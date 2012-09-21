@@ -6,11 +6,11 @@ List of improvements and modifications to be done.
 = GUI =
 
 Todo:
-  * audio files subcorpus (application/x-shockwave-flash)
+  * ...
 
 
 Done:
-  * asdf;
+  * audio files subcorpus (application/x-shockwave-flash)
 
 = DB layout changes =
 
