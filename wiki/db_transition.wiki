@@ -27,6 +27,10 @@ mysql$ SOURCE D:\all\projects\corpus\vepsian\trunk\vepsian\db_transition\db_new_
 = 2. Dump, export =
 
 == 2.1. Remote server dump (Unix) ==
+Run in shell:
+{{{
+/usr/local/mysql/bin/mysqldump -ucomponavt -p vepsian --skip-opt --add-drop-table --skip-set-charset --default-character-set=utf8 > vepsian_20120923_2600_8222.dump
+}}}
 
 == 2.2. Local desktop dump (Windows) ==
 
