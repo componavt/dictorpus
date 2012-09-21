@@ -6,7 +6,7 @@ List of improvements and modifications to be done.
 = GUI =
 
 Todo:
-  * asdf;
+  * audio files subcorpus (application/x-shockwave-flash)
 
 
 Done:
