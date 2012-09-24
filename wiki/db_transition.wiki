@@ -22,7 +22,10 @@ mysql$ SOURCE D:\all\projects\corpus\vepsian\trunk\vepsian\db_transition\db_new_
 
 == 1.2. Local desktop upload (Windows) ==
 
-
+Run in MySQL:
+{{{
+SET NAMES utf8; source D:/all/projects/corpus/vepsian/trunk/db/vepsian_20120923_2600_8222.sql;
+}}}
 
 = 2. Dump, export =
 
