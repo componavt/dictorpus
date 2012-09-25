@@ -37,7 +37,7 @@ Run in shell:
 
 == 2.2. Local desktop dump (Windows) ==
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Run from command-shell:
+{{{
+shell$ mysqldump -uroot -p vepsian_new --skip-opt --add-drop-table --skip-set-charset --default-character-set=utf8 --max_allowed_packet=1M > vepsian2_20120925_2600_8222.sql
+}}}
