@@ -39,5 +39,5 @@ Run in shell:
 
 Run from command-shell:
 {{{
-shell$ mysqldump -uroot -p vepsian_new --skip-opt --add-drop-table --skip-set-charset --default-character-set=utf8 --max_allowed_packet=1M > vepsian2_20120925_2600_8222.sql
+shell$ mysqldump -uroot -p vepsian --skip-opt --add-drop-table --skip-set-charset --default-character-set=utf8 --max_allowed_packet=1M > vepsian2_20120925_2600_8222.sql
 }}}
