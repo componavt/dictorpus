@@ -41,6 +41,8 @@ SET NAMES utf8; source D:/all/projects/corpus/vepsian/trunk/db/vepsian_20120923_
 == 2.1. Remote server dump (Unix) ==
 Run in shell:
 {{{
+cd /home/componavt/vepsian/db
+
 /usr/local/mysql/bin/mysqldump -ucomponavt -p vepsian --default-character-set=utf8 --max_allowed_packet=1M > vepsian_20120923_2600_8222.dump
 
 /usr/local/mysql/bin/mysqldump -ucomponavt -p vepsian --skip-opt --add-drop-table --skip-set-charset --default-character-set=utf8 > vepsian_20120926_2594_8217.dump
