@@ -33,7 +33,7 @@ mysql$ SET NAMES utf8;  source /home/componavt/vepsian/db/vepsian_20120925c_2600
 
 Run in MySQL:
 {{{
-SET NAMES utf8; source D:/all/projects/corpus/vepsian/trunk/db/vepsian_20120923_2600_8222.sql;
+SET NAMES utf8; source D:/all/projects/corpus/vepsian/db/vepsian_20120926_2594_8217.sql;
 }}}
 
 = 2. Dump, export =
