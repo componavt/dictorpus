@@ -57,3 +57,10 @@ shell$ mysqldump -uroot -p vepsian --default-character-set=utf8 --max_allowed_pa
 {{{
 shell$ mysqldump -uroot -p vepsian --add-drop-table --skip-set-charset --default-character-set=utf8 > vepsian_20120925_2600_8222_opt.sql
 }}}
+
+= User table =
+
+Add new users:
+{{{
+mysql$ INSERT INTO `user` VALUES ('john', md5('1234'), 'e@mail');
+}}}
