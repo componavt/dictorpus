@@ -21,7 +21,7 @@ mysql$ SOURCE D:\all\projects\corpus\vepsian\trunk\vepsian\db_transition\db_new_
 == 1.1. Remote server upload (Unix) ==
 
 {{{
-shell$ /usr/local/mysql/bin/mysql -ucomponavt -p vepsian
+shell$ /usr/local/bin/mysql -ucomponavt -p vepsian
 }}}
 
 {{{
@@ -43,7 +43,7 @@ Run in shell:
 {{{
 cd /home/componavt/vepsian/db
 
-/usr/local/mysql/bin/mysqldump -ucomponavt -p vepsian --default-character-set=utf8 --max_allowed_packet=1M vepsian_20120926_2594_8217.dump
+/usr/local/bin/mysqldump -ucomponavt -p vepsian --default-character-set=utf8 --max_allowed_packet=1M vepsian_20120926_2594_8217.dump
 }}}
 
 == 2.2. Local desktop dump (Windows) ==
