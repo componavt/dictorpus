@@ -14,6 +14,11 @@ Todo:
 Done:
   * audio files subcorpus (application/x-shockwave-flash)
 
+= Function =
+
+Todo:
+  * Поиск по текстам (text-search) по слову "vasan" выдаёт три ответа вместо пяти.
+
 = DB layout changes =
 
 == DB todo == 
