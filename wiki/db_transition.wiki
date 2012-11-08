@@ -62,5 +62,5 @@ shell$ mysqldump -uroot -p vepsian --add-drop-table --skip-set-charset --default
 
 Add new users:
 {{{
-mysql$ INSERT INTO `user` VALUES ('john', md5('1234'), 'e@mail');
+mysql$ INSERT INTO `user` (user_name, user_password, user_email) VALUES ('john', md5('1234'), 'e@mail');
 }}}
