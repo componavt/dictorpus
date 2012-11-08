@@ -16,7 +16,11 @@ Done:
 
 = Function =
 
-Todo:
+Todo dictionary:
+  * обратный словарь (Reverse dictionary)
+  ? how to deal with homonyms and several meanings of the word
+
+Todo corpus:
   * Поиск по текстам (text-search) по слову "vasan" выдаёт три ответа вместо пяти.
 
 = DB layout changes =
