@@ -43,7 +43,7 @@ Run in shell:
 {{{
 cd /home/componavt/vepsian/db
 
-/usr/local/bin/mysqldump -ucomponavt -p vepsian --default-character-set=utf8 --max_allowed_packet=1M vepsian_20120926_2594_8217.dump
+/usr/local/bin/mysqldump -ucomponavt -p vepsian --default-character-set=utf8 --max_allowed_packet=1M > vepsian_20120926_2594_8217.dump
 }}}
 
 == 2.2. Local desktop dump (Windows) ==
