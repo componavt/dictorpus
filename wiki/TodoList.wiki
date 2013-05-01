@@ -16,6 +16,8 @@ Done:
 
 = Function =
 
+TInformantVillage::getIDByName and informant_place.php stripslashes if get_magic_quotes_gpc()
+
 Todo dictionary:
   * обратный словарь (Reverse dictionary)
   * ? how to deal with homonyms and several meanings of the word
