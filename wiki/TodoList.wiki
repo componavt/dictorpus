@@ -3,6 +3,9 @@
 
 List of improvements and modifications to be done.
 
+= Misc =
+  * Добавить анализ статистика посещений сайта
+
 = test =
 
 Catchable fatal error: Object of class mysqli_result could not be converted to string in /www/vepsian/lib/db_text/informant/tinformant.php on line 102
