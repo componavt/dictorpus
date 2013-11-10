@@ -4,7 +4,7 @@
 List of improvements and modifications to be done.
 
 = Misc =
-  * Добавить анализ статистика посещений сайта
+  * Добавить анализ статистики посещений сайта
 
 = test =
 
