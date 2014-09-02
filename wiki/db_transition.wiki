@@ -25,7 +25,7 @@ shell$ /usr/local/bin/mysql -ucomponavt -p vepsian
 }}}
 
 {{{
-mysql$ DROP table concordance, corpus, label, lang, lemma, informant, informant_name, recorder_name, informant_place, informant_region, informant_village, part_of_speech, source, text, text_label, text_lemma, text_pair, text_sequence, translation, translation_lemma, user, wordform, wordform_unproved_todo;
+mysql$ DROP table event, event_recorder, place, place_region, place_village, recorder, concordance, corpus, label, lang, lemma, informant, informant_name, recorder_name, informant_place, informant_region, informant_village, part_of_speech, source, text, text_label, text_lemma, text_pair, text_sequence, translation, translation_lemma, user, wordform, wordform_unproved_todo;
 mysql$ SET NAMES utf8;  source /home/componavt/vepsian/db/vepsian_20120925c_2600_8222.dump;
 }}}
 
