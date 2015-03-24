@@ -1,0 +1,63 @@
+# Introduction #
+
+_vepsian_ - old database
+_vepsian\_new_ - new database
+
+# 0. Create new database scheme #
+
+Run in MySQL:
+```
+mysql$ drop database vepsian_new;
+mysql$ create database vepsian_new;
+mysql$ use vepsian_new;
+mysql$ SOURCE D:\all\projects\corpus\vepsian\trunk\vepsian\db_transition\db_new_version_2012\vepsian_new.sql
+```
+
+# 1. Upload database dump #
+
+## 1.1. Remote server upload (Unix) ##
+
+```
+shell$ /usr/local/bin/mysql -ucomponavt -p vepsian
+```
+
+```
+mysql$ DROP table event, event_recorder, place, place_region, place_village, recorder, concordance, corpus, label, lang, lemma, informant, informant_name, recorder_name, informant_place, informant_region, informant_village, part_of_speech, source, text, text_label, text_lemma, text_pair, text_sequence, translation, translation_lemma, user, wordform, wordform_unproved_todo;
+mysql$ SET NAMES utf8;  source /home/componavt/vepsian/db/vepsian_20120925c_2600_8222.dump;
+```
+
+## 1.2. Local desktop upload (Windows) ##
+
+Run in MySQL:
+```
+SET NAMES utf8; source D:/all/projects/corpus/vepsian/db/vepsian_20120926_2594_8217.sql;
+```
+
+# 2. Dump, export #
+
+## 2.1. Remote server dump (Unix) ##
+Run in shell:
+```
+cd /home/componavt/vepsian/db
+
+/usr/local/bin/mysqldump -ucomponavt -p vepsian --default-character-set=utf8 --max_allowed_packet=1M > vepsian_20120926_2594_8217.dump
+```
+
+## 2.2. Local desktop dump (Windows) ##
+
+Run from command-shell:
+```
+shell$ mysqldump -uroot -p vepsian --default-character-set=utf8 --max_allowed_packet=1M > vepsian_20120925_2600_8222.sql
+```
+
+??? and small optimized version:
+```
+shell$ mysqldump -uroot -p vepsian --add-drop-table --skip-set-charset --default-character-set=utf8 > vepsian_20120925_2600_8222_opt.sql
+```
+
+# User table #
+
+Add new users:
+```
+mysql$ INSERT INTO `user` (user_name, user_password, user_email) VALUES ('john', md5('1234'), 'e@mail');
+```
