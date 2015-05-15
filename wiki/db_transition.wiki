@@ -1,20 +1,16 @@
 #summary Transition from old to new database scheme.
-#labels MySQL,export,dump,Phase-Deploy
 
 = Introduction =
-
-_vepsian_ - old database
-_vepsian_new_ - new database
 
 = 0. Create new database scheme =
 
 Run in MySQL:
-{{{
+```MySQL
 mysql$ drop database vepsian_new;
 mysql$ create database vepsian_new;
 mysql$ use vepsian_new;
 mysql$ SOURCE D:\all\projects\corpus\vepsian\trunk\vepsian\db_transition\db_new_version_2012\vepsian_new.sql
-}}}
+```
 
 = 1. Upload database dump =
 
