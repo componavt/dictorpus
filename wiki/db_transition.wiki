@@ -4,6 +4,12 @@
 
 = 0. Create new database scheme =
 
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
+
 Run in MySQL:
 ```sh
 mysql$ drop database vepsian_new;
