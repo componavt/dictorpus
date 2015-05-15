@@ -45,18 +45,18 @@ cd /home/componavt/vepsian/db
 == 2.2. Local desktop dump (Windows) ==
 
 Run from command-shell:
-<CODE>
+<PRE>
 shell$ mysqldump -uroot -p vepsian --default-character-set=utf8 --max_allowed_packet=1M > vepsian_20120925_2600_8222.sql
-</CODE>
+</PRE>
 
 ??? and small optimized version:
-<CODE>
+<PRE>
 shell$ mysqldump -uroot -p vepsian --add-drop-table --skip-set-charset --default-character-set=utf8 > vepsian_20120925_2600_8222_opt.sql
-</CODE>
+</PRE>
 
 = User table =
 
 Add new users:
-<CODE>
+<PRE>
 mysql$ INSERT INTO `user` (user_name, user_password, user_email) VALUES ('john', md5('1234'), 'e@mail');
-</CODE>
+</PRE>
