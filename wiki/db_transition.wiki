@@ -5,7 +5,7 @@
 = 0. Create new database scheme =
 
 Run in MySQL:
-```MySQL
+```Shell
 mysql$ drop database vepsian_new;
 mysql$ create database vepsian_new;
 mysql$ use vepsian_new;
