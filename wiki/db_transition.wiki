@@ -4,12 +4,8 @@
 
 = 0. Create new database scheme =
 
-```ruby
-code and stuff
-```
-
 Run in MySQL:
-```sh
+```
 mysql$ drop database vepsian_new;
 mysql$ create database vepsian_new;
 mysql$ use vepsian_new;
@@ -20,9 +16,9 @@ mysql$ SOURCE D:\all\projects\corpus\vepsian\trunk\vepsian\db_transition\db_new_
 
 == 1.1. Remote server upload (Unix) ==
 
-{{{
+```
 shell$ /usr/local/bin/mysql -ucomponavt -p vepsian
-}}}
+```
 
 {{{
 mysql$ DROP table event, event_recorder, place, place_region, place_village, recorder, concordance, corpus, label, lang, lemma, informant, informant_name, recorder_name, informant_place, informant_region, informant_village, part_of_speech, source, text, text_label, text_lemma, text_pair, text_sequence, translation, translation_lemma, user, wordform, wordform_unproved_todo;
