@@ -6,13 +6,13 @@ List of languages
 
 @section('content')
 
-    <h2>Languages</h2>
+    <h2>{{ trans('messages.list_languages') }}</h2>
     <table id="languages" class="table">
     <thead>
         <tr>
-            <th>English</th>
-            <th>Russian</th>
-            <th>Language code</th>
+            <th>{{ trans('messages.in_english') }}</th>
+            <th>{{ trans('messages.in_russian') }}</th>
+            <th>{{ trans('messages.lang_code') }}</th>
         </tr>
     </thead>
     <tbody>

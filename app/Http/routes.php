@@ -10,13 +10,22 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect' ]
 
-Route::get('/', function () {
-    return view('welcome');
-});
+    ],
+    function()
+    {
+        Route::get('/', function () {
+            return view('welcome');
+        });
 
-Route::auth();
+        Route::auth();
 
-Route::get('/home', 'HomeController@index');
+        Route::get('/home', 'HomeController@index');
 
-Route::get('dict/lang', 'Dict\LangController@index');
+        Route::get('dict/lang', 'Dict\LangController@index');
+    }
+);
