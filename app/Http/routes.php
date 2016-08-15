@@ -27,5 +27,10 @@ Route::group(
         Route::get('/home', 'HomeController@index');
 
         Route::get('dict/lang', 'Dict\LangController@index');
+
+        //Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');
+        
+        Route::resource('dict/lemma', 'Dict\LemmaController');
+
     }
 );
