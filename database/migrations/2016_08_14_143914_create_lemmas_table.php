@@ -28,7 +28,7 @@ class CreateLemmasTable extends Migration
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
             
-            $table->integer('temp_translation_lemma_id');
+            //$table->integer('temp_translation_lemma_id');
             
             
             // Index -------------------

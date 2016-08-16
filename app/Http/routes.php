@@ -28,6 +28,8 @@ Route::group(
 
         Route::get('dict/lang', 'Dict\LangController@index');
 
+        Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
+        
         //Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');
         
         Route::resource('dict/lemma', 'Dict\LemmaController');

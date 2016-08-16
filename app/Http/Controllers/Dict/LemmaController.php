@@ -8,6 +8,10 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Dict\Lemma;
+use App\Models\Dict\Lang;
+use App\Models\Dict\PartOfSpeech;
+
 class LemmaController extends Controller
 {
     /**
@@ -15,9 +19,46 @@ class LemmaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $limit_num = $request->input('limit_num');
+
+        if ($limit_num<=0) {
+            $limit_num = 10;
+        } elseif ($limit_num>1000) {
+            $limit_num = 1000;
+        }      
+
+        
+        $limit_num = (int)$limit_num;
+        $lemmas = Lemma::orderBy('lemma')->take($limit_num)->get();        
+
+// print "<pre>";        
+        if ($lemmas) {
+            foreach ($lemmas as $lemma) { 
+                $lang_obj = Lang::where('id', $lemma->lang_id)->first();
+                if($lang_obj) {
+                    $lemma->lang = $lang_obj->getNameAttribute();
+                } else {
+                    $lemma->lang = '';
+                }
+                
+                $pos_obj = //$lemma -> pos();
+                        PartOfSpeech::where('id', $lemma->pos_id)->first();
+                // var_dump($pos_obj);
+                if ($pos_obj) {
+                    $lemma->pos = //$lemma->pos_id;
+$pos_obj->getNameAttribute();
+                } else {
+                    $lemma->pos = '';
+                }
+            }            
+        }
+        return view('dict.lemma.index')
+                  ->with(array('limit_num' => $limit_num,
+                               'lemmas' => $lemmas,
+                              )
+                        );
     }
 
     /**
@@ -84,6 +125,50 @@ class LemmaController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    
+    /** Gets list of longest lemmas, 
+     * gets first N lemmas sorted by length.
+     */
+    public function sortedByLength(Request $request)
+    {
+        $limit_num = (int)$request->input('limit_num');
+        
+        if ($limit_num<=0) {
+            $limit_num = 10;
+        } elseif ($limit_num>1000) {
+            $limit_num = 1000;
+        }           
+        
+        //select * from lemmas order by char_length(lemma) DESC limit 10;
+        //$lemmas = Lemma::orderBy(char_length('lemma'), 'desc')
+        //               ->take($limit_num)->get();
+        $lemmas = DB::select('select * from lemmas order by char_length(lemma) '
+                           . 'DESC limit :limit', ['limit'=>$limit_num]);
+         
+        if ($lemmas) {
+            foreach ($lemmas as $lemma) { 
+                $lang_obj = Lang::where('id', $lemma->lang_id)->first();
+                if($lang_obj) {
+                    $lemma->lang = $lang_obj->getNameAttribute();
+                } else {
+                    $lemma->lang = '';
+                }
+                
+                $pos_obj = PartOfSpeech::where('id', $lemma->pos_id)->first();
+                if ($pos_obj) {
+                    $lemma->pos = $pos_obj->getNameAttribute();
+                } else {
+                    $lemma->pos = '';
+                }
+            }            
+        }
+        return view('dict.lemma.sorted_by_length')
+                  ->with(array('limit_num' => $limit_num,
+                               'lemmas' => $lemmas,
+                              )
+                        );
     }
     
     

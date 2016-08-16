@@ -15,7 +15,7 @@ class Lemma extends Model
     
     
     // Lemma __belongs_to__ PartOfSpeech
-    public function lang()
+    public function pos()
     {
         return $this->belongsTo(PartOfSpeech::class);
     }

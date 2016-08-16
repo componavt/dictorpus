@@ -11,6 +11,7 @@ return [
     */
 
     'home' => 'Home',
-    'lang'  => 'Languages'
+    'langs'  => 'Languages',
+    'lemmas' => 'Lemmas'
 
 ];

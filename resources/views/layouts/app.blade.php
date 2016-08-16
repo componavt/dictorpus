@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ trans('main.site_title') }}</title>
+    <title>{{ trans('main.site_abbr') }} :: @yield('title')</title>
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha384-XdYbMnZ/QjLh6iI4ogqCTaIjrFk87ip+ekIjefZch0Y+PvJ8CDYtEs1ipDmPorQ+" crossorigin="anonymous">
@@ -14,6 +14,8 @@
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
+    
+    {!!Html::style('css/main.css')!!}
 
     <style>
         body {
@@ -47,18 +49,21 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/') }}">{{ trans('navigation.home') }}</a></li>
-                    <li><a href="{{ url('/dict/lang') }}">{{ trans('navigation.lang') }}</a></li>
+                    <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.home') }}</a></li>
+                    <li><a href="{{ LaravelLocalization::localizeURL('/dict/lang') }}">{{ trans('navigation.langs') }}</a></li>
+                    <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}">{{ trans('navigation.lemmas') }}</a></li>
                 </ul>
 
                 
                 <ul class="nav navbar-nav navbar-right lang">
                     @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                        @if ($localeCode != LaravelLocalization::getCurrentLocale())
                         <li>
                             <a rel="alternate" hreflang="{{$localeCode}}" href="{{LaravelLocalization::getLocalizedURL($localeCode) }}">
                                 {{ $properties['native'] }}
                             </a>
                         </li>
+                        @endif
                     @endforeach
                 </ul>
                 
