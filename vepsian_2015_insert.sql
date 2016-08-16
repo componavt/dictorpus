@@ -54,5 +54,12 @@ INSERT INTO `langs` VALUES (6,'Ludic','людиковское наречие','l
 
 
 
+-- MEANING and MEANING_TEXT ---------------------------------------
+-- php artisan make:model 'Models\Dict\Meaning' --migration
+-- php artisan make:controller 'Dict\MeaningController' --resource
+
+
+-- php artisan make:model 'Models\Dict\MeaningText' --migration
+-- php artisan make:controller 'Dict\MeaningTextController' --resource
 
 

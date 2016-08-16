@@ -34,5 +34,6 @@ Route::group(
         
         Route::resource('dict/lemma', 'Dict\LemmaController');
 
+        // Route::get('dict/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
     }
 );
