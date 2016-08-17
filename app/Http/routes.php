@@ -30,10 +30,11 @@ Route::group(
 
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
         
-        //Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');
+//        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');
         
+//        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
+
         Route::resource('dict/lemma', 'Dict\LemmaController');
 
-        // Route::get('dict/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
     }
 );

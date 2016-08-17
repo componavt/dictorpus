@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
+use App\Models\Dict\Meaning;
 
 class LemmaController extends Controller
 {
@@ -21,39 +22,45 @@ class LemmaController extends Controller
      */
     public function index(Request $request)
     {
-        $limit_num = $request->input('limit_num');
+        $limit_num = (int)$request->input('limit_num');
 
         if ($limit_num<=0) {
             $limit_num = 10;
         } elseif ($limit_num>1000) {
             $limit_num = 1000;
         }      
+       
+        $lemmas = Lemma::orderBy('lemma')->take($limit_num)
+                       ->with(['meanings'=> function ($query) {
+                                    $query->orderBy('meaning_n');
 
-        
-        $limit_num = (int)$limit_num;
-        $lemmas = Lemma::orderBy('lemma')->take($limit_num)->get();        
+                                }/*,
+                               'meaning.meaning_texts'=> function ($query) {
+                                    $query->orderBy('lang_id');
 
-// print "<pre>";        
-        if ($lemmas) {
-            foreach ($lemmas as $lemma) { 
-                $lang_obj = Lang::where('id', $lemma->lang_id)->first();
+                                }*/])
+                                        ->get();  
+        // ->with('meanings') - Eager Loading - to pre-load relationships 
+        // they know will be accessed after loading the model. 
+        // Eager loading provides a significant reduction in SQL queries that 
+        // must be executed to load a model's relations.
+
+/*        if ($lemmas) {
+            foreach ($lemmas as $lemma) {
+                
+                $lemma->lang = Lang::find( $lemma->lang_id )->name;
+//                $lemma->lang = $lemma->lang()->find( $lemma->lang_id )->name;
+                
+                /*$lang_obj = Lang::where('id', $lemma->lang_id)->first();
                 if($lang_obj) {
                     $lemma->lang = $lang_obj->getNameAttribute();
                 } else {
                     $lemma->lang = '';
-                }
-                
-                $pos_obj = //$lemma -> pos();
-                        PartOfSpeech::where('id', $lemma->pos_id)->first();
-                // var_dump($pos_obj);
-                if ($pos_obj) {
-                    $lemma->pos = //$lemma->pos_id;
-$pos_obj->getNameAttribute();
-                } else {
-                    $lemma->pos = '';
-                }
+                }*/
+ /*               
+                $lemma->pos = PartOfSpeech::find( $lemma->pos_id )->name;
             }            
-        }
+        } */
         return view('dict.lemma.index')
                   ->with(array('limit_num' => $limit_num,
                                'lemmas' => $lemmas,
@@ -79,7 +86,6 @@ $pos_obj->getNameAttribute();
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -90,7 +96,9 @@ $pos_obj->getNameAttribute();
      */
     public function show($id)
     {
-        //
+        $lemma_obj = Lemma::find($id);
+               
+        return view('dict.lemma.show')->with(['lemma'=>$lemma_obj]);
     }
 
     /**
@@ -141,14 +149,17 @@ $pos_obj->getNameAttribute();
             $limit_num = 1000;
         }           
         
-        //select * from lemmas order by char_length(lemma) DESC limit 10;
         //$lemmas = Lemma::orderBy(char_length('lemma'), 'desc')
         //               ->take($limit_num)->get();
         $lemmas = DB::select('select * from lemmas order by char_length(lemma) '
                            . 'DESC limit :limit', ['limit'=>$limit_num]);
          
+        $out_lemmas = array();
         if ($lemmas) {
             foreach ($lemmas as $lemma) { 
+                $out_lemmas[] = Lemma::find($lemma->id);
+            }
+ /*               
                 $lang_obj = Lang::where('id', $lemma->lang_id)->first();
                 if($lang_obj) {
                     $lemma->lang = $lang_obj->getNameAttribute();
@@ -162,11 +173,11 @@ $pos_obj->getNameAttribute();
                 } else {
                     $lemma->pos = '';
                 }
-            }            
+            }  */          
         }
         return view('dict.lemma.sorted_by_length')
                   ->with(array('limit_num' => $limit_num,
-                               'lemmas' => $lemmas,
+                               'lemmas' => $out_lemmas,
                               )
                         );
     }
@@ -175,13 +186,20 @@ $pos_obj->getNameAttribute();
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */
-    /*
+/*    
     public function tempInsertVepsianLemmas()
     {
         $lemmas = DB::connection('vepsian')->table('lemma')->orderBy('id')->get();
  
      
-        //DB::connection('mysql')->table('lemmas')->truncate();
+        DB::connection('mysql')->table('meaning_texts')->delete();
+        DB::connection('mysql')->statement('ALTER TABLE meaning_texts AUTO_INCREMENT = 1');
+        
+        DB::connection('mysql')->table('meanings')->delete();
+        DB::connection('mysql')->statement('ALTER TABLE meanings AUTO_INCREMENT = 1');
+
+        DB::connection('mysql')->table('lemmas')->delete();
+        DB::connection('mysql')->statement('ALTER TABLE lemmas AUTO_INCREMENT = 1');
         
         foreach ($lemmas as $lemma) {
             DB::connection('mysql')->table('lemmas')->insert([
@@ -190,45 +208,11 @@ $pos_obj->getNameAttribute();
                     'lang_id' => 1,
                     'pos_id' => $lemma->pos_id,
                     'created_at' => $lemma -> modified,
-                    'updated_at' => $lemma -> modified,
-                    'temp_translation_lemma_id' => 0
+                    'updated_at' => $lemma -> modified
                 ]
             );
         }
          
-        //DB::connection('mysql')->table('lemmas')->delete('delete from lemmas where id>2932');
-        $trans_lemmas = DB::connection('vepsian')->table('translation_lemma')->orderBy('id')->get();
-
-        foreach ($trans_lemmas as $trans_lemma) {
-            $translation = DB::connection('vepsian')->table('translation')-> where('translation_lemma_id',$trans_lemma->id)->first();
-            if (!$translation) {
-                continue;
-            }
-            $meaning_id = $translation->meaning_id;
-            
-            $meaning = DB::connection('vepsian')->table('meaning')-> where('id',$meaning_id)->first();
-            if (!$meaning) {
-                continue;
-            }
-            $lemma_id = $meaning->lemma_id;
-            
-            $lemma = DB::connection('vepsian')->table('lemma')-> where('id',$lemma_id)->first();
-            if (!$lemma) {
-                continue;
-            }
-            $pos_id = $lemma->pos_id;
-            
-            DB::connection('mysql')->table('lemmas')->insert([
-                    'lemma' => $trans_lemma->lemma,
-                    'lang_id' => $trans_lemma->lang_id,
-                    'pos_id' => $pos_id,
-                    'temp_translation_lemma_id' => $trans_lemma->id
-                ]
-            );
-        
-        }
- 
-//        return view("home");
     }
-     */
+ */    
 }

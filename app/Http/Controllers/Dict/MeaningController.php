@@ -91,7 +91,8 @@ class MeaningController extends Controller
      * (1) Copy vepsian.{meaning} to vepkar.meanings (without meaning_text)
      * (2) Copy vepsian.{meaning.meaning_text, translation_lemma} to vepkar.meaning_texts
      */
-    /*public function tempInsertVepsianMeanings()
+/*    
+    public function tempInsertVepsianMeanings()
     {
         $meanings = DB::connection('vepsian')->table('meaning')->orderBy('id')->get();
  
@@ -123,33 +124,36 @@ class MeaningController extends Controller
                 );
             }
             
-            $translation = DB::connection('vepsian')->table('translation')
-                             -> where('meaning_id',$meaning->id)->first();
-            if (!$translation) {
+            $translations = DB::connection('vepsian')->table('translation')
+                             -> where('meaning_id',$meaning->id)->get();
+            if (!$translations) {
                 continue;
-            }           
-            $translation_lemma_id = $translation-> translation_lemma_id;
+            }       
             
-            $translation_lemma = DB::connection('vepsian')
-                                   ->table('translation_lemma')
-                                   ->where('id',$translation_lemma_id)->first();
-            if (!$translation_lemma) {
-                continue;
-            } 
-            
-            if ($translation_lemma->lemma) {
-                DB::connection('mysql')->table('meaning_texts')->insert([
-                        'meaning_id' => $meaning->id,
-                        'lang_id' => $translation_lemma->lang_id,
-                        'meaning_text' => $translation_lemma->lemma,
-                        'created_at' => $meaning -> modified,
-                        'updated_at' => $meaning -> modified
-                    ]
-                );
+            foreach ($translations as $translation) {
+                $translation_lemma_id = $translation-> translation_lemma_id;
+
+                $translation_lemma = DB::connection('vepsian')
+                                       ->table('translation_lemma')
+                                       ->where('id',$translation_lemma_id)->first();
+                if (!$translation_lemma) {
+                    continue;
+                } 
+
+                if ($translation_lemma->lemma) {
+                    DB::connection('mysql')->table('meaning_texts')->insert([
+                            'meaning_id' => $meaning->id,
+                            'lang_id' => $translation_lemma->lang_id,
+                            'meaning_text' => $translation_lemma->lemma,
+                            'created_at' => $meaning -> modified,
+                            'updated_at' => $meaning -> modified
+                        ]
+                    );
+                }
             }       
         endforeach;
-         
-//        return view("home");
-    }*/
+    }
+ */    
+    
     
 }

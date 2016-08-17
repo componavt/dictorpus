@@ -39,9 +39,9 @@
         <tbody>
             @foreach($lemmas as $lemma)
             <tr>
-                <td>{{$lemma->lemma}}</td>
-                <td>{{$lemma->lang}}</td>
-                <td>{{$lemma->pos}}</td>
+                <td><a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a></td>
+                <td>{{$lemma->lang->name}}</td>
+                <td>{{$lemma->pos->name}}</td>
             </tr>
             @endforeach
         </tbody>
