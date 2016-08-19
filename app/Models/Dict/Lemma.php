@@ -35,5 +35,10 @@ class Lemma extends Model
         return $this->hasManyThrough('App\Models\Dict\Meaning', 'App\Models\Dict\MeaningText');
     }
 
-    
+    // Lemma __has_many__ Wordforms
+    public function wordforms(){
+        $builder = $this->belongsToMany('App\Models\Dict\Wordform','lemma_wordform');
+        $builder->getQuery()->getQuery()->distinct = TRUE;
+        return $builder->get();
+    }
 }

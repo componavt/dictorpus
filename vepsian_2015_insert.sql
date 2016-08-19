@@ -63,3 +63,30 @@ INSERT INTO `langs` VALUES (6,'Ludic','людиковское наречие','l
 -- php artisan make:controller 'Dict\MeaningTextController' --resource
 
 
+-- DIALECT ---------------------------------------
+-- php artisan make:model 'Models\Dict\Dialect' --migration
+
+INSERT INTO `dialects` VALUES (1, 1, 'Northern Veps','северновепсский диалект', 'veps-north'),(2,1,'Central Veps','средневепсский диалект','veps-centr'),(3,1,'Southern Veps','южновепсский диалект','veps-south'),(4,1,'Eastern dialects','восточные говоры','veps-east'),(5,1,'Western dialects','западные говоры','veps-west');
+
+
+-- GRAM_CATEGORY ---------------------------------------
+-- php artisan make:model 'Models\Dict\GramCategory' --migration
+
+INSERT INTO `gram_categories` VALUES (1, 'case','падеж'),(2,'number','число'),(3,'tense','время');
+
+
+-- GRAM ---------------------------------------
+-- php artisan make:model 'Models\Dict\Gram' --migration
+
+
+INSERT INTO `grams` VALUES (1, 2, 'sg','singular','ед. ч.','единственное число',1),(2, 2,'pl','plural','мн. ч.','множественное число',2),(3,1,'nom','nominative','','номинатив',1),(4,1,'gen','genitive','','генитив',2),(5,1,'part','partitive','','партитив',3),(6,1,'trans','translative','','транслатив',4),(7,1,'abes','abessive','','абессив',5),(8,1,'ess-inst','essive','','эссив-инструктив',6),(9,1,'ines','inessive','','инессив',7),(10,1,'elat','elative','','элатив',8),(11,1,'ill','illative','','иллатив',9),(12,1,'ades','adessive','','адессив',10),(13,1,'abl','ablative','','аблатив',11),(14,1,'all','allative','','аллатив',12),(15,1,'com','comitative','','комитатив',13),(16,1,'prol','prolative','','пролатив',14),(17,1,'term','terminative','','терминатив',15),(18,1,'appr','approximative','','аппроксиматив',16),(19,1,'adit','aditive','','адитив',17),(20,1,'egr','egressive','','эгрессив',18);
+
+-- GRAMSET ---------------------------------------
+-- php artisan make:model 'Models\Dict\Gramset' --migration
+
+-- WORDFORM ---------------------------------------
+-- php artisan make:model 'Models\Dict\Wordform' --migration
+
+-- LEMMA_WORDFORM ---------------------------------------
+-- php artisan make:migration create_lemma_wordform_table 
+
