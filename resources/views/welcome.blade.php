@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
 <div class="container">
@@ -8,7 +8,7 @@
                 <div class="panel-heading">{{ trans('main.site_title') }}</div>
 
                 <div class="panel-body">
-                    Your Application's Landing Page.
+                    
                 </div>
             </div>
         </div>

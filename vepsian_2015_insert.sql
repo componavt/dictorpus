@@ -1,6 +1,6 @@
 -- set names utf8; SOURCE /data/all/projects/git/dictorpus/vepsian_2015_insert.sql;
 
--- mysqldump -uroot -p vepkar --default-character-set=utf8 --max_allowed_packet=1M > vepkar_20160815_v01.sql
+-- mysqldump -uroot -p vepkar --default-character-set=utf8 --max_allowed_packet=1M > vepkar_20160821_v01.sql
 
 -- php artisan migrate:install
 -- php artisan migrate:rollback
@@ -93,4 +93,12 @@ INSERT INTO `gramsets` VALUES (1,5,1,3,NULL),(3,5,1,4,NULL),(4,5,1,5,NULL),(5,5,
 
 -- LEMMA_WORDFORM ---------------------------------------
 -- php artisan make:migration create_lemma_wordform_table 
+
+
+
+
+
+
+
+
 
