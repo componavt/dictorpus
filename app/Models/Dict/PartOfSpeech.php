@@ -30,3 +30,22 @@ class PartOfSpeech extends Model
     }
     
 }
+
+// 
+// + sequence_number TINYINT, see http://universaldependencies.org/u/pos/index.html
+// (1) Open class words
+// (2) Closed class words
+// (3) Other
+// 
+//      + Auxiliary verb, вспомогательный глагол, AUX 
+//      + Determiner, детерминатив, DET 
+// rename: INTER -> INTJ (interjection, междометие)
+// rename: N     -> NOUN (noun, существительное)
+// 
+//      + Proper noun, имя собственное, PROPN
+//      + Subordinating conjunction, подчинительный союз, SCONJ
+//      
+// (3) Other
+//      + Punctuation, пунктуация, PUNCT
+//      + Symbol, символ, SYM
+//      + Other, другое, X

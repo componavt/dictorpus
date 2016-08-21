@@ -25,6 +25,8 @@ Route::group(
         Route::auth();
 
         Route::get('/home', 'HomeController@index');
+        
+        Route::get('dict/dialect', 'Dict\DialectController@index');
 
         Route::get('dict/lang', 'Dict\LangController@index');
 
@@ -33,6 +35,10 @@ Route::group(
 //        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');
         
 //        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
+
+//        Route::get('dict/lemma/meaning/meaning_text/tempJoinMeaningText', 'Dict\MeaningTextController@tempJoinMeaningText');
+        
+        //Route::get('dict/lemma/wordform/tempInsertVepsianWordform', 'Dict\WordformController@tempInsertVepsianWordform');
 
         Route::resource('dict/lemma', 'Dict\LemmaController');
 

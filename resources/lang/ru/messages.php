@@ -15,12 +15,15 @@ return [
     'list_languages' => 'Список языков',
     'in_russian' => 'По-русски',
 
+    'code' => 'Код',
+    'dialect_list' => 'Список диалектов',
     'list_lemmas' => 'Список лемм',
     'list_long_lemmas' => 'Список длинных лемм',
     'limit_num' => 'количество записей',
     'lemma' => 'лемма',
     'lang' => 'язык',
     'pos' => 'часть речи',
+    'wordforms' => 'словоформы',
     
     "search" => "искать",
     "view" => "показать",

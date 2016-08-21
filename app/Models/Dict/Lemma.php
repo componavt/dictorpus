@@ -38,7 +38,14 @@ class Lemma extends Model
     // Lemma __has_many__ Wordforms
     public function wordforms(){
         $builder = $this->belongsToMany('App\Models\Dict\Wordform','lemma_wordform');
-        $builder->getQuery()->getQuery()->distinct = TRUE;
-        return $builder->get();
+//        $builder->getQuery()->getQuery()->distinct = TRUE;
+        return $builder;//->get();
+    }
+    
+    // Lemma has any Gramsets
+    public function hasGramsets(){
+        return $this->belongsToMany(Gramset::class, 'lemma_wordform')
+             ->wherePivot('wordform_id')
+             ->wherePivot('dialect_id');//->count();
     }
 }

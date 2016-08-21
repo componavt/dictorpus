@@ -7,6 +7,7 @@
 @section('content')
     <div class="container">
         <h2>{{ trans('messages.list_languages') }}</h2>
+        
         <table id="languages" class="table">
         <thead>
             <tr>
@@ -25,6 +26,9 @@
             @endforeach
         </tbody>
         </table>
+        
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/dialect') }}">{{ trans('messages.dialect_list') }}</a></p>
+                
     </div>
 @stop
 

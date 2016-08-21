@@ -11,3 +11,7 @@ and open the template in the editor.
 .navbar-default .navbar-nav > li > a {
     text-transform: capitalize;
 }
+
+.table-bordered td {
+    padding: 2px 5px;
+}

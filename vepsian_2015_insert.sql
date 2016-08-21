@@ -65,6 +65,7 @@ INSERT INTO `langs` VALUES (6,'Ludic','людиковское наречие','l
 
 -- DIALECT ---------------------------------------
 -- php artisan make:model 'Models\Dict\Dialect' --migration
+-- php artisan make:controller 'Dict\DialectController'
 
 INSERT INTO `dialects` VALUES (1, 1, 'Northern Veps','северновепсский диалект', 'veps-north'),(2,1,'Central Veps','средневепсский диалект','veps-centr'),(3,1,'Southern Veps','южновепсский диалект','veps-south'),(4,1,'Eastern dialects','восточные говоры','veps-east'),(5,1,'Western dialects','западные говоры','veps-west');
 
@@ -84,8 +85,11 @@ INSERT INTO `grams` VALUES (1, 2, 'sg','singular','ед. ч.','единстве�
 -- GRAMSET ---------------------------------------
 -- php artisan make:model 'Models\Dict\Gramset' --migration
 
+INSERT INTO `gramsets` VALUES (1,5,1,3,NULL),(3,5,1,4,NULL),(4,5,1,5,NULL),(5,5,1,6,NULL),(6,5,1,7,NULL),(7,5,1,8,NULL),(8,5,1,9,NULL),(9,5,1,10,NULL),(10,5,1,11,NULL),(11,5,1,12,NULL),(12,5,1,13,NULL),(13,5,1,14,NULL),(14,5,1,15,NULL),(15,5,1,16,NULL),(16,5,1,17,NULL),(17,5,1,18,NULL),(19,5,1,19,NULL),(20,5,1,20,NULL),(2,5,2,3,NULL),(24,5,2,4,NULL),(22,5,2,5,NULL),(23,5,2,9,NULL),(25,5,2,12,NULL),(18,5,2,18,NULL),(21,11,1,NULL,NULL);
+
 -- WORDFORM ---------------------------------------
 -- php artisan make:model 'Models\Dict\Wordform' --migration
+-- php artisan make:controller 'Dict\WordformController' --resource
 
 -- LEMMA_WORDFORM ---------------------------------------
 -- php artisan make:migration create_lemma_wordform_table 

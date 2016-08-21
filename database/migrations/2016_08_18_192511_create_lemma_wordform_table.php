@@ -19,7 +19,7 @@ class CreateLemmaWordformTable extends Migration
             $table->integer('wordform_id')->unsigned();
             $table->foreign('wordform_id')->references('id')->on('wordforms');
             
-            $table->smallInteger('gramset_id')->unsigned();
+            $table->smallInteger('gramset_id')->unsigned()->nullable();
             $table->foreign('gramset_id')->references('id')->on('gramsets');
             
             // dialect 

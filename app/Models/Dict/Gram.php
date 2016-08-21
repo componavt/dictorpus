@@ -4,6 +4,8 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 
+use LaravelLocalization;
+
 class Gram extends Model
 {
     public $timestamps = false;
@@ -27,6 +29,9 @@ class Gram extends Model
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_short_" . $locale;
+        if (!$this->{$column}) {
+            $column = "name_" . $locale;
+        }
         return $this->{$column};
     }
     
