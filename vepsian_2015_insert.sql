@@ -94,7 +94,15 @@ INSERT INTO `gramsets` VALUES (1,5,1,3,NULL),(3,5,1,4,NULL),(4,5,1,5,NULL),(5,5,
 -- LEMMA_WORDFORM ---------------------------------------
 -- php artisan make:migration create_lemma_wordform_table 
 
-
+-- Setting up Postfix and pipe incoming emails to Laravel
+-- https://sboersma.nl/blog/setting-up-postfix-and-pipe-incoming-emails-to-laravel
+-- sudo apt-get install postfix
+-- sudo apt-get install postfix-pcre
+-- pecl install mailparse
+-- composer require php-mime-mail-parser/php-mime-mail-parser
+-- php artisan make:model -m 'Models\EmailMessage'
+-- php artisan migrate
+-- php artisan make:console ReadEmail
 
 
 

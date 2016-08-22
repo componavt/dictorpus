@@ -162,6 +162,9 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         
         Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class,
+        
+        PhpConsole\Laravel\ServiceProvider::class,  // debug
+        Barryvdh\Debugbar\ServiceProvider::class,   //composer require barryvdh/laravel-debugbar  // also debugger
     ],
 
     /*
@@ -215,6 +218,8 @@ return [
         'Activation' => Cartalyst\Sentinel\Laravel\Facades\Activation::class,
         'Reminder'   => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
         'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
+        
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

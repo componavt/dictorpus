@@ -8,6 +8,13 @@ class Gramset extends Model
 {
     public $timestamps = false;
     
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }
+
     // Gramset __belongs_to__ PartOfSpeech
     public function pos()
     {

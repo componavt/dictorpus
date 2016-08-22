@@ -11,6 +11,12 @@ class PartOfSpeech extends Model
     
     public $timestamps = false;
     
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }
     
     /** Gets localised name of this part of speech (current $locale used).
      * 

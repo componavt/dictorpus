@@ -16,6 +16,8 @@ use Mail;
 use Storage;
 use CurlHttp;
 
+use Barryvdh\Debugbar\Facade as Debugbar;
+
 class AuthController extends Controller
 {
 
@@ -36,7 +38,7 @@ class AuthController extends Controller
      */
     public function register()
     {
-        return view('auth.register');
+        return view('auth.register');//->with('errors',$errors);
     }
 
 
@@ -120,12 +122,25 @@ class AuthController extends Controller
         ]);
         $input = $request->all();
         $credentials = [ 'email' => $request->email ];
+
+//        Debugbar::error('not mine Error!');
+//        Debugbar::info($credentials);
+//        exit(0);
+        
+        
         if($user = Sentinel::findByCredentials($credentials))
         {
+//Debugbar::info($user);
+//print 'This email is registered already.';
+//exit(0);
             return Redirect::to('register')
-                ->withErrors('Такой Email уже зарегистрирован.');
+                //view('auth.register')
+                ->withErrors('This email is registered already.');//Такой Email уже зарегистрирован.
         }
-
+        
+//print '22';
+//exit(0);
+        
         if ($sentuser = Sentinel::register($input))
         {
             $activation = Activation::create($sentuser);

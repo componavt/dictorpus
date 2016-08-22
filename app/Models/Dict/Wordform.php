@@ -13,6 +13,13 @@ class Wordform extends Model
      */
     protected $fillable = ['wordform'];
 
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }
+
     /** Gets gramset by lemma, dialect (if presented) and wordform.
      * 
      * @param int $lemma_id

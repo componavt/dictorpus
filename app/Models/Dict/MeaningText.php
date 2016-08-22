@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class MeaningText extends Model
 {
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }
+
     // MeaningText __belongs_to__ Meaning
     public function meaning()
     {

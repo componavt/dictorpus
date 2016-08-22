@@ -7,10 +7,15 @@ use LaravelLocalization;
 
 class Lang extends Model
 {
-    //
-    
     public $timestamps = false;
     
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }
+
     /** Gets name of this lang, takes into account locale.
      * 
      * @return String

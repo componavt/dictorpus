@@ -8,6 +8,12 @@ class Dialect extends Model
 {
     public $timestamps = false;
     
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }
     
     /** Gets name of this dialect, takes into account locale.
      * 
