@@ -1,12 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('title')
 {{ trans('navigation.lemmas') }}
 @stop
 
 @section('content')
-    <div class="container">
-
         <h2>{{ $lemma->lemma }}</h2>
         
         <p><b>{{ trans('messages.pos') }}:</b> {{ $lemma->pos->name}}</p>
@@ -40,8 +38,6 @@
             @endforeach
         </table>
         @endif
-        
-    </div>
 @stop
 
 

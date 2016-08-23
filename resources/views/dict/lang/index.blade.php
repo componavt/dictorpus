@@ -1,11 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('title')
 {{ trans('messages.list_languages') }}
 @stop
 
 @section('content')
-    <div class="container">
         <h2>{{ trans('messages.list_languages') }}</h2>
         
         <table id="languages" class="table">
@@ -28,8 +27,6 @@
         </table>
         
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/dialect') }}">{{ trans('messages.dialect_list') }}</a></p>
-                
-    </div>
 @stop
 
 

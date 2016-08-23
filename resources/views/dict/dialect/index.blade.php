@@ -1,11 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('title')
 {{ trans('messages.dialect_list') }}
 @stop
 
 @section('content')
-    <div class="container">
         <h2>{{ trans('messages.dialect_list') }}</h2>
             
         <table class="table">

@@ -1,12 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('title')
 {{ trans('messages.list_long_lemmas') }}
 @stop
 
 @section('content')
-    <div class="container">
-
         <h2>{{ trans('messages.list_long_lemmas') }}</h2>
 
         {!! Form::open(array('url' => '/dict/lemma/sorted_by_length', 
@@ -38,14 +36,21 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td>{{$lemma->lemma}}</td>
-                <td>{{$lemma->lang->name}}</td>
-                <td>{{$lemma->pos->name}}</td>
+                <td>
+                    @if($lemma->lang)
+                        {{$lemma->lang->name}}
+                    @endif
+                </td>
+                <td>
+                    @if($lemma->pos)
+                        {{$lemma->pos->name}}
+                    @endif
+                </td>
             </tr>
             @endforeach
         </tbody>
         </table>
         @endif
-    </div>
 @stop
 
 

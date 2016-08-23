@@ -23,7 +23,7 @@
 <section>
     <div class="container">
     @include('errors.errmsg')
-    @yield('body')
+    @yield('content')
     </div>
 </section>
 @include('footer.footer')

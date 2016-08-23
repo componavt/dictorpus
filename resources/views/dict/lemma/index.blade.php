@@ -1,12 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('title')
 {{ trans('navigation.lemmas') }}
 @stop
 
 @section('content')
-    <div class="container">
-
         <h2>{{ trans('navigation.lemmas') }}</h2>
         
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('messages.list_long_lemmas') }}</a></p>
@@ -40,14 +38,21 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td><a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a></td>
-                <td>{{$lemma->lang->name}}</td>
-                <td>{{$lemma->pos->name}}</td>
+                <td>
+                    @if($lemma->lang)
+                        {{$lemma->lang->name}}
+                    @endif
+                </td>
+                <td>
+                    @if($lemma->pos)
+                        {{$lemma->pos->name}}
+                    @endif
+                </td>
             </tr>
             @endforeach
         </tbody>
         </table>
         @endif
-    </div>
 @stop
 
 

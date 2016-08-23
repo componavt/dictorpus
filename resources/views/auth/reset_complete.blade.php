@@ -6,7 +6,7 @@
  * Time: 4:55
  */?>
 @extends('layouts.master')
-@section('body')
+@section('content')
     {!! Form::open() !!}
     @include('widgets.form._formitem_password', ['name' => 'password', 'title' => 'Пароль', 'placeholder' => 'Пароль' ])
     @include('widgets.form._formitem_password', ['name' => 'password_confirm', 'title' => 'Подтверждение пароля', 'placeholder' => 'Пароль' ])
