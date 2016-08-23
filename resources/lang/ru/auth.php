@@ -10,7 +10,8 @@ return [
     |
     */
 
-    'login' => 'Login',
-    'register' => 'Register',
-    'reset' => 'Reset'
+    'login' => 'Войти',
+    'register' => 'Зарегистрироваться',
+    'reset' => 'Забыли пароль?'
+    
 ];
