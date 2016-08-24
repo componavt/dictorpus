@@ -1,1 +1,1 @@
-Для активации аккаунта пройдите по <a href="{{ URL::to("activate/{$sentuser->getUserId()}/{$code}") }}">ссылке</a>
+{{ trans('mail.account_activate', array('url'=>URL::to("activate/{$sentuser->getUserId()}/{$code}"))) }}

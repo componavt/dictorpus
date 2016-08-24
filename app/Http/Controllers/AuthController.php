@@ -72,7 +72,7 @@ class AuthController extends Controller
             {
                 return Redirect::intended('/');
             }
-            $errors = 'Неправильный логин или пароль.';
+            $errors = \Lang::get('error.incorrect_login_pass');
             return Redirect::back()
                 ->withInput()
                 ->withErrors($errors);
@@ -84,22 +84,23 @@ class AuthController extends Controller
             $code = $activation->code;
             $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function($m) use ($sentuser)
             {
-                $m->from('noreplay@mysite.ru', 'LaravelSite');
-                $m->to($sentuser->email)->subject('Активация аккаунта');
+                $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
+                $m->to($sentuser->email)->subject(\Lang::get('mail.account_activation_subj'));
             });
 
             if ($sent === 0)
             {
                 return Redirect::to('login')
-                    ->withErrors('Ошибка отправки письма активации.');
+                    ->withErrors(\Lang::get('error.email_activation_error'));
             }
-            $errors = 'Ваш аккаунт не ативирован! Поищите в своем почтовом ящике письмо со ссылкой для активации (Вам отправлено повторное письмо). ';
+            $errors = \Lang::get('error.account_not_activated');
             return view('auth.login')->withErrors($errors);
         }
         catch (ThrottlingException $e)
         {
             $delay = $e->getDelay();
-            $errors = "Ваш аккаунт блокирован на {$delay} секунд.";
+            $errors = \Lang::get('error.account_throttle', array('delay'=>$delay));
+//            "Ваш аккаунт блокирован на {$delay} секунд.";
         }
         return Redirect::back()
             ->withInput()
@@ -119,6 +120,8 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
             'password_confirm' => 'required|same:password',
+            'first_name' => 'required',
+            'last_name' => 'required',
         ]);
         $input = $request->all();
         $credentials = [ 'email' => $request->email ];
@@ -135,7 +138,7 @@ class AuthController extends Controller
 //exit(0);
             return Redirect::to('register')
                 //view('auth.register')
-                ->withErrors('This email is registered already.');//Такой Email уже зарегистрирован.
+                ->withErrors(\Lang::get('error.email_is_registered'));
         }
         
 //print '22';
@@ -147,25 +150,25 @@ class AuthController extends Controller
             $code = $activation->code;
             $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function($m) use ($sentuser)
             {
-                $m->from('noreplqy@mysite.ru', 'LaravelSite');
-                $m->to($sentuser->email)->subject('Активация аккаунта');
+                $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
+                $m->to($sentuser->email)->subject(\Lang::get('mail.account_activation_subj'));
             });
             if ($sent === 0)
             {
                 return Redirect::to('register')
-                    ->withErrors('Ошибка отправки письма активации.');
+                    ->withErrors(\Lang::get('error.email_activation_error'));
             }
 
             $role = Sentinel::findRoleBySlug('user');
             $role->users()->attach($sentuser);
 
             return Redirect::to('login')
-                ->withSuccess('Ваш аккаунт создан. Проверьте Email для активации.')
+                ->withSuccess(\Lang::get('auth.account_is_created'))
                 ->with('userId', $sentuser->getUserId());
         }
         return Redirect::to('register')
             ->withInput()
-            ->withErrors('Failed to register.');
+            ->withErrors(\Lang::get('error.register_failed'));
     }
 
 
@@ -187,7 +190,7 @@ class AuthController extends Controller
         }
 
         return Redirect::to('login')
-            ->withSuccess('Аккаунт активирован.');
+            ->withSuccess(\Lang::get('auth.account_is_activated'));
     }
 
 

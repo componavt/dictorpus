@@ -29,6 +29,18 @@ class PartOfSpeech extends Model
         return $this->{$column};
     }
         
+    /** Gets all parts of speech for this category
+     * 
+     * @param int $category category of parts of speech
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public static function getByCategory($category)
+    {
+        return self::where('category',$category)->orderBy('id')->get();
+         
+    }
+        
     // PartOfSpeech __has_many__ Lemma
     public function lemmas()
     {

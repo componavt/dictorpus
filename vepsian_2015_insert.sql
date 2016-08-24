@@ -37,7 +37,7 @@ INSERT INTO `langs` VALUES (6,'Ludic','людиковское наречие','l
 
 -- PART_OF_SPEECH ---------------------------------------
 -- php artisan make:model 'Models\Dict\PartOfSpeech' --migration
-
+-- php artisan make:controller 'Dict\PartOfSpeechController'
 
 --
 -- Dumping data for table `part_of_speech`
@@ -104,6 +104,17 @@ INSERT INTO `gramsets` VALUES (1,5,1,3,NULL),(3,5,1,4,NULL),(4,5,1,5,NULL),(5,5,
 -- php artisan migrate
 -- php artisan make:console ReadEmail
 
+-- POS
+ALTER TABLE `parts_of_speech` ADD `category` tinyInt NOT NULL default 3;
+UPDATE `parts_of_speech` SET category=1 WHERE id in (1,2,4,5,11);
+UPDATE `parts_of_speech` SET category=2 WHERE id in (3,6,7,8,9,10);
+UPDATE `parts_of_speech` SET code='NOUN' WHERE id=5;
+UPDATE `parts_of_speech` SET code='INTJ' WHERE id=4;
+UPDATE `parts_of_speech` SET code='VERB' WHERE id=11;
+INSERT INTO `parts_of_speech` VALUES 
+(12,'Auxiliary verb', 'вспомогательный глагол', 'AUX',2),(13,'Determiner', 'детерминатив', 'DET',2),
+(14,'Proper noun', 'имя собственное', 'PROPN',1),(15,'Subordinating conjunction', 'подчинительный союз', 'SCONJ',2),
+(16,'Punctuation', 'пунктуация', 'PUNCT',3),(17,'Symbol', 'символ', 'SYM',3),(18,'Other', 'другое', 'X',3);
 
 
 

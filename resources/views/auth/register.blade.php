@@ -9,8 +9,10 @@
 @section('content')
     {!! Form::open() !!}
     @include('widgets.form._formitem_text', ['name' => 'email', 'title' => 'Email', 'placeholder' => 'Email' ])
-    @include('widgets.form._formitem_password', ['name' => 'password', 'title' => 'Пароль', 'placeholder' => 'Пароль' ])
-    @include('widgets.form._formitem_password', ['name' => 'password_confirm', 'title' => 'Подтверждение пароля', 'placeholder' => 'Пароль' ])
-    @include('widgets.form._formitem_btn_submit', ['title' => 'Регистрация'])
+    @include('widgets.form._formitem_password', ['name' => 'password', 'title' => trans('auth.password'), 'placeholder' => trans('auth.password') ])
+    @include('widgets.form._formitem_password', ['name' => 'password_confirm', 'title' => trans('auth.password_confirm'), 'placeholder' => trans('auth.password') ])
+    @include('widgets.form._formitem_text', ['name' => 'first_name', 'title' => trans('auth.first_name'), 'placeholder' => '' ])
+    @include('widgets.form._formitem_text', ['name' => 'last_name', 'title' => trans('auth.last_name'), 'placeholder' => '' ])
+    @include('widgets.form._formitem_btn_submit', ['title' => trans('auth.register')])
     {!! Form::close() !!}
 @stop

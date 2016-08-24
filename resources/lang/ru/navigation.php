@@ -11,7 +11,10 @@ return [
     */
 
     'home' => 'Главная',
+    'dialects' => 'Диалекты',
     'langs'  => 'Языки',
-    'lemmas' => 'Леммы'
+    'lemmas' => 'Леммы',
+    'parts_of_speech' => 'Части речи',
+    'references' => 'Cправочники'
 
 ];

@@ -22,6 +22,8 @@ class CreatePartsOfSpeechTable extends Migration
             /* short abbreviation of POS  */
             $table->string('code', 20)->unique()->comment = "short abbreviation of POS";
             
+            $table->tinyInteger('category')->unsigned();
+            
             // $table->timestamps(); // disable
         });
     }

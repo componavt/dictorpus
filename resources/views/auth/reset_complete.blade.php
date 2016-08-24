@@ -8,8 +8,8 @@
 @extends('layouts.master')
 @section('content')
     {!! Form::open() !!}
-    @include('widgets.form._formitem_password', ['name' => 'password', 'title' => 'Пароль', 'placeholder' => 'Пароль' ])
-    @include('widgets.form._formitem_password', ['name' => 'password_confirm', 'title' => 'Подтверждение пароля', 'placeholder' => 'Пароль' ])
-    @include('widgets.form._formitem_btn_submit', ['title' => 'Подтвердить'])
+    @include('widgets.form._formitem_password', ['name' => 'password', 'title' => trans('auth.password'), 'placeholder' => trans('auth.password') ])
+    @include('widgets.form._formitem_password', ['name' => 'password_confirm', 'title' => trans('auth.password_confirm'), 'placeholder' => trans('auth.password') ])
+    @include('widgets.form._formitem_btn_submit', ['title' => trans('auth.confirm')])
     {!! Form::close() !!}
 @stop

@@ -51,8 +51,8 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         
         Route::get('dict/dialect', 'Dict\DialectController@index');
-
         Route::get('dict/lang', 'Dict\LangController@index');
+        Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
 
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
         

@@ -10,8 +10,19 @@ return [
     |
     */
 
+    'account_is_created' => 'Ваш аккаунт создан. Проверьте Email для активации.',
+    'account_is_activated' => 'Аккаунт активирован.',
+    'confirm' => 'Подтвердить',
+    'first_name' => 'Имя',
+    'last_name' => 'Фамилия',
     'login' => 'Войти',
+    'password' => 'Пароль',
+    'password_confirm' => 'Подтверждение пароля',
+    'password_reset' => 'Password reset',
     'register' => 'Зарегистрироваться',
-    'reset' => 'Забыли пароль?'
-    
+    'remember' => 'Запомнить меня',
+    'reset' => 'Забыли пароль?',
+    'your_email' => 'Ваш Email',
+    'wait' => 'Через несколько минут вам на почту придет письмо с дальнейшими инструкциями',
+     
 ];
