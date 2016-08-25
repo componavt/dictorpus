@@ -186,7 +186,7 @@ class AuthController extends Controller
         if ( ! Activation::complete($sentuser, $code))
         {
             return Redirect::to("login")
-                ->withErrors('Неверный или просроченный код активации.');
+                ->withErrors(\Lang::get('error.activation_code_expired'));
         }
 
         return Redirect::to('login')
@@ -222,20 +222,20 @@ class AuthController extends Controller
         {
             return Redirect::back()
                 ->withInput()
-                ->withErrors('Пользователь с таким E-Mail в системе не найден.');
+                ->withErrors(\Lang::get('error.no_user_with_email'));
         }
         $reminder = Reminder::exists($sentuser) ?: Reminder::create($sentuser);
         $code = $reminder->code;
 
         $sent = Mail::send('mail.account_reminder', compact('sentuser', 'code'), function($m) use ($sentuser)
         {
-            $m->from('noreplay@mysite.com', 'SiteLaravel');
-            $m->to($sentuser->email)->subject('Сброс пароля');
+            $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
+            $m->to($sentuser->email)->subject(\Lang::get('auth.password_reset'));
         });
         if ($sent === 0)
         {
             return Redirect::to('reset')
-                ->withErrors('Ошибка отправки email.');
+                ->withErrors(\Lang::get('error.email_not_sent'));
         }
         return Redirect::to('wait');
     }
@@ -273,15 +273,15 @@ class AuthController extends Controller
         {
             return Redirect::back()
                 ->withInput()
-                ->withErrors('Такого пользователя не существует.');
+                ->withErrors(\Lang::get('error.no_user'));
         }
         if ( ! Reminder::complete($user, $code, $request->password))
         {
             return Redirect::to('login')
-                ->withErrors('Неверный или просроченный код сброса пароля.');
+                ->withErrors(\Lang::get('error.old_reset_code'));
         }
         return Redirect::to('login')
-            ->withSuccess("Пароль сброшен.");
+            ->withSuccess(\Lang::get('auth.password_updated'));
     }
 
     /**

@@ -9,7 +9,7 @@ return [
     |
     |
     */
-
+    
     'account_is_created' => 'Ваш аккаунт создан. Проверьте Email для активации.',
     'account_is_activated' => 'Аккаунт активирован.',
     'confirm' => 'Подтвердить',
@@ -18,7 +18,8 @@ return [
     'login' => 'Войти',
     'password' => 'Пароль',
     'password_confirm' => 'Подтверждение пароля',
-    'password_reset' => 'Password reset',
+    'password_reset' => 'Сброс пароля',
+    'password_updated' => 'Пароль успешно обновлён.',
     'register' => 'Зарегистрироваться',
     'remember' => 'Запомнить меня',
     'reset' => 'Забыли пароль?',

@@ -19,6 +19,7 @@ return [
     'password' => 'Password',
     'password_confirm' => 'Password confirmation',
     'password_reset' => 'Password reset',
+    'password_updated' => 'Password successfully updated.',
     'register' => 'Register',
     'remember' => 'Remember me',
     'reset' => 'Forgot your password?',
