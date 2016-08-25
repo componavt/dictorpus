@@ -12,6 +12,8 @@ use App\Models\Dict\Lemma;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Meaning;
+use App\Models\User;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 class LemmaController extends Controller
 {
@@ -23,47 +25,40 @@ class LemmaController extends Controller
     public function index(Request $request)
     {
         $limit_num = (int)$request->input('limit_num');
+        $lang_id = (int)$request->input('lang_id');
+        $pos_id = (int)$request->input('pos_id');
 
         if ($limit_num<=0) {
             $limit_num = 10;
         } elseif ($limit_num>1000) {
             $limit_num = 1000;
         }      
-       
-        $lemmas = Lemma::orderBy('lemma')->take($limit_num)
+        
+        $lemmas = Lemma::orderBy('lemma');
+        
+        if ($lang_id) {
+            $lemmas = $lemmas->where('lang_id',$lang_id);
+        } 
+         
+        if ($pos_id) {
+            $lemmas = $lemmas->where('pos_id',$pos_id);
+        } 
+         
+         $lemmas = $lemmas->take($limit_num)
                        ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
-
-                                }/*,
-                               'meaning.meaning_texts'=> function ($query) {
-                                    $query->orderBy('lang_id');
-
-                                }*/])
-                                        ->get();  
-        // ->with('meanings') - Eager Loading - to pre-load relationships 
-        // they know will be accessed after loading the model. 
-        // Eager loading provides a significant reduction in SQL queries that 
-        // must be executed to load a model's relations.
-
-/*        if ($lemmas) {
-            foreach ($lemmas as $lemma) {
-                
-                $lemma->lang = Lang::find( $lemma->lang_id )->name;
-//                $lemma->lang = $lemma->lang()->find( $lemma->lang_id )->name;
-                
-                /*$lang_obj = Lang::where('id', $lemma->lang_id)->first();
-                if($lang_obj) {
-                    $lemma->lang = $lang_obj->getNameAttribute();
-                } else {
-                    $lemma->lang = '';
-                }*/
- /*               
-                $lemma->pos = PartOfSpeech::find( $lemma->pos_id )->name;
-            }            
-        } */
+                                }])->get();
+        
+        $pos_values = PartOfSpeech::getGroupedList();   
+        $lang_values = Lang::getList();
+                                
         return view('dict.lemma.index')
                   ->with(array('limit_num' => $limit_num,
                                'lemmas' => $lemmas,
+                               'lang_values' => $lang_values,
+                               'lang_id'=>$lang_id,
+                               'pos_values' => $pos_values,
+                               'pos_id'=>$pos_id
                               )
                         );
     }
@@ -109,7 +104,10 @@ class LemmaController extends Controller
      */
     public function edit($id)
     {
-        //
+        if (!User::checkAccess('dict.edit'))
+            return Redirect::to('/')
+                    ->withErrors(\Lang::get('error.permission_denied'));
+        print 'Прилетели';
     }
 
     /**

@@ -10,11 +10,14 @@ return [
     |
     */
 
-    'home' => 'Главная',
     'dialects' => 'Диалекты',
+    'dictionary' => 'Словарь',
+    'gramsets' => 'Наборы грамматических признаков',
+    'grams' => 'Граммемы',
+    'home' => 'Главная',
     'langs'  => 'Языки',
     'lemmas' => 'Леммы',
     'parts_of_speech' => 'Части речи',
-    'references' => 'Cправочники'
-
+    'references' => 'Cправочники',
+    'wordforms' => 'Словоформы'
 ];

@@ -17,6 +17,7 @@ return [
     'email_is_registered' => 'Такой Email уже зарегистрирован.',
     'error' => 'Ошибка',
     'incorrect_login_pass' => 'Неправильный логин или пароль.',
+    'permission_denied'=> 'Недостаточно прав на выполнение этой операции',
     'register_failed' => 'Регистрация не прошла',
     'success' => 'Успешное выполнение'
 ];

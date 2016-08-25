@@ -35,10 +35,31 @@ class PartOfSpeech extends Model
      * 
      * @return \Illuminate\Http\Response
      */
-    public static function getByCategory($category)
+    public static function getByCategory($category, $order_by='id')
     {
-        return self::where('category',$category)->orderBy('id')->get();
+        return self::where('category',$category)->orderBy($order_by)->get();
          
+    }
+        
+    /** Gets list of parts of speech group by category
+     * 
+     * @return Array ['Open class words' => [1=>'Adjective',..], ...]
+     */
+    public static function getGroupedList()
+    {
+        $categories = self::select('category')->groupBy('category')->orderBy('category')->get();
+        
+        $pos_grouped = array();
+        
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        foreach ($categories as $row) {
+            foreach (self::getByCategory($row->category, 'name_'.$locale) as $pos) {
+                $pos_grouped[\Lang::get('dict.pos_category_'.$row->category)][$pos->id] = $pos->name;
+            }
+        }
+        
+        return $pos_grouped;         
     }
         
     // PartOfSpeech __has_many__ Lemma

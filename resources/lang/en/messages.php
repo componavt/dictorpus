@@ -26,6 +26,8 @@ return [
     'wordforms' => 'wordforms',
     
 
+    "edit" => "edit",
+    "history" => "history",
     "search" => "search",
     "view" => "view",
     

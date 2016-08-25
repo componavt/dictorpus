@@ -27,6 +27,24 @@ class Lang extends Model
         return $this->{$column};
     }
     
+    /** Gets list of languages
+     * 
+     * @return Array [1=>'Vepsian',..]
+     */
+    public static function getList()
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $languages = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($languages as $row) {
+            $list[$row->id] = $row->name;
+        }
+        
+        return $list;         
+    }
+        
     // Lang __has_many__ Lemma
     public function lemmas()
     {

@@ -220,6 +220,8 @@ return [
         'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
         
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        
+        'User' => App\Models\User::class,
     ],
 
 ];

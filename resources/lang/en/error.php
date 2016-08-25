@@ -17,6 +17,7 @@ return [
     'email_is_registered' => 'This email is registered already.',
     'error' => 'Error',
     'incorrect_login_pass' => 'Incorrect login or password.',
+    'permission_denied'=> 'Permission denied',
     'register_failed' => 'Failed to register.',
     'success' => 'Success'
 ];

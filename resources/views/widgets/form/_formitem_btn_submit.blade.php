@@ -5,4 +5,6 @@
  * Date: 25.01.16
  * Time: 4:46
  */?>
-{!! Form::submit($title, array('class' => 'btn btn-primary')) !!}
+<div class="form-group">
+{!! Form::submit($title, array('class' => 'btn btn-primary btn-default')) !!}
+</div>

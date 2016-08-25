@@ -9,19 +9,25 @@
         
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('messages.list_long_lemmas') }}</a></p>
 
-        {!! Form::open(array('url' => '/dict/lemma/', 
+        {!! Form::open(['url' => '/dict/lemma/', 
                              'method' => 'get', 
-                             'class' => 'form-inline')) 
+                             'class' => 'form-inline']) 
         !!}
-        {!! Form::text('limit_num', 
-                       $limit_num, 
-                       array('placeholder'=>trans('messages.limit_num'), 
-                             'class'=>'form-control', 
-                             'required'=>'true')) 
-        !!} 
-        {!! Form::submit(trans('messages.view'),
-                               array('class'=>'btn btn-default btn-primary')) 
-                !!}
+        @include('widgets.form._formitem_select', 
+                ['name' => 'lang_id', 
+                 'values' =>$lang_values,
+                 'value' =>$lang_id,
+                 'placeholder' => trans('dict.select_lang') ]) 
+        @include('widgets.form._formitem_select', 
+                ['name' => 'pos_id', 
+                 'values' =>$pos_values,
+                 'value' =>$pos_id,
+                 'placeholder' => trans('dict.select_pos') ]) 
+        @include('widgets.form._formitem_text', 
+                ['name' => 'limit_num', 
+                'value' => $limit_num, 
+                'placeholder' => trans('messages.limit_num') ])
+        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
 
         @if ($lemmas)

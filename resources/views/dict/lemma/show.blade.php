@@ -5,8 +5,22 @@
 @stop
 
 @section('content')
+        <h1>{{ trans('navigation.lemmas') }}</h1>
+        
+        <p>
+        @if (User::checkAccess('dict.edit'))
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/edit') }}">
+        @endif
+        {{ trans('messages.edit') }}
+        @if (User::checkAccess('dict.edit'))
+            </a>
+        @endif
+            | <a href="">{{ trans('messages.history') }}</a>
+        </p>
+        
         <h2>{{ $lemma->lemma }}</h2>
         
+        <p><b>{{ trans('messages.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('messages.pos') }}:</b> {{ $lemma->pos->name}}</p>
         
         @foreach ($lemma->meanings as $meaning)
