@@ -9,26 +9,23 @@ return [
     |
     |
     */
-
+    
+    'back_to_list' => 'Return to list',
+    'back_to_show' => 'Return to review',
+    'create_new_f' => 'Create a new',
+    'create_new_m' => 'Create a new',
+    'created_success' => 'Successfully created',
+    'edit' => 'edit',
+    'editing' => 'Editing',
+    'founded_records' => ':count records was founded.',
+    'history' => 'history',
     'in_english' => 'English',
-    'lang_code' => 'Language code',
-    'list_languages' => 'Languages',
     'in_russian' => 'Russian',
-    
-    'code' => 'code',
-    'dialect_list' => 'Dialect list',
-    'list_lemmas' => 'List of lemmas',
-    'list_long_lemmas' => 'List of longest lemmas',
     'limit_num' => 'number of records',
-    'lemma' => 'lemma',
-    'lang' => 'language',
-    'pos' => 'part of speech',
-    'wordforms' => 'wordforms',
-    
-
-    "edit" => "edit",
-    "history" => "history",
-    "search" => "search",
-    "view" => "view",
+    'records' => 'records',
+    'save' => 'save',
+    'search' => 'search',
+    'updated_success' => 'Successfully updated',
+    'view' => 'view',
     
 ];

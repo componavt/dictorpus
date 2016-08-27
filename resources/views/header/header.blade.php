@@ -29,7 +29,7 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}">{{ trans('navigation.lemmas') }}</a></li>
-                            <li><a>{{ trans('navigation.wordforms') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/wordform') }}">{{ trans('navigation.wordforms') }}</a></li>
                         </ul>
                     </li>
                     
@@ -42,8 +42,8 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lang') }}">{{ trans('navigation.langs') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/dialect') }}">{{ trans('navigation.dialects') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/pos') }}">{{ trans('navigation.parts_of_speech') }}</a></li>
-                            <li><a>{{ trans('navigation.gramsets') }}</a></li>
-                            <li><a>{{ trans('navigation.grams') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/gramset') }}">{{ trans('navigation.gramsets') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/gram') }}">{{ trans('navigation.grams') }}</a></li>
                         </ul>
                     </li>
                 </ul>

@@ -12,6 +12,7 @@ and open the template in the editor.
     text-transform: capitalize;
 }
 
-.table-bordered td {
-    padding: 2px 5px;
+.table-bordered td,
+.table-bordered th {
+    padding: 5px 10px;
 }

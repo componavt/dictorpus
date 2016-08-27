@@ -16,8 +16,8 @@ class CreateGramsetsTable extends Migration
             $table->smallInteger('id')->unsigned()->autoIncrement();
             
             // pos PartOfSpeech
-            $table->tinyInteger('pos_id')->unsigned()->nullable();
-            $table->    foreign('pos_id')->references('id')->on('parts_of_speech');
+            // it is not used, because there is pivot table gramset_pos, but this helps to debug code
+            $table->tinyInteger('pos_id_debug')->unsigned()->nullable();
             
             // id of grammatical number attribute
             $table->smallInteger('gram_id_number')->unsigned()->nullable();
@@ -30,6 +30,8 @@ class CreateGramsetsTable extends Migration
             // id of grammatical tense attribute
             $table->smallInteger('gram_id_tense')->unsigned()->nullable();
             $table->     foreign('gram_id_tense')->references('id')->on('grams');
+            
+            $table->tinyInteger('sequence_number')->unsigned();
          });
     }
 

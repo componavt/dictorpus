@@ -8,10 +8,11 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Lang;
-use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\PartOfSpeech;
 use App\Models\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
@@ -24,6 +25,7 @@ class LemmaController extends Controller
      */
     public function index(Request $request)
     {
+        $lemma_name = $request->input('lemma_name');
         $limit_num = (int)$request->input('limit_num');
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
@@ -36,6 +38,10 @@ class LemmaController extends Controller
         
         $lemmas = Lemma::orderBy('lemma');
         
+        if ($lemma_name) {
+            $lemmas = $lemmas->where('lemma','like', $lemma_name);
+        } 
+
         if ($lang_id) {
             $lemmas = $lemmas->where('lang_id',$lang_id);
         } 
@@ -49,12 +55,15 @@ class LemmaController extends Controller
                                     $query->orderBy('meaning_n');
                                 }])->get();
         
-        $pos_values = PartOfSpeech::getGroupedList();   
-        $lang_values = Lang::getList();
+        $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        
+        //$lang_values = Lang::getList();
+        $lang_values = Lang::getListWithQuantity('lemmas');
                                 
         return view('dict.lemma.index')
                   ->with(array('limit_num' => $limit_num,
                                'lemmas' => $lemmas,
+                               'lemma_name' => $lemma_name,
                                'lang_values' => $lang_values,
                                'lang_id'=>$lang_id,
                                'pos_values' => $pos_values,
@@ -70,7 +79,14 @@ class LemmaController extends Controller
      */
     public function create()
     {
-        //
+        $pos_values = PartOfSpeech::getGroupedList();   
+        $lang_values = Lang::getList();
+                                
+        return view('dict.lemma.create')
+                  ->with(array('lang_values' => $lang_values,
+                               'pos_values' => $pos_values,
+                              )
+                        );
     }
 
     /**
@@ -81,6 +97,22 @@ class LemmaController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'lemma'  => 'required|max:255',
+            'lang_id'=> 'required|numeric',
+            'pos_id' => 'numeric',
+        ]);
+        
+        $lemma= new Lemma;
+        $lemma->lemma = $request->lemma;
+        $lemma->lang_id = $request->lang_id;
+        $lemma->pos_id = $request->pos_id;
+        $lemma->save();
+	
+//        return redirect('/dict/lemma/'.($lemma->id));    
+        return Redirect::to('/dict/lemma/'.($lemma->id))
+            ->withSuccess(\Lang::get('messages.created_success'));
+        
     }
 
     /**
@@ -91,9 +123,9 @@ class LemmaController extends Controller
      */
     public function show($id)
     {
-        $lemma_obj = Lemma::find($id);
+        $lemma = Lemma::find($id);
                
-        return view('dict.lemma.show')->with(['lemma'=>$lemma_obj]);
+        return view('dict.lemma.show')->with(['lemma'=>$lemma]);
     }
 
     /**
@@ -104,10 +136,22 @@ class LemmaController extends Controller
      */
     public function edit($id)
     {
-        if (!User::checkAccess('dict.edit'))
+    /*    if (!User::checkAccess('dict.edit'))
             return Redirect::to('/')
-                    ->withErrors(\Lang::get('error.permission_denied'));
-        print 'Прилетели';
+                    ->withErrors(\Lang::get('error.permission_denied'));*/
+        $lemma = Lemma::find($id);
+        
+        $pos_values = PartOfSpeech::getGroupedList(); 
+        //$pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        $lang_values = Lang::getList();
+        $gramset_values = Gramset::getList($lemma->pos_id);
+                                
+        return view('dict.lemma.edit')
+                  ->with(array('lemma' => $lemma,
+                               'lang_values' => $lang_values,
+                               'pos_values' => $pos_values,
+                              )
+                        );
     }
 
     /**
@@ -119,8 +163,23 @@ class LemmaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
-    }
+       // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
+        $this->validate($request, [
+            'lemma'  => 'required|max:255',
+            'lang_id'=> 'required|numeric',
+            'pos_id' => 'numeric',
+        ]);
+        
+        $lemma= Lemma::find($id);
+        $lemma->lemma = $request->lemma;
+        $lemma->lang_id = $request->lang_id;
+        $lemma->pos_id = $request->pos_id;
+        $lemma->save();
+	
+//        return redirect('/dict/lemma/'.($lemma->id));
+        return Redirect::to('/dict/lemma/'.($lemma->id))
+            ->withSuccess(\Lang::get('messages.updated_success'));
+     }
 
     /**
      * Remove the specified resource from storage.
@@ -157,21 +216,6 @@ class LemmaController extends Controller
             foreach ($lemmas as $lemma) { 
                 $out_lemmas[] = Lemma::find($lemma->id);
             }
- /*               
-                $lang_obj = Lang::where('id', $lemma->lang_id)->first();
-                if($lang_obj) {
-                    $lemma->lang = $lang_obj->getNameAttribute();
-                } else {
-                    $lemma->lang = '';
-                }
-                
-                $pos_obj = PartOfSpeech::where('id', $lemma->pos_id)->first();
-                if ($pos_obj) {
-                    $lemma->pos = $pos_obj->getNameAttribute();
-                } else {
-                    $lemma->pos = '';
-                }
-            }  */          
         }
         return view('dict.lemma.sorted_by_length')
                   ->with(array('limit_num' => $limit_num,

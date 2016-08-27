@@ -45,6 +45,29 @@ class Lang extends Model
         return $list;         
     }
         
+    /** Gets list of languages
+     * 
+     * @return Array [1=>'Vepsian',..]
+     */
+    public static function getListWithQuantity($method_name)
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $languages = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($languages as $row) {
+            $count=$row->$method_name()->count();
+            $name = $row->name;
+            if ($count) {
+                $name .= " ($count)";
+            }
+            $list[$row->id] = $name;
+        }
+        
+        return $list;         
+    }
+        
     // Lang __has_many__ Lemma
     public function lemmas()
     {

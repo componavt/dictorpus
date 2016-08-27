@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
 @section('title')
-{{ trans('messages.list_long_lemmas') }}
+{{ trans('dict.list_long_lemmas') }}
 @stop
 
 @section('content')
-        <h2>{{ trans('messages.list_long_lemmas') }}</h2>
+        <h2>{{ trans('dict.list_long_lemmas') }}</h2>
 
         {!! Form::open(array('url' => '/dict/lemma/sorted_by_length', 
                              'method' => 'get', 
@@ -22,14 +22,15 @@
                 !!}
         {!! Form::close() !!}
 
+        <p>{{ trans('messages.founded_records', ['count'=>count($lemmas)]) }}</p>
+
         @if ($lemmas)
-        <br>
         <table class="table">
         <thead>
             <tr>
-                <th>{{ trans('messages.lemma') }}</th>
-                <th>{{ trans('messages.lang') }}</th>
-                <th>{{ trans('messages.pos') }}</th>
+                <th>{{ trans('dict.lemma') }}</th>
+                <th>{{ trans('dict.lang') }}</th>
+                <th>{{ trans('dict.pos') }}</th>
             </tr>
         </thead>
         <tbody>

@@ -1,18 +1,18 @@
 @extends('layouts.master')
 
 @section('title')
-{{ trans('messages.list_languages') }}
+{{ trans('dict.list_languages') }}
 @stop
 
 @section('content')
-        <h2>{{ trans('messages.list_languages') }}</h2>
+        <h2>{{ trans('dict.list_languages') }}</h2>
         
         <table id="languages" class="table">
         <thead>
             <tr>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
-                <th>{{ trans('messages.lang_code') }}</th>
+                <th>{{ trans('dict.lang_code') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -26,7 +26,7 @@
         </tbody>
         </table>
         
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/dialect') }}">{{ trans('messages.dialect_list') }}</a></p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/dialect') }}">{{ trans('dict.dialect_list') }}</a></p>
 @stop
 
 

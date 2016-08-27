@@ -92,7 +92,6 @@ class MeaningTextController extends Controller
      * Joins meaning_text.meaning_text for a same meaning_id and a same lang_id
      * with glue '; ' 
      */
-    
     public function tempJoinMeaningText()
     {
         $meanings = DB::table('meaning_texts')

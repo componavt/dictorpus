@@ -1,18 +1,18 @@
 @extends('layouts.master')
 
 @section('title')
-{{ trans('messages.dialect_list') }}
+{{ trans('dict.dialect_list') }}
 @stop
 
 @section('content')
-        <h2>{{ trans('messages.dialect_list') }}</h2>
+        <h2>{{ trans('dict.dialect_list') }}</h2>
             
         <table class="table">
         <thead>
             <tr>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
-                <th>{{ trans('messages.code') }}</th>
+                <th>{{ trans('dict.code') }}</th>
             </tr>
         </thead>
         <tbody>

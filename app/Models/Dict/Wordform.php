@@ -26,6 +26,16 @@ class Wordform extends Model
      * @param int $dialect_id
      * @return Gramset
      */
+    
+    // Wordforms __has_many__ Lemma
+    public function lemmas(){
+        $builder = $this->belongsToMany(Lemma::class,'lemma_wordform');
+        $builder = $builder ->groupBy('lemma_id');
+                   // ->wherePivot('gramset_id')
+                   // ->wherePivot('dialect_id');
+        return $builder;
+    }
+
     public function lemmaDialectGramset($lemma_id, $dialect_id=NULL)
     {
         return $this->belongsToMany(Gramset::class, 'lemma_wordform')

@@ -8,8 +8,12 @@
         <h1>{{ trans('navigation.lemmas') }}</h1>
         
         <p>
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a> |
+            
         @if (User::checkAccess('dict.edit'))
+        {{-- @can('dict.edit',$lemma) --}}
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/edit') }}">
+        {{-- @endcan --}}
         @endif
         {{ trans('messages.edit') }}
         @if (User::checkAccess('dict.edit'))
@@ -20,12 +24,12 @@
         
         <h2>{{ $lemma->lemma }}</h2>
         
-        <p><b>{{ trans('messages.lang') }}:</b> {{ $lemma->lang->name}}</p>
-        <p><b>{{ trans('messages.pos') }}:</b> {{ $lemma->pos->name}}</p>
+        <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
+        <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
         
         @foreach ($lemma->meanings as $meaning)
         <div>
-            {{$meaning->meaning_n}}.
+            <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
             <ul>
             @foreach ($meaning->meaningTexts as $meaning_text)
                 <li><b>{{$meaning_text->lang->name}}:</b> {{$meaning_text->meaning_text}}</li>
@@ -35,7 +39,7 @@
         @endforeach
         
         @if ($lemma->wordforms()->count())
-        <p><b>{{ trans('messages.wordforms') }}</b></p>
+        <h3>{{ trans('dict.wordforms') }}</h3>
         <table class="table-bordered">
             @foreach ($lemma->wordforms as $key=>$wordform)
             <tr>

@@ -1,4 +1,6 @@
 <?php
+//        Config::set('laravel-debugbar::config.enabled',false);
+        
 
 /*
 |--------------------------------------------------------------------------
@@ -51,8 +53,13 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         
         Route::get('dict/dialect', 'Dict\DialectController@index');
+        Route::get('dict/gram', 'Dict\GramController@index');
+        Route::get('dict/gramset', 'Dict\GramsetController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
+
+        Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
+        Route::get('dict/wordform', 'Dict\WordformController@index');
 
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
         
@@ -64,7 +71,9 @@ Route::group(
         
         //Route::get('dict/lemma/wordform/tempInsertVepsianWordform', 'Dict\WordformController@tempInsertVepsianWordform');
 
-        Route::resource('dict/lemma', 'Dict\LemmaController');
+        Route::resource('dict/lemma', 'Dict\LemmaController',
+                       ['names' => ['update' => 'lemma.update',
+                                    'store' => 'lemma.store']]);
 
     }
 );

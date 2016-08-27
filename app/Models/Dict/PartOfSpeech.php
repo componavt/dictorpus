@@ -29,6 +29,30 @@ class PartOfSpeech extends Model
         return $this->{$column};
     }
         
+    // PartOfSpeech __has_many__ Gramset
+    public function gramsets()
+    {
+        return $this->belongsToMany(Gramset::class,'gramset_pos','pos_id', 'gramset_id')
+                ->orderBy('sequence_number');
+    }
+     
+    // PartOfSpeech __has_many__ Lemma
+    public function lemmas()
+    {
+        return $this->hasMany(Lemma::class,'pos_id');
+    }
+    
+    // PartOfSpeech has many Wordforms through Lemma
+    public function wordforms()
+    {
+        $lemmas = $this->lemmas;
+        $wordforms = collect([]);
+        foreach ($lemmas as $lemma) {
+            $wordforms = $wordforms -> merge($lemma->wordforms);
+        }
+//        return $this->hasManyThrough('App\Models\Dict\Wordform', 'App\Models\Dict\Lemma', 'pos_id');
+    }
+    
     /** Gets all parts of speech for this category
      * 
      * @param int $category category of parts of speech
@@ -62,12 +86,35 @@ class PartOfSpeech extends Model
         return $pos_grouped;         
     }
         
-    // PartOfSpeech __has_many__ Lemma
-    public function lemmas()
+    /** Gets list of parts of speech group by category with quantity of records of $model_name
+     * 
+     * @return Array ['Open class words' => [1=>'Adjective (5)',..], ...]
+     */
+    public static function getGroupedListWithQuantity($method_name)
     {
-        return $this->hasMany(Lemma::class);
+        $categories = self::select('category')->groupBy('category')->orderBy('category')->get();
+        
+        $pos_grouped = array();
+        
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        foreach ($categories as $row) {
+            foreach (self::getByCategory($row->category, 'name_'.$locale) as $pos) {
+                $count=0;
+                $pos_name = $pos->name;
+                if ($pos->$method_name()) {
+                    $count=$pos->$method_name()->count();
+                }
+                if ($count) {
+                    $pos_name .= " ($count)";
+                }
+                $pos_grouped[\Lang::get('dict.pos_category_'.$row->category)][$pos->id] = $pos_name;
+            }
+        }
+        
+        return $pos_grouped;         
     }
-    
+        
 }
 
 // 

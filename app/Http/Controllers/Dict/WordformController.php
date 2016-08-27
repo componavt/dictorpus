@@ -8,6 +8,10 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+//use App\Models\Dict\Gramset;
+use App\Models\Dict\Lemma;
+use App\Models\Dict\Lang;
+use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
 class WordformController extends Controller
@@ -17,11 +21,58 @@ class WordformController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $wordform_name = $request->input('wordform_name');
+        $limit_num = (int)$request->input('limit_num');
+        $lang_id = (int)$request->input('lang_id');
+        $pos_id = (int)$request->input('pos_id');
 
+        if ($limit_num<=0) {
+            $limit_num = 10;
+        } elseif ($limit_num>1000) {
+            $limit_num = 1000;
+        }      
+        
+        $wordforms = Wordform::orderBy('wordform');
+        
+        if ($wordform_name) {
+            $wordforms = $wordforms->where('wordform','like', $wordform_name);
+        } 
+
+        if ($lang_id) {
+            $wordforms = $wordforms->where('lang_id',$lang_id);
+        } 
+         
+        if ($pos_id) {
+            $wordforms = $wordforms->where('pos_id',$pos_id);
+        } 
+         
+        $wordforms = $wordforms->take($limit_num)->get();
+        /*
+                       ->with(['meanings'=> function ($query) {
+                                    $query->orderBy('meaning_n');
+                                }])*/
+        
+        $pos_values = PartOfSpeech::getGroupedList();
+//        $pos_values = PartOfSpeech::getGroupedListWithQuantity('wordforms');
+       
+        $lang_values = Lang::getList();
+        //$lang_values = Lang::getListWithQuantity('wordforms');
+                                
+ 
+        return view('dict.wordform.index')
+                  ->with(array('limit_num' => $limit_num,
+                               'wordforms' => $wordforms,
+                               'wordform_name' => $wordform_name,
+                               'lang_values' => $lang_values,
+                               'lang_id'=>$lang_id,
+                               'pos_values' => $pos_values,
+                               'pos_id'=>$pos_id
+                              )
+                        );
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -88,11 +139,61 @@ class WordformController extends Controller
         //
     }
     
+    
+    /** Lists wordforms associated with more than one lemma.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function withMultipleLemmas(Request $request)
+    {
+        $wordform_name = $request->input('wordform_name');
+        $lang_id = (int)$request->input('lang_id');
+
+//select wordforms.wordform as wordform, count(*) as count from lemma_wordform, wordforms where 
+//wordforms.id=lemma_wordform.wordform_id and lemma_id in (select id from lemmas where lang_id=1) 
+//group by wordform having count>1 order by count;
+        $builder = DB::table('wordforms')
+                     ->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                     ->select(DB::raw('wordform_id, count(*) as count'))
+                     ->groupBy('wordform_id')
+                     ->having('count', '>', 1);
+        
+        if ($wordform_name) {
+            $builder = $builder->where('wordform','like', $wordform_name);
+        } 
+
+        if ($lang_id) {
+            $builder = $builder->whereIn('lemma_id',function($query) use ($lang_id){
+                        $query->select('id')
+                        ->from(with(new Lemma)->getTable())
+                        ->where('lang_id', $lang_id);
+                    });
+        } 
+         
+        $builder = $builder->orderBy('count', 'DESC');
+  /*      $builder = $builder->with(['wordforms'=> function ($query) {
+                                    $query->orderBy('wordform');
+                                }]);*/
+        $wordforms = $builder->get();
+           
+        $lang_values = Lang::getList();
+                                
+        return view('dict.wordform.with_multiple_lemmas')
+                  ->with(array(
+                               'wordforms' => $wordforms,
+                               'wordform_name' => $wordform_name,
+                               'lang_values' => $lang_values,
+                               'lang_id'=>$lang_id,
+                               )
+                        );
+    }
+    
     /** 
      * (1) Copy vepsian.wordform to vepkar.wordforms (without dublicates)
      * (2) Copy vepsian.lemma_gram_wordform to vepkar.lemma_wordform
      */
-    public function tempInsertVepsianWordform()
+/*    public function tempInsertVepsianWordform()
     {
         $lemma_wordfoms = DB::connection('vepsian')
                             ->table('lemma_gram_wordform')
@@ -130,5 +231,10 @@ class WordformController extends Controller
                 
         endforeach;
      }
-    
+ *
+ */  
 }
+
+// a lemma and word form related by more than once
+// select lemma_id, wordforms.wordform as wordform, count(*) as count from lemma_wordform,wordforms where wordforms.id=lemma_wordform.wordform_id group by lemma_id, wordform having count>1;
+// select wordforms.wordform as wordform, count(*) as count from lemma_wordform, wordforms where wordforms.id=lemma_wordform.wordform_id group by wordform having count>1 order by count;
