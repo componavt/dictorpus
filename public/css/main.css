@@ -16,3 +16,9 @@ and open the template in the editor.
 .table-bordered th {
     padding: 5px 10px;
 }
+
+.footer {
+    font-style: italic;
+    padding-bottom: 20px;
+    text-align: center;
+}

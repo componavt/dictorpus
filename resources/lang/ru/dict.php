@@ -13,6 +13,7 @@ return [
     'case' => 'падеж',
     'code' => 'Код',
     'dialect_list' => 'Список диалектов',
+    'gram_attr' => 'грам. признаки',
     'interpretation' => 'толкование',
     'lang_code' => 'Код языка',
     'lang' => 'язык',

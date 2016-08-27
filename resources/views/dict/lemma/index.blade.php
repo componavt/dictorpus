@@ -40,6 +40,8 @@
                  'value' =>$pos_id,
                  'placeholder' => trans('dict.select_pos') ]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+        
+        {{trans('messages.show_by')}}
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
                 'value' => $limit_num, 
@@ -47,7 +49,7 @@
                 'placeholder' => trans('messages.limit_num') ]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
-        <p>{{ trans('messages.founded_records', ['count'=>count($lemmas)]) }}</p>
+        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
         <br>
@@ -77,6 +79,7 @@
             @endforeach
         </tbody>
         </table>
+        {!! $lemmas->render() !!}
         @endif
 @stop
 

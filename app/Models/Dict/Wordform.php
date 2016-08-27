@@ -30,9 +30,8 @@ class Wordform extends Model
     // Wordforms __has_many__ Lemma
     public function lemmas(){
         $builder = $this->belongsToMany(Lemma::class,'lemma_wordform');
-        $builder = $builder ->groupBy('lemma_id');
-                   // ->wherePivot('gramset_id')
-                   // ->wherePivot('dialect_id');
+//        $builder = $builder ->groupBy('lemma_id');
+        $builder = $builder -> orderBy('lemma');
         return $builder;
     }
 

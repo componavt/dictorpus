@@ -44,20 +44,19 @@
         <p><b>{{ trans('dict.wordforms') }}</b></p>
         @if ($action == 'edit')
             @if ($lemma->wordforms()->count())
-            <table class="table-bordered">
-                @foreach ($lemma->wordforms as $key=>$wordform)
+            <table>
+                @foreach ($lemma->wordformsWithGramsets() as $wordform)
                 <tr>
                     <td>@include('widgets.form._formitem_text', 
                            ['name' => 'wordform['.$wordform->id.'][wordform]', 
                             'value'=> $wordform->wordform])</td>
-                    @if($lemma->hasGramsets())
                     <td>
-                        @if ($wordform->lemmaDialectGramset($lemma->id))
-                            {{ $wordform->lemmaDialectGramset($lemma->id)->gramsetList()}}
-                        @endif
+                        @include('widgets.form._formitem_select', 
+                                ['name' => 'wordform['.$wordform->id.'][gramset]', 
+                                 'values' =>$gramset_values,
+                                 'value' => $wordform->gramset_id]) 
                     </td>
-                    @endif
-                </tr>
+               </tr>
                 @endforeach
             </table>
             @endif

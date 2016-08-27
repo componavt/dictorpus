@@ -25,6 +25,7 @@ return [
     'records' => 'records',
     'save' => 'save',
     'search' => 'search',
+    'show_by' => 'by',
     'updated_success' => 'Successfully updated',
     'view' => 'view',
     

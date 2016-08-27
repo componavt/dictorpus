@@ -49,7 +49,7 @@ class Gramset extends Model
      * @param String $glue
      * @return String concatenated list of grammatical attributes (e.g. 'ед. ч., номинатив')
      */
-    public function gramsetList(String $glue=', ') : String
+    public function gramsetString(String $glue=', ') : String
     {
         $list = array();
         if ($this->gram_id_number){
@@ -87,7 +87,7 @@ class Gramset extends Model
         $list = array();
         foreach ($gramsets as $row) {
             $gramset = self::find($row->id);
-            $list[$row->id] = $gramset->gramsetList();
+            $list[$row->id] = $gramset->gramsetString();
         }
         
         return $list;         

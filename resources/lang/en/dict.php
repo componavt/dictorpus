@@ -13,6 +13,7 @@ return [
     'case' => 'Case',
     'code' => 'code',
     'dialect_list' => 'Dialect list',
+    'gram_attr' => 'Gram. attributes',
     'interpretation' => 'interpretation',
     'lang' => 'language',
     'lang_code' => 'Language code',

@@ -48,7 +48,10 @@ class WordformController extends Controller
             $wordforms = $wordforms->where('pos_id',$pos_id);
         } 
          
-        $wordforms = $wordforms->take($limit_num)->get();
+        $numAll = $wordforms->count();
+        
+        $wordforms = $wordforms->paginate($limit_num);
+                //take($limit_num)->get();
         /*
                        ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
@@ -68,7 +71,8 @@ class WordformController extends Controller
                                'lang_values' => $lang_values,
                                'lang_id'=>$lang_id,
                                'pos_values' => $pos_values,
-                               'pos_id'=>$pos_id
+                               'pos_id'=>$pos_id,
+                               'numAll' => $numAll
                               )
                         );
     }
@@ -171,7 +175,8 @@ class WordformController extends Controller
                     });
         } 
          
-        $builder = $builder->orderBy('count', 'DESC');
+        $builder = $builder->orderBy('count', 'DESC')
+                           ->orderBy('wordform');
   /*      $builder = $builder->with(['wordforms'=> function ($query) {
                                     $query->orderBy('wordform');
                                 }]);*/

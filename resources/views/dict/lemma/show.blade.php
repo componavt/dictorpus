@@ -40,16 +40,15 @@
         
         @if ($lemma->wordforms()->count())
         <h3>{{ trans('dict.wordforms') }}</h3>
+        <?php $key=1;?>
         <table class="table-bordered">
-            @foreach ($lemma->wordforms as $key=>$wordform)
+            @foreach ($lemma->wordformsWithGramsets() as $wordform)
             <tr>
-                <td>{{$key+1}}.</td>
+                <td>{{$key++}}.</td>
                 <td>{{ $wordform->wordform}}</td>
                 @if($lemma->hasGramsets())
                 <td>
-                    @if ($wordform->lemmaDialectGramset($lemma->id))
-                    {{ $wordform->lemmaDialectGramset($lemma->id)->gramsetList()}}
-                    @endif
+                    {{$wordform->gramsetString}}
                 </td>
                 @endif
             </tr>

@@ -61,7 +61,23 @@ class Lemma extends Model
     public function wordforms(){
         $builder = $this->belongsToMany('App\Models\Dict\Wordform','lemma_wordform');
 //        $builder->getQuery()->getQuery()->distinct = TRUE;
+//        $builder = $builder->withPivot('gramset_id','dialect_id');
+//        $builder = $builder->join('gramsets', 'gramsets.id', '=', 'lemma_wordform.gramset_id');
         return $builder;//->get();
+    }
+    
+    public function wordformsWithGramsets(){
+        $wordforms = $this->wordforms()->get();
+        foreach ($wordforms as $wordform) {
+            $gramset = $wordform->lemmaDialectGramset($this->id);
+            if ($gramset) {
+                $wordform->gramset_id = $gramset->id;
+                $wordform->gramsetString = $gramset->gramsetString();
+                $wordform->sequence_number = $gramset->sequence_number;
+            }
+        }      
+        $wordforms=$wordforms->sortBy('sequence_number');
+        return $wordforms;
     }
     
     // Lemma has any Gramsets

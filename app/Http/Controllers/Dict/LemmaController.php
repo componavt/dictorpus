@@ -22,6 +22,7 @@ class LemmaController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * 
      */
     public function index(Request $request)
     {
@@ -50,10 +51,16 @@ class LemmaController extends Controller
             $lemmas = $lemmas->where('pos_id',$pos_id);
         } 
          
-         $lemmas = $lemmas->take($limit_num)
+        $numAll = $lemmas->count();
+
+        $lemmas = $lemmas
+                //->take($limit_num)
                        ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
-                                }])->get();
+                                }])
+//                       ->simplePaginate($limit_num);         
+                       ->paginate($limit_num);         
+                                        /*->get();*/
         
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
         
@@ -67,7 +74,8 @@ class LemmaController extends Controller
                                'lang_values' => $lang_values,
                                'lang_id'=>$lang_id,
                                'pos_values' => $pos_values,
-                               'pos_id'=>$pos_id
+                               'pos_id'=>$pos_id,
+                               'numAll' => $numAll
                               )
                         );
     }
@@ -144,12 +152,13 @@ class LemmaController extends Controller
         $pos_values = PartOfSpeech::getGroupedList(); 
         //$pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
         $lang_values = Lang::getList();
-        $gramset_values = Gramset::getList($lemma->pos_id);
+        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
                                 
         return view('dict.lemma.edit')
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
+                               'gramset_values' => $gramset_values,
                               )
                         );
     }
@@ -195,9 +204,14 @@ class LemmaController extends Controller
     
     /** Gets list of longest lemmas, 
      * gets first N lemmas sorted by length.
+     *  
      */
     public function sortedByLength(Request $request)
     {
+    /**
+     * @var int $numAll Total number of lemmas
+     *
+     */
         $limit_num = (int)$request->input('limit_num');
         
         if ($limit_num<=0) {
@@ -208,6 +222,7 @@ class LemmaController extends Controller
         
         //$lemmas = Lemma::orderBy(char_length('lemma'), 'desc')
         //               ->take($limit_num)->get();
+        /*
         $lemmas = DB::select('select * from lemmas order by char_length(lemma) '
                            . 'DESC limit :limit', ['limit'=>$limit_num]);
          
@@ -217,9 +232,20 @@ class LemmaController extends Controller
                 $out_lemmas[] = Lemma::find($lemma->id);
             }
         }
+         * 
+         */
+        $builder = Lemma::select(DB::raw('*, char_length(lemma) as char_length'));
+        
+        $numAll = $builder->count();
+        
+        $lemmas = $builder->orderBy('char_length', 'desc')
+//                ->take($limit_num)->get();
+                          ->paginate($limit_num);
+                
         return view('dict.lemma.sorted_by_length')
                   ->with(array('limit_num' => $limit_num,
-                               'lemmas' => $out_lemmas,
+                               'lemmas' => $lemmas,
+                               'numAll' => $numAll
                               )
                         );
     }

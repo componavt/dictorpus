@@ -22,7 +22,7 @@
                 !!}
         {!! Form::close() !!}
 
-        <p>{{ trans('messages.founded_records', ['count'=>count($lemmas)]) }}</p>
+        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
         <table class="table">
@@ -52,6 +52,7 @@
         </tbody>
         </table>
         @endif
+        {!! $lemmas->render() !!}
 @stop
 
 

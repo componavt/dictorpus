@@ -36,7 +36,7 @@
                 'placeholder' => trans('messages.limit_num') ]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
-        <p>{{ trans('messages.founded_records', ['count'=>count($wordforms)]) }}</p>
+        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($wordforms)
         <br>
@@ -44,6 +44,7 @@
         <thead>
             <tr>
                 <th>{{ trans('dict.wordform') }}</th>
+                <th>{{ trans('dict.gram_attr') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
@@ -57,6 +58,14 @@
                 <td rowspan='{{$wordform->lemmas->count()}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>
+                    @if ($wordform->lemmaDialectGramset($lemma->id))
+                    {{ $wordform->lemmaDialectGramset($lemma->id)->gramsetString()}}
+                    @endif
+                </td>
+                <td>
+                    @if ($wordform->lemmas->count()>1)
+                        {{$key+1}}.
+                    @endif
                     <a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a>
                 </td>
                 <td>
@@ -75,6 +84,7 @@
         </tbody>
         </table>
         @endif
+        {!! $wordforms->render() !!}
 @stop
 
 

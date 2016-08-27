@@ -32,6 +32,7 @@
         <thead>
             <tr>
                 <th>{{ trans('dict.wordform') }}</th>
+                <th>{{ trans('dict.gram_attr') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
@@ -47,7 +48,12 @@
                 <td rowspan='{{$lemmas->count()}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>
-                    <a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a>
+                    @if ($wordform->lemmaDialectGramset($lemma->id))
+                    {{ $wordform->lemmaDialectGramset($lemma->id)->gramsetString()}}
+                    @endif
+                </td>
+                <td>
+                    {{$key+1}}. <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}">{{$lemma->lemma}}</a>
                 </td>
                 <td>
                     @if($lemma->lang)
