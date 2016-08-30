@@ -45,6 +45,37 @@ class Lang extends Model
         return $list;         
     }
         
+    /** Gets list of languages in the certain order: $first_lang, Russian, English, the others in alfabetic order
+     * 
+     * @return Array [1=>'Vepsian',..]
+     */
+    public static function getListWithPriority($first_lang_id)
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $languages = self::orderBy('name_'.$locale)->get();
+        
+        $list[$first_lang_id] = self::find($first_lang_id)->name;
+        
+        $ru_lang = self::where('code','ru')->first();
+        if (!isset($list[$ru_lang->id])) {
+            $list[$ru_lang->id] = $ru_lang->name;
+        }
+        
+        $en_lang = self::where('code','en')->first();
+        if (!isset($list[$en_lang->id])) {
+            $list[$en_lang->id] = $en_lang->name;
+        }
+        
+        foreach ($languages as $row) {
+            if (!isset($list[$row->id])) {
+                $list[$row->id] = $row->name;
+            }
+        }
+        
+        return $list;         
+    }
+        
     /** Gets list of languages
      * 
      * @return Array [1=>'Vepsian',..]

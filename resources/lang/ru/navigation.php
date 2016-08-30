@@ -10,6 +10,7 @@ return [
     |
     */
 
+    'about_project' => 'О проекте',
     'dialects' => 'Диалекты',
     'dictionary' => 'Словарь',
     'gramsets' => 'Наборы грамматических признаков',

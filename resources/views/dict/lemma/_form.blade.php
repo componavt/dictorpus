@@ -14,7 +14,7 @@
             @foreach ($lemma->meanings as $meaning)
             <div>
                 <h3>@include('widgets.form._formitem_text', 
-                           ['name' => 'meaning['.$meaning->id.'][meaning_n]', 
+                           ['name' => 'ex_meanings['.$meaning->id.'][meaning_n]', 
                             'value'=> $meaning->meaning_n,
                             'size' => 2,
                             'tail' => trans('dict.meaning')])</h3>
@@ -23,14 +23,11 @@
                         <th>{{ trans('dict.lang') }}</th>
                         <th>{{ trans('dict.interpretation') }}</th>
                     </tr>
-                @foreach ($meaning->meaningTexts as $meaning_text)
+                @foreach ($meaning->meaningTextsWithAllLangs() as $meaning_lang => $meaning_text)
                     <tr>
-                        <td>@include('widgets.form._formitem_select', 
-                           ['name' => 'meaning_text['.$meaning_text->id.'][lang_id]', 
-                            'values' =>$lang_values,
-                            'value'=> $meaning_text->lang_id])</td> 
+                        <td>{{ $meaning_text->lang_name}}</td> 
                         <td>@include('widgets.form._formitem_text', 
-                           ['name' => 'meaning_text['.$meaning_text->id.'][meaning_text]', 
+                           ['name' => 'ex_meanings['.$meaning->id.'][meaning_text]['.$meaning_lang.']', 
                             'value'=> $meaning_text->meaning_text])</td>
                     </tr>
                 @endforeach
@@ -38,28 +35,61 @@
             </div>
             @endforeach
         @endif
+            
+        {{-- New meaning --}}
+        <div>
+            <h3>@include('widgets.form._formitem_text', 
+                       ['name' => 'new_meanings[0][meaning_n]', 
+                        'value'=> $new_meaning_n,
+                        'size' => 2,
+                        'tail' => trans('dict.meaning')])</h3>
+            <table>
+                <tr>
+                    <th>{{ trans('dict.lang') }}</th>
+                    <th>{{ trans('dict.interpretation') }}</th>
+                </tr>
+            @foreach ($langs_for_meaning as $lang_id => $lang_text)
+                <tr>
+                    <td>{{ $lang_text }}&nbsp; </td> 
+                    <td>@include('widgets.form._formitem_text', 
+                       ['name' => 'new_meanings[0][meaning_text]['.$lang_id.']'])</td>
+                </tr>
+            @endforeach
+            </table>
+        </div>
+
         @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
     </div>
     <div class="col-sm-6">
         <p><b>{{ trans('dict.wordforms') }}</b></p>
         @if ($action == 'edit')
-            @if ($lemma->wordforms()->count())
             <table>
-                @foreach ($lemma->wordformsWithGramsets() as $wordform)
+                @if ($lemma->wordformsWithAllGramsets())
+                    @foreach ($lemma->wordformsWithAllGramsets() as $gramset_id => $wordform)
+                        <?php $wordform_value = ($wordform) ? ($wordform->wordform) : NULL; ?>
+                    <tr>
+                        <td>
+                            {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString()}}&nbsp;                        
+                        </td>
+                        <td>@include('widgets.form._formitem_text', 
+                               ['name' => 'lang_wordforms['.$gramset_id.']', 
+                                'value'=> $wordform_value])</td>
+                   </tr>
+                    @endforeach
+                @endif
+                @foreach ($lemma->wordformsWithoutGramsets() as $key=>$wordform)
                 <tr>
-                    <td>@include('widgets.form._formitem_text', 
-                           ['name' => 'wordform['.$wordform->id.'][wordform]', 
-                            'value'=> $wordform->wordform])</td>
                     <td>
                         @include('widgets.form._formitem_select', 
-                                ['name' => 'wordform['.$wordform->id.'][gramset]', 
-                                 'values' =>$gramset_values,
-                                 'value' => $wordform->gramset_id]) 
+                                ['name' => 'empty_wordforms['.$key.'][gramset]', 
+                                 'values' =>$gramset_values]) 
                     </td>
+                    <td>@include('widgets.form._formitem_text', 
+                           ['name' => 'empty_wordforms['.$key.'][wordform]', 
+                            'value'=> $wordform->wordform])</td>
                </tr>
                 @endforeach
             </table>
-            @endif
         @endif
     </div>
 </div>                 

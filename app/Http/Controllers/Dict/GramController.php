@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Dict\Gram;
+use App\Models\Dict\GramCategory;
+
 class GramController extends Controller
 {
     /**
@@ -15,16 +18,17 @@ class GramController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
-/*        $categories = PartOfSpeech::select('category')->groupBy('category')->orderBy('category')->get();
+    {
+        $gram_categories = GramCategory::all();
+        // $gram_categories = GramCategory::select('*')->orderBy('id')->get();
         
-        $pos_category = array();
+        $grams = array();
         
-        foreach ($categories as $row) {
-            $pos_category[$row->category] = PartOfSpeech::getByCategory($row->category);
+        foreach ($gram_categories as $gc) {         //   id is gram_category_id
+            $grams[$gc->name] = Gram::getByCategory($gc->id);
         }
 
-        return view('dict.pos.index')->with(array('pos_category' => $pos_category));*/
+        return view('dict.gram.index')->with(array('grams' => $grams));
     }
 
 }

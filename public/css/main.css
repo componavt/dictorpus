@@ -18,7 +18,10 @@ and open the template in the editor.
 }
 
 .footer {
+    background-color: #f8f8f8;
+    border-top: #e7e7e7 1px solid;
     font-style: italic;
-    padding-bottom: 20px;
+    margin-top: 20px;
+    padding: 20px;
     text-align: center;
 }

@@ -18,7 +18,7 @@ class DialectController extends Controller
     public function index()
     {
         
-        $dialects = Dialect::orderBy('lang_id','id')->get();
+        $dialects = Dialect::orderBy('lang_id')->orderBy('id')->get();
 
         return view('dict.dialect.index')->with(array('dialects' => $dialects));
     }

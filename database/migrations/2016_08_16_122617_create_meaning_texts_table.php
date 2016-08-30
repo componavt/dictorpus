@@ -32,6 +32,7 @@ class CreateMeaningTextsTable extends Migration
             $table->index('meaning_text');
             $table->index('lang_id');
             $table->index('meaning_id');
+            $table -> unique('meaning_id', 'lang_id');
         });
     }
 

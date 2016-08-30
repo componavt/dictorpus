@@ -25,9 +25,10 @@
 -- Dumping data for table `langs`
 --
 
-/*
+
 INSERT INTO `langs` VALUES (1,'Vepsian','вепсский','vep'),(2,'Russian','русский','ru'),(3,'English','английский','en');
 INSERT INTO `langs` VALUES (4,'Karelian','карельский','krl');
+/*move to dialects
 INSERT INTO `langs` VALUES (5,'Livvi-Karelian','ливвиковское наречие','olo');
 INSERT INTO `langs` VALUES (6,'Ludic','людиковское наречие','lud');
 */
@@ -68,6 +69,9 @@ INSERT INTO `langs` VALUES (6,'Ludic','людиковское наречие','l
 -- php artisan make:controller 'Dict\DialectController'
 
 INSERT INTO `dialects` VALUES (1, 1, 'Northern Veps','северновепсский диалект', 'veps-north'),(2,1,'Central Veps','средневепсский диалект','veps-centr'),(3,1,'Southern Veps','южновепсский диалект','veps-south'),(4,1,'Eastern dialects','восточные говоры','veps-east'),(5,1,'Western dialects','западные говоры','veps-west');
+INSERT INTO `dialects` VALUES (6,4,'Livvi-Karelian','ливвиковское наречие','olo');
+INSERT INTO `dialects` VALUES (7,4,'Ludic','людиковское наречие','lud');
+INSERT INTO `dialects` VALUES (8,4,'Karelian Proper','собственно-карельский','krl');
 
 
 -- GRAM_CATEGORY ---------------------------------------

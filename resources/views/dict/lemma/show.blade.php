@@ -31,9 +31,12 @@
         <div>
             <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
             <ul>
-            @foreach ($meaning->meaningTexts as $meaning_text)
+                @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
+                <li><b>{{$lang_name}}:</b> {{$meaning_text}}</li>
+                @endforeach
+            {{--@foreach ($meaning->meaningTexts as $meaning_text)
                 <li><b>{{$meaning_text->lang->name}}:</b> {{$meaning_text->meaning_text}}</li>
-            @endforeach
+            @endforeach--}}
             </ul>
         </div>
         @endforeach

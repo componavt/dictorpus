@@ -4,6 +4,8 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 
+use LaravelLocalization;
+
 class GramCategory extends Model
 {
     public $timestamps = false;

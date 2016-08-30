@@ -14,6 +14,7 @@ return [
     'code' => 'code',
     'dialect_list' => 'Dialect list',
     'gram_attr' => 'Gram. attributes',
+    'gram_list' => 'List of grammatical attributes',
     'interpretation' => 'interpretation',
     'lang' => 'language',
     'lang_code' => 'Language code',

@@ -3,6 +3,7 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 //use App\Models\Dict\Meaning;
 
@@ -25,6 +26,8 @@ class Lemma extends Model
 //        'small_name' => 'Nickname',
 //        'deleted_at' => 'Deleted At'
     );
+    
+    protected $fillable = ['lemma','lang_id','pos_id'];
     
     public static function boot()
     {
@@ -61,11 +64,15 @@ class Lemma extends Model
     public function wordforms(){
         $builder = $this->belongsToMany('App\Models\Dict\Wordform','lemma_wordform');
 //        $builder->getQuery()->getQuery()->distinct = TRUE;
-//        $builder = $builder->withPivot('gramset_id','dialect_id');
+        $builder = $builder->withPivot('gramset_id','dialect_id');
 //        $builder = $builder->join('gramsets', 'gramsets.id', '=', 'lemma_wordform.gramset_id');
         return $builder;//->get();
     }
     
+    /**
+     * Gets a collection of wordforms with gramsets and sorted by sequence_number of gramsets
+     * @return Wordform Object
+     */
     public function wordformsWithGramsets(){
         $wordforms = $this->wordforms()->get();
         foreach ($wordforms as $wordform) {
@@ -80,10 +87,57 @@ class Lemma extends Model
         return $wordforms;
     }
     
+    /**
+     * Gets a collection of wordforms without gramsets and sorted by id
+     * @return Wordform Object
+     */
+    public function wordformsWithoutGramsets(){
+        $wordforms = $this->wordforms()->wherePivot('gramset_id',NULL)->get();
+        return $wordforms;
+    }
+    
+    /**
+     * Gets a collection of wordforms for ALL gramsets and sorted by sequence_number of gramsets
+     * 
+     * FOR NULL DIALECT
+     * 
+     * @return Wordform Object
+     */
+    public function wordformsWithAllGramsets(){
+        $gramsets = Gramset::getList($this->pos_id);
+        
+        $wordforms = NULL;
+        
+        foreach (array_keys($gramsets) as $gramset_id) {
+    //                         ->withPivot('dialect_id',NULL)
+            $wordform = $this->wordforms()
+                             ->wherePivot('gramset_id',$gramset_id)
+                             ->first();
+            $wordforms[$gramset_id] = $wordform;
+        }
+        return $wordforms;
+    }
+    
     // Lemma has any Gramsets
     public function hasGramsets(){
         return $this->belongsToMany(Gramset::class, 'lemma_wordform')
              ->wherePivot('wordform_id')
              ->wherePivot('dialect_id');//->count();
     }
+    
+    /**
+     * Gets meaning_n for next meaning created
+     * 
+     * @return int
+     */
+    public function getNewMeaningN(){
+        $builder = DB::table('meanings')->select(DB::raw('max(meaning_n) as max_meaning_n'))->where('lemma_id',$this->id)->first();
+        if ($builder) {
+            $max_meaning_n = $builder->max_meaning_n;
+        } else {
+            $max_meaning_n = 0;
+        }
+        return 1+ $max_meaning_n;
+    }
+    
 }

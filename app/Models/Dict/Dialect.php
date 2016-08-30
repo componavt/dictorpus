@@ -15,6 +15,12 @@ class Dialect extends Model
         parent::boot();
     }
     
+    // Dialect __belongs_to__ Lang
+    public function lang()
+    {
+        return $this->belongsTo(Lang::class);
+    }    
+
     /** Gets name of this dialect, takes into account locale.
      * 
      * @return String

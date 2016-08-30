@@ -52,7 +52,6 @@
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
-        <br>
         <table class="table">
         <thead>
             <tr>
@@ -79,7 +78,7 @@
             @endforeach
         </tbody>
         </table>
-        {!! $lemmas->render() !!}
+            {!! $lemmas->render() !!}
         @endif
 @stop
 

@@ -42,4 +42,18 @@ class Gram extends Model
         return $this->{$column};
     }
     
+    
+    /** Gets all grams for given category sorted, 
+     * for example objects "sg", "pl" ($category_id is 2), 
+     * or case objects: "nominative", "genititive", ... (when ($category_id is 1).
+     * 
+     * @param int $category_id ID of category of grams
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public static function getByCategory($category_id)
+    {
+        return self::where('gram_category_id',$category_id)->orderBy('sequence_number')->get();
+         
+    }
 }

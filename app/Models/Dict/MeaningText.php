@@ -13,6 +13,8 @@ class MeaningText extends Model
         parent::boot();
     }
 
+    protected $fillable = ['lang_id','meaning_id','meaning_text'];
+
     // MeaningText __belongs_to__ Meaning
     public function meaning()
     {

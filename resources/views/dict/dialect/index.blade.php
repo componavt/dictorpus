@@ -10,6 +10,7 @@
         <table class="table">
         <thead>
             <tr>
+                <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('dict.code') }}</th>
@@ -18,6 +19,7 @@
         <tbody>
             @foreach($dialects as $dialect)
             <tr>
+                <td>{{$dialect->lang->name}}</td>
                 <td>{{$dialect->name_en}}</td>
                 <td>{{$dialect->name_ru}}</td>
                 <td>{{$dialect->code}}</td>

@@ -7,14 +7,18 @@ use DB;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
+
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use App\Models\User;
 
 use App\Models\Dict\Gramset;
-use App\Models\Dict\Lemma;
 use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
-use App\Models\User;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use App\Models\Dict\Wordform;
 
 class LemmaController extends Controller
 {
@@ -75,7 +79,7 @@ class LemmaController extends Controller
                                'lang_id'=>$lang_id,
                                'pos_values' => $pos_values,
                                'pos_id'=>$pos_id,
-                               'numAll' => $numAll
+                               'numAll' => $numAll,
                               )
                         );
     }
@@ -89,10 +93,13 @@ class LemmaController extends Controller
     {
         $pos_values = PartOfSpeech::getGroupedList();   
         $lang_values = Lang::getList();
+        $new_meaning_n = 1;
                                 
         return view('dict.lemma.create')
                   ->with(array('lang_values' => $lang_values,
                                'pos_values' => $pos_values,
+                               'langs_for_meaning' => $lang_values,
+                               'new_meaning_n' => $new_meaning_n
                               )
                         );
     }
@@ -111,11 +118,12 @@ class LemmaController extends Controller
             'pos_id' => 'numeric',
         ]);
         
-        $lemma= new Lemma;
+/*        $lemma= new Lemma;
         $lemma->lemma = $request->lemma;
         $lemma->lang_id = $request->lang_id;
         $lemma->pos_id = $request->pos_id;
-        $lemma->save();
+        $lemma->save();*/
+        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
 	
 //        return redirect('/dict/lemma/'.($lemma->id));    
         return Redirect::to('/dict/lemma/'.($lemma->id))
@@ -132,8 +140,29 @@ class LemmaController extends Controller
     public function show($id)
     {
         $lemma = Lemma::find($id);
-               
-        return view('dict.lemma.show')->with(['lemma'=>$lemma]);
+        $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
+        $meanings = $lemma->meanings;
+        $meaning_texts = [];
+        
+  
+        foreach ($meanings as $meaning) {
+            foreach ($langs_for_meaning as $lang_id => $lang_text) {
+                $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
+                if ($meaning_text_obj) {
+                    $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
+                }
+            }
+        }   
+/*        
+print "<pre>";        
+var_dump ($meaning_texts);
+exit(0);
+ * 
+ */
+        return view('dict.lemma.show')
+                  ->with(['lemma'=>$lemma,
+                          'meaning_texts' => $meaning_texts,
+            ]);
     }
 
     /**
@@ -150,15 +179,18 @@ class LemmaController extends Controller
         $lemma = Lemma::find($id);
         
         $pos_values = PartOfSpeech::getGroupedList(); 
-        //$pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
         $lang_values = Lang::getList();
         $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
+        $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
+        $new_meaning_n = $lemma->getNewMeaningN();
                                 
         return view('dict.lemma.edit')
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
                                'gramset_values' => $gramset_values,
+                               'langs_for_meaning' => $langs_for_meaning,
+                                'new_meaning_n' => $new_meaning_n
                               )
                         );
     }
@@ -179,16 +211,97 @@ class LemmaController extends Controller
             'pos_id' => 'numeric',
         ]);
         
+        // LEMMA UPDATING
         $lemma= Lemma::find($id);
         $lemma->lemma = $request->lemma;
         $lemma->lang_id = $request->lang_id;
         $lemma->pos_id = $request->pos_id;
         $lemma->save();
-	
+        
+        // WORDFORMS UPDATING
+        //remove all records from table lemma_wordform
+        $lemma-> wordforms()->detach();
+        
+        //add wordforms from full table of gramsets
+        if($request->lang_wordforms && is_array($request->lang_wordforms)) {
+            foreach($request->lang_wordforms as $gramset_id=>$wordform_text) {
+                if ($wordform_text) {
+                    $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_text]);
+                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>NULL]);
+                }
+            }
+        }
+ // add check-out for dublicates wordforms (several gramsets, one of them NULL) in lemma_wordform
+ // must not records with (the_same_lemma, the_same_wordform, the_same_dialect, some_gramset) 
+ //                   and (the_same_lemma, the_same_wordform, the_same_dialect, NULL) 
+        //add wordforms without gramsets
+        if($request->empty_wordforms && is_array($request->empty_wordforms)) {
+            foreach($request->empty_wordforms as $wordform_info) {
+                if ($wordform_info['wordform']) {
+                    $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_info['wordform']]);
+                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>'NULL']);
+                }
+            }
+        }
+               
+//$wordform_ids = array(1,2,3)        
+//$lemma->wordforms()->attach($wordform_ids) 
+ 
+        // MEANINGS UPDATING
+        // existing meanings
+        if ($request->ex_meanings && is_array($request->ex_meanings)) {
+            foreach ($request->ex_meanings as $meaning_id => $meaning) {
+//print "<pre>";        
+//var_dump($meaning);
+                $meaning_obj = Meaning::find($meaning_id);
+                $meaning_obj -> meaning_n = $meaning['meaning_n'];
+                $meaning_obj -> save();
+                
+                foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {   
+                    if ($meaning_text) {
+                        $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_id, 'lang_id' => $lang]);
+                        $meaning_text_obj -> meaning_text = $meaning_text;
+                        $meaning_text_obj -> save(); 
+                    } else {
+                        // delete if meaning_text exists in DB but it's empty in form
+                        $meaning_text_obj = MeaningText::where('meaning_id',$meaning_id)->where('lang_id',$lang)->first();
+                        if ($meaning_text_obj) {
+                            $meaning_text_obj -> delete();
+                        }    
+                    }
+                }
+            }
+        }
+
+        // new meanings, i.e. meanings created by user in form now
+        if ($request->new_meanings && is_array($request->new_meanings)) {
+            foreach ($request->new_meanings as $meaning) {
+//print "<pre>";        
+//var_dump($meaning);
+                $meaning_texts = $meaning['meaning_text'];
+                foreach ($meaning_texts as $lang=>$meaning_text) {
+                    if (!$meaning_text) {
+                        unset($meaning_texts[$lang]);
+                    }
+                }
+                
+                if (sizeof($meaning_texts)){
+                    $meaning_obj = Meaning::firstOrCreate(['lemma_id' => $id, 'meaning_n' => (int)$meaning['meaning_n']]);
+                    
+                    foreach ($meaning_texts as $lang=>$meaning_text) {                        
+                        $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => $lang]);
+                        $meaning_text_obj -> meaning_text = $meaning_text;
+                        $meaning_text_obj -> save();
+                    }
+                }
+            }
+        }
+        
+       
 //        return redirect('/dict/lemma/'.($lemma->id));
         return Redirect::to('/dict/lemma/'.($lemma->id))
             ->withSuccess(\Lang::get('messages.updated_success'));
-     }
+    }
 
     /**
      * Remove the specified resource from storage.

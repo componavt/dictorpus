@@ -10,6 +10,7 @@ return [
     |
     */
 
+    'about_project' => 'About',
     'dialects' => 'Dialects',
     'dictionary' => 'Dictionary',
     'gramsets' => 'Sets of grammatical attributes',
