@@ -225,68 +225,22 @@ class LemmaController extends Controller
         // WORDFORMS UPDATING
         //remove all records from table lemma_wordform
         $lemma-> wordforms()->detach();
-        
+       
         //add wordforms from full table of gramsets
-        if($request->lang_wordforms && is_array($request->lang_wordforms)) {
-            foreach($request->lang_wordforms as $gramset_id=>$wordform_text) {
-                if ($wordform_text) {
-                    $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_text]);
-                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>NULL]);
-                }
-            }
-        }
- // add check-out for dublicates wordforms (several gramsets, one of them NULL) in lemma_wordform
- // must not records with (the_same_lemma, the_same_wordform, the_same_dialect, some_gramset) 
- //                   and (the_same_lemma, the_same_wordform, the_same_dialect, NULL) 
+        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
+
         //add wordforms without gramsets
-        if($request->empty_wordforms && is_array($request->empty_wordforms)) {
-            foreach($request->empty_wordforms as $wordform_info) {
-                if ($wordform_info['wordform']) {
-                    $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_info['wordform']]);
-                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>'NULL']);
-                }
-            }
-        }
-               
-//$wordform_ids = array(1,2,3)        
-//$lemma->wordforms()->attach($wordform_ids) 
- 
+        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
+  
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);
-        /*
-        if ($request->ex_meanings && is_array($request->ex_meanings)) {
-            foreach ($request->ex_meanings as $meaning_id => $meaning) {
-                $meaning_obj = Meaning::find($meaning_id);
-                
-                foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {   
-                    if ($meaning_text) {
-                        $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_id, 'lang_id' => $lang]);
-                        $meaning_text_obj -> meaning_text = $meaning_text;
-                        $meaning_text_obj -> save(); 
-                    } else {
-                        // delete if meaning_text exists in DB but it's empty in form
-                        $meaning_text_obj = MeaningText::where('meaning_id',$meaning_id)->where('lang_id',$lang)->first();
-                        if ($meaning_text_obj) {
-                            $meaning_text_obj -> delete();
-                        }    
-                    }
-                }
-                
-                if ($meaning_obj->meaningTexts()->count()) { // is meaning has any meaning texts
-                    $meaning_obj -> meaning_n = $meaning['meaning_n'];
-                    $meaning_obj -> save();                    
-                } else {
-                    $meaning_obj -> delete();
-                }
-            }
-        }*/
 
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);
                
         return Redirect::to('/dict/lemma/'.($lemma->id))
-           ->withSuccess(\Lang::get('messages.updated_success'));
+                       ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
     /**
