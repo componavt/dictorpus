@@ -7,7 +7,7 @@
  */?>
 @extends('layouts.master')
 @section('content')
-    {!! Form::open() !!}
+    {!! Form::open(['class'=>'small-form']) !!}
     @include('widgets.form._formitem_text', ['name' => 'email', 'title' => 'Email', 'placeholder' => trans('auth.your_email') ])
     @include('widgets.form._formitem_btn_submit', ['title' => trans('auth.password_confirm')])
     {!! Form::close() !!}

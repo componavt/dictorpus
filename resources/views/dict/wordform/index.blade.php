@@ -1,3 +1,4 @@
+<?php $list_count = $limit_num * ($page-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -43,6 +44,7 @@
         <table class="table">
         <thead>
             <tr>
+                <th>No</th>
                 <th>{{ trans('dict.wordform') }}</th>
                 <th>{{ trans('dict.gram_attr') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
@@ -55,6 +57,7 @@
                 @foreach($wordform->lemmas as $key=>$lemma) 
             <tr>
                     @if ($key==0)
+                <td rowspan='{{$wordform->lemmas->count()}}'>{{ $list_count++ }}</td>
                 <td rowspan='{{$wordform->lemmas->count()}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>
@@ -84,7 +87,10 @@
         </tbody>
         </table>
         @endif
-        {!! $wordforms->render() !!}
+        {!! $wordforms->appends(['limit_num' => $limit_num,
+                                  'wordform_name' => $wordform_name,
+                                  'lang_id'=>$lang_id,
+                                  'pos_id'=>$pos_id])->render() !!}
 @stop
 
 

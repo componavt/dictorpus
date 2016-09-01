@@ -1,3 +1,4 @@
+<?php $list_count = $limit_num * ($page-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -49,13 +50,14 @@
                 'size' => 5,
                 'placeholder' => trans('messages.limit_num') ]) {{ trans('messages.records') }}
         {!! Form::close() !!}
-
+        
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
         <table class="table">
         <thead>
             <tr>
+                <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
@@ -67,6 +69,7 @@
         <tbody>
             @foreach($lemmas as $lemma)
             <tr id='row{{ $lemma->id }}'>
+                <td>{{ $list_count++ }}</td>
                 <td><a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a></td>
                 <td>
                     @if($lemma->lang)
@@ -93,7 +96,10 @@
             @endforeach
         </tbody>
         </table>
-            {!! $lemmas->render() !!}
+            {!! $lemmas->appends(['limit_num' => $limit_num,
+                                  'lemma_name' => $lemma_name,
+                                  'lang_id'=>$lang_id,
+                                  'pos_id'=>$pos_id])->render() !!}
         @endif
         
         @include('dict.lemma._modal_delete')

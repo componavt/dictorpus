@@ -1,3 +1,5 @@
+<?php $list_count = 1;?>
+
 @extends('layouts.master')
 
 @section('title')
@@ -31,6 +33,7 @@
         <table class="table">
         <thead>
             <tr>
+                <th>No</th>
                 <th>{{ trans('dict.wordform') }}</th>
                 <th>{{ trans('dict.gram_attr') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
@@ -45,6 +48,7 @@
                 @foreach($lemmas as $key=>$lemma) 
             <tr>
                     @if ($key==0)
+                <td rowspan='{{$lemmas->count()}}'>{{ $list_count++ }}</td>
                 <td rowspan='{{$lemmas->count()}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>

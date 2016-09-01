@@ -1,3 +1,4 @@
+<?php $list_count = $limit_num * ($page-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -28,6 +29,7 @@
         <table class="table">
         <thead>
             <tr>
+                <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
@@ -36,6 +38,7 @@
         <tbody>
             @foreach($lemmas as $lemma)
             <tr>
+                <td>{{ $list_count++ }}</td>
                 <td>{{$lemma->lemma}}</td>
                 <td>
                     @if($lemma->lang)
@@ -52,7 +55,7 @@
         </tbody>
         </table>
         @endif
-        {!! $lemmas->render() !!}
+        {!! $lemmas->appends(['limit_num' => $limit_num])->render() !!}
 @stop
 
 

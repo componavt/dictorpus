@@ -45,12 +45,17 @@ class LemmaController extends Controller
         $limit_num = (int)$request->input('limit_num');
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
+        $page = (int)$request->input('page');
 
+        if (!$page) {
+            $page = 1;
+        }
+        
         if ($limit_num<=0) {
             $limit_num = 10;
         } elseif ($limit_num>1000) {
             $limit_num = 1000;
-        }      
+        }   
         
         $lemmas = Lemma::orderBy('lemma');
         
@@ -84,12 +89,13 @@ class LemmaController extends Controller
                                 
         return view('dict.lemma.index')
                   ->with(array('limit_num' => $limit_num,
-                               'lemmas' => $lemmas,
                                'lemma_name' => $lemma_name,
-                               'lang_values' => $lang_values,
                                'lang_id'=>$lang_id,
-                               'pos_values' => $pos_values,
                                'pos_id'=>$pos_id,
+                               'page'=>$page,
+                               'lemmas' => $lemmas,
+                               'lang_values' => $lang_values,
+                               'pos_values' => $pos_values,
                                'numAll' => $numAll,
                               )
                         );
@@ -352,7 +358,12 @@ class LemmaController extends Controller
     public function sortedByLength(Request $request)
     {
         $limit_num = (int)$request->input('limit_num');
-        
+        $page = (int)$request->input('page');
+
+        if (!$page) {
+            $page = 1;
+        }
+                
         if ($limit_num<=0) {
             $limit_num = 10;
         } elseif ($limit_num>1000) {
@@ -370,6 +381,7 @@ class LemmaController extends Controller
                 
         return view('dict.lemma.sorted_by_length')
                   ->with(array('limit_num' => $limit_num,
+                               'page'=>$page,
                                'lemmas' => $lemmas,
                                'numAll' => $numAll
                               )

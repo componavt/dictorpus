@@ -27,7 +27,12 @@ class WordformController extends Controller
         $limit_num = (int)$request->input('limit_num');
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
+        $page = (int)$request->input('page');
 
+        if (!$page) {
+            $page = 1;
+        }
+        
         if ($limit_num<=0) {
             $limit_num = 10;
         } elseif ($limit_num>1000) {
@@ -68,6 +73,7 @@ class WordformController extends Controller
                   ->with(array('limit_num' => $limit_num,
                                'wordforms' => $wordforms,
                                'wordform_name' => $wordform_name,
+                               'page'=>$page,
                                'lang_values' => $lang_values,
                                'lang_id'=>$lang_id,
                                'pos_values' => $pos_values,
