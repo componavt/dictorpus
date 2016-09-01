@@ -8,8 +8,7 @@
         @include('widgets.form._formitem_select', 
                 ['name' => 'pos_id', 
                  'values' =>$pos_values,
-                 'title' => trans('dict.pos'),
-                 'placeholder' => trans('dict.select_pos')]) 
+                 'title' => trans('dict.pos')]) 
         @if ($action == 'edit')
             @foreach ($lemma->meanings as $meaning)
             <div>

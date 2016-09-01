@@ -4,6 +4,7 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use URL;
 
 //use App\Models\Dict\Meaning;
 
@@ -140,4 +141,22 @@ class Lemma extends Model
         return 1+ $max_meaning_n;
     }
     
+    /**
+     * Gets Delete link created in a view
+     * Generates a CSRF token and put it inside a custom data-delete attribute
+     * @param bool $is_button Is this button or link?
+     */
+    public function buttonDelete($is_button=true)
+    {
+//        $format = '<a href="%s" data-toggle="tooltip" data-delete="%s" title="%s" class="btn btn-default"><i class="fa fa-trash-o"></i></a>';
+        $format = '<a href="%s" data-toggle="tooltip" data-delete="%s" title="%s"';
+        if ($is_button) {
+            $format .= ' class="btn btn-xs btn-danger"';
+        }
+        $format .= '>%s</a>';
+        $link = URL::route('lemma.destroy', ['id' => $this->id]);
+        $token = csrf_token();
+        $title = \Lang::get('messages.delete');
+        return sprintf($format, $link, $token, $title, $title);
+    }
 }

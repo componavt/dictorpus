@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
 use DB;
+use Gate;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -22,7 +23,17 @@ use App\Models\Dict\Wordform;
 
 class LemmaController extends Controller
 {
-    /**
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
+        $this->middleware('auth:dict.edit,/dict/lemma/', ['only' => 'create','store','edit','update','destroy']);
+    }
+   /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -115,20 +126,15 @@ class LemmaController extends Controller
         $this->validate($request, [
             'lemma'  => 'required|max:255',
             'lang_id'=> 'required|numeric',
-            'pos_id' => 'numeric',
+//            'pos_id' => 'numeric',
         ]);
         
-/*        $lemma= new Lemma;
-        $lemma->lemma = $request->lemma;
-        $lemma->lang_id = $request->lang_id;
-        $lemma->pos_id = $request->pos_id;
-        $lemma->save();*/
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
-	
-//        return redirect('/dict/lemma/'.($lemma->id));    
-        return Redirect::to('/dict/lemma/'.($lemma->id))
-            ->withSuccess(\Lang::get('messages.created_success'));
         
+        Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
+	
+        return Redirect::to('/dict/lemma/'.($lemma->id))
+            ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
     /**
@@ -143,8 +149,7 @@ class LemmaController extends Controller
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $meanings = $lemma->meanings;
         $meaning_texts = [];
-        
-  
+          
         foreach ($meanings as $meaning) {
             foreach ($langs_for_meaning as $lang_id => $lang_text) {
                 $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
@@ -153,12 +158,7 @@ class LemmaController extends Controller
                 }
             }
         }   
-/*        
-print "<pre>";        
-var_dump ($meaning_texts);
-exit(0);
- * 
- */
+
         return view('dict.lemma.show')
                   ->with(['lemma'=>$lemma,
                           'meaning_texts' => $meaning_texts,
@@ -173,12 +173,9 @@ exit(0);
      */
     public function edit($id)
     {
-    /*    if (!User::checkAccess('dict.edit'))
-            return Redirect::to('/')
-                    ->withErrors(\Lang::get('error.permission_denied'));*/
         $lemma = Lemma::find($id);
         
-        $pos_values = PartOfSpeech::getGroupedList(); 
+        $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
         $lang_values = Lang::getList();
         $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
@@ -205,14 +202,15 @@ exit(0);
     public function update(Request $request, $id)
     {
        // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
+        $lemma= Lemma::findOrFail($id);
+        
         $this->validate($request, [
             'lemma'  => 'required|max:255',
             'lang_id'=> 'required|numeric',
-            'pos_id' => 'numeric',
+//            'pos_id' => 'numeric',
         ]);
         
         // LEMMA UPDATING
-        $lemma= Lemma::find($id);
         $lemma->lemma = $request->lemma;
         $lemma->lang_id = $request->lang_id;
         $lemma->pos_id = $request->pos_id;
@@ -249,13 +247,11 @@ exit(0);
  
         // MEANINGS UPDATING
         // existing meanings
+        Meaning::updateLemmaMeanings($request->ex_meanings);
+        /*
         if ($request->ex_meanings && is_array($request->ex_meanings)) {
             foreach ($request->ex_meanings as $meaning_id => $meaning) {
-//print "<pre>";        
-//var_dump($meaning);
                 $meaning_obj = Meaning::find($meaning_id);
-                $meaning_obj -> meaning_n = $meaning['meaning_n'];
-                $meaning_obj -> save();
                 
                 foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {   
                     if ($meaning_text) {
@@ -270,37 +266,21 @@ exit(0);
                         }    
                     }
                 }
+                
+                if ($meaning_obj->meaningTexts()->count()) { // is meaning has any meaning texts
+                    $meaning_obj -> meaning_n = $meaning['meaning_n'];
+                    $meaning_obj -> save();                    
+                } else {
+                    $meaning_obj -> delete();
+                }
             }
-        }
+        }*/
 
         // new meanings, i.e. meanings created by user in form now
-        if ($request->new_meanings && is_array($request->new_meanings)) {
-            foreach ($request->new_meanings as $meaning) {
-//print "<pre>";        
-//var_dump($meaning);
-                $meaning_texts = $meaning['meaning_text'];
-                foreach ($meaning_texts as $lang=>$meaning_text) {
-                    if (!$meaning_text) {
-                        unset($meaning_texts[$lang]);
-                    }
-                }
-                
-                if (sizeof($meaning_texts)){
-                    $meaning_obj = Meaning::firstOrCreate(['lemma_id' => $id, 'meaning_n' => (int)$meaning['meaning_n']]);
-                    
-                    foreach ($meaning_texts as $lang=>$meaning_text) {                        
-                        $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => $lang]);
-                        $meaning_text_obj -> meaning_text = $meaning_text;
-                        $meaning_text_obj -> save();
-                    }
-                }
-            }
-        }
-        
-       
-//        return redirect('/dict/lemma/'.($lemma->id));
+        Meaning::storeLemmaMeanings($request->new_meanings, $id);
+               
         return Redirect::to('/dict/lemma/'.($lemma->id))
-            ->withSuccess(\Lang::get('messages.updated_success'));
+           ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
     /**
@@ -311,7 +291,57 @@ exit(0);
      */
     public function destroy($id)
     {
-        //
+        $error = false;
+        $status_code = 200;
+        $result =[];
+        if($id != "" && $id > 0) {
+            try{
+                $lemma = Lemma::find($id);
+                if($lemma){
+                    $lemma_title = $lemma->lemma;
+                    
+                    //remove all records from table lemma_wordform
+                    $lemma-> wordforms()->detach();
+                    
+                    $meanings = $lemma->meanings;
+                    
+                    foreach ($meanings as $meaning) {
+                        $meaning_texts = $meaning->meaningTexts;
+                        foreach ($meaning_texts as $meaning_text) {
+                            $meaning_text -> delete();
+                        }
+                        $meaning -> delete();
+                    }
+
+                    $lemma->delete();
+                    $result['message'] = \Lang::get('dict.lemma_removed', ['name'=>$lemma_title]);
+                }
+                else{
+                    $error = true;
+                    $result['error_message'] = \Lang::get('record_not_exists');
+                }
+          }catch(\Exception $ex){
+                    $error = true;
+                    $status_code = $ex->getCode();
+                    $result['error_code'] = $ex->getCode();
+                    $result['error_message'] = $ex->getMessage();
+                }
+        }else{
+            $error =true;
+            $status_code = 400;
+            $result['message']='Request data is empty';
+        }
+        
+        if ($error) {
+                return Redirect::to('/dict/lemma/')
+                               ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/dict/lemma/')
+                  ->withSuccess($result['message']);
+        }
+        
+ //       return response()->json(['error' => $error,'response'=>$result],$status_code)
+  //                       ->setCallback(\Request::input('callback'));
     }
     
     
@@ -321,10 +351,6 @@ exit(0);
      */
     public function sortedByLength(Request $request)
     {
-    /**
-     * @var int $numAll Total number of lemmas
-     *
-     */
         $limit_num = (int)$request->input('limit_num');
         
         if ($limit_num<=0) {
@@ -334,19 +360,6 @@ exit(0);
         }           
         
         //$lemmas = Lemma::orderBy(char_length('lemma'), 'desc')
-        //               ->take($limit_num)->get();
-        /*
-        $lemmas = DB::select('select * from lemmas order by char_length(lemma) '
-                           . 'DESC limit :limit', ['limit'=>$limit_num]);
-         
-        $out_lemmas = array();
-        if ($lemmas) {
-            foreach ($lemmas as $lemma) { 
-                $out_lemmas[] = Lemma::find($lemma->id);
-            }
-        }
-         * 
-         */
         $builder = Lemma::select(DB::raw('*, char_length(lemma) as char_length'));
         
         $numAll = $builder->count();
@@ -362,8 +375,7 @@ exit(0);
                               )
                         );
     }
-    
-    
+        
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */

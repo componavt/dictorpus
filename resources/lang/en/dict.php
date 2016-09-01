@@ -20,6 +20,7 @@ return [
     'lang_code' => 'Language code',
     'lemma' => 'lemma',
     'lemmas' => 'lemmas',
+    'lemma_removed' => 'Lemma ":name" Removed Successfully.',
     'list_languages' => 'Languages',
     'list_lemmas' => 'List of lemmas',
     'list_long_lemmas' => 'List of longest lemmas',

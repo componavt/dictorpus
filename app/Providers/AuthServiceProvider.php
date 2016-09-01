@@ -8,6 +8,10 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use App\Models\Dict\Lemma;
 use App\Policies\Dict\LemmaPolicy;
 
+
+/** We are do not using politics, we are using Sentinel at this moment
+ * @see User::checkAccess(string $permission)
+ */
 class AuthServiceProvider extends ServiceProvider
 {
     /**

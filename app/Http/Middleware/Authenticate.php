@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 
 class Authenticate
 {
@@ -15,16 +17,21 @@ class Authenticate
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
-    {
-        if (Auth::guard($guard)->guest()) {
+    public function handle($request, Closure $next, $permission, $route_url) // $guard = null
+    {  
+        if (!User::checkAccess($permission)) {
+            return Redirect::to($route_url) // //.($lemma->id)
+                ->withErrors(\Lang::get('error.permission_denied'));
+        }
+
+/*        if (Auth::guard($guard)->guest()) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             }
 
             return redirect()->guest('login');
         }
-
+*/
         return $next($request);
     }
 }

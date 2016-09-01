@@ -15,7 +15,7 @@
 Route::group(
     [
         'prefix' => LaravelLocalization::setLocale(),
-        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect' ] // , 'web'
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect'] // , 'web'
 
     ],
     function()
@@ -73,7 +73,8 @@ Route::group(
 
         Route::resource('dict/lemma', 'Dict\LemmaController',
                        ['names' => ['update' => 'lemma.update',
-                                    'store' => 'lemma.store']]);
+                                    'store' => 'lemma.store',
+                                    'destroy' => 'lemma.destroy']]);
 
     }
 );

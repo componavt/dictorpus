@@ -12,13 +12,12 @@
             
         @if (User::checkAccess('dict.edit'))
         {{-- @can('dict.edit',$lemma) --}}
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/edit') }}">
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/edit') }}">{{ trans('messages.edit') }}</a> |
+            {!! $lemma->buttonDelete(false) !!}
+        @else
+            {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
+        @endif
         {{-- @endcan --}}
-        @endif
-        {{ trans('messages.edit') }}
-        @if (User::checkAccess('dict.edit'))
-            </a>
-        @endif
             | <a href="">{{ trans('messages.history') }}</a>
         </p>
         
@@ -31,9 +30,11 @@
         <div>
             <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
             <ul>
-                @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
-                <li><b>{{$lang_name}}:</b> {{$meaning_text}}</li>
-                @endforeach
+                @if (isset($meaning_texts[$meaning->id]))
+                    @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
+                    <li><b>{{$lang_name}}:</b> {{$meaning_text}}</li>
+                    @endforeach
+                @endif
             {{--@foreach ($meaning->meaningTexts as $meaning_text)
                 <li><b>{{$meaning_text->lang->name}}:</b> {{$meaning_text->meaning_text}}</li>
             @endforeach--}}
@@ -58,6 +59,22 @@
             @endforeach
         </table>
         @endif
+        
+        @if (User::checkAccess('dict.edit'))
+        <p>
+            
+            {{-- @include('dict.lemma._form_delete', ['lemma'=>$lemma]) --}}
+        </p>
+        @endif
+        
+        @include('dict.lemma._modal_delete')
 @stop
 
+@section('footScriptExtra')
+    {!!Html::script('js/rec-delete-link.js')!!}
+@stop
+
+@section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma');
+@stop
 

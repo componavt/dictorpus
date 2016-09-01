@@ -11,5 +11,5 @@ return [
     */
 
     'about_project' => 'About',
-    
+    'welcome_text' => ''
 ];

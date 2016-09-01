@@ -1,6 +1,6 @@
 -- set names utf8; SOURCE /data/all/projects/git/dictorpus/vepsian_2015_insert.sql;
 
--- mysqldump -uroot -p vepkar --default-character-set=utf8 --max_allowed_packet=1M > vepkar_20160827_v01.sql
+-- mysqldump -uroot -p vepkar --default-character-set=utf8 --max_allowed_packet=1M > vepkar_20160830_v01.sql
 
 -- php artisan migrate:install
 -- php artisan migrate:rollback

@@ -5,6 +5,8 @@ namespace App\Models;
 use Cartalyst\Sentinel\Users\EloquentUser;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
+use LaravelLocalization;
+
 class User extends EloquentUser
 {
    
@@ -12,8 +14,28 @@ class User extends EloquentUser
     {
         return $this->first_name . ' '. $this->last_name;
     }
-    
-    
+         
+    /**
+     * Gets a list of names of roles for the user.
+     *
+     * @return string
+     */
+    public function rolesNames()
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        $roles = $this->first()->roles()->get();
+        $list = [];
+        foreach ($roles as $role) {
+            if ($locale == 'ru') {
+                $list[] = $role->name;
+            } else {
+                $list[] = $role->slug;
+            }
+        }
+        return join(', ', $list);
+    }
+   
     /**
      * Gets a list of names of roles for the user.
      *
@@ -23,12 +45,16 @@ class User extends EloquentUser
     public static function getRolesNames(int $user_id) :String
     {
         //static::$rolesModel = $rolesModel;
+        /*
         $roles = self::where('id',$user_id)->first()->roles()->get();
         $list = [];
         foreach ($roles as $role) {
             $list[] = $role->name;
         }
         return join(', ', $list);
+         * 
+         */
+        return self::where('id',$user_id)->first()->rolesNames();
     }
     
     /**
@@ -42,7 +68,7 @@ class User extends EloquentUser
         $user=Sentinel::check();
         if (!$user)
             return false;
-        if ($user->hasAccess($permission))
+        if ($user->hasAccess('admin') || $user->hasAccess($permission))
             return true;
         return false;
     }

@@ -59,5 +59,71 @@ class Meaning extends Model
         
         return $meaning_texts;
     }
+
+    /**
+     * Stores array of new meanings for the lemma
+     * 
+     * @return NULL
+     */
+    public static function storeLemmaMeanings($meanings, $lemma_id){
+        if (!$meanings || !is_array($meanings)) {
+            return;
+        }
+        foreach ($meanings as $meaning) {
+            $meaning_texts = $meaning['meaning_text'];
+            foreach ($meaning_texts as $lang=>$meaning_text) {
+                if (!$meaning_text) {
+                    unset($meaning_texts[$lang]);
+                }
+            }
+
+            if (sizeof($meaning_texts)){
+                $meaning_obj = self::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => (int)$meaning['meaning_n']]);
+
+                foreach ($meaning_texts as $lang=>$meaning_text) {                        
+                    $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => $lang]);
+                    $meaning_text_obj -> meaning_text = $meaning_text;
+                    $meaning_text_obj -> save();
+                }
+            }
+            
+        }
+    }
+
+    /**
+     * Updates array of meanings and remove meanings without meaning texts
+     * 
+     * @return NULL
+     */
+    public static function updateLemmaMeanings($meanings){
+        if (!$meanings || !is_array($meanings)) {
+            return;
+        }
+        foreach ($meanings as $meaning_id => $meaning) {
+            $meaning_obj = Meaning::find($meaning_id);
+
+            foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {   
+                if ($meaning_text) {
+                    $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_id, 'lang_id' => $lang]);
+                    $meaning_text_obj -> meaning_text = $meaning_text;
+                    $meaning_text_obj -> save(); 
+                } else {
+                    // delete if meaning_text exists in DB but it's empty in form
+                    $meaning_text_obj = MeaningText::where('meaning_id',$meaning_id)->where('lang_id',$lang)->first();
+                    if ($meaning_text_obj) {
+                        $meaning_text_obj -> delete();
+                    }    
+                }
+            }
+
+            if ($meaning_obj->meaningTexts()->count()) { // is meaning has any meaning texts
+                $meaning_obj -> meaning_n = $meaning['meaning_n'];
+                $meaning_obj -> save();                    
+            } else {
+                $meaning_obj -> delete();
+                
+            }
+        }
+    }
     
 }

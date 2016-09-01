@@ -35,6 +35,11 @@ class LemmaPolicy
         return $user->hasAccess($permission);
     }
     
+    public function edit(User $user, Lemma $lemma)
+    {
+        $permission = 'dict.edit';
+        return $user->hasAccess($permission);
+    }
     public function update(User $user, Lemma $lemma)
     {
         $permission = 'dict.edit';

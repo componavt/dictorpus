@@ -11,6 +11,7 @@ return [
     */
 
     'site_title' => 'Open corpus of Veps and Karelian languages',
-    'site_abbr'  => 'VepKar'
+    'site_abbr'  => 'VepKar',
+    'krc' => 'KarRC RAS'
 
 ];

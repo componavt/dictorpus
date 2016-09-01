@@ -20,6 +20,7 @@ return [
     'lang' => 'язык',
     'lemma' => 'лемма',
     'lemmas' => 'леммы',
+    'lemma_removed' => 'Лемма ":name" удалена.',
     'list_languages' => 'Список языков',
     'list_lemmas' => 'Список лемм',
     'list_long_lemmas' => 'Список длинных лемм',
