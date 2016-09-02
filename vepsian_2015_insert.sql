@@ -170,4 +170,10 @@ Creating Policies ================================== https://www.laravel.com/doc
 php artisan make:policy 'Dict\LemmaPolicy' --model='Models\Dict\Lemma'
 php artisan make:policy 'Dict\LemmaPolicy'
 
+-- CORPUS ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Corpus' --migration
+
+INSERT INTO `corpuses` VALUES (1,1,'Dialectal texts','диалектные тексты'),(2,1,'Biblical texts (translated)','библейские тексты (переводные)'),(3,1,'New-writing language','младописьменный подкорпус'),(4,1,'Laments and lamentations','подкорпус вепсских причитаний'),(5,1,'Tales','подкорпус вепсских сказок');
+
+-- php artisan make:controller 'Corpus\TextController'
 
