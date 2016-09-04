@@ -45,22 +45,30 @@ class WordformController extends Controller
             $wordforms = $wordforms->where('wordform','like', $wordform_name);
         } 
 
+        if ($lang_id || $pos_id) {
+            $wordforms = $wordforms->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id');
+        }
+        
         if ($lang_id) {
-            $wordforms = $wordforms->where('lang_id',$lang_id);
+            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($lang_id){
+                        $query->select('id')
+                        ->from(with(new Lemma)->getTable())
+                        ->where('lang_id', $lang_id);
+                    });
         } 
          
         if ($pos_id) {
-            $wordforms = $wordforms->where('pos_id',$pos_id);
+            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($pos_id){
+                        $query->select('id')
+                        ->from(with(new Lemma)->getTable())
+                        ->where('pos_id',$pos_id);
+                    });
         } 
          
         $numAll = $wordforms->count();
         
         $wordforms = $wordforms->paginate($limit_num);
                 //take($limit_num)->get();
-        /*
-                       ->with(['meanings'=> function ($query) {
-                                    $query->orderBy('meaning_n');
-                                }])*/
         
         $pos_values = PartOfSpeech::getGroupedList();
 //        $pos_values = PartOfSpeech::getGroupedListWithQuantity('wordforms');
