@@ -175,5 +175,48 @@ php artisan make:policy 'Dict\LemmaPolicy'
 
 INSERT INTO `corpuses` VALUES (1,1,'Dialectal texts','диалектные тексты'),(2,1,'Biblical texts (translated)','библейские тексты (переводные)'),(3,1,'New-writing language','младописьменный подкорпус'),(4,1,'Laments and lamentations','подкорпус вепсских причитаний'),(5,1,'Tales','подкорпус вепсских сказок');
 
--- php artisan make:controller 'Corpus\TextController'
+-- GENRE ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Genre' --migration
+-- mysqldump  --skip-extended-insert -p -uroot vepsian label >vepsian_label.sql
+
+INSERT INTO `genres` VALUES (6,'Bridal laments','свадебные причитания',11);
+INSERT INTO `genres` VALUES (7,'Burial and funeral lamentations','похоронные и поминальные причитания',12);
+INSERT INTO `genres` VALUES (8,'Journalistic texts','публицистические тексты',21);
+INSERT INTO `genres` VALUES (9,'Literary texts','художественные тексты',22);
+INSERT INTO `genres` VALUES (10,'Texts for children','тексты для детей',23);
+
+-- SOURCE ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Source' --migration
+-- php artisan make:controller 'Corpus\SourceController'
+
+-- REGION ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Region' --migration
+INSERT INTO `regions` VALUES (1,'Vologda Oblast','Вологодская обл.');
+INSERT INTO `regions` VALUES (2,'Republic of Karelia','Республика Карелия');
+INSERT INTO `regions` VALUES (3,'Leningrad Oblast','Ленинградская обл.');
+
+-- District ---------------------------------------
+-- php artisan make:model 'Models\Corpus\District' --migration
+INSERT INTO `districts` VALUES (1,1,'Vytegorsky District','Вытегорский р-н');
+INSERT INTO `districts` VALUES (4,1,'Babayevsky District','Бабаевский р-н');
+INSERT INTO `districts` VALUES (5,3,'Volosovsky District','Волосовский р-н');
+INSERT INTO `districts` VALUES (6,3,'Podporozhsky District','Подпорожский р-н');
+INSERT INTO `districts` VALUES (7,3,'Vinnytsia District','Винницкий р-н');
+INSERT INTO `districts` VALUES (8,3,'Boksitogorsky District','Бокситогорский р-н');
+INSERT INTO `districts` VALUES (9,3,'Tikhvinsky District','Тихвинский р-н');
+INSERT INTO `districts` VALUES (10,2,'Prionezhsky District','Прионежский р-н');
+INSERT INTO `districts` VALUES (11,3,'Kapshinsky District','Капшинский р-н');
+
+/*
+INSERT INTO `place_region` VALUES (1,'Вытегорский р-н. Вологодская обл.');
+INSERT INTO `place_region` VALUES (2,'Республика Карелия');
+INSERT INTO `place_region` VALUES (4,'Бабаевский р-н, Вологодская обл.');
+INSERT INTO `place_region` VALUES (5,'Волосовский р-н, Ленинградская обл.');
+INSERT INTO `place_region` VALUES (6,'Подпорожский р-н, Ленинградская обл.');
+INSERT INTO `place_region` VALUES (7,'Винницкий р-н, Ленинградская обл.');
+INSERT INTO `place_region` VALUES (8,'Бокситогорский р-н, Ленинградская обл.');
+INSERT INTO `place_region` VALUES (9,'Тихвинский р-н, Ленинградская обл.');
+INSERT INTO `place_region` VALUES (10,'Прионежский р-н, Республика Карелия');
+INSERT INTO `place_region` VALUES (11,'Капшинский р-н, Ленинградская обл.');
+*/
 
