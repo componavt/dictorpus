@@ -226,3 +226,7 @@ INSERT INTO `place_region` VALUES (11,'Капшинский р-н, Ленинг�
 
 -- PLACENAME ---------------------------------------
 -- php artisan make:model 'Models\Corpus\PlaceName' --migration
+
+-- INFORMANT ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Informant' --migration
+-- php artisan make:controller 'Corpus\InformantController' --resource

@@ -3,6 +3,9 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Dict\Lang;
+use App\Models\Corpus\Place;
+
 
 class PlaceName extends Model
 {
@@ -17,7 +20,7 @@ class PlaceName extends Model
 
     /** Gets lang, takes into account locale.
      * 
-     * Corpus belongs_to Lang
+     * PlaceName belongs_to Lang
      * 
      * @return Relationship, Query Builder
      */
@@ -28,7 +31,7 @@ class PlaceName extends Model
     
     /** Gets place, takes into account locale.
      * 
-     * Corpus belongs_to Lang
+     * PlaceName belongs_to Place
      * 
      * @return Relationship, Query Builder
      */
