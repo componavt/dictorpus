@@ -3,6 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use LaravelLocalization;
 
 use App\Models\Corpus\Region;
 

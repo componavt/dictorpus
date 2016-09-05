@@ -195,7 +195,7 @@ INSERT INTO `regions` VALUES (1,'Vologda Oblast','Вологодская обл.
 INSERT INTO `regions` VALUES (2,'Republic of Karelia','Республика Карелия');
 INSERT INTO `regions` VALUES (3,'Leningrad Oblast','Ленинградская обл.');
 
--- District ---------------------------------------
+-- DISTRICT ---------------------------------------
 -- php artisan make:model 'Models\Corpus\District' --migration
 INSERT INTO `districts` VALUES (1,1,'Vytegorsky District','Вытегорский р-н');
 INSERT INTO `districts` VALUES (4,1,'Babayevsky District','Бабаевский р-н');
@@ -220,3 +220,9 @@ INSERT INTO `place_region` VALUES (10,'Прионежский р-н, Респу�
 INSERT INTO `place_region` VALUES (11,'Капшинский р-н, Ленинградская обл.');
 */
 
+-- PLACE ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Place' --migration
+-- php artisan make:controller 'Corpus\PlaceController'
+
+-- PLACENAME ---------------------------------------
+-- php artisan make:model 'Models\Corpus\PlaceName' --migration

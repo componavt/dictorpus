@@ -26,7 +26,25 @@ class Lang extends Model
         $column = "name_" . $locale;
         return $this->{$column};
     }
-    
+
+    /** Gets name of this lang by code, takes into account locale.
+     * 
+     * @return String
+     */
+    public static function getNameByCode($code) : String
+    {
+        $lang = self::where('code',$code)->first();
+        if ($lang) {
+            return $lang->getNameAttribute();
+        }
+    }
+           
+    // Lang __has_many__ Lemma
+    public function lemmas()
+    {
+        return $this->hasMany(Lemma::class);
+    }
+
     /** Gets list of languages
      * 
      * @return Array [1=>'Vepsian',..]
@@ -97,11 +115,5 @@ class Lang extends Model
         }
         
         return $list;         
-    }
-        
-    // Lang __has_many__ Lemma
-    public function lemmas()
-    {
-        return $this->hasMany(Lemma::class);
     }
 }

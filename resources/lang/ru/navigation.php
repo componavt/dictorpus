@@ -11,6 +11,7 @@ return [
     */
 
     'about_project' => 'О проекте',
+    'corpus' => 'Корпус',
     'dialects' => 'Диалекты',
     'dictionary' => 'Словарь',
     'gramsets' => 'Наборы грамматических признаков',
@@ -19,6 +20,7 @@ return [
     'langs'  => 'Языки',
     'lemmas' => 'Леммы',
     'parts_of_speech' => 'Части речи',
+    'places' => 'Населенные пункты',
     'references' => 'Cправочники',
     'wordforms' => 'Словоформы'
 ];
