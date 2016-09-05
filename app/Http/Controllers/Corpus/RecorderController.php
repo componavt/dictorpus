@@ -8,9 +8,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use DB;
 
-use App\Models\Corpus\Informant;
+use App\Models\Corpus\Recorder;
 
-class InformantController extends Controller
+class RecorderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -88,23 +88,21 @@ class InformantController extends Controller
         //
     }
 /*    
-    public function tempInsertVepsianInformant()
+    public function tempInsertVepsianRecorder()
     {
-        $veps_informants = DB::connection('vepsian')
-                            ->table('informant')
+        $veps_recorders = DB::connection('vepsian')
+                            ->table('recorder')
                             ->orderBy('id')
                             //->take(1)
                             ->get();
  
-        DB::connection('mysql')->table('informants')->delete();
+        DB::connection('mysql')->table('recorders')->delete();
        
-        foreach ($veps_informants as $veps_informant):
-            $informant = new Informant;
-            $informant->id = $veps_informant->id;
-            $informant->birth_place_id = $veps_informant->birth_place_id;
-            $informant->birth_date = $veps_informant->birth_date;
-            $informant->name_ru = $veps_informant->name;
-            $informant->save();            
+        foreach ($veps_recorders as $veps_recorder):
+            $recorder = new Recorder;
+            $recorder->id = $veps_recorder->id;
+            $recorder->name_ru = $veps_recorder->name;
+            $recorder->save();            
         endforeach;
      }
  * 

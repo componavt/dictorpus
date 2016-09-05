@@ -5,9 +5,7 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
-use App\Models\Corpus\Place;
-
-class Informant extends Model
+class Recorder extends Model
 {
     public $timestamps = false;
     
@@ -34,15 +32,4 @@ class Informant extends Model
         
         return $name;
     }
-    
-    /** Gets place, takes into account locale.
-     * 
-     * Informant belongs_to Place
-     * 
-     * @return Relationship, Query Builder
-     */
-    public function place()
-    {
-        return $this->belongsTo(Place::class);
-    }    
 }
