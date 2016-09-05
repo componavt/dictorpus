@@ -604,3 +604,16 @@ INSERT INTO `event_recorder` VALUES (231,3);
 INSERT INTO `event_recorder` VALUES (232,26);
 INSERT INTO `event_recorder` VALUES (233,9);
 INSERT INTO `event_recorder` VALUES (233,19);
+
+-- TRANSTEXT ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Transtext' --migration
+
+-- TEXT ---------------------------------------
+-- php artisan make:model 'Models\Corpus\Text' --migration
+-- php artisan make:controller 'Corpus\TextController' --resource
+
+
+-- select t1.id, t1.source_id, t2.source_id from text as t1, text as t2, text_pair where text_pair.text1_id=t1.id and text_pair.text2_id=t2.id and t1.source_id<>t2.source_id;
+
+-- php artisan make:migration create_dialect_text_table
+-- php artisan make:migration create_genre_text_table
