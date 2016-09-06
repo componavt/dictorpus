@@ -142,6 +142,46 @@ class TextController extends Controller
             $text->save();            
         endforeach;
      }
+
+    public function tempInsertVepsianDialectText()
+    {
+        DB::connection('mysql')->table('dialect_text')->delete();
+       
+        $veps_texts = DB::connection('vepsian')
+                            ->table('text_label')
+                            ->join('text','text.id','=','text_label.text_id')
+                            ->where('label_id','<',6)
+                            ->where('lang_id',1)
+                            ->orderBy('text_id')
+                            //->take(1)
+                            ->get();
+        
+        foreach ($veps_texts as $veps_text):
+            DB::connection('mysql')->table('dialect_text')
+                                   ->insert(['dialect_id'=>$veps_text->label_id,
+                                             'text_id'=>$veps_text->text_id]);
+        endforeach;
+     }
+    
+    public function tempInsertVepsianGenreText()
+    {
+        DB::connection('mysql')->table('dialect_text')->delete();
+       
+        $veps_texts = DB::connection('vepsian')
+                            ->table('text_label')
+                            ->join('text','text.id','=','text_label.text_id')
+                            ->where('label_id','>',5)
+                            ->where('lang_id',1)
+                            ->orderBy('text_id')
+                            //->take(1)
+                            ->get();
+        
+        foreach ($veps_texts as $veps_text):
+            DB::connection('mysql')->table('genre_text')
+                                   ->insert(['genre_id'=>$veps_text->label_id,
+                                             'text_id'=>$veps_text->text_id]);
+        endforeach;
+     }
  * 
  */
 }

@@ -612,8 +612,15 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- php artisan make:model 'Models\Corpus\Text' --migration
 -- php artisan make:controller 'Corpus\TextController' --resource
 
-
+-- different sources of text and transtext
 -- select t1.id, t1.source_id, t2.source_id from text as t1, text as t2, text_pair where text_pair.text1_id=t1.id and text_pair.text2_id=t2.id and t1.source_id<>t2.source_id;
 
 -- php artisan make:migration create_dialect_text_table
+
+-- transtexts have labels too
+-- select text.id, text.title, label.label_ru from text, label, text_label where text_label.text_id=text.id and text_label.label_id=label.id and text.lang_id=2;
+
+-- compare labels of text and labels of transtext
+-- select t1.id, t1.source_id, t2.source_id from text as t1, text as t2, text_pair where text_pair.text1_id=t1.id and text_pair.text2_id=t2.id and t1.source_id<>t2.source_id;
+
 -- php artisan make:migration create_genre_text_table
