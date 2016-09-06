@@ -5,6 +5,10 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Models\Corpus\Corpus;
+use App\Models\Dict\Lemma;
+use App\Models\Corpus\Text;
+
 class Lang extends Model
 {
     public $timestamps = false;
@@ -43,6 +47,18 @@ class Lang extends Model
     public function lemmas()
     {
         return $this->hasMany(Lemma::class);
+    }
+
+    // Lang __has_many__ Corpus
+    public function corpuses()
+    {
+        return $this->hasMany(Corpus::class);
+    }
+
+    // Lang __has_many__ Texts
+    public function texts()
+    {
+        return $this->hasMany(Text::class);
     }
 
     /** Gets list of languages

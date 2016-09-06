@@ -22,5 +22,6 @@ return [
     'parts_of_speech' => 'Parts of speech',
     'places' => 'Settlements',
     'references' => 'Reference tables',
+    'texts' => 'Texts',
     'wordforms' => 'Wordforms'
 ];

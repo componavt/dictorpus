@@ -31,6 +31,7 @@ return [
     'save' => 'save',
     'search' => 'search',
     'show_by' => 'by',
+    'translation' => 'Translation',
     'updated_success' => 'Successfully updated',
     'view' => 'view',
     

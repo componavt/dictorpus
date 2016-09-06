@@ -22,5 +22,6 @@ return [
     'parts_of_speech' => 'Части речи',
     'places' => 'Населенные пункты',
     'references' => 'Cправочники',
+    'texts' => 'Тексты',
     'wordforms' => 'Словоформы'
 ];

@@ -82,5 +82,9 @@ Route::group(
                                     'store' => 'lemma.store',
                                     'destroy' => 'lemma.destroy']]);
 
+        Route::resource('corpus/text', 'Corpus\TextController',
+                       ['names' => ['update' => 'text.update',
+                                    'store' => 'text.store',
+                                    'destroy' => 'text.destroy']]);
     }
 );

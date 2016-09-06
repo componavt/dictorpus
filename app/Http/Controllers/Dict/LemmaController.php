@@ -33,7 +33,8 @@ class LemmaController extends Controller
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.edit,/dict/lemma/', ['only' => 'create','store','edit','update','destroy']);
     }
-   /**
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

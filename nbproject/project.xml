@@ -7,6 +7,7 @@
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
             <word>endif</word>
+            <word>endsection</word>
             <word>словарь</word>
         </spellchecker-wordlist>
     </configuration>

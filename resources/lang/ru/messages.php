@@ -31,6 +31,7 @@ return [
     'save' => 'сохранить',
     'search' => 'искать',
     'show_by' => 'по',
+    'translation' => 'Перевод',
     'updated_success' => 'Обновление завершено',
     'view' => 'показать',
 ];
