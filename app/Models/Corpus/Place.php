@@ -45,4 +45,40 @@ class Place extends Model
     {
         return $this->hasMany(PlaceName::class);
     }
+
+    /**
+     * Gets full information about place
+     * 
+     * f.e. "Пондала (Pondal), Бабаевский р-н, Вологодская обл."
+     * 
+     * @param int $lang_id ID of text language for output translation of settlement title, f.e. Pondal
+     * 
+     * @return String
+     */
+    public function placeString()//$lang_id=''
+    {
+        $info = [];
+        
+        if ($this->name) {
+            if ($this->other_names()->count()) {
+                $other_names = $this->other_names()->get();//where('lang_id',$lang_id)->first();
+                $tmp = [];
+                foreach ($other_names as $other_name) {
+                    $tmp[] = $other_name->name; 
+                }
+            }
+            $info[0] = $this->name. sizeof($tmp) ? '('.join(', ',$tmp).')' : '';
+        }
+        
+        if ($this->district) {
+            $info[] = $this->district->name;
+        }
+        
+        if ($this->region) {
+            $info[] = $this->region->name;
+        }
+        
+        return join(', ', $info);
+    }    
+    
 }

@@ -56,7 +56,7 @@
                 <td>{{ $list_count++ }}</td>
                 <td>{{$text->lang->name}}</td>
                 <td>{{$text->corpus->name}}</td>
-                <td>{{$text->title}}</td>
+                <td><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}">{{$text->title}}</td>
                 <td>
                     @if ($text->transtext)
                     {{$text->transtext->title}}

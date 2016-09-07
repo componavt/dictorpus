@@ -124,7 +124,21 @@ class TextController extends Controller
      */
     public function show($id)
     {
-        //
+        $text = Text::find($id);
+        
+        $labels = [];
+        
+        foreach ($text->dialects as $dialect) {
+            $labels[] = $dialect->name;
+        }
+
+        foreach ($text->genres as $genre) {
+            $labels[] = $genre->name;
+        }
+        
+        return view('corpus.text.show')
+                  ->with(['text'=>$text,
+                          'labels'=>join(', ',$labels)]);
     }
 
     /**
@@ -214,6 +228,7 @@ class TextController extends Controller
             $text->save();            
         endforeach;
      }
+ */
 
     public function tempInsertVepsianDialectText()
     {
@@ -234,7 +249,7 @@ class TextController extends Controller
                                              'text_id'=>$veps_text->text_id]);
         endforeach;
      }
-    
+/*    
     public function tempInsertVepsianGenreText()
     {
         DB::connection('mysql')->table('dialect_text')->delete();

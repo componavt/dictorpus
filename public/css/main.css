@@ -36,3 +36,7 @@ and open the template in the editor.
     min-width: 300px;
     width: 30%;
 }
+
+.corpus-text td:first-child{
+    padding-right: 20px;
+}

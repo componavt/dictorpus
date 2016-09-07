@@ -3,6 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use LaravelLocalization;
 
 class Genre extends Model
 {

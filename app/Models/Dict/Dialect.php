@@ -3,6 +3,7 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
+use LaravelLocalization;
 
 class Dialect extends Model
 {
