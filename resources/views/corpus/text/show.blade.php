@@ -21,7 +21,7 @@
         </p>
         
         <h2>{{ $text->title }}</h2>
-        <h3>{{ $text->corpus->name }}</h3>
+        <h3>{{ trans('corpus.corpus') }}: {{ $text->corpus->name }}</h3>
         <p><i>{{ $labels }}</i></p>
 
         @if ($text->event)
