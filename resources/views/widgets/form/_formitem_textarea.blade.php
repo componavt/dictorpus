@@ -11,15 +11,13 @@ if(!isset($value))
     $value = null;
 if(!isset($title)) 
     $title = null;
-if(!isset($placeholder)) 
-    $placeholder = null;
-$class = 'form-control';
+if(!isset($attributes['class'])) 
+    $attributes['class'] = 'form-control';
 ?>
 <div class="form-group {!! $errors->has($name) ? 'has-error' : null !!}">
     @if($title)
 	<label for="{{$name}}">{{ $title }}</label>
     @endif
-    {!! Form::textarea($name, $value, array('placeholder' =>  $placeholder,
-                                        'class' => $class)) !!}
+    {!! Form::textarea($name, $value, $attributes) !!}
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

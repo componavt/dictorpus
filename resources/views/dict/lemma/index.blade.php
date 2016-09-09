@@ -88,7 +88,7 @@
                         class="btn btn-warning btn-xs btn-detail" value="{{$lemma->id}}">{{ trans('messages.edit') }}</a>
                  </td>
                 <td>
-                    {!! $lemma->buttonDelete() !!}
+                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'lemma.destroy', 'id' => $lemma->id])
 {{--                    @include('dict.lemma._form_delete', ['lemma'=>$lemma])--}}
                 </td>
                 @endif

@@ -6,14 +6,17 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
 use DB;
 
 use App\Models\Dict\Lang;
 
 use App\Models\Corpus\Corpus;
+use App\Models\Corpus\Event;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Recorder;
+use App\Models\Corpus\Source;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
 
@@ -105,7 +108,19 @@ class TextController extends Controller
      */
     public function create()
     {
-        //
+        $lang_values = Lang::getList();
+        $corpus_values = Corpus::getList();
+        $informant_values = [NULL => ''] + Informant::getList();
+        $place_values = [NULL => ''] + Place::getList();
+        $recorder_values = Recorder::getList();
+        
+        return view('corpus.text.create')
+                  ->with(['lang_values' => $lang_values,
+                          'corpus_values' => $corpus_values,
+                          'informant_values' => $informant_values,
+                          'place_values' => $place_values,
+                          'recorder_values' => $recorder_values,
+                         ]);
     }
 
     /**
@@ -116,7 +131,25 @@ class TextController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title'  => 'required|max:255',
+            'text'=> 'required',
+            'corpus_id' => 'required|numeric',
+            'lang_id' => 'required|numeric',
+            'transtext.title'  => 'max:255',
+            'transtext.lang_id' => 'numeric',
+        ]);
+        
+        $text = Text::create($request->only('corpus_id','lang_id','title','text')); //,'source_id','event_id',
+        
+        Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text'), 
+                                                  $text);
+        Event::storeEvent($request->only('event_informant_id','event_place_id','event_date'), 
+                                                  $text);
+        Source::storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'), 
+                                                  $text);
+        return Redirect::to('/corpus/text/'.($text->id))
+            ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
     /**
@@ -128,6 +161,11 @@ class TextController extends Controller
     public function show($id)
     {
         $text = Text::find($id);
+        
+        if (!$text) {
+            return Redirect::to('/corpus/text/')
+                           ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
+        }
         
         $labels = [];
         
@@ -156,7 +194,7 @@ class TextController extends Controller
         
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
-        $informant_values = Informant::getList();
+        $informant_values = [NULL => ''] + Informant::getList();
         $place_values = [NULL => ''] + Place::getList();
         $recorder_values = Recorder::getList();
         
@@ -188,10 +226,70 @@ class TextController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $text = Text::with('transtext')->find($id); //,'event','source'
-        $text->fill($request->only('corpus_id','lang_id','title','text')); //,'source_id','event_id'
-        $text->transtext->fill(only('transtext.lang_id','transtext.title','transtext.text'));
+        $this->validate($request, [
+            'title'  => 'required|max:255',
+            'text'=> 'required',
+            'corpus_id' => 'required|numeric',
+            'lang_id' => 'required|numeric',
+            'transtext.title'  => 'max:255',
+            'transtext.lang_id' => 'numeric',
+            'event_date' => 'numeric',
+        ]);
+
+        $text = Text::with('transtext','event','source')->get()->find($id); //,'event','source'
+        $text->fill($request->only('corpus_id','lang_id','title','text'));
+
+        Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text'), 
+                                                  $text);
+        Event::storeEvent($request->only('event_informant_id','event_place_id','event_date'), 
+                                                  $text);
+        Source::storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'), 
+                                                  $text);
+        
+ /*       
+        foreach (['event', 'source'] as $model_name) {
+            $id_name = $model_name.'_id';
+            $model_id = $text->{$id_name};
+            if ($text->{$model_name}) {
+                $model_obj = $text->{$model_name};
+            } elseif ($model_name == 'transtext') {
+                $model_obj = new Transtext;
+            } elseif ($model_name == 'event') {
+                $model_obj = new Event;
+//print '111';
+//exit(0);
+            } elseif ($model_name == 'source') {
+                $model_obj = new Source;
+            } 
+            
+            $is_empty_obj = true;
+            foreach ($model_obj->getFillable() as $column) {
+                $var_name = $model_name.'_'.$column;
+                if (!$request->{$var_name}) {
+                    $request->{$var_name} = NULL;
+                } else {
+                    $is_empty_obj = false;
+                }
+                $model_obj->{$column} = $request->{$var_name}; 
+            }
+            
+            if ($is_empty_obj) {
+                if ($model_id) {
+                    $text->{$id_name} = NULL;
+                }
+                $model_obj->delete();
+            }
+        }  
+*/
+        if ($text->event) {
+            $text-> event->recorders()->detach();
+            $text-> event->recorders()->attach($request->event_recorders);
+        }
+        
         $text->push();
+        
+        return Redirect::to('/corpus/text/'.($text->id))
+                       ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
     /**
@@ -259,7 +357,7 @@ class TextController extends Controller
         endforeach;
      }
  */
-
+/*
     public function tempInsertVepsianDialectText()
     {
         DB::connection('mysql')->table('dialect_text')->delete();
@@ -301,4 +399,6 @@ class TextController extends Controller
      }
  * 
  */
+     // select text1_id,text2_id,t1.event_id,t2.event_id  from text_pair, text as t1, text as t2 where t2.lang_id=2 and t2.event_id is not null and text_pair.text1_id=t1.id and text_pair.text2_id=t2.id;
+     // select text1_id,text2_id,text.event_id from text_pair,text where text.lang_id=2 and text.event_id is not null and text_pair.text2_id=text.id;
 }

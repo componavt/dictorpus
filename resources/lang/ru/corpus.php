@@ -32,6 +32,7 @@ return [
     'source_year' => 'Год публикации',
     'text' => 'текст',
     'text_list' => 'Список текстов',
+    'text_not_found' => 'Текст с ID=:id не найден',
     'title' => 'Заголовок',
     'transtext_lang' => 'язык перевода',
     'transtext_text' => 'текст перевода',

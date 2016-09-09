@@ -31,7 +31,10 @@
         
         $source_info[] = $archive;
     }
-    
+ 
+    if ($source->comment) {
+        $source_info[] = $source->comment;
+    }
     
     $source_str = join('<br>',$source_info);
 ?>

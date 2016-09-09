@@ -7,7 +7,17 @@
 
 @section('content')
         <h2>{{ trans('corpus.text_list') }}</h2>
-            
+        
+        <p>
+        @if (User::checkAccess('corpus.edit'))
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}">
+        @endif
+            {{ trans('messages.create_new_m') }}
+        @if (User::checkAccess('corpus.edit'))
+            </a>
+        @endif
+        </p>
+        
         {!! Form::open(['url' => '/corpus/text/', 
                              'method' => 'get', 
                              'class' => 'form-inline']) 
@@ -21,7 +31,7 @@
                 ['name' => 'lang_id', 
                  'values' => $lang_values,
                  'value' => $lang_id,
-                 'placeholder' => trans('dict.select_lang') ]) 
+                 'placeholder' => trans('corpus.select_lang') ]) 
         @include('widgets.form._formitem_select', 
                 ['name' => 'corpus_id', 
                  'values' => $corpus_values,
@@ -48,6 +58,9 @@
                 <th>{{ trans('corpus.corpus') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
                 <th>{{ trans('messages.translation') }}</th>
+                @if (User::checkAccess('corpus.edit'))
+                <th colspan="2"></th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -62,6 +75,15 @@
                     {{$text->transtext->title}}
                     @endif
                 </td>
+                @if (User::checkAccess('corpus.edit'))
+                <td>
+                    <a  href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/edit') }}" 
+                        class="btn btn-warning btn-xs btn-detail" value="{{$text->id}}">{{ trans('messages.edit') }}</a>
+                 </td>
+                <td>
+                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'text.destroy', 'id' => $text->id])
+                </td>
+                @endif
             </tr>
             @endforeach
         </tbody>

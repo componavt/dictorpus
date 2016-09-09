@@ -11,36 +11,37 @@
 </div>                 
 <div class="row">
     <div class="col-sm-6">
-        @include('widgets.form._formitem_text', 
-                ['name' => 'title', 
-                 'title'=>trans('corpus.title')])
         @include('widgets.form._formitem_select', 
                 ['name' => 'lang_id', 
                  'values' =>$lang_values,
                  'title' => trans('dict.lang')]) 
+        @include('widgets.form._formitem_text', 
+                ['name' => 'title', 
+                 'title'=>trans('corpus.title')])
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'text', 
                  'title'=>trans('corpus.text')])
 
         {{-- EVENT --}}
-        <?php $informant_id_value = ($text->event) ? ($text->event->informant_id) : NULL; ?>
+        <?php $informant_id_value = ($action=='edit' && $text->event) ? ($text->event->informant_id) : NULL; ?>
         @include('widgets.form._formitem_select', 
                 ['name' => 'event.informant_id', 
                  'values' =>$informant_values,
                  'value' => $informant_id_value,
                  'title' => trans('corpus.informant')]) 
-        <?php $event_date_value = ($text->event) ? ($text->event->date) : NULL; ?>
+        <?php $event_date_value = ($action=='edit' && $text->event) ? ($text->event->date) : NULL; ?>
         @include('widgets.form._formitem_text', 
                 ['name' => 'event.date', 
                  'value' => $event_date_value,
                  'size' => 4,
                  'title'=>trans('corpus.record_year')])
-        <?php $event_place_value = ($text->event) ? ($text->event->place_id) : NULL; ?>
+        <?php $event_place_value = ($action=='edit' && $text->event) ? ($text->event->place_id) : NULL; ?>
         @include('widgets.form._formitem_select', 
-                ['name' => 'event.birth_place_id', 
+                ['name' => 'event.place_id', 
                  'values' =>$place_values,
                  'value' => $event_place_value,
                  'title' => trans('corpus.record_place')]) 
+        <?php if ($action=='create') { $recorder_value = NULL; } ?>        
          @include('widgets.form._formitem_select', 
                 ['name' => 'event.recorders[]', 
                  'values' =>$recorder_values,
@@ -51,37 +52,37 @@
 @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
     </div>
     <div class="col-sm-6">
-        <?php $transtext_title_value = ($text->transtext) ? ($text->transtext->title) : NULL; ?>
-        @include('widgets.form._formitem_text', 
-                ['name' => 'transtext.title', 
-                 'value' => $transtext_title_value,
-                 'title'=>trans('corpus.transtext_title')])
-        <?php $transtext_lang_id_value = ($text->transtext) ? ($text->transtext->lang_id) : NULL; ?>
+        <?php $transtext_lang_id_value = ($action=='edit' && $text->transtext) ? ($text->transtext->lang_id) : NULL; ?>
         @include('widgets.form._formitem_select', 
                 ['name' => 'transtext.lang_id', 
                  'values' =>$lang_values,
                  'value' => $transtext_lang_id_value,
                  'title' => trans('corpus.transtext_lang')]) 
-        <?php $transtext_text_value = ($text->transtext) ? ($text->transtext->text) : NULL; ?>
+        <?php $transtext_title_value = ($action=='edit' && $text->transtext) ? ($text->transtext->title) : NULL; ?>
+        @include('widgets.form._formitem_text', 
+                ['name' => 'transtext.title', 
+                 'value' => $transtext_title_value,
+                 'title'=>trans('corpus.transtext_title')])
+        <?php $transtext_text_value = ($action=='edit' && $text->transtext) ? ($text->transtext->text) : NULL; ?>
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'transtext.text', 
                  'value' => $transtext_text_value,
                  'title'=>trans('corpus.transtext_text')])
                  
         {{-- SOURCE --}}
-        <?php $source_author_value = ($text->source) ? ($text->source->author) : NULL; ?>
+        <?php $source_author_value = ($action=='edit' && $text->source) ? ($text->source->author) : NULL; ?>
         @include('widgets.form._formitem_text', 
                 ['name' => 'source.author', 
                  'value' => $source_author_value,
                  'title'=>trans('corpus.source_author')])
-        <?php $source_title_value = ($text->source) ? ($text->source->title) : NULL; ?>
+        <?php $source_title_value = ($action=='edit' && $text->source) ? ($text->source->title) : NULL; ?>
         @include('widgets.form._formitem_text', 
                 ['name' => 'source.title', 
                  'value' => $source_title_value,
                  'title'=>trans('corpus.source_title')])
         <div class="row">
             <div class="col-sm-6">
-        <?php $source_year_value = ($text->source) ? ($text->source->year) : NULL; ?>
+        <?php $source_year_value = ($action=='edit' && $text->source) ? ($text->source->year) : NULL; ?>
         @include('widgets.form._formitem_text', 
                 ['name' => 'source.year', 
                  'value' => $source_year_value,
@@ -89,7 +90,7 @@
                  'title'=>trans('corpus.source_year')])
             </div>
             <div class="col-sm-6">
-        <?php $source_pages_value = ($text->source) ? ($text->source->pages) : NULL; ?>
+        <?php $source_pages_value = ($action=='edit' && $text->source) ? ($text->source->pages) : NULL; ?>
         @include('widgets.form._formitem_text', 
                 ['name' => 'source.pages', 
                  'value' => $source_pages_value,
@@ -98,8 +99,8 @@
             </div>
         </div>
         
-        <?php $ieeh_archive_number1_value = ($text->source) ? ($text->source->ieeh_archive_number1) : NULL; ?>
-        <?php $ieeh_archive_number2_value = ($text->source) ? ($text->source->ieeh_archive_number2) : NULL; ?>
+        <?php $ieeh_archive_number1_value = ($action=='edit' && $text->source && $text->source->ieeh_archive_number1) ? ($text->source->ieeh_archive_number1) : NULL; ?>
+        <?php $ieeh_archive_number2_value = ($action=='edit' && $text->source && $text->source->ieeh_archive_number2) ? ($text->source->ieeh_archive_number2) : NULL; ?>
         <div class="row">
             <div class="col-sm-8">
         @include('widgets.form._formitem_text', 
@@ -118,11 +119,13 @@
                  'size' => 5])
             </div>
         </div>
-        <?php $source_comment_value = ($text->source) ? ($text->source->comment) : NULL; ?>
+        <?php $source_comment_value = ($action=='edit' && $text->source) ? ($text->source->comment) : NULL; ?>
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'source.comment', 
                  'value' => $source_comment_value,
-                 'title'=>trans('corpus.comment')])
+                 'title'=>trans('corpus.comment'),
+                 'attributes' => ['rows'=>3],
+                ])
     </div>
 </div>                 
                          

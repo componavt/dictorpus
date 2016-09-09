@@ -28,7 +28,13 @@ class Place extends Model
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_" . $locale;
-        return $this->{$column};
+        $name = $this->{$column};
+        
+        if (!$name && $locale!='ru') {
+            $name = $this->name_ru;
+        }
+        
+        return $name;
     }
     
     public function district()
