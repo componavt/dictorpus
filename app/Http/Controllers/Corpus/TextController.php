@@ -11,6 +11,9 @@ use DB;
 use App\Models\Dict\Lang;
 
 use App\Models\Corpus\Corpus;
+use App\Models\Corpus\Informant;
+use App\Models\Corpus\Place;
+use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
 
@@ -149,7 +152,31 @@ class TextController extends Controller
      */
     public function edit($id)
     {
-        //
+        $text = Text::with('transtext')->find($id); //,'event','source'
+        
+        $lang_values = Lang::getList();
+        $corpus_values = Corpus::getList();
+        $informant_values = Informant::getList();
+        $place_values = [NULL => ''] + Place::getList();
+        $recorder_values = Recorder::getList();
+        
+        $recorder_value = [];
+        if ($text->event && $text->event->recorders) {
+            $recorders = $text->event->recorders;
+            foreach ($recorders as $recorder) {
+                $recorder_value[] = $recorder->id;
+            }
+        }
+//var_dump($recorder_value);
+        return view('corpus.text.edit')
+                  ->with(['text' => $text,
+                          'lang_values' => $lang_values,
+                          'corpus_values' => $corpus_values,
+                          'informant_values' => $informant_values,
+                          'place_values' => $place_values,
+                          'recorder_values' => $recorder_values,
+                          'recorder_value' => $recorder_value
+                         ]);
     }
 
     /**
@@ -161,7 +188,10 @@ class TextController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $text = Text::with('transtext')->find($id); //,'event','source'
+        $text->fill($request->only('corpus_id','lang_id','title','text')); //,'source_id','event_id'
+        $text->transtext->fill(only('transtext.lang_id','transtext.title','transtext.text'));
+        $text->push();
     }
 
     /**

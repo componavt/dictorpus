@@ -36,5 +36,10 @@ class Event extends Model
     public function place()
     {
         return $this->belongsTo(Place::class);
-    }    
+    }  
+    
+    // Event __has_many__ Recorders
+    public function recorders(){
+        return $this->belongsToMany(Recorder::class);
+    }
 }

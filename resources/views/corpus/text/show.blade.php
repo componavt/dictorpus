@@ -11,12 +11,12 @@
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}">{{ trans('messages.back_to_list') }}</a>
             
-{{--        @if (User::checkAccess('corpus.edit'))
+        @if (User::checkAccess('corpus.edit'))
             | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/edit') }}">{{ trans('messages.edit') }}</a> 
-            | {!! $text->buttonDelete(false) !!}
+            | @include('widgets.form._button_delete', ['is_button'=>false, $route = 'text.destroy', 'id' => $text->id])
         @else
             {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
-        @endif --}}
+        @endif 
             | <a href="">{{ trans('messages.history') }}</a>
         </p>
         

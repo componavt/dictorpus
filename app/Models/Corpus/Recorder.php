@@ -32,4 +32,23 @@ class Recorder extends Model
         
         return $name;
     }
+    
+    /** Gets list of recorders
+     * 
+     * @return Array [1=>'Онегина Нина Федоровна',..]
+     */
+    public static function getList()
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $recorders = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($recorders as $row) {
+            $list[$row->id] = $row->name;
+        }
+        
+        return $list;         
+    }
+    
 }

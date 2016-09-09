@@ -5,8 +5,15 @@ if(!isset($values))
     $values = array(); 
 if(!isset($title)) 
     $title = null;
-if(!isset($placeholder)) 
-    $placeholder = null;
+
+$add_atributes = ['class'=>'form-control'];
+
+if (isset($multiple) && $multiple) {
+    $add_atributes['multiple'] = 'multiple';
+}   
+
+if(isset($placeholder)) 
+    $add_atributes['placeholder'] = $placeholder;
 ?>
 
 <div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
@@ -17,8 +24,7 @@ if(!isset($placeholder))
 	{!! Form::select($name, 
                      $values, 
                      $value,
-                     array('placeholder'=>$placeholder, 
-                           'class'=>'form-control')) 
+                     $add_atributes) 
     !!}
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

@@ -146,7 +146,7 @@ class Lemma extends Model
      * Generates a CSRF token and put it inside a custom data-delete attribute
      * @param bool $is_button Is this button or link?
      */
-    public function buttonDelete($is_button=true)
+/*    public function buttonDelete($is_button=true)
     {
 //        $format = '<a href="%s" data-toggle="tooltip" data-delete="%s" title="%s" class="btn btn-default"><i class="fa fa-trash-o"></i></a>';
         $format = '<a href="%s" data-toggle="tooltip" data-delete="%s" title="%s"';
@@ -159,4 +159,6 @@ class Lemma extends Model
         $title = \Lang::get('messages.delete');
         return sprintf($format, $link, $token, $title, $title);
     }
+ * 
+ */
 }

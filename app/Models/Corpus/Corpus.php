@@ -48,6 +48,23 @@ class Corpus extends Model
     }
 
         
+    /** Gets list of languages
+     * 
+     * @return Array [1=>'Dialectal texts',..]
+     */
+    public static function getList()
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $corpuses = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($corpuses as $row) {
+            $list[$row->id] = $row->name;
+        }
+        
+        return $list;         
+    }
     /** Gets list of corpuses
      * 
      * @return Array [1=>'Dialectal texts (199)',..]

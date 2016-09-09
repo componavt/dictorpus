@@ -36,7 +36,7 @@ return [
                         (<a href="https://creativecommons.org/licenses/by/4.0/deed.ru">CC-BY</a>).
                         </p>
 
-                        <p><a href="http://www.krc.karelia.ru/index.php?plang=e">Karelian Research Centre of RAS</a>
-                        
-Над проектом работают сотрудники Карельского научного центра РАН.</p>',
+                        <p>VepKar project involves researchers 
+                        from institutes under the
+                        <a href="http://www.krc.karelia.ru/index.php?plang=e">Karelian Research Centre of RAS</a>.</p>',
 ];
