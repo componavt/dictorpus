@@ -23,6 +23,11 @@
                              'class' => 'form-inline']) 
         !!}
         @include('widgets.form._formitem_text', 
+                ['name' => 'search_id', 
+                'value' => $search_id,
+                'size' => 3,
+                'placeholder' => 'ID'])
+         @include('widgets.form._formitem_text', 
                 ['name' => 'informant_name', 
                 'value' => $informant_name,
                 'size' => 15,
@@ -68,7 +73,7 @@
             <tr>
                 <td>{{ $list_count++ }}</td>
                 <td>{{$informant->name_en}}</td>
-                <td><a href="{{ LaravelLocalization::localizeURL('/corpus/informant/'.$informant->id) }}">{{$informant->name_ru}}</a></td>
+                <td>{{$informant->name_ru}}</td>
                 <td>{{$informant->birth_date}}</td>
                 <td>
                     @if ($informant->birth_place)
@@ -94,6 +99,14 @@
                             'birth'=>$birth])->render() !!}
 
     </div>
+@stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/rec-delete-link.js')!!}
+@stop
+
+@section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/informant');
 @stop
 
 

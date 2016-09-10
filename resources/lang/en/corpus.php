@@ -19,7 +19,9 @@ return [
     'informant' => 'Informant',
     'informant_list' => 'Informant list',
     'informant_name' => 'Informant name',
+    'informant_removed' => 'Informant ":name" removed successfully.',
     'nee' => 'nee',
+    'of_informant' => 'of informant',
     'of_text' => 'of text',
     'p' => 'p.',
     'place_list' => 'Settlement list',
@@ -41,4 +43,5 @@ return [
     'transtext_lang' => 'language of translation',
     'transtext_text' => 'text of translation',
     'transtext_title' => 'title of translation',
+    'year_of_birth' => 'year of birth',
 ];

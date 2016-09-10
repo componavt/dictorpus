@@ -36,6 +36,7 @@ class InformantController extends Controller
         $limit_num = (int)$request->input('limit_num');
         $birth_place_id = (int)$request->input('birth_place_id');
         $birth = (int)$request->input('birth');
+        $search_id = (int)$request->input('search_id');
         $page = (int)$request->input('page');
 
         if (!$page) {
@@ -44,6 +45,10 @@ class InformantController extends Controller
         
         if (!$birth) {
             $birth = NULL;
+        }
+        
+        if (!$search_id) {
+            $search_id = NULL;
         }
         
         if ($limit_num<=0) {
@@ -70,6 +75,10 @@ class InformantController extends Controller
             $informants = $informants->where('birth_date',$birth);
         } 
 
+        if ($search_id) {
+            $informants = $informants->where('id',$search_id);
+        } 
+
         $numAll = $informants->count();
 
         $informants = $informants->paginate($limit_num);
@@ -82,6 +91,7 @@ class InformantController extends Controller
                             'informant_name' => $informant_name,
                             'birth_place_id'=>$birth_place_id,
                             'birth'=>$birth,
+                            'search_id'=>$search_id,
                             'page'=>$page,
                             'place_values' => $place_values,
                             'numAll' => $numAll,
@@ -95,7 +105,10 @@ class InformantController extends Controller
      */
     public function create()
     {
-        //
+        $place_values = [NULL => ''] + Place::getList();
+        
+        return view('corpus.informant.create')
+                  ->with(['place_values' => $place_values]);
     }
 
     /**
@@ -106,7 +119,21 @@ class InformantController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+            'birth_place_id' => 'numeric',
+            'birth_date' => 'numeric',
+        ]);
+        
+        if (!$request->birth_date) {
+            $request->birth_date = NULL;
+        }
+
+        $informant = Informant::create($request->all());
+        
+        return Redirect::to('/corpus/informant/?search_id='.$informant->id)
+            ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
     /**
@@ -117,7 +144,7 @@ class InformantController extends Controller
      */
     public function show($id)
     {
-        //
+        return Redirect::to('/corpus/informant/');
     }
 
     /**
@@ -128,7 +155,12 @@ class InformantController extends Controller
      */
     public function edit($id)
     {
-        //
+        $informant = Informant::find($id); 
+        $place_values = [NULL => ''] + Place::getList();
+        
+        return view('corpus.informant.edit')
+                  ->with(['place_values' => $place_values,
+                          'informant' => $informant]);
     }
 
     /**
@@ -140,7 +172,22 @@ class InformantController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+            'birth_place_id' => 'numeric',
+            'birth_date' => 'numeric',
+        ]);
+        
+        if (!$request['birth_date']) {
+            $request['birth_date'] = NULL;
+        }
+
+        $informant = Informant::find($id);
+        $informant->fill($request->all())->save();
+        
+        return Redirect::to('/corpus/informant/?search_id='.$informant->id)
+            ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
     /**
@@ -151,7 +198,40 @@ class InformantController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $error = false;
+        $status_code = 200;
+        $result =[];
+        if($id != "" && $id > 0) {
+            try{
+                $informant = Informant::find($id);
+                if($informant){
+                    $informant_name = $informant->name;
+                    $informant->delete();
+                    $result['message'] = \Lang::get('corpus.informant_removed', ['name'=>$informant_name]);
+                }
+                else{
+                    $error = true;
+                    $result['error_message'] = \Lang::get('record_not_exists');
+                }
+          }catch(\Exception $ex){
+                    $error = true;
+                    $status_code = $ex->getCode();
+                    $result['error_code'] = $ex->getCode();
+                    $result['error_message'] = $ex->getMessage();
+                }
+        }else{
+            $error =true;
+            $status_code = 400;
+            $result['message']='Request data is empty';
+        }
+        
+        if ($error) {
+                return Redirect::to('/corpus/informant/')
+                               ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/corpus/informant/')
+                  ->withSuccess($result['message']);
+        }
     }
 /*    
     public function tempInsertVepsianInformant()

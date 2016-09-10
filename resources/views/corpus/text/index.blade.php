@@ -96,4 +96,11 @@
     </div>
 @stop
 
+@section('footScriptExtra')
+    {!!Html::script('js/rec-delete-link.js')!!}
+@stop
+
+@section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
+@stop
 

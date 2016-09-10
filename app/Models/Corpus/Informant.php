@@ -10,7 +10,7 @@ use App\Models\Corpus\Place;
 class Informant extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['birth_place_id','birth_place_date','name_en','name_ru'];
+    protected $fillable = ['birth_place_id','birth_date','name_en','name_ru'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
     

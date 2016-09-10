@@ -19,7 +19,9 @@ return [
     'informant' => 'Информант',
     'informant_list' => 'Список информантов',
     'informant_name' => 'Имя информанта',
+    'informant_removed' => 'Информант ":name" удален.',
     'nee' => 'урожд.',
+    'of_informant' => 'информанта',
     'of_text' => 'текста',
     'p' => 'с.',
     'place_list' => 'Список населенных пунктов',
@@ -41,4 +43,5 @@ return [
     'transtext_lang' => 'язык перевода',
     'transtext_text' => 'текст перевода',
     'transtext_title' => 'заголовок перевода',
+    'year_of_birth' => 'год рождения',
 ];
