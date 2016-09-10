@@ -11,11 +11,14 @@ return [
     */
 
     'archive_krc' => 'ф/архив ИЯЛИ КарНЦ РАН',
+    'birth_place' => 'место рождения',
     'birth_year' => 'г.р.',
     'comment' => 'комментарий',
     'corpus' => 'Корпус',
     'district' => 'Район',
     'informant' => 'Информант',
+    'informant_list' => 'Список информантов',
+    'informant_name' => 'Имя информанта',
     'nee' => 'урожд.',
     'of_text' => 'текста',
     'p' => 'с.',
@@ -33,6 +36,7 @@ return [
     'text' => 'текст',
     'text_list' => 'Список текстов',
     'text_not_found' => 'Текст с ID=:id не найден',
+    'text_removed' => 'Текст ":name" удален.',
     'title' => 'Заголовок',
     'transtext_lang' => 'язык перевода',
     'transtext_text' => 'текст перевода',

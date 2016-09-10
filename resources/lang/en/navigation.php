@@ -17,6 +17,7 @@ return [
     'gramsets' => 'Sets of grammatical attributes',
     'grams' => 'Grammemes',
     'home' => 'Home',
+    'informants' => 'Informants',
     'langs'  => 'Languages',
     'lemmas' => 'Lemmas',
     'parts_of_speech' => 'Parts of speech',

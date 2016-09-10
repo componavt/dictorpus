@@ -61,3 +61,7 @@ and open the template in the editor.
     -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
+
+.table th:first-letter {
+    text-transform: uppercase;    
+}

@@ -86,5 +86,10 @@ Route::group(
                        ['names' => ['update' => 'text.update',
                                     'store' => 'text.store',
                                     'destroy' => 'text.destroy']]);
+        
+        Route::resource('corpus/informant', 'Corpus\InformantController',
+                       ['names' => ['update' => 'informant.update',
+                                    'store' => 'informant.store',
+                                    'destroy' => 'informant.destroy']]);
     }
 );

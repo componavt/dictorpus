@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
 use App\Models\Corpus\District;
+use App\Models\Corpus\Informant;
 use App\Models\Corpus\PlaceName;
 use App\Models\Corpus\Region;
 
@@ -52,6 +53,12 @@ class Place extends Model
         return $this->hasMany(PlaceName::class);
     }
 
+    // Place __has_many__ Informants
+    public function informants()
+    {
+        return $this->hasMany(Informant::class,'birth_place_id');
+    }
+
     /** Gets list of places
      * 
      * @return Array [1=>'Пондала (Pondal), Бабаевский р-н, Вологодская обл.',..]
@@ -70,6 +77,28 @@ class Place extends Model
         return $list;         
     }
     
+    /** Gets list of places
+     * 
+     * @return Array [1=>'Dialectal texts (199)',..]
+     */
+    public static function getListWithQuantity($method_name)
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $places = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($places as $row) {
+            $count=$row->$method_name()->count();
+            $name = $row->placeString();
+            if ($count) {
+                $name .= " ($count)";
+            }
+            $list[$row->id] = $name;
+        }
+        
+        return $list;         
+    }
 
     /**
      * Gets full information about place
@@ -80,6 +109,7 @@ class Place extends Model
      * 
      * @return String
      */
+    
     public function placeString($lang_id='')
     {
         $info = [];

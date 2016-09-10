@@ -29,7 +29,7 @@ class TextController extends Controller
      */
     public function __construct()
     {
-        // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
+        // permission= dict.edit, redirect failed users to /dict/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', ['only' => 'create','store','edit','update','destroy']);
     }
 
@@ -300,7 +300,71 @@ class TextController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $error = false;
+        $status_code = 200;
+        $result =[];
+        if($id != "" && $id > 0) {
+            try{
+                $text = Text::find($id);
+                if($text){
+                    $text_title = $text->title;
+                    
+                    $transtext_id = $text->transtext_id;
+                    $event_id = $text->event_id;
+                    $source_id = $text->source_id;
+                    
+                    $text->delete();
+
+                    //remove transtext if exists and don't link with other texts
+                    if ($transtext_id && !Text::where('id','<>',$id)
+                                              ->where('transtext_id',$transtext_id)
+                                              ->count()) {
+                        Transtext::find($transtext_id)->delete();
+                    }
+
+                    //remove event if exists and don't link with other texts
+                    if ($event_id && !Text::where('id','<>',$id)
+                                              ->where('event_id',$event_id)
+                                              ->count()) {
+                        $event = Event::find($event_id);
+                        if ($event) {
+                            $event->recorders()->detach();
+                            $event->delete();
+                        }
+                    }
+
+                    //remove source if exists and don't link with other texts
+                    if ($source_id && !Text::where('id','<>',$id)
+                                           ->where('source_id',$source_id)
+                                           ->count()) {
+                        Source::find($source_id)->delete();
+                    }
+
+                    $result['message'] = \Lang::get('corpus.text_removed', ['name'=>$text_title]);
+                }
+                else{
+                    $error = true;
+                    $result['error_message'] = \Lang::get('record_not_exists');
+                }
+          }catch(\Exception $ex){
+                    $error = true;
+                    $status_code = $ex->getCode();
+                    $result['error_code'] = $ex->getCode();
+                    $result['error_message'] = $ex->getMessage();
+                }
+        }else{
+            $error =true;
+            $status_code = 400;
+            $result['message']='Request data is empty';
+        }
+        
+        if ($error) {
+                return Redirect::to('/corpus/text/')
+                               ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/corpus/text/')
+                  ->withSuccess($result['message']);
+        }
     }
 /*    
     public function tempInsertVepsianText()
