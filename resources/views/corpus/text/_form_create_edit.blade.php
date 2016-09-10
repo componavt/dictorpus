@@ -46,8 +46,8 @@
                 ['name' => 'event.recorders[]', 
                  'values' =>$recorder_values,
                  'value' => $recorder_value,
-                 'multiple' => true,
-                 'title' => trans('corpus.recorded')]) 
+                 'title' => trans('corpus.recorded'),
+                 'attributes'=>['multiple'=>'multiple']]) 
                 
 @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
     </div>
@@ -94,7 +94,7 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'source.pages', 
                  'value' => $source_pages_value,
-                 'size' => 15,
+                 'attributes'=>['size' => 15],
                  'title'=>trans('corpus.source_pages')])
             </div>
         </div>
@@ -106,7 +106,7 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'source.ieeh_archive_number1', 
                  'value' => $ieeh_archive_number1_value,
-                 'size' => 5,
+                 'attributes'=>['size' => 5],
                  'title' => trans('corpus.archive_krc') .': № '])
             </div>
             <div class="col-sm-1">
@@ -116,7 +116,7 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'source.ieeh_archive_number2', 
                  'value' => $ieeh_archive_number2_value,
-                 'size' => 5])
+                 'attributes'=>['size' => 5]])
             </div>
         </div>
         <?php $source_comment_value = ($action=='edit' && $text->source) ? ($text->source->comment) : NULL; ?>

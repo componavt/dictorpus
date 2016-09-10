@@ -25,32 +25,33 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_id', 
                 'value' => $search_id,
-                'size' => 3,
-                'placeholder' => 'ID'])
+                'attributes'=>['size' => 3,
+                               'placeholder' => 'ID']])
          @include('widgets.form._formitem_text', 
                 ['name' => 'informant_name', 
                 'value' => $informant_name,
-                'size' => 15,
-                'placeholder' => trans('corpus.informant_name')])
+                'attributes'=>['size' => 15,
+                               'placeholder' => trans('corpus.informant_name')]])
         @include('widgets.form._formitem_select', 
                 ['name' => 'birth_place_id', 
                  'values' => $place_values,
                  'value' => $birth_place_id,
-                 'placeholder' => trans('corpus.birth_place') ]) 
+                 'attributes' => ['placeholder' => trans('corpus.birth_place')]]) 
+                                  
         @include('widgets.form._formitem_text', 
                 ['name' => 'birth', 
                 'value' => $birth,
-                'size' => 4,
-                'placeholder' => trans('corpus.birth_year')])
-                 
+                'attributes'=>['size' => 4,
+                               'placeholder' => trans('corpus.birth_year')]])
+        <br>         
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         
         {{trans('messages.show_by')}}
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
                 'value' => $limit_num, 
-                'size' => 5,
-                'placeholder' => trans('messages.limit_num') ]) {{ trans('messages.records') }}
+                'attributes'=>['size' => 5,
+                               'placeholder' => trans('messages.limit_num')]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
@@ -63,6 +64,7 @@
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('corpus.birth_year') }}</th>
                 <th>{{ trans('corpus.birth_place') }}</th>
+                <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th colspan="2"></th>
                 @endif
@@ -78,6 +80,11 @@
                 <td>
                     @if ($informant->birth_place)
                         {{$informant->birth_place->placeString()}}
+                    @endif
+                </td>
+                <td>
+                    @if($informant->texts)
+                        {{ $informant->texts()->count() }}
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))

@@ -1,16 +1,17 @@
 @extends('layouts.master')
 
 @section('title')
-{{ trans('navigation.informants') }}
+{{ trans('navigation.places') }}
 @stop
 
 @section('content')
-        <h1>{{ trans('navigation.informants') }}</h1>
-        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/informant/') }}">{{ trans('messages.back_to_list') }}</a></p>
+        <h1>{{ trans('navigation.places') }}</h1>
+        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/place/') }}">{{ trans('messages.back_to_list') }}</a></p>
         
-        {!! Form::open(array('method'=>'POST', 'route' => array('informant.store'))) !!}
-        @include('corpus.informant._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
+        {!! Form::open(array('method'=>'POST', 'route' => array('place.store'))) !!}
+        @include('corpus.place._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
                                       'action' => 'create',
-                                      'place_values' => $place_values])
+                                      'region_values' => $region_values,
+                                      'district_values' => $district_values])
         {!! Form::close() !!}
 @stop

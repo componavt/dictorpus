@@ -6,12 +6,16 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
+
+use App\Models\Dict\Lang;
 
 use App\Models\Corpus\District;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\PlaceName;
+use App\Models\Corpus\Region;
 
 class PlaceController extends Controller
 {
@@ -20,12 +24,70 @@ class PlaceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $places = Place::orderBy('name_'.$locale)->get();
+        $place_name = $request->input('place_name');
+        $limit_num = (int)$request->input('limit_num');
+        $region_id = (int)$request->input('region_id');
+        $district_id = (int)$request->input('district_id');
+        $search_id = (int)$request->input('search_id');
+        $page = (int)$request->input('page');
 
-        return view('corpus.place.index')->with(array('places' => $places));
+        if (!$page) {
+            $page = 1;
+        }
+        
+        if (!$search_id) {
+            $search_id = NULL;
+        }
+        
+        if ($limit_num<=0) {
+            $limit_num = 10;
+        } elseif ($limit_num>1000) {
+            $limit_num = 1000;
+        }   
+
+        $locale = LaravelLocalization::getCurrentLocale();
+        $places = Place::orderBy('name_'.$locale);
+
+        if ($place_name) {
+            $places = $places->where(function($q) use ($place_name){
+                            $q->where('name_en','like', $place_name)
+                              ->orWhere('name_ru','like', $place_name);
+                    });
+        } 
+
+        if ($region_id) {
+            $places = $places->where('region_id',$region_id);
+        } 
+
+        if ($district_id) {
+            $places = $places->where('region_id',$district_id);
+        } 
+
+        if ($search_id) {
+            $places = $places->where('id',$search_id);
+        } 
+
+        $numAll = $places->count();
+
+        $places = $places->paginate($limit_num);
+        
+        $region_values = Region::getListWithQuantity('places');
+        $district_values = District::getListWithQuantity('places');
+
+        return view('corpus.place.index')
+                    ->with(['places' => $places,
+                            'limit_num' => $limit_num,
+                            'place_name' => $place_name,
+                            'region_id'=>$region_id,
+                            'district_id'=>$district_id,
+                            'search_id'=>$search_id,
+                            'page'=>$page,
+                            'region_values' => $region_values,
+                            'district_values' => $district_values,
+                            'numAll' => $numAll,
+                ]);
     }
 
     /**
@@ -35,7 +97,16 @@ class PlaceController extends Controller
      */
     public function create()
     {
-        //
+        $region_values = Region::getList();
+        $district_values = [NULL => ''] + District::getList();
+        $lang_values = Lang::getList([Lang::getIDByCode('en'), 
+                                      Lang::getIDByCode('ru')]);
+        
+        return view('corpus.place.create')
+                  ->with(['region_values' => $region_values,
+                          'district_values' => $district_values,
+                          'lang_values' => $lang_values,
+                         ]);
     }
 
     /**
@@ -46,7 +117,25 @@ class PlaceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+            'district_id' => 'numeric',
+            'region_id' => 'numeric',
+        ]);
+        
+        $place = Place::create($request->only('district_id','region_id','name_en','name_ru'));
+        
+        foreach ($request->other_names as $lang => $other_name) {
+            if ($other_name) {
+                $name= PlaceName::create(['place_id'=>$place->id, 
+                                          'lang_id'=>$lang,
+                                          'name'=>$other_name]);
+            }
+        }
+        
+        return Redirect::to('/corpus/place/?search_id='.$place->id)
+            ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
     /**
@@ -57,7 +146,7 @@ class PlaceController extends Controller
      */
     public function show($id)
     {
-        //
+        return Redirect::to('/corpus/place/');
     }
 
     /**
@@ -68,7 +157,23 @@ class PlaceController extends Controller
      */
     public function edit($id)
     {
-        //
+        $place = Place::find($id); 
+        $region_values = Region::getList();
+        $district_values = [NULL => ''] + District::getList();
+        $lang_values = Lang::getList([Lang::getIDByCode('en'), 
+                                      Lang::getIDByCode('ru')]);
+        
+        $other_names =[];
+        foreach($place->other_names as $other_name) {
+            $other_names[$other_name->lang_id] = $other_name->name;
+        }
+        
+        return view('corpus.place.edit')
+                  ->with(['region_values' => $region_values,
+                          'district_values' => $district_values,
+                          'lang_values' => $lang_values,
+                          'other_names' => $other_names,
+                          'place' => $place]);
     }
 
     /**
@@ -80,7 +185,30 @@ class PlaceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+            'district_id' => 'numeric',
+            'region_id' => 'numeric',
+        ]);
+        
+        $place = Place::find($id);
+        $place->fill($request->only('district_id','region_id','name_en','name_ru'))->save();
+        
+        foreach ($place->other_names as $other_name) {
+            $other_name->delete();
+        }
+        
+        foreach ($request->other_names as $lang => $other_name) {
+            if ($other_name) {
+                $name= PlaceName::create(['place_id'=>$place->id, 
+                                          'lang_id'=>$lang,
+                                          'name'=>$other_name]);
+            }
+        }
+        
+        return Redirect::to('/corpus/place/?search_id='.$place->id)
+            ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
     /**
@@ -91,7 +219,43 @@ class PlaceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $error = false;
+        $status_code = 200;
+        $result =[];
+        if($id != "" && $id > 0) {
+            try{
+                $place = Place::find($id);
+                if($place){
+                    $place_name = $place->name;
+                    foreach ($place->other_names as $other_name) {
+                       $other_name->delete();
+                    }
+                    $place->delete();
+                    $result['message'] = \Lang::get('corpus.place_removed', ['name'=>$place_name]);
+                }
+                else{
+                    $error = true;
+                    $result['error_message'] = \Lang::get('record_not_exists');
+                }
+          }catch(\Exception $ex){
+                    $error = true;
+                    $status_code = $ex->getCode();
+                    $result['error_code'] = $ex->getCode();
+                    $result['error_message'] = $ex->getMessage();
+                }
+        }else{
+            $error =true;
+            $status_code = 400;
+            $result['message']='Request data is empty';
+        }
+        
+        if ($error) {
+                return Redirect::to('/corpus/place/')
+                               ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/corpus/place/')
+                  ->withSuccess($result['message']);
+        }
     }
     
     /*    

@@ -15,7 +15,7 @@
                 ['name' => 'pos_id', 
                  'values' =>$pos_values,
                  'value' =>$pos_id,
-                 'placeholder' => trans('dict.select_pos') ]) 
+                 'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
 

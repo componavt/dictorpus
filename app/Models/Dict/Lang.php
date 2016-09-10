@@ -31,6 +31,18 @@ class Lang extends Model
         return $this->{$column};
     }
 
+    /** Gets ID of this lang by code, takes into account locale.
+     * 
+     * @return int
+     */
+    public static function getIDByCode($code) : Int
+    {
+        $lang = self::where('code',$code)->first();
+        if ($lang) {
+            return $lang->id;
+        }
+    }
+           
     /** Gets name of this lang by code, takes into account locale.
      * 
      * @return String
@@ -39,7 +51,7 @@ class Lang extends Model
     {
         $lang = self::where('code',$code)->first();
         if ($lang) {
-            return $lang->getNameAttribute();
+            return $lang->name;
         }
     }
            
@@ -65,7 +77,7 @@ class Lang extends Model
      * 
      * @return Array [1=>'Vepsian',..]
      */
-    public static function getList()
+    public static function getList($without=[])
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
@@ -73,7 +85,9 @@ class Lang extends Model
         
         $list = array();
         foreach ($languages as $row) {
-            $list[$row->id] = $row->name;
+            if (!in_array($row->id, $without)) {
+                $list[$row->id] = $row->name;
+            }
         }
         
         return $list;         

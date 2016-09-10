@@ -62,9 +62,7 @@ Route::group(
         Route::get('dict/wordform', 'Dict\WordformController@index');
 
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
-
-        Route::get('corpus/place', 'Corpus\PlaceController@index');
-        
+      
 //        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');       
 //        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
 //        Route::get('dict/lemma/meaning/meaning_text/tempJoinMeaningText', 'Dict\MeaningTextController@tempJoinMeaningText');        
@@ -91,5 +89,10 @@ Route::group(
                        ['names' => ['update' => 'informant.update',
                                     'store' => 'informant.store',
                                     'destroy' => 'informant.destroy']]);
+        
+        Route::resource('corpus/place', 'Corpus\PlaceController',
+                       ['names' => ['update' => 'place.update',
+                                    'store' => 'place.store',
+                                    'destroy' => 'place.destroy']]);
     }
 );

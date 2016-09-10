@@ -26,7 +26,13 @@ class District extends Model
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_" . $locale;
-        return $this->{$column};
+        $name = $this->{$column};
+        
+        if (!$name && $locale!='ru') {
+            $name = $this->name_ru;
+        }
+        
+        return $name;
     }
     
     /** Gets lang, takes into account locale.
@@ -38,5 +44,52 @@ class District extends Model
     public function region()
     {
         return $this->belongsTo(Region::class);
-    }    
+    } 
+    
+    // District __has_many__ Places
+    public function places()
+    {
+        return $this->hasMany(Place::class);
+    }
+
+    /** Gets list of districts
+     * 
+     * @return Array [1=>'Бабаевский р-н',..]
+     */
+    public static function getList()
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $districts = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($districts as $row) {
+            $list[$row->id] = $row->name;
+        }
+        
+        return $list;         
+    }
+    
+    /** Gets list of districts with quantity of relations $method_name
+     * 
+     * @return Array [1=>'Бабаевский р-н (199)',..]
+     */
+    public static function getListWithQuantity($method_name)
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $districts = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($districts as $row) {
+            $count=$row->$method_name()->count();
+            $name = $row->name;
+            if ($count) {
+                $name .= " ($count)";
+            }
+            $list[$row->id] = $name;
+        }
+        
+        return $list;         
+    }
 }

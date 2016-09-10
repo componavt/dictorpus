@@ -10,6 +10,7 @@ use App\Models\Corpus\Place;
 class PlaceName extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['place_id','lang_id','name'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 

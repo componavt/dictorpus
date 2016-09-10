@@ -13,6 +13,7 @@ use App\Models\Corpus\Region;
 class Place extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['district_id','region_id','name_en','name_ru'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -57,6 +58,12 @@ class Place extends Model
     public function informants()
     {
         return $this->hasMany(Informant::class,'birth_place_id');
+    }
+
+    // Place __has_many_through__ Texts
+    public function texts()
+    {
+        return $this->hasManyThrough(Text::class, Event::class);
     }
 
     /** Gets list of places

@@ -15,7 +15,7 @@
                 <h3>@include('widgets.form._formitem_text', 
                            ['name' => 'ex_meanings['.$meaning->id.'][meaning_n]', 
                             'value'=> $meaning->meaning_n,
-                            'size' => 2,
+                            'attributes'=>['size' => 2],
                             'tail' => trans('dict.meaning')])</h3>
                 <table>
                     <tr>
@@ -40,7 +40,7 @@
             <h3>@include('widgets.form._formitem_text', 
                        ['name' => 'new_meanings[0][meaning_n]', 
                         'value'=> $new_meaning_n,
-                        'size' => 2,
+                        'attributes'=>['size' => 2],
                         'tail' => trans('dict.meaning')])</h3>
             <table>
                 <tr>

@@ -1,27 +1,30 @@
-# Laravel PHP Framework
+# dictorpus
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+Dictorpus is a framework to work with multilingual text corpus integrated with machine-readable dictionary.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Open corpus of Veps and Karelian languages (todo link) is based on Dictorpus.
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## DICTionary + cORPUS = dictorpus
 
-## Official Documentation
+The corpus is a search information system, 
+including a set of texts written in some language in a digital form. 
+The corpus is a more than a simple set of texts, 
+the corpus should provide a search possibilities within these texts 
+and the possibility to add (bind) some information to these texts. 
+A search possibilities of the corpus are based on the electronic dictionary 
+(as part of the corpus) connected with the texts of the corpus.
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+## Developers
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+Dictorpus project involves researchers from institutes under the [Karelian Research Centre of RAS]().
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+This program is multi-licensed and may be used under the terms of any of the following licenses:
+  * EPL, Eclipse Public License V1.0 or later, http://www.eclipse.org/legal
+  * LGPL, GNU Lesser General Public License V3.0 or later, http://www.gnu.org/licenses/lgpl.html
+  * GPL, GNU General Public License V3.0 or later, http://www.gnu.org/licenses/gpl.html
+  * AL, Apache License, V2.0 or later, http://www.apache.org/licenses
+  * BSD, New BSD License, http://www.opensource.org/licenses/bsd-license
+
+(todo) See [documentation](https://github.com/componavt/dictorpus/wiki).

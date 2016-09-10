@@ -11,24 +11,29 @@ if(!isset($value))
     $value = null;
 if(!isset($title)) 
     $title = null;
-if(!isset($placeholder)) 
-    $placeholder = null;
 if(!isset($tail)) 
     $tail = null;
-if(!isset($size)) {
-    $size = null;
-    $class = 'form-control';
-} else {
-    $class = 'form-control-sized';
+
+if (!isset($attributes)) {
+    $attributes = [];
 }
+
+if(isset($attributes['size'])) {
+    $attributes['class'] = 'form-control-sized';
+    
+} elseif (!isset($attributes['class'])) {
+    $attributes['class'] = 'form-control';
+}
+/*
+if(!isset($attributes['placeholder'])) {
+    $attributes['placeholder'] = $title;
+}*/    
 ?>
 <div class="form-group {!! $errors->has($name) ? 'has-error' : null !!}">
     @if($title)
 	<label for="{{$name}}">{{ $title }}&nbsp;</label>
     @endif
-    {!! Form::text($name, $value, array('placeholder' =>  $placeholder,
-                                        'size' => $size,
-                                        'class' => $class)) !!}
+    {!! Form::text($name, $value, $attributes) !!}
     {{ $tail }}                                    
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

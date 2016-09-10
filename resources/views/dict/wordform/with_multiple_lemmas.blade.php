@@ -18,12 +18,12 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'wordform_name', 
                 'value' => $wordform_name,
-                'placeholder'=>trans('dict.wordform')])
+                'attributes'=>['placeholder'=>trans('dict.wordform')]])
         @include('widgets.form._formitem_select', 
                 ['name' => 'lang_id', 
                  'values' =>$lang_values,
                  'value' =>$lang_id,
-                 'placeholder' => trans('dict.select_lang') ]) 
+                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
         

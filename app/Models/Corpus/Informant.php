@@ -5,7 +5,9 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Models\Corpus\Event;
 use App\Models\Corpus\Place;
+use App\Models\Corpus\Text;
 
 class Informant extends Model
 {
@@ -50,7 +52,19 @@ class Informant extends Model
     public function birth_place()
     {
         return $this->belongsTo(Place::class);//,'birth_place_id'
-    }    
+    }  
+    
+    // Informant __has_many__ Events
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
+    
+    // Informant __has_many_through__ Texts
+    public function texts()
+    {
+        return $this->hasManyThrough(Text::class, Event::class);
+    }
     
     /** Gets list of informant
      * 

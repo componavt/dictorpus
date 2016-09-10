@@ -65,6 +65,7 @@ class Corpus extends Model
         
         return $list;         
     }
+    
     /** Gets list of corpuses
      * 
      * @return Array [1=>'Dialectal texts (199)',..]

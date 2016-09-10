@@ -25,18 +25,18 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'text_title', 
                 'value' => $text_title,
-                'size' => 15,
-                'placeholder' => trans('corpus.title')])
+                'attributes'=>['size' => 15,
+                               'placeholder' => trans('corpus.title')]])
         @include('widgets.form._formitem_select', 
                 ['name' => 'lang_id', 
                  'values' => $lang_values,
                  'value' => $lang_id,
-                 'placeholder' => trans('corpus.select_lang') ]) 
+                 'attributes'=>['placeholder' => trans('dict.select_lang')] ]) 
         @include('widgets.form._formitem_select', 
                 ['name' => 'corpus_id', 
                  'values' => $corpus_values,
                  'value' => $corpus_id,
-                 'placeholder' => trans('corpus.select_corpus') ]) 
+                 'attributes'=>['placeholder' => trans('corpus.select_corpus') ]]) 
                  
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         
@@ -44,8 +44,8 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
                 'value' => $limit_num, 
-                'size' => 5,
-                'placeholder' => trans('messages.limit_num') ]) {{ trans('messages.records') }}
+                'attributes'=>['size' => 5,
+                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>

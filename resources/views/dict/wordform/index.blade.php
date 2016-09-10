@@ -16,25 +16,25 @@
         !!}
         @include('widgets.form._formitem_text', 
                 ['name' => 'wordform_name', 
-                'size' => 15,
                 'value' => $wordform_name,
-                'placeholder'=>trans('dict.wordform')])
+                'attributes'=>['size' => 15,
+                               'placeholder'=>trans('dict.wordform')]])
         @include('widgets.form._formitem_select', 
                 ['name' => 'lang_id', 
                  'values' =>$lang_values,
                  'value' =>$lang_id,
-                 'placeholder' => trans('dict.select_lang') ]) 
+                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
         @include('widgets.form._formitem_select', 
                 ['name' => 'pos_id', 
                  'values' =>$pos_values,
                  'value' =>$pos_id,
-                 'placeholder' => trans('dict.select_pos') ]) 
+                 'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
                 'value' => $limit_num, 
-                'size' => 5,
-                'placeholder' => trans('messages.limit_num') ]) {{ trans('messages.records') }}
+                'attributes'=>['size' => 5,
+                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
