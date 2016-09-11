@@ -16,7 +16,7 @@ A search possibilities of the corpus are based on the electronic dictionary
 
 ## Developers
 
-Dictorpus project involves researchers from institutes under the [Karelian Research Centre of RAS]().
+Dictorpus project involves researchers from institutes under the [Karelian Research Centre of RAS](http://www.krc.karelia.ru/index.php?&plang=e).
 
 ## License
 

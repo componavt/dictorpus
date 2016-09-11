@@ -6,7 +6,9 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
+                                @if (User::checkAccess('admin'))
                                 <li><a href="{{ url('/user') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('navigation.users') }}</a></li>
+                                @endif
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('navigation.logout') }}</a></li>
                             </ul>
                     @else
