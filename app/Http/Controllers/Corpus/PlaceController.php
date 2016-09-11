@@ -52,7 +52,11 @@ class PlaceController extends Controller
 
         if ($place_name) {
             $places = $places->where(function($q) use ($place_name){
-                            $q->where('name_en','like', $place_name)
+                            $q->whereIn('id',function($query) use ($place_name){
+                                $query->select('place_id')
+                                ->from(with(new PlaceName)->getTable())
+                                ->where('name','like', $place_name);
+                            })->orWhere('name_en','like', $place_name)
                               ->orWhere('name_ru','like', $place_name);
                     });
         } 

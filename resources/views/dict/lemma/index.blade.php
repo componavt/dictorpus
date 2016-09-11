@@ -26,6 +26,11 @@
                              'class' => 'form-inline']) 
         !!}
         @include('widgets.form._formitem_text', 
+                ['name' => 'search_id', 
+                'value' => $search_id,
+                'attributes'=>['size' => 3,
+                               'placeholder' => 'ID']])
+        @include('widgets.form._formitem_text', 
                 ['name' => 'lemma_name', 
                 'value' => $lemma_name,
                 'attributes'=>['size' => 15,
@@ -40,7 +45,7 @@
                  'values' =>$pos_values,
                  'value' =>$pos_id,
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
-                 
+        <br>         
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         
         {{trans('messages.show_by')}}

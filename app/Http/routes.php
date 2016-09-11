@@ -85,6 +85,11 @@ Route::group(
                                     'store' => 'text.store',
                                     'destroy' => 'text.destroy']]);
         
+        Route::resource('corpus/district', 'Corpus\DistrictController',
+                       ['names' => ['update' => 'district.update',
+                                    'store' => 'district.store',
+                                    'destroy' => 'district.destroy']]);
+
         Route::resource('corpus/informant', 'Corpus\InformantController',
                        ['names' => ['update' => 'informant.update',
                                     'store' => 'informant.store',
@@ -94,5 +99,10 @@ Route::group(
                        ['names' => ['update' => 'place.update',
                                     'store' => 'place.store',
                                     'destroy' => 'place.destroy']]);
+        
+        Route::resource('corpus/region', 'Corpus\RegionController',
+                       ['names' => ['update' => 'region.update',
+                                    'store' => 'region.store',
+                                    'destroy' => 'region.destroy']]);
     }
 );

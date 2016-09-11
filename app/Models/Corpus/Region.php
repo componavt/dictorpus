@@ -8,6 +8,7 @@ use LaravelLocalization;
 class Region extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['name_en','name_ru'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 

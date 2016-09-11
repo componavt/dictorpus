@@ -47,9 +47,14 @@ class LemmaController extends Controller
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
         $page = (int)$request->input('page');
+        $search_id = (int)$request->input('search_id');
 
         if (!$page) {
             $page = 1;
+        }
+        
+        if (!$search_id) {
+            $search_id = NULL;
         }
         
         if ($limit_num<=0) {
@@ -72,6 +77,10 @@ class LemmaController extends Controller
             $lemmas = $lemmas->where('pos_id',$pos_id);
         } 
          
+        if ($search_id) {
+            $lemmas = $lemmas->where('id',$search_id);
+        } 
+
         $numAll = $lemmas->count();
 
         $lemmas = $lemmas
@@ -98,6 +107,7 @@ class LemmaController extends Controller
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
                                'numAll' => $numAll,
+                               'search_id'=>$search_id,
                               )
                         );
     }

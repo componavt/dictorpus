@@ -191,12 +191,14 @@ INSERT INTO `genres` VALUES (10,'Texts for children','тексты для дет
 
 -- REGION ---------------------------------------
 -- php artisan make:model 'Models\Corpus\Region' --migration
+-- php artisan make:controller 'Corpus\RegionController' --resource
 INSERT INTO `regions` VALUES (1,'Vologda Oblast','Вологодская обл.');
 INSERT INTO `regions` VALUES (2,'Republic of Karelia','Республика Карелия');
 INSERT INTO `regions` VALUES (3,'Leningrad Oblast','Ленинградская обл.');
 
 -- DISTRICT ---------------------------------------
 -- php artisan make:model 'Models\Corpus\District' --migration
+-- php artisan make:controller 'Corpus\DistrictController' --resource
 INSERT INTO `districts` VALUES (1,1,'Vytegorsky District','Вытегорский р-н');
 INSERT INTO `districts` VALUES (4,1,'Babayevsky District','Бабаевский р-н');
 INSERT INTO `districts` VALUES (5,3,'Volosovsky District','Волосовский р-н');

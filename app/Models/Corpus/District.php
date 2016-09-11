@@ -10,6 +10,7 @@ use App\Models\Corpus\Region;
 class District extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['region_id','name_en','name_ru'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 

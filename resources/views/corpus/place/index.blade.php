@@ -31,7 +31,7 @@
                 ['name' => 'place_name', 
                 'value' => $place_name,
                 'attributes'=>['size' => 15,
-                               'placeholder' => trans('corpus.name')]])
+                               'placeholder' => trans('corpus.title')]])
         @include('widgets.form._formitem_select', 
                 ['name' => 'region_id', 
                  'values' => $region_values,
