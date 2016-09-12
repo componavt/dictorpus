@@ -136,7 +136,7 @@ class RegionController extends Controller
         $region->fill($request->all())->save();
         
         return Redirect::to('/corpus/region/?search_id='.$region->id)
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
     /**

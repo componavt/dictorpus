@@ -7,18 +7,22 @@
   * Updated: 24.08.2016 by Nataly Krizhanovsky
 */?>
 <?php
-if(! isset($value)) $value = null;
+if(! isset($value)) {
+    $values = [];
+} elseif(!is_array($value)) {
+    $values[$value] = $title;
+} else {
+    $values = $value;
+}   
 if(! isset($checked)) $checked = null;
 if(! isset($title)) $title = null;
-if(! isset($tail)) $tail = null;
 ?>
 <div class="{!! $errors->has($name) ? 'has-error' : null !!}">
-    @if($title)
+    @foreach($values as $value=>$title)
+        @if($title)
 	<label for="{{$name}}">{{ $title }}</label>
-    @endif
+        @endif
     {!! Form::checkbox($name, $value, $checked) !!}
-    @if($tail)
-	<label for="{{$name}}">{{ $tail }}</label>
-    @endif
+    @endforeach 
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

@@ -104,5 +104,14 @@ Route::group(
                        ['names' => ['update' => 'region.update',
                                     'store' => 'region.store',
                                     'destroy' => 'region.destroy']]);
+        
+        Route::resource('role', 'RoleController',
+                       ['names' => ['update' => 'role.update',
+                                    'store' => 'role.store',
+                                    'destroy' => 'role.destroy']]);
+        
+        Route::resource('user', 'UserController',
+                       ['names' => ['update' => 'user.update',
+                                    'destroy' => 'user.destroy']]);
     }
 );

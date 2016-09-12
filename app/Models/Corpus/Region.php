@@ -17,7 +17,7 @@ class Region extends Model
         parent::boot();
     }
 
-    /** Gets name of this corpus, takes into account locale.
+    /** Gets name of this region, takes into account locale.
      * 
      * @return String
      */

@@ -187,7 +187,7 @@ class InformantController extends Controller
         $informant->fill($request->all())->save();
         
         return Redirect::to('/corpus/informant/?search_id='.$informant->id)
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
     /**

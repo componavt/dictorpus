@@ -289,7 +289,7 @@ class LemmaController extends Controller
                 }
                 else{
                     $error = true;
-                    $result['error_message'] = \Lang::get('record_not_exists');
+                    $result['error_message'] = \Lang::get('messages.record_not_exists');
                 }
           }catch(\Exception $ex){
                     $error = true;

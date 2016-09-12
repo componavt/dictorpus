@@ -212,7 +212,7 @@ class PlaceController extends Controller
         }
         
         return Redirect::to('/corpus/place/?search_id='.$place->id)
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
     /**

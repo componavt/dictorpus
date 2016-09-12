@@ -167,7 +167,7 @@ class DistrictController extends Controller
         $district->fill($request->all())->save();
         
         return Redirect::to('/corpus/district/?search_id='.$district->id)
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
     /**

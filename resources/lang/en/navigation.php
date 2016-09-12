@@ -26,6 +26,7 @@ return [
     'places' => 'Settlements',
     'regions' => 'Regions',
     'references' => 'Reference tables',
+    'roles' => 'roles',
     'texts' => 'Texts',
     'wordforms' => 'Wordforms',
     'users' => 'Users',

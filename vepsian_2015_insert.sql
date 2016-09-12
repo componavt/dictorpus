@@ -626,3 +626,5 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- select t1.id, t1.source_id, t2.source_id from text as t1, text as t2, text_pair where text_pair.text1_id=t1.id and text_pair.text2_id=t2.id and t1.source_id<>t2.source_id;
 
 -- php artisan make:migration create_genre_text_table
+
+-- php artisan make:model 'Models\Role'
