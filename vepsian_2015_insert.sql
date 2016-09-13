@@ -628,3 +628,9 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- php artisan make:migration create_genre_text_table
 
 -- php artisan make:model 'Models\Role'
+
+-- RELATION ---------------------------------------
+-- php artisan make:model 'Models\Dict\Relation' --migration
+-- php artisan make:controller 'Dict\RelationController' --resource
+
+-- php artisan make:migration create_lemma_relation_table

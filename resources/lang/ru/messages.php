@@ -16,6 +16,7 @@ return [
     'confirm_delete' => 'Вы хотите удалить эту запись?',
     'create_new_f' => 'Создать новую',
     'create_new_m' => 'Создать новый',
+    'create_new_g' => 'Создать новое',
     'created_success' => 'Создание успешно завершено',
     'delete' => 'удалить',
     'delete_confirmation' => 'Подтверждение удаления',

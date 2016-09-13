@@ -25,6 +25,7 @@ return [
     'parts_of_speech' => 'Parts of speech',
     'places' => 'Settlements',
     'regions' => 'Regions',
+    'relations' => 'Relations',
     'references' => 'Reference tables',
     'roles' => 'roles',
     'texts' => 'Texts',

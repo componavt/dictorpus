@@ -1,0 +1,14 @@
+        @include('widgets.form._formitem_text', 
+                ['name' => 'name_en', 
+                 'title'=>trans('dict.name').' '.trans('messages.in_english')])
+                 
+        @include('widgets.form._formitem_text', 
+                ['name' => 'name_ru', 
+                 'title'=>trans('dict.name').' '.trans('messages.in_russian')])
+                 
+        @include('widgets.form._formitem_select', 
+                ['name' => 'reverse_relation_id', 
+                 'values' =>$relation_values,
+                 'title' => trans('dict.reverse_relation')]) 
+
+@include('widgets.form._formitem_btn_submit', ['title' => $submit_title])

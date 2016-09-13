@@ -80,6 +80,11 @@ Route::group(
                                     'store' => 'lemma.store',
                                     'destroy' => 'lemma.destroy']]);
 
+        Route::resource('dict/relation', 'Dict\RelationController',
+                       ['names' => ['update' => 'relation.update',
+                                    'store' => 'relation.store',
+                                    'destroy' => 'relation.destroy']]);
+        
         Route::resource('corpus/text', 'Corpus\TextController',
                        ['names' => ['update' => 'text.update',
                                     'store' => 'text.store',

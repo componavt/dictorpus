@@ -25,6 +25,7 @@ return [
     'parts_of_speech' => 'Части речи',
     'places' => 'Населенные пункты',
     'regions' => 'Регионы',
+    'relations' => 'Семантические отношения',
     'references' => 'Cправочники',
     'roles' => 'Роли',
     'texts' => 'Тексты',

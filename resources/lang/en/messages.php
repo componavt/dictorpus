@@ -16,6 +16,7 @@ return [
     'confirm_delete' => 'Do you want to delete this item?',
     'create_new_f' => 'Create a new',
     'create_new_m' => 'Create a new',
+    'create_new_g' => 'Create a new',
     'created_success' => 'Successfully created',
     'delete' => 'delete',
     'delete_confirmation' => 'Delete confirmation',

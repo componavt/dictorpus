@@ -27,8 +27,9 @@ return [
     'password_updated' => 'Password successfully updated.',
     
     'perm.admin' => 'Super rights',
-    'perm.edit.dict'=> 'Dictionary editing',
-    'perm.edit.corpus'=> 'Corpus editing',
+    'perm.corpus.edit'=> 'Corpus editing',
+    'perm.dict.edit'=> 'Dictionary editing',
+    'perm.ref.edit'=> 'References editing',
     'permissions' => 'Permissions',
     
     'register' => 'Register',

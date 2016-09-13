@@ -12,9 +12,14 @@ use App\Models\Role;
 class User extends EloquentUser
 {
     protected $fillable = ['email','first_name','last_name','permissions'];
-    protected $perm_list = ['admin','edit.dict','edit.corpus'];
+    protected $perm_list = ['admin','dict.edit','corpus.edit','ref.edit'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
+
+    protected $revisionEnabled = true;
+    protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
+    protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
+    protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
 
     public static function boot()
     {

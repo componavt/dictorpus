@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRegionsTable extends Migration
+class CreateRelationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,15 @@ class CreateRegionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('regions', function (Blueprint $table) {
+        Schema::create('relations', function (Blueprint $table) {
             //$table->increments('id');
             $table->tinyInteger('id')->unsigned()->autoIncrement(); // MySQL smallint(6)
             
             $table->string('name_en', 150);
             $table->string('name_ru', 150);
+
+            $table->tinyInteger('reverse_relation_id')->unsigned()->nullable(); 
+            $table->foreign('reverse_relation_id')->references('id')->on('relations');
             //$table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ class CreateRegionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('regions');
+        Schema::drop('relations');
     }
 }
