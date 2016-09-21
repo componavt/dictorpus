@@ -229,7 +229,8 @@ class AuthController extends Controller
 
         $sent = Mail::send('mail.account_reminder', compact('sentuser', 'code'), function($m) use ($sentuser)
         {
-            $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
+//            $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
+            $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
             $m->to($sentuser->email)->subject(\Lang::get('auth.password_reset'));
         });
         if ($sent === 0)
