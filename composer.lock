@@ -4,75 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fc35fd9e24a535e30da2def62ac68ab5",
-    "content-hash": "4ec6052958f8226332e1191b198a6623",
+    "hash": "411632fce8b8946029c8230cbbfe7e14",
+    "content-hash": "cf79fd6de719697aeb9149d9b5be3f0f",
     "packages": [
         {
-            "name": "barryvdh/laravel-debugbar",
-            "version": "V2.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "ecd1ce5c4a827e2f6a8fb41bcf67713beb1c1cbd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/ecd1ce5c4a827e2f6a8fb41bcf67713beb1c1cbd",
-                "reference": "ecd1ce5c4a827e2f6a8fb41bcf67713beb1c1cbd",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "5.1.*|5.2.*|5.3.*",
-                "maximebf/debugbar": "~1.11.0|~1.12.0",
-                "php": ">=5.5.9",
-                "symfony/finder": "~2.7|~3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Barryvdh\\Debugbar\\": "src/"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Barry vd. Heuvel",
-                    "email": "barryvdh@gmail.com"
-                }
-            ],
-            "description": "PHP Debugbar integration for Laravel",
-            "keywords": [
-                "debug",
-                "debugbar",
-                "laravel",
-                "profiler",
-                "webprofiler"
-            ],
-            "time": "2016-07-29 15:00:36"
-        },
-        {
             "name": "cartalyst/sentinel",
-            "version": "v2.0.12",
+            "version": "v2.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cartalyst/sentinel.git",
-                "reference": "5054be235f5501c5f05aebbacdfd1971fb64b52e"
+                "reference": "04e9e55b4642e18d3404af458b3dae0af5238592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cartalyst/sentinel/zipball/5054be235f5501c5f05aebbacdfd1971fb64b52e",
-                "reference": "5054be235f5501c5f05aebbacdfd1971fb64b52e",
+                "url": "https://api.github.com/repos/cartalyst/sentinel/zipball/04e9e55b4642e18d3404af458b3dae0af5238592",
+                "reference": "04e9e55b4642e18d3404af458b3dae0af5238592",
                 "shasum": ""
             },
             "require": {
@@ -114,28 +60,9 @@
             ],
             "authors": [
                 {
-                    "name": "Ben Corlett",
-                    "email": "ben.corlett@cartalyst.com",
-                    "role": "Developer"
-                },
-                {
                     "name": "Cartalyst LLC",
-                    "email": "help@cartalyst.com"
-                },
-                {
-                    "name": "Bruno Gaspar",
-                    "email": "bruno.gaspar@cartalyst.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dan Syme",
-                    "email": "dan.syme@cartalyst.com",
-                    "role": "Creator & Designer"
-                },
-                {
-                    "name": "Suhayb Wardany",
-                    "email": "su.wardany@cartalyst.com",
-                    "role": "Developer"
+                    "email": "help@cartalyst.com",
+                    "homepage": "https://cartalyst.com"
                 }
             ],
             "description": "PHP 5.4+ Fully-featured Authentication & Authorization System",
@@ -148,7 +75,7 @@
                 "php",
                 "security"
             ],
-            "time": "2016-05-13 16:34:19"
+            "time": "2016-09-05 15:16:16"
         },
         {
             "name": "cartalyst/support",
@@ -520,16 +447,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.2.44",
+            "version": "v5.2.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f24b7acfb494437ef00bdd062bed61eb21535546"
+                "reference": "2a79f920d5584ec6df7cf996d922a742d11095d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f24b7acfb494437ef00bdd062bed61eb21535546",
-                "reference": "f24b7acfb494437ef00bdd062bed61eb21535546",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/2a79f920d5584ec6df7cf996d922a742d11095d1",
+                "reference": "2a79f920d5584ec6df7cf996d922a742d11095d1",
                 "shasum": ""
             },
             "require": {
@@ -646,7 +573,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-08-23 13:03:29"
+            "time": "2016-08-26 11:44:52"
         },
         {
             "name": "laravelcollective/html",
@@ -786,78 +713,17 @@
             "time": "2016-08-10 08:55:11"
         },
         {
-            "name": "maximebf/debugbar",
-            "version": "v1.12.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/maximebf/php-debugbar.git",
-                "reference": "e634fbd32cd6bc3fa0e8c972b52d4bf49bab3988"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/e634fbd32cd6bc3fa0e8c972b52d4bf49bab3988",
-                "reference": "e634fbd32cd6bc3fa0e8c972b52d4bf49bab3988",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0",
-                "psr/log": "^1.0",
-                "symfony/var-dumper": "^2.6|^3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0|^5.0"
-            },
-            "suggest": {
-                "kriswallsmith/assetic": "The best way to manage assets",
-                "monolog/monolog": "Log using Monolog",
-                "predis/predis": "Redis storage"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.12-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "DebugBar\\": "src/DebugBar/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Maxime Bouroumeau-Fuseau",
-                    "email": "maxime.bouroumeau@gmail.com",
-                    "homepage": "http://maximebf.com"
-                },
-                {
-                    "name": "Barry vd. Heuvel",
-                    "email": "barryvdh@gmail.com"
-                }
-            ],
-            "description": "Debug bar in the browser for php application",
-            "homepage": "https://github.com/maximebf/php-debugbar",
-            "keywords": [
-                "debug",
-                "debugbar"
-            ],
-            "time": "2016-05-15 13:11:34"
-        },
-        {
             "name": "mcamara/laravel-localization",
-            "version": "1.1.5",
+            "version": "1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mcamara/laravel-localization.git",
-                "reference": "72d5e8bf48d10e59a0c47a708e28da9b3da734fe"
+                "reference": "ff6d398d8437d0169f1d3b97e4244552a5abcced"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mcamara/laravel-localization/zipball/72d5e8bf48d10e59a0c47a708e28da9b3da734fe",
-                "reference": "72d5e8bf48d10e59a0c47a708e28da9b3da734fe",
+                "url": "https://api.github.com/repos/mcamara/laravel-localization/zipball/ff6d398d8437d0169f1d3b97e4244552a5abcced",
+                "reference": "ff6d398d8437d0169f1d3b97e4244552a5abcced",
                 "shasum": ""
             },
             "require": {
@@ -892,7 +758,7 @@
                 "localization",
                 "php"
             ],
-            "time": "2016-08-05 08:13:21"
+            "time": "2016-08-25 18:28:07"
         },
         {
             "name": "monolog/monolog",
@@ -1065,16 +931,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "47b254ea51f1d6d5dc04b9b299e88346bf2369e3"
+                "reference": "4dd659edadffdc2143e4753df655d866dbfeedf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/47b254ea51f1d6d5dc04b9b299e88346bf2369e3",
-                "reference": "47b254ea51f1d6d5dc04b9b299e88346bf2369e3",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/4dd659edadffdc2143e4753df655d866dbfeedf0",
+                "reference": "4dd659edadffdc2143e4753df655d866dbfeedf0",
                 "shasum": ""
             },
             "require": {
@@ -1112,7 +978,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2016-04-19 13:41:41"
+            "time": "2016-09-16 12:04:44"
         },
         {
             "name": "paragonie/random_compat",
@@ -1163,78 +1029,17 @@
             "time": "2016-03-18 20:34:03"
         },
         {
-            "name": "php-console/laravel-service-provider",
-            "version": "5.1",
+            "name": "psr/log",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/barbushin/php-console-laravel.git",
-                "reference": "762cddcc6c17c08a2e499a1bd0dd575899fbec06"
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "5277094ed527a1c4477177d102fe4c53551953e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barbushin/php-console-laravel/zipball/762cddcc6c17c08a2e499a1bd0dd575899fbec06",
-                "reference": "762cddcc6c17c08a2e499a1bd0dd575899fbec06",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "5.*",
-                "php": ">=5.3.0",
-                "php-console/php-console": ">=3.1.4 <4.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "PhpConsole\\Laravel\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD 3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Barbushin Sergey",
-                    "email": "barbushin@gmail.com",
-                    "homepage": "http://linkedin.com/in/barbushin"
-                },
-                {
-                    "name": "Wemerson Januario",
-                    "email": "wemerson.januario@gmail.com",
-                    "homepage": "http://linkedin.com/in/wemersonjanuario",
-                    "role": "Laravel 5 support"
-                }
-            ],
-            "description": "Laravel service provider to handle PHP errors, dump variables, execute PHP code remotely in Google Chrome",
-            "homepage": "https://github.com/barbushin/php-console-laravel",
-            "keywords": [
-                "chrome",
-                "debug",
-                "error handler",
-                "errors",
-                "google chrome",
-                "laravel",
-                "php",
-                "php-console"
-            ],
-            "time": "2015-06-30 08:05:02"
-        },
-        {
-            "name": "php-console/php-console",
-            "version": "3.1.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/barbushin/php-console.git",
-                "reference": "07801c32ea32e4d57ddf1c6b9cf98ff7f2982542"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/barbushin/php-console/zipball/07801c32ea32e4d57ddf1c6b9cf98ff7f2982542",
-                "reference": "07801c32ea32e4d57ddf1c6b9cf98ff7f2982542",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/5277094ed527a1c4477177d102fe4c53551953e0",
+                "reference": "5277094ed527a1c4477177d102fe4c53551953e0",
                 "shasum": ""
             },
             "require": {
@@ -1243,135 +1048,12 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "1.0.x-dev"
                 }
             },
-            "autoload": {
-                "psr-0": {
-                    "PhpConsole": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD 3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sergey Barbushin",
-                    "email": "barbushin@gmail.com",
-                    "homepage": "http://linkedin.com/in/barbushin"
-                }
-            ],
-            "description": "Server side PHP library for Google Chrome extension \"PHP Console\".",
-            "homepage": "https://github.com/barbushin/php-console",
-            "keywords": [
-                "chrome",
-                "debug",
-                "error handler",
-                "errors",
-                "google chrome",
-                "php"
-            ],
-            "time": "2016-02-19 16:00:24"
-        },
-        {
-            "name": "php-mime-mail-parser/php-mime-mail-parser",
-            "version": "2.4.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-mime-mail-parser/php-mime-mail-parser.git",
-                "reference": "34f177f1a932e79327d336988065251b6ca2221a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-mime-mail-parser/php-mime-mail-parser/zipball/34f177f1a932e79327d336988065251b6ca2221a",
-                "reference": "34f177f1a932e79327d336988065251b6ca2221a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mailparse": "*",
-                "php": "^5.4.0 || ^7.0"
-            },
-            "replace": {
-                "exorus/php-mime-mail-parser": "*",
-                "messaged/php-mime-mail-parser": "*"
-            },
-            "require-dev": {
-                "phpunit/php-token-stream": "^1.3.0",
-                "phpunit/phpunit": "^4.0 || ^5.0",
-                "satooshi/php-coveralls": "0.*",
-                "squizlabs/php_codesniffer": "2.*"
-            },
-            "type": "library",
             "autoload": {
                 "psr-4": {
-                    "PhpMimeMailParser\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "bucabay",
-                    "email": "gabe@fijiwebdesign.com",
-                    "homepage": "http://www.fijiwebdesign.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "eXorus",
-                    "email": "exorus.spam@gmail.com",
-                    "homepage": "https://github.com/eXorus/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "M.Valinskis",
-                    "email": "M.Valins@gmail.com",
-                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
-                    "role": "Developer"
-                },
-                {
-                    "name": "eugene.emmett.wood",
-                    "email": "gene_w@cementhorizon.com",
-                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
-                    "role": "Developer"
-                },
-                {
-                    "name": "alknetso",
-                    "email": "alkne@gmail.com",
-                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Fully Tested Mailparse Extension Wrapper for PHP 5.4+",
-            "homepage": "https://github.com/php-mime-mail-parser/php-mime-mail-parser",
-            "keywords": [
-                "MimeMailParser",
-                "mail",
-                "mailparse",
-                "mime"
-            ],
-            "time": "2016-08-17 10:12:51"
-        },
-        {
-            "name": "psr/log",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Psr\\Log\\": ""
+                    "Psr\\Log\\": "Psr/Log/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1385,12 +1067,13 @@
                 }
             ],
             "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
             "keywords": [
                 "log",
                 "psr",
                 "psr-3"
             ],
-            "time": "2012-12-21 11:40:51"
+            "time": "2016-09-19 16:02:08"
         },
         {
             "name": "psy/psysh",
@@ -1636,7 +1319,7 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -2346,16 +2029,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v2.3.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "9ca5644c536654e9509b9d257f53c58630eb2a6a"
+                "reference": "3cc116adbe4b11be5ec557bf1d24dc5e3a21d18c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/9ca5644c536654e9509b9d257f53c58630eb2a6a",
-                "reference": "9ca5644c536654e9509b9d257f53c58630eb2a6a",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/3cc116adbe4b11be5ec557bf1d24dc5e3a21d18c",
+                "reference": "3cc116adbe4b11be5ec557bf1d24dc5e3a21d18c",
                 "shasum": ""
             },
             "require": {
@@ -2367,7 +2050,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -2392,7 +2075,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2016-06-14 14:14:52"
+            "time": "2016-09-01 10:05:43"
         }
     ],
     "packages-dev": [
@@ -3670,16 +3353,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.1.3",
+            "version": "v3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "1819adf2066880c7967df7180f4f662b6f0567ac"
+                "reference": "f291ed25eb1435bddbe8a96caaef16469c2a092d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/1819adf2066880c7967df7180f4f662b6f0567ac",
-                "reference": "1819adf2066880c7967df7180f4f662b6f0567ac",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/f291ed25eb1435bddbe8a96caaef16469c2a092d",
+                "reference": "f291ed25eb1435bddbe8a96caaef16469c2a092d",
                 "shasum": ""
             },
             "require": {
@@ -3715,7 +3398,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-17 14:02:08"
+            "time": "2016-09-02 02:12:52"
         },
         {
             "name": "webmozart/assert",
