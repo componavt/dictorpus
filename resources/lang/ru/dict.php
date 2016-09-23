@@ -36,6 +36,7 @@ return [
     'pos_category_3' => 'Другие',
     'pos_list' => 'Cписок частей речи',
     'relation_list' => 'Cписок семантических отношений',
+    'relations' => 'Cемантические отношения',
     'reverse_relation' => 'Обратное отношение',
     'select_lang' => 'Выберите язык',
     'select_pos' => 'Выберите часть речи',

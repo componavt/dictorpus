@@ -41,6 +41,10 @@ Route::group(
         Route::get('reset', 'AuthController@resetOrder');
         // Пользователь заполнил и отправил форму с E-Mail в запросе на сброс пароля
         Route::post('reset', 'AuthController@resetOrderProcess');
+//        Route::post('reset', function(){
+//	return  view('welcome');
+//});
+
         // Пользователю пришло письмо со ссылкой на эту страницу для ввода нового пароля
         Route::get('reset/{id}/{code}', 'AuthController@resetComplete');
         // Пользователь ввел новый пароль и отправил.
@@ -51,6 +55,7 @@ Route::group(
 
 
         Route::get('/home', 'HomeController@index');
+	Route::get('/dumps','DumpDownloadController@index');
         
         Route::get('dict/dialect', 'Dict\DialectController@index');
         Route::get('dict/gram', 'Dict\GramController@index');

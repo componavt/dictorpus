@@ -36,6 +36,7 @@ return [
     'pos_category_3' => 'Other',
     'pos_list' => 'List of parts of speech',
     'relation_list' => 'List of semantic relations',
+    'relations' => 'Semantic relations',
     'reverse_relation' => 'reverse relation',
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',

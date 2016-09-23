@@ -31,6 +31,17 @@
                     </tr>
                 @endforeach
                 </table>
+
+                {{ trans('dict.relations') }}
+                @include('widgets.form._formitem_select', 
+                        ['name' => 'relations[]',
+                         'attributes'=>['multiple'=>'multiple',
+                                        'class'=>'relation-multiple-select']
+                        ])  
+
+ {{--
+                         'values' => $all_meanings, 
+                         'value' => $meaning->relation_list,    --}}   
             </div>
             @endforeach
         @endif

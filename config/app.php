@@ -163,8 +163,8 @@ return [
         
         Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class,
         
-        PhpConsole\Laravel\ServiceProvider::class,  // debug
-        Barryvdh\Debugbar\ServiceProvider::class,   //composer require barryvdh/laravel-debugbar  // also debugger
+//        PhpConsole\Laravel\ServiceProvider::class,  // debug
+//        Barryvdh\Debugbar\ServiceProvider::class,   //composer require barryvdh/laravel-debugbar  // also debugger
     ],
 
     /*
@@ -219,7 +219,7 @@ return [
         'Reminder'   => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
         'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
         
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+//        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         
         'User' => App\Models\User::class,
     ],

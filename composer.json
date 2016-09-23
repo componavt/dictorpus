@@ -10,10 +10,7 @@
         "laravelcollective/html": "5.2.*",
         "mcamara/laravel-localization": "1.1.*",
         "cartalyst/sentinel": "2.0.*",
-        "venturecraft/revisionable": "1.*",
-        "php-mime-mail-parser/php-mime-mail-parser": "^2.4",
-        "php-console/laravel-service-provider": "~5.0",
-        "barryvdh/laravel-debugbar": "^2.2"
+        "venturecraft/revisionable": "1.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
