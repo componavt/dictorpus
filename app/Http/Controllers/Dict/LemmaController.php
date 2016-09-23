@@ -199,7 +199,7 @@ class LemmaController extends Controller
         $new_meaning_n = $lemma->getNewMeaningN();
 
         $all_meanings = [];
-        $lemmas = Lemma::where('lang_id',$lemma->lang_id)->orderBy('lemma')->take(10)->get();
+        $lemmas = Lemma::where('lang_id',$lemma->lang_id)->orderBy('lemma')->get();
         foreach ($lemmas as $lem) {
             foreach ($lem->meanings as $meaning) {
                 $all_meanings[$meaning->id] = $lem->lemma;

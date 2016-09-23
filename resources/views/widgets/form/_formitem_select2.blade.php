@@ -20,10 +20,11 @@ if (!isset($attributes['class'])) {
     <label for="{{$name}}">{{ $title }}</label>
     @endif
     
-    {!! Form::select($name, 
-                     $values, 
-                     $value,
-                     $attributes) 
-    !!}
+    <select multiple="multiple" class="<?=$attributes['class']?>" name="<?=$name?>[]">
+    <?php foreach ($values as $key=>$value): ?>
+        <option value="<?=$key?>"><?=$value?></option>
+    <?php endforeach;?>
+    </select>
+    
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>
