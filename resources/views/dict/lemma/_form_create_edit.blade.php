@@ -31,16 +31,17 @@
                     </tr>
                 @endforeach
                 </table>
-                {{ trans('dict.relations') }}
-                @include('widgets.form._formitem_select2', 
-                        ['name' => 'relations',
-                         'values' => $all_meanings, 
-                         'attributes'=>['multiple'=>'multiple',
-                                        'class'=>'relation-multiple-select']
-                        ])  
 
- {{--
-                         'value' => $meaning->relation_list,    --}}   
+                @foreach ($relation_values as $relation_id => $relation_text)
+{{--        @include('widgets.form._formitem_text', ['name' => 'lemma', 'title'=>trans('dict.lemma')]) --}}
+                    @include('widgets.form._formitem_select2', 
+                            ['name' => 'relations',
+                             'title' => $relation_text,
+                             'values' => $all_meanings, 
+                             'attributes'=>['multiple'=>'multiple',
+                                            'class'=>'relation-multiple-select form-control']
+                        ])  
+                @endforeach
             </div>
             @endforeach
         @endif

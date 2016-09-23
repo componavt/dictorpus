@@ -19,6 +19,7 @@ use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
+use App\Models\Dict\Relation;
 use App\Models\Dict\Wordform;
 
 class LemmaController extends Controller
@@ -197,6 +198,7 @@ class LemmaController extends Controller
         $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $new_meaning_n = $lemma->getNewMeaningN();
+        $relation_values = Relation::getList();
 
         $all_meanings = [];
         $lemmas = Lemma::where('lang_id',$lemma->lang_id)->orderBy('lemma')->get();
@@ -214,6 +216,7 @@ class LemmaController extends Controller
                                'langs_for_meaning' => $langs_for_meaning,
                                'new_meaning_n' => $new_meaning_n,
                                'all_meanings' => $all_meanings,
+                               'relation_values' => $relation_values 
                               )
                         );
     }

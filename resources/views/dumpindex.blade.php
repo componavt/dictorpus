@@ -6,7 +6,7 @@
 
 @section('content')
         <h2>{{ trans('dump.dump_list') }}</h2>
-
+	<p>{{ trans('dump.readme') }}</p>
         <table class="table">
         <thead>
             <tr>

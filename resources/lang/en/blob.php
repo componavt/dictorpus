@@ -32,7 +32,7 @@ return [
 
                         <p>The developed software is open source 
                         (<a href="https://github.com/componavt/dictorpus">Dictorpus</a> at GitHub), 
-                        linguistics data has open license 
+                        linguistics <a href="http://dictorpus.krc.karelia.ru/en/dumps">data</a> has open license 
                         (<a href="https://creativecommons.org/licenses/by/4.0/deed.ru">CC-BY</a>).
                         </p>
 
