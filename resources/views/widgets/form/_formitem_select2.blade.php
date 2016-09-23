@@ -1,4 +1,4 @@
-﻿<div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
+<div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
 <?php 
 if(!isset($value)) 
     $value = null;
