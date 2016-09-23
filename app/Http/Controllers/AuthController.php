@@ -16,7 +16,7 @@ use Mail;
 use Storage;
 use CurlHttp;
 
-use Barryvdh\Debugbar\Facade as Debugbar;
+//use Barryvdh\Debugbar\Facade as Debugbar;
 
 class AuthController extends Controller
 {
@@ -61,6 +61,7 @@ class AuthController extends Controller
      */
     public function loginProcess(Request $request)
     {
+//dd(1);
         try
         {
             $this->validate($request, [
@@ -84,7 +85,7 @@ class AuthController extends Controller
             $code = $activation->code;
             $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function($m) use ($sentuser)
             {
-                $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
+                $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
                 $m->to($sentuser->email)->subject(\Lang::get('mail.account_activation_subj'));
             });
 
@@ -150,7 +151,7 @@ class AuthController extends Controller
             $code = $activation->code;
             $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function($m) use ($sentuser)
             {
-                $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
+                $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
                 $m->to($sentuser->email)->subject(\Lang::get('mail.account_activation_subj'));
             });
             if ($sent === 0)
@@ -201,7 +202,9 @@ class AuthController extends Controller
      */
     public function resetOrder()
     {
+//var_dump(1);
         return view('auth.reset_order');
+//        return view('auth.login');
     }
 
 
@@ -216,8 +219,10 @@ class AuthController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
         ]);
+//dd($request);
         $email = $request->email;
         $sentuser = Sentinel::findByCredentials(compact('email'));
+//dd($sentuser);
         if ( ! $sentuser)
         {
             return Redirect::back()
@@ -226,10 +231,9 @@ class AuthController extends Controller
         }
         $reminder = Reminder::exists($sentuser) ?: Reminder::create($sentuser);
         $code = $reminder->code;
-
+//dd($code);
         $sent = Mail::send('mail.account_reminder', compact('sentuser', 'code'), function($m) use ($sentuser)
         {
-//            $m->from('noreply@vepkar.krc.karelia.ru', \Lang::get('main.site_abbr'));
             $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
             $m->to($sentuser->email)->subject(\Lang::get('auth.password_reset'));
         });

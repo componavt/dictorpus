@@ -149,7 +149,7 @@ class LemmaController extends Controller
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
-	
+    
         return Redirect::to('/dict/lemma/'.($lemma->id))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
@@ -197,14 +197,23 @@ class LemmaController extends Controller
         $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $new_meaning_n = $lemma->getNewMeaningN();
-                                
+
+        $all_meanings = [];
+        $lemmas = Lemma::where('lang_id',$lemma->lang_id)->orderBy('lemma')->take(10)->get();
+        foreach ($lemmas as $lem) {
+            foreach ($lem->meanings as $meaning) {
+                $all_meanings[$meaning->id] = $lem->lemma;
+            }
+        }  
+//dd($lang_values);                                
         return view('dict.lemma.edit')
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
                                'gramset_values' => $gramset_values,
                                'langs_for_meaning' => $langs_for_meaning,
-                                'new_meaning_n' => $new_meaning_n
+                               'new_meaning_n' => $new_meaning_n,
+                               'all_meanings' => $all_meanings,
                               )
                         );
     }

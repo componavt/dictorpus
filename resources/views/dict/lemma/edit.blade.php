@@ -4,6 +4,10 @@
 {{ trans('navigation.lemmas') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('navigation.lemmas') }}</h1>
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_lemma')}} "{{ $lemma->lemma}}"</h2>
@@ -15,4 +19,12 @@
                                       'lang_values' => $lang_values, 
                                       'pos_values'  => $pos_values])
         {!! Form::close() !!}
+@stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
+@stop
+
+@section('jqueryFunc')
+    $(".relation-multiple-select").select2();
 @stop
