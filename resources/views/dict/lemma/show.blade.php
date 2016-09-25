@@ -47,7 +47,11 @@
                                         $relation_lemma_info['lemma'].'</a> ('.
                                         $relation_lemma_info['meaning'].')';
                     }
-                    $relation_meanings =  join ('; ',$rel_lemmas);                        
+                    if (sizeof($rel_lemmas)>1) {
+                        $relation_meanings =  '<br>'. join ('<br>',$rel_lemmas);
+                    } else {
+                        $relation_meanings =  join ('; ',$rel_lemmas);
+                    }                        
                 ?>
                 <p><b>{{$relation_name}}:</b> {!! $relation_meanings !!}</p>
                 @endforeach

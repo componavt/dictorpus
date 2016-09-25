@@ -222,6 +222,7 @@ class LemmaController extends Controller
 
         $all_meanings = [];
         $lemmas = Lemma::where('lang_id',$lemma->lang_id)
+                       ->where('pos_id',$lemma->pos_id)
                        ->where('id','<>',$lemma->id) 
                        ->orderBy('lemma')->get();
         foreach ($lemmas as $lem) {
