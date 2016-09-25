@@ -30,8 +30,9 @@ class RelationController extends Controller
      */
     public function index(Request $request)
     {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $relations = Relation::orderBy('name_'.$locale)->get();
+//        $locale = LaravelLocalization::getCurrentLocale();
+//        $relations = Relation::orderBy('name_'.$locale)->get();
+        $relations = Relation::orderBy('sequence_number')->get();
         
         return view('dict.relation.index')
                     ->with(['relations' => $relations]);

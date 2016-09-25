@@ -8,7 +8,7 @@ use LaravelLocalization;
 class Relation extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['name_en', 'name_ru', 'reverse_relation_id'];
+    protected $fillable = ['name_en', 'name_ru', 'reverse_relation_id', 'sequence_number'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -62,9 +62,7 @@ class Relation extends Model
      */
     public static function getList()
     {     
-        $locale = LaravelLocalization::getCurrentLocale();
-        
-        $relations = self::orderBy('name_'.$locale)->get();
+        $relations = self::orderBy('sequence_number')->get();
         
         $list = array();
         foreach ($relations as $row) {

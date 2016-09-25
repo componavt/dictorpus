@@ -21,6 +21,8 @@ class CreateRelationsTable extends Migration
 
             $table->tinyInteger('reverse_relation_id')->unsigned()->nullable(); 
             $table->foreign('reverse_relation_id')->references('id')->on('relations');
+
+            $table->tinyInteger('sequence_number')->unsigned();
             //$table->timestamps();
         });
     }

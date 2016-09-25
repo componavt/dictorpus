@@ -31,6 +31,8 @@ return [
     'record_not_exists' => 'Запись не найдена.',
     'save' => 'сохранить',
     'search' => 'искать',
+    'seq_num' => 'п/н',
+    'sequence_number' => 'порядковый номер в списке',
     'show_by' => 'по',
     'translation' => 'Перевод',
     'updated_success' => 'Обновление завершено',

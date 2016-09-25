@@ -1,4 +1,3 @@
-<?php $list_count = 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -21,7 +20,7 @@
         <table class="table">
         <thead>
             <tr>
-                <th>No</th>
+                <th>{{ trans('messages.seq_num') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('dict.reverse_relation') }}</th>
@@ -33,7 +32,7 @@
         <tbody>
             @foreach($relations as $relation)
             <tr>
-                <td>{{ $list_count++ }}</td>
+                <td>{{$relation->sequence_number}}</td>
                 <td>{{$relation->name_en}}</td>
                 <td>{{$relation->name_ru}}</td>
                 <td>

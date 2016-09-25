@@ -31,6 +31,8 @@ return [
     'record_not_exists' => 'Record does not exists.',
     'save' => 'save',
     'search' => 'search',
+    'seq_num' => 's/n',
+    'sequence_number' => 'sequence number',
     'show_by' => 'by',
     'translation' => 'Translation',
     'updated_success' => 'Successfully updated',
