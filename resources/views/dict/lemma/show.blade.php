@@ -6,13 +6,13 @@
 
 @section('content')
         <h1>{{ trans('navigation.lemmas') }}</h1>
-        
+
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a> |
-            
+
         @if (User::checkAccess('dict.edit'))
         {{-- @can('dict.edit',$lemma) --}}
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/edit') }}">{{ trans('messages.edit') }}</a> |
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/edit') }}">{{ trans('messages.edit') }}</a>
             | @include('widgets.form._button_delete', ['is_button'=>false, $route = 'lemma.destroy', 'id' => $lemma->id])
         @else
             {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
@@ -20,12 +20,12 @@
         {{-- @endcan --}}
             | <a href="">{{ trans('messages.history') }}</a>
         </p>
-        
+
         <h2>{{ $lemma->lemma }}</h2>
-        
+
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
-        
+
         @foreach ($lemma->meanings as $meaning)
         <div>
             <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
@@ -41,13 +41,13 @@
             <ul>
                 @foreach ($meaning_relations[$meaning->id] as $relation_name => $relation_meanings)
                 <p><b>{{$relation_name}}:</b> {{$relation_meanings}}</p>
-                @endforeach   
+                @endforeach
             </ul>
             @endif
 
         </div>
         @endforeach
-        
+
         @if ($lemma->wordforms()->count())
         <h3>{{ trans('dict.wordforms') }}</h3>
         <?php $key=1;?>
@@ -65,14 +65,14 @@
             @endforeach
         </table>
         @endif
-        
+
         @if (User::checkAccess('dict.edit'))
         <p>
-            
+
             {{-- @include('dict.lemma._form_delete', ['lemma'=>$lemma]) --}}
         </p>
         @endif
-        
+
         @include('dict.lemma._modal_delete')
 @stop
 

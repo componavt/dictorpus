@@ -19,22 +19,22 @@ class Meaning extends Model
     {
         parent::boot();
     }
- 
+
     protected $fillable = ['lemma_id','meaning_n'];
 
     /**
      * Meaning __belongs_to__ Lemma
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\Relation
      */
     public function lemma()
     {
         return $this->belongsTo(Lemma::class);
     }
-    
+
     /**
      * Meaning __has_many__ MeaningTexts
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\Relation
      */
     public function meaningTexts()
@@ -44,7 +44,7 @@ class Meaning extends Model
 
     /**
      * Meaning __has_many__ Meaning
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\Relation
      */
     public function meaningRelations(){
@@ -53,36 +53,65 @@ class Meaning extends Model
 
         return $this->belongsToMany(Relation::class,'meaning_relation','meaning1_id','relation_id')
                     ->withPivot('meaning2_id');
-                   
+    }
+
+    /**
+     * Gets all meaning texts and returns string:
+     * 
+     * <meaning_n>. <lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...
+     * OR
+     *              <lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...
+     *              if lemma has one meaning 
+     * 
+     * @return String
+     */
+    public function getMultilangMeaningTextsString() :String
+    {
+        $mean_langs = [];
+        if ($this->meaningTexts) {
+            foreach ($this->meaningTexts as $meaning_text) {
+                if ($meaning_text->meaning_text) {
+                    $mean_langs[] = $meaning_text->lang->code .': '. $meaning_text->meaning_text;  
+                } 
+            }
+        } 
+        
+        $out = join(', ',$mean_langs);
+
+        if ($this->lemma->meanings()->count()>1) {
+            $out = $this->meaning_n. '. '.$out;
+        }
+        return $out;
     }
 
     /**
      * Gets an array of meaning texts for ALL languages and sorted by lang_id
-     * 
+     *
      * @return Array
      */
-    public function meaningTextsWithAllLangs(){
+    public function meaningTextsWithAllLangs()
+    {
         $own_lang_id = $this->lemma->lang_id;
 
         $langs = Lang::getListWithPriority($own_lang_id);
         $meaning_texts = array();
-        
+
         foreach ($langs as $lang_id => $lang_text) {
                 $meaning_text_obj = $this->meaningTexts()->where('lang_id', $lang_id)->first();
                 if (!$meaning_text_obj) {
                     $meaning_text_obj = new MeaningText;
                     $meaning_text_obj -> meaning_text = NULL;
-                } 
+                }
                 $meaning_text_obj -> lang_name = $lang_text;
                 $meaning_texts[$lang_id] = $meaning_text_obj;
         }
-        
+
         return $meaning_texts;
     }
 
     /**
      * Stores array of new meanings for the lemma
-     * 
+     *
      * @return NULL
      */
     public static function storeLemmaMeanings($meanings, $lemma_id){
@@ -100,19 +129,18 @@ class Meaning extends Model
             if (sizeof($meaning_texts)){
                 $meaning_obj = self::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => (int)$meaning['meaning_n']]);
 
-                foreach ($meaning_texts as $lang=>$meaning_text) {                        
+                foreach ($meaning_texts as $lang=>$meaning_text) {
                     $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => $lang]);
                     $meaning_text_obj -> meaning_text = $meaning_text;
                     $meaning_text_obj -> save();
                 }
             }
-            
         }
     }
 
     /**
      * Updates array of meanings and remove meanings without meaning texts
-     * 
+     *
      * @return NULL
      */
     public static function updateLemmaMeanings($meanings){
@@ -122,37 +150,67 @@ class Meaning extends Model
         foreach ($meanings as $meaning_id => $meaning) {
             $meaning_obj = Meaning::find($meaning_id);
 
-            foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {   
+            foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {
                 if ($meaning_text) {
                     $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_id, 'lang_id' => $lang]);
                     $meaning_text_obj -> meaning_text = $meaning_text;
-                    $meaning_text_obj -> save(); 
+                    $meaning_text_obj -> save();
                 } else {
                     // delete if meaning_text exists in DB but it's empty in form
                     $meaning_text_obj = MeaningText::where('meaning_id',$meaning_id)->where('lang_id',$lang)->first();
                     if ($meaning_text_obj) {
                         $meaning_text_obj -> delete();
-                    }    
+                    }
                 }
             }
-//dd($meaning_obj);
+            $meaning_obj->updateMeaningRelations(isset($meaning['relation']) ? $meaning['relation'] : []);
 /*
-            $meaning_obj->relationMeanings()->detach();
+            $meaning_obj->meaningRelations()->detach();
 
-//dd($meaning['relation']);
-
-            foreach ($meaning['relation'] as $relation_id=>$rel_mean_id) {
-                $meaning_obj->relationMeanings()->attach($relation_id,['meaning2_id'=>$rel_mean_id]);  
+            if (isset($meaning['relation'])) {
+                foreach ($meaning['relation'] as $relation_id=>$rel_means) {
+                    foreach ($rel_means as $rel_mean_id) {
+                        $meaning_obj->meaningRelations()
+                                    ->attach($relation_id,['meaning2_id'=>$rel_mean_id]);
+                    }
+                }
             }
 */
             if ($meaning_obj->meaningTexts()->count()) { // is meaning has any meaning texts
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
-                $meaning_obj -> save();                    
+                $meaning_obj -> save();
             } else {
                 $meaning_obj -> delete();
-                
             }
         }
     }
-    
+
+    /**
+     * Updates array of meaning relations 
+     *
+     * @return NULL
+     */
+    public function updateMeaningRelations($relations)
+    {
+        $this->meaningRelations()->detach();
+        if (!is_array($relations)) {
+            return;
+        }
+        foreach ($relations as $relation_id=>$rel_means) {
+            foreach ($rel_means as $rel_mean_id) {
+                $this->meaningRelations()
+                     ->attach($relation_id,['meaning2_id'=>$rel_mean_id]);
+                
+                // reverse relation
+                $mean2_obj = self::find($rel_mean_id);
+                $relation_obj = Relation::find($relation_id);
+                $mean2_rels = $mean2_obj->meaningRelations();
+                if (!$mean2_rels->wherePivot('relation_id',$relation_obj->reverse_relation_id)
+                                ->wherePivot('meaning2_id',$this->id)->count()) {
+                    $mean2_rels->attach($relation_obj->reverse_relation_id,
+                                        ['meaning2_id'=>$this->id]);
+                }
+            }
+        }
+    }
 }

@@ -196,38 +196,6 @@ class LemmaController extends Controller
                     }
                 }
             }
-/*
-            $relation_meanings_b = $meaning->meaningRelations();//->get();
-//dd ($relation_meanings);
-print "<P>count: ". $relation_meanings_b->count();
-                $relation_meanings = $relation_meanings_b->where('relation_id','=',7);
-print "<P>count=7:".$relation_meanings->count();
-print "<pre>";
-var_dump($relation_meanings->get());
-
-            foreach ($relations as $relation_id => $relation_text) {
-                $relation_meanings = $relation_meanings_b->where('relation_id','=',(int)$relation_id);
-//dd($relation_meanings);
-//                $relation_meanings = $relation_meanings_b->where('meaning_relation.relation_id','=',$relation_id);
-                if ($relation_meanings) { 
-if ($relation_id==7) {
-print "<P>$relation_id:".$relation_meanings->count();
-var_dump($relation_meanings->get());
-}
-                    $relation_meanings = $relation_meanings->get();             
-
-                    if ($relation_meanings) {
-                        $relation_lemmas = [];
-                        foreach ($relation_meanings as $relation_meaning) {
-                            $relation_lemmas[] = $relation_meaning->pivot->lemma->lemma;
-                        }
-                        if (sizeof($relation_lemmas)) {
-                            $meaning_relations[$meaning->id][$relation_text] = join('; ',$relation_lemmas);
-                        }
-                    } 
-                }
-            }
-*/                        
         }   
 
         return view('dict.lemma.show')
@@ -260,15 +228,7 @@ var_dump($relation_meanings->get());
                        ->orderBy('lemma')->get();
         foreach ($lemmas as $lem) {
             foreach ($lem->meanings as $meaning) {
-                $mean_langs = [];
-                if ($meaning->meaningTexts) {
-                    foreach ($meaning->meaningTexts as $meaning_text) {
-                        if ($meaning_text->meaning_text) {
-                            $mean_langs[] = $meaning_text->lang->code .': '. $meaning_text->meaning_text;  
-                        } 
-                    }
-                } 
-                $all_meanings[$meaning->id] = '<b>'.$lem->lemma .'</b> ('.$meaning->meaning_n. '. '.join(', ',$mean_langs).')';
+                $all_meanings[$meaning->id] = $lem->lemma .' ('.$meaning->getMultilangMeaningTextsString().')';
             }
         }  
 
@@ -361,6 +321,10 @@ var_dump($relation_meanings->get());
                     $meanings = $lemma->meanings;
                     
                     foreach ($meanings as $meaning) {
+                        DB::table('meaning_relation')
+                          ->where('meaning2_id',$meaning->id)->delete();
+                        $meaning->meaningRelations()->detach();
+
                         $meaning_texts = $meaning->meaningTexts;
                         foreach ($meaning_texts as $meaning_text) {
                             $meaning_text -> delete();
