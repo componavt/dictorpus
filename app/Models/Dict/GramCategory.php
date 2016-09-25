@@ -32,4 +32,20 @@ class GramCategory extends Model
         $column = "name_" . $locale;
         return $this->{$column};
     }
+    
+    /** Gets list of categories
+     * 
+     * @return Array [1=>'case',..]
+     */
+    public static function getList()
+    {     
+        $categories = self::orderBy('id')->get();
+        
+        $list = array();
+        foreach ($categories as $row) {
+            $list[$row->id] = $row->name;
+        }
+        
+        return $list;         
+    }
 }

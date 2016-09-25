@@ -23,6 +23,7 @@ class RelationController extends Controller
     {
         $this->middleware('auth:ref.edit,/dict/relation/', ['only' => 'create','store','edit','update','destroy']);
     }
+    
     /**
      * Display a listing of the resource.
      *
