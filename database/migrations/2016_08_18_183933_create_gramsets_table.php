@@ -31,6 +31,10 @@ class CreateGramsetsTable extends Migration
             $table->smallInteger('gram_id_tense')->unsigned()->nullable();
             $table->     foreign('gram_id_tense')->references('id')->on('grams');
             
+            // id of grammatical person attribute
+            $table->smallInteger('gram_id_person')->unsigned()->nullable();
+            $table->     foreign('gram_id_person')->references('id')->on('grams');
+            
             $table->tinyInteger('sequence_number')->unsigned();
          });
     }

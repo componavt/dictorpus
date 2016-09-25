@@ -33,11 +33,12 @@
                 </table>
 
                 @foreach ($relation_values as $relation_id => $relation_text)
-{{--        @include('widgets.form._formitem_text', ['name' => 'lemma', 'title'=>trans('dict.lemma')]) --}}
+                    <? $relation_value = isset($relation_meanings[$meaning->id][$relation_id]) ? $relation_meanings[$meaning->id][$relation_id] : array(); ?>
                     @include('widgets.form._formitem_select2', 
-                            ['name' => 'relations',
+                            ['name' => 'ex_meanings['.$meaning->id.'][relation]['.$relation_id.']',
                              'title' => $relation_text,
                              'values' => $all_meanings, 
+                             'value' => $relation_value,
                              'attributes'=>['multiple'=>'multiple',
                                             'class'=>'relation-multiple-select form-control']
                         ])  

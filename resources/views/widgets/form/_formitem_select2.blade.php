@@ -1,7 +1,7 @@
 <div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
 <?php 
 if(!isset($value)) 
-    $value = null;
+    $value = [];
 if(!isset($values)) 
     $values = array(); 
 if(!isset($title)) 
@@ -16,12 +16,12 @@ if (!isset($attributes['class'])) {
 }
 ?>
     @if($title)
-    <label for="{{$name}}">{{ $title }}</label>
+    <label for="{{$name}}[]">{{ $title }}</label>
     @endif
     
     <select multiple="multiple" class="<?=$attributes['class']?>" name="<?=$name?>[]">
-    <?php foreach ($values as $key=>$value): ?>
-        <option value="<?=$key?>"><?=$value?></option>
+    <?php foreach ($values as $key=>$val): ?>
+        <option value="<?=$key?>"<?=(in_array($key,$value)) ? ' selected' : '';?>><?=$val?></option>
     <?php endforeach;?>
     </select>
     

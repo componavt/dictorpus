@@ -24,9 +24,11 @@
         <table class="table">
         <thead>
             <tr><th>No</th>
-                <th>{{ trans('dict.number') }}</th>
                 <th>{{ trans('dict.case') }}</th>
+                <th>{{ trans('dict.person') }}</th>
+                <th>{{ trans('dict.number') }}</th>
                 <th>{{ trans('dict.tense') }}</th>
+                <th>{{ trans('dict.mood') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -34,20 +36,29 @@
             <tr>
                 <td>{{$key+1}}</td>
                 <td>
-                    <!-- Number (singular, plural) -->
-                    @if($gramset->gram_id_number)
-                        {{$gramset->gramNumber->name}}
-                        @if($gramset->gramNumber->name_short)
-                            ({{$gramset->gramNumber->name_short}})
-                        @endif
-                    @endif
-                </td>
-                <td>
                     <!-- Case (Nominative, ...) -->
                     @if($gramset->gram_id_case)
                         {{$gramset->gramCase->name}}
                         @if($gramset->gramCase->name_short)
                             ({{$gramset->gramCase->name_short}})
+                        @endif
+                    @endif
+                </td>
+                <td>
+                    <!-- Person (1st, ...) -->
+                    @if($gramset->gram_id_person)
+                        {{$gramset->gramPerson->name}}
+                        @if($gramset->gramPerson->name_short)
+                            ({{$gramset->gramPerson->name_short}})
+                        @endif
+                    @endif
+                </td>
+                <td>
+                    <!-- Number (singular, plural) -->
+                    @if($gramset->gram_id_number)
+                        {{$gramset->gramNumber->name}}
+                        @if($gramset->gramNumber->name_short)
+                            ({{$gramset->gramNumber->name_short}})
                         @endif
                     @endif
                 </td>
@@ -59,6 +70,15 @@
                             ({{$gramset->gramTense->name_short}})
                         @endif
                     @endif
+                </td>
+                <td>
+                    <!-- Mood (indicative, ...) -->
+                    @if($gramset->gram_id_mood)
+                        {{$gramset->gramMood->name}}
+                        @if($gramset->gramMood->name_short)
+                            ({{$gramset->gramMood->name_short}})
+                        @endif
+                    @endif  
                 </td>
             </tr>
             @endforeach

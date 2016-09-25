@@ -29,16 +29,22 @@
         @foreach ($lemma->meanings as $meaning)
         <div>
             <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
+            @if (isset($meaning_texts[$meaning->id]))
             <ul>
-                @if (isset($meaning_texts[$meaning->id]))
-                    @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
-                    <li><b>{{$lang_name}}:</b> {{$meaning_text}}</li>
-                    @endforeach
-                @endif
-            {{--@foreach ($meaning->meaningTexts as $meaning_text)
-                <li><b>{{$meaning_text->lang->name}}:</b> {{$meaning_text->meaning_text}}</li>
-            @endforeach--}}
+                @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
+                <li><b>{{$lang_name}}:</b> {{$meaning_text}}</li>
+                @endforeach
             </ul>
+            @endif
+
+            @if (isset($meaning_relations[$meaning->id]))
+            <ul>
+                @foreach ($meaning_relations[$meaning->id] as $relation_name => $relation_meanings)
+                <p><b>{{$relation_name}}:</b> {{$relation_meanings}}</p>
+                @endforeach   
+            </ul>
+            @endif
+
         </div>
         @endforeach
         

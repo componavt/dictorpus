@@ -4,6 +4,7 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Dict\Lang;
+use App\Models\Dict\Relation;
 
 class Meaning extends Model
 {
@@ -42,9 +43,23 @@ class Meaning extends Model
     }
 
     /**
-     * Gets a collection of meaning texts for ALL languages and sorted by lang_id
+     * Meaning __has_many__ Meaning
      * 
-     * @return Wordform Object
+     * @return Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function meaningRelations(){
+/*        return $this->belongsToMany(Meaning::class,'meaning_relation','meaning1_id','meaning2_id')
+                    ->withPivot('relation_id');     */
+
+        return $this->belongsToMany(Relation::class,'meaning_relation','meaning1_id','relation_id')
+                    ->withPivot('meaning2_id');
+                   
+    }
+
+    /**
+     * Gets an array of meaning texts for ALL languages and sorted by lang_id
+     * 
+     * @return Array
      */
     public function meaningTextsWithAllLangs(){
         $own_lang_id = $this->lemma->lang_id;
@@ -120,7 +135,16 @@ class Meaning extends Model
                     }    
                 }
             }
+//dd($meaning_obj);
+/*
+            $meaning_obj->relationMeanings()->detach();
 
+//dd($meaning['relation']);
+
+            foreach ($meaning['relation'] as $relation_id=>$rel_mean_id) {
+                $meaning_obj->relationMeanings()->attach($relation_id,['meaning2_id'=>$rel_mean_id]);  
+            }
+*/
             if ($meaning_obj->meaningTexts()->count()) { // is meaning has any meaning texts
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
                 $meaning_obj -> save();                    
