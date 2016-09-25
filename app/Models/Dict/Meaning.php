@@ -3,6 +3,8 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
+
 use App\Models\Dict\Lang;
 use App\Models\Dict\Relation;
 
@@ -164,19 +166,9 @@ class Meaning extends Model
                 }
             }
             $meaning_obj->updateMeaningRelations(isset($meaning['relation']) ? $meaning['relation'] : []);
-/*
-            $meaning_obj->meaningRelations()->detach();
 
-            if (isset($meaning['relation'])) {
-                foreach ($meaning['relation'] as $relation_id=>$rel_means) {
-                    foreach ($rel_means as $rel_mean_id) {
-                        $meaning_obj->meaningRelations()
-                                    ->attach($relation_id,['meaning2_id'=>$rel_mean_id]);
-                    }
-                }
-            }
-*/
-            if ($meaning_obj->meaningTexts()->count()) { // is meaning has any meaning texts
+            // is meaning has any meaning texts or any relations
+            if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count()) { 
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
                 $meaning_obj -> save();
             } else {
@@ -192,7 +184,12 @@ class Meaning extends Model
      */
     public function updateMeaningRelations($relations)
     {
+        // removes all relations to this meaning
+        DB::table('meaning_relation')
+          ->where('meaning2_id',$this->id)->delete();
+        // removes all relations from this meaning
         $this->meaningRelations()->detach();
+        
         if (!is_array($relations)) {
             return;
         }
@@ -205,11 +202,11 @@ class Meaning extends Model
                 $mean2_obj = self::find($rel_mean_id);
                 $relation_obj = Relation::find($relation_id);
                 $mean2_rels = $mean2_obj->meaningRelations();
-                if (!$mean2_rels->wherePivot('relation_id',$relation_obj->reverse_relation_id)
-                                ->wherePivot('meaning2_id',$this->id)->count()) {
-                    $mean2_rels->attach($relation_obj->reverse_relation_id,
+//                if (!$mean2_rels->wherePivot('relation_id',$relation_obj->reverse_relation_id)
+  //                              ->wherePivot('meaning2_id',$this->id)->count()) {
+                 $mean2_rels->attach($relation_obj->reverse_relation_id,
                                         ['meaning2_id'=>$this->id]);
-                }
+    //            }
             }
         }
     }
