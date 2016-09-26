@@ -7,6 +7,16 @@
 @section('content')
         <h2>{{ trans('navigation.gramsets') }}</h2>
         
+        <p style="text-align: right">
+        @if (User::checkAccess('ref.edit'))
+            <a href="{{ LaravelLocalization::localizeURL('/dict/gramset/create') }}">
+        @endif
+            {{ trans('messages.create_new_m') }}
+        @if (User::checkAccess('ref.edit'))
+            </a>
+        @endif
+        </p>
+        
         {!! Form::open(['url' => '/dict/gramset/', 
                              'method' => 'get', 
                              'class' => 'form-inline']) 

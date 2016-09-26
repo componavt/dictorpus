@@ -13,7 +13,7 @@
             <a href="{{ LaravelLocalization::localizeURL('/dict/gram/create') }}">
         @endif
             {{ trans('messages.create_new_m') }}
-        @if (User::checkAccess('dict.edit'))
+        @if (User::checkAccess('ref.edit'))
             </a>
         @endif
         </p>

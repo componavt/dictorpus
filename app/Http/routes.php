@@ -58,7 +58,6 @@ Route::group(
 	Route::get('/dumps','DumpDownloadController@index');
         
         Route::get('dict/dialect', 'Dict\DialectController@index');
-        Route::get('dict/gramset', 'Dict\GramsetController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
 
@@ -88,6 +87,11 @@ Route::group(
                        ['names' => ['update' => 'gram.update',
                                     'store' => 'gram.store',
                                     'destroy' => 'gram.destroy']]);
+
+        Route::resource('dict/gramset', 'Dict\GramsetController',
+                       ['names' => ['update' => 'gramset.update',
+                                    'store' => 'gramset.store',
+                                    'destroy' => 'gramset.destroy']]);
 
         Route::resource('dict/relation', 'Dict\RelationController',
                        ['names' => ['update' => 'relation.update',

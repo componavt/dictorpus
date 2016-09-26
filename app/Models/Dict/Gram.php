@@ -47,6 +47,21 @@ class Gram extends Model
         }
         return $this->{$column};
     }
+
+    /** Gets name of this grammatical attribute with short name, takes into account locale.
+     * 
+     * @return String
+     */
+    public function getNameWithShort() : String
+    {
+        $name = $this->name;
+        $locale = LaravelLocalization::getCurrentLocale();
+        $short_name_column = 'name_short_'. $locale;
+        if ($this->{$short_name_column}) {
+            $name .= ' ('. $this->{$short_name_column} . ')';
+        }    
+        return $name;
+    }
     
     
     /** Gets all grams for given category sorted, 
@@ -61,5 +76,22 @@ class Gram extends Model
     {
         return self::where('gram_category_id',$category_id)->orderBy('sequence_number')->get();
          
+    }
+    
+    /** Gets ordered list of grams for the grammatical category
+     * 
+     * @param int $category_id
+     * @return Array [1=>'номинатив',..]
+     */
+    public static function getList(int $category_id)
+    {
+        $grams = self::getByCategory($category_id);
+                
+        $list = [];
+        foreach ($grams as $gram) {
+            $list[$gram->id] = $gram->getNameWithShort();
+        }
+        
+        return $list;         
     }
 }

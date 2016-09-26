@@ -1,0 +1,21 @@
+        @include('widgets.form._formitem_select2',
+                ['name' => 'parts_of_speech',
+                 'title' => trans('dict.pos'),
+                 'attributes'=>['class'=>'relation-multiple-select form-control']
+                ])
+{{--                 'values' => $pos_values, --}}
+
+        @foreach ($grams as $code => $category_info)
+            @include('widgets.form._formitem_select', 
+                    ['name' => 'gram_id_'.$code, 
+                     'values' => $category_info['grams'],
+                     'title' => $category_info['name']
+                    ]) 
+        @endforeach
+    
+        @include('widgets.form._formitem_text',
+                ['name' => 'sequence_number',
+                 'attributes'=>['size' => 2],
+                 'title' => trans('messages.sequence_number')])         
+
+@include('widgets.form._formitem_btn_submit', ['title' => $submit_title])

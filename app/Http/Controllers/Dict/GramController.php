@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
+use App\Models\Dict\PartOfSpeech;
 
 class GramController extends Controller
 {
@@ -33,8 +34,6 @@ class GramController extends Controller
     public function index()
     {
         $gram_categories = GramCategory::all();
-        // $gram_categories = GramCategory::select('*')->orderBy('id')->get();
-        
         $grams = array();
         
         foreach ($gram_categories as $gc) {         //   id is gram_category_id
