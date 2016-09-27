@@ -17,7 +17,7 @@ class MeaningController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit','/dict/meaning/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:ref.edit,/dict/meaning/', ['only' => 'create','store','edit','update','destroy']);
     }
 
     /**

@@ -30,7 +30,7 @@ class TextController extends Controller
     public function __construct()
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit', '/corpus/text/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:corpus.edit,/corpus/text/', ['only' => 'create','store','edit','update','destroy']);
     }
 
     /**
