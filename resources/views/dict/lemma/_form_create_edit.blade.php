@@ -39,8 +39,7 @@
                              'title' => $relation_text,
                              'values' => $all_meanings,
                              'value' => $relation_value,
-                             'attributes'=>['multiple'=>'multiple',
-                                            'class'=>'relation-multiple-select form-control']
+                             'attributes'=>['multiple'=>'multiple']
                         ])
                 @endforeach
             </div>

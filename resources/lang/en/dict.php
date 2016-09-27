@@ -17,6 +17,8 @@ return [
     'gram_category' => 'Grammatical category',
     'gram_list' => 'List of grammatical attributes',
     'gram_removed' => 'Grammatical attribute ":name" is removed successfully.',
+    'gramset_has_wordform' => 'There are wordforms with these grammatical attributes',
+    'gramset_removed' => 'Set of grammatical attributes ":name" is removed successfully.',
     
     'interpretation' => 'interpretation',
     'lang' => 'language',
@@ -32,6 +34,7 @@ return [
     'name' => 'name',
     'name_short' => 'short name',
     'number' => 'Number',
+    'of_gramset' => 'of set',
     'of_lemma' => 'of lemma',
     'of_relation' => 'of relation',
     'parts_of_speech' => 'parts of speech',

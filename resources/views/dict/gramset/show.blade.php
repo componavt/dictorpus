@@ -1,0 +1,37 @@
+<?php $column_title = 'name_'. LaravelLocalization::getCurrentLocale(); ?>
+@extends('layouts.master')
+
+@section('title')
+{{ trans('navigation.gramsets') }}
+@stop
+
+@section('content')
+        <h1>{{ trans('navigation.gramsets') }}</h1>
+        
+        <p>
+            <a href="{{ LaravelLocalization::localizeURL('/dict/gramset/') }}">{{ trans('messages.back_to_list') }}</a>
+            {{ \Request::route()->getName() }}
+            
+        @if (User::checkAccess('ref.edit'))
+            | @include('widgets.form._button_edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit'])
+            | @include('widgets.form._button_delete', ['route' => 'gramset.destroy', 'id' => $gramset->id]) 
+        @else
+            | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
+        @endif 
+            | <a href="">{{ trans('messages.history') }}</a>
+        </p>
+        
+        @foreach ($gram_fields as $field)
+        <?php $column = 'gram'.ucfirst($field); ?>
+        <p><i>{{ trans('dict.'.$field) }}:</i> <b>{{ $gramset->{$column}->getNameWithShort() }}</b></p>
+        
+@stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/rec-delete-link.js')!!}
+@stop
+
+@section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/gramset');
+@stop
+

@@ -42,8 +42,7 @@
                 </td>
                 @if (User::checkAccess('dict.edit'))
                 <td>
-                    <a  href="{{ LaravelLocalization::localizeURL('/dict/relation/'.$relation->id.'/edit') }}" 
-                        class="btn btn-warning btn-xs btn-detail" value="{{$relation->id}}">{{ trans('messages.edit') }}</a> 
+                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/dict/relation/'.$relation->id.'/edit'])
                  </td>
                 <td>
                     @include('widgets.form._button_delete', ['is_button'=>true, $route = 'relation.destroy', 'id' => $relation->id])

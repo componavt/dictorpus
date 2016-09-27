@@ -70,6 +70,26 @@ class PartOfSpeech extends Model
          
     }
         
+    /** Gets list of parts of speech, sorts by category and alphabetically 
+     * 
+     * @return Array [1=>'Adjective',..]
+     */
+    public static function getList()
+    {
+        $parts_of_speech = [];
+        
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $pos_collec = self::where('name_'.$locale, '<>', '')->orderBy('category')
+                          ->orderBy('name_'.$locale)->get();
+        
+        foreach ($pos_collec as $pos) {
+            $parts_of_speech[$pos->id] = $pos->name;
+        }
+        
+        return $parts_of_speech;         
+    }
+        
     /** Gets list of parts of speech group by category
      * 
      * @return Array ['Open class words' => [1=>'Adjective',..], ...]

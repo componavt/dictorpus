@@ -48,4 +48,20 @@ class GramCategory extends Model
         
         return $list;         
     }
+    
+    /** Gets list of name_en categories for field names of grams
+     * 
+     * @return Array ['case',..]
+     */
+    public static function getNames()
+    {     
+        $categories = self::orderBy('id')->get();
+        
+        $list = array();
+        foreach ($categories as $row) {
+            $list[] = $row->name_en;
+        }
+        
+        return $list;         
+    }
 }

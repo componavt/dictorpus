@@ -2,27 +2,39 @@
 <?php 
 if(!isset($value)) 
     $value = [];
+
 if(!isset($values)) 
     $values = array(); 
+
 if(!isset($title)) 
     $title = null;
 
-if (!isset($attributes)) {
-    $attributes = [];
+if (!isset($grouped)) {
+    $grouped=false;
 }
 
-if (!isset($attributes['class'])) {
-    $attributes['class'] = 'form-control';
+if (!isset($class)) {
+    $class = 'multiple-select form-control';
 }
 ?>
     @if($title)
     <label for="{{$name}}[]">{{ $title }}</label>
     @endif
     
-    <select multiple="multiple" class="<?=$attributes['class']?>" name="<?=$name?>[]">
-    <?php foreach ($values as $key=>$val): ?>
-        <option value="<?=$key?>"<?=(in_array($key,$value)) ? ' selected' : '';?>><?=$val?></option>
-    <?php endforeach;?>
+    <select multiple="multiple" class="{{ $class }}" name="{{ $name }}[]">
+    @if ($grouped)
+        @foreach ($values as $group_name=>$group_values)
+        <optgroup label="{{$group_name}}">
+            @foreach ($group_values as $key=>$val)
+                <option value="{{$key}}"<?=(in_array($key,$value)) ? ' selected' : '';?>>{{$val}}</option>
+            @endforeach
+        </optgroup>
+        @endforeach
+    @else
+        @foreach ($values as $key=>$val)
+            <option value="{{$key}}"<?=(in_array($key,$value)) ? ' selected' : '';?>>{{$val}}</option>
+        @endforeach
+    @endif
     </select>
     
     <p class="help-block">{!! $errors->first($name) !!}</p>

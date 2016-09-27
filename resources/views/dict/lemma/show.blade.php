@@ -8,14 +8,14 @@
         <h1>{{ trans('navigation.lemmas') }}</h1>
 
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a> |
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a>
 
         @if (User::checkAccess('dict.edit'))
         {{-- @can('dict.edit',$lemma) --}}
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/edit') }}">{{ trans('messages.edit') }}</a>
-            | @include('widgets.form._button_delete', ['is_button'=>false, $route = 'lemma.destroy', 'id' => $lemma->id])
+            | @include('widgets.form._button_edit', ['route' => '/dict/lemma/'.$lemma->id.'/edit'])
+            | @include('widgets.form._button_delete', ['route' => 'lemma.destroy', 'id' => $lemma->id]) 
         @else
-            {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
+            | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif
         {{-- @endcan --}}
             | <a href="">{{ trans('messages.history') }}</a>

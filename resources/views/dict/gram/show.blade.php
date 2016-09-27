@@ -12,10 +12,10 @@
             <a href="{{ LaravelLocalization::localizeURL('/dict/gram/') }}">{{ trans('messages.back_to_list') }}</a>
             
         @if (User::checkAccess('ref.edit'))
-            | <a href="{{ LaravelLocalization::localizeURL('/dict/gram/'.$gram->id.'/edit') }}">{{ trans('messages.edit') }}</a> 
-            | @include('widgets.form._button_delete', ['is_button'=>false, $route = 'gram.destroy', 'id' => $gram->id])
+            | @include('widgets.form._button_edit', ['route' => '/dict/gram/'.$gram->id.'/edit'])
+            | @include('widgets.form._button_delete', ['route' => 'gram.destroy', 'id' => $gram->id]) 
         @else
-            {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
+            | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif 
             | <a href="">{{ trans('messages.history') }}</a>
         </p>

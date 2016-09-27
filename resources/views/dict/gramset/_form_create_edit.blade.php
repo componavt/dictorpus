@@ -1,9 +1,10 @@
         @include('widgets.form._formitem_select2',
                 ['name' => 'parts_of_speech',
                  'title' => trans('dict.pos'),
-                 'attributes'=>['class'=>'relation-multiple-select form-control']
+                 'values' => $pos_values, 
+                 'value' => $pos_value, 
+                 'grouped' => true
                 ])
-{{--                 'values' => $pos_values, --}}
 
         @foreach ($grams as $code => $category_info)
             @include('widgets.form._formitem_select', 

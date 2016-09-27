@@ -26,5 +26,5 @@
 @stop
 
 @section('jqueryFunc')
-    $(".relation-multiple-select").select2();
+    $(".multiple-select").select2();
 @stop

@@ -103,8 +103,7 @@
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td>
-                    <a  href="{{ LaravelLocalization::localizeURL('/corpus/place/'.$place->id.'/edit') }}" 
-                        class="btn btn-warning btn-xs btn-detail" value="{{$place->id}}">{{ trans('messages.edit') }}</a> 
+                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/place/'.$place->id.'/edit'])
                  </td>
                 <td>
                     @include('widgets.form._button_delete', ['is_button'=>true, $route = 'place.destroy', 'id' => $place->id])

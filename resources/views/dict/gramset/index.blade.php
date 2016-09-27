@@ -33,63 +33,41 @@
         <br>
         <table class="table">
         <thead>
-            <tr><th>No</th>
-                <th>{{ trans('dict.case') }}</th>
-                <th>{{ trans('dict.person') }}</th>
-                <th>{{ trans('dict.number') }}</th>
-                <th>{{ trans('dict.tense') }}</th>
-                <th>{{ trans('dict.mood') }}</th>
+            <tr>
+                <th>No</th>              
+                @foreach ($gram_fields as $field)
+                <th>{{ trans('dict.'.$field) }}</th>
+                @endforeach
+
+                @if (User::checkAccess('ref.edit'))
+                <th colspan="2"></th>
+                @endif
             </tr>
         </thead>
         <tbody>
             @foreach($gramsets as $key=>$gramset)
             <tr>
                 <td>{{$key+1}}</td>
+                @foreach ($gram_fields as $field)
                 <td>
-                    <!-- Case (Nominative, ...) -->
-                    @if($gramset->gram_id_case)
-                        {{$gramset->gramCase->name}}
-                        @if($gramset->gramCase->name_short)
-                            ({{$gramset->gramCase->name_short}})
-                        @endif
+                    @if($gramset->{'gram_id_'.$field})
+                        {{$gramset->{'gram'.ucfirst($field)}->getNameWithShort()}}
                     @endif
                 </td>
+                @endforeach
+
+                @if (User::checkAccess('ref.edit'))
                 <td>
-                    <!-- Person (1st, ...) -->
-                    @if($gramset->gram_id_person)
-                        {{$gramset->gramPerson->name}}
-                        @if($gramset->gramPerson->name_short)
-                            ({{$gramset->gramPerson->name_short}})
-                        @endif
-                    @endif
+                    @include('widgets.form._button_edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
+                                                           'is_button' => true,
+                                                           'without_text' => true])
                 </td>
                 <td>
-                    <!-- Number (singular, plural) -->
-                    @if($gramset->gram_id_number)
-                        {{$gramset->gramNumber->name}}
-                        @if($gramset->gramNumber->name_short)
-                            ({{$gramset->gramNumber->name_short}})
-                        @endif
-                    @endif
+                    @include('widgets.form._button_delete', ['route' => 'gramset.destroy', 'id' => $gramset->id,
+                                                             'is_button' => true,
+                                                             'without_text' => true])
                 </td>
-                <td>
-                    <!-- Tense (Past, Present, ...) -->
-                    @if($gramset->gram_id_tense)
-                        {{$gramset->gramTense->name}}
-                        @if($gramset->gramTense->name_short)
-                            ({{$gramset->gramTense->name_short}})
-                        @endif
-                    @endif
-                </td>
-                <td>
-                    <!-- Mood (indicative, ...) -->
-                    @if($gramset->gram_id_mood)
-                        {{$gramset->gramMood->name}}
-                        @if($gramset->gramMood->name_short)
-                            ({{$gramset->gramMood->name_short}})
-                        @endif
-                    @endif  
-                </td>
+                @endif
             </tr>
             @endforeach
         </tbody>
@@ -97,4 +75,10 @@
         @endif
 @stop
 
+@section('footScriptExtra')
+    {!!Html::script('js/rec-delete-link.js')!!}
+@stop
 
+@section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/gramset');
+@stop
