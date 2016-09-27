@@ -19,6 +19,16 @@ use App\Models\Corpus\Region;
 
 class PlaceController extends Controller
 {
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:corpus.edit','/corpus/place/', ['only' => 'create','store','edit','update','destroy']);
+    }
+
     /**
      * Show the list of places.
      *

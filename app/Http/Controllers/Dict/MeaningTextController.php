@@ -12,6 +12,15 @@ use App\Models\Dict\MeaningText;
 
 class MeaningTextController extends Controller
 {
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:ref.edit','/dict/meaning_text/', ['only' => 'create','store','edit','update','destroy']);
+    }
     /**
      * Display a listing of the resource.
      *

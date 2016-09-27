@@ -15,7 +15,15 @@ use App\Models\Dict\PartOfSpeech;
 
 class GramsetController extends Controller
 {
-    //
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:ref.edit','/dict/gramset/', ['only' => 'create','store','edit','update','destroy']);
+    }
     
      /**
      * Show the list of gramsets.

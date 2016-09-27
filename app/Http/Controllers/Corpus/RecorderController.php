@@ -12,6 +12,16 @@ use App\Models\Corpus\Recorder;
 
 class RecorderController extends Controller
 {
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:corpus.edit','/corpus/district/', ['only' => 'create','store','edit','update','destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *

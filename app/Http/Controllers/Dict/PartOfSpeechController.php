@@ -10,6 +10,16 @@ use App\Models\Dict\PartOfSpeech;
 
 class PartOfSpeechController extends Controller
 {
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:ref.edit','/dict/part_of_speech/', ['only' => 'create','store','edit','update','destroy']);
+    }
+
     /**
      * Show the list of parts of speech.
      *

@@ -10,6 +10,16 @@ use App\Http\Controllers\Controller;
 
 class MeaningController extends Controller
 {
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:ref.edit','/dict/meaning/', ['only' => 'create','store','edit','update','destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
