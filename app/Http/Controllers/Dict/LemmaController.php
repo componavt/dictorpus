@@ -399,6 +399,73 @@ class LemmaController extends Controller
                               )
                         );
     }
+    
+    
+    /** Gets list of all semantic ralations, 
+     *  
+     */
+    public function relation(Request $request)
+    {
+        $lemma_name = $request->input('lemma_name');
+        $limit_num = (int)$request->input('limit_num');
+        $lang_id = (int)$request->input('lang_id');
+        $pos_id = (int)$request->input('pos_id');
+        $relation_id = (int)$request->input('relation_id');
+        $page = (int)$request->input('page');
+
+        if (!$page) {
+            $page = 1;
+        }
+        
+        if ($limit_num<=0) {
+            $limit_num = 10;
+        } elseif ($limit_num>1000) {
+            $limit_num = 1000;
+        }   
+        
+        $lemmas = Lemma::select(DB::raw('lemmas.id as lemma1_id, lemmas.lemma as lemma1, relation_id, meaning1_id, meaning2_id'))
+                       ->join('meanings', 'lemmas.id', '=', 'meanings.lemma_id')
+                       ->join('meaning_relation', 'meanings.id', '=', 'meaning_relation.meaning1_id');        
+        if ($lemma_name) {
+            $lemmas = $lemmas->where('lemma','like', $lemma_name);
+        } 
+
+        if ($lang_id) {
+            $lemmas = $lemmas->where('lang_id',$lang_id);
+        } 
+         
+        if ($pos_id) {
+            $lemmas = $lemmas->where('pos_id',$pos_id);
+        } 
+                
+        if ($relation_id) {
+            $lemmas = $lemmas->where('relation_id',$relation_id);
+        } 
+        
+        $numAll = $lemmas->count();
+        $lemmas = $lemmas->orderBy('lemma')->paginate($limit_num);
+
+        $pos_values = PartOfSpeech::getList();//getGroupedListWithQuantity('lemmas');
+        
+        $lang_values = Lang::getList();//getListWithQuantity('lemmas');
+        
+        $relation_values = Relation::getList();//getListWithQuantity('lemmas');
+        
+        return view('dict.lemma.relation')
+                  ->with(array('limit_num' => $limit_num,
+                               'lemma_name' => $lemma_name,
+                               'lang_id'=>$lang_id,
+                               'pos_id'=>$pos_id,
+                               'relation_id'=>$relation_id,
+                               'page'=>$page,
+                               'lemmas' => $lemmas,
+                               'lang_values' => $lang_values,
+                               'pos_values' => $pos_values,
+                               'relation_values' => $relation_values,
+                               'numAll' => $numAll,
+                              )
+                        );
+    }
         
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id

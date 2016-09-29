@@ -55,7 +55,7 @@ Route::group(
 
 
         Route::get('/home', 'HomeController@index');
-	Route::get('/dumps','DumpDownloadController@index');
+        Route::get('/dumps','DumpDownloadController@index');
         
         Route::get('dict/dialect', 'Dict\DialectController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
@@ -65,6 +65,7 @@ Route::group(
         Route::get('dict/wordform', 'Dict\WordformController@index');
 
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
+        Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
       
 //        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');       
 //        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
