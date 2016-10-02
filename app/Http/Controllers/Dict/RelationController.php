@@ -21,7 +21,7 @@ class RelationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/relation/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:ref.edit,/dict/relation/', ['only' => ['create','store','edit','update','destroy']]);
     }
     
     /**

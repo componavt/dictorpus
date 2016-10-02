@@ -22,7 +22,7 @@ class DistrictController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:corpus.edit,/corpus/district/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:corpus.edit,/corpus/district/', ['only' => ['create','store','edit','update','destroy']]);
     }
 
     /**

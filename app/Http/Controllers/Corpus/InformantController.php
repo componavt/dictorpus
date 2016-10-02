@@ -22,7 +22,7 @@ class InformantController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:corpus.edit,/corpus/informant/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:corpus.edit,/corpus/informant/', ['only' => ['create','store','edit','update','destroy']]);
     }
 
     /**

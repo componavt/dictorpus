@@ -19,7 +19,7 @@ class Authenticate
      */
     public function handle($request, Closure $next, $permission, $route_url) // $guard = null
     {  
-dd($permission);        
+//dd($permission);        
         if (!User::checkAccess($permission)) {
             return Redirect::to($route_url) 
                 ->withErrors(\Lang::get('error.permission_denied'));

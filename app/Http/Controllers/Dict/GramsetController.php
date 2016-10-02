@@ -22,7 +22,7 @@ class GramsetController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/gramset/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:ref.edit,/dict/gramset/', ['only' => ['create','store','edit','update','destroy']]);
     }
     
      /**

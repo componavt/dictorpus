@@ -21,7 +21,7 @@ class RegionController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:corpus.edit,/corpus/region/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:corpus.edit,/corpus/region/', ['only' => ['create','store','edit','update','destroy']]);
     }
 
     /**

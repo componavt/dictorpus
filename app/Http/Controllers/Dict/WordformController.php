@@ -23,7 +23,7 @@ class WordformController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/wordform/', ['only' => 'create','store','edit','update','destroy']);
+        $this->middleware('auth:ref.edit,/dict/wordform/', ['only' => ['create','store','edit','update','destroy']]);
     }
 
     /**
