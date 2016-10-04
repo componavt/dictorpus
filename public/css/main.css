@@ -62,6 +62,12 @@ and open the template in the editor.
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 
+.table-interpretations th:first-letter,
 .table th:first-letter {
     text-transform: uppercase;    
+}
+
+.table-interpretations th,
+.table-interpretations td {
+    padding-right: 10px;
 }

@@ -4,11 +4,13 @@
         @include('widgets.form._formitem_select',
                 ['name' => 'lang_id',
                  'values' =>$lang_values,
-                 'title' => trans('dict.lang')])
+                 'title' => trans('dict.lang'),
+                 'attributes' => ['id'=>'lemma_lang_id']])
         @include('widgets.form._formitem_select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,
-                 'title' => trans('dict.pos')])
+                 'title' => trans('dict.pos'),
+                 'attributes' => ['id'=>'lemma_pos_id']])
         @if ($action == 'edit')
             @foreach ($lemma->meanings as $meaning)
             <div>
@@ -17,7 +19,7 @@
                             'value'=> $meaning->meaning_n,
                             'attributes'=>['size' => 2],
                             'tail' => trans('dict.meaning')])</h3>
-                <table>
+                <table class="table-interpretations">
                     <tr>
                         <th>{{ trans('dict.lang') }}</th>
                         <th>{{ trans('dict.interpretation') }}</th>
@@ -53,7 +55,7 @@
                         'value'=> $new_meaning_n,
                         'attributes'=>['size' => 2],
                         'tail' => trans('dict.meaning')])</h3>
-            <table>
+            <table class="table-interpretations">
                 <tr>
                     <th>{{ trans('dict.lang') }}</th>
                     <th>{{ trans('dict.interpretation') }}</th>

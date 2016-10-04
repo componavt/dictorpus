@@ -41,10 +41,6 @@ Route::group(
         Route::get('reset', 'AuthController@resetOrder');
         // Пользователь заполнил и отправил форму с E-Mail в запросе на сброс пароля
         Route::post('reset', 'AuthController@resetOrderProcess');
-//        Route::post('reset', function(){
-//	return  view('welcome');
-//});
-
         // Пользователю пришло письмо со ссылкой на эту страницу для ввода нового пароля
         Route::get('reset/{id}/{code}', 'AuthController@resetComplete');
         // Пользователь ввел новый пароль и отправил.
@@ -59,13 +55,12 @@ Route::group(
         
         Route::get('dict/dialect', 'Dict\DialectController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
-        Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
-
-        Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
-        Route::get('dict/wordform', 'Dict\WordformController@index');
-
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
+        Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
+        Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
+        Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
+        Route::get('dict/wordform', 'Dict\WordformController@index');
       
 //        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');       
 //        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
@@ -79,11 +74,6 @@ Route::group(
 //        Route::get('corpus/text/tempInsertVepsianDialectText', 'Corpus\TextController@tempInsertVepsianDialectText');
 //        Route::get('corpus/text/tempInsertVepsianGenreText', 'Corpus\TextController@tempInsertVepsianGenreText');
 
-        Route::resource('dict/lemma', 'Dict\LemmaController',
-                       ['names' => ['update' => 'lemma.update',
-                                    'store' => 'lemma.store',
-                                    'destroy' => 'lemma.destroy']]);
-
         Route::resource('dict/gram', 'Dict\GramController',
                        ['names' => ['update' => 'gram.update',
                                     'store' => 'gram.store',
@@ -93,6 +83,11 @@ Route::group(
                        ['names' => ['update' => 'gramset.update',
                                     'store' => 'gramset.store',
                                     'destroy' => 'gramset.destroy']]);
+
+        Route::resource('dict/lemma', 'Dict\LemmaController',
+                       ['names' => ['update' => 'lemma.update',
+                                    'store' => 'lemma.store',
+                                    'destroy' => 'lemma.destroy']]);
 
         Route::resource('dict/relation', 'Dict\RelationController',
                        ['names' => ['update' => 'relation.update',

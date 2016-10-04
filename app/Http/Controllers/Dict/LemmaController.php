@@ -9,6 +9,7 @@ use Gate;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
+use Response;
 
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use App\Models\User;
@@ -231,13 +232,16 @@ class LemmaController extends Controller
             }
         }  
 
-        $relation_meanings = [];
+        $relation_meanings = $meaning_relation_values = [];
         foreach ($lemma->meanings as $meaning) {
             foreach ($meaning->meaningRelations as $meaning_relation) {
                 $relation_id = $meaning_relation->pivot->relation_id;
-                $relation_meanings[$meaning->id][$relation_id][] = $meaning_relation->pivot->meaning2_id;
+                $meaning2_id = $meaning_relation->pivot->meaning2_id;
+                $relation_meanings[$meaning->id][$relation_id][] = $meaning2_id;
+                $meaning_relation_values[$meaning2_id] = $all_meanings[$meaning2_id];
             }
         }                      
+
         return view('dict.lemma.edit')
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
@@ -245,7 +249,7 @@ class LemmaController extends Controller
                                'gramset_values' => $gramset_values,
                                'langs_for_meaning' => $langs_for_meaning,
                                'new_meaning_n' => $new_meaning_n,
-                               'all_meanings' => $all_meanings,
+                               'all_meanings' => $meaning_relation_values,//$all_meanings,
                                'relation_values' => $relation_values,
                                'relation_meanings' => $relation_meanings 
                               )
@@ -401,7 +405,7 @@ class LemmaController extends Controller
     }
     
     
-    /** Gets list of all semantic ralations, 
+    /** Gets list of all semantic relations, 
      *  
      */
     public function relation(Request $request)
@@ -467,6 +471,35 @@ class LemmaController extends Controller
                         );
     }
         
+    /**
+     * Gets list of relations for drop down list in JSON format
+     * Test url: /dict/lemma/meanings_list?lang_id=1&pos_id=1&lemma_id=2810
+     * 
+     * @return JSON response
+     */
+    public function meaningsList(Request $request)
+    {
+        $lemma_name = '%'.$request->input('q').'%';
+        $lang_id = (int)$request->input('lang_id');
+        $pos_id = (int)$request->input('pos_id');
+        $lemma_id = (int)$request->input('lemma_id');
+
+        $all_meanings = [];
+        $lemmas = Lemma::where('lang_id',$lang_id)
+                       ->where('pos_id',$pos_id)
+                       ->where('id','<>',$lemma_id)
+                       ->where('lemma','like', $lemma_name)
+                       ->orderBy('lemma')->get();
+        foreach ($lemmas as $lem) {
+            foreach ($lem->meanings as $meaning) {
+                $all_meanings[]=['id'  => $meaning->id, 
+                                 'text'=> $lem->lemma .' ('.$meaning->getMultilangMeaningTextsString().')'];
+            }
+        }  
+
+        return Response::json($all_meanings);
+    }
+
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */
