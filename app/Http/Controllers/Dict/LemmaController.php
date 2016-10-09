@@ -170,8 +170,9 @@ class LemmaController extends Controller
         $relations = Relation::getList();
 //dd($relations);
         $meanings = $lemma->meanings;
-        $meaning_texts = [];
-        $meaning_relations = [];
+        $meaning_texts = 
+        $meaning_relations = 
+        $translation_values = [];
           
         foreach ($meanings as $meaning) {
             foreach ($langs_for_meaning as $lang_id => $lang_text) {
@@ -195,12 +196,28 @@ class LemmaController extends Controller
                                'meaning' => $relation_meaning_obj->getMultilangMeaningTextsString()];
                 }
             }
+            
+            foreach ($langs_for_meaning as $l_id => $lang_text) {
+                $meaning_translations = $meaning->translations()->wherePivot('lang_id',$l_id)->get();
+                if ($meaning_translations) {
+                    foreach ($meaning_translations as $meaning_translation) {
+                        $meaning2_id = $meaning_translation->pivot->meaning2_id; 
+                        $meaning2_obj = Meaning::find($meaning2_id);
+                        $translation_lemma_obj = $meaning2_obj->lemma;
+                        $translation_lemma = $translation_lemma_obj->lemma;
+                        $translation_values[$meaning->id][$lang_text][$translation_lemma_obj->id] 
+                            = ['lemma' => $translation_lemma,
+                               'meaning' => $meaning2_obj->getMultilangMeaningTextsString()];
+                    }
+                }
+            }
         }   
 
         return view('dict.lemma.show')
                   ->with(['lemma'=>$lemma,
                           'meaning_texts' => $meaning_texts,
-                          'meaning_relations' => $meaning_relations
+                          'meaning_relations' => $meaning_relations,
+                          'translation_values' => $translation_values
             ]);
     }
 
@@ -232,13 +249,31 @@ class LemmaController extends Controller
             }
         }  
 
-        $relation_meanings = $meaning_relation_values = [];
+        $relation_meanings = 
+        $meaning_relation_values = 
+        $translation_values = [];
+        
         foreach ($lemma->meanings as $meaning) {
             foreach ($meaning->meaningRelations as $meaning_relation) {
                 $relation_id = $meaning_relation->pivot->relation_id;
                 $meaning2_id = $meaning_relation->pivot->meaning2_id;
                 $relation_meanings[$meaning->id][$relation_id][] = $meaning2_id;
                 $meaning_relation_values[$meaning2_id] = $all_meanings[$meaning2_id];
+            }
+            
+            foreach (array_keys($langs_for_meaning) as $l_id) {
+                $translation_values[$meaning->id][$l_id] = [];
+                $meaning_translations = $meaning->translations()->wherePivot('lang_id',$l_id)->get();
+                if ($meaning_translations) {
+                    foreach ($meaning_translations as $meaning_translation) {
+                        $meaning2_id = $meaning_translation->pivot->meaning2_id; 
+                        $meaning2_obj = Meaning::find($meaning2_id);
+                        if ($meaning2_obj) {
+                            $translation_values[$meaning->id][$l_id][$meaning2_id] 
+                                = $meaning2_obj->getLemmaMultilangMeaningTextsString();
+                        }
+                    }
+                }
             }
         }                      
 
@@ -251,7 +286,8 @@ class LemmaController extends Controller
                                'new_meaning_n' => $new_meaning_n,
                                'all_meanings' => $meaning_relation_values,//$all_meanings,
                                'relation_values' => $relation_values,
-                               'relation_meanings' => $relation_meanings 
+                               'relation_meanings' => $relation_meanings,
+                               'translation_values' => $translation_values
                               )
                         );
     }
@@ -327,6 +363,10 @@ class LemmaController extends Controller
                         DB::table('meaning_relation')
                           ->where('meaning2_id',$meaning->id)->delete();
                         $meaning->meaningRelations()->detach();
+
+                        DB::table('meaning_translation')
+                          ->where('meaning2_id',$meaning->id)->delete();
+                        $meaning->translations()->detach();
 
                         $meaning_texts = $meaning->meaningTexts;
                         foreach ($meaning_texts as $meaning_text) {

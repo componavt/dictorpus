@@ -38,7 +38,8 @@
                 @foreach ($gram_fields as $field)
                 <th>{{ trans('dict.'.$field) }}</th>
                 @endforeach
-
+                
+                <th>{{ trans('dict.wordforms') }}</th>
                 @if (User::checkAccess('ref.edit'))
                 <th colspan="2"></th>
                 @endif
@@ -55,6 +56,8 @@
                     @endif
                 </td>
                 @endforeach
+                
+                <td>{{ $gramset->wordforms()->count()}}</td>
 
                 @if (User::checkAccess('ref.edit'))
                 <td>

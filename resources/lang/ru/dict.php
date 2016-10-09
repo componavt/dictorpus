@@ -52,6 +52,7 @@ return [
     'select_pos' => 'Выберите часть речи',
     'select_relation' => 'Выберите семантическое отношение',
     'tense' => 'время',
+    'translation' => 'перевод',
     'wordform' => 'словоформа',
     'wordforms' => 'словоформы',
     'wordforms_linked_many_lemmas' => 'Словоформы, связанные более чем с одной леммой',

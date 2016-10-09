@@ -19,10 +19,11 @@
                             'value'=> $meaning->meaning_n,
                             'attributes'=>['size' => 2],
                             'tail' => trans('dict.meaning')])</h3>
-                <table class="table-interpretations">
+                <table class="table-interpretations-translations">
                     <tr>
                         <th>{{ trans('dict.lang') }}</th>
                         <th>{{ trans('dict.interpretation') }}</th>
+                        <th>{{ trans('dict.translation') }}</th>
                     </tr>
                 @foreach ($meaning->meaningTextsWithAllLangs() as $meaning_lang => $meaning_text)
                     <tr>
@@ -30,6 +31,16 @@
                         <td>@include('widgets.form._formitem_text',
                            ['name' => 'ex_meanings['.$meaning->id.'][meaning_text]['.$meaning_lang.']',
                             'value'=> $meaning_text->meaning_text])</td>
+                        <td>
+                            @if ($meaning_lang != $lemma->lang_id)
+                                @include('widgets.form._formitem_select2',
+                                        ['name' => 'ex_meanings['.$meaning->id.'][translation]['.$meaning_lang.']',
+                                         'values' => $translation_values[$meaning->id][$meaning_lang],
+                                         'value' => array_keys($translation_values[$meaning->id][$meaning_lang]),
+                                         'class'=>'multiple-select-translation-'.$meaning_lang                            
+                                ])
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
                 </table>
@@ -41,7 +52,7 @@
                              'title' => $relation_text,
                              'values' => $all_meanings,
                              'value' => $relation_value,
-                             'attributes'=>['multiple'=>'multiple']
+                             'class'=>'multiple-select-relation form-control'
                         ])
                 @endforeach
             </div>

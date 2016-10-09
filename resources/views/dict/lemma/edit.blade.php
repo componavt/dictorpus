@@ -26,7 +26,7 @@
 @stop
 
 @section('jqueryFunc')
-    $(".multiple-select").select2({
+    $(".multiple-select-relation").select2({
         ajax: {
           url: "/dict/lemma/meanings_list",
           dataType: 'json',
@@ -34,36 +34,43 @@
           data: function (params) {
             return {
               q: params.term, // search term
-//              page: params.page
-              lang_id: {{ $lemma->lang_id}},
+              lang_id: $( "#lemma_lang_id option:selected" ).val() {{-- $lemma->lang_id--}},
               pos_id: $( "#lemma_pos_id option:selected" ).val(), {{-- $lemma->pos_id --}}
               lemma_id: {{ $lemma->id}}
             };
           },
-/*          processResults: function (data, params) {
-            // parse the results into the format expected by Select2
-            // since we are using custom formatting functions we do not need to
-            // alter the remote JSON data, except to indicate that infinite
-            // scrolling can be used
-            params.page = params.page || 1;
-
-            return {
-              results: data.items,
-              pagination: {
-                more: (params.page * 30) < data.total_count
-              }
-            };
-          },*/
           processResults: function (data) {
             return {
               results: data
             };
           },          
           cache: true
-        }//,
-//        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-  //      minimumInputLength: 1,
-    //    templateResult: formatRepo, // omitted for brevity, see the source of this page
-      //  templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
-      });
+        }
+    });
+    
+    @foreach ($langs_for_meaning as $lang_id => $lang_text)
+        @if ($lang_id != $lemma->lang_id)
+            $(".multiple-select-translation-{{ $lang_id }}").select2({
+                ajax: {
+                  url: "/dict/lemma/meanings_list",
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (params) {
+                    return {
+                      q: params.term, // search term
+                      lang_id: {{ $lang_id }},
+                      pos_id: $( "#lemma_pos_id option:selected" ).val(),
+                      lemma_id: {{ $lemma->id}}
+                    };
+                  },
+                  processResults: function (data) {
+                    return {
+                      results: data
+                    };
+                  },          
+                  cache: true
+                }
+            });
+        @endif
+    @endforeach
 @stop

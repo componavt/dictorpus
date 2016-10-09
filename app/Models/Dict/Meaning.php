@@ -58,6 +58,19 @@ class Meaning extends Model
     }
 
     /**
+     * Meaning __has_many__ Lang
+     *
+     * @return Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function translations(){
+/*        return $this->belongsToMany(Meaning::class,'meaning_relation','meaning1_id','meaning2_id')
+                    ->withPivot('relation_id');     */
+
+        return $this->belongsToMany(Lang::class,'meaning_translation','meaning1_id','lang_id')
+                    ->withPivot('meaning2_id');
+    }
+
+    /**
      * Gets all meaning texts and returns string:
      * 
      * <meaning_n>. <lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...
@@ -86,6 +99,21 @@ class Meaning extends Model
         return $out;
     }
 
+
+    /**
+     * Gets all meaning texts and returns string:
+     * 
+     * <lemma> (<meaning_n>. <lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...)
+     * OR
+     * <lemma> (<lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...)
+     *              if lemma has one meaning 
+     * 
+     * @return String
+     */
+    public function getLemmaMultilangMeaningTextsString() :String
+    {
+        return $this->lemma->lemma . ' ('. $this->getMultilangMeaningTextsString() . ')';
+    }
     /**
      * Gets an array of meaning texts for ALL languages and sorted by lang_id
      *
@@ -167,6 +195,8 @@ class Meaning extends Model
             }
             $meaning_obj->updateMeaningRelations(isset($meaning['relation']) ? $meaning['relation'] : []);
 
+            $meaning_obj->updateMeaningTranslations(isset($meaning['translation']) ? $meaning['translation'] : []);
+
             // is meaning has any meaning texts or any relations
             if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count()) { 
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
@@ -207,6 +237,36 @@ class Meaning extends Model
                  $mean2_rels->attach($relation_obj->reverse_relation_id,
                                         ['meaning2_id'=>$this->id]);
     //            }
+            }
+        }
+    }
+    
+    /**
+     * Updates array of meaning relations 
+     *
+     * @return NULL
+     */
+    public function updateMeaningTranslations($translations)
+    {
+        // removes all translations to this meaning
+        DB::table('meaning_translation')
+          ->where('meaning2_id',$this->id)->delete();
+        // removes all translations from this meaning
+        $this->translations()->detach();
+        
+        if (!is_array($translations)) {
+            return;
+        }
+        foreach ($translations as $lang_id=>$trans_means) {
+            foreach ($trans_means as $trans_mean_id) {
+                $this->translations()
+                     ->attach($lang_id,['meaning2_id'=>$trans_mean_id]);
+                
+                // reverse translation
+                $mean2_obj = self::find($trans_mean_id);
+                $mean2_transls = $mean2_obj->translations();
+                $mean2_transls->attach($this->lemma->lang_id,
+                                       ['meaning2_id'=>$this->id]);
             }
         }
     }

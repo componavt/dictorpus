@@ -96,6 +96,10 @@ class Wordform extends Model
                                                ->where('wordform_id',$wordform_obj->id)
                                                ->where('gramset_id',$wordform_info['gramset'])
                                                ->count() == 0) {
+                    if (!(int)$wordform_info['gramset']) {
+                        $wordform_info['gramset'] = NULL;
+                    }
+//dd($wordform_info['gramset']);
                     $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>'NULL']);
                 }
             }

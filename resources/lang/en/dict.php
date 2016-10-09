@@ -52,6 +52,7 @@ return [
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
     'tense' => 'Tense',
+    'translation' => 'translation',
     'wordform' => 'word form',
     'wordforms_linked_many_lemmas' => 'Word forms associated with more than one lemma',
     'wordforms' => 'word forms',
