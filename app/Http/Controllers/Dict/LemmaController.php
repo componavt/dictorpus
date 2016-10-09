@@ -293,6 +293,26 @@ class LemmaController extends Controller
     }
 
     /**
+     * Shows the form for editing of lemma's wordforms.
+     *
+     * @param  int  $id - ID of lemma
+     * @return \Illuminate\Http\Response
+     */
+    public function editWordforms($id)
+    {
+        $lemma = Lemma::find($id);
+        
+        $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
+        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
+
+        return view('dict.lemma.edit_wordforms')
+                  ->with(array('lemma' => $lemma,
+                               'gramset_values' => $gramset_values,
+                              )
+                        );
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -333,6 +353,32 @@ class LemmaController extends Controller
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);
                
+        return Redirect::to('/dict/lemma/'.($lemma->id))
+                       ->withSuccess(\Lang::get('messages.updated_success'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateWordforms(Request $request, $id)
+    {
+       // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
+        $lemma= Lemma::findOrFail($id);
+        
+        // WORDFORMS UPDATING
+        //remove all records from table lemma_wordform
+        $lemma-> wordforms()->detach();
+       
+        //add wordforms from full table of gramsets
+        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
+
+        //add wordforms without gramsets
+        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
+  
         return Redirect::to('/dict/lemma/'.($lemma->id))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

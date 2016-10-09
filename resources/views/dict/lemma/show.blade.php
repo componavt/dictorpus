@@ -84,7 +84,14 @@
         @endforeach
 
         @if ($lemma->wordforms()->count())
-        <h3>{{ trans('dict.wordforms') }}</h3>
+        <h3>
+            {{ trans('dict.wordforms') }}
+            @if (User::checkAccess('dict.edit'))
+                @include('widgets.form._button_edit', 
+                         ['route' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
+                          'without_text' => 1])
+            @endif
+        </h3>
         <?php $key=1;?>
         <table class="table-bordered">
             @foreach ($lemma->wordformsWithGramsets() as $wordform)
@@ -99,13 +106,6 @@
             </tr>
             @endforeach
         </table>
-        @endif
-
-        @if (User::checkAccess('dict.edit'))
-        <p>
-
-            {{-- @include('dict.lemma._form_delete', ['lemma'=>$lemma]) --}}
-        </p>
         @endif
 
         @include('dict.lemma._modal_delete')

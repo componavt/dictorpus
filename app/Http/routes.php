@@ -55,8 +55,12 @@ Route::group(
         
         Route::get('dict/dialect', 'Dict\DialectController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
-        Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
+
+        Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
+        Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')->name('lemma.update.wordforms');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
+        Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
+
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
