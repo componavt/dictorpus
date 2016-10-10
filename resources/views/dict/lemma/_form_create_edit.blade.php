@@ -51,6 +51,7 @@
                 </table>
 
                 @foreach ($relation_values as $relation_id => $relation_text)
+                    @if (isset($relation_meanings[$meaning->id][$relation_id]))
                     <?php $relation_value = isset($relation_meanings[$meaning->id][$relation_id]) ? $relation_meanings[$meaning->id][$relation_id] : array(); ?>
                     @include('widgets.form._formitem_select2',
                             ['name' => 'ex_meanings['.$meaning->id.'][relation]['.$relation_id.']',
@@ -59,7 +60,12 @@
                              'value' => $relation_value,
                              'class'=>'multiple-select-relation form-control'
                         ])
+                    @endif
                 @endforeach
+                
+                <div id="new-relations">
+                    
+                </div>
             @endforeach
         @endif
 
