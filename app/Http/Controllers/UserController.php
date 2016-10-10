@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:admin,/user/', ['all']);
+        $this->middleware('auth:admin,/', ['all']);
     }
 
     /**
@@ -168,10 +168,10 @@ class UserController extends Controller
             try{
                 $user = User::find($id);
                 if($user){
-                    $user_name = $user->name;
+                    $user_name = $user->email;
                     $user->roles()->detach();
                     $user->delete();
-                    $result['message'] = \Lang::get('user_removed', ['name'=>$user_name]);
+                    $result['message'] = \Lang::get('auth.user_removed', ['name'=>$user_name]);
                 }
                 else{
                     $error = true;

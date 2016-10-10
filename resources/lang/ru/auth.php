@@ -14,6 +14,7 @@ return [
     'account_is_activated' => 'Аккаунт активирован.',
     'confirm' => 'Подтвердить',
     'first_name' => 'Имя',
+    'last_login' => 'Последний вход',
     'last_name' => 'Фамилия',
     'login' => 'Войти',
     

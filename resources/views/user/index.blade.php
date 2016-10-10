@@ -17,6 +17,7 @@
                 <th>{{ trans('auth.last_name') }}</th>
                 <th>{{ trans('auth.permissions') }}</th>
                 <th>{{ trans('auth.roles') }}</th>
+                <th>{{ trans('auth.last_login') }}</th>
                 <th colspan="2"></th>
             </tr>
         </thead>
@@ -29,6 +30,7 @@
                 <td>{{$user->last_name}}</td>
                 <td>{{$user->permissionString()}}</td>
                 <td>{{$user->rolesNames()}}</td>
+                <td>{{$user->last_login}}</td>
                 <td>
                     <a  href="{{ LaravelLocalization::localizeURL('/user/'.$user->id.'/edit') }}" 
                         class="btn btn-warning btn-xs btn-detail" value="{{$user->id}}">{{ trans('messages.edit') }}</a> 

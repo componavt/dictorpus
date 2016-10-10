@@ -5,6 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/php-project/1">
             <name>dictorpus</name>
         </data>
+        <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1"/>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
             <word>endif</word>
             <word>endsection</word>
