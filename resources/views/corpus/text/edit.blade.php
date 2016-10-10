@@ -4,6 +4,10 @@
 {{ trans('navigation.texts') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('navigation.texts') }}</h1>
         <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_text')}} "{{ $text->title}}"</h2>
@@ -15,4 +19,12 @@
                                       'lang_values' => $lang_values, 
                                       'corpus_values'  => $corpus_values])
         {!! Form::close() !!}
+@stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
+@stop
+
+@section('jqueryFunc')
+    $(".multiple-select-recorder").select2();
 @stop

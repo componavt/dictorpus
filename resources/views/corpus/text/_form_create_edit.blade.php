@@ -42,12 +42,19 @@
                  'value' => $event_place_value,
                  'title' => trans('corpus.record_place')]) 
         <?php if ($action=='create') { $recorder_value = NULL; } ?>        
-         @include('widgets.form._formitem_select', 
+{{--        @include('widgets.form._formitem_select', 
                 ['name' => 'event.recorders[]', 
                  'values' =>$recorder_values,
                  'value' => $recorder_value,
                  'title' => trans('corpus.recorded'),
-                 'attributes'=>['multiple'=>'multiple']]) 
+                 'attributes'=>['multiple'=>'multiple']]) --}}
+        @include('widgets.form._formitem_select2',
+                ['name' => 'event.recorders', 
+                 'values' =>$recorder_values,
+                 'value' => $recorder_value,
+                 'title' => trans('corpus.recorded'),
+                 'class'=>'multiple-select-recorder form-control'
+            ])
                 
 @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
     </div>

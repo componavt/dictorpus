@@ -147,7 +147,12 @@ class TextController extends Controller
         Event::storeEvent($request->only('event_informant_id','event_place_id','event_date'), 
                                                   $text);
         Source::storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'), 
-                                                  $text);
+                                                  $text);       
+        if ($text->event) {
+            $text->event->recorders()->attach($request->event_recorders);
+            $text->push();
+        }
+
         return Redirect::to('/corpus/text/'.($text->id))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
