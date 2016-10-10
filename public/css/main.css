@@ -62,13 +62,20 @@ and open the template in the editor.
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 
+.table th:first-letter {
+    text-transform: uppercase;    
+}
+
 .table-interpretations-translations {
     width: 100%;
 }
 
-.table-interpretations-translations th:first-letter,
-.table th:first-letter {
+.table-interpretations-translations th:first-letter {
     text-transform: uppercase;    
+}
+
+.table-interpretations-translations th {
+    padding-bottom: 10px;
 }
 
 .table-interpretations-translations th,
@@ -76,6 +83,10 @@ and open the template in the editor.
     padding-right: 10px;
 }
 
-.table-interpretations-translations select {
-    width: 100%;
+.table-interpretations-translations tr td:not(:first-child) {
+    width: 50%;
+}
+
+.show-meaning-translation {
+    padding-left: 25px;
 }

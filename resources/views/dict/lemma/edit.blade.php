@@ -11,7 +11,13 @@
 @section('content')
         <h1>{{ trans('navigation.lemmas') }}</h1>
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_lemma')}}: {{ $lemma->lemma}}</h2>
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}">{{ trans('messages.back_to_show') }}</a></p>
+        <p>
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}">{{ trans('messages.back_to_show') }}</a>
+            | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a>
+            @if (User::checkAccess('dict.edit'))
+            | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}">{{ trans('messages.create_new_f') }}</a>
+            @endif
+        </p>
         
         {!! Form::model($lemma, array('method'=>'PUT', 'route' => array('lemma.update', $lemma->id))) !!}
         @include('dict.lemma._form_create_edit', ['submit_title' => trans('messages.save'),
@@ -27,6 +33,7 @@
 
 @section('jqueryFunc')
     $(".multiple-select-relation").select2({
+        width: 'resolve',
         ajax: {
           url: "/dict/lemma/meanings_list",
           dataType: 'json',
@@ -51,6 +58,7 @@
     @foreach ($langs_for_meaning as $lang_id => $lang_text)
         @if ($lang_id != $lemma->lang_id)
             $(".multiple-select-translation-{{ $lang_id }}").select2({
+                width: '100%',
                 ajax: {
                   url: "/dict/lemma/meanings_list",
                   dataType: 'json',

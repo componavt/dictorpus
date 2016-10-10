@@ -1,24 +1,29 @@
-{{--<div class="row">
-    <div class="col-sm-6"> --}}
+<div class="row">
+    <div class="col-sm-4">
         @include('widgets.form._formitem_text', ['name' => 'lemma', 'title'=>trans('dict.lemma')])
+    </div>
+    <div class="col-sm-4">        
         @include('widgets.form._formitem_select',
                 ['name' => 'lang_id',
                  'values' =>$lang_values,
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lemma_lang_id']])
+    </div>
+    <div class="col-sm-4">        
         @include('widgets.form._formitem_select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
-        @if ($action == 'edit')
-            @foreach ($lemma->meanings as $meaning)
-            <div>
-                <h3>@include('widgets.form._formitem_text',
-                           ['name' => 'ex_meanings['.$meaning->id.'][meaning_n]',
-                            'value'=> $meaning->meaning_n,
-                            'attributes'=>['size' => 2],
-                            'tail' => trans('dict.meaning')])</h3>
+    </div> 
+</div>
+@if ($action == 'edit')
+    @foreach ($lemma->meanings as $meaning)
+        <h3>@include('widgets.form._formitem_text',
+                   ['name' => 'ex_meanings['.$meaning->id.'][meaning_n]',
+                    'value'=> $meaning->meaning_n,
+                    'attributes'=>['size' => 2],
+                    'tail' => trans('dict.meaning')])</h3>
                 <table class="table-interpretations-translations">
                     <tr>
                         <th>{{ trans('dict.lang') }}</th>
@@ -55,7 +60,6 @@
                              'class'=>'multiple-select-relation form-control'
                         ])
                 @endforeach
-            </div>
             @endforeach
         @endif
 
@@ -66,29 +70,29 @@
                         'value'=> $new_meaning_n,
                         'attributes'=>['size' => 2],
                         'tail' => trans('dict.meaning')])</h3>
-            <table class="table-interpretations">
+            <table class="table-interpretations-translations">
                 <tr>
                     <th>{{ trans('dict.lang') }}</th>
                     <th>{{ trans('dict.interpretation') }}</th>
+                    <th></th>
                 </tr>
             @foreach ($langs_for_meaning as $lang_id => $lang_text)
                 <tr>
                     <td>{{ $lang_text }}&nbsp; </td>
                     <td>@include('widgets.form._formitem_text',
                        ['name' => 'new_meanings[0][meaning_text]['.$lang_id.']'])</td>
+                    <td></td>
                 </tr>
             @endforeach
             </table>
         </div>
 
         @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
-{{--    </div>
-    <div class="col-sm-6">
+{{--
         <p><b>{{ trans('dict.wordforms') }}</b></p>
         @if ($action == 'edit')
             @include('dict.lemma._form_edit_wordforms')
         @endif
-    </div> 
-</div>--}}
+--}}
 
 

@@ -12,22 +12,28 @@
 
         @if (User::checkAccess('dict.edit'))
         {{-- @can('dict.edit',$lemma) --}}
-            | @include('widgets.form._button_edit', ['route' => '/dict/lemma/'.$lemma->id.'/edit'])
+{{--            | @include('widgets.form._button_edit', ['route' => '/dict/lemma/'.$lemma->id.'/edit']) --}}
             | @include('widgets.form._button_delete', ['route' => 'lemma.destroy', 'id' => $lemma->id]) 
+            | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}">{{ trans('messages.create_new_f') }}</a>
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif
         {{-- @endcan --}}
+
             | <a href="">{{ trans('messages.history') }}</a>
         </p>
 
-        <h2>{{ $lemma->lemma }}</h2>
+        <h2>
+            {{ $lemma->lemma }}
+            @include('widgets.form._button_edit', 
+                     ['route' => '/dict/lemma/'.$lemma->id.'/edit',
+                      'without_text' => 1])
+        </h2>
 
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
 
         @foreach ($lemma->meanings as $meaning)
-        <div>
             <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
             @if (isset($meaning_texts[$meaning->id]))
             <ul>
@@ -59,8 +65,8 @@
             @endif
 
             @if (isset($translation_values[$meaning->id]))
+            <div class="show-meaning-translation">
             <h4>{{ trans('dict.translation')}}</h4>
-            <ul>
                 @foreach ($translation_values[$meaning->id] as $lang_text => $translation_lemmas)
                 <?php
                     $transl_lemmas = [];
@@ -77,10 +83,9 @@
                 ?>
                 <p><b>{{$lang_text}}:</b> {!! $translation_meanings !!}</p>
                 @endforeach
-            </ul>
+            </div>
             @endif
 
-        </div>
         @endforeach
 
         @if ($lemma->wordforms()->count())
