@@ -135,6 +135,25 @@ class LemmaController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createMeaning(Request $request)
+    {
+        $count = (int)$request->input('count');
+        $meaning_n = (int)$request->input('meaning_n');
+        $langs_for_meaning = Lang::getList();
+                                
+        return view('dict.lemma._form_create_meaning')
+                  ->with(array('count' => $count,
+                               'new_meaning_n' => $meaning_n,
+                               'langs_for_meaning' => $langs_for_meaning
+                              )
+                        );
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -6,6 +6,7 @@
 
 @section('headExtra')
     {!!Html::style('css/select2.min.css')!!}
+    {!!Html::style('css/lemma_form.css')!!}
 @stop
 
 @section('content')
@@ -29,21 +30,18 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
+    {!!Html::script('js/meaning.js')!!}
 @stop
 
 @section('jqueryFunc')
+    addMeaning();
+    
     $(".add-new-relation").click(function(){
         var meaning_id = $(this).attr("data-for");
-        var relation_id = $('#new_relation_id option:selected').val();
+        var relation = $('#new_relation_id option:selected');
+        var relation_id = relation.val();
         $('#relation_'+meaning_id + '_' + relation_id).show('slow');
-/*        var url = '/dict/meaning/' + meaning_id + '/relation/create/' + relation_id;
-        $.ajax({
-            url: url, 
-            type: 'GET',
-            success: function(result){
-                $("#new-relations").append(result);
-            }
-        }); */
+        relation.remove();
     });
     
     $(".multiple-select-relation").select2({

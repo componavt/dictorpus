@@ -10,6 +10,7 @@ return [
     |
     */
     
+    'add_new_meaning' => 'add a new meaning',
     'add_new_relation' => 'add a new relation',
     'case' => 'Case',
     'code' => 'code',

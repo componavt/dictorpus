@@ -66,27 +66,3 @@ and open the template in the editor.
     text-transform: uppercase;    
 }
 
-.table-interpretations-translations {
-    width: 100%;
-}
-
-.table-interpretations-translations th:first-letter {
-    text-transform: uppercase;    
-}
-
-.table-interpretations-translations th {
-    padding-bottom: 10px;
-}
-
-.table-interpretations-translations th,
-.table-interpretations-translations td {
-    padding-right: 10px;
-}
-
-.table-interpretations-translations tr td:not(:first-child) {
-    width: 50%;
-}
-
-.show-meaning-translation {
-    padding-left: 25px;
-}
