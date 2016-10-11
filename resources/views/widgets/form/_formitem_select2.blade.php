@@ -1,7 +1,3 @@
-<div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}"
-        <?=isset($id)  ? ' id="'.$id.'"' : '';?>
-        <?=isset($style)  ? ' style="'.$style.'"' : '';?>
-     >
 <?php 
 if(!isset($value)) 
     $value = [];
@@ -20,6 +16,12 @@ if (!isset($class)) {
     $class = 'multiple-select form-control';
 }
 ?>
+<div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}
+        <?=isset($group_class)  ? ' '.$group_class : '';?>
+        "
+        <?=isset($id)  ? ' id="'.$id.'"' : '';?>
+        <?=isset($style)  ? ' style="'.$style.'"' : '';?>
+     >
     @if($title)
     <label for="{{$name}}[]">{{ $title }}</label>
     @endif

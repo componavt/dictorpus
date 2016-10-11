@@ -54,10 +54,10 @@
                     <?php 
                         if (isset($relation_meanings[$meaning->id][$relation_id])) {
                             $relation_value =  $relation_meanings[$meaning->id][$relation_id]; 
-                            $style = 'display: block';
+                            $group_class = '';
                         } else {
                             $relation_value =  []; 
-                            $style = 'display: none';
+                            $group_class = 'empty-relation';
                         }
                     ?>
                     @include('widgets.form._formitem_select2',
@@ -65,9 +65,9 @@
                              'title' => $relation_text,
                              'values' => $all_meanings,
                              'value' => $relation_value,
-                             'style' => $style,
+                             'group_class' => $group_class,
                              'id' => 'relation_'.$meaning->id.'_'.$relation_id,
-                             'class'=>'multiple-select-relation form-control'
+                             'class'=> 'multiple-select-relation form-control'
                         ])
                 @endforeach
                 

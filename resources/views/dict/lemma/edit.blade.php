@@ -35,14 +35,15 @@
     $(".add-new-relation").click(function(){
         var meaning_id = $(this).attr("data-for");
         var relation_id = $('#new_relation_id option:selected').val();
-        var url = '/dict/meaning/' + meaning_id + '/relation/create/' + relation_id;
+        $('#relation_'+meaning_id + '_' + relation_id).show('slow');
+/*        var url = '/dict/meaning/' + meaning_id + '/relation/create/' + relation_id;
         $.ajax({
             url: url, 
             type: 'GET',
             success: function(result){
                 $("#new-relations").append(result);
             }
-        });
+        }); */
     });
     
     $(".multiple-select-relation").select2({
@@ -67,6 +68,8 @@
           cache: true
         }
     });
+    
+    $('.empty-relation').css('display','none');
     
     @foreach ($langs_for_meaning as $lang_id => $lang_text)
         @if ($lang_id != $lemma->lang_id)
