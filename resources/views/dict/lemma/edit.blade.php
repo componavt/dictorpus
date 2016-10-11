@@ -32,6 +32,19 @@
 @stop
 
 @section('jqueryFunc')
+    $(".add-new-relation").click(function(){
+        var meaning_id = $(this).attr("data-for");
+        var relation_id = $('#new_relation_id option:selected').val();
+        var url = '/dict/meaning/' + meaning_id + '/relation/create/' + relation_id;
+        $.ajax({
+            url: url, 
+            type: 'GET',
+            success: function(result){
+                $("#new-relations").append(result);
+            }
+        });
+    });
+    
     $(".multiple-select-relation").select2({
         width: 'resolve',
         ajax: {
@@ -41,8 +54,8 @@
           data: function (params) {
             return {
               q: params.term, // search term
-              lang_id: $( "#lemma_lang_id option:selected" ).val() {{-- $lemma->lang_id--}},
-              pos_id: $( "#lemma_pos_id option:selected" ).val(), {{-- $lemma->pos_id --}}
+              lang_id: $( "#lemma_lang_id option:selected" ).val(),
+              pos_id: $( "#lemma_pos_id option:selected" ).val(),
               lemma_id: {{ $lemma->id}}
             };
           },

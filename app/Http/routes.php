@@ -63,6 +63,7 @@ Route::group(
 
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
+        Route::get('dict/meaning/{id}/relation/create/{relation_id}', 'Dict\MeaningController@createRelation')->name('meaning.create.relation');
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
         Route::get('dict/wordform', 'Dict\WordformController@index');
       

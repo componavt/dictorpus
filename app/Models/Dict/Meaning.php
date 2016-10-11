@@ -114,6 +114,7 @@ class Meaning extends Model
     {
         return $this->lemma->lemma . ' ('. $this->getMultilangMeaningTextsString() . ')';
     }
+    
     /**
      * Gets an array of meaning texts for ALL languages and sorted by lang_id
      *
@@ -137,6 +138,23 @@ class Meaning extends Model
         }
 
         return $meaning_texts;
+    }
+    
+    /**
+     * Gets relations missing in this meaning
+     * 
+     * @return Array [1=>'synonyms'...]
+     */
+    public function missingRelationsList() :Array
+    {
+        $relations = [];
+        
+        foreach (Relation::getList() as $relation_id=>$relation_text) {
+            if ($this->meaningRelations()->wherePivot('relation_id',$relation_id)->count() == 0) {
+                $relations[$relation_id] = $relation_text;
+            }
+        }
+        return $relations;
     }
 
     /**

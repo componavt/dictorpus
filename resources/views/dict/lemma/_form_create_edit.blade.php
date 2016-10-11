@@ -64,7 +64,21 @@
                 @endforeach
                 
                 <div id="new-relations">
-                    
+                </div>
+{{--                @include('dict.lemma._form_new_relations')--}}
+                <div class="row">
+                  <div class="col-xs-3">
+                        @include('widgets.form._formitem_select',
+                                ['name' => 'new_relation',
+                                 'values' => $meaning->missingRelationsList(),
+                                 'attributes' => ['id'=>'new_relation_id']])
+                  </div>
+                  <div class="col-xs-3">
+                      <button type="button" class="btn btn-info add-new-relation" 
+                              data-for='{{ $meaning->id}}'>
+                          {{trans('dict.add_new_relation')}}
+                      </button>
+                  </div>
                 </div>
             @endforeach
         @endif

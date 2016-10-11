@@ -8,6 +8,8 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Dict\Relation;
+
 class MeaningController extends Controller
 {
      /**
@@ -38,6 +40,22 @@ class MeaningController extends Controller
     public function create()
     {
         //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createRelation($id,$relation_id)
+    {
+        $relation_text = Relation::find($relation_id)->name;
+        return view('dict.lemma._form_new_relation')
+                  ->with(array('meaning_id' => $id,
+                               'relation_id' => $relation_id,
+                               'relation_text' => $relation_text
+                              )
+                        );
     }
 
     /**
