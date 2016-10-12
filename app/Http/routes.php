@@ -53,6 +53,8 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         
+        Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
+
         Route::get('dict/dialect', 'Dict\DialectController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
 
