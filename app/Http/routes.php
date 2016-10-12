@@ -58,6 +58,7 @@ Route::group(
 
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
         Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')->name('lemma.update.wordforms');
+        Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
 

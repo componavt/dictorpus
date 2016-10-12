@@ -24,6 +24,11 @@ class Lang extends Model
     {
         parent::boot();
     }
+    
+    public function identifiableName()
+    {
+        return $this->name;
+    }    
 
     /** Gets name of this lang, takes into account locale.
      * 

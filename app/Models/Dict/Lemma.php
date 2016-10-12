@@ -21,6 +21,7 @@ class Lemma extends Model
 //        'public' => 'boolean:No|Yes',
 //        'modified_at' => 'datetime:d/m/Y g:i A',
 //        'deleted_at' => 'isEmpty:Active|Deleted'
+        'updated_at' => 'datetime:m/d/Y g:i A'
     );
     protected $revisionFormattedFieldNames = array(
 //        'title' => 'Title',

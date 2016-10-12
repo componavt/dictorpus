@@ -4,6 +4,10 @@
 {{ trans('navigation.lemmas') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/lemma.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('navigation.lemmas') }}</h1>
 
@@ -20,7 +24,7 @@
         @endif
         {{-- @endcan --}}
 
-            | <a href="">{{ trans('messages.history') }}</a>
+            | <a href="/dict/lemma/{{ $lemma->id }}/history">{{ trans('messages.history') }}</a>
         </p>
 
         <h2>

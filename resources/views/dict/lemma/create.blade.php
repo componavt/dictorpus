@@ -5,7 +5,7 @@
 @stop
 
 @section('headExtra')
-    {!!Html::style('css/lemma_form.css')!!}
+    {!!Html::style('css/lemma.css')!!}
 @stop
 
 @section('content')

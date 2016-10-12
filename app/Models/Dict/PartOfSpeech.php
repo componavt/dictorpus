@@ -23,6 +23,11 @@ class PartOfSpeech extends Model
         parent::boot();
     }
     
+    public function identifiableName()
+    {
+        return $this->name;
+    }    
+
     /** Gets localised name of this part of speech (current $locale used).
      * 
      * @return String
