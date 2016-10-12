@@ -88,7 +88,6 @@
 
         @endforeach
 
-        @if ($lemma->wordforms()->count())
         <h3>
             {{ trans('dict.wordforms') }}
             @if (User::checkAccess('dict.edit'))
@@ -97,6 +96,7 @@
                           'without_text' => 1])
             @endif
         </h3>
+        @if ($lemma->wordforms()->count())
         <?php $key=1;?>
         <table class="table-bordered">
             @foreach ($lemma->wordformsWithGramsets() as $wordform)
