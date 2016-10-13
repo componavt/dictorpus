@@ -55,7 +55,6 @@ Route::group(
         
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 
-        Route::get('dict/dialect', 'Dict\DialectController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
 
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
@@ -81,6 +80,11 @@ Route::group(
 //        Route::get('corpus/text/tempInsertVepsianText', 'Corpus\TextController@tempInsertVepsianText');
 //        Route::get('corpus/text/tempInsertVepsianDialectText', 'Corpus\TextController@tempInsertVepsianDialectText');
 //        Route::get('corpus/text/tempInsertVepsianGenreText', 'Corpus\TextController@tempInsertVepsianGenreText');
+
+        Route::resource('dict/dialect', 'Dict\DialectController',
+                       ['names' => ['update' => 'dialect.update',
+                                    'store' => 'dialect.store',
+                                    'destroy' => 'dialect.destroy']]);
 
         Route::resource('dict/gram', 'Dict\GramController',
                        ['names' => ['update' => 'gram.update',

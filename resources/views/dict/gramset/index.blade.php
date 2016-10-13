@@ -40,6 +40,7 @@
                 @endforeach
                 
                 <th>{{ trans('dict.wordforms') }}</th>
+                
                 @if (User::checkAccess('ref.edit'))
                 <th colspan="2"></th>
                 @endif

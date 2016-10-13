@@ -5,9 +5,12 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Models\Corpus\Text;
+
 class Dialect extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['lang_id', 'name_en', 'name_ru', 'code'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -37,4 +40,17 @@ class Dialect extends Model
         $column = "name_" . $locale;
         return $this->{$column};
     }
+    
+    // Dialect __has_many__ Wordforms
+    public function wordforms(){
+        $builder = $this->belongsToMany(Wordform::class,'lemma_wordform');
+        return $builder;
+    }
+
+    // Dialect __has_many__ Texts
+    public function texts(){
+        $builder = $this->belongsToMany(Text::class,'dialect_text');
+        return $builder;
+    }
+
 }
