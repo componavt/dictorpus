@@ -277,7 +277,9 @@ class LemmaController extends Controller
                 $relation_id = $meaning_relation->pivot->relation_id;
                 $meaning2_id = $meaning_relation->pivot->meaning2_id;
                 $relation_meanings[$meaning->id][$relation_id][] = $meaning2_id;
-                $meaning_relation_values[$meaning2_id] = $all_meanings[$meaning2_id];
+                if (isset($all_meanings[$meaning2_id])) {
+                    $meaning_relation_values[$meaning2_id] = $all_meanings[$meaning2_id];
+                }
             }
             
             foreach (array_keys($langs_for_meaning) as $l_id) {
