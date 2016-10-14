@@ -86,6 +86,9 @@ class Lemma extends Model
             }
         }      
         $wordforms=$wordforms->sortBy('sequence_number');
+//print "<pre>";        
+//dd($wordforms);
+//print "</pre>";        
         return $wordforms;
     }
     

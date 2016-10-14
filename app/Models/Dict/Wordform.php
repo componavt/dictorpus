@@ -62,6 +62,9 @@ class Wordform extends Model
             return;
         }
         foreach($wordforms as $gramset_id=>$wordform_text) {
+            if (!(int)$gramset_id) {
+                $gramset_id = NULL;
+            }
             if ($wordform_text) {
                 $wordform_obj = self::firstOrCreate(['wordform'=>$wordform_text]);
                 
@@ -100,7 +103,7 @@ class Wordform extends Model
                         $wordform_info['gramset'] = NULL;
                     }
 //dd($wordform_info['gramset']);
-                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>'NULL']);
+                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>NULL]);
                 }
             }
         }
