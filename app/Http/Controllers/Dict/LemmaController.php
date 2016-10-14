@@ -359,13 +359,13 @@ class LemmaController extends Controller
         
         // WORDFORMS UPDATING
         //remove all records from table lemma_wordform
-        $lemma-> wordforms()->detach();
+//        $lemma-> wordforms()->detach();
        
         //add wordforms from full table of gramsets
-        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
+//        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
 
         //add wordforms without gramsets
-        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
+//        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
   
         // MEANINGS UPDATING
         // existing meanings
