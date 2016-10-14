@@ -15,8 +15,9 @@
         {!! Form::open(array('method'=>'POST', 'route' => array('text.store'))) !!}
         @include('corpus.text._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
                                       'action' => 'create',
-                                      'lang_values' => $lang_values, 
-                                      'corpus_values'  => $corpus_values])
+                                      'recorder_values' => [], 
+                                      'genre_values' => [], 
+                                      'dialect_values'  => [] ])
         {!! Form::close() !!}
 @stop
 
@@ -25,5 +26,26 @@
 @stop
 
 @section('jqueryFunc')
-    $(".multiple-select-recorder").select2();
+    $(".multiple-select").select2();
+    
+    $(".multiple-select-dialect").select2({
+        width: '100%',
+        ajax: {
+          url: "/corpus/text/dialect_list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#lang_id option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });    
 @stop

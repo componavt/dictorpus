@@ -8,11 +8,15 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use DB;
+use LaravelLocalization;
+use Response;
 
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Event;
+use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Recorder;
@@ -150,8 +154,12 @@ class TextController extends Controller
                                                   $text);       
         if ($text->event) {
             $text->event->recorders()->attach($request->event_recorders);
-            $text->push();
         }
+
+        $text->dialects()->attach($request->dialects);
+        $text->genres()->attach($request->genres);
+
+        $text->push();
 
         return Redirect::to('/corpus/text/'.($text->id))
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -201,16 +209,16 @@ class TextController extends Controller
         $corpus_values = Corpus::getList();
         $informant_values = [NULL => ''] + Informant::getList();
         $place_values = [NULL => ''] + Place::getList();
+
         $recorder_values = Recorder::getList();
-        
-        $recorder_value = [];
-        if ($text->event && $text->event->recorders) {
-            $recorders = $text->event->recorders;
-            foreach ($recorders as $recorder) {
-                $recorder_value[] = $recorder->id;
-            }
-        }
-//var_dump($recorder_value);
+        $recorder_value = $text->recorderValue();
+
+        $dialect_values = Dialect::getList();
+        $dialect_value = $text->dialectValue();
+
+        $genre_values = Genre::getList();        
+        $genre_value = $text->genreValue();
+
         return view('corpus.text.edit')
                   ->with(['text' => $text,
                           'lang_values' => $lang_values,
@@ -218,7 +226,11 @@ class TextController extends Controller
                           'informant_values' => $informant_values,
                           'place_values' => $place_values,
                           'recorder_values' => $recorder_values,
-                          'recorder_value' => $recorder_value
+                          'recorder_value' => $recorder_value,
+                          'dialect_values' => $dialect_values,
+                          'dialect_value' => $dialect_value,
+                          'genre_values' => $genre_values,
+                          'genre_value' => $genre_value,
                          ]);
     }
 
@@ -251,46 +263,17 @@ class TextController extends Controller
         Source::storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'), 
                                                   $text);
         
- /*       
-        foreach (['event', 'source'] as $model_name) {
-            $id_name = $model_name.'_id';
-            $model_id = $text->{$id_name};
-            if ($text->{$model_name}) {
-                $model_obj = $text->{$model_name};
-            } elseif ($model_name == 'transtext') {
-                $model_obj = new Transtext;
-            } elseif ($model_name == 'event') {
-                $model_obj = new Event;
-//print '111';
-//exit(0);
-            } elseif ($model_name == 'source') {
-                $model_obj = new Source;
-            } 
-            
-            $is_empty_obj = true;
-            foreach ($model_obj->getFillable() as $column) {
-                $var_name = $model_name.'_'.$column;
-                if (!$request->{$var_name}) {
-                    $request->{$var_name} = NULL;
-                } else {
-                    $is_empty_obj = false;
-                }
-                $model_obj->{$column} = $request->{$var_name}; 
-            }
-            
-            if ($is_empty_obj) {
-                if ($model_id) {
-                    $text->{$id_name} = NULL;
-                }
-                $model_obj->delete();
-            }
-        }  
-*/
         if ($text->event) {
             $text-> event->recorders()->detach();
             $text-> event->recorders()->attach($request->event_recorders);
         }
         
+        $text->dialects()->detach();
+        $text->dialects()->attach($request->dialects);
+
+        $text->genres()->detach();
+        $text->genres()->attach($request->genres);
+
         $text->push();
         
         return Redirect::to('/corpus/text/'.($text->id))
@@ -349,7 +332,7 @@ class TextController extends Controller
                 }
                 else{
                     $error = true;
-                    $result['error_message'] = \Lang::get('record_not_exists');
+                    $result['error_message'] = \Lang::get('messages.record_not_exists');
                 }
           }catch(\Exception $ex){
                     $error = true;
@@ -370,6 +353,35 @@ class TextController extends Controller
             return Redirect::to('/corpus/text/')
                   ->withSuccess($result['message']);
         }
+    }
+    
+    /**
+     * Gets list of dialects for drop down list in JSON format
+     * Test url: /corpus/text/dialect_list?lang_id=1
+     * 
+     * @return JSON response
+     */
+    public function dialectList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        $dialect_name = '%'.$request->input('q').'%';
+        $lang_id = (int)$request->input('lang_id');
+//        $lemma_id = (int)$request->input('lemma_id');
+
+        $list = [];
+        $dialects = Dialect::where('lang_id',$lang_id)
+                       ->where(function($q) use ($dialect_name){
+                            $q->where('name_en','like', $dialect_name)
+                              ->orWhere('name_ru','like', $dialect_name);
+                         })->orderBy('name_'.$locale)->get();
+                         
+        foreach ($dialects as $dialect) {
+            $list[]=['id'  => $dialect->id, 
+                     'text'=> $dialect->name];
+        }  
+
+        return Response::json($list);
     }
 
     /**

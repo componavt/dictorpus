@@ -53,4 +53,21 @@ class Dialect extends Model
         return $builder;
     }
 
+    /** Gets list of dialects
+     * 
+     * @return Array [1=>'Northern Veps',..]
+     */
+    public static function getList()
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $dialects = self::orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($dialects as $row) {
+            $list[$row->id] = $row->name;
+        }
+        
+        return $list;         
+    }
 }

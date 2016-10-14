@@ -71,4 +71,48 @@ class Text extends Model
         return $builder;
     }
     
+    /**
+     * Gets IDs of recorders for record's form field
+     * 
+     * @return Array
+     */
+    public function recorderValue():Array{
+        $recorder_value = [];
+        if ($this->event && $this->event->recorders) {
+            foreach ($this->event->recorders as $recorder) {
+                $recorder_value[] = $recorder->id;
+            }
+        }
+        return $recorder_value;
+    }
+    
+    /**
+     * Gets IDs of dialects for dialect's form field
+     * 
+     * @return Array
+     */
+    public function dialectValue():Array{
+        $value = [];
+        if ($this->dialects) {
+            foreach ($this->dialects as $dialect) {
+                $value[] = $dialect->id;
+            }
+        }
+        return $value;
+    }
+    
+    /**
+     * Gets IDs of genres for genre's form field
+     * 
+     * @return Array
+     */
+    public function genreValue():Array{
+        $value = [];
+        if ($this->genres) {
+            foreach ($this->genres as $genre) {
+                $value[] = $genre->id;
+            }
+        }
+        return $value;
+    }
 }

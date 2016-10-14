@@ -53,6 +53,7 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         
+        Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 
         Route::get('dict/lang', 'Dict\LangController@index');
@@ -105,6 +106,16 @@ Route::group(
                        ['names' => ['update' => 'relation.update',
                                     'store' => 'relation.store',
                                     'destroy' => 'relation.destroy']]);
+/*        
+        Route::resource('corpus/corpus', 'Corpus\CorpusController',
+                       ['names' => ['update' => 'corpus.update',
+                                    'store' => 'corpus.store',
+                                    'destroy' => 'corpus.destroy']]);
+*/        
+        Route::resource('corpus/genre', 'Corpus\GenreController',
+                       ['names' => ['update' => 'genre.update',
+                                    'store' => 'genre.store',
+                                    'destroy' => 'genre.destroy']]);
         
         Route::resource('corpus/text', 'Corpus\TextController',
                        ['names' => ['update' => 'text.update',

@@ -19,6 +19,11 @@ return [
     'district_list' => 'Список районов',
     'district_removed' => 'Район ":name" удален.',
     
+    'genre' => 'Жанр',
+    'genre_has_text' => 'Жанр ":name" не может быть удален, существуют тексты связанные с ним',
+    'genre_list' => 'Список жанров',
+    'genre_removed' => 'Жанр ":name" удален.',
+    
     'informant' => 'Информант',
     'informant_list' => 'Список информантов',
     'informant_name' => 'Имя информанта',
