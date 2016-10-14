@@ -106,12 +106,12 @@ Route::group(
                        ['names' => ['update' => 'relation.update',
                                     'store' => 'relation.store',
                                     'destroy' => 'relation.destroy']]);
-/*        
+        
         Route::resource('corpus/corpus', 'Corpus\CorpusController',
                        ['names' => ['update' => 'corpus.update',
                                     'store' => 'corpus.store',
                                     'destroy' => 'corpus.destroy']]);
-*/        
+        
         Route::resource('corpus/genre', 'Corpus\GenreController',
                        ['names' => ['update' => 'genre.update',
                                     'store' => 'genre.store',

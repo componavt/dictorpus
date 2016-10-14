@@ -2,15 +2,15 @@
 @extends('layouts.master')
 
 @section('title')
-{{ trans('corpus.region_list') }}
+{{ trans('corpus.corpus_list') }}
 @stop
 
 @section('content')
-        <h2>{{ trans('corpus.region_list') }}</h2>
+        <h2>{{ trans('corpus.corpus_list') }}</h2>
         
         <p style="text-align:right">
-        @if (User::checkAccess('corpus.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/region/create') }}">
+        @if (User::checkAccess('ref.edit'))
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/corpus/create') }}">
         @endif
             {{ trans('messages.create_new_m') }}
         @if (User::checkAccess('corpus.edit'))
@@ -18,7 +18,7 @@
         @endif
         </p>
         
-        {!! Form::open(['url' => '/corpus/region/', 
+        {!! Form::open(['url' => '/corpus/corpus/', 
                              'method' => 'get', 
                              'class' => 'form-inline']) 
         !!}
@@ -28,8 +28,8 @@
                 'attributes'=>['size' => 3,
                                'placeholder' => 'ID']])
          @include('widgets.form._formitem_text', 
-                ['name' => 'region_name', 
-                'value' => $region_name,
+                ['name' => 'corpus_name', 
+                'value' => $corpus_name,
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.name')]])
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
@@ -43,29 +43,29 @@
                 <th>No</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
-                <th>{{ trans('navigation.places') }}</th>
+                <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th colspan="2"></th>
                 @endif
             </tr>
         </thead>
         <tbody>
-            @foreach($regions as $region)
+            @foreach($corpuses as $corpus)
             <tr>
                 <td>{{ $list_count++ }}</td>
-                <td>{{$region->name_en}}</td>
-                <td>{{$region->name_ru}}</td>
+                <td>{{$corpus->name_en}}</td>
+                <td>{{$corpus->name_ru}}</td>
                 <td>
-                    @if($region->places)
-                        {{ $region->places()->count() }}
+                    @if($corpus->texts)
+                        {{ $corpus->texts()->count() }}
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td>
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/region/'.$region->id.'/edit'])
+                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/corpus/'.$corpus->id.'/edit'])
                  </td>
                 <td>
-                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'region.destroy', 'id' => $region->id])
+                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'corpus.destroy', 'id' => $corpus->id])
                 </td>
                 @endif
             </tr>
@@ -80,7 +80,7 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/region');
+    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/corpus');
 @stop
 
 

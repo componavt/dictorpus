@@ -12,6 +12,7 @@ return [
 
     'about_project' => 'About',
     'corpus' => 'Corpus',
+    'corpuses' => 'Corpuses',
     'dialects' => 'Dialects',
     'dictionary' => 'Dictionary',
     'districts' => 'Districts',

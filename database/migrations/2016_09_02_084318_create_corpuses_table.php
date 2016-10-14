@@ -17,8 +17,8 @@ class CreateCorpusesTable extends Migration
             $table->smallInteger('id')->unsigned()->autoIncrement(); // MySQL smallint(6)
             
             // lang 
-            $table->smallInteger('lang_id')->unsigned();
-            $table->     foreign('lang_id')->references('id')->on('langs');
+//            $table->smallInteger('lang_id')->unsigned();
+  //          $table->     foreign('lang_id')->references('id')->on('langs');
 
             $table->string('name_en', 255);
             $table->string('name_ru', 255);

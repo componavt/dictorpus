@@ -117,6 +117,8 @@ class TextController extends Controller
         $informant_values = [NULL => ''] + Informant::getList();
         $place_values = [NULL => ''] + Place::getList();
         $recorder_values = Recorder::getList();
+        $dialect_values = Dialect::getList();
+        $genre_values = Genre::getList();        
         
         return view('corpus.text.create')
                   ->with(['lang_values' => $lang_values,
@@ -124,6 +126,8 @@ class TextController extends Controller
                           'informant_values' => $informant_values,
                           'place_values' => $place_values,
                           'recorder_values' => $recorder_values,
+                          'dialect_values' => $dialect_values,
+                          'genre_values' => $genre_values,
                          ]);
     }
 
@@ -301,6 +305,9 @@ class TextController extends Controller
                     $event_id = $text->event_id;
                     $source_id = $text->source_id;
                     
+                    $text->dialects()->detach();
+                    $text->genres()->detach();
+
                     $text->delete();
 
                     //remove transtext if exists and don't link with other texts

@@ -14,7 +14,11 @@ return [
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',
     'comment' => 'comments',
+    
     'corpus' => 'Corpus',
+    'corpus_has_text' => 'Corpus ":name" can not be removed, there are texts in this corpus',
+    'corpus_list' => 'Corpus list',
+    'corpus_removed' => 'Corpus ":name" is removed successfully.',
     
     'district' => 'District',
     'district_list' => 'District list',
@@ -23,7 +27,7 @@ return [
     'genre' => 'Genre',
     'genre_has_text' => 'Genre ":name" can not be removed, there are texts with this genre',
     'genre_list' => 'Genre list',
-    'genret_removed' => 'Genre ":name" is removed successfully.',
+    'genre_removed' => 'Genre ":name" is removed successfully.',
     
     'informant' => 'Informant',
     'informant_list' => 'Informant list',
@@ -33,7 +37,9 @@ return [
     'name' => 'name',
     'nee' => 'nee',
     
+    'of_corpus' => 'of corpus',
     'of_district' => 'of district',
+    'of_genre' => 'of genre',
     'of_informant' => 'of informant',
     'of_place' => 'of place',
     'of_text' => 'of text',

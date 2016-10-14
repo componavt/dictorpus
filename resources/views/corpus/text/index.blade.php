@@ -8,7 +8,7 @@
 @section('content')
         <h2>{{ trans('corpus.text_list') }}</h2>
         
-        <p>
+        <p style="text-align:right">
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}">
         @endif

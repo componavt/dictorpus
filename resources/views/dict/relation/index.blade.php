@@ -7,7 +7,7 @@
 @section('content')
         <h2>{{ trans('dict.relation_list') }}</h2>
         
-        <p>
+        <p style="text-align:right">
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/relation/create') }}">
         @endif

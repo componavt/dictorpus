@@ -14,7 +14,12 @@ return [
     'birth_place' => 'место рождения',
     'birth_year' => 'г.р.',
     'comment' => 'комментарий',
+    
     'corpus' => 'Корпус',
+    'corpus_has_text' => 'Корпус ":name" не может быть удален, в нем есть тексты',
+    'corpus_list' => 'Список корпусов',
+    'corpus_removed' => 'Корпус ":name" удален.',
+    
     'district' => 'Район',
     'district_list' => 'Список районов',
     'district_removed' => 'Район ":name" удален.',
@@ -32,7 +37,9 @@ return [
     'name' => 'название',
     'nee' => 'урожд.',
     
+    'of_corpus' => 'корпуса',
     'of_district' => 'района',
+    'of_genre' => 'жанра',
     'of_informant' => 'информанта',
     'of_place' => 'населенного пункта',
     'of_district' => 'региона',

@@ -12,6 +12,7 @@ return [
 
     'about_project' => 'О проекте',
     'corpus' => 'Корпус',
+    'corpuses' => 'Корпусы',
     'dialects' => 'Диалекты',
     'dictionary' => 'Словарь',
     'districts' => 'Районы',

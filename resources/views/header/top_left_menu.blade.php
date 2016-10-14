@@ -25,6 +25,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/gramset') }}">{{ trans('navigation.gramsets') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/gram') }}">{{ trans('navigation.grams') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/relation') }}">{{ trans('navigation.relations') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/corpus') }}">{{ trans('navigation.corpuses') }}</a></li>
                         </ul>
                     </li>
 
