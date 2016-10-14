@@ -15,6 +15,7 @@ return [
     'dialects' => 'Dialects',
     'dictionary' => 'Dictionary',
     'districts' => 'Districts',
+    'genres' => 'genres',
     'gramsets' => 'Sets of grammatical attributes',
     'grams' => 'Grammemes',
     'home' => 'Home',

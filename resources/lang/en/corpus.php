@@ -20,6 +20,11 @@ return [
     'district_list' => 'District list',
     'district_removed' => 'District ":name" is removed successfully.',
     
+    'genre' => 'Genre',
+    'genre_has_text' => 'Genre ":name" can not be removed, there are texts with this genre',
+    'genre_list' => 'Genre list',
+    'genret_removed' => 'Genre ":name" is removed successfully.',
+    
     'informant' => 'Informant',
     'informant_list' => 'Informant list',
     'informant_name' => 'Informant name',

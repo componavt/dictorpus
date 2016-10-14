@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
 
-use App\Models\Corpus\District;
-use App\Models\Corpus\Region;
+use App\Models\Corpus\Genre;
 
-class DistrictController extends Controller
+class GenreController extends Controller
 {
      /**
      * Instantiate a new new controller instance.
@@ -22,7 +21,7 @@ class DistrictController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:corpus.edit,/corpus/district/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:corpus.edit,/corpus/genre/', ['only' => ['create','store','edit','update','destroy']]);
     }
 
     /**
@@ -32,58 +31,35 @@ class DistrictController extends Controller
      */
     public function index(Request $request)
     {
-        $district_name = $request->input('district_name');
-        $limit_num = (int)$request->input('limit_num');
-        $region_id = (int)$request->input('region_id');
+        $genre_name = $request->input('genre_name');
         $search_id = (int)$request->input('search_id');
-        $page = (int)$request->input('page');
 
-        if (!$page) {
-            $page = 1;
-        }
-        
         if (!$search_id) {
             $search_id = NULL;
         }
         
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }   
-        
         $locale = LaravelLocalization::getCurrentLocale();
-        $districts = District::orderBy('name_'.$locale);
+        $genres = Genre::orderBy('name_'.$locale);
 
-        if ($district_name) {
-            $districts = $districts->where(function($q) use ($district_name){
-                            $q->where('name_en','like', $district_name)
-                              ->orWhere('name_ru','like', $district_name);
+        if ($genre_name) {
+            $genres = $genres->where(function($q) use ($genre_name){
+                            $q->where('name_en','like', $genre_name)
+                              ->orWhere('name_ru','like', $genre_name);
                     });
         } 
 
-        if ($region_id) {
-            $districts = $districts->where('region_id',$region_id);
-        } 
-
         if ($search_id) {
-            $districts = $districts->where('id',$search_id);
+            $genres = $genres->where('id',$search_id);
         } 
 
-        $numAll = $districts->count();
+        $numAll = $genres->count();
 
-        $districts = $districts->paginate($limit_num);
+        $genres = $genres->get();
         
-        $region_values = Region::getListWithQuantity('districts');
-        
-        return view('corpus.district.index')
-                    ->with(['districts' => $districts,
-                            'limit_num' => $limit_num,
-                            'district_name' => $district_name,
-                            'region_id'=>$region_id,
+        return view('corpus.genre.index')
+                    ->with(['genres' => $genres,
+                            'genre_name' => $genre_name,
                             'search_id'=>$search_id,
-                            'page'=>$page,
-                            'region_values' => $region_values,
                             'numAll' => $numAll,
             ]);
     }
@@ -95,10 +71,7 @@ class DistrictController extends Controller
      */
     public function create()
     {
-        $region_values = Region::getList();
-        
-        return view('corpus.district.create')
-                  ->with(['region_values' => $region_values]);
+        return view('corpus.genre.create');
     }
 
     /**
@@ -112,12 +85,11 @@ class DistrictController extends Controller
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
-            'region_id' => 'numeric',
         ]);
         
-        $district = District::create($request->all());
+        $genre = Genre::create($request->all());
         
-        return Redirect::to('/corpus/district/?search_id='.$district->id)
+        return Redirect::to('/corpus/genre/?search_id='.$genre->id)
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
@@ -129,7 +101,7 @@ class DistrictController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/corpus/district/');
+        return Redirect::to('/corpus/genre/');
     }
 
     /**
@@ -140,12 +112,10 @@ class DistrictController extends Controller
      */
     public function edit($id)
     {
-        $district = District::find($id); 
-        $region_values = Region::getList();
+        $genre = Genre::find($id); 
         
-        return view('corpus.district.edit')
-                  ->with(['region_values' => $region_values,
-                          'district' => $district]);
+        return view('corpus.genre.edit')
+                  ->with(['genre' => $genre]);
     }
 
     /**
@@ -160,13 +130,13 @@ class DistrictController extends Controller
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
-            'region_id' => 'numeric',
         ]);
         
-        $district = District::find($id);
-        $district->fill($request->all())->save();
+        $genre = Genre::find($id);
+        $genre->fill($request->all())->save();
         
-        return Redirect::to('/corpus/district/?search_id='.$district->id)
+//        return Redirect::to('/corpus/genre/?search_id='.$genre->id)
+        return Redirect::to('/corpus/genre/')
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
@@ -183,11 +153,16 @@ class DistrictController extends Controller
         $result =[];
         if($id != "" && $id > 0) {
             try{
-                $district = District::find($id);
-                if($district){
-                    $district_name = $district->name;
-                    $district->delete();
-                    $result['message'] = \Lang::get('corpus.district_removed', ['name'=>$district_name]);
+                $genre = Genre::find($id);
+                if($genre){
+                    $genre_name = $genre->name;
+                    if ($genre->texts()->count()>0) {
+                        $error = true;
+                        $result['error_message'] = \Lang::get('corpus.genre_has_text', ['name'=>$genre_name]);                        
+                    } else {
+                        $genre->delete();
+                        $result['message'] = \Lang::get('corpus.genre_removed', ['name'=>$genre_name]);
+                    }
                 }
                 else{
                     $error = true;
@@ -206,10 +181,10 @@ class DistrictController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/corpus/district/')
+                return Redirect::to('/corpus/genre/')
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/corpus/district/')
+            return Redirect::to('/corpus/genre/')
                   ->withSuccess($result['message']);
         }
     }

@@ -1,12 +1,28 @@
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         @include('widgets.form._formitem_select', 
                 ['name' => 'corpus_id', 
                  'values' =>$corpus_values,
                  'title' => trans('corpus.corpus')]) 
                  
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-4">
+        @include('widgets.form._formitem_select2',
+                ['name' => 'dialects', 
+                 'values' =>$dialect_values,
+                 'value' => $dialect_value,
+                 'title' => trans('navigation.dialects'),
+                 'class'=>'multiple-select-dialect form-control'
+            ])
+    </div>
+    <div class="col-sm-4">
+        @include('widgets.form._formitem_select2',
+                ['name' => 'genres', 
+                 'values' =>$genre_values,
+                 'value' => $genre_value,
+                 'title' => trans('navigation.genres'),
+                 'class'=>'multiple-select form-control'
+            ])
     </div>
 </div>                 
 <div class="row">
@@ -14,7 +30,8 @@
         @include('widgets.form._formitem_select', 
                 ['name' => 'lang_id', 
                  'values' =>$lang_values,
-                 'title' => trans('dict.lang')]) 
+                 'title' => trans('dict.lang'),
+                 'attributes' => ['id'=>'lang_id']])
         @include('widgets.form._formitem_text', 
                 ['name' => 'title', 
                  'title'=>trans('corpus.title')])
@@ -42,18 +59,12 @@
                  'value' => $event_place_value,
                  'title' => trans('corpus.record_place')]) 
         <?php if ($action=='create') { $recorder_value = NULL; } ?>        
-{{--        @include('widgets.form._formitem_select', 
-                ['name' => 'event.recorders[]', 
-                 'values' =>$recorder_values,
-                 'value' => $recorder_value,
-                 'title' => trans('corpus.recorded'),
-                 'attributes'=>['multiple'=>'multiple']]) --}}
         @include('widgets.form._formitem_select2',
                 ['name' => 'event.recorders', 
                  'values' =>$recorder_values,
                  'value' => $recorder_value,
                  'title' => trans('corpus.recorded'),
-                 'class'=>'multiple-select-recorder form-control'
+                 'class'=>'multiple-select form-control'
             ])
                 
 @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
