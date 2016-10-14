@@ -15,12 +15,14 @@ return [
     'welcome_text' =>  '<p>Open corpus of Veps and Karelian languages (abbr. VepKar)
                         contains dictionaries and corpora of Finnic languages of Karelia peoples.</p>
 
-                        <p>Karelian language corpus include three varieties which can be considered 
-                        as dialects or separate languages: Karelian Proper, 
-                        Livvi-Karelian and Ludic Karelian, 
-                        all of which have newly created writing tradition (“младописьменный”, mladopis\'mennyy type of languages). 
-                        Also VepKar project is a continuation of work done in 
-                        <a href="http://vepsian.krc.karelia.ru">Veps language corpus</a>.</p>
+                        <p>
+                            VepKar project is a continuation of work done in 
+                            <a href="http://vepsian.krc.karelia.ru">Veps language corpus</a>.
+                            Karelian language corpus include three varieties which can be considered 
+                            as dialects or separate languages: Karelian Proper, 
+                            Livvi-Karelian and Ludic Karelian, 
+                            all of which have newly created writing tradition (“младописьменный”, mladopis\'mennyy type of languages). 
+                        </p>
  
                         <p>The corpus is a search information system, including a set of texts 
                         written in some language in a digital form. 
