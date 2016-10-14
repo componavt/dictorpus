@@ -34,7 +34,7 @@
         <table class="table">
         <thead>
             <tr>
-                <th>No</th>              
+                <th>{{ trans('messages.sequence_number') }}</th>              
                 @foreach ($gram_fields as $field)
                 <th>{{ trans('dict.'.$field) }}</th>
                 @endforeach
@@ -49,7 +49,7 @@
         <tbody>
             @foreach($gramsets as $key=>$gramset)
             <tr>
-                <td>{{$key+1}}</td>
+                <td>{{$gramset->sequence_number}}</td>
                 @foreach ($gram_fields as $field)
                 <td>
                     @if($gramset->{'gram_id_'.$field})
