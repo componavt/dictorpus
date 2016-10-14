@@ -24,6 +24,11 @@ class Corpus extends Model
         parent::boot();
     }
 
+    public function identifiableName()
+    {
+        return $this->name;
+    }    
+
     /** Gets name of this corpus, takes into account locale.
      * 
      * @return String

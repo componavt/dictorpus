@@ -12,6 +12,7 @@ return [
     
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
+    'changed' => 'changed',
     'close' => 'close', 
     'confirm_delete' => 'Do you want to delete this item?',
     'create_new_f' => 'Create a new',
@@ -23,6 +24,7 @@ return [
     'edit' => 'edit',
     'editing' => 'Editing',
     'founded_records' => ':count records was founded.',
+    'from' => 'from',
     'history' => 'history',
     'in_english' => 'in English',
     'in_russian' => 'in Russian',
@@ -34,6 +36,7 @@ return [
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',
     'show_by' => 'by',
+    'to' => 'to',
     'translation' => 'Translation',
     'updated_success' => 'Successfully updated',
     'view' => 'view',

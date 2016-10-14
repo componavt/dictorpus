@@ -383,6 +383,24 @@ class TextController extends Controller
 
         return Response::json($list);
     }
+
+    /**
+     * Shows history of text.
+     *
+     * @param  int  $id - ID of text
+     * @return \Illuminate\Http\Response
+     */
+    public function history($id)
+    {
+        $text = Text::find($id);
+        if (!$text) {
+            return Redirect::to('/corpus/text/')
+                           ->withErrors(\Lang::get('messages.record_not_exists'));
+        }
+//dd($lemma->revisionHistory);        
+        return view('corpus.text.history')
+                  ->with(['text' => $text]);
+    }
     
 /*    
     public function tempInsertVepsianText()

@@ -17,7 +17,7 @@
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif 
-            | <a href="">{{ trans('messages.history') }}</a>
+            | <a href="/corpus/text/{{ $text->id }}/history">{{ trans('messages.history') }}</a>
         </p>
         
         <h2>{{ $text->title }}</h2>

@@ -4,6 +4,10 @@
 {{ trans('navigation.lemmas') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/lemma.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('navigation.lemmas') }}</h1>
 
@@ -20,7 +24,7 @@
         @endif
         {{-- @endcan --}}
 
-            | <a href="">{{ trans('messages.history') }}</a>
+            | <a href="/dict/lemma/{{ $lemma->id }}/history">{{ trans('messages.history') }}</a>
         </p>
 
         <h2>
@@ -88,7 +92,6 @@
 
         @endforeach
 
-        @if ($lemma->wordforms()->count())
         <h3>
             {{ trans('dict.wordforms') }}
             @if (User::checkAccess('dict.edit'))
@@ -97,6 +100,7 @@
                           'without_text' => 1])
             @endif
         </h3>
+        @if ($lemma->wordforms()->count())
         <?php $key=1;?>
         <table class="table-bordered">
             @foreach ($lemma->wordformsWithGramsets() as $wordform)

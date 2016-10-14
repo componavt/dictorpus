@@ -54,12 +54,14 @@ Route::group(
         Route::get('/dumps','DumpDownloadController@index');
         
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
+        Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 
         Route::get('dict/dialect', 'Dict\DialectController@index');
         Route::get('dict/lang', 'Dict\LangController@index');
 
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
         Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')->name('lemma.update.wordforms');
+        Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
 

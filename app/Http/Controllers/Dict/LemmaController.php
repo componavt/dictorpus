@@ -471,6 +471,23 @@ class LemmaController extends Controller
   //                       ->setCallback(\Request::input('callback'));
     }
     
+    /**
+     * Shows history of lemma.
+     *
+     * @param  int  $id - ID of lemma
+     * @return \Illuminate\Http\Response
+     */
+    public function history($id)
+    {
+        $lemma = Lemma::find($id);
+        if (!$lemma) {
+            return Redirect::to('/dict/lemma/')
+                           ->withErrors(\Lang::get('messages.record_not_exists'));
+        }
+//dd($lemma->revisionHistory);        
+        return view('dict.lemma.history')
+                  ->with(['lemma' => $lemma]);
+    }
     
     /** Gets list of longest lemmas, 
      * gets first N lemmas sorted by length.
