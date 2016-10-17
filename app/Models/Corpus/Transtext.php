@@ -8,7 +8,7 @@ use App\Models\Dict\Lang;
 
 class Transtext extends Model
 {
-    protected $fillable = ['lang_id','title','text'];
+    protected $fillable = ['lang_id','title','text','text_xml'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -51,11 +51,17 @@ class Transtext extends Model
         }
 
         if (!$is_empty_data) {
-            foreach (['lang_id','title','text'] as $column) {
+            foreach (['lang_id','title','text','text_xml'] as $column) {
                 $data_to_fill[$column] = ($requestData['transtext_'.$column]) ? $requestData['transtext_'.$column] : NULL;
             }
             if ($transtext_id) {
-                $transtext = self::find($transtext_id)->fill($data_to_fill);
+               
+                $transtext = self::find($transtext_id);
+                $old_text = $transtext->text;
+                $transtext->fill($data_to_fill);
+                if ($data_to_fill['text'] && $old_text != $data_to_fill['text']) {
+                    $transtext->divSentence();
+                }
                 $transtext->save();
             } else {
                 $transtext = self::firstOrCreate($data_to_fill);
@@ -75,4 +81,46 @@ class Transtext extends Model
         }
     }    
     
+    /**
+     * Sets text_xml as a markup text with sentences
+     */
+    public function divSentence(){
+        $out = '';
+        $text = $this->text;
+        $count = 1;
+/*  division on paragraphs and then on sentences       
+        if (preg_match_all("/(.+?)(\r?\n){2,}/is",$text,$desc_out)) {
+            foreach ($desc_out[0] as $ab) {
+                $ab = nl2br($ab);
+                $out_ab = '';
+                if (preg_match_all("/(.+?)(\.|\?|!|:){1,}(\s|<br(| \/)>|<\/p>|<\/div>|$)/is",$ab,$desc_out)) {
+                    foreach ($desc_out[0] as $sentence) {
+                       $out_ab .= "\t<s id=\"".$count++.'">'.trim($sentence)."</s>\n";
+                    }
+                } 
+                $out .= "<p>\n".$out_ab."</p>\n";
+            }
+        } 
+*/        
+        // division only on sentences
+        $text = nl2br($text);
+        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"){1,}(\s|<br(| \/)>|$)/is",
+                           $text, $desc_out)) {
+//dd($desc_out);
+            for ($i=0; $i<sizeof($desc_out[1]); $i++) {
+                $sentence = trim($desc_out[1][$i]);
+                if (preg_match("/^(<br(| \/)>)(.+)$/is",$sentence,$regs)) {
+                    $out .= $regs[1]."\n";
+                    $sentence = trim($regs[3]);
+                }
+                $out .= "<s id=\"".$count++.'">'.$sentence.$desc_out[2][$i]."</s>\n";
+                $div = trim($desc_out[3][$i]);
+                if ($div) {
+                    $out .= trim($div)."\n";
+                }
+            }
+        } 
+        
+        $this->text_xml = trim($out);
+    }
 }

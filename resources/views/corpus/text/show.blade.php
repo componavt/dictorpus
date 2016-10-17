@@ -5,6 +5,10 @@
 {{ trans('navigation.texts') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/text.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('navigation.texts') }}</h1>
         
@@ -45,8 +49,10 @@
         @endif      
         
         @if ($text->text)
-        <?php $text->text = str_replace("\n",'<br>',$text->text); ?>
-                    <p>{!! $text->text !!}</p>
+        <?php $markup_text = $text->text_xml 
+                    ? str_replace("<s id=\"","<s class=\"sentence\" id=\"text_s",$text->text_xml) 
+                    : nl2br($text->text); ?>
+                    <div id="text">{!! $markup_text !!}</div>
         @endif      
                 </td>
                 
@@ -57,8 +63,10 @@
                     ({{ $text->transtext->lang->name }})</h4>
             @endif      
             @if ($text->transtext->text)
-            <?php $text->transtext->text = str_replace("\n",'<br>',$text->transtext->text); ?>
-                    <p>{!! $text->transtext->text !!}</p>
+            <?php $markup_text = $text->transtext->text_xml 
+                            ? str_replace("<s id=\"","<s class=\"trans_sentence\" id=\"transtext_s",$text->transtext->text_xml) 
+                            : nl2br($text->transtext->text); ?>
+                    <div id="transtext">{!! $markup_text !!}</div>
             @endif      
         @endif      
             </tr>
@@ -71,5 +79,11 @@
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
+    
+    $(".sentence").hover(function(){
+        var trans_id = 'trans' + $(this).attr('id');
+        $(".trans_sentence").css('background','none');
+        $("#"+trans_id).css('background','yellow');
+    });
 @stop
 

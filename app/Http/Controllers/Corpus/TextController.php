@@ -178,6 +178,12 @@ class TextController extends Controller
     public function show($id)
     {
         $text = Text::find($id);
+          
+/*        if (!$text->text_xml) {
+            $text->divSentence();
+            $text->save();
+        } */
+            
         
         if (!$text) {
             return Redirect::to('/corpus/text/')
@@ -257,10 +263,15 @@ class TextController extends Controller
             'event_date' => 'numeric',
         ]);
 
-        $text = Text::with('transtext','event','source')->get()->find($id); //,'event','source'
-        $text->fill($request->only('corpus_id','lang_id','title','text'));
+        $text = Text::with('transtext','event','source')->get()->find($id);
+        $old_text = $text->text;
+        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
+        if ($request->text && $old_text != $request->text) {
+            $text->divSentence();
+            // TODO!! delete all relevance in meaning_text
+        }
 
-        Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text'), 
+        Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'), 
                                                   $text);
         Event::storeEvent($request->only('event_informant_id','event_place_id','event_date'), 
                                                   $text);
@@ -407,6 +418,42 @@ class TextController extends Controller
 //dd($lemma->revisionHistory);        
         return view('corpus.text.history')
                   ->with(['text' => $text]);
+    }
+
+    /**
+     * Markup all texts and transtexts
+     */
+    public function markupAllTexts()
+    {
+        $texts = Text::all();
+        foreach ($texts as $text) {
+            $text->divSentence();
+            $text->save();            
+        }
+        
+        $texts = Transtext::all();
+        foreach ($texts as $text) {
+            $text->divSentence();
+            $text->save();            
+        }
+    }
+    
+    /**
+     * Markup all texts and transtexts with empty text_xml
+     */
+    public function markupAllEmptyTextXML()
+    {
+        $texts = Text::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
+        foreach ($texts as $text) {
+            $text->divSentence();
+            $text->save();            
+        }
+        
+        $texts = Transtext::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
+        foreach ($texts as $text) {
+            $text->divSentence();
+            $text->save();            
+        }
     }
     
 /*    

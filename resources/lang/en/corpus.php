@@ -69,6 +69,7 @@ return [
     'text_list' => 'Text list',
     'text_not_found' => 'The text with ID=:id do not found',
     'text_removed' => 'Text ":name" is removed successfully.',
+    'text_xml' => 'markup text',
     
     'title' => 'Title',
     
