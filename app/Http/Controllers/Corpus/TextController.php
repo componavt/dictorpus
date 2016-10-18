@@ -178,13 +178,7 @@ class TextController extends Controller
     public function show($id)
     {
         $text = Text::find($id);
-          
-/*        if (!$text->text_xml) {
-            $text->divSentence();
-            $text->save();
-        } */
-            
-        
+       
         if (!$text) {
             return Redirect::to('/corpus/text/')
                            ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
@@ -437,11 +431,13 @@ class TextController extends Controller
             $text->save();            
         }
     }
+     
+     
     
     /**
      * Markup all texts and transtexts with empty text_xml
      */
-    public function markupAllEmptyTextXML()
+/*    public function markupAllEmptyTextXML()
     {
         $texts = Text::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
         foreach ($texts as $text) {
@@ -455,8 +451,21 @@ class TextController extends Controller
             $text->save();            
         }
     }
+ * 
+ */
     
-/*    
+    public function tempStripSlashes()
+    {
+        $texts = Text::all();
+        foreach ($texts as $text) {
+            $text->title = stripslashes($text->title);
+            $text->text = stripslashes($text->text);
+            $text->save();            
+        }
+        
+    }
+    
+    /*    
     public function tempInsertVepsianText()
     {
         DB::connection('mysql')->table('texts')->delete();
