@@ -20,7 +20,7 @@ class CreateMeaningTextTable extends Migration
             $table->foreign('text_id')->references('id')->on('texts');
             
             $table->integer('sentence_id')->unsigned();
-            $table->tinyInteger('relevance')->unsigned()->default(10);
+            $table->tinyInteger('relevance')->unsigned()->default(1);
         });
     }
 

@@ -58,6 +58,7 @@ return [
                     7 => 'an excellent example',
                     5 => 'a good example',
                     3 => 'a bad example',
+                    1 => 'not checked',
                     0 => 'not suitable'],
     
     'reverse_relation' => 'reverse relation',
