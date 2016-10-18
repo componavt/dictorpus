@@ -643,8 +643,7 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- php artisan make:migration create_meaning_translation_table
 
 -- alter table corpuses drop FOREIGN KEY `corpuses_lang_id_foreign`;
--- alter table corpuses drop KEY `corpuses_lang_id_foreign`;
--- alter table corpuses drop KEY `corpuses_lang_id_foreign`;
+-- alter table corpuses drop `lang_id`;
 
 -- alter table texts add text_xml text default NULL after text;
 -- alter table transtexts add text_xml text default NULL after text;

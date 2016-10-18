@@ -80,10 +80,22 @@
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
     
-    $(".sentence").hover(function(){
-        var trans_id = 'trans' + $(this).attr('id');
-        $(".trans_sentence").css('background','none');
-        $("#"+trans_id).css('background','yellow');
-    });
+    $(".sentence").hover(function(){ // over
+            var trans_id = 'trans' + $(this).attr('id');
+            $("#"+trans_id).css('background','yellow');
+        },
+        function(){ // out
+            $(".trans_sentence").css('background','none');
+        }
+    );
+    
+    $(".trans_sentence").hover(function(){ // over
+            var text_id = $(this).attr('id').replace('transtext','text');
+            $("#"+text_id).css('background','#8ccdd6');
+        },
+        function(){ // out
+            $(".sentence").css('background','none');
+        }
+    );
 @stop
 
