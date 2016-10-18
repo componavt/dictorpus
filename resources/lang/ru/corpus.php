@@ -70,6 +70,7 @@ return [
     'text_list' => 'Список текстов',
     'text_not_found' => 'Текст с ID=:id не найден',
     'text_removed' => 'Текст ":name" удален.',
+    'text_xml' => 'размеченный текст',
     
     'title' => 'Заголовок',
     

@@ -38,6 +38,9 @@
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'text', 
                  'title'=>trans('corpus.text')])
+        @include('widgets.form._formitem_textarea', 
+                ['name' => 'text_xml', 
+                 'title'=>trans('corpus.text_xml')])
 
         {{-- EVENT --}}
         <?php $informant_id_value = ($action=='edit' && $text->event) ? ($text->event->informant_id) : NULL; ?>
@@ -86,6 +89,11 @@
                 ['name' => 'transtext.text', 
                  'value' => $transtext_text_value,
                  'title'=>trans('corpus.transtext_text')])
+        <?php $transtext_text_xml_value = ($action=='edit' && $text->transtext) ? ($text->transtext->text_xml) : NULL; ?>
+        @include('widgets.form._formitem_textarea', 
+                ['name' => 'transtext.text_xml', 
+                 'value' => $transtext_text_xml_value,
+                 'title'=>trans('corpus.text_xml')])
                  
         {{-- SOURCE --}}
         <?php $source_author_value = ($action=='edit' && $text->source) ? ($text->source->author) : NULL; ?>

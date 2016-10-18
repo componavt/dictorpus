@@ -52,6 +52,15 @@ return [
     'relation_list' => 'List of semantic relations',
     'relation' => 'Semantic relation',
     'relations' => 'Semantic relations',
+    
+    'relevance' => 'relevance',    
+    'relevance_scope' => [10 => 'the best example',
+                    7 => 'an excellent example',
+                    5 => 'a good example',
+                    3 => 'a bad example',
+                    1 => 'not checked',
+                    0 => 'not suitable'],
+    
     'reverse_relation' => 'reverse relation',
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',
