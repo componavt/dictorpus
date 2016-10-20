@@ -15,6 +15,8 @@ use App\Models\Corpus\Transtext;
 class Text extends Model
 {
     protected $fillable = ['corpus_id','lang_id','source_id','event_id','title','text','text_xml'];
+    
+//    protected $delimeters = [',', '.', '!', '?', ':', '-', '\'', '"', '[', ']', '(', ')', '{', '}', '«', '»', '='];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -28,7 +30,12 @@ class Text extends Model
     {
         parent::boot();
     }
-
+/*    
+    public function getDelimeters()
+    {
+        return $this->delimeters;
+    }    
+*/
     // Text __belongs_to__ Lang
     public function lang()
     {
@@ -117,12 +124,17 @@ class Text extends Model
     }
     
     /**
-     * Sets text_xml as a markup text with sentences
+     * Gets a markup text with sentences
+     * 
+     * @param $text String
+     * @return String
      */
-    public function divSentence(){
+    public static function markupText($text): String{
         $out = '';
-        $text = $this->text;
-        $count = 1;
+        $sen_count = 1;
+        $word_count = 1;
+        $one_text = new Text;
+        $delimeters = [',', '.', '!', '?', ':', '-', '\'', '"', '[', ']', '(', ')', '{', '}', '«', '»', '='];
 /*  division on paragraphs and then on sentences       
         if (preg_match_all("/(.+?)(\r?\n){2,}/is",$text,$desc_out)) {
             foreach ($desc_out[0] as $ab) {
@@ -139,23 +151,79 @@ class Text extends Model
 */        
         // division only on sentences
         $text = nl2br($text);
-        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"){1,}(\s|<br(| \/)>|$)/is",
+        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"){1,}(\s|(<br(| \/)>\s*){1,}|$)/is",
                            $text, $desc_out)) {
 //dd($desc_out);
-            for ($i=0; $i<sizeof($desc_out[1]); $i++) {
-                $sentence = trim($desc_out[1][$i]);
+            for ($k=0; $k<sizeof($desc_out[1]); $k++) {
+                $sentence = trim($desc_out[1][$k]);
+                
+                // <br> in in the beginning of the string is moved before the sentence
                 if (preg_match("/^(<br(| \/)>)(.+)$/is",$sentence,$regs)) {
                     $out .= $regs[1]."\n";
                     $sentence = trim($regs[3]);
                 }
-                $out .= "<s id=\"".$count++.'">'.$sentence.$desc_out[2][$i]."</s>\n";
-                $div = trim($desc_out[3][$i]);
+                
+                // division on tokens
+//                $tokens = preg_split('/\s+/',$sentence);
+//                $words = [];
+                
+//                foreach ($tokens as $token) {
+//$token = '"<br />line,';                   
+                    $str = '';
+                    $i = 0;
+                    $is_word = false;
+                    $token = $sentence;
+                    while ($i<strlen($token)) {
+                        $char = substr($token,$i,1);
+//                        $token_tale = substr($token,$i+1);
+                        if (in_array($char, $delimeters) || preg_match("/\s/",$char)) {
+                            if ($is_word) {
+                                $str .= '</w>';
+                                $is_word = false;
+                            }
+                            $str .= $char;
+                        } elseif ($char == '<') { // && strpos($token,'>',$i+1)
+                            if ($is_word) {
+                                $str .= '</w>';
+                                $is_word = false;
+                            }
+                            $j = strpos($token,'>',$i+1);
+                            $str .= substr($token,$i,$j-$i+1);
+                            $i = $j;
+                        } else {
+                            if (!$is_word) {
+                                $str .= '<w id="'.$word_count++.'">';
+                                $is_word = true;
+                            }
+                            $str .= $char;
+                        }
+                        $i++;
+                    }
+                    if ($is_word) {
+                        $str .= '</w>';
+                    }
+//print "<p>$str</p>";                    
+//                    $words[] = $str;
+                    
+//                }                
+//                $out .= "<s id=\"".$sen_count++.'">'.join(' ',$words).$desc_out[2][$k]."</s>\n";
+ 
+                $out .= "<s id=\"".$sen_count++.'">'.$str.$desc_out[2][$k]."</s>\n";
+//                $out .= "<s id=\"".$sen_count++.'">'.$sentence.$desc_out[2][$k]."</s>\n";
+                $div = trim($desc_out[3][$k]);
                 if ($div) {
                     $out .= trim($div)."\n";
                 }
             }
         } 
         
-        $this->text_xml = trim($out);
+        return trim($out);
+    }
+    
+    /**
+     * Sets text_xml as a markup text with sentences
+     */
+    public function markup(){
+        $this->text_xml = self::markupText($this->text);
     }
 }

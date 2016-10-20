@@ -91,7 +91,7 @@
     
     $(".trans_sentence").hover(function(){ // over
             var text_id = $(this).attr('id').replace('transtext','text');
-            $("#"+text_id).css('background','#8ccdd6');
+            $("#"+text_id).css('background','#a9eef8');
         },
         function(){ // out
             $(".sentence").css('background','none');

@@ -261,7 +261,7 @@ class TextController extends Controller
         $old_text = $text->text;
         $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
         if ($request->text && $old_text != $request->text) {
-            $text->divSentence();
+            $text->markup();
             // TODO!! delete all relevance in meaning_text
         }
 
@@ -421,13 +421,13 @@ class TextController extends Controller
     {
         $texts = Text::all();
         foreach ($texts as $text) {
-            $text->divSentence();
+            $text->markup();
             $text->save();            
         }
         
         $texts = Transtext::all();
         foreach ($texts as $text) {
-            $text->divSentence();
+            $text->markup();
             $text->save();            
         }
     }
@@ -441,13 +441,13 @@ class TextController extends Controller
     {
         $texts = Text::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
         foreach ($texts as $text) {
-            $text->divSentence();
+            $text->markup();
             $text->save();            
         }
         
         $texts = Transtext::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
         foreach ($texts as $text) {
-            $text->divSentence();
+            $text->markup();
             $text->save();            
         }
     }

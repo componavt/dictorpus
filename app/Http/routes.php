@@ -83,7 +83,7 @@ Route::group(
 //        Route::get('corpus/text/tempInsertVepsianGenreText', 'Corpus\TextController@tempInsertVepsianGenreText');
         Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
 //        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
-        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
+//        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
 
         Route::resource('dict/dialect', 'Dict\DialectController',
                        ['names' => ['update' => 'dialect.update',
