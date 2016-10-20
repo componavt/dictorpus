@@ -3,20 +3,25 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 use App\Models\Corpus\Corpus;
-use App\Models\Dict\Dialect;
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Informant;
-use App\Models\Dict\Lang;
 use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
+
+use App\Models\Dict\Dialect;
+use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
+use App\Models\Dict\Meaning;
+use App\Models\Dict\Wordform;
 
 class Text extends Model
 {
     protected $fillable = ['corpus_id','lang_id','source_id','event_id','title','text','text_xml'];
     
-//    protected $delimeters = [',', '.', '!', '?', ':', '-', '\'', '"', '[', ']', '(', ')', '{', '}', '«', '»', '='];
+//    protected $delimeters = [',', '.', '!', '?', ':', '\'', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=']; // '-', 
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -78,6 +83,12 @@ class Text extends Model
         return $builder;
     }
     
+    // Text __has_many__ Meanings
+    public function meanings(){
+        $builder = $this->belongsToMany(Meaning::class);
+        return $builder;
+    }
+    
     /**
      * Gets IDs of recorders for record's form field
      * 
@@ -134,7 +145,7 @@ class Text extends Model
         $sen_count = 1;
         $word_count = 1;
         $one_text = new Text;
-        $delimeters = [',', '.', '!', '?', ':', '-', '\'', '"', '[', ']', '(', ')', '{', '}', '«', '»', '='];
+        $delimeters = [',', '.', '!', '?', ':', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=', '–']; // , '-', '\''
 /*  division on paragraphs and then on sentences       
         if (preg_match_all("/(.+?)(\r?\n){2,}/is",$text,$desc_out)) {
             foreach ($desc_out[0] as $ab) {
@@ -151,7 +162,8 @@ class Text extends Model
 */        
         // division only on sentences
         $text = nl2br($text);
-        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"){1,}(\s|(<br(| \/)>\s*){1,}|$)/is",
+//dd($text);        
+        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"|…){1,}(\s|(<br(| \/)>\s*){1,}|$)/is",
                            $text, $desc_out)) {
 //dd($desc_out);
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
@@ -224,6 +236,71 @@ class Text extends Model
      * Sets text_xml as a markup text with sentences
      */
     public function markup(){
-        $this->text_xml = self::markupText($this->text);
+        $this->text_xml = self::markupText($this->text);        
+        $this->updateMeaningText();
+    }
+    
+    /**
+     * Sets links meaning - text - sentence
+     */
+    public function updateMeaningText(){
+        libxml_use_internal_errors(true);
+//        $sxe = simplexml_load_string("<?xml version='1.0'?<text>".$this->text_xml.'</text>');
+        $sxe = simplexml_load_string('<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
+                                     '<text>'.$this->text_xml.'</text>');
+        if (!$sxe) {
+            echo "XML loading error\n". '('.$this->id.')';
+            foreach(libxml_get_errors() as $error) {
+                echo "\t", $error->message. '('.$this->id.')';
+            }
+            return;
+        }
+
+        $this -> meanings()->detach();
+        
+        foreach ($sxe->children()->s as $sentence) {
+//            if ($sentence->getName() == 's') {
+                $s_id = $sentence->attributes()->id;
+                //print "<P>".$s_id .'.';
+                foreach ($sentence->children()->w as $word) {
+                    $w_id = $word->attributes()->id;
+                    $meanings = [];
+                    $lemmas = Lemma::select('id')
+                            ->whereRaw("lemma like ?",[addcslashes(strtolower($word),"'")]);
+                    if ($lemmas->count()) {
+                        foreach ($lemmas->get() as $lemma) {
+                            foreach ($lemma->meanings as $meaning) {
+                                $meanings[$meaning->id] = 1;
+                            }
+                        }
+                    }
+                    
+                    $wordforms = Wordform::select('id')
+                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'")]);
+                    if ($wordforms->count()) {
+                        foreach ($wordforms->get() as $wordform) {
+                            foreach ($wordform->lemmas as $lemma) {
+                                foreach ($lemma->meanings as $meaning) {
+                                    $meanings[$meaning->id] = 1;
+                                }
+                            }
+                        }
+                    }
+                    
+                    foreach (array_keys($meanings) as $meaning_id) {
+                        $this->meanings()->attach($meaning_id,
+                                ['sentence_id'=>$s_id, 
+                                 'word_id'=>$w_id, 
+                                 'relevance'=>1]);
+                    }
+                            
+/*                    if ($lemmas->count() || $wordforms->count()) {
+                        print ' ('.$w_id.')'. $word;
+                    }*/
+                }
+                //print '</p>';
+//            }
+        }
+//exit(0);
     }
 }

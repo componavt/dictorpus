@@ -650,3 +650,11 @@ INSERT INTO `event_recorder` VALUES (233,19);
 
 -- LEMMA - TEXT -----------------------------------------
 -- php artisan make:migration create_meaning_text_table
+-- alter table meaning_text add word_id int(10) unsigned NOT NULL after sentence_id;
+-- alter table meaning_text add primary key `meaning_text_primary_key` (meaning_id,text_id, sentence_id, word_id);
+
+-- REMARKUP ALL TEXTS
+-- update texts set text_xml=NULL;
+-- update transtexts set text_xml=NULL;
+-- delete from meaning_text;
+-- corpus/text/markup_all_empty_text_xml

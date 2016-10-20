@@ -437,7 +437,7 @@ class TextController extends Controller
     /**
      * Markup all texts and transtexts with empty text_xml
      */
-/*    public function markupAllEmptyTextXML()
+    public function markupAllEmptyTextXML()
     {
         $texts = Text::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
         foreach ($texts as $text) {
@@ -451,10 +451,8 @@ class TextController extends Controller
             $text->save();            
         }
     }
- * 
- */
     
-    public function tempStripSlashes()
+/*    public function tempStripSlashes()
     {
         $texts = Text::all();
         foreach ($texts as $text) {
@@ -464,6 +462,8 @@ class TextController extends Controller
         }
         
     }
+ * 
+ */
     
     /*    
     public function tempInsertVepsianText()
