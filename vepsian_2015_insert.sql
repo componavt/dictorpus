@@ -660,3 +660,5 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- corpus/text/markup_all_empty_text_xml
 
 -- alter table texts change text_xml text_xml mediumblob;
+
+-- alter table lemmas change lemma `lemma` varchar(255) COLLATE utf8_bin NOT NULL;

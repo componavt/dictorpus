@@ -5,7 +5,6 @@ if (isset($w[0])) {
     $w[0]->addAttribute('class','word-marked');
     $sentence['s'] = $sxe->asXML();
 }
-
 ?>
 {!! $sentence['s'] !!}
 @if ($sentence['trans_s']) 

@@ -14,7 +14,7 @@ class CreateLemmasTable extends Migration
     {
         Schema::create('lemmas', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('lemma', 255)->comment = "English name of POS";
+            $table->string('lemma', 255)->collate('utf8_bin');
             
             // lang 
             $table->smallInteger('lang_id')->unsigned();

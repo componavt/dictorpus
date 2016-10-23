@@ -4,6 +4,7 @@ namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use LaravelLocalization;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Event;
@@ -324,4 +325,70 @@ class Text extends Model
         }
         return [$sxe,$error_text];
     }
+    
+    /**
+     * Gets markup text with links from words to related lemmas
+     
+     * @param $markup_text String
+     * @return String markup text 
+     **/
+    public function setLemmaLink($markup_text){
+        $text_id = (int)$this->id;
+        list($sxe,$error_message) = self::toXML($markup_text,'');
+        if ($error_message) {
+            return $markup_text;
+        }        
+        $words = $sxe->xpath('//w');
+        foreach ($words as $word) {
+            $word_id = (int)$word->attributes()->id;
+            $meanings = $this->meanings()->wherePivot('text_id',$text_id)
+                             ->wherePivot('word_id',$word_id)
+                             ->wherePivot('relevance','>',0);
+            if ($meanings->count()) {
+                $word->addAttribute('class','lemma-linked');
+                
+                $link_block = $word->addChild('div');
+                $link_block->addAttribute('class','links-to-lemmas');
+                $link_block->addAttribute('id','links_'.$word_id);
+
+                foreach ($meanings->get() as $meaning) {
+                    $lemma = $meaning->lemma;
+
+                    $link = $link_block->addChild('a',$lemma->lemma);
+                    $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
+                    
+                    $locale = LaravelLocalization::getCurrentLocale();
+                    $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');                    
+                }
+            }            
+/*            $lemmas = Lemma::whereIn('id',function($query) use ($text_id, $word_id){
+                                $query->select('lemma_id')
+                                      ->from('meanings')
+                                      ->whereIn('id',function($q) use ($text_id, $word_id){
+                                            $q->select('meaning_id')
+                                              ->from('meaning_text')
+                                              ->where('text_id',$text_id)      
+                                              ->where('word_id',$word_id)
+                                              ->where('relevance','>',0);
+                                              });
+                                   })->orderBy('lemma'); 
+            if ($lemmas->count()) {
+                $word->addAttribute('class','lemma-linked');
+                
+                $link_block = $word->addChild('div');
+                $link_block->addAttribute('class','links-to-lemmas');
+                $link_block->addAttribute('id','links_'.$word_id);
+
+                foreach ($lemmas->get() as $lemma) {
+                    $link = $link_block->addChild('a',$lemma->lemma);
+                    $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
+                    $meaning->getMultilangMeaningTextsString()
+                }
+            } */
+            
+        }
+        
+        return $sxe->asXML();
+    }
+    
 }

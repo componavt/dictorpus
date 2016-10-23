@@ -51,7 +51,9 @@
         @if ($text->text)
         <?php $markup_text = $text->text_xml 
                     ? str_replace("<s id=\"","<s class=\"sentence\" id=\"text_s",$text->text_xml) 
-                    : nl2br($text->text); ?>
+                    : nl2br($text->text); 
+              $markup_text = $text->setLemmaLink($markup_text);
+        ?>
                     <div id="text">{!! $markup_text !!}</div>
         @endif      
                 </td>
@@ -97,5 +99,11 @@
             $(".sentence").css('background','none');
         }
     );
+    
+    $(".lemma-linked").click(function() {
+        var block_id = 'links_' + $(this).attr('id');
+        $(".links-to-lemmas").hide();
+        $("#"+block_id).show();
+    });
 @stop
 

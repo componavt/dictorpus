@@ -150,15 +150,30 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
      *              <lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...
      *              if lemma has one meaning 
      * 
+     * @param $code String
      * @return String
      */
-    public function getMultilangMeaningTextsString() :String
+    public function getMultilangMeaningTextsString($code='') :String
     {
         $mean_langs = [];
-        if ($this->meaningTexts) {
-            foreach ($this->meaningTexts as $meaning_text) {
-                if ($meaning_text->meaning_text) {
-                    $mean_langs[] = $meaning_text->lang->code .': '. $meaning_text->meaning_text;  
+        $meaning_texts = $this->meaningTexts();
+        if ($code) {
+            $lang = Lang::where('code',$code)->first();
+            if ($lang) {
+                $meaning_texts_by_code = $meaning_texts->where('lang_id',$lang->id);
+                if ($meaning_texts_by_code->count()) {
+                    $meaning_texts = $meaning_texts_by_code;
+                }
+            }
+        }
+        if ($meaning_texts->count()) {
+            foreach ($meaning_texts->get() as $meaning_text_obj) {
+                $meaning_text = $meaning_text_obj->meaning_text;
+                if ($meaning_text) {
+                    if ($meaning_text_obj->lang->code != $code) {
+                        $meaning_text = $meaning_text_obj->lang->code .': '. $meaning_text;
+                    }
+                    $mean_langs[] = $meaning_text;  
                 } 
             }
         } 

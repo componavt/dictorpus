@@ -9,5 +9,37 @@ s {
 }
 
 .word-marked {
-    background: yellow;
+    background: #fefea6;
+}
+
+.lemma-linked {
+    color: #337ab7;
+    cursor:pointer;
+/*    text-decoration: underline;*/
+}
+
+.links-to-lemmas {
+    background: #dcf7f8;
+    color: black;
+    display: none;
+    left: 0;
+    margin-top: -2px;
+    max-width: 100px;
+    padding: 10px;
+    position: absolute;
+    width: auto;
+    z-index:100;
+}
+
+.links-to-lemmas a {
+    display: block;
+}
+
+.links-to-lemmas a span {
+    color: black;
+    text-decoration: none;
+}
+
+w {
+    position: relative;
 }
