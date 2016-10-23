@@ -23,6 +23,7 @@ return [
     'gram_removed' => 'Грамматический признак ":name" удален.',
     'gramset_has_wordform' => 'Есть словоформы с этим набором грамматических признаков',
     'gramset_removed' => 'Набор грамматических признаков ":name" удален.',
+    'hide_examples' => '&lt; &lt; скрыть примеры',
 
     'interpretation' => 'толкование',
     'lang_code' => 'Код языка',
@@ -35,6 +36,7 @@ return [
     'list_long_lemmas' => 'Список длинных лемм',
     'meaning' => 'значение',
     'mood' => 'наклонение',
+    'more_examples' => 'еще примеры &gt;&gt;',
     'name' => 'название',
     'name_short' => 'короткое название',
     'number' => 'число',

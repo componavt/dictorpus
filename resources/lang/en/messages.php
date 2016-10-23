@@ -23,6 +23,7 @@ return [
     'delete_confirmation' => 'Delete confirmation',
     'edit' => 'edit',
     'editing' => 'Editing',
+    'examples' => 'Examples',
     'founded_records' => ':count records was founded.',
     'from' => 'from',
     'history' => 'history',

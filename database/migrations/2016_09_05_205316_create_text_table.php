@@ -42,6 +42,8 @@ class CreateTextTable extends Migration
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
         });
+
+        DB::statement("alter table texts change text_xml text_xml mediumblob");
     }
 
     /**

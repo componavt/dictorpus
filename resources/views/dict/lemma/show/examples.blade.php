@@ -1,0 +1,49 @@
+<?php $sentences = $meaning->sentences(User::checkAccess('dict.edit')); ?>
+@if ($sentences)
+                <h4>{{ trans('messages.examples')}}</h4>
+                    @if (User::checkAccess('dict.edit'))
+                        {!! Form::open(['route' => ['lemma.update.examples', $lemma->id],
+                                        'method' => 'POST',
+                                        'class' => 'form-inline'
+                                      ])
+                        !!}
+                    @endif
+                    <?php $count=1; 
+                          $limit = 5;?>
+                    <table class="lemma-examples">
+                    @foreach ($sentences as $sentence)
+                        @if ($count==$limit+1)
+                        </table>
+                        <a class="show-more-examples">{{ trans('dict.more_examples') }}</a>
+                        <div class="more-examples">
+                        <table class="lemma-examples">
+                        @endif
+                            <tr class="row">
+                                <td>
+                            @if (User::checkAccess('dict.edit'))
+                                @include('widgets.form._formitem_select',
+                                        ['name' => 'relevance['.$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'].']',
+                                         'values' => trans('dict.relevance_scope'),
+                                         'value' => $sentence['relevance']
+                                        ])
+                            @endif
+                                </td>
+                                <td> 
+                                    {{ $count++ }}.
+                                    @include('dict.lemma.show.example_sentence')
+                                </td>
+                            </tr>
+                    @endforeach                    
+                    </table>
+                            
+                    @if ($count<=$limit)
+                    <div class="more-examples">
+                    @else
+                    <a class="hide-more-examples">{{ trans('dict.hide_examples') }}</a>
+                    @endif
+                    </div>
+                    @if (User::checkAccess('dict.edit'))
+                        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.save')])
+                        {!! Form::close() !!}
+                    @endif
+@endif

@@ -23,6 +23,7 @@ return [
     'delete_confirmation' => 'Подтверждение удаления',
     'edit' => 'редактировать',
     'editing' => 'Pедактирование',
+    'examples' => 'Примеры',
     'founded_records' => 'Найдено :count записей.',
     'from' => 'с',
     'history' => 'История изменений',

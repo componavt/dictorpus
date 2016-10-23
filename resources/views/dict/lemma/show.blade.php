@@ -6,6 +6,7 @@
 
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
+    {!!Html::style('css/text.css')!!}
 @stop
 
 @section('content')
@@ -38,58 +39,22 @@
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
 
         @foreach ($lemma->meanings as $meaning)
-            <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
-            @if (isset($meaning_texts[$meaning->id]))
-            <ul>
-                @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
-                <li><b>{{$lang_name}}:</b> {{$meaning_text}}</li>
-                @endforeach
-            </ul>
-            @endif
+        <table class="table lemma-meaning">
+            <tr>
+                <td>
+                    <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
 
-            @if (isset($meaning_relations[$meaning->id]))
-            <ul>
-                @foreach ($meaning_relations[$meaning->id] as $relation_name => $relation_lemmas)
-                <?php
-                    $rel_lemmas = [];
-                    foreach ($relation_lemmas as $relation_lemma_id => $relation_lemma_info) {
-                        $rel_lemmas[] = '<a href="/dict/lemma/'.$relation_lemma_id.'">'.
-                                        $relation_lemma_info['lemma'].'</a> ('.
-                                        $relation_lemma_info['meaning'].')';
-                    }
-                    if (sizeof($rel_lemmas)>1) {
-                        $relation_meanings =  '<br>'. join ('<br>',$rel_lemmas);
-                    } else {
-                        $relation_meanings =  join ('; ',$rel_lemmas);
-                    }                        
-                ?>
-                <p><b>{{$relation_name}}:</b> {!! $relation_meanings !!}</p>
-                @endforeach
-            </ul>
-            @endif
+                    @include('dict.lemma.show.meaning_texts')
 
-            @if (isset($translation_values[$meaning->id]))
-            <div class="show-meaning-translation">
-            <h4>{{ trans('dict.translation')}}</h4>
-                @foreach ($translation_values[$meaning->id] as $lang_text => $translation_lemmas)
-                <?php
-                    $transl_lemmas = [];
-                    foreach ($translation_lemmas as $translation_lemma_id => $translation_lemma_info) {
-                        $transl_lemmas[] = '<a href="/dict/lemma/'.$translation_lemma_id.'">'.
-                                        $translation_lemma_info['lemma'].'</a> ('.
-                                        $translation_lemma_info['meaning'].')';
-                    }
-                    if (sizeof($transl_lemmas)>1) {
-                        $translation_meanings =  '<br>'. join ('<br>',$transl_lemmas);
-                    } else {
-                        $translation_meanings =  join ('; ',$transl_lemmas);
-                    }                        
-                ?>
-                <p><b>{{$lang_text}}:</b> {!! $translation_meanings !!}</p>
-                @endforeach
-            </div>
-            @endif
+                    @include('dict.lemma.show.meaning_relations')
 
+                    @include('dict.lemma.show.meaning_translations')
+                </td>
+                <td>
+                    @include('dict.lemma.show.examples')
+                </td>
+            </tr>
+        </table>
         @endforeach
 
         <h3>
@@ -126,5 +91,14 @@
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma');
+    
+    $('.show-more-examples').click(function(){
+        $(this).hide();
+        $('.more-examples').show();
+    });
+    $('.hide-more-examples').click(function(){
+        $('.more-examples').hide();
+        $('.show-more-examples').show();
+    });
 @stop
 

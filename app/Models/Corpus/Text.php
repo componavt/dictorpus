@@ -145,7 +145,7 @@ class Text extends Model
         $sen_count = 1;
         $word_count = 1;
         $one_text = new Text;
-        $delimeters = [',', '.', '!', '?', ':', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=', '–']; // , '-', '\''
+        $delimeters = [',', '.', '!', '?', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=', '–']; // , '-', '\'', ':'
 /*  division on paragraphs and then on sentences       
         if (preg_match_all("/(.+?)(\r?\n){2,}/is",$text,$desc_out)) {
             foreach ($desc_out[0] as $ab) {
@@ -163,7 +163,7 @@ class Text extends Model
         // division only on sentences
         $text = nl2br($text);
 //dd($text);        
-        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"|…){1,}(\s|(<br(| \/)>\s*){1,}|$)/is",
+        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"|…){1,}(\s|(<br(| \/)>\s*){1,}|$)/is", 
                            $text, $desc_out)) {
 //dd($desc_out);
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
@@ -176,49 +176,38 @@ class Text extends Model
                 }
                 
                 // division on tokens
-//                $tokens = preg_split('/\s+/',$sentence);
-//                $words = [];
-                
-//                foreach ($tokens as $token) {
-//$token = '"<br />line,';                   
-                    $str = '';
-                    $i = 0;
-                    $is_word = false;
-                    $token = $sentence;
-                    while ($i<strlen($token)) {
-                        $char = substr($token,$i,1);
-//                        $token_tale = substr($token,$i+1);
-                        if (in_array($char, $delimeters) || preg_match("/\s/",$char)) {
-                            if ($is_word) {
-                                $str .= '</w>';
-                                $is_word = false;
-                            }
-                            $str .= $char;
-                        } elseif ($char == '<') { // && strpos($token,'>',$i+1)
-                            if ($is_word) {
-                                $str .= '</w>';
-                                $is_word = false;
-                            }
-                            $j = strpos($token,'>',$i+1);
-                            $str .= substr($token,$i,$j-$i+1);
-                            $i = $j;
-                        } else {
-                            if (!$is_word) {
-                                $str .= '<w id="'.$word_count++.'">';
-                                $is_word = true;
-                            }
-                            $str .= $char;
+                $str = '';
+                $i = 0;
+                $is_word = false;
+                $token = $sentence;
+                while ($i<strlen($token)) {
+                    $char = substr($token,$i,1);
+                    if (in_array($char, $delimeters) || preg_match("/\s/",$char)) {
+                        if ($is_word) {
+                            $str .= '</w>';
+                            $is_word = false;
                         }
-                        $i++;
+                        $str .= $char;
+                    } elseif ($char == '<') { // && strpos($token,'>',$i+1)
+                        if ($is_word) {
+                            $str .= '</w>';
+                            $is_word = false;
+                        }
+                        $j = strpos($token,'>',$i+1);
+                        $str .= substr($token,$i,$j-$i+1);
+                        $i = $j;
+                    } else {
+                        if (!$is_word) {
+                            $str .= '<w id="'.$word_count++.'">';
+                            $is_word = true;
+                        }
+                        $str .= $char;
                     }
-                    if ($is_word) {
-                        $str .= '</w>';
-                    }
-//print "<p>$str</p>";                    
-//                    $words[] = $str;
-                    
-//                }                
-//                $out .= "<s id=\"".$sen_count++.'">'.join(' ',$words).$desc_out[2][$k]."</s>\n";
+                    $i++;
+                }
+                if ($is_word) {
+                    $str .= '</w>';
+                }
  
                 $out .= "<s id=\"".$sen_count++.'">'.$str.$desc_out[2][$k]."</s>\n";
 //                $out .= "<s id=\"".$sen_count++.'">'.$sentence.$desc_out[2][$k]."</s>\n";
@@ -237,23 +226,31 @@ class Text extends Model
      */
     public function markup(){
         $this->text_xml = self::markupText($this->text);        
-        $this->updateMeaningText();
+        $error_message = $this->updateMeaningText();
+        if ($error_message) {
+            return $error_message;
+        }        
     }
     
     /**
      * Sets links meaning - text - sentence
      */
     public function updateMeaningText(){
-        libxml_use_internal_errors(true);
-//        $sxe = simplexml_load_string("<?xml version='1.0'?<text>".$this->text_xml.'</text>');
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+/*        libxml_use_internal_errors(true);
         $sxe = simplexml_load_string('<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
                                      '<text>'.$this->text_xml.'</text>');
+        $error_text = '';
         if (!$sxe) {
-            echo "XML loading error\n". '('.$this->id.')';
+            $error_text = "XML loading error\n". '('.$this->id.')';
             foreach(libxml_get_errors() as $error) {
-                echo "\t", $error->message. '('.$this->id.')';
+                $error_text .= "\t". $error->message. '('.$this->id.')';
             }
-            return;
+            return $error_text;
+        } */
+        
+        if ($error_message) {
+            return $error_message;
         }
 
         $this -> meanings()->detach();
@@ -265,8 +262,8 @@ class Text extends Model
                 foreach ($sentence->children()->w as $word) {
                     $w_id = $word->attributes()->id;
                     $meanings = [];
-                    $lemmas = Lemma::select('id')
-                            ->whereRaw("lemma like ?",[addcslashes(strtolower($word),"'")]);
+                    $lemmas = Lemma::select('id')->where('lang_id',$this->lang_id)
+                            ->whereRaw("lemma like ?",[addcslashes(strtolower($word),"'%")]);
                     if ($lemmas->count()) {
                         foreach ($lemmas->get() as $lemma) {
                             foreach ($lemma->meanings as $meaning) {
@@ -276,12 +273,14 @@ class Text extends Model
                     }
                     
                     $wordforms = Wordform::select('id')
-                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'")]);
+                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'%")]);
                     if ($wordforms->count()) {
                         foreach ($wordforms->get() as $wordform) {
                             foreach ($wordform->lemmas as $lemma) {
-                                foreach ($lemma->meanings as $meaning) {
-                                    $meanings[$meaning->id] = 1;
+                                if ($lemma->lang_id == $this->lang_id) {
+                                    foreach ($lemma->meanings as $meaning) {
+                                        $meanings[$meaning->id] = 1;
+                                    }
                                 }
                             }
                         }
@@ -302,5 +301,27 @@ class Text extends Model
 //            }
         }
 //exit(0);
+    }
+    
+    /**
+     * Load xml from string, create SimpleXMLelement
+     * 
+     * @param $text_xml - markup text
+     * @param id - identifier of object Text or Transtext
+     * 
+     * return Array [SimpleXMLElement object, error text if exists]
+     */
+    public static function toXML($text_xml, $id){
+        libxml_use_internal_errors(true);
+        $sxe = simplexml_load_string('<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
+                                     '<text>'.$text_xml.'</text>');
+        $error_text = '';
+        if (!$sxe) {
+            $error_text = "XML loading error\n". '('.$id.')';
+            foreach(libxml_get_errors() as $error) {
+                $error_text .= "\t". $error->message. '('.$id.')';
+            }
+        }
+        return [$sxe,$error_text];
     }
 }

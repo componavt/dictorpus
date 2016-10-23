@@ -5,6 +5,9 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\Models\Corpus\Text;
+use App\Models\Corpus\Transtext;
+
 use App\Models\Dict\Lang;
 use App\Models\Dict\Relation;
 
@@ -70,6 +73,75 @@ class Meaning extends Model
                     ->withPivot('meaning2_id');
     }
 
+    /**
+     * Meaning __has_many__ Texts
+     *
+     * @return Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function texts(){
+        return $this->belongsToMany(Text::class,'meaning_text');
+    }
+    
+    /**
+     * Gets sentences for examples in Lemma show page
+     *
+     * @param $for_edit Boolean: true - for edition, output all sentences, 
+     *                           false - for view, output all positive examples (relevance>0)
+     * @return array
+     */
+    public function sentences($for_edit=false){
+        $sentences = [];
+        $sentence_builder = DB::table('meaning_text')
+                              ->where('meaning_id',$this->id)
+                              ->orderBy('relevance','desc')
+                              ->orderBy('text_id')
+                              ->orderBy('sentence_id')
+                              ->orderBy('word_id');
+        if (!$for_edit) {
+            $sentence_builder = $sentence_builder->where('relevance','>',0);
+        }
+//print "<p>". $sentence_builder->count()."</p>";       
+        
+        foreach ($sentence_builder->get() as $sentence) {
+            $text = Text::find($sentence->text_id);
+            if (!$text) {
+//print "<p>text error</p>";
+                continue;
+            }
+            list($sxe,$error_message) = Text::toXML($text->text_xml,$text->id);
+            if ($error_message) {
+//print "<p>$error_message</p>";                
+                continue;
+            }
+            $s = $sxe->xpath('//s[@id="'.$sentence->sentence_id.'"]');
+            if (isset($s[0])) {
+                $transtext = Transtext::find($text->transtext_id);
+                $trans_s = '';
+                if ($transtext) {
+                    list($trans_sxe,$trans_error) = Text::toXML($transtext->text_xml,'trans: '.$transtext->id);
+                    if (!$trans_error) {
+                        $trans_sent = $trans_sxe->xpath('//s[@id="'.$sentence->sentence_id.'"]');
+                        if (isset($trans_sent[0])) {
+                            $trans_s = $trans_sent[0]->asXML();
+                        }
+                    }                    
+                }
+                $sentences[] = ['s' => $s[0]->asXML(), 
+                                's_id' => $sentence->sentence_id,
+                                'text' => $text, 
+                                'trans_s' => $trans_s,
+                                'w_id' => $sentence->word_id, 
+                                'relevance' => $sentence->relevance]; 
+} else {
+dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence_id='.$sentence->sentence_id.' and word_id='.$sentence->word_id);                    
+            }
+        }
+        
+//        $sentences = array_slice($sentences,0,$limit);
+//print "<p>". sizeof($sentences)."</p>";       
+        return $sentences;
+    }
+    
     /**
      * Gets all meaning texts and returns string:
      * 

@@ -658,3 +658,5 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- update transtexts set text_xml=NULL;
 -- delete from meaning_text;
 -- corpus/text/markup_all_empty_text_xml
+
+-- alter table texts change text_xml text_xml mediumblob;

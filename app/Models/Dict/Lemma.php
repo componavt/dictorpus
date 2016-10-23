@@ -146,6 +146,22 @@ class Lemma extends Model
     }
     
     /**
+     * Gets count of sentence-examples
+     * 
+     * @return int
+     */
+    public function countExamples(){
+        $count = 0;
+        foreach ($this->meanings as $meaning) {
+            if ($meaning->texts()) {
+//print "<p>meaning:".$meaning->id.', count: '.$meaning->texts()->count()."</p>";                
+                $count = $count + $meaning->texts()->count();
+            }
+        }
+        return $count;
+    }
+    
+    /**
      * Gets Delete link created in a view
      * Generates a CSRF token and put it inside a custom data-delete attribute
      * @param bool $is_button Is this button or link?

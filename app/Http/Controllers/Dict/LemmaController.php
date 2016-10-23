@@ -388,7 +388,6 @@ class LemmaController extends Controller
      */
     public function updateWordforms(Request $request, $id)
     {
-       // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
         $lemma= Lemma::findOrFail($id);
         
         // WORDFORMS UPDATING
@@ -402,6 +401,28 @@ class LemmaController extends Controller
         Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
   
         return Redirect::to('/dict/lemma/'.($lemma->id))
+                       ->withSuccess(\Lang::get('messages.updated_success'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateExamples(Request $request, $id)
+    {
+        foreach ($request['relevance'] as $key => $value) {
+            if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$key,$regs)) {
+                DB::statement('UPDATE meaning_text SET relevance='.(int)$value.
+                              ' WHERE meaning_id='.(int)$regs[1].
+                              ' AND text_id='.(int)$regs[2].
+                              ' AND sentence_id='.(int)$regs[3].
+                              ' AND word_id='.(int)$regs[4]);
+            }
+        }
+        return Redirect::to('/dict/lemma/'.$id)
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
@@ -430,11 +451,12 @@ class LemmaController extends Controller
                     foreach ($meanings as $meaning) {
                         DB::table('meaning_relation')
                           ->where('meaning2_id',$meaning->id)->delete();
-                        $meaning->meaningRelations()->detach();
 
                         DB::table('meaning_translation')
                           ->where('meaning2_id',$meaning->id)->delete();
-                        $meaning->translations()->detach();
+
+                        DB::table('meaning_text')
+                          ->where('meaning_id',$meaning->id)->delete();
 
                         $meaning_texts = $meaning->meaningTexts;
                         foreach ($meaning_texts as $meaning_text) {

@@ -23,6 +23,7 @@ return [
     'gram_removed' => 'Grammatical attribute ":name" is removed successfully.',
     'gramset_has_wordform' => 'There are wordforms with these grammatical attributes',
     'gramset_removed' => 'Set of grammatical attributes ":name" is removed successfully.',
+    'hide_examples' => '&lt; &lt; hide examples',
     
     'interpretation' => 'interpretation',
     'lang' => 'language',
@@ -35,6 +36,7 @@ return [
     'list_long_lemmas' => 'List of longest lemmas',
     'meaning' => 'meaning',
     'mood' => 'mood',
+    'more_examples' => 'more examples &gt;&gt;',
     'name' => 'name',
     'name_short' => 'short name',
     'number' => 'Number',

@@ -7,3 +7,7 @@ s {
 .numered-sentence {
     margin-bottom: 20px;
 }
+
+.word-marked {
+    background: yellow;
+}

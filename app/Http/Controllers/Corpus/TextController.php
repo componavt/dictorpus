@@ -166,7 +166,7 @@ class TextController extends Controller
         $text->push();
 
         return Redirect::to('/corpus/text/'.($text->id))
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(\Lang::get('messages.created_success'));
     }
 
     /**
@@ -256,14 +256,10 @@ class TextController extends Controller
             'transtext.lang_id' => 'numeric',
             'event_date' => 'numeric',
         ]);
-
+        
         $text = Text::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
         $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
-        if ($request->text && $old_text != $request->text) {
-            $text->markup();
-            // TODO!! delete all relevance in meaning_text
-        }
 
         Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'), 
                                                   $text);
@@ -283,10 +279,19 @@ class TextController extends Controller
         $text->genres()->detach();
         $text->genres()->attach($request->genres);
 
-        $text->push();
-        
-        return Redirect::to('/corpus/text/'.($text->id))
+        $redirect = Redirect::to('/corpus/text/'.($text->id))
                        ->withSuccess(\Lang::get('messages.updated_success'));
+
+        if ($request->text && $old_text != $request->text || $request->text && !$text->text_xml) {
+            $error_message = $text->markup();
+            if ($error_message) {
+                $redirect = $redirect->withErrors($error_message);
+            }
+        }
+
+        $text->push();        
+         
+        return $redirect;
     }
 
     /**
@@ -421,7 +426,8 @@ class TextController extends Controller
     {
         $texts = Text::all();
         foreach ($texts as $text) {
-            $text->markup();
+            $message_error = $text->markup();
+            print "<p>$message_error</p>";
             $text->save();            
         }
         
@@ -441,7 +447,8 @@ class TextController extends Controller
     {
         $texts = Text::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
         foreach ($texts as $text) {
-            $text->markup();
+            $message_error = $text->markup();
+            print "<p>$message_error</p>";
             $text->save();            
         }
         
