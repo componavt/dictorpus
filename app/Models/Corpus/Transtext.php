@@ -51,7 +51,7 @@ class Transtext extends Model
         }
 
         if (!$is_empty_data) {
-            foreach (['lang_id','title','text','text_xml'] as $column) {
+            foreach (['lang_id','title','text'] as $column) {
                 $data_to_fill[$column] = ($requestData['transtext_'.$column]) ? $requestData['transtext_'.$column] : NULL;
             }
             if ($transtext_id) {
@@ -59,12 +59,18 @@ class Transtext extends Model
                 $transtext = self::find($transtext_id);
                 $old_text = $transtext->text;
                 $transtext->fill($data_to_fill);
-                if ($data_to_fill['text'] && $old_text != $data_to_fill['text']) {
+                if ($data_to_fill['text'] && ($old_text != $data_to_fill['text'] || !$transtext->text_xml)) {
                     $transtext->markup();
                 }
                 $transtext->save();
             } else {
                 $transtext = self::firstOrCreate($data_to_fill);
+
+                if ($data_to_fill['text']) {
+                    $transtext->markup();
+                }
+                $transtext->save();
+
                 $text_obj->transtext_id = $transtext->id;
                 $text_obj->save();
             }

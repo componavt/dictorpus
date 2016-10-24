@@ -147,6 +147,16 @@ class Text extends Model
         $word_count = 1;
         $one_text = new Text;
         $delimeters = [',', '.', '!', '?', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=', '–']; // , '-', '\'', ':'
+        
+        $end1 = ['.','?','!','…'];
+        $end2 = ['.»','?»','!»','."','?"','!"'];
+        $text = trim($text);
+        $pseudo_end = false;
+        if (!in_array(substr($text,-1,1),$end1) && !in_array(substr($text,-1,2),$end2)) {
+            $text .= '.';
+            $pseudo_end = true;            
+        }
+        
 /*  division on paragraphs and then on sentences       
         if (preg_match_all("/(.+?)(\r?\n){2,}/is",$text,$desc_out)) {
             foreach ($desc_out[0] as $ab) {
@@ -164,7 +174,7 @@ class Text extends Model
         // division only on sentences
         $text = nl2br($text);
 //dd($text);        
-        if (preg_match_all("/(.+?)(\.|\?|!|:|\.»|\?»|!»|\.\"|\?\"|!\"|…){1,}(\s|(<br(| \/)>\s*){1,}|$)/is", 
+        if (preg_match_all("/(.+?)(\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|…){1,}(\s|(<br(| \/)>\s*){1,}|$)/is", // :|
                            $text, $desc_out)) {
 //dd($desc_out);
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
@@ -174,6 +184,9 @@ class Text extends Model
                 if (preg_match("/^(<br(| \/)>)(.+)$/is",$sentence,$regs)) {
                     $out .= $regs[1]."\n";
                     $sentence = trim($regs[3]);
+                }
+                if ($k == sizeof($desc_out[1])-1 && $pseudo_end) {
+                    $desc_out[2][$k] = '';
                 }
                 
                 // division on tokens
@@ -217,7 +230,11 @@ class Text extends Model
                     $out .= trim($div)."\n";
                 }
             }
-        } 
+        }
+        
+        if ($pseudo_end) {
+            
+        }
         
         return trim($out);
     }

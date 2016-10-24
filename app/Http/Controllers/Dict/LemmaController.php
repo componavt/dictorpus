@@ -34,7 +34,8 @@ class LemmaController extends Controller
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.edit,/dict/lemma/', 
-                          ['only' => ['create','store','edit','update','destroy','updateWordforms']]);
+                          ['only' => ['create','store','edit','update','destroy',
+                                      'editWordforms','updateWordforms','updateExamples']]);
     }
 
     /**

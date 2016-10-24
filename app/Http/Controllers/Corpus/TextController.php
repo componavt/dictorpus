@@ -34,7 +34,9 @@ class TextController extends Controller
     public function __construct()
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/text/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:corpus.edit,/corpus/text/', 
+                         ['only' => ['create','store','edit','update','destroy',
+                                     'markupAllEmptyTextXML','markupAllTexts']]);
     }
 
     /**
@@ -163,10 +165,19 @@ class TextController extends Controller
         $text->dialects()->attach($request->dialects);
         $text->genres()->attach($request->genres);
 
+        $redirect = Redirect::to('/corpus/text/'.($text->id))
+                       ->withSuccess(\Lang::get('messages.created_success'));
+
+        if ($request->text) {
+            $error_message = $text->markup();
+            if ($error_message) {
+                $redirect = $redirect->withErrors($error_message);
+            }
+        }
+
         $text->push();
 
-        return Redirect::to('/corpus/text/'.($text->id))
-            ->withSuccess(\Lang::get('messages.created_success'));
+        return $redirect;
     }
 
     /**
