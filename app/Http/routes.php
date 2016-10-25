@@ -147,6 +147,11 @@ Route::group(
                                     'store' => 'place.store',
                                     'destroy' => 'place.destroy']]);
         
+        Route::resource('corpus/recorder', 'Corpus\RecorderController',
+                       ['names' => ['update' => 'recorder.update',
+                                    'store' => 'recorder.store',
+                                    'destroy' => 'recorder.destroy']]);
+        
         Route::resource('corpus/region', 'Corpus\RegionController',
                        ['names' => ['update' => 'region.update',
                                     'store' => 'region.store',

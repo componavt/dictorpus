@@ -28,6 +28,7 @@ return [
     'logout' => 'Выйти',
     'parts_of_speech' => 'Части речи',
     'places' => 'Населенные пункты',
+    'recorders' => 'Собиратели',
     'regions' => 'Регионы',
     'relations' => 'Семантические отношения',
     'references' => 'Cправочники',

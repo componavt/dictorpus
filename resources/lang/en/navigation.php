@@ -28,6 +28,7 @@ return [
     'logout' => 'Logout',
     'parts_of_speech' => 'Parts of speech',
     'places' => 'Settlements',
+    'recorders' => 'Recorders',
     'regions' => 'Regions',
     'relations' => 'Relations',
     'references' => 'Reference tables',

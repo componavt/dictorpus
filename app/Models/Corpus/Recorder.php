@@ -8,7 +8,8 @@ use LaravelLocalization;
 class Recorder extends Model
 {
     public $timestamps = false;
-    
+    protected $fillable = ['name_en','name_ru'];
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;

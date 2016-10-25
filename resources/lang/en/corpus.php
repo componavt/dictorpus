@@ -42,6 +42,8 @@ return [
     'of_genre' => 'of genre',
     'of_informant' => 'of informant',
     'of_place' => 'of place',
+    'of_recorder' => 'of recorder',
+    'of_region' => 'of region',
     'of_text' => 'of text',
     
     'p' => 'p.',
@@ -52,6 +54,11 @@ return [
     'record_place' => 'recording place',
     'record_year' => 'year of recording',
     'recorded' => 'recorded',
+    
+    'recorder' => 'Recorder',
+    'recorder_list' => 'Recorders list',
+    'recorder_name' => 'Recorder name',
+    'recorder_removed' => 'Recorder ":name" is removed successfully.',
     
     'region' => 'Region',
     'region_list' => 'Region list',

@@ -42,7 +42,8 @@ return [
     'of_genre' => 'жанра',
     'of_informant' => 'информанта',
     'of_place' => 'населенного пункта',
-    'of_district' => 'региона',
+    'of_recorder' => 'собирателя',
+    'of_region' => 'региона',
     'of_text' => 'текста',
     
     'p' => 'с.',
@@ -57,6 +58,11 @@ return [
     'region' => 'Область, республика',
     'region_list' => 'Список регионов',
     'region_removed' => 'Регион ":name" удален.',
+    
+    'recorder' => 'Собиратель',
+    'recorder_list' => 'Список собирателей',
+    'recorder_name' => 'Имя собирателя',
+    'recorder_removed' => 'Собиратель ":name" удален.',
     
     'select_corpus' => 'Выберите корпус',
     
