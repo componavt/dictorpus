@@ -12,6 +12,8 @@ return [
 
     // “Veps language corpus”
     
+    'about_karelians' => '',
+    'about_veps' => '',
     'welcome_text' =>  '<p>Open corpus of Veps and Karelian languages (abbr. VepKar)
                         contains dictionaries and corpora of Finnic languages of Karelia peoples.</p>
 

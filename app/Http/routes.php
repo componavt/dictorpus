@@ -50,6 +50,12 @@ Route::group(
         Route::get('wait', 'AuthController@wait');
 
 
+        Route::get('/about_veps', function () {
+            return view('page.about_veps');
+        });
+        Route::get('/about_karelians', function () {
+            return view('page.about_karelians');
+        });
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         

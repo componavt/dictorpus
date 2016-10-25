@@ -662,3 +662,8 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- alter table texts change text_xml text_xml mediumblob;
 
 -- alter table lemmas change lemma `lemma` varchar(255) COLLATE utf8_bin NOT NULL;
+
+-- alter table wordforms change wordform `wordform` varchar(255) COLLATE utf8_bin NOT NULL;
+
+-- alter table texts change text `text` text COLLATE utf8_bin NOT NULL;
+-- alter table transtexts change text `text` text COLLATE utf8_bin NOT NULL;

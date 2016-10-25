@@ -10,7 +10,9 @@ return [
     |
     */
 
+    'about_karelians' => 'О карелах',
     'about_project' => 'О проекте',
+    'about_veps' => 'О вепсах',
     'corpus' => 'Корпус',
     'corpuses' => 'Корпусы',
     'dialects' => 'Диалекты',

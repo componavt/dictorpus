@@ -1,5 +1,15 @@
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.home') }}</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                           {{ trans('navigation.home') }} <span class="caret"></span>
+                        </a>
+                        
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.about_project') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
+                        </ul>
+                    </li>
                     
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
