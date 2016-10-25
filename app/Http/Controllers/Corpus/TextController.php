@@ -328,6 +328,7 @@ class TextController extends Controller
                     
                     $text->dialects()->detach();
                     $text->genres()->detach();
+                    $text->meanings()->detach();
 
                     $text->delete();
 
