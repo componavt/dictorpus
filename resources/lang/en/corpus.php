@@ -73,6 +73,7 @@ return [
     'source_year' => 'Source year',
     
     'text' => 'text',
+    'text_has_checked_meaning' => 'The text is locked for editing, as It has checked up links with lemmas. Changing the text would result in the loss of relevance of the text to lemmas.',
     'text_list' => 'Text list',
     'text_not_found' => 'The text with ID=:id do not found',
     'text_removed' => 'Text ":name" is removed successfully.',
@@ -85,4 +86,5 @@ return [
     'transtext_title' => 'title of translation',
     
     'year_of_birth' => 'year of birth',
+    'unlock' => 'unlock',
 ];

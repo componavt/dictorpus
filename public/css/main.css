@@ -66,3 +66,6 @@ and open the template in the editor.
     text-transform: uppercase;    
 }
 
+.warning {
+    color: red;
+}

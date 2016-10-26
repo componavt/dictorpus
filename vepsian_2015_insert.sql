@@ -667,3 +667,6 @@ INSERT INTO `event_recorder` VALUES (233,19);
 
 -- alter table texts change text `text` text COLLATE utf8_bin NOT NULL;
 -- alter table transtexts change text `text` text COLLATE utf8_bin NOT NULL;
+
+-- WORD
+-- php artisan make:model 'Models\Corpus\Word' --migration

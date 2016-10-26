@@ -40,6 +40,19 @@ s {
     text-decoration: none;
 }
 
-w {
+w, .text-has-checked-meaning {
     position: relative;
+}
+
+.text-has-checked-meaning button {
+    bottom: -30px;
+    /*height: 20px;*/
+    right: 0;
+    padding: 3px 12px;
+    position: absolute;
+}
+
+
+textarea.form-control[readonly] {
+    border: 1px solid red;
 }

@@ -6,6 +6,7 @@
 
 @section('headExtra')
     {!!Html::style('css/select2.min.css')!!}
+    {!!Html::style('css/text.css')!!}
 @stop
 
 @section('content')
@@ -49,4 +50,8 @@
         }
     });
     
+    $('.text-unlock').click(function() {
+        $(this).hide();
+        $('#text').prop('readonly',false);
+    });
 @stop

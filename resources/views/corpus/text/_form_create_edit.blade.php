@@ -35,9 +35,23 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'title', 
                  'title'=>trans('corpus.title')])
+        
+        <?php $attr = ['id'=>'text']; ?>
+        @if ($text->meanings()->wherePivot('relevance','<>',1)->count())
+            <?php $attr[] = 'readonly'; ?>
+            <p class="warning text-has-checked-meaning">
+                {{trans('corpus.text_has_checked_meaning')}}
+                <button type="button" class="btn btn-info text-unlock">
+                    {{trans('corpus.unlock')}}
+                </button>
+
+            </p>
+        @endif
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'text', 
-                 'title'=>trans('corpus.text')])
+                 'title'=>trans('corpus.text'),
+                 'attributes' => $attr,
+                ])
         @if ($action == 'edit')
             @include('widgets.form._formitem_textarea', 
                     ['name' => 'text_xml', 
