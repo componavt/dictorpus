@@ -657,6 +657,7 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- update texts set text_xml=NULL;
 -- update transtexts set text_xml=NULL;
 -- delete from meaning_text;
+-- delete from words;
 -- corpus/text/markup_all_empty_text_xml
 
 -- alter table texts change text_xml text_xml mediumblob;
@@ -670,3 +671,6 @@ INSERT INTO `event_recorder` VALUES (233,19);
 
 -- WORD
 -- php artisan make:model 'Models\Corpus\Word' --migration
+-- alter table words change word `word` varchar(255) COLLATE utf8_bin  NOT NULL;
+
+-- alter table meaning_text add w_id int(10) unsigned not null;

@@ -130,7 +130,7 @@ class Meaning extends Model
                                 's_id' => $sentence->sentence_id,
                                 'text' => $text, 
                                 'trans_s' => $trans_s,
-                                'w_id' => $sentence->word_id, 
+                                'w_id' => $sentence->w_id, 
                                 'relevance' => $sentence->relevance]; 
 } else {
 dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence_id='.$sentence->sentence_id.' and word_id='.$sentence->word_id);                    

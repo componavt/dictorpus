@@ -18,6 +18,10 @@ s {
 /*    text-decoration: underline;*/
 }
 
+.lemma-linked.has-checked {
+    color: green;
+}
+
 .links-to-lemmas {
     background: #dcf7f8;
     color: black;
@@ -29,6 +33,10 @@ s {
     position: absolute;
     width: auto;
     z-index:100;
+}
+
+.has-checked .links-to-lemmas {
+    background: #a6f4bc;
 }
 
 .links-to-lemmas a {

@@ -86,8 +86,15 @@ class Text extends Model
     
     // Text __has_many__ Meanings
     public function meanings(){
-        $builder = $this->belongsToMany(Meaning::class);
+        $builder = $this->belongsToMany(Meaning::class)
+                 -> withPivot('relevance');
         return $builder;
+    }
+    
+    // Text __has_many__ Words
+    public function words(){
+        return $this->hasMany(Word::class);
+//        return = $this->belongsToMany(Word::class,'meaning_text');
     }
     
     /**
@@ -145,11 +152,10 @@ class Text extends Model
         $out = '';
         $sen_count = 1;
         $word_count = 1;
-        $one_text = new Text;
-        $delimeters = [',', '.', '!', '?', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=', '–']; // , '-', '\'', ':'
+        $delimeters = [',', '.', '!', '?', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=', '–', '”', ':']; // - and ' - part of word
         
         $end1 = ['.','?','!','…'];
-        $end2 = ['.»','?»','!»','."','?"','!"'];
+        $end2 = ['.»','?»','!»','."','?"','!"','.”','?”','!”'];
         $text = trim($text);
         $pseudo_end = false;
         if (!in_array(substr($text,-1,1),$end1) && !in_array(substr($text,-1,2),$end2)) {
@@ -174,7 +180,7 @@ class Text extends Model
         // division only on sentences
         $text = nl2br($text);
 //dd($text);        
-        if (preg_match_all("/(.+?)(\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|…){1,}(\s|(<br(| \/)>\s*){1,}|$)/is", // :|
+        if (preg_match_all("/(.+?)(\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…){1,}(\s|(<br(| \/)>\s*){1,}|$)/is", // :|
                            $text, $desc_out)) {
 //dd($desc_out);
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
@@ -271,7 +277,24 @@ class Text extends Model
             return $error_message;
         }
 
-        $this -> meanings()->detach();
+        $checked_words = [];
+        $meanings = $this->meanings()->wherePivot('relevance','<>',1)
+                         ->join('words','words.id','=','meaning_text.word_id')
+                         ->get();
+/*
+        $meanings = DB::table('meaning_text')
+                            ->join('words','words.id','=','meaning_text.word_id')
+                            ->where('relevance','<>',1)
+                            ->where('words.text_id',$text_id)
+                            ->get();
+ */
+        foreach ($meanings as $meaning) {
+            $checked_words[$meaning->w_id] =
+                    [$meaning->word, $meaning->relevance];
+        }
+//dd($checked_words);        
+        $this->words()->delete();
+        $this->meanings()->detach();        
         
         foreach ($sxe->children()->s as $sentence) {
 //            if ($sentence->getName() == 's') {
@@ -279,6 +302,12 @@ class Text extends Model
                 //print "<P>".$s_id .'.';
                 foreach ($sentence->children()->w as $word) {
                     $w_id = $word->attributes()->id;
+                    $w_id = (int)$w_id;
+//dd($w_id);                    
+                    $word_obj = Word::create(['text_id' => $this->id,
+                                              'w_id' => $w_id,
+                                              'word' => $word
+                                            ]);
                     $meanings = [];
                     $lemmas = Lemma::select('id')->where('lang_id',$this->lang_id)
                             ->whereRaw("lemma like ?",[addcslashes(strtolower($word),"'%")]);
@@ -305,10 +334,17 @@ class Text extends Model
                     }
                     
                     foreach (array_keys($meanings) as $meaning_id) {
+                        $relevance = 1;
+                        if (isset($checked_words[$w_id][0])) {
+                            if ($checked_words[$w_id][0] == $word) {
+                                $relevance = $checked_words[$w_id][1];
+                            }
+                        }
                         $this->meanings()->attach($meaning_id,
                                 ['sentence_id'=>$s_id, 
-                                 'word_id'=>$w_id, 
-                                 'relevance'=>1]);
+                                 'word_id'=>$word_obj->id, 
+                                 'w_id'=>$w_id, 
+                                 'relevance'=>$relevance]);
                     }
                             
 /*                    if ($lemmas->count() || $wordforms->count()) {
@@ -359,17 +395,20 @@ class Text extends Model
         foreach ($words as $word) {
             $word_id = (int)$word->attributes()->id;
             $meanings = $this->meanings()->wherePivot('text_id',$text_id)
-                             ->wherePivot('word_id',$word_id)
+                             ->wherePivot('w_id',$word_id)
                              ->wherePivot('relevance','>',0);
-            if ($meanings->count()) {
-                $word->addAttribute('class','lemma-linked');
-                
+            if ($meanings->count()) {                
                 $link_block = $word->addChild('div');
                 $link_block->addAttribute('class','links-to-lemmas');
                 $link_block->addAttribute('id','links_'.$word_id);
 
+                $has_checked_meaning = false;
                 foreach ($meanings->get() as $meaning) {
                     $lemma = $meaning->lemma;
+
+                    if ($meaning->pivot->relevance >1) {
+                        $has_checked_meaning = true;
+                    }
 
                     $link = $link_block->addChild('a',$lemma->lemma);
                     $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
@@ -377,6 +416,13 @@ class Text extends Model
                     $locale = LaravelLocalization::getCurrentLocale();
                     $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');                    
                 }
+                
+                $class = 'lemma-linked';
+                if ($has_checked_meaning) {
+                    $class .= ' has-checked';
+                }
+                $word->addAttribute('class',$class);
+                
             }            
 /*            $lemmas = Lemma::whereIn('id',function($query) use ($text_id, $word_id){
                                 $query->select('lemma_id')

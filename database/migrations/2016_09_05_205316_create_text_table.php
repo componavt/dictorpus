@@ -36,7 +36,7 @@ class CreateTextTable extends Migration
             $table->     foreign('event_id')->references('id')->on('events');
             
             $table->string('title', 255);
-            $table->text('text');
+            $table->text('text')->collate('utf8_bin');
 
             //$table->timestamps();
             $table->timestamp('updated_at')->useCurrent();

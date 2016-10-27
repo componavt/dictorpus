@@ -41,9 +41,9 @@ class District extends Model
         return $name;
     }
     
-    /** Gets lang, takes into account locale.
+    /** Gets Region
      * 
-     * Corpus belongs_to Lang
+     * District belongs_to Region
      * 
      * @return Relationship, Query Builder
      */

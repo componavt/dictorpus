@@ -420,7 +420,7 @@ class LemmaController extends Controller
                               ' WHERE meaning_id='.(int)$regs[1].
                               ' AND text_id='.(int)$regs[2].
                               ' AND sentence_id='.(int)$regs[3].
-                              ' AND word_id='.(int)$regs[4]);
+                              ' AND w_id='.(int)$regs[4]);
             }
         }
         return Redirect::to('/dict/lemma/'.$id)
