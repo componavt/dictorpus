@@ -8,7 +8,7 @@ class Word extends Model
 {
     public $timestamps = false;
     
-    protected $fillable = ['text_id', 'w_id', 'word'];
+    protected $fillable = ['text_id', 'sentence_id', 'w_id', 'word'];
     
     /** Word belongs_to Text
      * 

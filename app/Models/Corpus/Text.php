@@ -238,10 +238,6 @@ class Text extends Model
             }
         }
         
-        if ($pseudo_end) {
-            
-        }
-        
         return trim($out);
     }
     
@@ -261,33 +257,16 @@ class Text extends Model
      */
     public function updateMeaningText(){
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
-/*        libxml_use_internal_errors(true);
-        $sxe = simplexml_load_string('<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
-                                     '<text>'.$this->text_xml.'</text>');
-        $error_text = '';
-        if (!$sxe) {
-            $error_text = "XML loading error\n". '('.$this->id.')';
-            foreach(libxml_get_errors() as $error) {
-                $error_text .= "\t". $error->message. '('.$this->id.')';
-            }
-            return $error_text;
-        } */
         
         if ($error_message) {
             return $error_message;
         }
 
+        // saving old checked links
         $checked_words = [];
         $meanings = $this->meanings()->wherePivot('relevance','<>',1)
                          ->join('words','words.id','=','meaning_text.word_id')
                          ->get();
-/*
-        $meanings = DB::table('meaning_text')
-                            ->join('words','words.id','=','meaning_text.word_id')
-                            ->where('relevance','<>',1)
-                            ->where('words.text_id',$text_id)
-                            ->get();
- */
         foreach ($meanings as $meaning) {
             $checked_words[$meaning->w_id] =
                     [$meaning->word, $meaning->relevance];
@@ -305,6 +284,7 @@ class Text extends Model
                     $w_id = (int)$w_id;
 //dd($w_id);                    
                     $word_obj = Word::create(['text_id' => $this->id,
+                                              'sentence_id' => $s_id,
                                               'w_id' => $w_id,
                                               'word' => $word
                                             ]);

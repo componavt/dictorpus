@@ -11,6 +11,8 @@ use App\Models\Corpus\Transtext;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Relation;
 
+use App\Models\Corpus\Word;
+
 class Meaning extends Model
 {
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -269,6 +271,10 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
                     $meaning_text_obj -> meaning_text = $meaning_text;
                     $meaning_text_obj -> save();
                 }
+                
+                if (!$meaning_obj->texts()->count()) {
+                    $meaning_obj->addTextLinks();
+                }
             }
         }
     }
@@ -306,7 +312,11 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
             if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count()) { 
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
                 $meaning_obj -> save();
+                if (!$meaning_obj->texts()->count()) {
+                    $meaning_obj->addTextLinks();
+                }
             } else {
+                $meaning_obj->texts()->detach();
                 $meaning_obj -> delete();
             }
         }
@@ -373,6 +383,38 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
                 $mean2_transls->attach($this->lemma->lang_id,
                                        ['meaning2_id'=>$this->id]);
             }
+        }
+    }
+    
+    /**
+     * Add records to meaning_text for new meanings
+     *
+     * @return NULL
+     */
+    public function addTextLinks()
+    {
+        $lemma_obj=$this->lemma;
+        $words = Word::where('word','like',$lemma_obj->lemma)->get();
+//dd($words);        
+        //$mean_ids = $lemma_obj->meanings()->where('id','<>',$this->id)->lists('id');
+        $meanings_builder = $lemma_obj->meanings();
+        
+        foreach ($words as $word) {
+            $relevance = 1;
+            // if some meaning has positive evaluation, it means that this meaning is not suitable
+            if ($meanings_builder->whereIn('id', function($q) use ($word) {
+                        $q->select('meaning_id')->from('meaning_text')
+                              ->where('text_id',$word->text_id)
+                              ->where('w_id',$word->w_id)
+                              ->where('relevance','>',1);
+                                         })->count()) {
+                $relevance = 0;
+            }
+            $this->texts()->attach($word->text_id,
+                    ['sentence_id'=>$word->sentence_id, 
+                     'word_id'=>$word->id, 
+                     'w_id'=>$word->w_id, 
+                     'relevance'=>$relevance]);        
         }
     }
 }

@@ -18,6 +18,7 @@ class CreateWordsTable extends Migration
             $table->integer('text_id')->unsigned();
             $table->foreign('text_id')->references('id')->on('texts');
 
+            $table->integer('sentence_id')->unsigned();
             $table->integer('w_id')->unsigned();
             $table->string('word', 255)->collate('utf8_bin');
             

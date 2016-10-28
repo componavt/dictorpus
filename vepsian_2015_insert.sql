@@ -653,13 +653,6 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- alter table meaning_text add word_id int(10) unsigned NOT NULL after sentence_id;
 -- alter table meaning_text add primary key `meaning_text_primary_key` (meaning_id,text_id, sentence_id, word_id);
 
--- REMARKUP ALL TEXTS
--- update texts set text_xml=NULL;
--- update transtexts set text_xml=NULL;
--- delete from meaning_text;
--- delete from words;
--- corpus/text/markup_all_empty_text_xml
-
 -- alter table texts change text_xml text_xml mediumblob;
 
 -- alter table lemmas change lemma `lemma` varchar(255) COLLATE utf8_bin NOT NULL;
@@ -669,8 +662,21 @@ INSERT INTO `event_recorder` VALUES (233,19);
 -- alter table texts change text `text` text COLLATE utf8_bin NOT NULL;
 -- alter table transtexts change text `text` text COLLATE utf8_bin NOT NULL;
 
--- WORD
+-- alter table meaning_text add w_id int(10) unsigned not null;
+
+-- WORD 
 -- php artisan make:model 'Models\Corpus\Word' --migration
+
+-- для 135
+-- php artisan migrate
 -- alter table words change word `word` varchar(255) COLLATE utf8_bin  NOT NULL;
 
--- alter table meaning_text add w_id int(10) unsigned not null;
+
+-- REMARKUP ALL TEXTS
+update texts set text_xml=NULL;
+update transtexts set text_xml=NULL;
+delete from meaning_text;
+delete from words;
+-- corpus/text/markup_all_empty_text_xml
+
+-- alter table words add `sentence_id` int(10) unsigned not null after text_id;
