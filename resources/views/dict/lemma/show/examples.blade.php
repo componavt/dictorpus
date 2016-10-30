@@ -14,8 +14,12 @@
                     @foreach ($sentences as $sentence)
                         @if ($count==$limit+1)
                         </table>
-                        <a class="show-more-examples">{{ trans('dict.more_examples') }}</a>
-                        <div class="more-examples">
+                        <a id="show-more-{{$meaning->meaning_n}}" 
+                           class="show-more-examples"
+                           data-for="{{$meaning->meaning_n}}">
+                                {{ trans('dict.more_examples') }}
+                        </a>
+                        <div id="more-{{$meaning->meaning_n}}" class="more-examples">
                         <table class="lemma-examples">
                         @endif
                             <tr class="row">
@@ -39,7 +43,10 @@
                     @if ($count<=$limit)
                     <div class="more-examples">
                     @else
-                    <a class="hide-more-examples">{{ trans('dict.hide_examples') }}</a>
+                    <a class="hide-more-examples"
+                       data-for="{{$meaning->meaning_n}}">
+                            {{ trans('dict.hide_examples') }}
+                    </a>
                     @endif
                     </div>
                     @if (User::checkAccess('dict.edit'))

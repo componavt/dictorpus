@@ -680,3 +680,7 @@ delete from words;
 -- corpus/text/markup_all_empty_text_xml
 
 -- alter table words add `sentence_id` int(10) unsigned not null after text_id;
+
+
+-- UNIT TESTS
+php artisan make:test 'Models\Corpus\TextTest'

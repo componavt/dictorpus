@@ -145,8 +145,8 @@ class Text extends Model
     /**
      * Gets a markup text with sentences
      * 
-     * @param $text String
-     * @return String
+     * @param $text String text without mark up
+     * @return String text with markup (split to sentences and words)
      */
     public static function markupText($text): String{
         $out = '';

@@ -93,12 +93,17 @@
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma');
     
     $('.show-more-examples').click(function(){
+        var meaning_n = $(this).attr('data-for');
+        var id='more-'+meaning_n;
         $(this).hide();
-        $('.more-examples').show();
+        $('#'+id).show();
     });
     $('.hide-more-examples').click(function(){
-        $('.more-examples').hide();
-        $('.show-more-examples').show();
+        var meaning_n = $(this).attr('data-for');
+        var text='more-'+meaning_n;
+        var link='show-more-'+meaning_n;
+        $('#'+text).hide();
+        $('#'+link).show();
     });
 @stop
 

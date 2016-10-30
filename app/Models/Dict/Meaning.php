@@ -394,20 +394,26 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
     public function addTextLinks()
     {
         $lemma_obj=$this->lemma;
-        $words = Word::where('word','like',$lemma_obj->lemma)->get();
-//dd($words);        
-        //$mean_ids = $lemma_obj->meanings()->where('id','<>',$this->id)->lists('id');
-        $meanings_builder = $lemma_obj->meanings();
+        $words = Word::whereIn('word', function ($q) use($lemma_obj){
+                            $q->select('wordform')->from('wordforms')
+                              ->whereIn('id',function($q2) use($lemma_obj){
+                                    $q2->select('wordform_id')->from('lemma_wordform')
+                                       ->where('lemma_id',$lemma_obj->id);
+                                });
+                       })
+                     ->orWhere('word','like',$lemma_obj->lemma)->get();
         
         foreach ($words as $word) {
             $relevance = 1;
             // if some meaning has positive evaluation, it means that this meaning is not suitable
-            if ($meanings_builder->whereIn('id', function($q) use ($word) {
+/*            if ($lemma_obj->meanings()->whereIn('id', function($q) use ($word) {
                         $q->select('meaning_id')->from('meaning_text')
                               ->where('text_id',$word->text_id)
                               ->where('w_id',$word->w_id)
-                              ->where('relevance','>',1);
-                                         })->count()) {
+                              ->where('relevance','>',1);*/
+            if (DB::table('meaning_text')->where('meaning_id','<>',$this->id)
+                  ->where('text_id',$word->text_id)->where('w_id',$word->w_id)
+                  ->where('relevance','>',1)->count()>0) {
                 $relevance = 0;
             }
             $this->texts()->attach($word->text_id,

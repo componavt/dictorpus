@@ -76,7 +76,7 @@ class PlaceController extends Controller
         } 
 
         if ($district_id) {
-            $places = $places->where('region_id',$district_id);
+            $places = $places->where('district_id',$district_id);
         } 
 
         if ($search_id) {
