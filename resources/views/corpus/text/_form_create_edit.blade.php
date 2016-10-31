@@ -37,7 +37,7 @@
                  'title'=>trans('corpus.title')])
         
         <?php $attr = ['id'=>'text']; ?>
-        @if ($text->meanings()->wherePivot('relevance','<>',1)->count())
+        @if ($action=='edit' && $text->meanings()->wherePivot('relevance','<>',1)->count())
             <?php $attr[] = 'readonly'; ?>
             <p class="warning text-has-checked-meaning">
                 {{trans('corpus.text_has_checked_meaning')}}
