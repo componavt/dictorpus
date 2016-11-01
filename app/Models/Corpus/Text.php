@@ -158,7 +158,7 @@ class Text extends Model
         $end2 = ['.»','?»','!»','."','?"','!"','.”','?”','!”'];
         $text = trim($text);
         $pseudo_end = false;
-        if (!in_array(substr($text,-1,1),$end1) && !in_array(substr($text,-1,2),$end2)) {
+        if (!in_array(mb_substr($text,-1,1),$end1) && !in_array(mb_substr($text,-1,2),$end2)) {
             $text .= '.';
             $pseudo_end = true;
         }
@@ -202,19 +202,19 @@ class Text extends Model
      */
     public static function markupSentence($sentence,$word_count): Array
     {
-        $delimeters = [',', '.', '!', '?', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=', '–', '”', ':']; // - and ' - part of word
-        // 
+        $delimeters = ',.!?"[](){}«»=”:'; // - and ' - part of word
         // different types of dashes and hyphens: '-', '‒', '–', '—', '―' 
         // if dashes inside words, then they are part of words,
         // if dashes surrounded by spaces, then dashes are not parts of words.
+        $dashes = '-‒–—―';
         
         $str = '';
         $i = 0;
         $is_word = false; // word tag <w> is not opened
         $token = $sentence;
-        while ($i<strlen($token)) {
-            $char = substr($token,$i,1);
-            if (in_array($char, $delimeters) || preg_match("/\s/",$char)) {
+        while ($i<mb_strlen($token)) {
+            $char = mb_substr($token,$i,1);
+            if (mb_strpos($delimeters, $char) || preg_match("/\s/",$char)) {
                 if ($is_word) {
                     $str .= '</w>';
                     $is_word = false;
@@ -225,11 +225,14 @@ class Text extends Model
                     $str .= '</w>';
                     $is_word = false;
                 }
-                $j = strpos($token,'>',$i+1);
-                $str .= substr($token,$i,$j-$i+1);
+                $j = mb_strpos($token,'>',$i+1);
+                $str .= mb_substr($token,$i,$j-$i+1);
                 $i = $j;
             } else {
-                if (!$is_word && !preg_match("/^-\s/",substr($token,$i,2))) {
+                $next_char = ($i+1 < mb_strlen($token)) ? mb_substr($token,$i+1,1) : '';
+                $next_char_is_special = (!$next_char || mb_strpos($delimeters, $next_char) || preg_match("/\s/",$next_char) || mb_strpos($dashes,$next_char));
+//                if (!$is_word && !preg_match("/^-\s/",mb_substr($token,$i,2))) {
+                if (!$is_word && !(mb_strpos($dashes,$char)!==false && $next_char_is_special)) { // && $next_char_is_special
                     $str .= '<w id="'.$word_count++.'">';
                     $is_word = true;
                 }

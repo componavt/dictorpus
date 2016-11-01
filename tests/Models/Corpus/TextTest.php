@@ -71,7 +71,7 @@ class TextTest extends TestCase
         
         $text = new Text();
         $result_xml = $text->markupText($source_text);
-
+        
         $this->assertEquals( $expected_xml, $result_xml);
     }
     
