@@ -1,6 +1,7 @@
-<?php $sentences = $meaning->sentences(User::checkAccess('dict.edit')); ?>
-@if ($sentences)
-                <h4>{{ trans('messages.examples')}}</h4>
+<?php $for_edition = User::checkAccess('dict.edit');
+      $sentence_total = $meaning->countSentences($for_edition); ?>
+@if ($sentence_total)
+                <h4>{{ trans('messages.examples')}} ({{trans('messages.total')}} {{ $sentence_total}})</h4>
                     @if (User::checkAccess('dict.edit'))
                         {!! Form::open(['route' => ['lemma.update.examples', $lemma->id],
                                         'method' => 'POST',
@@ -8,8 +9,10 @@
                                       ])
                         !!}
                     @endif
-                    <?php $count=1; 
-                          $limit = 5;?>
+<?php $limit = 100; 
+      $sentences = $meaning->sentences($for_edition,$limit);
+      $count=1; 
+      $limit = 5; ?>
                     <table class="lemma-examples">
                     @foreach ($sentences as $sentence)
                         @if ($count==$limit+1)
@@ -37,7 +40,7 @@
                                     @include('dict.lemma.show.example_sentence')
                                 </td>
                             </tr>
-                    @endforeach                    
+                    @endforeach
                     </table>
                             
                     @if ($count<=$limit)

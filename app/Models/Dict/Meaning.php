@@ -85,13 +85,30 @@ class Meaning extends Model
     }
     
     /**
+     * Gets total number of sentences for examples in Lemma show page
+     *
+     * @param $for_edit Boolean: true - for edition, output all sentences, 
+     *                           false - for view, output all positive examples (relevance>0)
+     * @return array
+     */
+    public function countSentences($for_edit=false)
+    {    
+        $sentence_builder = DB::table('meaning_text')
+                              ->where('meaning_id',$this->id);
+        if (!$for_edit) {
+            $sentence_builder = $sentence_builder->where('relevance','>',0);
+        }
+        return $sentence_builder->count();
+    }
+    
+    /**
      * Gets sentences for examples in Lemma show page
      *
      * @param $for_edit Boolean: true - for edition, output all sentences, 
      *                           false - for view, output all positive examples (relevance>0)
      * @return array
      */
-    public function sentences($for_edit=false){
+    public function sentences($for_edit=false, $limit=''){
         $sentences = [];
         $sentence_builder = DB::table('meaning_text')
                               ->where('meaning_id',$this->id)
@@ -101,6 +118,10 @@ class Meaning extends Model
                               ->orderBy('word_id');
         if (!$for_edit) {
             $sentence_builder = $sentence_builder->where('relevance','>',0);
+        }
+        
+        if ($limit) {
+            $sentence_builder = $sentence_builder->take($limit);
         }
 //print "<p>". $sentence_builder->count()."</p>";       
         

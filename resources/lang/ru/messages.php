@@ -38,6 +38,7 @@ return [
     'sequence_number' => 'порядковый номер в списке',
     'show_by' => 'по',
     'to' => 'на',
+    'total' => 'всего',
     'translation' => 'Перевод',
     'updated_success' => 'Обновление завершено',
     'view' => 'показать',

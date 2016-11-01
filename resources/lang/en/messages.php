@@ -38,6 +38,7 @@ return [
     'sequence_number' => 'sequence number',
     'show_by' => 'by',
     'to' => 'to',
+    'total' => 'total',
     'translation' => 'Translation',
     'updated_success' => 'Successfully updated',
     'view' => 'view',
