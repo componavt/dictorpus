@@ -29,12 +29,44 @@ class DialectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $limit_num = (int)$request->input('limit_num');
+        $lang_id = (int)$request->input('lang_id');
+        $page = (int)$request->input('page');
         
-        $dialects = Dialect::orderBy('lang_id')->orderBy('id')->get();
+         if (!$page) {
+            $page = 1;
+        }
+        
+        if ($limit_num<=0) {
+            $limit_num = 10;
+        } elseif ($limit_num>1000) {
+            $limit_num = 1000;
+        }      
+        
+        $dialects = Dialect::orderBy('lang_id')->orderBy('id');       
 
-        return view('dict.dialect.index')->with(array('dialects' => $dialects));
+        if ($lang_id) {
+            $dialects = $dialects->where('lang_id', $lang_id);
+        } 
+         
+        $numAll = $dialects->count();
+        
+        $dialects = $dialects->paginate($limit_num);
+//       $dialects = $dialects->get();
+
+//        $lang_values = Lang::getList();
+        $lang_values = Lang::getListWithQuantity('dialects');
+
+        return view('dict.dialect.index')
+            ->with(['dialects' => $dialects,
+                        'limit_num' => $limit_num,
+                        'page'=>$page,
+                        'lang_values' => $lang_values,
+                        'lang_id'=>$lang_id,
+                        'numAll' => $numAll
+                       ]);
     }
     
     /**
@@ -61,7 +93,7 @@ class DialectController extends Controller
         $this->validate($request, [
             'name_en'  => 'required|max:255',
             'name_ru'  => 'required|max:255',
-            'code' => 'required|max:20'
+            'code' => 'required|max:20|unique:dialects'
         ]);
         
         $dialect = Dialect::create($request->all());
@@ -107,13 +139,14 @@ class DialectController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $dialect = Dialect::find($id);
+
         $this->validate($request, [
             'name_en'  => 'required|max:255',
             'name_ru'  => 'required|max:255',
-            'code' => 'required|max:20'
+            'code' => 'required|max:20|unique:dialects,code,'.$dialect->id
         ]);
         
-        $dialect = Dialect::find($id);
         $dialect->fill($request->all())->save();
         
         return Redirect::to('/dict/dialect/')

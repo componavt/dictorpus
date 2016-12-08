@@ -1,3 +1,4 @@
+<?php $list_count = $limit_num * ($page-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -17,7 +18,26 @@
         @endif
         </p>
 
-        <table class="table">
+        {!! Form::open(['url' => '/dict/dialect/', 
+                             'method' => 'get', 
+                             'class' => 'form-inline']) 
+        !!}
+        @include('widgets.form._formitem_select', 
+                ['name' => 'lang_id', 
+                 'values' =>$lang_values,
+                 'value' =>$lang_id,
+                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
+        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+        @include('widgets.form._formitem_text', 
+                ['name' => 'limit_num', 
+                'value' => $limit_num, 
+                'attributes'=>['size' => 5,
+                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
+        {!! Form::close() !!}
+
+        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+
+    <table class="table">
         <thead>
             <tr>
                 <th>{{ trans('dict.lang') }}</th>
@@ -53,7 +73,8 @@
             @endforeach
         </tbody>
         </table>
-    </div>
+        {!! $dialects->appends(['limit_num' => $limit_num,
+                                           'lang_id'=>$lang_id])->render() !!}    
 @stop
 
 @section('footScriptExtra')

@@ -683,3 +683,8 @@ delete from words;
 -- UNIT TESTS
 php artisan make:test 'Models\Corpus\TextTest'
 ./vendor/bin/phpunit 
+
+-- KARELIAN LANGUAGES
+update langs set name_ru='Собственно карельское наречие' where id=4;
+insert into langs values (5,'Livvian','Ливвиковское Наречие','olo');
+insert into langs values (6,'Ludian','Людиковское Наречие','lud');

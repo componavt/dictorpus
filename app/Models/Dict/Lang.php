@@ -83,6 +83,12 @@ class Lang extends Model
         return $this->hasMany(Text::class);
     }
 
+    // Lang __has_many__ Dialects
+    public function dialects()
+    {
+        return $this->hasMany(Dialect::class);
+    }
+
     /** Gets list of languages
      * 
      * @return Array [1=>'Vepsian',..]
