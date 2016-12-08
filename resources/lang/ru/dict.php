@@ -42,6 +42,7 @@ return [
     'number' => 'число',
     'of_dialect' => 'диалекта',
     'of_gramset' => 'набора',
+    'of_lang' => 'языка',
     'of_lemma' => 'леммы',
     'of_relation' => 'отношения',
     'part_of_speech' => 'Часть речи',

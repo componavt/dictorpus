@@ -40,10 +40,13 @@ return [
     'name' => 'name',
     'name_short' => 'short name',
     'number' => 'Number',
+    
     'of_dialect' => 'of dialect',
     'of_gramset' => 'of set',
+    'of_lang' => 'языка',
     'of_lemma' => 'of lemma',
     'of_relation' => 'of relation',
+
     'parts_of_speech' => 'parts of speech',
     'person' => 'person',
     'pos' => 'part of speech',

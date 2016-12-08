@@ -62,15 +62,16 @@ Route::group(
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 
-        Route::get('dict/lang', 'Dict\LangController@index');
+//        Route::get('dict/lang', 'Dict\LangController@index');
 
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')->name('lemma.update.examples');
-        Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')->name('lemma.update.wordforms');
+        Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')
+                         ->name('lemma.update.wordforms');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
-        Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
+//        Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
 
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
@@ -107,6 +108,11 @@ Route::group(
                                     'store' => 'gramset.store',
                                     'destroy' => 'gramset.destroy']]);
 
+        Route::resource('dict/lang', 'Dict\LangController',
+                       ['names' => ['update' => 'lang.update',
+                                    'store' => 'lang.store',
+                                    'destroy' => 'lang.destroy']]);
+        
         Route::resource('dict/lemma', 'Dict\LemmaController',
                        ['names' => ['update' => 'lemma.update',
                                     'store' => 'lemma.store',

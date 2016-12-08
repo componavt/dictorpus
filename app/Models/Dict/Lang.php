@@ -12,6 +12,7 @@ use App\Models\Corpus\Text;
 class Lang extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['name_en', 'name_ru', 'code'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
