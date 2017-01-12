@@ -62,8 +62,6 @@ Route::group(
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 
-//        Route::get('dict/lang', 'Dict\LangController@index');
-
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')->name('lemma.update.examples');
@@ -78,6 +76,7 @@ Route::group(
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
         Route::get('dict/wordform', 'Dict\WordformController@index');
       
+//        Route::get('dict/gramset/tempInsertGramsetPosLang', 'Dict\GramsetController@tempInsertGramsetPosLang');       
 //        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');       
 //        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
 //        Route::get('dict/lemma/meaning/meaning_text/tempJoinMeaningText', 'Dict\MeaningTextController@tempJoinMeaningText');        

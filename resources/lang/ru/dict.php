@@ -39,6 +39,7 @@ return [
     'more_examples' => 'еще примеры &gt;&gt;',
     'name' => 'название',
     'name_short' => 'короткое название',
+    'negation' => 'отрицание',
     'number' => 'число',
     'of_dialect' => 'диалекта',
     'of_gramset' => 'набора',

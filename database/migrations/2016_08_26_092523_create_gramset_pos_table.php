@@ -18,6 +18,9 @@ class CreateGramsetPosTable extends Migration
 
             $table->tinyInteger('pos_id')->unsigned();
             $table->foreign('pos_id')->references('id')->on('parts_of_speech');
+
+            $table->smallInteger('lang_id')->unsigned()->nullable();
+            $table->foreign('lang_id')->references('id')->on('lang');
         });
         //
     }

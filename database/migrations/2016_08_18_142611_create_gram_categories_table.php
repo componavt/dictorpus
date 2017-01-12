@@ -17,6 +17,8 @@ class CreateGramCategoriesTable extends Migration
             
             $table->string('name_en', 45)->comment = "English name of category of grammatical attribute";
             $table->string('name_ru', 45)->comment = "Russian name of category of grammatical attribute";
+
+            $table->tinyInteger('sequence_number')->unsigned()->nullable();
         });
     }
 

@@ -6,6 +6,13 @@
                  'grouped' => true
                 ])
 
+        @include('widgets.form._formitem_select2',
+                ['name' => 'langs',
+                 'title' => trans('dict.lang'),
+                 'values' => $lang_values, 
+                 'value' => $lang_value
+                ])
+
         @foreach ($grams as $code => $category_info)
             @include('widgets.form._formitem_select', 
                     ['name' => 'gram_id_'.$code, 

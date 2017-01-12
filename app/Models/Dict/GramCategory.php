@@ -55,7 +55,7 @@ class GramCategory extends Model
      */
     public static function getNames()
     {     
-        $categories = self::orderBy('id')->get();
+        $categories = self::orderBy('sequence_number')->get();
         
         $list = array();
         foreach ($categories as $row) {

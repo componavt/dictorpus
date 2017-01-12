@@ -90,6 +90,12 @@ class Lang extends Model
         return $this->hasMany(Dialect::class);
     }
 
+    // Lang __has_many__ Gramset
+    public function gramsets()
+    {
+        return $this->belongsToMany(Gramset::class,'gramset_pos','lang_id','gramset_id');
+    }
+     
     /** Gets list of languages
      * 
      * @return Array [1=>'Vepsian',..]

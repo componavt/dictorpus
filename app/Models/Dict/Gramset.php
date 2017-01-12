@@ -53,10 +53,21 @@ class Gramset extends Model
         return $this->belongsTo(Gram::class, 'gram_id_mood');
     }
     
+    public function gramNegation()
+    {
+        return $this->belongsTo(Gram::class, 'gram_id_negation');
+    }
+    
     // Gramset __has_many__ PartOfSpeech
     public function parts_of_speech()
     {
         return $this->belongsToMany(PartOfSpeech::class,'gramset_pos','gramset_id','pos_id');
+    }
+     
+    // Gramset __has_many__ Lang
+    public function langs()
+    {
+        return $this->belongsToMany(Lang::class,'gramset_pos','gramset_id','lang_id');
     }
      
     // Gramset __has_many__ Wordforms

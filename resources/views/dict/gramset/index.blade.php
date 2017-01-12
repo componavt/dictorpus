@@ -26,10 +26,16 @@
                  'values' =>$pos_values,
                  'value' =>$pos_id,
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
+        @include('widgets.form._formitem_select', 
+                ['name' => 'lang_id', 
+                 'values' =>$lang_values,
+                 'value' =>$lang_id,
+                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
 
         @if ($gramsets && $gramsets->count())
+        <p>{{ trans('messages.founded_records', ['count'=>$gramsets->count()]) }}</p>
         <br>
         <table class="table">
         <thead>

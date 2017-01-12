@@ -39,6 +39,7 @@ return [
     'more_examples' => 'more examples &gt;&gt;',
     'name' => 'name',
     'name_short' => 'short name',
+    'negation' => 'negation',
     'number' => 'Number',
     
     'of_dialect' => 'of dialect',

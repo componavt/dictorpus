@@ -685,6 +685,17 @@ php artisan make:test 'Models\Corpus\TextTest'
 ./vendor/bin/phpunit 
 
 -- KARELIAN LANGUAGES
-update langs set name_ru='Собственно карельское наречие' where id=4;
-insert into langs values (5,'Livvian','Ливвиковское Наречие','olo');
-insert into langs values (6,'Ludian','Людиковское Наречие','lud');
+update langs set name_ru='пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ' where id=4;
+insert into langs values (5,'Livvian','пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ','olo');
+insert into langs values (6,'Ludian','пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ','lud');
+
+-- Add link with lang in gramsets
+alter table gramset_pos add lang_id smallint(5) unsigned default null;
+alter table gramset_pos add foreign key (lang_id) references lang(id);
+alter table gramset_pos add unique key (gramset_id, pos_id, lang_id);
+--dict/gramset/tempInsertGramsetPosLang
+
+--alter table gram_categories add sequence_number tinyint(3) unsigned;
+-- gram_cat.sql
+
+alter table grams add gram_id_negation tinyint(1) unsigned;
