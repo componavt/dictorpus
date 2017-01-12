@@ -71,7 +71,7 @@ Route::group(
                          ->name('lemma.update.wordforms');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
-//        Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
+        Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
 
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');

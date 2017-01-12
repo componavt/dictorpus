@@ -45,6 +45,8 @@ return [
                         (система <a href="https://github.com/componavt/dictorpus">Dictorpus</a>) 
                         и <a href="http://dictorpus.krc.karelia.ru/ru/dumps">данные</a> (лицензия <a href="https://creativecommons.org/licenses/by/4.0/deed.ru">CC-BY</a>).
 
-                    <p>Над проектом работают сотрудники <a href="http://www.krc.karelia.ru">Карельского научного центра РАН</a>.</p>',
+                    <p>Над проектом работают сотрудники <a href="http://www.krc.karelia.ru">Карельского научного центра РАН</a>.</p>
+                    
+                    <p>Данный проект был поддержан грантом РГНФ (проект № 15-04-12006). Создание тезауруса вепсского языка на основе разрешения лексической многозначности в многоязычном словаре (2015-2016).</p>',
     
 ];
