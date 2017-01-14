@@ -168,7 +168,7 @@ class GramsetController extends Controller
         }        
 
         $grams = [];        
-        foreach (GramCategory::all() as $gc) {         //   id is gram_category_id
+        foreach (GramCategory::all()->sortBy('sequence_number') as $gc) {         //   id is gram_category_id
             $grams[$gc->name_en] = ['name'=> $gc->name,
                                     'grams' => [NULL=>''] + Gram::getList($gc->id)];
         }
@@ -206,7 +206,9 @@ class GramsetController extends Controller
             'gram_id_mood'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_negation', 
             'gram_id_negation'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood', 
             'sequence_number' => 'numeric',
-            'parts_of_speech' => 'required|array'
+            'parts_of_speech' => 'required|array',
+            'lang_id' => 'numeric',
+            'pos_id' => 'numeric'
         ]);
 
         foreach (GramCategory::getNames() as $gc_name) {
@@ -229,7 +231,7 @@ class GramsetController extends Controller
         }
  
         if (isset($request['parts_of_speech'][0])) {
-            $back_url .= '?pos_id='. $request['parts_of_speech'][0];
+            $back_url .= '?pos_id='. $request['pos_id']. '&lang_id='. $request['lang_id'];
         }
         
         return Redirect::to($back_url)

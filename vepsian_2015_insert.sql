@@ -699,4 +699,4 @@ update gramset_pos set lang_id=1;
 --alter table gram_categories add sequence_number tinyint(3) unsigned;
 -- gram_cat.sql
 
-alter table grams add gram_id_negation tinyint(1) unsigned;
+alter table gramsets add gram_id_negation tinyint(1) unsigned;

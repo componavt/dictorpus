@@ -7,7 +7,7 @@ use DB;
 class Gramset extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['gram_id_number', 'gram_id_case', 'gram_id_tense', 'gram_id_person', 'gram_id_mood', 'sequence_number'];
+    protected $fillable = ['gram_id_number', 'gram_id_case', 'gram_id_tense', 'gram_id_person', 'gram_id_mood', 'sequence_number', 'gram_id_negation'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 

@@ -33,7 +33,7 @@ class GramController extends Controller
      */
     public function index()
     {
-        $gram_categories = GramCategory::all();
+        $gram_categories = GramCategory::all()->sortBy('sequence_number');
         $grams = array();
         
         foreach ($gram_categories as $gc) {         //   id is gram_category_id
