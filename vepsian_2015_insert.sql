@@ -691,8 +691,9 @@ insert into langs values (6,'Ludian','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿
 
 -- Add link with lang in gramsets
 alter table gramset_pos add lang_id smallint(5) unsigned default null;
-alter table gramset_pos add foreign key (lang_id) references lang(id);
+alter table gramset_pos add foreign key (lang_id) references langs(id);
 alter table gramset_pos add unique key (gramset_id, pos_id, lang_id);
+update gramset_pos set lang_id=1;
 --dict/gramset/tempInsertGramsetPosLang
 
 --alter table gram_categories add sequence_number tinyint(3) unsigned;

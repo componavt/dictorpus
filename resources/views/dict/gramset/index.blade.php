@@ -64,17 +64,19 @@
                 </td>
                 @endforeach
                 
-                <td>{{ $gramset->wordforms()->count()}}</td>
+                <td>{{ $gramset->wordforms($pos_id,$lang_id)->count()}}</td>
 
                 @if (User::checkAccess('ref.edit'))
                 <td>
                     @include('widgets.form._button_edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
                                                            'is_button' => true,
+                                                           'url_args' => $url_args,
                                                            'without_text' => true])
                 </td>
                 <td>
                     @include('widgets.form._button_delete', ['route' => 'gramset.destroy', 'id' => $gramset->id,
                                                              'is_button' => true,
+                                                             'url_args' => $url_args,
                                                              'without_text' => true])
                 </td>
                 @endif

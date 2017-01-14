@@ -1,3 +1,5 @@
+        @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
+        
         @include('widgets.form._formitem_select2',
                 ['name' => 'parts_of_speech',
                  'title' => trans('dict.pos'),

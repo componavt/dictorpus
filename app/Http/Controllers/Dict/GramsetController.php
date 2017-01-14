@@ -41,24 +41,22 @@ class GramsetController extends Controller
         $lang_obj = Lang::find($lang_id);
         $gram_fields = GramCategory::getNames();
         
-        $gramsets = Gramset::orderBy('sequence_number');
         
-        if ($lang_id || $pos_id) {
-            $gramsets = $gramsets->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id');
-        }
-        
-        if ($lang_id) {
-            $gramsets = $gramsets->where('lang_id',$lang_id);
+        if (!$lang_id || !$pos_id) {
+            $gramsets = NULL;
+        } else {
+            $gramsets = Gramset::orderBy('sequence_number')
+                      ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
+                      ->where('lang_id',$lang_id)
+                      ->where('pos_id',$pos_id)->get();
         } 
-         
-        if ($pos_id) {
-            $gramsets = $gramsets->where('pos_id',$pos_id);
-        } 
-        
-        $gramsets = $gramsets->get();
-        
+              
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('gramsets');
         $lang_values = Lang::getListWithQuantity('gramsets');
+        
+        $url_args = ['pos_id'=>$pos_id,
+                     'lang_id'=>$lang_id
+                    ];
                 
         return view('dict.gramset.index')
                 ->with(['pos_id'=>$pos_id, 
@@ -66,7 +64,8 @@ class GramsetController extends Controller
                         'lang_id'=>$lang_id, 
                         'lang_values' => $lang_values, 
                         'gram_fields' => $gram_fields,
-                        'gramsets' => $gramsets
+                        'gramsets' => $gramsets,
+                        'url_args' => $url_args
                     ]);
     }   
 
@@ -149,8 +148,11 @@ class GramsetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
+        $pos_id = (int)$request->input('pos_id');
+        $lang_id = (int)$request->input('lang_id');
+
         $gramset = Gramset::find($id); 
         $pos_values = PartOfSpeech::getGroupedList();
         
@@ -171,6 +173,10 @@ class GramsetController extends Controller
                                     'grams' => [NULL=>''] + Gram::getList($gc->id)];
         }
 
+        $url_args = ['pos_id'=>$pos_id,
+                     'lang_id'=>$lang_id
+                    ];
+
         return view('dict.gramset.edit')
                   ->with(['grams' => $grams,
                           'pos_values'=>$pos_values,
@@ -178,6 +184,7 @@ class GramsetController extends Controller
                           'lang_values'=>$lang_values,
                           'lang_value'=>$lang_value,
                           'gramset' => $gramset,
+                          'url_args' => $url_args
                          ]);
     }
 
