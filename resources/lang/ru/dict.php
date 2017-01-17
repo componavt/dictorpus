@@ -43,6 +43,7 @@ return [
     'negation' => 'отрицание',
     'number' => 'число',
     'of_dialect' => 'диалекта',
+    'of_gram' => 'грамемы',
     'of_gramset' => 'набора',
     'of_lang' => 'языка',
     'of_lemma' => 'леммы',
