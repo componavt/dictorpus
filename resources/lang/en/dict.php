@@ -44,6 +44,7 @@ return [
     'number' => 'Number',
     
     'of_dialect' => 'of dialect',
+    'of_gram' => 'of grammatical attribute',
     'of_gramset' => 'of set',
     'of_lang' => 'языка',
     'of_lemma' => 'of lemma',
