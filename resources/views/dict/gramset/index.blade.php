@@ -9,7 +9,7 @@
         
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/dict/gramset/create') }}">
+            <a href="{{ LaravelLocalization::localizeURL('/dict/gramset/create') }}{{$args_by_get}}">
         @endif
             {{ trans('messages.create_new_m') }}
         @if (User::checkAccess('ref.edit'))
@@ -58,7 +58,7 @@
                 <td>{{$gramset->sequence_number}}</td>
                 @foreach ($gram_fields as $field)
                 <td>
-                    @if($gramset->{'gram_id_'.$field})
+                    @if($gramset->{'gram_id_'.$field} && $gramset->{'gram'.ucfirst($field)})
                         {{$gramset->{'gram'.ucfirst($field)}->getNameWithShort()}}
                     @endif
                 </td>

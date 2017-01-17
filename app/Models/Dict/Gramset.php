@@ -7,7 +7,8 @@ use DB;
 class Gramset extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['gram_id_number', 'gram_id_case', 'gram_id_tense', 'gram_id_person', 'gram_id_mood', 'sequence_number', 'gram_id_negation'];
+    protected $fillable = ['gram_id_number', 'gram_id_case', 'gram_id_tense', 'gram_id_person', 'gram_id_mood', 
+                           'sequence_number', 'gram_id_negation', 'gram_id_infinitive', 'gram_id_voice','gram_id_participle','gram_id_reflexive'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -56,6 +57,26 @@ class Gramset extends Model
     public function gramNegation()
     {
         return $this->belongsTo(Gram::class, 'gram_id_negation');
+    }
+    
+    public function gramInfinitive()
+    {
+        return $this->belongsTo(Gram::class, 'gram_id_infinitive');
+    }
+    
+    public function gramVoice()
+    {
+        return $this->belongsTo(Gram::class, 'gram_id_voice');
+    }
+    
+    public function gramParticiple()
+    {
+        return $this->belongsTo(Gram::class, 'gram_id_participle');
+    }
+    
+    public function gramReflexive()
+    {
+        return $this->belongsTo(Gram::class, 'gram_id_reflexive');
     }
     
     // Gramset __has_many__ PartOfSpeech
@@ -147,6 +168,32 @@ class Gramset extends Model
         return $list;         
     }
 
+
+    /** Takes data from search form (part of speech, language) and 
+     * returns string for url such_as 
+     * pos_id=$pos_id&lang_id=$lang_id
+     * IF value is empty, the pair 'argument-value' is ignored
+     * 
+     * @param Array $url_args - array of pairs 'argument-value', f.e. ['pos_id'=>11, lang_id=>1]
+     * @return String f.e. 'pos_id=11&lang_id=1'
+     */
+    public static function searchValuesByURL(Array $url_args=NULL) : String
+    {
+        $url = '';
+        if (isset($url_args) && sizeof($url_args)) {
+            $tmp=[];
+            foreach ($url_args as $a=>$v) {
+                if ($v!='') {
+                    $tmp[] = "$a=$v";
+                }
+            }
+            if (sizeof ($tmp)) {
+                $url .= "?".implode('&',$tmp);
+            }
+        }
+        
+        return $url;
+    }
 }
 
 /*

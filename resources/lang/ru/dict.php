@@ -25,6 +25,7 @@ return [
     'gramset_removed' => 'Набор грамматических признаков ":name" удален.',
     'hide_examples' => '&lt; &lt; скрыть примеры',
 
+    'infinitive' => 'инфинитив',
     'interpretation' => 'толкование',
     'lang_code' => 'Код языка',
     'lang' => 'язык',
@@ -46,6 +47,8 @@ return [
     'of_lang' => 'языка',
     'of_lemma' => 'леммы',
     'of_relation' => 'отношения',
+    
+    'participle' => 'причастие',
     'part_of_speech' => 'Часть речи',
     'person' => 'лицо',
     'pos' => 'часть речи',
@@ -53,6 +56,8 @@ return [
     'pos_category_2' => 'Cлова закрытого класса',
     'pos_category_3' => 'Другие',
     'pos_list' => 'Cписок частей речи',
+    
+    'reflexive' => 'возвратность',
     'relation_list' => 'Cписок семантических отношений',
     'relation' => 'семантическое отношение',
     'relations' => 'Cемантические отношения',
@@ -71,6 +76,7 @@ return [
     'select_relation' => 'Выберите семантическое отношение',
     'tense' => 'время',
     'translation' => 'перевод',
+    'voice' => 'залог',
     'wordform' => 'словоформа',
     'wordforms' => 'словоформы',
     'wordforms_linked_many_lemmas' => 'Словоформы, связанные более чем с одной леммой',

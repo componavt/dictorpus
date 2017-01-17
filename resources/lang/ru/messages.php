@@ -35,7 +35,7 @@ return [
     'save' => 'сохранить',
     'search' => 'искать',
     'seq_num' => 'п/н',
-    'sequence_number' => 'порядковый номер в списке',
+    'sequence_number' => 'No в списке',
     'show_by' => 'по',
     'to' => 'на',
     'total' => 'всего',

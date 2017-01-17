@@ -696,7 +696,40 @@ alter table gramset_pos add unique key (gramset_id, pos_id, lang_id);
 update gramset_pos set lang_id=1;
 --dict/gramset/tempInsertGramsetPosLang
 
---alter table gram_categories add sequence_number tinyint(3) unsigned;
--- gram_cat.sql
+SET FOREIGN_KEY_CHECKS=0;
+SET NAMES utf8;
+
+DROP TABLE IF EXISTS `gram_categories`;
+CREATE TABLE `gram_categories` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `name_en` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'English name of category of grammatical attribute',
+  `name_ru` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Russian name of category of grammatical attribute',
+  `sequence_number` tinyint(3) unsigned DEFAULT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+INSERT INTO `gram_categories` VALUES (1,'case','падеж',4),(2,'number','число',5),(3,'tense','время',2),(4,'person','лицо',3),(5,'mood','наклонение',1),(6,'negation','отрицание',6);
+
+INSERT INTO `grams` VALUES (38,6,'n.f.','positive form','п.ф.','положительная форма',1),(39,6,'n.f.','negative form','о.ф.','отрицательная форма',2);
+
+SET FOREIGN_KEY_CHECKS=1;
 
 alter table gramsets add gram_id_negation tinyint(1) unsigned;
+
+--2017-01-17
+alter table gramsets add gram_id_infinitive tinyint(1) unsigned;
+alter table gramsets add gram_id_voice tinyint(1) unsigned;
+alter table gramsets add gram_id_participle tinyint(1) unsigned;
+alter table gramsets add gram_id_reflexive tinyint(1) unsigned;
+
+SET FOREIGN_KEY_CHECKS=0;
+DELETE FROM gram_categories;
+INSERT INTO `gram_categories` VALUES (1,'case','падеж',6),(2,'number','число',7),(3,'tense','время',4),(4,'person','лицо',5),(5,'mood','наклонение',3),(6,'negation','отрицание',8);
+INSERT INTO `gram_categories` VALUES (7,'infinitive','инфинитив',2),(8,'voice','залог',9),(9,'participle','причастие',10),(10,'reflexive','возвратность',1);
+
+INSERT INTO `grams` VALUES (40,7,'inf I','infinitive I','I инф.','I инфинитив',1),(41,7,'inf II','infinitive II','II инф.','II инфинитив',2),(42,7,'inf III','infinitive III','III инф.','III инфинитив',3);
+INSERT INTO `grams` VALUES (43,8,'act','active','акт','актив',1),(44,8,'pass','passive','пасс.','пассив',2);
+INSERT INTO `grams` VALUES (45,9,'1 part.','1st participle','1 прич.','1-е причастие',1),(46,9,'2 part.','2nd participle','2 прич.','2-е причастие',2);
+INSERT INTO `grams` VALUES (47,10,'refl.','reflexive verb','возвр.','возвратный глагол',1);
+SET FOREIGN_KEY_CHECKS=1;
+
+update gramsets set gram_id_negation=38 where pos_id_debug=11;

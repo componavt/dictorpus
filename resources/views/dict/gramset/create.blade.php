@@ -15,7 +15,9 @@
         {!! Form::open(array('method'=>'POST', 'route' => array('gramset.store'))) !!}
         @include('dict.gramset._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
                                                     'action' => 'create',
-                                                    'pos_value' => []])
+                                                    'pos_value' => [$url_args['pos_id']],
+                                                    'lang_value' => [$url_args['lang_id']]
+                                                   ])
         {!! Form::close() !!}
 @stop
 

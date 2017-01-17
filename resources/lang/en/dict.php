@@ -25,6 +25,7 @@ return [
     'gramset_removed' => 'Set of grammatical attributes ":name" is removed successfully.',
     'hide_examples' => '&lt; &lt; hide examples',
     
+    'infinitive' => 'infinitive',
     'interpretation' => 'interpretation',
     'lang' => 'language',
     'lang_code' => 'Language code',
@@ -48,6 +49,7 @@ return [
     'of_lemma' => 'of lemma',
     'of_relation' => 'of relation',
 
+    'participle' => 'participle',
     'parts_of_speech' => 'parts of speech',
     'person' => 'person',
     'pos' => 'part of speech',
@@ -55,6 +57,7 @@ return [
     'pos_category_2' => 'Closed class words',
     'pos_category_3' => 'Other',
     'pos_list' => 'List of parts of speech',
+    'reflexive' => 'reflexive',
     'relation_list' => 'List of semantic relations',
     'relation' => 'Semantic relation',
     'relations' => 'Semantic relations',
@@ -73,6 +76,7 @@ return [
     'select_relation' => 'Select a semantic relation',
     'tense' => 'Tense',
     'translation' => 'translation',
+    'voice' => 'voice',
     'wordform' => 'word form',
     'wordforms_linked_many_lemmas' => 'Word forms associated with more than one lemma',
     'wordforms' => 'word forms',
