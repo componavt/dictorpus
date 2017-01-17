@@ -11,7 +11,8 @@
 @section('content')
         <h1>{{ trans('navigation.gramsets') }}</h1>
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_gramset')}} "{{ $gramset->gramsetString()}}"</h2>
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/gramset/'.$gramset->id) }}">{{ trans('messages.back_to_show') }}</a></p>
+        <!--p><a href="{{ LaravelLocalization::localizeURL('/dict/gramset/'.$gramset->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p-->
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/gramset/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::model($gramset, array('method'=>'PUT', 'route' => array('gramset.update', $gramset->id))) !!}
         @include('dict.gramset._form_create_edit', ['submit_title' => trans('messages.save'),

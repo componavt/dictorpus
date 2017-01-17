@@ -95,11 +95,14 @@ class GramsetController extends Controller
                      'lang_id'=>$lang_id
                     ];
 
+        $args_by_get = Gramset::searchValuesByURL($url_args);
+                
         return view('dict.gramset.create')
                   ->with(['grams' => $grams,
                           'pos_values'=>$pos_values,
                           'lang_values'=>$lang_values,
-                          'url_args' => $url_args
+                          'url_args' => $url_args,
+                          'args_by_get' => $args_by_get
                          ]);
     }
 
@@ -197,6 +200,8 @@ class GramsetController extends Controller
                      'lang_id'=>$lang_id
                     ];
                         
+        $args_by_get = Gramset::searchValuesByURL($url_args);
+                
         return view('dict.gramset.edit')
                   ->with(['grams' => $grams,
                           'pos_values'=>$pos_values,
@@ -204,7 +209,8 @@ class GramsetController extends Controller
                           'lang_values'=>$lang_values,
                           'lang_value'=>$lang_value,
                           'gramset' => $gramset,
-                          'url_args' => $url_args
+                          'url_args' => $url_args,
+                          'args_by_get' => $args_by_get
                          ]);
     }
 
