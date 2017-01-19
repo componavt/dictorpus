@@ -92,7 +92,8 @@ class GramsetController extends Controller
                         'gramsets' => $gramsets,
                         'url_args' => $url_args,
                         'numAll' => $numAll,
-                        'args_by_get' => $args_by_get
+                        'args_by_get' => $args_by_get,
+                        'limit_num' => $limit_num
                     ]);
     }   
 
@@ -175,7 +176,7 @@ class GramsetController extends Controller
                 }
         }
  
-        if (isset($request['parts_of_speech'][0])) {
+        if (isset($request['pos_id'])) {
             $back_url .= '?pos_id='. $request['pos_id']. '&lang_id='. $request['lang_id'];
         }
                 
@@ -290,7 +291,7 @@ class GramsetController extends Controller
                 }
         }
  
-        if (isset($request['parts_of_speech'][0])) {
+        if (isset($request['pos_id'])) {
             $back_url .= '?pos_id='. $request['pos_id']. '&lang_id='. $request['lang_id'];
         }
         

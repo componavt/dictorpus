@@ -21,6 +21,8 @@
         <table class="table">
         <tbody>
             <tr>
+            <?php $column_num = ceil(sizeof($grams)/2);
+               $count = 1; ?>
             @foreach($grams as $name => $grams_list)
                 <td>
                     <h3>{{ $name }}</h3>
@@ -37,6 +39,11 @@
                     </p>
                     @endforeach
                 </td>
+                <?php if ($count==$column_num): ?>
+            </tr>
+            <tr>
+                <?php endif; ?>
+                <?php $count ++; ?>
             @endforeach
             </tr>
         </tbody>

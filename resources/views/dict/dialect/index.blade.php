@@ -10,7 +10,7 @@
             
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/dict/dialect/create') }}">
+            <a href="{{ LaravelLocalization::localizeURL('/dict/dialect/create') }}{{$args_by_get}}">
         @endif
             {{ trans('messages.create_new_m') }}
         @if (User::checkAccess('ref.edit'))
@@ -63,10 +63,17 @@
 
                 @if (User::checkAccess('ref.edit'))
                 <td>
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/dict/dialect/'.$dialect->id.'/edit'])
+                    @include('widgets.form._button_edit', 
+                            ['is_button'=>true, 
+                             'url_args' => $url_args,
+                             'route' => '/dict/dialect/'.$dialect->id.'/edit'])
                 </td>
                 <td>
-                    @include('widgets.form._button_delete', ['is_button'=>true, 'route' => 'dialect.destroy', 'id' => $dialect->id])
+                    @include('widgets.form._button_delete', 
+                            ['is_button'=>true, 
+                            'url_args' => $url_args,
+                            'route' => 'dialect.destroy', 
+                            'id' => $dialect->id])
                 </td>
                 @endif
             </tr>

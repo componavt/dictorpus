@@ -32,6 +32,13 @@
                  'value' =>$lang_id,
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+
+        {{trans('messages.show_by')}}
+        @include('widgets.form._formitem_text',
+                ['name' => 'limit_num',
+                'value' => $limit_num,
+                'attributes'=>['size' => 5,
+                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
@@ -61,7 +68,7 @@
                 @foreach ($gram_fields as $field)
                 <td>
                     @if($gramset->{'gram_id_'.$field} && $gramset->{'gram'.ucfirst($field)})
-                        {{$gramset->{'gram'.ucfirst($field)}->getNameWithShort()}}
+                        {{$gramset->{'gram'.ucfirst($field)}->name_short}}
                     @endif
                 </td>
                 @endforeach

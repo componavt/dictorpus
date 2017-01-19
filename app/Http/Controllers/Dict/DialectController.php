@@ -59,12 +59,18 @@ class DialectController extends Controller
 //        $lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('dialects');
 
+        $url_args = ['lang_id'=>$lang_id];
+                
+        $args_by_get = Dialect::searchValuesByURL($url_args);
+                
         return view('dict.dialect.index')
             ->with(['dialects' => $dialects,
                         'limit_num' => $limit_num,
                         'page'=>$page,
                         'lang_values' => $lang_values,
                         'lang_id'=>$lang_id,
+                        'url_args' => $url_args,
+                        'args_by_get' => $args_by_get,
                         'numAll' => $numAll
                        ]);
     }
@@ -74,12 +80,16 @@ class DialectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $lang_id = (int)$request->input('lang_id');
         $lang_values = Lang::getList();
+        $url_args = ['lang_id'=>$lang_id];
 
         return view('dict.dialect.create')
-                  ->with(['lang_values' => $lang_values]);
+                  ->with(['lang_values' => $lang_values,
+                          'url_args' => $url_args,
+                         ]);
     }
 
     /**
@@ -119,13 +129,18 @@ class DialectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
+        $lang_id = (int)$request->input('lang_id');
+
         $dialect = Dialect::find($id); 
         $lang_values = Lang::getList();
         
+        $url_args = ['lang_id'=>$lang_id];
+        
         return view('dict.dialect.edit')
                   ->with(['dialect' => $dialect,
+                          'url_args' => $url_args,
                           'lang_values' => $lang_values,
                          ]);
     }
@@ -149,8 +164,13 @@ class DialectController extends Controller
         
         $dialect->fill($request->all())->save();
         
-        return Redirect::to('/dict/dialect/')
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+        $back_url = '/dict/dialect/';
+        if (isset($request['lang_id'])) {
+            $back_url .= '?lang_id='. $request['lang_id'];
+        }
+
+        return Redirect::to($back_url)
+                       ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
     /**
