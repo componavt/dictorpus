@@ -36,19 +36,42 @@ class GramsetController extends Controller
     {   
         $pos_id = (int)$request->input('pos_id');
         $lang_id = (int)$request->input('lang_id');
+        $limit_num = (int)$request->input('limit_num');
+        $page = (int)$request->input('page');
+
+        if (!$page) {
+            $page = 1;
+        }
         
-        $pos_obj = PartOfSpeech::find($pos_id);
-        $lang_obj = Lang::find($lang_id);
-        $gram_fields = GramCategory::getNames();
+        if ($limit_num<=0) {
+            $limit_num = 25;
+        } elseif ($limit_num>1000) {
+            $limit_num = 1000;
+        }   
         
-        
+        $gram_fields = [];
+
         if (!$lang_id || !$pos_id) {
             $gramsets = NULL;
+            $numAll = 0;
         } else {
             $gramsets = Gramset::orderBy('sequence_number')
                       ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
                       ->where('lang_id',$lang_id)
-                      ->where('pos_id',$pos_id)->get();
+                      ->where('pos_id',$pos_id);//->get();
+            $numAll = $gramsets->count();
+            $gramsets = $gramsets->paginate($limit_num);         
+
+            $all_gram_fields = GramCategory::getNames();    
+            // remove empty columns
+            foreach ($all_gram_fields as $field) {
+                foreach ($gramsets as $gramset) {
+                    if ($gramset->{'gram'.ucfirst($field)} != NULL) {
+                        $gram_fields[] = $field;
+                        continue 2;
+                    }
+                }
+            }        
         } 
               
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('gramsets');
@@ -68,6 +91,7 @@ class GramsetController extends Controller
                         'gram_fields' => $gram_fields,
                         'gramsets' => $gramsets,
                         'url_args' => $url_args,
+                        'numAll' => $numAll,
                         'args_by_get' => $args_by_get
                     ]);
     }   
@@ -337,6 +361,7 @@ class GramsetController extends Controller
      *
      * @return null
      */
+/*    
     public function tempInsertGramsetPosLang()
     {
         $langs = [4,5,6];
@@ -348,6 +373,48 @@ class GramsetController extends Controller
                     'pos_id' => $rec->pos_id,
                     'lang_id' => $lang
                 ]);
+            }
+        }
+    }
+*/    
+    /**
+     * Reads some gramsets for non-reflexive verbs and 
+     * inserts the same records for reflexive verbs.
+     *
+     * @return null
+     */
+    public function tempInsertGramsetsForReflexive()
+    {
+        $reflexive_sequence_number=143;
+        $lang_id = 6; // lude lang
+        $pos_id = 11; // verb
+        $reflex_verb = 47; // id of grammatical attribure 'reflexive verb'
+        $seq_nums = [0=>71, 82=>95, 106=>119]; // ranges of sequence numbers  
+        $langs = [1, 4, 5, 6];
+        
+        foreach ($seq_nums as $min=>$max) {
+            $gramsets = Gramset::orderBy('sequence_number')
+                               ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
+                               ->where('lang_id',$lang_id)
+                               ->where('pos_id',$pos_id)
+                               ->where('sequence_number','>',$min)
+                               ->where('sequence_number','<',$max)
+                               ->get();
+            foreach ($gramsets as $gramset) {
+                $ref_gramset = Gramset::create([
+                    'gram_id_mood' => $gramset->gram_id_mood, 
+                    'gram_id_tense' => $gramset->gram_id_tense, 
+                    'gram_id_person' => $gramset->gram_id_person, 
+                    'gram_id_number' => $gramset->gram_id_number, 
+                    'gram_id_negation' => $gramset->gram_id_negation, 
+                    'gram_id_reflexive' => $reflex_verb,
+                    'sequence_number' => $reflexive_sequence_number++,
+                ]);
+
+                foreach ($langs as $l_id) {
+                    $ref_gramset-> parts_of_speech()
+                                -> attach($pos_id, ['lang_id'=>$l_id]);
+                }
             }
         }
     }

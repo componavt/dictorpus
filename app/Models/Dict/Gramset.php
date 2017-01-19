@@ -119,6 +119,22 @@ class Gramset extends Model
     public function gramsetString(String $glue=', ') : String
     {
         $list = array();
+        if ($this->gram_id_reflexive){
+            $list[] = $this->gramReflexive->name_short;
+        }
+            
+        if ($this->gram_id_infinitive){
+            $list[] = $this->gramInfinitive->name_short;
+        }
+            
+        if ($this->gram_id_mood){
+            $list[] = $this->gramMood->name_short;
+        }
+            
+        if ($this->gram_id_tense){
+            $list[] = $this->gramTense->name_short;
+        }
+            
         if ($this->gram_id_person){
             $list[] = $this->gramPerson->name_short;
         }
@@ -131,12 +147,16 @@ class Gramset extends Model
             $list[] = $this->gramNumber->name_short;
         }
             
-        if ($this->gram_id_tense){
-            $list[] = $this->gramTense->name_short;
+        if ($this->gram_id_negation){
+            $list[] = $this->gramNegation->name_short;
         }
             
-        if ($this->gram_id_mood){
-            $list[] = $this->gramMood->name_short;
+        if ($this->gram_id_voice){
+            $list[] = $this->gramVoice->name_short;
+        }
+            
+        if ($this->gram_id_participle){
+            $list[] = $this->gramParticiple->name_short;
         }
             
         return join($glue, $list);

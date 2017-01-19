@@ -71,11 +71,11 @@
             @foreach ($lemma->wordformsWithGramsets() as $wordform)
             <tr>
                 <td>{{$key++}}.</td>
-                <td>{{ $wordform->wordform}}</td>
                 @if($lemma->hasGramsets())
                 <td>
                     {{$wordform->gramsetString}}
                 </td>
+                <td>{{ $wordform->wordform}}</td>
                 @endif
             </tr>
             @endforeach

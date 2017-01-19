@@ -34,9 +34,11 @@
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
 
-        @if ($gramsets && $gramsets->count())
-        <p>{{ trans('messages.founded_records', ['count'=>$gramsets->count()]) }}</p>
-        <br>
+        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+
+        @if ($gramsets && $numAll)
+            {!! $gramsets->appends(['pos_id' => $pos_id,
+                                    'lang_id'=>$lang_id])->render() !!}
         <table class="table">
         <thead>
             <tr>
@@ -84,6 +86,8 @@
             @endforeach
         </tbody>
         </table>
+            {!! $gramsets->appends(['pos_id' => $pos_id,
+                                    'lang_id'=>$lang_id])->render() !!}
         @endif
 @stop
 
