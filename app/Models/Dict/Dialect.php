@@ -53,15 +53,23 @@ class Dialect extends Model
         return $builder;
     }
 
-    /** Gets list of dialects
+    /** Gets list of dialects for language $lang_id,
+     * if $lang_id is empty, gets all dialects
      * 
+     * @param $lang_id - language ID
      * @return Array [1=>'Northern Veps',..]
      */
-    public static function getList()
+    public static function getList($lang_id=NULL)
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $dialects = self::orderBy('name_'.$locale)->get();
+        $dialects = self::orderBy('name_'.$locale);
+        
+        if ($lang_id) {
+            $dialects = $dialects->where('lang_id',$lang_id);
+        }
+        
+        $dialects = $dialects->get();
         
         $list = array();
         foreach ($dialects as $row) {

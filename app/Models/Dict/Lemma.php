@@ -109,17 +109,22 @@ class Lemma extends Model
      * @return Wordform Object
      */
     public function wordformsWithAllGramsets(){
-        $gramsets = Gramset::getList($this->pos_id);
+        $gramsets = Gramset::getList($this->pos_id,$this->lang_id);
+        $dialects = ['NULL'=>''] + Dialect::getList($this->lang_id);
         
         $wordforms = NULL;
         
         foreach (array_keys($gramsets) as $gramset_id) {
     //                         ->withPivot('dialect_id',NULL)
-            $wordform = $this->wordforms()
-                             ->wherePivot('gramset_id',$gramset_id)
-                             ->first();
-            $wordforms[$gramset_id] = $wordform;
+            foreach (array_keys($dialects) as $dialect_id) {
+                $wordform = $this->wordforms()
+                                 ->wherePivot('gramset_id',$gramset_id)
+                                 ->wherePivot('dialect_id', $dialect_id)
+                                 ->first();
+                $wordforms[$gramset_id][$dialect_id] = $wordform;
+            }
         }
+        
         return $wordforms;
     }
     

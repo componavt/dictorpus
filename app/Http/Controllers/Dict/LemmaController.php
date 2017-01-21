@@ -14,6 +14,7 @@ use Response;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use App\Models\User;
 
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -326,11 +327,14 @@ class LemmaController extends Controller
         $lemma = Lemma::find($id);
         
         $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
-        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
+        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id, $lemma->lang_id);
+
+        $dialects = ['NULL'=>''] + Dialect::getList($lemma->lang_id);
 
         return view('dict.lemma.edit_wordforms')
                   ->with(array('lemma' => $lemma,
                                'gramset_values' => $gramset_values,
+                               'dialects' => $dialects
                               )
                         );
     }
