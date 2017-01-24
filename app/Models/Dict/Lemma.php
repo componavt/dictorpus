@@ -72,11 +72,25 @@ class Lemma extends Model
     }
     
     /**
+     * Gets collections of dialects, that has any wordforms of this lemma
+     * 
+     * @param $lemma_id
+     * @return Collection of Dialect objects
+     */
+    public function dialects()
+    {
+        return $this->belongsToMany(Dialect::class, 'lemma_wordform')
+                    ->withPivot('gramset_id','wordform_id');
+    } 
+    
+    /**
      * Gets a collection of wordforms with gramsets and sorted by sequence_number of gramsets
-     * @return Wordform Object
+     * @return Collection of Wordform Objects
      */
     public function wordformsWithGramsets(){
         $wordforms = $this->wordforms()->get();
+//        $dialects = [NULL=>''] + Dialect::getList($this->lang_id);
+
         foreach ($wordforms as $wordform) {
             $gramset = $wordform->lemmaDialectGramset($this->id);
             if ($gramset) {
@@ -110,13 +124,15 @@ class Lemma extends Model
      */
     public function wordformsWithAllGramsets(){
         $gramsets = Gramset::getList($this->pos_id,$this->lang_id);
-        $dialects = ['NULL'=>''] + Dialect::getList($this->lang_id);
+        $dialects = [NULL=>''] + Dialect::getList($this->lang_id);
         
         $wordforms = NULL;
-        
         foreach (array_keys($gramsets) as $gramset_id) {
     //                         ->withPivot('dialect_id',NULL)
             foreach (array_keys($dialects) as $dialect_id) {
+                if (!(int)$dialect_id) {
+                    $dialect_id = NULL;
+                }
                 $wordform = $this->wordforms()
                                  ->wherePivot('gramset_id',$gramset_id)
                                  ->wherePivot('dialect_id', $dialect_id)
@@ -124,7 +140,7 @@ class Lemma extends Model
                 $wordforms[$gramset_id][$dialect_id] = $wordform;
             }
         }
-        
+//dd($wordforms);        
         return $wordforms;
     }
     

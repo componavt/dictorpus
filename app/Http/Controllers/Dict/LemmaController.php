@@ -325,7 +325,7 @@ class LemmaController extends Controller
     public function editWordforms($id)
     {
         $lemma = Lemma::find($id);
-        
+//dd($lemma->wordformsWithAllGramsets());        
         $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
         $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id, $lemma->lang_id);
 
@@ -363,16 +363,6 @@ class LemmaController extends Controller
         $lemma->pos_id = $request->pos_id;
         $lemma->save();
         
-        // WORDFORMS UPDATING
-        //remove all records from table lemma_wordform
-//        $lemma-> wordforms()->detach();
-       
-        //add wordforms from full table of gramsets
-//        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
-
-        //add wordforms without gramsets
-//        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
-  
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);
@@ -394,17 +384,17 @@ class LemmaController extends Controller
     public function updateWordforms(Request $request, $id)
     {
         $lemma= Lemma::findOrFail($id);
-        
+//phpinfo();
+//dd($request->empty_wordforms);        
         // WORDFORMS UPDATING
         //remove all records from table lemma_wordform
         $lemma-> wordforms()->detach();
        
         //add wordforms from full table of gramsets
         Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
-
         //add wordforms without gramsets
         Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
-  
+//exit(0);  
         return Redirect::to('/dict/lemma/'.($lemma->id))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

@@ -48,10 +48,18 @@ class Wordform extends Model
              ->wherePivot('dialect_id', $dialect_id)->first();
     } 
     
+    public function lemmaGramsetDialect($lemma_id, $gramset_id=NULL)
+    {
+        return $this->belongsToMany(Dialect::class, 'lemma_wordform')
+             ->wherePivot('lemma_id', $lemma_id)
+             ->wherePivot('gramset_id', $gramset_id)->first();
+    }
+
     /**
      * Stores relations with array of wordform (with gramsets) and create Wordform if is not exists
      * 
-     * @param array $wordforms array of wordforms with pairs "id of gramset - wordform"
+     * @param array $wordforms array of wordforms with pairs "id of gramset - wordform",
+     *                         f.e. [<gramset_id1> => [<dialect_id1> => <wordform1>, ...], ..] ]
      * @param Lemma $lemma object of lemma
      * 
      * @return NULL
@@ -110,6 +118,7 @@ class Wordform extends Model
                     }
 //dd($wordform_info['gramset']);
                     $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>NULL]);
+//print "<P>". $wordform_obj->id.",". $wordform_info['gramset'];
                 }
             }
         }
