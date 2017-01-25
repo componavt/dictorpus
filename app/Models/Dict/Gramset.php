@@ -116,7 +116,7 @@ class Gramset extends Model
      * @param String $glue
      * @return String concatenated list of grammatical attributes (e.g. 'ед. ч., номинатив')
      */
-    public function gramsetString(String $glue=', ') : String
+    public function gramsetString(String $glue=', ', $with_number=false) : String
     {
         $list = array();
         if ($this->gram_id_reflexive){
@@ -158,17 +158,22 @@ class Gramset extends Model
         if ($this->gram_id_participle){
             $list[] = $this->gramParticiple->name_short;
         }
-            
-        return join($glue, $list);
+           
+        $out = join($glue, $list);
+        if ($with_number) {
+            $out = $this->sequence_number .'. '.$out;
+        }
+        return $out;
     }
     
     /** Gets ordered list of gramsets for the part of speech and the language
      * 
      * @param int $pos_id
      * @param int $lang_id
+     * @param boolean $with_number - with sequence_number
      * @return Array [1=>'ед. ч., номинатив',..]
      */
-    public static function getList(int $pos_id, int $lang_id=NULL)
+    public static function getList(int $pos_id, int $lang_id=NULL, $with_number=false)
     {
         // select id from gramsets,gramset_pos where gramset_pos.gramset_id=gramsets.id and gramset_pos.pos_id=5 group by id order by sequence_number;
 
@@ -188,6 +193,9 @@ class Gramset extends Model
         foreach ($gramsets as $row) {
             $gramset = self::find($row->id);
             $list[$row->id] = $gramset->gramsetString();
+            if ($with_number) {
+                $list[$row->id] = $gramset->sequence_number .'. '.$list[$row->id];
+            }
         }
         
         return $list;         

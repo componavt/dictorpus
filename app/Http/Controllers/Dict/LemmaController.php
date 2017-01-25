@@ -255,7 +255,7 @@ class LemmaController extends Controller
         
         $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
         $lang_values = Lang::getList();
-        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id);
+//        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $new_meaning_n = $lemma->getNewMeaningN();
         $relation_values = Relation::getList();
@@ -305,7 +305,7 @@ class LemmaController extends Controller
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
-                               'gramset_values' => $gramset_values,
+//                               'gramset_values' => $gramset_values,
                                'langs_for_meaning' => $langs_for_meaning,
                                'new_meaning_n' => $new_meaning_n,
                                'all_meanings' => $meaning_relation_values,//$all_meanings,
@@ -327,7 +327,7 @@ class LemmaController extends Controller
         $lemma = Lemma::find($id);
 //dd($lemma->wordformsWithAllGramsets());        
         $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
-        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id, $lemma->lang_id);
+        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
 
         $dialects = ['NULL'=>''] + Dialect::getList($lemma->lang_id);
 

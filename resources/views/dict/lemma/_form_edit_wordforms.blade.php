@@ -9,7 +9,7 @@
                     @foreach ($lemma->wordformsWithAllGramsets() as $gramset_id => $dialect_wordform)
                     <tr>
                         <td>
-                            {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString()}}&nbsp;
+                            {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString(', ',true)}}&nbsp;
                         </td>
                         @foreach ($dialect_wordform as $dialect_id => $wordform)
                         <?php $wordform_value = ($wordform) ? ($wordform->wordform) : NULL; ?>

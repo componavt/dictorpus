@@ -66,17 +66,24 @@
             @endif
         </h3>
         @if ($lemma->wordforms()->count())
-        <?php $key=1;?>
+        <?php $key=1; ?>
         <table class="table-bordered">
-            @foreach ($lemma->wordformsWithGramsets() as $wordform)
+            <tr>
+                <th>No</th>
+                <th>{{ trans('dict.gramsets') }}</th>
+                @foreach (array_values($lemma->existDialects()) as $dialect_name)
+                <th>{{$dialect_name}}</td>
+                @endforeach
+            </tr>
+            @foreach ($lemma->existGramsets() as $gramset_id=>$gramset_name)
             <tr>
                 <td>{{$key++}}.</td>
-                @if($lemma->hasGramsets())
                 <td>
-                    {{$wordform->gramsetString}}
+                    {{$gramset_name}}
                 </td>
-                <td>{{ $wordform->wordform}}</td>
-                @endif
+                @foreach (array_keys($lemma->existDialects()) as $dialect_id)
+                <td>{{ $lemma->wordform($gramset_id,$dialect_id) }}</td>
+                @endforeach
             </tr>
             @endforeach
         </table>

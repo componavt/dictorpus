@@ -5,6 +5,7 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use URL;
+use LaravelLocalization;
 
 //use App\Models\Dict\Meaning;
 
@@ -62,7 +63,11 @@ class Lemma extends Model
         return $this->hasManyThrough('App\Models\Dict\Meaning', 'App\Models\Dict\MeaningText');
     }
 
-    // Lemma __has_many__ Wordforms
+    /**
+     *  Lemma __has_many__ Wordforms
+     * 
+     * @return Builder
+     */
     public function wordforms(){
         $builder = $this->belongsToMany('App\Models\Dict\Wordform','lemma_wordform');
 //        $builder->getQuery()->getQuery()->distinct = TRUE;
@@ -72,15 +77,108 @@ class Lemma extends Model
     }
     
     /**
-     * Gets collections of dialects, that has any wordforms of this lemma
+     *  Gets wordform for given gramset and dialect
      * 
-     * @param $lemma_id
-     * @return Collection of Dialect objects
+     * @param int $gramset_id
+     * @param int $dialect_id
+     * 
+     * @return String or NULL
+     */
+    public function wordform($gramset_id,$dialect_id){
+        if (!$gramset_id) {
+            $gramset_id=NULL;
+        }
+        if (!$dialect_id) {
+            $dialect_id=NULL;
+        }
+        $wordform_coll = $this->wordforms()
+                         ->wherePivot('gramset_id',$gramset_id)
+                         ->wherePivot('dialect_id',$dialect_id)
+                         ->get();
+        if (!$wordform_coll) {
+            return NULL;
+        } else {
+            $wordform_arr = [];
+            foreach($wordform_coll as $wordform) {
+                $wordform_arr[]=$wordform->wordform;
+            }
+            return join(', ',$wordform_arr);
+        }        
+    }
+    
+    /**
+     * Gets Builder of dialects, that has any wordforms of this lemma
+     * 
+     * @return Builder
      */
     public function dialects()
     {
+        $locale = LaravelLocalization::getCurrentLocale();
         return $this->belongsToMany(Dialect::class, 'lemma_wordform')
-                    ->withPivot('gramset_id','wordform_id');
+//                    ->withPivot('gramset_id','wordform_id')
+                    ->orderBy('name_'.$locale);
+    } 
+    
+    /**
+     * Gets gramsets, that has any wordforms of this lemma
+     * 
+     * @return Builder
+     */
+    public function gramsets()
+    {
+        return $this->belongsToMany(Gramset::class, 'lemma_wordform')
+                    ->orderBy('sequence_number');
+    } 
+    
+    /**
+     * Gets array of unique dialects, that has any wordforms of this lemma
+     * 
+     * @param $lemma_id
+     * @return Array [NULL=>'', 2=>'средневепсский говор',...]
+     */
+    public function existDialects()
+    {
+        $dialect_ids = DB::table('lemma_wordform')
+                      ->select('dialect_id')
+                      ->where('lemma_id',$this->id)
+                      ->groupBy('dialect_id')->get();
+        $dialects = [];
+        
+        foreach ($dialect_ids as $dialect) {
+            if (!$dialect->dialect_id) {
+                $dialects[$dialect->dialect_id] = '';
+            } else {
+                $dialects[$dialect->dialect_id] = Dialect::find($dialect->dialect_id)->name;
+            }
+        }
+        asort($dialects);
+        return $dialects;
+    } 
+    
+    /**
+     * Gets array of unique grammatical sets, that has any wordforms of this lemma
+     * 
+     * @param $lemma_id
+     * @return Array [NULL=>'', 
+     *                  26=>'индикатив, презенс, 1 л., ед. ч., положительная форма',...]
+     */
+    public function existGramsets()
+    {
+        $gramsets = [];
+        if ($this->wordforms()->wherePivot('gramset_id',NULL)) {
+            $gramsets[NULL] ='';
+        }
+/*        $gramset_ids = DB::table('lemma_wordform')
+                      ->select('gramset_id')
+                      ->where('lemma_id',$this->id)
+                      ->groupBy('gramset_id')->get();*/
+        $gramset_coll=$this->gramsets()
+                           ->groupBy('id')
+                           ->get();
+        foreach ($gramset_coll as $gramset) {
+            $gramsets[$gramset->id] = $gramset->gramsetString();
+        }
+        return $gramsets;
     } 
     
     /**
@@ -88,8 +186,8 @@ class Lemma extends Model
      * @return Collection of Wordform Objects
      */
     public function wordformsWithGramsets(){
+        $dialects = existDialects();
         $wordforms = $this->wordforms()->get();
-//        $dialects = [NULL=>''] + Dialect::getList($this->lang_id);
 
         foreach ($wordforms as $wordform) {
             $gramset = $wordform->lemmaDialectGramset($this->id);

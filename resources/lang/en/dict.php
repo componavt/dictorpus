@@ -23,6 +23,7 @@ return [
     'gram_removed' => 'Grammatical attribute ":name" is removed successfully.',
     'gramset_has_wordform' => 'There are wordforms with these grammatical attributes',
     'gramset_removed' => 'Set of grammatical attributes ":name" is removed successfully.',
+    'gramsets' => 'grammatical attributes',
     'hide_examples' => '&lt; &lt; hide examples',
     
     'infinitive' => 'infinitive',
