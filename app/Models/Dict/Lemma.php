@@ -243,10 +243,15 @@ class Lemma extends Model
     }
     
     // Lemma has any Gramsets
-    public function hasGramsets(){
-        return $this->belongsToMany(Gramset::class, 'lemma_wordform')
-             ->wherePivot('wordform_id')
-             ->wherePivot('dialect_id');//->count();
+    public function hasGramsets($wordform_id='', $dialect_id=''){
+        $builder = $this->belongsToMany(Gramset::class, 'lemma_wordform');
+        if ($wordform_id!=='') {
+            $builder = $builder -> wherePivot('wordform_id',$wordform_id);
+        }
+        if ($dialect_id!=='') {
+            $builder = $builder -> wherePivot('dialect_id',$dialect_id);
+        }
+        return $builder;
     }
     
     /**

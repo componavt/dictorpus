@@ -45,6 +45,11 @@
                  'values' =>$pos_values,
                  'value' =>$pos_id,
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
+        @include('widgets.form._formitem_select', 
+                ['name' => 'gramset_id', 
+                 'values' =>$gramset_values,
+                 'value' =>$gramset_id,
+                 'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
         <br>
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
 

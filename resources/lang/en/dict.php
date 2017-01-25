@@ -73,9 +73,12 @@ return [
                     0 => 'not suitable'],
     
     'reverse_relation' => 'reverse relation',
+    
+    'select_gramset' => 'Select a set of grammatical attributes',
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
+    
     'tense' => 'Tense',
     'translation' => 'translation',
     'voice' => 'voice',

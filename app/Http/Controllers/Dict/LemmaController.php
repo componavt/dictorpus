@@ -51,6 +51,7 @@ class LemmaController extends Controller
         $limit_num = (int)$request->input('limit_num');
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
+        $gramset_id = (int)$request->input('gramset_id');
         $page = (int)$request->input('page');
         $search_id = (int)$request->input('search_id');
 
@@ -85,6 +86,12 @@ class LemmaController extends Controller
         if ($search_id) {
             $lemmas = $lemmas->where('id',$search_id);
         } 
+        
+        if ($gramset_id) {
+            $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                             ->where('gramset_id',$gramset_id);
+            
+        }
 
         $numAll = $lemmas->count();
 
@@ -101,16 +108,19 @@ class LemmaController extends Controller
         
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('lemmas');
+        $gramset_values = Gramset::getList($pos_id,$lang_id,true);
                                 
         return view('dict.lemma.index')
                   ->with(array('limit_num' => $limit_num,
                                'lemma_name' => $lemma_name,
                                'lang_id'=>$lang_id,
                                'pos_id'=>$pos_id,
+                               'gramset_id'=>$gramset_id,
                                'page'=>$page,
                                'lemmas' => $lemmas,
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
+                               'gramset_values' => $gramset_values,
                                'numAll' => $numAll,
                                'search_id'=>$search_id,
                               )
