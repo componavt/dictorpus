@@ -321,7 +321,7 @@ class GramsetController extends Controller
                 $gramset = Gramset::find($id);
                 if($gramset){
                     $parts_of_speech = $gramset->parts_of_speech();
-                    if (!$gramset->wordforms) {
+                    if (!$gramset->wordforms()->count()) {
                         $gramset_name = $gramset->gramsetString();
                         $parts_of_speech->detach();
                         $gramset->delete();

@@ -73,7 +73,15 @@
                 </td>
                 @endforeach
                 
-                <td><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}&gramset_id={{$gramset->id}}">{{ $gramset->wordforms($pos_id,$lang_id)->count()}}</a></td>
+                <td>
+                  @if ($gramset->wordforms($pos_id,$lang_id)->count())
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}&gramset_id={{$gramset->id}}">
+                        {{ $gramset->wordforms($pos_id,$lang_id)->count()}}
+                    </a>
+                  @else
+                    {{$gramset->wordforms($pos_id,$lang_id)->count()}}
+                  @endif
+                </td>
 
                 @if (User::checkAccess('ref.edit'))
                 <td>
