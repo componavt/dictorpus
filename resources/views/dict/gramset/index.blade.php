@@ -83,7 +83,7 @@
                                                            'without_text' => true])
                 </td>
                 <td>
-                    @include('widgets.form._button_delete', ['route' => 'gramset.destroy', 'id' => $gramset->id,
+                    @include('widgets.form._button_delete', ['route' => '/dict/gramset/'.$gramset->id,
                                                              'is_button' => true,
                                                              'url_args' => $url_args,
                                                              'without_text' => true])

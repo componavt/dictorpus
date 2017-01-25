@@ -292,7 +292,7 @@ class GramsetController extends Controller
         }
  
         if (isset($request['pos_id'])) {
-            $back_url .= '?pos_id='. $request['pos_id']. '&lang_id='. $request['lang_id'];
+            $back_url .= '?pos_id='. (int)$request['pos_id']. '&lang_id='. (int)$request['lang_id'];
         }
         
         return Redirect::to($back_url)
@@ -305,22 +305,22 @@ class GramsetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $error = false;
         $status_code = 200;
         $result =[];
+
         $back_url = '/dict/gramset/';
-        
+        if (isset($request['pos_id'])) {
+            $back_url .= '?pos_id='. (int)$request['pos_id']. '&lang_id='. (int)$request['lang_id'];
+        }
+                
         if($id != "" && $id > 0) {
             try{
                 $gramset = Gramset::find($id);
                 if($gramset){
                     $parts_of_speech = $gramset->parts_of_speech();
-                    if ($parts_of_speech->count()) {
-                        $back_url .= '?pos_id='. $parts_of_speech->first()->id;
-                    }
-                    
                     if (!$gramset->wordforms) {
                         $gramset_name = $gramset->gramsetString();
                         $parts_of_speech->detach();
