@@ -81,7 +81,8 @@ class Meaning extends Model
      * @return Illuminate\Database\Eloquent\Relations\Relation
      */
     public function texts(){
-        return $this->belongsToMany(Text::class,'meaning_text');
+        return $this->belongsToMany(Text::class,'meaning_text')
+                ->withPivot('relevance');
     }
     
     /**
@@ -293,8 +294,11 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
                     $meaning_text_obj -> save();
                 }
                 
+                // this meaning has not links with texts yet, add them
                 if (!$meaning_obj->texts()->count()) {
                     $meaning_obj->addTextLinks();
+                } else {
+                    $meaning_obj->updateTextLinks();
                 }
             }
         }
@@ -310,7 +314,7 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
             return;
         }
         foreach ($meanings as $meaning_id => $meaning) {
-            $meaning_obj = Meaning::find($meaning_id);
+            $meaning_obj = self::find($meaning_id);
 
             foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {
                 if ($meaning_text) {
@@ -333,8 +337,12 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
             if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count()) { 
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
                 $meaning_obj -> save();
+
+                // this meaning has not links with texts yet, add them
                 if (!$meaning_obj->texts()->count()) {
                     $meaning_obj->addTextLinks();
+                } else {
+                    $meaning_obj->updateTextLinks();
                 }
             } else {
                 $meaning_obj->texts()->detach();
@@ -415,6 +423,7 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
     public function addTextLinks()
     {
         $lemma_obj=$this->lemma;
+        // select all words that match the lemma or word forms of this lemma
         $words = Word::whereIn('word', function ($q) use($lemma_obj){
                             $q->select('wordform')->from('wordforms')
                               ->whereIn('id',function($q2) use($lemma_obj){
@@ -426,12 +435,8 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
         
         foreach ($words as $word) {
             $relevance = 1;
-            // if some meaning has positive evaluation, it means that this meaning is not suitable
-/*            if ($lemma_obj->meanings()->whereIn('id', function($q) use ($word) {
-                        $q->select('meaning_id')->from('meaning_text')
-                              ->where('text_id',$word->text_id)
-                              ->where('w_id',$word->w_id)
-                              ->where('relevance','>',1);*/
+            // if some another meaning has positive evaluation with this sentence, 
+            // it means that this meaning is not suitable for this example
             if (DB::table('meaning_text')->where('meaning_id','<>',$this->id)
                   ->where('text_id',$word->text_id)->where('w_id',$word->w_id)
                   ->where('relevance','>',1)->count()>0) {
@@ -442,6 +447,68 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
                      'word_id'=>$word->id, 
                      'w_id'=>$word->w_id, 
                      'relevance'=>$relevance]);        
+        }
+    }
+    
+    /**
+     * Removes all neutral links (relevance=1) from meaning_text
+     * and adds new links
+     *
+     * @return NULL
+     */
+    public function updateTextLinks()
+    {        
+        $lemma_obj=$this->lemma;
+        // select all words that match the lemma or word forms of this lemma
+        $words = Word::whereIn('word', function ($q) use($lemma_obj){
+                            $q->select('wordform')->from('wordforms')
+                              ->whereIn('id',function($q2) use($lemma_obj){
+                                    $q2->select('wordform_id')->from('lemma_wordform')
+                                       ->where('lemma_id',$lemma_obj->id);
+                                });
+                       })
+                     ->orWhere('word','like',$lemma_obj->lemma)->get();
+        
+        $text_links = [];               
+        foreach ($words as $word) {
+            $relevance = 1;
+                $existLink = $this->texts()->wherePivot('text_id',$word->text_id)
+                              ->wherePivot('w_id',$word->w_id);
+                // if exists links between this meaning and this word, get their relevance
+                if ($existLink->count()>0) {                    
+//dd($existLink->first());                    
+                    $relevance = $existLink->first()->pivot->relevance ;
+                }
+            
+/*            if ($this->texts()->count()>0) {
+                $existLink = $this->texts()->wherePivot('text_id',$word->text_id)
+                              ->wherePivot('w_id',$word->w_id);
+                // if exists links between this meaning and this word, get their relevance
+                if ($existLink->count()>0) {
+                    $relevance = $existLink->pivot->relevance ;
+                }
+            }*/
+
+            // if some another meaning has positive evaluation with this sentence, 
+            // it means that this meaning is not suitable for this example
+            if (DB::table('meaning_text')->where('meaning_id','<>',$this->id)
+                  ->where('text_id',$word->text_id)->where('w_id',$word->w_id)
+                  ->where('relevance','>',1)->count()>0) {
+                $relevance = 0;
+            }
+            $text_links[] = ['text_id' => $word->text_id,
+                             'other_fields' =>
+                                ['sentence_id'=>$word->sentence_id, 
+                                 'word_id'=>$word->id, 
+                                 'w_id'=>$word->w_id, 
+                                 'relevance'=>$relevance]                
+                            ];
+        }
+        
+        $this->texts()->detach();
+        
+        foreach ($text_links as $link) {
+            $this->texts()->attach($link['text_id'],$link['other_fields']);
         }
     }
 }

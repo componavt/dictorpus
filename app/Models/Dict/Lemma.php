@@ -165,7 +165,7 @@ class Lemma extends Model
     public function existGramsets()
     {
         $gramsets = [];
-        if ($this->wordforms()->wherePivot('gramset_id',NULL)) {
+        if ($this->wordforms()->wherePivot('gramset_id',NULL)->count()) {
             $gramsets[NULL] ='';
         }
 /*        $gramset_ids = DB::table('lemma_wordform')
