@@ -405,6 +405,10 @@ class LemmaController extends Controller
         //add wordforms without gramsets
         Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
 //exit(0);  
+
+        // updates links with text examples
+        $lemma->updateTextLinks();
+                
         return Redirect::to('/dict/lemma/'.($lemma->id))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

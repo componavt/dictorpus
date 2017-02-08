@@ -7,6 +7,7 @@ use DB;
 use URL;
 use LaravelLocalization;
 
+use App\Models\Corpus\Word;
 //use App\Models\Dict\Meaning;
 
 class Lemma extends Model
@@ -285,6 +286,61 @@ class Lemma extends Model
         return $count;
     }
     
+    /**
+     * Removes all neutral links (relevance=1) from meaning_text
+     * and adds new links for all meanings
+     *
+     * @return NULL
+     */
+    public function updateTextLinks()
+    {        
+        $lemma_obj=$this;
+        // select all words that match the lemma or word forms of this lemma
+        $words = Word::whereIn('word', function ($q) use($lemma_obj){
+                            $q->select('wordform')->from('wordforms')
+                              ->whereIn('id',function($q2) use($lemma_obj){
+                                    $q2->select('wordform_id')->from('lemma_wordform')
+                                       ->where('lemma_id',$lemma_obj->id);
+                                });
+                       })
+                     ->orWhere('word','like',$lemma_obj->lemma)->get();
+        
+        foreach ($lemma_obj->meanings as $meaning) {
+            $text_links = [];               
+            foreach ($words as $word) {
+                $relevance = 1;
+                $existLink = $meaning->texts()->wherePivot('text_id',$word->text_id)
+                              ->wherePivot('w_id',$word->w_id);
+                // if exists links between this meaning and this word, get their relevance
+                if ($existLink->count()>0) {                    
+//dd($existLink->first());                    
+                    $relevance = $existLink->first()->pivot->relevance;
+                }
+            
+                // if some another meaning has positive evaluation with this sentence, 
+                // it means that this meaning is not suitable for this example
+                if (DB::table('meaning_text')->where('meaning_id','<>',$meaning->id)
+                      ->where('text_id',$word->text_id)->where('w_id',$word->w_id)
+                      ->where('relevance','>',1)->count()>0) {
+                    $relevance = 0;
+                }
+                $text_links[] = ['text_id' => $word->text_id,
+                                 'other_fields' =>
+                                    ['sentence_id'=>$word->sentence_id, 
+                                     'word_id'=>$word->id, 
+                                     'w_id'=>$word->w_id, 
+                                     'relevance'=>$relevance]                
+                                ];
+            }
+        
+            $meaning->texts()->detach();
+
+            foreach ($text_links as $link) {
+                $meaning->texts()->attach($link['text_id'],$link['other_fields']);
+            }
+        }
+    }
+
     /**
      * Gets Delete link created in a view
      * Generates a CSRF token and put it inside a custom data-delete attribute
