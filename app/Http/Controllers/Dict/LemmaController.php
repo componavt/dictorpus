@@ -26,17 +26,47 @@ use App\Models\Dict\Wordform;
 
 class LemmaController extends Controller
 {
+    public $url_args=[];
+    public $args_by_get='';
+    
      /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                           ['only' => ['create','store','edit','update','destroy',
                                       'editWordforms','updateWordforms','updateExamples']]);
+        
+        $this->url_args = [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_gramset'  => (int)$request->input('search_gramset'),
+                    'search_id'       => (int)$request->input('search_id'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_lemma'    => $request->input('search_lemma'),
+                    'search_pos'      => (int)$request->input('search_pos'),
+                    'search_wordform' => $request->input('search_wordform'),
+                ];
+        
+        if (!$this->url_args['page']) {
+            $this->url_args['page'] = 1;
+        }
+        
+        if (!$this->url_args['search_id']) {
+            $this->url_args['search_id'] = NULL;
+        }
+        
+        if ($this->url_args['limit_num']<=0) {
+            $this->url_args['limit_num'] = 10;
+        } elseif ($this->url_args['limit_num']>1000) {
+            $this->url_args['limit_num'] = 1000;
+        }   
+        
+        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
 
     /**
@@ -45,84 +75,65 @@ class LemmaController extends Controller
      * @return \Illuminate\Http\Response
      * 
      */
-    public function index(Request $request)
+    public function index()
     {
-        $lemma_name = $request->input('lemma_name');
-        $limit_num = (int)$request->input('limit_num');
-        $lang_id = (int)$request->input('lang_id');
-        $pos_id = (int)$request->input('pos_id');
-        $gramset_id = (int)$request->input('gramset_id');
-        $page = (int)$request->input('page');
-        $search_id = (int)$request->input('search_id');
-
-        if (!$page) {
-            $page = 1;
-        }
-        
-        if (!$search_id) {
-            $search_id = NULL;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }   
-        
         $lemmas = Lemma::orderBy('lemma');
         
-        if ($lemma_name) {
-            $lemmas = $lemmas->where('lemma','like', $lemma_name);
+        if ($this->url_args['search_wordform'] || $this->url_args['search_gramset']) {
+            $search_wordform = $this->url_args['search_wordform'];
+            $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id');
+            if ($search_wordform) {
+                $lemmas = $lemmas->whereIn('wordform_id',function($query) use ($search_wordform){
+                                    $query->select('id')
+                                    ->from('wordforms')
+                                    ->where('wordform','like', $search_wordform);
+                                });
+            } 
+
+            if ($this->url_args['search_gramset']) {
+                $lemmas = $lemmas->where('gramset_id',$this->url_args['search_gramset']);
+            }
+        }    
+
+        if ($this->url_args['search_lemma']) {
+            $lemmas = $lemmas->where('lemma','like', $this->url_args['search_lemma']);
         } 
 
-        if ($lang_id) {
-            $lemmas = $lemmas->where('lang_id',$lang_id);
+        if ($this->url_args['search_lang']) {
+            $lemmas = $lemmas->where('lang_id',$this->url_args['search_lang']);
         } 
          
-        if ($pos_id) {
-            $lemmas = $lemmas->where('pos_id',$pos_id);
+        if ($this->url_args['search_pos']) {
+            $lemmas = $lemmas->where('pos_id',$this->url_args['search_pos']);
         } 
          
-        if ($search_id) {
-            $lemmas = $lemmas->where('id',$search_id);
+        if ($this->url_args['search_id']) {
+            $lemmas = $lemmas->where('id',$this->url_args['search_id']);
         } 
         
-        if ($gramset_id) {
-            $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
-                             ->where('gramset_id',$gramset_id);
-            
-        }
-
-        $numAll = $lemmas->count();
-
-        $lemmas = $lemmas
-                //->take($limit_num)
-                       ->with(['meanings'=> function ($query) {
+        $lemmas = $lemmas->groupBy('lemmas.id')
+                         ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
-                                }])
-//                       ->simplePaginate($limit_num);         
-                       ->paginate($limit_num);         
-                                        /*->get();*/
+                                }]);
+        $numAll = $lemmas->get()->count();
+
+        $lemmas = $lemmas->paginate($this->url_args['limit_num']);         
         
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
         
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('lemmas');
-        $gramset_values = Gramset::getList($pos_id,$lang_id,true);
+        $gramset_values = Gramset::getList($this->url_args['search_pos'],$this->url_args['search_lang'],true);
                                 
         return view('dict.lemma.index')
-                  ->with(array('limit_num' => $limit_num,
-                               'lemma_name' => $lemma_name,
-                               'lang_id'=>$lang_id,
-                               'pos_id'=>$pos_id,
-                               'gramset_id'=>$gramset_id,
-                               'page'=>$page,
-                               'lemmas' => $lemmas,
-                               'lang_values' => $lang_values,
-                               'pos_values' => $pos_values,
+                  ->with(array(
                                'gramset_values' => $gramset_values,
-                               'numAll' => $numAll,
-                               'search_id'=>$search_id,
+                               'lang_values'    => $lang_values,
+                               'lemmas'         => $lemmas,
+                               'numAll'         => $numAll,
+                               'pos_values'     => $pos_values,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
                               )
                         );
     }
@@ -137,18 +148,23 @@ class LemmaController extends Controller
         $pos_values = PartOfSpeech::getGroupedList();   
         $lang_values = Lang::getList();
         $new_meaning_n = 1;
-                                
+                
         return view('dict.lemma.create')
-                  ->with(array('lang_values' => $lang_values,
-                               'pos_values' => $pos_values,
+                  ->with(array(
                                'langs_for_meaning' => $lang_values,
-                               'new_meaning_n' => $new_meaning_n
+                               'lang_values' => $lang_values,
+                               'new_meaning_n' => $new_meaning_n,
+                               'pos_values' => $pos_values,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
                               )
                         );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Shows the form for creating a new resource.
+     * 
+     * Called by ajax request
      *
      * @return \Illuminate\Http\Response
      */
@@ -184,7 +200,7 @@ class LemmaController extends Controller
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
     
-        return Redirect::to('/dict/lemma/'.($lemma->id))
+        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
@@ -249,7 +265,9 @@ class LemmaController extends Controller
                   ->with(['lemma'=>$lemma,
                           'meaning_texts' => $meaning_texts,
                           'meaning_relations' => $meaning_relations,
-                          'translation_values' => $translation_values
+                          'translation_values' => $translation_values,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
             ]);
     }
 
@@ -321,7 +339,9 @@ class LemmaController extends Controller
                                'all_meanings' => $meaning_relation_values,//$all_meanings,
                                'relation_values' => $relation_values,
                                'relation_meanings' => $relation_meanings,
-                               'translation_values' => $translation_values
+                               'translation_values' => $translation_values,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
                               )
                         );
     }
@@ -344,7 +364,9 @@ class LemmaController extends Controller
         return view('dict.lemma.edit_wordforms')
                   ->with(array('lemma' => $lemma,
                                'gramset_values' => $gramset_values,
-                               'dialects' => $dialects
+                               'dialects' => $dialects,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
                               )
                         );
     }
@@ -359,6 +381,7 @@ class LemmaController extends Controller
     public function update(Request $request, $id)
     {
        // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
+
         $lemma= Lemma::findOrFail($id);
         
         $this->validate($request, [
@@ -380,7 +403,7 @@ class LemmaController extends Controller
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);
                
-        return Redirect::to('/dict/lemma/'.($lemma->id))
+        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
@@ -409,7 +432,7 @@ class LemmaController extends Controller
         // updates links with text examples
         $lemma->updateTextLinks();
                 
-        return Redirect::to('/dict/lemma/'.($lemma->id))
+        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
@@ -431,7 +454,7 @@ class LemmaController extends Controller
                               ' AND w_id='.(int)$regs[4]);
             }
         }
-        return Redirect::to('/dict/lemma/'.$id)
+        return Redirect::to('/dict/lemma/'.$id.($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
@@ -494,10 +517,10 @@ class LemmaController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/dict/lemma/')
+                return Redirect::to('/dict/lemma/'.($this->args_by_get))
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/dict/lemma/')
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
                   ->withSuccess($result['message']);
         }
         
@@ -515,12 +538,15 @@ class LemmaController extends Controller
     {
         $lemma = Lemma::find($id);
         if (!$lemma) {
-            return Redirect::to('/dict/lemma/')
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
                            ->withErrors(\Lang::get('messages.record_not_exists'));
         }
 //dd($lemma->revisionHistory);        
         return view('dict.lemma.history')
-                  ->with(['lemma' => $lemma]);
+                  ->with(['lemma' => $lemma,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
+                         ]);
     }
     
     /** Gets list of longest lemmas, 
@@ -566,7 +592,7 @@ class LemmaController extends Controller
      */
     public function relation(Request $request)
     {
-        $lemma_name = $request->input('lemma_name');
+        $search_lemma = $request->input('search_lemma');
         $limit_num = (int)$request->input('limit_num');
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
@@ -586,8 +612,8 @@ class LemmaController extends Controller
         $lemmas = Lemma::select(DB::raw('lemmas.id as lemma1_id, lemmas.lemma as lemma1, relation_id, meaning1_id, meaning2_id'))
                        ->join('meanings', 'lemmas.id', '=', 'meanings.lemma_id')
                        ->join('meaning_relation', 'meanings.id', '=', 'meaning_relation.meaning1_id');        
-        if ($lemma_name) {
-            $lemmas = $lemmas->where('lemma','like', $lemma_name);
+        if ($search_lemma) {
+            $lemmas = $lemmas->where('lemma','like', $search_lemma);
         } 
 
         if ($lang_id) {
@@ -613,7 +639,7 @@ class LemmaController extends Controller
         
         return view('dict.lemma.relation')
                   ->with(array('limit_num' => $limit_num,
-                               'lemma_name' => $lemma_name,
+                               'search_lemma' => $search_lemma,
                                'lang_id'=>$lang_id,
                                'pos_id'=>$pos_id,
                                'relation_id'=>$relation_id,
@@ -635,7 +661,7 @@ class LemmaController extends Controller
      */
     public function meaningsList(Request $request)
     {
-        $lemma_name = '%'.$request->input('q').'%';
+        $search_lemma = '%'.$request->input('q').'%';
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
         $lemma_id = (int)$request->input('lemma_id');
@@ -644,7 +670,7 @@ class LemmaController extends Controller
         $lemmas = Lemma::where('lang_id',$lang_id)
                        ->where('pos_id',$pos_id)
                        ->where('id','<>',$lemma_id)
-                       ->where('lemma','like', $lemma_name)
+                       ->where('lemma','like', $search_lemma)
                        ->orderBy('lemma')->get();
         foreach ($lemmas as $lem) {
             foreach ($lem->meanings as $meaning) {

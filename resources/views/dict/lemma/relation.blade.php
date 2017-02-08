@@ -13,8 +13,8 @@
                              'class' => 'form-inline'])
         !!}
         @include('widgets.form._formitem_text',
-                ['name' => 'lemma_name',
-                'value' => $lemma_name,
+                ['name' => 'search_lemma',
+                'value' => $search_lemma,
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.lemma')]])
         @include('widgets.form._formitem_select',
@@ -74,7 +74,7 @@
             @endforeach
         </table>
             {!! $lemmas->appends(['limit_num' => $limit_num,
-                                  'lemma_name' => $lemma_name,
+                                  'search_lemma' => $search_lemma,
                                   'lang_id'=>$lang_id,
                                   'relation_id'=>$relation_id,
                                   'pos_id'=>$pos_id])->render() !!}

@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -12,7 +12,7 @@
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('dict.list_long_lemmas') }}</a> 
             |
         @if (User::checkAccess('dict.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}">
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">
         @endif
             {{ trans('messages.create_new_f') }}
         @if (User::checkAccess('dict.edit'))
@@ -27,30 +27,35 @@
         !!}
         @include('widgets.form._formitem_text',
                 ['name' => 'search_id',
-                'value' => $search_id,
+                'value' => $url_args['search_id'],
                 'attributes'=>['size' => 3,
                                'placeholder' => 'ID']])
         @include('widgets.form._formitem_text',
-                ['name' => 'lemma_name',
-                'value' => $lemma_name,
+                ['name' => 'search_lemma',
+                'value' => $url_args['search_lemma'],
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.lemma')]])
+        @include('widgets.form._formitem_text',
+                ['name' => 'search_wordform',
+                'value' => $url_args['search_wordform'],
+                'attributes'=>['size' => 15,
+                               'placeholder'=>trans('dict.wordform')]])
         @include('widgets.form._formitem_select',
-                ['name' => 'lang_id',
+                ['name' => 'search_lang',
                  'values' =>$lang_values,
-                 'value' =>$lang_id,
+                 'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]])
         @include('widgets.form._formitem_select',
-                ['name' => 'pos_id',
+                ['name' => 'search_pos',
                  'values' =>$pos_values,
-                 'value' =>$pos_id,
+                 'value' =>$url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
         <br>
-        @if ($pos_id && $lang_id)         
+        @if ($url_args['search_pos'] && $url_args['search_lang'])         
             @include('widgets.form._formitem_select', 
-                    ['name' => 'gramset_id', 
+                    ['name' => 'search_gramset', 
                      'values' =>$gramset_values,
-                     'value' =>$gramset_id,
+                     'value' =>$url_args['search_gramset'],
                      'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
         @endif
         
@@ -59,7 +64,7 @@
         {{trans('messages.show_by')}}
         @include('widgets.form._formitem_text',
                 ['name' => 'limit_num',
-                'value' => $limit_num,
+                'value' => $url_args['limit_num'],
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
@@ -83,7 +88,7 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td>{{ $list_count++ }}</td>
-                <td><a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a></td>
+                <td><a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
                 <td>
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
@@ -99,20 +104,22 @@
                 </td>
                 @if (User::checkAccess('dict.edit'))
                 <td>
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/dict/lemma/'.$lemma->id.'/edit'])
+                    @include('widgets.form._button_edit', 
+                             ['is_button'=>true, 
+                              'route' => '/dict/lemma/'.$lemma->id.'/edit',
+                             ])
                 </td>
                 <td>
-                    @include('widgets.form._button_delete', ['is_button'=>true, 'route' => 'lemma.destroy', 'id' => $lemma->id])
-{{--                    @include('dict.lemma._form_delete', ['lemma'=>$lemma])--}}
+                    @include('widgets.form._button_delete', 
+                             ['is_button'=>true, 
+                              'route' => 'lemma.destroy', 'id' => $lemma->id,
+                             ])
                 </td>
                 @endif
             </tr>
             @endforeach
         </table>
-            {!! $lemmas->appends(['limit_num' => $limit_num,
-                                  'lemma_name' => $lemma_name,
-                                  'lang_id'=>$lang_id,
-                                  'pos_id'=>$pos_id])->render() !!}
+            {!! $lemmas->appends($url_args)->render() !!}
         @endif
 
 {{--        @include('dict.lemma._modal_delete') --}}

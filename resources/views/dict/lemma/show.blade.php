@@ -13,19 +13,18 @@
         <h1>{{ trans('navigation.lemmas') }}</h1>
 
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a>
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
 
         @if (User::checkAccess('dict.edit'))
-        {{-- @can('dict.edit',$lemma) --}}
-{{--            | @include('widgets.form._button_edit', ['route' => '/dict/lemma/'.$lemma->id.'/edit']) --}}
-            | @include('widgets.form._button_delete', ['route' => 'lemma.destroy', 'id' => $lemma->id]) 
-            | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}">{{ trans('messages.create_new_f') }}</a>
+            | @include('widgets.form._button_delete', 
+                       ['route' => 'lemma.destroy', 
+                        'id' => $lemma->id]) 
+            | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif
-        {{-- @endcan --}}
 
-            | <a href="/dict/lemma/{{ $lemma->id }}/history">{{ trans('messages.history') }}</a>
+            | <a href="/dict/lemma/{{ $lemma->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
         </p>
 
         <h2>
@@ -97,7 +96,7 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma');
+    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma{{$args_by_get}}');
     
     $('.show-more-examples').click(function(){
         var meaning_n = $(this).attr('data-for');

@@ -81,7 +81,7 @@ class GramsetController extends Controller
                      'lang_id'=>$lang_id
                     ];
                 
-        $args_by_get = Gramset::searchValuesByURL($url_args);
+        $args_by_get = Lang::searchValuesByURL($url_args);
                 
         return view('dict.gramset.index')
                 ->with(['pos_id'=>$pos_id, 
@@ -120,7 +120,7 @@ class GramsetController extends Controller
                      'lang_id'=>$lang_id
                     ];
 
-        $args_by_get = Gramset::searchValuesByURL($url_args);
+        $args_by_get = Lang::searchValuesByURL($url_args);
                 
         return view('dict.gramset.create')
                   ->with(['grams' => $grams,
@@ -230,7 +230,7 @@ class GramsetController extends Controller
                      'lang_id'=>$lang_id
                     ];
                         
-        $args_by_get = Gramset::searchValuesByURL($url_args);
+        $args_by_get = Lang::searchValuesByURL($url_args);
                 
         return view('dict.gramset.edit')
                   ->with(['grams' => $grams,

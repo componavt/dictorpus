@@ -75,7 +75,7 @@
                 
                 <td>
                   @if ($gramset->wordforms($pos_id,$lang_id)->count())
-                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}&gramset_id={{$gramset->id}}">
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}&search_gramset={{$gramset->id}}">
                         {{ $gramset->wordforms($pos_id,$lang_id)->count()}}
                     </a>
                   @else
