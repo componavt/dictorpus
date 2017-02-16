@@ -1,3 +1,4 @@
+        @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
             <table>
                 <tr>
                     <th>&nbsp;</th>

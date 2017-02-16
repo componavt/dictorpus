@@ -7,7 +7,7 @@
 @section('content')
         <h1>{{ trans('navigation.lemmas') }}</h1>
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_lemma')}}: {{ $lemma->lemma}}</h2>
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}">{{ trans('messages.back_to_show') }}</a></p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
         
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>

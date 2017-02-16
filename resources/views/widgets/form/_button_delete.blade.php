@@ -1,16 +1,7 @@
 <?php
-        if (isset($args_by_get)) {
-            $route .= $args_by_get;
-        } elseif (isset($url_args) && sizeof($url_args)) {
-            $tmp=[];
-            foreach ($url_args as $a=>$v) {
-                if ($v!='') {
-                    $tmp[] = "$a=$v";
-                }
-            }
-            if (sizeof ($tmp)) {
-                $route .= "?".implode('&',$tmp);
-            }
+        $args_for_route = ['id' => $id];
+        if (isset($url_args)) {
+            $args_for_route = array_merge($args_for_route,$url_args);
         }
 //        $format = '<a href="%s" data-toggle="tooltip" data-delete="%s" title="%s" class="btn btn-default"><i class="fa fa-trash-o"></i></a>';
         $format = '<a href="%s" data-toggle="tooltip" data-delete="%s" title="%s"';
@@ -18,7 +9,8 @@
             $format .= ' class="btn btn-xs btn-danger"';
         }
         $format .= '><i class="fa fa-trash-o fa-lg"></i> %s</a>';
-        $link = LaravelLocalization::localizeURL($route);
+        $link = URL::route($route, $args_for_route);
+                //LaravelLocalization::localizeURL($route);
         $token = csrf_token();
         if (isset($without_text) && $without_text) {
             $title = '';

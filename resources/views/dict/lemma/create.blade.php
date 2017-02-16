@@ -10,7 +10,7 @@
 
 @section('content')
         <h1>{{ trans('navigation.lemmas') }}</h1>
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a></p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('lemma.store'))) !!}
         @include('dict.lemma._form_create_edit', ['submit_title' => trans('messages.create_new_f'),
