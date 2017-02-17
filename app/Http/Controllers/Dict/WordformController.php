@@ -21,9 +21,29 @@ class WordformController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth:ref.edit,/dict/wordform/', ['only' => ['create','store','edit','update','destroy']]);
+        
+        $this->url_args = [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_pos'      => (int)$request->input('search_pos'),
+                    'search_wordform' => $request->input('search_wordform'),
+                ];
+        
+        if (!$this->url_args['page']) {
+            $this->url_args['page'] = 1;
+        }
+        
+        if ($this->url_args['limit_num']<=0) {
+            $this->url_args['limit_num'] = 10;
+        } elseif ($this->url_args['limit_num']>1000) {
+            $this->url_args['limit_num'] = 1000;
+        }   
+        
+        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
 
     /**
@@ -31,55 +51,51 @@ class WordformController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $wordform_name = $request->input('wordform_name');
-        $limit_num = (int)$request->input('limit_num');
-        $lang_id = (int)$request->input('lang_id');
-        $pos_id = (int)$request->input('pos_id');
-        $page = (int)$request->input('page');
-
-        if (!$page) {
-            $page = 1;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }      
-        
         $wordforms = Wordform::orderBy('wordform');
         
-        if ($wordform_name) {
-            $wordforms = $wordforms->where('wordform','like', $wordform_name);
+        if ($this->url_args['search_wordform']) {
+            $wordforms = $wordforms->where('wordform','like', $this->url_args['search_wordform']);
         } 
 
-        if ($lang_id || $pos_id) {
+        $search_lang = $this->url_args['search_lang'];
+        $search_pos = $this->url_args['search_pos'];
+        if ($search_lang || $search_pos) {
             $wordforms = $wordforms->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id');
         }
         
-        if ($lang_id) {
-            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($lang_id){
+        if ($search_lang) {
+            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($search_lang){
                         $query->select('id')
                         ->from(with(new Lemma)->getTable())
-                        ->where('lang_id', $lang_id);
+                        ->where('lang_id', $search_lang);
                     });
         } 
          
-        if ($pos_id) {
-            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($pos_id){
+        if ($search_pos) {
+            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($search_pos){
                         $query->select('id')
                         ->from(with(new Lemma)->getTable())
-                        ->where('pos_id',$pos_id);
+                        ->where('pos_id',$search_pos);
                     });
         } 
          
         $numAll = $wordforms->count();
         
-        $wordforms = $wordforms->paginate($limit_num);
+        $wordforms = $wordforms->paginate($this->url_args['limit_num']);
                 //take($limit_num)->get();
         
+        foreach ($wordforms as $wordform) {
+            $lemmas = [];
+            foreach ($wordform->lemmas as $lemma) {
+               if (!$search_lang || $lemma->lang_id == $search_lang) {
+                   $lemmas[$lemma->id] = $lemma;
+               } 
+            }
+            $wordform['lemmas'] = array_values($lemmas);
+        }
+
         $pos_values = PartOfSpeech::getGroupedList();
 //        $pos_values = PartOfSpeech::getGroupedListWithQuantity('wordforms');
        
@@ -88,17 +104,14 @@ class WordformController extends Controller
                                 
  
         return view('dict.wordform.index')
-                  ->with(array('limit_num' => $limit_num,
-                               'wordforms' => $wordforms,
-                               'wordform_name' => $wordform_name,
-                               'page'=>$page,
-                               'lang_values' => $lang_values,
-                               'lang_id'=>$lang_id,
-                               'pos_values' => $pos_values,
-                               'pos_id'=>$pos_id,
-                               'numAll' => $numAll
-                              )
-                        );
+                  ->with([
+                      'lang_values' => $lang_values,
+                      'numAll' => $numAll,
+                      'pos_values' => $pos_values,
+                      'wordforms' => $wordforms,
+                      'args_by_get'    => $this->args_by_get,
+                      'url_args'       => $this->url_args,
+                   ]);
     }
     
     /**
@@ -173,49 +186,61 @@ class WordformController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function withMultipleLemmas(Request $request)
+    public function withMultipleLemmas()
     {
-        $wordform_name = $request->input('wordform_name');
-        $lang_id = (int)$request->input('lang_id');
-
 //select wordforms.wordform as wordform, count(*) as count from lemma_wordform, wordforms where 
 //wordforms.id=lemma_wordform.wordform_id and lemma_id in (select id from lemmas where lang_id=1) 
 //group by wordform having count>1 order by count;
-        $builder = DB::table('wordforms')
-                     ->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+        $builder = DB::table('wordforms')->
+                     join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                      ->select(DB::raw('wordform_id, count(*) as count'))
                      ->groupBy('wordform_id')
                      ->having('count', '>', 1);
         
-        if ($wordform_name) {
-            $builder = $builder->where('wordform','like', $wordform_name);
+        if ($this->url_args['search_wordform']) {
+            $builder = $builder->where('wordform','like', $this->url_args['search_wordform']);
         } 
 
-        if ($lang_id) {
-            $builder = $builder->whereIn('lemma_id',function($query) use ($lang_id){
+        $search_lang = $this->url_args['search_lang'];
+        if ($search_lang) {
+            $builder = $builder->whereIn('lemma_id',function($query) use ($search_lang){
                         $query->select('id')
                         ->from(with(new Lemma)->getTable())
-                        ->where('lang_id', $lang_id);
+                        ->where('lang_id', $search_lang);
                     });
         } 
          
         $builder = $builder->orderBy('count', 'DESC')
                            ->orderBy('wordform');
+//                ->with('lemmas');
   /*      $builder = $builder->with(['wordforms'=> function ($query) {
                                     $query->orderBy('wordform');
                                 }]);*/
-        $wordforms = $builder->get();
-           
+
+        $wordforms = [];
+
+        foreach ($builder->get() as $wordform) {
+            $wordform_obj = Wordform::find($wordform->wordform_id);            
+//dd($wordform_obj->lemmas);
+            $lemmas = [];
+            foreach ($wordform_obj->lemmas as $lemma) {
+               if (!$search_lang || $lemma->lang_id == $search_lang) {
+                   $lemmas[$lemma->id] = $lemma;
+               } 
+            }
+            $wordform_obj['lemmas'] = array_values($lemmas);
+            $wordforms[] = $wordform_obj;
+        }
+ //dd($wordforms);       
         $lang_values = Lang::getList();
                                 
         return view('dict.wordform.with_multiple_lemmas')
-                  ->with(array(
-                               'wordforms' => $wordforms,
-                               'wordform_name' => $wordform_name,
-                               'lang_values' => $lang_values,
-                               'lang_id'=>$lang_id,
-                               )
-                        );
+                  ->with([
+                        'lang_values' => $lang_values,
+                        'wordforms' => $wordforms,
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
+                         ]);
     }
     
     /** 

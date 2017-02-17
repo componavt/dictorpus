@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -15,24 +15,24 @@
                              'class' => 'form-inline']) 
         !!}
         @include('widgets.form._formitem_text', 
-                ['name' => 'wordform_name', 
-                'value' => $wordform_name,
+                ['name' => 'search_wordform', 
+                'value' => $url_args['search_wordform'],
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.wordform')]])
         @include('widgets.form._formitem_select', 
-                ['name' => 'lang_id', 
+                ['name' => 'search_lang', 
                  'values' =>$lang_values,
-                 'value' =>$lang_id,
+                 'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
         @include('widgets.form._formitem_select', 
-                ['name' => 'pos_id', 
+                ['name' => 'search_pos', 
                  'values' =>$pos_values,
-                 'value' =>$pos_id,
+                 'value' =>$url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
-                'value' => $limit_num, 
+                'value' => $url_args['limit_num'], 
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
@@ -54,11 +54,11 @@
         </thead>
         <tbody>
             @foreach($wordforms as $wordform)
-                @foreach($wordform->lemmas as $key=>$lemma) 
+                @foreach($wordform['lemmas'] as $key=>$lemma) 
             <tr>
                     @if ($key==0)
-                <td rowspan='{{$wordform->lemmas->count()}}'>{{ $list_count++ }}</td>
-                <td rowspan='{{$wordform->lemmas->count()}}'>{{$wordform->wordform}}</td>
+                <td rowspan='{{sizeof($wordform['lemmas'])}}'>{{ $list_count++ }}</td>
+                <td rowspan='{{sizeof($wordform['lemmas'])}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>
                     @if ($wordform->lemmaDialectGramset($lemma->id))
@@ -66,10 +66,10 @@
                     @endif
                 </td>
                 <td>
-                    @if ($wordform->lemmas->count()>1)
+                    @if (sizeof($wordform['lemmas'])>1)
                         {{$key+1}}.
                     @endif
-                    <a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a>
+                    <a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a>
                 </td>
                 <td>
                     @if($lemma->lang)
@@ -87,10 +87,7 @@
         </tbody>
         </table>
         @endif
-        {!! $wordforms->appends(['limit_num' => $limit_num,
-                                  'wordform_name' => $wordform_name,
-                                  'lang_id'=>$lang_id,
-                                  'pos_id'=>$pos_id])->render() !!}
+        {!! $wordforms->appends($url_args)->render() !!}
 @stop
 
 

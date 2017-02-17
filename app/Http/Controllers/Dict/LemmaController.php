@@ -416,6 +416,7 @@ class LemmaController extends Controller
      */
     public function updateWordforms(Request $request, $id)
     {
+//dd($request->lang_wordforms);        
         $lemma= Lemma::findOrFail($id);
 //phpinfo();
 //dd($request->empty_wordforms);        

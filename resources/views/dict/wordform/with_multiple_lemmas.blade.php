@@ -16,13 +16,13 @@
                              'class' => 'form-inline']) 
         !!}
         @include('widgets.form._formitem_text', 
-                ['name' => 'wordform_name', 
-                'value' => $wordform_name,
+                ['name' => 'search_wordform', 
+                'value' => $url_args['search_wordform'],
                 'attributes'=>['placeholder'=>trans('dict.wordform')]])
         @include('widgets.form._formitem_select', 
-                ['name' => 'lang_id', 
+                ['name' => 'search_lang', 
                  'values' =>$lang_values,
-                 'value' =>$lang_id,
+                 'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
@@ -42,14 +42,12 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($wordforms as $row)
-                <?php $wordform=\App\Models\Dict\Wordform::find($row->wordform_id);?>
-                <?php $lemmas = $wordform->lemmas;?>
-                @foreach($lemmas as $key=>$lemma) 
+            @foreach($wordforms as $wordform)
+                @foreach($wordform['lemmas'] as $key=>$lemma) 
             <tr>
                     @if ($key==0)
-                <td rowspan='{{$lemmas->count()}}'>{{ $list_count++ }}</td>
-                <td rowspan='{{$lemmas->count()}}'>{{$wordform->wordform}}</td>
+                <td rowspan='{{sizeof($wordform['lemmas'])}}'>{{ $list_count++ }}</td>
+                <td rowspan='{{sizeof($wordform['lemmas'])}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>
                     @if ($wordform->lemmaDialectGramset($lemma->id))
@@ -57,7 +55,7 @@
                     @endif
                 </td>
                 <td>
-                    {{$key+1}}. <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}">{{$lemma->lemma}}</a>
+                    {{$key+1}}. <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}{{$args_by_get}}">{{$lemma->lemma}}</a>
                 </td>
                 <td>
                     @if($lemma->lang)

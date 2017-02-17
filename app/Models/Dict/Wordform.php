@@ -87,6 +87,7 @@ class Wordform extends Model
                                                    ->count() == 0) {
                         $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
                     }
+//print "<p>".$lemma->id." = ". $wordform_obj->id ." = $wordform_text = $gramset_id = $dialect_id";              
                 }
             }
         }
