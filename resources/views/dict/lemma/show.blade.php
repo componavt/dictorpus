@@ -59,9 +59,18 @@
         <h3>
             {{ trans('dict.wordforms') }}
             @if (User::checkAccess('dict.edit'))
-                @include('widgets.form._button_edit', 
-                         ['route' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
-                          'without_text' => 1])
+                {!! Form::open(['url' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
+                                'method' => 'get',
+                                'class' => 'form-inline'])
+                !!}
+                @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
+                @include('widgets.form._formitem_select',
+                        ['name' => 'dialect_id',
+                         'values' =>$dialect_values,
+                         'attributes'=>['placeholder' => trans('dict.select_dialect'),
+                                       ]]) 
+                @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.edit')])
+                {!! Form::close() !!}
             @endif
         </h3>
         @if ($lemma->wordforms()->count())

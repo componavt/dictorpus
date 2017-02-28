@@ -53,6 +53,21 @@ class Dialect extends Model
         return $builder;
     }
 
+    /** Gets name of dialects  by ID,
+     * 
+     * @param $id - dialect ID
+     * @return string - localizated name of dialect
+     */
+    public static function getNameByID($id)
+    {     
+        $dialect = self::find($id);
+        if ($dialect) {
+            return $dialect->name;
+        } else {
+            return NULL;
+        }
+    }
+
     /** Gets list of dialects for language $lang_id,
      * if $lang_id is empty, gets all dialects
      * 

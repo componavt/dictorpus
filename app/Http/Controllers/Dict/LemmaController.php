@@ -260,14 +260,18 @@ class LemmaController extends Controller
                 }
             }
         }   
+        
+        $dialect_values = Dialect::getList($lemma->lang_id);
 
         return view('dict.lemma.show')
-                  ->with(['lemma'=>$lemma,
-                          'meaning_texts' => $meaning_texts,
+                  ->with([
+                          'dialect_values'    => $dialect_values,
+                          'lemma'             => $lemma,
+                          'meaning_texts'     => $meaning_texts,
                           'meaning_relations' => $meaning_relations,
-                          'translation_values' => $translation_values,
-                               'args_by_get'    => $this->args_by_get,
-                               'url_args'       => $this->url_args,
+                          'translation_values'=> $translation_values,
+                          'args_by_get'       => $this->args_by_get,
+                          'url_args'          => $this->url_args,
             ]);
     }
 
@@ -352,19 +356,25 @@ class LemmaController extends Controller
      * @param  int  $id - ID of lemma
      * @return \Illuminate\Http\Response
      */
-    public function editWordforms($id)
+    public function editWordforms(Request $request, $id)
     {
+        $dialect_id = (int)$request->dialect_id;
+        $dialect_name = Dialect::getNameByID($dialect_id);
+        
+        if (!$dialect_id) {
+            $dialect_id = NULL;
+        }
+
         $lemma = Lemma::find($id);
-//dd($lemma->wordformsWithAllGramsets());        
-        $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
+//dd($lemma->wordformsWithAllGramsets($dialect_id));        
         $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
 
-        $dialects = ['NULL'=>''] + Dialect::getList($lemma->lang_id);
-
         return view('dict.lemma.edit_wordforms')
-                  ->with(array('lemma' => $lemma,
+                  ->with(array(
+                               'dialect_id' => $dialect_id,
+                               'dialect_name' => $dialect_name,
                                'gramset_values' => $gramset_values,
-                               'dialects' => $dialects,
+                               'lemma' => $lemma,                      
                                'args_by_get'    => $this->args_by_get,
                                'url_args'       => $this->url_args,
                               )

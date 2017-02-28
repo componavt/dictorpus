@@ -74,6 +74,7 @@ return [
     
     'reverse_relation' => 'reverse relation',
     
+    'select_dialect' => 'Select a dialect',
     'select_gramset' => 'Select a set of grammatical attributes',
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',

@@ -159,7 +159,6 @@ class Lemma extends Model
     /**
      * Gets array of unique grammatical sets, that has any wordforms of this lemma
      * 
-     * @param $lemma_id
      * @return Array [NULL=>'', 
      *                  26=>'индикатив, презенс, 1 л., ед. ч., положительная форма',...]
      */
@@ -217,13 +216,16 @@ class Lemma extends Model
     /**
      * Gets a collection of wordforms for ALL gramsets and sorted by sequence_number of gramsets
      * 
-     * FOR NULL DIALECT
-     * 
-     * @return Wordform Object
+     * @param $dialect_id
+     * @return Collection of Wordform Objects
      */
-    public function wordformsWithAllGramsets(){
+    public function wordformsWithAllGramsets($dialect_id=NULL){
         $gramsets = Gramset::getList($this->pos_id,$this->lang_id);
-        $dialects = [NULL=>''] + Dialect::getList($this->lang_id);
+        if ($dialect_id) {
+            $dialects = [$dialect_id => Dialect::getNameByID($dialect_id)];
+        } else {
+            $dialects = [NULL=>''] + Dialect::getList($this->lang_id);
+        }
         
         $wordforms = NULL;
         foreach (array_keys($gramsets) as $gramset_id) {
@@ -232,6 +234,7 @@ class Lemma extends Model
                 if (!(int)$dialect_id) {
                     $dialect_id = NULL;
                 }
+//dd($dialect_id);        
                 $wordform = $this->wordforms()
                                  ->wherePivot('gramset_id',$gramset_id)
                                  ->wherePivot('dialect_id', $dialect_id)
