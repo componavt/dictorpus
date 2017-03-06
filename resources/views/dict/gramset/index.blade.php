@@ -91,10 +91,10 @@
                                                            'without_text' => true])
                 </td>
                 <td>
-                    @include('widgets.form._button_delete', ['route' => '/dict/gramset/'.$gramset->id,
+{{--                    @include('widgets.form._button_delete', ['route' => '/dict/gramset/'.$gramset->id,
                                                              'is_button' => true,
-                                                             'url_args' => $url_args,
-                                                             'without_text' => true])
+                                                             'url_args' => $url_args, 
+                                                             'without_text' => true]) --}}
                 </td>
                 @endif
             </tr>
