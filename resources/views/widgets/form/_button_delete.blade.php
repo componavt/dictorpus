@@ -1,5 +1,8 @@
 <?php
-        $args_for_route = ['id' => $id];
+        $args_for_route = [];
+        if (isset($id)) {
+            $args_for_route['id'] = $id;
+        }
         if (isset($url_args)) {
             $args_for_route = array_merge($args_for_route,$url_args);
         }
