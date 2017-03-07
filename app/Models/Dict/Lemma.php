@@ -298,8 +298,13 @@ class Lemma extends Model
     public function updateTextLinks()
     {        
         $lemma_obj=$this;
+        $lang_id = $lemma_obj->lang_id;
         // select all words that match the lemma or word forms of this lemma
-        $words = Word::whereIn('word', function ($q) use($lemma_obj){
+        $words = Word::whereIn('text_id',function ($q) use($lang_id){
+                            $q->select('id')->from('texts')
+                              ->where('lang_id',$lang_id);
+                       });
+        $words = $words ->whereIn('word', function ($q) use($lemma_obj){
                             $q->select('wordform')->from('wordforms')
                               ->whereIn('id',function($q2) use($lemma_obj){
                                     $q2->select('wordform_id')->from('lemma_wordform')
@@ -307,7 +312,7 @@ class Lemma extends Model
                                 });
                        })
                      ->orWhere('word','like',$lemma_obj->lemma)->get();
-        
+//dd($words);
         foreach ($lemma_obj->meanings as $meaning) {
             $text_links = [];               
             foreach ($words as $word) {

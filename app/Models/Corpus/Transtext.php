@@ -90,7 +90,7 @@ class Transtext extends Model
     /**
      * Sets text_xml as a markup text with sentences
      */
-    public function markup(){        
+    public function markup(){  
         $this->text_xml = Text::markupText($this->text);
     }
 }

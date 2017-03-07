@@ -78,15 +78,16 @@ class Wordform extends Model
                       ->wherePivot('gramset_id',$gramset_id)
                       ->wherePivot('dialect_id',$dialect_id)
                       ->detach();
-                if ($wordform_text) {
-                    if (!(int)$dialect_id) {
-                        $dialect_id = NULL;
-                    }
-                    $wordform_obj = self::firstOrCreate(['wordform'=>$wordform_text]);
-
-                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
-//print "<p>".$lemma->id." = ". $wordform_obj->id ." = $wordform_text = $gramset_id = $dialect_id";              
+                if (!$wordform_text) {
+                    continue;
                 }
+                if (!(int)$dialect_id) {
+                    $dialect_id = NULL;
+                }
+                $wordform_obj = self::firstOrCreate(['wordform'=>$wordform_text]);
+
+                $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
+//print "<p>".$lemma->id." = ". $wordform_obj->id ." = $wordform_text = $gramset_id = $dialect_id";              
             }
         }
     }
