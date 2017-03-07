@@ -279,14 +279,22 @@ class Lemma extends Model
      * @return int
      */
     public function countExamples(){
+        $lemma_id = $this->id;
+        $texts = DB::table('meaning_text')
+                     ->whereIn('meaning_id',function($q) use ($lemma_id){
+                         $q->select('id')->from('meanings')
+                           ->where('lemma_id',$lemma_id);
+                     })->groupBy('word_id')->get();
+//dd($builder->toSql());                     
+        /*
         $count = 0;
         foreach ($this->meanings as $meaning) {
             if ($meaning->texts()) {
 //print "<p>meaning:".$meaning->id.', count: '.$meaning->texts()->count()."</p>";                
                 $count = $count + $meaning->texts()->count();
             }
-        }
-        return $count;
+        }*/
+        return sizeof($texts);
     }
     
     /**
