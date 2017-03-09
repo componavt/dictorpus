@@ -112,7 +112,8 @@
                 <td>
                     @include('widgets.form._button_delete', 
                              ['is_button'=>true, 
-                              'route' => 'lemma.destroy', 'id' => $lemma->id,
+                              'route' => 'lemma.destroy', 
+                              'id' => $lemma->id,
                              ])
                 </td>
                 @endif

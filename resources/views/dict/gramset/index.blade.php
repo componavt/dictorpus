@@ -22,21 +22,21 @@
                              'class' => 'form-inline']) 
         !!}
         @include('widgets.form._formitem_select', 
-                ['name' => 'pos_id', 
+                ['name' => 'search_pos', 
                  'values' =>$pos_values,
-                 'value' =>$pos_id,
+                 'value' => $url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
         @include('widgets.form._formitem_select', 
-                ['name' => 'lang_id', 
+                ['name' => 'search_lang', 
                  'values' =>$lang_values,
-                 'value' =>$lang_id,
+                 'value' => $url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
 
         {{trans('messages.show_by')}}
         @include('widgets.form._formitem_text',
                 ['name' => 'limit_num',
-                'value' => $limit_num,
+                'value' => $url_args['limit_num'],
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
@@ -44,8 +44,7 @@
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($gramsets && $numAll)
-            {!! $gramsets->appends(['pos_id' => $pos_id,
-                                    'lang_id'=>$lang_id])->render() !!}
+            {!! $gramsets->appends($url_args)->render() !!}
         <table class="table">
         <thead>
             <tr>
@@ -54,11 +53,12 @@
                 <th>{{ trans('dict.'.$field) }}</th>
                 @endforeach
                 
-                <th>{{ trans('dict.wordforms') }}</th>
-                
                 @if (User::checkAccess('ref.edit'))
                 <th colspan="2"></th>
                 @endif
+                
+                <th>{{ trans('dict.lemmas') }}</th>
+                <th>{{ trans('dict.wordforms') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -72,16 +72,6 @@
                     @endif
                 </td>
                 @endforeach
-                
-                <td>
-                  @if ($gramset->wordforms($pos_id,$lang_id)->count())
-                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}&search_gramset={{$gramset->id}}">
-                        {{ $gramset->wordforms($pos_id,$lang_id)->count()}}
-                    </a>
-                  @else
-                    {{$gramset->wordforms($pos_id,$lang_id)->count()}}
-                  @endif
-                </td>
 
                 @if (User::checkAccess('ref.edit'))
                 <td>
@@ -91,18 +81,33 @@
                                                            'without_text' => true])
                 </td>
                 <td>
-{{--                    @include('widgets.form._button_delete', ['route' => '/dict/gramset/'.$gramset->id,
-                                                             'is_button' => true,
-                                                             'url_args' => $url_args, 
-                                                             'without_text' => true]) --}}
+                    @include('widgets.form._button_delete', 
+                             ['is_button' => true,
+                              'route' => 'gramset.destroy', 
+                              'id' => $gramset->id,
+                              'without_text' => true]) 
+                </td>
+                
+                <td>
+                  <?php $count=sizeof($gramset->lemmas($url_args['search_pos'],$url_args['search_lang'])->groupBy('lemma_id')->get()); ?>
+                  @if ($count)
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}&search_gramset={{$gramset->id}}">
+                        {{ $count }}
+                    </a>
+                  @else
+                    {{ $count }}
+                  @endif
+                </td>
+
+                <td>
+                  {{ $gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count() }}
                 </td>
                 @endif
             </tr>
             @endforeach
         </tbody>
         </table>
-            {!! $gramsets->appends(['pos_id' => $pos_id,
-                                    'lang_id'=>$lang_id])->render() !!}
+            {!! $gramsets->appends($url_args)->render() !!}
         @endif
 @stop
 

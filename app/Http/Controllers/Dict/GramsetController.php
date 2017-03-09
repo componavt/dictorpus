@@ -22,9 +22,27 @@ class GramsetController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth:ref.edit,/dict/gramset/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->url_args = [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_pos'      => (int)$request->input('search_pos'),
+                ];
+        
+        if (!$this->url_args['page']) {
+            $this->url_args['page'] = 1;
+        }
+        
+        if ($this->url_args['limit_num']<=0) {
+            $this->url_args['limit_num'] = 25;
+        } elseif ($this->url_args['limit_num']>1000) {
+            $this->url_args['limit_num'] = 1000;
+        }   
+        
+        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
     
      /**
@@ -32,35 +50,28 @@ class GramsetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {   
-        $pos_id = (int)$request->input('pos_id');
-        $lang_id = (int)$request->input('lang_id');
-        $limit_num = (int)$request->input('limit_num');
-        $page = (int)$request->input('page');
-
-        if (!$page) {
-            $page = 1;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 25;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }   
-        
         $gram_fields = [];
 
-        if (!$lang_id || !$pos_id) {
+/*        if (!$this->url_args['search_lang'] || !$this->url_args['search_pos']) {
             $gramsets = NULL;
             $numAll = 0;
         } else {
-            $gramsets = Gramset::orderBy('sequence_number')
-                      ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
-                      ->where('lang_id',$lang_id)
-                      ->where('pos_id',$pos_id);//->get();
-            $numAll = $gramsets->count();
-            $gramsets = $gramsets->paginate($limit_num);         
+*/            $gramsets = Gramset::orderBy('sequence_number')
+                      ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id');
+            
+            if ($this->url_args['search_lang']) {
+                $gramsets = $gramsets->where('lang_id',$this->url_args['search_lang']);
+            }
+                      
+            if ($this->url_args['search_pos']) {
+                $gramsets = $gramsets->where('pos_id',$this->url_args['search_pos']);
+            }
+            
+            $gramsets=$gramsets->groupBy('gramsets.id');
+            $numAll = sizeof($gramsets->get());
+            $gramsets = $gramsets->paginate($this->url_args['limit_num']);         
 
             $all_gram_fields = GramCategory::getNames();    
             // remove empty columns
@@ -72,28 +83,20 @@ class GramsetController extends Controller
                     }
                 }
             }        
-        } 
+        //} 
               
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('gramsets');
         $lang_values = Lang::getListWithQuantity('gramsets');
         
-        $url_args = ['pos_id'=>$pos_id,
-                     'lang_id'=>$lang_id
-                    ];
-                
-        $args_by_get = Lang::searchValuesByURL($url_args);
-                
         return view('dict.gramset.index')
-                ->with(['pos_id'=>$pos_id, 
-                        'pos_values' => $pos_values, 
-                        'lang_id'=>$lang_id, 
-                        'lang_values' => $lang_values, 
+                ->with([
                         'gram_fields' => $gram_fields,
                         'gramsets' => $gramsets,
-                        'url_args' => $url_args,
+                        'lang_values' => $lang_values, 
                         'numAll' => $numAll,
-                        'args_by_get' => $args_by_get,
-                        'limit_num' => $limit_num
+                        'pos_values' => $pos_values, 
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
                     ]);
     }   
 
@@ -102,11 +105,8 @@ class GramsetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
-        $pos_id = (int)$request->input('pos_id');
-        $lang_id = (int)$request->input('lang_id');
-
         $pos_values = PartOfSpeech::getGroupedList();
         $lang_values = Lang::getList();
         
@@ -116,18 +116,12 @@ class GramsetController extends Controller
                                     'grams' => [NULL=>''] + Gram::getList($gc->id)];
         }
 
-        $url_args = ['pos_id'=>$pos_id,
-                     'lang_id'=>$lang_id
-                    ];
-
-        $args_by_get = Lang::searchValuesByURL($url_args);
-                
         return view('dict.gramset.create')
                   ->with(['grams' => $grams,
-                          'pos_values'=>$pos_values,
                           'lang_values'=>$lang_values,
-                          'url_args' => $url_args,
-                          'args_by_get' => $args_by_get
+                          'pos_values'=>$pos_values,
+                          'args_by_get'    => $this->args_by_get,
+                          'url_args'       => $this->url_args,
                          ]);
     }
 
@@ -139,8 +133,6 @@ class GramsetController extends Controller
      */
     public function store(Request $request)
     {
-        $back_url = '/dict/gramset/';
-
         $this->validate($request, [
             'gram_id_number'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
             'gram_id_case'  => 'numeric|required_without_all:gram_id_number,gram_id_tense,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
@@ -155,8 +147,6 @@ class GramsetController extends Controller
             'sequence_number' => 'numeric',
             'parts_of_speech' => 'required|array',
             'langs' => 'required|array',
-            'lang_id' => 'numeric',
-            'pos_id' => 'numeric'
         ]);
 
         foreach (GramCategory::getNames() as $gc_name) {
@@ -176,10 +166,8 @@ class GramsetController extends Controller
                 }
         }
  
-        if (isset($request['pos_id'])) {
-            $back_url .= '?pos_id='. $request['pos_id']. '&lang_id='. $request['lang_id'];
-        }
-                
+        $back_url = '/dict/gramset/?'.$this->args_by_get;
+
         return Redirect::to($back_url)
                        ->withSuccess(\Lang::get('messages.created_success'));        
     }
@@ -201,11 +189,8 @@ class GramsetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, Request $request)
+    public function edit($id)
     {
-        $pos_id = (int)$request->input('pos_id');
-        $lang_id = (int)$request->input('lang_id');
-
         $gramset = Gramset::find($id); 
         $pos_values = PartOfSpeech::getGroupedList();
         
@@ -226,21 +211,15 @@ class GramsetController extends Controller
                                     'grams' => [NULL=>''] + Gram::getList($gc->id)];
         }
 
-        $url_args = ['pos_id'=>$pos_id,
-                     'lang_id'=>$lang_id
-                    ];
-                        
-        $args_by_get = Lang::searchValuesByURL($url_args);
-                
         return view('dict.gramset.edit')
                   ->with(['grams' => $grams,
-                          'pos_values'=>$pos_values,
-                          'pos_value'=>$pos_value,
-                          'lang_values'=>$lang_values,
-                          'lang_value'=>$lang_value,
                           'gramset' => $gramset,
-                          'url_args' => $url_args,
-                          'args_by_get' => $args_by_get
+                          'lang_value'=>$lang_value,
+                          'lang_values'=>$lang_values,
+                          'pos_value'=>$pos_value,
+                          'pos_values'=>$pos_values,
+                          'args_by_get'    => $this->args_by_get,
+                          'url_args'       => $this->url_args,
                          ]);
     }
 
@@ -253,7 +232,6 @@ class GramsetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $back_url = '/dict/gramset/';
         $this->validate($request, [
             'gram_id_number'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
             'gram_id_case'  => 'numeric|required_without_all:gram_id_number,gram_id_tense,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
@@ -268,8 +246,6 @@ class GramsetController extends Controller
             'sequence_number' => 'numeric',
             'parts_of_speech' => 'required|array',
             'langs' => 'required|array',
-            'lang_id' => 'numeric',
-            'pos_id' => 'numeric'
         ]);
 
         foreach (GramCategory::getNames() as $gc_name) {
@@ -291,10 +267,8 @@ class GramsetController extends Controller
                 }
         }
  
-        if (isset($request['pos_id'])) {
-            $back_url .= '?pos_id='. (int)$request['pos_id']. '&lang_id='. (int)$request['lang_id'];
-        }
-        
+        $back_url = '/dict/gramset/'.$this->args_by_get;
+
         return Redirect::to($back_url)
                        ->withSuccess(\Lang::get('messages.updated_success'));        
     }
@@ -311,10 +285,7 @@ class GramsetController extends Controller
         $status_code = 200;
         $result =[];
 
-        $back_url = '/dict/gramset/';
-        if (isset($request['pos_id'])) {
-            $back_url .= '?pos_id='. (int)$request['pos_id']. '&lang_id='. (int)$request['lang_id'];
-        }
+        $back_url = '/dict/gramset/'.$this->args_by_get;
                 
         if($id != "" && $id > 0) {
             try{
@@ -384,6 +355,7 @@ class GramsetController extends Controller
      *
      * @return null
      */
+/*    
     public function tempInsertGramsetsForReflexive()
     {
         $reflexive_sequence_number=143;
@@ -419,4 +391,6 @@ class GramsetController extends Controller
             }
         }
     }
+ * 
+ */
 }
