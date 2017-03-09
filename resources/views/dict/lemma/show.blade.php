@@ -29,9 +29,11 @@
 
         <h2>
             {{ $lemma->lemma }}
-            @include('widgets.form._button_edit', 
-                     ['route' => '/dict/lemma/'.$lemma->id.'/edit',
-                      'without_text' => 1])
+            @if (User::checkAccess('dict.edit'))
+                @include('widgets.form._button_edit', 
+                         ['route' => '/dict/lemma/'.$lemma->id.'/edit',
+                          'without_text' => 1])
+            @endif
         </h2>
 
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
@@ -79,8 +81,19 @@
             <tr>
                 <th>No</th>
                 <th>{{ trans('dict.gramsets') }}</th>
-                @foreach (array_values($lemma->existDialects()) as $dialect_name)
-                <th>{{$dialect_name}}</td>
+                @foreach ($lemma->existDialects() as $dialect_id=>$dialect_name)
+                <th>
+                    {{$dialect_name}}
+                    @if (User::checkAccess('dict.edit'))
+                        @include('widgets.form._button_edit', 
+                                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
+                                  'args_by_get' => (isset($args_by_get) && $args_by_get) 
+                                                    ? $args_by_get.'&dialect_id='.$dialect_id 
+                                                    : '?dialect_id='.$dialect_id,
+                                  'without_text' => 1])
+                    @endif
+
+                    </th>
                 @endforeach
             </tr>
             @foreach ($lemma->existGramsets() as $gramset_id=>$gramset_name)
