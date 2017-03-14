@@ -428,9 +428,6 @@ class LemmaController extends Controller
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);
                
-        // updates links with text examples
-        $lemma->updateTextLinks();
-
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

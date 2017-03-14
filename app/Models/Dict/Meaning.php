@@ -423,8 +423,14 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
     public function addTextLinks()
     {
         $lemma_obj=$this->lemma;
+        $lang_id = $lemma_obj->lang_id;
         // select all words that match the lemma or word forms of this lemma
-        $words = Word::whereIn('word', function ($q) use($lemma_obj){
+/*        
+        $words = Word::whereIn('text_id',function ($q) use($lang_id){
+                            $q->select('id')->from('texts')
+                              ->where('lang_id',$lang_id);
+                       });
+        $words = $words ->whereIn('word', function ($q) use($lemma_obj){
                             $q->select('wordform')->from('wordforms')
                               ->whereIn('id',function($q2) use($lemma_obj){
                                     $q2->select('wordform_id')->from('lemma_wordform')
@@ -432,7 +438,17 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
                                 });
                        })
                      ->orWhere('word','like',$lemma_obj->lemma)->get();
-        
+ */       
+        $query = "select * from words, texts "
+                          . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
+                            . " and (word like '".$lemma_obj->lemma."' OR word in "
+                                . "(select wordform from wordforms, lemma_wordform "
+                                 . "where wordforms.id = lemma_wordform.wordform_id "
+                                   . "and lemma_id = ".$lemma_obj->id." "
+                                   . "and wordform like '".$lemma_obj->lemma."'))";
+//dd($query);        
+        $words = DB::select($query);
+
         foreach ($words as $word) {
             $relevance = 1;
             // if some another meaning has positive evaluation with this sentence, 
@@ -459,16 +475,47 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
     public function updateTextLinks()
     {        
         $lemma_obj=$this->lemma;
+        $lang_id = $lemma_obj->lang_id;
+//dd($lang_id);       
         // select all words that match the lemma or word forms of this lemma
-        $words = Word::whereIn('word', function ($q) use($lemma_obj){
+/*        
+        $words = Word::whereIn('text_id',function ($q) use($lang_id){
+                            $q->select('id')->from('texts')
+                              ->where('lang_id',$lang_id);
+                       });
+        $words = $words ->whereIn('word', function ($q) use($lemma_obj){
                             $q->select('wordform')->from('wordforms')
                               ->whereIn('id',function($q2) use($lemma_obj){
                                     $q2->select('wordform_id')->from('lemma_wordform')
                                        ->where('lemma_id',$lemma_obj->id);
                                 });
                        })
-                     ->orWhere('word','like',$lemma_obj->lemma)->get();
-        
+                     ->orWhere('word','like',$lemma_obj->lemma);
+ * 
+ */
+//dd($words->toSql());                       
+//        $words=$words->get();
+
+/*        $words = DB::select("select * from words, texts "
+                          . "where words.text_id = texts.id and texts.lang_id = :lang_id "
+                            . "and (word like ':lemma' OR word in "
+                                . "(select wordform from wordforms, lemma_wordform "
+                                 . "where wordforms.id = lemma_wordform.wordform_id "
+                                   . "and lemma_id = :lemma_id "
+                                   . "and wordform like ':lemma')",
+                ['lang_id'=>$lang_id,
+                 'lemma_id'=>$lemma_obj->id,
+                 'lemma'=>$lemma_obj->lemma ]); */
+        $query = "select * from words, texts "
+                          . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
+                            . " and (word like '".$lemma_obj->lemma."' OR word in "
+                                . "(select wordform from wordforms, lemma_wordform "
+                                 . "where wordforms.id = lemma_wordform.wordform_id "
+                                   . "and lemma_id = ".$lemma_obj->id." "
+                                   . "and wordform like '".$lemma_obj->lemma."'))";
+//dd($query);        
+        $words = DB::select($query);
+//dd($words);
         $text_links = [];               
         foreach ($words as $word) {
             $relevance = 1;
@@ -506,7 +553,7 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
         }
         
         $this->texts()->detach();
-        
+//dd($text_links);        
         foreach ($text_links as $link) {
             $this->texts()->attach($link['text_id'],$link['other_fields']);
         }

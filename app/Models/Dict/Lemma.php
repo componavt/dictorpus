@@ -308,7 +308,7 @@ class Lemma extends Model
         $lemma_obj=$this;
         $lang_id = $lemma_obj->lang_id;
         // select all words that match the lemma or word forms of this lemma
-        $words = Word::whereIn('text_id',function ($q) use($lang_id){
+/*        $words = Word::whereIn('text_id',function ($q) use($lang_id){
                             $q->select('id')->from('texts')
                               ->where('lang_id',$lang_id);
                        });
@@ -320,7 +320,19 @@ class Lemma extends Model
                                 });
                        })
                      ->orWhere('word','like',$lemma_obj->lemma)->get();
+ * 
+ */
 //dd($words);
+        $query = "select * from words, texts "
+                          . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
+                            . " and (word like '".$lemma_obj->lemma."' OR word in "
+                                . "(select wordform from wordforms, lemma_wordform "
+                                 . "where wordforms.id = lemma_wordform.wordform_id "
+                                   . "and lemma_id = ".$lemma_obj->id." "
+                                   . "and wordform like '".$lemma_obj->lemma."'))";
+//dd($query);        
+        $words = DB::select($query);
+
         foreach ($lemma_obj->meanings as $meaning) {
             $text_links = [];               
             foreach ($words as $word) {
