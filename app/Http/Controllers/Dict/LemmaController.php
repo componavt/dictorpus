@@ -48,6 +48,7 @@ class LemmaController extends Controller
                     'search_id'       => (int)$request->input('search_id'),
                     'search_lang'     => (int)$request->input('search_lang'),
                     'search_lemma'    => $request->input('search_lemma'),
+                    'search_meaning'  => $request->input('search_meaning'),
                     'search_pos'      => (int)$request->input('search_pos'),
                     'search_wordform' => $request->input('search_wordform'),
                 ];
@@ -111,6 +112,20 @@ class LemmaController extends Controller
             $lemmas = $lemmas->where('id',$this->url_args['search_id']);
         } 
         
+        if ($this->url_args['search_meaning']) {
+            $search_meaning = $this->url_args['search_meaning'];
+            $lemmas = $lemmas->whereIn('id',function($query) use ($search_meaning){
+                                    $query->select('lemma_id')
+                                    ->from('meanings')
+                                    ->whereIn('id',function($query) use ($search_meaning){
+                                        $query->select('meaning_id')
+                                        ->from('meaning_texts')
+                                        ->where('meaning_text','like', $search_meaning);
+                                    });
+                                });
+        } 
+
+
         $lemmas = $lemmas->groupBy('lemmas.id')
                          ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');

@@ -40,6 +40,11 @@
                 'value' => $url_args['search_wordform'],
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.wordform')]])
+        @include('widgets.form._formitem_text',
+                ['name' => 'search_meaning',
+                'value' => $url_args['search_meaning'],
+                'attributes'=>['size' => 15,
+                               'placeholder'=>trans('dict.meaning')]])
         @include('widgets.form._formitem_select',
                 ['name' => 'search_lang',
                  'values' =>$lang_values,
