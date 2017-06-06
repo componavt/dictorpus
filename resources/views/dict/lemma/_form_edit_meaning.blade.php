@@ -14,6 +14,7 @@
                         <td>{{ $meaning_text->lang_name}}</td>
                         <td>@include('widgets.form._formitem_text',
                            ['name' => 'ex_meanings['.$meaning->id.'][meaning_text]['.$meaning_lang.']',
+                            'special_symbol' => true,
                             'value'=> $meaning_text->meaning_text])</td>
                         <td>
                             @if ($meaning_lang != $lemma->lang_id)

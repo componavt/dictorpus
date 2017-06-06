@@ -13,7 +13,9 @@
                 <tr>
                     <td>{{ $lang_text }}&nbsp; </td>
                     <td>@include('widgets.form._formitem_text',
-                       ['name' => 'new_meanings['.$count.'][meaning_text]['.$lang_id.']'])</td>
+                       ['name' => 'new_meanings['.$count.'][meaning_text]['.$lang_id.']',
+                        'special_symbol' => true,
+                       ])</td>
                     <td></td>
                 </tr>
             @endforeach

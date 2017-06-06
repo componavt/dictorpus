@@ -69,3 +69,45 @@ and open the template in the editor.
 .warning {
     color: red;
 }
+
+.special-symbols-link {
+    color: #c9302c;
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    position: absolute;
+    right: 5px;
+    text-align:right;
+    top: 0;
+    /*width: 300px;*/
+}
+/*
+.form-inline .special-symbols-link {
+    top: 0;
+}
+*/
+.special-symbols {
+    display: none;
+    position: absolute;
+    right: 0;
+    text-align:right;
+    top: -25px;
+    width: 300px;
+}
+/*
+.form-inline .special-symbols {
+    top: -25px;
+}
+*/
+.special-symbol-b {
+/*    background-color: #f0ad4e;
+    border-color: #f0ad4e;*/
+    font-size: 14px;
+/*    font-weight: bold;*/
+    line-height: 14px;
+    padding: 0;
+}
+
+.form-group {
+    position: relative;
+}

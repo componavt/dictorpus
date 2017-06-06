@@ -49,12 +49,14 @@
         @endif
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'text', 
+                 'special_symbol' => true,
                  'title'=>trans('corpus.text'),
                  'attributes' => $attr,
                 ])
         @if ($action == 'edit')
             @include('widgets.form._formitem_textarea', 
                     ['name' => 'text_xml', 
+                     'special_symbol' => true,
                      'title'=>trans('corpus.text_xml')])
         @endif
         
@@ -98,11 +100,13 @@
         <?php $transtext_title_value = ($action=='edit' && $text->transtext) ? ($text->transtext->title) : NULL; ?>
         @include('widgets.form._formitem_text', 
                 ['name' => 'transtext.title', 
+                 'special_symbol' => true,
                  'value' => $transtext_title_value,
                  'title'=>trans('corpus.transtext_title')])
         <?php $transtext_text_value = ($action=='edit' && $text->transtext) ? ($text->transtext->text) : NULL; ?>
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'transtext.text', 
+                 'special_symbol' => true,
                  'value' => $transtext_text_value,
                  'title'=>trans('corpus.transtext_text')])
         @if ($action=='edit')

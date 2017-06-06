@@ -24,6 +24,7 @@
         !!}
         @include('widgets.form._formitem_text', 
                 ['name' => 'text_title', 
+                 'special_symbol' => true,
                 'value' => $text_title,
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.title')]])
@@ -97,9 +98,10 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
 @stop
-

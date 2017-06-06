@@ -37,6 +37,7 @@ return [
     'seq_num' => 'п/н',
     'sequence_number' => 'No в списке',
     'show_by' => 'по',
+    'special_symbols' => 'специальные символы',
     'to' => 'на',
     'total' => 'всего',
     'translation' => 'Перевод',

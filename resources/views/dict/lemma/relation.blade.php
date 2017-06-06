@@ -14,6 +14,7 @@
         !!}
         @include('widgets.form._formitem_text',
                 ['name' => 'search_lemma',
+                 'special_symbol' => true,
                 'value' => $search_lemma,
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.lemma')]])
@@ -79,4 +80,12 @@
                                   'relation_id'=>$relation_id,
                                   'pos_id'=>$pos_id])->render() !!}
         @endif
+@stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/special_symbols.js')!!}
+@stop
+
+@section('jqueryFunc')
+    toggleSpecial();
 @stop

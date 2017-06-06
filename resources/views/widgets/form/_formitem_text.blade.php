@@ -13,6 +13,8 @@ if(!isset($title))
     $title = null;
 if(!isset($tail)) 
     $tail = null;
+if(!isset($special_symbol)) 
+    $special_symbol = false;
 
 if (!isset($attributes)) {
     $attributes = [];
@@ -28,12 +30,18 @@ if(isset($attributes['size'])) {
 if(!isset($attributes['placeholder'])) {
     $attributes['placeholder'] = $title;
 }*/    
+$id_name = preg_replace("/[\.\]\[]/","_",$name);
+$attributes['id'] = $id_name;
+
 ?>
 <div class="form-group {!! $errors->has($name) ? 'has-error' : null !!}">
     @if($title)
 	<label for="{{$name}}">{{ $title }}&nbsp;</label>
     @endif
     {!! Form::text($name, $value, $attributes) !!}
+    @if ($special_symbol) 
+        @include('dict.special_symbols',['id_name'=>$id_name])
+    @endif
     {{ $tail }}                                    
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

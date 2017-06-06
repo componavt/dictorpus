@@ -17,6 +17,7 @@
         !!}
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_wordform', 
+                 'special_symbol' => true,
                 'value' => $url_args['search_wordform'],
                 'attributes'=>['placeholder'=>trans('dict.wordform')]])
         @include('widgets.form._formitem_select', 
@@ -75,4 +76,11 @@
         @endif
 @stop
 
+@section('footScriptExtra')
+    {!!Html::script('js/special_symbols.js')!!}
+@stop
+
+@section('jqueryFunc')
+    toggleSpecial();
+@stop
 

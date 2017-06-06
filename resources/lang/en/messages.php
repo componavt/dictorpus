@@ -37,6 +37,7 @@ return [
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',
     'show_by' => 'by',
+    'special_symbols' => 'special symbols',
     'to' => 'to',
     'total' => 'total',
     'translation' => 'Translation',

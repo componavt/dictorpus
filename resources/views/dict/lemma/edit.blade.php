@@ -31,9 +31,11 @@
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/meaning.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     addMeaning();
     
     $(".add-new-relation").click(function(){

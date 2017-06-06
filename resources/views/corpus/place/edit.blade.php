@@ -14,3 +14,11 @@
                                       'action' => 'edit'])
         {!! Form::close() !!}
 @stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/special_symbols.js')!!}
+@stop
+
+@section('jqueryFunc')
+    toggleSpecial();
+@stop

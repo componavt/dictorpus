@@ -23,6 +23,7 @@
             <?php $other_name = isset($other_names[$lang_id]) ? $other_names[$lang_id] : NULL; ?>
             @include('widgets.form._formitem_text', 
                     ['name' => 'other_names['.$lang_id.']', 
+                     'special_symbol' => true,
                      'value' => $other_name,
                      'title'=>trans('corpus.name').' ('.$lang_n. ' '. trans('dict.lang').')'])            
         @endforeach

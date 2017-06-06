@@ -29,6 +29,7 @@
                                'placeholder' => 'ID']])
          @include('widgets.form._formitem_text', 
                 ['name' => 'place_name', 
+                 'special_symbol' => true,
                 'value' => $place_name,
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.title')]])
@@ -122,8 +123,10 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/informant');
 @stop

@@ -6,6 +6,7 @@
 @stop
 
 @section('content')
+        
         <h2>{{ trans('navigation.lemmas') }}</h2>
 
         <p>
@@ -33,16 +34,19 @@
         @include('widgets.form._formitem_text',
                 ['name' => 'search_lemma',
                 'value' => $url_args['search_lemma'],
+                'special_symbol' => true,
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.lemma')]])
         @include('widgets.form._formitem_text',
                 ['name' => 'search_wordform',
                 'value' => $url_args['search_wordform'],
+                'special_symbol' => true,
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.wordform')]])
         @include('widgets.form._formitem_text',
                 ['name' => 'search_meaning',
                 'value' => $url_args['search_meaning'],
+                'special_symbol' => true,
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.meaning')]])
         @include('widgets.form._formitem_select',
@@ -133,9 +137,11 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma');
 @stop
 

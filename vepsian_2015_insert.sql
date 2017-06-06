@@ -733,3 +733,9 @@ INSERT INTO `grams` VALUES (47,10,'refl.','reflexive verb','возвр.','воз
 SET FOREIGN_KEY_CHECKS=1;
 
 update gramsets set gram_id_negation=38 where pos_id_debug=11;
+
+alter table meaning_text drop foreign key `meaning_text_meaning_id_foreign`;
+alter table meaning_text drop primary key;
+alter table meaning_text add CONSTRAINT `meaning_text_meaning_id_foreign` FOREIGN KEY (`meaning_id`) REFERENCES `meanings` (`id`);
+alter table meaning_text add primary key (`meaning_id`,`text_id`,`sentence_id`,`w_id`);
+

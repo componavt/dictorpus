@@ -13,11 +13,19 @@ if(!isset($title))
     $title = null;
 if(!isset($attributes['class'])) 
     $attributes['class'] = 'form-control';
+if(!isset($special_symbol)) 
+    $special_symbol = false;
+
+$id_name = preg_replace("/[\.\]\[]/","_",$name);
+$attributes['id'] = $id_name;
 ?>
 <div class="form-group {!! $errors->has($name) ? 'has-error' : null !!}">
     @if($title)
 	<label for="{{$name}}">{{ $title }}</label>
     @endif
     {!! Form::textarea($name, $value, $attributes) !!}
+    @if ($special_symbol) 
+        @include('dict.special_symbols',['id_name'=>$id_name])
+    @endif
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

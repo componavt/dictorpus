@@ -16,6 +16,7 @@
         !!}
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_wordform', 
+                 'special_symbol' => true,
                 'value' => $url_args['search_wordform'],
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.wordform')]])
@@ -90,4 +91,11 @@
         {!! $wordforms->appends($url_args)->render() !!}
 @stop
 
+@section('footScriptExtra')
+    {!!Html::script('js/special_symbols.js')!!}
+@stop
+
+@section('jqueryFunc')
+    toggleSpecial();
+@stop
 

@@ -18,3 +18,11 @@
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/special_symbols.js')!!}
+@stop
+
+@section('jqueryFunc')
+    toggleSpecial();
+@stop

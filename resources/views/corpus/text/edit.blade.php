@@ -24,9 +24,11 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     $(".multiple-select").select2();
     
     $(".multiple-select-dialect").select2({
