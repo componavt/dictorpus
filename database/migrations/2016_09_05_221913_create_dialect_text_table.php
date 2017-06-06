@@ -18,6 +18,8 @@ class CreateDialectTextTable extends Migration
             
             $table->integer('text_id')->unsigned();
             $table->foreign('text_id')->references('id')->on('texts');
+
+            $table->tinyInteger('sequence_number')->unsigned()->nullable();
         });
     }
 

@@ -24,7 +24,7 @@ class CreateGramsTable extends Migration
             $table->string('name_short_ru', 15)->comment = "Russian short name of grammatical attribute";
             $table->string('name_ru', 255)->comment = "Russian name of grammatical attribute";
            
-            $table->tinyInteger('sequence_number')->unsigned();
+            $table->tinyInteger('sequence_number')->unsigned()->nullable();
             
             // $table->timestamps();
         });

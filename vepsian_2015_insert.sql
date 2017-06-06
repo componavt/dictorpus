@@ -739,3 +739,4 @@ alter table meaning_text drop primary key;
 alter table meaning_text add CONSTRAINT `meaning_text_meaning_id_foreign` FOREIGN KEY (`meaning_id`) REFERENCES `meanings` (`id`);
 alter table meaning_text add primary key (`meaning_id`,`text_id`,`sentence_id`,`w_id`);
 
+alter table dialects add  `sequence_number` tinyint(1) unsigned DEFAULT NULL;

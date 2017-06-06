@@ -10,7 +10,7 @@ use App\Models\Corpus\Text;
 class Dialect extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['lang_id', 'name_en', 'name_ru', 'code'];
+    protected $fillable = ['lang_id', 'name_en', 'name_ru', 'code', 'sequence_number'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -78,7 +78,8 @@ class Dialect extends Model
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $dialects = self::orderBy('name_'.$locale);
+//        $dialects = self::orderBy('name_'.$locale);
+        $dialects = self::orderBy('sequence_number');
         
         if ($lang_id) {
             $dialects = $dialects->where('lang_id',$lang_id);

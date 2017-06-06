@@ -1,5 +1,9 @@
         @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
 
+        @include('widgets.form._formitem_text', 
+                ['name' => 'sequence_number', 
+                 'title'=>trans('messages.sequence_number')])
+                 
         @include('widgets.form._formitem_select',
                 ['name' => 'lang_id',
                  'values' =>$lang_values,

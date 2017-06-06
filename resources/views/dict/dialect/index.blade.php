@@ -40,6 +40,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>{{ trans('messages.sequence_number') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
@@ -54,6 +55,7 @@
         <tbody>
             @foreach($dialects as $dialect)
             <tr>
+                <td>{{$dialect->sequence_number}}</td>
                 <td>{{$dialect->lang->name}}</td>
                 <td>{{$dialect->name_en}}</td>
                 <td>{{$dialect->name_ru}}</td>

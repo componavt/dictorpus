@@ -45,7 +45,8 @@ class DialectController extends Controller
             $limit_num = 1000;
         }      
         
-        $dialects = Dialect::orderBy('lang_id')->orderBy('id');       
+        $dialects = Dialect::orderBy('lang_id')->orderBy('sequence_number')
+                           ->orderBy('id');       
 
         if ($lang_id) {
             $dialects = $dialects->where('lang_id', $lang_id);
