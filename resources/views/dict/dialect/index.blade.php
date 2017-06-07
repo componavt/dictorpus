@@ -45,8 +45,8 @@
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('dict.code') }}</th>
-                <th>{{ trans('dict.wordforms') }}</th>                
-                <th>{{ trans('navigation.texts') }}</th>                
+                <th style='text-align:right'>{{ trans('dict.wordforms') }}</th>                
+                <th style='text-align:right'>{{ trans('navigation.texts') }}</th>                
                 @if (User::checkAccess('ref.edit'))
                 <th colspan="2"></th>
                 @endif
@@ -60,8 +60,16 @@
                 <td>{{$dialect->name_en}}</td>
                 <td>{{$dialect->name_ru}}</td>
                 <td>{{$dialect->code}}</td>
-                <td>{{$dialect->wordforms()->count()}}</td>
-                <td>{{$dialect->texts()->count()}}</td>
+                <td style='text-align:right'>
+                    <a href='{{ LaravelLocalization::localizeURL('/dict/wordform?search_dialect='.$dialect->id) }}'>
+                        {{$dialect->wordforms()->count()}}
+                    </a>
+                </td>
+                <td style='text-align:right'>
+                    <a href='{{ LaravelLocalization::localizeURL('/corpus/text?search_dialect='.$dialect->id) }}'>
+                        {{$dialect->texts()->count()}}
+                    </a>
+                </td>
 
                 @if (User::checkAccess('ref.edit'))
                 <td>

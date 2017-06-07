@@ -31,12 +31,32 @@ class TextController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
                                      'markupAllEmptyTextXML','markupAllTexts']]);
+        $this->url_args = [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_corpus'   => (int)$request->input('search_corpus'),
+                    'search_dialect'  => (int)$request->input('search_dialect'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_title'    => $request->input('search_title'),
+                ];
+        
+        if (!$this->url_args['page']) {
+            $this->url_args['page'] = 1;
+        }
+        
+        if ($this->url_args['limit_num']<=0) {
+            $this->url_args['limit_num'] = 10;
+        } elseif ($this->url_args['limit_num']>1000) {
+            $this->url_args['limit_num'] = 1000;
+        }   
+        
+        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
 
     /**
@@ -46,26 +66,12 @@ class TextController extends Controller
      */
     public function index(Request $request)
     {
-        $text_title = $request->input('text_title');
-        $limit_num = (int)$request->input('limit_num');
-        $lang_id = (int)$request->input('lang_id');
-        $corpus_id = (int)$request->input('corpus_id');
-        $page = (int)$request->input('page');
-
-        if (!$page) {
-            $page = 1;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }   
         
         // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
         // select texts by title from texts and translation texts
         $texts = Text::orderBy('title');
 
+        $text_title = $this->url_args['search_title'];
         if ($text_title) {
             $texts = $texts->where(function($q) use ($text_title){
                             $q->whereIn('transtext_id',function($query) use ($text_title){
@@ -77,34 +83,51 @@ class TextController extends Controller
                            //->whereOr('transtexts.title','like', $text_title);
         } 
 
-        if ($lang_id) {
-            $texts = $texts->where('lang_id',$lang_id);
+        if ($this->url_args['search_corpus']) {
+            $texts = $texts->where('corpus_id',$this->url_args['search_corpus']);
         } 
 
-        if ($corpus_id) {
-            $texts = $texts->where('corpus_id',$corpus_id);
+        $search_dialect = $this->url_args['search_dialect'];
+        if ($search_dialect) {
+            $texts = $texts->whereIn('id',function($query) use ($search_dialect){
+                        $query->select('text_id')
+                        ->from("dialect_text")
+                        ->where('dialect_id',$search_dialect);
+                    });
+        } 
+
+        if ($search_dialect || !$this->url_args['search_lang']) {
+            $dialect = Dialect::find($search_dialect);
+            if ($dialect) {
+                $this->url_args['search_lang'] = $dialect->lang_id;
+            }
+        }
+        
+        if ($this->url_args['search_lang']) {
+            $texts = $texts->where('lang_id',$this->url_args['search_lang']);
         } 
 
         $numAll = $texts->count();
 
-        $texts = $texts->paginate($limit_num);
+        $texts = $texts->paginate($this->url_args['limit_num']);
         
         $corpus_values = Corpus::getListWithQuantity('texts');
         
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('texts');
+        
+        $dialect_values = Dialect::getList();
 
         return view('corpus.text.index')
-                    ->with(['texts' => $texts,
-                            'limit_num' => $limit_num,
-                            'text_title' => $text_title,
-                            'lang_id'=>$lang_id,
-                            'corpus_id'=>$corpus_id,
-                            'page'=>$page,
-                            'lang_values' => $lang_values,
-                            'corpus_values' => $corpus_values,
-                            'numAll' => $numAll,
-            ]);
+                    ->with([
+                        'dialect_values' => $dialect_values,
+                        'texts' => $texts,
+                        'lang_values' => $lang_values,
+                        'corpus_values' => $corpus_values,
+                        'numAll' => $numAll,
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
+                    ]);
     }
 
     /**

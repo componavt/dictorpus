@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 //use App\Models\Dict\Gramset;
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
@@ -28,6 +29,7 @@ class WordformController extends Controller
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
+                    'search_dialect'  => (int)$request->input('search_dialect'),
                     'search_lang'     => (int)$request->input('search_lang'),
                     'search_pos'      => (int)$request->input('search_pos'),
                     'search_wordform' => $request->input('search_wordform'),
@@ -61,7 +63,16 @@ class WordformController extends Controller
 
         $search_lang = $this->url_args['search_lang'];
         $search_pos = $this->url_args['search_pos'];
-        if ($search_lang || $search_pos) {
+        $search_dialect = $this->url_args['search_dialect'];
+
+        if ($search_dialect || !$search_lang) {
+            $dialect = Dialect::find($search_dialect);
+            if ($dialect) {
+                $search_lang = $this->url_args['search_lang'] =
+                        $dialect->lang_id;
+            }
+        }
+        if ($search_lang || $search_pos || $search_dialect) {
             $wordforms = $wordforms->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id');
         }
         
@@ -80,6 +91,17 @@ class WordformController extends Controller
                         ->where('pos_id',$search_pos);
                     });
         } 
+         
+        if ($search_dialect) {
+            $wordforms = $wordforms->where('dialect_id',$search_dialect);
+                    
+/*            $wordforms = $wordforms->whereIn('id',function($query) use ($search_dialect){
+                        $query->select('wordform_id')
+                        ->from("lemma_wordform")
+                        ->where('dialect_id',$search_dialect);
+                    }); */
+        } 
+//dd($wordforms->get());        
          
         $numAll = $wordforms->count();
         
@@ -102,9 +124,11 @@ class WordformController extends Controller
         $lang_values = Lang::getList();
         //$lang_values = Lang::getListWithQuantity('wordforms');
                                 
+        $dialect_values = Dialect::getList();
  
         return view('dict.wordform.index')
                   ->with([
+                      'dialect_values' => $dialect_values,
                       'lang_values' => $lang_values,
                       'numAll' => $numAll,
                       'pos_values' => $pos_values,

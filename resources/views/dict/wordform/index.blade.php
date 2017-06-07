@@ -20,16 +20,25 @@
                 'value' => $url_args['search_wordform'],
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.wordform')]])
-        @include('widgets.form._formitem_select', 
-                ['name' => 'search_lang', 
-                 'values' =>$lang_values,
-                 'value' =>$url_args['search_lang'],
-                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
+                               
         @include('widgets.form._formitem_select', 
                 ['name' => 'search_pos', 
                  'values' =>$pos_values,
                  'value' =>$url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
+                 
+        @include('widgets.form._formitem_select', 
+                ['name' => 'search_lang', 
+                 'values' =>$lang_values,
+                 'value' =>$url_args['search_lang'],
+                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
+                 
+        @include('widgets.form._formitem_select', 
+                ['name' => 'search_dialect', 
+                 'values' =>$dialect_values,
+                 'value' =>$url_args['search_dialect'],
+                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
+        <br>         
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
@@ -49,8 +58,9 @@
                 <th>{{ trans('dict.wordform') }}</th>
                 <th>{{ trans('dict.gram_attr') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
-                <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
+                <th>{{ trans('dict.lang') }}</th>
+                <th>{{ trans('dict.dialect') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -62,9 +72,13 @@
                 <td rowspan='{{sizeof($wordform['lemmas'])}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>
-                    @if ($wordform->lemmaDialectGramset($lemma->id))
-                    {{ $wordform->lemmaDialectGramset($lemma->id)->gramsetString()}}
-                    @endif
+                    <?php 
+                    if($wordform->gramset_id) {
+                        $gramset = \App\Models\Dict\Gramset::find($wordform->gramset_id);
+                        if ($gramset) {
+                            print $gramset->gramsetString();
+                        }
+                    } ?>
                 </td>
                 <td>
                     @if (sizeof($wordform['lemmas'])>1)
@@ -73,13 +87,18 @@
                     <a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a>
                 </td>
                 <td>
+                    @if($lemma->pos)
+                        {{$lemma->pos->name}}
+                    @endif
+                </td>
+                <td>
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
                     @endif
                 </td>
                 <td>
-                    @if($lemma->pos)
-                        {{$lemma->pos->name}}
+                    @if($wordform->dialect_id)
+                        {{\App\Models\Dict\Dialect::find($wordform->dialect_id)->name}}
                     @endif
                 </td>
             </tr>

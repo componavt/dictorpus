@@ -51,8 +51,11 @@
                 <td rowspan='{{sizeof($wordform['lemmas'])}}'>{{$wordform->wordform}}</td>
                     @endif
                 <td>
-                    @if ($wordform->lemmaDialectGramset($lemma->id))
-                    {{ $wordform->lemmaDialectGramset($lemma->id)->gramsetString()}}
+                    <?php $gramsets = $wordform->lemmaDialectGramset($lemma->id); ?>
+                    @if ($gramsets->count())
+                        @foreach ($gramsets->get() as $gramset)
+                        {{ $gramset->gramsetString()}}<br>
+                        @endforeach
                     @endif
                 </td>
                 <td>

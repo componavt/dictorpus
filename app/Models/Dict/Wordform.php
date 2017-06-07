@@ -43,9 +43,12 @@ class Wordform extends Model
 
     public function lemmaDialectGramset($lemma_id, $dialect_id=NULL)
     {
-        return $this->belongsToMany(Gramset::class, 'lemma_wordform')
-             ->wherePivot('lemma_id', $lemma_id)
-             ->wherePivot('dialect_id', $dialect_id)->first();
+        $builder = $this->belongsToMany(Gramset::class, 'lemma_wordform')
+             ->wherePivot('lemma_id', $lemma_id);
+        if ($dialect_id) {
+            $builder = $builder->wherePivot('dialect_id', $dialect_id);
+        }
+        return $builder;
     } 
     
     public function lemmaGramsetDialect($lemma_id, $gramset_id=NULL)

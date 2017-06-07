@@ -43,7 +43,8 @@ class Dialect extends Model
     
     // Dialect __has_many__ Wordforms
     public function wordforms(){
-        $builder = $this->belongsToMany(Wordform::class,'lemma_wordform');
+        $builder = $this->belongsToMany(Wordform::class,'lemma_wordform')
+                ->distinct('wordform_id');
         return $builder;
     }
 

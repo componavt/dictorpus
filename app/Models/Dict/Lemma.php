@@ -184,13 +184,15 @@ class Lemma extends Model
     /**
      * Gets a collection of wordforms with gramsets and sorted by sequence_number of gramsets
      * @return Collection of Wordform Objects
+     * 
+     * ФУНКЦИИЯ НЕ ИСПОЛЬЗУЕТСЯ НИГДЕ?
      */
     public function wordformsWithGramsets(){
         $dialects = existDialects();
         $wordforms = $this->wordforms()->get();
 
         foreach ($wordforms as $wordform) {
-            $gramset = $wordform->lemmaDialectGramset($this->id);
+            $gramset = $wordform->lemmaDialectGramset($this->id,NULL)->first(); // А МОЖЕТ МАССИВ?
             if ($gramset) {
                 $wordform->gramset_id = $gramset->id;
                 $wordform->gramsetString = $gramset->gramsetString();

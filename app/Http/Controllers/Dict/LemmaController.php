@@ -481,6 +481,13 @@ class LemmaController extends Controller
                               ' AND w_id='.(int)$regs[4]);
             }
         }
+/*        $lemma=Lemma::find($id);
+        foreach ($lemmas->meanings as $meaning) {
+            $meaning_text = DB::table('meaning_text')->select()
+                    ->where('meaning_id',$meaning->id)
+                    ->where()
+                    ->get(['relevance','text_id',])
+        }*/
         return Redirect::to('/dict/lemma/'.$id.($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

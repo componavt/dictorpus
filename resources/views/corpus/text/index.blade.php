@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -23,28 +23,36 @@
                              'class' => 'form-inline']) 
         !!}
         @include('widgets.form._formitem_text', 
-                ['name' => 'text_title', 
+                ['name' => 'search_title', 
                  'special_symbol' => true,
-                'value' => $text_title,
+                'value' => $url_args['search_title'],
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.title')]])
+                               
         @include('widgets.form._formitem_select', 
-                ['name' => 'lang_id', 
+                ['name' => 'search_lang', 
                  'values' => $lang_values,
-                 'value' => $lang_id,
-                 'attributes'=>['placeholder' => trans('dict.select_lang')] ]) 
-        @include('widgets.form._formitem_select', 
-                ['name' => 'corpus_id', 
-                 'values' => $corpus_values,
-                 'value' => $corpus_id,
-                 'attributes'=>['placeholder' => trans('corpus.select_corpus') ]]) 
+                 'value' => $url_args['search_lang'],
+                 'attributes'=>['placeholder' => trans('dict.select_lang')] ])
                  
+        @include('widgets.form._formitem_select', 
+                ['name' => 'search_corpus', 
+                 'values' => $corpus_values,
+                 'value' => $url_args['search_corpus'],
+                 'attributes'=>['placeholder' => trans('corpus.select_corpus') ]]) 
+                                  
+        @include('widgets.form._formitem_select', 
+                ['name' => 'search_dialect', 
+                 'values' =>$dialect_values,
+                 'value' =>$url_args['search_dialect'],
+                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
+        <br>         
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         
         {{trans('messages.show_by')}}
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
-                'value' => $limit_num, 
+                'value' => $url_args['limit_num'], 
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
@@ -56,6 +64,7 @@
             <tr>
                 <th>No</th>
                 <th>{{ trans('dict.lang') }}</th>
+                <th>{{ trans('dict.dialect') }}</th>
                 <th>{{ trans('corpus.corpus') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
                 <th>{{ trans('messages.translation') }}</th>
@@ -69,6 +78,14 @@
             <tr>
                 <td>{{ $list_count++ }}</td>
                 <td>{{$text->lang->name}}</td>
+                <td>
+                    @if($text->dialects)
+                        @foreach ($text->dialects as $dialect)
+                        {{$dialect->name}}<br>
+                        @endforeach
+                        
+                    @endif
+                </td>
                 <td>{{$text->corpus->name}}</td>
                 <td><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}">{{$text->title}}</td>
                 <td>
@@ -88,11 +105,7 @@
             @endforeach
         </tbody>
         </table>
-        {!! $texts->appends(['limit_num' => $limit_num,
-                             'text_title' => $text_title,
-                             'lang_id'=>$lang_id,
-                             'corpus_id'=>$corpus_id])->render() !!}
-
+        {!! $texts->appends($url_args)->render() !!}
     </div>
 @stop
 
