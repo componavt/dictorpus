@@ -252,8 +252,10 @@ class WordformController extends Controller
                    $lemmas[$lemma->id] = $lemma;
                } 
             }
-            $wordform_obj['lemmas'] = array_values($lemmas);
-            $wordforms[] = $wordform_obj;
+            if (sizeof($lemmas)>1) {
+                $wordform_obj['lemmas'] = array_values($lemmas);
+                $wordforms[] = $wordform_obj;
+            }
         }
  //dd($wordforms);       
         $lang_values = Lang::getList();
