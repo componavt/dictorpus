@@ -481,13 +481,36 @@ class LemmaController extends Controller
                               ' AND w_id='.(int)$regs[4]);
             }
         }
-/*        $lemma=Lemma::find($id);
-        foreach ($lemmas->meanings as $meaning) {
-            $meaning_text = DB::table('meaning_text')->select()
-                    ->where('meaning_id',$meaning->id)
-                    ->where()
-                    ->get(['relevance','text_id',])
-        }*/
+        $lemma=Lemma::find($id);
+        $meanings = [];
+        foreach ($lemma->meanings as $meaning) {
+            $meanings[] = $meaning->id;            
+        }
+        $meanings = array_unique($meanings);
+        
+        foreach ($meanings as $meaning_id) {
+            $sentences = DB::table('meaning_text')
+                    ->where('meaning_id',$meaning_id)
+                    ->where('relevance',1)
+                    ->get(['text_id','sentence_id','w_id']);
+            foreach ($sentences as $sentence) {
+                $exists_positive_rel = DB::table('meaning_text')
+                        -> where('text_id',$sentence->text_id)
+                        -> where('sentence_id',$sentence->sentence_id)
+                        -> where('w_id',$sentence->w_id)
+                        -> whereIn('meaning_id',$meanings)
+                        -> where ('relevance','>',1);
+                if ($exists_positive_rel->count() > 0) {
+                    DB::statement('UPDATE meaning_text SET relevance=0'
+                                 .' WHERE meaning_id='.(int)$meaning_id
+                                 .' AND text_id='.(int)$sentence->text_id
+                                 .' AND sentence_id='.(int)$sentence->sentence_id
+                                 .' AND w_id='.(int)$sentence->w_id);
+                    
+                }
+                
+            }
+        }
         return Redirect::to('/dict/lemma/'.$id.($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
