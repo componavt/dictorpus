@@ -66,5 +66,5 @@ textarea.form-control[readonly] {
 }
 
 ol {
-    padding-left: 0;
+    padding-left: 5px;
 }
