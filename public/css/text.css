@@ -64,3 +64,7 @@ w, .text-has-checked-meaning {
 textarea.form-control[readonly] {
     border: 1px solid red;
 }
+
+ol {
+    padding-left: 0;
+}

@@ -65,6 +65,7 @@ return [
     'recorder_removed' => 'Собиратель ":name" удален.',
     
     'select_corpus' => 'Выберите корпус',
+    'sentences' => 'Предложения',
     
     'source' => 'Источник',
     'source_author' => 'Автор источника',
@@ -84,6 +85,8 @@ return [
     'transtext_lang' => 'язык перевода',
     'transtext_text' => 'текст перевода',
     'transtext_title' => 'заголовок перевода',
+    
     'year_of_birth' => 'год рождения',
+    'word' => 'Слово',
     'unlock' => 'разблокировать',
 ];

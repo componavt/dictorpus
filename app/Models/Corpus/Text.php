@@ -439,4 +439,40 @@ class Text extends Model
         return $sxe->asXML();
     }
 
+    public function sentences($word=''){
+        $sentences = [];
+        
+        list($sxe,$error_message) = Text::toXML($this->text_xml,$this->id);
+        if ($error_message) {
+            return $sentences;
+        }
+
+        $sentence_builder = DB::table('meaning_text')
+                              ->select('sentence_id','w_id')
+                              ->where('text_id',$this->id)
+                              ->groupBy('sentence_id')
+                              ->orderBy('sentence_id');
+        if ($word) {
+            $sentence_builder = $sentence_builder ->whereIn('word_id',
+                                        function($q) use ($word){
+                                            $q->select('id')
+                                              ->from('words')
+                                              ->where('word','like',$word);
+                                        });
+        }                                
+//dd($sentence_builder->toSql());        
+        foreach ($sentence_builder->get() as $sentence) {
+            $sentences[$sentence->sentence_id]['w_id'][]=$sentence->w_id;
+        }
+        
+        foreach ($sentences as $sentence_id => $sentence) {
+            $s = $sxe->xpath('//s[@id="'.$sentence_id.'"]');
+            if (isset($s[0])) {
+                $sentences[$sentence_id]['s']= $s[0]->asXML();
+            }
+        }
+        
+        return $sentences;
+    }
+    
 }

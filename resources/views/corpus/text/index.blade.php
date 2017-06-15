@@ -5,6 +5,10 @@
 {{ trans('corpus.text_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/text.css')!!}
+@stop
+
 @section('content')
         <h2>{{ trans('corpus.text_list') }}</h2>
         
@@ -29,6 +33,13 @@
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.title')]])
                                
+        @include('widgets.form._formitem_text', 
+                ['name' => 'search_word', 
+                 'special_symbol' => true,
+                'value' => $url_args['search_word'],
+                'attributes'=>['size' => 15,
+                               'placeholder' => trans('corpus.word')]])
+                               
         @include('widgets.form._formitem_select', 
                 ['name' => 'search_lang', 
                  'values' => $lang_values,
@@ -36,17 +47,18 @@
                  'attributes'=>['placeholder' => trans('dict.select_lang')] ])
                  
         @include('widgets.form._formitem_select', 
+                ['name' => 'search_dialect', 
+                 'values' =>$dialect_values,
+                 'value' =>$url_args['search_dialect'],
+                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
+                 
+        <br>         
+        @include('widgets.form._formitem_select', 
                 ['name' => 'search_corpus', 
                  'values' => $corpus_values,
                  'value' => $url_args['search_corpus'],
                  'attributes'=>['placeholder' => trans('corpus.select_corpus') ]]) 
                                   
-        @include('widgets.form._formitem_select', 
-                ['name' => 'search_dialect', 
-                 'values' =>$dialect_values,
-                 'value' =>$url_args['search_dialect'],
-                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
-        <br>         
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         
         {{trans('messages.show_by')}}
@@ -68,6 +80,9 @@
                 <th>{{ trans('corpus.corpus') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
                 <th>{{ trans('messages.translation') }}</th>
+                @if ($url_args['search_word'])
+                <th style='text-align: center'>{{ trans('corpus.sentences') }}</th>
+                @endif
                 @if (User::checkAccess('corpus.edit'))
                 <th colspan="2"></th>
                 @endif
@@ -93,12 +108,30 @@
                     {{$text->transtext->title}}
                     @endif
                 </td>
+                
+                @if ($url_args['search_word'])
+                <td>
+                    <ol>
+                    @foreach ($text->sentences($url_args['search_word']) as $sentence_id => $sentence)
+                        <li>@include('corpus.text.show_sentence',['count'=>$sentence_id])</li>
+                    @endforeach
+                    </ol>
+                </td>
+                @endif
+                
                 @if (User::checkAccess('corpus.edit'))
                 <td>
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/text/'.$text->id.'/edit'])
+                    @include('widgets.form._button_edit', 
+                            ['is_button'=>true, 
+                             'without_text' => 1,
+                             'route' => '/corpus/text/'.$text->id.'/edit'])
                  </td>
                 <td>
-                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'text.destroy', 'id' => $text->id])
+                    @include('widgets.form._button_delete', 
+                            ['is_button'=>true, 
+                             'without_text' => 1,
+                             $route = 'text.destroy', 
+                             'id' => $text->id])
                 </td>
                 @endif
             </tr>

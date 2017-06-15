@@ -65,6 +65,7 @@ return [
     'region_removed' => 'Region ":name" is removed successfully.',
     
     'select_corpus' => 'Select corpus',
+    'sentences' => 'Sentences',
     
     'source' => 'Source',
     'source_author' => 'source author',
@@ -86,5 +87,6 @@ return [
     'transtext_title' => 'title of translation',
     
     'year_of_birth' => 'year of birth',
+    'word' => 'Word',
     'unlock' => 'unlock',
 ];

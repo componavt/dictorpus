@@ -44,6 +44,7 @@ class TextController extends Controller
                     'search_dialect'  => (int)$request->input('search_dialect'),
                     'search_lang'     => (int)$request->input('search_lang'),
                     'search_title'    => $request->input('search_title'),
+                    'search_word'    => $request->input('search_word'),
                 ];
         
         if (!$this->url_args['page']) {
@@ -105,6 +106,15 @@ class TextController extends Controller
         
         if ($this->url_args['search_lang']) {
             $texts = $texts->where('lang_id',$this->url_args['search_lang']);
+        } 
+
+        $search_word = $this->url_args['search_word'];
+        if ($search_word) {
+            $texts = $texts->whereIn('id',function($query) use ($search_word){
+                                $query->select('text_id')
+                                ->from('words')
+                                ->where('word','like', $search_word);
+                            });
         } 
 
         $numAll = $texts->count();
