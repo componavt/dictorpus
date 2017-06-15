@@ -111,11 +111,11 @@
                 
                 @if ($url_args['search_word'])
                 <td>
-                    <ol>
                     @foreach ($text->sentences($url_args['search_word']) as $sentence_id => $sentence)
+                    <ol start="{{$sentence_id}}">
                         <li>@include('corpus.text.show_sentence',['count'=>$sentence_id])</li>
-                    @endforeach
                     </ol>
+                    @endforeach
                 </td>
                 @endif
                 
