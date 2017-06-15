@@ -56,7 +56,7 @@
                         @include('widgets.form._formitem_select',
                                 ['name' => 'new_relation',
                                  'values' => $meaning->missingRelationsList(),
-                                 'attributes' => ['id'=>'new_relation_id']])
+                                 'attributes' => ['id'=>'new_relation_'.$meaning->id]])
                   </div>
                   <div class="col-xs-3">
                       <button type="button" class="btn btn-info add-new-relation" 

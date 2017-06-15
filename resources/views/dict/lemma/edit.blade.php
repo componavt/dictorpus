@@ -40,7 +40,7 @@
     
     $(".add-new-relation").click(function(){
         var meaning_id = $(this).attr("data-for");
-        var relation = $('#new_relation_id option:selected');
+        var relation = $('#new_relation_' + meaning_id + ' option:selected');
         var relation_id = relation.val();
         $('#relation_'+meaning_id + '_' + relation_id).show('slow');
         relation.remove();
