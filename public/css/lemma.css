@@ -50,3 +50,7 @@
 .lemma-examples td:last-child {
     padding-bottom: 20px;
 }
+
+#reflexive-field {
+    display: none;
+}

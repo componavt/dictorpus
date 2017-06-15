@@ -20,6 +20,15 @@
                  'values' =>$pos_values,
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
+                 
+            <?php $checked = (isset($lemma->reflexive) && $lemma->reflexive==1 ? 'checked' : NULL); ?>
+        <div id='reflexive-field'>
+        @include('widgets.form._formitem_checkbox', 
+                ['name' => 'reflexive', 
+                 'value' => 1,
+                 'checked' => $checked,
+                 'tail'=>trans('dict.reflexive_verb').' '.trans('dict.verb')])
+        </div>
     </div> 
 </div>
 @if ($action == 'edit')

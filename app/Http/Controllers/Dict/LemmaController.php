@@ -211,7 +211,11 @@ class LemmaController extends Controller
 //            'pos_id' => 'numeric',
         ]);
         
-        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
+        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
+        if ($lemma->pos_id != 11) { // is not verb
+            $lemma->reflexive = 0;
+        }
+        $lemma->save();
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
     
@@ -417,8 +421,12 @@ class LemmaController extends Controller
         
         // LEMMA UPDATING
         $lemma->lemma = $request->lemma;
-        $lemma->lang_id = $request->lang_id;
-        $lemma->pos_id = $request->pos_id;
+        $lemma->lang_id = (int)$request->lang_id;
+        $lemma->pos_id = (int)$request->pos_id;
+        $lemma->reflexive = (int)$request->reflexive;
+        if ($lemma->pos_id != 11) { // is not verb
+            $lemma->reflexive = 0;
+        }
         $lemma->save();
         
         // MEANINGS UPDATING

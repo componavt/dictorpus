@@ -24,6 +24,8 @@ class CreateLemmasTable extends Migration
             $table->tinyInteger('pos_id')->unsigned()->nullable();
             $table->    foreign('pos_id')->references('id')->on('parts_of_speech');
             
+            $table->boolean('reflexive')->unsigned();
+
             //$table->timestamps();
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();

@@ -740,3 +740,5 @@ alter table meaning_text add CONSTRAINT `meaning_text_meaning_id_foreign` FOREIG
 alter table meaning_text add primary key (`meaning_id`,`text_id`,`sentence_id`,`w_id`);
 
 alter table dialects add  `sequence_number` tinyint(1) unsigned DEFAULT NULL;
+
+alter table lemmas add `reflexive` tinyint(1) unsigned DEFAULT 0;

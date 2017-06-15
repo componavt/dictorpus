@@ -61,6 +61,7 @@ return [
     'pos_category_3' => 'Other',
     'pos_list' => 'List of parts of speech',
     'reflexive' => 'reflexive',
+    'reflexive_verb' => 'reflexive',
     'relation_list' => 'List of semantic relations',
     'relation' => 'Semantic relation',
     'relations' => 'Semantic relations',
@@ -83,6 +84,7 @@ return [
     
     'tense' => 'Tense',
     'translation' => 'translation',
+    'verb' => 'verb',
     'voice' => 'voice',
     'wordform' => 'word form',
     'wordforms_linked_many_lemmas' => 'Word forms associated with more than one lemma',

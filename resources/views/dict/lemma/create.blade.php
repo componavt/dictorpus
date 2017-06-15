@@ -23,9 +23,11 @@
 @section('footScriptExtra')
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
     addMeaning();
+    posSelect();
 @stop

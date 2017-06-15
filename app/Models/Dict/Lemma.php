@@ -31,7 +31,7 @@ class Lemma extends Model
 //        'deleted_at' => 'Deleted At'
     );
     
-    protected $fillable = ['lemma','lang_id','pos_id'];
+    protected $fillable = ['lemma','lang_id','pos_id','reflexive'];
     
     public static function boot()
     {

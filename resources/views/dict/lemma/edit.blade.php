@@ -32,11 +32,13 @@
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
     addMeaning();
+    posSelect();
     
     $(".add-new-relation").click(function(){
         var meaning_id = $(this).attr("data-for");

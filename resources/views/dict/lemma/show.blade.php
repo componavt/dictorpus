@@ -37,7 +37,12 @@
         </h2>
 
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
-        <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
+        <p>
+            <b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}
+            @if ($lemma->reflexive)
+                ({{ trans('dict.reflexive_verb') }})
+            @endif
+        </p>
 
         @foreach ($lemma->meanings as $meaning)
         <table class="table lemma-meaning">
