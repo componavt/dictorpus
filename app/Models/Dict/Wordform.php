@@ -103,11 +103,12 @@ class Wordform extends Model
      * 
      * @return NULL
      */
-    public static function storeLemmaWordformsEmpty($wordforms, $lemma)
+    public static function storeLemmaWordformsEmpty($wordforms, $lemma, $dialect_id='')
     {
         if(!$wordforms || !is_array($wordforms)) {
             return;
         }
+//dd($wordforms);        
         foreach($wordforms as $wordform_info) {
             if ($wordform_info['wordform']) {
                 $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_info['wordform']]);
@@ -119,8 +120,16 @@ class Wordform extends Model
                     if (!(int)$wordform_info['gramset']) {
                         $wordform_info['gramset'] = NULL;
                     }
+                    if (!(int)$wordform_info['dialect']) {
+                        if ((int)$dialect_id) {
+                            $wordform_info['dialect'] = (int)$dialect_id;
+                        } else {
+                            $wordform_info['dialect'] = NULL;
+                        }
+                    } 
 //dd($wordform_info['gramset']);
-                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>NULL]);
+                    $lemma-> wordforms()->attach($wordform_obj->id, 
+                            ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>$wordform_info['dialect']]);
 //print "<P>". $wordform_obj->id.",". $wordform_info['gramset'];
                 }
             }

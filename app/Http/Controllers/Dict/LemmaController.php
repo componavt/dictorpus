@@ -387,11 +387,12 @@ class LemmaController extends Controller
         $lemma = Lemma::find($id);
 //dd($lemma->wordformsWithAllGramsets($dialect_id));        
         $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
-
+        $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id);
         return view('dict.lemma.edit_wordforms')
                   ->with(array(
                                'dialect_id' => $dialect_id,
                                'dialect_name' => $dialect_name,
+                               'dialect_values' => $dialect_values,
                                'gramset_values' => $gramset_values,
                                'lemma' => $lemma,                      
                                'args_by_get'    => $this->args_by_get,
@@ -456,12 +457,16 @@ class LemmaController extends Controller
 //dd($request->empty_wordforms);        
         // WORDFORMS UPDATING
         //remove all records from table lemma_wordform
+        if (!(int)$dialect_id) {
+            $dialect_id = NULL;
+        }
+//        if ($dialect_id) {
         $lemma-> wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
-       
+//        }
         //add wordforms from full table of gramsets
         Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
         //add wordforms without gramsets
-        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma);
+        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma, $dialect_id);
 //exit(0);  
 
         // updates links with text examples

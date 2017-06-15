@@ -72,9 +72,9 @@ class WordformController extends Controller
                         $dialect->lang_id;
             }
         }
-        if ($search_lang || $search_pos || $search_dialect) {
+//        if ($search_lang || $search_pos || $search_dialect) {
             $wordforms = $wordforms->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id');
-        }
+//        }
         
         if ($search_lang) {
             $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($search_lang){
@@ -101,7 +101,7 @@ class WordformController extends Controller
                         ->where('dialect_id',$search_dialect);
                     }); */
         } 
-//dd($wordforms->get());        
+//dd($wordforms->toSql());        
          
         $numAll = $wordforms->count();
         

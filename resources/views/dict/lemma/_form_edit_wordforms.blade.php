@@ -29,6 +29,11 @@
                            ['name' => 'empty_wordforms['.$key.'][wordform]', 
                             'special_symbol' => true,
                             'value'=> $wordform->wordform])</td>
+                    <td>
+                        @include('widgets.form._formitem_select', 
+                                ['name' => 'empty_wordforms['.$key.'][dialect]', 
+                                 'values' =>$dialect_values]) 
+                    </td>
                </tr>
                 @endforeach
             </table>
