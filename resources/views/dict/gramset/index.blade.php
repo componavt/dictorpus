@@ -91,7 +91,7 @@
                 <td>
                   <?php $count=sizeof($gramset->lemmas($url_args['search_pos'],$url_args['search_lang'])->groupBy('lemma_id')->get()); ?>
                   @if ($count)
-                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}&search_gramset={{$gramset->id}}">
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get_for_out}}&search_gramset={{$gramset->id}}">
                         {{ $count }}
                     </a>
                   @else

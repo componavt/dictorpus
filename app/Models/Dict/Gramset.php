@@ -108,6 +108,7 @@ class Gramset extends Model
                                 ->where('lang_id', $lang_id);
                             });
         }
+//dd($builder->toSql());        
         return $builder;
     }
 
@@ -199,8 +200,10 @@ class Gramset extends Model
 
         $gramsets = DB::table('gramsets')
                       ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
-                      ->select('gramsets.id')
-                      ->where('gramset_pos.pos_id',$pos_id);
+                      ->select('gramsets.id');
+        if ($pos_id) {
+            $gramsets = $gramsets->where('gramset_pos.pos_id',$pos_id);
+        }
         if ($lang_id) {
             $gramsets = $gramsets->where('lang_id',$lang_id);
         }

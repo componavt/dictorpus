@@ -93,6 +93,9 @@ class LemmaController extends Controller
 
             if ($this->url_args['search_gramset']) {
                 $lemmas = $lemmas->where('gramset_id',$this->url_args['search_gramset']);
+                /*if (!$this->url_args['search_pos']) {
+                    
+                }*/
             }
         }    
 
@@ -130,10 +133,11 @@ class LemmaController extends Controller
                          ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
                                 }]);
+//dd($lemmas->get());                                
         $numAll = $lemmas->get()->count();
-
+//dd($numAll); 
         $lemmas = $lemmas->paginate($this->url_args['limit_num']);         
-        
+//dd($lemmas);        
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
         
         //$lang_values = Lang::getList();

@@ -87,6 +87,11 @@ class GramsetController extends Controller
               
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('gramsets');
         $lang_values = Lang::getListWithQuantity('gramsets');
+
+        $url_args_for_out = $this->url_args;
+        unset($url_args_for_out['page']);
+        $args_by_get_for_out = Lang::searchValuesByURL($url_args_for_out);
+        
         
         return view('dict.gramset.index')
                 ->with([
@@ -96,6 +101,7 @@ class GramsetController extends Controller
                         'numAll' => $numAll,
                         'pos_values' => $pos_values, 
                         'args_by_get'    => $this->args_by_get,
+                        'args_by_get_for_out' => $args_by_get_for_out,
                         'url_args'       => $this->url_args,
                     ]);
     }   

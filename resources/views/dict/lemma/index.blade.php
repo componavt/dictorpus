@@ -54,18 +54,20 @@
                  'values' =>$lang_values,
                  'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]])
+        <br>
         @include('widgets.form._formitem_select',
                 ['name' => 'search_pos',
                  'values' =>$pos_values,
                  'value' =>$url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
-        <br>
-        @if ($url_args['search_pos'] && $url_args['search_lang'])         
+                 
+        @if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
             @include('widgets.form._formitem_select', 
                     ['name' => 'search_gramset', 
                      'values' =>$gramset_values,
                      'value' =>$url_args['search_gramset'],
                      'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
+            <br>
         @endif
         
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
