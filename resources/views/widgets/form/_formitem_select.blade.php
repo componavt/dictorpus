@@ -13,6 +13,8 @@ if (!isset($attributes)) {
 if (!isset($attributes['class'])) {
     $attributes['class'] = 'form-control';
 }
+$attributes['id'] = $name;
+
 ?>
 
 <div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">

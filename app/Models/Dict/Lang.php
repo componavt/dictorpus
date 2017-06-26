@@ -184,7 +184,12 @@ class Lang extends Model
         if (isset($url_args) && sizeof($url_args)) {
             $tmp=[];
             foreach ($url_args as $a=>$v) {
-                if ($v!='' && !($a=='page' && $v==1) && !($a=='limit_num' && $v==10)) {
+                if (is_array($v)) {
+                    foreach ($v as $k=>$value) {
+                        $tmp[] = "$a[$k]=$value";
+                    }
+                }
+                elseif ($v!='' && !($a=='page' && $v==1) && !($a=='limit_num' && $v==10)) {
                     $tmp[] = "$a=$v";
                 }
             }

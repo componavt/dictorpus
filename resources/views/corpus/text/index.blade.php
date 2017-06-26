@@ -6,6 +6,7 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/text.css')!!}
 @stop
 
@@ -23,50 +24,71 @@
         </p>
         
         {!! Form::open(['url' => '/corpus/text/', 
-                             'method' => 'get', 
-                             'class' => 'form-inline']) 
+                             'method' => 'get']) 
         !!}
+<div class="row">
+    <div class="col-sm-4">
+        @include('widgets.form._formitem_select2', 
+                ['name' => 'search_lang', 
+                 'values' => $lang_values,
+                 'value' => $url_args['search_lang'],
+                 'title' => trans('dict.lang'),
+                 'class'=>'multiple-select-lang form-control',
+        ])
+                 
+    </div>
+    <div class="col-sm-4">
+        @include('widgets.form._formitem_select2',
+                ['name' => 'search_dialect', 
+                 'values' =>$dialect_values,
+                 'value' => $url_args['search_dialect'],
+                 'title' => trans('dict.dialect'),
+                 'class'=>'multiple-select-dialect form-control'
+            ])
+    </div>
+    <div class="col-sm-4">
+        @include('widgets.form._formitem_select2', 
+                ['name' => 'search_corpus', 
+                 'values' => $corpus_values,
+                 'value' => $url_args['search_corpus'],
+                 'title' => trans('corpus.corpus'),
+                 'class'=>'multiple-select-corpus form-control'
+            ])
+    </div>
+</div>                 
+<div class="row">
+    <div class="col-sm-4">
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_title', 
                  'special_symbol' => true,
                 'value' => $url_args['search_title'],
-                'attributes'=>['size' => 15,
-                               'placeholder' => trans('corpus.title')]])
+                'attributes'=>['placeholder' => trans('corpus.title')]])
                                
+    </div>
+    <div class="col-sm-3">
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_word', 
                  'special_symbol' => true,
                 'value' => $url_args['search_word'],
-                'attributes'=>['size' => 15,
-                               'placeholder' => trans('corpus.word')]])
+                'attributes'=>['placeholder' => trans('corpus.word')]])
                                
-        @include('widgets.form._formitem_select', 
-                ['name' => 'search_lang', 
-                 'values' => $lang_values,
-                 'value' => $url_args['search_lang'],
-                 'attributes'=>['placeholder' => trans('dict.select_lang')] ])
-                 
-        @include('widgets.form._formitem_select', 
-                ['name' => 'search_dialect', 
-                 'values' =>$dialect_values,
-                 'value' =>$url_args['search_dialect'],
-                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
-                 
-        <br>         
-        @include('widgets.form._formitem_select', 
-                ['name' => 'search_corpus', 
-                 'values' => $corpus_values,
-                 'value' => $url_args['search_corpus'],
-                 'attributes'=>['placeholder' => trans('corpus.select_corpus') ]]) 
-                                  
+    </div>
+    <div class="col-sm-2">
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
-        
+    </div>
+    <div class="col-sm-1" style='text-align:right'>       
         {{trans('messages.show_by')}}
+    </div>
+    <div class="col-sm-1">
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
-                'attributes'=>['size' => 5,
-                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
+                'attributes'=>['placeholder' => trans('messages.limit_num') ]]) 
+    </div>
+    <div class="col-sm-1">
+                {{ trans('messages.records') }}
+    </div>
+</div>                 
         {!! Form::close() !!}
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
@@ -143,11 +165,39 @@
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
+
     toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
+    $(".multiple-select-lang").select2();
+    $(".multiple-select-corpus").select2();
+    
+    $(".multiple-select-dialect").select2({
+        width: '100%',
+        ajax: {
+          url: "/dict/dialect/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: selectedValuesToURL("#search_lang")
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });
+        
+        
 @stop

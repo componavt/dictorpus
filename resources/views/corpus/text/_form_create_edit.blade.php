@@ -32,6 +32,7 @@
                  'values' =>$lang_values,
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lang_id']])
+                 
         @include('widgets.form._formitem_text', 
                 ['name' => 'title', 
                  'title'=>trans('corpus.title')])

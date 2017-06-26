@@ -59,6 +59,8 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         
+/*        Route::get('corpus/corpus/list', 'Corpus\CorpusController@corpusList');*/
+        Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 

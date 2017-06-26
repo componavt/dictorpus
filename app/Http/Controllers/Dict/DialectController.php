@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Response;
+use LaravelLocalization;
 
 use App\Models\Corpus\Text;
 use App\Models\Dict\Dialect;
@@ -222,4 +224,44 @@ class DialectController extends Controller
                   ->withSuccess($result['message']);
         }
     }
+    
+    /**
+     * Gets list of dialects for drop down list in JSON format
+     * Test url: /dict/dialect/list?lang_id[]=1
+     * 
+     * @return JSON response
+     */
+    public function dialectList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        $dialect_name = '%'.$request->input('q').'%';
+        $lang_ids = (array)$request->input('lang_id');
+//        $lemma_id = (int)$request->input('lemma_id');
+
+        $list = [];
+        $dialects = Dialect::where(function($q) use ($dialect_name){
+                            $q->where('name_en','like', $dialect_name)
+                              ->orWhere('name_ru','like', $dialect_name);
+                         });
+        if (sizeof($lang_ids)) {                 
+            $dialects = $dialects ->whereIn('lang_id',$lang_ids);
+        }
+        
+        $dialects = $dialects->orderBy('name_'.$locale)->get();
+                         
+        foreach ($dialects as $dialect) {
+            $list[]=['id'  => $dialect->id, 
+                     'text'=> $dialect->name];
+        }  
+//dd(sizeof($dialects));
+        return Response::json($list);
+
+/*        $lang_id = (int)$request->input('lang_id');
+
+        $all_dialects = Dialect::getList($lang_id);
+
+        return Response::json($all_dialects);*/
+    }
+
 }

@@ -40,9 +40,9 @@ class TextController extends Controller
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
-                    'search_corpus'   => (int)$request->input('search_corpus'),
-                    'search_dialect'  => (int)$request->input('search_dialect'),
-                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_corpus'   => (array)$request->input('search_corpus'),
+                    'search_dialect'  => (array)$request->input('search_dialect'),
+                    'search_lang'     => (array)$request->input('search_lang'),
                     'search_title'    => $request->input('search_title'),
                     'search_word'    => $request->input('search_word'),
                 ];
@@ -85,27 +85,27 @@ class TextController extends Controller
         } 
 
         if ($this->url_args['search_corpus']) {
-            $texts = $texts->where('corpus_id',$this->url_args['search_corpus']);
+            $texts = $texts->whereIn('corpus_id',$this->url_args['search_corpus']);
         } 
 
         $search_dialect = $this->url_args['search_dialect'];
-        if ($search_dialect) {
+        if (sizeof($search_dialect)) {
             $texts = $texts->whereIn('id',function($query) use ($search_dialect){
                         $query->select('text_id')
                         ->from("dialect_text")
-                        ->where('dialect_id',$search_dialect);
+                        ->whereIn('dialect_id',$search_dialect);
                     });
         } 
 
-        if ($search_dialect || !$this->url_args['search_lang']) {
-            $dialect = Dialect::find($search_dialect);
+        if (isset($search_dialect[0]) && !$this->url_args['search_lang']) {
+            $dialect = Dialect::find($search_dialect[0]);
             if ($dialect) {
-                $this->url_args['search_lang'] = $dialect->lang_id;
+                $this->url_args['search_lang'] = [$dialect->lang_id];
             }
         }
         
-        if ($this->url_args['search_lang']) {
-            $texts = $texts->where('lang_id',$this->url_args['search_lang']);
+        if (sizeof($this->url_args['search_lang'])) {
+            $texts = $texts->whereIn('lang_id',$this->url_args['search_lang']);
         } 
 
         $search_word = $this->url_args['search_word'];
@@ -122,7 +122,7 @@ class TextController extends Controller
         $texts = $texts->paginate($this->url_args['limit_num']);
         
         $corpus_values = Corpus::getListWithQuantity('texts');
-        
+
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('texts');
         
@@ -428,11 +428,11 @@ class TextController extends Controller
         $locale = LaravelLocalization::getCurrentLocale();
 
         $dialect_name = '%'.$request->input('q').'%';
-        $lang_id = (int)$request->input('lang_id');
+        $lang_ids = (array)$request->input('lang_id');
 //        $lemma_id = (int)$request->input('lemma_id');
 
         $list = [];
-        $dialects = Dialect::where('lang_id',$lang_id)
+        $dialects = Dialect::whereIn('lang_id',$lang_ids)
                        ->where(function($q) use ($dialect_name){
                             $q->where('name_en','like', $dialect_name)
                               ->orWhere('name_ru','like', $dialect_name);
@@ -442,7 +442,7 @@ class TextController extends Controller
             $list[]=['id'  => $dialect->id, 
                      'text'=> $dialect->name];
         }  
-
+//dd(sizeof($dialects));
         return Response::json($list);
     }
 

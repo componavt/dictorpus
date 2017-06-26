@@ -1,6 +1,9 @@
 <?php 
-if(!isset($value)) 
+if(!isset($value)) {
     $value = [];
+} else {
+    $value = (array)$value;
+}
 
 if(!isset($values)) 
     $values = array(); 
@@ -26,7 +29,7 @@ if (!isset($class)) {
     <label for="{{$name}}[]">{{ $title }}</label>
     @endif
     
-    <select multiple="multiple" class="{{ $class }}" name="{{ $name }}[]">
+    <select multiple="multiple" class="{{ $class }}" name="{{ $name }}[]" id="{{ $name }}" placeholder="choooose">
     @if ($grouped)
         @foreach ($values as $group_name=>$group_values)
         <optgroup label="{{$group_name}}">

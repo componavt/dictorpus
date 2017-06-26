@@ -187,4 +187,36 @@ class CorpusController extends Controller
                   ->withSuccess($result['message']);
         }
     }
+    
+    /**
+     * Gets list of corpuses for drop down list in JSON format
+     * Test url: /corpus/corpus/list?lang_id[]=1&lang[]=5
+     * 
+     * @return JSON response
+     */
+    public function corpusList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        $corpus_name = '%'.$request->input('q').'%';
+        $lang_ids = (array)$request->input('lang_id');
+
+        $list = [];
+        /*
+        $dialects = Dialect::whereIn('lang_id',$lang_ids)
+                       ->where(function($q) use ($dialect_name){
+                            $q->where('name_en','like', $dialect_name)
+                              ->orWhere('name_ru','like', $dialect_name);
+                         })->orderBy('name_'.$locale)->get();
+                         
+        foreach ($dialects as $dialect) {
+            $list[]=['id'  => $dialect->id, 
+                     'text'=> $dialect->name];
+        }  
+//dd(sizeof($dialects));
+         */
+        return Response::json($list);
+    }
+
+    
 }
