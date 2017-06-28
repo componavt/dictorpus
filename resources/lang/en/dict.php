@@ -74,6 +74,18 @@ return [
                     1 => 'not checked',
                     0 => 'not suitable'],
     
+    'relevance_scope_for_select' => [10 => '<span class="relevance-10">the best example</span>',
+                    7 => 'an excellent example',
+                    5 => 'a good example',
+                    3 => 'a bad example',
+                    1 => 'not checked',
+                    0 => 'not suitable'],
+    
+    'relevance_scope_example' => [10 => 'the best',
+                    7 => 'an excellent',
+                    5 => 'a good',
+                    3 => 'a bad'],
+    
     'reverse_relation' => 'reverse relation',
     
     'select_dialect' => 'Select a dialect',

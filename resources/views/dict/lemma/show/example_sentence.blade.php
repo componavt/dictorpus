@@ -1,4 +1,5 @@
 <?php 
+//dd($sentence);
 list($sxe,$error_message) = \App\Models\Corpus\Text::toXML($sentence['s'],$count);
 $w = $sxe->xpath('//w[@id="'.$sentence['w_id'].'"]');
 if (isset($w[0])) {
@@ -6,12 +7,14 @@ if (isset($w[0])) {
     $sentence['s'] = $sxe->asXML();
 }
 ?>
+@if (isset($relevance) && $relevance>1)
+    <span class="glyphicon glyphicon-star relevance-<?=$relevance;?>"></span>
+@endif
+
 {!! $sentence['s'] !!}
 @if ($sentence['trans_s']) 
     <br><i>{!! $sentence['trans_s'] !!}</i>
 @endif
 @if ($sentence['text'])
-(<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id) }}">
-    {{$sentence['text']->title}}
-</a>)
+(<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id) }}">{{$sentence['text']->title}}</a>)
 @endif

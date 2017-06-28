@@ -127,7 +127,14 @@ class Meaning extends Model
 //print "<p>". $sentence_builder->count()."</p>";       
         
         foreach ($sentence_builder->get() as $sentence) {
-            $text = Text::find($sentence->text_id);
+            $sentence = Text::extractSentence($sentence->text_id, 
+                                              $sentence->sentence_id, 
+                                              $sentence->w_id, 
+                                              $sentence->relevance);
+            if ($sentence) {
+                $sentences[] = $sentence;
+            }
+/*            $text = Text::find($sentence->text_id);
             if (!$text) {
 //print "<p>text error</p>";
                 continue;
@@ -159,7 +166,7 @@ class Meaning extends Model
 } else {
 dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence_id='.$sentence->sentence_id.' and word_id='.$sentence->word_id);                    
             }
-        }
+*/        }
         
 //        $sentences = array_slice($sentences,0,$limit);
 //print "<p>". sizeof($sentences)."</p>";       

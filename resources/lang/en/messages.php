@@ -30,6 +30,7 @@ return [
     'in_english' => 'in English',
     'in_russian' => 'in Russian',
     'limit_num' => 'number of records',
+    'of' => 'of',
     'records' => 'records',
     'record_not_exists' => 'Record does not exists.',
     'save' => 'save',

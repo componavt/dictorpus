@@ -406,6 +406,40 @@ class LemmaController extends Controller
     }
 
     /**
+     * Shows the form for editing of lemma's text examples.
+     *
+     * @param  int  $id - ID of lemma
+     * @return \Illuminate\Http\Response
+     */
+    public function editExamples(Request $request, $id)
+    {
+        $lemma = Lemma::find($id);
+        
+        $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
+        $meanings = $lemma->meanings;
+        $meaning_texts = [];
+          
+        foreach ($meanings as $meaning) {
+            foreach ($langs_for_meaning as $lang_id => $lang_text) {
+                $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
+                if ($meaning_text_obj) {
+                    $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
+                }
+            }
+        }   
+        
+        return view('dict.lemma.edit_examples')
+                  ->with(array(
+                               'lemma'          => $lemma, 
+                               'meanings'        => $lemma->meanings,
+                               'meaning_texts'  => $meaning_texts,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
+                              )
+                        );
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

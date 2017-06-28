@@ -64,11 +64,13 @@ Route::group(
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 
+        Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
-        Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')->name('lemma.update.examples');
+        Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
+                        ->name('lemma.update.examples');
         Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')
-                         ->name('lemma.update.wordforms');
+                        ->name('lemma.update.wordforms');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');

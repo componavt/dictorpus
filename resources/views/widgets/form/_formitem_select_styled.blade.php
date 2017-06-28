@@ -14,7 +14,6 @@ if (!isset($attributes['class'])) {
     $attributes['class'] = 'form-control';
 }
 $attributes['id'] = $name;
-
 ?>
 
 <div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
@@ -22,10 +21,16 @@ $attributes['id'] = $name;
 	<label for="{{$name}}">{{ $title }}</label>
     @endif
     
-	{!! Form::select($name, 
-                     $values, 
-                     $value,
-                     $attributes) 
-        !!}
+    <select id='{{$name}}' name='{{$name}}' class='{{$attributes['class']}}'>
+        @foreach ($values as $k=>$v)
+        <option value='{{$k}}' 
+            <?php if($k === $value) { print ' selected';} ?>
+                >
+            <span
+            <?php if(isset($styles[$k])) { print " class='".$styles[$k]."'";} ?> 
+            >{{$v}}</span>
+        </option>
+        @endforeach
+    </select>
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

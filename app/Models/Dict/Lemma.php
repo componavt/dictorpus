@@ -7,6 +7,7 @@ use DB;
 use URL;
 use LaravelLocalization;
 
+use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 //use App\Models\Dict\Meaning;
 
@@ -369,6 +370,53 @@ class Lemma extends Model
                 $meaning->texts()->attach($link['text_id'],$link['other_fields']);
             }
         }
+    }
+
+    /**
+     * Gets sentences for Lemma text examples edition 
+     *
+     * @return array
+     */
+    public function sentences(){
+        $sentences = [];
+        $lemma_id = $this->id;
+        
+        $sentence_builder = DB::table('meaning_text')
+                              ->whereIn('meaning_id',function($q) use($lemma_id){
+                                    $q->select('id')->from('meanings')
+                                       ->where('lemma_id',$lemma_id);
+                              })
+                              ->groupBy('text_id')
+                              ->groupBy('sentence_id')
+                              ->groupBy('w_id')
+                              ->orderBy('text_id')
+                              ->orderBy('sentence_id')
+                              ->orderBy('w_id');
+//dd($sentence_builder->count());                              
+//print "<pre>";                              
+        foreach ($sentence_builder->get() as $s) {
+//print_r($s);            
+            $sentence_builder2 = DB::table('meaning_text')
+                              ->where('text_id',$s->text_id)
+                              ->where('sentence_id',$s->sentence_id)
+                              ->where('w_id',$s->w_id)
+                              ->whereIn('meaning_id',function($q) use($lemma_id){
+                                    $q->select('id')->from('meanings')
+                                       ->where('lemma_id',$lemma_id);
+                              });
+            $relevance=[];
+            foreach ($sentence_builder2->get() as $s2) {
+                $relevance[$s2->meaning_id] = $s2->relevance;
+            }
+            $sentence = Text::extractSentence($s->text_id, 
+                                              $s->sentence_id, 
+                                              $s->w_id, 
+                                              $relevance);
+            if ($sentence) {
+                $sentences[] = $sentence;
+            }
+        }
+        return $sentences;
     }
 
     /**

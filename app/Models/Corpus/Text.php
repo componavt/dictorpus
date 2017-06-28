@@ -469,4 +469,53 @@ class Text extends Model
         return $sentences;
     }
     
+    /**
+     * find sentence in text, parse xml
+     * 
+     * @param int $text_id
+     * @param int $sentence_id - number of sentence in the text
+     * @param int $w_id - number of word in the text
+     * @param INT OR Array $relevance - if function is called for one meaning, type is INT, else ARRAY
+     * @return array f.e. ['s' => <sentence in xml format>, 
+                           's_id' => <number of sentence in the text>,
+                           'text' => <text object>, 
+                           'trans_s' => <transtext sentence in xml format>,
+                           'w_id' => <number of word in the text>, 
+                            'relevance' => <relevance>]
+     */
+    public static function extractSentence($text_id, $sentence_id, $w_id, $relevance) {
+            $text = Text::find($text_id);
+            if (!$text) {
+//print "<p>text error</p>";
+                return NULL;
+            }
+            list($sxe,$error_message) = Text::toXML($text->text_xml,$text->id);
+            if ($error_message) {
+//print "<p>$error_message</p>";                
+                return NULL;
+            }
+            $s = $sxe->xpath('//s[@id="'.$sentence_id.'"]');
+            if (isset($s[0])) {
+                $transtext = Transtext::find($text->transtext_id);
+                $trans_s = '';
+                if ($transtext) {
+                    list($trans_sxe,$trans_error) = Text::toXML($transtext->text_xml,'trans: '.$transtext->id);
+                    if (!$trans_error) {
+                        $trans_sent = $trans_sxe->xpath('//s[@id="'.$sentence_id.'"]');
+                        if (isset($trans_sent[0])) {
+                            $trans_s = $trans_sent[0]->asXML();
+                        }
+                    }                    
+                }
+                $sentence = ['s' => $s[0]->asXML(), 
+                                's_id' => $sentence_id,
+                                'text' => $text, 
+                                'trans_s' => $trans_s,
+                                'w_id' => $w_id, 
+                                'relevance' => $relevance]; 
+                return $sentence;
+            } else {
+                dd("!s: meaning_id=".$this->id.' and text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
+            }
+    }
 }

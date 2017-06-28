@@ -54,3 +54,24 @@
 #reflexive-field {
     display: none;
 }
+
+.relevance {
+    padding-right: 20px;    
+}
+
+.relevance-10 {
+    color: green;
+}
+
+.relevance-7 {
+    color: blue;
+}
+
+.relevance-5 {
+    color: orange;
+}
+
+.relevance-3 {
+    color: grey;
+}
+
