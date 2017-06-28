@@ -11,6 +11,7 @@ use App\Models\Corpus\Event;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
+use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
@@ -447,18 +448,11 @@ class Text extends Model
             return $sentences;
         }
 
-        $sentence_builder = DB::table('meaning_text')
-                              ->select('sentence_id','w_id')
+        $sentence_builder = Word::select('sentence_id','w_id')
                               ->where('text_id',$this->id)
-                              ->groupBy('sentence_id')
                               ->orderBy('sentence_id');
         if ($word) {
-            $sentence_builder = $sentence_builder ->whereIn('word_id',
-                                        function($q) use ($word){
-                                            $q->select('id')
-                                              ->from('words')
-                                              ->where('word','like',$word);
-                                        });
+            $sentence_builder = $sentence_builder ->where('word','like',$word);
         }                                
 //dd($sentence_builder->toSql());        
         foreach ($sentence_builder->get() as $sentence) {
