@@ -1,5 +1,10 @@
 <?php 
 //dd($sentence);
+if($sentence['text']->event && $sentence['text']->event->place) {
+        $place_title = $sentence['text']->event->place->placeString();
+} else { 
+    $place_title =''; 
+}
 list($sxe,$error_message) = \App\Models\Corpus\Text::toXML($sentence['s'],$count);
 $w = $sxe->xpath('//w[@id="'.$sentence['w_id'].'"]');
 if (isset($w[0])) {
@@ -16,5 +21,7 @@ if (isset($w[0])) {
     <br><i>{!! $sentence['trans_s'] !!}</i>
 @endif
 @if ($sentence['text'])
-(<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id) }}">{{$sentence['text']->title}}</a>)
+(<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id) }}" 
+    title="{{$place_title}}">
+    {{$sentence['text']->title}}</a>)
 @endif
