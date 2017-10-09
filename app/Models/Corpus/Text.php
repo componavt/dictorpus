@@ -203,7 +203,7 @@ class Text extends Model
      */
     public static function markupSentence($sentence,$word_count): Array
     {
-        $delimeters = ',.!?"[](){}«»=”:,'; // - and ' - part of word
+        $delimeters = ',.!?"[](){}«»=”:'; // - and ' - part of word
         // different types of dashes and hyphens: '-', '‒', '–', '—', '―' 
         // if dashes inside words, then they are part of words,
         // if dashes surrounded by spaces, then dashes are not parts of words.
@@ -215,7 +215,7 @@ class Text extends Model
         $token = $sentence;
         while ($i<mb_strlen($token)) {
             $char = mb_substr($token,$i,1);
-            if (mb_strpos($delimeters, $char) || preg_match("/\s/",$char)) {
+            if (mb_strpos($delimeters, $char)!==false || preg_match("/\s/",$char)) {
                 if ($is_word) {
                     $str .= '</w>';
                     $is_word = false;
