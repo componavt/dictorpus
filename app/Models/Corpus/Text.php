@@ -270,12 +270,19 @@ class Text extends Model
 
         // saving old checked links
         $checked_words = [];
-        $meanings = $this->meanings()->wherePivot('relevance','<>',1)
-                         ->join('words','words.id','=','meaning_text.word_id')
-                         ->get();
+//dd($this->meanings);        
+        $meanings = DB::table("meaning_text")
+                  ->where('relevance','<>',1)
+                  ->where('text_id',$this->id)
+                //$this->meanings()->wherePivot('relevance','<>',1)
+                         //->join('words','words.id','=','meaning_text.word_id')
+                  ->get();
+//dd($meanings);
         foreach ($meanings as $meaning) {
-            $checked_words[$meaning->w_id] =
-                    [$meaning->word, $meaning->relevance];
+            $word = Word::where('text_id',$this->id)
+                        ->where('w_id',$meaning->w_id)->first();
+            $checked_words[$meaning->w_id][$meaning->meaning_id] =
+                    [$word->word, $meaning->relevance];
         }
 //dd($checked_words);
         $this->words()->delete();
@@ -321,9 +328,10 @@ class Text extends Model
 
                     foreach (array_keys($meanings) as $meaning_id) {
                         $relevance = 1;
-                        if (isset($checked_words[$w_id][0])) {
-                            if ($checked_words[$w_id][0] == $word) {
-                                $relevance = $checked_words[$w_id][1];
+                        if (isset($checked_words[$w_id][$meaning_id][0])) {
+                            if ($checked_words[$w_id][$meaning_id][0] == $word 
+                                    || $checked_words[$w_id][$meaning_id][0] == $word.',') {
+                                $relevance = $checked_words[$w_id][$meaning_id][1];
                             }
                         }
                         $this->meanings()->attach($meaning_id,

@@ -51,6 +51,8 @@ return [
     'place_list' => 'Settlement list',
     'place_removed' => 'Settlement ":name" is removed successfully.',
     
+    're-markup' => 're-markup text to XML',
+    
     'record_place' => 'recording place',
     'record_year' => 'year of recording',
     'recorded' => 'recorded',
