@@ -262,7 +262,13 @@ class Text extends Model
      * Sets links meaning - text - sentence
      */
     public function updateMeaningText(){
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+/*$word = "Ojat’";
+// select * from wordforms where wordform like 'Ojat’';
+                    $wordforms = Wordform::select('id')
+                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'%")])->get();
+dd($wordforms);                    
+*/
+                    list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
 
         if ($error_message) {
             return $error_message;
@@ -301,9 +307,10 @@ class Text extends Model
                                               'w_id' => $w_id,
                                               'word' => $word
                                             ]);
+                    $word_t = addcslashes(strtolower($word),"'%");
                     $meanings = [];
                     $lemmas = Lemma::select('id')->where('lang_id',$this->lang_id)
-                            ->whereRaw("lemma like ?",[addcslashes(strtolower($word),"'%")]);
+                            ->whereRaw("lemma like ?",[$word_t]);
                     if ($lemmas->count()) {
                         foreach ($lemmas->get() as $lemma) {
                             foreach ($lemma->meanings as $meaning) {
@@ -313,7 +320,7 @@ class Text extends Model
                     }
 
                     $wordforms = Wordform::select('id')
-                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'%")]);
+                            ->whereRaw("wordform like ?",[$word_t]);
                     if ($wordforms->count()) {
                         foreach ($wordforms->get() as $wordform) {
                             foreach ($wordform->lemmas as $lemma) {

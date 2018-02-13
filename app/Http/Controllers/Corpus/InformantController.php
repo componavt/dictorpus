@@ -178,9 +178,13 @@ class InformantController extends Controller
             'birth_place_id' => 'numeric',
             'birth_date' => 'numeric',
         ]);
-        
+//dd($request);        
         if (!$request['birth_date']) {
             $request['birth_date'] = NULL;
+        }
+
+        if (!$request['birth_place_id']) {
+            $request['birth_place_id'] = NULL;
         }
 
         $informant = Informant::find($id);

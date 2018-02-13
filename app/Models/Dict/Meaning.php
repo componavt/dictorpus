@@ -446,15 +446,17 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
                        })
                      ->orWhere('word','like',$lemma_obj->lemma)->get();
  */       
+        $lemma_t = addcslashes($lemma_obj->lemma,"'");
         $query = "select * from words, texts "
                           . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
-                            . " and (word like '".$lemma_obj->lemma."' OR word in "
-                                . "(select wordform from wordforms, lemma_wordform "
-                                 . "where wordforms.id = lemma_wordform.wordform_id "
-                                   . "and lemma_id = ".$lemma_obj->id." "
-                                   . "and wordform like '".$lemma_obj->lemma."'))";
+                            . " and (word like '".$lemma_t."'";
 //dd($query);        
-        $words = DB::select($query);
+        foreach ($lemma_obj->wordforms as $wordform_obj) {
+            $wordform_t = addcslashes($wordform_obj->wordform,"'");
+            $query .= " OR word like '".$wordform_t."'";
+        }
+//dd($query.')');        
+        $words = DB::select($query.')');
 
         foreach ($words as $word) {
             $relevance = 1;
@@ -513,15 +515,16 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
                 ['lang_id'=>$lang_id,
                  'lemma_id'=>$lemma_obj->id,
                  'lemma'=>$lemma_obj->lemma ]); */
+        $lemma_t = addcslashes($lemma_obj->lemma,"'");
         $query = "select * from words, texts "
                           . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
-                            . " and (word like '".$lemma_obj->lemma."' OR word in "
-                                . "(select wordform from wordforms, lemma_wordform "
-                                 . "where wordforms.id = lemma_wordform.wordform_id "
-                                   . "and lemma_id = ".$lemma_obj->id." "
-                                   . "and wordform like '".$lemma_obj->lemma."'))";
-//dd($query);        
-        $words = DB::select($query);
+                            . " and (word like '".$lemma_t."'";
+        foreach ($lemma_obj->wordforms as $wordform_obj) {
+            $wordform_t = addcslashes($wordform_obj->wordform,"'");
+            $query .= " OR word like '".$wordform_t."'";
+        }
+//dd($query.')');        
+        $words = DB::select($query.')');
 //dd($words);
         $text_links = [];               
         foreach ($words as $word) {
