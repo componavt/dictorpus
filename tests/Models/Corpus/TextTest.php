@@ -103,4 +103,30 @@ class TextTest extends TestCase
 
         $this->assertEquals( $expected_xml, $result_xml);
     }
+    
+    public function testMarkupTextWithComma()
+    {
+        $source_text   = "Hö openziba kaikid tulnuzid ristituid kirjutamha da lugemaha vepsän kelel, starinoičiba vepsläižes literaturas, "
+                       . "Kodima-lehteses da Kipinäkulehteses.";
+        $expected_xml  = '<s id="1"><w id="1">Hö</w> <w id="2">openziba</w> <w id="3">kaikid</w> <w id="4">tulnuzid</w> '
+                       . '<w id="5">ristituid</w> <w id="6">kirjutamha</w> <w id="7">da</w> <w id="8">lugemaha</w> <w id="9">vepsän</w> '
+                       . '<w id="10">kelel</w>, <w id="11">starinoičiba</w> <w id="12">vepsläižes</w> <w id="13">literaturas</w>, '
+                       . '<w id="14">Kodima-lehteses</w> <w id="15">da</w> <w id="16">Kipinäkulehteses</w>.</s>';
+        
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testMarkupSentenceWithComma()
+    {
+        $source_text   = "kelel, literaturas, Kodima-lehteses.";
+        $expected_xml  = '<s id="1"><w id="1">kelel</w>, <w id="2">literaturas</w>, <w id="3">Kodima-lehteses</w>.</s>';
+        
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
 }

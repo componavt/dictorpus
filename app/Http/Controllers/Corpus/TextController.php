@@ -483,6 +483,31 @@ class TextController extends Controller
         }
     }
      
+    /**
+     * Markup xml of text and transtext
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function markupText(Int $id)
+    {
+        $text = Text::find($id);
+        $message_error = $text->markup();
+        if ($message_error) {
+            return Redirect::to('/corpus/text/'.($text->id))
+                           ->withError($message_error);        
+        }
+        $text->save();            
+        
+        $transText = Transtext::find($text->transtext_id);
+        if ($transText) {
+            $transText->markup();
+            $transText->save(); 
+        }
+        
+        return Redirect::to('/corpus/text/'.($text->id))
+                       ->withSuccess(\Lang::get('messages.updated_success'));        
+    }
      
     
     /**

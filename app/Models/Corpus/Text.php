@@ -203,7 +203,7 @@ class Text extends Model
      */
     public static function markupSentence($sentence,$word_count): Array
     {
-        $delimeters = ',.!?"[](){}«»=”:,'; // - and ' - part of word
+        $delimeters = ',.!?"[](){}«»=”:'; // - and ' - part of word
         // different types of dashes and hyphens: '-', '‒', '–', '—', '―' 
         // if dashes inside words, then they are part of words,
         // if dashes surrounded by spaces, then dashes are not parts of words.
@@ -215,7 +215,7 @@ class Text extends Model
         $token = $sentence;
         while ($i<mb_strlen($token)) {
             $char = mb_substr($token,$i,1);
-            if (mb_strpos($delimeters, $char) || preg_match("/\s/",$char)) {
+            if (mb_strpos($delimeters, $char)!==false || preg_match("/\s/",$char)) {
                 if ($is_word) {
                     $str .= '</w>';
                     $is_word = false;
@@ -262,7 +262,13 @@ class Text extends Model
      * Sets links meaning - text - sentence
      */
     public function updateMeaningText(){
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+/*$word = "Ojat’";
+// select * from wordforms where wordform like 'Ojat’';
+                    $wordforms = Wordform::select('id')
+                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'%")])->get();
+dd($wordforms);                    
+*/
+                    list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
 
         if ($error_message) {
             return $error_message;
@@ -270,12 +276,19 @@ class Text extends Model
 
         // saving old checked links
         $checked_words = [];
-        $meanings = $this->meanings()->wherePivot('relevance','<>',1)
-                         ->join('words','words.id','=','meaning_text.word_id')
-                         ->get();
+//dd($this->meanings);        
+        $meanings = DB::table("meaning_text")
+                  ->where('relevance','<>',1)
+                  ->where('text_id',$this->id)
+                //$this->meanings()->wherePivot('relevance','<>',1)
+                         //->join('words','words.id','=','meaning_text.word_id')
+                  ->get();
+//dd($meanings);
         foreach ($meanings as $meaning) {
-            $checked_words[$meaning->w_id] =
-                    [$meaning->word, $meaning->relevance];
+            $word = Word::where('text_id',$this->id)
+                        ->where('w_id',$meaning->w_id)->first();
+            $checked_words[$meaning->w_id][$meaning->meaning_id] =
+                    [$word->word, $meaning->relevance];
         }
 //dd($checked_words);
         $this->words()->delete();
@@ -294,9 +307,10 @@ class Text extends Model
                                               'w_id' => $w_id,
                                               'word' => $word
                                             ]);
+                    $word_t = addcslashes(strtolower($word),"'%");
                     $meanings = [];
                     $lemmas = Lemma::select('id')->where('lang_id',$this->lang_id)
-                            ->whereRaw("lemma like ?",[addcslashes(strtolower($word),"'%")]);
+                            ->whereRaw("lemma like ?",[$word_t]);
                     if ($lemmas->count()) {
                         foreach ($lemmas->get() as $lemma) {
                             foreach ($lemma->meanings as $meaning) {
@@ -306,7 +320,7 @@ class Text extends Model
                     }
 
                     $wordforms = Wordform::select('id')
-                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'%")]);
+                            ->whereRaw("wordform like ?",[$word_t]);
                     if ($wordforms->count()) {
                         foreach ($wordforms->get() as $wordform) {
                             foreach ($wordform->lemmas as $lemma) {
@@ -321,9 +335,10 @@ class Text extends Model
 
                     foreach (array_keys($meanings) as $meaning_id) {
                         $relevance = 1;
-                        if (isset($checked_words[$w_id][0])) {
-                            if ($checked_words[$w_id][0] == $word) {
-                                $relevance = $checked_words[$w_id][1];
+                        if (isset($checked_words[$w_id][$meaning_id][0])) {
+                            if ($checked_words[$w_id][$meaning_id][0] == $word 
+                                    || $checked_words[$w_id][$meaning_id][0] == $word.',') {
+                                $relevance = $checked_words[$w_id][$meaning_id][1];
                             }
                         }
                         $this->meanings()->attach($meaning_id,

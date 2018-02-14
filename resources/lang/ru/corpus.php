@@ -51,6 +51,8 @@ return [
     'place_list' => 'Список населенных пунктов',
     'place_removed' => 'Населенный пункт ":name" удален.',
     
+    're-markup' => 'переразметить текст в XML',
+    
     'record_place' => 'место записи',
     'record_year' => 'г. записи',
     'recorded' => 'записали',
