@@ -268,7 +268,7 @@ class Text extends Model
                             ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'%")])->get();
 dd($wordforms);                    
 */
-                    list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
 
         if ($error_message) {
             return $error_message;
@@ -291,9 +291,14 @@ dd($wordforms);
                     [$word->word, $meaning->relevance];
         }
 //dd($checked_words);
-        $this->words()->delete();
-        $this->meanings()->detach();
-
+//print '<p>'.$this->id;     
+//print '<p>'.$this->words()->count();
+//        $this->words()->delete();
+        DB::statement("DELETE FROM words WHERE text_id=".(int)$this->id);
+//        $this->meanings()->detach();
+        DB::statement("DELETE FROM meaning_text WHERE text_id=".(int)$this->id);
+//print '<p>'.$this->words()->count();
+//exit(0);
         foreach ($sxe->children()->s as $sentence) {
 //            if ($sentence->getName() == 's') {
                 $s_id = $sentence->attributes()->id;

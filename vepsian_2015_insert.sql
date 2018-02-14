@@ -742,3 +742,6 @@ alter table meaning_text add primary key (`meaning_id`,`text_id`,`sentence_id`,`
 alter table dialects add  `sequence_number` tinyint(1) unsigned DEFAULT NULL;
 
 alter table lemmas add `reflexive` tinyint(1) unsigned DEFAULT 0;
+
+alter table texts add `checked` tinyint(1) unsigned DEFAULT 0;
+alter table transtexts add `checked` tinyint(1) unsigned DEFAULT 0;

@@ -39,6 +39,8 @@ return [
     'sequence_number' => 'sequence number',
     'show_by' => 'by',
     'special_symbols' => 'special symbols',
+    'text_exists' => 'There is a text associated with this entry',
+    'informant_exists' => 'There is an informant associated with this entry',
     'to' => 'to',
     'total' => 'total',
     'translation' => 'Translation',

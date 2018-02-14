@@ -469,18 +469,34 @@ class TextController extends Controller
      */
     public function markupAllTexts()
     {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $text = Text::where('checked',0)->first();
+//dd($text);            
+            if ($text) {
+                $message_error = $text->markup();
+                print "<p>$message_error</p>";
+                $text->checked=1;
+                $text->save();   
+//dd($text->updated_at);                
+            } else {
+                $is_all_checked = true;
+            }
+        }
+/*            
         $texts = Text::all();
         foreach ($texts as $text) {
             $message_error = $text->markup();
             print "<p>$message_error</p>";
             $text->save();            
         }
-        
-        $texts = Transtext::all();
-        foreach ($texts as $text) {
-            $text->markup();
-            $text->save();            
-        }
+*/
+
+    $texts = Transtext::all();
+    foreach ($texts as $text) {
+        $text->markup();
+        $text->save();            
+    }
     }
      
     /**

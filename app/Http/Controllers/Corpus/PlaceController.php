@@ -244,8 +244,20 @@ class PlaceController extends Controller
                     foreach ($place->other_names as $other_name) {
                        $other_name->delete();
                     }
-                    $place->delete();
-                    $result['message'] = \Lang::get('corpus.place_removed', ['name'=>$place_name]);
+                    if ($place->texts()->count() >0) {
+                        $error = true;
+                        $result['error_message'] = \Lang::get('messages.text_exists');
+                    } elseif ($place->informants()->count() >0) {
+                        $error = true;
+                        $result['error_message'] = \Lang::get('messages.informant_exists');
+                    } else {
+                        foreach ($place->events as $event) {
+                            $event->recorders()->detach();
+                            $event->delete();
+                        }
+                        $place->delete();
+                        $result['message'] = \Lang::get('corpus.place_removed', ['name'=>$place_name]);
+                    }
                 }
                 else{
                     $error = true;

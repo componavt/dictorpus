@@ -59,6 +59,12 @@ class Place extends Model
         return $this->hasMany(PlaceName::class);
     }
 
+    // Place __has_many__ Events
+    public function events()
+    {
+        return $this->hasMany(Event::class,'place_id');
+    }
+
     // Place __has_many__ Informants
     public function informants()
     {
