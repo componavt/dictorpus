@@ -130,6 +130,10 @@ class InformantController extends Controller
             $request->birth_date = NULL;
         }
 
+        if (!$request['birth_place_id']) {
+            $request['birth_place_id'] = NULL;
+        }
+
         $informant = Informant::create($request->all());
         
         return Redirect::to('/corpus/informant/?search_id='.$informant->id)
