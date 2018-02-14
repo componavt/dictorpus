@@ -18,7 +18,7 @@
         <tbody>
             @foreach($dumps as $dump)
             <tr>
-                <td><a href="{{$dump["href"]}}">{{$dump["filename"]}}</a></td>
+                <td><a href="http://dictorpus.krc.karelia.ru/{{$dump["href"]}}">{{$dump["filename"]}}</a></td>
                 <td>{{$dump["date"]}}</td>
                 <td>{{$dump["size"]}}</td>
             </tr>
