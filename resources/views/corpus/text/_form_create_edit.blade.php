@@ -62,11 +62,11 @@
         @endif
         
         {{-- EVENT --}}
-        <?php $informant_id_value = ($action=='edit' && $text->event) ? ($text->event->informant_id) : NULL; ?>
-        @include('widgets.form._formitem_select', 
-                ['name' => 'event.informant_id', 
+        <?php if ($action=='create') { $informant_value = NULL; } ?>        
+        @include('widgets.form._formitem_select2', 
+                ['name' => 'event.informants', 
                  'values' =>$informant_values,
-                 'value' => $informant_id_value,
+                 'value' => $informant_value,
                  'title' => trans('corpus.informant')]) 
         <?php $event_date_value = ($action=='edit' && $text->event) ? ($text->event->date) : NULL; ?>
         @include('widgets.form._formitem_text', 

@@ -30,9 +30,9 @@ class Event extends Model
      * 
      * @return Relationship, Query Builder
      */
-    public function informant()
+    public function informants()
     {
-        return $this->belongsTo(Informant::class);
+        return $this->belongsToMany(Informant::class);
     }    
     
     /** 

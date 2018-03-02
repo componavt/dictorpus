@@ -30,6 +30,7 @@ return [
     'genre_removed' => 'Жанр ":name" удален.',
     
     'informant' => 'Информант',
+    'informants' => 'Информант(ы)',
     'informant_list' => 'Список информантов',
     'informant_name' => 'Имя информанта',
     'informant_removed' => 'Информант ":name" удален.',

@@ -30,6 +30,7 @@ return [
     'genre_removed' => 'Genre ":name" is removed successfully.',
     
     'informant' => 'Informant',
+    'informants' => 'Informant(s)',
     'informant_list' => 'Informant list',
     'informant_name' => 'Informant name',
     'informant_removed' => 'Informant ":name" is removed successfully.',

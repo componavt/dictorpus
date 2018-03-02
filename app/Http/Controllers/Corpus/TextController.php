@@ -255,8 +255,11 @@ class TextController extends Controller
         
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
-        $informant_values = [NULL => ''] + Informant::getList();
+//        $informant_values = [NULL => ''] + Informant::getList();
         $place_values = [NULL => ''] + Place::getList();
+
+        $informant_values = Informant::getList();
+        $informant_value = $text->informantValue();
 
         $recorder_values = Recorder::getList();
         $recorder_value = $text->recorderValue();
@@ -271,6 +274,7 @@ class TextController extends Controller
                   ->with(['text' => $text,
                           'lang_values' => $lang_values,
                           'corpus_values' => $corpus_values,
+                          'informant_value' => $informant_value,
                           'informant_values' => $informant_values,
                           'place_values' => $place_values,
                           'recorder_values' => $recorder_values,
@@ -313,6 +317,8 @@ class TextController extends Controller
                                                   $text);
         
         if ($text->event) {
+            $text-> event->informants()->detach();
+            $text-> event->informants()->attach($request->event_informants);
             $text-> event->recorders()->detach();
             $text-> event->recorders()->attach($request->event_recorders);
         }

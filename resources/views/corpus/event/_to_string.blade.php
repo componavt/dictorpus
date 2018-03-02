@@ -1,4 +1,13 @@
 <?php
+    $event_informants = \DB::table('event_informant')
+                          ->select('informant_id')
+                          ->where('event_id', $event->id)->get();
+    $informants_arr = [];
+    foreach ($event_informants as $event_informant) {
+            $informants_arr[] = \App\Models\Corpus\Informant::find($event_informant->informant_id)->informantString();
+    }
+    $informant_list = join("<br>\n",$informants_arr);
+
     $event_recorders = \DB::table('event_recorder')
                           ->select('recorder_id')
                           ->where('event_id', $event->id)->get();
@@ -8,9 +17,11 @@
     }
     $recoders_list = join(', ',$recorders_arr);
 ?>
-@if ($event->informant)
-    @include('corpus.informant._to_string',['informant' => $event->informant, 'lang_id' => $lang_id])@if($event->place 
-        || $event->date || $event->recorders)<br>@endif
+@if ($informants_arr)
+        <i>{{ trans('corpus.informants')}}:</i> 
+        @foreach ($informants_arr as $informant) 
+            {{$informant}}<br>
+        @endforeach
 @endif
 
 @if ($event->place)

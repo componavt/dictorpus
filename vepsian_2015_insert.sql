@@ -744,4 +744,8 @@ alter table dialects add  `sequence_number` tinyint(1) unsigned DEFAULT NULL;
 alter table lemmas add `reflexive` tinyint(1) unsigned DEFAULT 0;
 
 alter table texts add `checked` tinyint(1) unsigned DEFAULT 0;
-alter table transtexts add `checked` tinyint(1) unsigned DEFAULT 0;
+
+delete from event_informant where event_id not in (select event_id from texts where event_id is not null);
+delete from event_recorder where event_id not in (select event_id from texts where event_id is not null);
+delete from events where id not in (select event_id from texts where event_id is not null);
+

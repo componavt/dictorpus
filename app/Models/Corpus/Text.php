@@ -99,6 +99,21 @@ class Text extends Model
     }
 
     /**
+     * Gets IDs of informants for informant's form field
+     *
+     * @return Array
+     */
+    public function informantValue():Array{
+        $informant_value = [];
+        if ($this->event && $this->event->informants) {
+            foreach ($this->event->informants as $informant) {
+                $informant_value[] = $informant->id;
+            }
+        }
+        return $informant_value;
+    }
+
+    /**
      * Gets IDs of recorders for record's form field
      *
      * @return Array
