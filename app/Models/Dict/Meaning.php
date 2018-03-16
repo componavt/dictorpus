@@ -181,7 +181,7 @@ dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence
      *              <lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...
      *              if lemma has one meaning 
      * 
-     * @param $code String
+     * @param $code String - language code
      * @return String
      */
     public function getMultilangMeaningTextsString($code='') :String
