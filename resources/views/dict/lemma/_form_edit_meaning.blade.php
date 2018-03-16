@@ -54,7 +54,7 @@
                 <div class="row">
                   <div class="col-xs-3">
                         @include('widgets.form._formitem_select',
-                                ['name' => 'new_relation',
+                                ['name' => 'new_relation_'.$meaning->id,
                                  'values' => $meaning->missingRelationsList(),
                                  'attributes' => ['id'=>'new_relation_'.$meaning->id]])
                   </div>
