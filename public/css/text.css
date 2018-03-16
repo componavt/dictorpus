@@ -22,6 +22,10 @@ s {
     color: green;
 }
 
+.lemma-linked.polysemy {
+    color: red;
+}
+
 .links-to-lemmas {
     background: #dcf7f8;
     color: black;

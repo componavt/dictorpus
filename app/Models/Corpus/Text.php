@@ -441,7 +441,9 @@ dd($wordforms);
                 $class = 'lemma-linked';
                 if ($has_checked_meaning) {
                     $class .= ' has-checked';
-                }
+                } elseif ($meanings->count() > 1) {
+                    $class .= ' polysemy';                
+                } 
                 $word->addAttribute('class',$class);
 
             }
