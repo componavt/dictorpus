@@ -57,8 +57,8 @@
           data: function (params) {
             return {
               q: params.term, // search term
-              lang_id: $( "#lemma_lang_id option:selected" ).val(),
-              pos_id: $( "#lemma_pos_id option:selected" ).val(),
+              lang_id: $( "#lang_id option:selected" ).val(),
+              pos_id: $( "#pos_id option:selected" ).val(),
               lemma_id: {{ $lemma->id}}
             };
           },
@@ -85,7 +85,7 @@
                     return {
                       q: params.term, // search term
                       lang_id: {{ $lang_id }},
-                      pos_id: $( "#lemma_pos_id option:selected" ).val(),
+                      pos_id: $( "#pos_id option:selected" ).val(),
                       lemma_id: {{ $lemma->id}}
                     };
                   },
