@@ -523,14 +523,39 @@ class LemmaController extends Controller
     public function updateExamples(Request $request, $id)
     {
         foreach ($request['relevance'] as $key => $value) {
+            $relevance = (int)$value;
             if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$key,$regs)) {
-                DB::statement('UPDATE meaning_text SET relevance='.(int)$value.
-                              ' WHERE meaning_id='.(int)$regs[1].
-                              ' AND text_id='.(int)$regs[2].
-                              ' AND sentence_id='.(int)$regs[3].
-                              ' AND w_id='.(int)$regs[4]);
+                $meaning_id = (int)$regs[1];
+                $text_id = (int)$regs[2];
+                $sentence_id = (int)$regs[3];
+                $w_id = (int)$regs[4];
+                
+                if ($relevance == 1) { // не выставлена оценка
+                    $exists_positive_rel = DB::table('meaning_text') // ищем другие значения лемм с положительной оценкой
+                            -> where('text_id',$text_id)
+                            -> where('sentence_id',$sentence_id)
+                            -> where('w_id',$w_id)
+                            -> where('meaning_id', '<>', $meaning_id)
+                            -> where ('relevance','>',1);
+                    if ($exists_positive_rel->count() > 0) { // этот пример привязан к другому значению
+                        $relevance = 0;
+                    }
+                } elseif ($relevance != 0) { // положительная оценка
+                    DB::statement('UPDATE meaning_text SET relevance=0'. // всем значениям с неопределенными оценками проставим отрицательные
+                                  ' WHERE meaning_id <> '.$meaning_id.
+                                  ' AND relevance=1'.
+                                  ' AND text_id='.$text_id.
+                                  ' AND sentence_id='.$sentence_id.
+                                  ' AND w_id='.$w_id);
+                }
+                DB::statement('UPDATE meaning_text SET relevance='.$relevance // запишем оценку этому значению
+                             .' WHERE meaning_id='.$meaning_id
+                             .' AND text_id='.$text_id
+                             .' AND sentence_id='.$sentence_id
+                             .' AND w_id='.$w_id);
             }
         }
+/*        
         $lemma=Lemma::find($id);
         $meanings = [];
         foreach ($lemma->meanings as $meaning) {
@@ -561,6 +586,8 @@ class LemmaController extends Controller
                 
             }
         }
+ * 
+ */
         return Redirect::to('/dict/lemma/'.$id.($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

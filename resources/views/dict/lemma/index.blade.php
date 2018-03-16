@@ -90,6 +90,7 @@
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
+                <!--th>{{ trans('dict.interpretation') }}</th-->
                 <th>{{ trans('messages.examples') }}</th>
                 @if (User::checkAccess('dict.edit'))
                 <th colspan="2"></th>
@@ -103,6 +104,11 @@
                 <td>
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
+                    @endif
+                </td>
+                <td>
+                    @if($lemma->pos)
+                        {{$lemma->pos->name}}
                     @endif
                 </td>
                 <td>
