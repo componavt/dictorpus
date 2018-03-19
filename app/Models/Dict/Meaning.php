@@ -134,42 +134,8 @@ class Meaning extends Model
             if ($sentence) {
                 $sentences[] = $sentence;
             }
-/*            $text = Text::find($sentence->text_id);
-            if (!$text) {
-//print "<p>text error</p>";
-                continue;
-            }
-            list($sxe,$error_message) = Text::toXML($text->text_xml,$text->id);
-            if ($error_message) {
-//print "<p>$error_message</p>";                
-                continue;
-            }
-            $s = $sxe->xpath('//s[@id="'.$sentence->sentence_id.'"]');
-            if (isset($s[0])) {
-                $transtext = Transtext::find($text->transtext_id);
-                $trans_s = '';
-                if ($transtext) {
-                    list($trans_sxe,$trans_error) = Text::toXML($transtext->text_xml,'trans: '.$transtext->id);
-                    if (!$trans_error) {
-                        $trans_sent = $trans_sxe->xpath('//s[@id="'.$sentence->sentence_id.'"]');
-                        if (isset($trans_sent[0])) {
-                            $trans_s = $trans_sent[0]->asXML();
-                        }
-                    }                    
-                }
-                $sentences[] = ['s' => $s[0]->asXML(), 
-                                's_id' => $sentence->sentence_id,
-                                'text' => $text, 
-                                'trans_s' => $trans_s,
-                                'w_id' => $sentence->w_id, 
-                                'relevance' => $sentence->relevance]; 
-} else {
-dd("!s: meaning_id=".$this->id.' and text_id='.$sentence->text_id.' and sentence_id='.$sentence->sentence_id.' and word_id='.$sentence->word_id);                    
-            }
-*/        }
+        }
         
-//        $sentences = array_slice($sentences,0,$limit);
-//print "<p>". sizeof($sentences)."</p>";       
         return $sentences;
     }
     

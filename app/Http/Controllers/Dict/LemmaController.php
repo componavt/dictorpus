@@ -23,6 +23,7 @@ use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Relation;
 use App\Models\Dict\Wordform;
+use App\Models\Corpus\Text;
 
 class LemmaController extends Controller
 {
@@ -437,6 +438,56 @@ class LemmaController extends Controller
                                'url_args'       => $this->url_args,
                               )
                         );
+    }
+
+    /**
+     * Shows the form for editing of text example for all lemma meanings connected with this sentence.
+     *
+     * @param  int  $id - ID of lemma
+     * @param  int  $sentence_id - ID of example
+     * @return \Illuminate\Http\Response
+     */
+    public function editExample(Request $request, $id, $example_id)
+    {
+        $lemma = Lemma::find($id);
+        if (preg_match("/^(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
+            $text_id = (int)$regs[1];
+            $sentence_id = (int)$regs[2];
+            $w_id = (int)$regs[3];
+        
+            $sentence = Text::extractSentence($text_id, $sentence_id, $w_id);            
+            $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
+
+            $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
+                               -> where('text_id',$text_id)
+                               -> where('sentence_id',$sentence_id)
+                               -> where('w_id',$w_id)
+                               -> get();
+            $meaning_texts = [];
+
+            foreach ($meanings as $meaning) {
+                foreach ($langs_for_meaning as $lang_id => $lang_text) {
+                    $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
+                    if ($meaning_text_obj) {
+                        $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
+                    }
+                }
+            }   
+
+            return view('dict.lemma.edit_example')
+                      ->with(array(
+                                   'lemma'          => $lemma, 
+                                   'meanings'       => $meanings,
+                                   'meaning_texts'  => $meaning_texts,
+                                   'sentence'       => $sentence,
+                                   'args_by_get'    => $this->args_by_get,
+                                   'url_args'       => $this->url_args,
+                                  )
+                            );
+        } else {
+            return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
+                       ->withError(\Lang::get('messages.invalid_id'));
+        }
     }
 
     /**

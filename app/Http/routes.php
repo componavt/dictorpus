@@ -65,6 +65,7 @@ Route::group(
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
 
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
+        Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')

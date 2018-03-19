@@ -29,6 +29,7 @@ return [
     'history' => 'history',
     'in_english' => 'in English',
     'in_russian' => 'in Russian',
+    'invalid_id' => 'Invalid identifier',
     'limit_num' => 'number of records',
     'of' => 'of',
     'records' => 'records',

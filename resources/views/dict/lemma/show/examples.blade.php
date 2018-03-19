@@ -19,13 +19,6 @@
                     </span>
                     @endforeach
                 </p>
-{{--                    @if (User::checkAccess('dict.edit'))
-                        {!! Form::open(['route' => ['lemma.update.examples', $lemma->id],
-                                        'method' => 'POST',
-                                        'class' => 'form-inline'
-                                      ])
-                        !!}
-                    @endif --}}
 <?php $limit = 100; 
       $sentences = $meaning->sentences($for_edition,$limit);
       $count=1; 
@@ -43,19 +36,11 @@
                         <table class="lemma-examples">
                         @endif
                             <tr class="row">
-{{--                                <td>
-                            @if (User::checkAccess('dict.edit'))
-                                @include('widgets.form._formitem_select',
-                                        ['name' => 'relevance['.$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'].']',
-                                         'values' => trans('dict.relevance_scope'),
-                                         'value' => $sentence['relevance']
-                                        ])
-                            @endif 
-                                </td>--}}
                                 <td> 
                                 @if ($sentence['relevance']>0)
                                     {{ $count++ }}.
-                                    @include('dict.lemma.show.example_sentence', ['relevance'=>$sentence['relevance']])
+                                    @include('dict.lemma.show.example_sentence', 
+                                        ['relevance'=>$sentence['relevance'], 'is_edit' => 1])
                                 @endif
                                 </td>
                             </tr>
@@ -71,8 +56,4 @@
                     </a>
                     @endif
                     </div>
-{{--                    @if (User::checkAccess('dict.edit'))
-                        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.save')])
-                        {!! Form::close() !!}
-                    @endif --}}
 @endif

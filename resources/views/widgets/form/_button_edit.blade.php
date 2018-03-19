@@ -15,6 +15,8 @@
         $format = '<a  href="%s"';
         if (isset($is_button) && $is_button) {
             $format .= ' class="btn btn-warning btn-xs btn-detail"';
+        } elseif (isset($link_class)) {
+            $format .= ' class="'.$link_class.'"';
         }
         $format .= '><i class="fa fa-pencil fa-lg"></i> %s</a>';
         $link = LaravelLocalization::localizeURL($route);

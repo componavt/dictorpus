@@ -520,7 +520,7 @@ dd($wordforms);
                            'w_id' => <number of word in the text>, 
                             'relevance' => <relevance>]
      */
-    public static function extractSentence($text_id, $sentence_id, $w_id, $relevance) {
+    public static function extractSentence($text_id, $sentence_id, $w_id, $relevance='') {
             $text = Text::find($text_id);
             if (!$text) {
 //print "<p>text error</p>";

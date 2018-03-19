@@ -24,4 +24,13 @@ if (isset($w[0])) {
 (<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id) }}" 
     title="{{$place_title}}">
     {{$sentence['text']->title}}</a>)
+    @if (isset($is_edit) && User::checkAccess('dict.edit'))
+        @include('widgets.form._button_edit', 
+                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/example/'.
+                             $sentence['text']->id.'_'.$sentence['s_id'].
+                             '_'.$sentence['w_id'],
+                  'link_class' => 'sentence-edit',
+                  'without_text' => 1])
+    @endif
+    
 @endif
