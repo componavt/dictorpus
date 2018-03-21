@@ -182,7 +182,9 @@ class TextController extends Controller
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',
         ]);
-        
+        $request['text'] = Text::process($request['text']);
+        $request['transtext_text'] = Text::process($request['transtext_text']);
+
         $text = Text::create($request->only('corpus_id','lang_id','title','text')); //,'source_id','event_id',
         
         Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text'), 
@@ -307,6 +309,10 @@ class TextController extends Controller
         
         $text = Text::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
+
+        $request['text'] = Text::process($request['text']);
+        $request['transtext_text'] = Text::process($request['transtext_text']);
+
         $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
 
         Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'), 

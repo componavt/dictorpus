@@ -159,6 +159,18 @@ class Text extends Model
     }
 
     /**
+     * process string, replace simbols >, < on html-entities
+     *
+     * @param $str String 
+     * @return String 
+     */
+    public static function process($str):String{
+        $str = str_replace(">","&gt;",$str);
+        $str = str_replace("<","&lt;",$str);
+        return $str;
+    }
+    
+    /**
      * Gets a markup text with sentences
      *
      * @param $text String text without mark up
