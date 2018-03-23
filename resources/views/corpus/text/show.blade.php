@@ -50,10 +50,12 @@
         @endif      
         
         @if ($text->text)
-        <?php $markup_text = $text->text_xml 
-                    ? str_replace("<s id=\"","<s class=\"sentence\" id=\"text_s",$text->text_xml) 
-                    : nl2br($text->text); 
-              $markup_text = $text->setLemmaLink($markup_text);
+        <?php   if ($text->text_xml) :
+                    $markup_text = $text->setLemmaLink($text->text_xml);
+                    $markup_text = str_replace("<s id=\"","<s class=\"sentence\" id=\"text_s",$markup_text);
+                else :
+                    $markup_text = nl2br($text->text);
+                endif; 
         ?>
                     <div id="text">{!! $markup_text !!}</div>
         @endif      

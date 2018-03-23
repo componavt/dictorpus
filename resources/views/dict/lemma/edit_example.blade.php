@@ -22,12 +22,13 @@
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
         <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>''])</p>
 
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
+        <p><a href="{{ LaravelLocalization::localizeURL($back_to_url) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
         
 
-        {!! Form::model($lemma, array('method'=>'POST', 'route' => array('lemma.update.examples', $lemma->id))) !!}
+        {!! Form::open(array('method'=>'POST', 'route' => $route)) !!}
         @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
-
+        <input type="hidden" name="back_to_url" value="{{$back_to_url}}">
+        
         <table class="table lemma-example-edit">
             @foreach ($meanings as $meaning)
             <tr>

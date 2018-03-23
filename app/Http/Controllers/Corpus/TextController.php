@@ -299,6 +299,38 @@ class TextController extends Controller
     }
 
     /**
+     * Shows the form for editing of text example for all lemma meanings connected with this sentence.
+     *
+     * @param  int  $id - ID of lemma
+     * @param  int  $sentence_id - ID of example
+     * @return \Illuminate\Http\Response
+     */
+    public function editExample(Request $request, $id, $example_id)
+    {
+        //$text = Text::find($id);
+        list($sentence, $meanings, $meaning_texts) = 
+                Text::preparationForExampleEdit($id.'_'.$example_id);
+        
+        if ($sentence == NULL) {
+            return Redirect::to('/corpus/text/'.$id.($this->args_by_get))
+                       ->withError(\Lang::get('messages.invalid_id'));            
+        } else {
+            return view('dict.lemma.edit_example')
+                      ->with(array(
+                                   'back_to_url'    => '/corpus/text/'.$id,
+                                   'id'             => $id, 
+                                   'meanings'       => $meanings,
+                                   'meaning_texts'  => $meaning_texts,
+                                   'route'          => array('text.update.examples', $id),
+                                   'sentence'       => $sentence,
+                                   'args_by_get'    => $this->args_by_get,
+                                   'url_args'       => $this->url_args,
+                                  )
+                            );            
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -360,6 +392,19 @@ class TextController extends Controller
         return $redirect;
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateExamples(Request $request, $id)
+    {
+        Text::updateExamples($request['relevance']);
+        return Redirect::to($request['back_to_url'].($this->args_by_get))
+                       ->withSuccess(\Lang::get('messages.updated_success'));
+    }
     /**
      * Remove the specified resource from storage.
      *

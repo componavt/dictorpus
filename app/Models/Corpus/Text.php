@@ -17,6 +17,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\MeaningText;
 use App\Models\Dict\Wordform;
 
 class Text extends Model
@@ -413,6 +414,19 @@ dd($wordforms);
     }
 
     /**
+     * Gets identifier of the sentence by ID of word in the text
+
+     * @param $w_id INT identifier of the word in the text
+     * @return Int identifier of the sentence
+     **/
+    public function getSentenceID($w_id){
+        $sentence = Word::select('sentence_id')
+                        ->where('text_id',$this->id)
+                        ->where('w_id',$w_id)->first();
+        return $sentence->sentence_id;
+    }
+
+    /**
      * Gets markup text with links from words to related lemmas
 
      * @param $markup_text String
@@ -424,68 +438,56 @@ dd($wordforms);
         if ($error_message) {
             return $markup_text;
         }
-        $words = $sxe->xpath('//w');
-        foreach ($words as $word) {
-            $word_id = (int)$word->attributes()->id;
-            $meanings = $this->meanings()->wherePivot('text_id',$text_id)
-                             ->wherePivot('w_id',$word_id)
-                             ->wherePivot('relevance','>',0);
-            if ($meanings->count()) {
-                $link_block = $word->addChild('div');
-                $link_block->addAttribute('class','links-to-lemmas');
-                $link_block->addAttribute('id','links_'.$word_id);
+        $sentences = $sxe->xpath('//s');
+        foreach ($sentences as $sentence) {
+            $sentence_id = (int)$sentence->attributes()->id;
+//dd($sentence);       
+            foreach ($sentence->children() as $word) {
+                $word_id = (int)$word->attributes()->id;
 
-                $has_checked_meaning = false;
-                foreach ($meanings->get() as $meaning) {
-                    $lemma = $meaning->lemma;
+                $meanings = $this->meanings()->wherePivot('text_id',$text_id)
+                                 ->wherePivot('w_id',$word_id)
+                                 ->wherePivot('relevance','>',0);
+                if ($meanings->count()) {
+                    $link_block = $word->addChild('div');
+                    $link_block->addAttribute('class','links-to-lemmas');
+                    $link_block->addAttribute('id','links_'.$word_id);
 
-                    if ($meaning->pivot->relevance >1) {
-                        $has_checked_meaning = true;
+                    $has_checked_meaning = false;
+                    foreach ($meanings->get() as $meaning) {
+                        $lemma = $meaning->lemma;
+
+                        if ($meaning->pivot->relevance >1) {
+                            $has_checked_meaning = true;
+                        }
+
+                        $link = $link_block->addChild('a',$lemma->lemma);
+                        $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
+
+                        $locale = LaravelLocalization::getCurrentLocale();
+                        $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
                     }
 
-                    $link = $link_block->addChild('a',$lemma->lemma);
-                    $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
+                    $button_edit = $link_block->addChild('a','&#9999;');
+                    $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
+                                                                                        $sentence_id.'_'.$word_id)); 
+                    $button_edit->addAttribute('class','text-example-edit'); 
+    //                $button = $button_edit->addChild('i');
+    //                $button->addAttribute('class','fa-pencil'); 
+    //                $button->addAttribute('class','fa fa-pencil fa-lg'); 
 
-                    $locale = LaravelLocalization::getCurrentLocale();
-                    $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
+                    $class = 'lemma-linked';
+                    if ($has_checked_meaning) {
+                        $class .= ' has-checked';
+                    } elseif ($meanings->count() > 1) {
+                        $class .= ' polysemy';                
+                    } 
+                    $word->addAttribute('class',$class);
+
                 }
-
-                $class = 'lemma-linked';
-                if ($has_checked_meaning) {
-                    $class .= ' has-checked';
-                } elseif ($meanings->count() > 1) {
-                    $class .= ' polysemy';                
-                } 
-                $word->addAttribute('class',$class);
-
             }
-/*            $lemmas = Lemma::whereIn('id',function($query) use ($text_id, $word_id){
-                                $query->select('lemma_id')
-                                      ->from('meanings')
-                                      ->whereIn('id',function($q) use ($text_id, $word_id){
-                                            $q->select('meaning_id')
-                                              ->from('meaning_text')
-                                              ->where('text_id',$text_id)
-                                              ->where('word_id',$word_id)
-                                              ->where('relevance','>',0);
-                                              });
-                                   })->orderBy('lemma');
-            if ($lemmas->count()) {
-                $word->addAttribute('class','lemma-linked');
-
-                $link_block = $word->addChild('div');
-                $link_block->addAttribute('class','links-to-lemmas');
-                $link_block->addAttribute('id','links_'.$word_id);
-
-                foreach ($lemmas->get() as $lemma) {
-                    $link = $link_block->addChild('a',$lemma->lemma);
-                    $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
-                    $meaning->getMultilangMeaningTextsString()
-                }
-            } */
-
         }
-
+        
         return $sxe->asXML();
     }
 
@@ -566,5 +568,83 @@ dd($wordforms);
             } else {
                 dd("!s: meaning_id=".$this->id.' and text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
             }
+    }
+
+    /**
+     * 
+
+     * @param $markup_text String
+     * @return String markup text
+     **/
+    public static function preparationForExampleEdit($example_id){
+        if (preg_match("/^(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
+            $text_id = (int)$regs[1];
+            $sentence_id = (int)$regs[2];
+            $w_id = (int)$regs[3];
+        
+            $sentence = Text::extractSentence($text_id, $sentence_id, $w_id);            
+
+            $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
+                               -> where('text_id',$text_id)
+                               -> where('sentence_id',$sentence_id)
+                               -> where('w_id',$w_id)
+                               -> get();
+            $meaning_texts = [];
+
+            foreach ($meanings as $meaning) {
+                $langs_for_meaning = Lang::getListWithPriority($meaning->lemma->lang_id);
+                foreach ($langs_for_meaning as $lang_id => $lang_text) {
+                    $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
+                    if ($meaning_text_obj) {
+                        $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
+                    }
+                }
+            }   
+            
+            return [$sentence, $meanings, $meaning_texts];
+        } else {
+            return [NULL, NULL, NULL];
+        }
+    }
+
+    /**
+     * 
+     *
+     * 
+     */
+    public static function updateExamples($relevances) {
+        foreach ($relevances as $key => $value) {
+            $relevance = (int)$value;
+            if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$key,$regs)) {
+                $meaning_id = (int)$regs[1];
+                $text_id = (int)$regs[2];
+                $sentence_id = (int)$regs[3];
+                $w_id = (int)$regs[4];
+                
+                if ($relevance == 1) { // не выставлена оценка
+                    $exists_positive_rel = DB::table('meaning_text') // ищем другие значения лемм с положительной оценкой
+                            -> where('text_id',$text_id)
+                            -> where('sentence_id',$sentence_id)
+                            -> where('w_id',$w_id)
+                            -> where('meaning_id', '<>', $meaning_id)
+                            -> where ('relevance','>',1);
+                    if ($exists_positive_rel->count() > 0) { // этот пример привязан к другому значению
+                        $relevance = 0;
+                    }
+                } elseif ($relevance != 0) { // положительная оценка
+                    DB::statement('UPDATE meaning_text SET relevance=0'. // всем значениям с неопределенными оценками проставим отрицательные
+                                  ' WHERE meaning_id <> '.$meaning_id.
+                                  ' AND relevance=1'.
+                                  ' AND text_id='.$text_id.
+                                  ' AND sentence_id='.$sentence_id.
+                                  ' AND w_id='.$w_id);
+                }
+                DB::statement('UPDATE meaning_text SET relevance='.$relevance // запишем оценку этому значению
+                             .' WHERE meaning_id='.$meaning_id
+                             .' AND text_id='.$text_id
+                             .' AND sentence_id='.$sentence_id
+                             .' AND w_id='.$w_id);
+            }
+        }
     }
 }

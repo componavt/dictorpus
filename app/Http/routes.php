@@ -60,6 +60,10 @@ Route::group(
         Route::get('/dumps','DumpDownloadController@index');
         
 /*        Route::get('corpus/corpus/list', 'Corpus\CorpusController@corpusList');*/
+        Route::get('corpus/text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
+        Route::post('corpus/text/{id}/update/examples', 'Corpus\TextController@updateExamples')
+                        ->name('text.update.examples');
+
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');

@@ -450,43 +450,26 @@ class LemmaController extends Controller
     public function editExample(Request $request, $id, $example_id)
     {
         $lemma = Lemma::find($id);
-        if (preg_match("/^(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
-            $text_id = (int)$regs[1];
-            $sentence_id = (int)$regs[2];
-            $w_id = (int)$regs[3];
         
-            $sentence = Text::extractSentence($text_id, $sentence_id, $w_id);            
-            $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
-
-            $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
-                               -> where('text_id',$text_id)
-                               -> where('sentence_id',$sentence_id)
-                               -> where('w_id',$w_id)
-                               -> get();
-            $meaning_texts = [];
-
-            foreach ($meanings as $meaning) {
-                foreach ($langs_for_meaning as $lang_id => $lang_text) {
-                    $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
-                    if ($meaning_text_obj) {
-                        $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
-                    }
-                }
-            }   
-
+        list($sentence, $meanings, $meaning_texts) = 
+                Text::preparationForExampleEdit($example_id);
+        
+        if ($sentence == NULL) {
+            return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
+                       ->withError(\Lang::get('messages.invalid_id'));            
+        } else {
             return view('dict.lemma.edit_example')
                       ->with(array(
-                                   'lemma'          => $lemma, 
+                                   'back_to_url'    => '/dict/lemma/'.$lemma->id,
+                                   'id'             => $lemma->id, 
                                    'meanings'       => $meanings,
                                    'meaning_texts'  => $meaning_texts,
+                                   'route'          => array('lemma.update.examples', $id),
                                    'sentence'       => $sentence,
                                    'args_by_get'    => $this->args_by_get,
                                    'url_args'       => $this->url_args,
                                   )
-                            );
-        } else {
-            return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
-                       ->withError(\Lang::get('messages.invalid_id'));
+                            );            
         }
     }
 
@@ -573,73 +556,8 @@ class LemmaController extends Controller
      */
     public function updateExamples(Request $request, $id)
     {
-        foreach ($request['relevance'] as $key => $value) {
-            $relevance = (int)$value;
-            if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$key,$regs)) {
-                $meaning_id = (int)$regs[1];
-                $text_id = (int)$regs[2];
-                $sentence_id = (int)$regs[3];
-                $w_id = (int)$regs[4];
-                
-                if ($relevance == 1) { // не выставлена оценка
-                    $exists_positive_rel = DB::table('meaning_text') // ищем другие значения лемм с положительной оценкой
-                            -> where('text_id',$text_id)
-                            -> where('sentence_id',$sentence_id)
-                            -> where('w_id',$w_id)
-                            -> where('meaning_id', '<>', $meaning_id)
-                            -> where ('relevance','>',1);
-                    if ($exists_positive_rel->count() > 0) { // этот пример привязан к другому значению
-                        $relevance = 0;
-                    }
-                } elseif ($relevance != 0) { // положительная оценка
-                    DB::statement('UPDATE meaning_text SET relevance=0'. // всем значениям с неопределенными оценками проставим отрицательные
-                                  ' WHERE meaning_id <> '.$meaning_id.
-                                  ' AND relevance=1'.
-                                  ' AND text_id='.$text_id.
-                                  ' AND sentence_id='.$sentence_id.
-                                  ' AND w_id='.$w_id);
-                }
-                DB::statement('UPDATE meaning_text SET relevance='.$relevance // запишем оценку этому значению
-                             .' WHERE meaning_id='.$meaning_id
-                             .' AND text_id='.$text_id
-                             .' AND sentence_id='.$sentence_id
-                             .' AND w_id='.$w_id);
-            }
-        }
-/*        
-        $lemma=Lemma::find($id);
-        $meanings = [];
-        foreach ($lemma->meanings as $meaning) {
-            $meanings[] = $meaning->id;            
-        }
-        $meanings = array_unique($meanings);
-        
-        foreach ($meanings as $meaning_id) {
-            $sentences = DB::table('meaning_text')
-                    ->where('meaning_id',$meaning_id)
-                    ->where('relevance',1)
-                    ->get(['text_id','sentence_id','w_id']);
-            foreach ($sentences as $sentence) {
-                $exists_positive_rel = DB::table('meaning_text')
-                        -> where('text_id',$sentence->text_id)
-                        -> where('sentence_id',$sentence->sentence_id)
-                        -> where('w_id',$sentence->w_id)
-                        -> whereIn('meaning_id',$meanings)
-                        -> where ('relevance','>',1);
-                if ($exists_positive_rel->count() > 0) {
-                    DB::statement('UPDATE meaning_text SET relevance=0'
-                                 .' WHERE meaning_id='.(int)$meaning_id
-                                 .' AND text_id='.(int)$sentence->text_id
-                                 .' AND sentence_id='.(int)$sentence->sentence_id
-                                 .' AND w_id='.(int)$sentence->w_id);
-                    
-                }
-                
-            }
-        }
- * 
- */
-        return Redirect::to('/dict/lemma/'.$id.($this->args_by_get))
+        Text::updateExamples($request['relevance']);
+        return Redirect::to($request['back_to_url'].($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
