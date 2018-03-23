@@ -144,7 +144,7 @@ class LemmaController extends Controller
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('lemmas');
         $gramset_values = Gramset::getList($this->url_args['search_pos'],$this->url_args['search_lang'],true);
-                                
+
         return view('dict.lemma.index')
                   ->with(array(
                                'gramset_values' => $gramset_values,

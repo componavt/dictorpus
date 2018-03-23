@@ -26,6 +26,9 @@ use App\Models\Corpus\Transtext;
 
 class TextController extends Controller
 {
+    public $url_args=[];
+    public $args_by_get='';
+    
      /**
      * Instantiate a new new controller instance.
      *
@@ -56,7 +59,7 @@ class TextController extends Controller
         } elseif ($this->url_args['limit_num']>1000) {
             $this->url_args['limit_num'] = 1000;
         }   
-        
+       
         $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
 
@@ -163,6 +166,8 @@ class TextController extends Controller
                           'recorder_values' => $recorder_values,
                           'dialect_values' => $dialect_values,
                           'genre_values' => $genre_values,
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
                          ]);
     }
 
@@ -200,7 +205,7 @@ class TextController extends Controller
         $text->dialects()->attach($request->dialects);
         $text->genres()->attach($request->genres);
 
-        $redirect = Redirect::to('/corpus/text/'.($text->id))
+        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.created_success'));
 
         if ($request->text) {
@@ -242,7 +247,10 @@ class TextController extends Controller
         
         return view('corpus.text.show')
                   ->with(['text'=>$text,
-                          'labels'=>join(', ',$labels)]);
+                          'labels'=>join(', ',$labels),
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
+                      ]);
     }
 
     /**
@@ -285,6 +293,8 @@ class TextController extends Controller
                           'dialect_value' => $dialect_value,
                           'genre_values' => $genre_values,
                           'genre_value' => $genre_value,
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
                          ]);
     }
 
@@ -335,7 +345,7 @@ class TextController extends Controller
         $text->genres()->detach();
         $text->genres()->attach($request->genres);
 
-        $redirect = Redirect::to('/corpus/text/'.($text->id))
+        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
 
         if ($request->text && $old_text != $request->text || $request->text && !$text->text_xml) {
@@ -421,10 +431,10 @@ class TextController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/corpus/text/')
+                return Redirect::to('/corpus/text/'.($this->args_by_get))
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/corpus/text/')
+            return Redirect::to('/corpus/text/'.($this->args_by_get))
                   ->withSuccess($result['message']);
         }
     }
@@ -473,7 +483,10 @@ class TextController extends Controller
         }
 //dd($lemma->revisionHistory);        
         return view('corpus.text.history')
-                  ->with(['text' => $text]);
+                  ->with(['text' => $text,
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
+                          ]);
     }
 
     /**
@@ -533,7 +546,7 @@ class TextController extends Controller
             $transText->save(); 
         }
         
-        return Redirect::to('/corpus/text/'.($text->id))
+        return Redirect::to('/corpus/text/'.($text->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));        
     }
      

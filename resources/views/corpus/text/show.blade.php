@@ -13,16 +13,16 @@
         <h1>{{ trans('navigation.texts') }}</h1>
         
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}">{{ trans('messages.back_to_list') }}</a>
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             
         @if (User::checkAccess('corpus.edit'))
             | @include('widgets.form._button_edit', ['route' => '/corpus/text/'.$text->id.'/edit'])
-            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/markup') }}">{{ trans('corpus.re-markup') }}</a>            
+            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/markup') }}{{$args_by_get}}">{{ trans('corpus.re-markup') }}</a>            
             | @include('widgets.form._button_delete', ['route' => 'text.destroy', 'id' => $text->id]) 
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif 
-            | <a href="/corpus/text/{{ $text->id }}/history">{{ trans('messages.history') }}</a>
+            | <a href="/corpus/text/{{ $text->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
         </p>
         
         <h2>{{ $text->title }}</h2>

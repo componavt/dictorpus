@@ -186,7 +186,8 @@ class Lang extends Model
             foreach ($url_args as $a=>$v) {
                 if (is_array($v)) {
                     foreach ($v as $k=>$value) {
-                        $tmp[] = "$a[$k]=$value";
+//                        $tmp[] = $a."[".$k."]=".$value;
+                        $tmp[] = $a."%5B%5D=".$value;
                     }
                 }
                 elseif ($v!='' && !($a=='page' && $v==1) && !($a=='limit_num' && $v==10)) {

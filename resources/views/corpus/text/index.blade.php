@@ -15,7 +15,7 @@
         
         <p style="text-align:right">
         @if (User::checkAccess('corpus.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}">
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
         @endif
             {{ trans('messages.create_new_m') }}
         @if (User::checkAccess('corpus.edit'))
@@ -124,7 +124,7 @@
                     @endif
                 </td>
                 <td>{{$text->corpus->name}}</td>
-                <td><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}">{{$text->title}}</td>
+                <td><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</td>
                 <td>
                     @if ($text->transtext)
                     {{$text->transtext->title}}

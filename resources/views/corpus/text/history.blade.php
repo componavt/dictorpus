@@ -13,8 +13,8 @@
         <h1>{{ trans('navigation.texts') }}</h1>
 
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}">{{ trans('messages.back_to_show') }}</a>
-            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}">{{ trans('messages.back_to_list') }}</a>
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a>
+            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
         </p>
 
         <h2>{{ $text->title }}</h2>
