@@ -101,10 +101,18 @@
         }
     );
     
-    $(".lemma-linked").click(function() {
+   $(".lemma-linked").click(function() {
         var block_id = 'links_' + $(this).attr('id');
         $(".links-to-lemmas").hide();
         $("#"+block_id).show();
     });
+    
+    $(document).mouseup(function (e){ // событие клика по веб-документу
+		var div = $(".links-to-lemmas"); // тут указываем ID элемента
+		if (!div.is(e.target) // если клик был не по нашему блоку
+		    && div.has(e.target).length === 0) { // и не по его дочерним элементам
+			div.hide(); // скрываем его
+		}
+	});    
 @stop
 

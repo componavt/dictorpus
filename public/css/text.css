@@ -19,7 +19,7 @@ s {
 }
 
 .lemma-linked.has-checked {
-    color: green;
+    color: #3eea6b;
 }
 
 .lemma-linked.polysemy {
@@ -32,10 +32,10 @@ s {
     display: none;
     left: 0;
     margin-top: -2px;
-    max-width: 100px;
+/*    max-width: 200px;*/
     padding: 10px;
     position: absolute;
-    width: auto;
+    width: 200px;
     z-index:100;
 }
 
