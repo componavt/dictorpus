@@ -33,7 +33,7 @@
             @foreach ($meanings as $meaning)
             <tr>
                 <td>
-                    <h3>{{$meaning->lemma->lemma}}</h3>
+                    <h3>{{$meaning->lemma->lemma}} ({{$meaning->lemma->pos->name}})</h3>
                     {{$meaning->meaning_n}} {{trans('dict.meaning')}}
                     @if (isset($meaning_texts[$meaning->id]))
                         @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
