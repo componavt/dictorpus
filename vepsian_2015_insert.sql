@@ -749,3 +749,7 @@ delete from event_informant where event_id not in (select event_id from texts wh
 delete from event_recorder where event_id not in (select event_id from texts where event_id is not null);
 delete from events where id not in (select event_id from texts where event_id is not null);
 
+--php artisan make:migration increase_number_fields_in_sources_table --table=sources
+
+alter table sources change `ieeh_archive_number1` `ieeh_archive_number1` char(10) default null;
+alter table sources change `pages` `pages` varchar(20) default null;
