@@ -36,6 +36,7 @@
 
         {!! Form::model($lemma, array('method'=>'POST', 'route' => array('lemma.update.examples', $lemma->id))) !!}
         @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
+        <input type="hidden" name="back_to_url" value="{{$back_to_url}}">
 
         <table class="table lemma-example-edit">
             <tr>

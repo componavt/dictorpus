@@ -40,6 +40,7 @@ class LemmaController extends Controller
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                           ['only' => ['create','store','edit','update','destroy',
+                                      'createMeaning', 'editExamples', 'editExample',
                                       'editWordforms','updateWordforms','updateExamples']]);
         
         $this->url_args = [
@@ -431,6 +432,7 @@ class LemmaController extends Controller
         
         return view('dict.lemma.edit_examples')
                   ->with(array(
+                               'back_to_url'    => '/dict/lemma/'.$lemma->id,
                                'lemma'          => $lemma, 
                                'meanings'        => $lemma->meanings,
                                'meaning_texts'  => $meaning_texts,

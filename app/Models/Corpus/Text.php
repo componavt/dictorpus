@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
 
+use App\Models\User;
+
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Informant;
@@ -467,15 +469,15 @@ dd($wordforms);
                         $locale = LaravelLocalization::getCurrentLocale();
                         $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
                     }
-
-                    $button_edit = $link_block->addChild('a','&#9999;');
-                    $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
-                                                                                        $sentence_id.'_'.$word_id)); 
-                    $button_edit->addAttribute('class','text-example-edit'); 
-    //                $button = $button_edit->addChild('i');
-    //                $button->addAttribute('class','fa-pencil'); 
-    //                $button->addAttribute('class','fa fa-pencil fa-lg'); 
-
+                    if (User::checkAccess('corpus.edit')) {
+                        $button_edit = $link_block->addChild('a','&#9999;');
+                        $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
+                                                                                            $sentence_id.'_'.$word_id)); 
+                        $button_edit->addAttribute('class','text-example-edit'); 
+        //                $button = $button_edit->addChild('i');
+        //                $button->addAttribute('class','fa-pencil'); 
+        //                $button->addAttribute('class','fa fa-pencil fa-lg'); 
+                    }
                     $class = 'lemma-linked';
                     if ($has_checked_meaning) {
                         $class .= ' has-checked';
