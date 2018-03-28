@@ -109,6 +109,9 @@
                 <td>
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
+                        @if ($lemma->reflexive)
+                            ({{ trans('dict.reflexive_verb') }})
+                        @endif
                     @endif
                 </td>
                 <td>
