@@ -153,18 +153,24 @@ class Meaning extends Model
     public function getMultilangMeaningTextsString($code='') :String
     {
         $mean_langs = [];
-        $meaning_texts = $this->meaningTexts();
-        if ($code) {
+        $meaning_texts = $this->meaningTexts()->get();
+//dd($meaning_texts->count());                
+//print $this->id;       
+ //dd($meaning_texts->toSql());                
+       if ($code) {
             $lang = Lang::where('code',$code)->first();
             if ($lang) {
-                $meaning_texts_by_code = $meaning_texts->where('lang_id',$lang->id);
-                if ($meaning_texts_by_code->count()) {
-                    $meaning_texts = $meaning_texts_by_code;
+                $meaning_texts_by_code = $this->meaningTexts()->where('lang_id',$lang->id);
+//print $meaning_texts_by_code->count();                
+                if ($meaning_texts_by_code->count() > 0) {
+                    $meaning_texts = $meaning_texts_by_code->get();
                 }
             }
         }
-        if ($meaning_texts->count()) {
-            foreach ($meaning_texts->get() as $meaning_text_obj) {
+//dd($meaning_texts->toSql());                
+//dd($meaning_texts->count());                
+//        if ($meaning_texts->count()) {
+            foreach ($meaning_texts as $meaning_text_obj) {
                 $meaning_text = $meaning_text_obj->meaning_text;
                 if ($meaning_text) {
                     if ($meaning_text_obj->lang->code != $code) {
@@ -173,7 +179,7 @@ class Meaning extends Model
                     $mean_langs[] = $meaning_text;  
                 } 
             }
-        } 
+  //      } 
         
         $out = join(', ',$mean_langs);
 

@@ -116,7 +116,7 @@
                 </td>
                 <td>
                     @foreach ($lemma->meanings as $meaning_obj) 
-                        {{$meaning_obj->getMultilangMeaningTextsString('ru')}}<br>
+                        {{$meaning_obj->getMultilangMeaningTextsString(LaravelLocalization::getCurrentLocale())}}<br>
                     @endforeach
                 </td>
                 <td>
