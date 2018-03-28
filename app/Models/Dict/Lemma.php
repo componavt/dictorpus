@@ -141,8 +141,10 @@ class Lemma extends Model
     public function existDialects()
     {
         $dialect_ids = DB::table('lemma_wordform')
+                      ->leftJoin('dialects','dialects.id','=','lemma_wordform.dialect_id')
                       ->select('dialect_id')
                       ->where('lemma_id',$this->id)
+                      ->orderBy('sequence_number')
                       ->groupBy('dialect_id')->get();
         $dialects = [];
         
@@ -153,7 +155,7 @@ class Lemma extends Model
                 $dialects[$dialect->dialect_id] = Dialect::find($dialect->dialect_id)->name;
             }
         }
-        asort($dialects);
+ //       asort($dialects);
         return $dialects;
     } 
     

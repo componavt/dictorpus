@@ -225,7 +225,7 @@ class LemmaController extends Controller
         }
         $lemma->save();
         
-        //Wordform::storeInitialWordforms($lemma);
+        Wordform::storeInitialWordforms($lemma);
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
     
