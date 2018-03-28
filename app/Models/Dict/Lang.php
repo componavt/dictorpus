@@ -120,9 +120,13 @@ class Lang extends Model
      * 
      * @return Array [1=>'Vepsian',..]
      */
-    public static function getListWithPriority($first_lang_id)
+    public static function getListWithPriority($first_lang_id='')
     {     
         $locale = LaravelLocalization::getCurrentLocale();
+        
+        if (!$first_lang_id) {
+            $first_lang_id = self::getIDByCode($locale);
+        }
         
         $languages = self::orderBy('name_'.$locale)->get();
         

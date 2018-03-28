@@ -168,11 +168,13 @@ class LemmaController extends Controller
     {
         $pos_values = PartOfSpeech::getGroupedList();   
         $lang_values = Lang::getList();
+        $langs_for_meaning = Lang::getListWithPriority();
+        
         $new_meaning_n = 1;
                 
         return view('dict.lemma.create')
                   ->with(array(
-                               'langs_for_meaning' => $lang_values,
+                               'langs_for_meaning' => $langs_for_meaning,
                                'lang_values' => $lang_values,
                                'new_meaning_n' => $new_meaning_n,
                                'pos_values' => $pos_values,
@@ -222,6 +224,8 @@ class LemmaController extends Controller
             $lemma->reflexive = 0;
         }
         $lemma->save();
+        
+        Wordform::storeInitialWordforms($lemma);
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
     

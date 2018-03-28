@@ -135,4 +135,35 @@ class Wordform extends Model
             }
         }
     }
+    
+    /**
+     * Store wordform in nominative for nouns (NOUN), adjectives(ADJ)
+     * and infinitive for verbs (VERB)
+     * 
+     * @param Lemma $lemma - object of lemma
+     * @return NULL
+     */
+    public static function storeInitialWordforms($lemma) {
+//dd($lemma);
+        $pos_code = $lemma->pos->code;
+//dd($pos_code); 
+        $dialects = array_keys(Dialect::getList($lemma->lang_id));
+//dd($dialects);        
+        $gramset_id = '';
+        
+        if ($pos_code == 'NOUN' || $pos_code == 'ADJ') {
+            $gramset_id = 1; // nominative
+        } elseif ($pos_code == 'VERB') {
+            $gramset_id = 170; //infinitive I
+        }
+//dd($gramset_id);        
+        if ($gramset_id) {
+            $wordform_obj = self::firstOrCreate(['wordform'=>$lemma->lemma]);
+//dd($wordform_obj);            
+            foreach ($dialects as $dialect_id) {
+//dd($dialect_id);                
+                $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                
+            }
+        }
+    }
 }
