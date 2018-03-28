@@ -195,7 +195,8 @@ class LemmaController extends Controller
     {
         $count = (int)$request->input('count');
         $meaning_n = (int)$request->input('meaning_n');
-        $langs_for_meaning = Lang::getList();
+//        $langs_for_meaning = Lang::getList();
+        $langs_for_meaning = Lang::getListWithPriority();
                                 
         return view('dict.lemma._form_create_meaning')
                   ->with(array('count' => $count,
