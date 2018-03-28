@@ -58,11 +58,6 @@
         </button>
 
         @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
-{{--
-        <p><b>{{ trans('dict.wordforms') }}</b></p>
-        @if ($action == 'edit')
-            @include('dict.lemma._form_edit_wordforms')
-        @endif
---}}
+
 
 
