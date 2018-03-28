@@ -6,6 +6,7 @@ use Cartalyst\Sentinel\Users\EloquentUser;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 use LaravelLocalization;
+use DB;
 
 use App\Models\Role;
 
@@ -117,6 +118,16 @@ class User extends EloquentUser
         return false;
     }
     
+    public function getLastActionTime() {
+        $history = DB::table('revisions')
+                     ->select('updated_at')
+                     ->where('user_id',$this->id)
+                     ->orderBy('updated_at','desc')->first();
+        
+        if ($history) {
+            return $history->updated_at;
+        }
+    }
     // "The permission display_name allows a user to description."
     
     // name,            display_name,       description

@@ -14,6 +14,7 @@ return [
     'account_is_activated' => 'Account is activated.',
     'confirm' => 'Confirm',
     'first_name' => 'First name',
+    'last_activity' => 'Last activity',
     'last_name' => 'Last name',
     'last_login' => 'last login',
     'login' => 'Login',
