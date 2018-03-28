@@ -431,6 +431,9 @@ class TextController extends Controller
                     $text->genres()->detach();
                     $text->meanings()->detach();
 
+                    //remove all relative words
+                    $text->words()->delete();
+                    
                     $text->delete();
 
                     //remove transtext if exists and don't link with other texts
