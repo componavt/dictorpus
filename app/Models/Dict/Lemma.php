@@ -289,16 +289,8 @@ class Lemma extends Model
                      ->whereIn('meaning_id',function($q) use ($lemma_id){
                          $q->select('id')->from('meanings')
                            ->where('lemma_id',$lemma_id);
-                     })->groupBy('word_id')->get();
-//dd($builder->toSql());                     
-        /*
-        $count = 0;
-        foreach ($this->meanings as $meaning) {
-            if ($meaning->texts()) {
-//print "<p>meaning:".$meaning->id.', count: '.$meaning->texts()->count()."</p>";                
-                $count = $count + $meaning->texts()->count();
-            }
-        }*/
+                     })->groupBy('text_id','w_id')->get();
+//dd($texts->toSql());                     
         return sizeof($texts);
     }
     

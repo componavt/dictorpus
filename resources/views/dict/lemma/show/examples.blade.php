@@ -1,16 +1,20 @@
 <?php $for_edition = User::checkAccess('dict.edit');
       $sentence_count = $meaning->countSentences(false);
       $sentence_total = $meaning->countSentences(true); ?>
-@if ($sentence_total)
+@if ($sentence_total && (User::checkAccess('dict.edit') || $sentence_count))
                 <h4>{{ trans('messages.examples')}} 
-                    ({{trans('messages.total')}} {{ $sentence_count}} {{trans('messages.of')}} {{ $sentence_total}})
 
                     @if (User::checkAccess('dict.edit'))
+                        ({{trans('messages.total')}} {{ $sentence_count}} {{trans('messages.of')}} {{ $sentence_total}})
                         @include('widgets.form._button_edit', 
                                  ['route' => '/dict/lemma/'.$lemma->id.'/edit/examples/',
                                   'without_text' => 1])
+                    @else
+                        ({{ $sentence_count}})
                     @endif
                 </h4>
+@endif 
+@if ($sentence_count)
                 <p>
                     @foreach (trans('dict.relevance_scope_example') as $r_k=> $r_v) 
                     <span class='relevance relevance-{{$r_k}}'>
@@ -55,5 +59,5 @@
                             {{ trans('dict.hide_examples') }}
                     </a>
                     @endif
-                    </div>
+                    </div>              
 @endif
