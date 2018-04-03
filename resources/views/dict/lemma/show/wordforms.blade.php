@@ -6,11 +6,11 @@
                                 'class' => 'form-inline'])
                 !!}
                 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
+<!--'attributes'=>['placeholder' => trans('dict.select_dialect')] -->
                 @include('widgets.form._formitem_select',
                         ['name' => 'dialect_id',
                          'values' =>$dialect_values,
-                         'attributes'=>['placeholder' => trans('dict.select_dialect'),
-                                       ]]) 
+                         ]) 
                 @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.edit')])
                 {!! Form::close() !!}
             @endif

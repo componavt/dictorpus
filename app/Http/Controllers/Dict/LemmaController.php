@@ -292,7 +292,6 @@ class LemmaController extends Controller
         }   
         
         $dialect_values = Dialect::getList($lemma->lang_id);
-
         return view('dict.lemma.show')
                   ->with([
                           'dialect_values'    => $dialect_values,
