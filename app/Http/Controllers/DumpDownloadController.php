@@ -26,7 +26,7 @@ class DumpDownloadController extends Controller
 
 	$dir="db/";
 
-	$files = scandir($dir);
+	$files = scandir($dir,SCANDIR_SORT_DESCENDING);
 
 	$dumps=array();
 
