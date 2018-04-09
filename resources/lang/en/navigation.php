@@ -26,6 +26,7 @@ return [
     'langs'  => 'Languages',
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',
+    'omonyms' => 'Omonyms',
     'parts_of_speech' => 'Parts of speech',
     'places' => 'Settlements',
     'recorders' => 'Recorders',

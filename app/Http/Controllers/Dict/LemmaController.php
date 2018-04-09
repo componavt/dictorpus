@@ -739,6 +739,50 @@ class LemmaController extends Controller
                         );
     }
         
+    public function omonyms(Request $request) {
+        $lemmas = Lemma::groupBy('lemma','pos_id','lang_id')
+                       ->havingRaw('count(*) > 1');
+        
+        if ($this->url_args['search_lemma']) {
+            $lemmas = $lemmas->where('lemma','like', $this->url_args['search_lemma']);
+        } 
+
+        foreach (['lang','pos'] as $var) {
+            if ($this->url_args['search_'.$var]) {
+                $lemmas = $lemmas->where($var.'_id',$this->url_args['search_'.$var]);
+            }
+        } 
+         
+        $ids = [];
+        foreach($lemmas->get() as $lemma) {
+            $omonyms = Lemma::select('id')
+                            ->where('lemma','like',$lemma->lemma)
+                            ->where('lang_id',$lemma->lang_id)
+                            ->where('pos_id',$lemma->pos_id)->get();
+            foreach ($omonyms as $omonym) {
+                $ids[] = $omonym->id;
+            }
+        }
+
+        $lemmas = Lemma::whereIn('id',$ids);
+        $numAll = $lemmas->count();
+        $lemmas = $lemmas->orderBy('lemma')->paginate($this->url_args['limit_num']);
+
+        $pos_values = PartOfSpeech::getList();        
+        $lang_values = Lang::getList();
+        
+        return view('dict.lemma.omonyms')
+                  ->with([
+                            'lemmas'          => $lemmas,
+                            'lang_values'     => $lang_values,
+                            'numAll'          => $numAll,
+                            'pos_values'      => $pos_values,
+                            'args_by_get'     => $this->args_by_get,
+                            'url_args'        => $this->url_args,
+                          ]
+                        );
+    }
+
     /**
      * Gets list of relations for drop down list in JSON format
      * Test url: /dict/lemma/meanings_list?lang_id=1&pos_id=1&lemma_id=2810
@@ -768,10 +812,6 @@ class LemmaController extends Controller
         return Response::json($all_meanings);
     }
     
-    public function omonyms(Request $request) {
-        
-    }
-
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */

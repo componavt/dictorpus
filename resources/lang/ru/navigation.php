@@ -26,6 +26,7 @@ return [
     'langs'  => 'Языки',
     'lemmas' => 'Леммы',
     'logout' => 'Выйти',
+    'omonyms' => 'Омонимы',
     'parts_of_speech' => 'Части речи',
     'places' => 'Населенные пункты',
     'recorders' => 'Собиратели',
