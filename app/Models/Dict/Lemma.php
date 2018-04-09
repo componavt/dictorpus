@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use URL;
 use LaravelLocalization;
+use \Venturecraft\Revisionable\Revision;
 
+use App\Models\User;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 //use App\Models\Dict\Meaning;
@@ -437,7 +439,38 @@ class Lemma extends Model
         }
         return $sentences;
     }
-
+    
+    public static function lastCreatedLemmas($limit='') {
+        $lemmas = self::latest();
+        if ($limit) {
+            $lemmas = $lemmas->take($limit);
+        }
+        $lemmas = $lemmas->get();
+        foreach ($lemmas as $lemma) {
+            $revision = Revision::where('revisionable_type','like','%Lemma')
+                                ->where('key','created_at')
+                                ->where('revisionable_id',$lemma->id)
+                                ->latest()->first();
+            if ($revision) {
+                $lemma->user = User::getNameByID($revision->user_id);
+            }
+        }
+        return $lemmas;
+    }
+    
+    public static function lastUpdatedLemmas($limit='') {
+        $revisions = Revision::where('revisionable_type','like','%Lemma')
+                            ->where('key','updated_at')
+                            ->latest()->take($limit)->get();
+        $lemmas = [];
+        foreach ($revisions as $revision) {
+            $lemma = Lemma::find($revision->revisionable_id);
+            $lemma->user = User::getNameByID($revision->user_id);
+            $lemmas[] = $lemma;
+        }
+        return $lemmas;
+    }
+    
     /**
      * Gets Delete link created in a view
      * Generates a CSRF token and put it inside a custom data-delete attribute

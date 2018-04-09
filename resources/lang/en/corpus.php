@@ -35,8 +35,10 @@ return [
     'informant_name' => 'Informant name',
     'informant_removed' => 'Informant ":name" is removed successfully.',
     
+    'last_updated_texts' => 'Last updated texts',
     'name' => 'name',
     'nee' => 'nee',
+    'new_texts'=>'New texts',
     
     'of_corpus' => 'of corpus',
     'of_district' => 'of district',

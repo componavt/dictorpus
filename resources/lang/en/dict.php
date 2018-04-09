@@ -32,6 +32,7 @@ return [
     'interpretation' => 'interpretation',
     'lang' => 'language',
     'lang_code' => 'Language code',
+    'last_updated_lemmas' => 'Last updated lemmas',
     'lemma' => 'lemma',
     'lemmas' => 'lemmas',
     'lemma_removed' => 'Lemma ":name" is removed successfully.',
@@ -44,6 +45,7 @@ return [
     'name' => 'name',
     'name_short' => 'short name',
     'negation' => 'negation',
+    'new_lemmas'=>'New lemmas',
     'number' => 'Number',
     
     'of_dialect' => 'of dialect',

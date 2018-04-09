@@ -128,6 +128,17 @@ class User extends EloquentUser
             return $history->updated_at;
         }
     }
+    
+    public static function getNameByID($id) {
+        $user = User::find($id);
+        if ($user) {
+            return $user->name;
+        }
+    }
+    
+    
+    
+    
     // "The permission display_name allows a user to description."
     
     // name,            display_name,       description

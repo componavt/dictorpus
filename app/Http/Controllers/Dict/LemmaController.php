@@ -506,6 +506,7 @@ class LemmaController extends Controller
         if ($lemma->pos_id != 11) { // is not verb
             $lemma->reflexive = 0;
         }
+        $lemma->updated_at = date('Y-m-d H:i:s');
         $lemma->save();
         
         // MEANINGS UPDATING

@@ -35,8 +35,10 @@ return [
     'informant_name' => 'Имя информанта',
     'informant_removed' => 'Информант ":name" удален.',
     
+    'last_updated_texts' => 'Последние измененные тексты',
     'name' => 'название',
     'nee' => 'урожд.',
+    'new_texts'=>'Новые тексты',
     
     'of_corpus' => 'корпуса',
     'of_district' => 'района',

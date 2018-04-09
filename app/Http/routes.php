@@ -20,9 +20,7 @@ Route::group(
     ],
     function()
     {
-        Route::get('/', function () {
-            return view('welcome');
-        });
+        Route::get('/','HomeController@index');
 
         // Вызов страницы регистрации пользователя
         Route::get('register', 'AuthController@register');   

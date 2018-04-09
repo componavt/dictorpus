@@ -357,7 +357,9 @@ class TextController extends Controller
         $request['transtext_text'] = Text::process($request['transtext_text']);
 
         $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
-
+        $text->updated_at = date('Y-m-d H:i:s');
+        $text->save();
+        
         Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'), 
                                                   $text);
         Event::storeEvent($request->only('event_informant_id','event_place_id','event_date'), 

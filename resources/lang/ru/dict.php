@@ -32,6 +32,7 @@ return [
     'interpretation' => 'толкование',
     'lang_code' => 'Код языка',
     'lang' => 'язык',
+    'last_updated_lemmas' => 'Последние измененные леммы',
     'lemma' => 'лемма',
     'lemmas' => 'леммы',
     'lemma_removed' => 'Лемма ":name" удалена.',
@@ -44,6 +45,7 @@ return [
     'name' => 'название',
     'name_short' => 'короткое название',
     'negation' => 'отрицание',
+    'new_lemmas'=>'Новые леммы',
     'number' => 'число',
     
     'of_dialect' => 'диалекта',

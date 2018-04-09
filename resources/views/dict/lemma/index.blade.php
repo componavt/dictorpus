@@ -86,7 +86,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
-        @if ($lemmas)
+        @if ($numAll)
         <table class="table">
         <thead>
             <tr>

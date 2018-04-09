@@ -5,6 +5,7 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
+use \Venturecraft\Revisionable\Revision;
 
 use App\Models\User;
 
@@ -649,4 +650,36 @@ dd($wordforms);
             }
         }
     }
+    
+    public static function lastCreatedTexts($limit='') {
+        $texts = self::latest();
+        if ($limit) {
+            $texts = $texts->take($limit);
+        }
+        $texts = $texts->get();
+        foreach ($texts as $text) {
+            $revision = Revision::where('revisionable_type','like','%Text')
+                                ->where('key','created_at')
+                                ->where('revisionable_id',$text->id)
+                                ->latest()->first();
+            if ($revision) {
+                $text->user = User::getNameByID($revision->user_id);
+            }
+        }
+        return $texts;
+    }
+    
+    public static function lastUpdatedTexts($limit='') {
+        $revisions = Revision::where('revisionable_type','like','%Text')
+                            ->where('key','updated_at')
+                            ->latest()->take($limit)->get();
+        $texts = [];
+        foreach ($revisions as $revision) {
+            $text = Text::find($revision->revisionable_id);
+            $text->user = User::getNameByID($revision->user_id);
+            $texts[] = $text;
+        }
+        return $texts;
+    }
+    
 }

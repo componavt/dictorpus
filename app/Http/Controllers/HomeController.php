@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 
+use App\Models\Dict\Lemma;
+use App\Models\Corpus\Text;
+
 class HomeController extends Controller
 {
     /**
@@ -14,7 +17,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
 
     /**
@@ -24,7 +27,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-//        return view('home');
-        return view('welcome');
+        $limit = 3;
+        $new_lemmas = Lemma::lastCreatedLemmas($limit);
+        $last_updated_lemmas = Lemma::lastUpdatedLemmas($limit);
+        $new_texts = Text::lastCreatedTexts($limit);
+        $last_updated_texts = Text::lastUpdatedTexts($limit);
+        
+        return view('welcome')->with([
+                                        'new_lemmas'=>$new_lemmas,
+                                        'last_updated_lemmas'=>$last_updated_lemmas,
+                                        'new_texts'=>$new_texts,
+                                        'last_updated_texts'=>$last_updated_texts,
+                                     ]);
     }
 }
