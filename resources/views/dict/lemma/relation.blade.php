@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -15,23 +15,26 @@
         @include('widgets.form._formitem_text',
                 ['name' => 'search_lemma',
                  'special_symbol' => true,
-                'value' => $search_lemma,
+                'value' => $url_args['search_lemma'],
                 'attributes'=>['size' => 15,
                                'placeholder'=>trans('dict.lemma')]])
+                               
         @include('widgets.form._formitem_select',
-                ['name' => 'lang_id',
+                ['name' => 'search_lang',
                  'values' =>$lang_values,
-                 'value' =>$lang_id,
+                 'value' => $url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]])
+                 
         @include('widgets.form._formitem_select',
-                ['name' => 'pos_id',
+                ['name' => 'search_pos',
                  'values' =>$pos_values,
-                 'value' =>$pos_id,
+                 'value' => $url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
+                 
         @include('widgets.form._formitem_select',
-                ['name' => 'relation_id',
+                ['name' => 'search_relation',
                  'values' =>$relation_values,
-                 'value' =>$relation_id,
+                 'value' => $url_args['search_relation'],
                  'attributes'=>['placeholder' => trans('dict.select_relation') ]]) 
         <br>
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
@@ -39,7 +42,7 @@
         {{trans('messages.show_by')}}
         @include('widgets.form._formitem_text',
                 ['name' => 'limit_num',
-                'value' => $limit_num,
+                'value' => $url_args['limit_num'],
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
@@ -66,19 +69,15 @@
                 <td>{{ $list_count++ }}</td>
                 <td>{{ $lemma1->lang->name }}</td>
                 <td>{{ $lemma1->pos->name }}</td>
-                <td><a href="/dict/lemma/{{$lemma->lemma1_id}}">{{$lemma->lemma1}}</a></td>
+                <td><a href="/dict/lemma/{{$lemma->lemma1_id}}{{$args_by_get}}">{{$lemma->lemma1}}</a></td>
                 <td>{{ \App\Models\Dict\Meaning::find($lemma->meaning1_id)->getMultilangMeaningTextsString() }}</td>
                 <td>{{ \App\Models\Dict\Relation::find($lemma->relation_id)->name }}</td>
-                <td><a href="/dict/lemma/{{$lemma2->id}}">{{$lemma2->lemma}}</a></td>
+                <td><a href="/dict/lemma/{{$lemma2->id}}{{$args_by_get}}">{{$lemma2->lemma}}</a></td>
                 <td>{{ $meaning2->getMultilangMeaningTextsString() }}</td>
             </tr>
             @endforeach
         </table>
-            {!! $lemmas->appends(['limit_num' => $limit_num,
-                                  'search_lemma' => $search_lemma,
-                                  'lang_id'=>$lang_id,
-                                  'relation_id'=>$relation_id,
-                                  'pos_id'=>$pos_id])->render() !!}
+            {!! $lemmas->appends($url_args)->render() !!}
         @endif
 @stop
 

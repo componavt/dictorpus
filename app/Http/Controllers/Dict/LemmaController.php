@@ -52,6 +52,7 @@ class LemmaController extends Controller
                     'search_lemma'    => $request->input('search_lemma'),
                     'search_meaning'  => $request->input('search_meaning'),
                     'search_pos'      => (int)$request->input('search_pos'),
+                    'search_relation' => (int)$request->input('search_relation'),
                     'search_wordform' => $request->input('search_wordform'),
                 ];
         
@@ -702,44 +703,22 @@ class LemmaController extends Controller
      */
     public function relation(Request $request)
     {
-        $search_lemma = $request->input('search_lemma');
-        $limit_num = (int)$request->input('limit_num');
-        $lang_id = (int)$request->input('lang_id');
-        $pos_id = (int)$request->input('pos_id');
-        $relation_id = (int)$request->input('relation_id');
-        $page = (int)$request->input('page');
-
-        if (!$page) {
-            $page = 1;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }   
-        
         $lemmas = Lemma::select(DB::raw('lemmas.id as lemma1_id, lemmas.lemma as lemma1, relation_id, meaning1_id, meaning2_id'))
                        ->join('meanings', 'lemmas.id', '=', 'meanings.lemma_id')
                        ->join('meaning_relation', 'meanings.id', '=', 'meaning_relation.meaning1_id');        
-        if ($search_lemma) {
-            $lemmas = $lemmas->where('lemma','like', $search_lemma);
+
+        if ($this->url_args['search_lemma']) {
+            $lemmas = $lemmas->where('lemma','like', $this->url_args['search_lemma']);
         } 
 
-        if ($lang_id) {
-            $lemmas = $lemmas->where('lang_id',$lang_id);
+        foreach (['lang','pos','relation'] as $var) {
+            if ($this->url_args['search_'.$var]) {
+                $lemmas = $lemmas->where($var.'_id',$this->url_args['search_'.$var]);
+            }
         } 
          
-        if ($pos_id) {
-            $lemmas = $lemmas->where('pos_id',$pos_id);
-        } 
-                
-        if ($relation_id) {
-            $lemmas = $lemmas->where('relation_id',$relation_id);
-        } 
-        
         $numAll = $lemmas->count();
-        $lemmas = $lemmas->orderBy('lemma')->paginate($limit_num);
+        $lemmas = $lemmas->orderBy('lemma')->paginate($this->url_args['limit_num']);
 
         $pos_values = PartOfSpeech::getList();//getGroupedListWithQuantity('lemmas');
         
@@ -748,18 +727,15 @@ class LemmaController extends Controller
         $relation_values = Relation::getList();//getListWithQuantity('lemmas');
         
         return view('dict.lemma.relation')
-                  ->with(array('limit_num' => $limit_num,
-                               'search_lemma' => $search_lemma,
-                               'lang_id'=>$lang_id,
-                               'pos_id'=>$pos_id,
-                               'relation_id'=>$relation_id,
-                               'page'=>$page,
-                               'lemmas' => $lemmas,
-                               'lang_values' => $lang_values,
-                               'pos_values' => $pos_values,
-                               'relation_values' => $relation_values,
-                               'numAll' => $numAll,
-                              )
+                  ->with([
+                            'lemmas'          => $lemmas,
+                            'lang_values'     => $lang_values,
+                            'numAll'          => $numAll,
+                            'pos_values'      => $pos_values,
+                            'relation_values' => $relation_values,
+                            'args_by_get'     => $this->args_by_get,
+                            'url_args'        => $this->url_args,
+                          ]
                         );
     }
         
@@ -790,6 +766,10 @@ class LemmaController extends Controller
         }  
 
         return Response::json($all_meanings);
+    }
+    
+    public function omonyms(Request $request) {
+        
     }
 
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
