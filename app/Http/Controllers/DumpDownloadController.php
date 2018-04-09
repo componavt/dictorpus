@@ -33,7 +33,7 @@ class DumpDownloadController extends Controller
 	foreach ($files as $file) if ($file!="."&&$file!="..") {
 		$dumps[]=array("filename"=>$file,
 				"date"=>date("d-m-Y H:i:s",filemtime($dir.$file)),
-				"size"=>filesize($dir.$file)/(1024*1024),
+				"size"=>round(filesize($dir.$file)/(1024*1024),1),
 				"href"=>env('APP_URL').$dir.$file
 				);
 	}
