@@ -18,6 +18,7 @@ return [
     'dialect_can_not_be_removed' => 'The dialect can not be removed, there is the related word forms or texts',
     'dialect_list' => 'Dialect list',
     'dialect_removed' => 'Dialect ":name" is removed successfully.',
+    'example_comment' => 'Checked examples / Unchecked examples / Total number',
     'gram_attr' => 'Gram. attributes',
     'gram_category' => 'Grammatical category',
     'gram_list' => 'List of grammatical attributes',

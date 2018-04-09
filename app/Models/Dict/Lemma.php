@@ -295,6 +295,42 @@ class Lemma extends Model
     }
     
     /**
+     * Gets count of the checked sentence-examples
+     * (relevance >1)
+     * 
+     * @return int
+     */
+    public function countCheckedExamples(){
+        $lemma_id = $this->id;
+        $texts = DB::table('meaning_text')
+                    ->where('relevance','>',1)
+                    ->whereIn('meaning_id',function($q) use ($lemma_id){
+                         $q->select('id')->from('meanings')
+                           ->where('lemma_id',$lemma_id);
+                    })->groupBy('text_id','w_id')->get();
+//dd($texts->toSql());                     
+        return sizeof($texts);
+    }
+    
+    /**
+     * Gets count of the checked sentence-examples
+     * (relevance >1)
+     * 
+     * @return int
+     */
+    public function countUncheckedExamples(){
+        $lemma_id = $this->id;
+        $texts = DB::table('meaning_text')
+                    ->where('relevance',1)
+                    ->whereIn('meaning_id',function($q) use ($lemma_id){
+                         $q->select('id')->from('meanings')
+                           ->where('lemma_id',$lemma_id);
+                    })->groupBy('text_id','w_id')->get();
+//dd($texts->toSql());                     
+        return sizeof($texts);
+    }
+    
+    /**
      * Removes all neutral links (relevance=1) from meaning_text
      * and adds new links for all meanings
      *

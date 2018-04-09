@@ -78,3 +78,6 @@
 .sentence-edit {
     color: #666;
 }
+.unchecked-count {
+    color: red;
+}

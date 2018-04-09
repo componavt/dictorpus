@@ -5,6 +5,10 @@
 {{ trans('navigation.lemmas') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/lemma.css')!!}
+@stop
+
 @section('content')
         
         <h2>{{ trans('navigation.lemmas') }}</h2>
@@ -91,7 +95,7 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
-                <th>{{ trans('messages.examples') }}</th>
+                <th>{{ trans('messages.examples') }} *</th>
                 @if (User::checkAccess('dict.edit'))
                 <th colspan="2"></th>
                 @endif
@@ -120,6 +124,19 @@
                     @endforeach
                 </td>
                 <td>
+                    <?php $total_ex = $lemma->countExamples();?>
+                    @if ($total_ex)
+                        <?php $unchecked = $lemma->countUncheckedExamples();?>
+                        {{$lemma->countCheckedExamples()}} /
+                        @if ($unchecked >0)
+                            <span class="unchecked-count">
+                        @endif
+                        {{$unchecked}} 
+                        @if ($unchecked >0)
+                            </span>
+                        @endif
+                        /
+                    @endif
                     {{$lemma->countExamples()}}
                 </td>
                 @if (User::checkAccess('dict.edit'))
@@ -141,6 +158,8 @@
             @endforeach
         </table>
             {!! $lemmas->appends($url_args)->render() !!}
+            
+            <p><big>*</big> -  {{ trans('dict.example_comment') }}
         @endif
 
 {{--        @include('dict.lemma._modal_delete') --}}
