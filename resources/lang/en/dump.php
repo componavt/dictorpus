@@ -11,7 +11,7 @@ return [
     */
 
     'dump_list' => 'List of available versions of database "vepkar"',
-    'size'  => 'Size of file (Kb)',
+    'size'  => 'Size of file (Mb)',
     'date' => 'Creation date and time',
     'filename' => 'Filename',
     'readme' => 'A profile for the first login and tests is created in the offered database. Login: admin@test.ru, password: admin. We recommend you to create some necessary 
