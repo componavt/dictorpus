@@ -621,6 +621,23 @@ class TextController extends Controller
         }
     }
     
+    public function newTextList(Request $request)
+    {
+        $limit = (int)$request->input('limit');
+        $new_texts = Text::lastCreatedTexts($limit);
+                                
+        return view('corpus.text.new_list')
+                  ->with(['new_texts' => $new_texts]);
+    }
+    
+    public function updatedTextList(Request $request)
+    {
+        $limit = (int)$request->input('limit');
+        $last_updated_texts = Text::lastUpdatedTexts($limit);
+                                
+        return view('corpus.text.updated_list')
+                  ->with(['last_updated_texts'=>$last_updated_texts]);
+    }
 /*    public function tempStripSlashes()
     {
         $texts = Text::all();

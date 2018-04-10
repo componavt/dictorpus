@@ -28,14 +28,11 @@ class HomeController extends Controller
     public function index()
     {
         $limit = 3;
-        $new_lemmas = Lemma::lastCreatedLemmas($limit);
-        $last_updated_lemmas = Lemma::lastUpdatedLemmas($limit);
         $new_texts = Text::lastCreatedTexts($limit);
         $last_updated_texts = Text::lastUpdatedTexts($limit);
         
         return view('welcome')->with([
-                                        'new_lemmas'=>$new_lemmas,
-                                        'last_updated_lemmas'=>$last_updated_lemmas,
+                                        'limit'=>$limit,
                                         'new_texts'=>$new_texts,
                                         'last_updated_texts'=>$last_updated_texts,
                                      ]);

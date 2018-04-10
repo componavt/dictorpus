@@ -11,49 +11,28 @@
                 <div class="panel-body">
                     {!! trans('blob.welcome_text') !!}
                     
-                    <div class="last-created-lemma">
-                        <h4>{{trans('dict.new_lemmas')}}</h4>
-                        <ol>
-                        @foreach ($new_lemmas as $lemma)
-                        <li><a href="dict/lemma/{{$lemma->id}}">{{$lemma->lemma}}</a> 
-                            <i>({{$lemma->user}}, {{$lemma->created_at}})</i></li> 
-                        @endforeach
-                        </ol>
+                    <div id="last-created-lemmas" class="block-list">
                     </div>
                     
-                    @if($last_updated_lemmas)
-                    <div class="last-updated-lemma">
-                        <h4>{{trans('dict.last_updated_lemmas')}}</h4>
-                        <ol>
-                        @foreach ($last_updated_lemmas as $lemma)
-                        <li><a href="dict/lemma/{{$lemma->id}}">{{$lemma->lemma}}</a> 
-                            <i>({{$lemma->user}}, {{$lemma->updated_at}})</i></li> 
-                        @endforeach
-                        </ol>
-                    </div>
-                    @endif
-                    
-                    <div class="last-created-text">
-                        <h4>{{trans('corpus.new_texts')}}</h4>
-                        <ol>
-                        @foreach ($new_texts as $text)
-                        <li><a href="corpus/text/{{$text->id}}">{{$text->title}}</a> 
-                            <i>({{$text->user}}, {{$text->created_at}})</i></li> 
-                        @endforeach
-                        </ol>
+                    <div id="last-updated-lemmas" class="block-list">
                     </div>
                     
-                    @if($last_updated_texts)
-                    <div class="last-updated-text">
-                        <h4>{{trans('corpus.last_updated_texts')}}</h4>
-                        <ol>
-                        @foreach ($last_updated_texts as $text)
-                        <li><a href="corpus/text/{{$text->id}}">{{$text->title}}</a> 
-                            <i>({{$text->user}}, {{$text->updated_at}})</i></li> 
-                        @endforeach
-                        </ol>
+                    <div id="last-created-texts" class="block-list">
                     </div>
-                    @endif
+                    
+                    <div id="last-updated-texts" class="block-list">
+                    </div>
                 </div>
             </div>
 @endsection
+
+@section('footScriptExtra')
+    {!!Html::script('js/new_list_load.js')!!}
+@stop
+
+@section('jqueryFunc')
+    newListLoad('/dict/lemma/new_list/', 'last-created-lemmas',{{$limit}});
+    newListLoad('/dict/lemma/updated_list/', 'last-updated-lemmas',{{$limit}});
+    newListLoad('/corpus/text/new_list/', 'last-created-texts',{{$limit}});
+    newListLoad('/dcorpus/text/updated_list/', 'last-updated-texts',{{$limit}});
+@stop

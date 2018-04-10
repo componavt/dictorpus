@@ -812,6 +812,25 @@ class LemmaController extends Controller
         return Response::json($all_meanings);
     }
     
+    public function newLemmaList(Request $request)
+    {
+        $limit = (int)$request->input('limit');
+        $new_lemmas = Lemma::lastCreatedLemmas($limit);
+                                
+        return view('dict.lemma.new_list')
+                  ->with(['new_lemmas' => $new_lemmas]);
+    }
+    
+    public function updatedLemmaList(Request $request)
+    {
+        $limit = (int)$request->input('limit');
+        $last_updated_lemmas = Lemma::lastUpdatedLemmas($limit);
+                                
+        return view('dict.lemma.updated_list')
+                  ->with(['last_updated_lemmas'=>$last_updated_lemmas]);
+    }
+    
+    
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */

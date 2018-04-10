@@ -62,9 +62,12 @@ Route::group(
         Route::post('corpus/text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
 
-        Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
+        Route::get('corpus/text/new_list', 'Corpus\TextController@newTextList');
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
+        Route::get('corpus/text/updated_list', 'Corpus\TextController@updatedTextList');
+
+        Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
 
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
@@ -76,9 +79,11 @@ Route::group(
                         ->name('lemma.update.wordforms');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
+        Route::get('dict/lemma/new_list', 'Dict\LemmaController@newLemmaList');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/omonyms', 'Dict\LemmaController@omonyms');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
+        Route::get('dict/lemma/updated_list', 'Dict\LemmaController@updatedLemmaList');
 
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
