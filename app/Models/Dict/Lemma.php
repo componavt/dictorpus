@@ -461,6 +461,7 @@ class Lemma extends Model
     public static function lastUpdatedLemmas($limit='') {
         $revisions = Revision::where('revisionable_type','like','%Lemma')
                             ->where('key','updated_at')
+                            ->groupBy('revisionable_id')
                             ->latest()->take($limit)->get();
         $lemmas = [];
         foreach ($revisions as $revision) {

@@ -672,6 +672,7 @@ dd($wordforms);
     public static function lastUpdatedTexts($limit='') {
         $revisions = Revision::where('revisionable_type','like','%Text')
                             ->where('key','updated_at')
+                            ->groupBy('revisionable_id')
                             ->latest()->take($limit)->get();
         $texts = [];
         foreach ($revisions as $revision) {
