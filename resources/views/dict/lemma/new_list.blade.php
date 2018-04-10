@@ -6,4 +6,7 @@
                             <i>({{$lemma->user}}, {{$lemma->created_at}})</i></li> 
                         @endforeach
                         </ol>
+                        @if ($limit)
+                        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/new_list/')}}">{{trans('main.see_full_list')}}</a></p>
+                        @endif
 @endif

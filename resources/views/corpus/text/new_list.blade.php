@@ -6,4 +6,7 @@
                             <i>({{$text->user}}, {{$text->created_at}})</i></li> 
                         @endforeach
                         </ol>
+                        @if ($limit)
+                        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/new_list/')}}">{{trans('main.see_full_list')}}</a></p>
+                        @endif
 @endif

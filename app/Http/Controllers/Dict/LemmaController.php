@@ -815,19 +815,37 @@ class LemmaController extends Controller
     public function newLemmaList(Request $request)
     {
         $limit = (int)$request->input('limit');
-        $new_lemmas = Lemma::lastCreatedLemmas($limit);
+        if ($limit) {
+            $portion = $limit;
+            $view = 'new_list';
+        } else {
+            $portion = 100;
+            $view = 'full_new_list';
+        }
+        $lemmas = Lemma::lastCreatedLemmas($portion);
                                 
-        return view('dict.lemma.new_list')
-                  ->with(['new_lemmas' => $new_lemmas]);
+        return view('dict.lemma.'.$view)
+                  ->with(['new_lemmas' => $lemmas,
+                          'limit' => $limit
+                         ]);
     }
     
     public function updatedLemmaList(Request $request)
     {
         $limit = (int)$request->input('limit');
-        $last_updated_lemmas = Lemma::lastUpdatedLemmas($limit);
+        if ($limit) {
+            $portion = $limit;
+            $view = 'updated_list';
+        } else {
+            $portion = 100;
+            $view = 'full_updated_list';
+        }
+        $lemmas = Lemma::lastUpdatedLemmas($portion);
                                 
-        return view('dict.lemma.updated_list')
-                  ->with(['last_updated_lemmas'=>$last_updated_lemmas]);
+        return view('dict.lemma.'.$view)
+                  ->with(['last_updated_lemmas'=>$lemmas,
+                          'limit' => $limit
+                         ]);
     }
     
     

@@ -624,19 +624,37 @@ class TextController extends Controller
     public function newTextList(Request $request)
     {
         $limit = (int)$request->input('limit');
-        $new_texts = Text::lastCreatedTexts($limit);
+        if ($limit) {
+            $portion = $limit;
+            $view = 'new_list';
+        } else {
+            $portion = 100;
+            $view = 'full_new_list';
+        }
+        $texts = Text::lastCreatedTexts($portion);
                                 
-        return view('corpus.text.new_list')
-                  ->with(['new_texts' => $new_texts]);
+        return view('corpus.text.'.$view)
+                  ->with(['new_texts' => $texts,
+                          'limit' => $limit
+                         ]);
     }
     
     public function updatedTextList(Request $request)
     {
         $limit = (int)$request->input('limit');
-        $last_updated_texts = Text::lastUpdatedTexts($limit);
+        if ($limit) {
+            $portion = $limit;
+            $view = 'updated_list';
+        } else {
+            $portion = 100;
+            $view = 'full_updated_list';
+        }
+        $texts = Text::lastUpdatedTexts($portion);
                                 
-        return view('corpus.text.updated_list')
-                  ->with(['last_updated_texts'=>$last_updated_texts]);
+        return view('corpus.text.'.$view)
+                  ->with(['last_updated_texts'=>$texts,
+                          'limit' => $limit
+                         ]);
     }
 /*    public function tempStripSlashes()
     {
