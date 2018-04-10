@@ -28,13 +28,6 @@ class HomeController extends Controller
     public function index()
     {
         $limit = 3;
-        $new_texts = Text::lastCreatedTexts($limit);
-        $last_updated_texts = Text::lastUpdatedTexts($limit);
-        
-        return view('welcome')->with([
-                                        'limit'=>$limit,
-                                        'new_texts'=>$new_texts,
-                                        'last_updated_texts'=>$last_updated_texts,
-                                     ]);
+        return view('welcome')->with(['limit'=>$limit]);
     }
 }

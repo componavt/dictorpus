@@ -34,5 +34,5 @@
     newListLoad('/dict/lemma/new_list/', 'last-created-lemmas',{{$limit}});
     newListLoad('/dict/lemma/updated_list/', 'last-updated-lemmas',{{$limit}});
     newListLoad('/corpus/text/new_list/', 'last-created-texts',{{$limit}});
-    newListLoad('/dcorpus/text/updated_list/', 'last-updated-texts',{{$limit}});
+    newListLoad('/corpus/text/updated_list/', 'last-updated-texts',{{$limit}});
 @stop
