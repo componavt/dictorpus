@@ -54,6 +54,9 @@ Route::group(
         Route::get('/about_karelians', function () {
             return view('page.about_karelians');
         });
+        Route::get('/permission', function () {
+            return view('page.permission');
+        });
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         

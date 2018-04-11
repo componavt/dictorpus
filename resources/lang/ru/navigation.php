@@ -28,6 +28,7 @@ return [
     'logout' => 'Выйти',
     'omonyms' => 'Омонимы',
     'parts_of_speech' => 'Части речи',
+    'permission' => 'Разрешения',
     'places' => 'Населенные пункты',
     'recorders' => 'Собиратели',
     'regions' => 'Регионы',

@@ -14,6 +14,8 @@ return [
     
     'about_karelians' => '',
     'about_veps' => '',
+    'permission' => '<p><a href="/docs/permission_bible.pdf">Permission</a>'
+    . '',
     'welcome_text' =>  '<p>Open corpus of Veps and Karelian languages (abbr. VepKar)
                         contains dictionaries and corpora of Finnic languages of Karelia peoples.</p>
 
