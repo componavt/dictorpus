@@ -14,8 +14,10 @@ return [
     
     'about_karelians' => '',
     'about_veps' => '',
-    'permission' => '<p><a href="/docs/permission_bible.pdf">Permission</a>'
-    . '',
+    'permission' => '<ul>'
+                  . '<li><a href="/docs/permission_bible.pdf">The permission of the Bible Translation Institute to use the Veps publications published by the Institute for the Veps Corps</a></li><br>'
+                  . '<li><a href="/docs/permission_periodika.pdf">Permission of the Periodica publishing house to use the materials of the Karelian newspaper Oma Mua, the Vep newspaper Kodima, the almanac Taival in Karelian and the Verez tullei almanac in the Vepsian language for use in the VepKar project</a></li>'
+                  . '</ul>',
     'welcome_text' =>  '<p>Open corpus of Veps and Karelian languages (abbr. VepKar)
                         contains dictionaries and corpora of Finnic languages of Karelia peoples.</p>
 
