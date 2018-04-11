@@ -28,6 +28,7 @@ return [
     'logout' => 'Logout',
     'omonyms' => 'Omonyms',
     'parts_of_speech' => 'Parts of speech',
+    'permission' => 'Permission',
     'places' => 'Settlements',
     'recorders' => 'Recorders',
     'regions' => 'Regions',
