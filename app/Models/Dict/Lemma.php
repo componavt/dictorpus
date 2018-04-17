@@ -62,10 +62,29 @@ class Lemma extends Model
     }
     
     // Lemma has many MeaningTexts through Meanings
-    public function meaning_texts()
+    public function meaningTexts()
     {
-        return $this->hasManyThrough('App\Models\Dict\Meaning', 'App\Models\Dict\MeaningText');
+        return $this->hasManyThrough(MeaningText::class, Meaning::class, 'lemma_id', 'meaning_id');
+//        return $this->hasManyThrough('App\Models\Dict\MeaningText', 'App\Models\Dict\Meaning');
     }
+/*    public function meaning_texts($ids = [])
+    {
+        return MeaningText::whereHas('meanings', function($q) use($ids) { 
+                                $q->whereIn('id', $ids);                             
+                           })->get(); 
+        
+    }    
+/*    public function meaning_texts()
+    {
+        $lemma_id = $this->id;
+        $builder = MeaningText::whereIn('meaning_id', function($query) use($lemma_id) { 
+                                $query->select('id')->from('meanings')
+                                      ->where('lemma_id',$lemma_id);
+                           });
+//dd($builder->toSQL());                           
+        return $builder->get(); 
+        
+    } */   
 
     /**
      *  Lemma __has_many__ Wordforms
@@ -472,7 +491,24 @@ class Lemma extends Model
         return $lemmas;
     }
     
-    /**
+    public function allHistory() {
+        $lemma_history = $this->revisionHistory->where('key', '<>', 'updated_at');//new Collection;
+        foreach ($this->meanings as $meaning) {
+            $lemma_history = $lemma_history -> merge($meaning->revisionHistory);
+            foreach($meaning->meaningTexts as $meaning_text) {
+               $lemma_history = $lemma_history -> merge($meaning_text->revisionHistory);
+            }
+        }
+         
+        $lemma_history = $lemma_history->sortByDesc('id')
+                      ->groupBy(function ($item, $key) {
+                            return (string)$item['updated_at'];
+                        });
+//dd($lemma_history);                        
+        return $lemma_history;
+    }
+     
+   /**
      * Gets Delete link created in a view
      * Generates a CSRF token and put it inside a custom data-delete attribute
      * @param bool $is_button Is this button or link?

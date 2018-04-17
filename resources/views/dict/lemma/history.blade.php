@@ -1,3 +1,8 @@
+{{--
+    http://localhost/ru/dict/lemma/3598/history
+    http://localhost/ru/dict/lemma/56/history
+    http://localhost/ru/dict/lemma/1386/history
+    --}}
 @extends('layouts.master')
 
 @section('title')
@@ -14,18 +19,16 @@
 
         <h2>{{ $lemma->lemma }}</h2>
         <h3>{{ trans('messages.history') }}</h3>
-
-        @foreach($lemma->revisionHistory as $history )
-            <?php $user = \App\Models\User::find($history->userResponsible()->id);?>
-            <li>
-                <i>{{ $history->updated_at }}</i>
-                {{ $user->name }} 
-                {{trans('messages.changed')}} 
-                {{ $history->fieldName() }} 
-                {{trans('messages.from')}} 
-                <b>{{ $history->oldValue() }}</b> 
-                {{trans('messages.to')}} 
-                <b>{{ $history->newValue() }}</b>
-            </li>
+        @foreach($lemma->allHistory() as $time => $histories )
+        <?php $user = \App\Models\User::find($histories[0]->userResponsible()->id); ?>
+        <p>
+            <i>{{ $time }}</i>
+            {{ $user->name }} 
+            <ul>
+            @foreach($histories as $history)
+                @include('widgets.history.one_string')
+            @endforeach
+            </ul>
+        </p>
         @endforeach
 @stop        
