@@ -510,6 +510,9 @@ class Lemma extends Model
                    $history->field_name = trans('history.'.$fieldName.'_accusative'). ' '
                            . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
                            . " ($lang)";
+/*                   $history->model_accusative = trans('history.meaning_text_accusative')
+                           . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
+                           . " ($lang)"; */
                }
                $lemma_history = $lemma_history -> merge($meaning_text->revisionHistory);
             }

@@ -1,11 +1,3 @@
-{{--
-    /dict/lemma/652/history - reflexive verb
-    /dict/lemma/3458/history - reflexive verb
-    /dict/lemma/2880/history    
-    /dict/lemma/3598/history
-    /dict/lemma/56/history
-    /dict/lemma/1386/history
-    --}}
 @extends('layouts.master')
 
 @section('title')
@@ -27,3 +19,12 @@
         <h2>{{ $lemma->lemma }}</h2>
         @include('widgets.history._history')
 @stop        
+{{--
+    /dict/lemma/652/history - последняя дата пустая, только создание толкования. Проверка на наличие перед выводом?
+    /dict/lemma/652/history - reflexive verb
+    /dict/lemma/3458/history - reflexive verb
+    /dict/lemma/2880/history    
+    /dict/lemma/3598/history
+    /dict/lemma/56/history
+    /dict/lemma/1386/history
+    --}}
