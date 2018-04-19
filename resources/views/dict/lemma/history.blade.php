@@ -1,8 +1,10 @@
 {{--
-    http://localhost/ru/dict/lemma/2880/history    
-    http://localhost/ru/dict/lemma/3598/history
-    http://localhost/ru/dict/lemma/56/history
-    http://localhost/ru/dict/lemma/1386/history
+    /dict/lemma/652/history - reflexive verb
+    /dict/lemma/3458/history - reflexive verb
+    /dict/lemma/2880/history    
+    /dict/lemma/3598/history
+    /dict/lemma/56/history
+    /dict/lemma/1386/history
     --}}
 @extends('layouts.master')
 

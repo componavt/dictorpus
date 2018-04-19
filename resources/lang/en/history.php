@@ -16,5 +16,6 @@ return [
     'meaning_genetiv' => 'of the meaning :num',
     'meaning_text_accusative' => 'the interpretation',
     'pos_accusative' => 'the part of speech',
+    'reflexive_accusative' => 'the verbal reflexivity',
     'text_accusative' => 'the text',
 ];

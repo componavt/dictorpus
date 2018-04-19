@@ -27,7 +27,7 @@ if (!isset($history->field_name)) {
                     <li>
                         {{trans('messages.created')}} {{ $history->field_name }}: <b>{{ $history->newValue() }}</b>
                     </li>
-                @else
+                @elseif (!($fieldName=='reflexive' && $history->oldValue()) != null )
                     <li>
                         {{trans('messages.changed')}} 
                         {{$history->field_name}} 
