@@ -683,4 +683,36 @@ dd($wordforms);
         return $texts;
     }
     
+    public function allHistory() {
+        $text_history = $this->revisionHistory->filter(function ($item) {
+                            return $item['key'] != 'updated_at';
+                        });
+        foreach ($text_history as $history) {
+            $history->model_accusative = trans('history.text_accusative');
+        }/*
+        foreach ($this->meanings as $meaning) {
+            foreach ($meaning->revisionHistory as $history) {
+                $history->model_accusative = trans('history.meaning_accusative', ['num'=>$meaning->meaning_n]);
+            }
+            $lemma_history = $lemma_history -> merge($meaning->revisionHistory);
+            foreach($meaning->meaningTexts as $meaning_text) {
+               foreach ($meaning_text->revisionHistory as $history) {
+                   $lang = $meaning_text->lang->name;
+                   $fieldName = $history->fieldName();
+                   $history->field_name = trans('history.'.$fieldName). ' '
+                           . trans('dict.of_meaning'). ' '. $meaning->meaning_n
+                           . " ($lang)";
+               }
+               $lemma_history = $lemma_history -> merge($meaning_text->revisionHistory);
+            }
+        }
+         
+        $lemma_history = $lemma_history->sortByDesc('id')
+                      ->groupBy(function ($item, $key) {
+                            return (string)$item['updated_at'];
+                        });
+//dd($lemma_history);     */                   
+        return $text_history;
+    }
+     
 }

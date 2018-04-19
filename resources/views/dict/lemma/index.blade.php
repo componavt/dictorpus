@@ -52,7 +52,7 @@
                 'value' => $url_args['search_meaning'],
                 'special_symbol' => true,
                 'attributes'=>['size' => 15,
-                               'placeholder'=>trans('dict.meaning')]])
+                               'placeholder'=>trans('dict.interpretation')]])
         @include('widgets.form._formitem_select',
                 ['name' => 'search_lang',
                  'values' =>$lang_values,

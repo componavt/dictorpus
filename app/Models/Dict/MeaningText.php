@@ -11,7 +11,7 @@ class MeaningText extends Model
     protected $revisionEnabled = true;
     protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
     protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
-    protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
+    protected $revisionCreationsEnabled = false; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
 
     public static function boot()
     {

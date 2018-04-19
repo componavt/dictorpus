@@ -492,10 +492,25 @@ class Lemma extends Model
     }
     
     public function allHistory() {
-        $lemma_history = $this->revisionHistory->where('key', '<>', 'updated_at');//new Collection;
+        $lemma_history = $this->revisionHistory->filter(function ($item) {
+                            return $item['key'] != 'updated_at';
+                        });
+        foreach ($lemma_history as $history) {
+            $history->model_accusative = trans('history.lemma_accusative');
+        }
         foreach ($this->meanings as $meaning) {
+            foreach ($meaning->revisionHistory as $history) {
+                $history->model_accusative = trans('history.meaning_accusative', ['num'=>$meaning->meaning_n]);
+            }
             $lemma_history = $lemma_history -> merge($meaning->revisionHistory);
             foreach($meaning->meaningTexts as $meaning_text) {
+               foreach ($meaning_text->revisionHistory as $history) {
+                   $lang = $meaning_text->lang->name;
+                   $fieldName = $history->fieldName();
+                   $history->field_name = trans('history.'.$fieldName.'_accusative'). ' '
+                           . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
+                           . " ($lang)";
+               }
                $lemma_history = $lemma_history -> merge($meaning_text->revisionHistory);
             }
         }

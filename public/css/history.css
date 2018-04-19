@@ -1,3 +1,13 @@
 .history-record {
     margin-bottom: 20px;
 }
+
+.old-value {
+    color: #337ab7;
+    font-weight: bold;
+}
+
+.new-value {
+    color: #2eaf38;
+    font-weight: bold;
+}

@@ -52,7 +52,7 @@ return [
     'of_example' => 'of example',
     'of_gram' => 'of grammatical attribute',
     'of_gramset' => 'of set',
-    'of_lang' => 'языка',
+    'of_lang' => 'of lang',
     'of_lemma' => 'of lemma',
     'of_relation' => 'of relation',
 
