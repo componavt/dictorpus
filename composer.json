@@ -10,7 +10,9 @@
         "laravelcollective/html": "5.2.*",
         "mcamara/laravel-localization": "1.1.*",
         "cartalyst/sentinel": "2.0.*",
-        "venturecraft/revisionable": "1.*"
+        "venturecraft/revisionable": "1.*",
+        "vi-kon/laravel-diff": "^1.0",
+        "caxy/php-htmldiff": "^0.1.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

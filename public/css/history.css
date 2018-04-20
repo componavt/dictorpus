@@ -2,11 +2,13 @@
     margin-bottom: 20px;
 }
 
+.diffdel,
 .old-value {
     color: #337ab7;
     font-weight: bold;
 }
 
+.diffins,
 .new-value {
     color: #2eaf38;
     font-weight: bold;

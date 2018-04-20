@@ -1,6 +1,46 @@
-        <h3>{{ trans('messages.history') }}</h3>
-        @foreach($lemma->allHistory() as $time => $histories )
+<?php
+$options = [
+    // Compare by line or by characters
+    'compareCharacters' => false,
+    // Offset size in hunk groups
+    'offset'            => 2,
+];
+
+$diff = \Diff::compare("hello\na", "hello\nasd\na", $options);
+$groups = $diff->getGroups();
+
+foreach($groups as $i => $group)
+{
+    // Output: Hunk 1 : Lines 2 - 6
+    echo 'Hunk ' . $i . ' : Lines ' 
+         . $group->getFirstPosition() . ' - ' . $group->getLastPosition(); 
+    
+    // Output changed lines (entries)
+    foreach($group->getEntries() as $entry)
+    {
+        // Output old position of line
+        echo $entry instanceof \ViKon\Diff\Entry\InsertedEntry 
+            ? '-'
+            : $entry->getOldPosition() + 1;
+
+        echo ' | ';
+
+        // Output new position of line
+        echo $entry instanceof \ViKon\Diff\Entry\DeletedEntry 
+            ? '-'
+            : $entry->getNewPosition() + 1;
+        
+        echo ' - ';        
+
+        // Output line (entry)
+        echo $entry;
+    }
+}
+?>
+    <h3>{{ trans('messages.history') }}</h3>
+        @foreach($all_history as $time => $histories )
 <?php 
+//dd($all_history);
 $user = \App\Models\User::find($histories[0]->userResponsible()->id); 
 $histories = $histories->sortBy('id');
 $history_strings = [];
@@ -11,19 +51,25 @@ foreach($histories as $history) {
     }    
     
     if ($fieldName == 'created_at') :
-        if (isset($history->model_accusative)):
+        if (isset($history->what_created)):
             $history_strings[] = trans('messages.created'). ' '
-                               . $history->model_accusative;
+                               . $history->what_created;
         endif;
-    elseif (preg_match("/MeaningText$/",$history->revisionable_type) && !$history->oldValue()) :
+    elseif ($history->oldValue() == null) : //preg_match("/MeaningText$/",$history->revisionable_type) && 
             $history_strings[] = trans('messages.created'). ' '
                                . $history->field_name .': <b>'
                                . $history->newValue().'</b>';
-    elseif (!($fieldName=='reflexive' && $history->oldValue() == null) ) :
+    elseif ($fieldName == 'text') :
+//            $diff = \Diff::compare($history->oldValue(), $history->newValue());
+            $htmlDiff = new HtmlDiff($history->oldValue(), $history->newValue());
             $history_strings[] = trans('messages.changed'). ' '
-                               . $history->field_name. ' '
+//                               . $history->field_name. '<br>'.$diff->toHTML();
+                               . $history->field_name. '<br>'.$htmlDiff->build();
+    else :
+            $history_strings[] = trans('messages.changed'). ' '
+                               . $history->field_name. '<br>'
                                . trans('messages.from'). ' ' 
-                               . ' <span class="old-value">'. $history->oldValue(). '</span> ' 
+                               . ' <span class="old-value">'. $history->oldValue(). '</span><br>' 
                                . trans('messages.to'). ' '
                                . '<span class="new-value">'. $history->newValue(). '</span>';
     endif;

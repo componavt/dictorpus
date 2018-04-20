@@ -18,19 +18,5 @@
         </p>
 
         <h2>{{ $text->title }}</h2>
-        <h3>{{ trans('messages.history') }}</h3>
-
-        @foreach($text->revisionHistory as $history )
-            <?php $user = \App\Models\User::find($history->userResponsible()->id);?>
-            <li class='history-record'>
-                <i>{{ $history->updated_at }}</i>
-                {{ $user->name }} 
-                {{trans('messages.changed')}} 
-                {{ $history->fieldName() }} 
-                {{trans('messages.from')}} 
-                <b>{!! $history->oldValue() !!}</b> 
-                {{trans('messages.to')}} 
-                <b>{!! $history->newValue() !!}</b>
-            </li>
-        @endforeach
+        @include('widgets.history._history', ['all_history' => $text->allHistory()])
 @stop        

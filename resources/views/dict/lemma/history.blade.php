@@ -17,10 +17,9 @@
         </p>
 
         <h2>{{ $lemma->lemma }}</h2>
-        @include('widgets.history._history')
+        @include('widgets.history._history', ['all_history' => $lemma->allHistory()])
 @stop        
 {{--
-    /dict/lemma/652/history - последняя дата пустая, только создание толкования. Проверка на наличие перед выводом?
     /dict/lemma/652/history - reflexive verb
     /dict/lemma/3458/history - reflexive verb
     /dict/lemma/2880/history    

@@ -492,17 +492,18 @@ class Lemma extends Model
     }
     
     public function allHistory() {
-        $lemma_history = $this->revisionHistory->filter(function ($item) {
-                            return $item['key'] != 'updated_at';
+        $all_history = $this->revisionHistory->filter(function ($item) {
+                            return $item['key'] != 'updated_at'
+                                 && !($item['key'] == 'reflexive' && $item['old_value'] == null && $item['new_value'] == 0);
                         });
-        foreach ($lemma_history as $history) {
-            $history->model_accusative = trans('history.lemma_accusative');
+        foreach ($all_history as $history) {
+            $history->what_created = trans('history.lemma_accusative');
         }
         foreach ($this->meanings as $meaning) {
             foreach ($meaning->revisionHistory as $history) {
-                $history->model_accusative = trans('history.meaning_accusative', ['num'=>$meaning->meaning_n]);
+                $history->what_created = trans('history.meaning_accusative', ['num'=>$meaning->meaning_n]);
             }
-            $lemma_history = $lemma_history -> merge($meaning->revisionHistory);
+            $all_history = $all_history -> merge($meaning->revisionHistory);
             foreach($meaning->meaningTexts as $meaning_text) {
                foreach ($meaning_text->revisionHistory as $history) {
                    $lang = $meaning_text->lang->name;
@@ -510,20 +511,17 @@ class Lemma extends Model
                    $history->field_name = trans('history.'.$fieldName.'_accusative'). ' '
                            . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
                            . " ($lang)";
-/*                   $history->model_accusative = trans('history.meaning_text_accusative')
-                           . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
-                           . " ($lang)"; */
                }
-               $lemma_history = $lemma_history -> merge($meaning_text->revisionHistory);
+               $all_history = $all_history -> merge($meaning_text->revisionHistory);
             }
         }
          
-        $lemma_history = $lemma_history->sortByDesc('id')
+        $all_history = $all_history->sortByDesc('id')
                       ->groupBy(function ($item, $key) {
                             return (string)$item['updated_at'];
                         });
-//dd($lemma_history);                        
-        return $lemma_history;
+//dd($all_history);                        
+        return $all_history;
     }
      
    /**

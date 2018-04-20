@@ -19,6 +19,14 @@ class Event extends Model
     protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
     protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
     protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
+    protected $revisionFormattedFields = array(
+        'name_ru'  => 'string:<strong>%s</strong>',
+    );
+    protected $revisionFormattedFieldNames = array(
+//        'title' => 'Title',
+//        'small_name' => 'Nickname',
+//        'deleted_at' => 'Deleted At'
+    );
 
     public static function boot()
     {

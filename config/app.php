@@ -218,6 +218,8 @@ return [
         'Activation' => Cartalyst\Sentinel\Laravel\Facades\Activation::class,
         'Reminder'   => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
         'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
+        'Diff'       => ViKon\Diff\Diff::class,
+        'HtmlDiff'   => Caxy\HtmlDiff\HtmlDiff::class,
         
 //        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         
