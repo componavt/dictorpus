@@ -3,7 +3,7 @@
                         'value'=> $new_meaning_n,
                         'attributes'=>['size' => 2],
                         'tail' => trans('dict.meaning')])</h3>
-            <table class="table-interpretations-translations">
+            <table class="table-interpretations">
                 <tr>
                     <th>{{ trans('dict.lang') }}</th>
                     <th>{{ trans('dict.interpretation') }}</th>

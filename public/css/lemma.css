@@ -1,22 +1,30 @@
+.table-interpretations,
 .table-interpretations-translations {
     width: 100%;
 }
 
+.table-interpretations th:first-letter,
 .table-interpretations-translations th:first-letter {
     text-transform: uppercase;    
 }
 
+.table-interpretations th,
 .table-interpretations-translations th {
     padding-bottom: 10px;
-}
-
-.table-interpretations-translations th,
-.table-interpretations-translations td {
     padding-right: 10px;
 }
 
+.table-interpretations td,
+.table-interpretations-translations td {
+    padding-right: 10px;
+}
+/*
 .table-interpretations-translations tr td:not(:first-child) {
     width: 50%;
+}
+*/
+.table-interpretations tr td:not(:first-child) {
+    width: 100%;
 }
 
 .show-meaning-translation {
