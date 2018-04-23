@@ -44,6 +44,7 @@ foreach($groups as $i => $group)
 $user = \App\Models\User::find($histories[0]->userResponsible()->id); 
 $histories = $histories->sortBy('id');
 $history_strings = [];
+$diffConfig = new Caxy\HtmlDiff\HtmlDiffConfig();
 foreach($histories as $history) {
     $fieldName = $history->fieldName();
     if (!isset($history->field_name)) {
@@ -61,7 +62,7 @@ foreach($histories as $history) {
                                . $history->newValue().'</b>';
     elseif ($fieldName == 'text') :
 //            $diff = \Diff::compare($history->oldValue(), $history->newValue());
-            $htmlDiff = new HtmlDiff($history->oldValue(), $history->newValue());
+            $htmlDiff = HtmlDiff::create($history->oldValue(), $history->newValue(),$diffConfig);
             $history_strings[] = trans('messages.changed'). ' '
 //                               . $history->field_name. '<br>'.$diff->toHTML();
                                . $history->field_name. '<br>'.$htmlDiff->build();
