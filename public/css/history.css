@@ -2,12 +2,14 @@
     margin-bottom: 20px;
 }
 
+del.diffmod,
 .diffdel,
 .old-value {
     color: #337ab7;
     font-weight: bold;
 }
 
+ins.diffmod,
 .diffins,
 .new-value {
     color: #2eaf38;

@@ -43,11 +43,12 @@ class Place extends Model
         
         return $name;
     }
-    
-    public function getPlaceIdAttribute() { // for revisionable
-        return 'name_ru';
-    }
-    
+
+    public function identifiableName()
+    {
+        return $this->placeString();//name;
+    }    
+
     public function district()
     {
         return $this->belongsTo(District::class);

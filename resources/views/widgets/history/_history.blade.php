@@ -1,5 +1,5 @@
 <?php
-$options = [
+/*$options = [
     // Compare by line or by characters
     'compareCharacters' => false,
     // Offset size in hunk groups
@@ -35,7 +35,7 @@ foreach($groups as $i => $group)
         // Output line (entry)
         echo $entry;
     }
-}
+}*/
 ?>
     <h3>{{ trans('messages.history') }}</h3>
         @foreach($all_history as $time => $histories )
