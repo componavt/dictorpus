@@ -9,7 +9,10 @@
                 <div class="panel-heading">{{ trans('navigation.about_project') }}</div>
 
                 <div class="panel-body">
-                    {!! trans('blob.welcome_text') !!}
+                    {!! trans('blob.welcome_text',[
+                        'total_dialects'=>$total_dialects,
+                        'total_lemmas'=>$total_lemmas,
+                        'total_texts'=>$total_texts]) !!}
                     
                     <div id="last-created-lemmas" class="block-list">
                     </div>

@@ -35,6 +35,7 @@ return [
     'relations' => 'Relations',
     'references' => 'Reference tables',
     'roles' => 'roles',
+    'stats' => 'Statistics',
     'texts' => 'Texts',
     'wordforms' => 'Wordforms',
     'users' => 'Users',

@@ -749,5 +749,9 @@ dd($wordforms);
 //dd($all_history);                        
         return $all_history;
     }
-     
+    
+    public static function totalCount(){
+        return self::count();
+    }
+          
 }

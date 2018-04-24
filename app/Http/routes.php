@@ -21,6 +21,7 @@ Route::group(
     function()
     {
         Route::get('/','HomeController@index');
+        Route::get('/stats','HomeController@stats');
 
         // Вызов страницы регистрации пользователя
         Route::get('register', 'AuthController@register');   

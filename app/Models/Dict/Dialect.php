@@ -121,4 +121,7 @@ class Dialect extends Model
         
         return $url;
     }
+    public static function totalCount(){
+        return self::count();
+    }     
 }
