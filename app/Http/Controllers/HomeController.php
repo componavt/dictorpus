@@ -5,9 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 
+use App\Models\User;
+use App\Models\Corpus\Informant;
+use App\Models\Corpus\Place;
+use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Word;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\Meaning;
+use App\Models\Dict\Wordform;
 
 class HomeController extends Controller
 {
@@ -29,9 +36,9 @@ class HomeController extends Controller
     public function index()
     {
         $limit = 3;
-        $total_lemmas = Lemma::totalCount();
-        $total_texts = Text::totalCount();
-        $total_dialects = Dialect::totalCount();
+        $total_lemmas = Lemma::count();
+        $total_texts = Text::count();
+        $total_dialects = Dialect::count();
         return view('welcome')
                 ->with(['limit'=>$limit,
                         'total_dialects' => $total_dialects,
@@ -45,13 +52,44 @@ class HomeController extends Controller
      */
     public function stats()
     {
-        $total_lemmas = Lemma::totalCount();
-        $total_texts = Text::totalCount();
-        $total_dialects = Dialect::totalCount();
+        $total_active_editors = User::countActiveEditors(); 
+        $total_checked_examples = Text::countCheckedExamples();
+        $total_checked_words = Text::countCheckedWords(); 
+        $total_examples = Text::countExamples();
+        $total_informants = Informant::count();
+        $total_lemmas = Lemma::count();
+        $total_meanings = Meaning::count();
+        $total_places = Place::count();
+        $total_recorders = Recorder::count();
+        $total_relations = Meaning::countRelations();
+        $total_texts = Text::count();
+        $total_translations = Meaning::countTranslations();
+        $total_wordforms = Wordform::count();
+        $total_words = Word::count(); 
+        $total_users = User::count(); 
+        
+//        $persFormatter = new \NumberFormatter("en-US", \NumberFormatter::PERCENT); 
+//        $all_word_to_check = $persFormatter->format($total_checked_words/$total_words);
+
+        $all_words_to_checked = 100*$total_checked_words/$total_words;
         return view('page.stats')
                 ->with([
-                        'total_lemmas' => $total_lemmas,
-                        'total_texts' => $total_texts,
+                        'all_words_to_checked' => number_format($all_words_to_checked, 2,',', ' '),
+                        'total_active_editors' => number_format($total_active_editors, 0, ',', ' '),
+                        'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
+                        'total_checked_words' => number_format($total_checked_words, 0, ',', ' '),
+                        'total_examples' => number_format($total_examples, 0, ',', ' '),
+                        'total_informants' => number_format($total_informants, 0, ',', ' '),
+                        'total_lemmas' => number_format($total_lemmas, 0, ',', ' '),
+                        'total_meanings' => number_format($total_meanings, 0, ',', ' '),
+                        'total_places' => number_format($total_places, 0, ',', ' '),
+                        'total_recorders' => number_format($total_recorders, 0, ',', ' '),
+                        'total_relations' => number_format($total_relations, 0, ',', ' '),
+                        'total_texts' => number_format($total_texts, 0, ',', ' '),
+                        'total_translations' => number_format($total_translations, 0, ',', ' '),
+                        'total_wordforms' => number_format($total_wordforms, 0, ',', ' '),
+                        'total_words' => number_format($total_words, 0, ',', ' '),
+                        'total_users' => number_format($total_users, 0, ',', ' '),
                        ]);
     }
 }

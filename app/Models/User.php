@@ -136,7 +136,17 @@ class User extends EloquentUser
         }
     }
     
-    
+     public static function countActiveEditors(){
+        $now = date_create();
+        $date = date_format(date_modify($now,'-30 day'), 'Y-m-d');
+//dd(DB::table('revisions')->select('user_id')
+//                 ->where('created_at','>',$date)->distinct()->toSQL());        
+        $users = DB::table('revisions')->select('user_id')
+                 ->where('created_at','>',$date)->groupBy('user_id')->get();
+//dd($users);        
+        return sizeof($users);
+    }
+   
     
     
     // "The permission display_name allows a user to description."

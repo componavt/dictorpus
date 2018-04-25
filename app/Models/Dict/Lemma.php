@@ -523,10 +523,10 @@ class Lemma extends Model
 //dd($all_history);                        
         return $all_history;
     }
-    
+/*    
     public static function totalCount(){
         return self::count();
-    }
+    }*/
      
    /**
      * Gets Delete link created in a view

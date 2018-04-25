@@ -540,4 +540,12 @@ class Meaning extends Model
             $this->texts()->attach($link['text_id'],$link['other_fields']);
         }
     }
+    
+    public static function countTranslations(){
+        return DB::table('meaning_translation')->count();
+    }
+    
+    public static function countRelations(){
+        return DB::table('meaning_relation')->count();
+    }
 }

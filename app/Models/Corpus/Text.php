@@ -750,8 +750,22 @@ dd($wordforms);
         return $all_history;
     }
     
-    public static function totalCount(){
+/*    public static function totalCount(){
         return self::count();
+    }*/
+          
+    public static function countExamples(){
+        $examples = DB::table('meaning_text')->select('text_id', 'w_id')->groupBy('text_id', 'w_id')->get();
+//        $examples = DB::table('meaning_text')->select('text_id', 'sentence_id')->groupBy('text_id', 'sentence_id')->get();
+        return sizeof($examples);
     }
           
+    public static function countCheckedExamples(){
+        return DB::table('meaning_text')->where('relevance','<>',1)->count();
+    }
+          
+    public static function countCheckedWords(){
+        return DB::table('meaning_text')->select('text_id', 'w_id')
+                 ->where('relevance','>',1)->distinct()->count();
+    }
 }
