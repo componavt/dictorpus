@@ -9,6 +9,7 @@ use LaravelLocalization;
 use DB;
 
 use App\Models\Role;
+use App\Models\Dict\Lang;
 
 class User extends EloquentUser
 {
@@ -39,6 +40,11 @@ class User extends EloquentUser
     // User __has_many__ Roles
     public function roles(){
         return $this->belongsToMany(Role::class, 'role_users');
+    }
+    
+    // User __has_many__ Langs
+    public function langs(){
+        return $this->belongsToMany(Lang::class, 'lang_users');
     }
     
     /**
@@ -100,6 +106,21 @@ class User extends EloquentUser
         return self::where('id',$user_id)->first()->rolesNames();
     }
     
+    /**
+     * Gets IDs of langs for lang's form field
+     *
+     * @return Array
+     */
+    public function langValue():Array{
+        $value = [];
+        if ($this->langs) {
+            foreach ($this->langs as $lang) {
+                $value[] = $lang->id;
+            }
+        }
+        return $value;
+    }
+
     /**
      * Checks access for a permission
      *

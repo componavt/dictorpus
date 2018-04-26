@@ -753,3 +753,6 @@ delete from events where id not in (select event_id from texts where event_id is
 
 alter table sources change `ieeh_archive_number1` `ieeh_archive_number1` char(10) default null;
 alter table sources change `pages` `pages` varchar(20) default null;
+
+-- LANG - USER -----------------------------------------
+-- php artisan make:migration create_lang_user_table

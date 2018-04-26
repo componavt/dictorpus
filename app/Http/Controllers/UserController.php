@@ -12,6 +12,7 @@ use LaravelLocalization;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Dict\Lang;
 
 class UserController extends Controller
 {
@@ -109,13 +110,18 @@ class UserController extends Controller
                 $perm_value[] = $perm;
             }
         }
-       
+
+        $lang_values = Lang::getList();
+        $lang_value = $user->langValue();
+        
         return view('user.edit')
                   ->with(['user' => $user,
-                          'role_values' => $role_values,
-                          'role_value' => $role_value,
+                          'lang_values' => $lang_values,
+                          'lang_value' => $lang_value,
                           'perm_values' => $perm_values,
                           'perm_value' => $perm_value,
+                          'role_values' => $role_values,
+                          'role_value' => $role_value,
                          ]);
     }
 
