@@ -9,21 +9,6 @@
     </div>
     <div class="col-sm-4">        
         @include('widgets.form._formitem_select',
-                ['name' => 'lang_id',
-                 'values' =>$lang_values,
-                 'value' =>$lang_id,
-                 'title' => trans('dict.lang'),
-                 'attributes' => ['id'=>'lemma_lang_id']])
-        <div id='wordforms-field'>
-        @include('widgets.form._formitem_text', 
-                ['name' => 'wordforms', 
-                 'value' => '',
-                 'field_comments' => trans('dict.wordforms_field_comments'),
-                 'title'=>trans('dict.wordforms')])
-        </div>
-    </div>
-    <div class="col-sm-4">        
-        @include('widgets.form._formitem_select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,
                  'title' => trans('dict.pos'),
@@ -38,6 +23,21 @@
                  'tail'=>trans('dict.reflexive_verb').' '.trans('dict.verb')])
         </div>
     </div> 
+    <div class="col-sm-4">        
+        @include('widgets.form._formitem_select',
+                ['name' => 'lang_id',
+                 'values' =>$lang_values,
+                 'value' =>$lang_id,
+                 'title' => trans('dict.lang'),
+                 'attributes' => ['id'=>'lemma_lang_id']])
+        <div id='wordforms-field'>
+        @include('widgets.form._formitem_text', 
+                ['name' => 'wordforms', 
+                 'value' => '',
+                 'field_comments' => trans('dict.wordforms_field_comments'),
+                 'title'=>trans('dict.wordforms')])
+        </div>
+    </div>
 </div>
 @if ($action == 'edit')
     @foreach ($lemma->meanings as $meaning)
