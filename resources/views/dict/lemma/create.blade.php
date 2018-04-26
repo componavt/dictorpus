@@ -15,6 +15,7 @@
         {!! Form::open(array('method'=>'POST', 'route' => array('lemma.store'))) !!}
         @include('dict.lemma._form_create_edit', ['submit_title' => trans('messages.create_new_f'),
                                       'action' => 'create',
+                                      'lang_id' => $lang_id,
                                       'lang_values' => $lang_values, 
                                       'pos_values'  => $pos_values])
         {!! Form::close() !!}
@@ -30,4 +31,5 @@
     toggleSpecial();
     addMeaning();
     posSelect();
+    langSelect();
 @stop

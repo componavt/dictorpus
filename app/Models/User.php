@@ -44,7 +44,7 @@ class User extends EloquentUser
     
     // User __has_many__ Langs
     public function langs(){
-        return $this->belongsToMany(Lang::class, 'lang_users');
+        return $this->belongsToMany(Lang::class, 'lang_user');
     }
     
     /**
@@ -96,6 +96,22 @@ class User extends EloquentUser
     }
     
     /**
+     * Gets a list of languages for the user.
+     *
+     * @return string
+     */
+    public function langString()
+    {
+        $langs = $this->langs;
+        $list = [];
+        
+        foreach ($langs as $lang) {
+            $list[] = $lang->name;
+        }
+        return join(', ', $list);
+    }
+    
+    /**
      * Gets a list of names of roles for the user.
      *
      * @param  int  $user_id
@@ -121,6 +137,26 @@ class User extends EloquentUser
         return $value;
     }
 
+    /**
+     * Gets the user first language ID
+     * 
+     * @return INT
+     */
+    public static function userLangID()
+    {
+        $auth_user=Sentinel::check();
+        $user = User::find($auth_user->id);
+        if (!$user) {
+            return NULL;
+        }
+        $langs = $user->langs();
+        if (!$langs || !sizeof($langs)) {
+            return NULL;
+        }
+        
+        return  $langs->first()->id;
+    } 
+    
     /**
      * Checks access for a permission
      *

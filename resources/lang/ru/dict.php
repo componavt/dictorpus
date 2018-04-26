@@ -108,4 +108,5 @@ return [
     'wordform' => 'словоформа',
     'wordforms' => 'словоформы',
     'wordforms_linked_many_lemmas' => 'Словоформы, связанные более чем с одной леммой',
+    'wordforms_field_comments' => 'Стандартные 3 словоформы через , или ;'
 ];

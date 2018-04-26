@@ -13,10 +13,10 @@
             <tr>
                 <th>No</th>
                 <th>E-mail</th>
-                <th>{{ trans('auth.first_name') }}</th>
-                <th>{{ trans('auth.last_name') }}</th>
+                <th>{{ trans('auth.name') }}</th>
                 <th>{{ trans('auth.permissions') }}</th>
                 <th>{{ trans('auth.roles') }}</th>
+                <th>{{ trans('navigation.langs') }}</th>
                 <th>{{ trans('auth.last_login') }}</th>
                 <th>{{ trans('auth.last_activity') }}</th>
                 <th colspan="2"></th>
@@ -27,10 +27,10 @@
             <tr>
                 <td>{{ $list_count++ }}</td>
                 <td>{{$user->email}}</td>
-                <td>{{$user->first_name}}</td>
-                <td>{{$user->last_name}}</td>
+                <td>{{$user->first_name}} {{$user->last_name}}</td>
                 <td>{{$user->permissionString()}}</td>
                 <td>{{$user->rolesNames()}}</td>
+                <td>{{$user->langString()}}</td>
                 <td>{{$user->last_login}}</td>
                 <td>{{$user->getLastActionTime()}}</td>
                 <td>

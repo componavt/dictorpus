@@ -39,6 +39,11 @@ $attributes['id'] = $id_name;
 	<label for="{{$name}}">{{ $title }}&nbsp;</label>
     @endif
     {!! Form::text($name, $value, $attributes) !!}
+
+    @if (isset($field_comments))
+    <span class='field_comments'>{{$field_comments}}</span>
+    @endif
+    
     @if ($special_symbol) 
         @include('dict.special_symbols',['id_name'=>$id_name])
     @endif

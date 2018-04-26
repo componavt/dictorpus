@@ -171,11 +171,14 @@ class LemmaController extends Controller
         $lang_values = Lang::getList();
         $langs_for_meaning = Lang::getListWithPriority();
         
+        $lang_id = User::userLangID();
+        
         $new_meaning_n = 1;
                 
         return view('dict.lemma.create')
                   ->with(array(
                                'langs_for_meaning' => $langs_for_meaning,
+                               'lang_id' => $lang_id,
                                'lang_values' => $lang_values,
                                'new_meaning_n' => $new_meaning_n,
                                'pos_values' => $pos_values,
@@ -230,6 +233,8 @@ class LemmaController extends Controller
         //Wordform::storeInitialWordforms($lemma);
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
+        
+        $lemma->createDictionaryWordforms($request->wordforms);
     
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -516,6 +521,9 @@ class LemmaController extends Controller
 
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);
+        
+        $lemma->createDictionaryWordforms($request->wordforms);    
+        
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

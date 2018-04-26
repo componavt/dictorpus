@@ -115,3 +115,9 @@ and open the template in the editor.
 .block-list h2 {
     font-size: 18px;
 }
+
+.field_comments {
+    color: grey;
+    font-size: 12px;
+    font-style: italic;    
+}

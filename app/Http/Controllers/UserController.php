@@ -155,6 +155,9 @@ class UserController extends Controller
         $user->roles()->detach();
         $user->roles()->attach($request->roles);
         
+        $user->langs()->detach();
+        $user->langs()->attach($request->langs);
+        
         return Redirect::to('/user/?search_id='.$user->id)
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }

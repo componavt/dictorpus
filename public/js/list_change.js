@@ -1,7 +1,7 @@
 function posSelect() {
     $("#pos_id")
         .change(function () {
-            if ($( "#pos_id option:selected" ).val()==11) {
+            if ($( "#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
             } else {
                 $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
@@ -26,3 +26,16 @@ function selectedValuesToURL(varname) {
     });
     return forURL;
 }
+
+function langSelect() {
+    $("#lang_id")
+        .change(function () {
+            if ($( "#lang_id option:selected" ).val()==5) { // livvic
+                $("#wordforms-field").show().prop("disabled", false);
+            } else {
+                $("#wordforms-field").hide().attr('checked',false).prop("disabled", true);
+            }
+          })
+        .change();    
+}
+

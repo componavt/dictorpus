@@ -534,6 +534,17 @@ class Lemma extends Model
 //dd($all_history);                        
         return $all_history;
     }
+    
+    public function createDictionaryWordforms($wordforms) {        
+        if (!isset($request->wordforms))
+            return;
+        
+        $wordform_list=preg_split("/\s*[,;\s]\s*/",$request->wordforms);
+        if (!$wordform_list || sizeof(!$wordform_list)!=3)
+            return;
+        
+        
+    }
 /*    
     public static function totalCount(){
         return self::count();

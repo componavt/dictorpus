@@ -63,6 +63,10 @@
     display: none;
 }
 
+#wordforms-field {
+    display: none;
+}
+
 .relevance {
     padding-right: 20px;    
 }

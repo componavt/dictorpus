@@ -10,24 +10,30 @@
                 ['name' => 'last_name', 
                  'title'=> trans('auth.last_name')])
                  
-{{--       @include('widgets.form._formitem_checkbox', 
-                ['name' => 'permissions[]', 
-                 'value' => $permissions,
-                 'title'=>trans('auth.permissions')]) --}}
         <?php if ($action=='create') { $perm_value = NULL; } ?>        
-         @include('widgets.form._formitem_select', 
-                ['name' => 'permissions[]', 
+         @include('widgets.form._formitem_select2', 
+                ['name' => 'permissions', 
                  'values' =>$perm_values,
                  'value' => $perm_value,
                  'title' => trans('auth.permissions'),
-                 'attributes'=>['multiple'=>'multiple']]) 
+                 'class'=>'multiple-select form-control'
+            ])
 
         <?php if ($action=='create') { $role_value = NULL; } ?>        
-         @include('widgets.form._formitem_select', 
-                ['name' => 'roles[]', 
+         @include('widgets.form._formitem_select2', 
+                ['name' => 'roles', 
                  'values' =>$role_values,
                  'value' => $role_value,
                  'title' => trans('auth.roles'),
-                 'attributes'=>['multiple'=>'multiple']]) 
+                 'class'=>'multiple-select form-control'
+            ])
                  
+        @include('widgets.form._formitem_select2',
+                ['name' => 'langs', 
+                 'values' =>$lang_values,
+                 'value' => $lang_value,
+                 'title' => trans('navigation.langs'),
+                 'class'=>'multiple-select form-control'
+            ])
+            
 @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])

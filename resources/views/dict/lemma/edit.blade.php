@@ -23,6 +23,7 @@
         {!! Form::model($lemma, array('method'=>'PUT', 'route' => array('lemma.update', $lemma->id))) !!}
         @include('dict.lemma._form_create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit',
+                                      'lang_id' => null,
                                       'lang_values' => $lang_values, 
                                       'pos_values'  => $pos_values])
         {!! Form::close() !!}
@@ -39,6 +40,7 @@
     toggleSpecial();
     addMeaning();
     posSelect();
+    langSelect();
     
     $(".add-new-relation").click(function(){
         var meaning_id = $(this).attr("data-for");
