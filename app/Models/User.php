@@ -149,11 +149,10 @@ class User extends EloquentUser
         if (!$user) {
             return NULL;
         }
-        $langs = $user->langs();
-        if (!$langs || !sizeof($langs)) {
+        $langs = $user->langs;
+        if (!$langs || !$langs->first()) {
             return NULL;
         }
-        
         return  $langs->first()->id;
     } 
     

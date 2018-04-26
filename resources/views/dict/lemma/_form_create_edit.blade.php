@@ -1,4 +1,4 @@
-        @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
+@include('widgets.form._url_args_by_post',['url_args'=>$url_args])
         
 <div class="row">
     <div class="col-sm-4">

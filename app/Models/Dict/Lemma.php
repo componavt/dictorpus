@@ -536,14 +536,32 @@ class Lemma extends Model
     }
     
     public function createDictionaryWordforms($wordforms) {        
-        if (!isset($request->wordforms))
+//dd($request->wordforms);        
+        if (!isset($wordforms))
+            return;
+        $wordform_list=preg_split("/\s*[,;\s]\s*/",$wordforms);
+        if (!$wordform_list || sizeof($wordform_list)!=3)
             return;
         
-        $wordform_list=preg_split("/\s*[,;\s]\s*/",$request->wordforms);
-        if (!$wordform_list || sizeof(!$wordform_list)!=3)
+        $wordform_list[3] = $this->lemma;
+        
+        $pos_id = $this->pos_id;
+        $gramsets[1] =
+        $gramsets[5] =
+        $gramsets[10] = [0=>3, 1=>4, 2=>22, 3=>1];
+        $gramsets[11] = [0=>26, 1=>28, 2=>72, 3=>170];
+        
+        if (!isset($gramsets[$pos_id]))
             return;
         
+        $dialect = Dialect::where('lang_id', $this->lang_id)->orderBy('sequence_number')->first();
+        if (!$dialect)
+            return;
         
+        foreach ($gramsets[$pos_id] as $key=>$gramset_id) {
+            $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_list[$key]]);
+            $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect->id]);
+        }
     }
 /*    
     public static function totalCount(){

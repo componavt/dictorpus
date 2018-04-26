@@ -172,7 +172,6 @@ class LemmaController extends Controller
         $langs_for_meaning = Lang::getListWithPriority();
         
         $lang_id = User::userLangID();
-        
         $new_meaning_n = 1;
                 
         return view('dict.lemma.create')
