@@ -300,6 +300,17 @@ class Lemma extends Model
     }
     
     /**
+     * @return Boolean is true, if this lemma can have wordforms, 
+     * i.e the part of speech in this language has grammatical sets
+     */
+    public function isChangeable(){
+        $lang = $this->lang_id;
+        $pos = $this->pos_id;
+        return (boolean)DB::table('gramset_pos')->where('lang_id',$lang)
+                ->where('pos_id',$pos)->count();
+    }
+    
+    /**
      * Gets count of sentence-examples
      * 
      * @return int

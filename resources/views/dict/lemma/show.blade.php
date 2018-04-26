@@ -63,8 +63,10 @@
         </table>
         @endforeach
 
-        @include('dict.lemma.show.wordforms')
-
+        @if ($lemma->isChangeable())
+            @include('dict.lemma.show.wordforms')
+        @endif
+            
         @include('dict.lemma._modal_delete')
 @stop
 
