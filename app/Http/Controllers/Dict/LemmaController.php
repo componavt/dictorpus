@@ -229,12 +229,10 @@ class LemmaController extends Controller
         }
         $lemma->save();
         
-        //Wordform::storeInitialWordforms($lemma);
-        
+        $lemma->createDictionaryWordforms($request->wordforms);
+            
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
-        $lemma->createDictionaryWordforms($request->wordforms);
-    
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
@@ -514,15 +512,14 @@ class LemmaController extends Controller
         $lemma->updated_at = date('Y-m-d H:i:s');
         $lemma->save();
         
+        $lemma->createDictionaryWordforms($request->wordforms);    
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);
 
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);
-        
-        $lemma->createDictionaryWordforms($request->wordforms);    
-        
+                
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
