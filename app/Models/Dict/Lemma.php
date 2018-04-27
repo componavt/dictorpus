@@ -549,7 +549,7 @@ class Lemma extends Model
         $gramsets[1] =
         $gramsets[5] =
         $gramsets[10] = [0=>3, 1=>4, 2=>22, 3=>1];
-        $gramsets[11] = [0=>26, 1=>28, 2=>72, 3=>170];
+        $gramsets[11] = [0=>26, 1=>28, 2=>31, 3=>170];
         
         if (!isset($gramsets[$pos_id]))
             return;
