@@ -3,7 +3,6 @@
 @section('title')
 {{ trans('main.site_title') }}
 
-<? $total_lemmas = 1313;
 @endsection
 
 @section('content')
