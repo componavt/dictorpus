@@ -223,11 +223,14 @@ class LemmaController extends Controller
 //            'pos_id' => 'numeric',
         ]);
         
-        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
-        if ($lemma->pos_id != 11) { // is not verb
-            $lemma->reflexive = 0;
+        $data = $request->all();
+        if ($data['pos_id'] != 11) { // is not verb
+            $data['reflexive'] = 0;
         }
-        $lemma->save();
+        $data['lemma'] = trim($data['lemma']);
+        $request->replace($data);
+        
+        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
         
         $lemma->createDictionaryWordforms($request->wordforms);
             
@@ -246,6 +249,9 @@ class LemmaController extends Controller
     public function show($id)
     {
         $lemma = Lemma::find($id);
+        if (!$lemma)
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
+                           ->withErrors('error.no_lemma');
 
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $relations = Relation::getList();
@@ -502,7 +508,7 @@ class LemmaController extends Controller
         ]);
         
         // LEMMA UPDATING
-        $lemma->lemma = $request->lemma;
+        $lemma->lemma = trim($request->lemma);
         $lemma->lang_id = (int)$request->lang_id;
         $lemma->pos_id = (int)$request->pos_id;
         $lemma->reflexive = (int)$request->reflexive;

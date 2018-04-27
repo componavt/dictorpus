@@ -19,6 +19,7 @@ return [
     'email_not_sent' => 'Sorry, an error occurred and the email was not sent.',
     'error' => 'Error',
     'incorrect_login_pass' => 'Incorrect login or password.',
+    'no_lemma'=> 'Lemma not found.',
     'no_user'=> 'User not found.',
     'no_user_with_email'=> 'No user with that email address.',
     'old_reset_code' => 'Invalid or expired password reset code',
