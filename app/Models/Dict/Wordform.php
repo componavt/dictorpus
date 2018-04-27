@@ -110,6 +110,7 @@ class Wordform extends Model
         }
 //dd($wordforms);        
         foreach($wordforms as $wordform_info) {
+            $wordform_info['wordform'] = trim($wordform_info['wordform']);
             if ($wordform_info['wordform']) {
                 $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_info['wordform']]);
 //                    if (!$lemma-> wordforms->has('id', '=', $wordform_obj->id)) {
