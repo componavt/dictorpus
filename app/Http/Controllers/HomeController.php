@@ -39,8 +39,15 @@ class HomeController extends Controller
         $total_lemmas = Lemma::count();
         $total_texts = Text::count();
         $total_dialects = Dialect::count();
+//        $lemmas_choice = \Lang::choice('blob.choice_articles',$total_lemmas, [], 'ru');
+//        $texts_choice = \Lang::choice('blob.choice_texts',$total_texts, [], 'ru');
+        $lemmas_choice = \Lang::choice('blob.choice_articles',substr($total_lemmas,-1,2), [], 'ru');
+        $texts_choice = trans_choice('blob.choice_texts',substr($total_texts,-1,2), [], 'ru');
+        
         return view('welcome')
                 ->with(['limit'=>$limit,
+                        'lemmas_choice' => $lemmas_choice,
+                        'texts_choice' => $texts_choice,
                         'total_dialects' => $total_dialects,
                         'total_lemmas' => $total_lemmas,
                         'total_texts' => $total_texts,

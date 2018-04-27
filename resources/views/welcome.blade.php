@@ -2,6 +2,8 @@
 
 @section('title')
 {{ trans('main.site_title') }}
+
+<? $total_lemmas = 1313;
 @endsection
 
 @section('content')
@@ -12,8 +14,8 @@
                     {!! trans('blob.welcome_text',[
                         'total_dialects'=>$total_dialects,
                         'total_lemmas'=>$total_lemmas,
-                        'lemmas' => trans_choice('blob.choice_articles',substr($total_lemmas,-1,1), [], 'ru'),
-                        'texts' => trans_choice('blob.choice_texts',substr($total_texts,-1,1), [], 'ru'),
+                        'lemmas' => $lemmas_choice,
+                        'texts' => $texts_choice,
                         'total_texts'=>$total_texts]) !!}
                     
                     <div id="last-created-lemmas" class="block-list">
