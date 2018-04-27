@@ -72,9 +72,12 @@ class HomeController extends Controller
 //        $all_word_to_check = $persFormatter->format($total_checked_words/$total_words);
 
         $all_words_to_checked = 100*$total_checked_words/$total_words;
+        $all_examples_to_checked = 100*$total_checked_examples/$total_examples;
+        
         return view('page.stats')
                 ->with([
                         'all_words_to_checked' => number_format($all_words_to_checked, 2,',', ' '),
+                        'all_examples_to_checked' => number_format($all_examples_to_checked, 2,',', ' '),
                         'total_active_editors' => number_format($total_active_editors, 0, ',', ' '),
                         'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
                         'total_checked_words' => number_format($total_checked_words, 0, ',', ' '),

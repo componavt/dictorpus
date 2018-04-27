@@ -35,7 +35,7 @@ return [
                        содержащий словари и корпуса прибалтийско-финских языков народов Карелии.</p>
 
                     <p>Корпус был открыт 24 июля 2016 года, и сейчас в нём содержится <a href="/ru/stats">:total_lemmas</a> статьи(ей) о словах и
-                    <a href="/ru/stats">:total_texts</a> тектов(а) на 6 языках и <a href="/ru/dict/dialect">:total_dialects</a> диалектах.</p>
+                    <a href="/ru/stats">:total_texts</a> текстов(а) на 6 языках и <a href="/ru/dict/dialect">:total_dialects</a> диалектах.</p>
 
                     <p>Проект ВепКар является продолжением работ по  
                         <a href="http://vepsian.krc.karelia.ru">Корпусу вепсского языка</a>.

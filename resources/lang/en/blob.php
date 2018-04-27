@@ -18,9 +18,13 @@ return [
                   . '<li><a href="/docs/permission_bible.pdf">The permission of the Bible Translation Institute to use the Veps publications published by the Institute for the Veps Corps</a></li><br>'
                   . '<li><a href="/docs/permission_periodika.pdf">Permission of the Periodica publishing house to use the materials of the Karelian newspaper Oma Mua, the Vep newspaper Kodima, the almanac Taival in Karelian and the Verez tullei almanac in the Vepsian language for use in the VepKar project</a></li>'
                   . '</ul>',
-    'welcome_text' =>  '<p>Open corpus of Veps and Karelian languages (abbr. VepKar)
-                        contains dictionaries and corpora of Finnic languages of Karelia peoples.</p>
+    'welcome_text' =>  '<p>Welcome to the Open corpus of Veps and Karelian languages (VepKar),
+                        containing dictionaries and corpora of Baltic-Finnic languages of Karelia peoples.</p>
 
+                        <p>The corpus was opened on July 24, 2016, and now it contains <a href="/ru/stats">:total_lemmas</a> dictionary articles and
+                        <a href="/ru/stats">:total_texts</a> texts in 6 languages and <a href="/ru/dict/dialect">:total_dialects</a> dialects.
+                        </p>
+                        
                         <p>
                             VepKar project is a continuation of work done in 
                             <a href="http://vepsian.krc.karelia.ru">Veps language corpus</a>.

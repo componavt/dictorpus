@@ -12,7 +12,12 @@ return [
     */
 
 
-    'all_words_to_checked' => 'Ratio of bound words to the total number of words (in%)',
+    'all_words_to_checked' => 'Ratio of bound words to the total number of words (in %)',
+    'all_examples_to_checked' => 'Ratio of verified examples to total number of examples (in %)',
+    
+    'meanings' => 'Meanings of words',
+    'translations' => 'Translations',
+    'relations' => 'Semantic relationships (synonyms, etc.)',
     
     'of_recorders'=>'collectors',
     'of_informants' => 'informants',
@@ -27,7 +32,8 @@ return [
     'stats_by_users' => 'Stats by Editors',
     'stats_by_corp' => 'Statistics by corpuses',
     'stats_by_dict' => 'Statistics by dictionary',
-    'stats_by_dict_corp' => 'Statistics by dictionary and texts',
+    'stats_by_words' => 'Statistics by words in the text',
+    'stats_by_examples' => 'Statistics by examples (words in sentences automatically tied to a lemma)',
 
     'total_active_editors' => 'Active editors (Participants who have activity in the last 30 days)',
     'total_examples' => 'The total number of examples (the number of words in sentences automatically tied to a lemma)',
