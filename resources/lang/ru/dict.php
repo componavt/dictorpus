@@ -56,6 +56,7 @@ return [
     'of_lemma' => 'лемму',
     'of_meaning' => 'значения',
     'of_relation' => 'отношения',
+    'of_wordform' => 'словоформы',
     
     'participle' => 'причастие',
     'part_of_speech' => 'Часть речи',

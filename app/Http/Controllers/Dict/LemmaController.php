@@ -557,6 +557,7 @@ class LemmaController extends Controller
         //add wordforms without gramsets
         Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma, $dialect_id);
 //exit(0);  
+//dd($lemma->wordforms);
 
         // updates links with text examples
         $lemma->updateTextLinks();

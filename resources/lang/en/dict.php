@@ -55,6 +55,7 @@ return [
     'of_lang' => 'of lang',
     'of_lemma' => 'of lemma',
     'of_relation' => 'of relation',
+    'of_wordform' => 'of wordform',
 
     'participle' => 'participle',
     'parts_of_speech' => 'parts of speech',

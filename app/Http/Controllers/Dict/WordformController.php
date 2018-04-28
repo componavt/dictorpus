@@ -7,6 +7,7 @@ use DB;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
 
 //use App\Models\Dict\Gramset;
 use App\Models\Dict\Dialect;
@@ -145,7 +146,7 @@ class WordformController extends Controller
      */
     public function create()
     {
-        //
+        return Redirect::to('/dict/wordform/');
     }
 
     /**
@@ -156,7 +157,7 @@ class WordformController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Redirect::to('/dict/wordform/');
     }
 
     /**
@@ -167,7 +168,7 @@ class WordformController extends Controller
      */
     public function show($id)
     {
-        //
+        return Redirect::to('/dict/wordform/');
     }
 
     /**
@@ -178,7 +179,12 @@ class WordformController extends Controller
      */
     public function edit($id)
     {
-        //
+        $wordform = Wordform::find($id);
+        return view('dict.wordform.edit')
+                ->with(['wordform'=>$wordform,
+                        'args_by_get'    => $this->args_by_get,
+                        'url_args'       => $this->url_args,
+                       ]);
     }
 
     /**
@@ -190,7 +196,17 @@ class WordformController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $wordform = Wordform::find($id);
+        $this->validate($request, [
+            'wordform'  => 'required|max:255',
+        ]);
+        
+        // LEMMA UPDATING
+        $wordform->wordform = trim($request->wordform);
+        $wordform->save();
+        
+        return Redirect::to('/dict/wordform/'.($this->args_by_get))
+                       ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
     /**
@@ -201,7 +217,7 @@ class WordformController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Redirect::to('/dict/wordform/');
     }
     
     

@@ -87,9 +87,12 @@ class Wordform extends Model
                 if (!(int)$dialect_id) {
                     $dialect_id = NULL;
                 }
+//dd(trim($wordform_text));                
                 $wordform_obj = self::firstOrCreate(['wordform'=>trim($wordform_text)]);
-
+//dd($wordform_obj);
                 $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
+//dd($lemma-> wordforms);
+                
 //print "<p>".$lemma->id." = ". $wordform_obj->id ." = $wordform_text = $gramset_id = $dialect_id";              
             }
         }

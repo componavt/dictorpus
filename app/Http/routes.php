@@ -91,7 +91,7 @@ Route::group(
 
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
-        Route::get('dict/wordform', 'Dict\WordformController@index');
+//        Route::get('dict/wordform', 'Dict\WordformController@index');
       
 //        Route::get('dict/gramset/tempInsertGramsetsForReflexive', 'Dict\GramsetController@tempInsertGramsetsForReflexive');       
 //        Route::get('dict/gramset/tempInsertGramsetPosLang', 'Dict\GramsetController@tempInsertGramsetPosLang');       
@@ -141,6 +141,9 @@ Route::group(
                                     'store' => 'relation.store',
                                     'destroy' => 'relation.destroy']]);
         
+        Route::resource('dict/wordform', 'Dict\WordformController',
+                       ['names' => ['update' => 'wordform.update']]);
+
         Route::resource('corpus/corpus', 'Corpus\CorpusController',
                        ['names' => ['update' => 'corpus.update',
                                     'store' => 'corpus.store',
