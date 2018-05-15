@@ -496,8 +496,10 @@ class Lemma extends Model
         $lemmas = [];
         foreach ($revisions as $revision) {
             $lemma = Lemma::find($revision->revisionable_id);
-            $lemma->user = User::getNameByID($revision->user_id);
-            $lemmas[] = $lemma;
+            if ($lemma) {
+                $lemma->user = User::getNameByID($revision->user_id);
+                $lemmas[] = $lemma;
+            }
         }
         return $lemmas;
     }
