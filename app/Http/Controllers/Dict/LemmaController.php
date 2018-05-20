@@ -230,6 +230,25 @@ class LemmaController extends Controller
             $data['reflexive'] = 0;
         }
         $data['lemma'] = trim($data['lemma']);
+        if (preg_match("/^([^\s\(]+)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\;\s*-([^\,\;]+)\)/", $data['lemma'], $regs)) {
+//        if (preg_match("/([^\s\(]+)\s*\(-([\,\;]+)\,\s*-([\,\;]+)\;\s*-([\,\;]+)\)/", $data['lemma'], $regs)) {
+            $regs[1] = str_replace('||','',$regs[1]);
+            if (preg_match("/^(.+)\|(.+)$/",$regs[1],$rregs)){
+                $regs[5] = $rregs[1];
+                $regs[1] = $rregs[1].$rregs[2];
+            } else {
+                $regs[5] = $regs[1];
+            }
+            $regs[2] = $regs[5].$regs[2];
+            $regs[3] = $regs[5].$regs[3];
+            $regs[4] = $regs[5].$regs[4];
+//            dd($regs);
+            $data['lemma'] = $regs[1];
+            $data['wordforms'] = $regs[2].', '.$regs[3].'; '.$regs[4];
+//dd($data['wordforms']);            
+        }
+//exit(0);        
+//dd($data['lemma']);        
         $request->replace($data);
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
