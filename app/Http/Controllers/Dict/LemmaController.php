@@ -173,6 +173,7 @@ class LemmaController extends Controller
         
         $lang_id = User::userLangID();
         $new_meaning_n = 1;
+	$pos_id = PartOfSpeech::getIDByCode('Noun');
                 
         return view('dict.lemma.create')
                   ->with(array(
@@ -180,6 +181,7 @@ class LemmaController extends Controller
                                'lang_id' => $lang_id,
                                'lang_values' => $lang_values,
                                'new_meaning_n' => $new_meaning_n,
+                               'pos_id' => $pos_id,
                                'pos_values' => $pos_values,
                                'args_by_get'    => $this->args_by_get,
                                'url_args'       => $this->url_args,

@@ -63,6 +63,15 @@ class PartOfSpeech extends Model
 //        return $this->hasManyThrough('App\Models\Dict\Wordform', 'App\Models\Dict\Lemma', 'pos_id');
     }
     
+    public static function getIDByCode($code)
+    {
+        $pos = self::where('code', $code)->first();
+        if ($pos && isset($pos->id)) {
+//dd($pos->id);
+            return $pos->id;
+        }
+    }
+        
     /** Gets all parts of speech for this category
      * 
      * @param int $category category of parts of speech

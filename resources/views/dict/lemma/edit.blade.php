@@ -24,6 +24,7 @@
         @include('dict.lemma._form_create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit',
                                       'lang_id' => null,
+				      'pos_id'=>null,
                                       'lang_values' => $lang_values, 
                                       'pos_values'  => $pos_values])
         {!! Form::close() !!}

@@ -11,6 +11,7 @@
         @include('widgets.form._formitem_select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,
+		 'value' => $pos_id,
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
