@@ -542,7 +542,7 @@ class Lemma extends Model
         if (!isset($wordforms))
             return;
         $wordform_list=preg_split("/\s*[,;\s]\s*/",$wordforms);
-        if (!$wordform_list || sizeof($wordform_list)!=3)
+        if (!$wordform_list || sizeof($wordform_list)<2)
             return;
         
         $wordform_list[3] = $this->lemma;
@@ -561,8 +561,10 @@ class Lemma extends Model
             return;
         
         foreach ($gramsets[$pos_id] as $key=>$gramset_id) {
-            $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_list[$key]]);
-            $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect->id]);
+            if (isset($wordform_list[$key])) {
+                $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_list[$key]]);
+                $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect->id]);
+            }
         }
     }
 /*    

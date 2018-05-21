@@ -230,24 +230,30 @@ class LemmaController extends Controller
             $data['reflexive'] = 0;
         }
         $data['lemma'] = trim($data['lemma']);
-        if (preg_match("/^([^\s\(]+)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\;\s*-([^\,\;]+)\)/", $data['lemma'], $regs)) {
-//        if (preg_match("/([^\s\(]+)\s*\(-([\,\;]+)\,\s*-([\,\;]+)\;\s*-([\,\;]+)\)/", $data['lemma'], $regs)) {
+        if (preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)(\;\s*([^\,\;]+))?\)/", $data['lemma'], $regs)) {
+//        if (preg_match("/^([^\s\(]+)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\;\s*-([^\,\;]+)\)/", $data['lemma'], $regs)) {
+//dd($regs);
             $regs[1] = str_replace('||','',$regs[1]);
             if (preg_match("/^(.+)\|(.+)$/",$regs[1],$rregs)){
-                $regs[5] = $rregs[1];
+                $regs[6] = $rregs[1];
                 $regs[1] = $rregs[1].$rregs[2];
             } else {
-                $regs[5] = $regs[1];
+                $regs[6] = $regs[1];
             }
-            $regs[2] = $regs[5].$regs[2];
-            $regs[3] = $regs[5].$regs[3];
-            $regs[4] = $regs[5].$regs[4];
-//            dd($regs);
+            $regs[2] = str_replace('-', $regs[6], $regs[2]);
+            $regs[3] = str_replace('-', $regs[6], $regs[3]);
+            if (isset($regs[5])) {
+                $regs[5] = str_replace('-', $regs[6], $regs[5]);
+            }
+//dd($regs);
+//exit(0);        
             $data['lemma'] = $regs[1];
-            $data['wordforms'] = $regs[2].', '.$regs[3].'; '.$regs[4];
+            $data['wordforms'] = $regs[2].', '.$regs[3];
+            if (isset($regs[5])) {
+                $data['wordforms'] .= '; '.$regs[5];
+            }
 //dd($data['wordforms']);            
         }
-//exit(0);        
 //dd($data['lemma']);        
         $request->replace($data);
         
