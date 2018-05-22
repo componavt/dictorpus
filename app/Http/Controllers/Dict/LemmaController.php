@@ -230,7 +230,7 @@ class LemmaController extends Controller
             $data['reflexive'] = 0;
         }
         $data['lemma'] = trim($data['lemma']);
-        if (preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)(\;\s*([^\,\;]+))?\)/", $data['lemma'], $regs)) {
+        if (preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $data['lemma'], $regs)) {
 //        if (preg_match("/^([^\s\(]+)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\;\s*-([^\,\;]+)\)/", $data['lemma'], $regs)) {
 //dd($regs);
             $regs[1] = str_replace('||','',$regs[1]);
