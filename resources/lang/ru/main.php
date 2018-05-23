@@ -14,5 +14,6 @@ return [
     'site_title' => 'Открытый корпус вепсского и карельского языков',
     'site_abbr'  => 'ВепКар',
     'krc' => 'КарНЦ РАН',
-    'datetime_format' => '%d %B %Y в %H:%m'
+    'datetime_format' => '%d %B %Y в %H:%m',
+    'date_format' => '%d %B %Y'
 ];

@@ -860,8 +860,11 @@ class LemmaController extends Controller
             $portion = 100;
             $view = 'full_new_list';
         }
-        $lemmas = Lemma::lastCreatedLemmas($portion);
-                                
+        $lemmas = Lemma::lastCreatedLemmas($portion)
+                        ->groupBy(function ($item, $key) {
+                            return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
+                        });
+//dd($lemmas);
         return view('dict.lemma.'.$view)
                   ->with(['new_lemmas' => $lemmas,
                           'limit' => $limit

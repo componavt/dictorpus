@@ -40,6 +40,7 @@ foreach($groups as $i => $group)
     <h3>{{ trans('messages.history') }}</h3>
         @foreach($all_history as $time => $histories )
 <?php 
+$dt = \Carbon\Carbon::parse($time);
 //dd($all_history);
 $user = \App\Models\User::find($histories[0]->userResponsible()->id); 
 $histories = $histories->sortBy('id');
@@ -78,7 +79,7 @@ foreach($histories as $history) {
 ?>
             @if (sizeof($history_strings))
         <p>
-            <i>{{ $time }}</i>
+            <span class="date">{{ $dt->formatLocalized(trans('main.datetime_format')) }}</span>
             {{ $user->name }} 
             <ul>
             @foreach($history_strings as $history)
