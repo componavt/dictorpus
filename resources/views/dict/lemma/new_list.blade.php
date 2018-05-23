@@ -5,7 +5,7 @@
                         <ol>
                             @foreach ($lemmas as $lemma)
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma')}}/{{$lemma->id}}">{{$lemma->lemma}}</a> 
-                                ({{$lemma->user}}, <span class="date">{{$lemma->created_at->formatLocalized("%H:%m")}})</li> 
+                                ({{$lemma->user}}, <span class="date">{{$lemma->created_at->formatLocalized("%H:%M")}})</li> 
                             @endforeach
                         </ol>
                         @endforeach
