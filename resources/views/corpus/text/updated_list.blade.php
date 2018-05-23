@@ -4,7 +4,7 @@
                         @foreach ($last_updated_texts as $text)
                         <li><a href="{{ LaravelLocalization::localizeURL('corpus/text')}}/{{$text->id}}">{{$text->title}}</a> 
                             (
-                                @if (isset($lemma->user))
+                                @if (isset($text->user))
                                     {{$text->user}}, 
                                 @endif
                                 <span class="date">{{$text->updated_at->formatLocalized(trans('main.datetime_format'))}})</span>
