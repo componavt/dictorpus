@@ -3,12 +3,12 @@
                         <ol>
                         @foreach ($last_updated_lemmas as $lemma)
                         <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma')}}/{{$lemma->id}}">{{$lemma->lemma}}</a> 
-                            <i>(
+                            (
                                 @if (isset($lemma->user))
                                     {{$lemma->user}}, 
                                 @endif
-                                {{$lemma->updated_at}})
-                            </i></li> 
+                                <span class="date">{{$lemma->updated_at->formatLocalized(trans('main.datetime_format'))}})</span>
+                            </li> 
                         @endforeach
                         </ol>
                         @if ($limit)

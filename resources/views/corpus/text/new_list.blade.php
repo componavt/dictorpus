@@ -3,7 +3,7 @@
                         <ol>
                         @foreach ($new_texts as $text)
                         <li><a href="{{ LaravelLocalization::localizeURL('corpus/text')}}/{{$text->id}}">{{$text->title}}</a> 
-                            <i>({{$text->user}}, {{$text->created_at}})</i></li> 
+                            ({{$text->user}}, <span class="date">{{$text->created_at->formatLocalized(trans('main.datetime_format'))}})</span></li> 
                         @endforeach
                         </ol>
                         @if ($limit)

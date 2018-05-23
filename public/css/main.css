@@ -123,6 +123,7 @@ and open the template in the editor.
 }
 
 .date {
+    color:#999;
     font-size: 12px;
     font-style: italic;
 }

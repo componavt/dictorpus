@@ -3,7 +3,12 @@
                         <ol>
                         @foreach ($last_updated_texts as $text)
                         <li><a href="{{ LaravelLocalization::localizeURL('corpus/text')}}/{{$text->id}}">{{$text->title}}</a> 
-                            <i>({{$text->user}}, {{$text->updated_at}})</i></li> 
+                            (
+                                @if (isset($lemma->user))
+                                    {{$text->user}}, 
+                                @endif
+                                <span class="date">{{$text->updated_at->formatLocalized(trans('main.datetime_format'))}})</span>
+                        </li> 
                         @endforeach
                         </ol>
                         @if ($limit)
