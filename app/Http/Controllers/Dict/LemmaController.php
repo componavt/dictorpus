@@ -857,7 +857,7 @@ class LemmaController extends Controller
             $portion = $limit;
             $view = 'new_list';
         } else {
-            $portion = 100;
+            $portion = 1000;
             $view = 'full_new_list';
         }
         $lemmas = Lemma::lastCreatedLemmas($portion)
