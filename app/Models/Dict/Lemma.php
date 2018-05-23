@@ -35,7 +35,15 @@ class Lemma extends Model
     );
     
     protected $fillable = ['lemma','lang_id','pos_id','reflexive'];
-    
+    /**
+    * Атрибуты, которые должны быть преобразованы к датам.
+    *
+    * @var array
+    */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];    
     public static function boot()
     {
         parent::boot();

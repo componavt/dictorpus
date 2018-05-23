@@ -13,7 +13,8 @@
         "venturecraft/revisionable": "1.*",
         "vi-kon/laravel-diff": "^1.0",
         "caxy/php-htmldiff": "^0.1.7",
-        "anhskohbo/no-captcha": "^3.0"
+        "anhskohbo/no-captcha": "^3.0",
+        "nesbot/carbon": "^1.28"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
