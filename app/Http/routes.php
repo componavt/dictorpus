@@ -76,6 +76,7 @@ Route::group(
 
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
 
+        Route::get('dict/lemma/add/example/{example_id}', 'Dict\LemmaController@addExample');
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
@@ -89,7 +90,6 @@ Route::group(
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/omonyms', 'Dict\LemmaController@omonyms');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
-
         Route::get('dict/lemma/full_new_list', 'Dict\LemmaController@fullNewList');
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');

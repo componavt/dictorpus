@@ -72,23 +72,12 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/meaning.js')!!}
 @stop
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma{{$args_by_get}}');
-    
-    $('.show-more-examples').click(function(){
-        var meaning_n = $(this).attr('data-for');
-        var id='more-'+meaning_n;
-        $(this).hide();
-        $('#'+id).show();
-    });
-    $('.hide-more-examples').click(function(){
-        var meaning_n = $(this).attr('data-for');
-        var text='more-'+meaning_n;
-        var link='show-more-'+meaning_n;
-        $('#'+text).hide();
-        $('#'+link).show();
-    });
+    toggleExamples();
+    addExample('{{LaravelLocalization::localizeURL('/dict/lemma/add/example')}}');
 @stop
 

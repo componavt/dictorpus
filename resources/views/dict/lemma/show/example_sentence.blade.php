@@ -1,5 +1,10 @@
 <?php 
 //dd($sentence);
+$t_s_w = $sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'];
+if (isset($meaning)) {
+    $m_t_s_w = $meaning->id.'_'.$t_s_w;
+} 
+
 if($sentence['text']->event && $sentence['text']->event->place) {
         $place_title = $sentence['text']->event->place->placeString();
 } else { 
@@ -12,8 +17,18 @@ if (isset($w[0])) {
     $sentence['s'] = $sxe->asXML();
 }
 ?>
-@if (isset($relevance) && $relevance>1)
-    <span class="glyphicon glyphicon-star relevance-<?=$relevance;?>"></span>
+@if (isset($meaning))
+    <span id="sentence-relevance_<?=$m_t_s_w;?>">
+    @if (isset($relevance) && $relevance>1)
+        <span class="glyphicon glyphicon-star relevance-<?=$relevance;?>"></span>
+    @else
+        @if (isset($is_edit) && User::checkAccess('dict.edit'))
+            @include('widgets.form._button_add', 
+                    ['data_add' => $m_t_s_w,
+                     'class' => 'add-example'])
+        @endif
+    @endif
+    </span>
 @endif
 
 {!! $sentence['s'] !!}
@@ -26,11 +41,8 @@ if (isset($w[0])) {
     {{$sentence['text']->title}}</a>)
     @if (isset($is_edit) && User::checkAccess('dict.edit'))
         @include('widgets.form._button_edit', 
-                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/example/'.
-                             $sentence['text']->id.'_'.$sentence['s_id'].
-                             '_'.$sentence['w_id'],
+                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/example/'.$t_s_w,
                   'link_class' => 'sentence-edit',
                   'without_text' => 1])
-    @endif
-    
+    @endif    
 @endif

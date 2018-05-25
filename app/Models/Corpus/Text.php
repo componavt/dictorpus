@@ -623,7 +623,6 @@ dd($wordforms);
                 $text_id = (int)$regs[2];
                 $sentence_id = (int)$regs[3];
                 $w_id = (int)$regs[4];
-                
                 if ($relevance == 1) { // не выставлена оценка
                     $exists_positive_rel = DB::table('meaning_text') // ищем другие значения лемм с положительной оценкой
                             -> where('text_id',$text_id)

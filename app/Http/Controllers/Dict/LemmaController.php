@@ -573,6 +573,18 @@ class LemmaController extends Controller
     }
 
     /**
+     * /dict/lemma/add/example/1418_5_59_3093
+     * 
+     * @param type $example_id
+     * @return string
+     */
+    public function addExample($example_id)
+    {
+        Text::updateExamples([$example_id=>5]);
+        return '<span class="glyphicon glyphicon-star relevance-5"></span>';
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

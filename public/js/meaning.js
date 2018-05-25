@@ -14,3 +14,33 @@ function addMeaning() {
         $(this).data('meaning_n', meaning_n+1);
     });    
 }
+
+function addExample(route) {
+    $(".add-example").click(function(){
+        var id = $(this).data('add');
+        $.ajax({
+            url: route+'/'+id, 
+            type: 'GET',
+            success: function(result){
+                $("#sentence-relevance_"+ id).html(result);
+            }
+        }); 
+        $(this).data('count',count + 1);
+    });    
+}    
+
+function toggleExamples() {    
+    $('.show-more-examples').click(function(){
+        var meaning_n = $(this).attr('data-for');
+        var id='more-'+meaning_n;
+        $(this).hide();
+        $('#'+id).show();
+    });
+    $('.hide-more-examples').click(function(){
+        var meaning_n = $(this).attr('data-for');
+        var text='more-'+meaning_n;
+        var link='show-more-'+meaning_n;
+        $('#'+text).hide();
+        $('#'+link).show();
+    });
+}
