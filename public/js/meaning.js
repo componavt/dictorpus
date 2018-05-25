@@ -44,7 +44,7 @@ function toggleExamples() {
     });
 }
 
-function addMeaning(route) {
+function addWordMeaning(route) {
     $(".choose-meaning").click(function(){
         var id = $(this).data('add');
         var w_id = $(this).closest('w').attr('id');
