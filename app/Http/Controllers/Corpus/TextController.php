@@ -623,7 +623,7 @@ class TextController extends Controller
     
     public function fullNewList(Request $request)
     {
-        $portion = 1000;
+        $portion = 100;
         $texts = Text::lastCreated($portion)
                     ->groupBy(function ($item, $key) {
                         return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
