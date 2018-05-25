@@ -478,7 +478,7 @@ class Lemma extends Model
         return $sentences;
     }
     
-    public static function lastCreatedLemmas($limit='') {
+    public static function lastCreated($limit='') {
         $lemmas = self::latest();
         if ($limit) {
             $lemmas = $lemmas->take($limit);
@@ -496,7 +496,7 @@ class Lemma extends Model
         return $lemmas;
     }
     
-    public static function lastUpdatedLemmas($limit='') {
+    public static function lastUpdated($limit='',$is_grouped=0) {
         $revisions = Revision::where('revisionable_type','like','%Lemma')
                             ->where('key','updated_at')
                             ->groupBy('revisionable_id')
@@ -506,9 +506,15 @@ class Lemma extends Model
             $lemma = Lemma::find($revision->revisionable_id);
             if ($lemma) {
                 $lemma->user = User::getNameByID($revision->user_id);
-                $lemmas[] = $lemma;
+                if ($is_grouped) {
+                    $updated_date = $lemma->updated_at->formatLocalized(trans('main.date_format'));            
+                    $lemmas[$updated_date][] = $lemma;
+                } else {
+                    $lemmas[] = $lemma;
+                }
             }
         }
+        
         return $lemmas;
     }
     

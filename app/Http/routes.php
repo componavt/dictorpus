@@ -66,10 +66,13 @@ Route::group(
         Route::post('corpus/text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
 
-        Route::get('corpus/text/new_list', 'Corpus\TextController@newTextList');
         Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
-        Route::get('corpus/text/updated_list', 'Corpus\TextController@updatedTextList');
+
+        Route::get('corpus/text/full_new_list', 'Corpus\TextController@fullNewList');
+        Route::get('corpus/text/limited_new_list', 'Corpus\TextController@limitedNewList');
+        Route::get('corpus/text/full_updated_list', 'Corpus\TextController@fullUpdatedList');
+        Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
 
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
 
@@ -83,11 +86,14 @@ Route::group(
                         ->name('lemma.update.wordforms');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
-        Route::get('dict/lemma/new_list', 'Dict\LemmaController@newLemmaList');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/omonyms', 'Dict\LemmaController@omonyms');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
-        Route::get('dict/lemma/updated_list', 'Dict\LemmaController@updatedLemmaList');
+
+        Route::get('dict/lemma/full_new_list', 'Dict\LemmaController@fullNewList');
+        Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
+        Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
+        Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
 
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
@@ -106,8 +112,8 @@ Route::group(
 //        Route::get('corpus/text/tempInsertVepsianText', 'Corpus\TextController@tempInsertVepsianText');
 //        Route::get('corpus/text/tempInsertVepsianDialectText', 'Corpus\TextController@tempInsertVepsianDialectText');
 //        Route::get('corpus/text/tempInsertVepsianGenreText', 'Corpus\TextController@tempInsertVepsianGenreText');
-        Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
-        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
+//        Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
+//        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
 //        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
 

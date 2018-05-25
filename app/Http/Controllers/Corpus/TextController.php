@@ -621,6 +621,61 @@ class TextController extends Controller
         }
     }
     
+    public function fullNewList(Request $request)
+    {
+        $portion = 1000;
+        $texts = Text::lastCreated($portion)
+                    ->groupBy(function ($item, $key) {
+                        return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
+                    });
+        if (!$texts) {            
+            return Redirect::to('/');
+        }
+        return view('corpus.text.list.full_new')
+              ->with(['new_texts' => $texts]);
+    }
+    
+    /**
+     * /corpus/text/limited_new_list
+     * @param Request $request
+     * @return Response
+     */
+    public function limitedNewList(Request $request)
+    {
+        $limit = (int)$request->input('limit');
+        $texts = Text::lastCreated($limit);
+        if ($texts) {                       
+            return view('corpus.text.list.limited_new')
+                      ->with(['new_texts' => $texts]);
+        }
+    }
+    
+    public function fullUpdatedList(Request $request)
+    {
+        $portion = 100;
+        $texts = Text::lastUpdated($portion,1);                                
+        if (!$texts) {            
+            return Redirect::to('/');
+        }
+        return view('corpus.text.list.full_updated')
+                  ->with(['last_updated_texts'=>$texts]);
+    }
+    
+    /**
+     * /corpus/text/limited_updated_list
+     * @param Request $request
+     * @return Response
+     */
+    public function limitedUpdatedList(Request $request)
+    {
+        $limit = (int)$request->input('limit');
+        $texts = Text::lastUpdated($limit);
+//dd($texts);                                
+        if ($texts) {                       
+            return view('corpus.text.list.limited_updated')
+                      ->with(['last_updated_texts'=>$texts]);
+        }
+    }
     public function newTextList(Request $request)
     {
         $limit = (int)$request->input('limit');

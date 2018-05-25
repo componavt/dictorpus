@@ -651,7 +651,7 @@ dd($wordforms);
         }
     }
     
-    public static function lastCreatedTexts($limit='') {
+    public static function lastCreated($limit='') {
         $texts = self::latest();
         if ($limit) {
             $texts = $texts->take($limit);
@@ -669,7 +669,7 @@ dd($wordforms);
         return $texts;
     }
     
-    public static function lastUpdatedTexts($limit='') {
+    public static function lastUpdated($limit='',$is_grouped=0) {
         $revisions = Revision::where('revisionable_type','like','%Text')
                             ->where('key','updated_at')
                             ->groupBy('revisionable_id')
@@ -678,7 +678,12 @@ dd($wordforms);
         foreach ($revisions as $revision) {
             $text = Text::find($revision->revisionable_id);
             $text->user = User::getNameByID($revision->user_id);
-            $texts[] = $text;
+            if ($is_grouped) {
+                $updated_date = $text->updated_at->formatLocalized(trans('main.date_format'));            
+                $texts[$updated_date][] = $text;
+            } else {
+                $texts[] = $text;
+            }
         }
         return $texts;
     }

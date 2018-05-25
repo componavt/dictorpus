@@ -850,47 +850,60 @@ class LemmaController extends Controller
         return Response::json($all_meanings);
     }
     
-    public function newLemmaList(Request $request)
+    public function fullNewList(Request $request)
     {
-        $limit = (int)$request->input('limit');
-        if ($limit) {
-            $portion = $limit;
-            $view = 'new_list';
-        } else {
-            $portion = 1000;
-            $view = 'full_new_list';
+        $portion = 1000;
+        $lemmas = Lemma::lastCreated($portion)
+                    ->groupBy(function ($item, $key) {
+                        return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
+                    });
+        if (!$lemmas) {            
+            return Redirect::to('/');
         }
-        if ($limit) {
-            $lemmas = Lemma::lastCreatedLemmas($portion);
-        } else {
-            $lemmas = Lemma::lastCreatedLemmas($portion)
-                        ->groupBy(function ($item, $key) {
-                            return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
-                        });
-        }
-//dd($lemmas);
-        return view('dict.lemma.'.$view)
-                  ->with(['new_lemmas' => $lemmas,
-                          'limit' => $limit
-                         ]);
+        return view('dict.lemma.list.full_new')
+              ->with(['new_lemmas' => $lemmas]);
     }
     
-    public function updatedLemmaList(Request $request)
+    /**
+     * /dict/lemma/limited_new_list
+     * @param Request $request
+     * @return Response
+     */
+    public function limitedNewList(Request $request)
     {
         $limit = (int)$request->input('limit');
-        if ($limit) {
-            $portion = $limit;
-            $view = 'updated_list';
-        } else {
-            $portion = 100;
-            $view = 'full_updated_list';
+        $lemmas = Lemma::lastCreated($limit);
+        if ($lemmas) {                       
+            return view('dict.lemma.list.limited_new')
+                      ->with(['new_lemmas' => $lemmas]);
         }
-        $lemmas = Lemma::lastUpdatedLemmas($portion);
-                                
-        return view('dict.lemma.'.$view)
-                  ->with(['last_updated_lemmas'=>$lemmas,
-                          'limit' => $limit
-                         ]);
+    }
+    
+    public function fullUpdatedList(Request $request)
+    {
+        $portion = 100;
+        $lemmas = Lemma::lastUpdated($portion,1);                                
+        if (!$lemmas) {            
+            return Redirect::to('/');
+        }
+        return view('dict.lemma.list.full_updated')
+                  ->with(['last_updated_lemmas'=>$lemmas]);
+    }
+    
+    /**
+     * /dict/lemma/limited_updated_list
+     * @param Request $request
+     * @return Response
+     */
+    public function limitedUpdatedList(Request $request)
+    {
+        $limit = (int)$request->input('limit');
+        $lemmas = Lemma::lastUpdated($limit);
+//dd($lemmas);                                
+        if ($lemmas) {                       
+            return view('dict.lemma.list.limited_updated')
+                      ->with(['last_updated_lemmas'=>$lemmas]);
+        }
     }
     
     
