@@ -581,6 +581,33 @@ class Lemma extends Model
             }
         }
     }
+    
+    public static function parseLemmaField($lemma, $wordforms) {
+        if (!preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs)) {
+            return [$lemma,$wordforms];
+        }
+        $regs[1] = str_replace('||','',$regs[1]);
+        if (preg_match("/^(.+)\|(.+)$/",$regs[1],$rregs)){
+            $regs[6] = $rregs[1];
+            $regs[1] = $rregs[1].$rregs[2];
+        } else {
+            $regs[6] = $regs[1];
+        }
+        $regs[2] = str_replace('-', $regs[6], $regs[2]);
+        $regs[3] = str_replace('-', $regs[6], $regs[3]);
+        if (isset($regs[5])) {
+            $regs[5] = str_replace('-', $regs[6], $regs[5]);
+        }
+//dd($regs);
+//exit(0);        
+        $lemma = $regs[1];
+        $wordforms = $regs[2].', '.$regs[3];
+        if (isset($regs[5])) {
+            $wordforms .= '; '.$regs[5];
+        }
+        
+        return [$lemma,$wordforms];
+    }
 /*    
     public static function totalCount(){
         return self::count();

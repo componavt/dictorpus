@@ -229,32 +229,8 @@ class LemmaController extends Controller
         if ($data['pos_id'] != 11) { // is not verb
             $data['reflexive'] = 0;
         }
-        $data['lemma'] = trim($data['lemma']);
-        if (preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $data['lemma'], $regs)) {
-//        if (preg_match("/^([^\s\(]+)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\;\s*-([^\,\;]+)\)/", $data['lemma'], $regs)) {
-//dd($regs);
-            $regs[1] = str_replace('||','',$regs[1]);
-            if (preg_match("/^(.+)\|(.+)$/",$regs[1],$rregs)){
-                $regs[6] = $rregs[1];
-                $regs[1] = $rregs[1].$rregs[2];
-            } else {
-                $regs[6] = $regs[1];
-            }
-            $regs[2] = str_replace('-', $regs[6], $regs[2]);
-            $regs[3] = str_replace('-', $regs[6], $regs[3]);
-            if (isset($regs[5])) {
-                $regs[5] = str_replace('-', $regs[6], $regs[5]);
-            }
-//dd($regs);
-//exit(0);        
-            $data['lemma'] = $regs[1];
-            $data['wordforms'] = $regs[2].', '.$regs[3];
-            if (isset($regs[5])) {
-                $data['wordforms'] .= '; '.$regs[5];
-            }
-//dd($data['wordforms']);            
-        }
-//dd($data['lemma']);        
+        list($data['lemma'], $data['wordforms']) 
+                = Lemma::parseLemmaField(trim($data['lemma']), $data['wordforms']);
         $request->replace($data);
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
@@ -535,7 +511,10 @@ class LemmaController extends Controller
         ]);
         
         // LEMMA UPDATING
-        $lemma->lemma = trim($request->lemma);
+        list($new_lemma, $wordforms_list) 
+                = Lemma::parseLemmaField(trim($request->lemma), $request->wordforms);
+        
+        $lemma->lemma = $new_lemma;
         $lemma->lang_id = (int)$request->lang_id;
         $lemma->pos_id = (int)$request->pos_id;
         $lemma->reflexive = (int)$request->reflexive;
@@ -545,7 +524,7 @@ class LemmaController extends Controller
         $lemma->updated_at = date('Y-m-d H:i:s');
         $lemma->save();
         
-        $lemma->createDictionaryWordforms($request->wordforms);    
+        $lemma->createDictionaryWordforms($wordforms_list);    
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);
