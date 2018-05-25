@@ -12,5 +12,5 @@
                 $route .= "?".implode('&',$tmp);
             }
         }*/
-        $format = '<a  data-add="%s" class="btn btn-warning btn-xs btn-detail '.$class.'"><i class="fa fa-plus fa-lg"></i></a>';
-        print sprintf($format, $data_add);
+        $format = '<a  data-add="%s" class="btn btn-warning btn-xs btn-detail %s" title="%s"><i class="fa fa-plus fa-lg"></i></a>';
+        print sprintf($format, $data_add, $class, $title);

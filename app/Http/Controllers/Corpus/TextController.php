@@ -13,6 +13,7 @@ use Response;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
+use App\Models\Dict\Meaning;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Event;
@@ -711,7 +712,34 @@ class TextController extends Controller
                           'limit' => $limit
                          ]);
     }
-/*    public function tempStripSlashes()
+    
+    /**
+     * /corpus/text/add/example/4254_1500_11_92
+     * 
+     * @param type $example_id
+     * @return string
+     */
+    public function addExample($example_id)
+    {
+        Text::updateExamples([$example_id=>5]);
+        $str = '';
+        if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
+            $meaning_id = $regs[1];
+            $meaning = Meaning::find($meaning_id);
+            if ($meaning) {
+                $locale = LaravelLocalization::getCurrentLocale();
+                $str = '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
+                     .'">'.$meaning->lemma->lemma.'<span> ('
+                     .$meaning->getMultilangMeaningTextsString($locale)
+                     .')</span></a></div>'
+                     .'<a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$regs[2].'/edit/example/'.$regs[3].'_'.$regs[4])
+                     .'" class="text-example-edit">&#9999;</a>';
+            }
+        }
+        return $str;
+    }
+
+    /*    public function tempStripSlashes()
     {
         $texts = Text::all();
         foreach ($texts as $text) {

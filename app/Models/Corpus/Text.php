@@ -464,11 +464,18 @@ dd($wordforms);
                             $has_checked_meaning = true;
                         }
 
-                        $link = $link_block->addChild('a',$lemma->lemma);
+                        $link_div = $link_block->addChild('div');
+                        $link = $link_div->addChild('a',$lemma->lemma);
                         $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
 
                         $locale = LaravelLocalization::getCurrentLocale();
                         $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
+                        if (!$has_checked_meaning && User::checkAccess('corpus.edit')) {
+                            $add_link = $link_div->addChild('span');
+                            $add_link->addAttribute('data-add',$meaning->id.'_'.$this->id.'_'.$sentence_id.'_'.$word_id);
+                            $add_link->addAttribute('class','fa fa-plus choose-meaning'); //  fa-lg 
+                            $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
+                        }
                     }
                     if (User::checkAccess('corpus.edit')) {
                         $button_edit = $link_block->addChild('a','&#9999;');

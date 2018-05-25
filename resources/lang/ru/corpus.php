@@ -36,6 +36,7 @@ return [
     'informant_removed' => 'Информант ":name" удален.',
     
     'last_updated_texts' => 'Последние измененные тексты',
+    'mark_right_meaning' => 'отметить правильное значение',
     'name' => 'название',
     'nee' => 'урожд.',
     'new_texts'=>'Новые тексты',

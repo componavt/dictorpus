@@ -25,7 +25,6 @@ function addExample(route) {
                 $("#sentence-relevance_"+ id).html(result);
             }
         }); 
-        $(this).data('count',count + 1);
     });    
 }    
 
@@ -44,3 +43,20 @@ function toggleExamples() {
         $('#'+link).show();
     });
 }
+
+function addMeaning(route) {
+    $(".choose-meaning").click(function(){
+        var id = $(this).data('add');
+        var w_id = $(this).closest('w').attr('id');
+        
+        $.ajax({
+            url: route+'/'+id, 
+            type: 'GET',
+            success: function(result){
+                $("#links_"+ w_id).html(result);
+                $("w#"+w_id).removeClass('polysemy').addClass('has-checked');
+            }
+        }); 
+    });    
+}    
+

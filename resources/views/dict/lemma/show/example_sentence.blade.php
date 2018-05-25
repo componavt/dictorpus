@@ -25,7 +25,8 @@ if (isset($w[0])) {
         @if (isset($is_edit) && User::checkAccess('dict.edit'))
             @include('widgets.form._button_add', 
                     ['data_add' => $m_t_s_w,
-                     'class' => 'add-example'])
+                     'class' => 'add-example',
+                     'title' => trans('dict.add-example-5')])
         @endif
     @endif
     </span>

@@ -61,6 +61,7 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         
+        Route::get('corpus/text/add/example/{example_id}', 'Corpus\TextController@addExample');
 /*        Route::get('corpus/corpus/list', 'Corpus\CorpusController@corpusList');*/
         Route::get('corpus/text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
         Route::post('corpus/text/{id}/update/examples', 'Corpus\TextController@updateExamples')

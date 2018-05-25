@@ -36,6 +36,7 @@ return [
     'informant_removed' => 'Informant ":name" is removed successfully.',
     
     'last_updated_texts' => 'Last updated texts',
+    'mark_right_meaning' => 'choose right meaning',
     'name' => 'name',
     'nee' => 'nee',
     'new_texts'=>'New texts',

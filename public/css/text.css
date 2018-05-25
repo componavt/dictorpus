@@ -42,11 +42,11 @@ s {
 .has-checked .links-to-lemmas {
     background: #a6f4bc;
 }
-
+/*
 .links-to-lemmas a {
     display: block;
 }
-
+*/
 .links-to-lemmas a span {
     color: black;
     text-decoration: none;
@@ -74,6 +74,7 @@ ol {
 }
 
 .text-example-edit {
+    display: block;
     font-size: 40px;
     line-height: 20px;
     text-align: right;
@@ -82,4 +83,9 @@ ol {
 
 .text-example-edit:hover {
     text-decoration: none;
+}
+
+.links-to-lemmas .choose-meaning {
+    color: #f0ad4e;
+    padding-left: 10px;
 }

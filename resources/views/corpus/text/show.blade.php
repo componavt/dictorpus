@@ -80,10 +80,12 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/meaning.js')!!}
 @stop
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
+    addMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add/example')}}');
     
     $(".sentence").hover(function(){ // over
             var trans_id = 'trans' + $(this).attr('id');
