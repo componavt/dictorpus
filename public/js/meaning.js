@@ -28,6 +28,21 @@ function addExample(route) {
     });    
 }    
 
+function removeExample(route) {
+    $(".remove-example").click(function(){
+        var id = $(this).data('for');
+        $.ajax({
+            url: route+'/'+id, 
+            type: 'GET',
+            success: function(result){
+                if (result) {
+                    $("#sentence-"+ id).hide();
+                }
+            }
+        }); 
+    });    
+}    
+
 function toggleExamples() {    
     $('.show-more-examples').click(function(){
         var meaning_n = $(this).attr('data-for');

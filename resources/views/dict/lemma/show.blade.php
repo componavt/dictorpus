@@ -79,5 +79,6 @@
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma{{$args_by_get}}');
     toggleExamples();
     addExample('{{LaravelLocalization::localizeURL('/dict/lemma/add/example')}}');
+    removeExample('{{LaravelLocalization::localizeURL('/dict/lemma/remove/example')}}');
 @stop
 

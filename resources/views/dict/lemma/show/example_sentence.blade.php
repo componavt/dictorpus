@@ -46,4 +46,11 @@ if (isset($w[0])) {
                   'link_class' => 'sentence-edit',
                   'without_text' => 1])
     @endif    
+    
+    @if (isset($is_edit) && User::checkAccess('dict.edit'))
+        @include('widgets.form._button_remove', 
+                ['data_add' => $m_t_s_w,
+                 'class' => 'remove-example',
+                 'title' => trans('dict.remove-example')])
+    @endif
 @endif

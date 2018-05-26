@@ -39,7 +39,7 @@
                         <div id="more-{{$meaning->meaning_n}}" class="more-examples">
                         <table class="lemma-examples">
                         @endif
-                            <tr class="row">
+                            <tr class="row" id="sentence-{{$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id']}}">
                                 <td> 
                                 @if ($sentence['relevance']>0)
                                     {{ $count++ }}.

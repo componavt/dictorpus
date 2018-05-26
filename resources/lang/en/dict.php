@@ -92,6 +92,7 @@ return [
                     5 => 'a good',
                     3 => 'a bad'],
     
+    'remove-example' => 'this example is not suitable',
     'reverse_relation' => 'reverse relation',
     
     'select_dialect' => 'Select a dialect',

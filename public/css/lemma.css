@@ -93,3 +93,13 @@
 .unchecked-count {
     color: red;
 }
+
+.add-example {
+    color: #f0ad4e;
+    cursor: pointer;
+}
+
+.remove-example {
+    color: #666;
+    cursor: pointer;
+}

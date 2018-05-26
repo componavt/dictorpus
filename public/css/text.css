@@ -87,5 +87,6 @@ ol {
 
 .links-to-lemmas .choose-meaning {
     color: #f0ad4e;
+    cursor: pointer;
     padding-left: 10px;
 }

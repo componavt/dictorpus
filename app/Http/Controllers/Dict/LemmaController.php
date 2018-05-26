@@ -573,6 +573,25 @@ class LemmaController extends Controller
     }
 
     /**
+     * /dict/lemma/remove/example/5177_1511_1_8
+     * 
+     * @param type $example_id
+     * @return int
+     */
+    public function removeExample($example_id)
+    {
+        if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
+            DB::statement('UPDATE meaning_text SET relevance=0'. 
+                          ' WHERE meaning_id='.(int)$regs[1].
+                          ' AND text_id='.(int)$regs[2].
+                          ' AND sentence_id='.(int)$regs[3].
+                          ' AND w_id='.(int)$regs[4]);            
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
      * /dict/lemma/add/example/1418_5_59_3093
      * 
      * @param type $example_id
