@@ -29,18 +29,18 @@
       $limit = 5; ?>
                     <table class="lemma-examples">
                     @foreach ($sentences as $sentence)
-                        @if ($count==$limit+1)
-                        </table>
-                        <a id="show-more-{{$meaning->meaning_n}}" 
-                           class="show-more-examples"
-                           data-for="{{$meaning->meaning_n}}">
-                                {{ trans('dict.more_examples') }}
-                        </a>
-                        <div id="more-{{$meaning->meaning_n}}" class="more-examples">
-                        <table class="lemma-examples">
-                        @endif
-                        
                         @if ($sentence['relevance']>0)
+                            @if ($count==$limit+1)
+                            </table>
+                            <a id="show-more-{{$meaning->meaning_n}}" 
+                               class="show-more-examples"
+                               data-for="{{$meaning->meaning_n}}">
+                                    {{ trans('dict.more_examples') }}
+                            </a>
+                            <div id="more-{{$meaning->meaning_n}}" class="more-examples">
+                            <table class="lemma-examples">
+                            @endif
+                        
                             <tr class="row" id="sentence-{{$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id']}}">
                                 <td> 
                                     {{ $count++ }}.
@@ -54,11 +54,11 @@
                             
                     @if ($count<=$limit)
                     <div class="more-examples">
-                    @else
+                    </div>              
+                    @elseif ($count-1>$limit)
                     <a class="hide-more-examples"
                        data-for="{{$meaning->meaning_n}}">
                             {{ trans('dict.hide_examples') }}
                     </a>
                     @endif
-                    </div>              
 @endif

@@ -21,13 +21,6 @@ if (isset($w[0])) {
     <span id="sentence-relevance_<?=$m_t_s_w;?>">
     @if (isset($relevance) && $relevance>1)
         <span class="glyphicon glyphicon-star relevance-<?=$relevance;?>"></span>
-    @else
-        @if (isset($is_edit) && User::checkAccess('dict.edit'))
-            @include('widgets.form._button_add', 
-                    ['data_add' => $m_t_s_w,
-                     'class' => 'add-example',
-                     'title' => trans('dict.add-example-5')])
-        @endif
     @endif
     </span>
 @endif
@@ -47,6 +40,14 @@ if (isset($w[0])) {
                   'without_text' => 1])
     @endif    
     
+    @if (!isset($relevance) || $relevance==1)
+        @if (isset($is_edit) && User::checkAccess('dict.edit'))
+            @include('widgets.form._button_add', 
+                    ['data_add' => $m_t_s_w,
+                     'class' => 'add-example',
+                     'title' => trans('dict.add-example-5')])
+        @endif
+    @endif
     @if (isset($is_edit) && User::checkAccess('dict.edit'))
         @include('widgets.form._button_remove', 
                 ['data_add' => $m_t_s_w,

@@ -18,11 +18,13 @@ function addMeaning() {
 function addExample(route) {
     $(".add-example").click(function(){
         var id = $(this).data('add');
+        button = $(this);
         $.ajax({
             url: route+'/'+id, 
             type: 'GET',
             success: function(result){
                 $("#sentence-relevance_"+ id).html(result);
+                button.hide();
             }
         }); 
     });    
