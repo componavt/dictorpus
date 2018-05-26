@@ -586,7 +586,7 @@ class Lemma extends Model
     
     public static function parseLemmaField($lemma, $wordforms) {
         if (!preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs)) {
-            return [$lemma,$wordforms];
+            return [str_replace('|','',$lemma),$wordforms];
         }
         $regs[1] = str_replace('||','',$regs[1]);
         if (preg_match("/^(.+)\|(.+)$/",$regs[1],$rregs)){
