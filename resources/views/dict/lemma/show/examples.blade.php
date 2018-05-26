@@ -39,15 +39,16 @@
                         <div id="more-{{$meaning->meaning_n}}" class="more-examples">
                         <table class="lemma-examples">
                         @endif
+                        
+                        @if ($sentence['relevance']>0)
                             <tr class="row" id="sentence-{{$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id']}}">
                                 <td> 
-                                @if ($sentence['relevance']>0)
                                     {{ $count++ }}.
                                     @include('dict.lemma.show.example_sentence', 
                                         ['relevance'=>$sentence['relevance'], 'is_edit' => 1])
-                                @endif
                                 </td>
                             </tr>
+                        @endif
                     @endforeach
                     </table>
                             
