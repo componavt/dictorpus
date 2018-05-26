@@ -97,9 +97,15 @@
 .add-example {
     color: #f0ad4e;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 .remove-example {
     color: #666;
     cursor: pointer;
+    margin-left: 10px;
+}
+
+.sentence-edit:hover {
+    text-decoration: none;
 }
