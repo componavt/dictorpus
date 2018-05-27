@@ -646,6 +646,7 @@ class LemmaController extends Controller
                     
                     //remove all records from table lemma_wordform
                     $lemma-> wordforms()->detach();
+                    $lemma-> phraseLemmas()->detach();
                     
                     $meanings = $lemma->meanings;
                     

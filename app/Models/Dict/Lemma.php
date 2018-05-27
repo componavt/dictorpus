@@ -195,6 +195,15 @@ class Lemma extends Model
         return join('; ',$list);
     }
     
+    public function phraseMeaning(){
+        $locale = LaravelLocalization::getCurrentLocale();   
+        if (!sizeof($this->meanings)) {
+            return NULL;
+        }
+//dd($this->meanings);        
+        return $this->meanings->first()->getMultilangMeaningTextsString($locale);
+    }
+    
     /**
      * Gets array of unique dialects, that has any wordforms of this lemma
      * 
