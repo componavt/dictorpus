@@ -61,6 +61,8 @@ return [
     'participle' => 'participle',
     'parts_of_speech' => 'parts of speech',
     'person' => 'person',
+    'phrase_lemmas' => 'Phrase lemmas',
+    'phrases' => 'Phrases',
     'pos' => 'part of speech',
     'pos_category_1' => 'Open class words',
     'pos_category_2' => 'Closed class words',

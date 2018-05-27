@@ -62,6 +62,8 @@ return [
     'participle' => 'причастие',
     'part_of_speech' => 'Часть речи',
     'person' => 'лицо',
+    'phrase_lemmas' => 'леммы из фразы',
+    'phrases' => 'фразеологизмы',
     'pos' => 'часть речи',
     'pos_category_1' => 'Cлова открытого класса',
     'pos_category_2' => 'Cлова закрытого класса',

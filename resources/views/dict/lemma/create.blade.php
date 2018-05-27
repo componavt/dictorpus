@@ -5,6 +5,7 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/lemma.css')!!}
 @stop
 
@@ -18,11 +19,13 @@
                                       'lang_id' => $lang_id,
 				      'pos_id' => $pos_id,
                                       'lang_values' => $lang_values, 
+                                      'phrase_values' => [],
                                       'pos_values'  => $pos_values])
         {!! Form::close() !!}
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
@@ -33,4 +36,26 @@
     addMeaning();
     posSelect();
     langSelect();
+    
+    $(".multiple-select-phrase").select2({
+        width: '100%',
+        ajax: {
+          url: "/dict/lemma/phrase_list",
+          dataType: 'json',
+          delay: 2500,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#lang_id option:selected" ).val(),
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });
+    
 @stop

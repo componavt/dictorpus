@@ -88,6 +88,7 @@ Route::group(
                         ->name('lemma.update.wordforms');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
+        Route::get('dict/lemma/phrase_list', 'Dict\LemmaController@phraseList');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/remove/example/{example_id}', 'Dict\LemmaController@removeExample');
         Route::get('dict/lemma/omonyms', 'Dict\LemmaController@omonyms');

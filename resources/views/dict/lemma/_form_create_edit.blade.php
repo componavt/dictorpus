@@ -23,6 +23,15 @@
                  'checked' => $checked,
                  'tail'=>trans('dict.reflexive_verb').' '.trans('dict.verb')])
         </div>
+        <div id='phrase-field'>
+        @include('widgets.form._formitem_select2',
+                ['name' => 'phrase',
+                 'values' => $phrase_values,
+                 'value' => array_keys($phrase_values),
+                 'title' => trans('dict.phrase_lemmas'),
+                 'class'=>'multiple-select-phrase'                            
+        ])
+        </div>
     </div> 
     <div class="col-sm-4">        
         @include('widgets.form._formitem_select',

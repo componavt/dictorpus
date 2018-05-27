@@ -74,6 +74,27 @@
         }
     });
     
+    $(".multiple-select-phrase").select2({
+        width: '100%',
+        ajax: {
+          url: "/dict/lemma/phrase_list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#lang_id option:selected" ).val(),
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });
+    
     $('.empty-relation').css('display','none');
     
     @foreach ($langs_for_meaning as $lang_id => $lang_text)

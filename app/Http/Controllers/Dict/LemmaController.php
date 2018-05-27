@@ -236,6 +236,7 @@ class LemmaController extends Controller
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
         
         $lemma->createDictionaryWordforms($request->wordforms);
+        $lemma->storePhrase($request->phrase);
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -372,18 +373,26 @@ class LemmaController extends Controller
                     }
                 }
             }
-        }                      
-
+        }   
+                
+        $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
+        
+/*        if ($lemma->phraseLemmas) {
+            foreach ($lemma->phraseLemmas as $lemma1) {
+                $phrase_values[$le]
+            }
+        }
+*/
         return view('dict.lemma.edit')
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
-//                               'gramset_values' => $gramset_values,
                                'langs_for_meaning' => $langs_for_meaning,
                                'new_meaning_n' => $new_meaning_n,
                                'all_meanings' => $meaning_relation_values,//$all_meanings,
                                'relation_values' => $relation_values,
                                'relation_meanings' => $relation_meanings,
+                               'phrase_values' => $phrase_values,
                                'translation_values' => $translation_values,
                                'args_by_get'    => $this->args_by_get,
                                'url_args'       => $this->url_args,
@@ -525,6 +534,7 @@ class LemmaController extends Controller
         $lemma->save();
         
         $lemma->createDictionaryWordforms($wordforms_list);    
+        $lemma->storePhrase($request->phrase);
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);
@@ -860,6 +870,32 @@ class LemmaController extends Controller
         return Response::json($all_meanings);
     }
     
+    /**
+     * Gets list of phrase lemmas for drop down list in JSON format
+     * Test url: /dict/lemma/phrase_list?lang_id=5
+     * 
+     * @return JSON response
+     */
+    public function phraseList(Request $request)
+    {
+        $search_lemma = '%'.$request->input('q').'%';
+        $lang_id = (int)$request->input('lang_id');
+        $limit = 100;
+        $list = [];
+        
+        $lemmas = Lemma::where('lang_id',$lang_id)
+                       ->where('pos_id','<>',PartOfSpeech::getPhraseID())
+                       ->where('lemma','like', $search_lemma)
+                       ->take($limit)
+                       ->orderBy('lemma')->get();
+        
+        foreach($lemmas as $lemma) {
+            $list[] = ['id'  => $lemma->id, 
+                       'text'=> $lemma->lemma];
+        }
+
+        return Response::json($list);
+    }
     public function fullNewList(Request $request)
     {
         $portion = 1000;

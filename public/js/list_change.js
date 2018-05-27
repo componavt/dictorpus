@@ -3,8 +3,11 @@ function posSelect() {
         .change(function () {
             if ($( "#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
+            } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
+                $("#phrase-field").show().prop("disabled", false);
             } else {
                 $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
+                $("#phrase-field").hide().prop("disabled", true);
             }
           })
         .change();    

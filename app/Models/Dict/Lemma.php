@@ -161,6 +161,40 @@ class Lemma extends Model
                     ->orderBy('sequence_number');
     } 
     
+    public function phraseLemmas(){
+        $builder = $this->belongsToMany(Lemma::class,'lemma_phrase','phrase_id');
+        return $builder;
+    }
+
+    public function phrases(){
+        $builder = $this->belongsToMany(Lemma::class,'lemma_phrase','lemma_id','phrase_id');
+        return $builder;
+    }
+
+    public function phraseListWithLink(){
+        if (!$this->phrases()) {
+            return NULL;
+        }
+//dd($this->phrases);        
+        $list=[];
+        foreach ($this->phrases as $lemma) {
+            $list[] = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
+        }    
+        return join('; ',$list);
+    }
+    
+    public function phraseLemmasListWithLink(){
+        if ($this->pos_id != PartOfSpeech::getPhraseID() || !$this->phraseLemmas()) {
+            return NULL;
+        }
+//dd($this);        
+        $list=[];
+        foreach ($this->phraseLemmas as $lemma) {
+            $list[] = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
+        }    
+        return join('; ',$list);
+    }
+    
     /**
      * Gets array of unique dialects, that has any wordforms of this lemma
      * 
@@ -609,6 +643,13 @@ class Lemma extends Model
         }
         
         return [$lemma,$wordforms];
+    }
+    
+    public function storePhrase($lemmas) {
+        $this->phraseLemmas()->detach();
+        if ($lemmas) {
+            $this->phraseLemmas()->attach($lemmas);
+        }
     }
 /*    
     public static function totalCount(){

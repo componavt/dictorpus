@@ -43,7 +43,18 @@
                 ({{ trans('dict.reflexive_verb') }})
             @endif
         </p>
+        @if ($lemma->phraseLemmasListWithLink())
+        <p>
+            <b>{{trans('dict.phrase_lemmas')}}:</b> {!!$lemma->phraseLemmasListWithLink()!!}
+        </p>
+        @endif
 
+        @if ($lemma->phraseListWithLink())
+        <p>
+            <b>{{trans('dict.phrases')}}:</b> {!!$lemma->phraseListWithLink()!!}
+        </p>
+        @endif
+        
         @foreach ($lemma->meanings as $meaning)
         <table class="table lemma-meaning">
             <tr>

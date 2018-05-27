@@ -74,7 +74,7 @@ ol {
 }
 
 .text-example-edit {
-    display: block;
+ /*   display: block;*/
     font-size: 40px;
     line-height: 20px;
     text-align: right;

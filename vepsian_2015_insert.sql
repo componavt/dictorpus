@@ -756,3 +756,8 @@ alter table sources change `pages` `pages` varchar(20) default null;
 
 -- LANG - USER -----------------------------------------
 -- php artisan make:migration create_lang_user_table
+
+-- PHRASE --------------------------------------------------- 
+insert into parts_of_speech values (19,'Phrase', 'фразеологизм','PHRASE',1);
+-- php artisan make:migration create_lemma_phrase_table 
+-- php artisan migrate

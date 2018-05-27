@@ -83,6 +83,10 @@ class PartOfSpeech extends Model
         return self::where('category',$category)->orderBy($order_by)->get();
          
     }
+    
+    public static function getPhraseID() {
+        return self::getIDByCode('PHRASE');
+    }
         
     /** Gets list of parts of speech, sorts by category and alphabetically 
      * 
