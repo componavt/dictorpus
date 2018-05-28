@@ -24,7 +24,7 @@
 
         </p>
 
-        @include('dict.lemma._search_form',['url' => '/dict/lemma/',
+        @include('dict.lemma._search_form',['url' => '/dict/lemma/phrases',
                                             'is_search_id' => 0,
                                             'is_search_pos' => 0,
                                             'is_search_wordform' => 0
