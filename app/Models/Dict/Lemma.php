@@ -206,6 +206,7 @@ class Lemma extends Model
     
     public function omonymsListWithLink(){
         $lemmas = self::where('lemma',$this->lemma)
+                ->where('lang_id',$this->lang_id)
                 ->where('id','<>',$this->id)->get();
         if (!sizeof($lemmas)) {
             return NULL;
