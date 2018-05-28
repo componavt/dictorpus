@@ -63,7 +63,7 @@
                          'title' => trans('dict.add-example-5')])
             @endif
             
-            @foreach ($lemma->phrases as $ph_lemma) 
+            @foreach ($lemma->phrases->sortBy('lemma') as $ph_lemma) 
             <br><a href="{{LaravelLocalization::localizeURL('/dict/lemma/'.$ph_lemma->id)}}">{{$ph_lemma->lemma}}</a> 
                 - {{$ph_lemma->phraseMeaning()}}
             @endforeach
