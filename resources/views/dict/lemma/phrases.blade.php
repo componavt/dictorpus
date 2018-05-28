@@ -41,7 +41,7 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
-                <th>{{ trans('dict.lemmas') }} *</th>
+                <th>{{ trans('dict.lemmas') }}</th>
                 @if (User::checkAccess('dict.edit'))
                 <th colspan="2"></th>
                 @endif

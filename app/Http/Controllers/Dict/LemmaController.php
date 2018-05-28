@@ -165,22 +165,28 @@ class LemmaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $phrase_values = (array)$request->input('phrase_lemmas');
+        $pos_id = (int)$request->input('pos_id');
+        if (!$pos_id) {
+            $pos_id = PartOfSpeech::getIDByCode('Noun');
+        }
+
+        $lang_id = User::userLangID();
+        $new_meaning_n = 1;
+        
         $pos_values = PartOfSpeech::getGroupedList();   
         $lang_values = Lang::getList();
         $langs_for_meaning = Lang::getListWithPriority();
         
-        $lang_id = User::userLangID();
-        $new_meaning_n = 1;
-	$pos_id = PartOfSpeech::getIDByCode('Noun');
-                
         return view('dict.lemma.create')
                   ->with(array(
                                'langs_for_meaning' => $langs_for_meaning,
                                'lang_id' => $lang_id,
                                'lang_values' => $lang_values,
                                'new_meaning_n' => $new_meaning_n,
+                               'phrase_values' => $phrase_values,
                                'pos_id' => $pos_id,
                                'pos_values' => $pos_values,
                                'args_by_get'    => $this->args_by_get,
