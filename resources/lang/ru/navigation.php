@@ -29,6 +29,7 @@ return [
     'omonyms' => 'Омонимы',
     'parts_of_speech' => 'Части речи',
     'permission' => 'Разрешения',
+    'phrases' => 'Фразеологизмы',
     'places' => 'Населенные пункты',
     'recorders' => 'Собиратели',
     'regions' => 'Регионы',

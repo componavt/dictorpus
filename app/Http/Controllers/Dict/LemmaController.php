@@ -954,6 +954,58 @@ class LemmaController extends Controller
     }
     
     
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     * 
+     */
+    public function phrases()
+    {
+        $lemmas = Lemma::where('pos_id', PartOfSpeech::getPhraseID())->orderBy('lemma');
+        
+        if ($this->url_args['search_lemma']) {
+            $lemmas = $lemmas->where('lemma','like', $this->url_args['search_lemma']);
+        } 
+
+        if ($this->url_args['search_lang']) {
+            $lemmas = $lemmas->where('lang_id',$this->url_args['search_lang']);
+        } 
+         
+        if ($this->url_args['search_meaning']) {
+            $search_meaning = $this->url_args['search_meaning'];
+            $lemmas = $lemmas->whereIn('id',function($query) use ($search_meaning){
+                                    $query->select('lemma_id')
+                                    ->from('meanings')
+                                    ->whereIn('id',function($query) use ($search_meaning){
+                                        $query->select('meaning_id')
+                                        ->from('meaning_texts')
+                                        ->where('meaning_text','like', $search_meaning);
+                                    });
+                                });
+        } 
+
+
+        $lemmas = $lemmas->groupBy('lemmas.id')
+                         ->with(['meanings'=> function ($query) {
+                                    $query->orderBy('meaning_n');
+                                }]);
+        $numAll = $lemmas->get()->count();
+        $lemmas = $lemmas->paginate($this->url_args['limit_num']);         
+
+        $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        $lang_values = Lang::getListWithQuantity('lemmas');
+
+        return view('dict.lemma.phrases')
+                  ->with(array(
+                               'lang_values'    => $lang_values,
+                               'lemmas'         => $lemmas,
+                               'numAll'         => $numAll,
+                               'args_by_get'    => $this->args_by_get,
+                               'url_args'       => $this->url_args,
+                              )
+                        );
+    }
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */

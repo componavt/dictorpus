@@ -29,6 +29,7 @@ return [
     'omonyms' => 'Omonyms',
     'parts_of_speech' => 'Parts of speech',
     'permission' => 'Permission',
+    'phrases' => 'Phrases',
     'places' => 'Settlements',
     'recorders' => 'Recorders',
     'regions' => 'Regions',

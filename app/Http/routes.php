@@ -92,6 +92,7 @@ Route::group(
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/remove/example/{example_id}', 'Dict\LemmaController@removeExample');
         Route::get('dict/lemma/omonyms', 'Dict\LemmaController@omonyms');
+        Route::get('dict/lemma/phrases', 'Dict\LemmaController@phrases');
         Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
         Route::get('dict/lemma/full_new_list', 'Dict\LemmaController@fullNewList');
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');

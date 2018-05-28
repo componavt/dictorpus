@@ -2,7 +2,7 @@
 @extends('layouts.master')
 
 @section('title')
-{{ trans('navigation.lemmas') }}
+{{ trans('navigation.phrases') }}
 @stop
 
 @section('headExtra')
@@ -11,11 +11,9 @@
 
 @section('content')
         
-        <h2>{{ trans('navigation.lemmas') }}</h2>
+        <h2>{{ trans('navigation.phrases') }}</h2>
 
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('dict.list_long_lemmas') }}</a> 
-            |
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">
         @endif
@@ -27,9 +25,9 @@
         </p>
 
         @include('dict.lemma._search_form',['url' => '/dict/lemma/',
-                                            'is_search_id' => 1,
-                                            'is_search_pos' => 1,
-                                            'is_search_wordform' => 1
+                                            'is_search_id' => 0,
+                                            'is_search_pos' => 0,
+                                            'is_search_wordform' => 0
                                            ]) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
@@ -43,7 +41,7 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
-                <th>{{ trans('messages.examples') }} *</th>
+                <th>{{ trans('dict.lemmas') }} *</th>
                 @if (User::checkAccess('dict.edit'))
                 <th colspan="2"></th>
                 @endif
@@ -52,7 +50,7 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td>{{ $list_count++ }}</td>
-                <td><a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
+                <td><a href="{{LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id)}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
                 <td>
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
@@ -72,20 +70,7 @@
                     @endforeach
                 </td>
                 <td>
-                    <?php $total_ex = $lemma->countExamples();?>
-                    @if ($total_ex)
-                        <?php $unchecked = $lemma->countUncheckedExamples();?>
-                        {{$lemma->countCheckedExamples()}} /
-                        @if ($unchecked >0)
-                            <span class="unchecked-count">
-                        @endif
-                        {{$unchecked}} 
-                        @if ($unchecked >0)
-                            </span>
-                        @endif
-                        /
-                    @endif
-                    {{$lemma->countExamples()}}
+                    {!! $lemma->phraseLemmasListWithLink() !!}
                 </td>
                 @if (User::checkAccess('dict.edit'))
                 <td>
@@ -107,10 +92,8 @@
         </table>
             {!! $lemmas->appends($url_args)->render() !!}
             
-            <p><big>*</big> -  {{ trans('dict.example_comment') }}
         @endif
 
-{{--        @include('dict.lemma._modal_delete') --}}
 @stop
 
 @section('footScriptExtra')
