@@ -71,6 +71,12 @@
         </p>
         @endif
         
+        @if ($lemma->omonymsListWithLink())
+        <p>
+            <b{!! User::checkAccess('dict.edit')?' class="warning"':'' !!}>{{trans('dict.omonyms')}}:</b> {!!$lemma->omonymsListWithLink()!!}
+        </p>
+        @endif
+
         @foreach ($lemma->meanings as $meaning)
         <table class="table lemma-meaning">
             <tr>

@@ -58,6 +58,7 @@ return [
     'of_relation' => 'of relation',
     'of_wordform' => 'of wordform',
 
+    'omonyms' => 'omonyms',
     'participle' => 'participle',
     'parts_of_speech' => 'parts of speech',
     'person' => 'person',

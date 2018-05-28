@@ -60,6 +60,7 @@ return [
     'of_relation' => 'отношения',
     'of_wordform' => 'словоформы',
     
+    'omonyms' => 'омонимы',
     'participle' => 'причастие',
     'part_of_speech' => 'Часть речи',
     'person' => 'лицо',

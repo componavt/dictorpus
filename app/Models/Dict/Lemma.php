@@ -204,6 +204,19 @@ class Lemma extends Model
         return $this->meanings->first()->getMultilangMeaningTextsString($locale);
     }
     
+    public function omonymsListWithLink(){
+        $lemmas = self::where('lemma',$this->lemma)
+                ->where('id','<>',$this->id)->get();
+        if (!sizeof($lemmas)) {
+            return NULL;
+        }
+        $list=[];
+        foreach ($lemmas as $lemma) {
+            $list[] = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a> ('.$lemma->pos->name.')';
+        }    
+        return join('; ',$list);
+    }
+    
     /**
      * Gets array of unique dialects, that has any wordforms of this lemma
      * 
