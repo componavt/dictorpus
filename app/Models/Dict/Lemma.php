@@ -190,7 +190,7 @@ class Lemma extends Model
 //dd($this);        
         $list=[];
         foreach ($this->phraseLemmas as $lemma) {
-            $list[] = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
+            $list[] = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a> ('.$lemma->pos->name.')';
         }    
         return join('; ',$list);
     }
