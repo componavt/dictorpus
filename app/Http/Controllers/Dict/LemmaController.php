@@ -885,9 +885,9 @@ class LemmaController extends Controller
      */
     public function phraseList(Request $request)
     {
+        $limit = 1000;
         $search_lemma = '%'.$request->input('q').'%';
         $lang_id = (int)$request->input('lang_id');
-        $limit = 100;
         $list = [];
         
         $lemmas = Lemma::where('lang_id',$lang_id)
