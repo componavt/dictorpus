@@ -68,6 +68,7 @@ class Event extends Model
      * @return INT or NULL
      */
     public static function storeEvent($requestData, $text_obj=NULL){
+//dd($requestData);        
         $is_empty_data = true;
         if(array_filter($requestData)) {
             $is_empty_data = false;
@@ -81,7 +82,7 @@ class Event extends Model
 
         if (!$is_empty_data) {
             $data_to_fill = [];
-            foreach (['informant_id','place_id','date'] as $column) {
+            foreach (['place_id','date'] as $column) {//'informant_id',
                 $data_to_fill[$column] = ($requestData['event_'.$column]) ? $requestData['event_'.$column] : NULL;
             }
             if ($event_id) {
@@ -102,6 +103,7 @@ class Event extends Model
                      ->where('event_id',$event_id)
                      ->count()) {
                 $text_obj->event->recorders()->detach();
+                $text_obj->event->informants()->detach();
                 self::destroy($event_id);
             }
         }

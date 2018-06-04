@@ -700,6 +700,7 @@ dd($wordforms);
                                    && $item['key'] != 'text_xml'
                                    && $item['key'] != 'transtext_id'
                                    && $item['key'] != 'event_id'
+                                   && $item['key'] != 'checked'
                                    && $item['key'] != 'source_id';
                                  //&& !($item['key'] == 'reflexive' && $item['old_value'] == null && $item['new_value'] == 0);
                         });
