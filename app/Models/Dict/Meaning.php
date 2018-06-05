@@ -4,6 +4,7 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use LaravelLocalization;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
@@ -184,12 +185,16 @@ class Meaning extends Model
         $out = join(', ',$mean_langs);
 
         if ($this->lemma->meanings()->count()>1) {
-            $out = $this->meaning_n. '. '.$out;
+            $out = $this->meaning_n. ') '.$out;
         }
         return $out;
     }
 
-
+    public function getMultilangMeaningTextsStringLocale() :String
+    {
+        return $this->getMultilangMeaningTextsString(LaravelLocalization::getCurrentLocale());
+    }
+    
     /**
      * Gets all meaning texts and returns string:
      * 

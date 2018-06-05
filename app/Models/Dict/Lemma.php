@@ -196,12 +196,16 @@ class Lemma extends Model
     }
     
     public function phraseMeaning(){
-        $locale = LaravelLocalization::getCurrentLocale();   
-        if (!sizeof($this->meanings)) {
+        $locale = LaravelLocalization::getCurrentLocale();  
+        $interpretation = [];
+        foreach ($this->meanings as $meaning_obj) {
+            $interpretation[] = $meaning_obj->getMultilangMeaningTextsStringLocale();
+        }
+        
+        if (!sizeof($interpretation)) {
             return NULL;
         }
-//dd($this->meanings);        
-        return $this->meanings->first()->getMultilangMeaningTextsString($locale);
+        return join('; ',$interpretation);
     }
     
     public function omonymsListWithLink(){
