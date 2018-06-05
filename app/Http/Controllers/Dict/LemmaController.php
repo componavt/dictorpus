@@ -898,7 +898,7 @@ class LemmaController extends Controller
         
         foreach($lemmas as $lemma) {
             $list[] = ['id'  => $lemma->id, 
-                       'text'=> $lemma->lemma. ' ('.$lemma->pos->name.')'];
+                       'text'=> $lemma->lemma. ' ('.$lemma->pos->name.') '.$lemma->phraseMeaning()];
         }
 
         return Response::json($list);
