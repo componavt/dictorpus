@@ -9,6 +9,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/stats') }}">{{ trans('navigation.stats') }}</a></li>
+                            <li><a href="http://dictorpus.krc.karelia.ru/dumps">{{ trans('navigation.dumps') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/permission') }}">{{ trans('navigation.permission') }}</a></li>
                         </ul>
                     </li>

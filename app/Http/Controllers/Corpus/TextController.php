@@ -363,7 +363,7 @@ class TextController extends Controller
         
         Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'), 
                                                   $text);
-        Event::storeEvent($request->only('event_informant_id','event_place_id','event_date'), 
+        Event::storeEvent($request->only('event_place_id','event_date'), 
                                                   $text);
         Source::storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'), 
                                                   $text);

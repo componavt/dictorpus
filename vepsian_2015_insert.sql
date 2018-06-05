@@ -761,3 +761,6 @@ alter table sources change `pages` `pages` varchar(20) default null;
 insert into parts_of_speech values (19,'Phrase', 'фразеологизм','PHRASE',1);
 -- php artisan make:migration create_lemma_phrase_table 
 -- php artisan migrate
+
+-- php artisan make:migration drop_column_informant_id_from_events 
+delete from revisions where revisionable_type like '%Event' and `key` like 'informant_id';

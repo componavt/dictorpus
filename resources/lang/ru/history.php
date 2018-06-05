@@ -17,6 +17,7 @@ return [
     'event_genetiv' => 'записи',
     'ieeh_archive_number1_accusative' => 'первую часть архивного номера',
     'ieeh_archive_number2_accusative' => 'вторую часть архивного номера',
+    'informant_accusative' => 'информанта',
     'lang_accusative' => 'язык',
     'lemma_accusative' => 'лемму',
     'meaning_accusative' => ':num-е значение',

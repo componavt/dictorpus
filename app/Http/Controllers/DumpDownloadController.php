@@ -34,7 +34,8 @@ class DumpDownloadController extends Controller
 		$dumps[]=array("filename"=>$file,
 				"date"=>date("d-m-Y H:i:s",filemtime($dir.$file)),
 				"size"=>round(filesize($dir.$file)/(1024*1024),1),
-				"href"=>env('APP_URL').$dir.$file
+//				"href"=>env('APP_URL').$dir.$file
+				"href"=>$dir.$file
 				);
 	}
 
