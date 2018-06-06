@@ -764,3 +764,5 @@ insert into parts_of_speech values (19,'Phrase', 'фразеологизм','PHR
 
 -- php artisan make:migration drop_column_informant_id_from_events 
 delete from revisions where revisionable_type like '%Event' and `key` like 'informant_id';
+
+insert into parts_of_speech values (20,'Predicative', 'предикатив','PRE',1);

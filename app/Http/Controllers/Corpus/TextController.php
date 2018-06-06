@@ -385,7 +385,7 @@ class TextController extends Controller
                        ->withSuccess(\Lang::get('messages.updated_success'));
 
         if ($request->text && $old_text != $request->text || $request->text && !$text->text_xml) {
-            $error_message = $text->markup();
+            $error_message = $text->markup($text->text_xml);
             if ($error_message) {
                 $redirect = $redirect->withErrors($error_message);
             }
@@ -551,7 +551,7 @@ class TextController extends Controller
             $text = Text::where('checked',0)->first();
 //dd($text);            
             if ($text) {
-                $message_error = $text->markup();
+                $message_error = $text->markup($text->text_xml);
                 print "<p>$message_error</p>";
                 $text->checked=1;
                 $text->save();   
@@ -585,7 +585,7 @@ class TextController extends Controller
     public function markupText(Int $id)
     {
         $text = Text::find($id);
-        $message_error = $text->markup();
+        $message_error = $text->markup($text->text_xml);
         if ($message_error) {
             return Redirect::to('/corpus/text/'.($text->id))
                            ->withError($message_error);        

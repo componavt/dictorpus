@@ -281,9 +281,9 @@ class Text extends Model
     /**
      * Sets text_xml as a markup text with sentences
      */
-    public function markup(){
+    public function markup($old_xml=null){
         $this->text_xml = self::markupText($this->text);
-        $error_message = $this->updateMeaningText();
+        $error_message = $this->updateMeaningText($old_xml);
         if ($error_message) {
             return $error_message;
         }
@@ -292,13 +292,7 @@ class Text extends Model
     /**
      * Sets links meaning - text - sentence
      */
-    public function updateMeaningText(){
-/*$word = "Ojat’";
-// select * from wordforms where wordform like 'Ojat’';
-                    $wordforms = Wordform::select('id')
-                            ->whereRaw("wordform like ?",[addcslashes(strtolower($word),"'%")])->get();
-dd($wordforms);                    
-*/
+    public function updateMeaningText($old_xml=null){
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
 
         if ($error_message) {
@@ -307,41 +301,41 @@ dd($wordforms);
 
         // saving old checked links
         $checked_words = [];
-//dd($this->meanings);        
-        $meanings = DB::table("meaning_text")
-                  ->where('relevance','<>',1)
-                  ->where('text_id',$this->id)
-                //$this->meanings()->wherePivot('relevance','<>',1)
-                         //->join('words','words.id','=','meaning_text.word_id')
-                  ->get();
-//dd($meanings);
-        foreach ($meanings as $meaning) {
-            $word = Word::where('text_id',$this->id)
-                        ->where('w_id',$meaning->w_id)->first();
-            $checked_words[$meaning->w_id][$meaning->meaning_id] =
-                    [$word->word, $meaning->relevance];
+        if ($old_xml) {
+            list($sxe_old,$error_message) = self::toXML($old_xml,$this->id);
+            foreach ($sxe_old->children()->s as $sentence) {
+                $s_id = (int)$sentence->attributes()->id;
+                $word_count = 0;
+                foreach ($sentence->children()->w as $word) {
+                    $checked_words[$s_id][$word_count] = [];                
+                    $w_id = (int)$word->attributes()->id;
+                    $meanings = DB::table("meaning_text")
+                              ->where('relevance','<>',1)
+                              ->where('text_id',$this->id)
+                              ->where('w_id',$w_id)
+                              ->get();
+    //dd($meanings);        
+                    foreach ($meanings as $meaning) {
+                        $checked_words[$s_id][$word_count][$meaning->meaning_id] =
+                                [(string)$word, $meaning->relevance];
+                    }
+                    $word_count++;
+                }
+            }
         }
-//dd($checked_words);
-//print '<p>'.$this->id;     
-//print '<p>'.$this->words()->count();
-//        $this->words()->delete();
         DB::statement("DELETE FROM words WHERE text_id=".(int)$this->id);
-//        $this->meanings()->detach();
         DB::statement("DELETE FROM meaning_text WHERE text_id=".(int)$this->id);
-//print '<p>'.$this->words()->count();
-//exit(0);
+
         foreach ($sxe->children()->s as $sentence) {
-//            if ($sentence->getName() == 's') {
-                $s_id = $sentence->attributes()->id;
-                //print "<P>".$s_id .'.';
+                $s_id = (int)$sentence->attributes()->id;
+                $word_count = 0;
                 foreach ($sentence->children()->w as $word) {
                     $w_id = $word->attributes()->id;
                     $w_id = (int)$w_id;
-//dd($w_id);
                     $word_obj = Word::create(['text_id' => $this->id,
                                               'sentence_id' => $s_id,
                                               'w_id' => $w_id,
-                                              'word' => $word
+                                              'word' => (string)$word
                                             ]);
                     $word_t = addcslashes(strtolower($word),"'%");
                     $meanings = [];
@@ -370,11 +364,12 @@ dd($wordforms);
                     }
 
                     foreach (array_keys($meanings) as $meaning_id) {
+//dd(isset($checked_words[$s_id]));                        
                         $relevance = 1;
-                        if (isset($checked_words[$w_id][$meaning_id][0])) {
-                            if ($checked_words[$w_id][$meaning_id][0] == $word 
-                                    || $checked_words[$w_id][$meaning_id][0] == $word.',') {
-                                $relevance = $checked_words[$w_id][$meaning_id][1];
+                        if (isset($checked_words[$s_id][$word_count][$meaning_id][0])) {
+                            if ($checked_words[$s_id][$word_count][$meaning_id][0] == $word 
+                                    || $checked_words[$s_id][$word_count][$meaning_id][0] == $word.',') {
+                                $relevance = $checked_words[$s_id][$word_count][$meaning_id][1];
                             }
                         }
                         $this->meanings()->attach($meaning_id,
@@ -383,15 +378,9 @@ dd($wordforms);
                                  'w_id'=>$w_id,
                                  'relevance'=>$relevance]);
                     }
-
-/*                    if ($lemmas->count() || $wordforms->count()) {
-                        print ' ('.$w_id.')'. $word;
-                    }*/
+                    $word_count++;
                 }
-                //print '</p>';
-//            }
         }
-//exit(0);
     }
 
     /**
