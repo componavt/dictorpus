@@ -467,10 +467,12 @@ class Text extends Model
                         }
                     }
                     if (User::checkAccess('corpus.edit')) {
-                        $button_edit = $link_block->addChild('a','&#9999;');
+                        $button_edit_p = $link_block->addChild('p');
+                        $button_edit_p->addAttribute('class','text-example-edit'); 
+                        $button_edit = $button_edit_p->addChild('a',' ');//,'&#9999;'
                         $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
                                                                                             $sentence_id.'_'.$word_id)); 
-                        $button_edit->addAttribute('class','text-example-edit'); 
+                        $button_edit->addAttribute('class','glyphicon glyphicon-pencil');
         //                $button = $button_edit->addChild('i');
         //                $button->addAttribute('class','fa-pencil'); 
         //                $button->addAttribute('class','fa fa-pencil fa-lg'); 
