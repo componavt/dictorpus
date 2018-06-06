@@ -732,8 +732,8 @@ class TextController extends Controller
                      .'">'.$meaning->lemma->lemma.'<span> ('
                      .$meaning->getMultilangMeaningTextsString($locale)
                      .')</span></a></div>'
-                     .'<a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$regs[2].'/edit/example/'.$regs[3].'_'.$regs[4])
-                     .'" class="text-example-edit">&#9999;</a>';
+                     .'<p class="text-example-edit"><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$regs[2].'/edit/example/'.$regs[3].'_'.$regs[4])
+                     .'" class="glyphicon glyphicon-pencil"></a>';
             }
         }
         return $str;
