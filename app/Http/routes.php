@@ -120,7 +120,8 @@ Route::group(
 //        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
 //        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
-
+        Route::get('corpus/text/tmpProcessOldLetters', 'Corpus\TextController@tmpProcessOldLetters');
+        
         Route::resource('dict/dialect', 'Dict\DialectController',
                        ['names' => ['update' => 'dialect.update',
                                     'store' => 'dialect.store',

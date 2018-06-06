@@ -293,6 +293,11 @@ class Text extends Model
      * Sets links meaning - text - sentence
      */
     public function updateMeaningText($old_xml=null){
+        if (Lang::isLangKarelian($this->lang_id)) {
+            $is_changeLetters = true;
+        } else {
+            $is_changeLetters = false;
+        }
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
 
         if ($error_message) {
@@ -333,8 +338,8 @@ class Text extends Model
                     $w_id = $word->attributes()->id;
                     $w_id = (int)$w_id;
                     $word_for_DB = (string)$word;
-                    if (in_array($this->lang_id,[1,4,5,6])) {
-                        $word_for_DB = str_replace('ü','y',str_replace('w','y',$word_for_DB));
+                    if ($is_changeLetters) {
+                        $word_for_DB = Word::changeLetters($word_for_DB);
                     }
                     $word_obj = Word::create(['text_id' => $this->id,
                                               'sentence_id' => $s_id,
@@ -386,6 +391,8 @@ class Text extends Model
                 }
         }
     }
+// select id from meanings where lemma_id in (SELECT id from lemmas like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
+// select id from meanings where lemma_id in (SELECT id from lemmas like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
 
     /**
      * Load xml from string, create SimpleXMLelement

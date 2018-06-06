@@ -11,10 +11,6 @@ use DB;
 use LaravelLocalization;
 use Response;
 
-use App\Models\Dict\Dialect;
-use App\Models\Dict\Lang;
-use App\Models\Dict\Meaning;
-
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Genre;
@@ -24,6 +20,11 @@ use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Source;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
+use App\Models\Corpus\Word;
+
+use App\Models\Dict\Dialect;
+use App\Models\Dict\Lang;
+use App\Models\Dict\Meaning;
 
 class TextController extends Controller
 {
@@ -737,6 +738,25 @@ class TextController extends Controller
             }
         }
         return $str;
+    }
+    
+    public function tmpProcessOldLetters() {
+        $words = Word::whereRaw("(word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%')"
+                . " and text_id in (SELECT id from texts where lang_id=5)")  // only livvic texts
+                     ->take(1)->get();
+//dd($words->toSql());        
+        foreach ($words as $word) {
+            $new_word = Word::changeLetters($word->word);
+            if ($new_word != $word->word) {
+//dd($word->text_id);        
+dd($new_word);        
+                DB::statement("DELETE FROM meaning_text WHERE word_id=".$word->id);
+                $word->word = $new_word;
+                $word->save();
+            }
+//                        $word_for_DB = Word::changeLetters($word_for_DB);
+        }
+        
     }
 
     /*    public function tempStripSlashes()

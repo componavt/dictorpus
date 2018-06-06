@@ -205,4 +205,11 @@ class Lang extends Model
         
         return $url;
     }
+    
+    public static function isLangKarelian($lang_id) {
+        if (in_array($lang_id,[4,5,6])) {
+            return true;
+        }
+        return false;
+    }
 }
