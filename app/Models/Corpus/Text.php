@@ -332,12 +332,16 @@ class Text extends Model
                 foreach ($sentence->children()->w as $word) {
                     $w_id = $word->attributes()->id;
                     $w_id = (int)$w_id;
+                    $word_for_DB = (string)$word;
+                    if (in_array($this->lang_id,[1,4,5,6])) {
+                        $word_for_DB = str_replace('ü','y',str_replace('w','y',$word_for_DB));
+                    }
                     $word_obj = Word::create(['text_id' => $this->id,
                                               'sentence_id' => $s_id,
                                               'w_id' => $w_id,
-                                              'word' => (string)$word
+                                              'word' => (string)$word_for_DB
                                             ]);
-                    $word_t = addcslashes(strtolower($word),"'%");
+                    $word_t = addcslashes(strtolower($word_for_DB),"'%");
                     $meanings = [];
                     $lemmas = Lemma::select('id')->where('lang_id',$this->lang_id)
                             ->whereRaw("lemma like ?",[$word_t]);
