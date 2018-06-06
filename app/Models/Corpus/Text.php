@@ -307,7 +307,7 @@ class Text extends Model
                 $s_id = (int)$sentence->attributes()->id;
                 $word_count = 0;
                 foreach ($sentence->children()->w as $word) {
-                    $checked_words[$s_id][$word_count] = [];                
+                    //$checked_words[$s_id][$word_count] = [];                
                     $w_id = (int)$word->attributes()->id;
                     $meanings = DB::table("meaning_text")
                               ->where('relevance','<>',1)
