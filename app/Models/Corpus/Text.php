@@ -293,7 +293,7 @@ class Text extends Model
      * Sets links meaning - text - sentence
      */
     public function updateMeaningText($old_xml=null){
-        if (Lang::isLangKarelian($this->lang_id)) {
+        if (Lang::isLetterChangeable($this->lang_id)) {
             $is_changeLetters = true;
         } else {
             $is_changeLetters = false;
@@ -346,8 +346,30 @@ class Text extends Model
                                               'w_id' => $w_id,
                                               'word' => (string)$word_for_DB
                                             ]);
-                    $word_t = addcslashes(strtolower($word_for_DB),"'%");
-                    $meanings = [];
+                    $word_t = addcslashes($word_for_DB,"'%");
+                    $word_t_l = strtolower($word_t);
+                    $wordform_q = "(SELECT id from wordforms where wordform like '$word_t' or wordform like '$word_t_l')";
+                    $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
+                    $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id
+                                       ." and (lemma like '$word_t' or lemma like '$word_t_l' or id in $lemma_q))")
+                                       ->get();    
+                    foreach ($meanings as $meaning) {
+                        $meaning_id = $meaning->id;
+                        $relevance = 1;
+                        if (isset($checked_words[$s_id][$word_count][$meaning_id][0])) {
+                            if ($checked_words[$s_id][$word_count][$meaning_id][0] == $word 
+                                    || $checked_words[$s_id][$word_count][$meaning_id][0] == $word.',') {
+                                $relevance = $checked_words[$s_id][$word_count][$meaning_id][1];
+                            }
+                        }
+                        $this->meanings()->attach($meaning_id,
+                                ['sentence_id'=>$s_id,
+                                 'word_id'=>$word_obj->id,
+                                 'w_id'=>$w_id,
+                                 'relevance'=>$relevance]);
+                                            
+                    }
+/*                    $meanings = [];
                     $lemmas = Lemma::select('id')->where('lang_id',$this->lang_id)
                             ->whereRaw("lemma like ?",[$word_t]);
                     if ($lemmas->count()) {
@@ -386,13 +408,13 @@ class Text extends Model
                                  'word_id'=>$word_obj->id,
                                  'w_id'=>$w_id,
                                  'relevance'=>$relevance]);
-                    }
+                    }*/
                     $word_count++;
                 }
         }
     }
-// select id from meanings where lemma_id in (SELECT id from lemmas like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
-// select id from meanings where lemma_id in (SELECT id from lemmas like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
+// select id from meanings where lemma_id in (SELECT id from lemmas where lemma like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
+// select id from meanings where lemma_id in (SELECT id from lemmas where lemma like 'myö' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like 'myö')));    
 
     /**
      * Load xml from string, create SimpleXMLelement

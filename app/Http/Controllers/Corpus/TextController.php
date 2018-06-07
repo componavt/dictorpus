@@ -741,16 +741,32 @@ class TextController extends Controller
     }
     
     public function tmpProcessOldLetters() {
+        $lang_id=5;
         $words = Word::whereRaw("(word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%')"
                 . " and text_id in (SELECT id from texts where lang_id=5)")  // only livvic texts
-                     ->take(1)->get();
+                     ->take(1000)->get();
 //dd($words->toSql());        
         foreach ($words as $word) {
+//dd($word->word);            
             $new_word = Word::changeLetters($word->word);
+            $new_word_l = strtolower($new_word);
             if ($new_word != $word->word) {
 //dd($word->text_id);        
-dd($new_word);        
+print "<p>".$word->word;        
                 DB::statement("DELETE FROM meaning_text WHERE word_id=".$word->id);
+                $wordform_q = "(SELECT id from wordforms where wordform like '$new_word' or wordform like '$new_word_l')";
+                $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
+                $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=$lang_id and (lemma like '$new_word' or lemma like '$new_word_l' or id in $lemma_q))")
+                                   ->get();    
+//dd($meanings);    
+                foreach ($meanings as $meaning) {
+                    $meaning->texts()->attach($word->text_id,
+                            ['sentence_id'=>$word->sentence_id,
+                             'word_id'=>$word->id,
+                             'w_id'=>$word->w_id,
+                             'relevance'=>1]);
+                    
+                }
                 $word->word = $new_word;
                 $word->save();
             }
