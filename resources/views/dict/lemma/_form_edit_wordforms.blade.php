@@ -17,6 +17,11 @@
                                 'value'=> isset($dialect_wordform[$dialect_id][$i]) ? $dialect_wordform[$dialect_id][$i]->wordform : NULL
                                ])</td>
                         @endforeach
+                        <td>@include('widgets.form._formitem_select', 
+                                ['name' => 'lang_wordforms_dialect['.$gramset_id.']', 
+                                 'values' =>$dialect_values,
+                                 'value' =>$dialect_id]) 
+                        </td>
                    </tr>
                     @endforeach
                 @endif

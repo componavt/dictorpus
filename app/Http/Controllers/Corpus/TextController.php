@@ -739,7 +739,8 @@ class TextController extends Controller
         }
         return $str;
     }
-    
+
+//select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
     public function tmpProcessOldLetters() {
         $lang_id=5;
         $words = Word::whereRaw("(word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%')"

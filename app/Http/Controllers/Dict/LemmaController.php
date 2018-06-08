@@ -575,7 +575,7 @@ class LemmaController extends Controller
         $lemma-> wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
 //        }
         //add wordforms from full table of gramsets
-        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma);
+        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma, $request->lang_wordforms_dialect);
         //add wordforms without gramsets
         Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma, $dialect_id);
 //exit(0);  

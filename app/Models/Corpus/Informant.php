@@ -63,7 +63,13 @@ class Informant extends Model
     // Informant __has_many_through__ Texts
     public function texts()
     {
-        return $this->hasManyThrough(Text::class, Event::class);
+        $informant_id = $this->id;
+//        return $this->hasManyThrough(Text::class, Event::class);
+        $texts = Text::whereIn('event_id', function($query) use ($informant_id) {
+                                $query->select('event_id')->from('event_informant')
+                                      ->where('informant_id',$informant_id);
+                              });
+        return $texts;
     }
     
     /** Gets list of informant

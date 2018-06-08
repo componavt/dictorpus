@@ -64,37 +64,52 @@ class Wordform extends Model
      * @param array $wordforms array of wordforms with pairs "id of gramset - wordform",
      *                         f.e. [<gramset_id1> => [<dialect_id1> => <wordform1>, ...], ..] ]
      * @param Lemma $lemma object of lemma
+     * @param array $dialects array of dialects with pairs gramset - dialect
+     *                         f.e. [<gramset_id1> => [<dialect_id1>, ...], ..] ]
+     *                        is neccessary for changing dialect of wordform
      * 
      * @return NULL
      */
-    public static function storeLemmaWordformGramsets($wordforms, $lemma)
+    public static function storeLemmaWordformGramsets($wordforms, $lemma, $dialects)
     {
         if(!$wordforms || !is_array($wordforms)) {
             return;
         }
-        foreach($wordforms as $gramset_id=>$dialect_wordform) {
+//print "<pre>";
+  //      var_dump($dialects);       
+
+        foreach($wordforms as $gramset_id=>$wordform_dialect) {
             if (!(int)$gramset_id) {
                 $gramset_id = NULL;
             }
-            foreach($dialect_wordform as $dialect_id=>$wordform_texts) {
-		$lemma-> wordforms()
+            foreach ($wordform_dialect as $old_dialect_id => $wordform_texts) {
+                if (!(int)$old_dialect_id) {
+                    $old_dialect_id = NULL;
+                }
+                $lemma-> wordforms()
                       ->wherePivot('gramset_id',$gramset_id)
-                      ->wherePivot('dialect_id',$dialect_id)
+                      ->wherePivot('dialect_id',$old_dialect_id)
                       ->detach();
-                if (!(int)$dialect_id) {
+                if (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id]) {
+                    $dialect_id = (int)$dialects[$gramset_id];
+                } else {
                     $dialect_id = NULL;
                 }
+    //print "<br>".$lemma->id." = $dialect_id";  
                 foreach ($wordform_texts as $wordform_text) {
-                    if (!$wordform_text) {
-                        continue;
+                    if ($wordform_text) {
+                        foreach (preg_split("/\//",$wordform_text) as $word) {
+                            $wordform_obj = self::firstOrCreate(['wordform'=>trim($word)]);
+        //print "<br>". $wordform_obj->id ." = $wordform_text = $gramset_id = $dialect_id";  
+                            $exist_wordforms = $lemma-> wordforms()
+                                                     ->wherePivot('gramset_id',$gramset_id)
+                                                     ->wherePivot('dialect_id',$dialect_id)
+                                                     ->wherePivot('wordform_id',$wordform_obj->id);
+                            if (!$exist_wordforms->count()) {
+                                $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
+                            }
+                        }
                     }
-//dd(trim($wordform_text));                
-                    $wordform_obj = self::firstOrCreate(['wordform'=>trim($wordform_text)]);
-//dd($wordform_obj);
-                    $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
-//dd($lemma-> wordforms);
-                
-print "<p>".$lemma->id." = ". $wordform_obj->id ." = $wordform_text = $gramset_id = $dialect_id";  
                 }
             }
         }

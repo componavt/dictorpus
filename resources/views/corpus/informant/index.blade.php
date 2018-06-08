@@ -83,8 +83,8 @@
                     @endif
                 </td>
                 <td>
-                    @if($informant->texts)
-                        {{ $informant->texts()->count() }}
+                   @if($informant->texts())
+                         {{ $informant->texts()->count() }} 
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
