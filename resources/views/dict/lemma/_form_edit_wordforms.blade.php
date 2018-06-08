@@ -10,11 +10,13 @@
                         <td>
                             {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString(', ',true)}}&nbsp;
                         </td>
-                        <?php $wordform_value = ($dialect_wordform[$dialect_id]) ? ($dialect_wordform[$dialect_id]->wordform) : NULL; ?>
+                        @foreach ([0,1] as $i)
                         <td>@include('widgets.form._formitem_text',
-                               ['name' => 'lang_wordforms['.$gramset_id.']['.$dialect_id.']',
+                               ['name' => 'lang_wordforms['.$gramset_id.']['.$dialect_id.']['.$i.']',
                                 'special_symbol' => true,
-                                'value'=> $wordform_value])</td>
+                                'value'=> isset($dialect_wordform[$dialect_id][$i]) ? $dialect_wordform[$dialect_id][$i]->wordform : NULL
+                               ])</td>
+                        @endforeach
                    </tr>
                     @endforeach
                 @endif

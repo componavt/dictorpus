@@ -108,7 +108,7 @@ class Lemma extends Model
     }
     
     /**
-     *  Gets wordform for given gramset and dialect
+     *  Gets wordforms for given gramset and dialect
      * 
      * @param int $gramset_id
      * @param int $dialect_id
@@ -333,7 +333,8 @@ class Lemma extends Model
                 $wordform = $this->wordforms()
                                  ->wherePivot('gramset_id',$gramset_id)
                                  ->wherePivot('dialect_id', $dialect_id)
-                                 ->first();
+                                 //->first();
+                                 ->get();
                 $wordforms[$gramset_id][$dialect_id] = $wordform;
             }
         }
