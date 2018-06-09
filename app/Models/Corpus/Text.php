@@ -169,8 +169,10 @@ class Text extends Model
      * @return String 
      */
     public static function process($str):String{
-        $str = str_replace(">","&gt;",$str);
-        $str = str_replace("<","&lt;",$str);
+        $str = str_replace(">","&sup;",$str);
+        $str = str_replace("<","&sub;",$str);
+//        $str = str_replace(">","&gt;",$str);
+//        $str = str_replace("<","&lt;",$str);
         return $str;
     }
     
@@ -369,46 +371,6 @@ class Text extends Model
                                  'relevance'=>$relevance]);
                                             
                     }
-/*                    $meanings = [];
-                    $lemmas = Lemma::select('id')->where('lang_id',$this->lang_id)
-                            ->whereRaw("lemma like ?",[$word_t]);
-                    if ($lemmas->count()) {
-                        foreach ($lemmas->get() as $lemma) {
-                            foreach ($lemma->meanings as $meaning) {
-                                $meanings[$meaning->id] = 1;
-                            }
-                        }
-                    }
-
-                    $wordforms = Wordform::select('id')
-                            ->whereRaw("wordform like ?",[$word_t]);
-                    if ($wordforms->count()) {
-                        foreach ($wordforms->get() as $wordform) {
-                            foreach ($wordform->lemmas as $lemma) {
-                                if ($lemma->lang_id == $this->lang_id) {
-                                    foreach ($lemma->meanings as $meaning) {
-                                        $meanings[$meaning->id] = 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (array_keys($meanings) as $meaning_id) {
-//dd(isset($checked_words[$s_id]));                        
-                        $relevance = 1;
-                        if (isset($checked_words[$s_id][$word_count][$meaning_id][0])) {
-                            if ($checked_words[$s_id][$word_count][$meaning_id][0] == $word 
-                                    || $checked_words[$s_id][$word_count][$meaning_id][0] == $word.',') {
-                                $relevance = $checked_words[$s_id][$word_count][$meaning_id][1];
-                            }
-                        }
-                        $this->meanings()->attach($meaning_id,
-                                ['sentence_id'=>$s_id,
-                                 'word_id'=>$word_obj->id,
-                                 'w_id'=>$w_id,
-                                 'relevance'=>$relevance]);
-                    }*/
                     $word_count++;
                 }
         }

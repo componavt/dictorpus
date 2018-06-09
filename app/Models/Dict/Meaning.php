@@ -473,8 +473,11 @@ class Meaning extends Model
         $this->updateTextLinksForQuery($query.')');
     }
     
-     public static function updateTextLinksForQuery($query) {
+     public function updateTextLinksForQuery($query) {
         $words = DB::select($query);
+        if (!$words) {
+            return;
+        }
         $text_links = [];               
         foreach ($words as $word) {
             $relevance = 1;
@@ -503,6 +506,7 @@ class Meaning extends Model
 
         $this->texts()->detach();
         foreach ($text_links as $link) {
+//print "<br>meaning: ".$this->id."; text:".$link['text_id'];            
             $this->texts()->attach($link['text_id'],$link['other_fields']);
         }
     }

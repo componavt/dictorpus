@@ -194,9 +194,8 @@ class Wordform extends Model
      *
      * @return NULL
      */
-    public function updateTextLinks()
+    public function updateTextLinks($lemma)
     {        
-        $lemma=$this->lemma;
         $lang_id = $lemma->lang_id;
         $word = addcslashes($this->wordform,"'");
         foreach ($lemma->meanings as $meaning) {
