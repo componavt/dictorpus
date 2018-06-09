@@ -308,23 +308,25 @@ class Text extends Model
         $checked_words = [];
         if ($old_xml) {
             list($sxe_old,$error_message) = self::toXML($old_xml,$this->id);
-            foreach ($sxe_old->children()->s as $sentence) {
-                $s_id = (int)$sentence->attributes()->id;
-                $word_count = 0;
-                foreach ($sentence->children()->w as $word) {
-                    //$checked_words[$s_id][$word_count] = [];                
-                    $w_id = (int)$word->attributes()->id;
-                    $meanings = DB::table("meaning_text")
-                              ->where('relevance','<>',1)
-                              ->where('text_id',$this->id)
-                              ->where('w_id',$w_id)
-                              ->get();
-    //dd($meanings);        
-                    foreach ($meanings as $meaning) {
-                        $checked_words[$s_id][$word_count][$meaning->meaning_id] =
-                                [(string)$word, $meaning->relevance];
+            if ($sxe_old) {
+                foreach ($sxe_old->children()->s as $sentence) {
+                    $s_id = (int)$sentence->attributes()->id;
+                    $word_count = 0;
+                    foreach ($sentence->children()->w as $word) {
+                        //$checked_words[$s_id][$word_count] = [];                
+                        $w_id = (int)$word->attributes()->id;
+                        $meanings = DB::table("meaning_text")
+                                  ->where('relevance','<>',1)
+                                  ->where('text_id',$this->id)
+                                  ->where('w_id',$w_id)
+                                  ->get();
+        //dd($meanings);        
+                        foreach ($meanings as $meaning) {
+                            $checked_words[$s_id][$word_count][$meaning->meaning_id] =
+                                    [(string)$word, $meaning->relevance];
+                        }
+                        $word_count++;
                     }
-                    $word_count++;
                 }
             }
         }
