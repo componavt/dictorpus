@@ -1012,6 +1012,43 @@ class LemmaController extends Controller
                               )
                         );
     }
+    
+    /*
+     * split wordforms such as pieksäh/pieksähes on two wordforms
+     * and link meanings of lemma with sentences
+     * 
+     * select * from meaning_text where meaning_id in (select id from meanings where lemma_id in (select lemma_id from lemma_wordform where wordform_id=8755))
+     */
+    public function tmpSplitWordforms() {
+        $wordforms = Wordform::where('wordform','like','%/%')->take(100)->get();
+        foreach($wordforms as $wordform) {
+print "<br><br>".$wordform->id. "=".$wordform->wordform;  
+//exit(0);
+            $lemmas = $wordform->lemmas()->withPivot('gramset_id')
+                      ->withPivot('dialect_id')->get();
+            foreach ($lemmas as $lemma) {
+                $gramset_id = $lemma->pivot->gramset_id;
+                $dialect_id = $lemma->pivot->dialect_id;
+                foreach (preg_split("/\//",$wordform->wordform) as $word) {
+                    $wordform_obj = Wordform::firstOrCreate(['wordform'=>trim($word)]);
+                    $exist_wordforms = $lemma->wordforms()
+                                             ->wherePivot('gramset_id',$gramset_id)
+                                             ->wherePivot('dialect_id',$dialect_id)
+                                             ->wherePivot('wordform_id',$wordform_obj->id);
+                    if (!$exist_wordforms->count()) {
+                        $lemma->wordforms()->attach($wordform_obj->id, 
+                               ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
+                    }
+print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->id."=".$lemma->lemma;                    
+                    $wordform_obj->updateTextLinks($lemma);
+                }
+                $wordform->lemmas()->wherePivot('gramset_id',$gramset_id)
+                         ->wherePivot('dialect_id',$dialect_id)
+                         ->detach();
+            }
+            $wordform->delete();
+        }
+    }
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */

@@ -187,4 +187,23 @@ class Wordform extends Model
             }
         }
     }
+    
+    /**
+     * Removes all neutral links (relevance=1) from meaning_text
+     * and adds new links
+     *
+     * @return NULL
+     */
+    public function updateTextLinks($lemma)
+    {        
+        $lang_id = $lemma->lang_id;
+        $word = addcslashes($this->wordform,"'");
+        foreach ($lemma->meanings as $meaning) {
+            $query = "select * from words, texts "
+                              . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
+                                . " and word like '".$word."'";
+            $meaning->updateTextLinksForQuery($query);
+        }
+    }
+    
 }

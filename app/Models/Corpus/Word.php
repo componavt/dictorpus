@@ -39,4 +39,5 @@ class Word extends Model
         $word = str_replace('Ü','Y',$word);
         return $word;
     }
+    
 }
