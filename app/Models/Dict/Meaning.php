@@ -462,36 +462,6 @@ class Meaning extends Model
     {        
         $lemma_obj=$this->lemma;
         $lang_id = $lemma_obj->lang_id;
-//dd($lang_id);       
-        // select all words that match the lemma or word forms of this lemma
-/*        
-        $words = Word::whereIn('text_id',function ($q) use($lang_id){
-                            $q->select('id')->from('texts')
-                              ->where('lang_id',$lang_id);
-                       });
-        $words = $words ->whereIn('word', function ($q) use($lemma_obj){
-                            $q->select('wordform')->from('wordforms')
-                              ->whereIn('id',function($q2) use($lemma_obj){
-                                    $q2->select('wordform_id')->from('lemma_wordform')
-                                       ->where('lemma_id',$lemma_obj->id);
-                                });
-                       })
-                     ->orWhere('word','like',$lemma_obj->lemma);
- * 
- */
-//dd($words->toSql());                       
-//        $words=$words->get();
-
-/*        $words = DB::select("select * from words, texts "
-                          . "where words.text_id = texts.id and texts.lang_id = :lang_id "
-                            . "and (word like ':lemma' OR word in "
-                                . "(select wordform from wordforms, lemma_wordform "
-                                 . "where wordforms.id = lemma_wordform.wordform_id "
-                                   . "and lemma_id = :lemma_id "
-                                   . "and wordform like ':lemma')",
-                ['lang_id'=>$lang_id,
-                 'lemma_id'=>$lemma_obj->id,
-                 'lemma'=>$lemma_obj->lemma ]); */
         $lemma_t = addcslashes($lemma_obj->lemma,"'");
         $query = "select * from words, texts "
                           . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
@@ -500,28 +470,20 @@ class Meaning extends Model
             $wordform_t = addcslashes($wordform_obj->wordform,"'");
             $query .= " OR word like '".$wordform_t."'";
         }
-//dd($query.')');        
-        $words = DB::select($query.')');
-//dd($words);
+        $this->updateTextLinksForQuery($query.')');
+    }
+    
+     public static function updateTextLinksForQuery($query) {
+        $words = DB::select($query);
         $text_links = [];               
         foreach ($words as $word) {
             $relevance = 1;
-                $existLink = $this->texts()->wherePivot('text_id',$word->text_id)
-                              ->wherePivot('w_id',$word->w_id);
-                // if exists links between this meaning and this word, get their relevance
-                if ($existLink->count()>0) {                    
-//dd($existLink->first());                    
-                    $relevance = $existLink->first()->pivot->relevance ;
-                }
-            
-/*            if ($this->texts()->count()>0) {
-                $existLink = $this->texts()->wherePivot('text_id',$word->text_id)
-                              ->wherePivot('w_id',$word->w_id);
-                // if exists links between this meaning and this word, get their relevance
-                if ($existLink->count()>0) {
-                    $relevance = $existLink->pivot->relevance ;
-                }
-            }*/
+            $existLink = $this->texts()->wherePivot('text_id',$word->text_id)
+                          ->wherePivot('w_id',$word->w_id);
+            // if exists links between this meaning and this word, get their relevance
+            if ($existLink->count()>0) {                    
+                $relevance = $existLink->first()->pivot->relevance ;
+            }
 
             // if some another meaning has positive evaluation with this sentence, 
             // it means that this meaning is not suitable for this example
@@ -538,15 +500,14 @@ class Meaning extends Model
                                  'relevance'=>$relevance]                
                             ];
         }
-        
+
         $this->texts()->detach();
-//dd($text_links);        
         foreach ($text_links as $link) {
             $this->texts()->attach($link['text_id'],$link['other_fields']);
         }
     }
     
-    public static function countTranslations(){
+   public static function countTranslations(){
         return DB::table('meaning_translation')->count();
     }
     

@@ -443,54 +443,6 @@ class Lemma extends Model
         foreach ($this->meanings as $meaning_obj) {
             $meaning_obj->updateTextLinks();
         }
-/*        
-        $lang_id = $lemma_obj->lang_id;
-        $lemma_t = addcslashes($lemma_obj->lemma,"'");
-        $query = "select * from words, texts "
-                          . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
-                            . " and (word like '".$lemma_t."' OR word in "
-                                . "(select wordform from wordforms, lemma_wordform "
-                                 . "where wordforms.id = lemma_wordform.wordform_id "
-                                   . "and lemma_id = ".$lemma_obj->id." "
-                                   . "and wordform like '".$lemma_t."'))";
-        $words = DB::select($query);
-
-        foreach ($lemma_obj->meanings as $meaning) {
-            $text_links = [];               
-            foreach ($words as $word) {
-                $relevance = 1;
-                $existLink = $meaning->texts()->wherePivot('text_id',$word->text_id)
-                              ->wherePivot('w_id',$word->w_id);
-                // if exists links between this meaning and this word, get their relevance
-                if ($existLink->count()>0) {                    
-//dd($existLink->first());                    
-                    $relevance = $existLink->first()->pivot->relevance;
-                }
-            
-                // if some another meaning has positive evaluation with this sentence, 
-                // it means that this meaning is not suitable for this example
-                if (DB::table('meaning_text')->where('meaning_id','<>',$meaning->id)
-                      ->where('text_id',$word->text_id)->where('w_id',$word->w_id)
-                      ->where('relevance','>',1)->count()>0) {
-                    $relevance = 0;
-                }
-                $text_links[] = ['text_id' => $word->text_id,
-                                 'other_fields' =>
-                                    ['sentence_id'=>$word->sentence_id, 
-                                     'word_id'=>$word->id, 
-                                     'w_id'=>$word->w_id, 
-                                     'relevance'=>$relevance]                
-                                ];
-            }
-        
-            $meaning->texts()->detach();
-
-            foreach ($text_links as $link) {
-                $meaning->texts()->attach($link['text_id'],$link['other_fields']);
-            }
-        }
- * 
- */
     }
 
     /**
