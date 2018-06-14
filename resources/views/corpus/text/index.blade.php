@@ -33,7 +33,7 @@
                  'values' => $lang_values,
                  'value' => $url_args['search_lang'],
                  'title' => trans('dict.lang'),
-                 'class'=>'multiple-select-lang form-control',
+                 'class'=>'multiple-select-lang form-control'
         ])
                  
     </div>

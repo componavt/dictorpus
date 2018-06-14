@@ -10,6 +10,7 @@
                         <th>{{ trans('dict.translation') }}</th>
                     </tr>
                 @foreach ($meaning->meaningTextsWithAllLangs() as $meaning_lang => $meaning_text)
+                
                     <tr>
                         <td>{{ $meaning_text->lang_name}}</td>
                         <td>@include('widgets.form._formitem_text',

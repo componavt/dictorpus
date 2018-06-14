@@ -15,5 +15,5 @@ return [
     'site_abbr'  => 'ВепКар',
     'krc' => 'КарНЦ РАН',
     'datetime_format' => '%d %B %Y в %H:%M',
-    'date_format' => '%d %B %Y'
+    'date_format' => '%d %B %Y',
 ];

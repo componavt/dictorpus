@@ -15,6 +15,12 @@ if (!isset($grouped)) {
     $grouped=false;
 }
 
+if (!isset($is_multiple) || $is_multiple) {
+    $multiple = ' multiple="multiple"';
+} else {
+    $multiple = '';
+}
+
 if (!isset($class)) {
     $class = 'multiple-select form-control';
 }
@@ -29,7 +35,7 @@ if (!isset($class)) {
     <label for="{{$name}}[]">{{ $title }}</label>
     @endif
     
-    <select multiple="multiple" class="{{ $class }}" name="{{ $name }}[]" id="{{ $name }}" placeholder="choooose">
+    <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}[]" id="{{ $name }}" placeholder="choooose">
     @if ($grouped)
         @foreach ($values as $group_name=>$group_values)
         <optgroup label="{{$group_name}}">

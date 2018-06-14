@@ -13,9 +13,11 @@ s {
 }
 
 .lemma-linked {
-    color: #337ab7;
     cursor:pointer;
-/*    text-decoration: underline;*/
+}
+
+.lemma-linked.not-checked {
+    color: #337ab7;
 }
 
 .lemma-linked.has-checked {
@@ -27,7 +29,7 @@ s {
 }
 
 .links-to-lemmas {
-    background: #dcf7f8;
+    background: #ccc;
     color: black;
     display: none;
     left: 0;
@@ -41,6 +43,11 @@ s {
 
 .has-checked .links-to-lemmas {
     background: #a6f4bc;
+}
+
+.not-checked .links-to-lemmas,
+.polysemy .links-to-lemmas {
+    background: #dcf7f8;
 }
 /*
 .links-to-lemmas a {

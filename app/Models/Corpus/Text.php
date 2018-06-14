@@ -437,11 +437,12 @@ class Text extends Model
                 $meanings = $this->meanings()->wherePivot('text_id',$text_id)
                                  ->wherePivot('w_id',$word_id)
                                  ->wherePivot('relevance','>',0);
+                $word_class = 'lemma-linked';
+
                 if ($meanings->count()) {
                     $link_block = $word->addChild('div');
                     $link_block->addAttribute('class','links-to-lemmas');
                     $link_block->addAttribute('id','links_'.$word_id);
-
                     $has_checked_meaning = false;
                     foreach ($meanings->get() as $meaning) {
                         $lemma = $meaning->lemma;
@@ -470,19 +471,25 @@ class Text extends Model
                         $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
                                                                                             $sentence_id.'_'.$word_id)); 
                         $button_edit->addAttribute('class','glyphicon glyphicon-pencil');
-        //                $button = $button_edit->addChild('i');
-        //                $button->addAttribute('class','fa-pencil'); 
-        //                $button->addAttribute('class','fa fa-pencil fa-lg'); 
                     }
-                    $class = 'lemma-linked';
                     if ($has_checked_meaning) {
-                        $class .= ' has-checked';
+                        $word_class .= ' has-checked';
                     } elseif ($meanings->count() > 1) {
-                        $class .= ' polysemy';                
-                    } 
-                    $word->addAttribute('class',$class);
+                        $word_class .= ' polysemy';                
+                    } else {
+                        $word_class .= ' not-checked';
+                    }
 
+                } elseif (User::checkAccess('corpus.edit')) {
+                    $word_class .= ' call-add-wordform';
+/*                    $form = $link_block->addChild('form');
+                    $select_lemma = $form->addChild('select',"\n");
+                    $select_lemma->addAttribute('multiple','multiple');
+                    $select_lemma->addAttribute('class','multiple-select-lemma');
+                    $select_lemma->addAttribute('name','lemma-choose['.$word_id.']');
+                    $select_lemma->addAttribute('id','lemma-choose-'.$word_id);*/
                 }
+                $word->addAttribute('class',$word_class);
             }
         }
         
@@ -564,7 +571,7 @@ class Text extends Model
                                 'relevance' => $relevance]; 
                 return $sentence;
             } else {
-                dd("!s: meaning_id=".$this->id.' and text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
+                dd('!text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
             }
     }
 
@@ -580,7 +587,7 @@ class Text extends Model
             $sentence_id = (int)$regs[2];
             $w_id = (int)$regs[3];
         
-            $sentence = Text::extractSentence($text_id, $sentence_id, $w_id);            
+            $sentence = self::extractSentence($text_id, $sentence_id, $w_id);            
 
             $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
                                -> where('text_id',$text_id)

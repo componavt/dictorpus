@@ -24,6 +24,7 @@ use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Relation;
 use App\Models\Dict\Wordform;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Word;
 
 class LemmaController extends Controller
 {
@@ -217,6 +218,35 @@ class LemmaController extends Controller
                         );
     }
 
+    /**
+     * Shows the form for creating a new wordform.
+     * 
+     * Called by ajax request
+     * /dict/lemma/wordform/create/?text_id=1548&w_id=4
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createWordform(Request $request)
+    {
+        $text_id = (int)$request->input('text_id');
+        $w_id = (int)$request->input('w_id');
+        if (!$text_id || !$w_id) {
+            return;
+        }
+        
+        $word = Word::where('text_id',$text_id)
+                        ->where('w_id',$w_id)->first();
+       
+        if (!$word || !$word->sentence_id) {
+            return;
+        }
+        
+        $sentence = Text::extractSentence($text_id, $word->sentence_id, $w_id);            
+                                
+        return view('dict.lemma._form_create_wordform')
+                  ->with(['sentence'=>$sentence]);
+    }
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -862,11 +892,15 @@ class LemmaController extends Controller
         $lemma_id = (int)$request->input('lemma_id');
 
         $all_meanings = [];
-        $lemmas = Lemma::where('lang_id',$lang_id)
-                       ->where('pos_id',$pos_id)
-                       ->where('id','<>',$lemma_id)
-                       ->where('lemma','like', $search_lemma)
-                       ->orderBy('lemma')->get();
+        $lemmas = Lemma::where('lemma','like', $search_lemma)
+                       ->where('lang_id',$lang_id);
+        if ($pos_id) {
+            $lemmas = $lemmas->where('pos_id',$pos_id);
+        }
+        if ($lemma_id) {
+            $lemmas = $lemmas->where('id','<>',$lemma_id);
+        }
+        $lemmas = $lemmas->orderBy('lemma')->get();
         foreach ($lemmas as $lem) {
             foreach ($lem->meanings as $meaning) {
                 $all_meanings[]=['id'  => $meaning->id, 
@@ -903,6 +937,33 @@ class LemmaController extends Controller
 
         return Response::json($list);
     }
+    
+    /**
+     * Gets list of lemmas for drop down list in JSON format
+     * Test url: /dict/lemma/list?lang_id=5
+     * 
+     * @return JSON response
+     */
+    public function lemmaLangList(Request $request)
+    {
+        $limit = 1000;
+        $search_lemma = '%'.$request->input('q').'%';
+        $lang_id = (int)$request->input('lang_id');
+        $list = [];
+        
+        $lemmas = Lemma::where('lang_id',$lang_id)
+                       ->where('lemma','like', $search_lemma)
+                       ->take($limit)
+                       ->orderBy('lemma')->get();
+        
+        foreach($lemmas as $lemma) {
+            $list[] = ['id'  => $lemma->id, 
+                       'text'=> $lemma->lemma. ' ('.$lemma->pos->name.') '.$lemma->phraseMeaning()];
+        }
+
+        return Response::json($list);
+    }
+    
     public function fullNewList(Request $request)
     {
         $portion = 1000;

@@ -1,0 +1,27 @@
+<div class="modal fade in" id="{{ $name }}" tabindex="-1" role="dialog" aria-hidden="false" style="display:none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">{{ $title }}</h4>
+            </div>
+            <div class="modal-body">
+        @include('widgets.form._formitem_text', 
+                ['name' => 'lemma', 
+                 'special_symbol' => true,
+                 'title'=>trans('dict.lemma')])
+    @include('widgets.form._formitem_select2',
+            ['name' => 'choose-lemma2',
+             'title' => trans('dict.lemma'),
+             'class'=>'select-lemma2 form-control',
+             'is_multiple' => false
+    ])
+                {!! $modal_body !!}
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" id="{{ $submit_id }}">{{ $submit_title }}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{trans('messages.close')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
