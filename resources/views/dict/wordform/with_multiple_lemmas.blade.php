@@ -31,7 +31,7 @@
         <p>{{ trans('messages.founded_records', ['count'=>count($wordforms)]) }}</p>
 
         @if ($wordforms)
-        <table class="table">
+        <table class="table-bordered table-wide table-striped">
         <thead>
             <tr>
                 <th>No</th>

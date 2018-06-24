@@ -8,43 +8,12 @@
 @section('content')
         <h2>{{ trans('navigation.omonyms') }}</h2>
 
-        {!! Form::open(['url' => '/dict/lemma/omonyms',
-                             'method' => 'get',
-                             'class' => 'form-inline'])
-        !!}
-        @include('widgets.form._formitem_text',
-                ['name' => 'search_lemma',
-                 'special_symbol' => true,
-                'value' => $url_args['search_lemma'],
-                'attributes'=>['size' => 15,
-                               'placeholder'=>trans('dict.lemma')]])
-                               
-        @include('widgets.form._formitem_select',
-                ['name' => 'search_lang',
-                 'values' =>$lang_values,
-                 'value' => $url_args['search_lang'],
-                 'attributes'=>['placeholder' => trans('dict.select_lang') ]])
-                 
-        @include('widgets.form._formitem_select',
-                ['name' => 'search_pos',
-                 'values' =>$pos_values,
-                 'value' => $url_args['search_pos'],
-                 'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
-                 
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
-
-        {{trans('messages.show_by')}}
-        @include('widgets.form._formitem_text',
-                ['name' => 'limit_num',
-                'value' => $url_args['limit_num'],
-                'attributes'=>['size' => 5,
-                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
-        {!! Form::close() !!}
+        @include('dict.lemma.search._omonyms_form',['url' => '/dict/lemma/omonyms']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
-        <table class="table">
+        <table class="table-bordered table-wide table-striped">
         <thead>
             <tr>
                 <th>No</th>

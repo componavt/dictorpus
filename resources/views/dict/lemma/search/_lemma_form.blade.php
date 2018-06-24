@@ -2,7 +2,6 @@
                         'method' => 'get'])
         !!}
 <div class="row">
-        @if ($is_search_id)
     <div class="col-sm-1">
             @include('widgets.form._formitem_text',
                     ['name' => 'search_id',
@@ -10,9 +9,6 @@
                     'attributes'=>['placeholder' => 'ID']])
     </div>
     <div class="col-sm-2">
-        @else
-    <div class="col-sm-3">
-        @endif
         @include('widgets.form._formitem_text',
                 ['name' => 'search_lemma',
                 'value' => $url_args['search_lemma'],
@@ -20,7 +16,6 @@
                 'attributes'=>['placeholder'=>trans('dict.lemma')]])
                                
     </div>
-        @if ($is_search_wordform)
     <div class="col-sm-3">
             @include('widgets.form._formitem_text',
                     ['name' => 'search_wordform',
@@ -28,8 +23,6 @@
                     'special_symbol' => true,
                     'attributes'=>['placeholder'=>trans('dict.wordform')]])
     </div>
-        @endif
-        
     <div class="col-sm-3">
         @include('widgets.form._formitem_text',
                 ['name' => 'search_meaning',
@@ -46,7 +39,6 @@
     </div>
 </div>                 
 <div class="row">
-        @if ($is_search_wordform)
     <div class="col-sm-4">
             @include('widgets.form._formitem_select',
                     ['name' => 'search_pos',
@@ -64,7 +56,6 @@
                          'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
             @endif
     </div>
-        @endif
         
     <div class="col-sm-3 search-button-b">       
         <span>

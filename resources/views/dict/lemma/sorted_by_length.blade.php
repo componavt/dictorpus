@@ -21,12 +21,12 @@
         {!! Form::submit(trans('messages.view'),
                                array('class'=>'btn btn-default btn-primary')) 
                 !!}
-        {!! Form::close() !!}
+                {!! Form::close() !!}<br>
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
-        <table class="table">
+        <table class="table-bordered table-wide table-striped">
         <thead>
             <tr>
                 <th>No</th>

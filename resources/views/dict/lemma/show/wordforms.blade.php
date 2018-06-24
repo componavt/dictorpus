@@ -2,22 +2,26 @@
             {{ trans('dict.wordforms') }}
             @if (User::checkAccess('dict.edit'))
                 {!! Form::open(['url' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
-                                'method' => 'get',
-                                'class' => 'form-inline'])
+                                'method' => 'get'])
                 !!}
                 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
-<!--'attributes'=>['placeholder' => trans('dict.select_dialect')] -->
+            <div class="row">
+                <div class="col-sm-3">
                 @include('widgets.form._formitem_select',
                         ['name' => 'dialect_id',
                          'values' =>$dialect_values,
                          ]) 
+                </div>
+                <div class="col-sm-1">
                 @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.edit')])
+                </div>
+            </div>                 
                 {!! Form::close() !!}
             @endif
         </h3>
         @if ($lemma->wordforms()->count())
         <?php $key=1; ?>
-        <table class="table-bordered">
+        <table class="table-bordered table-striped">
             <tr>
                 <th>No</th>
                 <th>{{ trans('dict.gramsets') }}</th>

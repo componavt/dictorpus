@@ -24,26 +24,21 @@
 
         </p>
 
-        @include('dict.lemma._search_form',['url' => '/dict/lemma/phrases',
-                                            'is_search_id' => 0,
-                                            'is_search_pos' => 0,
-                                            'is_search_wordform' => 0
-                                           ]) 
+        @include('dict.lemma.search._phrases_form',['url' => '/dict/lemma/phrases']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($numAll)
-        <table class="table">
+        <table class="table-bordered table-wide table-striped">
         <thead>
             <tr>
                 <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
-                <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
                 @if (User::checkAccess('dict.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
@@ -54,14 +49,6 @@
                 <td>
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
-                    @endif
-                </td>
-                <td>
-                    @if($lemma->pos)
-                        {{$lemma->pos->name}}
-                        @if ($lemma->reflexive)
-                            ({{ trans('dict.reflexive_verb') }})
-                        @endif
                     @endif
                 </td>
                 <td>
@@ -76,12 +63,12 @@
                 <td>
                     @include('widgets.form._button_edit', 
                              ['is_button'=>true, 
+                              'without_text' => true,
                               'route' => '/dict/lemma/'.$lemma->id.'/edit',
                              ])
-                </td>
-                <td>
                     @include('widgets.form._button_delete', 
                              ['is_button'=>true, 
+                              'without_text' => true,
                               'route' => 'lemma.destroy', 
                               'id' => $lemma->id,
                              ])

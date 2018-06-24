@@ -16,7 +16,7 @@
 
         @if ($wordforms)
         <br>
-        <table class="table">
+        <table class="table-bordered table-wide table-striped">
         <thead>
             <tr>
                 <th>No</th>
@@ -27,7 +27,7 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.dialect') }}</th>
                 @if (User::checkAccess('dict.edit'))
-                <th></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>

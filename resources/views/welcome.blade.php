@@ -16,11 +16,21 @@
                         'lemmas' => $lemmas_choice,
                         'texts' => $texts_choice,
                         'total_texts'=>$total_texts]) !!}
-                    
-                    <div id="last-updated-lemmas" class="block-list">
-                    </div>
-                    
-                    <div id="last-updated-texts" class="block-list">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div id="last-updated-lemmas" class="block-list">
+                            </div>
+
+                            <div id="last-updated-texts" class="block-list">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            @include('widgets.youtube',
+                                    ['width' => '100%',
+                                     'height' => '270',
+                                     'video' => 'VDYq7yA8ByA'
+                                    ])
+                        </div>
                     </div>
                 </div>
             </div>

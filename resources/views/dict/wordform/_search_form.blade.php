@@ -1,36 +1,47 @@
         {!! Form::open(['url' => '/dict/wordform/', 
-                             'method' => 'get', 
-                             'class' => 'form-inline']) 
+                             'method' => 'get']) 
         !!}
+<div class="row">
+    <div class="col-sm-2">
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_wordform', 
                  'special_symbol' => true,
                 'value' => $url_args['search_wordform'],
-                'attributes'=>['size' => 15,
-                               'placeholder'=>trans('dict.wordform')]])
-                               
+                'attributes'=>['placeholder'=>trans('dict.wordform')]])
+    </div>
+    <div class="col-sm-3">
         @include('widgets.form._formitem_select', 
                 ['name' => 'search_pos', 
                  'values' =>$pos_values,
                  'value' =>$url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
-                 
+    </div>
+    <div class="col-sm-2">
         @include('widgets.form._formitem_select', 
                 ['name' => 'search_lang', 
                  'values' =>$lang_values,
                  'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
-                 
+    </div>
+    <div class="col-sm-2">
         @include('widgets.form._formitem_select', 
                 ['name' => 'search_dialect', 
                  'values' =>$dialect_values,
                  'value' =>$url_args['search_dialect'],
                  'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
-        <br>         
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+    </div>
+    <div class="col-sm-3 search-button-b">       
+        <span>
+        {{trans('messages.show_by')}}
+        </span>
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
-                'attributes'=>['size' => 5,
-                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
+                'attributes'=>['size' => 5, 'placeholder' => trans('messages.limit_num') ]]) 
+        <span>
+                {{ trans('messages.records') }}
+        </span>
+        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+    </div>
+</div>                 
         {!! Form::close() !!}

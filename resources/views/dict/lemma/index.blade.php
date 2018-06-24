@@ -26,16 +26,12 @@
 
         </p>
 
-        @include('dict.lemma._search_form',['url' => '/dict/lemma/',
-                                            'is_search_id' => 1,
-                                            'is_search_pos' => 1,
-                                            'is_search_wordform' => 1
-                                           ]) 
+        @include('dict.lemma.search._lemma_form',['url' => '/dict/lemma/']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($numAll)
-        <table class="table-bordered table-wide">
+        <table class="table-bordered table-wide table-striped">
         <thead>
             <tr>
                 <th>No</th>

@@ -178,3 +178,8 @@ and open the template in the editor.
     margin-left: 20px;
 }
 
+.condensed>div {
+    padding-right: 5px;
+    padding-left: 5px;
+
+}
