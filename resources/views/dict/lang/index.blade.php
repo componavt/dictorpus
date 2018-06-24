@@ -17,7 +17,7 @@
         @endif
         </p>
         
-        <table id="languages" class="table">
+        <table id="languages" class="table-striped table">
         <thead>
             <tr>
                 <th>{{ trans('messages.in_english') }}</th>
@@ -37,7 +37,7 @@
                 @if (User::checkAccess('dict.edit'))
                 <td>
                     @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/dict/lang/'.$language->id.'/edit'])
-                 </td>
+                </td>
                 @endif
             </tr>
             @endforeach

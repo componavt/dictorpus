@@ -10,10 +10,10 @@ return [
     |
     */
 
+    'datetime_format' => '%d %B %Y в %H:%M',
+    'date_format' => '%d %B %Y',
+    'krc' => 'КарНЦ РАН',
     'see_full_list' => 'Полный список',
     'site_title' => 'Открытый корпус вепсского и карельского языков',
     'site_abbr'  => 'ВепКар',
-    'krc' => 'КарНЦ РАН',
-    'datetime_format' => '%d %B %Y в %H:%M',
-    'date_format' => '%d %B %Y'
 ];

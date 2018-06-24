@@ -17,13 +17,7 @@
                         'texts' => $texts_choice,
                         'total_texts'=>$total_texts]) !!}
                     
-                    <div id="last-created-lemmas" class="block-list">
-                    </div>
-                    
                     <div id="last-updated-lemmas" class="block-list">
-                    </div>
-                    
-                    <div id="last-created-texts" class="block-list">
                     </div>
                     
                     <div id="last-updated-texts" class="block-list">
@@ -37,8 +31,6 @@
 @stop
 
 @section('jqueryFunc')
-    newListLoad('/dict/lemma/limited_new_list/', 'last-created-lemmas',{{$limit}});
     newListLoad('/dict/lemma/limited_updated_list/', 'last-updated-lemmas',{{$limit}});
-    newListLoad('/corpus/text/limited_new_list/', 'last-created-texts',{{$limit}});
     newListLoad('/corpus/text/limited_updated_list/', 'last-updated-texts',{{$limit}});
 @stop

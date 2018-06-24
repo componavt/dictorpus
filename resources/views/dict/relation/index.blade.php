@@ -17,7 +17,7 @@
         @endif
         </p>
         
-        <table class="table">
+        <table class="table table-striped">
         <thead>
             <tr>
                 <th>{{ trans('messages.seq_num') }}</th>

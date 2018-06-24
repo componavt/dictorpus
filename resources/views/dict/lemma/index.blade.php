@@ -35,7 +35,7 @@
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($numAll)
-        <table class="table">
+        <table class="table-bordered table-wide">
         <thead>
             <tr>
                 <th>No</th>
@@ -45,7 +45,7 @@
                 <th>{{ trans('dict.interpretation') }}</th>
                 <th>{{ trans('messages.examples') }} *</th>
                 @if (User::checkAccess('dict.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
@@ -91,12 +91,12 @@
                 <td>
                     @include('widgets.form._button_edit', 
                              ['is_button'=>true, 
+                              'without_text' => true,
                               'route' => '/dict/lemma/'.$lemma->id.'/edit',
                              ])
-                </td>
-                <td>
                     @include('widgets.form._button_delete', 
                              ['is_button'=>true, 
+                              'without_text' => true,
                               'route' => 'lemma.destroy', 
                               'id' => $lemma->id,
                              ])

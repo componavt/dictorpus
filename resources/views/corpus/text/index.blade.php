@@ -23,77 +23,11 @@
         @endif
         </p>
         
-        {!! Form::open(['url' => '/corpus/text/', 
-                             'method' => 'get']) 
-        !!}
-<div class="row">
-    <div class="col-sm-4">
-        @include('widgets.form._formitem_select2', 
-                ['name' => 'search_lang', 
-                 'values' => $lang_values,
-                 'value' => $url_args['search_lang'],
-                 'title' => trans('dict.lang'),
-                 'class'=>'multiple-select-lang form-control',
-        ])
-                 
-    </div>
-    <div class="col-sm-4">
-        @include('widgets.form._formitem_select2',
-                ['name' => 'search_dialect', 
-                 'values' =>$dialect_values,
-                 'value' => $url_args['search_dialect'],
-                 'title' => trans('dict.dialect'),
-                 'class'=>'multiple-select-dialect form-control'
-            ])
-    </div>
-    <div class="col-sm-4">
-        @include('widgets.form._formitem_select2', 
-                ['name' => 'search_corpus', 
-                 'values' => $corpus_values,
-                 'value' => $url_args['search_corpus'],
-                 'title' => trans('corpus.corpus'),
-                 'class'=>'multiple-select-corpus form-control'
-            ])
-    </div>
-</div>                 
-<div class="row">
-    <div class="col-sm-4">
-        @include('widgets.form._formitem_text', 
-                ['name' => 'search_title', 
-                 'special_symbol' => true,
-                'value' => $url_args['search_title'],
-                'attributes'=>['placeholder' => trans('corpus.title')]])
-                               
-    </div>
-    <div class="col-sm-3">
-        @include('widgets.form._formitem_text', 
-                ['name' => 'search_word', 
-                 'special_symbol' => true,
-                'value' => $url_args['search_word'],
-                'attributes'=>['placeholder' => trans('corpus.word')]])
-                               
-    </div>
-    <div class="col-sm-2">
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
-    </div>
-    <div class="col-sm-1" style='text-align:right'>       
-        {{trans('messages.show_by')}}
-    </div>
-    <div class="col-sm-1">
-        @include('widgets.form._formitem_text', 
-                ['name' => 'limit_num', 
-                'value' => $url_args['limit_num'], 
-                'attributes'=>['placeholder' => trans('messages.limit_num') ]]) 
-    </div>
-    <div class="col-sm-1">
-                {{ trans('messages.records') }}
-    </div>
-</div>                 
-        {!! Form::close() !!}
+        @include('corpus.text._search_form',['url' => '/corpus/text/']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table">
+        <table class="table-bordered table-wide">
         <thead>
             <tr>
                 <th>No</th>
@@ -106,7 +40,7 @@
                 <th style='text-align: center'>{{ trans('corpus.sentences') }}</th>
                 @endif
                 @if (User::checkAccess('corpus.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
@@ -147,8 +81,6 @@
                             ['is_button'=>true, 
                              'without_text' => 1,
                              'route' => '/corpus/text/'.$text->id.'/edit'])
-                 </td>
-                <td>
                     @include('widgets.form._button_delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,

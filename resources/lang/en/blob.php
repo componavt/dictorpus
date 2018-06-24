@@ -22,8 +22,8 @@ return [
     'welcome_text' =>  '<p>Welcome to the Open corpus of Veps and Karelian languages (VepKar),
                         containing dictionaries and corpora of Baltic-Finnic languages of Karelia peoples.</p>
 
-                        <p>The corpus was opened on July 24, 2016, and now it contains <a href="/ru/stats">:total_lemmas</a> dictionary articles and
-                        <a href="/ru/stats">:total_texts</a> texts in 6 languages and <a href="/ru/dict/dialect">:total_dialects</a> dialects.
+                        <p>The corpus was opened on July 24, 2016, and now it contains <a href="/en/stats">:total_lemmas</a> dictionary articles and
+                        <a href="/ru/stats">:total_texts</a> texts in 6 languages and <a href="/en/dict/dialect">:total_dialects</a> dialects.
                         </p>
                         
                         <p>

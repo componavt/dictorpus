@@ -94,3 +94,11 @@ ol {
 .links-to-lemmas div:last-of-type {
     margin-bottom: 10px;
 }
+
+.corpus-text td:first-of-type {
+    padding-right: 20px;
+}
+
+.corpus-text td:last-of-type {
+    padding-left: 20px;
+}

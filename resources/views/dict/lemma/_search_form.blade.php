@@ -55,12 +55,14 @@
             @endif
         @endif
         
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
-
         {{trans('messages.show_by')}}
         @include('widgets.form._formitem_text',
                 ['name' => 'limit_num',
                 'value' => $url_args['limit_num'],
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
+                               
+        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
+
+        

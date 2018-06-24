@@ -6,6 +6,7 @@
 
 @section('content')
         <h2>{{trans('corpus.last_updated_texts')}}</h2>
+        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/')}}">{{trans('corpus.new_texts')}}</a></p>
         @foreach ($last_updated_texts as $cr_date =>$texts)
         <p class="date">{{$cr_date}}</p>
             @foreach ($texts as $text)

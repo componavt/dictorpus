@@ -37,7 +37,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table">
+        <table class="table table-striped table-wide">
         <thead>
             <tr>
                 <th>No</th>

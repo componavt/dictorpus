@@ -10,6 +10,7 @@ return [
     |
     */
     
+    'actions' => 'Actions',
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
     'changed' => 'changed',

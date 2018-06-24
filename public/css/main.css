@@ -148,3 +148,33 @@ and open the template in the editor.
     color:#999;
     padding-left: 20px;
 }
+
+.table-wide {
+    width: 100%;
+}
+
+.table-wide th {
+    text-align: center;
+}
+
+.table-wide th::first-letter {
+    text-transform: uppercase;
+}
+
+.table-wide td {
+    padding: 10px 15px;
+}
+
+.search-button-b {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-button-b span {
+    margin-top: 5px;
+}
+
+.search-button-b input[type=submit]{
+    margin-left: 20px;
+}
+

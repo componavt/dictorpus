@@ -18,45 +18,11 @@
         @endif
         </p>
         
-        {!! Form::open(['url' => '/corpus/informant/', 
-                             'method' => 'get', 
-                             'class' => 'form-inline']) 
-        !!}
-        @include('widgets.form._formitem_text', 
-                ['name' => 'search_id', 
-                'value' => $search_id,
-                'attributes'=>['size' => 3,
-                               'placeholder' => 'ID']])
-         @include('widgets.form._formitem_text', 
-                ['name' => 'informant_name', 
-                'value' => $informant_name,
-                'attributes'=>['size' => 15,
-                               'placeholder' => trans('corpus.informant_name')]])
-        @include('widgets.form._formitem_select', 
-                ['name' => 'birth_place_id', 
-                 'values' => $place_values,
-                 'value' => $birth_place_id,
-                 'attributes' => ['placeholder' => trans('corpus.birth_place')]]) 
-                                  
-        @include('widgets.form._formitem_text', 
-                ['name' => 'birth', 
-                'value' => $birth,
-                'attributes'=>['size' => 4,
-                               'placeholder' => trans('corpus.birth_year')]])
-        <br>         
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
-        
-        {{trans('messages.show_by')}}
-        @include('widgets.form._formitem_text', 
-                ['name' => 'limit_num', 
-                'value' => $limit_num, 
-                'attributes'=>['size' => 5,
-                               'placeholder' => trans('messages.limit_num')]]) {{ trans('messages.records') }}
-        {!! Form::close() !!}
+        @include('corpus.informant._search_form',['url' => '/corpus/informant/']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table">
+        <table class="table-bordered table-wide">
         <thead>
             <tr>
                 <th>No</th>
@@ -66,7 +32,7 @@
                 <th>{{ trans('corpus.birth_place') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
@@ -89,10 +55,15 @@
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td>
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/informant/'.$informant->id.'/edit'])
-                 </td>
-                <td>
-                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'informant.destroy', 'id' => $informant->id])
+                    @include('widgets.form._button_edit', 
+                            ['is_button'=>true, 
+                             'without_text' => 1,
+                             'route' => '/corpus/informant/'.$informant->id.'/edit'])
+                    @include('widgets.form._button_delete', 
+                            ['is_button'=>true, 
+                             'without_text' => 1,
+                             $route = 'informant.destroy', 
+                             'id' => $informant->id])
                 </td>
                 @endif
             </tr>

@@ -18,26 +18,11 @@
         @endif
         </p>
 
-        {!! Form::open(['url' => '/dict/dialect/', 
-                             'method' => 'get', 
-                             'class' => 'form-inline']) 
-        !!}
-        @include('widgets.form._formitem_select', 
-                ['name' => 'lang_id', 
-                 'values' =>$lang_values,
-                 'value' =>$lang_id,
-                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
-        @include('widgets.form._formitem_text', 
-                ['name' => 'limit_num', 
-                'value' => $limit_num, 
-                'attributes'=>['size' => 5,
-                               'placeholder' => trans('messages.limit_num') ]]) {{ trans('messages.records') }}
-        {!! Form::close() !!}
+        @include('dict.dialect._search_form',['url' => '/dict/dialect/']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
-    <table class="table">
+    <table class="table-bordered table-wide">
         <thead>
             <tr>
                 <th>{{ trans('messages.sequence_number') }}</th>
@@ -48,7 +33,7 @@
                 <th style='text-align:right'>{{ trans('dict.wordforms') }}</th>                
                 <th style='text-align:right'>{{ trans('navigation.texts') }}</th>                
                 @if (User::checkAccess('ref.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
@@ -75,12 +60,12 @@
                 <td>
                     @include('widgets.form._button_edit', 
                             ['is_button'=>true, 
+                             'without_text' => 1,
                              'url_args' => $url_args,
                              'route' => '/dict/dialect/'.$dialect->id.'/edit'])
-                </td>
-                <td>
                     @include('widgets.form._button_delete', 
                             ['is_button'=>true, 
+                             'without_text' => 1,
                             'url_args' => $url_args,
                             'route' => 'dialect.destroy', 
                             'id' => $dialect->id])
