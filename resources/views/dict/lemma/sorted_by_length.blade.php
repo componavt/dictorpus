@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -13,7 +13,7 @@
                              'class' => 'form-inline')) 
         !!}
         {!! Form::text('limit_num', 
-                       $limit_num, 
+                       $url_args['limit_num'], 
                        array('placeholder'=>trans('messages.limit_num'), 
                              'class'=>'form-control', 
                              'required'=>'true')) 
@@ -39,7 +39,7 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td>{{ $list_count++ }}</td>
-                <td>{{$lemma->lemma}}</td>
+                <td><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
                 <td>
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
@@ -55,7 +55,7 @@
         </tbody>
         </table>
         @endif
-        {!! $lemmas->appends(['limit_num' => $limit_num])->render() !!}
+        {!! $lemmas->appends(['limit_num' => $url_args['limit_num']])->render() !!}
 @stop
 
 

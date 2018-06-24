@@ -731,33 +731,18 @@ class LemmaController extends Controller
      */
     public function sortedByLength(Request $request)
     {
-        $limit_num = (int)$request->input('limit_num');
-        $page = (int)$request->input('page');
-
-        if (!$page) {
-            $page = 1;
-        }
-                
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }           
-        
-        //$lemmas = Lemma::orderBy(char_length('lemma'), 'desc')
         $builder = Lemma::select(DB::raw('*, char_length(lemma) as char_length'));
         
         $numAll = $builder->count();
         
         $lemmas = $builder->orderBy('char_length', 'desc')
-//                ->take($limit_num)->get();
-                          ->paginate($limit_num);
+                          ->paginate($this->url_args['limit_num']);
                 
         return view('dict.lemma.sorted_by_length')
-                  ->with(array('limit_num' => $limit_num,
-                               'page'=>$page,
-                               'lemmas' => $lemmas,
-                               'numAll' => $numAll
+                  ->with(array('lemmas'      => $lemmas,
+                               'numAll'      => $numAll,
+                               'args_by_get' => $this->args_by_get,
+                               'url_args'    => $this->url_args,
                               )
                         );
     }
