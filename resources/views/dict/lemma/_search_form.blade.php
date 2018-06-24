@@ -55,25 +55,25 @@
                      'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
     </div>
 
+    <div class="col-sm-5">
             @if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
-    <div class="col-sm-4">
                 @include('widgets.form._formitem_select', 
                         ['name' => 'search_gramset', 
                          'values' =>$gramset_values,
                          'value' =>$url_args['search_gramset'],
                          'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
-    </div>
             @endif
+    </div>
         @endif
         
-    <div class="col-sm-4 search-button-b">       
+    <div class="col-sm-3 search-button-b">       
         <span>
         {{trans('messages.show_by')}}
         </span>
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
-                'attributes'=>['placeholder' => trans('messages.limit_num') ]]) 
+                'attributes'=>['size' => 5, 'placeholder' => trans('messages.limit_num') ]]) 
         <span>
                 {{ trans('messages.records') }}
         </span>
