@@ -27,7 +27,7 @@ return [
     'of_relations' => 'semantic relationships (synonyms, etc.)',
     'of_texts' => 'texts',
     'of_translations' => 'translations',
-    'of_wordforms' => 'word forms',
+    'of_wordforms' => 'wordforms',
 
     'stats_by_users' => 'Stats by Editors',
     'stats_by_corp' => 'Statistics by corpuses',

@@ -331,6 +331,6 @@ class WordformController extends Controller
  */  
 }
 
-// a lemma and word form related by more than once
+// a lemma and wordform related by more than once
 // select lemma_id, wordforms.wordform as wordform, count(*) as count from lemma_wordform,wordforms where wordforms.id=lemma_wordform.wordform_id group by lemma_id, wordform having count>1;
 // select wordforms.wordform as wordform, count(*) as count from lemma_wordform, wordforms where wordforms.id=lemma_wordform.wordform_id group by wordform having count>1 order by count;

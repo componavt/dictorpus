@@ -408,7 +408,7 @@ class Meaning extends Model
     {
         $lemma_obj=$this->lemma;
         $lang_id = $lemma_obj->lang_id;
-        // select all words that match the lemma or word forms of this lemma
+        // select all words that match the lemma or wordforms of this lemma
 /*        
         $words = Word::whereIn('text_id',function ($q) use($lang_id){
                             $q->select('id')->from('texts')
