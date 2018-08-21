@@ -41,8 +41,10 @@ class LemmaController extends Controller
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                           ['only' => ['create','store','edit','update','destroy',
-                                      'createMeaning', 'editExamples', 'editExample',
-                                      'editWordforms','updateWordforms','updateExamples']]);
+                                      'editExample', 'removeExample',
+                                      'editExamples','updateExamples', 
+                                      'createMeaning', 'createWordform',
+                                      'editWordforms','updateWordforms']]);
         
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
@@ -218,35 +220,6 @@ class LemmaController extends Controller
                         );
     }
 
-    /**
-     * Shows the form for creating a new wordform.
-     * 
-     * Called by ajax request
-     * /dict/lemma/wordform/create/?text_id=1548&w_id=4
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createWordform(Request $request)
-    {
-        $text_id = (int)$request->input('text_id');
-        $w_id = (int)$request->input('w_id');
-        if (!$text_id || !$w_id) {
-            return;
-        }
-        
-        $word = Word::where('text_id',$text_id)
-                        ->where('w_id',$w_id)->first();
-       
-        if (!$word || !$word->sentence_id) {
-            return;
-        }
-        
-        $sentence = Text::extractSentence($text_id, $word->sentence_id, $w_id);            
-                                
-        return view('dict.lemma._form_create_wordform')
-                  ->with(['sentence'=>$sentence]);
-    }
-    
     /**
      * Store a newly created resource in storage.
      *
@@ -947,7 +920,8 @@ class LemmaController extends Controller
     public function lemmaLangList(Request $request)
     {
         $limit = 1000;
-        $search_lemma = '%'.$request->input('q').'%';
+//        $search_lemma = '%'.$request->input('q').'%';
+        $search_lemma = $request->input('q').'%';
         $lang_id = (int)$request->input('lang_id');
         $list = [];
         

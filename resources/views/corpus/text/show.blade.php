@@ -15,7 +15,7 @@
                                   'title'=>trans('corpus.add-wordform'),
                                   'submit_id' => 'save-wordform',
                                   'submit_title' => trans('messages.save'),
-                                  'modal_body'=>'<div id="addWordformDiv"></div>'])
+                                  'modal_view'=>'dict.lemma._form_create_wordform'])
         
         <h1>{{ trans('navigation.texts') }}</h1>
         
@@ -98,26 +98,6 @@
     addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add/example')}}');
     addWordform('{{$text->id}}','{{$text->lang_id}}');
     
-                $(".select-lemma2").select2({
-                    width: '100%',
-                    ajax: {
-                      url: "/dict/lemma/list",
-                      dataType: 'json',
-                      delay: 250,
-                      data: function (params) {
-                        return {
-                          q: params.term, // search term
-                          lang_id: lang_id
-                        };
-                      },
-                      processResults: function (data) {
-                        return {
-                          results: data
-                        };
-                      },          
-                      cache: true
-                    }
-                });
     $(".sentence").hover(function(){ // over
             var trans_id = 'trans' + $(this).attr('id');
             $("#"+trans_id).css('background','yellow');

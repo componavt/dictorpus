@@ -433,13 +433,15 @@ class Text extends Model
 //dd($sentence);       
             foreach ($sentence->children() as $word) {
                 $word_id = (int)$word->attributes()->id;
-
+                if (!$word_id) {
+                    continue;
+                }
                 $meanings = $this->meanings()->wherePivot('text_id',$text_id)
                                  ->wherePivot('w_id',$word_id)
                                  ->wherePivot('relevance','>',0);
-                $word_class = 'lemma-linked';
-
+                $word_class = '';
                 if ($meanings->count()) {
+                    $word_class = 'lemma-linked';
                     $link_block = $word->addChild('div');
                     $link_block->addAttribute('class','links-to-lemmas');
                     $link_block->addAttribute('id','links_'.$word_id);
@@ -481,7 +483,7 @@ class Text extends Model
                     }
 
                 } elseif (User::checkAccess('corpus.edit')) {
-                    $word_class .= ' call-add-wordform';
+                    $word_class = 'call-add-wordform';
 /*                    $form = $link_block->addChild('form');
                     $select_lemma = $form->addChild('select',"\n");
                     $select_lemma->addAttribute('multiple','multiple');
@@ -489,7 +491,10 @@ class Text extends Model
                     $select_lemma->addAttribute('name','lemma-choose['.$word_id.']');
                     $select_lemma->addAttribute('id','lemma-choose-'.$word_id);*/
                 }
-                $word->addAttribute('class',$word_class);
+                
+                if ($word_class) {
+                    $word->addAttribute('class',$word_class);
+                }
             }
         }
         

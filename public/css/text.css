@@ -12,7 +12,8 @@ s {
     background: #fefea6;
 }
 
-.lemma-linked {
+.lemma-linked,
+.call-add-wordform {
     cursor:pointer;
 }
 

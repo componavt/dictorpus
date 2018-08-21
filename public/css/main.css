@@ -148,3 +148,7 @@ and open the template in the editor.
     color:#999;
     padding-left: 20px;
 }
+
+.with-first-big-letter::first-letter {
+    text-transform: uppercase;
+}

@@ -6,12 +6,7 @@
                 <h4 class="modal-title">{{ $title }}</h4>
             </div>
             <div class="modal-body">
-    @include('widgets.form._formitem_select2',
-            ['name' => 'choose-lemma2',
-             'title' => trans('dict.lemma'),
-             'class'=>'select-lemma2 form-control'
-    ])
-                {!! $modal_body !!}
+                @include($modal_view) 
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="{{ $submit_id }}">{{ $submit_title }}</button>

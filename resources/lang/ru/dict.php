@@ -36,6 +36,7 @@ return [
     'lang' => 'язык',
     'last_updated_lemmas' => 'Последние измененные леммы',
     'lemma' => 'лемма',
+    'lemma_meaning' => 'лемма со значением',
     'lemmas' => 'леммы',
     'lemma_removed' => 'Лемма ":name" удалена.',
     'list_languages' => 'Список языков',

@@ -35,6 +35,7 @@ return [
     'lang_code' => 'Language code',
     'last_updated_lemmas' => 'Last updated lemmas',
     'lemma' => 'lemma',
+    'lemma_meaning' => 'lemma with meaning',
     'lemmas' => 'lemmas',
     'lemma_removed' => 'Lemma ":name" is removed successfully.',
     'list_languages' => 'Languages',

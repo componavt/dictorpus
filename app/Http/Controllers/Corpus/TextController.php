@@ -740,6 +740,37 @@ class TextController extends Controller
         return $str;
     }
 
+    /**
+     * Shows the sentence with a highlighted word.
+     * Receives text ID and word ID (local number in the text),
+     * finds sentence in the text, parses xml
+     * 
+     * Called by ajax request
+     * /corpus/text/sentence?text_id=1548&w_id=4
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showWordInSentence(Request $request)
+    {
+        $text_id = (int)$request->input('text_id');
+        $w_id = (int)$request->input('w_id');
+        if (!$text_id || !$w_id) {
+            return;
+        }
+        
+        $word = Word::where('text_id',$text_id)
+                        ->where('w_id',$w_id)->first();
+       
+        if (!$word || !$word->sentence_id) {
+            return;
+        }
+        
+        $sentence = Text::extractSentence($text_id, $word->sentence_id, $w_id);            
+                                
+        return view('dict.lemma.show.example_sentence')
+                ->with(['sentence'=>$sentence,'relevance'=>'', 'count'=>'']);
+    }
+    
 //select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
     public function tmpProcessOldLetters() {
         $lang_id=5;
