@@ -32,10 +32,10 @@ if (!isset($class)) {
         <?=isset($style)  ? ' style="'.$style.'"' : '';?>
      >
     @if($title)
-    <label for="{{$name}}[]">{{ $title }}</label>
+    <label for="{{$name}}{{$multiple ? '[]': ''}}">{{ $title }}</label>
     @endif
     
-    <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}[]" id="{{ $name }}" placeholder="choooose">
+    <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}{{$multiple ? '[]': ''}}" id="{{ $name }}" placeholder="choooose">
     @if ($grouped)
         @foreach ($values as $group_name=>$group_values)
         <optgroup label="{{$group_name}}">
