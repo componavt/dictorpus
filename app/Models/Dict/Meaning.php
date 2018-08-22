@@ -86,6 +86,30 @@ class Meaning extends Model
                 ->withPivot('relevance');
     }
     
+    /** Gets list of meanings for lemma $lemma_id,
+     * if $lang_id is empty, gets null
+     * 
+     * @param $lemma_id - lemma ID
+     * @return Array
+     */
+    public static function getList($lemma_id=NULL)
+    {     
+        $lemma = Lemma::find($lemma_id);
+        if (!$lemma) {
+            return;
+        }
+//        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $meanings = $lemma->meanings;
+        
+        $list = array();
+        foreach ($meanings as $row) {
+            $list[$row->id] = $row->getMultilangMeaningTextsStringLocale();
+        }
+        
+        return $list;         
+    }
+    
     /**
      * Gets total number of sentences for examples in Lemma show page
      *
