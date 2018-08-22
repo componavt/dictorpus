@@ -621,6 +621,14 @@ class LemmaController extends Controller
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
+    /**
+     * Saves links 1)text's word with lemma's meaning 
+     *             2)wordform with gramset and dialects
+     * 
+     * /dict/lemma/wordform/update?lemma_id=10603&text_id=1548&w_id=7&meaning_id=11660&gramset_id=34&dialects[]=44&dialects[]=34
+     * @param Request $request
+     * @return Null
+     */
     public function updateWordformFromText(Request $request)
     {
         $lemma_id = (int)$request->input('lemma_id');
@@ -635,8 +643,7 @@ class LemmaController extends Controller
         $text = Text::find($text_id);
         $word = Word::where('text_id',$text_id)
                         ->where('w_id',$w_id)->first();
-       
-        if ($lemma || !$text || !$word || !$word->sentence_id) {
+        if (!$lemma || !$text || !$word || !$word->sentence_id) {
             return;
         }
         
@@ -647,31 +654,41 @@ class LemmaController extends Controller
         if ($meaning_id) {
             $meaning = Meaning::find($meaning_id);
             if ($meaning) {
-                $relevance = 5;
-                $text->meanings()->detach($meaning_id,
-                        ['sentence_id'=>$word->sentence_id,
-                         'word_id'=>$word->id,
-                         'w_id'=>$w_id]); 
-                $text->meanings()->attach($meaning_id,
-                        ['sentence_id'=>$word->sentence_id,
-                         'word_id'=>$word->id,
-                         'w_id'=>$w_id,
-                         'relevance'=>$relevance]);
-            }
-        }
-        
-        if ($gramset_id || sizeof($dialects)) {
-            $wordform = Wordform::firstOrCreate(['wordform'=>$word->word]);
-            if (!sizeof($dialects)) {
-                    $lemma-> wordforms()->attach($wordform->id, 
-                            ['gramset_id'=>$gramset_id, 'dialect_id'=>NULL]);                
-            } else {
-                foreach ($dialects as $dialect_id) {
-                    $lemma-> wordforms()->attach($wordform->id, 
-                            ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                                    
+                DB::statement("DELETE FROM meaning_text WHERE text_id=$text_id "
+                        . "and w_id=$w_id");
+//                $text->meanings()->where('w_id',$w_id)->detach(); 
+                foreach ($lemma->meanings as $meaning) {
+                    if ($meaning->id == $meaning_id) {
+                        $relevance = 5;
+                    } else {
+                        $relevance = 0;
+                    }
+                    $text->meanings()->attach($meaning->id,
+                            ['sentence_id'=>$word->sentence_id,
+                             'word_id'=>$word->id,
+                             'w_id'=>$w_id,
+                             'relevance'=>$relevance]);
                 }
             }
         }
+        
+        $wordform = Wordform::firstOrCreate(['wordform'=>$word->word]);
+        if (!sizeof($dialects)) {
+            $dialects[0] = NULL;
+        }
+        foreach ($dialects as $dialect_id) {
+            $query = "DELETE FROM lemma_wordform WHERE lemma_id=$lemma_id "
+                . "and wordform_id=".$wordform->id." and gramset_id=$gramset_id and dialect_id";
+            if (!$dialect_id) {
+//                $dialect_id=NULL;
+                $query .= " is NULL";
+            } else {
+                $query .= "=".(int)$dialect_id;
+            }
+            $lemma-> wordforms()->attach($wordform->id, 
+                    ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                                    
+        }
+print 'done';            
     }   
     
     /**

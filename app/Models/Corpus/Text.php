@@ -92,6 +92,7 @@ class Text extends Model
     // Text __has_many__ Meanings
     public function meanings(){
         $builder = $this->belongsToMany(Meaning::class)
+//                 -> withPivot('w_id')
                  -> withPivot('relevance');
         return $builder;
     }
