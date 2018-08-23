@@ -542,4 +542,5 @@ class Meaning extends Model
     public static function countRelations(){
         return DB::table('meaning_relation')->count();
     }
+        
 }

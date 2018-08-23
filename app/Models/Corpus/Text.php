@@ -378,6 +378,39 @@ class Text extends Model
                 }
         }
     }
+    
+    /**
+     * Add link
+     * 
+     * @param Int $lemma - Lemma ID
+     * @param Int $meaning_id - Meaning ID
+     * @param Int $w_id - ID of word in the text
+     * @param Word $word - Word Object
+     */
+    public function addLinkWithMeaning($lemma, $meaning_id, $w_id, $word){
+        if (!$meaning_id) {
+            return;
+        }
+        $meaning = Meaning::find($meaning_id);
+        if (!$meaning) {
+            return;
+        }
+        DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->id
+                . " and w_id=$w_id");
+//                $text->meanings()->where('w_id',$w_id)->detach(); 
+        foreach ($lemma->meanings as $meaning) {
+            if ($meaning->id == $meaning_id) {
+                $relevance = 5;
+            } else {
+                $relevance = 0;
+            }
+            $this->meanings()->attach($meaning->id,
+                    ['sentence_id'=>$word->sentence_id,
+                     'word_id'=>$word->id, 'w_id'=>$w_id,
+                     'relevance'=>$relevance]);            
+        }
+    }
+    
 // select id from meanings where lemma_id in (SELECT id from lemmas where lemma like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
 // select id from meanings where lemma_id in (SELECT id from lemmas where lemma like 'myö' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like 'myö')));    
 
@@ -442,7 +475,7 @@ class Text extends Model
                                  ->wherePivot('relevance','>',0);
                 $word_class = '';
                 if ($meanings->count()) {
-                    $word_class = 'lemma-linked';
+                $word_class = 'lemma-linked';
                     $link_block = $word->addChild('div');
                     $link_block->addAttribute('class','links-to-lemmas');
                     $link_block->addAttribute('id','links_'.$word_id);
@@ -484,7 +517,7 @@ class Text extends Model
                     }
 
                 } elseif (User::checkAccess('corpus.edit')) {
-                    $word_class = 'call-add-wordform';
+                    $word_class .= 'lemma-linked call-add-wordform';
 /*                    $form = $link_block->addChild('form');
                     $select_lemma = $form->addChild('select',"\n");
                     $select_lemma->addAttribute('multiple','multiple');

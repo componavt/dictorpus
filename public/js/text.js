@@ -20,6 +20,9 @@ function addWordform(text_id, lang_id) {
         }
     }); 
     $(".call-add-wordform").click(function() {
+/*        if (!$(this).classList.contains('call-add-wordform')) {
+            return;
+        }*/
         w_id = $(this).attr('id');
         $("#modalAddWordform").modal('show');
         $.ajax({
@@ -78,8 +81,12 @@ function addWordform(text_id, lang_id) {
                   },
             type: 'GET',
             success: function(result){
-//alert(result);                
-/*                $(this).hide();*/
+                $("#modalAddWordform").modal('hide');
+                $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('has-checked');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
             }
         }); 
     });

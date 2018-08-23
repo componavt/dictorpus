@@ -41,7 +41,8 @@ class TextController extends Controller
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
-                                     'editExample', 'updateExamples', 'markupText',
+                                     'addExample', 'editExample', 'updateExamples', 
+                                     'markupText',
                                      'markupAllEmptyTextXML','markupAllTexts']]);
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
@@ -772,6 +773,7 @@ class TextController extends Controller
     }
     
 //select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
+/*
     public function tmpProcessOldLetters() {
         $lang_id=5;
         $words = Word::whereRaw("(word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%')"
@@ -806,7 +808,7 @@ print "<p>".$word->word;
         }
         
     }
-
+*/
     /*    public function tempStripSlashes()
     {
         $texts = Text::all();
