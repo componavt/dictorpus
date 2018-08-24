@@ -59,7 +59,9 @@ function addWordform(text_id, lang_id) {
         if (!$(this).hasClass('call-add-wordform')) {
             return;
         }
-        w_id = $(this).attr('id');
+        var w_id = $(this).attr('id');
+        var wordform = $(this).html();        
+
         $("#modalAddWordform").modal('show');
         $.ajax({
             url: '/corpus/text/sentence', 
@@ -67,6 +69,7 @@ function addWordform(text_id, lang_id) {
             type: 'GET',
             success: function(result){
                 $("#addWordformSentence").html(result);               
+                $("#choose-wordform").val(wordform);               
                 $("#choose-lemma")
                     .change(function () {
                         var lemma_id=$( "#choose-lemma option:selected" ).val();
@@ -92,6 +95,7 @@ function addWordform(text_id, lang_id) {
     });
     
     $("#save-wordform").click(function(){
+        var wordform = $( "#choose-wordform" ).val();
         var lemma_id = $( "#choose-lemma option:selected" ).val();
         var meaning_id = $( "#choose-meaning option:selected" ).val();
         var gramset_id = $( "#choose-gramset option:selected" ).val();
@@ -111,6 +115,7 @@ function addWordform(text_id, lang_id) {
             data: {text_id: text_id, 
                    w_id: w_id,
                    lemma_id: lemma_id, 
+                   wordform: wordform, 
                    meaning_id: meaning_id,
                    gramset_id: gramset_id,
                    dialects: dialects

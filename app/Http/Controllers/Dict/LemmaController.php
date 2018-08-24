@@ -652,8 +652,13 @@ class LemmaController extends Controller
         $gramset_id = $request->input('gramset_id'); 
         $dialects = (array)$request->input('dialects'); 
         
+        $wordform = $request->input('wordform'); 
+        if (!$wordform) {
+            $wordform = $word -> word;
+        }
+        
         $text->addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
-        $lemma->addWordformFromText($word, $gramset_id, $dialects);
+        $lemma->addWordformFromText($wordform, $gramset_id, $dialects);
         return 1;            
     }   
     

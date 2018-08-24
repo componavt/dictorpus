@@ -638,7 +638,7 @@ class Lemma extends Model
     /**
      * Add wordform found in the text with gramset_id and set of dialects
      * 
-     * @param Word $word 
+     * @param String $word 
      * @param Int $gramset_id
      * @param Array $dialects
      */
@@ -646,7 +646,7 @@ class Lemma extends Model
         if (!$this->pos || !$this->pos->isChangeable()) {
             return;
         }
-        $wordform = Wordform::firstOrCreate(['wordform'=>$word->word]);
+        $wordform = Wordform::firstOrCreate(['wordform'=>$word]);
         if (!sizeof($dialects)) {
             $dialects[0] = NULL;
         }
