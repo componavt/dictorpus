@@ -1,3 +1,39 @@
+function highlightSentences() {
+    $(".sentence").hover(function(){ // over
+            var trans_id = 'trans' + $(this).attr('id');
+            $("#"+trans_id).css('background','yellow');
+        },
+        function(){ // out
+            $(".trans_sentence").css('background','none');
+        }
+    );
+    
+    $(".trans_sentence").hover(function(){ // over
+            var text_id = $(this).attr('id').replace('transtext','text');
+            $("#"+text_id).css('background','#a9eef8');
+        },
+        function(){ // out
+            $(".sentence").css('background','none');
+        }
+    );    
+}
+
+function showLemmaLinked() {
+   $(".lemma-linked").click(function() {
+        var block_id = 'links_' + $(this).attr('id');
+        $(".links-to-lemmas").hide();
+        $("#"+block_id).show();
+    });
+        
+    $(document).mouseup(function (e){
+		var div = $(".links-to-lemmas");
+		if (!div.is(e.target)
+		    && div.has(e.target).length === 0) {
+			div.hide(); // скрываем его
+		}
+    });    
+}
+
 function addWordform(text_id, lang_id) {
     $(".select-lemma").select2({
         width: '100%',
@@ -20,9 +56,9 @@ function addWordform(text_id, lang_id) {
         }
     }); 
     $(".call-add-wordform").click(function() {
-/*        if (!$(this).classList.contains('call-add-wordform')) {
+        if (!$(this).hasClass('call-add-wordform')) {
             return;
-        }*/
+        }
         w_id = $(this).attr('id');
         $("#modalAddWordform").modal('show');
         $.ajax({
@@ -83,6 +119,18 @@ function addWordform(text_id, lang_id) {
             success: function(result){
                 $("#modalAddWordform").modal('hide');
                 $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('has-checked');
+                $("w[id="+w_id+"].has-checked").append('<div class="links-to-lemmas" id="links_'+w_id+'"></div>')
+                $.ajax({
+                    url: '/corpus/text/word/create_checked_block', 
+                    data: {text_id: text_id, 
+                           w_id: w_id,
+                           meaning_id: meaning_id,
+                          },
+                    type: 'GET',
+                    success: function(result){
+                        $("#links_"+ w_id).html(result);
+                    }
+                }); 
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);

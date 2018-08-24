@@ -726,19 +726,28 @@ class TextController extends Controller
         Text::updateExamples([$example_id=>5]);
         $str = '';
         if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
-            $meaning_id = $regs[1];
-            $meaning = Meaning::find($meaning_id);
-            if ($meaning) {
-                $locale = LaravelLocalization::getCurrentLocale();
-                $str = '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
-                     .'">'.$meaning->lemma->lemma.'<span> ('
-                     .$meaning->getMultilangMeaningTextsString($locale)
-                     .')</span></a></div>'
-                     .'<p class="text-example-edit"><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$regs[2].'/edit/example/'.$regs[3].'_'.$regs[4])
-                     .'" class="glyphicon glyphicon-pencil"></a>';
-            }
+            $str = Text::createWordCheckedBlock($regs[1],$regs[2],$regs[3],$regs[4]);
         }
         return $str;
+    }
+
+    /**
+     * /corpus/text/word/create_checked_block
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function getWordCheckedBlock(Request $request)
+    {
+        $meaning_id = (int)$request->input('meaning_id');
+        $text_id = (int)$request->input('text_id'); 
+        $w_id = (int)$request->input('w_id'); 
+        $word = Word::where('text_id',$text_id)
+                    ->where('w_id',$w_id)->first();
+        if (!$word || !$word->sentence_id) {
+            return;
+        }
+        return Text::createWordCheckedBlock($meaning_id, $text_id, $word->sentence_id, $w_id);
     }
 
     /**

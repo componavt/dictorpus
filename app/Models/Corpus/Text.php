@@ -475,7 +475,7 @@ class Text extends Model
                                  ->wherePivot('relevance','>',0);
                 $word_class = '';
                 if ($meanings->count()) {
-                $word_class = 'lemma-linked';
+                    $word_class = 'lemma-linked';
                     $link_block = $word->addChild('div');
                     $link_block->addAttribute('class','links-to-lemmas');
                     $link_block->addAttribute('id','links_'.$word_id);
@@ -492,7 +492,7 @@ class Text extends Model
                         $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
 
                         $locale = LaravelLocalization::getCurrentLocale();
-                        $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
+                        $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
                         if (!$has_checked_meaning && User::checkAccess('corpus.edit')) {
                             $add_link = $link_div->addChild('span');
                             $add_link->addAttribute('data-add',$meaning->id.'_'.$this->id.'_'.$sentence_id.'_'.$word_id);
@@ -515,15 +515,8 @@ class Text extends Model
                     } else {
                         $word_class .= ' not-checked';
                     }
-
                 } elseif (User::checkAccess('corpus.edit')) {
                     $word_class .= 'lemma-linked call-add-wordform';
-/*                    $form = $link_block->addChild('form');
-                    $select_lemma = $form->addChild('select',"\n");
-                    $select_lemma->addAttribute('multiple','multiple');
-                    $select_lemma->addAttribute('class','multiple-select-lemma');
-                    $select_lemma->addAttribute('name','lemma-choose['.$word_id.']');
-                    $select_lemma->addAttribute('id','lemma-choose-'.$word_id);*/
                 }
                 
                 if ($word_class) {
@@ -535,6 +528,23 @@ class Text extends Model
         return $sxe->asXML();
     }
 
+    public static function createWordCheckedBlock($meaning_id, $text_id, $sentence_id, $w_id) {
+            $meaning = Meaning::find($meaning_id);
+            if (!$meaning) {
+                return;
+            }
+            $locale = LaravelLocalization::getCurrentLocale();
+            $url = '/corpus/text/'.$text_id.'/edit/example/'.$sentence_id.'_'.$w_id;
+            $str = '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
+                 .'">'.$meaning->lemma->lemma.'<span> ('
+                 .$meaning->getMultilangMeaningTextsString($locale)
+                 .')</span></a></div>'
+                 .'<p class="text-example-edit"><a href="'
+                 .LaravelLocalization::localizeURL($url)
+                 .'" class="glyphicon glyphicon-pencil"></a>';
+            return $str;
+    }
+    
     public function sentences($word=''){
         $sentences = [];
         

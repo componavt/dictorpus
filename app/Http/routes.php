@@ -75,6 +75,7 @@ Route::group(
         Route::get('corpus/text/limited_new_list', 'Corpus\TextController@limitedNewList');
         Route::get('corpus/text/full_updated_list', 'Corpus\TextController@fullUpdatedList');
         Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
+        Route::get('corpus/text/word/create_checked_block', 'Corpus\TextController@getWordCheckedBlock');
 
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
 
