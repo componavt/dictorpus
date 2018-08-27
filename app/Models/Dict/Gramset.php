@@ -187,6 +187,14 @@ class Gramset extends Model
         return $out;
     }
     
+    public static function getStringByID($gramset_id) {
+        $gramset = self::find($gramset_id);
+        if (!$gramset) {
+            return;
+        }
+        return $gramset->gramsetString();
+    }
+    
     /** Gets ordered list of gramsets for the part of speech and the language
      * 
      * @param int $pos_id

@@ -766,3 +766,6 @@ insert into parts_of_speech values (19,'Phrase', 'фразеологизм','PHR
 delete from revisions where revisionable_type like '%Event' and `key` like 'informant_id';
 
 insert into parts_of_speech values (20,'Predicative', 'предикатив','PRE',1);
+
+-- LEMMA - TEXT -----------------------------------------
+-- php artisan make:migration create_text_wordform_table

@@ -109,7 +109,7 @@ function addWordform(text_id, lang_id) {
             dialect = dialects_obj[i];
             dialects.push(dialects_obj[i].value);
         }
-//alert('/dict/lemma/wordform/update?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&w_id='+w_id+'&dialects='+dialects);        
+alert('/dict/lemma/wordform/update?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&w_id='+w_id+'&dialects='+dialects);        
         $.ajax({
             url: '/dict/lemma/wordform/update', 
             data: {text_id: text_id, 

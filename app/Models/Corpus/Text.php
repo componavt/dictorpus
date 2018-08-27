@@ -17,6 +17,7 @@ use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
@@ -100,7 +101,15 @@ class Text extends Model
     // Text __has_many__ Words
     public function words(){
         return $this->hasMany(Word::class);
-//        return = $this->belongsToMany(Word::class,'meaning_text');
+//        return $this->belongsToMany(Word::class,'meaning_text');
+    }
+
+    // Text __has_many__ Wordforms
+    public function wordforms(){
+//        return $this->hasMany(Wordform::class);
+        $builder = $this->belongsToMany(Wordform::class,'text_wordform')
+                 ->withPivot('w_id') -> withPivot('gramset_id');
+        return $builder;
     }
 
     /**
@@ -500,6 +509,18 @@ class Text extends Model
                             $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
                         }
                     }
+                    if ($has_checked_meaning) {
+                        $word_class .= ' has-checked';
+                        $wordform = $this->wordforms()->wherePivot('w_id',$word_id) -> first();
+                        if ($wordform) {
+                            $gramset_p = $link_block->addChild('p', Gramset::getStringByID($wordform->pivot->gramset_id));
+                            $gramset_p -> addAttribute('class','word_gramset');
+                        }
+                    } elseif ($meanings->count() > 1) {
+                        $word_class .= ' polysemy';                
+                    } else {
+                        $word_class .= ' not-checked';
+                    }
                     if (User::checkAccess('corpus.edit')) {
                         $button_edit_p = $link_block->addChild('p');
                         $button_edit_p->addAttribute('class','text-example-edit'); 
@@ -507,13 +528,6 @@ class Text extends Model
                         $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
                                                                                             $sentence_id.'_'.$word_id)); 
                         $button_edit->addAttribute('class','glyphicon glyphicon-pencil');
-                    }
-                    if ($has_checked_meaning) {
-                        $word_class .= ' has-checked';
-                    } elseif ($meanings->count() > 1) {
-                        $word_class .= ' polysemy';                
-                    } else {
-                        $word_class .= ' not-checked';
                     }
                 } elseif (User::checkAccess('corpus.edit')) {
                     $word_class .= 'lemma-linked call-add-wordform';

@@ -102,3 +102,8 @@ ol {
 .links-to-lemmas div:last-of-type {
     margin-bottom: 10px;
 }
+
+.word_gramset {
+    color: #c25a22;
+    font-style: italic;
+}

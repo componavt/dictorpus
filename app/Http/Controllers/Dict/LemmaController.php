@@ -658,7 +658,7 @@ class LemmaController extends Controller
         }
         
         $text->addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
-        $lemma->addWordformFromText($wordform, $gramset_id, $dialects);
+        $lemma->addWordformFromText($wordform, $gramset_id, $dialects, $text_id, $w_id);
         return 1;            
     }   
     

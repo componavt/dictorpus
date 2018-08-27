@@ -641,12 +641,18 @@ class Lemma extends Model
      * @param String $word 
      * @param Int $gramset_id
      * @param Array $dialects
+     * @param Int $text_id
+     * @param Int $w_id
      */
-    public function addWordformFromText($word, $gramset_id, $dialects) {
-        if (!$this->pos || !$this->pos->isChangeable()) {
+    public function addWordformFromText($word, $gramset_id, $dialects, $text_id, $w_id) {
+        if (!$word || !$this->pos || !$this->pos->isChangeable()) {
             return;
         }
         $wordform = Wordform::firstOrCreate(['wordform'=>$word]);
+        if ($gramset_id) {
+            $wordform->texts()->attach($text_id,['w_id'=>$w_id, 'gramset_id'=>$gramset_id]);
+        }
+        
         if (!sizeof($dialects)) {
             $dialects[0] = NULL;
         }
