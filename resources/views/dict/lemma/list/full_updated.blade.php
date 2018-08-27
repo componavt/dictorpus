@@ -19,7 +19,7 @@
                 <div class="time">{{$lemma->updated_at->formatLocalized("%H:%M")}}</div>
                 <div class="event">
                     <a href="{{ LaravelLocalization::localizeURL('/dict/lemma')}}/{{$lemma->id}}">{{$lemma->lemma}}</a> 
-                    ({{$lemma->user}})
+                    (@if (isset($lemma->user)){{$lemma->user}}@endif)
                 </div>
             </div> 
             @endforeach

@@ -14,7 +14,7 @@
                 <div class="time">{{$text->created_at->formatLocalized("%H:%M")}}</div>
                 <div class="event">
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text')}}/{{$text->id}}">{{$text->title}}</a> 
-                    ({{$text->user}})
+                    (@if (isset($text->user)){{$text->user}}@endif)
                 </div>
             </div> 
             @endforeach
