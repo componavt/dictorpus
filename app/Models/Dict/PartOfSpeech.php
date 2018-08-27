@@ -157,6 +157,13 @@ class PartOfSpeech extends Model
         
         return $pos_grouped;         
     }
+    
+    public function isChangeable() {
+        if ($this->gramsets()) {
+            return true;
+        } 
+        return false;            
+    }
         
 }
 

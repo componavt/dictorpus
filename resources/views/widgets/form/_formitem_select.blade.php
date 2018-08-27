@@ -2,7 +2,7 @@
 if(!isset($value)) 
     $value = null;
 if(!isset($values)) 
-    $values = array(); 
+    $values = []; 
 if(!isset($title)) 
     $title = null;
 

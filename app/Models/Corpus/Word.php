@@ -21,6 +21,13 @@ class Word extends Model
         return $this->belongsTo(Text::class);
     } 
     
+    // Word __has_many__ Meanings
+    public function meanings(){
+        $builder = $this->belongsToMany(Meaning::class)
+                 -> withPivot('relevance');
+        return $builder;
+    }
+
     /**
      * Changes obsolete letters to modern
      * If a parameter lang_id is given, then does the check need such a replacement

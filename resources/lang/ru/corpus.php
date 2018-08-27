@@ -10,6 +10,7 @@ return [
     |
     */
 
+    'add-wordform' => 'Добавить словоформу',
     'archive_krc' => 'ф/архив ИЯЛИ КарНЦ РАН',
     'birth_place' => 'место рождения',
     'birth_year' => 'г.р.',

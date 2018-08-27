@@ -10,6 +10,7 @@ return [
     |
     */
 
+    'add-wordform' => 'Add wordform',
     'archive_krc' => 'audio archive of ILLH, KarRC RAS',
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',

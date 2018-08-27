@@ -1,0 +1,147 @@
+function highlightSentences() {
+    $(".sentence").hover(function(){ // over
+            var trans_id = 'trans' + $(this).attr('id');
+            $("#"+trans_id).css('background','yellow');
+        },
+        function(){ // out
+            $(".trans_sentence").css('background','none');
+        }
+    );
+    
+    $(".trans_sentence").hover(function(){ // over
+            var text_id = $(this).attr('id').replace('transtext','text');
+            $("#"+text_id).css('background','#a9eef8');
+        },
+        function(){ // out
+            $(".sentence").css('background','none');
+        }
+    );    
+}
+
+function showLemmaLinked() {
+   $(".lemma-linked").click(function() {
+        var block_id = 'links_' + $(this).attr('id');
+        $(".links-to-lemmas").hide();
+        $("#"+block_id).show();
+    });
+        
+    $(document).mouseup(function (e){
+		var div = $(".links-to-lemmas");
+		if (!div.is(e.target)
+		    && div.has(e.target).length === 0) {
+			div.hide(); // скрываем его
+		}
+    });    
+}
+
+function addWordform(text_id, lang_id) {
+    $(".select-lemma").select2({
+        width: '100%',
+        ajax: {
+          url: "/dict/lemma/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: lang_id
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    }); 
+    $(".call-add-wordform").click(function() {
+        if (!$(this).hasClass('call-add-wordform')) {
+            return;
+        }
+        var w_id = $(this).attr('id');
+        var wordform = $(this).html();        
+
+        $("#modalAddWordform").modal('show');
+        $.ajax({
+            url: '/corpus/text/sentence', 
+            data: {text_id: text_id, w_id: w_id },
+            type: 'GET',
+            success: function(result){
+                $("#addWordformSentence").html(result);               
+                $("#choose-wordform").val(wordform);               
+                $("#choose-lemma")
+                    .change(function () {
+                        var lemma_id=$( "#choose-lemma option:selected" ).val();
+                        if (lemma_id != null) {
+                        $.ajax({
+                            url: '/dict/lemma/wordform/create', 
+                            data: {lemma_id: lemma_id, text_id: text_id },
+                            type: 'GET',
+                            success: function(result){
+                                $("#addWordformFields").html(result);               
+                            },
+                            error: function() {
+                                alert('ERROR');
+                            }
+                        }); 
+/*                        $("#"+div_name).load(url+selected_val);*/
+                        }
+                    })
+                    .change();    
+            }
+        }); 
+        
+    });
+    
+    $("#save-wordform").click(function(){
+        var wordform = $( "#choose-wordform" ).val();
+        var lemma_id = $( "#choose-lemma option:selected" ).val();
+        var meaning_id = $( "#choose-meaning option:selected" ).val();
+        var gramset_id = $( "#choose-gramset option:selected" ).val();
+//        var sentence_id = $("#addWordformSentence s").attr('id');
+        var w_id = $("#addWordformSentence .word-marked").attr('id');
+        var dialects_obj = $("input[name=choose-dialect]:checked");
+//alert(dialects_obj);        
+        var dialects = [];
+        var dialect;
+        for (i=0; i<dialects_obj.length; i++) {
+            dialect = dialects_obj[i];
+            dialects.push(dialects_obj[i].value);
+        }
+alert('/dict/lemma/wordform/update?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&w_id='+w_id+'&dialects='+dialects);        
+        $.ajax({
+            url: '/dict/lemma/wordform/update', 
+            data: {text_id: text_id, 
+                   w_id: w_id,
+                   lemma_id: lemma_id, 
+                   wordform: wordform, 
+                   meaning_id: meaning_id,
+                   gramset_id: gramset_id,
+                   dialects: dialects
+                  },
+            type: 'GET',
+            success: function(result){
+                $("#modalAddWordform").modal('hide');
+                $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('has-checked');
+                $("w[id="+w_id+"].has-checked").append('<div class="links-to-lemmas" id="links_'+w_id+'"></div>')
+                $.ajax({
+                    url: '/corpus/text/word/create_checked_block', 
+                    data: {text_id: text_id, 
+                           w_id: w_id,
+                           meaning_id: meaning_id,
+                          },
+                    type: 'GET',
+                    success: function(result){
+                        $("#links_"+ w_id).html(result);
+                    }
+                }); 
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        }); 
+    });
+    
+}

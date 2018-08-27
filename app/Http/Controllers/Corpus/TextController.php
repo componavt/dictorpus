@@ -41,7 +41,8 @@ class TextController extends Controller
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
-                                     'editExample', 'updateExamples', 'markupText',
+                                     'addExample', 'editExample', 'updateExamples', 
+                                     'markupText',
                                      'markupAllEmptyTextXML','markupAllTexts']]);
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
@@ -725,22 +726,63 @@ class TextController extends Controller
         Text::updateExamples([$example_id=>5]);
         $str = '';
         if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
-            $meaning_id = $regs[1];
-            $meaning = Meaning::find($meaning_id);
-            if ($meaning) {
-                $locale = LaravelLocalization::getCurrentLocale();
-                $str = '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
-                     .'">'.$meaning->lemma->lemma.'<span> ('
-                     .$meaning->getMultilangMeaningTextsString($locale)
-                     .')</span></a></div>'
-                     .'<p class="text-example-edit"><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$regs[2].'/edit/example/'.$regs[3].'_'.$regs[4])
-                     .'" class="glyphicon glyphicon-pencil"></a>';
-            }
+            $str = Text::createWordCheckedBlock($regs[1],$regs[2],$regs[3],$regs[4]);
         }
         return $str;
     }
 
+    /**
+     * /corpus/text/word/create_checked_block
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function getWordCheckedBlock(Request $request)
+    {
+        $meaning_id = (int)$request->input('meaning_id');
+        $text_id = (int)$request->input('text_id'); 
+        $w_id = (int)$request->input('w_id'); 
+        $word = Word::where('text_id',$text_id)
+                    ->where('w_id',$w_id)->first();
+        if (!$word || !$word->sentence_id) {
+            return;
+        }
+        return Text::createWordCheckedBlock($meaning_id, $text_id, $word->sentence_id, $w_id);
+    }
+
+    /**
+     * Shows the sentence with a highlighted word.
+     * Receives text ID and word ID (local number in the text),
+     * finds sentence in the text, parses xml
+     * 
+     * Called by ajax request
+     * /corpus/text/sentence?text_id=1548&w_id=4
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showWordInSentence(Request $request)
+    {
+        $text_id = (int)$request->input('text_id');
+        $w_id = (int)$request->input('w_id');
+        if (!$text_id || !$w_id) {
+            return;
+        }
+        
+        $word = Word::where('text_id',$text_id)
+                        ->where('w_id',$w_id)->first();
+       
+        if (!$word || !$word->sentence_id) {
+            return;
+        }
+        
+        $sentence = Text::extractSentence($text_id, $word->sentence_id, $w_id);            
+                                
+        return view('dict.lemma.show.example_sentence')
+                ->with(['sentence'=>$sentence,'relevance'=>'', 'count'=>'']);
+    }
+    
 //select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
+/*
     public function tmpProcessOldLetters() {
         $lang_id=5;
         $words = Word::whereRaw("(word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%')"
@@ -775,7 +817,7 @@ print "<p>".$word->word;
         }
         
     }
-
+*/
     /*    public function tempStripSlashes()
     {
         $texts = Text::all();

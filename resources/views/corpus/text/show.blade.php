@@ -7,9 +7,16 @@
 
 @section('headExtra')
     {!!Html::style('css/text.css')!!}
+    {!!Html::style('css/select2.min.css')!!}
 @stop
 
 @section('content')
+        @include('widgets.modal',['name'=>'modalAddWordform',
+                                  'title'=>trans('corpus.add-wordform'),
+                                  'submit_id' => 'save-wordform',
+                                  'submit_title' => trans('messages.save'),
+                                  'modal_view'=>'dict.lemma._form_create_wordform'])
+        
         <h1>{{ trans('navigation.texts') }}</h1>
         
         <p>
@@ -76,47 +83,22 @@
         @endif      
             </tr>
         </table>
+        
 @stop
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/meaning.js')!!}
+    {!!Html::script('js/select2.min.js')!!}
+    {!!Html::script('js/text.js')!!}
 @stop
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
+    highlightSentences();
     addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add/example')}}');
+    showLemmaLinked();
+    addWordform('{{$text->id}}','{{$text->lang_id}}');
     
-    $(".sentence").hover(function(){ // over
-            var trans_id = 'trans' + $(this).attr('id');
-            $("#"+trans_id).css('background','yellow');
-        },
-        function(){ // out
-            $(".trans_sentence").css('background','none');
-        }
-    );
-    
-    $(".trans_sentence").hover(function(){ // over
-            var text_id = $(this).attr('id').replace('transtext','text');
-            $("#"+text_id).css('background','#a9eef8');
-        },
-        function(){ // out
-            $(".sentence").css('background','none');
-        }
-    );
-    
-   $(".lemma-linked").click(function() {
-        var block_id = 'links_' + $(this).attr('id');
-        $(".links-to-lemmas").hide();
-        $("#"+block_id).show();
-    });
-    
-    $(document).mouseup(function (e){ // событие клика по веб-документу
-		var div = $(".links-to-lemmas"); // тут указываем ID элемента
-		if (!div.is(e.target) // если клик был не по нашему блоку
-		    && div.has(e.target).length === 0) { // и не по его дочерним элементам
-			div.hide(); // скрываем его
-		}
-	});    
 @stop
 

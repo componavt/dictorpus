@@ -5,6 +5,8 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\Models\Corpus\Text;
+
 class Wordform extends Model
 {
     /**
@@ -38,6 +40,12 @@ class Wordform extends Model
         $builder = $this->belongsToMany(Lemma::class,'lemma_wordform');
 //        $builder = $builder ->groupBy('lemma_id');
         $builder = $builder -> orderBy('lemma');
+        return $builder;
+    }
+
+    // Wordforms __has_many__ Texts
+    public function texts(){
+        $builder = $this->belongsToMany(Text::class,'text_wordform');
         return $builder;
     }
 

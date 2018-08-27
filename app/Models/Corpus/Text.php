@@ -17,6 +17,7 @@ use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
@@ -92,6 +93,7 @@ class Text extends Model
     // Text __has_many__ Meanings
     public function meanings(){
         $builder = $this->belongsToMany(Meaning::class)
+//                 -> withPivot('w_id')
                  -> withPivot('relevance');
         return $builder;
     }
@@ -99,7 +101,15 @@ class Text extends Model
     // Text __has_many__ Words
     public function words(){
         return $this->hasMany(Word::class);
-//        return = $this->belongsToMany(Word::class,'meaning_text');
+//        return $this->belongsToMany(Word::class,'meaning_text');
+    }
+
+    // Text __has_many__ Wordforms
+    public function wordforms(){
+//        return $this->hasMany(Wordform::class);
+        $builder = $this->belongsToMany(Wordform::class,'text_wordform')
+                 ->withPivot('w_id') -> withPivot('gramset_id');
+        return $builder;
     }
 
     /**
@@ -377,6 +387,39 @@ class Text extends Model
                 }
         }
     }
+    
+    /**
+     * Add link
+     * 
+     * @param Int $lemma - Lemma ID
+     * @param Int $meaning_id - Meaning ID
+     * @param Int $w_id - ID of word in the text
+     * @param Word $word - Word Object
+     */
+    public function addLinkWithMeaning($lemma, $meaning_id, $w_id, $word){
+        if (!$meaning_id) {
+            return;
+        }
+        $meaning = Meaning::find($meaning_id);
+        if (!$meaning) {
+            return;
+        }
+        DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->id
+                . " and w_id=$w_id");
+//                $text->meanings()->where('w_id',$w_id)->detach(); 
+        foreach ($lemma->meanings as $meaning) {
+            if ($meaning->id == $meaning_id) {
+                $relevance = 5;
+            } else {
+                $relevance = 0;
+            }
+            $this->meanings()->attach($meaning->id,
+                    ['sentence_id'=>$word->sentence_id,
+                     'word_id'=>$word->id, 'w_id'=>$w_id,
+                     'relevance'=>$relevance]);            
+        }
+    }
+    
 // select id from meanings where lemma_id in (SELECT id from lemmas where lemma like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
 // select id from meanings where lemma_id in (SELECT id from lemmas where lemma like 'myö' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like 'myö')));    
 
@@ -433,15 +476,18 @@ class Text extends Model
 //dd($sentence);       
             foreach ($sentence->children() as $word) {
                 $word_id = (int)$word->attributes()->id;
-
+                if (!$word_id) {
+                    continue;
+                }
                 $meanings = $this->meanings()->wherePivot('text_id',$text_id)
                                  ->wherePivot('w_id',$word_id)
                                  ->wherePivot('relevance','>',0);
+                $word_class = '';
                 if ($meanings->count()) {
+                    $word_class = 'lemma-linked';
                     $link_block = $word->addChild('div');
                     $link_block->addAttribute('class','links-to-lemmas');
                     $link_block->addAttribute('id','links_'.$word_id);
-
                     $has_checked_meaning = false;
                     foreach ($meanings->get() as $meaning) {
                         $lemma = $meaning->lemma;
@@ -455,13 +501,25 @@ class Text extends Model
                         $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
 
                         $locale = LaravelLocalization::getCurrentLocale();
-                        $meaning_text = $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
+                        $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
                         if (!$has_checked_meaning && User::checkAccess('corpus.edit')) {
                             $add_link = $link_div->addChild('span');
                             $add_link->addAttribute('data-add',$meaning->id.'_'.$this->id.'_'.$sentence_id.'_'.$word_id);
                             $add_link->addAttribute('class','fa fa-plus choose-meaning'); //  fa-lg 
                             $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
                         }
+                    }
+                    if ($has_checked_meaning) {
+                        $word_class .= ' has-checked';
+                        $wordform = $this->wordforms()->wherePivot('w_id',$word_id) -> first();
+                        if ($wordform) {
+                            $gramset_p = $link_block->addChild('p', Gramset::getStringByID($wordform->pivot->gramset_id));
+                            $gramset_p -> addAttribute('class','word_gramset');
+                        }
+                    } elseif ($meanings->count() > 1) {
+                        $word_class .= ' polysemy';                
+                    } else {
+                        $word_class .= ' not-checked';
                     }
                     if (User::checkAccess('corpus.edit')) {
                         $button_edit_p = $link_block->addChild('p');
@@ -470,18 +528,13 @@ class Text extends Model
                         $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
                                                                                             $sentence_id.'_'.$word_id)); 
                         $button_edit->addAttribute('class','glyphicon glyphicon-pencil');
-        //                $button = $button_edit->addChild('i');
-        //                $button->addAttribute('class','fa-pencil'); 
-        //                $button->addAttribute('class','fa fa-pencil fa-lg'); 
                     }
-                    $class = 'lemma-linked';
-                    if ($has_checked_meaning) {
-                        $class .= ' has-checked';
-                    } elseif ($meanings->count() > 1) {
-                        $class .= ' polysemy';                
-                    } 
-                    $word->addAttribute('class',$class);
-
+                } elseif (User::checkAccess('corpus.edit')) {
+                    $word_class .= 'lemma-linked call-add-wordform';
+                }
+                
+                if ($word_class) {
+                    $word->addAttribute('class',$word_class);
                 }
             }
         }
@@ -489,6 +542,23 @@ class Text extends Model
         return $sxe->asXML();
     }
 
+    public static function createWordCheckedBlock($meaning_id, $text_id, $sentence_id, $w_id) {
+            $meaning = Meaning::find($meaning_id);
+            if (!$meaning) {
+                return;
+            }
+            $locale = LaravelLocalization::getCurrentLocale();
+            $url = '/corpus/text/'.$text_id.'/edit/example/'.$sentence_id.'_'.$w_id;
+            $str = '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
+                 .'">'.$meaning->lemma->lemma.'<span> ('
+                 .$meaning->getMultilangMeaningTextsString($locale)
+                 .')</span></a></div>'
+                 .'<p class="text-example-edit"><a href="'
+                 .LaravelLocalization::localizeURL($url)
+                 .'" class="glyphicon glyphicon-pencil"></a>';
+            return $str;
+    }
+    
     public function sentences($word=''){
         $sentences = [];
         
@@ -564,7 +634,7 @@ class Text extends Model
                                 'relevance' => $relevance]; 
                 return $sentence;
             } else {
-                dd("!s: meaning_id=".$this->id.' and text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
+                dd('!text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
             }
     }
 
@@ -580,7 +650,7 @@ class Text extends Model
             $sentence_id = (int)$regs[2];
             $w_id = (int)$regs[3];
         
-            $sentence = Text::extractSentence($text_id, $sentence_id, $w_id);            
+            $sentence = self::extractSentence($text_id, $sentence_id, $w_id);            
 
             $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
                                -> where('text_id',$text_id)

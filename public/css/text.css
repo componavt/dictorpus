@@ -12,10 +12,13 @@ s {
     background: #fefea6;
 }
 
-.lemma-linked {
-    color: #337ab7;
+.lemma-linked,
+.call-add-wordform {
     cursor:pointer;
-/*    text-decoration: underline;*/
+}
+
+.lemma-linked.not-checked {
+    color: #337ab7;
 }
 
 .lemma-linked.has-checked {
@@ -27,7 +30,7 @@ s {
 }
 
 .links-to-lemmas {
-    background: #dcf7f8;
+    background: #ccc;
     color: black;
     display: none;
     left: 0;
@@ -41,6 +44,11 @@ s {
 
 .has-checked .links-to-lemmas {
     background: #a6f4bc;
+}
+
+.not-checked .links-to-lemmas,
+.polysemy .links-to-lemmas {
+    background: #dcf7f8;
 }
 /*
 .links-to-lemmas a {
@@ -101,4 +109,9 @@ ol {
 
 .corpus-text td:last-of-type {
     padding-left: 20px;
+}
+
+.word_gramset {
+    color: #c25a22;
+    font-style: italic;
 }
