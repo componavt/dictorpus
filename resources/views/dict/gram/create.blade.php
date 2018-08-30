@@ -1,11 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.grams') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.grams') }}</h1>
+@section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/gram/') }}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('gram.store'))) !!}

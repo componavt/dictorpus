@@ -6,7 +6,7 @@
 @stop
 
 @section('content')
-        <h2>{{ trans('auth.user_list') }}</h2>
+        <h1>{{ trans('auth.user_list') }}</h1>
               
         <table class="table">
         <thead>

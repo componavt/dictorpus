@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.stats') }}
 @endsection
 
@@ -8,11 +8,7 @@
     {!!Html::style('css/stats.css')!!}
 @stop
 
-@section('content')
-            <div class="panel panel-default">
-                <div class="panel-heading">{{trans('navigation.stats')}}</div>
-
-                <div class="panel-body">
+@section('body')
                     <table class="table-bordered stats-table">
                         <tr>
                             <th colspan='2'>{{trans('stats.stats_by_dict')}}</th>
@@ -85,6 +81,4 @@
                             <td>{{trans('stats.total_active_editors')}}</td><td>{{$total_active_editors}}</td>
                         </tr>
                     </table>
-                </div>
-            </div>
 @endsection

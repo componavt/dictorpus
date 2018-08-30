@@ -1,11 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('dump.dump_list') }}
 @endsection
 
-@section('content')
-        <h2>{{ trans('dump.dump_list') }}</h2>
+@section('body')
 	<p>{{ trans('dump.readme') }}</p>
         <table class="table">
         <thead>
@@ -25,6 +24,5 @@
             @endforeach
         </tbody>
         </table>
-    </div> 
 @endsection
 

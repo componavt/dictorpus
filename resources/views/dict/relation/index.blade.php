@@ -1,12 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('dict.relation_list') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('dict.relation_list') }}</h2>
-        
+@section('body')        
         <p style="text-align:right">
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/relation/create') }}">

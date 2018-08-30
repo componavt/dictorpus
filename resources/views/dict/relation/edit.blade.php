@@ -1,12 +1,11 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.relations') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.relations') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('dict.of_relation')}} "{{ $relation->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('dict.of_relation')}} <span class='imp'>"{{ $relation->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/relation/'.$relation->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($relation, array('method'=>'PUT', 'route' => array('relation.update', $relation->id))) !!}

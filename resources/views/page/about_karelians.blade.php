@@ -1,13 +1,9 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
-{{ trans('main.site_title') }}
+@section('page_title')
+{{ trans('navigation.about_karelians') }}
 @endsection
 
-@section('content')
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ trans('navigation.about_karelians') }}</div>
-
-                <div class="panel-body">{!! trans('blob.about_karelians') !!}</div>
-            </div>
+@section('page-title')
+{!! trans('blob.about_karelians') !!}
 @endsection

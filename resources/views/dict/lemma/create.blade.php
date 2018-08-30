@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.lemmas') }}
 @stop
 
@@ -9,8 +9,7 @@
     {!!Html::style('css/lemma.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.lemmas') }}</h1>
+@section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('lemma.store'))) !!}

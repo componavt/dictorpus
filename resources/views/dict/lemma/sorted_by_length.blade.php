@@ -1,13 +1,11 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('dict.list_long_lemmas') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('dict.list_long_lemmas') }}</h2>
-
+@section('body')
         {!! Form::open(array('url' => '/dict/lemma/sorted_by_length', 
                              'method' => 'get', 
                              'class' => 'form-inline')) 

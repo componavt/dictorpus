@@ -1,12 +1,11 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.recorders') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.recorders') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_recorder')}} "{{ $recorder->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_recorder')}} <span class='imp'>"{{ $recorder->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/recorder/'.$recorder->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($recorder, array('method'=>'PUT', 'route' => array('recorder.update', $recorder->id))) !!}

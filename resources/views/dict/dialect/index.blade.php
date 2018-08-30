@@ -6,7 +6,7 @@
 @stop
 
 @section('content')
-        <h2>{{ trans('dict.dialect_list') }}</h2>
+        <h1>{{ trans('dict.dialect_list') }}</h1>
             
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))

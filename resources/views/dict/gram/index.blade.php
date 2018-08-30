@@ -1,13 +1,11 @@
 <?php $short_name_column = 'name_short_'. LaravelLocalization::getCurrentLocale(); ?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
-{{ trans('dict.pos_list') }}
+@section('page_title')
+{{ trans('dict.gram_list') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('dict.gram_list') }}</h2>
-
+@section('body')
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/gram/create') }}">

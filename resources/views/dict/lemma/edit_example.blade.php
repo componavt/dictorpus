@@ -6,9 +6,9 @@
         '3'=>'relevance-3',
         ];
 ?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.lemmas') }}
 @stop
 
@@ -17,8 +17,7 @@
     {!!Html::style('css/text.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.lemmas') }}</h1>
+@section('body')
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
         <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>''])</p>
 

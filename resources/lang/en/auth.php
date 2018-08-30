@@ -17,6 +17,7 @@ return [
     'last_activity' => 'Last activity',
     'last_name' => 'Last name',
     'last_login' => 'last login',
+    'log_in' => 'Sign in',
     'login' => 'Login',
     'name' => 'name',
     
@@ -25,6 +26,7 @@ return [
     
     'password' => 'Password',
     'password_confirm' => 'Password confirmation',
+    'password_recovery' => 'Password recovery',
     'password_reset' => 'Password reset',
     'password_updated' => 'Password successfully updated.',
     
@@ -34,7 +36,8 @@ return [
     'perm.ref.edit'=> 'References editing',
     'permissions' => 'Permissions',
     
-    'register' => 'Register',
+    'registration' => 'Registration form',
+    'register' => 'Sign up',
     'remember' => 'Remember me',
     'reset' => 'Forgot your password?',
     

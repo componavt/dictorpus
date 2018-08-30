@@ -6,7 +6,7 @@
 @stop
 
 @section('content')
-        <h2>{{ trans('navigation.wordforms') }}</h2>
+        <h1>{{ trans('navigation.wordforms') }}</h1>
         
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/wordform/with_multiple_lemmas') }}">{{ trans('dict.wordforms_linked_many_lemmas') }}</a></p>
         

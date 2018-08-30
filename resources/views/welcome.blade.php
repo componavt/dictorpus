@@ -20,7 +20,7 @@
                             {!! trans('blob.welcome_text') !!}
                             </div>
                         </div>
-                        <div class="col-sm-5 right-col">
+                        <div class="col-sm-5">
                             <h2>{{trans('blob.corpus_means_title')}}</h2>
                             <div class="corpus_means_text">{{trans('blob.corpus_means_text')}}</div>
                             

@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.gramsets') }}
 @stop
 
@@ -8,8 +8,7 @@
     {!!Html::style('css/select2.min.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.gramsets') }}</h1>
+@section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/gramset/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('gramset.store'))) !!}

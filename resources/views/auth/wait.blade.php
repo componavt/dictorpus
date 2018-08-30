@@ -1,4 +1,4 @@
-@extends('layouts.master')
-@section('content')
-    <h3>{{ trans('auth.wait') }}</h3>
+@extends('layouts.page')
+@section('page_title')
+    {{ trans('auth.wait') }}
 @stop

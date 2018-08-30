@@ -6,7 +6,7 @@
 
 @section('content')
         <h1>{{ trans('navigation.wordforms') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('dict.of_wordform')}}: {{ $wordform->wordform}}</h2>
+        <h2>{{ trans('messages.editing')}} {{ trans('dict.of_wordform')}}: <span class='imp'>{{ $wordform->wordform}}</span></h2>
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/wordform/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
         </p>

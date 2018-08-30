@@ -55,6 +55,9 @@ Route::group(
         Route::get('/about_karelians', function () {
             return view('page.about_karelians');
         });
+        Route::get('/grants', function () {
+            return view('page.grants');
+        });
         Route::get('/permission', function () {
             return view('page.permission');
         });

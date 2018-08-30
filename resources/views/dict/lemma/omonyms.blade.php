@@ -1,13 +1,11 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.omonyms') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('navigation.omonyms') }}</h2>
-
+@section('body')
         @include('dict.lemma.search._omonyms_form',['url' => '/dict/lemma/omonyms']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>

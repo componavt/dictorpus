@@ -9,7 +9,7 @@
 @stop
 
 @section('content')
-        <h2>{{trans('dict.new_lemmas')}}</h2>
+        <h1>{{trans('dict.new_lemmas')}}</h1>
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_updated_list/')}}">{{trans('dict.last_updated_lemmas')}}</a></p>
         
         @foreach ($new_lemmas as $cr_date =>$lemmas)

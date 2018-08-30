@@ -164,10 +164,91 @@ h2 {
 .footer {
     background-color: #373737;
     color: #fff;
-    font-style: italic;
     margin-top: 35px;
     padding: 35px 0 100px;
-    text-align: center;
+}
+
+.footer-right-col {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding-left: 12%;
+}
+
+.developers {
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 20px;
+    min-height: 150px;
+    padding-left: 113px;
+    position: relative;
+}
+
+.developers:before {
+    background: #fefefe url(../images/krc-logo.png) 50% 32px no-repeat;
+    border-top: 2px solid #dbd8d8;
+    content: '';
+    height: 136px;
+    left: 0;
+    position: absolute;
+    top: -35px;
+    width: 98px;
+}
+
+.developers a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.license {
+    color: #d4d4d4;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 22px;
+}
+
+.license a {
+    color: #6d6d6d;
+    text-decoration: underline;
+}
+
+.copyright {
+    border-top: 2px solid #515151;
+    margin-top: 40px;
+    padding-top: 50px;
+}
+
+.copyright-b {
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0 auto;
+    max-width: 320px;
+    padding: 21px 0 0 158px;
+    position: relative;
+}
+
+.copyright-b:before {
+    background: url(../images/logo-bottom.png) 0 0 no-repeat;
+    content: '';
+    height: 77px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 141px;
+}
+
+.copy-left {
+    display: inline-block;
+    text-align: right;
+    margin: 0px;
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: “FlipH”;
 }
 
 .corpus-text td:first-child{
@@ -304,4 +385,23 @@ h2 {
 
 .with-first-big-letter::first-letter {
     text-transform: uppercase;
+}
+
+.pagination > .active > a,
+.pagination > .active > a:focus,
+.pagination > .active > a:hover, 
+.pagination > .active > span, 
+.pagination > .active > span:focus, 
+.pagination > .active > span:hover {
+    background-color: #972d1a;
+    border-color: #972d1a;
+}
+
+.pagination > li > a, 
+.pagination > li > span {
+    color: #972d1a;
+}
+
+.imp {
+    color: #972d1a;
 }

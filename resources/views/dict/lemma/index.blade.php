@@ -11,7 +11,7 @@
 
 @section('content')
         
-        <h2>{{ trans('navigation.lemmas') }}</h2>
+        <h1>{{ trans('navigation.lemmas') }}</h1>
 
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('dict.list_long_lemmas') }}</a> 

@@ -11,7 +11,7 @@
 @stop
 
 @section('content')
-        <h2>{{ trans('corpus.text_list') }}</h2>
+        <h1>{{ trans('corpus.text_list') }}</h1>
         
         <p style="text-align:right">
         @if (User::checkAccess('corpus.edit'))

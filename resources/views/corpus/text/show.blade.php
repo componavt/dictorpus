@@ -1,7 +1,6 @@
+@extends('layouts.page')
 
-@extends('layouts.master')
-
-@section('title')
+@section('page_title')
 {{ trans('navigation.texts') }}
 @stop
 
@@ -10,14 +9,12 @@
     {!!Html::style('css/select2.min.css')!!}
 @stop
 
-@section('content')
+@section('body')
         @include('widgets.modal',['name'=>'modalAddWordform',
                                   'title'=>trans('corpus.add-wordform'),
                                   'submit_id' => 'save-wordform',
                                   'submit_title' => trans('messages.save'),
                                   'modal_view'=>'dict.lemma._form_create_wordform'])
-        
-        <h1>{{ trans('navigation.texts') }}</h1>
         
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>

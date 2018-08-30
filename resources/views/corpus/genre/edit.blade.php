@@ -1,12 +1,11 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.genres') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.genres') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_genre')}} "{{ $genre->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_genre')}} <span class='imp'>"{{ $genre->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/genre/'.$genre->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($genre, array('method'=>'PUT', 'route' => array('genre.update', $genre->id))) !!}

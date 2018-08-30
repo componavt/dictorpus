@@ -57,7 +57,7 @@ return [
     'of_gram' => 'грамматического признака',
     'of_gramset' => 'набора',
     'of_lang' => 'языка',
-    'of_lemma' => 'лемму',
+    'of_lemma' => 'леммы',
     'of_meaning' => 'значения',
     'of_relation' => 'отношения',
     'of_wordform' => 'словоформы',

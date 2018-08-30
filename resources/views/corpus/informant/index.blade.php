@@ -6,7 +6,7 @@
 @stop
 
 @section('content')
-        <h2>{{ trans('corpus.informant_list') }}</h2>
+        <h1>{{ trans('corpus.informant_list') }}</h1>
         
         <p>
         @if (User::checkAccess('corpus.edit'))

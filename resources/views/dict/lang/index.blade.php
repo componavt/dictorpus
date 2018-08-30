@@ -1,12 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('dict.list_languages') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('dict.list_languages') }}</h2>
-        
+@section('body')        
         <p style="text-align:right">
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/lang/create') }}">

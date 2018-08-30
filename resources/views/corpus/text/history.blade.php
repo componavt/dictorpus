@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.texts') }}
 @stop
 
@@ -9,9 +9,7 @@
     {!!Html::style('css/history.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.texts') }}</h1>
-
+@section('body')
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a>
             | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>

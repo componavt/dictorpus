@@ -1,13 +1,11 @@
 <?php $column_title = 'name_'. LaravelLocalization::getCurrentLocale(); ?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.gramsets') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.gramsets') }}</h1>
-        
+@section('body')
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/gramset/') }}">{{ trans('messages.back_to_list') }}</a>
             {{ \Request::route()->getName() }}

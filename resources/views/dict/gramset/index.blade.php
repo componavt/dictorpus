@@ -5,7 +5,7 @@
 @stop
 
 @section('content')
-        <h2>{{ trans('navigation.gramsets') }}</h2>
+        <h1>{{ trans('navigation.gramsets') }}</h1>
         
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))

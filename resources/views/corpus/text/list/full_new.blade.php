@@ -1,11 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
-{{ trans('navigation.texts') }}
+@section('page-title')
+{{ trans('corpus.new_texts') }}
 @stop
 
-@section('content')
-        <h2>{{trans('corpus.new_texts')}}</h2>
+@section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/')}}">{{trans('corpus.last_updated_texts')}}</a></p>
         @foreach ($new_texts as $cr_date =>$texts)
         <p class="date">{{$cr_date}}</p>

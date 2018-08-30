@@ -1,12 +1,12 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.relations') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('navigation.relations') }}</h2>
+@section('body')
+        <h1>{{ trans('navigation.relations') }}</h1>
 
         @include('dict.lemma.search._relation_form',['url' => '/dict/lemma/relation']) 
 

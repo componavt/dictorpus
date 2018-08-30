@@ -1,13 +1,11 @@
 <?php $list_count = $limit_num * ($page-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('corpus.district_list') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('corpus.district_list') }}</h2>
-        
+@section('body')
         <p>
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/district/create') }}">

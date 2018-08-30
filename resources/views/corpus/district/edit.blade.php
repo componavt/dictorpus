@@ -1,12 +1,11 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.districts') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.districts') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_district')}} "{{ $district->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_district')}} <span class='imp'>"{{ $district->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/district/'.$district->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($district, array('method'=>'PUT', 'route' => array('district.update', $district->id))) !!}

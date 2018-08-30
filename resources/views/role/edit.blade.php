@@ -1,12 +1,11 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.roles') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.roles') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('auth.of_role')}} "{{ $role->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('auth.of_role')}} <span class='imp'>"{{ $role->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/role/'.$role->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($role, array('method'=>'PUT', 'route' => array('role.update', $role->id))) !!}

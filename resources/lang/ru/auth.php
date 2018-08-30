@@ -17,6 +17,7 @@ return [
     'last_activity' => 'Последняя активность',
     'last_login' => 'Последний вход',
     'last_name' => 'Фамилия',
+    'log_in' => 'Войти в VepKar',
     'login' => 'Войти',
     
     'of_role' => 'роли',
@@ -24,6 +25,7 @@ return [
     
     'password' => 'Пароль',
     'password_confirm' => 'Подтверждение пароля',
+    'password_recovery' => 'Восстановление пароля',
     'password_reset' => 'Сброс пароля',
     'password_updated' => 'Пароль успешно обновлён.',
     
@@ -33,6 +35,7 @@ return [
     'perm.edit.ref'=> 'Редакция справочников',
     'permissions' => 'Права',
     
+    'registration' => 'Регистрация',
     'register' => 'Зарегистрироваться',
     'remember' => 'Запомнить меня',
     'reset' => 'Забыли пароль?',

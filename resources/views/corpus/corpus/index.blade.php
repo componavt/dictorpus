@@ -1,13 +1,11 @@
 <?php $list_count = 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('corpus.corpus_list') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('corpus.corpus_list') }}</h2>
-        
+@section('body')        
         <p style="text-align:right">
         @if (User::checkAccess('ref.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/corpus/create') }}">

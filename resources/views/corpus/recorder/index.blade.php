@@ -1,13 +1,11 @@
 <?php $list_count = 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('corpus.recorder_list') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('corpus.recorder_list') }}</h2>
-        
+@section('body')
         <p style="text-align:right">
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/recorder/create') }}">

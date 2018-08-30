@@ -1,7 +1,7 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.phrases') }}
 @stop
 
@@ -9,15 +9,12 @@
     {!!Html::style('css/lemma.css')!!}
 @stop
 
-@section('content')
-        
-        <h2>{{ trans('navigation.phrases') }}</h2>
-
+@section('body')
         <p>
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">
         @endif
-            {{ trans('messages.create_new_f') }}
+            {{ trans('messages.create_new_m') }}
         @if (User::checkAccess('dict.edit'))
             </a>
         @endif

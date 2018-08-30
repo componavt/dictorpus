@@ -21,6 +21,7 @@ return [
     'dumps' => 'Dumps',
     'genres' => 'genres',
     'gramsets' => 'Sets of grammatical attributes',
+    'grants' => 'Grants',
     'grams' => 'Grammemes',
     'home' => 'Home',
     'informants' => 'Informants',

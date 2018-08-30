@@ -1,16 +1,14 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
-{{ trans('navigation.lemmas') }}
+@section('page_title')
+{{ trans('navigation.omonyms') }}
 @stop
 
 @section('headExtra')
     {!!Html::style('css/history.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.lemmas') }}</h1>
-
+@section('body')
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}">{{ trans('messages.back_to_show') }}</a>
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.back_to_list') }}</a>

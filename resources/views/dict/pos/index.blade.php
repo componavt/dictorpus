@@ -1,12 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('dict.pos_list') }}
 @stop
 
-@section('content')
-        <h2>{{ trans('dict.pos_list') }}</h2>
-        
+@section('body')
         <table class="table">
         <tbody>
             <tr>

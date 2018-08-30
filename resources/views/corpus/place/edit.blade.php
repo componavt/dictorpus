@@ -1,12 +1,11 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.places') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.places') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_place')}} "{{ $place->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_place')}} <span class='imp'>"{{ $place->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/place/'.$place->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($place, array('method'=>'PUT', 'route' => array('place.update', $place->id))) !!}

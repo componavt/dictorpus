@@ -1,11 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.places') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.places') }}</h1>
+@section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/place/') }}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('place.store'))) !!}

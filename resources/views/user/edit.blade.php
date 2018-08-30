@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.users') }}
 @stop
 
@@ -8,9 +8,8 @@
     {!!Html::style('css/select2.min.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.users') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('auth.of_user')}} "{{ $user->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('auth.of_user')}} <span class='imp'>"{{ $user->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/user/'.$user->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($user, array('method'=>'PUT', 'route' => array('user.update', $user->id))) !!}

@@ -1,9 +1,9 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.about_veps') }}
+{{ trans('navigation.grants') }}
 @endsection
 
 @section('body')
-{!! trans('blob.about_veps') !!}
+{!! trans('blob.grants') !!}
 @endsection

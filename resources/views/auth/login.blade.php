@@ -5,8 +5,13 @@
  * Date: 25.01.16
  * Time: 4:38
  */?>
-@extends('layouts.master')
-@section('content')
+@extends('layouts.page')
+
+@section('page_title')
+{{ trans('auth.log_in') }}
+@stop
+
+@section('body')
     {!! Form::open(['class'=>'small-form']) !!}
         @include('widgets.form._formitem_text', ['name' => 'email', 'title' => 'Email', 
                                                  'attributes' => ['placeholder' => trans('auth.your_email') ]])

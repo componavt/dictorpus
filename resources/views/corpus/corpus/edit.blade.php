@@ -1,12 +1,11 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.corpuses') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.corpuses') }}</h1>
-        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_corpus')}} "{{ $corpus->name}}"</h2>
+@section('body')
+        <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_corpus')}} <span class='imp'>"{{ $corpus->name}}"</span></h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/corpus/'.$corpus->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($corpus, array('method'=>'PUT', 'route' => array('corpus.update', $corpus->id))) !!}
