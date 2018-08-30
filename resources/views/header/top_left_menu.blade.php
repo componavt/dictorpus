@@ -1,10 +1,10 @@
                 <ul class="nav navbar-nav">
-                    <li class="dropdown">
+                    <li class="dropdown" id='menu1'>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                            {{ trans('navigation.home') }} <span class="caret"></span>
                         </a>
                         
-                        <ul class="dropdown-menu" role="menu">
+                        <ul class="dropdown-menu" role="menu" id='menu1-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.about_project') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
@@ -14,12 +14,12 @@
                         </ul>
                     </li>
                     
-                    <li class="dropdown">
+                    <li class="dropdown" id='menu2'>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             {{ trans('navigation.dictionary') }} <span class="caret"></span>
                         </a>
 
-                        <ul class="dropdown-menu" role="menu">
+                        <ul class="dropdown-menu" role="menu" id='menu2-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}">{{ trans('navigation.lemmas') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/wordform') }}">{{ trans('navigation.wordforms') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/relation') }}">{{ trans('navigation.relations') }}</a></li>
@@ -28,12 +28,12 @@
                         </ul>
                     </li>
                     
-                    <li class="dropdown">
+                    <li class="dropdown" id='menu3'>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             {{ trans('navigation.references') }} <span class="caret"></span>
                         </a>
 
-                        <ul class="dropdown-menu" role="menu">
+                        <ul class="dropdown-menu" role="menu" id='menu3-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lang') }}">{{ trans('navigation.langs') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/dialect') }}">{{ trans('navigation.dialects') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/pos') }}">{{ trans('navigation.parts_of_speech') }}</a></li>
@@ -44,12 +44,12 @@
                         </ul>
                     </li>
 
-                    <li class="dropdown">
+                    <li class="dropdown" id='menu4'>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             {{ trans('navigation.corpus') }} <span class="caret"></span>
                         </a>
 
-                        <ul class="dropdown-menu" role="menu">
+                        <ul class="dropdown-menu" role="menu" id='menu4-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}">{{ trans('navigation.texts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/informant') }}">{{ trans('navigation.informants') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/place') }}">{{ trans('navigation.places') }}</a></li>

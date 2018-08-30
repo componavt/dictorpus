@@ -19,6 +19,12 @@ return [
                   . '<li><a href="/docs/permission_bible_karelian.pdf">The permission of the Bible Translation Institute to use publications published by the Institute on Livvik and North Karelian dialects of the Karelian language for the VepKar project</a></li><br>'
                   . '<li><a href="/docs/permission_periodika.pdf">Permission of the Periodica publishing house to use the materials of the Karelian newspaper Oma Mua, the Vep newspaper Kodima, the almanac Taival in Karelian and the Verez tullei almanac in the Vepsian language for use in the VepKar project</a></li>'
                   . '</ul>',
+    'corpus_means_title' => 'What is "the language corpus"',
+    'corpus_means_text' => 'The corpus is an information and reference system based on the collection of texts in electronic form.
+                       Using the electronic dictionary, included in the corpus, you can quickly search and process texts.
+                       It is these corpora and dictionaries that we develop in the framework of the VepKar project.',
+    'in_numbers_title' => 'VepKar in numbers',
+    'in_numbers_text' => 'The Open corpus of Veps and Karelian languages was opened on July 24, 2016. At the moment in the corpus:',
     'welcome_text' =>  '<p>Welcome to the Open corpus of Veps and Karelian languages (VepKar),
                         containing dictionaries and corpora of Baltic-Finnic languages of Karelia peoples.</p>
 

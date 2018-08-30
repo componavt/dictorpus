@@ -1,10 +1,13 @@
         <h2>{{trans('dict.last_updated_lemmas')}}</h2>
-        <ol>
         @foreach ($last_updated_lemmas as $lemma)
-        <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma')}}/{{$lemma->id}}">{{$lemma->lemma}}</a> 
-            (@if (isset($lemma->user)){{$lemma->user}},@endif
-            <span class="datetime">{{$lemma->updated_at->formatLocalized(trans('main.datetime_format'))}}</span>)
-        </li> 
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma')}}/{{$lemma->id}}">
+                <span>{{$lemma->lemma}}</span></a> 
+            <span class="datetime">
+                (@if (isset($lemma->user)){{$lemma->user}},@endif
+                {{$lemma->updated_at->format('d.m.Y, H:i')}})
+            </span>
+        </p> 
         @endforeach
-        </ol>
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_updated_list/')}}">{{trans('main.see_full_list')}}</a></p>
+        <p class="full-list">
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_updated_list/')}}">{{trans('main.see_all_lemmas')}}</a>
+        </p>

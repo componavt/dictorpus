@@ -7,29 +7,37 @@
 
 @section('content')
             <div class="panel panel-default">
-                <div class="panel-heading">{{ trans('navigation.about_project') }}</div>
-
                 <div class="panel-body">
-                    {!! trans('blob.welcome_text',[
-                        'total_dialects'=>$total_dialects,
-                        'total_lemmas'=>$total_lemmas,
-                        'lemmas' => $lemmas_choice,
-                        'texts' => $texts_choice,
-                        'total_texts'=>$total_texts]) !!}
                     <div class="row">
-                        <div class="col-sm-6">
-                            <div id="last-updated-lemmas" class="block-list">
-                            </div>
-
-                            <div id="last-updated-texts" class="block-list">
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-7">
+                            <h1>{{ trans('navigation.about_project') }} VepKar</h1>
                             @include('widgets.youtube',
                                     ['width' => '100%',
                                      'height' => '270',
                                      'video' => 'VDYq7yA8ByA'
                                     ])
+                            <div class="text-page">        
+                            {!! trans('blob.welcome_text') !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-5 right-col">
+                            <h2>{{trans('blob.corpus_means_title')}}</h2>
+                            <div class="corpus_means_text">{{trans('blob.corpus_means_text')}}</div>
+                            
+                            <div class="in_numbers">
+                                <h2>{{trans('blob.in_numbers_title')}}</h2>
+                                {!!trans('blob.in_numbers_text',[
+                                        'total_dialects'=>$total_dialects,
+                                        'total_lemmas'=>$total_lemmas,
+                                        'lemmas' => $lemmas_choice,
+                                        'texts' => $texts_choice,
+                                        'total_texts'=>$total_texts])!!}
+                            </div>
+                            <div id="last-updated-lemmas" class="block-list">
+                            </div>
+
+                            <div id="last-updated-texts" class="block-list">
+                            </div>
                         </div>
                     </div>
                 </div>

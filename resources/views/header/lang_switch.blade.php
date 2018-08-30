@@ -2,7 +2,8 @@
                         @if ($localeCode != LaravelLocalization::getCurrentLocale())
                         <li>
                             <a rel="alternate" hreflang="{{$localeCode}}" href="{{LaravelLocalization::getLocalizedURL($localeCode) }}">
-                                {{ $properties['native'] }}
+                            <span class="lang-sm lang-lbl" lang="{{$localeCode}}"></span>
+                                {{-- $properties['native'] --}}
                             </a>
                         </li>
                         @endif

@@ -1,0 +1,22 @@
+.btn {
+    border-radius: 0;
+}
+
+.btn-primary {
+    font-size: 16px;
+    line-height: 16px;
+    text-transform: uppercase;
+}
+
+.btn-primary,
+.btn-primary:active,
+.btn-primary:hover,
+.btn-primary:active:hover,
+.btn-primary:focus {
+    background-color: #ef3928;
+    border-color: #ef3928;
+}
+
+.fa-btn {
+    margin-right: 6px;
+}

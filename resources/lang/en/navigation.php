@@ -11,7 +11,7 @@ return [
     */
 
     'about_karelians' => 'Karelians',
-    'about_project' => 'About',
+    'about_project' => 'About project',
     'about_veps' => 'Veps',
     'corpus' => 'Corpus',
     'corpuses' => 'Corpuses',

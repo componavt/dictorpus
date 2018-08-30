@@ -13,6 +13,8 @@ return [
     'datetime_format' => '%d %B %Y в %H:%M',
     'date_format' => '%d %B %Y',
     'krc' => 'КарНЦ РАН',
+    'see_all_lemmas' => 'Все леммы',
+    'see_all_texts' => 'Все тексты',
     'see_full_list' => 'Полный список',
     'site_title' => 'Открытый корпус вепсского и карельского языков',
     'site_abbr'  => 'ВепКар',

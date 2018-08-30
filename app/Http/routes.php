@@ -32,7 +32,7 @@ Route::group(
         // Вызов страницы авторизации
         Route::get('login', 'AuthController@login');
         // Пользователь заполнил форму авторизации и отправил
-        Route::post('login', 'AuthController@loginProcess');
+        Route::post('login', 'AuthController@loginProcess')->name('login');
         // Выход пользователя из системы
         Route::get('logout', 'AuthController@logoutuser');
         // Пользователь забыл пароль и запросил сброс пароля. Это начало процесса - 
