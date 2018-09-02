@@ -17,8 +17,8 @@ return [
     'last_activity' => 'Last activity',
     'last_name' => 'Last name',
     'last_login' => 'last login',
-    'log_in' => 'Sign in',
-    'login' => 'Login',
+    'log_in' => 'Sign in VepKar',
+    'login' => 'Sign in',
     'name' => 'name',
     
     'of_role' => 'of role',

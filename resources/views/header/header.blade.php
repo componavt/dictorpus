@@ -1,6 +1,6 @@
         <header id="header">
             <div class="logo">
-                <a href="/"><img src="/images/logo.ru.png"></a>
+                <a href="/"><img src="/images/logo.{{LaravelLocalization::getCurrentLocale()}}.png"></a>
             </div>
             
 <!-- Authentication Links -->            

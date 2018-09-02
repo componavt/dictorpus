@@ -13,6 +13,7 @@ return [
     'datetime_format' => '%d %B %Y в %H:%M',
     'date_format' => '%d %B %Y',
     'krc' => 'КарНЦ РАН',
+    'registr_link' => 'Зарегистрироваться<br>на VepKar',
     'see_all_lemmas' => 'Все леммы',
     'see_all_texts' => 'Все тексты',
     'see_full_list' => 'Полный список',

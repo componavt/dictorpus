@@ -766,51 +766,42 @@ class Text extends Model
             $history->what_created = trans('history.text_accusative');
         }
  
-        $transtext_history = $this->transtext->revisionHistory->filter(function ($item) {
-                            return $item['key'] != 'text_xml';
-                        });
-        foreach ($transtext_history as $history) {
-                $history->what_created = trans('history.transtext_accusative');
-                $fieldName = $history->fieldName();
-                $history->field_name = trans('history.'.$fieldName.'_accusative')
-                        . ' '. trans('history.transtext_genetiv');
-            }
-            $all_history = $all_history -> merge($transtext_history);
-        
-        $event_history = $this->event->revisionHistory->filter(function ($item) {
-                            return $item['key'] != 'text_xml';
-                        });
-        foreach ($event_history as $history) {
-                $fieldName = $history->fieldName();
-                $history->field_name = trans('history.'.$fieldName.'_accusative')
-                        . ' '. trans('history.event_genetiv');
-            }
-            $all_history = $all_history -> merge($event_history);
-        
-        $source_history = $this->source->revisionHistory->filter(function ($item) {
-                            return $item['key'] != 'text_xml';
-                        });
-        foreach ($source_history as $history) {
-                $fieldName = $history->fieldName();
-                $history->field_name = trans('history.'.$fieldName.'_accusative')
-                        . ' '. trans('history.source_genetiv');
-            }
-            $all_history = $all_history -> merge($source_history);
-        
-/*        foreach ($this->transtext as $meaning) {
-            foreach($meaning->meaningTexts as $meaning_text) {
-               foreach ($meaning_text->revisionHistory as $history) {
-                   $lang = $meaning_text->lang->name;
-                   $fieldName = $history->fieldName();
-                   $history->field_name = trans('history.'.$fieldName.'_accusative'). ' '
-                           . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
-                           . " ($lang)";
-               }
-               $all_history = $all_history -> merge($meaning_text->revisionHistory);
-            }
+        if ($this->transtext) {
+            $transtext_history = $this->transtext->revisionHistory->filter(function ($item) {
+                                return $item['key'] != 'text_xml';
+                            });
+            foreach ($transtext_history as $history) {
+                    $history->what_created = trans('history.transtext_accusative');
+                    $fieldName = $history->fieldName();
+                    $history->field_name = trans('history.'.$fieldName.'_accusative')
+                            . ' '. trans('history.transtext_genetiv');
+                }
+                $all_history = $all_history -> merge($transtext_history);
         }
- * 
- */
+        
+        if ($this->event) {
+            $event_history = $this->event->revisionHistory->filter(function ($item) {
+                                return $item['key'] != 'text_xml';
+                            });
+            foreach ($event_history as $history) {
+                    $fieldName = $history->fieldName();
+                    $history->field_name = trans('history.'.$fieldName.'_accusative')
+                            . ' '. trans('history.event_genetiv');
+                }
+                $all_history = $all_history -> merge($event_history);
+        }
+        
+        if ($this->source) {
+            $source_history = $this->source->revisionHistory->filter(function ($item) {
+                                return $item['key'] != 'text_xml';
+                            });
+            foreach ($source_history as $history) {
+                    $fieldName = $history->fieldName();
+                    $history->field_name = trans('history.'.$fieldName.'_accusative')
+                            . ' '. trans('history.source_genetiv');
+                }
+                $all_history = $all_history -> merge($source_history);
+        }
          
         $all_history = $all_history->sortByDesc('id')
                       ->groupBy(function ($item, $key) {

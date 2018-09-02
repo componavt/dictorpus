@@ -13,6 +13,7 @@ return [
     'datetime_format' => '%B %d, %Y in %H:%M',
     'date_format' => '%B %d, %Y',
     'krc' => 'KarRC RAS',
+    'registr_link' => 'Sign up',
     'see_all_lemmas' => 'All lemmas',
     'see_all_texts' => 'All texts',
     'see_full_list' => 'Full list',

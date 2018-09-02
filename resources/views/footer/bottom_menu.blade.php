@@ -4,7 +4,7 @@
                         <p><a href="{{ LaravelLocalization::localizeURL('/about_veps') }}"><span>{{ trans('navigation.about_veps') }}</span></a></p>
                         <p><a href="{{ LaravelLocalization::localizeURL('/about_karelians') }}"><span>{{ trans('navigation.about_karelians') }}</span></a></p>
                         <p><a href="{{ LaravelLocalization::localizeURL('/stats') }}"><span>{{ trans('navigation.stats') }}</span></a></p>
-                        <p><a href="http://dictorpus.krc.karelia.ru/dumps"><span>{{ trans('navigation.dumps') }}</span></a></p>
+                        <p><a href="http://dictorpus.krc.karelia.ru/{{$locale}}/dumps"><span>{{ trans('navigation.dumps') }}</span></a></p>
                         <p><a href="{{ LaravelLocalization::localizeURL('/permission') }}"><span>{{ trans('navigation.permission') }}</span></a></p>
                         <p><a href="{{ LaravelLocalization::localizeURL('/grants') }}"><span>{{ trans('navigation.grants') }}</span></a></p>
                     </div>

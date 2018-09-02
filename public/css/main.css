@@ -20,6 +20,7 @@ body {
 }
 
 section a,
+section a:active,
 section a:hover {
     color: #ef3928;
     text-decoration: underline;
@@ -44,7 +45,7 @@ section a:hover {
 }
 
 .user-registr-link {
-    color: #d5d5d5;
+    color: #222222;
     font-size: 13px;
     line-height: 16px;
     text-decoration: underline;

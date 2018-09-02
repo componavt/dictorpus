@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use LaravelLocalization;
 
 use App\Models\User;
 use App\Models\Corpus\Informant;
@@ -36,14 +37,15 @@ class HomeController extends Controller
     public function index()
     {
         $limit = 3;
+        $locale = LaravelLocalization::getCurrentLocale();
         $total_lemmas = Lemma::count();
         $total_texts = Text::count();
         $total_dialects = Dialect::count();
-        $lemmas_choice = \Lang::choice('blob.choice_articles',$total_lemmas, [], 'ru');
+        $lemmas_choice = \Lang::choice('blob.choice_articles',$total_lemmas, [], $locale);
 //        $lemmas_choice = \Lang::choice('blob.choice_articles',substr($total_lemmas,-1,2), [], 'ru');
 //        $total_texts = 1322;
 //dd(substr($total_texts,-1,3));        
-        $texts_choice = \Lang::choice('blob.choice_texts',$total_texts, [], 'ru');
+        $texts_choice = \Lang::choice('blob.choice_texts',$total_texts, [], $locale);
 //        $texts_choice = trans_choice('blob.choice_texts',substr($total_texts,-1,2), [], 'ru');
         
         return view('welcome')

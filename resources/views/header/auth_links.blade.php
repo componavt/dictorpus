@@ -26,7 +26,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <a class="user-registr-link" href="/register"><span>Зарегистрироваться<br>на VepKar</span></a>
+                                    <a class="user-registr-link" href="/register">{!!trans('main.registr_link')!!}</span></a>
                                 </div>
                                 <div class="col-sm-6 user-enter-submit">
                                     <label><input type="checkbox" hidden><span></span></label>
