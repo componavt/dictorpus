@@ -1,10 +1,10 @@
 <div class='footer'>
     <div class="container">
         <div class="row">
-            <div class="col-sm-7">
+            <div class="col-md-7">
 @include('footer.bottom_menu')
             </div>
-            <div class="col-sm-5 footer-right-col">
+            <div class="col-md-5 footer-right-col">
                 <div class="developers">
                     {!! trans('blob.developers') !!}
                 </div>

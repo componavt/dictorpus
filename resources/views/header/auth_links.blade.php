@@ -1,5 +1,5 @@
-                        <li class="dropdown">
                     @if ($user=Sentinel::check())
+                        <li class="dropdown">
                             <?php $user = User::find($user->id);?>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ $user->name }} ({{ $user->rolesNames() }})<span class="caret"></span>
@@ -12,31 +12,25 @@
                                 @endif
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('navigation.logout') }}</a></li>
                             </ul>
+                        </li>
                     @else
-                        <div class="user-enter">
                         {!! Form::open(['method'=>'POST', 'route'=>'login']) !!}
-                            <div class="row">
-                                <div class="col-sm-6">
+                            <div class="user-enter-input">
                             @include('widgets.form._formitem_text', ['name' => 'email', 
                                                                      'attributes' => ['placeholder' => trans('auth.your_email') ]])
-                                </div>
-                                <div class="col-sm-6">
                             @include('widgets.form._formitem_password', ['name' => 'password', 'placeholder' => trans('auth.password') ])
-                                </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-6">
+                            <div class="user-registr-submit">
+                                <div class="user-registr-col">
                                     <a class="user-registr-link" href="/register">{!!trans('main.registr_link')!!}</span></a>
                                 </div>
-                                <div class="col-sm-6 user-enter-submit">
+                                <div class="remember-me">
                                     <label><input type="checkbox" hidden><span></span></label>
                                     <span class="user-enter-remember-text">{{trans('auth.remember')}}</span>
-                                    <!--label for="remember"><input name="remember" type="checkbox" hidden><span></span>
-                                    {{trans('auth.remember')}}</label-->
+                                </div>
+                                <div class="user-enter-submit">
                                     @include('widgets.form._formitem_btn_submit', ['title' => trans('auth.login')])
                                 </div>
                             </div>
                         {!! Form::close() !!}
-                        </div>
                     @endif
-                        </li>

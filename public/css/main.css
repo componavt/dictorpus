@@ -26,15 +26,26 @@ section a:hover {
     text-decoration: underline;
 }
 
-#header {
+/*#header {
     align-items: center;
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
-}
+}*/
 
 .logo img {
     padding: 30px 20px 30px 0;
+}
+
+.user-enter-input,
+.user-registr-submit {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user-enter-input  > div,
+.user-registr-submit  > div {
+    width: 100%;
 }
 
 .user-enter label {
@@ -42,6 +53,10 @@ section a:hover {
     font-style: italic;
     font-weight: normal;
     line-height: 16px;
+}
+
+.user-registr-col {
+    padding-bottom: 10px;
 }
 
 .user-registr-link {
@@ -56,10 +71,17 @@ section a:hover {
 }
 
 .user-enter-submit {
-    align-items:  start;
+    align-items:  flex-start;
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
+}
+
+.remember-me {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
 }
 
 .user-enter-remember-text {
@@ -67,7 +89,8 @@ section a:hover {
     font-size: 12px;
     font-style: italic;
     line-height: 12px;
-    margin-top: 3px;
+    margin-top: -7px;
+    max-width: 100px;
     padding: 0 10px 0 0;
 }
 
@@ -182,8 +205,9 @@ h2 {
     font-size: 15px;
     font-weight: bold;
     line-height: 20px;
+    max-width: 350px;
     min-height: 150px;
-    padding-left: 113px;
+    padding: 0 0 20px 113px;
     position: relative;
 }
 
@@ -208,6 +232,7 @@ h2 {
     font-size: 15px;
     font-style: italic;
     line-height: 22px;
+    max-width: 350px;
 }
 
 .license a {
@@ -405,4 +430,103 @@ h2 {
 
 .imp {
     color: #972d1a;
+}
+
+@media screen and (max-width: 395px) {    
+    .logo img {
+        height: auto;
+        padding: 30px 0;
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 400px) {    
+    .user-enter-input > div {
+        width: 49%;
+    }
+    .user-enter-input > div:first-child {
+        margin-right: 2%;
+    }
+    .user-registr-submit .user-registr-col {
+        margin-right: 2%;
+        width: 45%;
+    }
+    .user-registr-submit .remember-me {
+        width: 33%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 20%;
+    }
+    .user-registr-submit .user-enter-submit .form-group,
+    .user-registr-submit .user-enter-submit .form-group input{
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 450px) {    
+    .user-registr-submit .user-registr-col {
+        margin-right: 2%;
+        width: 49%;
+    }
+    .user-registr-submit .remember-me {
+        width: 31%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 18%;
+    }
+}
+/* sm */
+@media screen and (min-width: 576px) and (max-width: 767px) {    
+}
+/* md */
+@media screen and (max-width: 991px) {
+    .user-enter {
+        padding-bottom: 30px;
+    }
+    .nav > li > a {
+        padding: 10px 15px;
+    }
+    
+    .navbar-default .navbar-nav > li > .dropdown-toggle {
+        font-size: 16px;
+    }    
+    .navbar-right {
+        margin-right: 0;
+    }  
+    .caret {
+        border-top: 13px dashed;
+        border-right: 8px solid transparent;
+        border-left: 8px solid transparent;
+    }    
+}
+@media screen and (min-width: 992px) {
+    .user-enter {
+        padding-top: 70px;
+    }
+}
+@media screen and (max-width: 1199px) {
+    .developers {
+        font-size: 14px;
+        line-height: 18px;
+    }
+}/*
+@media screen and (min-width: 768px) and (max-width: 991px) {    
+    .user-registr-submit .remember-me {
+        width: 31%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 18%;
+    }
+}*/
+/* lg */
+@media screen and (min-width: 992px) and (max-width: 1199px) {    
+    .user-registr-submit .remember-me {
+        width: 31%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 18%;
+    }
+}
+/* xl */
+@media screen and (min-width: 1200px){
 }
