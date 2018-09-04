@@ -5,6 +5,10 @@
 {{ trans('dict.dialect_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('dict.dialect_list') }}</h1>
             
@@ -22,7 +26,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
-    <table class="table-bordered table-wide">
+    <table class="table-bordered table-wide rwd-table">
         <thead>
             <tr>
                 <th>{{ trans('messages.sequence_number') }}</th>
@@ -40,24 +44,24 @@
         <tbody>
             @foreach($dialects as $dialect)
             <tr>
-                <td>{{$dialect->sequence_number}}</td>
-                <td>{{$dialect->lang->name}}</td>
-                <td>{{$dialect->name_en}}</td>
-                <td>{{$dialect->name_ru}}</td>
-                <td>{{$dialect->code}}</td>
-                <td style='text-align:right'>
+                <td data-th="{{ trans('messages.sequence_number') }}">{{$dialect->sequence_number}}</td>
+                <td data-th="{{ trans('dict.lang') }}">{{$dialect->lang->name}}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$dialect->name_en}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$dialect->name_ru}}</td>
+                <td data-th="{{ trans('dict.code') }}">{{$dialect->code}}</td>
+                <td data-th="{{ trans('dict.wordforms') }}" style='text-align:right'>
                     <a href='{{ LaravelLocalization::localizeURL('/dict/wordform?search_dialect='.$dialect->id) }}'>
                         {{$dialect->wordforms()->count()}}
                     </a>
                 </td>
-                <td style='text-align:right'>
+                <td data-th="{{ trans('navigation.texts') }}" style='text-align:right'>
                     <a href='{{ LaravelLocalization::localizeURL('/corpus/text?search_dialect='.$dialect->id) }}'>
                         {{$dialect->texts()->count()}}
                     </a>
                 </td>
 
                 @if (User::checkAccess('ref.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,

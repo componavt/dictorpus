@@ -4,6 +4,10 @@
 {{ trans('dict.list_languages') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('body')        
         <p style="text-align:right">
         @if (User::checkAccess('dict.edit'))
@@ -15,25 +19,25 @@
         @endif
         </p>
         
-        <table id="languages" class="table-striped table">
+        <table id="languages" class="table-striped table rwd-table">
         <thead>
             <tr>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('dict.lang_code') }}</th>
                 @if (User::checkAccess('dict.edit'))
-                <th></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
         <tbody>
             @foreach($languages as $language)
             <tr>
-                <td>{{$language->name_en}}</td>
-                <td>{{$language->name_ru}}</td>
-                <td>{{$language->code}}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$language->name_en}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$language->name_ru}}</td>
+                <td data-th="{{ trans('dict.lang_code') }}">{{$language->code}}</td>
                 @if (User::checkAccess('dict.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/dict/lang/'.$language->id.'/edit'])
                 </td>
                 @endif

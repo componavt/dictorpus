@@ -5,6 +5,10 @@
 {{ trans('corpus.place_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('corpus.place_list') }}</h1>
             
@@ -22,7 +26,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table-bordered table-wide">
+        <table class="table-bordered table-wide rwd-table">
         <thead>
             <tr>
                 <th>{{ trans('corpus.region') }}</th>
@@ -38,13 +42,13 @@
         <tbody>
             @foreach($places as $place)
             <tr>
-                <td>{{$place->region->name}}</td>
-                <td>
+                <td data-th="{{ trans('corpus.region') }}">{{$place->region->name}}</td>
+                <td data-th="{{ trans('corpus.district') }}">
                     @if ($place->district_id)
                         {{$place->district->name}}
                     @endif
                 </td>
-                <td>
+                <td data-th="{{ trans('corpus.title') }}">
                     @if ($place->name_en)
                     <b>{{ \App\Models\Dict\Lang::getNameByCode('en') }}:</b> {{ $place->name_en }}<br>
                     @endif
@@ -56,18 +60,18 @@
                     <b>{{ \App\Models\Dict\Lang::find($other_name->lang_id)->name }}:</b> {{ $other_name->name }}<br>
                     @endforeach
                 </td>
-                <td>
+                <td data-th="{{ trans('navigation.texts') }}">
                     @if($place->texts)
                         {{ $place->texts()->count() }}
                     @endif
                 </td>
-                <td>
+                <td data-th="{{ trans('navigation.informants') }}">
                     @if($place->informants)
                         {{ $place->informants()->count() }}
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,

@@ -4,6 +4,10 @@
 {{ trans('dict.pos_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('body')
         <table class="table">
         <tbody>

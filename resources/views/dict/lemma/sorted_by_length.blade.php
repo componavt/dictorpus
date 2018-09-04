@@ -5,6 +5,10 @@
 {{ trans('dict.list_long_lemmas') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('body')
         {!! Form::open(array('url' => '/dict/lemma/sorted_by_length', 
                              'method' => 'get', 
@@ -24,7 +28,7 @@
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
-        <table class="table-bordered table-wide table-striped">
+        <table class="table-bordered table-wide table-striped rwd-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -36,14 +40,14 @@
         <tbody>
             @foreach($lemmas as $lemma)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('dict.lemma') }}"><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
+                <td data-th="{{ trans('dict.lang') }}">
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
                     @endif
                 </td>
-                <td>
+                <td data-th="{{ trans('dict.lemma') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
                     @endif

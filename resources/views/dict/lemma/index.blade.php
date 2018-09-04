@@ -1,18 +1,16 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.lemmas') }}
 @stop
 
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
+    {!!Html::style('css/table.css')!!}
 @stop
 
-@section('content')
-        
-        <h1>{{ trans('navigation.lemmas') }}</h1>
-
+@section('body')        
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('dict.list_long_lemmas') }}</a> 
             |
@@ -31,7 +29,7 @@
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($numAll)
-        <table class="table-bordered table-wide table-striped">
+        <table class="table-bordered table-wide table-striped rwd-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -47,14 +45,14 @@
         </thead>
             @foreach($lemmas as $lemma)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td><a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('dict.lemma') }}"><a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
+                <td data-th="{{ trans('dict.lang') }}">
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
                     @endif
                 </td>
-                <td>
+                <td data-th="{{ trans('dict.pos') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
                         @if ($lemma->reflexive)
@@ -62,12 +60,12 @@
                         @endif
                     @endif
                 </td>
-                <td>
+                <td data-th="{{ trans('dict.interpretation') }}">
                     @foreach ($lemma->meanings as $meaning_obj) 
                         {{$meaning_obj->getMultilangMeaningTextsStringLocale()}}<br>
                     @endforeach
                 </td>
-                <td>
+                <td data-th="{{ trans('messages.examples') }}">
                     <?php $total_ex = $lemma->countExamples();?>
                     @if ($total_ex)
                         <?php $unchecked = $lemma->countUncheckedExamples();?>
@@ -84,7 +82,7 @@
                     {{$lemma->countExamples()}}
                 </td>
                 @if (User::checkAccess('dict.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', 
                              ['is_button'=>true, 
                               'without_text' => true,

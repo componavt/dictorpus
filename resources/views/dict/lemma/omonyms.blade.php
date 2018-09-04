@@ -5,13 +5,17 @@
 {{ trans('navigation.omonyms') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('body')
         @include('dict.lemma.search._omonyms_form',['url' => '/dict/lemma/omonyms']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
-        <table class="table-bordered table-wide table-striped">
+        <table class="table-bordered table-wide table-striped rwd-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -23,11 +27,11 @@
         </thead>
             @foreach($lemmas as $lemma)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{ $lemma->lang->name }}</td>
-                <td>{{ $lemma->pos->name }}</td>
-                <td><a href="/dict/lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('dict.lang') }}">{{ $lemma->lang->name }}</td>
+                <td data-th="{{ trans('dict.pos') }}">{{ $lemma->pos->name }}</td>
+                <td data-th="{{ trans('dict.lemma') }}"><a href="/dict/lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
+                <td data-th="{{ trans('dict.interpretation') }}">
                     @foreach ($lemma->meanings as $meaning_obj) 
                         {{$meaning_obj->getMultilangMeaningTextsString(LaravelLocalization::getCurrentLocale())}}<br>
                     @endforeach

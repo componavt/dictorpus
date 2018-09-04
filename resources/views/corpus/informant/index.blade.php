@@ -5,6 +5,10 @@
 {{ trans('corpus.informant_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('content')
         <h1>{{ trans('corpus.informant_list') }}</h1>
         
@@ -22,7 +26,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table-bordered table-wide">
+        <table class="table-bordered table-wide rwd-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -39,22 +43,22 @@
         <tbody>
             @foreach($informants as $informant)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{$informant->name_en}}</td>
-                <td>{{$informant->name_ru}}</td>
-                <td>{{$informant->birth_date}}</td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$informant->name_en}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$informant->name_ru}}</td>
+                <td data-th="{{ trans('corpus.birth_year') }}">{{$informant->birth_date}}</td>
+                <td data-th="{{ trans('corpus.birth_place') }}">
                     @if ($informant->birth_place)
                         {{$informant->birth_place->placeString()}}
                     @endif
                 </td>
-                <td>
+                <td data-th="{{ trans('navigation.texts') }}">
                    @if($informant->texts())
                          {{ $informant->texts()->count() }} 
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,

@@ -5,6 +5,10 @@
 {{ trans('corpus.district_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('body')
         <p>
         @if (User::checkAccess('corpus.edit'))
@@ -48,7 +52,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table">
+        <table class="table rwd-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -57,27 +61,25 @@
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('navigation.places') }}</th>
                 @if (User::checkAccess('corpus.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
         <tbody>
             @foreach($districts as $district)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{$district->region->name}}</td>
-                <td>{{$district->name_en}}</td>
-                <td>{{$district->name_ru}}</td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('corpus.region') }}">{{$district->region->name}}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$district->name_en}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$district->name_ru}}</td>
+                <td data-th="{{ trans('navigation.places') }}">
                     @if($district->places)
                         {{ $district->places()->count() }}
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/district/'.$district->id.'/edit'])
-                 </td>
-                <td>
                     @include('widgets.form._button_delete', ['is_button'=>true, $route = 'district.destroy', 'id' => $district->id])
                 </td>
                 @endif

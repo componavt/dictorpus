@@ -8,6 +8,7 @@
 @section('headExtra')
     {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/text.css')!!}
+    {!!Html::style('css/table.css')!!}
 @stop
 
 @section('content')
@@ -27,7 +28,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table-bordered table-wide">
+        <table class="table-bordered table-wide rwd-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -47,9 +48,9 @@
         <tbody>
             @foreach($texts as $text)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{$text->lang->name}}</td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('dict.lang') }}">{{$text->lang->name}}</td>
+                <td data-th="{{ trans('dict.dialect') }}">
                     @if($text->dialects)
                         @foreach ($text->dialects as $dialect)
                         {{$dialect->name}}<br>
@@ -57,16 +58,16 @@
                         
                     @endif
                 </td>
-                <td>{{$text->corpus->name}}</td>
-                <td><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</td>
-                <td>
+                <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
+                <td data-th="{{ trans('corpus.title') }}"><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</td>
+                <td data-th="{{ trans('messages.translation') }}">
                     @if ($text->transtext)
                     {{$text->transtext->title}}
                     @endif
                 </td>
                 
                 @if ($url_args['search_word'])
-                <td>
+                <td data-th="{{ trans('corpus.sentences') }}">
                     @foreach ($text->sentences($url_args['search_word']) as $sentence_id => $sentence)
                     <ol start="{{$sentence_id}}">
                         <li>@include('corpus.text.show_sentence',['count'=>$sentence_id])</li>
@@ -76,7 +77,7 @@
                 @endif
                 
                 @if (User::checkAccess('corpus.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,

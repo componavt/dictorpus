@@ -1,12 +1,14 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.gramsets') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('navigation.gramsets') }}</h1>
-        
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
+@section('body')       
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/gramset/create') }}{{$args_by_get}}">
@@ -23,7 +25,7 @@
 
         @if ($gramsets && $numAll)
             {!! $gramsets->appends($url_args)->render() !!}
-        <table class="table-bordered table-wide">
+        <table class="table-bordered table-wide rwd-table">
         <thead>
             <tr>
                 <th>{{ trans('messages.sequence_number') }}</th>              
@@ -41,9 +43,9 @@
         <tbody>
             @foreach($gramsets as $key=>$gramset)
             <tr>
-                <td>{{$gramset->sequence_number}}</td>
+                <td data-th="{{ trans('messages.sequence_number') }}">{{$gramset->sequence_number}}</td>
                 @foreach ($gram_fields as $field)
-                <td>
+                <td data-th="{{ trans('dict.'.$field) }}">
                     @if($gramset->{'gram_id_'.$field} && $gramset->{'gram'.ucfirst($field)})
                         {{$gramset->{'gram'.ucfirst($field)}->name_short}}
                     @endif
@@ -51,7 +53,7 @@
                 @endforeach
 
                 @if (User::checkAccess('ref.edit'))
-                <td>
+                <td data-th="{{ trans('dict.lemmas') }}">
                   <?php $count=sizeof($gramset->lemmas($url_args['search_pos'],$url_args['search_lang'])->groupBy('lemma_id')->get()); ?>
                   @if ($count)
                     <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get_for_out}}&search_gramset={{$gramset->id}}">
@@ -62,11 +64,11 @@
                   @endif
                 </td>
 
-                <td>
+                <td data-th="{{ trans('dict.wordforms') }}">
                   {{ $gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count() }}
                 </td>
                 
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
                                                            'is_button' => true,
                                                            'url_args' => $url_args,

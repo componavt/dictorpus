@@ -5,6 +5,10 @@
 {{ trans('corpus.genre_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('body')
         <p style="text-align:right">
         @if (User::checkAccess('corpus.edit'))
@@ -43,26 +47,24 @@
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
         <tbody>
             @foreach($genres as $genre)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{$genre->name_en}}</td>
-                <td>{{$genre->name_ru}}</td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$genre->name_en}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$genre->name_ru}}</td>
+                <td data-th="{{ trans('navigation.texts') }}">
                     @if($genre->texts)
                         {{ $genre->texts()->count() }}
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/genre/'.$genre->id.'/edit'])
-                 </td>
-                <td>
                     @include('widgets.form._button_delete', ['is_button'=>true, $route = 'genre.destroy', 'id' => $genre->id])
                 </td>
                 @endif

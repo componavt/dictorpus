@@ -5,6 +5,10 @@
 {{ trans('corpus.region_list') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
 @section('body')
         <p style="text-align:right">
         @if (User::checkAccess('corpus.edit'))
@@ -35,7 +39,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table-striped table-wide">
+        <table class="table-striped table-wide rwd-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -43,26 +47,24 @@
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('navigation.places') }}</th>
                 @if (User::checkAccess('corpus.edit'))
-                <th colspan="2"></th>
+                <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
         </thead>
         <tbody>
             @foreach($regions as $region)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{$region->name_en}}</td>
-                <td>{{$region->name_ru}}</td>
-                <td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$region->name_en}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$region->name_ru}}</td>
+                <td data-th="{{ trans('navigation.places') }}">
                     @if($region->places)
                         {{ $region->places()->count() }}
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
-                <td>
+                <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/region/'.$region->id.'/edit'])
-                 </td>
-                <td>
                     @include('widgets.form._button_delete', ['is_button'=>true, $route = 'region.destroy', 'id' => $region->id])
                 </td>
                 @endif
