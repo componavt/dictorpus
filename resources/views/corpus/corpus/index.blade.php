@@ -39,7 +39,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table table-striped rwd-table">
+        <table class="table table-striped rwd-table wide-md">
         <thead>
             <tr>
                 <th>No</th>
@@ -64,8 +64,17 @@
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/corpus/'.$corpus->id.'/edit'])
-                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'corpus.destroy', 'id' => $corpus->id])
+                    @include('widgets.form._button_edit', 
+                             ['is_button'=>true, 
+                              'without_text' => true,
+                              'route' => '/corpus/corpus/'.$corpus->id.'/edit',
+                             ])
+                    @include('widgets.form._button_delete', 
+                             ['is_button'=>true, 
+                              'without_text' => true,
+                              'route' => 'corpus.destroy', 
+                              'id' => $corpus->id,
+                             ])
                 </td>
                 @endif
             </tr>

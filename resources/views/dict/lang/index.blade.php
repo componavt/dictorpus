@@ -19,7 +19,7 @@
         @endif
         </p>
         
-        <table id="languages" class="table-striped table rwd-table">
+        <table id="languages" class="table-striped table rwd-table wide-md">
         <thead>
             <tr>
                 <th>{{ trans('messages.in_english') }}</th>

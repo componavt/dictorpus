@@ -4,10 +4,9 @@
   ******************************************/
 function changeWidthDropDownMenu() {
     $(".dropdown").click(function(){
-  var e = $(this);
-        if ($(this).hasClass('open')) {
+/*        if ($(this).hasClass('open')) {
             return;
-        }
+        }*/
         var id = $(this).attr("id");
         var width = $(this).width();
         $("#"+id+"-sub").width(width-1);

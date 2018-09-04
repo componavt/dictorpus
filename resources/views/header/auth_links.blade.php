@@ -13,7 +13,7 @@
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('navigation.logout') }}</a></li>
                             </ul>
                         </li>
-                    @else
+                    @elseif (!isset($without_enter_form) || !$without_enter_form)
                         {!! Form::open(['method'=>'POST', 'route'=>'login']) !!}
                             <div class="user-enter-input">
                             @include('widgets.form._formitem_text', ['name' => 'email', 

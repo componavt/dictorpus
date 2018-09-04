@@ -5,15 +5,17 @@
 {{ trans('navigation.relations') }}
 @stop
 
-@section('body')
-        <h1>{{ trans('navigation.relations') }}</h1>
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
 
+@section('body')
         @include('dict.lemma.search._relation_form',['url' => '/dict/lemma/relation']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
         @if ($lemmas)
-        <table class="table-bordered table-wide table-striped">
+        <table class="table-bordered table-wide table-striped rwd-table wide-lg">
         <thead>
             <tr>
                 <th>No</th>
@@ -29,14 +31,14 @@
                   $meaning2 = \App\Models\Dict\Meaning::find($lemma->meaning2_id);
                   $lemma2 = $meaning2->lemma; ?>
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{ $lemma1->lang->name }}</td>
-                <td>{{ $lemma1->pos->name }}</td>
-                <td><a href="/dict/lemma/{{$lemma->lemma1_id}}{{$args_by_get}}">{{$lemma->lemma1}}</a></td>
-                <td>{{ \App\Models\Dict\Meaning::find($lemma->meaning1_id)->getMultilangMeaningTextsString() }}</td>
-                <td>{{ \App\Models\Dict\Relation::find($lemma->relation_id)->name }}</td>
-                <td><a href="/dict/lemma/{{$lemma2->id}}{{$args_by_get}}">{{$lemma2->lemma}}</a></td>
-                <td>{{ $meaning2->getMultilangMeaningTextsString() }}</td>
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('dict.lang') }}">{{ $lemma1->lang->name }}</td>
+                <td data-th="{{ trans('dict.pos') }}">{{ $lemma1->pos->name }}</td>
+                <td data-th="{{ trans('dict.lemma') }} 1"><a href="/dict/lemma/{{$lemma->lemma1_id}}{{$args_by_get}}">{{$lemma->lemma1}}</a></td>
+                <td data-th="{{ trans('dict.interpretation') }}">{{ \App\Models\Dict\Meaning::find($lemma->meaning1_id)->getMultilangMeaningTextsString() }}</td>
+                <td data-th="{{ trans('dict.relation') }}">{{ \App\Models\Dict\Relation::find($lemma->relation_id)->name }}</td>
+                <td data-th="{{ trans('dict.lemma') }} 2"><a href="/dict/lemma/{{$lemma2->id}}{{$args_by_get}}">{{$lemma2->lemma}}</a></td>
+                <td data-th="{{ trans('dict.interpretation') }}">{{ $meaning2->getMultilangMeaningTextsString() }}</td>
             </tr>
             @endforeach
         </table>

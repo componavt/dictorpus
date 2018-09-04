@@ -4,7 +4,9 @@
  * User: Dmitriy Pivovarov aka AngryDeer http://studioweb.pro
  * Date: 25.01.16
  * Time: 4:51
- */?>
+ */
+$without_enter_form = true;
+?>
 @extends('layouts.page')
 
 @section('page_title')

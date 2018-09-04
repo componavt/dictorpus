@@ -19,7 +19,7 @@
         @endif
         </p>
         
-        <table class="table table-striped rwd-table">
+        <table class="table table-striped rwd-table wide-lg">
         <thead>
             <tr>
                 <th>{{ trans('messages.seq_num') }}</th>

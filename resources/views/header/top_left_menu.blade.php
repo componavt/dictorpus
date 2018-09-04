@@ -1,11 +1,11 @@
                 <ul class="nav navbar-nav">
                     <li class="dropdown" id='menu1'>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                           {{ trans('navigation.home') }} <span class="caret"></span>
+                           {{ trans('navigation.about_project') }} <span class="caret"></span>
                         </a>
                         
                         <ul class="dropdown-menu" role="menu" id='menu1-sub'>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.about_project') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.home') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/stats') }}">{{ trans('navigation.stats') }}</a></li>

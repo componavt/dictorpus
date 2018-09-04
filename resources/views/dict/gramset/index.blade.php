@@ -25,7 +25,7 @@
 
         @if ($gramsets && $numAll)
             {!! $gramsets->appends($url_args)->render() !!}
-        <table class="table-bordered table-wide rwd-table">
+        <table class="table-bordered table-wide rwd-table wide-lg">
         <thead>
             <tr>
                 <th>{{ trans('messages.sequence_number') }}</th>              

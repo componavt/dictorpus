@@ -39,7 +39,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
-        <table class="table table-striped table-wide rwd-table">
+        <table class="table-bordered table-striped table-wide rwd-table wide-md">
         <thead>
             <tr>
                 <th>No</th>
@@ -58,8 +58,15 @@
                 <td data-th="{{ trans('messages.in_russian') }}">{{$recorder->name_ru}}</td>
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/corpus/recorder/'.$recorder->id.'/edit'])
-                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'recorder.destroy', 'id' => $recorder->id])
+                    @include('widgets.form._button_edit', 
+                            ['is_button'=>true, 
+                             'without_text' => 1,
+                             'route' => '/corpus/recorder/'.$recorder->id.'/edit'])
+                    @include('widgets.form._button_delete', 
+                            ['is_button'=>true, 
+                             'without_text' => 1,
+                             $route = 'recorder.destroy', 
+                             'id' => $recorder->id])
                 </td>
                 @endif
             </tr>

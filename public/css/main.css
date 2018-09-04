@@ -94,6 +94,9 @@ section a:hover {
     padding: 0 10px 0 0;
 }
 
+.btn {
+    text-decoration: none;
+}
 .panel-default {
     border-color: #d6d6d6;
     border-radius: 0;
@@ -483,21 +486,6 @@ h2 {
     .user-enter {
         padding-bottom: 30px;
     }
-    .nav > li > a {
-        padding: 10px 15px;
-    }
-    
-    .navbar-default .navbar-nav > li > .dropdown-toggle {
-        font-size: 16px;
-    }    
-    .navbar-right {
-        margin-right: 0;
-    }  
-    .caret {
-        border-top: 13px dashed;
-        border-right: 8px solid transparent;
-        border-left: 8px solid transparent;
-    }    
 }
 @media screen and (min-width: 992px) {
     .user-enter {

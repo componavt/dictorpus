@@ -18,7 +18,7 @@
 
         @if ($wordforms)
         <br>
-        <table class="table-bordered table-wide table-striped rwd-table">
+        <table class="table-bordered table-wide table-striped rwd-table wide-lg">
         <thead>
             <tr>
                 <th>No</th>

@@ -126,24 +126,12 @@ class AuthController extends Controller
         ]);
         $input = $request->all();
         $credentials = [ 'email' => $request->email ];
-
-//        Debugbar::error('not mine Error!');
-//        Debugbar::info($credentials);
-//        exit(0);
         
-        
-        if($user = Sentinel::findByCredentials($credentials))
-        {
-//Debugbar::info($user);
-//print 'This email is registered already.';
-//exit(0);
+        if($user = Sentinel::findByCredentials($credentials)) {
             return Redirect::to('register')
                 //view('auth.register')
                 ->withErrors(\Lang::get('error.email_is_registered'));
         }
-        
-//print '22';
-//exit(0);
         
         if ($sentuser = Sentinel::register($input))
         {

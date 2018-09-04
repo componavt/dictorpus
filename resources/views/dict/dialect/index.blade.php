@@ -26,7 +26,7 @@
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
-    <table class="table-bordered table-wide rwd-table">
+    <table class="table-bordered table-wide rwd-table wide-lg">
         <thead>
             <tr>
                 <th>{{ trans('messages.sequence_number') }}</th>
@@ -34,8 +34,8 @@
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('dict.code') }}</th>
-                <th style='text-align:right'>{{ trans('dict.wordforms') }}</th>                
-                <th style='text-align:right'>{{ trans('navigation.texts') }}</th>                
+                <th>{{ trans('dict.wordforms') }}</th>                
+                <th>{{ trans('navigation.texts') }}</th>                
                 @if (User::checkAccess('ref.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -49,12 +49,12 @@
                 <td data-th="{{ trans('messages.in_english') }}">{{$dialect->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$dialect->name_ru}}</td>
                 <td data-th="{{ trans('dict.code') }}">{{$dialect->code}}</td>
-                <td data-th="{{ trans('dict.wordforms') }}" style='text-align:right'>
+                <td data-th="{{ trans('dict.wordforms') }}">
                     <a href='{{ LaravelLocalization::localizeURL('/dict/wordform?search_dialect='.$dialect->id) }}'>
                         {{$dialect->wordforms()->count()}}
                     </a>
                 </td>
-                <td data-th="{{ trans('navigation.texts') }}" style='text-align:right'>
+                <td data-th="{{ trans('navigation.texts') }}">
                     <a href='{{ LaravelLocalization::localizeURL('/corpus/text?search_dialect='.$dialect->id) }}'>
                         {{$dialect->texts()->count()}}
                     </a>
