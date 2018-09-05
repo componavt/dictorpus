@@ -19,9 +19,10 @@ body {
     font-size: 14px;
 }
 
-section a,
-section a:active,
-section a:hover {
+a,
+a:active,
+a:focus,
+a:hover {
     color: #ef3928;
     text-decoration: underline;
 }

@@ -22,7 +22,8 @@
                             </div>
                             <div class="user-registr-submit">
                                 <div class="user-registr-col">
-                                    <a class="user-registr-link" href="/register">{!!trans('main.registr_link')!!}</span></a>
+                                    <a class="user-registr-link" href="/register">{!!trans('main.registr_link')!!}</span></a><br>
+                                    <a class="user-registr-link" href="/reset">{!!trans('auth.reset')!!}</span></a>
                                 </div>
                                 <div class="remember-me">
                                     <label><input type="checkbox" hidden><span></span></label>
