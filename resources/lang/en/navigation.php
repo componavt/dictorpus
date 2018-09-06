@@ -37,7 +37,7 @@ return [
     'regions' => 'Regions',
     'relations' => 'Relations',
     'references' => 'Reference tables',
-    'roles' => 'roles',
+    'roles' => 'Roles',
     'stats' => 'Statistics',
     'texts' => 'Texts',
     'wordforms' => 'Wordforms',

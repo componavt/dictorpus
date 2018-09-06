@@ -95,6 +95,21 @@ a:hover {
     padding: 0 10px 0 0;
 }
 
+.user-menu-name {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.user-menu {
+    font-size: 16px;
+    text-align: right;
+}
+
+.user-menu a {
+    margin-left: 20px;
+}
+
 .btn {
     text-decoration: none;
 }

@@ -1,18 +1,16 @@
                     @if ($user=Sentinel::check())
-                        <li class="dropdown">
+                        <div class="user-menu-name">
                             <?php $user = User::find($user->id);?>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ $user->name }} ({{ $user->rolesNames() }})<span class="caret"></span>
-                            </a>
+                            {{ $user->name }} ({{ $user->rolesNames() }})
+                        </div>
+                        <div class="user-menu">
+                            @if (User::checkAccess('admin'))
+                            <a href="{{ url('/user') }}"><i class="fa fa-btn fa-user"></i>{{ trans('navigation.users') }}</a>
+                            <a href="{{ url('/role') }}"><i class="fa fa-btn fa-users"></i>{{ trans('navigation.roles') }}</a>
+                            @endif
 
-                            <ul class="dropdown-menu" role="menu">
-                                @if (User::checkAccess('admin'))
-                                <li><a href="{{ url('/user') }}"><i class="fa fa-btn fa-user"></i>{{ trans('navigation.users') }}</a></li>
-                                <li><a href="{{ url('/role') }}"><i class="fa fa-btn fa-users"></i>{{ trans('navigation.roles') }}</a></li>
-                                @endif
-                                <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('navigation.logout') }}</a></li>
-                            </ul>
-                        </li>
+                            <a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('navigation.logout') }}</a>
+                        </div>                        
                     @elseif (!isset($without_enter_form) || !$without_enter_form)
                         {!! Form::open(['method'=>'POST', 'route'=>'login']) !!}
                             <div class="user-enter-input">
