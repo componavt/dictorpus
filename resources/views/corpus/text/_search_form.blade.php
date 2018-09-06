@@ -2,7 +2,7 @@
                              'method' => 'get']) 
         !!}
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-md-4">
         @include('widgets.form._formitem_select2', 
                 ['name' => 'search_lang', 
                  'values' => $lang_values,
@@ -12,7 +12,7 @@
         ])
                  
     </div>
-    <div class="col-sm-4">
+    <div class="col-md-4">
         @include('widgets.form._formitem_select2',
                 ['name' => 'search_dialect', 
                  'values' =>$dialect_values,
@@ -21,7 +21,7 @@
                  'class'=>'multiple-select-dialect form-control'
             ])
     </div>
-    <div class="col-sm-4">
+    <div class="col-md-4">
         @include('widgets.form._formitem_select2', 
                 ['name' => 'search_corpus', 
                  'values' => $corpus_values,
@@ -32,7 +32,7 @@
     </div>
 </div>                 
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-md-4">
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_title', 
                  'special_symbol' => true,
@@ -40,7 +40,7 @@
                 'attributes'=>['placeholder' => trans('corpus.title')]])
                                
     </div>
-    <div class="col-sm-4">
+    <div class="col-md-4">
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_word', 
                  'special_symbol' => true,
@@ -48,7 +48,7 @@
                 'attributes'=>['placeholder' => trans('corpus.word')]])
                                
     </div>
-    <div class="col-sm-4 search-button-b">       
+    <div class="col-md-4 search-button-b">       
         <span>
         {{trans('messages.show_by')}}
         </span>

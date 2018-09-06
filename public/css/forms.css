@@ -1,6 +1,13 @@
-.form-control {
+.form-control,
+selection select2-selection__rendered,
+.form-group .select2-container--default .select2-selection--multiple {
     border-radius: 0;
     box-shadow: 0 0 10px rgba(0,0,0,.075);
+}
+
+.select2-selection {
+    border: none;
+    border-radius: 0;    
 }
 
 input[type="checkbox"]+span,
@@ -48,6 +55,10 @@ input[type="radio"]:checked+span:before{
     width: 30%;
 }
 
+.form-group label {
+    display: block;
+}
+
 .form-group label:first-letter {
     text-transform: uppercase;
 }
@@ -88,7 +99,23 @@ input[type="radio"]:checked+span:before{
     margin-top: 5px;
 }
 
+.search-button-b input[type=text]{
+    margin: 0 10px;
+    width: 50px;
+}
+
 .search-button-b input[type=submit]{
     margin-left: 20px;
 }
 
+@media screen and (max-width: 320px) {    
+    .btn-primary {
+        font-size: 14px;   
+    }
+}
+
+@media screen and (max-width: 395px) {    
+/*    .search-button-b input[type=text]{
+        width: 50px;
+    }*/
+}
