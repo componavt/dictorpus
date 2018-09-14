@@ -169,6 +169,10 @@
                  'value' => $ieeh_archive_number2_value])
             </div>
         </div>
+        @include('widgets.form._formitem_text', 
+                ['name' => 'youtube_id', 
+                 'value' => ($action=='edit' && $text->video) ? ($text->video->youtube_id) : NULL,
+                 'title'=>trans('corpus.youtube_id')])
         <?php $source_comment_value = ($action=='edit' && $text->source) ? ($text->source->comment) : NULL; ?>
         @include('widgets.form._formitem_textarea', 
                 ['name' => 'source.comment', 

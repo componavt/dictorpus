@@ -30,6 +30,12 @@
         </p>
         
         <h2>{{ $text->title }}</h2>
+        
+        @if ($text->video && $text->video->youtube_id)
+        <div class="row">
+            <div class="col-sm-6">
+        @endif
+        
         <h3>{{ trans('corpus.corpus') }}: {{ $text->corpus->name }}</h3>
         <p><i>{{ $labels }}</i></p>
 
@@ -45,6 +51,18 @@
         </p>
         @endif
         
+        @if ($text->video && $text->video->youtube_id)
+            </div>
+            <div class="col-sm-6">
+                @include('widgets.youtube',
+                        ['width' => '100%',
+                         'height' => '270',
+                         'video' => $text->video->youtube_id
+                        ])
+            </div>
+        </div>
+        @endif
+
         @if ($text->transtext)
         <div class="row corpus-text">
             <div class="col-sm-6">

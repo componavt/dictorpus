@@ -767,5 +767,8 @@ delete from revisions where revisionable_type like '%Event' and `key` like 'info
 
 insert into parts_of_speech values (20,'Predicative', 'предикатив','PRE',1);
 
--- LEMMA - TEXT -----------------------------------------
+-- WORDFORM - TEXT -----------------------------------------
 -- php artisan make:migration create_text_wordform_table
+
+-- VIDEO -----------------------------------------
+--php artisan make:model 'Models\Corpus\Video --migration

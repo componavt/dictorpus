@@ -94,6 +94,7 @@ return [
     'transtext_title' => 'title of translation',
     
     'year_of_birth' => 'year of birth',
+    'youtube_id' => 'YouTube Identifier',
     'word' => 'Word',
     'unlock' => 'unlock',
 ];

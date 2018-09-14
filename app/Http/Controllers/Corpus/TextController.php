@@ -363,6 +363,8 @@ class TextController extends Controller
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();
         
+        $text->storeVideo($request->youtube_id);
+        
         Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'), 
                                                   $text);
         Event::storeEvent($request->only('event_place_id','event_date'), 

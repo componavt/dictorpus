@@ -112,6 +112,12 @@ class Text extends Model
         return $builder;
     }
 
+    // Text __has_one__ Video
+    public function video()
+    {
+        return $this->hasOne(Video::class);
+    }
+   
     /**
      * Gets IDs of informants for informant's form field
      *
@@ -172,6 +178,25 @@ class Text extends Model
         return $value;
     }
 
+    public function storeVideo($youtube_id) {
+//dd($youtube_id);        
+        if (!$youtube_id) {
+            return;
+        } else {
+            $youtube_id = trim($youtube_id);
+        }
+        
+        if ($this->video) {
+            $this->video->youtube_id = $youtube_id;
+            $this->video->save();
+        } else {
+            $video = Video::firstOrCreate(['text_id'=>$this->id]);
+            $video->youtube_id = $youtube_id;
+            $video->save();
+            $this->video()->save($video);
+        }
+    }
+    
     /**
      * process string, replace simbols >, < on html-entities
      *

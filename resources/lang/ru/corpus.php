@@ -94,6 +94,7 @@ return [
     'transtext_title' => 'заголовок перевода',
     
     'year_of_birth' => 'год рождения',
+    'youtube_id' => 'Код видео на YouTube',
     'word' => 'Слово',
     'unlock' => 'разблокировать',
 ];
