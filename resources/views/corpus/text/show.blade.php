@@ -45,8 +45,10 @@
         </p>
         @endif
         
+        @if ($text->transtext)
         <div class="row corpus-text">
             <div class="col-sm-6">
+        @endif
         @if ($text->title)
                     <h4>{{ $text->title }}<br>
                     ({{ $text->lang->name }})</h4>
@@ -62,9 +64,9 @@
         ?>
                     <div id="text">{!! $markup_text !!}</div>
         @endif      
+        @if ($text->transtext)
             </div>
                 
-        @if ($text->transtext)
             <div class="col-sm-6">
             @if ($text->transtext->title)
                     <h4>{{ $text->transtext->title }}<br>
@@ -76,9 +78,9 @@
                             : nl2br($text->transtext->text); ?>
                     <div id="transtext">{!! $markup_text !!}</div>
             @endif      
-        @endif      
             </div>
         </div>
+        @endif      
         
 @stop
 
