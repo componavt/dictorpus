@@ -34,6 +34,7 @@ return [
     'perm.corpus.edit'=> 'Corpus editing',
     'perm.dict.edit'=> 'Dictionary editing',
     'perm.ref.edit'=> 'References editing',
+    'perm.user.edit'=> 'Users editing',
     'permissions' => 'Permissions',
     
     'registration' => 'Registration form',

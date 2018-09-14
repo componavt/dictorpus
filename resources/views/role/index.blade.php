@@ -1,13 +1,15 @@
 <?php $list_count = 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('auth.role_list') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('auth.role_list') }}</h1>
-              
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
+@section('body')
         <p>
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/role/create') }}">
@@ -18,30 +20,40 @@
         @endif
         </p>
 
-        <table class="table">
+        <table class="table-bordered table-wide table-striped rwd-table wide-md">
         <thead>
             <tr>
                 <th>No</th>
                 <th>{{ trans('auth.slug') }}</th>
                 <th>{{ trans('auth.role_name') }}</th>
                 <th>{{ trans('auth.permissions') }}</th>
-                <th colspan="2"></th>
+                @if (User::checkAccess('user.edit'))
+                <th>{{ trans('messages.actions') }}</th>
+                @endif
             </tr>
         </thead>
         <tbody>
             @foreach($roles as $role)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{$role->slug}}</td>
-                <td>{{$role->name}}</td>
-                <td>{{$role->permissionString()}}</td>
-                <td>
-                    <a  href="{{ LaravelLocalization::localizeURL('/role/'.$role->id.'/edit') }}" 
-                        class="btn btn-warning btn-xs btn-detail" value="{{$role->id}}">{{ trans('messages.edit') }}</a> 
-                 </td>
-                <td>
-                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'role.destroy', 'id' => $role->id])
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('auth.slug') }}">{{$role->slug}}</td>
+                <td data-th="{{ trans('auth.role_name') }}">{{$role->name}}</td>
+                <td data-th="{{ trans('auth.permissions') }}">{{$role->permissionString()}}</td>
+                @if (User::checkAccess('user.edit'))
+                <td data-th="{{ trans('messages.actions') }}">
+                    @include('widgets.form._button_edit', 
+                             ['is_button'=>true, 
+                              'without_text' => true,
+                              'route' => '/role/'.$role->id.'/edit',
+                             ])
+                    @include('widgets.form._button_delete', 
+                             ['is_button'=>true, 
+                              'without_text' => true,
+                              'route' => 'role.destroy', 
+                              'id' => $role->id,
+                             ])
                 </td>
+                @endif
             </tr> 
             @endforeach
         </tbody>

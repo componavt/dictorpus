@@ -1,45 +1,55 @@
 <?php $list_count = 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('auth.user_list') }}
 @stop
 
-@section('content')
-        <h1>{{ trans('auth.user_list') }}</h1>
-              
-        <table class="table">
+@section('headExtra')
+    {!!Html::style('css/table.css')!!}
+@stop
+
+@section('body')
+        <table class="table-bordered table-wide table-striped rwd-table wide-lg">
         <thead>
             <tr>
                 <th>No</th>
                 <th>E-mail</th>
                 <th>{{ trans('auth.name') }}</th>
-                <th>{{ trans('auth.permissions') }}</th>
                 <th>{{ trans('auth.roles') }}</th>
                 <th>{{ trans('navigation.langs') }}</th>
                 <th>{{ trans('auth.last_login') }}</th>
                 <th>{{ trans('auth.last_activity') }}</th>
-                <th colspan="2"></th>
+                @if (User::checkAccess('user.edit'))
+                <th>{{ trans('messages.actions') }}</th>
+                @endif
             </tr>
         </thead>
         <tbody>
             @foreach($users as $user)
             <tr>
-                <td>{{ $list_count++ }}</td>
-                <td>{{$user->email}}</td>
-                <td>{{$user->first_name}} {{$user->last_name}}</td>
-                <td>{{$user->permissionString()}}</td>
-                <td>{{$user->rolesNames()}}</td>
-                <td>{{$user->langString()}}</td>
-                <td>{{$user->last_login}}</td>
-                <td>{{$user->getLastActionTime()}}</td>
-                <td>
-                    <a  href="{{ LaravelLocalization::localizeURL('/user/'.$user->id.'/edit') }}" 
-                        class="btn btn-warning btn-xs btn-detail" value="{{$user->id}}">{{ trans('messages.edit') }}</a> 
-                 </td>
-                <td>
-                    @include('widgets.form._button_delete', ['is_button'=>true, $route = 'user.destroy', 'id' => $user->id])
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="E-mail">{{$user->email}}</td>
+                <td data-th="{{ trans('auth.name') }}">{{$user->first_name}} {{$user->last_name}}</td>
+                <td data-th="{{ trans('auth.roles') }}">{{$user->rolesNames()}}</td>
+                <td data-th="{{ trans('navigation.langs') }}">{{$user->langString()}}</td>
+                <td data-th="{{ trans('auth.last_login') }}">{{$user->last_login}}</td>
+                <td data-th="{{ trans('auth.last_activity') }}">{{$user->getLastActionTime()}}</td>
+                @if (User::checkAccess('user.edit'))
+                <td data-th="{{ trans('messages.actions') }}">
+                    @include('widgets.form._button_edit', 
+                             ['is_button'=>true, 
+                              'without_text' => true,
+                              'route' => '/user/'.$user->id.'/edit',
+                             ])
+                    @include('widgets.form._button_delete', 
+                             ['is_button'=>true, 
+                              'without_text' => true,
+                              'route' => 'user.destroy', 
+                              'id' => $user->id,
+                             ])
                 </td>
+                @endif
             </tr> 
             @endforeach
         </tbody>

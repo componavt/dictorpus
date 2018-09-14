@@ -32,7 +32,8 @@ return [
     'perm.admin' => 'Супер-права',
     'perm.dict.edit'=> 'Редакция словаря',
     'perm.corpus.edit'=> 'Редакция корпуса',
-    'perm.edit.ref'=> 'Редакция справочников',
+    'perm.ref.edit'=> 'Редакция справочников',
+    'perm.user.edit'=> 'Редакция пользователей',
     'permissions' => 'Права',
     
     'registration' => 'Регистрация',
