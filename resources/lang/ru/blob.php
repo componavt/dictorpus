@@ -45,7 +45,7 @@ return [
                             и <a href="/ru/dict/dialect">:total_dialects</a> диалектах</span>
                          </div>',
     'license' => 'Вы можете свободно использовать материалы нашего сайта и делиться ими, главное — указать авторство и ссылку
-                  на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/deed.ru">Побробнее о лицензии CC BY 4.0</a>',
+                  на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/">Побробнее о лицензии CC BY 4.0</a>',
     'permission' => '<p>Разрешение <a href="/docs/permission_bible.pdf">Института перевода Библии</a> на использование вепсских изданий, '
                   . 'опубликованных Институтом для вепского корпуса</p>'
                   . '<p>Разрешение <a href="/docs/permission_bible_karelian.pdf">Института перевода Библии</a> на использование изданий '
@@ -67,7 +67,7 @@ return [
                     <p>Программная оболочка корпуса VepKar — это разрабатываемый нами проект
                     с открытым исходным кодом <a href="https://github.com/componavt/dictorpus">Dictorpus</a>
                     и <a href="http://dictorpus.krc.karelia.ru/ru/dumps">открытыми данными</a> 
-                    (лицензия <a href="https://creativecommons.org/licenses/by/4.0/deed.ru">CC-BY</a>). 
+                    (лицензия <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY</a>). 
                     Название проекта "Dictorpus" указывает на объединение словаря (DICTionary) и корпуса
                     (cORPUS). Программа Dictorpus предназначена для коллективов
                     лингвистов, работающих с языками мира. На данный момент в программу

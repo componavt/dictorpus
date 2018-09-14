@@ -39,7 +39,7 @@ return [
                          </div>',        
     'grants' => '',
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
-                  <br><a href="https://creativecommons.org/licenses/by/4.0/deed.ru">More about the CC BY 4.0 license</a>',
+                  <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
     'permission' => '',
     'welcome_text' =>  '<p>Welcome to VepKar - an Open corpus of Veps and Karelian languages, 
                         containing dictionaries and corpora of the Baltic-Finnish languages ​​of Karelia peoples.</p>
@@ -51,7 +51,7 @@ return [
 
                         <p>The software shell of the VepKar case is an open source project <a href="https://github.com/componavt/dictorpus">Dictorpus</a> 
                         developed by us and <a href="http://dictorpus.krc.karelia.ru/en/dumps">open data</a> 
-                        (<a href="https://creativecommons.org/licenses/by/4.0/deed.ru">CC-BY</a>). 
+                        (<a href="https://creativecommons.org/licenses/by/4.0/">CC-BY</a>). 
                         The name of the project "Dictorpus" indicates the union of the dictionary (DICTionary) and the corpus (cORPUS). 
                         The program Dictorpus is designed for teams of linguists working with the languages ​​of the world. 
                         At the moment, the program includes support and takes into account the features of Vepsian and Karelian languages.</p>',

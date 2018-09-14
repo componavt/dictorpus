@@ -45,9 +45,8 @@
         </p>
         @endif
         
-        <table class="corpus-text">
-            <tr valign='top'>
-                <td>
+        <div class="row corpus-text">
+            <div class="col-sm-6">
         @if ($text->title)
                     <h4>{{ $text->title }}<br>
                     ({{ $text->lang->name }})</h4>
@@ -63,10 +62,10 @@
         ?>
                     <div id="text">{!! $markup_text !!}</div>
         @endif      
-                </td>
+            </div>
                 
         @if ($text->transtext)
-                <td>
+            <div class="col-sm-6">
             @if ($text->transtext->title)
                     <h4>{{ $text->transtext->title }}<br>
                     ({{ $text->transtext->lang->name }})</h4>
@@ -78,8 +77,8 @@
                     <div id="transtext">{!! $markup_text !!}</div>
             @endif      
         @endif      
-            </tr>
-        </table>
+            </div>
+        </div>
         
 @stop
 
