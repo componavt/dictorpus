@@ -59,57 +59,6 @@ class Event extends Model
     }
     
     /**
-     * Checks request data. If the request data is not null, 
-     * updates Event if it exists or creates new and returns id of Event
-     * 
-     * If the request data is null and Event exists, 
-     * destroy it and sets event_id in Text as NULL.
-     * 
-     * @return INT or NULL
-     */
-    public static function storeEvent($requestData, $text_obj=NULL){
-//dd($requestData);        
-        $is_empty_data = true;
-        if(array_filter($requestData)) {
-            $is_empty_data = false;
-        }
-//dd($is_empty_data);
-        if ($text_obj) {
-            $event_id = $text_obj->event_id;
-        } else {
-            $event_id = NULL;
-        }
-
-        if (!$is_empty_data) {
-            $data_to_fill = [];
-            foreach (['place_id','date'] as $column) {//'informant_id',
-                $data_to_fill[$column] = ($requestData['event_'.$column]) ? $requestData['event_'.$column] : NULL;
-            }
-            if ($event_id) {
-                $event = self::find($event_id)->fill($data_to_fill);
-                $event->save();
-            } else {
-                $event = self::firstOrCreate($data_to_fill);
-                $text_obj->event_id = $event->id;
-                $text_obj->save();
-//dd($text_obj);               
-            }
-            return $event->id;
-            
-        } elseif ($event_id) {
-            $text_obj->event_id = NULL;
-            $text_obj->save();
-            if (!Text::where('id','<>',$text_obj->id)
-                     ->where('event_id',$event_id)
-                     ->count()) {
-                $text_obj->event->recorders()->detach();
-                $text_obj->event->informants()->detach();
-                self::destroy($event_id);
-            }
-        }
-    }    
-
-    /**
      * Gets full information about event as array
      * 
      * i.e. ['informant' => 'Калинина Александра Леонтьевна, г.р. 1909, урожд. Пондала (Pondal), Бабаевский р-н, Вологодская обл.',

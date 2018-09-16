@@ -198,6 +198,188 @@ class Text extends Model
     }
     
     /**
+     * Checks request data. If the request data is not null, 
+     * updates Transtext if it exists or creates new and returns id of Transtext
+     * 
+     * If the request data is null and Transtext exists, 
+     * destroy it and sets transtext_id in Text as NULL.
+     * 
+     * @return INT or NULL
+     */
+    public function storeTranstext($requestData){
+        $is_empty_data = true;
+        if ($requestData['transtext_title'] || $requestData['transtext_text']) {
+            $is_empty_data = false;
+        }
+//dd($is_empty_data);
+        if ($this) {
+            $transtext_id = $this->transtext_id;
+        } else {
+            $transtext_id = NULL;
+        }
+
+        if (!$is_empty_data) {
+            foreach (['lang_id','title','text'] as $column) {
+                $data_to_fill[$column] = ($requestData['transtext_'.$column]) ? $requestData['transtext_'.$column] : NULL;
+            }
+            if ($transtext_id) {
+               
+                $transtext = Transtext::find($transtext_id);
+                $old_text = $transtext->text;
+                $transtext->fill($data_to_fill);
+                if ($data_to_fill['text'] && ($old_text != $data_to_fill['text'] || !$transtext->text_xml)) {
+                    $transtext->markup();
+                }
+                $transtext->save();
+            } else {
+                $transtext = Transtext::firstOrCreate($data_to_fill);
+
+                if ($data_to_fill['text']) {
+                    $transtext->markup();
+                }
+                $transtext->save();
+
+                $this->transtext_id = $transtext->id;
+                $this->save();
+            }
+            return $transtext->id;
+            
+        } elseif ($transtext_id) {
+            $this->transtext_id = NULL;
+            $this->save();
+            if (!self::where('id','<>',$this->id)
+                     ->where('transtext_id',$transtext_id)
+                     ->count()) {
+                Transtext::destroy($transtext_id);
+            }
+        }
+    }    
+    
+    /**
+     * Checks request data. If the request data is not null, 
+     * updates Event if it exists or creates new and returns id of Event
+     * 
+     * If the request data is null and Event exists, 
+     * destroy it and sets event_id in Text as NULL.
+     * 
+     * @return INT or NULL
+     */
+    public function storeEvent($requestData){
+//dd($requestData);        
+        $is_empty_data = true;
+        if(array_filter($requestData)) {
+            $is_empty_data = false;
+        }
+//dd($is_empty_data);
+        if ($this) {
+            $event_id = $this->event_id;
+        } else {
+            $event_id = NULL;
+        }
+
+        if (!$is_empty_data) {
+            $data_to_fill = [];
+            foreach (['place_id','date'] as $column) {//'informant_id',
+                $data_to_fill[$column] = ($requestData['event_'.$column]) ? $requestData['event_'.$column] : NULL;
+            }
+            if ($event_id) {
+                $event = Event::find($event_id)->fill($data_to_fill);
+                $event->save();
+            } else {
+                $event = Event::firstOrCreate($data_to_fill);
+                $this->event_id = $event->id;
+                $this->save();
+            }
+            $this->event->informants()->detach();
+           $this->event->informants()->attach($requestData['event_informants']);
+            $this->event->recorders()->detach();
+            $this->event->recorders()->attach($requestData['event_recorders']);
+        
+            return $event->id;
+            
+        } elseif ($event_id) {
+            $this->event_id = NULL;
+            $this->save();
+            if (!self::where('id','<>',$this->id)
+                     ->where('event_id',$event_id)
+                     ->count()) {
+                $this->event->recorders()->detach();
+                $this->event->informants()->detach();
+                Event::destroy($event_id);
+            }
+        }
+    }    
+
+    /**
+     * Checks request data. If the request data is not null, 
+     * updates Source if it exists or creates new and returns id of Source
+     * 
+     * If the request data is null and Source exists, 
+     * destroy it and sets source_id in Text as NULL.
+     * 
+     * @return INT or NULL
+     */
+    public function storeSource($requestData){
+        $is_empty_data = true;
+        if(array_filter($requestData)) {
+            $is_empty_data = false;
+        }
+        if ($this) {
+            $source_id = $this->source_id;
+        } else {
+            $source_id = NULL;
+        }
+
+        if (!$is_empty_data) {
+            foreach (['title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'] as $column) {
+                $data_to_fill[$column] = ($requestData['source_'.$column]) ? $requestData['source_'.$column] : NULL;
+            }
+            if ($source_id) {
+                $source = Source::find($source_id)->fill($data_to_fill);
+                $source->save();
+            } else {
+                $source = Source::firstOrCreate($data_to_fill);
+                $this->source_id = $source->id;
+                $this->save();
+            }
+ //       dd($source);
+            return $source->id;
+            
+        } elseif ($source_id) {
+            $this->source_id = NULL;
+            $this->save();
+            
+            if (!self::where('id','<>',$this->id)
+                     ->where('source_id',$source_id)
+                     ->count()) {
+                Source::destroy($source_id);
+            }
+        }
+    }    
+    
+    public function storeAdditionInfo($request, $old_text=NULL){
+        $error_message = '';
+        
+        $this->storeVideo($request->youtube_id);
+        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'));
+        $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
+        $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
+        
+        $this->dialects()->detach();
+        $this->dialects()->attach($request->dialects);
+
+        $this->genres()->detach();
+        $this->genres()->attach($request->genres);
+        
+        if ($request->text && ($old_text != $request->text || !$this->text_xml)) {
+            $error_message = $this->markup($this->text_xml);
+        }
+
+        $this->push();        
+        
+        return $error_message;
+    }
+    /**
      * process string, replace simbols >, < on html-entities
      *
      * @param $str String 
@@ -248,7 +430,7 @@ class Text extends Model
                 }
 
                 // division on words
-                list($str,$word_count) = Text::markupSentence($sentence,$word_count);
+                list($str,$word_count) = self::markupSentence($sentence,$word_count);
 
                 $out .= "<s id=\"".$sen_count++.'">'.$str.$desc_out[2][$k]."</s>\n";
                 $div = trim($desc_out[3][$k]);
@@ -587,7 +769,7 @@ class Text extends Model
     public function sentences($word=''){
         $sentences = [];
         
-        list($sxe,$error_message) = Text::toXML($this->text_xml,$this->id);
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
         if ($error_message) {
             return $sentences;
         }
@@ -628,12 +810,12 @@ class Text extends Model
                             'relevance' => <relevance>]
      */
     public static function extractSentence($text_id, $sentence_id, $w_id, $relevance='') {
-            $text = Text::find($text_id);
+            $text = self::find($text_id);
             if (!$text) {
 //print "<p>text error</p>";
                 return NULL;
             }
-            list($sxe,$error_message) = Text::toXML($text->text_xml,$text->id);
+            list($sxe,$error_message) = self::toXML($text->text_xml,$text->id);
             if ($error_message) {
 //print "<p>$error_message</p>";                
                 return NULL;
@@ -643,7 +825,7 @@ class Text extends Model
                 $transtext = Transtext::find($text->transtext_id);
                 $trans_s = '';
                 if ($transtext) {
-                    list($trans_sxe,$trans_error) = Text::toXML($transtext->text_xml,'trans: '.$transtext->id);
+                    list($trans_sxe,$trans_error) = self::toXML($transtext->text_xml,'trans: '.$transtext->id);
                     if (!$trans_error) {
                         $trans_sent = $trans_sxe->xpath('//s[@id="'.$sentence_id.'"]');
                         if (isset($trans_sent[0])) {
@@ -765,7 +947,7 @@ class Text extends Model
                             ->latest()->take($limit)->get();
         $texts = [];
         foreach ($revisions as $revision) {
-            $text = Text::find($revision->revisionable_id);
+            $text = self::find($revision->revisionable_id);
             $text->user = User::getNameByID($revision->user_id);
             if ($is_grouped) {
                 $updated_date = $text->updated_at->formatLocalized(trans('main.date_format'));            

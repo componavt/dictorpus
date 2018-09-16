@@ -135,16 +135,11 @@ class TextController extends Controller
         
         $dialect_values = Dialect::getList();
 
-        return view('corpus.text.index')
-                    ->with([
-                        'dialect_values' => $dialect_values,
-                        'texts' => $texts,
-                        'lang_values' => $lang_values,
-                        'corpus_values' => $corpus_values,
-                        'numAll' => $numAll,
-                        'args_by_get'    => $this->args_by_get,
-                        'url_args'       => $this->url_args,
-                    ]);
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        return view('corpus.text.index',
+                compact('corpus_values', 'dialect_values', 'lang_values',
+                        'texts', 'numAll', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -162,17 +157,12 @@ class TextController extends Controller
         $dialect_values = Dialect::getList();
         $genre_values = Genre::getList();        
         
-        return view('corpus.text.create')
-                  ->with(['lang_values' => $lang_values,
-                          'corpus_values' => $corpus_values,
-                          'informant_values' => $informant_values,
-                          'place_values' => $place_values,
-                          'recorder_values' => $recorder_values,
-                          'dialect_values' => $dialect_values,
-                          'genre_values' => $genre_values,
-                        'args_by_get'    => $this->args_by_get,
-                        'url_args'       => $this->url_args,
-                         ]);
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        return view('corpus.text.create',
+                  compact('corpus_values', 'dialect_values', 'genre_values',
+                          'informant_values', 'lang_values', 'place_values',
+                          'recorder_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -190,37 +180,21 @@ class TextController extends Controller
             'lang_id' => 'required|numeric',
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',
+            'event_date' => 'numeric',
         ]);
         $request['text'] = Text::process($request['text']);
         $request['transtext_text'] = Text::process($request['transtext_text']);
 
         $text = Text::create($request->only('corpus_id','lang_id','title','text')); //,'source_id','event_id',
-        
-        Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text'), 
-                                                  $text);
-        Event::storeEvent($request->only('event_informant_id','event_place_id','event_date'), 
-                                                  $text);
-        Source::storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'), 
-                                                  $text);       
-        if ($text->event) {
-            $text->event->recorders()->attach($request->event_recorders);
-        }
 
-        $text->dialects()->attach($request->dialects);
-        $text->genres()->attach($request->genres);
+        $error_message = $text -> storeAdditionInfo($request);
 
-        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get))
-                       ->withSuccess(\Lang::get('messages.created_success'));
-
-        if ($request->text) {
-            $error_message = $text->markup();
-            if ($error_message) {
-                $redirect = $redirect->withErrors($error_message);
-            }
-        }
-
-        $text->push();
-
+        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get));
+        if ($error_message) {
+            $redirect = $redirect->withErrors($error_message);
+        } else {
+            $redirect = $redirect->withSuccess(\Lang::get('messages.created_success'));
+        }         
         return $redirect;
     }
 
@@ -248,13 +222,11 @@ class TextController extends Controller
         foreach ($text->genres as $genre) {
             $labels[] = $genre->name;
         }
-        
-        return view('corpus.text.show')
-                  ->with(['text'=>$text,
-                          'labels'=>join(', ',$labels),
-                        'args_by_get'    => $this->args_by_get,
-                        'url_args'       => $this->url_args,
-                      ]);
+        $labels = join(', ',$labels);
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        return view('corpus.text.show',
+                  compact('labels', 'text', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -352,51 +324,24 @@ class TextController extends Controller
             'transtext.lang_id' => 'numeric',
             'event_date' => 'numeric',
         ]);
+        $request['text'] = Text::process($request['text']);
+        $request['transtext_text'] = Text::process($request['transtext_text']);
         
         $text = Text::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
-
-        $request['text'] = Text::process($request['text']);
-        $request['transtext_text'] = Text::process($request['transtext_text']);
 
         $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();
         
-        $text->storeVideo($request->youtube_id);
-        
-        Transtext::storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'), 
-                                                  $text);
-        Event::storeEvent($request->only('event_place_id','event_date'), 
-                                                  $text);
-        Source::storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'), 
-                                                  $text);
-        
-        if ($text->event) {
-            $text-> event->informants()->detach();
-            $text-> event->informants()->attach($request->event_informants);
-            $text-> event->recorders()->detach();
-            $text-> event->recorders()->attach($request->event_recorders);
-        }
-        
-        $text->dialects()->detach();
-        $text->dialects()->attach($request->dialects);
+        $error_message = $text -> storeAdditionInfo($request, $old_text);
 
-        $text->genres()->detach();
-        $text->genres()->attach($request->genres);
-
-        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get))
-                       ->withSuccess(\Lang::get('messages.updated_success'));
-
-        if ($request->text && $old_text != $request->text || $request->text && !$text->text_xml) {
-            $error_message = $text->markup($text->text_xml);
-            if ($error_message) {
-                $redirect = $redirect->withErrors($error_message);
-            }
-        }
-
-        $text->push();        
-         
+        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get));
+        if ($error_message) {
+            $redirect = $redirect->withErrors($error_message);
+        } else {
+            $redirect = $redirect->withSuccess(\Lang::get('messages.updated_success'));
+        }         
         return $redirect;
     }
 
@@ -438,8 +383,8 @@ class TextController extends Controller
                     $text->genres()->detach();
                     $text->meanings()->detach();
 
-                    //remove all relative words
                     $text->words()->delete();
+                    $text->video()->delete();
                     
                     $text->delete();
 

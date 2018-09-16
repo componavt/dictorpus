@@ -30,64 +30,6 @@ class Transtext extends Model
     }
 
     /**
-     * Checks request data. If the request data is not null, 
-     * updates Transtext if it exists or creates new and returns id of Transtext
-     * 
-     * If the request data is null and Transtext exists, 
-     * destroy it and sets transtext_id in Text as NULL.
-     * 
-     * @return INT or NULL
-     */
-    public static function storeTranstext($requestData, $text_obj=NULL){
-        $is_empty_data = true;
-        if ($requestData['transtext_title'] || $requestData['transtext_text']) {
-            $is_empty_data = false;
-        }
-//dd($is_empty_data);
-        if ($text_obj) {
-            $transtext_id = $text_obj->transtext_id;
-        } else {
-            $transtext_id = NULL;
-        }
-
-        if (!$is_empty_data) {
-            foreach (['lang_id','title','text'] as $column) {
-                $data_to_fill[$column] = ($requestData['transtext_'.$column]) ? $requestData['transtext_'.$column] : NULL;
-            }
-            if ($transtext_id) {
-               
-                $transtext = self::find($transtext_id);
-                $old_text = $transtext->text;
-                $transtext->fill($data_to_fill);
-                if ($data_to_fill['text'] && ($old_text != $data_to_fill['text'] || !$transtext->text_xml)) {
-                    $transtext->markup();
-                }
-                $transtext->save();
-            } else {
-                $transtext = self::firstOrCreate($data_to_fill);
-
-                if ($data_to_fill['text']) {
-                    $transtext->markup();
-                }
-                $transtext->save();
-
-                $text_obj->transtext_id = $transtext->id;
-                $text_obj->save();
-            }
-            return $transtext->id;
-            
-        } elseif ($transtext_id) {
-            $text_obj->transtext_id = NULL;
-            $text_obj->save();
-            if (!Text::where('id','<>',$text_obj->id)
-                     ->where('transtext_id',$transtext_id)
-                     ->count()) {
-                self::destroy($transtext_id);
-            }
-        }
-    }    
-    
-    /**
      * Sets text_xml as a markup text with sentences
      */
     public function markup(){  
