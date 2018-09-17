@@ -10,7 +10,6 @@
 @stop
 
 @section('body')
-        <h1>{{ trans('navigation.lemmas') }}</h1>
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_lemma')}}: <span class='imp'>{{ $lemma->lemma}}</span></h2>
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a>
