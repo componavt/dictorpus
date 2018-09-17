@@ -26,6 +26,8 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/relation') }}">{{ trans('navigation.relations') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/omonyms') }}">{{ trans('navigation.omonyms') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/phrases') }}">{{ trans('navigation.phrases') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_new_list/') }}">{{ trans('dict.new_lemmas') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_updated_list/') }}">{{ trans('dict.last_updated_lemmas') }}</a></li>
                         </ul>
                     </li>
                     
@@ -52,12 +54,15 @@
 
                         <ul class="dropdown-menu" role="menu" id='menu4-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}">{{ trans('navigation.texts') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/video') }}">{{ trans('navigation.video') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/informant') }}">{{ trans('navigation.informants') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/place') }}">{{ trans('navigation.places') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/region') }}">{{ trans('navigation.regions') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/district') }}">{{ trans('navigation.districts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/genre') }}">{{ trans('navigation.genres') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/recorder') }}">{{ trans('navigation.recorders') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/') }}">{{ trans('corpus.new_texts') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/') }}">{{ trans('corpus.last_updated_texts') }}</a></li>
                         </ul>
                     </li>
                 </ul>

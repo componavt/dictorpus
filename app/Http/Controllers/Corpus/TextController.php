@@ -727,7 +727,7 @@ class TextController extends Controller
         return view('dict.lemma.show.example_sentence')
                 ->with(['sentence'=>$sentence,'relevance'=>'', 'count'=>'']);
     }
-    
+        
 //select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
 /*
     public function tmpProcessOldLetters() {

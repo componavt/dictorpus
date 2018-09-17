@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('page-title')
+@section('page_title')
 {{ trans('corpus.new_texts') }}
 @stop
 

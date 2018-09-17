@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('navigation.lemmas') }}
 @stop
 
@@ -8,8 +8,7 @@
     {!!Html::style('css/lemma.css')!!}
 @stop
 
-@section('content')
-        <h1>{{trans('dict.last_updated_lemmas')}}</h1>
+@section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_new_list/')}}">{{trans('dict.new_lemmas')}}</a></p>
         
         @foreach ($last_updated_lemmas as $cr_date =>$lemmas)

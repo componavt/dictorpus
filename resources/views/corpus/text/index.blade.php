@@ -59,7 +59,7 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
-                <td data-th="{{ trans('corpus.title') }}"><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</td>
+                <td data-th="{{ trans('corpus.title') }}"><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a></td>
                 <td data-th="{{ trans('messages.translation') }}">
                     @if ($text->transtext)
                     {{$text->transtext->title}}

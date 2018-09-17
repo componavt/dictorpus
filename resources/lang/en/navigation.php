@@ -40,6 +40,7 @@ return [
     'roles' => 'Roles',
     'stats' => 'Statistics',
     'texts' => 'Texts',
+    'video' => 'Video',
     'wordforms' => 'Wordforms',
     'users' => 'Users',
 ];
