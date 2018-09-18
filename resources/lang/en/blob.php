@@ -38,8 +38,8 @@ return [
                             и <a href="/en/dict/dialect">:total_dialects</a> dialects</span>
                          </div>',        
     'grants' => '<p>The project was supported by grants:</p>
-                 <p>the Russian Foundation for the Humanities, grant No. 15-04-12006, "Veps thesaurus constructing based on word sense disambiguation in multilingual dictionary".</p>
-                 <p>the Russian Foundation for Basic Research, grant No. 18-012-00117, "Problems of construction of text corpus of minor peoples of Russia in the case of Open corpus of Veps and Karelian languages".</p>',
+                 <p>the Russian Foundation for the Humanities, grant No. 15-04-12006, "Veps thesaurus constructing based on word sense disambiguation in multilingual dictionary", 2015-2016.</p>
+                 <p>the Russian Foundation for Basic Research, grant No. 18-012-00117, "Problems of construction of text corpus of minor peoples of Russia in the case of Open corpus of Veps and Karelian languages", 2018-2020.</p>',
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
                   <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
     'permission' => '',
