@@ -134,8 +134,8 @@ class PlaceController extends Controller
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
-            'district_id' => 'numeric',
-            'region_id' => 'numeric',
+            'district_id' => 'required|numeric',
+            'region_id' => 'required|numeric',
         ]);
         
         $place = Place::create($request->only('district_id','region_id','name_en','name_ru'));
@@ -202,8 +202,8 @@ class PlaceController extends Controller
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
-            'district_id' => 'numeric',
-            'region_id' => 'numeric',
+            'district_id' => 'required|numeric',
+            'region_id' => 'required|numeric',
         ]);
         
         $place = Place::find($id);
