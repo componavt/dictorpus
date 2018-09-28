@@ -773,3 +773,5 @@ insert into parts_of_speech values (20,'Predicative', 'предикатив','PR
 -- VIDEO -----------------------------------------
 --php artisan make:model Models\Corpus\Video --migration
 --php artisan make:controller Corpus\VideoController
+
+--php artisan make:migration change_column_ieeh_archive_numbers_from_sources
