@@ -329,6 +329,13 @@ class WordformController extends Controller
      }
  *
  */  
+    
+    public function tempCheckWordformsWithSpaces() {
+        $wordforms = Wordform::where('wordform','like','% %')->get();
+        foreach ($wordforms as $wordform) {
+            print "<p>".$wordform->id.', '.$wordform->wordform;
+        }
+    }    
 }
 
 // a lemma and wordform related by more than once

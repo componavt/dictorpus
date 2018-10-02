@@ -676,6 +676,48 @@ class Lemma extends Model
                     ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                                    
         }
     }
+    
+    public function isExistWordforms($gramset_id, $dialect_id, $wordform_id) {
+        $exist_wordforms = $this-> wordforms()
+                                 ->wherePivot('gramset_id',$gramset_id)
+                                 ->wherePivot('dialect_id',$dialect_id)
+                                 ->wherePivot('wordform_id',$wordform_id);
+        return $exist_wordforms->count();        
+    }
+    
+    public function addWordforms($words, $gramset_id, $dialect_id) {
+        $trim_words = trim($words);
+        if (!$trim_words) { return;}
+
+        foreach (preg_split("/[\/,]/",$trim_words) as $word) {
+            $this->addWordform($word, $gramset_id, $dialect_id);
+        }
+    }
+    
+    public function addWordform($word, $gramset_id, $dialect_id) {
+        $trim_word = trim($word);
+        if (!$trim_word) { return;}
+        
+        $wordform_obj = Wordform::firstOrCreate(['wordform'=>$trim_word]);
+        if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
+            return;
+        }
+        $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);        
+    }
+    
+    public function deleteWordforms($gramset_id, $dialect_id) {
+        $this-> wordforms()
+              ->wherePivot('gramset_id',$gramset_id)
+              ->wherePivot('dialect_id',$dialect_id)
+              ->detach();
+    }
+    
+    public function deleteWordformsEmptyGramsets() {
+        $this-> wordforms()
+              ->wherePivot('gramset_id',NULL)
+              ->detach();
+    }
+    
     /*    
     public static function totalCount(){
         return self::count();

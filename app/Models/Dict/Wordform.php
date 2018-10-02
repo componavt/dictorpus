@@ -83,44 +83,18 @@ class Wordform extends Model
         if(!$wordforms || !is_array($wordforms)) {
             return;
         }
-//print "<pre>";
-  //      var_dump($dialects);       
-
         foreach($wordforms as $gramset_id=>$wordform_dialect) {
-            if (!(int)$gramset_id) {
-                $gramset_id = NULL;
-            }
+            $gramset_id = (!(int)$gramset_id) ? NULL : (int)$gramset_id; 
             foreach ($wordform_dialect as $old_dialect_id => $wordform_texts) {
-                if (!(int)$old_dialect_id) {
-                    $old_dialect_id = NULL;
-                }
-                $lemma-> wordforms()
-                      ->wherePivot('gramset_id',$gramset_id)
-                      ->wherePivot('dialect_id',$old_dialect_id)
-                      ->detach();
-                if (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id]) {
-                    $dialect_id = (int)$dialects[$gramset_id];
-                } else {
-                    $dialect_id = NULL;
-                }
-    //print "<br>".$lemma->id." = $dialect_id";  
-                foreach ($wordform_texts as $wordform_text) {
-                    if ($wordform_text) {
-                        foreach (preg_split("/\//",$wordform_text) as $word) {
-                            $wordform_obj = self::firstOrCreate(['wordform'=>trim($word)]);
-        //print "<br>". $wordform_obj->id ." = $wordform_text = $gramset_id = $dialect_id";  
-                            $exist_wordforms = $lemma-> wordforms()
-                                                     ->wherePivot('gramset_id',$gramset_id)
-                                                     ->wherePivot('dialect_id',$dialect_id)
-                                                     ->wherePivot('wordform_id',$wordform_obj->id);
-                            if (!$exist_wordforms->count()) {
-                                $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);
-                            }
-                        }
-                    }
-                }
+                $old_dialect_id = (!(int)$old_dialect_id) ? NULL : (int)$old_dialect_id; 
+                $lemma->deleteWordforms($gramset_id, $old_dialect_id);
+                
+                $dialect_id = (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id])
+                        ? (int)$dialects[$gramset_id] : NULL;
+                $lemma->addWordforms($wordform_texts, $gramset_id, $dialect_id);
             }
         }
+//exit(0); 
     }
 
     /**
@@ -133,35 +107,18 @@ class Wordform extends Model
      */
     public static function storeLemmaWordformsEmpty($wordforms, $lemma, $dialect_id='')
     {
+//exit(0);        
         if(!$wordforms || !is_array($wordforms)) {
             return;
         }
-//dd($wordforms);        
+        $lemma->deleteWordformsEmptyGramsets();
+        
         foreach($wordforms as $wordform_info) {
-            $wordform_info['wordform'] = trim($wordform_info['wordform']);
-            if ($wordform_info['wordform']) {
-                $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_info['wordform']]);
-//                    if (!$lemma-> wordforms->has('id', '=', $wordform_obj->id)) {
-                if (DB::table('lemma_wordform')->where('lemma_id',$lemma->id)
-                                               ->where('wordform_id',$wordform_obj->id)
-                                               ->where('gramset_id',$wordform_info['gramset'])
-                                               ->count() == 0) {
-                    if (!(int)$wordform_info['gramset']) {
-                        $wordform_info['gramset'] = NULL;
-                    }
-                    if (!(int)$wordform_info['dialect']) {
-                        if ((int)$dialect_id) {
-                            $wordform_info['dialect'] = (int)$dialect_id;
-                        } else {
-                            $wordform_info['dialect'] = NULL;
-                        }
-                    } 
-//dd($wordform_info['gramset']);
-                    $lemma-> wordforms()->attach($wordform_obj->id, 
-                            ['gramset_id'=>$wordform_info['gramset'], 'dialect_id'=>$wordform_info['dialect']]);
-//print "<P>". $wordform_obj->id.",". $wordform_info['gramset'];
-                }
+            $wordform_info['gramset'] = ((int)$wordform_info['gramset']) ? (int)$wordform_info['gramset'] : NULL; 
+            if (!(int)$wordform_info['dialect']) {
+                $wordform_info['dialect'] = ((int)$dialect_id) ? (int)$dialect_id : NULL; 
             }
+            $lemma->addWordforms($wordform_info['wordform'], $wordform_info['gramset'], $wordform_info['dialect']);
         }
     }
     

@@ -4,6 +4,10 @@
 {{ trans('navigation.lemmas') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/lemma.css')!!}
+@stop
+
 @section('body')
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_lemma')}}: {{ $lemma->lemma}}</h2>
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>

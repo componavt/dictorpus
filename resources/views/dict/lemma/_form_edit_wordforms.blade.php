@@ -1,7 +1,9 @@
-        @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
-            <table>
+@include('widgets.form._url_args_by_post',['url_args'=>$url_args])
+        <div class="table-responsive">
+            <table class="word-form-table">
                 <tr>
                     <th>&nbsp;</th>
+                    <th class="warning">{{trans('dict.wordform_field_comments')}}</th>
                     <th>{{$dialect_name}}</th>
                 </tr>
                 @if ($lemma->wordformsWithAllGramsets($dialect_id))
@@ -10,13 +12,11 @@
                         <td>
                             {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString(', ',true)}}&nbsp;
                         </td>
-                        @foreach ([0,1] as $i)
                         <td>@include('widgets.form._formitem_text',
-                               ['name' => 'lang_wordforms['.$gramset_id.']['.$dialect_id.']['.$i.']',
+                               ['name' => 'lang_wordforms['.$gramset_id.']['.$dialect_id.']',
                                 'special_symbol' => true,
-                                'value'=> isset($dialect_wordform[$dialect_id][$i]) ? $dialect_wordform[$dialect_id][$i]->wordform : NULL
+                                'value'=> $lemma->wordform($gramset_id,$dialect_id)
                                ])</td>
-                        @endforeach
                         <td>@include('widgets.form._formitem_select', 
                                 ['name' => 'lang_wordforms_dialect['.$gramset_id.']', 
                                  'values' =>$dialect_values,
@@ -44,4 +44,5 @@
                </tr>
                 @endforeach
             </table>
+        </div>
 
