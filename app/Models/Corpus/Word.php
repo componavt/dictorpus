@@ -47,4 +47,15 @@ class Word extends Model
         return $word;
     }
     
+    public function leftNeighbor() {
+        if ($this->w_id == 1) { return; }
+        $word = Word::where('text_id',$this->text_id)
+                ->where('sentence_id',$this->sentence_id)
+                ->where('w_id','<',$this->w_id)
+                ->orderBy('w_id','desc')
+                //->toSql();
+                ->first();
+//dd($word.'|'.$this->text_id.'|'.$this->sentence_id.'|'.$this->w_id);        
+        return $word;
+    }
 }

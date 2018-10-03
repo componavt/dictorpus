@@ -171,4 +171,15 @@ class Wordform extends Model
         }
     }
     
+    public function langsArr() {
+        $langs = [];
+        $lemmas = $this->lemmas;
+        if (!sizeof($lemmas)) { return; }
+        
+        foreach ($lemmas as $lemma) {
+            $langs[] = $lemma->lang_id;
+        }
+        
+        return array_unique($langs);
+    }
 }

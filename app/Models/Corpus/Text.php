@@ -595,6 +595,16 @@ class Text extends Model
         }
     }
     
+    /*
+     * нужно на дереве xml найти узел с последним w_id, добавить к нему содержимое остальных узлов и остальные узлы удалить.
+     * удалить записи в meaning_text для удаленных слов, если у meaning_text.lemma_id нет таких словоформ, то удалить и эти связи
+     * обновить таблицу words: изменить последнее слово и удалить остальные
+     * обновить text_wordform
+     */
+    public function mergeWords($word_founded) {
+        
+    }
+    
     /**
      * Add link
      * 
@@ -604,13 +614,11 @@ class Text extends Model
      * @param Word $word - Word Object
      */
     public function addLinkWithMeaning($lemma, $meaning_id, $w_id, $word){
-        if (!$meaning_id) {
-            return;
-        }
+        if (!$meaning_id) { return; }
+        
         $meaning = Meaning::find($meaning_id);
-        if (!$meaning) {
-            return;
-        }
+        if (!$meaning) { return; }
+        
         DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->id
                 . " and w_id=$w_id");
 //                $text->meanings()->where('w_id',$w_id)->detach(); 
