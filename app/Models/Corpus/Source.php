@@ -4,6 +4,8 @@ namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Corpus\Text;
+
 class Source extends Model
 {
     protected $fillable = ['title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'];
@@ -20,4 +22,17 @@ class Source extends Model
         parent::boot();
     }
     
+    /**
+     * remove source if exists and don't link with other texts
+     * 
+     * @param INT $source_id
+     * @param INT $text_id
+     */
+    public static function removeUnused($source_id, $text_id) {
+        if ($source_id && !Text::where('id','<>',$text_id)
+                               ->where('source_id',$source_id)
+                               ->count()) {
+            Source::find($source_id)->delete();
+        }
+    }
 }

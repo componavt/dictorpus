@@ -39,6 +39,18 @@ class Recorder extends Model
         return $name;
     }
     
+    // Recorder __has_many_through__ Texts
+    public function texts()
+    {
+        $recorder_id = $this->id;
+//        return $this->hasManyThrough(Text::class, Event::class);
+        $texts = Text::whereIn('event_id', function($query) use ($recorder_id) {
+                                $query->select('event_id')->from('event_recorder')
+                                      ->where('recorder_id',$recorder_id);
+                              });
+        return $texts;
+    }
+    
     /** Gets list of recorders
      * 
      * @return Array [1=>'Онегина Нина Федоровна',..]

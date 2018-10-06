@@ -178,6 +178,127 @@ class Text extends Model
         return $value;
     }
 
+    public static function search(Array $url_args) {
+        // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
+        // select texts by title from texts and translation texts
+        $texts = self::orderBy('title');        
+        $texts = self::searchByDialects($texts, $url_args['search_dialect']);
+        $texts = self::searchByInformant($texts, $url_args['search_informant']);
+        $texts = self::searchByLang($texts, $url_args['search_lang']);
+        $texts = self::searchByRecorder($texts, $url_args['search_recorder']);
+        $texts = self::searchByTitle($texts, $url_args['search_title']);
+        $texts = self::searchByWord($texts, $url_args['search_word']);
+        
+        if ($url_args['search_corpus']) {
+            $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
+        } 
+
+        return $texts;
+    }
+
+    public static function searchByDialects($texts, $dialects) {
+        if (!sizeof($dialects)) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($dialects){
+                    $query->select('text_id')
+                    ->from("dialect_text")
+                    ->whereIn('dialect_id',$dialects);
+                });
+    }
+    
+    public static function searchByInformant($texts, $informant) {
+        if (!$informant) {
+            return $texts;
+        }
+        return $texts->whereIn('event_id',function($query) use ($informant){
+                    $query->select('event_id')
+                    ->from('event_informant')
+                    ->where('informant_id',$informant);
+                });
+    }
+    
+    public static function searchByLang($texts, $langs) {
+        if (!sizeof($langs)) {
+            return $texts;
+        }
+        return $texts->whereIn('lang_id',$langs);
+    }
+    
+    public static function searchByRecorder($texts, $recorder) {
+        if (!$recorder) {
+            return $texts;
+        }
+        return $texts->whereIn('event_id',function($query) use ($recorder){
+                    $query->select('event_id')
+                    ->from('event_recorder')
+                    ->where('recorder_id',$recorder);
+                });
+    }
+    
+    public static function searchByTitle($texts, $title) {
+        if (!$title) {
+            return $texts;
+        }
+        return $texts->where(function($q) use ($title){
+                        $q->whereIn('transtext_id',function($query) use ($title){
+                            $query->select('id')
+                            ->from(with(new Transtext)->getTable())
+                            ->where('title','like', $title);
+                        })->orWhere('title','like', $title);
+                });
+                       //->whereOr('transtexts.title','like', $text_title);
+    }
+
+    public static function searchByWord($texts, $word) {
+        if (!$word) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($word){
+                                $query->select('text_id')
+                                ->from('words')
+                                ->where('word','like', $word);
+                            });
+    }
+
+    public static function updateByID($request, $id) {
+        $request['text'] = self::process($request['text']);
+        
+        $text = self::with('transtext','event','source')->get()->find($id);
+        $old_text = $text->text;
+
+        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
+        $text->updated_at = date('Y-m-d H:i:s');
+        $text->save();
+        
+        return $text -> storeAdditionInfo($request, $old_text);
+    }
+    
+    public function storeAdditionInfo($request, $old_text=NULL){
+        $error_message = '';
+        $request['transtext_text'] = Text::process($request['transtext_text']);
+        $request['event_date'] = (int)$request['event_date'];
+        
+        $this->storeVideo($request->youtube_id);
+        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'));
+        $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
+        $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
+        
+        $this->dialects()->detach();
+        $this->dialects()->attach($request->dialects);
+
+        $this->genres()->detach();
+        $this->genres()->attach($request->genres);
+        
+        if ($request->text && ($old_text != $request->text || !$this->text_xml)) {
+            $error_message = $this->markup($this->text_xml);
+        }
+
+        $this->push();        
+        
+        return $error_message;
+    }
+    
     public function storeVideo($youtube_id) {
 //dd($youtube_id);        
         if (!$youtube_id) {
@@ -208,7 +329,7 @@ class Text extends Model
      */
     public function storeTranstext($requestData){
         $is_empty_data = true;
-        if ($requestData['transtext_title'] || $requestData['transtext_text']) {
+        if ($requestData['transtext_title'] && $requestData['transtext_text']) {
             $is_empty_data = false;
         }
 //dd($is_empty_data);
@@ -290,11 +411,12 @@ class Text extends Model
                 $this->event_id = $event->id;
                 $this->save();
             }
-            $this->event->informants()->detach();
-           $this->event->informants()->attach($requestData['event_informants']);
-            $this->event->recorders()->detach();
-            $this->event->recorders()->attach($requestData['event_recorders']);
-        
+            if ($this->event) {
+                $this->event->informants()->detach();
+                $this->event->informants()->attach($requestData['event_informants']);
+                $this->event->recorders()->detach();
+                $this->event->recorders()->attach($requestData['event_recorders']);
+            }
             return $event->id;
             
         } elseif ($event_id) {
@@ -356,29 +478,31 @@ class Text extends Model
             }
         }
     }    
-    
-    public function storeAdditionInfo($request, $old_text=NULL){
-        $error_message = '';
-        
-        $this->storeVideo($request->youtube_id);
-        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'));
-        $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
-        $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
-        
-        $this->dialects()->detach();
-        $this->dialects()->attach($request->dialects);
 
-        $this->genres()->detach();
-        $this->genres()->attach($request->genres);
-        
-        if ($request->text && ($old_text != $request->text || !$this->text_xml)) {
-            $error_message = $this->markup($this->text_xml);
-        }
+    public static function remove($text) {
+        $id = $text->id;
+        $text_title = $text->title;
 
-        $this->push();        
-        
-        return $error_message;
+        $transtext_id = $text->transtext_id;
+        $event_id = $text->event_id;
+        $source_id = $text->source_id;
+
+        $text->dialects()->detach();
+        $text->genres()->detach();
+        $text->meanings()->detach();
+
+        $text->words()->delete();
+        $text->video()->delete();
+
+        $text->delete();
+
+        Transtext::removeUnused($transtext_id, $id);
+        Event::removeUnused($event_id, $id);
+        Source::removeUnused($source_id, $id);
+
+        return $text_title;
     }
+    
     /**
      * process string, replace simbols >, < on html-entities
      *

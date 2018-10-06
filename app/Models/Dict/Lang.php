@@ -198,7 +198,7 @@ class Lang extends Model
                     $tmp[] = "$a=$v";
                 }
             }
-            if (sizeof ($tmp)) {
+           if (sizeof ($tmp)) {
                 $url .= "?".implode('&',$tmp);
             }
         }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Recorder;
+use App\Models\Corpus\Text;
 
 class Event extends Model
 {
@@ -58,6 +59,25 @@ class Event extends Model
         return $this->belongsToMany(Recorder::class);
     }
     
+    /**
+     * remove event if exists and don't link with other texts
+     * 
+     * @param INT $event_id
+     * @param INT $text_id
+     */
+    public static function removeUnused($event_id, $text_id) {
+        if ($event_id && !Text::where('id','<>',$text_id)
+                                  ->where('event_id',$event_id)
+                                  ->count()) {
+            $event = Event::find($event_id);
+            if ($event) {
+                $event->informants()->detach();
+                $event->recorders()->detach();
+                $event->delete();
+            }
+        }
+    }
+
     /**
      * Gets full information about event as array
      * 

@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -54,7 +54,9 @@
                 </td>
                 <td data-th="{{ trans('navigation.texts') }}">
                    @if($informant->texts())
-                         {{ $informant->texts()->count() }} 
+                   <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_informant={{$informant->id}}">
+                       {{ $informant->texts()->count() }} 
+                   </a>
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
@@ -74,10 +76,7 @@
             @endforeach
         </tbody>
         </table>
-        {!! $informants->appends(['limit_num' => $limit_num,
-                             'informant_name' => $informant_name,
-                            'birth_place_id'=>$birth_place_id,
-                            'birth'=>$birth])->render() !!}
+        {!! $informants->appends($url_args)->render() !!}
 
     </div>
 @stop

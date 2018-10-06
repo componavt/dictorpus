@@ -5,26 +5,26 @@
     <div class="col-sm-1">
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_id', 
-                'value' => $search_id,
+                'value' => $url_args['search_id'],
                 'attributes'=>['placeholder' => 'ID']])
     </div>
     <div class="col-sm-2">
          @include('widgets.form._formitem_text', 
-                ['name' => 'informant_name', 
-                'value' => $informant_name,
+                ['name' => 'search_name', 
+                'value' => $url_args['search_name'],
                 'attributes'=>['placeholder' => trans('corpus.informant_name')]])
     </div>
     <div class="col-sm-5">
         @include('widgets.form._formitem_select', 
-                ['name' => 'birth_place_id', 
+                ['name' => 'search_birth_place', 
                  'values' => $place_values,
-                 'value' => $birth_place_id,
+                 'value' => $url_args['search_birth_place'],
                  'attributes' => ['placeholder' => trans('corpus.birth_place')]])                                   
     </div>
     <div class="col-sm-1">
         @include('widgets.form._formitem_text', 
-                ['name' => 'birth', 
-                'value' => $birth,
+                ['name' => 'search_birth', 
+                'value' => $url_args['search_birth'],
                 'attributes'=>['placeholder' => trans('corpus.birth_year')]])
     </div>
     <div class="col-sm-3 search-button-b">       
@@ -33,7 +33,7 @@
         </span>
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 
-                'value' => $limit_num, 
+                'value' => $url_args['limit_num'], 
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) 
         <span>

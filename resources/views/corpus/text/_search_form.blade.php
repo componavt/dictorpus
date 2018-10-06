@@ -9,8 +9,7 @@
                  'value' => $url_args['search_lang'],
                  'title' => trans('dict.lang'),
                  'class'=>'multiple-select-lang form-control',
-        ])
-                 
+        ])                 
     </div>
     <div class="col-md-4">
         @include('widgets.form._formitem_select2',
@@ -36,16 +35,35 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_title', 
                  'special_symbol' => true,
-                'value' => $url_args['search_title'],
-                'attributes'=>['placeholder' => trans('corpus.title')]])
-                               
+                 'value' => $url_args['search_title'],
+                 'title' => trans('corpus.title')
+                ])                               
     </div>
+    <div class="col-md-4">
+        @include('widgets.form._formitem_select', 
+                ['name' => 'search_informant', 
+                 'values' => $informant_values,
+                 'value' => $url_args['search_informant'],
+                 'title' => trans('corpus.informant'),
+        ])                 
+    </div>
+    <div class="col-md-4">
+        @include('widgets.form._formitem_select', 
+                ['name' => 'search_recorder', 
+                 'values' => $recorder_values,
+                 'value' => $url_args['search_recorder'],
+                 'title' => trans('corpus.recorder'),
+        ])                 
+    </div>
+</div>                 
+<div class="row">
     <div class="col-md-4">
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_word', 
                  'special_symbol' => true,
-                'value' => $url_args['search_word'],
-                'attributes'=>['placeholder' => trans('corpus.word')]])
+                 'value' => $url_args['search_word'],
+                 'attributes'=>['placeholder' => trans('corpus.word')]
+                ])
                                
     </div>
     <div class="col-md-4 search-button-b">       

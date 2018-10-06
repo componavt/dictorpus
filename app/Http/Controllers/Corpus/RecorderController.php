@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
 
+use App\Models\Dict\Lang;
 use App\Models\Corpus\Recorder;
 
 class RecorderController extends Controller
@@ -19,9 +20,17 @@ class RecorderController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth:corpus.edit,/corpus/recorder/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->url_args = [
+                    'search_id'     => (int)$request->input('search_id'),
+                    'search_name'    => $request->input('search_name'),
+                ];
+        
+        $this->url_args['search_id'] = $this->url_args['search_id'] ? $this->url_args['search_id'] : NULL;
+        
+        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
 
     /**
@@ -29,18 +38,15 @@ class RecorderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $recorder_name = $request->input('recorder_name');
-        $search_id = (int)$request->input('search_id');
-
-        if (!$search_id) {
-            $search_id = NULL;
-        }
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
         
         $locale = LaravelLocalization::getCurrentLocale();
         $recorders = Recorder::orderBy('name_'.$locale);
 
+        $recorder_name = $url_args['search_id'];
         if ($recorder_name) {
             $recorders = $recorders->where(function($q) use ($recorder_name){
                             $q->where('name_en','like', $recorder_name)
@@ -48,20 +54,16 @@ class RecorderController extends Controller
                     });
         } 
 
-        if ($search_id) {
-            $recorders = $recorders->where('id',$search_id);
+        if ($url_args['search_id']) {
+            $recorders = $recorders->where('id',$url_args['search_id']);
         } 
 
         $numAll = $recorders->count();
 
         $recorders = $recorders->get();
         
-        return view('corpus.recorder.index')
-                    ->with(['recorders' => $recorders,
-                            'recorder_name' => $recorder_name,
-                            'search_id'=>$search_id,
-                            'numAll' => $numAll,
-            ]);
+        return view('corpus.recorder.index',
+                    compact('recorders', 'numAll','args_by_get', 'url_args'));
     }
 
     /**
@@ -114,8 +116,7 @@ class RecorderController extends Controller
     {
         $recorder = Recorder::find($id); 
         
-        return view('corpus.recorder.edit')
-                  ->with(['recorder' => $recorder]);
+        return view('corpus.recorder.edit',compact('recorder'));
     }
 
     /**

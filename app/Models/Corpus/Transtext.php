@@ -5,6 +5,7 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Dict\Lang;
+use App\Models\Corpus\Text;
 
 class Transtext extends Model
 {
@@ -34,5 +35,19 @@ class Transtext extends Model
      */
     public function markup(){  
         $this->text_xml = Text::markupText($this->text);
+    }
+    
+    /**
+     * remove transtext if exists and don't link with other texts
+     * 
+     * @param INT $transtext_id
+     * @param INT $text_id
+     */
+    public static function removeUnused($transtext_id, $text_id) {
+        if ($transtext_id && !Text::where('id','<>',$text_id)
+                                  ->where('transtext_id',$transtext_id)
+                                  ->count()) {
+            Transtext::find($transtext_id)->delete();
+        }        
     }
 }

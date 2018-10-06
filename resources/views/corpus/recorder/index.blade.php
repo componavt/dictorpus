@@ -26,12 +26,12 @@
         !!}
         @include('widgets.form._formitem_text', 
                 ['name' => 'search_id', 
-                'value' => $search_id,
+                'value' => $url_args['search_id'],
                 'attributes'=>['size' => 3,
                                'placeholder' => 'ID']])
          @include('widgets.form._formitem_text', 
-                ['name' => 'recorder_name', 
-                'value' => $recorder_name,
+                ['name' => 'search_name', 
+                'value' => $url_args['search_name'],
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.name')]])
         @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
@@ -45,6 +45,7 @@
                 <th>No</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
+                <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -56,6 +57,13 @@
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$recorder->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$recorder->name_ru}}</td>
+                <td data-th="{{ trans('navigation.texts') }}">
+                   @if($recorder->texts())
+                   <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_recorder={{$recorder->id}}">
+                       {{ $recorder->texts()->count() }} 
+                   </a>
+                    @endif
+                </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', 

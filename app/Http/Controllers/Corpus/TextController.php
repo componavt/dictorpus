@@ -49,9 +49,11 @@ class TextController extends Controller
                     'page'            => (int)$request->input('page'),
                     'search_corpus'   => (array)$request->input('search_corpus'),
                     'search_dialect'  => (array)$request->input('search_dialect'),
+                    'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
+                    'search_recorder' => $request->input('search_recorder'),
                     'search_title'    => $request->input('search_title'),
-                    'search_word'    => $request->input('search_word'),
+                    'search_word'     => $request->input('search_word'),
                 ];
         
         if (!$this->url_args['page']) {
@@ -72,57 +74,19 @@ class TextController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
-        
-        // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
-        // select texts by title from texts and translation texts
-        $texts = Text::orderBy('title');
+    public function index()
+    {        
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
 
-        $text_title = $this->url_args['search_title'];
-        if ($text_title) {
-            $texts = $texts->where(function($q) use ($text_title){
-                            $q->whereIn('transtext_id',function($query) use ($text_title){
-                                $query->select('id')
-                                ->from(with(new Transtext)->getTable())
-                                ->where('title','like', $text_title);
-                            })->orWhere('title','like', $text_title);
-                    });
-                           //->whereOr('transtexts.title','like', $text_title);
-        } 
-
-        if ($this->url_args['search_corpus']) {
-            $texts = $texts->whereIn('corpus_id',$this->url_args['search_corpus']);
-        } 
-
-        $search_dialect = $this->url_args['search_dialect'];
-        if (sizeof($search_dialect)) {
-            $texts = $texts->whereIn('id',function($query) use ($search_dialect){
-                        $query->select('text_id')
-                        ->from("dialect_text")
-                        ->whereIn('dialect_id',$search_dialect);
-                    });
-        } 
-
-        if (isset($search_dialect[0]) && !$this->url_args['search_lang']) {
-            $dialect = Dialect::find($search_dialect[0]);
+        if (isset($url_args['search_dialect'][0]) && !$url_args['search_lang']) {
+            $dialect = Dialect::find($url_args['search_dialect'][0]);
             if ($dialect) {
-                $this->url_args['search_lang'] = [$dialect->lang_id];
+                $url_args['search_lang'] = [$dialect->lang_id];
             }
         }
         
-        if (sizeof($this->url_args['search_lang'])) {
-            $texts = $texts->whereIn('lang_id',$this->url_args['search_lang']);
-        } 
-
-        $search_word = $this->url_args['search_word'];
-        if ($search_word) {
-            $texts = $texts->whereIn('id',function($query) use ($search_word){
-                                $query->select('text_id')
-                                ->from('words')
-                                ->where('word','like', $search_word);
-                            });
-        } 
+        $texts = Text::search($url_args);
 
         $numAll = $texts->count();
 
@@ -134,12 +98,13 @@ class TextController extends Controller
         $lang_values = Lang::getListWithQuantity('texts');
         
         $dialect_values = Dialect::getList();
+        $informant_values = [NULL => ''] + Informant::getList();
+        $recorder_values = [NULL => ''] + Recorder::getList();
 
-        $args_by_get = $this->args_by_get;
-        $url_args = $this->url_args;
         return view('corpus.text.index',
-                compact('corpus_values', 'dialect_values', 'lang_values',
-                        'texts', 'numAll', 'args_by_get', 'url_args'));
+                compact('corpus_values', 'dialect_values', 'informant_values', 
+                        'lang_values', 'recorder_values', 'texts', 'numAll', 
+                        'args_by_get', 'url_args'));
     }
 
     /**
@@ -256,32 +221,24 @@ class TextController extends Controller
         $genre_values = Genre::getList();        
         $genre_value = $text->genreValue();
 
-        return view('corpus.text.edit')
-                  ->with(['text' => $text,
-                          'lang_values' => $lang_values,
-                          'corpus_values' => $corpus_values,
-                          'informant_value' => $informant_value,
-                          'informant_values' => $informant_values,
-                          'place_values' => $place_values,
-                          'recorder_values' => $recorder_values,
-                          'recorder_value' => $recorder_value,
-                          'dialect_values' => $dialect_values,
-                          'dialect_value' => $dialect_value,
-                          'genre_values' => $genre_values,
-                          'genre_value' => $genre_value,
-                        'args_by_get'    => $this->args_by_get,
-                        'url_args'       => $this->url_args,
-                         ]);
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        return view('corpus.text.edit',
+                compact('corpus_values', 'dialect_value', 'dialect_values',
+                        'genre_value', 'genre_values', 'informant_value',
+                        'informant_values','lang_values', 'place_values','text',
+                        'recorder_value', 'recorder_values', 'args_by_get', 'url_args'
+                        ));
     }
 
     /**
      * Shows the form for editing of text example for all lemma meanings connected with this sentence.
      *
      * @param  int  $id - ID of lemma
-     * @param  int  $sentence_id - ID of example
+     * @param  int  $example_id - ID of example
      * @return \Illuminate\Http\Response
      */
-    public function editExample(Request $request, $id, $example_id)
+    public function editExample($id, $example_id)
     {
         //$text = Text::find($id);
         list($sentence, $meanings, $meaning_texts) = 
@@ -322,27 +279,17 @@ class TextController extends Controller
             'lang_id' => 'required|numeric',
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',
-            'event_date' => 'numeric',
+//            'event_date' => 'numeric',
         ]);
-        $request['text'] = Text::process($request['text']);
-        $request['transtext_text'] = Text::process($request['transtext_text']);
-        
-        $text = Text::with('transtext','event','source')->get()->find($id);
-        $old_text = $text->text;
 
-        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
-        $text->updated_at = date('Y-m-d H:i:s');
-        $text->save();
+        $error_message = Text::updateByID($request, $id);
         
-        $error_message = $text -> storeAdditionInfo($request, $old_text);
-
-        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get));
+        $redirect = Redirect::to('/corpus/text/'.$id.($this->args_by_get));
         if ($error_message) {
-            $redirect = $redirect->withErrors($error_message);
+            return $redirect->withErrors($error_message);
         } else {
-            $redirect = $redirect->withSuccess(\Lang::get('messages.updated_success'));
+            return $redirect->withSuccess(\Lang::get('messages.updated_success'));
         }         
-        return $redirect;
     }
 
     /**
@@ -373,46 +320,7 @@ class TextController extends Controller
             try{
                 $text = Text::find($id);
                 if($text){
-                    $text_title = $text->title;
-                    
-                    $transtext_id = $text->transtext_id;
-                    $event_id = $text->event_id;
-                    $source_id = $text->source_id;
-                    
-                    $text->dialects()->detach();
-                    $text->genres()->detach();
-                    $text->meanings()->detach();
-
-                    $text->words()->delete();
-                    $text->video()->delete();
-                    
-                    $text->delete();
-
-                    //remove transtext if exists and don't link with other texts
-                    if ($transtext_id && !Text::where('id','<>',$id)
-                                              ->where('transtext_id',$transtext_id)
-                                              ->count()) {
-                        Transtext::find($transtext_id)->delete();
-                    }
-
-                    //remove event if exists and don't link with other texts
-                    if ($event_id && !Text::where('id','<>',$id)
-                                              ->where('event_id',$event_id)
-                                              ->count()) {
-                        $event = Event::find($event_id);
-                        if ($event) {
-                            $event->recorders()->detach();
-                            $event->delete();
-                        }
-                    }
-
-                    //remove source if exists and don't link with other texts
-                    if ($source_id && !Text::where('id','<>',$id)
-                                           ->where('source_id',$source_id)
-                                           ->count()) {
-                        Source::find($source_id)->delete();
-                    }
-
+                    $text_title = Text::remove($text);
                     $result['message'] = \Lang::get('corpus.text_removed', ['name'=>$text_title]);
                 }
                 else{
@@ -482,7 +390,6 @@ class TextController extends Controller
             return Redirect::to('/corpus/text/')
                            ->withErrors(\Lang::get('messages.record_not_exists'));
         }
-//dd($lemma->revisionHistory);        
         return view('corpus.text.history')
                   ->with(['text' => $text,
                         'args_by_get'    => $this->args_by_get,
@@ -498,25 +405,15 @@ class TextController extends Controller
         $is_all_checked = false;
         while (!$is_all_checked) {
             $text = Text::where('checked',0)->first();
-//dd($text);            
             if ($text) {
                 $message_error = $text->markup($text->text_xml);
                 print "<p>$message_error</p>";
                 $text->checked=1;
                 $text->save();   
-//dd($text->updated_at);                
             } else {
                 $is_all_checked = true;
             }
         }
-/*            
-        $texts = Text::all();
-        foreach ($texts as $text) {
-            $message_error = $text->markup();
-            print "<p>$message_error</p>";
-            $text->save();            
-        }
-*/
 
     $texts = Transtext::all();
     foreach ($texts as $text) {
@@ -564,14 +461,14 @@ class TextController extends Controller
             $text->save();            
         }
         
-        $texts = Transtext::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
-        foreach ($texts as $text) {
+        $transtexts = Transtext::where('text_xml',NULL)->orWhere('text_xml','like','')->get();
+        foreach ($transtexts as $text) {
             $text->markup();
             $text->save();            
         }
     }
     
-    public function fullNewList(Request $request)
+    public function fullNewList()
     {
         $portion = 100;
         $texts = Text::lastCreated($portion)
@@ -600,7 +497,7 @@ class TextController extends Controller
         }
     }
     
-    public function fullUpdatedList(Request $request)
+    public function fullUpdatedList()
     {
         $portion = 100;
         $texts = Text::lastUpdated($portion,1);                                
