@@ -11,11 +11,14 @@
                     <div class="row">
                         <div class="col-sm-7">
                             <h1>{{ trans('navigation.about_project') }} VepKar</h1>
-                            @include('widgets.youtube',
-                                    ['width' => '100%',
-                                     'height' => '270',
-                                     'video' => 'VDYq7yA8ByA'
-                                    ])
+                            @if ($video)
+                                @include('widgets.youtube',
+                                        ['width' => '100%',
+                                         'height' => '270',
+                                         'video' => $video->youtube_id
+                                        ])
+                                        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$video->text_id) }}">{{$video->text->title}}</a></p>
+                            @endif
                             <div class="text-page">        
                             {!! trans('blob.welcome_text') !!}
                             </div>

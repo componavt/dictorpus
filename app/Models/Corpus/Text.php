@@ -1168,4 +1168,18 @@ class Text extends Model
         return DB::table('meaning_text')->select('text_id', 'w_id')
                  ->where('relevance','>',1)->distinct()->count();
     }
+    
+    public static function videoForStart() {
+        $texts = [1859, 1616, 1601];
+//date_default_timezone_set('europe/lisbon');
+        $date1 = new \DateTime('2018-10-07');
+        $date2 = new \DateTime('now');
+
+        $n = $date2->diff($date1)->format("%a") % sizeof($texts);
+        
+        $text = self::find($texts[$n]);
+        if (!$text) { return; }
+        
+        return $text->video;        
+    }
 }
