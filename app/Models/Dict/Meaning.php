@@ -295,19 +295,7 @@ class Meaning extends Model
 
             if (sizeof($meaning_texts)){
                 $meaning_obj = self::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => (int)$meaning['meaning_n']]);
-
-                foreach ($meaning_texts as $lang=>$meaning_text) {
-                    $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => $lang]);
-                    $meaning_text_obj -> meaning_text = $meaning_text;
-                    $meaning_text_obj -> save();
-                }
-                
-                // this meaning has not links with texts yet, add them
-                if (!$meaning_obj->texts()->count()) {
-                    $meaning_obj->addTextLinks();
-                } else {
-                    $meaning_obj->updateTextLinks();
-                }
+                self::updateLemmaMeaningTexts($meaning_texts, $meaning_obj->id);
             }
         }
     }
@@ -324,19 +312,8 @@ class Meaning extends Model
         foreach ($meanings as $meaning_id => $meaning) {
             $meaning_obj = self::find($meaning_id);
 
-            foreach ($meaning['meaning_text'] as $lang=>$meaning_text) {
-                if ($meaning_text) {
-                    $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_id, 'lang_id' => $lang]);
-                    $meaning_text_obj -> meaning_text = $meaning_text;
-                    $meaning_text_obj -> save();
-                } else {
-                    // delete if meaning_text exists in DB but it's empty in form
-                    $meaning_text_obj = MeaningText::where('meaning_id',$meaning_id)->where('lang_id',$lang)->first();
-                    if ($meaning_text_obj) {
-                        $meaning_text_obj -> delete();
-                    }
-                }
-            }
+            self::updateLemmaMeaningTexts($meaning['meaning_text'], $meaning_id);
+            
             $meaning_obj->updateMeaningRelations(isset($meaning['relation']) ? $meaning['relation'] : []);
 
             $meaning_obj->updateMeaningTranslations(isset($meaning['translation']) ? $meaning['translation'] : []);
@@ -346,12 +323,6 @@ class Meaning extends Model
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
                 $meaning_obj -> save();
 
-                // this meaning has not links with texts yet, add them
-                if (!$meaning_obj->texts()->count()) {
-                    $meaning_obj->addTextLinks();
-                } else {
-                    $meaning_obj->updateTextLinks();
-                }
             } else {
                 $meaning_obj->texts()->detach();
                 $meaning_obj -> delete();
@@ -359,6 +330,21 @@ class Meaning extends Model
         }
     }
 
+    public static function updateLemmaMeaningTexts($meanings, $meaning_id){
+        foreach ($meanings as $lang=>$meaning_text) {
+            if ($meaning_text) {
+                $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_id, 'lang_id' => $lang]);
+                $meaning_text_obj -> meaning_text = $meaning_text;
+                $meaning_text_obj -> save();
+            } else {
+                // delete if meaning_text exists in DB but it's empty in form
+                $meaning_text_obj = MeaningText::where('meaning_id',$meaning_id)->where('lang_id',$lang)->first();
+                if ($meaning_text_obj) {
+                    $meaning_text_obj -> delete();
+                }
+            }
+        }
+    }
     /**
      * Updates array of meaning relations 
      *

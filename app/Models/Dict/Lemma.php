@@ -441,7 +441,12 @@ class Lemma extends Model
     public function updateTextLinks()
     {        
         foreach ($this->meanings as $meaning_obj) {
-            $meaning_obj->updateTextLinks();
+            // this meaning has not links with texts yet, add them
+            if (!$meaning_obj->texts()->count()) {
+                $meaning_obj->addTextLinks();
+            } else {
+                $meaning_obj->updateTextLinks();
+            }
         }
     }
 
