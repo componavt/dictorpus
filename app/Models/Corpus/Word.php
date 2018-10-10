@@ -5,6 +5,7 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Dict\Lang;
+use App\Models\Dict\Meaning;
 
 class Word extends Model
 {
@@ -23,7 +24,7 @@ class Word extends Model
     
     // Word __has_many__ Meanings
     public function meanings(){
-        $builder = $this->belongsToMany(Meaning::class)
+        $builder = $this->belongsToMany(Meaning::class,'meaning_text')
                  -> withPivot('relevance');
         return $builder;
     }

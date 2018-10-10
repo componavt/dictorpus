@@ -723,10 +723,26 @@ class Text extends Model
      * нужно на дереве xml найти узел с последним w_id, добавить к нему содержимое остальных узлов и остальные узлы удалить.
      * удалить записи в meaning_text для удаленных слов, если у meaning_text.lemma_id нет таких словоформ, то удалить и эти связи
      * обновить таблицу words: изменить последнее слово и удалить остальные
-     * обновить text_wordform
      */
-    public function mergeWords($word_founded) {
-        
+    public function mergeWords($words_to_merge) {
+        $last_id = array_pop($words_to_merge);
+
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        if (!$sxe || $error_message) {return; }
+        $last_node = $sxe->xpath("//w[@id='".$last_id."']");
+        $last_word_obj = Word::where('text_id',$this->id) -> where('w_id',$last_id)->first();
+        foreach ($words_to_merge as $word_id) {
+            $node = $sxe->xpath("//w[@id='".$word_id."']");
+            $last_node[0][0] = $node[0]->__toString().' '.$last_node[0]->__toString();
+            unset($node[0][0]);
+            $word_obj = Word::where('text_id',$this->id) -> where('w_id',$word_id)->first();
+            $word_obj->meanings()->detach();
+            $word_obj->delete();            
+        }
+        $last_word_obj->word = $last_node[0]->__toString();
+        $last_word_obj->save();
+        $this->text_xml = $sxe->asXML();
+        $this->save();
     }
     
     /**

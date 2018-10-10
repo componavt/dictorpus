@@ -335,7 +335,7 @@ class WordformController extends Controller
     public function tempCheckWordformsWithSpaces() {
 //print "<pre>";        
         $wordforms = Wordform::where('wordform','like','% %')
-//                ->where('id','>',51739)
+                ->where('id','>',9526)
                 ->orderBy('id')->get();//take(10)->
         $count = 1;
         foreach ($wordforms as $wordform) {
@@ -366,10 +366,11 @@ class WordformController extends Controller
                     $founded = true;
                     $word_founded=[$last_word->w_id => $last_word->word];
                     $curr_word = $last_word;
+                    $sent_id = $last_word->sentence_id;
                     $i=sizeof($words)-2;
                     while ($founded && $i>=0) {
                         $curr_word = $curr_word->leftNeighbor();
-                        if (!$curr_word) { 
+                        if (!$curr_word || $curr_word->sentence_id != $sent_id) { 
                             $founded = false;
                             continue;                            
                         }
@@ -383,8 +384,8 @@ class WordformController extends Controller
                     ksort($word_founded);
                     if ($founded) {
                         print "<br><span style='color:red'>FOUNDED: </span>";
-                        print $last_word->text_id.' | '.join(',',array_keys($word_founded));
-                        $last_word->text->mergeWords($word_founded);
+                        print $last_word->text_id.' | '.$last_word->sentence_id.' | '.join(',',array_keys($word_founded));
+                        $last_word->text->mergeWords(array_keys($word_founded));
                     }
                 }
             } else {
