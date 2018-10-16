@@ -409,56 +409,46 @@ class Meaning extends Model
         }
     }
     
+    public function addText($text_id, $sentence_id, $word_id, $w_id, $relevance) {
+        $this->texts()->attach($text_id,
+                ['sentence_id'=>$sentence_id, 
+                 'word_id'=>$word_id, 
+                 'w_id'=>$w_id, 
+                 'relevance'=>$relevance]);        
+    }
+    
+    // if some another meaning has positive evaluation with this sentence, 
+    // it means that this meaning is not suitable for this example
+    public function isNotSuitableForExample($text_id, $w_id) {
+        return DB::table('meaning_text')->where('meaning_id','<>',$this->id)
+                 ->where('text_id',$text_id)->where('w_id',$w_id)
+                 ->where('relevance','>',1)->count();        
+    }
     /**
      * Add records to meaning_text for new meanings
      *
      * @return NULL
      */
-    public function addTextLinks()
-    {
+    public function addTextLinks() {
         $lemma_obj=$this->lemma;
         $lang_id = $lemma_obj->lang_id;
-        // select all words that match the lemma or wordforms of this lemma
-/*        
-        $words = Word::whereIn('text_id',function ($q) use($lang_id){
-                            $q->select('id')->from('texts')
-                              ->where('lang_id',$lang_id);
-                       });
-        $words = $words ->whereIn('word', function ($q) use($lemma_obj){
-                            $q->select('wordform')->from('wordforms')
-                              ->whereIn('id',function($q2) use($lemma_obj){
-                                    $q2->select('wordform_id')->from('lemma_wordform')
-                                       ->where('lemma_id',$lemma_obj->id);
-                                });
-                       })
-                     ->orWhere('word','like',$lemma_obj->lemma)->get();
- */       
         $lemma_t = addcslashes($lemma_obj->lemma,"'");
-        $query = "select * from words, texts "
-                          . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
-                            . " and (word like '".$lemma_t."'";
-//dd($query);        
+        $query = "select * from words, texts where"
+               . " words.text_id = texts.id and texts.lang_id = ".$lang_id
+               . " and (word like '".$lemma_t."'";
         foreach ($lemma_obj->wordforms as $wordform_obj) {
-            $wordform_t = addcslashes($wordform_obj->wordform,"'");
-            $query .= " OR word like '".$wordform_t."'";
+            $wordform_obj->trimWord();
+            $wordform_obj->checkWordformWithSpaces(0);
+            $query .= " OR word like '".addcslashes($wordform_obj->wordform,"'")."'";
         }
-//dd($query.')');        
         $words = DB::select($query.')');
 
         foreach ($words as $word) {
             $relevance = 1;
-            // if some another meaning has positive evaluation with this sentence, 
-            // it means that this meaning is not suitable for this example
-            if (DB::table('meaning_text')->where('meaning_id','<>',$this->id)
-                  ->where('text_id',$word->text_id)->where('w_id',$word->w_id)
-                  ->where('relevance','>',1)->count()>0) {
+            if ($this->isNotSuitableForExample($word->text_id,$word->w_id)) {
                 $relevance = 0;
             }
-            $this->texts()->attach($word->text_id,
-                    ['sentence_id'=>$word->sentence_id, 
-                     'word_id'=>$word->id, 
-                     'w_id'=>$word->w_id, 
-                     'relevance'=>$relevance]);        
+            $this->addText($word->text_id, $word->sentence_id, $word->id, $word->w_id, $relevance);        
         }
     }
     
@@ -477,6 +467,8 @@ class Meaning extends Model
                           . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
                             . " and (word like '".$lemma_t."'";
         foreach ($lemma_obj->wordforms as $wordform_obj) {
+            $wordform_obj->trimWord();
+            $wordform_obj->checkWordformWithSpaces(0);
             $wordform_t = addcslashes($wordform_obj->wordform,"'");
             $query .= " OR word like '".$wordform_t."'";
         }
@@ -521,7 +513,7 @@ class Meaning extends Model
         }
     }
     
-   public static function countTranslations(){
+    public static function countTranslations(){
         return DB::table('meaning_translation')->count();
     }
     

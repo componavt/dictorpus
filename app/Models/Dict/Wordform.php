@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Word;
 
 class Wordform extends Model
 {
@@ -67,62 +68,6 @@ class Wordform extends Model
     }
 
     /**
-     * Stores relations with array of wordform (with gramsets) and create Wordform if is not exists
-     * 
-     * @param array $wordforms array of wordforms with pairs "id of gramset - wordform",
-     *                         f.e. [<gramset_id1> => [<dialect_id1> => <wordform1>, ...], ..] ]
-     * @param Lemma $lemma object of lemma
-     * @param array $dialects array of dialects with pairs gramset - dialect
-     *                         f.e. [<gramset_id1> => [<dialect_id1>, ...], ..] ]
-     *                        is neccessary for changing dialect of wordform
-     * 
-     * @return NULL
-     */
-    public static function storeLemmaWordformGramsets($wordforms, $lemma, $dialects)
-    {
-        if(!$wordforms || !is_array($wordforms)) {
-            return;
-        }
-        foreach($wordforms as $gramset_id=>$wordform_dialect) {
-            $gramset_id = (!(int)$gramset_id) ? NULL : (int)$gramset_id; 
-            foreach ($wordform_dialect as $old_dialect_id => $wordform_texts) {
-                $old_dialect_id = (!(int)$old_dialect_id) ? NULL : (int)$old_dialect_id; 
-                $lemma->deleteWordforms($gramset_id, $old_dialect_id);
-                
-                $dialect_id = (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id])
-                        ? (int)$dialects[$gramset_id] : NULL;
-                $lemma->addWordforms($wordform_texts, $gramset_id, $dialect_id);
-            }
-        }
-//exit(0); 
-    }
-
-    /**
-     * Stores relations with array of wordform (without gramsets изначально) and create Wordform if is not exists
-     * 
-     * @param array $wordforms array of wordforms with pairs "id of gramset - wordform"
-     * @param Lemma $lemma_id object of lemma
-     * 
-     * @return NULL
-     */
-    public static function storeLemmaWordformsEmpty($wordforms, $lemma, $dialect_id='')
-    {
-//exit(0);        
-        if(!$wordforms || !is_array($wordforms)) {
-            return;
-        }
-        $lemma->deleteWordformsEmptyGramsets();
-        
-        foreach($wordforms as $wordform_info) {
-            $wordform_info['gramset'] = ((int)$wordform_info['gramset']) ? (int)$wordform_info['gramset'] : NULL; 
-            if (!(int)$wordform_info['dialect']) {
-                $wordform_info['dialect'] = ((int)$dialect_id) ? (int)$dialect_id : NULL; 
-            }
-            $lemma->addWordforms($wordform_info['wordform'], $wordform_info['gramset'], $wordform_info['dialect']);
-        }
-    }
-    
-    /**
      * Store wordform in nominative for nouns (NOUN), adjectives(ADJ)
      * and infinitive for verbs (VERB)
      * 
@@ -171,6 +116,11 @@ class Wordform extends Model
         }
     }
     
+    /**
+     * return all language ids of all lemmas, linked with this wordform
+     * 
+     * @return Array - array of unique lang_ids
+     */
     public function langsArr() {
         $langs = [];
         $lemmas = $this->lemmas;
@@ -182,4 +132,44 @@ class Wordform extends Model
         
         return array_unique($langs);
     }
+
+    /**
+     * remove extra spaces at the beginning and end of the wordform 
+     * @return boolean true if wordform was trimmed
+     */
+    public function trimWord() {
+        $trim_word = trim($this->wordform);
+        if ($trim_word != $this->wordform) {
+            $this->wordform = $trim_word;
+            $this->save();                    
+            return true;
+        }        
+    }
+    /**
+     * called for the wordforms which contains white spaces (many-word wordforms)
+     * search for words in the text following in the same sequence as in the wordform
+     * and merge these words
+     * 
+     */
+    public function checkWordformWithSpaces($text_output=0) {
+        $words = preg_split("/\s+/",$this->wordform);
+        if (sizeof($words)<2) { return; }
+
+        // search the last word in the text with the languages of the wordform
+        $word_coll = Word::searchByWordInTexts($words[sizeof($words)-1], $this->langsArr());
+        if (!$word_coll) { return; }        
+        
+        print $text_output ? "<br><span style='color:red'>BINGO!</span>: ".sizeof($word_coll) : '';
+        foreach ($word_coll as $last_word) {
+            $words_founded = $last_word->searchForWordform($words);
+            if (!$words_founded) { continue; }
+            
+            print $text_output ? "<br><span style='color:red'>FOUNDED: </span>".
+                  $last_word->text_id.' | '.$last_word->sentence_id.' | '.join(',',array_keys($words_founded)) : '';
+            $error_message = $last_word->mergeWords($words_founded);
+            if ($error_message) {
+                dd($error_message);
+            }
+        }
+    }    
 }

@@ -85,63 +85,11 @@ class LemmaController extends Controller
      */
     public function index()
     {
-        $lemmas = Lemma::orderBy('lemma');
-        
-        if ($this->url_args['search_wordform'] || $this->url_args['search_gramset']) {
-            $search_wordform = $this->url_args['search_wordform'];
-            $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id');
-            if ($search_wordform) {
-                $lemmas = $lemmas->whereIn('wordform_id',function($query) use ($search_wordform){
-                                    $query->select('id')
-                                    ->from('wordforms')
-                                    ->where('wordform','like', $search_wordform);
-                                });
-            } 
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
 
-            if ($this->url_args['search_gramset']) {
-                $lemmas = $lemmas->where('gramset_id',$this->url_args['search_gramset']);
-                /*if (!$this->url_args['search_pos']) {
-                    
-                }*/
-            }
-        }    
-
-        if ($this->url_args['search_lemma']) {
-            $lemmas = $lemmas->where('lemma','like', $this->url_args['search_lemma']);
-        } 
-
-        if ($this->url_args['search_lang']) {
-            $lemmas = $lemmas->where('lang_id',$this->url_args['search_lang']);
-        } 
-         
-        if ($this->url_args['search_pos']) {
-            $lemmas = $lemmas->where('pos_id',$this->url_args['search_pos']);
-        } 
-         
-        if ($this->url_args['search_id']) {
-            $lemmas = $lemmas->where('id',$this->url_args['search_id']);
-        } 
-        
-        if ($this->url_args['search_meaning']) {
-            $search_meaning = $this->url_args['search_meaning'];
-            $lemmas = $lemmas->whereIn('id',function($query) use ($search_meaning){
-                                    $query->select('lemma_id')
-                                    ->from('meanings')
-                                    ->whereIn('id',function($query) use ($search_meaning){
-                                        $query->select('meaning_id')
-                                        ->from('meaning_texts')
-                                        ->where('meaning_text','like', $search_meaning);
-                                    });
-                                });
-        } 
-
-
-        $lemmas = $lemmas->groupBy('lemmas.id')
-                         ->with(['meanings'=> function ($query) {
-                                    $query->orderBy('meaning_n');
-                                }]);
-//dd($lemmas->get());                                
-        $numAll = $lemmas->get()->count();
+        $lemmas = Lemma::search($url_args);
+        $numAll = $lemmas->count();
 //dd($numAll); 
         $lemmas = $lemmas->paginate($this->url_args['limit_num']);         
 //dd($lemmas);        
@@ -151,17 +99,9 @@ class LemmaController extends Controller
         $lang_values = Lang::getListWithQuantity('lemmas');
         $gramset_values = Gramset::getList($this->url_args['search_pos'],$this->url_args['search_lang'],true);
 
-        return view('dict.lemma.index')
-                  ->with(array(
-                               'gramset_values' => $gramset_values,
-                               'lang_values'    => $lang_values,
-                               'lemmas'         => $lemmas,
-                               'numAll'         => $numAll,
-                               'pos_values'     => $pos_values,
-                               'args_by_get'    => $this->args_by_get,
-                               'url_args'       => $this->url_args,
-                              )
-                        );
+        return view('dict.lemma.index',
+                compact('gramset_values', 'lang_values', 'lemmas', 'numAll',
+                        'pos_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -171,6 +111,9 @@ class LemmaController extends Controller
      */
     public function create(Request $request)
     {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
         $phrase_values = (array)$request->input('phrase_lemmas');
         $pos_id = (int)$request->input('pos_id');
         if (!$pos_id) {
@@ -184,19 +127,9 @@ class LemmaController extends Controller
         $lang_values = Lang::getList();
         $langs_for_meaning = Lang::getListWithPriority();
         
-        return view('dict.lemma.create')
-                  ->with(array(
-                               'langs_for_meaning' => $langs_for_meaning,
-                               'lang_id' => $lang_id,
-                               'lang_values' => $lang_values,
-                               'new_meaning_n' => $new_meaning_n,
-                               'phrase_values' => $phrase_values,
-                               'pos_id' => $pos_id,
-                               'pos_values' => $pos_values,
-                               'args_by_get'    => $this->args_by_get,
-                               'url_args'       => $this->url_args,
-                              )
-                        );
+        return view('dict.lemma.create',
+                  compact('langs_for_meaning', 'lang_id', 'lang_values', 'new_meaning_n',
+                          'phrase_values', 'pos_id', 'pos_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -424,12 +357,6 @@ class LemmaController extends Controller
                 
         $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
         
-/*        if ($lemma->phraseLemmas) {
-            foreach ($lemma->phraseLemmas as $lemma1) {
-                $phrase_values[$le]
-            }
-        }
-*/
         return view('dict.lemma.edit')
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
@@ -613,9 +540,9 @@ class LemmaController extends Controller
         }
         $lemma-> wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
         //add wordforms from full table of gramsets
-        Wordform::storeLemmaWordformGramsets($request->lang_wordforms, $lemma, $request->lang_wordforms_dialect);
+        $lemma-> storeWordformGramsets($request->lang_wordforms, $request->lang_wordforms_dialect);
         //add wordforms without gramsets
-        Wordform::storeLemmaWordformsEmpty($request->empty_wordforms, $lemma, $dialect_id);
+        $lemma-> storeWordformsEmpty($request->empty_wordforms, $dialect_id);
 
         // updates links with text examples
         $lemma->updateTextLinks();
@@ -718,53 +645,27 @@ class LemmaController extends Controller
     public function destroy($id)
     {
         $error = false;
-        $status_code = 200;
+//        $status_code = 200;
         $result =[];
         if($id != "" && $id > 0) {
             try{
                 $lemma = Lemma::find($id);
                 if($lemma){
-                    $lemma_title = $lemma->lemma;
-                    
-                    //remove all records from table lemma_wordform
-                    $lemma-> wordforms()->detach();
-                    $lemma-> phraseLemmas()->detach();
-                    
-                    $meanings = $lemma->meanings;
-                    
-                    foreach ($meanings as $meaning) {
-                        DB::table('meaning_relation')
-                          ->where('meaning2_id',$meaning->id)->delete();
-
-                        DB::table('meaning_translation')
-                          ->where('meaning2_id',$meaning->id)->delete();
-
-                        DB::table('meaning_text')
-                          ->where('meaning_id',$meaning->id)->delete();
-
-                        $meaning_texts = $meaning->meaningTexts;
-                        foreach ($meaning_texts as $meaning_text) {
-                            $meaning_text -> delete();
-                        }
-                        $meaning -> delete();
-                    }
-
-                    $lemma->delete();
-                    $result['message'] = \Lang::get('dict.lemma_removed', ['name'=>$lemma_title]);
-                }
-                else{
+                    $result['message'] = \Lang::get('dict.lemma_removed', ['name'=>$lemma->lemma]);
+                    $lemma-> remove();
+                } else{
                     $error = true;
                     $result['error_message'] = \Lang::get('messages.record_not_exists');
                 }
           }catch(\Exception $ex){
                     $error = true;
-                    $status_code = $ex->getCode();
+//                    $status_code = $ex->getCode();
                     $result['error_code'] = $ex->getCode();
                     $result['error_message'] = $ex->getMessage();
                 }
-        }else{
+        } else{
             $error =true;
-            $status_code = 400;
+//            $status_code = 400;
             $result['message']='Request data is empty';
         }
         
@@ -805,7 +706,7 @@ class LemmaController extends Controller
      * gets first N lemmas sorted by length.
      *  
      */
-    public function sortedByLength(Request $request)
+    public function sortedByLength()
     {
         $builder = Lemma::select(DB::raw('*, char_length(lemma) as char_length'));
         
@@ -827,7 +728,7 @@ class LemmaController extends Controller
     /** Gets list of all semantic relations, 
      *  
      */
-    public function relation(Request $request)
+    public function relation()
     {
         $lemmas = Lemma::select(DB::raw('lemmas.id as lemma1_id, lemmas.lemma as lemma1, relation_id, meaning1_id, meaning2_id'))
                        ->join('meanings', 'lemmas.id', '=', 'meanings.lemma_id')

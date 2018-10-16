@@ -314,13 +314,13 @@ class TextController extends Controller
     public function destroy($id)
     {
         $error = false;
-        $status_code = 200;
+//        $status_code = 200;
         $result =[];
         if($id != "" && $id > 0) {
             try{
                 $text = Text::find($id);
                 if($text){
-                    $text_title = Text::remove($text);
+                    $text_title = Text::removeAll($text);
                     $result['message'] = \Lang::get('corpus.text_removed', ['name'=>$text_title]);
                 }
                 else{
@@ -329,13 +329,13 @@ class TextController extends Controller
                 }
           }catch(\Exception $ex){
                     $error = true;
-                    $status_code = $ex->getCode();
+ //                   $status_code = $ex->getCode();
                     $result['error_code'] = $ex->getCode();
                     $result['error_message'] = $ex->getMessage();
                 }
         }else{
             $error =true;
-            $status_code = 400;
+//            $status_code = 400;
             $result['message']='Request data is empty';
         }
         

@@ -332,62 +332,20 @@ class WordformController extends Controller
  *
  */  
     
-    public function tempCheckWordformsWithSpaces() {
+    public function tempCheckWordformsWithSpaces(Request $request) {
 //print "<pre>";        
-        $wordforms = Wordform::where('wordform','like','% %')
-                ->where('id','>',9526)
-                ->orderBy('id')->get();//take(10)->
+        $id = $request->id;
+        $wordforms = Wordform::where('wordform','like','% %');
+        if ($id) {
+            $wordforms = $wordforms->where('id','>',$id);
+        }
+        $wordforms = $wordforms->orderBy('id')->get();//take(10)->
         $count = 1;
         foreach ($wordforms as $wordform) {
             print "<p>".$count++.') '.$wordform->id.', '.$wordform->wordform;
-            $wordform_id = $wordform->id;
             if ($wordform->lemmas()->count()) { 
-                $trim_word = trim($wordform->wordform);
-                if ($trim_word != $wordform->wordform) {
-                    $wordform->wordform = $trim_word;
-                    $wordform->save();                    
-                    print "<br>Wordform saved";
-                }
-                $words = preg_split("/\s+/",$trim_word);
-                if (sizeof($words)<2) { continue; }
-
-                $langs = $wordform->langsArr();
-                //print "<br>";
-                //print_r($words);
-                $word_coll = Word::where('word','like',$words[sizeof($words)-1])
-                        ->whereIn('text_id',function($query) use ($langs){
-                                $query->select('id')
-                                ->from(with(new Text)->getTable())
-                                ->whereIn('lang_id',$langs);
-                            })->get();
-                if (!sizeof($word_coll)) { continue; }        
-                print "<br><span style='color:red'>BINGO!</span>: ".sizeof($word_coll);
-                foreach ($word_coll as $last_word) {
-                    $founded = true;
-                    $word_founded=[$last_word->w_id => $last_word->word];
-                    $curr_word = $last_word;
-                    $sent_id = $last_word->sentence_id;
-                    $i=sizeof($words)-2;
-                    while ($founded && $i>=0) {
-                        $curr_word = $curr_word->leftNeighbor();
-                        if (!$curr_word || $curr_word->sentence_id != $sent_id) { 
-                            $founded = false;
-                            continue;                            
-                        }
-                        $word_founded[$curr_word->w_id] = $curr_word->word;
-                        if ($curr_word->word != $words[$i]) {
-                            $founded = false;
-                            continue;
-                        }
-                        $i--;
-                    }
-                    ksort($word_founded);
-                    if ($founded) {
-                        print "<br><span style='color:red'>FOUNDED: </span>";
-                        print $last_word->text_id.' | '.$last_word->sentence_id.' | '.join(',',array_keys($word_founded));
-                        $last_word->text->mergeWords(array_keys($word_founded));
-                    }
-                }
+                print $wordform->trimWord() ? '<br>Wordform saved' : '';
+                $wordform->checkWordformWithSpaces(1);
             } else {
                 $wordform->delete();
                 print "<br>Wordform deleted";

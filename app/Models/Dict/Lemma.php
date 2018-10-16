@@ -222,6 +222,33 @@ class Lemma extends Model
         return join('; ',$list);
     }
     
+    public function remove() {
+        //remove all records from table lemma_wordform
+        $this-> wordforms()->detach();
+        $this-> phraseLemmas()->detach();
+
+        $meanings = $this->meanings;
+
+        foreach ($meanings as $meaning) {
+            DB::table('meaning_relation')
+              ->where('meaning2_id',$meaning->id)->delete();
+
+            DB::table('meaning_translation')
+              ->where('meaning2_id',$meaning->id)->delete();
+
+            DB::table('meaning_text')
+              ->where('meaning_id',$meaning->id)->delete();
+
+            $meaning_texts = $meaning->meaningTexts;
+            foreach ($meaning_texts as $meaning_text) {
+                $meaning_text -> delete();
+            }
+            $meaning -> delete();
+        }
+
+        $this->delete();
+    }
+    
     /**
      * Gets array of unique dialects, that has any wordforms of this lemma
      * 
@@ -721,6 +748,142 @@ class Lemma extends Model
         $this-> wordforms()
               ->wherePivot('gramset_id',NULL)
               ->detach();
+    }
+
+    public static function search(Array $url_args) {
+        $lemmas = self::orderBy('lemma');
+        if ($url_args['search_wordform'] || $url_args['search_gramset']) {
+            $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id');
+            $lemmas = self::searchByWordform($lemmas, $url_args['search_wordform']);
+            $lemmas = self::searchByGramset($lemmas, $url_args['search_gramset']);
+        }    
+        $lemmas = self::searchByLemma($lemmas, $url_args['search_lemma']);
+        $lemmas = self::searchByLang($lemmas, $url_args['search_lang']);
+        $lemmas = self::searchByPOS($lemmas, $url_args['search_pos']);
+        $lemmas = self::searchByID($lemmas, $url_args['search_id']);
+        $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning']);
+
+        $lemmas = $lemmas->groupBy('lemmas.id')
+                         ->with(['meanings'=> function ($query) {
+                                    $query->orderBy('meaning_n');
+                                }]);
+        return $lemmas;
+    }
+    
+    public static function searchByWordform($lemmas, $wordform) {
+        if (!$wordform) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('wordform_id',function($query) use ($wordform){
+                            $query->select('id')
+                            ->from('wordforms')
+                            ->where('wordform','like', $wordform);
+                        });
+    }
+    
+    public static function searchByGramset($lemmas, $gramset) {
+        if (!$gramset) {
+            return $lemmas;
+        }
+        return $lemmas->where('gramset_id',$gramset);
+    }
+    
+    public static function searchByLemma($lemmas, $lemma) {
+        if (!$lemma) {
+            return $lemmas;
+        }
+        return $lemmas->where('lemma','like',$lemma);
+    }
+    
+    public static function searchByLang($lemmas, $lang) {
+        if (!$lang) {
+            return $lemmas;
+        }
+        return $lemmas->where('lang_id',$lang);
+    }
+    
+    public static function searchByPOS($lemmas, $pos) {
+        if (!$pos) {
+            return $lemmas;
+        }
+        return $lemmas->where('pos_id',$pos);
+    }
+    
+    public static function searchByID($lemmas, $id) {
+        if (!$id) {
+            return $lemmas;
+        }
+        return $lemmas->where('id',$id);
+    }
+    
+    public static function searchByMeaning($lemmas, $meaning) {
+        if (!$meaning) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query) use ($meaning){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($query) use ($meaning){
+                            $query->select('meaning_id')
+                            ->from('meaning_texts')
+                            ->where('meaning_text','like', $meaning);
+                        });
+                    });
+    }
+    
+    /**
+     * Stores relations with array of wordform (with gramsets) and create Wordform if is not exists
+     * 
+     * @param array $wordforms array of wordforms with pairs "id of gramset - wordform",
+     *                         f.e. [<gramset_id1> => [<dialect_id1> => <wordform1>, ...], ..] ]
+     * @param array $dialects array of dialects with pairs gramset - dialect
+     *                         f.e. [<gramset_id1> => [<dialect_id1>, ...], ..] ]
+     *                        is neccessary for changing dialect of wordform
+     * 
+     * @return NULL
+     */
+    public function storeWordformGramsets($wordforms, $dialects)
+    {
+        if(!$wordforms || !is_array($wordforms)) {
+            return;
+        }
+        foreach($wordforms as $gramset_id=>$wordform_dialect) {
+            $gramset_id = (!(int)$gramset_id) ? NULL : (int)$gramset_id; 
+            foreach ($wordform_dialect as $old_dialect_id => $wordform_texts) {
+                $old_dialect_id = (!(int)$old_dialect_id) ? NULL : (int)$old_dialect_id; 
+                $this->deleteWordforms($gramset_id, $old_dialect_id);
+                
+                $dialect_id = (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id])
+                        ? (int)$dialects[$gramset_id] : NULL;
+                $this->addWordforms($wordform_texts, $gramset_id, $dialect_id);
+            }
+        }
+//exit(0); 
+    }
+
+    /**
+     * Stores relations with array of wordform (without gramsets изначально) and create Wordform if is not exists
+     * 
+     * @param array $wordforms array of wordforms with pairs "id of gramset - wordform"
+     * @param Lemma $lemma_id object of lemma
+     * 
+     * @return NULL
+     */
+    public function storeWordformsEmpty($wordforms, $dialect_id='')
+    {
+//exit(0);        
+        if(!$wordforms || !is_array($wordforms)) {
+            return;
+        }
+        $this->deleteWordformsEmptyGramsets();
+        
+        foreach($wordforms as $wordform_info) {
+            $wordform_info['gramset'] = ((int)$wordform_info['gramset']) ? (int)$wordform_info['gramset'] : NULL; 
+            if (!(int)$wordform_info['dialect']) {
+                $wordform_info['dialect'] = ((int)$dialect_id) ? (int)$dialect_id : NULL; 
+            }
+            $this->addWordforms($wordform_info['wordform'], $wordform_info['gramset'], $wordform_info['dialect']);
+        }
     }
     
     /*    

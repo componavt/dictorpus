@@ -79,6 +79,7 @@ textarea.form-control[readonly] {
 }
 
 ol {
+    list-style-position: inside;
     padding-left: 5px;
 }
 

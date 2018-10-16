@@ -59,6 +59,15 @@ class Event extends Model
         return $this->belongsToMany(Recorder::class);
     }
     
+    public static function removeByID($id) {
+        $event = self::find($id);
+        if ($event) {
+            $event->informants()->detach();
+            $event->recorders()->detach();
+            $event->delete();
+        }
+    }    
+
     /**
      * remove event if exists and don't link with other texts
      * 
@@ -69,7 +78,7 @@ class Event extends Model
         if ($event_id && !Text::where('id','<>',$text_id)
                                   ->where('event_id',$event_id)
                                   ->count()) {
-            $event = Event::find($event_id);
+            $event = self::find($event_id);
             if ($event) {
                 $event->informants()->detach();
                 $event->recorders()->detach();

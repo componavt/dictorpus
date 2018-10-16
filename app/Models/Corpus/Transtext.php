@@ -37,6 +37,10 @@ class Transtext extends Model
         $this->text_xml = Text::markupText($this->text);
     }
     
+    public static function removeByID($id) {
+        self::find($id)->delete();
+    }    
+
     /**
      * remove transtext if exists and don't link with other texts
      * 

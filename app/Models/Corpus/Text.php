@@ -98,6 +98,14 @@ class Text extends Model
         return $builder;
     }
 
+    public function addMeaning($meaning_id, $sentence_id, $word_id, $w_id, $relevance) {
+                        $this->meanings()->attach($meaning_id,
+                                ['sentence_id'=>$sentence_id,
+                                 'word_id'=>$word_id,
+                                 'w_id'=>$w_id,
+                                 'relevance'=>$relevance]);        
+    }
+    
     // Text __has_many__ Words
     public function words(){
         return $this->hasMany(Word::class);
@@ -479,7 +487,18 @@ class Text extends Model
         }
     }    
 
-    public static function remove($text) {
+    public function remove() {
+        $this->dialects()->detach();
+        $this->genres()->detach();
+        $this->meanings()->detach();
+
+        $this->words()->delete();
+        $this->video()->delete();
+
+        $this->delete();
+    }    
+
+    public static function removeAll($text) {
         $id = $text->id;
         $text_title = $text->title;
 
@@ -487,20 +506,18 @@ class Text extends Model
         $event_id = $text->event_id;
         $source_id = $text->source_id;
 
-        $text->dialects()->detach();
-        $text->genres()->detach();
-        $text->meanings()->detach();
+        $text->remove();
 
-        $text->words()->delete();
-        $text->video()->delete();
-
-        $text->delete();
-
-        Transtext::removeUnused($transtext_id, $id);
-        Event::removeUnused($event_id, $id);
-        Source::removeUnused($source_id, $id);
+        Transtext::removeByID($transtext_id);
+        Event::removeByID($event_id);
+        Source::removeByID($source_id);
 
         return $text_title;
+    }
+
+    public function updateXML($text_xml) {
+        $this->text_xml = $text_xml;
+        $this->save();
     }
     
     /**
@@ -632,117 +649,125 @@ class Text extends Model
         }
     }
 
+    // saving old checked links
+    public function checkedWords($old_xml) {
+        $checked_words = [];
+        if (!$old_xml) { return $checked_words; } 
+        
+        list($sxe_old,$error_message) = self::toXML($old_xml,$this->id);
+        if (!$sxe_old || $error_message) { return $checked_words; } 
+
+        foreach ($sxe_old->children()->s as $sentence) {
+            $s_id = (int)$sentence->attributes()->id;
+            $word_count = 0;
+            foreach ($sentence->children()->w as $word) {
+                //$checked_words[$s_id][$word_count] = [];                
+                $meanings = DB::table("meaning_text")
+                          ->where('text_id',$this->id)
+                          ->where('w_id',(int)$word->attributes()->id)
+                          ->where('relevance','<>',1)->get();
+                foreach ($meanings as $meaning) {
+                    $checked_words[$s_id][$word_count][$meaning->meaning_id] =
+                            [(string)$word, $meaning->relevance];
+                }
+                $word_count++;
+            }
+        }
+        
+        return $checked_words;
+    }
+    
+    public function getMeaningsByWord($word) {
+        $word_t = addcslashes($word,"'%");
+        $word_t_l = strtolower($word_t);
+        $wordform_q = "(SELECT id from wordforms where wordform like '$word_t' or wordform like '$word_t_l')";
+        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
+        $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id
+                           ." and (lemma like '$word_t' or lemma like '$word_t_l' or id in $lemma_q))")
+                           ->get();    
+        return $meanings;
+    }
     /**
      * Sets links meaning - text - sentence
      */
     public function updateMeaningText($old_xml=null){
-        if (Lang::isLetterChangeable($this->lang_id)) {
-            $is_changeLetters = true;
-        } else {
-            $is_changeLetters = false;
-        }
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        if ($error_message) { return $error_message; }
 
-        if ($error_message) {
-            return $error_message;
-        }
-
-        // saving old checked links
-        $checked_words = [];
-        if ($old_xml) {
-            list($sxe_old,$error_message) = self::toXML($old_xml,$this->id);
-            if ($sxe_old) {
-                foreach ($sxe_old->children()->s as $sentence) {
-                    $s_id = (int)$sentence->attributes()->id;
-                    $word_count = 0;
-                    foreach ($sentence->children()->w as $word) {
-                        //$checked_words[$s_id][$word_count] = [];                
-                        $w_id = (int)$word->attributes()->id;
-                        $meanings = DB::table("meaning_text")
-                                  ->where('relevance','<>',1)
-                                  ->where('text_id',$this->id)
-                                  ->where('w_id',$w_id)
-                                  ->get();
-        //dd($meanings);        
-                        foreach ($meanings as $meaning) {
-                            $checked_words[$s_id][$word_count][$meaning->meaning_id] =
-                                    [(string)$word, $meaning->relevance];
-                        }
-                        $word_count++;
-                    }
-                }
-            }
-        }
+        $checked_words = $this->checkedWords($old_xml);
         DB::statement("DELETE FROM words WHERE text_id=".(int)$this->id);
         DB::statement("DELETE FROM meaning_text WHERE text_id=".(int)$this->id);
 
         foreach ($sxe->children()->s as $sentence) {
-                $s_id = (int)$sentence->attributes()->id;
-                $word_count = 0;
-                foreach ($sentence->children()->w as $word) {
-                    $w_id = $word->attributes()->id;
-                    $w_id = (int)$w_id;
-                    $word_for_DB = (string)$word;
-                    if ($is_changeLetters) {
-                        $word_for_DB = Word::changeLetters($word_for_DB);
-                    }
-                    $word_obj = Word::create(['text_id' => $this->id,
-                                              'sentence_id' => $s_id,
-                                              'w_id' => $w_id,
-                                              'word' => (string)$word_for_DB
-                                            ]);
-                    $word_t = addcslashes($word_for_DB,"'%");
-                    $word_t_l = strtolower($word_t);
-                    $wordform_q = "(SELECT id from wordforms where wordform like '$word_t' or wordform like '$word_t_l')";
-                    $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
-                    $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id
-                                       ." and (lemma like '$word_t' or lemma like '$word_t_l' or id in $lemma_q))")
-                                       ->get();    
-                    foreach ($meanings as $meaning) {
-                        $meaning_id = $meaning->id;
-                        $relevance = 1;
-                        if (isset($checked_words[$s_id][$word_count][$meaning_id][0])) {
-                            if ($checked_words[$s_id][$word_count][$meaning_id][0] == $word 
-                                    || $checked_words[$s_id][$word_count][$meaning_id][0] == $word.',') {
-                                $relevance = $checked_words[$s_id][$word_count][$meaning_id][1];
-                            }
-                        }
-                        $this->meanings()->attach($meaning_id,
-                                ['sentence_id'=>$s_id,
-                                 'word_id'=>$word_obj->id,
-                                 'w_id'=>$w_id,
-                                 'relevance'=>$relevance]);
-                                            
-                    }
-                    $word_count++;
-                }
+            $s_id = (int)$sentence->attributes()->id;
+            $sxe = $this->updateMeaningSentence($sxe, $s_id, $sentence->children()->w, isset($checked_words[$s_id]) ? $checked_words[$s_id] : NULL);
         }
     }
     
-    /*
-     * нужно на дереве xml найти узел с последним w_id, добавить к нему содержимое остальных узлов и остальные узлы удалить.
-     * удалить записи в meaning_text для удаленных слов, если у meaning_text.lemma_id нет таких словоформ, то удалить и эти связи
-     * обновить таблицу words: изменить последнее слово и удалить остальные
-     */
-    public function mergeWords($words_to_merge) {
-        $last_id = array_pop($words_to_merge);
+    public function updateMeaningSentence($sxe, $s_id, $sent_words, $checked_sent_words) {
+        $is_changeLetters = Lang::isLetterChangeable($this->lang_id);
+        $word_count = 0;
+//var_dump($sent_words);
+        $left_words = [];
+        foreach ($sent_words as $word) {
+            $w_id = (int)$word->attributes()->id;
+            $word_for_DB = (string)$word;
+            if ($is_changeLetters) { $word_for_DB = Word::changeLetters($word_for_DB); }
 
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
-        if (!$sxe || $error_message) {return; }
-        $last_node = $sxe->xpath("//w[@id='".$last_id."']");
-        $last_word_obj = Word::where('text_id',$this->id) -> where('w_id',$last_id)->first();
-        foreach ($words_to_merge as $word_id) {
-            $node = $sxe->xpath("//w[@id='".$word_id."']");
-            $last_node[0][0] = $node[0]->__toString().' '.$last_node[0]->__toString();
-            unset($node[0][0]);
-            $word_obj = Word::where('text_id',$this->id) -> where('w_id',$word_id)->first();
-            $word_obj->meanings()->detach();
-            $word_obj->delete();            
+            list($sxe, $word_for_DB) = $this->searchToMerge($sxe, $w_id, $word_for_DB, $left_words);
+            
+            $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_DB]);
+            foreach ($this->getMeaningsByWord($word_for_DB) as $meaning) {
+                $meaning_id = $meaning->id;
+                $relevance = isset($checked_sent_words[$word_count][$meaning_id][0]) && $checked_sent_words[$word_count][$meaning_id][0] == $word 
+                           ? $relevance = $checked_sent_words[$word_count][$meaning_id][1] : 1;
+                $this->addMeaning($meaning_id, $s_id, $word_obj->id, $w_id, $relevance);
+            }
+            $left_words[$w_id] = $word_for_DB;
+            $word_count++;
         }
-        $last_word_obj->word = $last_node[0]->__toString();
-        $last_word_obj->save();
-        $this->text_xml = $sxe->asXML();
-        $this->save();
+//dd($sent_words);        
+        return $sxe;
+    }
+    
+    public function searchToMerge($sxe, $last_w_id, $last_word, $left_words) {
+        $words[$last_w_id] = $last_word;
+        $wordform_is_exist = true;
+        $ids = array_keys($left_words);
+        $i=sizeof($left_words)-1;
+        while ($wordform_is_exist && $i >=0) {
+            $w_id = $ids[$i];
+            $word_with_left = $left_words[$w_id]. ' '.  join(' ',$words);
+            $lemma_count = Lemma::where('lemma','like',$word_with_left)->count();
+            $wordforms_count = Wordform::where('wordform','like',$word_with_left)->count();
+            if (!$lemma_count && !$wordforms_count) {
+                $wordform_is_exist = false;
+            } else {
+                $words = [$w_id =>$left_words[$w_id]] + $words;
+            }
+            $i--;
+        }
+        
+        if ($wordform_is_exist && sizeof($words)>1) {
+            list($sxe,$last_word)=$this->mergeNodes($sxe, $words);
+        }
+        return [$sxe, $last_word];
+    }
+    
+    public function mergeNodes($sxe, $words) {
+        $word_ids = array_keys($words);
+        $last_id = array_pop($word_ids);
+        
+        $last_node = $sxe->xpath("//w[@id='".$last_id."']");
+        foreach ($word_ids as $word_id) {
+            $node = $sxe->xpath("//w[@id='".$word_id."']");
+            if ($node) {
+                $last_node[0][0] = (string)$node[0].' '.(string)$last_node[0];
+                unset($node[0][0]);
+            }
+            Word::removeByTextWid($this->id,$word_id);
+        }
+        return [$sxe, (string)$last_node[0]];
     }
     
     /**
@@ -788,11 +813,16 @@ class Text extends Model
      */
     public static function toXML($text_xml, $id){
         libxml_use_internal_errors(true);
-        $sxe = simplexml_load_string('<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
-                                     '<text>'.$text_xml.'</text>');
+        if (!preg_match("/^\<\?xml/", $text_xml)) {
+            $text_xml = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
+                                     '<text>'.$text_xml.'</text>';
+        }
+//dd($text_xml);        
+        $sxe = simplexml_load_string($text_xml);
+//dd($text_xml);       
         $error_text = '';
         if (!$sxe) {
-            $error_text = "XML loading error\n". '('.$id.')';
+            $error_text = "XML loading error". '('.$id.")\n";
             foreach(libxml_get_errors() as $error) {
                 $error_text .= "\t". $error->message. '('.$id.')';
             }

@@ -29,6 +29,22 @@ class Word extends Model
         return $builder;
     }
 
+    public function remove() {
+        $this->meanings()->detach();
+        $this->delete();            
+    }
+
+    public static function getByTextWid($text_id,$w_id) {
+        return self::where('text_id',$text_id) -> where('w_id',$w_id)->first();
+    }
+
+    public static function removeByTextWid($text_id,$w_id) {
+        $word_obj = self::getByTextWid($text_id,$w_id);
+        if ($word_obj) {
+            $word_obj->remove();   
+        }
+    }
+    
     /**
      * Changes obsolete letters to modern
      * If a parameter lang_id is given, then does the check need such a replacement
@@ -48,9 +64,13 @@ class Word extends Model
         return $word;
     }
     
+    /**
+     * search the nearest left neighbour in the same sentence
+     * @return Word
+     */
     public function leftNeighbor() {
         if ($this->w_id == 1) { return; }
-        $word = Word::where('text_id',$this->text_id)
+        $word = self::where('text_id',$this->text_id)
                 ->where('sentence_id',$this->sentence_id)
                 ->where('w_id','<',$this->w_id)
                 ->orderBy('w_id','desc')
@@ -58,5 +78,100 @@ class Word extends Model
                 ->first();
 //dd($word.'|'.$this->text_id.'|'.$this->sentence_id.'|'.$this->w_id);        
         return $word;
+    }
+    
+    /**
+     * 
+     * @param String $word
+     * @param Array $langs
+     * @return Collection of Words
+     */
+    public static function searchByWordInTexts($word, $langs) {
+        $word_coll = self::where('word','like',$word)
+                ->whereIn('text_id',function($query) use ($langs){
+                        $query->select('id')
+                        ->from(with(new Text)->getTable())
+                        ->whereIn('lang_id',$langs);
+                    })->get();
+        if (sizeof($word_coll)) { 
+            return $word_coll; 
+        }                           
+    }
+    
+    /**
+     * move to the left word in the sentence and compare with the given words
+     * if all words are founded in the text return array of words, else return NULL
+     * 
+     * @param Array $words - array of strings
+     * @return Array [word_id => word_string]
+     */
+    public function searchForWordform($words) {
+        $word_founded=[$this->w_id => $this->word];
+        $curr_word = $this;
+        $sent_id = $this->sentence_id;
+        $i=sizeof($words)-2;
+        while ($i>=0) {
+            $curr_word = $curr_word->leftNeighbor();
+            if (!$curr_word || $curr_word->sentence_id != $sent_id) { 
+                return;                            
+            }
+            $word_founded[$curr_word->w_id] = $curr_word->word;
+            if ($curr_word->word != $words[$i]) {
+                return;
+            }
+            $i--;
+        }
+        ksort($word_founded);
+        return $word_founded;
+    }
+    
+    /*
+     * нужно на дереве xml найти узел с последним w_id, добавить к нему содержимое остальных узлов и остальные узлы удалить.
+     * удалить записи в meaning_text для удаленных слов, если у meaning_text.lemma_id нет таких словоформ, то удалить и эти связи
+     * обновить таблицу words: изменить последнее слово и удалить остальные
+     */
+    public function mergeWords($words_to_merge) {
+        $word_ids = array_keys($words_to_merge);
+        $last_id = array_pop($word_ids);
+        
+        list($sxe,$error_message) = Text::toXML($this->text->text_xml,$this->text_id);        
+        if (!$sxe || $error_message) {return $error_message; }
+//dd($sxe);        
+        $last_node = $sxe->xpath("//w[@id='".$last_id."']");
+        if (!$this->checkWord((string)$last_node[0])) { return; }
+
+        foreach ($word_ids as $word_id) {
+            $node = $sxe->xpath("//w[@id='".$word_id."']");
+            if ($node) {
+                $last_node[0][0] = (string)$node[0].' '.(string)$last_node[0];
+                unset($node[0][0]);
+            }
+            self::removeByTextWid($this->text_id,$word_id);
+        }
+        $this->word = $last_node[0]->__toString();
+        $this->save();
+        $this->text->updateXML($sxe->asXML());
+    }
+    
+    /**
+     * check if Word equils to word in the text
+     * if $word_string is NULL or empty string delete this Word
+     * if the words are different update Word
+     * 
+     * @param String $word_string
+     * @return boolean = true if $word_string = Word->word
+     */
+    public function checkWord($word_string) {
+        if (!$word_string) { 
+            $this->remove();
+            return;             
+        }
+        
+        if ($word_string == $this->word) {
+            return true;
+        }
+        
+        $this->word = $word_string;
+        $this->save();
     }
 }

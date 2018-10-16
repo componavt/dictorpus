@@ -22,6 +22,10 @@ class Source extends Model
         parent::boot();
     }
     
+    public static function removeByID($id) {
+        self::find($id)->delete();
+    }    
+
     /**
      * remove source if exists and don't link with other texts
      * 
