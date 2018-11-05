@@ -59,14 +59,9 @@
     padding-bottom: 20px;
 }
 
-#reflexive-field {
-    display: none;
-}
-
-#phrase-field {
-    display: none;
-}
-
+#reflexive-field,
+#mult-noun,
+#phrase-field,
 #wordforms-field {
     display: none;
 }

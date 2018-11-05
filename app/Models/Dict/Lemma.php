@@ -597,7 +597,7 @@ class Lemma extends Model
         return $all_history;
     }
     
-    public function createDictionaryWordforms($wordforms) {        
+    public function createDictionaryWordforms($wordforms,$plural=NULL) {        
 //dd($request->wordforms);        
         if (!isset($wordforms))
             return;
@@ -608,6 +608,7 @@ class Lemma extends Model
         $wordform_list[3] = $this->lemma;
         
         $pos_id = $this->pos_id;
+
         $gramsets[1] =
         $gramsets[5] =
         $gramsets[6] =
@@ -619,6 +620,10 @@ class Lemma extends Model
         if (!isset($gramsets[$pos_id]))
             return;
         
+        if ($pos_id == 5 && $plural) {
+            $gramsets[5] = [0=>24, 1=>22, 3=>2];
+        }
+
         $dialect = Dialect::where('lang_id', $this->lang_id)->orderBy('sequence_number')->first();
         if (!$dialect)
             return;

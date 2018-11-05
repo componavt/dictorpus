@@ -214,8 +214,8 @@ class LemmaController extends Controller
         $request->replace($data);
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
-        
-        $lemma->createDictionaryWordforms($request->wordforms);
+
+        $lemma->createDictionaryWordforms($request->wordforms, $request->mult_noun);
         $lemma->storePhrase($request->phrase);
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);

@@ -45,6 +45,7 @@ return [
     'meaning' => 'meaning',
     'mood' => 'mood',
     'more_examples' => 'more examples &gt;&gt;',
+    'mult_noun' => 'plural',
     'name' => 'name',
     'name_short' => 'short name',
     'negation' => 'negation',

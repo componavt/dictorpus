@@ -1,12 +1,21 @@
 function posSelect() {
     $("#pos_id")
         .change(function () {
-            if ($( "#pos_id option:selected" ).val()==11) { // is verb
+            if ($("#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
+                $("#mult-noun").hide().prop("disabled", true);
+                $("#phrase-field").hide().prop("disabled", true);
+            } else if ($( "#pos_id option:selected" ).val()==5) { // is noun
+                $("#mult-noun").show().prop("disabled", false);
+                $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
+                $("#phrase-field").hide().prop("disabled", true);
             } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
                 $("#phrase-field").show().prop("disabled", false);
+                $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
+                $("#mult-noun").hide().prop("disabled", true);
             } else {
                 $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
+                $("#mult-noun").hide().prop("disabled", true);
                 $("#phrase-field").hide().prop("disabled", true);
             }
           })

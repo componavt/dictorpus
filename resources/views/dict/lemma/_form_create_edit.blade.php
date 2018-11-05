@@ -23,6 +23,12 @@
                  'checked' => $checked,
                  'tail'=>trans('dict.reflexive_verb').' '.trans('dict.verb')])
         </div>
+        <div id='mult-noun'>
+        @include('widgets.form._formitem_checkbox', 
+                ['name' => 'mult_noun', 
+                 'value' => 1,
+                 'tail'=>trans('dict.mult_noun')])
+        </div>
         <div id='phrase-field'>
         @include('widgets.form._formitem_select2',
                 ['name' => 'phrase',
