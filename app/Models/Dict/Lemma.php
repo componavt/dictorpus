@@ -886,6 +886,14 @@ class Lemma extends Model
         }
     }
     
+    function getMultilangMeaningTexts() {
+        $meanings = [];
+        foreach ($this->meanings as $meaning_obj) {
+             $meanings[] = $meaning_obj->getMultilangMeaningTextsStringLocale();
+        }
+        return $meanings;
+    }
+    
     /*    
     public static function totalCount(){
         return self::count();

@@ -731,7 +731,7 @@ class Text extends Model
     }
     
     public function searchToMerge($sxe, $last_w_id, $last_word, $left_words) {
-        $words[$last_w_id] = $last_word;
+/*        $words[$last_w_id] = $last_word;
         $wordform_is_exist = true;
         $ids = array_keys($left_words);
         $i=sizeof($left_words)-1;
@@ -750,7 +750,7 @@ class Text extends Model
         
         if ($wordform_is_exist && sizeof($words)>1) {
             list($sxe,$last_word)=$this->mergeNodes($sxe, $words);
-        }
+        } */
         return [$sxe, $last_word];
     }
     

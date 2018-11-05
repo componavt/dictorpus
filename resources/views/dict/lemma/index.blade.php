@@ -61,8 +61,8 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('dict.interpretation') }}">
-                    @foreach ($lemma->meanings as $meaning_obj) 
-                        {{$meaning_obj->getMultilangMeaningTextsStringLocale()}}<br>
+                    @foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) 
+                        {{$meaning_string}}<br>
                     @endforeach
                 </td>
                 <td data-th="{{ trans('messages.examples') }}">
