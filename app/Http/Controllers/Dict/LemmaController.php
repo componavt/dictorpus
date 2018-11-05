@@ -220,6 +220,8 @@ class LemmaController extends Controller
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
+        $lemma->updateTextLinks();
+
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
