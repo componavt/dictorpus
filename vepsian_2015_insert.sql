@@ -775,3 +775,7 @@ insert into parts_of_speech values (20,'Predicative', 'предикатив','PR
 --php artisan make:controller Corpus\VideoController
 
 --php artisan make:migration change_column_ieeh_archive_numbers_from_sources
+
+-- 5/11/2018 HELPERS
+-- composer dump-autoload
+-- https://habr.com/post/344342/
