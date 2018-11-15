@@ -61,6 +61,11 @@ Route::group(
         Route::get('/permission', function () {
             return view('page.permission');
         });
+        
+        Route::get('/help/text/show', function () {
+            return view('help.text.show');
+        });
+
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         

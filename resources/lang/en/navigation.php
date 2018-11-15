@@ -23,6 +23,7 @@ return [
     'gramsets' => 'Sets of grammatical attributes',
     'grants' => 'Grants',
     'grams' => 'Grammemes',
+    'help' => 'Help',
     'home' => 'Home',
     'informants' => 'Informants',
     'langs'  => 'Languages',

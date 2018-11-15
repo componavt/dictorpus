@@ -776,6 +776,10 @@ insert into parts_of_speech values (20,'Predicative', 'предикатив','PR
 
 --php artisan make:migration change_column_ieeh_archive_numbers_from_sources
 
+-- github error: cannot lock ref 'refs/remotes/origin/master
+-- git gc --prune=now
+-- https://stackoverflow.com/questions/6656619/git-and-nasty-error-cannot-lock-existing-info-refs-fatal
+
 -- 5/11/2018 HELPERS
 -- composer dump-autoload
 -- https://habr.com/post/344342/

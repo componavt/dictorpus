@@ -27,6 +27,7 @@
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif 
             | <a href="/corpus/text/{{ $text->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
+            | <a href="{{ LaravelLocalization::localizeURL('/help/text/show') }}">? {{ trans('navigation.help') }}</a>            
         </p>
         
         <h2>{{ $text->title }}</h2>

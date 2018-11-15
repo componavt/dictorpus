@@ -452,6 +452,23 @@ h2 {
     color: #972d1a;
 }
 
+.figure {
+/*    background: #f1efef;*/
+    padding: 1% 5%;
+    text-align: center;
+}
+
+.figure img {
+    display: block;
+    height:auto;
+    margin: 1% auto;
+    max-width:100%;
+}
+
+.figure-caption {
+    font-style: italic;
+}
+
 @media screen and (max-width: 395px) {    
     .logo img {
         height: auto;
