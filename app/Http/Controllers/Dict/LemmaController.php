@@ -90,7 +90,7 @@ class LemmaController extends Controller
 
         $lemmas = Lemma::search($url_args);
         $numAll = $lemmas->count();
-//dd($numAll); 
+//dd($lemmas->toSql()); 
         $lemmas = $lemmas->paginate($this->url_args['limit_num']);         
 //dd($lemmas);        
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');

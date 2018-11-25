@@ -768,7 +768,8 @@ class Lemma extends Model
         $lemmas = self::searchByID($lemmas, $url_args['search_id']);
         $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning']);
 
-        $lemmas = $lemmas->groupBy('lemmas.id')
+        $lemmas = $lemmas
+                //->groupBy('lemmas.id') // отключено, неправильно показывает общее число записей
                          ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
                                 }]);
