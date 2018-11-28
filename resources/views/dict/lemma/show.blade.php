@@ -50,15 +50,11 @@
         @if (sizeof($lemma->phrases))
         <p>
             <b>{{trans('dict.phrases')}}:</b> 
+            @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}{{$args_by_get?'&':'?'}}pos_id={{ 
                         \App\Models\Dict\PartOfSpeech::getPhraseID()}}&phrase_lemmas[{{$lemma->id}}]={{$lemma->lemma}}">
                 <i class="fa fa-plus fa-lg add-phrase" title="{{trans('dict.add-phrase')}}"></i>
             </a>
-            @if (isset($is_edit) && User::checkAccess('dict.edit'))
-                @include('widgets.form._button_add', 
-                        ['data_add' => $m_t_s_w,
-                         'class' => 'add-example',
-                         'title' => trans('dict.add-example-5')])
             @endif
             
             @foreach ($lemma->phrases->sortBy('lemma') as $ph_lemma) 
