@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReverseLemma extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['reverse_lemma','id','lang_id','inflexion'];//lemma_
+    protected $fillable = ['reverse_lemma','id','lang_id','inflexion','stem'];//lemma_
     
     // Lemma __belongs_to__ Lang
     public function lemma()

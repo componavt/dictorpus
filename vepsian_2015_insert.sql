@@ -787,3 +787,11 @@ insert into parts_of_speech values (20,'Predicative', 'предикатив','PR
 -- REVERSE_LEMMAS
 -- php artisan make:model Models\Dict\ReverseLemma --migration
 -- php artisan make:controller Dict\ReverseLemmaController
+
+-- php artisan make:migration add_field_in_reverse_lemma_table
+
+-- UNIT TESTS
+php artisan make:test Models\Dict\LemmaTest
+./vendor/bin/phpunit tests/Models/Dict/LemmaTest
+
+php artisan make:test Models\Dict\WordformTest

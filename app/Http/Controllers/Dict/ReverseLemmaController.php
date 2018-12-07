@@ -90,15 +90,7 @@ class ReverseLemmaController extends Controller
             }
 
             foreach ($lemmas as $lemma) {
-                $reverse_lemma = $lemma->reverse();
-    print "<p>".$reverse_lemma.', '.$lemma->id; 
-//exit(0);    
-//                $reverse_lemma_obj = 
-                ReverseLemma::create([
-                    'id' => $lemma->id,
-                    'reverse_lemma' => $reverse_lemma,
-                    'lang_id' => $lemma->lang_id,
-                    'stem' => $lemma->extractStem()]);
+                $lemma->createReverseLemma();
             }            
         }        
     }

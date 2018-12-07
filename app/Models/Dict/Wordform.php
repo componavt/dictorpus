@@ -66,6 +66,15 @@ class Wordform extends Model
              ->wherePivot('lemma_id', $lemma_id)
              ->wherePivot('gramset_id', $gramset_id)->first();
     }
+    
+    public function getMainPart() {
+        $wordform = $this -> wordform;
+        $words = preg_split("/\s+/",$wordform);
+        if (sizeof($words)>1) {
+            $wordform = array_pop($words); // the last element
+        } 
+        return $wordform;
+    }
 
     /**
      * Store wordform in nominative for nouns (NOUN), adjectives(ADJ)

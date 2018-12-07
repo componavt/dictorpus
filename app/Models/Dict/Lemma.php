@@ -413,10 +413,29 @@ class Lemma extends Model
         return 1+ $max_meaning_n;
     }
     
-    public function extractStem() {
-        $stem = NULL;
-        return $stem;
+    public function uniqueWordforms() {
+        $wordforms = [];
+        foreach ($this->wordforms as $wordform) {
+            $wordforms[] = $wordform->getMainPart();
+        }
+        return array_unique($wordforms);
     }
+    
+    public function extractStem() {
+        $inflexion = '';
+        $stem = $this->lemma;
+//print "\n".join(', ',$this->uniqueWordforms());
+
+        foreach ($this->uniqueWordforms() as $wordform) {
+            while (!preg_match("/^".$stem."/", $wordform)) {
+                $inflexion = mb_substr($stem, -1, 1). $inflexion;
+                $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
+//print "\n$wordform, $stem";                
+            }
+        }
+        return [$stem, $inflexion];
+    }
+    
     /**
      * @return Boolean is true, if this lemma can have wordforms, 
      * i.e the part of speech in this language has grammatical sets
@@ -675,21 +694,34 @@ class Lemma extends Model
     }
     
     public function storeReverseLemma() {
-        $reverse = $this->reverse();
         $reverse_lemma = ReverseLemma::find($this->id);
         if ($reverse_lemma) {
+            $reverse = $this->reverse();
+            list($stem, $flexion) = $this->extractStem();
+
             $reverse_lemma->reverse_lemma = $reverse;
             $reverse_lemma->lang_id = $this->lang_id;
-            $reverse_lemma->stem = $this->extractStem();
+            $reverse_lemma->stem = $stem;
+            $reverse_lemma->flexion = $flexion;
+            
             $reverse_lemma -> save();
         } else {
-            ReverseLemma::create([
-                'id' => $this->id,
-                'reverse_lemma' => $reverse,
-                'lang_id' => $this->lang_id,
-                'stem' => $this->extractStem()]);            
+            $this->createReverseLemma();
         }
         
+    }
+    
+    public function createReverseLemma() {
+        $reverse_lemma = $this->reverse();
+//print "<p>".$reverse_lemma.', '.$this->id; 
+        list($stem, $inflexion) = $this->extractStem();
+        
+        ReverseLemma::create([
+            'id' => $this->id,
+            'reverse_lemma' => $reverse_lemma,
+            'lang_id' => $this->lang_id,
+            'stem' => $stem,
+            'inflexion' => $inflexion]);
     }
     
     /**
