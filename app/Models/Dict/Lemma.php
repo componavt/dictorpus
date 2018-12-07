@@ -55,6 +55,11 @@ class Lemma extends Model
         return $this->belongsTo(Lang::class);
     }    
     
+    public function reverseLemma()
+    {
+        return $this->belongsTo(ReverseLemma::class,'id');
+    }    
+    
     // Lemma __belongs_to__ PartOfSpeech
     // $pos_name = PartOfSpeech::find(9)->name_ru;
     public function pos()
@@ -222,7 +227,7 @@ class Lemma extends Model
         return join('; ',$list);
     }
     
-    public function reverseLemma(){
+    public function reverse(){
         $str = $this->lemma;
         $reverse = '';
         for ($i = mb_strlen($str); $i>=0; $i--) {
@@ -235,6 +240,8 @@ class Lemma extends Model
         //remove all records from table lemma_wordform
         $this-> wordforms()->detach();
         $this-> phraseLemmas()->detach();
+        
+        $this->reverseLemma->delete();
 
         $meanings = $this->meanings;
 
@@ -668,7 +675,7 @@ class Lemma extends Model
     
     public function storeReverseLemma() {
         $reverse_lemma = ReverseLemma::firstOrCreate(['id'=>$this->id]);
-        $reverse_lemma->reverse_lemma = $this->reverseLemma();
+        $reverse_lemma->reverse_lemma = $this->reverse();
         $reverse_lemma->lang_id = $this->lang_id;
         $reverse_lemma->stem = $this->extractStem();
         $reverse_lemma -> save();

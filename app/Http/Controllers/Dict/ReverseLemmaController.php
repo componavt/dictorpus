@@ -87,7 +87,7 @@ class ReverseLemmaController extends Controller
             }
 
             foreach ($lemmas as $lemma) {
-                $reverse_lemma = $lemma->reverseLemma();
+                $reverse_lemma = $lemma->reverse();
     print "<p>".$reverse_lemma.', '.$lemma->id; 
 //exit(0);    
 //                $reverse_lemma_obj = 
