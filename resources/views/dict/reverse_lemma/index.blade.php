@@ -27,7 +27,7 @@
             @foreach($reverse_lemmas as $reverse_lemma)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
-                <td data-th="{{ trans('dict.lemma') }}" style="text-align: right">
+                <td data-th="{{ trans('dict.lemma') }}" class="big-size to-right">
                     @if ($reverse_lemma && $reverse_lemma->lemma)
                     <a href="lemma/{{$reverse_lemma->id}}{{$args_by_get}}">
                         {{$reverse_lemma->lemma->lemma}}</a>

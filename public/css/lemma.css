@@ -122,3 +122,21 @@
     width: 33%;
 }
 
+.big-size {
+    font-size: 18px; 
+    line-height: 14px;
+    letter-spacing: 2px;
+    text-align: right;
+}
+
+.big-size a {
+    text-decoration: none;
+}
+
+.big-size a:hover {
+    text-decoration: underline;
+}
+
+.rwd-table .to-right {
+    text-align: right;
+}
