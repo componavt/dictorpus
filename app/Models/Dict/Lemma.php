@@ -697,12 +697,12 @@ class Lemma extends Model
         $reverse_lemma = ReverseLemma::find($this->id);
         if ($reverse_lemma) {
             $reverse = $this->reverse();
-            list($stem, $flexion) = $this->extractStem();
+            list($stem, $inflexion) = $this->extractStem();
 
             $reverse_lemma->reverse_lemma = $reverse;
             $reverse_lemma->lang_id = $this->lang_id;
             $reverse_lemma->stem = $stem;
-            $reverse_lemma->flexion = $flexion;
+            $reverse_lemma->inflexion = $inflexion;
             
             $reverse_lemma -> save();
         } else {
