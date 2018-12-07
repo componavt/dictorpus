@@ -30,7 +30,7 @@
                     @if ($reverse_lemma && $reverse_lemma->lemma)
                     <a href="lemma/{{$reverse_lemma->id}}{{$args_by_get}}">
                         {{$reverse_lemma->lemma->lemma}}</a>
-                    @endif;
+                    @endif
                 </td>
             </tr>
             @endforeach
