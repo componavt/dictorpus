@@ -240,9 +240,10 @@ class Lemma extends Model
         //remove all records from table lemma_wordform
         $this-> wordforms()->detach();
         $this-> phraseLemmas()->detach();
+        if ($this->reverseLemma) {
+            $this->reverseLemma->delete();
+        }
         
-        $this->reverseLemma->delete();
-
         $meanings = $this->meanings;
 
         foreach ($meanings as $meaning) {
@@ -674,11 +675,21 @@ class Lemma extends Model
     }
     
     public function storeReverseLemma() {
-        $reverse_lemma = ReverseLemma::firstOrCreate(['id'=>$this->id]);
-        $reverse_lemma->reverse_lemma = $this->reverse();
-        $reverse_lemma->lang_id = $this->lang_id;
-        $reverse_lemma->stem = $this->extractStem();
-        $reverse_lemma -> save();
+        $reverse = $this->reverse();
+        $reverse_lemma = ReverseLemma::find($this->id);
+        if ($reverse_lemma) {
+            $reverse_lemma->reverse_lemma = $reverse;
+            $reverse_lemma->lang_id = $this->lang_id;
+            $reverse_lemma->stem = $this->extractStem();
+            $reverse_lemma -> save();
+        } else {
+            ReverseLemma::create([
+                'id' => $this->id,
+                'reverse_lemma' => $reverse,
+                'lang_id' => $this->lang_id,
+                'stem' => $this->extractStem()]);            
+        }
+        
     }
     
     /**
