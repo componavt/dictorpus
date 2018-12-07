@@ -7,6 +7,7 @@ use DB;
 
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\ReverseLemma;
 
 use App\Http\Requests;
@@ -32,6 +33,7 @@ class ReverseLemmaController extends Controller
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
                     'search_lang'     => (int)$request->input('search_lang'),
+                    'search_pos'      => (int)$request->input('search_pos'),
                 ];
         
         if (!$this->url_args['page']) {
@@ -69,10 +71,11 @@ class ReverseLemmaController extends Controller
         }
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('reverseLemmas');
+        $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
 
         return view('dict.reverse_lemma.index',
                 compact('lang_values', 'reverse_lemmas', 'numAll',
-                        'args_by_get', 'url_args'));
+                        'pos_values', 'args_by_get', 'url_args'));
     }
 
     public function tmpCreateAllReverse() {

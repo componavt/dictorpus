@@ -2,7 +2,7 @@
                         'method' => 'get'])
         !!}
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-sm-4">
         @include('widgets.form._formitem_select',
                 ['name' => 'search_lang',
                  'values' =>$lang_values,
@@ -10,7 +10,15 @@
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]])
     </div>
         
-    <div class="col-md-6 search-button-b">       
+    <div class="col-sm-4">
+            @include('widgets.form._formitem_select',
+                    ['name' => 'search_pos',
+                     'values' =>$pos_values,
+                     'value' =>$url_args['search_pos'],
+                     'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
+    </div>
+    
+    <div class="col-sm-4 search-button-b">       
         <span>{{trans('messages.show_by')}}</span>
         @include('widgets.form._formitem_text', 
                 ['name' => 'limit_num', 

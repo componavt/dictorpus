@@ -21,6 +21,7 @@
             <tr>
                 <th>No</th>
                 <th style="text-align: right">{{ trans('dict.lemma') }}</th>
+                <th>{{ trans('dict.pos') }}</th>
             </tr>
         </thead>
             @foreach($reverse_lemmas as $reverse_lemma)
@@ -30,6 +31,14 @@
                     @if ($reverse_lemma && $reverse_lemma->lemma)
                     <a href="lemma/{{$reverse_lemma->id}}{{$args_by_get}}">
                         {{$reverse_lemma->lemma->lemma}}</a>
+                    @endif
+                </td>
+                <td data-th="{{ trans('dict.pos') }}">
+                    @if($reverse_lemma->lemma->pos)
+                        <span title="{{$reverse_lemma->lemma->pos->name}}">{{$reverse_lemma->lemma->pos->code}}</span>
+                        @if ($reverse_lemma->lemma->reflexive)
+                            ({{ trans('dict.reflexive_verb') }})
+                        @endif
                     @endif
                 </td>
             </tr>

@@ -29,6 +29,7 @@ class ReverseLemma extends Model
             return NULL;
         }
         $lemmas = self::searchByLang($lemmas, $url_args['search_lang']);
+        $lemmas = self::searchByPOS($lemmas, $url_args['search_pos']);
 
         return $lemmas;
     }
@@ -38,6 +39,16 @@ class ReverseLemma extends Model
             return $lemmas;
         }
         return $lemmas->where('lang_id',$lang);
+    }
+    
+    public static function searchByPOS($lemmas, $pos) {
+        if (!$pos) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function ($query) use ($pos) {
+            $query -> select ('id') -> from('lemmas')
+                   -> where ('pos_id', $pos);
+        });
     }
     
     
