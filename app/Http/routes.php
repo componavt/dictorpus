@@ -114,6 +114,10 @@ Route::group(
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
         
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
+
+        Route::get('dict/reverse_lemma/', 'Dict\ReverseLemmaController@index');
+        Route::get('dict/reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
+
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
         Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
       

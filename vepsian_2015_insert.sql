@@ -783,3 +783,7 @@ insert into parts_of_speech values (20,'Predicative', 'предикатив','PR
 -- 5/11/2018 HELPERS
 -- composer dump-autoload
 -- https://habr.com/post/344342/
+
+-- REVERSE_LEMMAS
+-- php artisan make:model Models\Dict\ReverseLemma --migration
+-- php artisan make:controller Dict\ReverseLemmaController

@@ -231,6 +231,23 @@ class Gramset extends Model
         
         return $list;         
     }
+    
+    /**
+     * 
+     * @param INT $pos_id - part of speech's ID
+     * @param BOOLEAN $is_plural = 1, if lemma is plural noun
+     * @return ARRAY or NULL
+     */
+    public static function dictionaryGramsets($pos_id, $is_plural=NULL) {
+        if ($pos_id == 5 && $is_plural) {
+            return [0=>24, 1=>22, 3=>2];
+        } elseif (in_array($pos_id, [1, 5, 6, 10, 14, 20])) {
+            return [0=>3, 1=>4, 2=>22, 3=>1];
+        } elseif ($pos_id == 11) { // verb
+            return [0=>26, 1=>28, 2=>31, 3=>170];
+        }
+        return NULL;
+    }
 
 }
 

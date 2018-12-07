@@ -72,6 +72,11 @@ class Lang extends Model
         return $this->hasMany(Lemma::class);
     }
 
+    public function reverseLemmas()
+    {
+        return $this->hasMany(ReverseLemma::class);
+    }
+
     // Lang __has_many__ Corpus
     public function corpuses()
     {

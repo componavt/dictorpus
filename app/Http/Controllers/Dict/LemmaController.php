@@ -217,6 +217,7 @@ class LemmaController extends Controller
 
         $lemma->createDictionaryWordforms($request->wordforms, $request->mult_noun);
         $lemma->storePhrase($request->phrase);
+        $lemma->storeReverseLemma();
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -511,6 +512,7 @@ class LemmaController extends Controller
         
         $lemma->createDictionaryWordforms($wordforms_list);    
         $lemma->storePhrase($request->phrase);
+        $lemma->storeReverseLemma();
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);

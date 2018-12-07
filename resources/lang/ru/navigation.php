@@ -38,6 +38,7 @@ return [
     'regions' => 'Регионы',
     'relations' => 'Семантические отношения',
     'references' => 'Cправочники',
+    'reverse_dictionary' => 'Обратный словарь',
     'roles' => 'Роли',
     'stats' => 'Статистика',
     'texts' => 'Тексты',

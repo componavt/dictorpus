@@ -38,6 +38,7 @@ return [
     'regions' => 'Regions',
     'relations' => 'Relations',
     'references' => 'Reference tables',
+    'reverse_dictionary' => 'Reverse dictionary',
     'roles' => 'Roles',
     'stats' => 'Statistics',
     'texts' => 'Texts',

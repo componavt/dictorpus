@@ -222,6 +222,15 @@ class Lemma extends Model
         return join('; ',$list);
     }
     
+    public function reverseLemma(){
+        $str = $this->lemma;
+        $reverse = '';
+        for ($i = mb_strlen($str); $i>=0; $i--) {
+            $reverse .= mb_substr($str, $i, 1);
+        }
+        return $reverse;
+    }   
+    
     public function remove() {
         //remove all records from table lemma_wordform
         $this-> wordforms()->detach();
@@ -396,6 +405,10 @@ class Lemma extends Model
         return 1+ $max_meaning_n;
     }
     
+    public function extractStem() {
+        $stem = NULL;
+        return $stem;
+    }
     /**
      * @return Boolean is true, if this lemma can have wordforms, 
      * i.e the part of speech in this language has grammatical sets
@@ -599,41 +612,22 @@ class Lemma extends Model
     
     public function createDictionaryWordforms($wordforms,$plural=NULL) {        
 //dd($request->wordforms);        
-        if (!isset($wordforms))
-            return;
+        if (!isset($wordforms)) { return; }
+        
         $wordform_list=preg_split("/\s*[,;\s]\s*/",$wordforms);
-        if (!$wordform_list || sizeof($wordform_list)<2)
-            return;
+        if (!$wordform_list || sizeof($wordform_list)<2) { return; }
         
         $wordform_list[3] = $this->lemma;
         
-        $pos_id = $this->pos_id;
-
-        $gramsets[1] =
-        $gramsets[5] =
-        $gramsets[6] =
-        $gramsets[10] =
-        $gramsets[14] = 
-        $gramsets[20] = [0=>3, 1=>4, 2=>22, 3=>1];
-        $gramsets[11] = [0=>26, 1=>28, 2=>31, 3=>170];
+        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $plural);
+        if ($gramsets == NULL) { return; }
         
-        if (!isset($gramsets[$pos_id]))
-            return;
-        
-        if ($pos_id == 5 && $plural) {
-            $gramsets[5] = [0=>24, 1=>22, 3=>2];
-        }
-
         $dialect = Dialect::where('lang_id', $this->lang_id)->orderBy('sequence_number')->first();
-        if (!$dialect)
-            return;
+        if (!$dialect) { return; }
         
-        foreach ($gramsets[$pos_id] as $key=>$gramset_id) {
+        foreach ($gramsets as $key=>$gramset_id) {
             if (isset($wordform_list[$key])) {
-                foreach (preg_split("/\//",$wordform_list[$key]) as $wordform_text) {
-                    $wordform_obj = Wordform::firstOrCreate(['wordform'=>$wordform_text]);
-                    $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect->id]);
-                }
+                $this -> addWordforms($wordform_list[$key], $gramset_id, $dialect->id);
             }
         }
     }
@@ -670,6 +664,14 @@ class Lemma extends Model
         if ($lemmas) {
             $this->phraseLemmas()->attach($lemmas);
         }
+    }
+    
+    public function storeReverseLemma() {
+        $reverse_lemma = ReverseLemma::firstOrCreate(['id'=>$this->id]);
+        $reverse_lemma->reverse_lemma = $this->reverseLemma();
+        $reverse_lemma->lang_id = $this->lang_id;
+        $reverse_lemma->stem = $this->extractStem();
+        $reverse_lemma -> save();
     }
     
     /**
