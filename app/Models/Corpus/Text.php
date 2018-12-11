@@ -1216,7 +1216,7 @@ class Text extends Model
     }
     
     public static function videoForStart() {
-        $texts = [1859, 1616, 1601];
+        $texts = [1859, 2070, 1616, 1601];
 //date_default_timezone_set('europe/lisbon');
         $date1 = new \DateTime('2018-10-07');
         $date2 = new \DateTime('now');
