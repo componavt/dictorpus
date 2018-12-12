@@ -405,12 +405,18 @@ class Text extends Model
         } else {
             $event_id = NULL;
         }
-
+//dd($requestData['event_informants']);
+        if (sizeof($this->event->texts)>1) {
+            
+        }
+//dd($this->event->otherTexts($this));
+        
         if (!$is_empty_data) {
             $data_to_fill = [];
             foreach (['place_id','date'] as $column) {//'informant_id',
                 $data_to_fill[$column] = ($requestData['event_'.$column]) ? $requestData['event_'.$column] : NULL;
             }
+dd($data_to_fill);
             if ($event_id) {
                 $event = Event::find($event_id)->fill($data_to_fill);
                 $event->save();

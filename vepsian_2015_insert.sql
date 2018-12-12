@@ -791,7 +791,10 @@ insert into parts_of_speech values (20,'Predicative', 'предикатив','PR
 -- php artisan make:migration add_field_in_reverse_lemma_table
 
 -- UNIT TESTS
-php artisan make:test Models\Dict\LemmaTest
-./vendor/bin/phpunit tests/Models/Dict/LemmaTest
+-- php artisan make:test Models\Dict\LemmaTest
+-- ./vendor/bin/phpunit tests/Models/Dict/LemmaTest
 
-php artisan make:test Models\Dict\WordformTest
+-- php artisan make:test Models\Dict\WordformTest
+
+-- Одинаковые леммы в карельских наречиях = 506, каждая встречается дважды
+select lemma, count(*) as count from lemmas where lang_id in (4,5,6) group by lemma having count>1;

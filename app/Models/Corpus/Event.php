@@ -59,6 +59,11 @@ class Event extends Model
         return $this->belongsToMany(Recorder::class);
     }
     
+    // Event __has_many__ Textrs
+    public function texts(){
+        return $this->hasMany(Text::class);
+    }
+    
     public static function removeByID($id) {
         $event = self::find($id);
         if ($event) {
@@ -87,6 +92,15 @@ class Event extends Model
         }
     }
 
+    public function otherTexts($withoutText) {
+        if (!$this) {
+            return NULL;
+        }
+//dd($this->texts);        
+        $texts = $this->texts->except("id",$withoutText->id);
+dd($texts);        
+        return $texts;
+    }
     /**
      * Gets full information about event as array
      * 
