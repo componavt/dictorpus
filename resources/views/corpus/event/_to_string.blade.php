@@ -4,7 +4,10 @@
                           ->where('event_id', $event->id)->get();
     $informants_arr = [];
     foreach ($event_informants as $event_informant) {
-            $informants_arr[] = \App\Models\Corpus\Informant::find($event_informant->informant_id)->informantString();
+        $informant = \App\Models\Corpus\Informant::find($event_informant->informant_id);
+        if ($informant) {
+            $informants_arr[] = $informant->informantString();
+        }
     }
     $informant_list = join("<br>\n",$informants_arr);
 
