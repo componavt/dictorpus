@@ -12,7 +12,7 @@ use App\Models\Corpus\Text;
 
 class Event extends Model
 {
-    protected $fillable = ['informant_id','place_id','date'];
+    protected $fillable = ['place_id','date']; //'informant_id',
     public $timestamps = false;
     
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -66,10 +66,14 @@ class Event extends Model
     }
     
     public function updateInformantsAndRecorders($request_data) {
+//dd($this);        
+//dd($request_data);        
         $this->informants()->detach();
         $this->informants()->attach($request_data['event_informants']);
         $this->recorders()->detach();
         $this->recorders()->attach($request_data['event_recorders']);
+//dd($this);        
+//dd($this->informants);        
     }
     
     public static function removeByID($id) {
@@ -131,11 +135,15 @@ class Event extends Model
             return 0; }
             
         $informants = DB::table('event_informant')->where('event_id', $this->id)->lists('informant_id');    
-        if (array_diff($informants,$new_data['event_informants'])) {
+//var_dump($informants);
+//var_dump($new_data['event_informants']);
+        if (sizeof(array_diff($informants,$new_data['event_informants']))
+                || sizeof(array_diff($new_data['event_informants'],$informants))) {
             return 0; } // different informants
         
         $recorders = DB::table('event_recorder')->where('event_id', $this->id)->lists('recorder_id');    
-        if (array_diff($recorders,$new_data['event_recorders'])) {
+        if (sizeof(array_diff($recorders,$new_data['event_recorders']))
+                || sizeof(array_diff($new_data['event_recorders'],$recorders))) {
             return 0; } // different recorders      
         
         return 2;

@@ -420,23 +420,29 @@ class Text extends Model
         if ($event_id) {
             $event = Event::find($event_id);
             $is_possible_changed = $event->isPossibleChanged($this, $request_data);
+//print "<pre>";
+//var_dump($is_possible_changed);            
             if ($is_possible_changed==1) {
                 $event->fill($data_to_fill);
                 $event->save();
             } elseif ($is_possible_changed==0) {
                 $event = $this->createEvent($data_to_fill);
+//var_dump($this->event_id);
+//var_dump($this->event);
             }
         } else {
-            $event = createEvent($data_to_fill);
+            $event = $this->createEvent($data_to_fill);
         }
-        if (!$this->event) { return; }
-        $this->event -> updateInformantsAndRecorders($request_data);
+        //if (!$this->event) { return; }
+        $event -> updateInformantsAndRecorders($request_data);
     }
     
     public function createEvent($data_to_fill) {
         $event = Event::create($data_to_fill);
         $this->event_id = $event->id;
         $this->save();  
+//var_dump($event);
+//var_dump($this->event);
         return $event;
     }
     
