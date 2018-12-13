@@ -335,9 +335,9 @@ class Text extends Model
      * 
      * @return INT or NULL
      */
-    public function storeTranstext($requestData){
+    public function storeTranstext($request_data){
         $is_empty_data = true;
-        if ($requestData['transtext_title'] && $requestData['transtext_text']) {
+        if ($request_data['transtext_title'] && $request_data['transtext_text']) {
             $is_empty_data = false;
         }
 //dd($is_empty_data);
@@ -349,7 +349,7 @@ class Text extends Model
 
         if (!$is_empty_data) {
             foreach (['lang_id','title','text'] as $column) {
-                $data_to_fill[$column] = ($requestData['transtext_'.$column]) ? $requestData['transtext_'.$column] : NULL;
+                $data_to_fill[$column] = ($request_data['transtext_'.$column]) ? $request_data['transtext_'.$column] : NULL;
             }
             if ($transtext_id) {
                
@@ -393,58 +393,61 @@ class Text extends Model
      * 
      * @return INT or NULL
      */
-    public function storeEvent($requestData){
-//dd($requestData);        
+    public function storeEvent($request_data){
+//dd($request_data);        
+        if (!$this) { return; }
         $is_empty_data = true;
-        if(array_filter($requestData)) {
+        if(array_filter($request_data)) {
             $is_empty_data = false;
         }
-//dd($is_empty_data);
-        if ($this) {
-            $event_id = $this->event_id;
-        } else {
-            $event_id = NULL;
-        }
-//dd($requestData['event_informants']);
-        if (sizeof($this->event->texts)>1) {
-            
-        }
-//dd($this->event->otherTexts($this));
-        
+
+        $event_id = $this->event_id;
         if (!$is_empty_data) {
-            $data_to_fill = [];
-            foreach (['place_id','date'] as $column) {//'informant_id',
-                $data_to_fill[$column] = ($requestData['event_'.$column]) ? $requestData['event_'.$column] : NULL;
-            }
-dd($data_to_fill);
-            if ($event_id) {
-                $event = Event::find($event_id)->fill($data_to_fill);
-                $event->save();
-            } else {
-                $event = Event::firstOrCreate($data_to_fill);
-                $this->event_id = $event->id;
-                $this->save();
-            }
-            if ($this->event) {
-                $this->event->informants()->detach();
-                $this->event->informants()->attach($requestData['event_informants']);
-                $this->event->recorders()->detach();
-                $this->event->recorders()->attach($requestData['event_recorders']);
-            }
-            return $event->id;
+            $this->updateEvent($event_id, $request_data);
+            return $this->event_id;
             
         } elseif ($event_id) {
-            $this->event_id = NULL;
-            $this->save();
-            if (!self::where('id','<>',$this->id)
-                     ->where('event_id',$event_id)
-                     ->count()) {
-                $this->event->recorders()->detach();
-                $this->event->informants()->detach();
-                Event::destroy($event_id);
-            }
+            $this->removeEvent();
         }
     }    
+    
+    public function updateEvent($event_id, $request_data) {
+        $data_to_fill = [];
+        foreach (['place_id','date'] as $column) {//'informant_id',
+            $data_to_fill[$column] = ($request_data['event_'.$column]) ? $request_data['event_'.$column] : NULL;
+        }
+//dd($data_to_fill);
+        if ($event_id) {
+            $event = Event::find($event_id);
+            $is_possible_changed = $event->isPossibleChanged($this, $request_data);
+            if ($is_possible_changed==1) {
+                $event->fill($data_to_fill);
+                $event->save();
+            } elseif ($is_possible_changed==0) {
+                $event = $this->createEvent($data_to_fill);
+            }
+        } else {
+            $event = createEvent($data_to_fill);
+        }
+        if (!$this->event) { return; }
+        $this->event -> updateInformantsAndRecorders($request_data);
+    }
+    
+    public function createEvent($data_to_fill) {
+        $event = Event::create($data_to_fill);
+        $this->event_id = $event->id;
+        $this->save();  
+        return $event;
+    }
+    
+    public function removeEvent() {
+        $event_id = $this->event_id;
+        
+        $this->event_id = NULL;
+        $this->save();
+        
+        Event::removeUnused($event_id, $this->id);        
+    }
 
     /**
      * Checks request data. If the request data is not null, 
@@ -455,9 +458,9 @@ dd($data_to_fill);
      * 
      * @return INT or NULL
      */
-    public function storeSource($requestData){
+    public function storeSource($request_data){
         $is_empty_data = true;
-        if(array_filter($requestData)) {
+        if(array_filter($request_data)) {
             $is_empty_data = false;
         }
         if ($this) {
@@ -468,7 +471,7 @@ dd($data_to_fill);
 
         if (!$is_empty_data) {
             foreach (['title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'] as $column) {
-                $data_to_fill[$column] = ($requestData['source_'.$column]) ? $requestData['source_'.$column] : NULL;
+                $data_to_fill[$column] = ($request_data['source_'.$column]) ? $request_data['source_'.$column] : NULL;
             }
             if ($source_id) {
                 $source = Source::find($source_id)->fill($data_to_fill);

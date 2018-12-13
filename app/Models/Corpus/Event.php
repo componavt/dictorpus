@@ -3,6 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
@@ -64,6 +65,13 @@ class Event extends Model
         return $this->hasMany(Text::class);
     }
     
+    public function updateInformantsAndRecorders($request_data) {
+        $this->informants()->detach();
+        $this->informants()->attach($request_data['event_informants']);
+        $this->recorders()->detach();
+        $this->recorders()->attach($request_data['event_recorders']);
+    }
+    
     public static function removeByID($id) {
         $event = self::find($id);
         if ($event) {
@@ -80,26 +88,57 @@ class Event extends Model
      * @param INT $text_id
      */
     public static function removeUnused($event_id, $text_id) {
-        if ($event_id && !Text::where('id','<>',$text_id)
-                                  ->where('event_id',$event_id)
-                                  ->count()) {
-            $event = self::find($event_id);
-            if ($event) {
-                $event->informants()->detach();
-                $event->recorders()->detach();
-                $event->delete();
-            }
+        if (!$event_id) { 
+            return;             
         }
+        if (Text::where('id','<>',$text_id)
+                ->where('event_id',$event_id) 
+                ->count()) {
+            return; 
+                
+        }
+        $event = self::find($event_id);
+        if (!$event) { return; }
+        
+        $event->informants()->detach();
+        $event->recorders()->detach();
+        $event->delete();
     }
+    
+    /**
+     * Is it possible to change the event of text?
+     * Yes, if no other texts with event_id=$this->id, besides $text
+     * No,
+     * @param Text $withoutText 
+     * @param Array $new_data = ['event_place_id'=>$place_id, 'event_date'=>$date,
+     *                          'event_informants'=>[$informants1, $informants2,...],
+     *                          'event_recorders' => [$recorder1, $recorder2, ...]] 
+     * @return Integer  = 0 - to create a new event 
+     *                    1 - to update the event
+     *                    2 - nothing doing, because event is not changed
+     */
+    public function isPossibleChanged($text, $new_data) {
+        if (!$this) { return 0; }
+//var_dump($new_data);        
+        
+        $texts = Text::where('event_id',$this->id)
+                ->where('id','<>',$text->id)->get();
+        // no other texts besides $text
+        if (sizeof($texts)==0) { return 1; }
 
-    public function otherTexts($withoutText) {
-        if (!$this) {
-            return NULL;
-        }
-//dd($this->texts);        
-        $texts = $this->texts->except("id",$withoutText->id);
-dd($texts);        
-        return $texts;
+        if ($this->place_id != $new_data['event_place_id']
+            ||  $this->date != $new_data['event_date']) {
+            return 0; }
+            
+        $informants = DB::table('event_informant')->where('event_id', $this->id)->lists('informant_id');    
+        if (array_diff($informants,$new_data['event_informants'])) {
+            return 0; } // different informants
+        
+        $recorders = DB::table('event_recorder')->where('event_id', $this->id)->lists('recorder_id');    
+        if (array_diff($recorders,$new_data['event_recorders'])) {
+            return 0; } // different recorders      
+        
+        return 2;
     }
     /**
      * Gets full information about event as array
