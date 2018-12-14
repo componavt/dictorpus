@@ -209,7 +209,7 @@ class LemmaController extends Controller
         if ($data['pos_id'] != 11) { // is not verb
             $data['reflexive'] = 0;
         }
-        list($data['lemma'], $data['wordforms']) 
+        list($data['lemma'], $data['wordforms'], $stem, $inflexion) 
                 = Lemma::parseLemmaField(trim($data['lemma']), $data['wordforms']);
         $request->replace($data);
         

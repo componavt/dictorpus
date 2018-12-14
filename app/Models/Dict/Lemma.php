@@ -660,30 +660,40 @@ class Lemma extends Model
     }
     
     public static function parseLemmaField($lemma, $wordforms) {
-        if (!preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs)) {
-            return [str_replace('|','',$lemma),$wordforms];
+        $inflexion = NULL;
+        $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
+        
+        if ($parsing) {
+            $lemma = $regs[1];
         }
-        $regs[1] = str_replace('||','',$regs[1]);
-        if (preg_match("/^(.+)\|(.+)$/",$regs[1],$rregs)){
-            $regs[6] = $rregs[1];
-            $regs[1] = $rregs[1].$rregs[2];
+
+        $lemma = str_replace('||','',$lemma);
+        if (preg_match("/^(.+)\|(.+)$/",$lemma,$rregs)){
+            $stem = $rregs[1];
+            $inflexion = $rregs[2];
+            $lemma = $stem.$inflexion;
         } else {
-            $regs[6] = $regs[1];
+            $stem = $lemma;
         }
-        $regs[2] = str_replace('-', $regs[6], $regs[2]);
-        $regs[3] = str_replace('-', $regs[6], $regs[3]);
+
+        if (!$parsing) {
+            return [$lemma, $wordforms, $stem, $inflexion];
+        }
+
+        $regs[2] = str_replace('-', $stem, $regs[2]);
+        $regs[3] = str_replace('-', $stem, $regs[3]);
         if (isset($regs[5])) {
-            $regs[5] = str_replace('-', $regs[6], $regs[5]);
+            $regs[5] = str_replace('-', $stem, $regs[5]);
         }
 //dd($regs);
 //exit(0);        
-        $lemma = $regs[1];
+
         $wordforms = $regs[2].', '.$regs[3];
         if (isset($regs[5])) {
             $wordforms .= '; '.$regs[5];
         }
         
-        return [$lemma,$wordforms];
+        return [$lemma,$wordforms, $stem, $inflexion];
     }
     
     public function storePhrase($lemmas) {
@@ -693,11 +703,13 @@ class Lemma extends Model
         }
     }
     
-    public function storeReverseLemma() {
+    public function storeReverseLemma($stem=NULL, $inflexion=NULL) {
         $reverse_lemma = ReverseLemma::find($this->id);
         if ($reverse_lemma) {
             $reverse = $this->reverse();
-            list($stem, $inflexion) = $this->extractStem();
+            if (!$stem && !$inflexion) {
+                list($stem, $inflexion) = $this->extractStem();
+            }
 
             $reverse_lemma->reverse_lemma = $reverse;
             $reverse_lemma->lang_id = $this->lang_id;
@@ -706,15 +718,17 @@ class Lemma extends Model
             
             $reverse_lemma -> save();
         } else {
-            $this->createReverseLemma();
+            $this->createReverseLemma($stem, $inflexion);
         }
         
     }
     
-    public function createReverseLemma() {
+    public function createReverseLemma($stem=NULL, $inflexion=NULL) {
         $reverse_lemma = $this->reverse();
 //print "<p>".$reverse_lemma.', '.$this->id; 
-        list($stem, $inflexion) = $this->extractStem();
+        if (!$stem && !$inflexion) {
+            list($stem, $inflexion) = $this->extractStem();
+        }
         
         ReverseLemma::create([
             'id' => $this->id,
