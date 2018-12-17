@@ -68,11 +68,17 @@ class Wordform extends Model
     }
     
     public function getMainPart() {
-        $wordform = $this -> wordform;
-        $words = preg_split("/\s+/",$wordform);
+        mb_internal_encoding("UTF-8");
+        $wordform = trim($this -> wordform);
+/*        if (preg_match_all("/\b([^\b]+)\b/", $wordform, $words, PREG_PATTERN_ORDER)) {
+            $wordform = array_pop($words[1]); // the last element
+        }
+*/        
+        $words = preg_split("/[\s\u{c2a0}]+/",$wordform); // &nbsp; https://stackoverflow.com/a/42424643/1173350
         if (sizeof($words)>1) {
             $wordform = array_pop($words); // the last element
         } 
+ 
         return $wordform;
     }
 

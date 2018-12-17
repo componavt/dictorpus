@@ -424,7 +424,7 @@ class Lemma extends Model
     public function extractStem() {
         $inflexion = '';
         $stem = $this->lemma;
-//print "\n".join(', ',$this->uniqueWordforms());
+//print "\n".join("\n ",$this->uniqueWordforms())."\n";
 
         foreach ($this->uniqueWordforms() as $wordform) {
             while (!preg_match("/^".$stem."/", $wordform)) {

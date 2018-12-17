@@ -20,7 +20,7 @@ class LemmaTest extends TestCase
     {
         $this->assertTrue(true);
     }
-    
+ /*   
     public function testExtractStemVepsVerbManyWordforms()
     {
         $lemma_id = 828;
@@ -30,17 +30,18 @@ class LemmaTest extends TestCase
         $expected = ['pe','sta'];
         $this->assertEquals( $expected, $result);        
     }
-    
+   */ 
     public function testExtractStemPropKarVerbManyWordforms()
     {
         $lemma_id = 2984;
         $lemma = Lemma::find($lemma_id);
+        
         $result = $lemma->extractStem();
         
         $expected = ['aš','tuo'];
         $this->assertEquals( $expected, $result);        
     }
-    
+ /*   
     // чередование в диалектах
     public function testExtractStemVepsNounManyWordforms()
     {
@@ -51,5 +52,5 @@ class LemmaTest extends TestCase
         $expected = ['','aid'];
         $this->assertEquals( $expected, $result);        
     }
-    
+   */ 
 }
