@@ -2,9 +2,11 @@
 
 <div class="row">
     <div class="col-sm-4">
+        
         @include('widgets.form._formitem_text', 
                 ['name' => 'lemma', 
                  'special_symbol' => true,
+                 'value' => $lemma->reverseLemma ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->inflexion : $lemma->lemma,
                  'title'=>trans('dict.lemma')])
     </div>
     <div class="col-sm-4">        

@@ -217,7 +217,7 @@ class LemmaController extends Controller
 
         $lemma->createDictionaryWordforms($request->wordforms, $request->mult_noun);
         $lemma->storePhrase($request->phrase);
-        $lemma->storeReverseLemma();
+        $lemma->storeReverseLemma($stem, $inflexion);
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -497,7 +497,7 @@ class LemmaController extends Controller
         ]);
         
         // LEMMA UPDATING
-        list($new_lemma, $wordforms_list) 
+        list($new_lemma, $wordforms_list, $stem, $inflexion) 
                 = Lemma::parseLemmaField(trim($request->lemma), $request->wordforms);
         
         $lemma->lemma = $new_lemma;
@@ -512,7 +512,7 @@ class LemmaController extends Controller
         
         $lemma->createDictionaryWordforms($wordforms_list);    
         $lemma->storePhrase($request->phrase);
-        $lemma->storeReverseLemma();
+        $lemma->storeReverseLemma($stem, $inflexion);
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);

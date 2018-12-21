@@ -675,8 +675,8 @@ class Lemma extends Model
         } else {
             $stem = $lemma;
         }
-
         if (!$parsing) {
+//var_dump([$parsing, $lemma, $wordforms, $stem, $inflexion]);
             return [$lemma, $wordforms, $stem, $inflexion];
         }
 
@@ -705,6 +705,7 @@ class Lemma extends Model
     
     public function storeReverseLemma($stem=NULL, $inflexion=NULL) {
         $reverse_lemma = ReverseLemma::find($this->id);
+//dd($stem, $inflexion);
         if ($reverse_lemma) {
             $reverse = $this->reverse();
             if (!$stem && !$inflexion) {
