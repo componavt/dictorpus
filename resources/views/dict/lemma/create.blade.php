@@ -18,6 +18,7 @@
                                       'lang_id' => $lang_id,
 				      'pos_id' => $pos_id,
                                       'lang_values' => $lang_values, 
+                                      'lemma_value' => '',
                                       'phrase_values' => $phrase_values,
                                       'pos_values'  => $pos_values])
         {!! Form::close() !!}

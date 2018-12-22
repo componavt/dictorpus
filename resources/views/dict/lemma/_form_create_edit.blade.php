@@ -6,7 +6,7 @@
         @include('widgets.form._formitem_text', 
                 ['name' => 'lemma', 
                  'special_symbol' => true,
-                 'value' => $lemma->reverseLemma ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->inflexion : $lemma->lemma,
+                 'value' => $lemma_value,
                  'title'=>trans('dict.lemma')])
     </div>
     <div class="col-sm-4">        
