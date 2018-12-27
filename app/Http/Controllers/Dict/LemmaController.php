@@ -360,11 +360,16 @@ class LemmaController extends Controller
                 
         $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
         
+        $lemma_value = $lemma->reverseLemma && $lemma->reverseLemma->inflexion 
+                     ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->inflexion 
+                     : $lemma->lemma;
+        
         return view('dict.lemma.edit')
                   ->with(array('lemma' => $lemma,
                                'lang_values' => $lang_values,
                                'pos_values' => $pos_values,
                                'langs_for_meaning' => $langs_for_meaning,
+                               'lemma_value' => $lemma_value,
                                'new_meaning_n' => $new_meaning_n,
                                'all_meanings' => $meaning_relation_values,//$all_meanings,
                                'relation_values' => $relation_values,

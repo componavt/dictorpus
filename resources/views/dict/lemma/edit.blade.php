@@ -25,7 +25,7 @@
                                       'lang_id' => null,
 				      'pos_id'=>null,
                                       'lang_values' => $lang_values, 
-                                      'lemma_value' => $lemma->reverseLemma ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->inflexion : $lemma->lemma,
+                                      'lemma_value' => $lemma_value,
                                       'pos_values'  => $pos_values])
         {!! Form::close() !!}
 @stop

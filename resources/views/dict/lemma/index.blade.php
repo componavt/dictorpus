@@ -37,7 +37,8 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
-                <th>{{ trans('messages.examples') }} *</th>
+                <th>{{ trans('dict.wordforms') }}</th>
+                <th>{{ trans('messages.examples') }}&nbsp;*</th>
                 @if (User::checkAccess('dict.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -64,6 +65,9 @@
                     @foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) 
                         {{$meaning_string}}<br>
                     @endforeach
+                </td>
+                <td data-th="{{ trans('dict.wordforms') }}">
+                    {{$lemma->wordforms ? sizeof($lemma->wordforms) : '0'}}
                 </td>
                 <td data-th="{{ trans('messages.examples') }}">
                     <?php $total_ex = $lemma->countExamples();?>

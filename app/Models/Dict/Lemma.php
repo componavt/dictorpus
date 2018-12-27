@@ -659,7 +659,7 @@ class Lemma extends Model
         }
     }
     
-    public static function parseLemmaField($lemma, $wordforms) {
+    public static function parseLemmaField($lemma, $wordforms='') {
         $inflexion = NULL;
         $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
         
@@ -668,7 +668,7 @@ class Lemma extends Model
         }
 
         $lemma = str_replace('||','',$lemma);
-        if (preg_match("/^(.+)\|(.+)$/",$lemma,$rregs)){
+        if (preg_match("/^(.+)\|(.*)$/",$lemma,$rregs)){
             $stem = $rregs[1];
             $inflexion = $rregs[2];
             $lemma = $stem.$inflexion;
