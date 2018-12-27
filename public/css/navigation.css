@@ -102,14 +102,14 @@ flex: 1 0 auto;
 }
 */
 .bottom-menu > div a {
-    color: #909090;
-    text-decoration: underline;
-}
-
-.bottom-menu > div a span{
+    border-bottom: #909090 1px solid;
+    text-decoration: none;
     color: #d1d1d1;
 }
 
+.bottom-menu p:first-letter {
+    text-transform: uppercase;
+}
 .bottom-menu > div .bottom-menu-title {
     color: #fff;
     font-size: 14px;
