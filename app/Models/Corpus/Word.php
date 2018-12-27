@@ -54,13 +54,20 @@ class Word extends Model
      * @return String
      */
     public static function changeLetters($word,$lang_id=null) {
-        if ($lang_id && !isLangVepsOrKarelian($lang_id)) {
+        if (!$lang_id || $lang_id && !Lang::isLetterChangeable($lang_id)) {
             return $word;
         }
-        $word = str_replace('w','y',$word);
-        $word = str_replace('W','Y',$word);
+
         $word = str_replace('ü','y',$word);
         $word = str_replace('Ü','Y',$word);
+        
+        if (preg_match("/[aou]/u", $word)) { // back vowels
+            $word = str_replace('w','u',$word);
+            $word = str_replace('W','U',$word);            
+        } else {
+            $word = str_replace('w','y',$word);
+            $word = str_replace('W','Y',$word);            
+        }
         return $word;
     }
     

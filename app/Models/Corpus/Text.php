@@ -720,14 +720,12 @@ class Text extends Model
     }
     
     public function updateMeaningSentence($sxe, $s_id, $sent_words, $checked_sent_words) {
-        $is_changeLetters = Lang::isLetterChangeable($this->lang_id);
         $word_count = 0;
 //var_dump($sent_words);
         $left_words = [];
         foreach ($sent_words as $word) {
             $w_id = (int)$word->attributes()->id;
-            $word_for_DB = (string)$word;
-            if ($is_changeLetters) { $word_for_DB = Word::changeLetters($word_for_DB); }
+            $word_for_DB = Word::changeLetters((string)$word,$this->lang_id);
 
             list($sxe, $word_for_DB) = $this->searchToMerge($sxe, $w_id, $word_for_DB, $left_words);
             

@@ -800,3 +800,6 @@ insert into parts_of_speech values (20,'Predicative', 'предикатив','PR
 select lemma, count(*) as count from lemmas where lang_id in (4,5,6) group by lemma having count>1;
 
 -- ./vendor/bin/phpunit tests/Models/Dict/WordformTest
+
+-- php artisan make:test Models\Corpus\WordTest
+-- ./vendor/bin/phpunit tests/Models/Corpus/WordTest
