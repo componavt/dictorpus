@@ -32,7 +32,7 @@ class PartOfSpeechController extends Controller
         $pos_category = array();
         
         foreach ($categories as $row) {
-            $pos_category[$row->category] = PartOfSpeech::getByCategory($row->category);
+            $pos_category[$row->category] = PartOfSpeech::getByCategory($row->category,'code');
         }
 
         return view('dict.pos.index')->with(array('pos_category' => $pos_category));
