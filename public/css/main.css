@@ -38,10 +38,18 @@ a:hover {
     padding: 30px 20px 30px 0;
 }
 
+.user-enter,
 .user-enter-input,
 .user-registr-submit {
     display: flex;
     flex-wrap: wrap;
+}
+
+.user-enter {
+    align-items: flex-end;
+    flex-direction: column;
+    min-height: 150px;
+    justify-content: space-between;
 }
 
 .user-enter-input  > div,
@@ -522,14 +530,22 @@ h2 {
 @media screen and (min-width: 576px) and (max-width: 767px) {    
 }
 /* md */
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 767px) {
     .user-enter {
+        align-items: flex-start;
+        min-height: auto;
         padding-bottom: 30px;
     }
 }
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 768px) {
     .user-enter {
-        padding-top: 70px;
+        padding-top: 63px;
+    }
+}
+@media screen and (max-width: 991px) {
+    .user-menu-name {
+        font-size: 16px;
+        line-height: 16px;
     }
 }
 @media screen and (max-width: 1199px) {
