@@ -17,19 +17,25 @@
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
-            <?php $checked = (isset($lemma->reflexive) && $lemma->reflexive==1 ? 'checked' : NULL); ?>
-        <div id='reflexive-field'>
-        @include('widgets.form._formitem_checkbox', 
+        <?php $checked = (isset($lemma->animacy) && $lemma->animacy==1 ? 'checked' : NULL); ?>
+        <div id='animacy-field'>
+        @include('widgets.form._formitem_radio', 
+                ['name' => 'animacy', 
+                 'values' => trans('messages.bin_answers'),
+                 'checked' => $checked,
+                 'title'=>trans('dict.animacy')])
+        </div>
+        @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'reflexive', 
+                 'obj' => $lemma,
+                 'title'=>trans('dict.reflexive_verb').' '.trans('dict.verb')])
+        <?php $checked = (isset($lemma->plur_tan) && $lemma->plur_tan==1 ? 'checked' : NULL); ?>
+        <div id='plur_tan-field'>
+        @include('widgets.form._formitem_checkbox', 
+                ['name' => 'plur_tan', 
                  'value' => 1,
                  'checked' => $checked,
-                 'tail'=>trans('dict.reflexive_verb').' '.trans('dict.verb')])
-        </div>
-        <div id='mult-noun'>
-        @include('widgets.form._formitem_checkbox', 
-                ['name' => 'mult_noun', 
-                 'value' => 1,
-                 'tail'=>trans('dict.mult_noun')])
+                 'title'=>trans('dict.plur_tan')])
         </div>
         <div id='phrase-field'>
         @include('widgets.form._formitem_select2',

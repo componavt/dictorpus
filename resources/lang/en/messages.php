@@ -13,6 +13,7 @@ return [
     'actions' => 'Actions',
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
+    'bin_answers' => [1=>'yes', 0=>'no'],
     'changed' => 'changed',
     'close' => 'close', 
     'confirm_delete' => 'Do you want to delete this item?',

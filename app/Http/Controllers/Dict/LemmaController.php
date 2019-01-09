@@ -215,7 +215,7 @@ class LemmaController extends Controller
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
 
-        $lemma->createDictionaryWordforms($request->wordforms, $request->mult_noun);
+        $lemma->createDictionaryWordforms($request->wordforms, $request->plur_tan);
         $lemma->storePhrase($request->phrase);
         $lemma->storeReverseLemma($stem, $inflexion);
             
