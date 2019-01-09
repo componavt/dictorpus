@@ -803,3 +803,6 @@ select lemma, count(*) as count from lemmas where lang_id in (4,5,6) group by le
 
 -- php artisan make:test Models\Corpus\WordTest
 -- ./vendor/bin/phpunit tests/Models/Corpus/WordTest
+
+-- php artisan make:migration create_lemma_features_table 
+-- php artisan migrate
