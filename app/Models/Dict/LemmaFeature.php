@@ -5,13 +5,13 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use URL;
-use Lang;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
 
 class LemmaFeature extends Model
 {
     public $timestamps = false;
+    public $incrementing=false;
     protected $fillable = ['id','animacy','abbr','plur_tan','reflexive',
         'transitive','prontype_id','numtype_id','degree_id','advtype_id'];
     public $featuresByPOS = [1  => ['degree_id'],                   // adjective

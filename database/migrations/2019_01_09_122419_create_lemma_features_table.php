@@ -13,7 +13,7 @@ class CreateLemmaFeaturesTable extends Migration
     public function up()
     {
         Schema::create('lemma_features', function (Blueprint $table) {
-            $table->integer('id')->unsigned()->nullable();
+            $table->integer('id')->unsigned()->nullable()->unique();
             $table->foreign('id')->references('id')->on('lemmas');
             
             $table->unsignedTinyInteger('animacy')->nullable();
