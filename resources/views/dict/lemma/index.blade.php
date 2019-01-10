@@ -56,9 +56,7 @@
                 <td data-th="{{ trans('dict.pos') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
-                        @if ($lemma->reflexive)
-                            ({{ trans('dict.reflexive') }})
-                        @endif
+                        @include('dict.lemma.show.features')
                     @endif
                 </td>
                 <td data-th="{{ trans('dict.interpretation') }}">
