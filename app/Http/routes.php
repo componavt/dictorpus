@@ -112,6 +112,7 @@ Route::group(
         Route::get('dict/lemma/wordform/create', 'Dict\LemmaController@createWordform'); 
         Route::get('dict/lemma/wordform/update', 'Dict\LemmaController@updateWordformFromText'); 
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
+        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 
         
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
 

@@ -1,5 +1,5 @@
         <?php $checked = (isset($obj->$name) && $obj->$name==1 ? 'checked' : NULL); ?>
-        <div id='{{$name}}-field'>
+        <div id='{{$name}}-field' class="lemma-feature-field">
         @include('widgets.form._formitem_checkbox', 
                 ['name' => $name, 
                  'value' => 1,

@@ -36,10 +36,8 @@
 
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p>
-            <b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}
-            @if ($lemma->reflexive)
-                ({{ trans('dict.reflexive_verb') }})
-            @endif
+            <b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}  
+            @include('dict.lemma.show.features')
         </p>
         @if ($lemma->phraseLemmasListWithLink())
         <p>

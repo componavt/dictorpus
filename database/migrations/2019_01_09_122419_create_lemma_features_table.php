@@ -13,18 +13,18 @@ class CreateLemmaFeaturesTable extends Migration
     public function up()
     {
         Schema::create('lemma_features', function (Blueprint $table) {
-            $table->integer('lemma_id')->unsigned();
-            $table->foreign('lemma_id')->references('id')->on('lemmas');
+            $table->integer('id')->unsigned()->nullable();
+            $table->foreign('id')->references('id')->on('lemmas');
             
-            $table->tinyInteger('animacy')->unsigned();
-            $table->unsignedTinyInteger('abbr');
-            $table->unsignedTinyInteger('plur_tan');
-            $table->unsignedTinyInteger('transitivity');
-            $table->unsignedTinyInteger('reflexive');
-            $table->unsignedTinyInteger('prontype_id');
-            $table->unsignedTinyInteger('numtype_id');
-            $table->unsignedTinyInteger('degree_id');
-            $table->unsignedTinyInteger('advtype_id');            
+            $table->unsignedTinyInteger('animacy')->nullable();
+            $table->unsignedTinyInteger('abbr')->nullable();
+            $table->unsignedTinyInteger('plur_tan')->nullable();
+            $table->unsignedTinyInteger('reflexive')->nullable();
+            $table->unsignedTinyInteger('transitive')->nullable();
+            $table->unsignedTinyInteger('prontype_id')->nullable();
+            $table->unsignedTinyInteger('numtype_id')->nullable();
+            $table->unsignedTinyInteger('degree_id')->nullable();
+            $table->unsignedTinyInteger('advtype_id')->nullable();            
         });
     }
 

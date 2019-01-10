@@ -37,7 +37,7 @@
                     @if($reverse_lemma->lemma->pos)
                         <span title="{{$reverse_lemma->lemma->pos->name}}">{{$reverse_lemma->lemma->pos->code}}</span>
                         @if ($reverse_lemma->lemma->reflexive)
-                            ({{ trans('dict.reflexive_verb') }})
+                            ({{ trans('dict.reflexive') }})
                         @endif
                     @endif
                 </td>

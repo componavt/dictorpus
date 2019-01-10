@@ -57,7 +57,7 @@
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
                         @if ($lemma->reflexive)
-                            ({{ trans('dict.reflexive_verb') }})
+                            ({{ trans('dict.reflexive') }})
                         @endif
                     @endif
                 </td>

@@ -166,6 +166,12 @@ class Lemma extends Model
                     ->orderBy('sequence_number');
     } 
     
+    // Lemma __has one__ LemmaFeature
+    public function features()
+    {
+        return $this->hasOne(LemmaFeature::class,'id','id');
+    }    
+    
     public function phraseLemmas(){
         $builder = $this->belongsToMany(Lemma::class,'lemma_phrase','phrase_id');
         return $builder;

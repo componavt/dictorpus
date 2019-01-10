@@ -59,10 +59,7 @@
     padding-bottom: 20px;
 }
 
-#reflexive-field,
-#plur_tan-field,
-#phrase-field,
-#wordforms-field {
+.lemma-feature-field {
     display: none;
 }
 

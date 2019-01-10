@@ -1,25 +1,25 @@
 function posSelect() {
     $("#pos_id")
         .change(function () {
+            $(".lemma-feature-field").hide().prop("disabled", true);
             if ($("#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
-                
-                $("#plur_tan-field").hide().prop("disabled", true);
-                $("#phrase-field").hide().prop("disabled", true);
-            } else if ($( "#pos_id option:selected" ).val()==5) { // is noun
+                $("#transitive-field").show().prop("disabled", false);
+            } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun
+                $("#animacy-field").show().prop("disabled", false);
+                $("#abbr-field").show().prop("disabled", false);
                 $("#plur_tan-field").show().prop("disabled", false);
-                
-                $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
-                $("#phrase-field").hide().prop("disabled", true);
+            } else if ($( "#pos_id option:selected" ).val()==6) { // is numeral
+                $("#numtype-field").show().prop("disabled", false);
+            } else if ($( "#pos_id option:selected" ).val()==10) { // is pronoun
+                $("#prontype-field").show().prop("disabled", false);
+            } else if ($( "#pos_id option:selected" ).val()==2) { // is adverb
+                $("#advtype-field").show().prop("disabled", false);
+                $("#degree-field").show().prop("disabled", false);
+            } else if ($( "#pos_id option:selected" ).val()==1) { // is adjective
+                $("#degree-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
                 $("#phrase-field").show().prop("disabled", false);
-                
-                $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
-                $("#plur_tan-field").hide().prop("disabled", true);
-            } else {
-                $("#reflexive-field").hide().attr('checked',false).prop("disabled", true);
-                $("#plur_tan-field").hide().prop("disabled", true);
-                $("#phrase-field").hide().prop("disabled", true);
             }
           })
         .change();    

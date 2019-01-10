@@ -18,6 +18,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
@@ -492,7 +493,6 @@ class LemmaController extends Controller
     public function update(Request $request, $id)
     {
        // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
-
         $lemma= Lemma::findOrFail($id);
         
         $this->validate($request, [
@@ -508,12 +508,10 @@ class LemmaController extends Controller
         $lemma->lemma = $new_lemma;
         $lemma->lang_id = (int)$request->lang_id;
         $lemma->pos_id = (int)$request->pos_id;
-        $lemma->reflexive = (int)$request->reflexive;
-        if ($lemma->pos_id != 11) { // is not verb
-            $lemma->reflexive = 0;
-        }
         $lemma->updated_at = date('Y-m-d H:i:s');
         $lemma->save();
+        
+        LemmaFeature::store($lemma->id, $request);
         
         $lemma->createDictionaryWordforms($wordforms_list);    
         $lemma->storePhrase($request->phrase);
@@ -1023,6 +1021,7 @@ class LemmaController extends Controller
      * 
      * select * from meaning_text where meaning_id in (select id from meanings where lemma_id in (select lemma_id from lemma_wordform where wordform_id=8755))
      */
+    /*
     public function tmpSplitWordforms() {
         $wordforms = Wordform::where('wordform','like','%/%')->take(100)->get();
         foreach($wordforms as $wordform) {
@@ -1052,7 +1051,19 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
             }
             $wordform->delete();
         }
+    }*/
+    
+    public function tmpMoveReflexive() {
+        $lemmas=Lemma::where('reflexive',1)->get();
+       
+        foreach ($lemmas as $lemma) {
+            LemmaFeature::create(['id'=>$lemma->id,
+                'reflexive'=>1]);
+        }
+        print 'done.';
     }
+    
+    
     /** Copy vepsian.{lemma and translation_lemma} to vepkar.lemmas
      * + temp column vepkar.lemmas.temp_translation_lemma_id
      */
