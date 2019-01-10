@@ -1,4 +1,5 @@
 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
+<?php $obj = $lemma->features;;?>
 
 <div class="row">
     <div class="col-sm-4">
@@ -27,36 +28,28 @@
         </div>
         @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'abbr', 
-                 'obj' => $lemma,
                  'title'=>trans('dict.abbr')])
         @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'plur_tan', 
-                 'obj' => $lemma,
                  'title'=>trans('dict.plur_tan')])
         @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'reflexive', 
-                 'obj' => $lemma,
                  'title'=>trans('dict.reflexive').' '.trans('dict.verb')])
         @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'transitive', 
-                 'obj' => $lemma,
                  'title'=>trans('dict.transitive').' '.trans('dict.verb')])
 
         @include('widgets.form._formitem_select_for_field', 
                 ['name' => 'prontype', 
-                 'obj' => $lemma,
                  'lang_file'=> 'dict'])
         @include('widgets.form._formitem_select_for_field', 
                 ['name' => 'numtype', 
-                 'obj' => $lemma,
                  'lang_file'=> 'dict'])
         @include('widgets.form._formitem_select_for_field', 
                 ['name' => 'advtype', 
-                 'obj' => $lemma,
                  'lang_file'=> 'dict'])
         @include('widgets.form._formitem_select_for_field', 
                 ['name' => 'degree', 
-                 'obj' => $lemma,
                  'lang_file'=> 'dict'])
                  
         <div id='phrase-field' class="lemma-feature-field">
