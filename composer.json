@@ -9,6 +9,7 @@
         "laravel/framework": "5.2.*",
         "laravelcollective/html": "5.2.*",
         "mcamara/laravel-localization": "1.1.*",
+        "nesbot/carbon": "^1.20",
         "cartalyst/sentinel": "2.0.*",
         "venturecraft/revisionable": "1.*",
         "vi-kon/laravel-diff": "^1.0",
