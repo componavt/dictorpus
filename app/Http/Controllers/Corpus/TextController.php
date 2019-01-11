@@ -614,8 +614,7 @@ class TextController extends Controller
             return;
         }
         
-        $word = Word::where('text_id',$text_id)
-                        ->where('w_id',$w_id)->first();
+        $word = Word::getByTextWid($text_id, $w_id);
        
         if (!$word || !$word->sentence_id) {
             return;
@@ -630,17 +629,19 @@ class TextController extends Controller
     /*
      * vepkar-20190129-vep
      */
-    public function exportToCONLL(Request $request) {
+    public function exportToCONLL() {//Request $request
         $date = Carbon::now();
         $date_now = $date->toDateString();
                 //isoFormat('YYYYMMDD');
-//        foreach ([1, 4, 5, 6] as $lang_id) {
-            $lang_id = 1;
+        foreach ([1, 4, 5, 6] as $lang_id) {
+            //$lang_id = 1;
             $lang = Lang::find($lang_id);
+            //exportLangTextsToCONLL($lang_id);
             $filename = 'export/conll/vepkar-'.$date_now.'-'.$lang->code.'.txt';
 //    dd($filename);        
-            $p = Storage::disk('public')->put($filename, 'Contents');
-//        }
+            Storage::disk('public')->put($filename, $lang->name);
+            print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
+        }
     }
 
 

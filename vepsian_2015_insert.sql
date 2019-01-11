@@ -806,3 +806,14 @@ select lemma, count(*) as count from lemmas where lang_id in (4,5,6) group by le
 
 -- php artisan make:migration create_lemma_features_table 
 -- php artisan migrate
+
+-- Создание символьной ссылки в Windows на папку (/J)
+mklink /J public\storage storage\app\public
+
+-- удаление всех таблиц
+-- php artisan migrate --reset
+-- заново создание всех таблиц, например, если было изменение в какой-то миграции
+-- php artisan migrate --refresh
+
+-- создание модели одновременно с миграцией и контроллером
+-- php artisan make:model Test -m -s

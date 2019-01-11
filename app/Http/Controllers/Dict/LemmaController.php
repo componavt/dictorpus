@@ -578,11 +578,9 @@ class LemmaController extends Controller
 
         $lemma = Lemma::find($lemma_id);
         $text = Text::find($text_id);
-        $word = Word::where('text_id',$text_id)
-                        ->where('w_id',$w_id)->first();
-        if (!$lemma || !$text || !$word || !$word->sentence_id) {
-            return;
-        }
+        $word = Word::getByTextWid($text_id, $w_id);
+        
+        if (!$lemma || !$text || !$word || !$word->sentence_id) { return; }
         
         $meaning_id = $request->input('meaning_id'); 
         $gramset_id = $request->input('gramset_id'); 
