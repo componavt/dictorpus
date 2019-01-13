@@ -19,6 +19,10 @@
                 ['name' => 'name_ru', 
                  'title'=>trans('dict.name').' '.trans('messages.in_russian')])
                  
+        @include('widgets.form._formitem_text', 
+                ['name' => 'conll', 
+                 'title'=>trans('dict.conll')])
+                 
         @include('widgets.form._formitem_text',
                 ['name' => 'sequence_number',
                  'attributes'=>['size' => 2],

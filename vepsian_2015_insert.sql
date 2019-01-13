@@ -817,3 +817,12 @@ mklink /J public\storage storage\app\public
 
 -- создание модели одновременно с миграцией и контроллером
 -- php artisan make:model Test -m -s
+
+-- php artisan make:migration add_field_in_grams_table 
+-- php artisan migrate
+
+-- php artisan make:test Models\Dict\LemmaFeatureTest
+-- ./vendor/bin/phpunit tests/Models/Dict/LemmaFeatureTest
+
+-- php artisan make:test Models\Dict\GramsetTest
+-- ./vendor/bin/phpunit tests/Models/Dict/GramsetTest

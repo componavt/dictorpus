@@ -142,6 +142,62 @@ class Lemma extends Model
         }        
     }
     
+    public function getWordformsByWord($word) {
+        return $this->wordforms()->where('wordform','like',$word)->get();
+    }
+    
+    public function getGramsetsByWord($word) {
+        $wordforms = $this->getWordformsByWord($word);
+        $gramsets = [];
+        foreach ($wordforms as $wordform) {
+            if ($wordform->pivot->gramset_id) {
+                $gramsets[] = $wordform->pivot->gramset_id;
+            }
+        }
+        return array_unique($gramsets);
+    }
+    
+    public function getWordformsCONLL($word) {
+        $gramsets = $this->getGramsetsByWord($word);
+        $features = [];
+        foreach ($gramsets as $gramset_id) {
+            $gramset = Gramset::find($gramset_id);
+            if (!$gramset) {
+                continue;
+            }
+            $gramset_feats = $gramset->toCONLL();
+            if ($gramset_feats) {
+                $features[] = $gramset_feats;
+            }
+        }
+        return $features;
+    }
+    
+    public function featsToCONLL($word) {
+        $lemma_feats = [];
+        if ($this->features) {
+            $lemma_feats = $this->features->toCONLL();
+        }
+//dd($lemma_feats);        
+        $wordform_feats = $this->getWordformsCONLL($word);
+        if (!sizeof($wordform_feats)) {
+            if (!sizeof($lemma_feats)) {
+                return "_";
+            } else {
+                return join('|',$lemma_feats);
+            }
+        }
+//dd($wordform_feats);
+        $features = [];
+        foreach ($wordform_feats as $feats) {
+            $f = array_unique(array_merge($lemma_feats, $feats));
+            if (sizeof($f)) {
+                $features[] = join('|',$f);
+            }
+        }
+        return join('#',$features);
+    }
+    
     /**
      * Gets Builder of dialects, that has any wordforms of this lemma
      * 

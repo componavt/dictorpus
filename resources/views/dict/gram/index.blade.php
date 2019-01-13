@@ -32,6 +32,9 @@
                     @if ($gramzik->{$short_name_column})
                         ({{ $gramzik->{$short_name_column} }})
                     @endif
+                    @if (User::checkAccess('ref.edit') && $gramzik->conll)
+                        ({{ $gramzik->conll }})
+                    @endif
                 </p>
                 @endforeach
             </div>

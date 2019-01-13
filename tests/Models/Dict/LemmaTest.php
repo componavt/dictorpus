@@ -53,4 +53,13 @@ class LemmaTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testToCONLLVepAnimateNoun()
+    {
+        $word = "vel'l";
+        $lemma_obj = Lemma::find(24); 
+        $result = $lemma_obj->getWordformsCONLL($word);
+        
+        $expected = ["Number=Sing"];
+        $this->assertEquals( $expected, $result);        
+    }
 }

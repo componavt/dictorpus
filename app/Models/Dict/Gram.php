@@ -9,7 +9,7 @@ use LaravelLocalization;
 class Gram extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['gram_category_id', 'name_short_en', 'name_en', 'name_short_ru', 'name_ru', 'sequence_number'];
+    protected $fillable = ['gram_category_id', 'name_short_en', 'name_en', 'name_short_ru', 'name_ru', 'sequence_number', 'conll'];
         
     use \Venturecraft\Revisionable\RevisionableTrait;
 

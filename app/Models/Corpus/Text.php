@@ -702,6 +702,16 @@ class Text extends Model
                            ->get();    
         return $meanings;
     }
+    
+    public function getMeaningsByWid($w_id) {
+        $meanings = $this->meanings();
+var_dump($meanings);        
+        /*->wherePivot('text_id',$this->id)
+                         ->wherePivot('w_id',$w_id)
+                         ->wherePivot('relevance','>',0)->get();
+        */
+    }
+    
     /**
      * Sets links meaning - text - sentence
      */
@@ -1013,27 +1023,31 @@ class Text extends Model
             }
             $s = $sxe->xpath('//s[@id="'.$sentence_id.'"]');
             if (isset($s[0])) {
-                $transtext = Transtext::find($text->transtext_id);
-                $trans_s = '';
-                if ($transtext) {
-                    list($trans_sxe,$trans_error) = self::toXML($transtext->text_xml,'trans: '.$transtext->id);
-                    if (!$trans_error) {
-                        $trans_sent = $trans_sxe->xpath('//s[@id="'.$sentence_id.'"]');
-                        if (isset($trans_sent[0])) {
-                            $trans_s = $trans_sent[0]->asXML();
-                        }
-                    }                    
-                }
                 $sentence = ['s' => $s[0]->asXML(), 
                                 's_id' => $sentence_id,
                                 'text' => $text, 
-                                'trans_s' => $trans_s,
+                                'trans_s' => $text->getTransSentence($sentence_id),
                                 'w_id' => $w_id, 
                                 'relevance' => $relevance]; 
                 return $sentence;
             } else {
                 dd('!text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
             }
+    }
+    
+    public function getTransSentence($sentence_id) {
+        $transtext = Transtext::find($this->transtext_id);
+        $trans_s = '';
+        if ($transtext) {
+            list($trans_sxe,$trans_error) = self::toXML($transtext->text_xml,'trans: '.$transtext->id);
+            if (!$trans_error) {
+                $trans_sent = $trans_sxe->xpath('//s[@id="'.$sentence_id.'"]');
+                if (isset($trans_sent[0])) {
+                    $trans_s = $trans_sent[0]->asXML();
+                }
+            }                    
+        }
+        return $trans_s;
     }
 
     /**
@@ -1148,6 +1162,42 @@ class Text extends Model
             }
         }
         return $texts;
+    }
+    
+    public function toCONLL() {
+        $out = "";
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        if ($error_message) {
+            return NULL;
+        }
+//print "<pre>";        
+        $sentences = $sxe->xpath('//s');
+//asXML        
+//        $sentences = Word::where('text_id', $this->id)->groupBy('sentence_id')
+//                   ->select('sentence_id')->orderBy('sentence_id')->get();
+        foreach ($sentences as $sentence) {
+            $out .= "# text_id = ".$this->id."\n".
+                    "# sent_id = ".$this->id."-".$sentence['id']."\n".
+                    //$sentence->asXML()."\n".
+                    "# text = ".trim(strip_tags($sentence->asXML()))."\n";
+            $trans_text = str_replace("\'","'",trim(strip_tags($this->getTransSentence($sentence['id']))));
+            if ($trans_text) {
+                $out .= "# text_ru = ".$trans_text."\n";
+            }
+            $count = 1;
+//var_dump($sentence);            
+            foreach ($sentence->w as $w) {
+//dd((int)$w['id']);                
+                foreach (Word::toCONLL($this->id, (int)$w['id']) as $line) {
+                    $out .= "$count\t".
+                            //$w->asXML().
+                            $line."\n";
+                }
+                $count++;
+            }
+            $out .= "\n";
+        }
+        return $out;
     }
     
     public function allHistory() {

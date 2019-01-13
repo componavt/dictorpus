@@ -79,6 +79,17 @@ class Gramset extends Model
         return $this->belongsTo(Gram::class, 'gram_id_reflexive');
     }
     
+    public function toCONLL() {
+            $feats = [];
+            if ($this->gramNumber && $this->gramNumber->conll) {
+                $feats[] = $this->gramNumber->conll;
+            }
+            if ($this->gramCase && $this->gramCase->conll) {
+                $feats[] = $this->gramCase->conll;
+            }
+        return $feats;
+    }
+
     // Gramset __has_many__ PartOfSpeech
     public function parts_of_speech()
     {

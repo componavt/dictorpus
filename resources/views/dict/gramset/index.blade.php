@@ -52,7 +52,6 @@
                 </td>
                 @endforeach
 
-                @if (User::checkAccess('ref.edit'))
                 <td data-th="{{ trans('dict.lemmas') }}">
                   <?php $count=sizeof($gramset->lemmas($url_args['search_pos'],$url_args['search_lang'])->groupBy('lemma_id')->get()); ?>
                   @if ($count)
@@ -68,6 +67,7 @@
                   {{ $gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count() }}
                 </td>
                 
+                @if (User::checkAccess('ref.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form._button_edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
                                                            'is_button' => true,

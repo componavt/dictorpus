@@ -18,24 +18,20 @@
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
-        <?php $checked = (isset($lemma->animacy) && $lemma->animacy==1 ? 'checked' : NULL); ?>
-        <div id='animacy-field' class="lemma-feature-field">
-        @include('widgets.form._formitem_radio', 
+        @include('widgets.form._formitem_radio_for_field', 
                 ['name' => 'animacy', 
-                 'values' => trans('messages.bin_answers'),
-                 'checked' => $checked,
                  'title'=>trans('dict.animacy')])
-        </div>
         @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'abbr', 
                  'title'=>trans('dict.abbr')])
         @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'plur_tan', 
                  'title'=>trans('dict.plur_tan')])
+                 
         @include('widgets.form._formitem_checkbox_for_field', 
                 ['name' => 'reflexive', 
                  'title'=>trans('dict.reflexive').' '.trans('dict.verb')])
-        @include('widgets.form._formitem_checkbox_for_field', 
+        @include('widgets.form._formitem_radio_for_field', 
                 ['name' => 'transitive', 
                  'title'=>trans('dict.transitive').' '.trans('dict.verb')])
 

@@ -22,7 +22,38 @@ class LemmaFeature extends Model
                              11 => ['reflexive', 'transitive'],     // verb                             
                              14 => ['animacy', 'abbr', 'plur_tan'], // proper noun
                             ];
-
+    public $feas_conll_codes = [
+        'animacy'    => [1 => 'Animacy=Anim',
+                         0 => 'Animacy=Inan'],
+        'abbr'       => [1 => 'Abbr=Yes'],
+        'plur_tan'   => [1 => 'Number=Plur'],
+        'reflexive'  => [1 => 'Reflex=Yes'],
+        'transitive' => [1 => 'Subcat=Trans',
+                         0 => 'Subcat=Intr'],
+        "prontype_id" =>[1 => 'PronType=Prs',
+                         2 => 'PronType=Prs|Poss=Yes',
+                         3 => 'PronType=Prs|Reflex=Yes',
+                         4 => 'PronType=Rcp',
+                         5 => 'PronType=Ind',
+                         6 => 'PronType=Dem',
+                         7 => 'PronType=Int',
+                         8 => 'PronType=Rel',
+                         9 => 'PronType=Neg'],
+        "numtype_id" => [1 => 'NumType=Num',
+                         2 => 'NumType=Sets',
+                         3 => 'NumType=Ord',
+                         4 => 'NumType=Frac'],
+        "advtype_id" => [1 => 'AdvType=Man', 
+                         2 => 'AdvType=Sta',
+                         3 => 'AdvType=Loc',
+                         4 => '',
+                         5 => 'AdvType=Deg',
+                         6 => 'AdvType=Mod'],
+        "degree_id"  => [1 => 'Degree=Pos',
+                         2 => 'Degree=Cmp',
+                         3 => 'Degree=Sup'],
+    ];
+    
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -125,5 +156,27 @@ class LemmaFeature extends Model
         }
 //dd($lemma_feature);        
         $lemma_feature->save();
+    }
+    
+    public function toCONLL() {
+        $features = [];
+        foreach ($this->allowFeatures() as $field) {
+            $value = $this->$field;
+//print "$value\n";   
+            if (!$value) {
+                continue;
+            }
+            if (isset($this->feas_conll_codes[$field])):              
+                $feas = $this->feas_conll_codes[$field];
+//print "code:".$feas[$value]."\n";
+                if ($feas[$value]!==''):
+                    $features[] = $feas[$value];
+                else:
+dd($field);                    
+                endif;
+            endif;
+        }
+//dd($features);        
+        return $features;
     }
 }

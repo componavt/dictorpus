@@ -5,6 +5,7 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 
 class Word extends Model
@@ -27,6 +28,24 @@ class Word extends Model
         $builder = $this->belongsToMany(Meaning::class,'meaning_text')
                  -> withPivot('relevance');
         return $builder;
+    }
+    
+    public function getLemmas() {
+        $w_id = $this->w_id;
+        $text_id = $this->text_id;
+        $lemmas = Lemma::whereIn('id', function ($query) use ($text_id, $w_id) {
+            $query->select('lemma_id')->from('meanings')
+                  ->whereIn('id', function ($query) use ($text_id, $w_id) {
+                        $query->select('meaning_id')->from('meaning_text')
+                              ->where('relevance', '>', 0)
+                              ->where('text_id',$text_id)
+                              ->where('w_id',$w_id);
+                    });
+            });
+//dd($lemmas->pluck('id'));            
+//dd($lemmas->toSql(). "  $word_id"); 
+//select * from `lemmas` where `id` in (select `lemma_id` from `meanings` where `id` in (select `meaning_id` from `meaning_text` where `word_id` = 1210143))  
+        return $lemmas -> get();
     }
 
     public function remove() {
@@ -180,5 +199,25 @@ class Word extends Model
         
         $this->word = $word_string;
         $this->save();
+    }
+    
+    public static function toCONLL($text_id, $w_id) {
+        $word = self::getByTextWid($text_id, $w_id);
+//dd($word);        
+        if (!$word) {
+            return NULL;
+        }
+        
+        $lemmas = $word->getLemmas();
+//dd($lemmas);        
+        if (!$lemmas || !$lemmas->count()) {
+            return [$word->word."\tUNKN\t_\t_\t_\t_\t_\t_\t_"];
+        }
+        $lines = [];
+        foreach ($lemmas as $lemma) {
+            $lines[] = $word->word."\t".$lemma->lemma."\t".$lemma->pos->code.
+                    "\t_\t". $lemma->featsToCONLL($word->word)."\t_\t_\t_\t_";
+        }
+        return $lines;
     }
 }
