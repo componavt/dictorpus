@@ -12,16 +12,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class TextTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
-    
     /** The empty string results to empty string
      */
     public function testMarkupTextEmpty()
@@ -39,13 +29,13 @@ class TextTest extends TestCase
      */
     public function testMarkupText1sentence()
     {
-        $source_text = "I was born to love you.";
-        $expected_xml  = '<s id="1"><w id="1">I</w> <w id="2">was</w> <w id="3">born</w> <w id="4">to</w> <w id="5">love</w> <w id="6">you</w>.</s>';
+        $source_text = "A was born to love you.";
+        $expected_xml  = '<s id="1"><w id="1">A</w> <w id="2">was</w> <w id="3">born</w> <w id="4">to</w> <w id="5">love</w> <w id="6">you</w>.</s>';
         
         $text = new Text();
-        $xml_text = $text->markupText($source_text);
+        $result_xml = $text->markupText($source_text);
 
-        $this->assertEquals( $xml_text, $expected_xml);
+        $this->assertEquals( $expected_xml, $result_xml );
     }
     
     /** Let's markup two sentences with !..
@@ -124,6 +114,41 @@ class TextTest extends TestCase
         $source_text   = "kelel, literaturas, Kodima-lehteses.";
         $expected_xml  = '<s id="1"><w id="1">kelel</w>, <w id="2">literaturas</w>, <w id="3">Kodima-lehteses</w>.</s>';
         
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+
+    public function testMarkupSentenceWithNumbers()
+    {
+        $source_text   = "Voittajakši tuli Sport-joukko: 6:0.”";
+        $expected_xml  = '<s id="1"><w id="1">Voittajakši</w> <w id="2">tuli</w> <w id="3">Sport-joukko</w>: 6:0.”</s>';
+        
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testMarkupSentenceWithDashes()
+    {
+        $source_text   = "Niiden keskes om Šoutjärven rahvahan hor, ”Noid”-, ”Vepsän hel’m”-, ”Randaine”-, ”Linduižed”-, ”Armas”- ansamblid da äi toižid.";
+//        $expected_xml  = '<s id="1"><w id="1">Niiden</w> <w id="2">keskes</w> <w id="3">om</w> <w id="4">Šoutjärven</w> <w id="5">rahvahan</w> <w id="6">hor</w>, ”<w id="7">Noid</w>”<w id="8">-</w>, ”<w id="9">Vepsän</w> <w id="10">hel’m</w>”<w id="11">-</w>, ”<w id="12">Randaine</w>”<w id="13">-</w>, ”<w id="14">Linduižed</w>”<w id="15">-</w>, ”<w id="16">Armas</w>”- <w id="17">ansamblid</w> <w id="18">da</w> <w id="19">äi</w> <w id="20">toižid</w>.</s>';
+        $expected_xml  = '<s id="1"><w id="1">Niiden</w> <w id="2">keskes</w> <w id="3">om</w> <w id="4">Šoutjärven</w> <w id="5">rahvahan</w> <w id="6">hor</w>, ”<w id="7">Noid</w>”-, ”<w id="8">Vepsän</w> <w id="9">hel’m</w>”-, ”<w id="10">Randaine</w>”-, ”<w id="11">Linduižed</w>”-, ”<w id="12">Armas</w>”- <w id="13">ansamblid</w> <w id="14">da</w> <w id="15">äi</w> <w id="16">toižid</w>.</s>';
+        
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testMarkupSentenceDashBeforeTag()
+    {
+        $source_text   = "Sid’ susedas Kalag’-posadas jo koumanden kerdan mäni ”Vepsän sarn”-
+festival’-konkurs.";
+        $expected_xml  = '<s id="1"><w id="1">Sid’</w> <w id="2">susedas</w> <w id="3">Kalag’-posadas</w> <w id="4">jo</w> <w id="5">koumanden</w> <w id="6">kerdan</w> <w id="7">mäni</w> ”<w id="8">Vepsän</w> <w id="9">sarn</w>”-<br />
+<w id="10">festival’-konkurs</w>.</s>';
         $text = new Text();
         $result_xml = $text->markupText($source_text);
 

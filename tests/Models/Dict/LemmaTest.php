@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Models\Dict\Lemma;
+use App\Models\Dict\Wordform;
 
 // php artisan make:test Models\Dict\LemmaTest
 // ./vendor/bin/phpunit tests/Models/Dict/LemmaTest
@@ -53,13 +54,24 @@ class LemmaTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testToCONLLVepAnimateNoun()
+    public function testGetWordformsCONLLVepAnimateNoun()
     {
-        $word = "vel'l";
+        $word = "Vellenke";
         $lemma_obj = Lemma::find(24); 
         $result = $lemma_obj->getWordformsCONLL($word);
         
-        $expected = ["Number=Sing"];
+        $expected = [["Number=Sing","Case=Com"]];
         $this->assertEquals( $expected, $result);        
     }
+
+    public function testGetGramsetsByWordVepAnimateNoun()
+    {
+        $word = "Vellenke";
+        $lemma_obj = Lemma::find(24); 
+        $result = $lemma_obj->getGramsetsByWord($word);
+        
+        $expected = [14];
+        $this->assertEquals( $expected, $result);        
+    }
+ 
 }

@@ -143,11 +143,14 @@ class Lemma extends Model
     }
     
     public function getWordformsByWord($word) {
-        return $this->wordforms()->where('wordform','like',$word)->get();
+//dd($word);        
+//        return $this->wordforms()->where('wordform','like',$word)->orderByRaw('wordform collate utf8_unicode_ci')->get();
+        return $this->wordforms()->whereRaw("wordform like '".addslashes($word)."' collate utf8_unicode_ci")->get();
     }
     
     public function getGramsetsByWord($word) {
         $wordforms = $this->getWordformsByWord($word);
+//dd($wordforms);        
         $gramsets = [];
         foreach ($wordforms as $wordform) {
             if ($wordform->pivot->gramset_id) {
@@ -178,7 +181,7 @@ class Lemma extends Model
         if ($this->features) {
             $lemma_feats = $this->features->toCONLL();
         }
-//dd($lemma_feats);        
+//dd($lemma_feats); 
         $wordform_feats = $this->getWordformsCONLL($word);
         if (!sizeof($wordform_feats)) {
             if (!sizeof($lemma_feats)) {

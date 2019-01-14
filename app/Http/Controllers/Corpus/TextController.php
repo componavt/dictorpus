@@ -401,6 +401,8 @@ class TextController extends Controller
 
     /**
      * Markup all texts and transtexts
+     * update texts set checked=0;
+     * select count(*) from texts where checked=0;
      */
     public function markupAllTexts()
     {
@@ -417,11 +419,11 @@ class TextController extends Controller
             }
         }
 
-    $texts = Transtext::all();
-    foreach ($texts as $text) {
-        $text->markup();
-        $text->save();            
-    }
+        $texts = Transtext::all();
+        foreach ($texts as $text) {
+            $text->markup();
+            $text->save();            
+        }
     }
      
     /**
@@ -633,22 +635,23 @@ class TextController extends Controller
         $date = Carbon::now();
         $date_now = $date->toDateString();
                 //isoFormat('YYYYMMDD');
-        //foreach ([1, 4, 5, 6] as $lang_id) {
-            $lang_id = 1;
+        foreach ([1, 4, 5, 6] as $lang_id) {
+//            $lang_id = 1;
             $lang = Lang::find($lang_id);
             $filename = 'export/conll/vepkar-'.$date_now.'-'.$lang->code.'.txt';
 //    dd($filename);        
             Storage::disk('public')->put($filename, "# ".$lang->name);
             //exportLangTextsToCONLL($lang_id);
             $texts = Text::where('lang_id',$lang_id)
-                    ->whereNotNull('transtext_id')
-                    ->take(1)->get();
+                    //->whereNotNull('transtext_id')
+                    //->take(1)
+                    ->get();
             foreach ($texts as $text) {
 //dd($text);                
                 Storage::disk('public')->append($filename, $text->toCONLL());
             }
             print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
-        //}
+        }
     }
 
 

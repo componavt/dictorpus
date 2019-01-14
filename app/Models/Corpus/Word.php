@@ -205,19 +205,28 @@ class Word extends Model
     public static function toCONLL($text_id, $w_id) {
         $word = self::getByTextWid($text_id, $w_id);
 //dd($word);        
-        if (!$word) {
+
+        if (!$word || !$word->word) {
             return NULL;
         }
         
         $lemmas = $word->getLemmas();
+//if ($text_id==1 && $w_id==73) {   
+//    dd($lemmas);
+//}
 //dd($lemmas);        
         if (!$lemmas || !$lemmas->count()) {
             return [$word->word."\tUNKN\t_\t_\t_\t_\t_\t_\t_"];
         }
         $lines = [];
         foreach ($lemmas as $lemma) {
-            $lines[] = $word->word."\t".$lemma->lemma."\t".$lemma->pos->code.
-                    "\t_\t". $lemma->featsToCONLL($word->word)."\t_\t_\t_\t_";
+            $line = $word->word."\t".$lemma->lemma."\t";
+            if ($lemma->pos) {
+                $line .= $lemma->pos->code;
+            } else {
+                $line .= 'UNKN';
+            }
+            $lines[] = $line."\t_\t".$lemma->featsToCONLL($word->word)."\t_\t_\t_\t_";
         }
         return $lines;
     }

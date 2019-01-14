@@ -619,38 +619,47 @@ class Text extends Model
         $i = 0;
         $is_word = false; // word tag <w> is not opened
         $token = $sentence;
+        $word_len=0;
         while ($i<mb_strlen($token)) {
             $char = mb_substr($token,$i,1);
-            if (mb_strpos($delimeters, $char)!==false || preg_match("/\s/",$char)) {
-                if ($is_word) {
-                    $str .= '</w>';
-                    $is_word = false;
-                }
-                $str .= $char;
-            } elseif ($char == '<') { // && strpos($token,'>',$i+1)
-                if ($is_word) {
+            if ($char == '<') { // begin of a tag 
+                if ($is_word) { // the previous char is part of a word, the word ends
                     $str .= '</w>';
                     $is_word = false;
                 }
                 $j = mb_strpos($token,'>',$i+1);
-                $str .= mb_substr($token,$i,$j-$i+1);
+                $str .= mb_substr($token,$i,$j-$i+1); // other chars of the tag are transferred to str
                 $i = $j;
-            } else {
-                $next_char = ($i+1 < mb_strlen($token)) ? mb_substr($token,$i+1,1) : '';
-                $next_char_is_special = (!$next_char || mb_strpos($delimeters, $next_char) || preg_match("/\s/",$next_char) || mb_strpos($dashes,$next_char));
-//                if (!$is_word && !preg_match("/^-\s/",mb_substr($token,$i,2))) {
-                if (!$is_word && !(mb_strpos($dashes,$char)!==false && $next_char_is_special)) { // && $next_char_is_special
-                    $str .= '<w id="'.$word_count++.'">';
-                    $is_word = true;
+            } elseif (mb_strpos($delimeters, $char)!==false || preg_match("/\s/",$char)) { // the char is a delimeter or white space
+                if ($is_word) { // the previous char is part of a word, the word ends
+                    $str .= '</w>';
+                    $is_word = false;
                 }
                 $str .= $char;
+            } else {
+                $next_char = ($i+1 < mb_strlen($token)) ? mb_substr($token,$i+1,1) : '';
+                
+                // if the next_char is and of the sentence OR a delimeter OR a white space OR a dash THEN the next char is special
+                $next_char_is_special = (!$next_char || mb_strpos($delimeters, $next_char)!==false || preg_match("/\s/",$next_char) || mb_strpos($dashes,$next_char)!==false || $next_char == '<');
+                $char_is_dash_AND_next_char_is_special = mb_strpos($dashes,$char)!==false && $next_char_is_special;
+                $char_is_number_AND_next_char_is_special = preg_match("/\d/",$char) && $next_char_is_special;
+                // if word is not started AND NOT (the char is dash AND the next char is special) THEN the new word started
+                if (!$is_word && !$char_is_dash_AND_next_char_is_special && !$char_is_number_AND_next_char_is_special) { 
+                    $str .= '<w id="'.$word_count++.'">';
+                    $is_word = true;
+                    $word_len=0;
+                }
+                $str .= $char;
+                if ($is_word) {
+                    $word_len++;
+                }
             }
             $i++;
         }
         if ($is_word) {
             $str .= '</w>';
         }
-        return [$str,$word_count];
+        return [$str,$word_count]; 
     }
 
     /**
@@ -1087,11 +1096,6 @@ var_dump($meanings);
         }
     }
 
-    /**
-     * 
-     *
-     * 
-     */
     public static function updateExamples($relevances) {
         foreach ($relevances as $key => $value) {
             $relevance = (int)$value;
@@ -1188,7 +1192,12 @@ var_dump($meanings);
 //var_dump($sentence);            
             foreach ($sentence->w as $w) {
 //dd((int)$w['id']);                
-                foreach (Word::toCONLL($this->id, (int)$w['id']) as $line) {
+                $words = Word::toCONLL($this->id, (int)$w['id']);
+                if (!$words) {
+                    $out .= "$count\tERROR\n";
+                    continue;
+                }
+                foreach ($words as $line) {
                     $out .= "$count\t".
                             //$w->asXML().
                             $line."\n";

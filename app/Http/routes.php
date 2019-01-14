@@ -136,7 +136,7 @@ Route::group(
 //        Route::get('corpus/text/tempInsertVepsianText', 'Corpus\TextController@tempInsertVepsianText');
 //        Route::get('corpus/text/tempInsertVepsianDialectText', 'Corpus\TextController@tempInsertVepsianDialectText');
 //        Route::get('corpus/text/tempInsertVepsianGenreText', 'Corpus\TextController@tempInsertVepsianGenreText');
-//        Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
+        Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
 //        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
 //        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
