@@ -37,7 +37,8 @@ class Word extends Model
             $query->select('lemma_id')->from('meanings')
                   ->whereIn('id', function ($query) use ($text_id, $w_id) {
                         $query->select('meaning_id')->from('meaning_text')
-                              ->where('relevance', '>', 0)
+//WSD?                                
+//                              ->where('relevance', '>', 0)
                               ->where('text_id',$text_id)
                               ->where('w_id',$w_id);
                     });
