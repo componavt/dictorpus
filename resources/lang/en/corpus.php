@@ -81,6 +81,7 @@ return [
     'source_year' => 'Source year',
     
     'text' => 'text',
+    'text_fragment' => 'Fragment of text',
     'text_has_checked_meaning' => 'The text is locked for editing, as It has checked up links with lemmas. Changing the text would result in the loss of relevance of the text to lemmas.',
     'text_list' => 'Text list',
     'text_not_found' => 'The text with ID=:id do not found',

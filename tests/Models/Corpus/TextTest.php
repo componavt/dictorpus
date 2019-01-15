@@ -29,8 +29,8 @@ class TextTest extends TestCase
      */
     public function testMarkupText1sentence()
     {
-        $source_text = "A was born to love you.";
-        $expected_xml  = '<s id="1"><w id="1">A</w> <w id="2">was</w> <w id="3">born</w> <w id="4">to</w> <w id="5">love</w> <w id="6">you</w>.</s>';
+        $source_text = "I was born to love you.";
+        $expected_xml  = '<s id="1"><w id="1">I</w> <w id="2">was</w> <w id="3">born</w> <w id="4">to</w> <w id="5">love</w> <w id="6">you</w>.</s>';
         
         $text = new Text();
         $result_xml = $text->markupText($source_text);
@@ -155,13 +155,54 @@ festival’-konkurs.";
         $this->assertEquals( $expected_xml, $result_xml);
     }
     
-    public function testMarkupSentenceWithProcent()
+    public function testMarkupSentenceDashInside()
     {
-        $source_text   = "Tegihe sel’ktaks, miše küzutud ristituiden keskes 40% - aktivižid, 35% - ”kacujid”";
-        $expected_xml  = '<s id="1"><w id="1">Tegihe</w> <w id="2">sel’ktaks</w>, <w id="3">miše</w> <w id="4">küzutud</w> <w id="5">ristituiden</w> <w id="6">keskes</w> 40% - <w id="7">aktivižid</w>, 35% - ”<w id="8">kacujid</w>”';
+        $source_text   = "Kvarcitnijas om muzikškol-ki lapsile.";
+        $expected_xml  = '<s id="1"><w id="1">Kvarcitnijas</w> <w id="2">om</w> <w id="3">muzikškol-ki</w> <w id="4">lapsile</w>.</s>';
         $text = new Text();
         $result_xml = $text->markupText($source_text);
 
         $this->assertEquals( $expected_xml, $result_xml);
     }
+    
+    public function testMarkupSentenceDashAfterQuote()
+    {
+        $source_text   = "”Keradam da kaičem”- ansambl’an";
+        $expected_xml  = '<s id="1">”<w id="1">Keradam</w> <w id="2">da</w> <w id="3">kaičem</w>”- <w id="4">ansambl’an</w></s>';
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testMarkupSentenceDashAfterQuoteBeforeWord()
+    {
+        $source_text   = "”Keradam da kaičem”-ansambl’an";
+        $expected_xml  = '<s id="1">”<w id="1">Keradam</w> <w id="2">da</w> <w id="3">kaičem</w>”<w id="4">-ansambl’an</w></s>';
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testMarkupSentenceDashAfterWord()
+    {
+        $source_text   = "festivalih rahvahan- ta folkloriteatterija";
+        $expected_xml  = '<s id="1"><w id="1">festivalih</w> <w id="2">rahvahan</w>- <w id="3">ta</w> <w id="4">folkloriteatterija</w></s>';
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testMarkupSentenceWithProcent()
+    {
+        $source_text   = "Tegihe sel’ktaks, miše küzutud ristituiden keskes 40% - aktivižid, 35% - ”kacujid”";
+        $expected_xml  = '<s id="1"><w id="1">Tegihe</w> <w id="2">sel’ktaks</w>, <w id="3">miše</w> <w id="4">küzutud</w> <w id="5">ristituiden</w> <w id="6">keskes</w> 40% - <w id="7">aktivižid</w>, 35% - ”<w id="8">kacujid</w>”</s>';
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+ 
 }

@@ -66,6 +66,15 @@
                 ])
                                
     </div>
+    <div class="col-md-4">
+        @include('widgets.form._formitem_text', 
+                ['name' => 'search_text', 
+                 'special_symbol' => true,
+                 'value' => $url_args['search_word'],
+                 'attributes'=>['placeholder' => trans('corpus.text_fragment')]
+                ])
+                               
+    </div>
     <div class="col-md-4 search-button-b">       
         <span>
         {{trans('messages.show_by')}}

@@ -196,9 +196,14 @@ class Text extends Model
         $texts = self::searchByRecorder($texts, $url_args['search_recorder']);
         $texts = self::searchByTitle($texts, $url_args['search_title']);
         $texts = self::searchByWord($texts, $url_args['search_word']);
+        //$texts = self::searchByText($texts, $url_args['search_text']);
         
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
+        } 
+
+        if ($url_args['search_text']) {
+            $texts = $texts->where('text','like','%'.$url_args['search_text'].'%');
         } 
 
         return $texts;
@@ -601,7 +606,7 @@ class Text extends Model
     
     public static function wordAddToSentence($is_word, $word, $str, $word_count) {
         if ($is_word) { // the previous char is part of a word, the word ends
-            if (!preg_match("/\w/i",$word)) {
+            if (!preg_match("/[a-zA-ZА-Яа-яЁё]/i",$word)) {
                 $str .= $word;
             } else {
                 $str .= '<w id="'.$word_count++.'">'.$word.'</w>';
@@ -616,6 +621,7 @@ class Text extends Model
      *
      * @param $sentence String text without mark up
      * @param $word_count Integer initial word count
+     * ./vendor/bin/phpunit tests/Models/Corpus/TextTest
      *
      * @return Array text with markup (split to words) and next word count
      */
@@ -642,15 +648,22 @@ class Text extends Model
             } elseif (mb_strpos($delimeters, $char)!==false || preg_match("/\s/",$char)) { // the char is a delimeter or white space
                 list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
                 $str .= $char;
-                
+//if ($i>15) {exit(0);}
+//dd("$i: $char");                
             } else {
                 $next_char = ($i+1 < mb_strlen($token)) ? mb_substr($token,$i+1,1) : '';
                 
                 // if the next_char is and of the sentence OR a delimeter OR a white space OR a dash THEN the next char is special
                 $next_char_is_special = (!$next_char || mb_strpos($delimeters, $next_char)!==false || preg_match("/\s/",$next_char) || mb_strpos($dashes,$next_char)!==false || $next_char == '<');
                 $char_is_dash_AND_next_char_is_special = mb_strpos($dashes,$char)!==false && $next_char_is_special;
+                
+                if ($is_word && $char_is_dash_AND_next_char_is_special) {
+                    list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
+                    $str .= $char;
+                } else {
                 // if word is not started AND NOT (the char is dash AND the next char is special) THEN the new word started
                 if (!$is_word && !$char_is_dash_AND_next_char_is_special) { 
+//                if (!$is_word && mb_strpos($dashes,$char)===false) { 
                     $is_word = true;
                     $word='';
                 }
@@ -659,10 +672,13 @@ class Text extends Model
                 } else {
                     $str .= $char;            
                 }
+                }
             }
+//print "$i: $char| word: $word| is_word: $is_word| str: $str\n";            
             $i++;
         }
         list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
+//print "$i: $char| word: $word| str: $str\n";            
         return [$str,$word_count]; 
     }
 

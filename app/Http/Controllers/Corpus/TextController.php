@@ -56,6 +56,7 @@ class TextController extends Controller
                     'search_recorder' => $request->input('search_recorder'),
                     'search_title'    => $request->input('search_title'),
                     'search_word'     => $request->input('search_word'),
+                    'search_text'     => $request->input('search_text'),
                 ];
         
         if (!$this->url_args['page']) {
