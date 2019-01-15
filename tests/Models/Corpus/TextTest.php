@@ -154,4 +154,14 @@ festival’-konkurs.";
 
         $this->assertEquals( $expected_xml, $result_xml);
     }
+    
+    public function testMarkupSentenceWithProcent()
+    {
+        $source_text   = "Tegihe sel’ktaks, miše küzutud ristituiden keskes 40% - aktivižid, 35% - ”kacujid”";
+        $expected_xml  = '<s id="1"><w id="1">Tegihe</w> <w id="2">sel’ktaks</w>, <w id="3">miše</w> <w id="4">küzutud</w> <w id="5">ristituiden</w> <w id="6">keskes</w> 40% - <w id="7">aktivižid</w>, 35% - ”<w id="8">kacujid</w>”';
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
 }

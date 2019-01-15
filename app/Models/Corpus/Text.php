@@ -598,6 +598,18 @@ class Text extends Model
 
         return trim($out);
     }
+    
+    public static function wordAddToSentence($is_word, $word, $str, $word_count) {
+        if ($is_word) { // the previous char is part of a word, the word ends
+            if (!preg_match("/\w/i",$word)) {
+                $str .= $word;
+            } else {
+                $str .= '<w id="'.$word_count++.'">'.$word.'</w>';
+            }
+            $is_word = false;
+        }
+        return [$is_word, $str, $word_count]; 
+    }
 
     /**
      * Divides sentence on words
@@ -609,7 +621,7 @@ class Text extends Model
      */
     public static function markupSentence($sentence,$word_count): Array
     {
-        $delimeters = ',.!?"[](){}«»=”:'; // - and ' - part of word
+        $delimeters = ',.!?"[](){}«»=”:%'; // - and ' - part of word
         // different types of dashes and hyphens: '-', '‒', '–', '—', '―' 
         // if dashes inside words, then they are part of words,
         // if dashes surrounded by spaces, then dashes are not parts of words.
@@ -619,46 +631,38 @@ class Text extends Model
         $i = 0;
         $is_word = false; // word tag <w> is not opened
         $token = $sentence;
-        $word_len=0;
+        $word='';
         while ($i<mb_strlen($token)) {
             $char = mb_substr($token,$i,1);
             if ($char == '<') { // begin of a tag 
-                if ($is_word) { // the previous char is part of a word, the word ends
-                    $str .= '</w>';
-                    $is_word = false;
-                }
+                list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
                 $j = mb_strpos($token,'>',$i+1);
                 $str .= mb_substr($token,$i,$j-$i+1); // other chars of the tag are transferred to str
                 $i = $j;
             } elseif (mb_strpos($delimeters, $char)!==false || preg_match("/\s/",$char)) { // the char is a delimeter or white space
-                if ($is_word) { // the previous char is part of a word, the word ends
-                    $str .= '</w>';
-                    $is_word = false;
-                }
+                list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
                 $str .= $char;
+                
             } else {
                 $next_char = ($i+1 < mb_strlen($token)) ? mb_substr($token,$i+1,1) : '';
                 
                 // if the next_char is and of the sentence OR a delimeter OR a white space OR a dash THEN the next char is special
                 $next_char_is_special = (!$next_char || mb_strpos($delimeters, $next_char)!==false || preg_match("/\s/",$next_char) || mb_strpos($dashes,$next_char)!==false || $next_char == '<');
                 $char_is_dash_AND_next_char_is_special = mb_strpos($dashes,$char)!==false && $next_char_is_special;
-                $char_is_number_AND_next_char_is_special = preg_match("/\d/",$char) && $next_char_is_special;
                 // if word is not started AND NOT (the char is dash AND the next char is special) THEN the new word started
-                if (!$is_word && !$char_is_dash_AND_next_char_is_special && !$char_is_number_AND_next_char_is_special) { 
-                    $str .= '<w id="'.$word_count++.'">';
+                if (!$is_word && !$char_is_dash_AND_next_char_is_special) { 
                     $is_word = true;
-                    $word_len=0;
+                    $word='';
                 }
-                $str .= $char;
                 if ($is_word) {
-                    $word_len++;
+                    $word .= $char;
+                } else {
+                    $str .= $char;            
                 }
             }
             $i++;
         }
-        if ($is_word) {
-            $str .= '</w>';
-        }
+        list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
         return [$str,$word_count]; 
     }
 
