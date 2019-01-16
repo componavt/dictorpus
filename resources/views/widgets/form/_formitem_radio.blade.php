@@ -9,7 +9,7 @@ if(! isset($values)) $values = [];
 	<label for="{{$name}}">{{ $title }}</label>
     @endif
     @foreach ($values as $value=>$tail)
-    {!! Form::radio($name, $value, $value==$checked) !!}
+    {!! Form::radio($name, $value, $value===$checked) !!}
     {{$tail}}
     @endforeach
     <p class="help-block">{!! $errors->first($name) !!}</p>
