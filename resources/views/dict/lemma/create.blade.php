@@ -20,7 +20,8 @@
                                       'lang_values' => $lang_values, 
                                       'lemma_value' => '',
                                       'phrase_values' => $phrase_values,
-                                      'pos_values'  => $pos_values])
+                                      'pos_values'  => $pos_values,
+                                      'obj' => NULL])
         {!! Form::close() !!}
 @stop
 
