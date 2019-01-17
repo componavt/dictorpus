@@ -11,8 +11,8 @@
             {{ \Request::route()->getName() }}
             
         @if (User::checkAccess('ref.edit'))
-            | @include('widgets.form._button_edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit'])
-            | @include('widgets.form._button_delete', ['route' => 'gramset.destroy', 'id' => $gramset->id]) 
+            | @include('widgets.form.button._edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit'])
+            | @include('widgets.form.button._delete', ['route' => 'gramset.destroy', 'id' => $gramset->id]) 
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif 

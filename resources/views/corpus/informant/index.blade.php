@@ -61,11 +61,11 @@
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', 
+                    @include('widgets.form.button._edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                              'route' => '/corpus/informant/'.$informant->id.'/edit'])
-                    @include('widgets.form._button_delete', 
+                    @include('widgets.form.button._delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                              $route = 'informant.destroy', 

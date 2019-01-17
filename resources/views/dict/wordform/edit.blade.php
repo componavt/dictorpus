@@ -14,12 +14,12 @@
         {!! Form::model($wordform, array('method'=>'PUT', 'route' => array('wordform.update', $wordform->id))) !!}
         @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
         
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'wordform', 
                  'special_symbol' => true,
                  'title'=>trans('dict.wordform')])
 
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.save')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
                  
         {!! Form::close() !!}
 @stop

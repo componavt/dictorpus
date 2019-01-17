@@ -3,52 +3,52 @@
 <div class="row">
     <div class="col-sm-4">
         
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'lemma', 
                  'special_symbol' => true,
                  'value' => $lemma_value,
                  'title'=>trans('dict.lemma')])
     </div>
     <div class="col-sm-4">        
-        @include('widgets.form._formitem_select',
+        @include('widgets.form.formitem._select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,
 		 'value' => $pos_id,
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
-        @include('widgets.form._formitem_radio_for_field', 
+        @include('widgets.form.formitem._radio_for_field', 
                 ['name' => 'animacy', 
                  'title'=>trans('dict.animacy')])
-        @include('widgets.form._formitem_checkbox_for_field', 
+        @include('widgets.form.formitem._checkbox_for_field', 
                 ['name' => 'abbr', 
                  'title'=>trans('dict.abbr')])
-        @include('widgets.form._formitem_checkbox_for_field', 
+        @include('widgets.form.formitem._checkbox_for_field', 
                 ['name' => 'plur_tan', 
                  'title'=>trans('dict.plur_tan')])
                  
-        @include('widgets.form._formitem_checkbox_for_field', 
+        @include('widgets.form.formitem._checkbox_for_field', 
                 ['name' => 'reflexive', 
                  'title'=>trans('dict.reflexive').' '.trans('dict.verb')])
-        @include('widgets.form._formitem_radio_for_field', 
+        @include('widgets.form.formitem._radio_for_field', 
                 ['name' => 'transitive', 
                  'title'=>trans('dict.transitive').' '.trans('dict.verb')])
 
-        @include('widgets.form._formitem_select_for_field', 
+        @include('widgets.form.formitem._select_for_field', 
                 ['name' => 'prontype', 
                  'lang_file'=> 'dict'])
-        @include('widgets.form._formitem_select_for_field', 
+        @include('widgets.form.formitem._select_for_field', 
                 ['name' => 'numtype', 
                  'lang_file'=> 'dict'])
-        @include('widgets.form._formitem_select_for_field', 
+        @include('widgets.form.formitem._select_for_field', 
                 ['name' => 'advtype', 
                  'lang_file'=> 'dict'])
-        @include('widgets.form._formitem_select_for_field', 
+        @include('widgets.form.formitem._select_for_field', 
                 ['name' => 'degree', 
                  'lang_file'=> 'dict'])
                  
         <div id='phrase-field' class="lemma-feature-field">
-        @include('widgets.form._formitem_select2',
+        @include('widgets.form.formitem._select2',
                 ['name' => 'phrase',
                  'values' => $phrase_values,
                  'value' => array_keys($phrase_values),
@@ -58,14 +58,14 @@
         </div>
     </div> 
     <div class="col-sm-4">        
-        @include('widgets.form._formitem_select',
+        @include('widgets.form.formitem._select',
                 ['name' => 'lang_id',
                  'values' =>$lang_values,
                  'value' =>$lang_id,
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lemma_lang_id']])
         <div id='wordforms-field'>
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'wordforms', 
                  'value' => '',
                  'field_comments' => trans('dict.wordforms_field_comments'),
@@ -99,7 +99,7 @@
             {{trans('dict.add_new_meaning')}}
         </button>
 
-        @include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
+        @include('widgets.form.formitem._submit', ['title' => $submit_title])
 
 
 

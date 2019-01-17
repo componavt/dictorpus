@@ -18,17 +18,17 @@
                              'method' => 'get', 
                              'class' => 'form-inline']) 
         !!}
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'search_wordform', 
                  'special_symbol' => true,
                 'value' => $url_args['search_wordform'],
                 'attributes'=>['placeholder'=>trans('dict.wordform')]])
-        @include('widgets.form._formitem_select', 
+        @include('widgets.form.formitem._select', 
                 ['name' => 'search_lang', 
                  'values' =>$lang_values,
                  'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
         
         <p>{{ trans('messages.founded_records', ['count'=>count($wordforms)]) }}</p>

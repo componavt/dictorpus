@@ -18,7 +18,7 @@
         <h3>{{ trans('dict.wordforms') }}</h3>
         {!! Form::model($lemma, array('method'=>'POST', 'route' => array('lemma.update.wordforms', $lemma->id))) !!}
         @include('dict.lemma._form_edit_wordforms')
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.save')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop
 

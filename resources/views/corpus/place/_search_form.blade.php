@@ -3,27 +3,27 @@
         !!}
 <div class="row">
     <div class="col-sm-1">
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'search_id', 
                 'value' => $search_id,
                 'attributes'=>['placeholder' => 'ID']])                                  
     </div>
     <div class="col-sm-2">
-         @include('widgets.form._formitem_text', 
+         @include('widgets.form.formitem._text', 
                 ['name' => 'place_name', 
                  'special_symbol' => true,
                 'value' => $place_name,
                 'attributes'=>['placeholder' => trans('corpus.title')]])
     </div>
     <div class="col-sm-3">
-        @include('widgets.form._formitem_select', 
+        @include('widgets.form.formitem._select', 
                 ['name' => 'region_id', 
                  'values' => $region_values,
                  'value' => $region_id,
                  'attributes' => ['placeholder' => trans('corpus.region')]]) 
     </div>
     <div class="col-sm-3">
-        @include('widgets.form._formitem_select', 
+        @include('widgets.form.formitem._select', 
                 ['name' => 'district_id', 
                  'values' => $district_values,
                  'value' => $district_id,
@@ -33,7 +33,7 @@
         <span>
         {{trans('messages.show_by')}}
         </span>
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $limit_num, 
                 'attributes'=>['size' => 5,
@@ -41,7 +41,7 @@
         <span>
                 {{ trans('messages.records') }}
         </span>
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>                 
         {!! Form::close() !!}

@@ -14,9 +14,9 @@
                     @elseif (!isset($without_enter_form) || !$without_enter_form)
                         {!! Form::open(['method'=>'POST', 'route'=>'login']) !!}
                             <div class="user-enter-input">
-                            @include('widgets.form._formitem_text', ['name' => 'email', 
+                            @include('widgets.form.formitem._text', ['name' => 'email', 
                                                                      'attributes' => ['placeholder' => trans('auth.your_email') ]])
-                            @include('widgets.form._formitem_password', ['name' => 'password', 'placeholder' => trans('auth.password') ])
+                            @include('widgets.form.formitem._password', ['name' => 'password', 'placeholder' => trans('auth.password') ])
                             </div>
                             <div class="user-registr-submit">
                                 <div class="user-registr-col">
@@ -28,7 +28,7 @@
                                     <span class="user-enter-remember-text">{{trans('auth.remember')}}</span>
                                 </div>
                                 <div class="user-enter-submit">
-                                    @include('widgets.form._formitem_btn_submit', ['title' => trans('auth.login')])
+                                    @include('widgets.form.formitem._submit', ['title' => trans('auth.login')])
                                 </div>
                             </div>
                         {!! Form::close() !!}

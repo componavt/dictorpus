@@ -69,11 +69,11 @@
                 
                 @if (User::checkAccess('ref.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
+                    @include('widgets.form.button._edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
                                                            'is_button' => true,
                                                            'url_args' => $url_args,
                                                            'without_text' => true])
-                    @include('widgets.form._button_delete', 
+                    @include('widgets.form.button._delete', 
                              ['is_button' => true,
                               'route' => 'gramset.destroy', 
                               'id' => $gramset->id,

@@ -3,7 +3,7 @@
         !!}
 <div class="row">
     <div class="col-md-4">
-        @include('widgets.form._formitem_select2', 
+        @include('widgets.form.formitem._select2', 
                 ['name' => 'search_lang', 
                  'values' => $lang_values,
                  'value' => $url_args['search_lang'],
@@ -12,7 +12,7 @@
         ])                 
     </div>
     <div class="col-md-4">
-        @include('widgets.form._formitem_select2',
+        @include('widgets.form.formitem._select2',
                 ['name' => 'search_dialect', 
                  'values' =>$dialect_values,
                  'value' => $url_args['search_dialect'],
@@ -21,7 +21,7 @@
             ])
     </div>
     <div class="col-md-4">
-        @include('widgets.form._formitem_select2', 
+        @include('widgets.form.formitem._select2', 
                 ['name' => 'search_corpus', 
                  'values' => $corpus_values,
                  'value' => $url_args['search_corpus'],
@@ -32,7 +32,7 @@
 </div>                 
 <div class="row">
     <div class="col-md-4">
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'search_title', 
                  'special_symbol' => true,
                  'value' => $url_args['search_title'],
@@ -40,7 +40,7 @@
                 ])                               
     </div>
     <div class="col-md-4">
-        @include('widgets.form._formitem_select', 
+        @include('widgets.form.formitem._select', 
                 ['name' => 'search_informant', 
                  'values' => $informant_values,
                  'value' => $url_args['search_informant'],
@@ -48,7 +48,7 @@
         ])                 
     </div>
     <div class="col-md-4">
-        @include('widgets.form._formitem_select', 
+        @include('widgets.form.formitem._select', 
                 ['name' => 'search_recorder', 
                  'values' => $recorder_values,
                  'value' => $url_args['search_recorder'],
@@ -58,7 +58,7 @@
 </div>                 
 <div class="row">
     <div class="col-md-4">
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'search_word', 
                  'special_symbol' => true,
                  'value' => $url_args['search_word'],
@@ -67,7 +67,7 @@
                                
     </div>
     <div class="col-md-4">
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'search_text', 
                  'special_symbol' => true,
                  'value' => $url_args['search_word'],
@@ -79,14 +79,14 @@
         <span>
         {{trans('messages.show_by')}}
         </span>
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
                 'attributes'=>['placeholder' => trans('messages.limit_num') ]]) 
         <span>
                 {{ trans('messages.records') }}
         </span>
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>                 
         {!! Form::close() !!}

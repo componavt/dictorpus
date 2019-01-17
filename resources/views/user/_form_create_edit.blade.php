@@ -1,17 +1,17 @@
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'email', 
                  'title'=> 'E-mail'])
                  
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'first_name', 
                  'title'=> trans('auth.first_name')])
                  
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'last_name', 
                  'title'=> trans('auth.last_name')])
                  
         <?php if ($action=='create') { $perm_value = NULL; } ?>        
-         @include('widgets.form._formitem_select2', 
+         @include('widgets.form.formitem._select2', 
                 ['name' => 'permissions', 
                  'values' =>$perm_values,
                  'value' => $perm_value,
@@ -20,7 +20,7 @@
             ])
 
         <?php if ($action=='create') { $role_value = NULL; } ?>        
-         @include('widgets.form._formitem_select2', 
+         @include('widgets.form.formitem._select2', 
                 ['name' => 'roles', 
                  'values' =>$role_values,
                  'value' => $role_value,
@@ -28,7 +28,7 @@
                  'class'=>'multiple-select form-control'
             ])
                  
-        @include('widgets.form._formitem_select2',
+        @include('widgets.form.formitem._select2',
                 ['name' => 'langs', 
                  'values' =>$lang_values,
                  'value' => $lang_value,
@@ -36,4 +36,4 @@
                  'class'=>'multiple-select form-control'
             ])
             
-@include('widgets.form._formitem_btn_submit', ['title' => $submit_title])
+@include('widgets.form.formitem._submit', ['title' => $submit_title])

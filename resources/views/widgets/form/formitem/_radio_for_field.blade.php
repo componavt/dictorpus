@@ -1,8 +1,13 @@
+<?php
+    if (!isset($radio_value)) {
+        $radio_value = trans('messages.bin_answers');
+    }
+?>
         <?php $checked = (isset($obj->$name) && $obj->$name==1 ? 'checked' : NULL); ?>
         <div id='{{$name}}-field' class="lemma-feature-field">
-        @include('widgets.form._formitem_checkbox', 
+        @include('widgets.form.formitem._radio', 
                 ['name' => $name, 
-                 'value' => 1,
+                 'values' => $radio_value,
                  'checked' => $checked,
                  'title'=>$title])
         </div>

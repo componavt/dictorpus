@@ -13,11 +13,11 @@
 
 @section('body')
     {!! Form::open(['class'=>'small-form']) !!}
-        @include('widgets.form._formitem_text', ['name' => 'email', 'title' => 'Email', 
+        @include('widgets.form.formitem._text', ['name' => 'email', 'title' => 'Email', 
                                                  'attributes' => ['placeholder' => trans('auth.your_email') ]])
-        @include('widgets.form._formitem_password', ['name' => 'password', 'title' => trans('auth.password'), 'placeholder' => trans('auth.password') ])
-        @include('widgets.form._formitem_checkbox', ['name' => 'remember', 'title' => trans('auth.remember')] )
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('auth.login')])
+        @include('widgets.form.formitem._password', ['name' => 'password', 'title' => trans('auth.password'), 'placeholder' => trans('auth.password') ])
+        @include('widgets.form.formitem._checkbox', ['name' => 'remember', 'title' => trans('auth.remember')] )
+        @include('widgets.form.formitem._submit', ['title' => trans('auth.login')])
     {!! Form::close() !!}
 
     <br><p><a href="{{URL::to('/reset')}}">{{ trans('auth.reset') }}</a></p>

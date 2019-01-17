@@ -37,6 +37,7 @@ return [
     'of' => 'of',
     'records' => 'records',
     'record_not_exists' => 'Record does not exists.',
+    'reload' => 'reload',
     'save' => 'save',
     'search' => 'search',
     'seq_num' => 's/n',

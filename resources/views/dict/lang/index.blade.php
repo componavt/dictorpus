@@ -38,7 +38,7 @@
                 <td data-th="{{ trans('dict.lang_code') }}">{{$language->code}}</td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', ['is_button'=>true, 'route' => '/dict/lang/'.$language->id.'/edit'])
+                    @include('widgets.form.button._edit', ['is_button'=>true, 'route' => '/dict/lang/'.$language->id.'/edit'])
                 </td>
                 @endif
             </tr>

@@ -36,7 +36,7 @@
                         @if ($gramzik->conll)
                             ({{ $gramzik->conll }})
                         @endif
-                        @include('widgets.form._button_edit', ['route' => '/dict/gram/'.$gramzik->id.'/edit', 'without_text' => 1])                        
+                        @include('widgets.form.button._edit', ['route' => '/dict/gram/'.$gramzik->id.'/edit', 'without_text' => 1])                        
                     @endif
                 </p>
                 @endforeach

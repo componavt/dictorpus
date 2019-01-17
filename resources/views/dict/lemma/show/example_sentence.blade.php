@@ -34,7 +34,7 @@ if (isset($w[0])) {
     title="{{$place_title}}">
     {{$sentence['text']->title}}</a>)
     @if (isset($is_edit) && User::checkAccess('dict.edit'))
-        @include('widgets.form._button_edit', 
+        @include('widgets.form.button._edit', 
                  ['route' => '/dict/lemma/'.$lemma->id.'/edit/example/'.$t_s_w,
                   'link_class' => 'sentence-edit',
                   'without_text' => 1])
@@ -42,14 +42,14 @@ if (isset($w[0])) {
     
     @if (!isset($relevance) || $relevance==1)
         @if (isset($is_edit) && User::checkAccess('dict.edit'))
-            @include('widgets.form._button_add', 
+            @include('widgets.form.button._add', 
                     ['data_add' => $m_t_s_w,
                      'class' => 'add-example',
                      'title' => trans('dict.add-example-5')])
         @endif
     @endif
     @if (isset($is_edit) && User::checkAccess('dict.edit'))
-        @include('widgets.form._button_remove', 
+        @include('widgets.form.button._remove', 
                 ['data_add' => $m_t_s_w,
                  'class' => 'remove-example',
                  'title' => trans('dict.remove-example')])

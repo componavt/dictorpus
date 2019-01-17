@@ -1,4 +1,4 @@
-            <h3>@include('widgets.form._formitem_text',
+            <h3>@include('widgets.form.formitem._text',
                        ['name' => 'new_meanings['.$count.'][meaning_n]',
                         'value'=> $new_meaning_n,
                         'attributes'=>['size' => 2],
@@ -12,7 +12,7 @@
             @foreach ($langs_for_meaning as $lang_id => $lang_text)
                 <tr>
                     <td>{{ $lang_text }}&nbsp; </td>
-                    <td>@include('widgets.form._formitem_text',
+                    <td>@include('widgets.form.formitem._text',
                        ['name' => 'new_meanings['.$count.'][meaning_text]['.$lang_id.']',
                         'special_symbol' => true,
                        ])</td>

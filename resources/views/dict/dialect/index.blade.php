@@ -62,12 +62,12 @@
 
                 @if (User::checkAccess('ref.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', 
+                    @include('widgets.form.button._edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                              'url_args' => $url_args,
                              'route' => '/dict/dialect/'.$dialect->id.'/edit'])
-                    @include('widgets.form._button_delete', 
+                    @include('widgets.form.button._delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                             'url_args' => $url_args,

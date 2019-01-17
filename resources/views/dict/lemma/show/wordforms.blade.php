@@ -7,13 +7,13 @@
                 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
             <div class="row">
                 <div class="col-sm-3">
-                @include('widgets.form._formitem_select',
+                @include('widgets.form.formitem._select',
                         ['name' => 'dialect_id',
                          'values' =>$dialect_values,
                          ]) 
                 </div>
                 <div class="col-sm-1">
-                @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.edit')])
+                @include('widgets.form.formitem._submit', ['title' => trans('messages.edit')])
                 </div>
             </div>                 
                 {!! Form::close() !!}
@@ -29,7 +29,7 @@
                 <th>
                     {{$dialect_name}}
                     @if (User::checkAccess('dict.edit'))
-                        @include('widgets.form._button_edit', 
+                        @include('widgets.form.button._edit', 
                                  ['route' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
                                   'args_by_get' => (isset($args_by_get) && $args_by_get) 
                                                     ? $args_by_get.'&dialect_id='.$dialect_id 

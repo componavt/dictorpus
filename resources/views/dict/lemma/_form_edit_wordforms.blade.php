@@ -12,12 +12,12 @@
                         <td>
                             {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString(', ',true)}}&nbsp;
                         </td>
-                        <td>@include('widgets.form._formitem_text',
+                        <td>@include('widgets.form.formitem._text',
                                ['name' => 'lang_wordforms['.$gramset_id.']['.$dialect_id.']',
                                 'special_symbol' => true,
                                 'value'=> $lemma->wordform($gramset_id,$dialect_id)
                                ])</td>
-                        <td>@include('widgets.form._formitem_select', 
+                        <td>@include('widgets.form.formitem._select', 
                                 ['name' => 'lang_wordforms_dialect['.$gramset_id.']', 
                                  'values' =>$dialect_values,
                                  'value' =>$dialect_id]) 
@@ -28,16 +28,16 @@
                 @foreach ($lemma->wordformsWithoutGramsets() as $key=>$wordform)
                 <tr>
                     <td>
-                        @include('widgets.form._formitem_select', 
+                        @include('widgets.form.formitem._select', 
                                 ['name' => 'empty_wordforms['.$key.'][gramset]', 
                                  'values' =>$gramset_values]) 
                     </td>
-                    <td>@include('widgets.form._formitem_text', 
+                    <td>@include('widgets.form.formitem._text', 
                            ['name' => 'empty_wordforms['.$key.'][wordform]', 
                             'special_symbol' => true,
                             'value'=> $wordform->wordform])</td>
                     <td>
-                        @include('widgets.form._formitem_select', 
+                        @include('widgets.form.formitem._select', 
                                 ['name' => 'empty_wordforms['.$key.'][dialect]', 
                                  'values' =>$dialect_values]) 
                     </td>

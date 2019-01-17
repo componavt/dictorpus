@@ -14,7 +14,7 @@
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
 
         @if (User::checkAccess('dict.edit'))
-            | @include('widgets.form._button_delete', 
+            | @include('widgets.form.button._delete', 
                        ['route' => 'lemma.destroy', 
                         'id' => $lemma->id]) 
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
@@ -28,7 +28,7 @@
         <h2>
             {{ $lemma->lemma }}
             @if (User::checkAccess('dict.edit'))
-                @include('widgets.form._button_edit', 
+                @include('widgets.form.button._edit', 
                          ['route' => '/dict/lemma/'.$lemma->id.'/edit',
                           'without_text' => 1])
             @endif

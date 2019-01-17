@@ -59,12 +59,12 @@
                 </td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', 
+                    @include('widgets.form.button._edit', 
                              ['is_button'=>true, 
                               'without_text' => true,
                               'route' => '/dict/lemma/'.$lemma->id.'/edit',
                              ])
-                    @include('widgets.form._button_delete', 
+                    @include('widgets.form.button._delete', 
                              ['is_button'=>true, 
                               'without_text' => true,
                               'route' => 'lemma.destroy', 

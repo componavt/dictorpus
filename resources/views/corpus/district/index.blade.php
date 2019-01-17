@@ -24,26 +24,26 @@
                              'method' => 'get', 
                              'class' => 'form-inline']) 
         !!}
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'search_id', 
                 'value' => $search_id,
                 'attributes'=>['size' => 3,
                                'placeholder' => 'ID']])
-         @include('widgets.form._formitem_text', 
+         @include('widgets.form.formitem._text', 
                 ['name' => 'district_name', 
                 'value' => $district_name,
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.name')]])
-        @include('widgets.form._formitem_select', 
+        @include('widgets.form.formitem._select', 
                 ['name' => 'region_id', 
                  'values' => $region_values,
                  'value' => $region_id,
                  'attributes' => ['placeholder' => trans('corpus.region')]]) 
         <br>         
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.view')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
         
         {{trans('messages.show_by')}}
-        @include('widgets.form._formitem_text', 
+        @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $limit_num, 
                 'attributes'=>['size' => 5,
@@ -79,11 +79,11 @@
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form._button_edit', 
+                    @include('widgets.form.button._edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                              'route' => '/corpus/district/'.$district->id.'/edit'])
-                    @include('widgets.form._button_delete', 
+                    @include('widgets.form.button._delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                              $route = 'district.destroy', 

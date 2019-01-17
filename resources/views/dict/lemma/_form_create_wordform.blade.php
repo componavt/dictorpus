@@ -1,9 +1,9 @@
     <p id="addWordformSentence"></p>
-    @include('widgets.form._formitem_text', 
+    @include('widgets.form.formitem._text', 
             ['name' => 'choose-wordform',
              'title' => trans('dict.wordform')]) 
 
-@include('widgets.form._formitem_select2',
+@include('widgets.form.formitem._select2',
             ['name' => 'choose-lemma',
              'title' => trans('dict.lemma'),
              'class'=>'select-lemma form-control',

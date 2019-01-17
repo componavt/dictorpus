@@ -6,7 +6,10 @@
 
                     @if (User::checkAccess('dict.edit'))
                         ({{trans('messages.total')}} {{ $sentence_count}} {{trans('messages.of')}} {{ $sentence_total}})
-                        @include('widgets.form._button_edit', 
+                        @include('widgets.form.button._edit', 
+                                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/examples/',
+                                  'without_text' => 1])
+                        @include('widgets.form.button._reload', 
                                  ['route' => '/dict/lemma/'.$lemma->id.'/edit/examples/',
                                   'without_text' => 1])
                     @else

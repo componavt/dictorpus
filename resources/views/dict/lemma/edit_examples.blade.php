@@ -64,12 +64,12 @@
                                         ? $sentence['relevance'][$meaning->id]
                                         : 1;
                     ?>
-                    @include('widgets.form._formitem_select',
+                    @include('widgets.form.formitem._select',
                             ['name' => 'relevance['.$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'].']',
                              'values' => trans('dict.relevance_scope'),
                              'value' => $relevance,
                             ])
-{{--                    @include('widgets.form._formitem_select_styled',
+{{--                    @include('widgets.form.formitem._select_styled',
                             ['name' => 'relevance['.$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'].']',
                              'values' => trans('dict.relevance_scope'),
                              'value' => $relevance,
@@ -80,7 +80,7 @@
             </tr>
             @endforeach
         </table>
-        @include('widgets.form._formitem_btn_submit', ['title' => trans('messages.save')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
         @endif
 @stop

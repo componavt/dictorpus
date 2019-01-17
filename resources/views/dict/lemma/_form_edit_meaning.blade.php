@@ -1,4 +1,4 @@
-        <h3>@include('widgets.form._formitem_text',
+        <h3>@include('widgets.form.formitem._text',
                    ['name' => 'ex_meanings['.$meaning->id.'][meaning_n]',
                     'value'=> $meaning->meaning_n,
                     'attributes'=>['size' => 2],
@@ -13,13 +13,13 @@
                 
                     <tr>
                         <td>{{ $meaning_text->lang_name}}</td>
-                        <td>@include('widgets.form._formitem_text',
+                        <td>@include('widgets.form.formitem._text',
                            ['name' => 'ex_meanings['.$meaning->id.'][meaning_text]['.$meaning_lang.']',
                             'special_symbol' => true,
                             'value'=> $meaning_text->meaning_text])</td>
                         <td>
                             @if ($meaning_lang != $lemma->lang_id)
-                                @include('widgets.form._formitem_select2',
+                                @include('widgets.form.formitem._select2',
                                         ['name' => 'ex_meanings['.$meaning->id.'][translation]['.$meaning_lang.']',
                                          'values' => $translation_values[$meaning->id][$meaning_lang],
                                          'value' => array_keys($translation_values[$meaning->id][$meaning_lang]),
@@ -41,7 +41,7 @@
                             $group_class = 'empty-relation';
                         }
                     ?>
-                    @include('widgets.form._formitem_select2',
+                    @include('widgets.form.formitem._select2',
                             ['name' => 'ex_meanings['.$meaning->id.'][relation]['.$relation_id.']',
                              'title' => $relation_text,
                              'values' => $all_meanings,
@@ -54,7 +54,7 @@
                 
                 <div class="row">
                   <div class="col-xs-3">
-                        @include('widgets.form._formitem_select',
+                        @include('widgets.form.formitem._select',
                                 ['name' => 'new_relation_'.$meaning->id,
                                  'values' => $meaning->missingRelationsList(),
                                  'attributes' => ['id'=>'new_relation_'.$meaning->id]])
