@@ -54,6 +54,10 @@ function reloadExamples(i) {
         success: function(result){
             $("#meaning-examples_"+ id).html(result);
             $("#img-loading_"+ id).hide();                
+        },
+        error: function() {
+            $("#meaning-examples_"+ id).html('ERROR');
+            $("#img-loading_"+ id).hide();                
         }
     }); 
 }   
@@ -68,7 +72,8 @@ function loadExamples(route, id) {
             $("#img-loading_"+ id).hide();                
         },
         error: function() {
-            alert('error');                
+            $("#meaning-examples_"+ id).html('ERROR');
+            $("#img-loading_"+ id).hide();                
         }
     }); 
 }
