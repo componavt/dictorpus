@@ -829,4 +829,3 @@ mklink /J public\storage storage\app\public
 
 -- php artisan make:migration change_index_in_wordforms_table 
 -- php artisan migrate
-

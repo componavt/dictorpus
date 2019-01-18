@@ -222,7 +222,7 @@ class LemmaController extends Controller
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
-        $lemma->updateTextLinks();
+//        $lemma->updateTextLinks();
 
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -552,7 +552,7 @@ class LemmaController extends Controller
         $lemma-> storeWordformsEmpty($request->empty_wordforms, $dialect_id);
 
         // updates links with text examples
-        $lemma->updateTextLinks();
+//        $lemma->updateTextLinks();
                 
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
@@ -613,18 +613,6 @@ class LemmaController extends Controller
             return 1;
         }
         return 0;
-    }
-
-    /**
-     * /dict/lemma/add/example/1418_5_59_3093
-     * 
-     * @param type $example_id
-     * @return string
-     */
-    public function addExample($example_id)
-    {
-        Text::updateExamples([$example_id=>5]);
-        return '<span class="glyphicon glyphicon-star relevance-5"></span>';
     }
 
     /**

@@ -18,11 +18,11 @@
         } elseif (isset($link_class)) {
             $format .= ' class="'.$link_class.'"';
         }
-        $format .= '><i class="fa fa-pencil-alt fa-lg"></i> %s</a>';
+        $format .= '><i class="fa fa-pencil-alt fa-lg"></i>%s</a>';
         $link = LaravelLocalization::localizeURL($route);
         if (isset($without_text) && $without_text) {
             $title = '';
         } else {
-            $title = \Lang::get('messages.edit');
+            $title = ' '.\Lang::get('messages.edit');
         }
         print sprintf($format, $link, $title);

@@ -136,3 +136,15 @@
 .rwd-table .to-right {
     text-align: right;
 }
+
+h4 .fa {
+    margin-left: 20px;
+}
+
+.reload-examples {
+    cursor: pointer;
+}
+
+.img-loading {
+    display: none;
+}

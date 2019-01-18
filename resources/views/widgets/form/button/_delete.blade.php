@@ -11,7 +11,7 @@
         if (isset($is_button) && $is_button) {
             $format .= ' class="btn btn-xs btn-danger"';
         }
-        $format .= '><i class="fa fa-trash-o fa-lg"></i> %s</a>';
+        $format .= '><i class="fa fa-trash fa-lg"></i> %s</a>';
         $link = URL::route($route, $args_for_route);
                 //LaravelLocalization::localizeURL($route);
         $token = csrf_token();

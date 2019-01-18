@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.omonyms') }}
+{{ trans('navigation.lemmas') }}
 @stop
 
 @section('headExtra')

@@ -7,11 +7,12 @@
                     @if (User::checkAccess('dict.edit'))
                         ({{trans('messages.total')}} {{ $sentence_count}} {{trans('messages.of')}} {{ $sentence_total}})
                         @include('widgets.form.button._edit', 
-                                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/examples/',
+                                 ['route' => '/dict/lemma/'.$meaning->lemma->id.'/edit/examples/',
                                   'without_text' => 1])
                         @include('widgets.form.button._reload', 
-                                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/examples/',
-                                  'without_text' => 1])
+                                 ['data_reload' => $meaning->id,
+                                  'class' => 'reload-examples',
+                                  'title' => trans('messages.reload')])
                     @else
                         ({{ $sentence_count}})
                     @endif
@@ -37,6 +38,7 @@
                             </table>
                             <a id="show-more-{{$meaning->meaning_n}}" 
                                class="show-more-examples"
+                               onClick ="showExamples(this)"
                                data-for="{{$meaning->meaning_n}}">
                                     {{ trans('dict.more_examples') }}
                             </a>
@@ -60,7 +62,7 @@
                     </div>              
                     @elseif ($count-1>$limit)
                     <a class="hide-more-examples"
-                       data-for="{{$meaning->meaning_n}}">
+                       onClick ="hideExamples({{$meaning->meaning_n}})">
                             {{ trans('dict.hide_examples') }}
                     </a>
                     @endif

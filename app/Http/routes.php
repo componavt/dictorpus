@@ -88,7 +88,6 @@ Route::group(
 
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
 
-        Route::get('dict/lemma/add/example/{example_id}', 'Dict\LemmaController@addExample');
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
@@ -114,6 +113,10 @@ Route::group(
         Route::get('dict/lemma/wordform/update', 'Dict\LemmaController@updateWordformFromText'); 
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
         Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 
+        
+        Route::get('dict/meaning/example/add/{example_id}', 'Dict\MeaningController@addExample');
+        Route::get('dict/meaning/{id}/examples/reload', 'Dict\MeaningController@reloadExamples');
+        Route::get('dict/meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
         
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
 

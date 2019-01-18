@@ -82,7 +82,10 @@
                     @include('dict.lemma.show.meaning_translations')
                 </td>
                 <td>
-                    @include('dict.lemma.show.examples')
+                    <img class="img-loading" id="img-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
+                    <div  id="meaning-examples_{{$meaning->id}}">
+{{--                    @include('dict.lemma.show.examples') --}}
+                    </div>
                 </td>
             </tr>
         </table>
@@ -101,9 +104,14 @@
 @stop
 
 @section('jqueryFunc')
+    @foreach ($lemma->meanings as $meaning)
+    loadExamples('{{LaravelLocalization::localizeURL('/dict/meaning/examples/load')}}', {{$meaning->id}});
+    @endforeach
+    
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma{{$args_by_get}}');
-    toggleExamples();
-    addExample('{{LaravelLocalization::localizeURL('/dict/lemma/add/example')}}');
+/*    toggleExamples();
+    addExample('{{LaravelLocalization::localizeURL('/dict/meaning/example/add')}}'); 
     removeExample('{{LaravelLocalization::localizeURL('/dict/lemma/remove/example')}}');
+    reloadExamples('{{LaravelLocalization::localizeURL('/dict/meaning/examples/reload')}}'); */
 @stop
 

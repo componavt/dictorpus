@@ -8,7 +8,10 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
+
+use App\Models\Corpus\Text;
 
 class MeaningController extends Controller
 {
@@ -53,11 +56,10 @@ class MeaningController extends Controller
     {
         $relation_text = Relation::find($relation_id)->name;
         return view('dict.lemma._form_new_relation')
-                  ->with(array('meaning_id' => $id,
-                               'relation_id' => $relation_id,
-                               'relation_text' => $relation_text
-                              )
-                        );
+                  ->with(['meaning_id' => $id,
+                          'relation_id' => $relation_id,
+                          'relation_text' => $relation_text                           
+                         ]);
     }
 
     /**
@@ -116,7 +118,61 @@ class MeaningController extends Controller
         //
     }
     
-    
+    /**
+     * /dict/meaning/example/add/1418_5_59_3093
+     * 
+     * @param type $example_id
+     * @return string
+     */
+    public function addExample($example_id)
+    {
+        Text::updateExamples([$example_id=>5]);
+        return '<span class="glyphicon glyphicon-star relevance-5"></span>';
+    }
+
+    /**
+     * test: /dict/meaning/examples/reload/23813
+     * 
+     * @param INT $id
+     * @return \Illuminate\Http\Response
+     */
+    public function loadExamples ($id) {
+        $meaning = Meaning::find($id);
+        if (!$meaning) {
+            return NULL;
+        }
+        
+        if (!$meaning->texts()->count()) {
+            $meaning->addTextLinks();
+        }
+        return view('dict.lemma.show.examples')
+                  ->with(['meaning' => $meaning,
+                         ]); 
+    }
+
+    /**
+     * test: /dict/meaning/examples/reload/23813
+     * 
+     * @param INT $id
+     * @return \Illuminate\Http\Response
+     */
+    public function reloadExamples ($id) {
+        $meaning = Meaning::find($id);
+        if (!$meaning) {
+            return NULL;
+        }
+        
+        if (!$meaning->texts()->count()) {
+            $meaning->addTextLinks();
+        } else {
+            $meaning->updateTextLinks();
+        }
+        return view('dict.lemma.show.examples')
+                  ->with(['meaning' => $meaning,
+                         ]); 
+    }
+
+
     /** 
      * (1) Copy vepsian.{meaning} to vepkar.meanings (without meaning_text)
      * (2) Copy vepsian.{meaning.meaning_text, translation_lemma} to vepkar.meaning_texts
