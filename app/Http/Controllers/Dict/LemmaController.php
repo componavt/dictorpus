@@ -234,12 +234,14 @@ class LemmaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $lemma = Lemma::find($id);
         if (!$lemma)
             return Redirect::to('/dict/lemma/'.($this->args_by_get))
                            ->withErrors('error.no_lemma');
+
+        $update_text_links = (int)$request->input('update_text_links');
 
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $relations = Relation::getList();
@@ -296,6 +298,7 @@ class LemmaController extends Controller
                           'meaning_texts'     => $meaning_texts,
                           'meaning_relations' => $meaning_relations,
                           'translation_values'=> $translation_values,
+                          'update_text_links' => $update_text_links,
                           'args_by_get'       => $this->args_by_get,
                           'url_args'          => $this->url_args,
             ]);
@@ -554,7 +557,7 @@ class LemmaController extends Controller
         // updates links with text examples
 //        $lemma->updateTextLinks();
                 
-        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
+        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).'&update_text_links=1')
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 

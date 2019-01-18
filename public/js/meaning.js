@@ -49,7 +49,7 @@ function reloadExamples(i) {
     $("#meaning-examples_"+ id).empty();
     $("#img-loading_"+ id).show();
     $.ajax({
-        url: '/dict/meaning/'+ id +'/examples/reload/', 
+        url: '/dict/meaning/examples/reload/'+ id, 
         type: 'GET',
         success: function(result){
             $("#meaning-examples_"+ id).html(result);

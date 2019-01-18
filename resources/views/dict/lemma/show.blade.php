@@ -96,6 +96,7 @@
         @endif
             
         @include('dict.lemma._modal_delete')
+<?php $route_for_load = ($update_text_links) ? '/dict/meaning/examples/reload' : '/dict/meaning/examples/load'; ?>
 @stop
 
 @section('footScriptExtra')
@@ -105,7 +106,7 @@
 
 @section('jqueryFunc')
     @foreach ($lemma->meanings as $meaning)
-    loadExamples('{{LaravelLocalization::localizeURL('/dict/meaning/examples/load')}}', {{$meaning->id}});
+    loadExamples('{{LaravelLocalization::localizeURL($route_for_load)}}', {{$meaning->id}});
     @endforeach
     
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma{{$args_by_get}}');
