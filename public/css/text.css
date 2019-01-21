@@ -117,3 +117,12 @@ ol {
     color: #c25a22;
     font-style: italic;
 }
+
+.modal-body {
+    position: relative;
+}
+
+.link-in-form-field {
+    margin-bottom: -5px;
+    text-align: right;
+}

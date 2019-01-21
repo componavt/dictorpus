@@ -6,7 +6,9 @@
                 <h4 class="modal-title">{{ $title }}</h4>
             </div>
             <div class="modal-body">
-                @include($modal_view) 
+                @if ($modal_view)
+                    @include($modal_view) 
+                @endif
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="{{ $submit_id }}">{{ $submit_title }}</button>

@@ -10,12 +10,18 @@
 @stop
 
 @section('body')
-        @include('widgets.modal',['name'=>'modalAddWordform',
+        @if (User::checkAccess('corpus.edit'))
+            @include('widgets.modal',['name'=>'modalAddWordform',
                                   'title'=>trans('corpus.add-wordform'),
                                   'submit_id' => 'save-wordform',
                                   'submit_title' => trans('messages.save'),
                                   'modal_view'=>'dict.lemma._form_create_wordform'])
-        
+            @include('widgets.modal',['name'=>'modalAddLemma',
+                                  'title'=>trans('corpus.add-lemma'),
+                                  'submit_id' => 'save-lemma',
+                                  'submit_title' => trans('messages.save'),
+                                  'modal_view'=>''])
+        @endif         
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             

@@ -10,6 +10,7 @@ return [
     |
     */
 
+    'add-lemma' => 'Add lemma',
     'add-wordform' => 'Add wordform',
     'archive_krc' => 'audio archive of ILLH, KarRC RAS',
     'birth_place' => 'birth place',
