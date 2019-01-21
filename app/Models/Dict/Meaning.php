@@ -430,79 +430,99 @@ class Meaning extends Model
      * @return NULL
      */
     public function addTextLinks() {
-        $lemma_obj=$this->lemma;
-        $lang_id = $lemma_obj->lang_id;
-        $lemma_t = addcslashes($lemma_obj->lemma,"'");
-        $query = "select * from words, texts where"
-               . " words.text_id = texts.id and texts.lang_id = ".$lang_id
-               . " and (word like '".$lemma_t."'";
-        foreach ($lemma_obj->wordforms as $wordform_obj) {
-            $wordform_obj->trimWord();
-            $wordform_obj->checkWordformWithSpaces(0);
-            $query .= " OR word like '".addcslashes($wordform_obj->wordform,"'")."'";
+        $words = $this->getWordsByWordforms();
+        if (!$words) {
+            return;
         }
-        $words = DB::select($query.')');
-
+        
         foreach ($words as $word) {
             $relevance = 1;
             if ($this->isNotSuitableForExample($word->text_id,$word->w_id)) {
                 $relevance = 0;
             }
-            $this->addText($word->text_id, $word->sentence_id, $word->id, $word->w_id, $relevance);        
+            $this->addText($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, $relevance);        
         }
     }
     
     /**
-     * Removes all neutral links (relevance=1) from meaning_text
-     * and adds new links
+     * (Check comment and remove it:  "Removes all neutral links (relevance=1) from meaning_text").
+     * 
+     * Updates records in the table meaning_text, 
+     * which binds the tables meaning and text.
+     * Search in texts a lemma and all wordforms of the lemma.
      *
+     * TODO: remove duplicates of wordorms from the SQL request.
+     * 
+     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words, texts where words.text_id = texts.id and texts.lang_id = 5 and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
+     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words where text_id in (select id from texts where lang_id = 5) and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
+     * 
      * @return NULL
      */
-    public function updateTextLinks()
+    public function getWordsByWordforms()
     {        
         $lemma_obj=$this->lemma;
         $lang_id = $lemma_obj->lang_id;
-        $lemma_t = addcslashes($lemma_obj->lemma,"'");
-        $query = "select * from words, texts "
-                          . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
-                            . " and (word like '".$lemma_t."'";
+        $strs = ["word like '".addcslashes($lemma_obj->lemma,"'")."'"];
         foreach ($lemma_obj->wordforms as $wordform_obj) {
-            $wordform_obj->trimWord();
-            $wordform_obj->checkWordformWithSpaces(0);
-            $wordform_t = addcslashes($wordform_obj->wordform,"'");
-            $query .= " OR word like '".$wordform_t."'";
+            $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
+            //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
+            $strs[] = "word like '".addcslashes($wordform_obj->wordform,"'")."'";
         }
-        $this->updateTextLinksForQuery($query.')');
+        $cond = join(' OR ',array_unique($strs));
+/*        $unique_strs = array_unique($strs);
+            
+         // select all words matched with <lemma> from texts with lemma's lang
+        $query = "select text_id, sentence_id, w_id, words.id as word_id from words, texts where "
+               . "words.text_id = texts.id and texts.lang_id = ".$lang_id
+               . " and (".join(' OR ',$unique_strs).")"; */
+        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+               . " text_id in (select id from texts where lang_id = ".$lang_id
+               . ") and (".join(' OR ',$unique_strs).")"; 
+//dd($query);        
+        $words = DB::select($query); 
+        return $words;
     }
     
-     public function updateTextLinksForQuery($query) {
-        $words = DB::select($query);
+    public function chooseRelevance($text_id, $w_id) {
+        $relevance = 1;
+        $existLink = $this->texts()->wherePivot('text_id',$text_id)
+                      ->wherePivot('w_id',$w_id);
+        // if exists links between this meaning and this word, get their relevance
+        if ($existLink->count()>0) {                    
+            $relevance = $existLink->first()->pivot->relevance ;
+        }
+
+        // if some another meaning has positive evaluation with this sentence, 
+        // it means that this meaning is not suitable for this example
+        if (DB::table('meaning_text')->where('meaning_id','<>',$this->id)
+              ->where('text_id',$text_id)->where('w_id',$w_id)
+              ->where('relevance','>',1)->count()>0) {
+            $relevance = 0;
+        }
+        return $relevance;
+    }
+
+
+    /**
+     * Updates records in the table meaning_text, 
+     * which binds the tables meaning and text.
+     * Search in texts a lemma and all wordforms of the lemma.
+     *
+     * @return NULL
+     */
+     public function updateTextLinks() {
+        $words = $this->getWordsByWordforms();
         if (!$words) {
             return;
         }
         $text_links = [];               
         foreach ($words as $word) {
-            $relevance = 1;
-            $existLink = $this->texts()->wherePivot('text_id',$word->text_id)
-                          ->wherePivot('w_id',$word->w_id);
-            // if exists links between this meaning and this word, get their relevance
-            if ($existLink->count()>0) {                    
-                $relevance = $existLink->first()->pivot->relevance ;
-            }
-
-            // if some another meaning has positive evaluation with this sentence, 
-            // it means that this meaning is not suitable for this example
-            if (DB::table('meaning_text')->where('meaning_id','<>',$this->id)
-                  ->where('text_id',$word->text_id)->where('w_id',$word->w_id)
-                  ->where('relevance','>',1)->count()>0) {
-                $relevance = 0;
-            }
             $text_links[] = ['text_id' => $word->text_id,
                              'other_fields' =>
                                 ['sentence_id'=>$word->sentence_id, 
-                                 'word_id'=>$word->id, 
+                                 'word_id'=>$word->word_id, 
                                  'w_id'=>$word->w_id, 
-                                 'relevance'=>$relevance]                
+                                 'relevance'=>$this->chooseRelevance($word->text_id, $word->w_id)]                
                             ];
         }
 
