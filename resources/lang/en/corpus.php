@@ -30,6 +30,7 @@ return [
     'genre_has_text' => 'Genre ":name" can not be removed, there are texts with this genre',
     'genre_list' => 'Genre list',
     'genre_removed' => 'Genre ":name" is removed successfully.',
+    'has_link_with_lemma' => 'linked with lemma',
     
     'informant' => 'Informant',
     'informants' => 'Informant(s)',

@@ -85,6 +85,8 @@ Route::group(
         Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
         Route::get('corpus/text/word/create_checked_block', 'Corpus\TextController@getWordCheckedBlock');
         Route::get('corpus/text/export/conll', 'Corpus\TextController@exportToCONLL');
+        
+        Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
 
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
 

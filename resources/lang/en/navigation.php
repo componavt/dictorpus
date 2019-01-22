@@ -43,6 +43,7 @@ return [
     'stats' => 'Statistics',
     'texts' => 'Texts',
     'video' => 'Video',
+    'word_frequency' => 'Frequency dictionary of tokens',
     'wordforms' => 'Wordforms',
     'users' => 'Users',
 ];

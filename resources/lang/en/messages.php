@@ -28,6 +28,7 @@ return [
     'editing' => 'Editing',
     'examples' => 'Examples',
     'founded_records' => ':count records was founded.',
+    'frequency' => 'frequency',
     'from' => 'from',
     'history' => 'history',
     'in_english' => 'in English',

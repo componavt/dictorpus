@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\Wordform;
 
 class Word extends Model
 {
@@ -105,6 +106,29 @@ class Word extends Model
                 ->first();
 //dd($word.'|'.$this->text_id.'|'.$this->sentence_id.'|'.$this->w_id);        
         return $word;
+    }
+    
+    public static function search(Array $url_args) {
+        $words = self::orderBy('word');        
+        $words = self::searchByLang($texts, $url_args['search_lang']);
+//        $words = self::searchByWord($texts, $url_args['search_word']);
+        
+        if ($url_args['search_word']) {
+            $words = $words->where('l_word','like',mb_strtolower($url_args['search_word'], 'UTF-8'));
+        } 
+
+        return $words;
+    }
+
+    public static function searchByLang($texts, $lang_id) {
+        if (!$lang_id) {
+            return $words;
+        }
+        return $words->whereIn('text_id', function() use ($lang_id){
+                                $query = select('id')->from('texts')
+                                       -> where('lang_id',$lang_id);
+                        });
+                
     }
     
     /**
@@ -229,5 +253,28 @@ class Word extends Model
             $lines[] = $line."\t_\t".$lemma->featsToCONLL($word->word)."\t_\t_\t_\t_";
         }
         return $lines;
+    }
+    
+    public function isLinkedWithLemmaByLang($lang_id) {
+        $word = $this->l_word;
+        $lemmas = Lemma::where('lemma', 'like', $word)
+                ->where('lang_id',$lang_id);
+//dd($lemmas);        
+        if ($lemmas->count()) {
+            return true;
+        }
+         //return false;
+       
+        $wordforms = Wordform::where('wordform', 'like', $word)
+                   ->whereIn('id',function($query) use ($lang_id) {
+                       $query ->select('wordform_id')->from('lemma_wordform')
+                              ->whereIn('lemma_id',function($q) use ($lang_id) {
+                                    $q ->select('id')->from('lemmas')
+                                           ->where('lang_id',$lang_id);
+                                });
+                   });
+        if ($wordforms->count()) {
+            return true;
+        }
     }
 }

@@ -28,6 +28,7 @@ return [
     'editing' => 'Pедактирование',
     'examples' => 'Примеры',
     'founded_records' => 'Найдено :count записей.',
+    'frequency' => 'частота',
     'from' => 'с',
     'history' => 'История изменений',
     'in_english' => 'по&#8209;английски',

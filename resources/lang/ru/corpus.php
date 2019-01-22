@@ -30,6 +30,7 @@ return [
     'genre_has_text' => 'Жанр ":name" не может быть удален, существуют тексты связанные с ним',
     'genre_list' => 'Список жанров',
     'genre_removed' => 'Жанр ":name" удален.',
+    'has_link_with_lemma' => 'есть в словаре',
     
     'informant' => 'Информант',
     'informants' => 'Информант(ы)',

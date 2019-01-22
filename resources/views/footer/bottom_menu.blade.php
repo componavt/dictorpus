@@ -41,6 +41,7 @@
                         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/district') }}">{{ trans('navigation.districts') }}</a></p>
                         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/genre') }}">{{ trans('navigation.genres') }}</a></p>
                         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/recorder') }}">{{ trans('navigation.recorders') }}</a></p>
+                        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/word/freq_dict') }}">{{ trans('navigation.word_frequency') }}</a></p>
                         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/') }}">{{ trans('corpus.new_texts') }}</a></p>
                         <!--p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/') }}">{{ trans('corpus.last_updated_texts') }}</a></p-->
                     </div>
