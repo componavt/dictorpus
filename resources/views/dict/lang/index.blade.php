@@ -22,6 +22,7 @@
         <table id="languages" class="table-striped table rwd-table wide-md">
         <thead>
             <tr>
+                <th>{{ trans('messages.seq_num') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('dict.lang_code') }}</th>
@@ -33,6 +34,7 @@
         <tbody>
             @foreach($languages as $language)
             <tr>
+                <td data-th="{{ trans('messages.seq_num') }}">{{$language->sequence_number}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$language->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$language->name_ru}}</td>
                 <td data-th="{{ trans('dict.lang_code') }}">{{$language->code}}</td>

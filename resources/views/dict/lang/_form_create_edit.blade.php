@@ -10,4 +10,8 @@
                 ['name' => 'code',
                  'title' => trans('messages.code')])         
 
+        @include('widgets.form.formitem._text',
+                ['name' => 'sequence_number',
+                 'title' => trans('messages.sequence_number')])         
+
 @include('widgets.form.formitem._submit', ['title' => $submit_title])
