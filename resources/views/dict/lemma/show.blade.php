@@ -106,7 +106,7 @@
 
 @section('jqueryFunc')
     @foreach ($lemma->meanings as $meaning)
-    loadExamples('{{LaravelLocalization::localizeURL($route_for_load)}}', {{$meaning->id}});
+        loadExamples('{{LaravelLocalization::localizeURL($route_for_load)}}', {{$meaning->id}});
     @endforeach
     
     recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma{{$args_by_get}}');

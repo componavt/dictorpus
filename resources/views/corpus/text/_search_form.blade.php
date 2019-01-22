@@ -70,7 +70,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_text', 
                  'special_symbol' => true,
-                 'value' => $url_args['search_word'],
+                 'value' => $url_args['search_text'],
                  'attributes'=>['placeholder' => trans('corpus.text_fragment')]
                 ])
                                

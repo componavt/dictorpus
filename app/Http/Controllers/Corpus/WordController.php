@@ -29,7 +29,7 @@ class WordController extends Controller
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
-                    'search_lang'     => (array)$request->input('search_lang'),
+                    'search_lang'     => $request->input('search_lang'),
                     'search_word'     => $request->input('search_word'),
                 ];
         
@@ -38,8 +38,8 @@ class WordController extends Controller
         }
         
         if ($this->url_args['limit_num']<=0) {
-            $this->url_args['limit_num'] = 10;
-        } elseif ($this->url_args['limit_num']>1000) {
+            $this->url_args['limit_num'] = 100;
+        } elseif ($this->url_args['limit_num']>10000) {
             $this->url_args['limit_num'] = 1000;
         }   
        
@@ -70,7 +70,9 @@ class WordController extends Controller
         } 
 
 //var_dump($words->toSql());        
-            $words = $words ->take(100)->get();
+            $words = $words 
+                    ->take($this->url_args['limit_num'])
+                    ->get();
         } else {
             $words = NULL;
         }

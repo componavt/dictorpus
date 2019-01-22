@@ -56,14 +56,18 @@ function reloadExamples(i) {
             $("#img-loading_"+ id).hide();                
         },
         error: function() {
-            $("#meaning-examples_"+ id).html('ERROR');
+            $("#meaning-examples_"+ id).html('ERROR'); 
+/*        error: function(jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+')'; 
+            $("#meaning-examples_"+ id).html(text);*/
             $("#img-loading_"+ id).hide();                
         }
     }); 
 }   
 
 function loadExamples(route, id) {
-    $("#img-loading_"+ id).show();
+    $("#img-loading_"+ id).show();    
     $.ajax({
         url: route+'/'+id, 
         type: 'GET',
@@ -73,6 +77,11 @@ function loadExamples(route, id) {
         },
         error: function() {
             $("#meaning-examples_"+ id).html('ERROR');
+/*        error: function(jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: '+route+'/'+id;
+//alert(text);
+            $("#meaning-examples_"+ id).html(text);*/
             $("#img-loading_"+ id).hide();                
         }
     }); 

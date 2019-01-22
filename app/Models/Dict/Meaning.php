@@ -477,7 +477,7 @@ class Meaning extends Model
                . " and (".join(' OR ',$unique_strs).")"; */
         $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
                . " text_id in (select id from texts where lang_id = ".$lang_id
-               . ") and (".join(' OR ',$unique_strs).")"; 
+               . ") and (".$cond.")"; 
 //dd($query);        
         $words = DB::select($query); 
         return $words;
