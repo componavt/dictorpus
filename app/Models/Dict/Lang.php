@@ -109,7 +109,9 @@ class Lang extends Model
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $languages = self::orderBy('name_'.$locale)->get();
+        $languages = self::orderBy('sequence_number')
+                //orderBy('name_'.$locale)
+                ->get();
         
         $list = array();
         foreach ($languages as $row) {
@@ -133,7 +135,9 @@ class Lang extends Model
             $first_lang_id = self::getIDByCode($locale);
         }
         
-        $languages = self::orderBy('name_'.$locale)->get();
+        $languages = self::orderBy('sequence_number')
+                //orderBy('name_'.$locale)
+                ->get();
         
         $list[$first_lang_id] = self::find($first_lang_id)->name;
         
@@ -164,7 +168,9 @@ class Lang extends Model
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $languages = self::orderBy('name_'.$locale)->get();
+        $languages = self::orderBy('sequence_number')
+                //orderBy('name_'.$locale)
+                ->get();
         
         $list = array();
         foreach ($languages as $row) {
