@@ -27,6 +27,7 @@ return [
     'case' => 'Case',
     'code' => 'code',
     'conll' => 'Code CONLL',
+    'create_new_lemma' => 'Create a new lemma',
     'degree' => 'degree of comparison',
     'degrees' => [NULL=> '',
                   1 => 'positive',

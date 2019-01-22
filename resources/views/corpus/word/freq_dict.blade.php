@@ -12,6 +12,12 @@
 @section('body')        
         @include('corpus.word._search_form',['url' => '/corpus/word/freq_dict']) 
 
+        @if (User::checkAccess('dict.edit'))
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}">
+                {{ trans('dict.create_new_lemma') }}
+            </a>
+        @endif
+        
         @if ($words)
         <table class="table table-striped rwd-table wide-md">
         <thead>

@@ -831,3 +831,9 @@ mklink /J public\storage storage\app\public
 -- php artisan migrate
 
 -- php artisan make:controller Corpus\WordController
+
+update parts_of_speech set name_en='Coordinating conjunction', name_ru='союз сочинительный', code='CCONJ' where id=3;
+update parts_of_speech set name_ru='союз подчинительный' where id=15;
+
+-- php artisan make:migration add_field_in_langs_table 
+-- php artisan migrate

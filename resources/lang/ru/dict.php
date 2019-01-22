@@ -27,6 +27,7 @@ return [
     'case' => 'падеж',
     'code' => 'Код',
     'conll' => 'Код CONLL',
+    'create_new_lemma' => 'Создать новую лемму',
     'degree' => 'степень сравнения',
     'degrees' => [NULL=> '',
                   1 => 'положительная',
