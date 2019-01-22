@@ -30,7 +30,7 @@ class LangController extends Controller
     public function index()
     {
         
-        $langs = Lang::orderBy('name_en')->orderBy('sequence_number')->get();
+        $langs = Lang::orderBy('sequence_number')->get();
         $total_count = Lang::count();
 
         return view('dict.lang.index')->with(array('languages' => $langs,
