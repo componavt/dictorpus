@@ -90,6 +90,10 @@ input[type="radio"]:checked+span:before{
     font-style: italic;    
 }
 
+.submit-button-b {
+    text-align: right;
+    vertical-align: bottom;
+}
 .search-button-b {
     display: flex;
     justify-content: space-between;
@@ -101,11 +105,15 @@ input[type="radio"]:checked+span:before{
 
 .search-button-b input[type=text]{
     margin: 0 10px;
-    width: 50px;
+    width: 60px;
 }
 
 .search-button-b input[type=submit]{
     margin-left: 20px;
+}
+
+.search-linked-field label {
+    display: block;
 }
 
 @media screen and (max-width: 320px) {    

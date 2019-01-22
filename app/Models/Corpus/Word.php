@@ -256,7 +256,7 @@ class Word extends Model
     }
     
     public function isLinkedWithLemmaByLang($lang_id) {
-        $word = $this->l_word;
+        $word = $this->word;
         $lemmas = Lemma::where('lemma', 'like', $word)
                 ->where('lang_id',$lang_id);
 //dd($lemmas);        

@@ -29,8 +29,9 @@ class WordController extends Controller
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
-                    'search_lang'     => $request->input('search_lang'),
+                    'search_lang'     => (int)$request->input('search_lang'),
                     'search_word'     => $request->input('search_word'),
+                    'search_linked'   => $request->input('search_linked'),
                 ];
         
         if (!$this->url_args['page']) {
@@ -39,7 +40,7 @@ class WordController extends Controller
         
         if ($this->url_args['limit_num']<=0) {
             $this->url_args['limit_num'] = 100;
-        } elseif ($this->url_args['limit_num']>10000) {
+        } elseif ($this->url_args['limit_num']>1000) {
             $this->url_args['limit_num'] = 1000;
         }   
        
@@ -48,6 +49,7 @@ class WordController extends Controller
     
     /**
      * SQL: select lower(word) as l_word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, l_word LIMIT 30;
+     * SQL: select word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, word LIMIT 30;
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
@@ -57,21 +59,23 @@ class WordController extends Controller
 
         if ($url_args['search_lang']) {
             $lang_id = $url_args['search_lang'];
-            $words = Word::select(DB::raw('lower(word) as l_word'),DB::raw('count(word) as frequency'))
+//            $words = Word::select(DB::raw('lower(word) as l_word'),DB::raw('count(word) as frequency'))
+            $words = Word::select('word',DB::raw('count(word) as frequency'))
                    ->whereIn('text_id', function($query) use ($lang_id){
                                 $query->select('id')->from('texts')
                                       ->where('lang_id',$lang_id);
                         })
-                  ->groupBy(DB::raw('lower(word)'))
+                  ->groupBy('word')
                   ->orderBy(DB::raw('count(word)'), 'DESC');
                         
-        if ($url_args['search_word']) {
-            $words = $words->where(DB::raw('lower(word)'),'like',mb_strtolower($url_args['search_word'], 'UTF-8'));
-        } 
+            if ($url_args['search_word']) {
+                $words = $words->where('word','like',$url_args['search_word']);
+            } 
 
 //var_dump($words->toSql());        
             $words = $words 
-                    ->take($this->url_args['limit_num'])
+//                    ->take($this->url_args['limit_num'])
+                    ->take(1000)
                     ->get();
         } else {
             $words = NULL;
