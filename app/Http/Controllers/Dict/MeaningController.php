@@ -24,7 +24,7 @@ class MeaningController extends Controller
     {
         $this->middleware('auth:ref.edit,/dict/meaning/', 
                 ['only' => ['create','store','edit','update','destroy',
-                            'createRelation']]);
+                            'createRelation', 'addExample', 'loadExamples', 'reloadExamples']]);
     }
 
     /**

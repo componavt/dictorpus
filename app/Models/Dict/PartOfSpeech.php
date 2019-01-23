@@ -8,6 +8,7 @@ use LaravelLocalization;
 class PartOfSpeech extends Model
 {
     protected $table = 'parts_of_speech';
+    protected $fillable = ['name_en', 'name_ru', 'code', 'category'];
     
     public $timestamps = false;
     
@@ -37,6 +38,16 @@ class PartOfSpeech extends Model
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_" . $locale;
         return $this->{$column};
+    }
+        
+    // muttator
+    public function getCodeAttribute($code)
+    {
+//    dd(\Schema::hasColumn(app(PartOfSpeech::class)->getTable(), 'code'));        
+        if (in_array($code, ['POSTP', 'PREP'])) {
+            $code = "ADP";
+        }
+        return $code;
     }
         
     // PartOfSpeech __has_many__ Gramset
