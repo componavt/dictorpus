@@ -126,3 +126,7 @@ ol {
     margin-bottom: -5px;
     text-align: right;
 }
+
+#call-add-lemma {
+    cursor: pointer;
+}

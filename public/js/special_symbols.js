@@ -12,7 +12,9 @@ function toggleSpecial() {
 }
 
 function insertSymbol (text, fieldName) {
-    insertTextAtCursor(document.getElementById(fieldName),text);
+    var elem = document.getElementById(fieldName)
+    insertTextAtCursor(elem,text);
+    elem.focus();
 /*    
         var textEl = $("#"+fieldName);
         oldText = textEl.val();

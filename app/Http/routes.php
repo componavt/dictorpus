@@ -98,6 +98,7 @@ Route::group(
                         ->name('lemma.update.examples');
         Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')
                         ->name('lemma.update.wordforms');
+        Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');

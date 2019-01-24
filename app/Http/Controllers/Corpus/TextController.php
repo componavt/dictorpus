@@ -27,6 +27,7 @@ use App\Models\Corpus\Word;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\PartOfSpeech;
 
 class TextController extends Controller
 {
@@ -191,10 +192,15 @@ class TextController extends Controller
             $labels[] = $genre->name;
         }
         $labels = join(', ',$labels);
+        $pos_values = PartOfSpeech::getGroupedList();   
+        $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
+        $pos_id = PartOfSpeech::getIDByCode('Noun');
+        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.show',
-                  compact('labels', 'text', 'args_by_get', 'url_args'));
+                  compact('labels', 'text', 'args_by_get', 'url_args', 
+                          'pos_values', 'pos_id', 'langs_for_meaning'));
     }
 
     /**

@@ -17,35 +17,7 @@
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
-        @include('widgets.form.formitem._radio_for_field', 
-                ['name' => 'animacy', 
-                 'title'=>trans('dict.animacy')])
-        @include('widgets.form.formitem._checkbox_for_field', 
-                ['name' => 'abbr', 
-                 'title'=>trans('dict.abbr')])
-        @include('widgets.form.formitem._checkbox_for_field', 
-                ['name' => 'plur_tan', 
-                 'title'=>trans('dict.plur_tan')])
-                 
-        @include('widgets.form.formitem._checkbox_for_field', 
-                ['name' => 'reflexive', 
-                 'title'=>trans('dict.reflexive').' '.trans('dict.verb')])
-        @include('widgets.form.formitem._radio_for_field', 
-                ['name' => 'transitive', 
-                 'title'=>trans('dict.transitive').' '.trans('dict.verb')])
-
-        @include('widgets.form.formitem._select_for_field', 
-                ['name' => 'prontype', 
-                 'lang_file'=> 'dict'])
-        @include('widgets.form.formitem._select_for_field', 
-                ['name' => 'numtype', 
-                 'lang_file'=> 'dict'])
-        @include('widgets.form.formitem._select_for_field', 
-                ['name' => 'advtype', 
-                 'lang_file'=> 'dict'])
-        @include('widgets.form.formitem._select_for_field', 
-                ['name' => 'degree', 
-                 'lang_file'=> 'dict'])
+        @include('dict.lemma.form._create_edit_pos_features') 
                  
         <div id='phrase-field' class="lemma-feature-field">
         @include('widgets.form.formitem._select2',

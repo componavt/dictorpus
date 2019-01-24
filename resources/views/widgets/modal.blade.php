@@ -12,7 +12,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="{{ $submit_id }}">{{ $submit_title }}</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{trans('messages.close')}}</button>
+                <button type="button" class="btn btn-default cancel" data-dismiss="modal">{{trans('messages.close')}}</button>
             </div>
         </div>
     </div>

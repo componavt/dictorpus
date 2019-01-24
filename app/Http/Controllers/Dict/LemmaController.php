@@ -44,7 +44,7 @@ class LemmaController extends Controller
                           ['only' => ['create','store','edit','update','destroy',
                                       'editExample', 'removeExample',
                                       'editExamples','updateExamples', 
-                                      'createMeaning', 
+                                      'createMeaning', 'storeSimple',
                                       'createWordform', 'updateWordformFromText',
                                       'editWordforms','updateWordforms']]);
         
@@ -226,6 +226,41 @@ class LemmaController extends Controller
 
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     * 
+     * URL: /dict/lemma/store_simple?lang_id=4&lemma=täh&meaning=test1&pos_id=5
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeSimple(Request $request)
+    {
+        $this->validate($request, [
+            'lemma'  => 'required|max:255',
+            'lang_id'=> 'required|numeric',
+            'pos_id' => 'numeric',
+        ]);
+        
+        $data = $request->all();
+        list($data['lemma'], $data['wordforms'], $stem, $inflexion) 
+                = Lemma::parseLemmaField(trim($data['lemma']));
+        $request->replace($data);
+        
+        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
+
+        $lemma->createDictionaryWordforms($request->wordforms, $request->plur_tan);
+        $lemma->storeReverseLemma($stem, $inflexion);
+        $new_meanings[0]=['meaning_n' => 1,
+                          'meaning_text' =>
+                            [Lang::getIDByCode('ru') => $request->meaning]];    
+        Meaning::storeLemmaMeanings($new_meanings, $lemma->id);
+        
+        $lemma->updateTextLinks();
+
+        return $lemma->id;        
     }
 
     /**

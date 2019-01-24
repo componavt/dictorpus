@@ -5,6 +5,7 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/lemma.css')!!}
     {!!Html::style('css/text.css')!!}
     {!!Html::style('css/select2.min.css')!!}
 @stop
@@ -20,7 +21,7 @@
                                   'title'=>trans('corpus.add-lemma'),
                                   'submit_id' => 'save-lemma',
                                   'submit_title' => trans('messages.save'),
-                                  'modal_view'=>''])
+                                  'modal_view'=>'dict.lemma.form._create_simple'])
         @endif         
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
@@ -114,9 +115,11 @@
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/text.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
     highlightSentences();
     addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add/example')}}');
