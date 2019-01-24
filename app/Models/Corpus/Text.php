@@ -1188,6 +1188,11 @@ var_dump($meanings);
         return $texts;
     }
     
+    public static function processTextForCONLL($sentence) {
+        $sentence = trim(str_replace("\n"," ",strip_tags($sentence)));
+        return str_replace("\'","'",$sentence);
+    }
+    
     public function toCONLL() {
         $out = "";
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
@@ -1203,8 +1208,8 @@ var_dump($meanings);
             $out .= "# text_id = ".$this->id."\n".
                     "# sent_id = ".$this->id."-".$sentence['id']."\n".
                     //$sentence->asXML()."\n".
-                    "# text = ".trim(strip_tags($sentence->asXML()))."\n";
-            $trans_text = str_replace("\'","'",trim(strip_tags($this->getTransSentence($sentence['id']))));
+                    "# text = ".Text::processTextForCONLL($sentence->asXML())."\n";
+            $trans_text = Text::processTextForCONLL($this->getTransSentence($sentence['id']));
             if ($trans_text) {
                 $out .= "# text_ru = ".$trans_text."\n";
             }

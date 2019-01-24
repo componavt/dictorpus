@@ -43,7 +43,6 @@ class PartOfSpeech extends Model
     // muttator
     public function getCodeAttribute($code)
     {
-//    dd(\Schema::hasColumn(app(PartOfSpeech::class)->getTable(), 'code'));        
         if (in_array($code, ['POSTP', 'PREP'])) {
             $code = "ADP";
         }
