@@ -49,6 +49,12 @@ function saveLemma(lang_id, lemma, pos_id, meaning) {
             $( "#new_meanings_0__meaning_text__2_" ).val(null);
             var newOption = new Option(lemma, lemma_id, false, false);
             $('#choose-lemma').append(newOption).trigger('change');
+            $('#choose-lemma').trigger({
+                type: 'select2:select',
+                params: {
+                    data: {id: lemma_id, text: lemma}
+                }
+            });
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);
