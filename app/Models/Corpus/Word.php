@@ -245,7 +245,7 @@ class Word extends Model
         $lines = [];
         foreach ($lemmas as $lemma) {
             $line = $word->word."\t".$lemma->lemma."\t";
-            if ($lemma->pos) {
+            if ($lemma->pos && !in_array($lemma->pos->code, ['PHRASE','PRE'])) { // фразеологизм, предикатив
                 $line .= $lemma->pos->code;
             } else {
                 $line .= 'UNKN';

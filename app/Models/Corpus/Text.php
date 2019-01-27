@@ -1204,6 +1204,8 @@ var_dump($meanings);
 //asXML        
 //        $sentences = Word::where('text_id', $this->id)->groupBy('sentence_id')
 //                   ->select('sentence_id')->orderBy('sentence_id')->get();
+//dd($sentences);       
+        $is_last_item = sizeof($sentences);
         foreach ($sentences as $sentence) {
             $out .= "# text_id = ".$this->id."\n".
                     "# sent_id = ".$this->id."-".$sentence['id']."\n".
@@ -1229,7 +1231,9 @@ var_dump($meanings);
                 }
                 $count++;
             }
-            $out .= "\n";
+            if ($is_last_item-- > 1) {
+                $out .= "\n";
+            }
         }
         return $out;
     }

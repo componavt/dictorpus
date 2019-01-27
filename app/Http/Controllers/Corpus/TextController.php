@@ -641,19 +641,19 @@ class TextController extends Controller
     public function exportToCONLL() {//Request $request
         $date = Carbon::now();
         $date_now = $date->toDateString();
-        foreach ([1, 4, 5, 6] as $lang_id) {
-//            $lang_id = 1;
+//        foreach ([1, 4, 5, 6] as $lang_id) {
+            $lang_id = 5;
             $lang = Lang::find($lang_id);
             $filename = 'export/conll/vepkar-'.$date_now.'-'.$lang->code.'.txt';
             Storage::disk('public')->put($filename, "# ".$lang->name);
             $texts = Text::where('lang_id',$lang_id)
-//                    ->where('id',1)
+//                    ->where('id',1416)
                     ->get();
             foreach ($texts as $text) {
                 Storage::disk('public')->append($filename, $text->toCONLL());
             }
             print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
-        }
+        //}
     }
 
 
