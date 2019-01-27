@@ -639,10 +639,11 @@ class TextController extends Controller
      * vepkar-20190129-vep
      */
     public function exportToCONLL() {//Request $request
+        ini_set('max_execution_time', 7200);
         $date = Carbon::now();
         $date_now = $date->toDateString();
-//        foreach ([1, 4, 5, 6] as $lang_id) {
-            $lang_id = 5;
+        foreach ([4, 5, 6, 1] as $lang_id) {
+//            $lang_id = 5;
             $lang = Lang::find($lang_id);
             $filename = 'export/conll/vepkar-'.$date_now.'-'.$lang->code.'.txt';
             Storage::disk('public')->put($filename, "# ".$lang->name);
@@ -653,7 +654,7 @@ class TextController extends Controller
                 Storage::disk('public')->append($filename, $text->toCONLL());
             }
             print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
-        //}
+        }
     }
 
 
