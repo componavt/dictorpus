@@ -8,6 +8,8 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\User;
+
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
 
@@ -24,7 +26,7 @@ class MeaningController extends Controller
     {
         $this->middleware('auth:ref.edit,/dict/meaning/', 
                 ['only' => ['create','store','edit','update','destroy',
-                            'createRelation', 'addExample', 'loadExamples', 'reloadExamples']]);
+                            'createRelation', 'addExample', 'reloadExamples']]);
     }
 
     /**
@@ -142,7 +144,7 @@ class MeaningController extends Controller
             return NULL;
         }
         
-        if (!$meaning->texts()->count()) {
+        if (User::checkAccess('corpus.edit') && !$meaning->texts()->count()) {
             $meaning->addTextLinks();
         }
         return view('dict.lemma.show.examples')
