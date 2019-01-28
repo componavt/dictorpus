@@ -723,7 +723,7 @@ class Text extends Model
     
     public function getMeaningsByWord($word) {
         $word_t = addcslashes($word,"'%");
-        $word_t_l = strtolower($word_t);
+        $word_t_l = mb_strtolower($word_t);
         $wordform_q = "(SELECT id from wordforms where wordform like '$word_t' or wordform like '$word_t_l')";
         $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
         $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id

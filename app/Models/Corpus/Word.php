@@ -257,15 +257,20 @@ class Word extends Model
     
     public function isLinkedWithLemmaByLang($lang_id) {
         $word = $this->word;
-        $lemmas = Lemma::where('lemma', 'like', $word)
-                ->where('lang_id',$lang_id);
+        $word_t = addcslashes($word,"'%");
+        $word_t_l = mb_strtolower($word_t);
+        $lemmas = Lemma::where('lang_id',$lang_id)
+                //where('lemma', 'like', $word)
+                ->whereRaw("lemma like '$word_t' or lemma like '$word_t_l'");
+//whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id  ." and (lemma like '$word_t' or lemma like '$word_t_l' or id in $lemma_q))")
 //dd($lemmas);        
         if ($lemmas->count()) {
             return true;
         }
          //return false;
        
-        $wordforms = Wordform::where('wordform', 'like', $word)
+        $wordforms = Wordform::whereRaw("(wordform like '$word_t' or wordform like '$word_t_l')")
+                //where('wordform', 'like', $word)
                    ->whereIn('id',function($query) use ($lang_id) {
                        $query ->select('wordform_id')->from('lemma_wordform')
                               ->whereIn('lemma_id',function($q) use ($lang_id) {
