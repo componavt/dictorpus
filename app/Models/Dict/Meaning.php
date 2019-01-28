@@ -510,11 +510,14 @@ class Meaning extends Model
      *
      * @return NULL
      */
-     public function updateTextLinks() {
-        $words = $this->getWordsByWordforms();
+     public function updateTextLinks($words=NULL) {
+        if (!$words) {
+            $words = $this->getWordsByWordforms();
+        }
         if (!$words) {
             return;
         }
+//dd($words);        
         $text_links = [];               
         foreach ($words as $word) {
             $text_links[] = ['text_id' => $word->text_id,

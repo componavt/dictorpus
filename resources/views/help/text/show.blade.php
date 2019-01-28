@@ -37,7 +37,7 @@
     
     <div class="figure">
         <img src="/images/help/result_of_wordform_creation.png">
-        <span class="figure-caption">Рис.3 Значение проверено и подтверждено экспертом</span>
+        <span class="figure-caption">Рис.3 После сохранения формы значение считается проверенным и подтвержденным экспертом</span>
     </div>
     
 @stop

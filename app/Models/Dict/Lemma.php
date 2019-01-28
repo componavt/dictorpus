@@ -844,6 +844,7 @@ class Lemma extends Model
             $this-> wordforms()->attach($wordform->id, 
                     ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                                    
         }
+        $wordform->updateTextLinks($this);
     }
     
     public function isExistWordforms($gramset_id, $dialect_id, $wordform_id) {

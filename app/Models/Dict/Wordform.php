@@ -124,10 +124,12 @@ class Wordform extends Model
         $lang_id = $lemma->lang_id;
         $word = addcslashes($this->wordform,"'");
         foreach ($lemma->meanings as $meaning) {
-            $query = "select * from words, texts "
-                              . "where words.text_id = texts.id and texts.lang_id = ".$lang_id
-                                . " and word like '".$word."'";
-            $meaning->updateTextLinksForQuery($query);
+            $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+               . " text_id in (select id from texts where lang_id = ".$lang_id
+                                . ") and word like '".$word."'";
+//dd($query);        
+            $words = DB::select($query); 
+            $meaning->updateTextLinks($words);
         }
     }
     
