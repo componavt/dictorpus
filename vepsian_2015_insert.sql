@@ -837,3 +837,5 @@ update parts_of_speech set name_ru='союз подчинительный' where
 
 -- php artisan make:migration add_field_in_langs_table 
 -- php artisan migrate
+
+-- php artisan make:test Models\Dict\PartOfSpeechTest

@@ -36,4 +36,5 @@ class WordformTest extends TestCase
         $expected = 'aštun';
         $this->assertEquals( $expected, $result);        
     }
+    
 }

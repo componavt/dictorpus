@@ -98,6 +98,19 @@ class PartOfSpeech extends Model
         return self::getIDByCode('PHRASE');
     }
         
+    public static function getNameIDs() {
+        return [self::getIDByCode('ADJ'), 
+                self::getIDByCode('NOUN'), 
+                self::getIDByCode('NUM'), 
+                self::getIDByCode('PRON'), 
+                self::getIDByCode('PROPN'), 
+                self::getIDByCode('PRE')];
+    }
+
+    public static function getVerbID() {
+        return self::getIDByCode('VERB');
+    }
+    
     /** Gets list of parts of speech, sorts by category and alphabetically 
      * 
      * @return Array [1=>'Adjective',..]

@@ -1033,6 +1033,164 @@ class Lemma extends Model
         return $meanings;
     }
     
+    public function wordformsByTemplate($template) {
+        $lang_id = $this->lang_id;
+        if ($lang_id != 4) {// is not Proper Karelian  
+            return false;
+        }
+        
+        $pos_id = $this->pos_id;
+        if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
+            return false;
+        }
+        
+//        $template = trim($template);
+        if (!preg_match('/\{([^\}]+)\}/', $template, $list)) {
+            return false;
+        }
+        
+        $stems = preg_split('/,/',$list[1]);
+        for ($i=0; $i<sizeof($stems); $i++) {
+            $stems[$i] = trim($stems[$i]);
+        }
+        
+        $gramsets = Gramset::getListForAutoComplete($lang_id, $pos_id);
+        
+        if ($pos_id == PartOfSpeech::getVerbID()) {
+            $wordforms = $this->verbWordformsByStems($stems, $gramsets);
+        } else {
+            $wordforms = $this->nounWordformsByStems($stems, $gramsets);
+        }
+        return $wordforms;
+    }
+    
+    public function nounWordformsByStems($stems, $gramsets) {
+        if (sizeof ($stems) != 6) {
+            return false;
+        }
+        $wordforms = [];
+        
+        $stem1_a = (Word::isBackVowels($stems[1]) ? 'a': 'ä');
+        $stem2_a = (Word::isBackVowels($stems[2]) ? 'a': 'ä');
+        $stem5_a = (Word::isBackVowels($stems[5]) ? 'a': 'ä');
+//        $stem1_i = mb_substr($stems[2], -1, 1)=='i';
+        $stem1_i = preg_match("/i$/u", $stems[5]);
+        $stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
+        foreach ($gramsets as $gramset_id) {
+            switch ($gramset_id) {
+                case 1: // номинатив, ед. ч. 
+                    $wordform = $stems[0];
+                    break;
+                case 3: // генитив, ед. ч. 
+                    $wordform = $stems[1].'n';
+                    break;
+                case 4: // партитив, ед. ч. 
+                    $wordform = $stems[3];
+                    break;
+                case 277: // эссив, ед. ч. 
+                    $wordform = $stems[2] . 'n'. $stem2_a;
+                    break;
+                case 5: // транслатив, ед. ч. 
+                    $wordform = $stems[1] . ($stem1_i ? 'ksi' : 'kši');
+                    break;
+                case 8: // инессив, ед. ч. 
+                    $wordform = $stems[1] . ($stem1_i ? 'ss' : 'šš') . $stem1_a;
+                    break;
+                case 9: // элатив, ед. ч. 
+                    $wordform = $stems[1] . ($stem1_i ? 'st' : 'št') . $stem1_a;
+                    break;
+                case 10: // иллатив, ед. ч. 
+                    $wordform = $stems[2].'h';
+                    break;
+                case 278: // адессив-аллатив, ед. ч. 
+                    $wordform = $stems[1] . 'll'. $stem1_a;
+                    break;
+                case 12: // аблатив, ед. ч. 
+                    $wordform = $stems[1] . 'ld'. $stem1_a;
+                    break;
+                case 6: // абессив, ед. ч. 
+                    $wordform = $stems[1] . 'tt'. $stem1_a;
+                    break;
+                case 14: // комитатив, ед. ч. 
+                    $wordform = $stems[1].'nke';
+                    break;
+                case 15: // пролатив, ед. ч. 
+                    $wordform = $stems[1].'čči';
+                    break;
+                case 2: // номинатив, мн. ч. 
+                    $wordform = $stems[1].'t';
+                    break;
+                case 24: // генитив, мн. ч. 
+                    $wordform = $stems[4].'n';
+                    break;
+                case 22: // партитив, мн. ч. 
+                    $wordform = $stems[5] . ($stem5_oi ? 'd'.$stem5_a : 'e' );
+                    break;
+                case 279: // эссив, мн. ч.
+                    $wordform = $stems[5] . 'n'. $stem5_a;
+                    break;
+                case 59: // транслатив, мн. ч. 
+                    $wordform = $stems[4].'ksi';
+                    break;
+                case 23: // инессив, мн. ч.
+                    $wordform = $stems[4] . 'ss'. $stem5_a;
+                    break;
+                case 60: // элатив, мн. ч.
+                    $wordform = $stems[4] . 'st'. $stem5_a;
+                    break;
+                case 61: // иллатив, мн. ч. 
+                    $wordform = $stems[5].'h';
+                    break;
+                case 280: // адессив-аллатив, мн. ч.
+                    $wordform = $stems[4] . 'll'. $stem5_a;
+                    break;
+                case 62: // аблатив, мн. ч.
+                    $wordform = $stems[4] . 'ld'. $stem5_a;
+                    break;
+                case 64: // абессив, мн. ч.
+                    $wordform = $stems[4] . 'tt'. $stem5_a;
+                    break;
+                case 65: // комитатив, мн. ч. 
+                    $wordform = $stems[4].'nke';
+                    break;
+                case 66: // пролатив, мн. ч. 
+                    $wordform = $stems[4].'čči';
+                    break;
+                case 281: // инструктив, мн. ч. 
+                    $wordform = $stems[4].'n';
+                    break;
+                default:
+                    $wordform = '';
+            }
+            $wordforms[$gramset_id] = $wordform;
+        }
+        return $wordforms;
+    }
+
+    public function verbWordformsByStems($stems, $gramsets) {
+        if (sizeof ($stems) != 8) {
+            return false;
+        }
+        $wordforms = [];
+        return $wordforms;
+    }
+    
+    public function getWordformsForTest($dialect_id) {
+        $wordforms = [];
+        $lang_id = $this->lang_id;
+        $pos_id = $this->pos_id;
+        $gramsets = Gramset::getListForAutoComplete($lang_id, $pos_id);
+//dd($gramsets);        
+        foreach ($gramsets as $gramset_id) {
+            $wordform_obj = $this->wordforms()
+                   ->wherePivot('gramset_id',$gramset_id) 
+                   ->wherePivot('dialect_id',$dialect_id)->first();
+            $wordforms[$gramset_id] = $wordform_obj ? $wordform_obj->wordform : ''; 
+        }
+//var_dump($wordforms);        
+        return $wordforms;
+    }
+
     /*    
     public static function totalCount(){
         return self::count();

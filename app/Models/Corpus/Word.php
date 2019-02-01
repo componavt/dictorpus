@@ -67,6 +67,18 @@ class Word extends Model
     }
     
     /**
+     * Is exists back vowels in the word
+     * @param String $word
+     * @return Boolean
+     */
+    public static function isBackVowels($word) {
+        if (preg_match("/[aou]/u", $word)) { 
+            return true;
+        }
+        return false;
+    }
+    
+    /**
      * Changes obsolete letters to modern
      * If a parameter lang_id is given, then does the check need such a replacement
      * 
@@ -82,7 +94,7 @@ class Word extends Model
         $word = str_replace('ü','y',$word);
         $word = str_replace('Ü','Y',$word);
         
-        if (preg_match("/[aou]/u", $word)) { // back vowels
+        if (self::isBackVowels($word)) { 
             $word = str_replace('w','u',$word);
             $word = str_replace('W','U',$word);            
         } else {

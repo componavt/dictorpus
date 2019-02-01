@@ -144,7 +144,7 @@ class MeaningController extends Controller
             return NULL;
         }
         
-        if (User::checkAccess('corpus.edit') && !$meaning->texts()->count()) {
+        if (User::checkAccess('dict.edit') && !$meaning->texts()->count()) {
             $meaning->addTextLinks();
         }
         return view('dict.lemma.show.examples')

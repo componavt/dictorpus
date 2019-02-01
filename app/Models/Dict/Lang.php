@@ -218,7 +218,7 @@ class Lang extends Model
     }
     
     public static function isLetterChangeable($lang_id) {
-        if (in_array($lang_id,[5])) {
+        if (in_array($lang_id,[5, 4, 6])) { // karelian languages
             return true;
         }
         return false;
