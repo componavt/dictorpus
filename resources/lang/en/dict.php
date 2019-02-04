@@ -35,6 +35,7 @@ return [
                   3 => 'superlative'],
     'dialect' => 'Dialect',
     'dialect_can_not_be_removed' => 'The dialect can not be removed, there is the related wordforms or texts',
+    'dialect_in_lemma_form' => 'Dialect for word form autocompletion',
     'dialect_list' => 'Dialect list',
     'dialect_removed' => 'Dialect ":name" is removed successfully.',
     'dialects' => 'Dialects',

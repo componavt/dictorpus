@@ -12,6 +12,7 @@ use LaravelLocalization;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
 class UserController extends Controller
@@ -94,35 +95,21 @@ class UserController extends Controller
     {
         $user = User::find($id); 
         
-        $role_values = Role::getList();
-        
-        $role_value = [];
-        foreach ($user->roles as $role) {
-            $role_value[] = $role->id;
-        }
+        $role_values = Role::getList();        
+        $role_value = $user->roleValue();
         
         $perm_values = $user->getPermList();
-        $user_perms = $user->permissions;
-
-        $perm_value = [];
-        foreach ($perm_values as $perm=>$perm_t) {
-            if (isset($user_perms[$perm]) && $user_perms[$perm]) {
-                $perm_value[] = $perm;
-            }
-        }
+        $perm_value = $user->permValue();
 
         $lang_values = Lang::getList();
         $lang_value = $user->langValue();
         
-        return view('user.edit')
-                  ->with(['user' => $user,
-                          'lang_values' => $lang_values,
-                          'lang_value' => $lang_value,
-                          'perm_values' => $perm_values,
-                          'perm_value' => $perm_value,
-                          'role_values' => $role_values,
-                          'role_value' => $role_value,
-                         ]);
+        $dialect_values = Dialect::getGroupedList();
+        $dialect_value = $user->dialectValue();
+        
+        return view('user.edit',
+                  compact('dialect_value', 'dialect_values', 'lang_value', 'lang_values', 
+                          'perm_value', 'perm_values', 'role_value', 'role_values', 'user'));
     }
 
     /**
@@ -157,6 +144,9 @@ class UserController extends Controller
         
         $user->langs()->detach();
         $user->langs()->attach($request->langs);
+        
+        $user->dialects()->detach();
+        $user->dialects()->attach($request->dialects);
         
         return Redirect::to('/user/?search_id='.$user->id)
             ->withSuccess(\Lang::get('messages.updated_success'));        

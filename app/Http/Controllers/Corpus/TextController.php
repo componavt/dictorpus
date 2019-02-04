@@ -13,6 +13,8 @@ use LaravelLocalization;
 use Response;
 use Storage;
 
+use App\Library\Grammatic;
+
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Genre;
@@ -226,6 +228,7 @@ class TextController extends Controller
 
         $dialect_values = Dialect::getList();
         $dialect_value = $text->dialectValue();
+//dd($dialect_value);        
 
         $genre_values = Genre::getList();        
         $genre_value = $text->genreValue();
@@ -363,10 +366,8 @@ class TextController extends Controller
      * 
      * @return JSON response
      */
-    public function dialectList(Request $request)
+/*    public function dialectList(Request $request)
     {
-        $locale = LaravelLocalization::getCurrentLocale();
-
         $dialect_name = '%'.$request->input('q').'%';
         $lang_ids = (array)$request->input('lang_id');
 //        $lemma_id = (int)$request->input('lemma_id');
@@ -376,7 +377,7 @@ class TextController extends Controller
                        ->where(function($q) use ($dialect_name){
                             $q->where('name_en','like', $dialect_name)
                               ->orWhere('name_ru','like', $dialect_name);
-                         })->orderBy('name_'.$locale)->get();
+                         })->orderBy('sequence_number')->get();
                          
         foreach ($dialects as $dialect) {
             $list[]=['id'  => $dialect->id, 
@@ -670,7 +671,7 @@ class TextController extends Controller
 //dd($words->toSql());        
         foreach ($words as $word) {
 //dd($word->word);            
-            $new_word = Word::changeLetters($word->word);
+            $new_word = Grammatic::changeLetters($word->word);
             $new_word_l = strtolower($new_word);
             if ($new_word != $word->word) {
 //dd($word->text_id);        

@@ -9,6 +9,7 @@ use LaravelLocalization;
 use DB;
 
 use App\Models\Role;
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
 class User extends EloquentUser
@@ -45,6 +46,11 @@ class User extends EloquentUser
     // User __has_many__ Langs
     public function langs(){
         return $this->belongsToMany(Lang::class, 'lang_user');
+    }
+    
+    // User __has_many__ Langs
+    public function dialects(){
+        return $this->belongsToMany(Dialect::class, 'dialect_user');
     }
     
     /**
@@ -138,14 +144,54 @@ class User extends EloquentUser
     }
 
     /**
+     * Gets IDs of dialects for lang's form field
+     *
+     * @return Array
+     */
+    public function dialectValue():Array{
+        $value = [];
+        if ($this->dialects) {
+            foreach ($this->dialects as $dialect) {
+                $value[] = $dialect->id;
+            }
+        }
+        return $value;
+    }
+
+    public function permValue():Array {        
+        $user_perms = $this->permissions;
+
+        $perm_value = [];
+        foreach ($this->getPermList() as $perm=>$perm_t) {
+            if (isset($user_perms[$perm]) && $user_perms[$perm]) {
+                $perm_value[] = $perm;
+            }
+        }
+        
+        return $perm_value;
+    }
+
+    public function roleValue():Array {        
+        $role_value = [];
+        foreach ($this->roles as $role) {
+            $role_value[] = $role->id;
+        }
+        return $role_value;
+    }
+    
+    public static function authUser()
+    {
+        $auth_user=Sentinel::check();
+        return self::find($auth_user->id);
+    }
+    
+    /**
      * Gets the user first language ID
      * 
      * @return INT
      */
-    public static function userLangID()
-    {
-        $auth_user=Sentinel::check();
-        $user = User::find($auth_user->id);
+    public static function userLangID() {
+        $user = self::authUser();
         if (!$user) {
             return NULL;
         }
@@ -154,6 +200,35 @@ class User extends EloquentUser
             return NULL;
         }
         return  $langs->first()->id;
+    } 
+    
+    public static function userDialectID() {
+        $user = self::authUser();
+        if (!$user) {
+            return NULL;
+        }
+        $dialects = $user->dialects;
+        if (!$dialects || !$dialects->first()) {
+            return NULL;
+        }
+        return  $dialects->first()->id;
+    } 
+    
+    public static function userDialects() {
+        $user = self::authUser();
+        if (!$user) {
+            return NULL;
+        }
+        $dialects = $user->dialects;
+        if (!$dialects) {
+            return NULL;
+        }
+        $ids = [];
+        
+        foreach ($dialects as $dialect) {
+            $ids[] = $dialect->id;
+        }
+        return  $ids;
     } 
     
     /**

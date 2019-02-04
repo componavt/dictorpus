@@ -66,6 +66,18 @@ class Lang extends Model
         }
     }
            
+    /** Gets name of this lang by code, takes into account locale.
+     * 
+     * @return String
+     */
+    public static function getNameByID($id) : String
+    {
+        $lang = self::where('id',$id)->first();
+        if ($lang) {
+            return $lang->name;
+        }
+    }
+           
     // Lang __has_many__ Lemma
     public function lemmas()
     {
@@ -217,10 +229,4 @@ class Lang extends Model
         return $url;
     }
     
-    public static function isLetterChangeable($lang_id) {
-        if (in_array($lang_id,[5, 4, 6])) { // karelian languages
-            return true;
-        }
-        return false;
-    }
 }

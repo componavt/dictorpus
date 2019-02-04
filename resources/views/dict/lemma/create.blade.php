@@ -13,14 +13,9 @@
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('lemma.store'))) !!}
-        @include('dict.lemma._form_create_edit', ['submit_title' => trans('messages.create_new_f'),
+        @include('dict.lemma.form._create_edit', ['submit_title' => trans('messages.create_new_f'),
                                       'action' => 'create',
-                                      'lang_id' => $lang_id,
-				      'pos_id' => $pos_id,
-                                      'lang_values' => $lang_values, 
                                       'lemma_value' => '',
-                                      'phrase_values' => $phrase_values,
-                                      'pos_values'  => $pos_values,
                                       'obj' => NULL])
         {!! Form::close() !!}
 @stop
@@ -37,6 +32,27 @@
     addMeaning();
     posSelect();
     langSelect();
+    
+    $(".select-dialect").select2({
+        width: '100%',
+        ajax: {
+          url: "/dict/dialect/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#lang_id option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
     
     $(".multiple-select-phrase").select2({
         width: '100%',

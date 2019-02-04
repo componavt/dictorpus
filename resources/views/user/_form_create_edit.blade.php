@@ -36,4 +36,12 @@
                  'class'=>'multiple-select form-control'
             ])
             
+        @include('widgets.form.formitem._select2',
+                ['name' => 'dialects', 
+                 'values' =>$dialect_values,
+                 'value' => $dialect_value,
+                 'title' => trans('navigation.dialects'),
+                 'grouped' => true,
+                 'class'=>'multiple-select form-control'
+            ])
 @include('widgets.form.formitem._submit', ['title' => $submit_title])

@@ -96,6 +96,24 @@ class Dialect extends Model
         return $list;         
     }
     
+    /** Gets list of dialects group by languages
+     * 
+     * @return Array ['Vepsian' => [1=>'New written Veps',..], ...]
+     */
+    public static function getGroupedList()
+    {
+        $langs = self::select('lang_id')->groupBy('lang_id')->orderBy('lang_id')->get();
+        
+        $list = [];
+        foreach ($langs as $row) {
+            foreach (self::getList($row->lang_id) as $dialect_title => $dialect_id) {
+                $list[Lang::getNameByID($row->lang_id)][$dialect_title] = $dialect_id;
+            }
+        }
+        
+        return $list;         
+    }
+        
     /** Takes data from search form (part of speech, language) and 
      * returns string for url such_as 
      * pos_id=$pos_id&lang_id=$lang_id

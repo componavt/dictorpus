@@ -20,7 +20,7 @@
         </p>
         
         {!! Form::model($lemma, array('method'=>'PUT', 'route' => array('lemma.update', $lemma->id))) !!}
-        @include('dict.lemma._form_create_edit', ['submit_title' => trans('messages.save'),
+        @include('dict.lemma.form._create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit',
                                       'lang_id' => null,
 				      'pos_id'=>null,
@@ -43,6 +43,27 @@
     addMeaning();
     posSelect();
     langSelect();
+    
+    $(".select-dialect").select2({
+        width: '100%',
+        ajax: {
+          url: "/dict/dialect/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#lang_id option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
     
     $(".add-new-relation").click(function(){
         var meaning_id = $(this).attr("data-for");

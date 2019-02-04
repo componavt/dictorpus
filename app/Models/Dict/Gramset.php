@@ -105,24 +105,6 @@ class Gramset extends Model
         return $this->belongsToMany(Lang::class,'gramset_pos','gramset_id','lang_id');
     }
      
-    public static function getListForAutoComplete($lang_id, $pos_id) {
-        $gramsets = [];
-        if ($lang_id != 4) {// is not Proper Karelian  
-            return $gramsets;
-        }
-        
-        if ($pos_id == PartOfSpeech::getVerbID()) {
-            $gramsets = [];
-
-        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            $gramsets = [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15, 
-                         2, 24, 22];
-  //                       2, 24, 22, 279, 59, 23, 60, 61, 280, 62, 64, 65, 66, 281];
-        }
-        
-        return $gramsets;
-    }
-    
     // Gramset __has_many__ Lemmas
     public function lemmas($pos_id='', $lang_id=''){
         $builder = $this->belongsToMany(Lemma::class,'lemma_wordform');

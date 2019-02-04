@@ -23,7 +23,8 @@ class DialectController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/dialect/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/dialect/', 
+                ['only' => ['create','store','edit','update','destroy']]);
     }
 
     /**
@@ -233,7 +234,6 @@ class DialectController extends Controller
      */
     public function dialectList(Request $request)
     {
-        $locale = LaravelLocalization::getCurrentLocale();
 
         $dialect_name = '%'.$request->input('q').'%';
         $lang_ids = (array)$request->input('lang_id');
@@ -248,7 +248,7 @@ class DialectController extends Controller
             $dialects = $dialects ->whereIn('lang_id',$lang_ids);
         }
         
-        $dialects = $dialects->orderBy('name_'.$locale)->get();
+        $dialects = $dialects->orderBy('sequence_number')->get();
                          
         foreach ($dialects as $dialect) {
             $list[]=['id'  => $dialect->id, 

@@ -7,6 +7,7 @@ use DB;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
 
+use App\Library\Grammatic;
 use App\Models\User;
 
 use App\Models\Corpus\Corpus;
@@ -764,7 +765,7 @@ var_dump($meanings);
         $left_words = [];
         foreach ($sent_words as $word) {
             $w_id = (int)$word->attributes()->id;
-            $word_for_DB = Word::changeLetters((string)$word,$this->lang_id);
+            $word_for_DB = Grammatic::changeLetters((string)$word,$this->lang_id);
 
             list($sxe, $word_for_DB) = $this->searchToMerge($sxe, $w_id, $word_for_DB, $left_words);
             

@@ -839,3 +839,8 @@ update parts_of_speech set name_ru='союз подчинительный' where
 -- php artisan migrate
 
 -- php artisan make:test Models\Dict\PartOfSpeechTest
+
+-- DIALECT - USER -----------------------------------------
+-- php artisan make:migration create_dialect_user_table
+
+-- php artisan make:test Models\Library\GrammaticTest

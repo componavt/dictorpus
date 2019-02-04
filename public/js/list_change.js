@@ -45,11 +45,14 @@ function selectedValuesToURL(varname) {
 function langSelect() {
     $("#lang_id")
         .change(function () {
-            if ($( "#lang_id option:selected" ).val()==5) { // livvic
+            //$('.select-dialect').val(null).trigger('change');    
+/*
+            var lang = $( "#lang_id option:selected" ).val();
+            if (lang==5) { // livvic
                 $("#wordforms-field").show().prop("disabled", false);
             } else {
                 $("#wordforms-field").hide().attr('checked',false).prop("disabled", true);
-            }
+            } */
           })
         .change();    
 }

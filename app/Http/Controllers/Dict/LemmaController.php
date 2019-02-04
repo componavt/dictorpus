@@ -122,15 +122,20 @@ class LemmaController extends Controller
         }
 
         $lang_id = User::userLangID();
+//        $dialect_id = User::userDialectID();
+        $dialect_value = User::userDialects();
+//var_dump($dialect_value);        
         $new_meaning_n = 1;
         
         $pos_values = PartOfSpeech::getGroupedList();   
         $lang_values = Lang::getList();
         $langs_for_meaning = Lang::getListWithPriority();
-        
+        $dialect_values = $lang_id ? Dialect::getList($lang_id) : Dialect::getList(); //['NULL'=>'']+
+//dd($dialect_values);        
         return view('dict.lemma.create',
-                  compact('langs_for_meaning', 'lang_id', 'lang_values', 'new_meaning_n',
-                          'phrase_values', 'pos_id', 'pos_values', 'args_by_get', 'url_args'));
+                  compact('dialect_value', 'dialect_values', 'langs_for_meaning', 
+                          'lang_id', 'lang_values', 'new_meaning_n', 'phrase_values', 
+                          'pos_id', 'pos_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -207,18 +212,19 @@ class LemmaController extends Controller
         ]);
         
         $data = $request->all();
-        if ($data['pos_id'] != 11) { // is not verb
+/*        if ($data['pos_id'] != 11) { // is not verb
             $data['reflexive'] = 0;
-        }
-        list($data['lemma'], $data['wordforms'], $stem, $inflexion) 
-                = Lemma::parseLemmaField(trim($data['lemma']), $data['wordforms']);
+        }*/
+        list($data['lemma'], $wordforms, $stem, $inflexion, $gramset_wordforms) 
+                = Lemma::parseLemmaField($data);
         $request->replace($data);
         
-        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id','reflexive'));
+        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id')); //,'reflexive'
 
-        $lemma->createDictionaryWordforms($request->wordforms, $request->plur_tan);
+        $lemma->createDictionaryWordforms($wordforms, $request->plur_tan);
         $lemma->storePhrase($request->phrase);
         $lemma->storeReverseLemma($stem, $inflexion);
+        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -347,6 +353,8 @@ class LemmaController extends Controller
      */
     public function edit($id)
     {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
         $lemma = Lemma::find($id);
         
         $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
@@ -396,29 +404,22 @@ class LemmaController extends Controller
                 }
             }
         }   
-                
+            
+        $all_meanings = $meaning_relation_values;
         $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
+        $dialect_value = User::userDialects();
+        $dialect_values = Dialect::getList($lemma->lang_id);
         
         $lemma_value = $lemma->reverseLemma && $lemma->reverseLemma->inflexion 
                      ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->inflexion 
                      : $lemma->lemma;
         
-        return view('dict.lemma.edit')
-                  ->with(array('lemma' => $lemma,
-                               'lang_values' => $lang_values,
-                               'pos_values' => $pos_values,
-                               'langs_for_meaning' => $langs_for_meaning,
-                               'lemma_value' => $lemma_value,
-                               'new_meaning_n' => $new_meaning_n,
-                               'all_meanings' => $meaning_relation_values,//$all_meanings,
-                               'relation_values' => $relation_values,
-                               'relation_meanings' => $relation_meanings,
-                               'phrase_values' => $phrase_values,
-                               'translation_values' => $translation_values,
-                               'args_by_get'    => $this->args_by_get,
-                               'url_args'       => $this->url_args,
-                              )
-                        );
+        return view('dict.lemma.edit',
+                    compact('all_meanings', 'lang_values', 'dialect_value', 
+                            'dialect_values', 'langs_for_meaning', 
+                            'lemma', 'lemma_value', 'new_meaning_n', 'phrase_values',
+                            'pos_values', 'relation_values', 'relation_meanings',
+                            'translation_values', 'args_by_get', 'url_args'));
     }
 
     /**
