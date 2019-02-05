@@ -81,7 +81,7 @@ class Grammatic
     }
     
     public static function nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id) {
-        $stem1_i = preg_match("/i$/u", $stems[5]);
+        $stem1_i = preg_match("/i$/u", $stems[1]);
         $stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
         
         switch ($gramset_id) {
