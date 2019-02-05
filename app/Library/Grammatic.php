@@ -630,7 +630,10 @@ class Grammatic
 
     public static function condImp3SingPolByStem($stem, $lemma, $dialect_id) {
 //dd("$stem, $lemma");
-        if (preg_match("/i$/u",$stem)) {
+        if (preg_match("/^(.+)i$/u",$stem, $regs)) {
+            if (preg_match("/(ua|iä)$/u",$lemma)) {
+                return $regs[1]. self::garmVowel($lemma,'a'). 'is’';
+            }            
             return $stem. 's’';
         }
         if (preg_match("/(ua|iä)$/u",$lemma) && preg_match("/^(.+)o$/u", $stem, $regs)) {
