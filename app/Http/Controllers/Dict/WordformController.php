@@ -27,7 +27,7 @@ class WordformController extends Controller
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:ref.edit,/dict/wordform/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:dict.edit,/dict/wordform/', ['only' => ['create','store','edit','update','destroy']]);
         
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),

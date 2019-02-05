@@ -190,10 +190,9 @@ class GrammaticTest extends TestCase
         $expected = 'mennyh';
         $this->assertEquals( $expected, $result);        
     }
+       
+    // ------------------------------------------------------wordformsByTemplate
     
-    /*
-     * ------------------------------------------------------wordformsByTemplate
-     */
     public function testWordformsByTemplateIncorrectLang() {
         $lang_id = 1;
         $pos_id = 0;
@@ -238,12 +237,12 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    /* падает на 91, 103, 151, */
+    // падает на 91, 103, 151, 
     public function testWordformsByTemplateTulla() {
         $lang_id = 4;
         $pos_id = 11;
         $dialect_id=47;
-        $template = "{tulla, tule, tulo, tuli, tuli, tul, tulla, tuld}";
+        $template = "{tulla, tule, tule, tuli, tuli, tul, tulla, tuld}";
         $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
 //dd($result);        
         $lemma_id = 21337; //tulla 
@@ -253,7 +252,22 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-    
+/*    
+    public function testWordformsByTemplatePieni() {
+        $lang_id = 4;
+        $pos_id = 1; //adjective
+        $dialect_id=47;
+        $template = "{pieni, piene, piene, piendä, pieni, pieni}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21360; //pieni 
+        $lemma = Lemma::find($lemma_id); 
+        $dialect_id=46;
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+*/    
     public function testNegativeVerbForInd1Sing() {
         $lang_id = 4;
         $gramset_id = 70; // индикатив, презенс, 1 л., ед. ч., отриц
@@ -272,12 +286,21 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testPerfectVerbForm() {
+    public function testPerfectVerbFormTulla() {
         $lang_id = 4;
         $stem = 'tul';
         $result = Grammatic::perfectForm($stem, $lang_id);
         
         $expected = 'tullun';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testPerfectVerbFormAndua() {
+        $lang_id = 4;
+        $stem = 'anda';
+        $result = Grammatic::perfectForm($stem, $lang_id);
+        
+        $expected = 'andan';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -290,30 +313,10 @@ class GrammaticTest extends TestCase
         $expected = 'olet ';
         $this->assertEquals( $expected, $result);        
     }
-    
-    public function testAuxFormIndPerf3PlurNeg() {
-        $lang_id = 4;
-        $gramset_id = 97; // индикатив, перфект, 3 л., мн. ч., отриц
-        $dialect_id=47;
-        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
-        
-        $expected = 'ei ole ';
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testAuxFormIndPlurf3PlurNeg() {
-        $lang_id = 4;
-        $gramset_id = 103; // 42. индикатив, плюсквамперфект, 3 л., мн. ч., пол.
-        $dialect_id=47;
-        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
-        
-        $expected = 'oli ';
-        $this->assertEquals( $expected, $result);        
-    }
 /*    
     public function testAuxFormIndPerf3PlurNeg() {
         $lang_id = 4;
-        $gramset_id = 136; // 97. кондиционал, плюсквамперфект, 3 л., ед. ч., пол.
+        $gramset_id = 97; // 36. индикатив, перфект, 3 л., мн. ч., отриц
         $dialect_id=47;
         $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
         
@@ -321,6 +324,26 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
 */    
+    public function testAuxFormIndPlurf3PlurNeg() {
+        $lang_id = 4;
+        $gramset_id = 103; // 42. индикатив, плюсквамперфект, 3 л., мн. ч., пол.
+        $dialect_id=47;
+        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
+        
+        $expected = 'oldih ';
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testAuxFormCondPlur3SingPol() {
+        $lang_id = 4;
+        $gramset_id = 136; // 97. кондиционал, плюсквамперфект, 3 л., ед. ч., пол.
+        $dialect_id=47;
+        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
+        
+        $expected = 'olis’ ';
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testimp3SingPolByStem() {
         $stem5 = 'lien';
         $lemma = 'lietä';
@@ -352,14 +375,25 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testverbWordformByStemsActive1Partic() {
+    public function testVerbWordformByStems282Andua() {
         $lang_id = 4;
-        $stems = ['tulla', 'tule', 'tulo', 'tuli', 'tuli', 'tul', 'tulla', 'tuld'];
+        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
+        $gramset_id = 282; //141. актив, 2-е причастие  (сокращенная форма); перфект (форма основного глагола)
+        $dialect_id=47;
+        $result = Grammatic::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
+        
+        $expected = 'andan';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testVerbWordformByStemsActive1Partic() {
+        $lang_id = 4;
+        $stems = ['tulla', 'tule', 'tule', 'tuli', 'tuli', 'tul', 'tulla', 'tuld'];
         $gramset_id = 178; //139. актив, 1-е причастие 
         $dialect_id=47;
         $result = Grammatic::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
         
-        $expected = 'tuloja';
+        $expected = 'tulija';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -402,4 +436,27 @@ class GrammaticTest extends TestCase
         $expected = 'öy';
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testProcessForWordformApostroph() {
+        $word = "ändäis'";
+        $result = Grammatic::processForWordform($word);
+        $expected = "ändäis’";
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testProcessForWordformWhitespaces() {
+        $word = "elgiä  olgua";
+        $result = Grammatic::processForWordform($word);
+        $expected = "elgiä olgua";
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testMaxStem() {
+        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
+        $result = Grammatic::maxStem($stems);
+        
+        $expected = ['an', 'dua'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

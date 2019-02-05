@@ -731,16 +731,18 @@ class Lemma extends Model
     }
     
     public static function parseLemmaField($data) {
-        $inflexion = NULL;
+//dd($data);        
         $lemma = trim($data['lemma']);
         $wordforms = '';//trim($data['wordforms']);
-        list($lemma, $gramset_wordforms) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);
+        list($lemma, $gramset_wordforms, $stem, $inflexion) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);
         
-        if (!$gramset_wordforms) {
-            $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
-            if ($parsing) {
-                $lemma = $regs[1];
-            }
+        if ($gramset_wordforms) {
+            return [$lemma, $wordforms, $stem, $inflexion, $gramset_wordforms];
+        }
+        $inflexion = NULL;
+        $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
+        if ($parsing) {
+            $lemma = $regs[1];
         }
         
         $lemma = str_replace('||','',$lemma);
@@ -751,11 +753,7 @@ class Lemma extends Model
         } else {
             $stem = $lemma;
         }
-
-        if ($gramset_wordforms) {
-            return [$lemma, $wordforms, $stem, $inflexion, $gramset_wordforms];
-        }
-        
+      
         if (!$parsing) {
 //var_dump([$parsing, $lemma, $wordforms, $stem, $inflexion]);
             return [$lemma, $wordforms, $stem, $inflexion, false];
@@ -881,7 +879,7 @@ class Lemma extends Model
     }
     
     public function addWordform($word, $gramset_id, $dialect_id) {
-        $trim_word = trim($word);
+        $trim_word = Grammatic::processForWordform($word);
         if (!$trim_word) { return;}
         
         $wordform_obj = Wordform::firstOrCreate(['wordform'=>$trim_word]);

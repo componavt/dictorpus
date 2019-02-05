@@ -541,8 +541,9 @@ class LemmaController extends Controller
         ]);
         
         // LEMMA UPDATING
-        list($new_lemma, $wordforms_list, $stem, $inflexion) 
-                = Lemma::parseLemmaField(trim($request->lemma), $request->wordforms);
+//dd($request->all());        
+        list($new_lemma, $wordforms_list, $stem, $inflexion, $gramset_wordforms) 
+                = Lemma::parseLemmaField($request->all());
         
         $lemma->lemma = $new_lemma;
         $lemma->lang_id = (int)$request->lang_id;
@@ -558,6 +559,7 @@ class LemmaController extends Controller
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);
+        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
 
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);

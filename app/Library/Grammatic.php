@@ -18,15 +18,15 @@ class Grammatic
         if ($pos_id == PartOfSpeech::getVerbID()) {
             $gramsets = [26,  27,  28,  29,  30,  31,  70,  71,  72,  73,  78,  79, 
                          32,  33,  34,  35,  36,  37,  80,  81,  82,  83,  84,  85, 
-                         86,  87,  88,  89,  90, /* 91,*/  92,  93,  94,  95,  96,  97, 
-                         98,  99, 100, 101, 102, /*103,*/ 104, 105, 107, 108, 106, 109,
+                         86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+                         98,  99, 100, 101, 102, 103, 104, 105, 107, 108, 106, 109,
                               51,  52,       54,  55,       50,  74,       76,  77,  
                          44,  45,  46,  47,  48,  49, 116, 117, 118, 119, 120, 121,
                         135, 125, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
-                        146, 147, 148, 149, 150, /*151,*/ 152, 153, 154, 155, 156, 157,
+                        146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157,
                         158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169,
-                        170, 171, 172, /*173, 174, 175, 176, 177,
-                        178,*/ 179, 282, 180, 181];
+                        170, 171, 172, 173, 174, 175, 176, 177,
+                        178, 179, 282, 180, 181];
 
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) {
             $gramsets = [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15, 
@@ -76,10 +76,11 @@ class Grammatic
                 $wordforms[$gramset_id] = self::nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
             }
         }
-        return [$stems[0], $wordforms];
+        list($max_stem, $inflexion) = self::maxStem($stems);
+        return [$stems[0], $wordforms, $max_stem, $inflexion];
     }
     
-    public static function nounWordformByStems($stems, $gramsets, $lang_id, $dialect_id) {
+    public static function nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id) {
         $stem1_i = preg_match("/i$/u", $stems[5]);
         $stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
         
@@ -221,7 +222,8 @@ class Grammatic
             case 96: // 35. индикатив, перфект, 2 л., мн. ч., отриц. 
                 return self::auxForm(96, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 97: // 36. индикатив, перфект, 3 л., мн. ч., отриц. 
-                return self::auxForm(97, $lang_id, $dialect_id). $stems[7]. self::garmVowel($stems[7],'u');
+                return 'ei ole './/self::auxForm(97, $lang_id, $dialect_id). 
+                       $stems[7]. self::garmVowel($stems[7],'u');
 
             case 98: // 37. индикатив, плюсквамперфект, 1 л., ед. ч., пол. 
                 return self::auxForm(98, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
@@ -401,7 +403,7 @@ class Grammatic
     }
 
     public static function isConsonant($letter) {
-        $consonants = ['p', 't', 'k', 's', 'h', 'j', 'v', 'l', 'r', 'm', 'n', 'č'];
+        $consonants = ['p', 't', 'k', 's', 'h', 'j', 'v', 'l', 'r', 'm', 'n', 'č', 'd'];
         if (in_array($letter, $consonants)) {
             return true;
         } 
@@ -771,9 +773,9 @@ class Grammatic
         }
 
         $aux_number = $gramset->gram_id_number;
-        if ($gramset->gram_id_person==23 && $gramset->gram_id_number==2) { // perfect, 3rd, plural //  && $gramset->gram_id_tense != 49
+/*        if ($gramset->gram_id_person==23 && $gramset->gram_id_number==2) { // perfect, 3rd, plural //  && $gramset->gram_id_tense != 49
             $aux_number = 1; // singular
-        }
+        } */
         $aux_gramset = Gramset::where('gram_id_mood', $gramset->gram_id_mood)
                               ->where('gram_id_person', $gramset->gram_id_person)
                               ->where('gram_id_number', $aux_number)
@@ -838,9 +840,30 @@ class Grammatic
      */
     public static function replaceSingVowel($stem, $vowel, $replacement) {
         $before_last_let = mb_substr($stem, -2, 1);
-        if (self::isConsonant($before_last_let) && preg_match("/^(.)".$vowel."$/u", $stem, $regs)) {
+        if (self::isConsonant($before_last_let) && preg_match("/^(.+)".$vowel."$/u", $stem, $regs)) {
             return $regs[1].$replacement;
         }
         return $stem;
+    }
+    
+    public static function processForWordform($word) {
+        $word = trim($word);
+        $word = preg_replace("/\s{2,}/", " ", $word);
+        $word = preg_replace("/['`]/", "’", $word);
+        return $word;
+    }
+    
+    public static function maxStem($stems) {
+        $inflexion = '';
+        $stem = $stems[0];
+
+        for ($i=1; $i<sizeof($stems); $i++) {
+            while (!preg_match("/^".$stem."/", $stems[$i])) {
+                $inflexion = mb_substr($stem, -1, 1). $inflexion;
+                $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
+            }
+        }
+        return [$stem, $inflexion];
+        
     }
 }

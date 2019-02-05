@@ -26,7 +26,7 @@ class MeaningController extends Controller
     {
         $this->middleware('auth:dict.edit,/dict/meaning/', 
                 ['only' => ['create','store','edit','update','destroy',
-                            'createRelation', 'addExample', 'reloadExamples']]);
+                            'createRelation', 'addExample']]);
     }
 
     /**
@@ -164,10 +164,12 @@ class MeaningController extends Controller
             return NULL;
         }
         
-        if (!$meaning->texts()->count()) {
-            $meaning->addTextLinks();
-        } else {
-            $meaning->updateTextLinks();
+        if (User::checkAccess('dict.edit') && !$meaning->texts()->count()) {
+            if (!$meaning->texts()->count()) {
+                $meaning->addTextLinks();
+            } else {
+                $meaning->updateTextLinks();
+            }
         }
         return view('dict.lemma.show.examples')
                   ->with(['meaning' => $meaning,
