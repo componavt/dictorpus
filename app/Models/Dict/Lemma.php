@@ -734,6 +734,7 @@ class Lemma extends Model
 //dd($data);        
         $lemma = trim($data['lemma']);
         $wordforms = '';//trim($data['wordforms']);
+//dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);        
         list($lemma, $gramset_wordforms, $stem, $inflexion) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);
         
         if ($gramset_wordforms) {

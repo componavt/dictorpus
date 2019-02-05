@@ -38,15 +38,15 @@ class Grammatic
     
     public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id) {
         if ($lang_id != 4) {// is not Proper Karelian  
-            return [$template, false];
+            return [$template, false, $template, NULL];
         }
         
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            return [$template, false];
+            return [$template, false, $template, NULL];
         }
         
         if (!preg_match('/\{([^\}]+)\}/', $template, $list)) {
-            return [$template, false];
+            return [$template, false, $template, NULL];
         }
         
         $stems = preg_split('/,/',$list[1]);
@@ -55,7 +55,7 @@ class Grammatic
         }
         
         if (!isset($stems[0])) {
-            return [$template, false];
+            return [$template, false, $template, NULL];
         }
         
         $gramsets = self::getListForAutoComplete($lang_id, $pos_id);
@@ -63,14 +63,14 @@ class Grammatic
         
         if ($pos_id == PartOfSpeech::getVerbID()) {
             if (sizeof ($stems) != 8) {
-                return [$stems[0], false];
+                return [$stems[0], false, $template, NULL];
             }
             foreach ($gramsets as $gramset_id) {
                 $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
             }
         } else {
             if (sizeof ($stems) != 6) {
-                return [$stems[0], false];
+                return [$stems[0], false, $template, NULL];
             }
             foreach ($gramsets as $gramset_id) {
                 $wordforms[$gramset_id] = self::nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);

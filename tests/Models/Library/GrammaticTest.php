@@ -200,7 +200,7 @@ class GrammaticTest extends TestCase
         $template = "ativo, ativo, ativo, ativu, ativo, ativo";
         $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
         
-        $expected = [$template, false];
+        $expected = [$template, false, $template, NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -211,7 +211,7 @@ class GrammaticTest extends TestCase
         $template = "ativo, ativo, ativo, ativu, ativo, ativo";
         $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
         
-        $expected = [$template, false];
+        $expected = [$template, false, $template, NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -222,7 +222,7 @@ class GrammaticTest extends TestCase
         $template = "ativo, ativo, ativo, ativu, ativo, ativo";
         $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
         
-        $expected = [$template, false];
+        $expected = [$template, false, $template, NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -233,7 +233,7 @@ class GrammaticTest extends TestCase
         $template = "{ativo, ativo, ativo, ativu, ativo}";
         $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
         
-        $expected = ['ativo', false];
+        $expected = ['ativo', false, $template, NULL];
         $this->assertEquals( $expected, $result);        
     }
     
