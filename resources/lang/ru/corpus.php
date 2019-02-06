@@ -81,6 +81,7 @@ return [
     'source_pages' => 'страницы',
     'source_title' => 'Название источника',
     'source_year' => 'Год публикации',
+    'symbol' => 'символ',
     
     'text' => 'текст',
     'text_fragment' => 'Фрагмент текста',

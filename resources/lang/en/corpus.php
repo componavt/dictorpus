@@ -81,6 +81,7 @@ return [
     'source_pages' => 'pages',
     'source_title' => 'source title',
     'source_year' => 'Source year',
+    'symbol' => 'symbol',
     
     'text' => 'text',
     'text_fragment' => 'Fragment of text',

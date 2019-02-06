@@ -41,6 +41,7 @@ return [
     'reverse_dictionary' => 'Обратный словарь',
     'roles' => 'Роли',
     'stats' => 'Статистика',
+    'text_frequency' => 'Частота символов в текстах',
     'texts' => 'Тексты',
     'video' => 'Видео',
     'word_frequency' => 'Частотный словарь токенов',

@@ -663,6 +663,27 @@ class TextController extends Controller
 //        }
     }
 
+    /**
+     * SQL: select lower(word) as l_word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, l_word LIMIT 30;
+     * SQL: select word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, word LIMIT 30;
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function frequencySymb(Request $request) {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        if ($url_args['search_lang']) {
+            $symbols = Text::countFrequencySymbols($url_args['search_lang']);
+        } else {
+            $symbols = NULL;
+        }
+        $lang_values = Lang::getList();
+        
+        return view('corpus.text.freq_symb',
+                compact('lang_values', 'symbols', 'args_by_get', 'url_args'));
+    }
+    
 
 //select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
 /*

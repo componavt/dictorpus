@@ -1330,4 +1330,22 @@ var_dump($meanings);
         
         return $text->video;        
     }
+    
+    public static function countFrequencySymbols($lang_id) {
+        $symbols = [];
+        $texts = Text::select('text')->where('lang_id', $lang_id)->get();
+        foreach ($texts as $text) {
+            $text_symbols = preg_split("//u", $text->text);
+//dd($text_symbols);    
+            foreach ($text_symbols as $symbol) {
+                if (!in_array($symbol, ['', ' ', "\r", "\n"])) {
+                    $symbols[$symbol]=isset($symbols[$symbol]) ? $symbols[$symbol]+1 : 1;
+                }
+            }
+        }
+        ksort($symbols);
+//        arsort($symbols);
+//dd($symbols);
+        return $symbols;
+    }
 }

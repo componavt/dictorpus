@@ -65,6 +65,9 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/') }}">{{ trans('corpus.new_texts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/') }}">{{ trans('corpus.last_updated_texts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/word/freq_dict') }}">{{ trans('navigation.word_frequency') }}</a></li>
+                        @if (User::checkAccess('corpus.edit')) 
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/freq_symb') }}">{{ trans('navigation.text_frequency') }}</a></li>
+                        @endif;
                         </ul>
                     </li>
                 </ul>

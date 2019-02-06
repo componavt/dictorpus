@@ -41,6 +41,7 @@ return [
     'reverse_dictionary' => 'Reverse dictionary',
     'roles' => 'Roles',
     'stats' => 'Statistics',
+    'text_frequency' => 'Frequency of symbols in texts',
     'texts' => 'Texts',
     'video' => 'Video',
     'word_frequency' => 'Frequency dictionary of tokens',
