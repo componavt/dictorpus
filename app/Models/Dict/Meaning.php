@@ -462,11 +462,13 @@ class Meaning extends Model
     {        
         $lemma_obj=$this->lemma;
         $lang_id = $lemma_obj->lang_id;
-        $strs = ["word like '".addcslashes($lemma_obj->lemma,"'")."'"];
+//        $strs = ["word like '".addcslashes($lemma_obj->lemma,"'")."'"];
+        $strs = ["word like '".$lemma_obj->lemma_for_search."'"];
         foreach ($lemma_obj->wordforms as $wordform_obj) {
             $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
             //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
-            $strs[] = "word like '".addcslashes($wordform_obj->wordform,"'")."'";
+//            $strs[] = "word like '".addcslashes($wordform_obj->wordform,"'")."'";
+            $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
         }
         $cond = join(' OR ',array_unique($strs));
 /*        $unique_strs = array_unique($strs);

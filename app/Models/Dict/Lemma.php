@@ -36,7 +36,7 @@ class Lemma extends Model
 //        'deleted_at' => 'Deleted At'
     );
     
-    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search', 'wordform_for_search'];
+    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search'];
     /**
     * Атрибуты, которые должны быть преобразованы к датам.
     *

@@ -15,7 +15,7 @@ class Wordform extends Model
      *
      * @var array
      */
-    protected $fillable = ['wordform'];
+    protected $fillable = ['wordform', 'wordform_for_search'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 

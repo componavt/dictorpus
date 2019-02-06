@@ -847,3 +847,6 @@ update parts_of_speech set name_ru='союз подчинительный' where
 
 -- php artisan make:migration add_field_in_lemmas_table
 -- php artisan make:migration add_field_in_wordforms_table
+
+update lemmas set lemma_for_search=replace(lemma, '’', '');
+update wordforms set wordform_for_search=replace(wordform, '’', '');

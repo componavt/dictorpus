@@ -409,6 +409,7 @@ class TextController extends Controller
 
     /**
      * Markup all texts and transtexts
+     * /corpus/text/markup_all_texts
      * update texts set checked=0;
      * select count(*) from texts where checked=0;
      */
@@ -426,12 +427,14 @@ class TextController extends Controller
                 $is_all_checked = true;
             }
         }
-
+/*
         $texts = Transtext::all();
         foreach ($texts as $text) {
             $text->markup();
             $text->save();            
         }
+ * 
+ */
     }
      
     /**
