@@ -725,10 +725,10 @@ class Text extends Model
     public function getMeaningsByWord($word) {
         $word_t = addcslashes($word,"'%");
         $word_t_l = mb_strtolower($word_t);
-        $wordform_q = "(SELECT id from wordforms where wordform like '$word_t' or wordform like '$word_t_l')";
+        $wordform_q = "(SELECT id from wordforms where REPLACE(wordform,'’','') like '$word_t' or wordform like '$word_t_l')";
         $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
         $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id
-                           ." and (lemma like '$word_t' or lemma like '$word_t_l' or id in $lemma_q))")
+                           ." and (REPLACE(lemma,'’','') like '$word_t' or (REPLACE(lemma,'’','') like '$word_t_l' or id in $lemma_q))")
                            ->get();    
         return $meanings;
     }

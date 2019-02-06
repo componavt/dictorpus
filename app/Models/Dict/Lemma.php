@@ -36,7 +36,7 @@ class Lemma extends Model
 //        'deleted_at' => 'Deleted At'
     );
     
-    protected $fillable = ['lemma','lang_id','pos_id'];
+    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search', 'wordform_for_search'];
     /**
     * Атрибуты, которые должны быть преобразованы к датам.
     *
@@ -732,7 +732,7 @@ class Lemma extends Model
     
     public static function parseLemmaField($data) {
 //dd($data);        
-        $lemma = trim($data['lemma']);
+        $lemma = Grammatic::toRightForm($data['lemma']);
         $wordforms = '';//trim($data['wordforms']);
 //dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);        
         list($lemma, $gramset_wordforms, $stem, $inflexion) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);
@@ -871,7 +871,7 @@ class Lemma extends Model
     }
     
     public function addWordforms($words, $gramset_id, $dialect_id) {
-        $trim_words = trim($words);
+        $trim_words = Grammatic::toRightForm($words);//trim($words);
         if (!$trim_words) { return;}
 
         foreach (preg_split("/[\/,]/",$trim_words) as $word) {

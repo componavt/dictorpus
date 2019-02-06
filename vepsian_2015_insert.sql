@@ -844,3 +844,6 @@ update parts_of_speech set name_ru='союз подчинительный' where
 -- php artisan make:migration create_dialect_user_table
 
 -- php artisan make:test Models\Library\GrammaticTest
+
+-- php artisan make:migration add_field_in_lemmas_table
+-- php artisan make:migration add_field_in_wordforms_table

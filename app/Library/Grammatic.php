@@ -441,11 +441,18 @@ class Grammatic
      * Changes obsolete letters to modern
      * If a parameter lang_id is given, then does the check need such a replacement
      * 
+     * Used only for writing word index
+     * NB! Remove ’ in dialect texts
+     * 
      * @param String $word
      * @param Int $lang_id
      * @return String
      */
     public static function changeLetters($word,$lang_id=null) {
+        $word = self::toSearchForm($word);
+        $word = str_replace("'",'',$word);
+        $word = str_replace("`",'',$word);
+        
         if (!$lang_id || $lang_id && !self::isLetterChangeable($lang_id)) {
             return $word;
         }
@@ -462,7 +469,19 @@ class Grammatic
         }
         return $word;
     }
-    
+
+    public static function toSearchForm($word) {
+        $word = str_replace('’','',$word);
+        return $word;
+    }
+
+    public static function toRightForm($word) {
+        $word = trim($word);
+        $word = str_replace("'",'’',$word);
+        $word = str_replace("`",'’',$word);
+        $word = preg_replace("/\s{2,}/", " ", $word);
+        return $word;
+    }
     public static function negativeForm($gramset_id, $lang_id) {
         if ($lang_id != 4) {
             return '';
