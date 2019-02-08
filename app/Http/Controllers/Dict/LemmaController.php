@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Redirect;
 use Response;
 
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+
+use App\Library\Grammatic;
 use App\Models\User;
 
 use App\Models\Dict\Dialect;
@@ -220,6 +222,8 @@ class LemmaController extends Controller
         $request->replace($data);
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id')); //,'reflexive'
+        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+        $lemma->save();
 
         $lemma->createDictionaryWordforms($wordforms, $request->plur_tan);
         $lemma->storePhrase($request->phrase);
@@ -256,6 +260,8 @@ class LemmaController extends Controller
         $request->replace($data);
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
+        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+        $lemma->save();
 
         $lemma->createDictionaryWordforms($request->wordforms, $request->plur_tan);
         $lemma->storeReverseLemma($stem, $inflexion);
@@ -546,6 +552,7 @@ class LemmaController extends Controller
                 = Lemma::parseLemmaField($request->all());
         
         $lemma->lemma = $new_lemma;
+        $lemma->lemma_for_search = Grammatic::toSearchForm($new_lemma);
         $lemma->lang_id = (int)$request->lang_id;
         $lemma->pos_id = (int)$request->pos_id;
         $lemma->updated_at = date('Y-m-d H:i:s');

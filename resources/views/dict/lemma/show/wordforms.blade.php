@@ -47,7 +47,9 @@
                     {{$gramset_name}}
                 </td>
                 @foreach (array_keys($lemma->existDialects()) as $dialect_id)
-                <td>{{ $lemma->wordform($gramset_id,$dialect_id) }}</td>
+                <td>
+                    <?php print $lemma->wordform($gramset_id, $dialect_id, 1);?>
+                </td>
                 @endforeach
             </tr>
             @endforeach

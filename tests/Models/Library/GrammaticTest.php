@@ -437,16 +437,16 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testProcessForWordformApostroph() {
+    public function testToRightFormApostroph() {
         $word = "ändäis'";
-        $result = Grammatic::processForWordform($word);
+        $result = Grammatic::toRightForm($word);
         $expected = "ändäis’";
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testProcessForWordformWhitespaces() {
+    public function testToRightFormWhitespaces() {
         $word = "elgiä  olgua";
-        $result = Grammatic::processForWordform($word);
+        $result = Grammatic::toRightForm($word);
         $expected = "elgiä olgua";
         $this->assertEquals( $expected, $result);        
     }

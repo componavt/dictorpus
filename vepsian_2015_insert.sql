@@ -850,3 +850,10 @@ update parts_of_speech set name_ru='союз подчинительный' where
 
 update lemmas set lemma_for_search=replace(lemma, '’', '');
 update wordforms set wordform_for_search=replace(wordform, '’', '');
+
+update lemmas set lemma=replace(lemma, '\'', '’');
+update lemmas set lemma_for_search=replace(lemma_for_search, '\'', '');
+update wordforms set wordform=replace(wordform, '\'', '’');
+update wordforms set wordform_for_search=replace(wordform_for_search, '\'' , '');
+
+

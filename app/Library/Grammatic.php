@@ -477,8 +477,7 @@ class Grammatic
 
     public static function toRightForm($word) {
         $word = trim($word);
-        $word = str_replace("'",'’',$word);
-        $word = str_replace("`",'’',$word);
+        $word = preg_replace("/['`]/", "’", $word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         return $word;
     }
@@ -741,9 +740,9 @@ class Grammatic
         if (self::isConsonant($before_last_let) && self::isVowel($last_let)) {
             return $stem. 'n';
         } elseif (self::isVowel($before_last_let) && self::isVowel($last_let)) {
-            return $stem. 'nun';
+            return $stem. self::garmVowel($stem, 'nun');
         } elseif (in_array($last_let, ['n', 'l', 'r', 's', 'š'])) {
-            return $stem. $last_let. 'un';
+            return $stem. $last_let. self::garmVowel($stem, 'un');
         }
     }
     
@@ -867,14 +866,14 @@ class Grammatic
         }
         return $stem;
     }
-    
+/*    
     public static function processForWordform($word) {
         $word = trim($word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         $word = preg_replace("/['`]/", "’", $word);
         return $word;
     }
-    
+*/    
     public static function maxStem($stems) {
         $inflexion = '';
         $stem = $stems[0];

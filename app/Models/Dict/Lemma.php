@@ -122,7 +122,7 @@ class Lemma extends Model
      * 
      * @return String or NULL
      */
-    public function wordform($gramset_id,$dialect_id){
+    public function wordform($gramset_id,$dialect_id, $with_search_link=NULL){
         if (!$gramset_id) {
             $gramset_id=NULL;
         }
@@ -138,7 +138,15 @@ class Lemma extends Model
         } else {
             $wordform_arr = [];
             foreach($wordform_coll as $wordform) {
-                $wordform_arr[]=$wordform->wordform;
+                $w = $wordform->wordform;
+                if ($with_search_link) { 
+                    $word = Word::where('word', 'like',$wordform->wordform_for_search)->first();
+                    if ($word) {
+                        $w = '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?lang_id='.$this->lang_id
+                           . '&search_word='.$wordform->wordform_for_search.'&'.$wordform->id). '">'.$w.'</a>';
+                    }
+                }
+                $wordform_arr[]=$w;
             }
             return join(', ',$wordform_arr);
         }        
@@ -733,7 +741,7 @@ class Lemma extends Model
     public static function parseLemmaField($data) {
 //dd($data);        
         $lemma = Grammatic::toRightForm($data['lemma']);
-        $wordforms = '';//trim($data['wordforms']);
+        $wordforms = '';//trim($data['wordforms']); убрано поле из формы леммы
 //dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);        
         list($lemma, $gramset_wordforms, $stem, $inflexion) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);
         
@@ -880,7 +888,7 @@ class Lemma extends Model
     }
     
     public function addWordform($word, $gramset_id, $dialect_id) {
-        $trim_word = Grammatic::processForWordform($word);
+        $trim_word = Grammatic::toRightForm($word);
         if (!$trim_word) { return;}
         
         $wordform_obj = Wordform::firstOrCreate(['wordform'=>$trim_word]);
