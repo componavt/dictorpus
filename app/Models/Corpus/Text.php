@@ -607,9 +607,10 @@ class Text extends Model
     
     public static function wordAddToSentence($is_word, $word, $str, $word_count) {
         if ($is_word) { // the previous char is part of a word, the word ends
-            if (!preg_match("/[a-zA-ZА-Яа-яЁё]/i",$word)) {
+            if (!preg_match("/([a-zA-ZА-Яа-яЁё])/u",$word, $regs)) {
                 $str .= $word;
             } else {
+//dd($regs);
                 $str .= '<w id="'.$word_count++.'">'.$word.'</w>';
             }
             $is_word = false;

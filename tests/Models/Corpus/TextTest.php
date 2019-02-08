@@ -8,7 +8,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 // use TestCase;
 
 
-// php artisan make:test 'Models\Corpus\TextTest'
+// php artisan make:test Models\Corpus\TextTest
+// ./vendor/bin/phpunit tests/Models/Corpus/TextTest
 
 class TextTest extends TestCase
 {
@@ -205,4 +206,28 @@ festival’-konkurs.";
         $this->assertEquals( $expected_xml, $result_xml);
     }
  
+    public function testMarkupSentenceWithAloneApostroph()
+    {
+        $source_text   = "Paiči sekcijoid konferencijal radoi kaks’ mastar ’ - klassad";
+        $expected_xml  = '<s id="1"><w id="1">Paiči</w> <w id="2">sekcijoid</w> <w id="3">konferencijal</w> <w id="4">radoi</w> <w id="5">kaks’</w> <w id="6">mastar</w> ’ - <w id="7">klassad</w></s>';
+        
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testWordAddToSentenceWithAloneApostroph()
+    {
+        $word   = "’";
+        $is_word = true;
+        $str = '';
+        $word_count = 1;
+        $expected_xml  = [false, '’', 1];
+        
+        $text = new Text();
+        $result_xml = $text->wordAddToSentence($is_word, $word, $str, $word_count);
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
 }
