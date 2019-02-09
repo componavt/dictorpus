@@ -879,7 +879,7 @@ class Lemma extends Model
     }
     
     public function addWordforms($words, $gramset_id, $dialect_id) {
-        $trim_words = Grammatic::toRightForm($words);//trim($words);
+        $trim_words = trim($words);
         if (!$trim_words) { return;}
 
         foreach (preg_split("/[\/,]/",$trim_words) as $word) {
@@ -892,6 +892,9 @@ class Lemma extends Model
         if (!$trim_word) { return;}
         
         $wordform_obj = Wordform::firstOrCreate(['wordform'=>$trim_word]);
+        $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
+        $wordform_obj->save();
+
         if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
             return;
         }

@@ -164,7 +164,8 @@ class MeaningController extends Controller
             return NULL;
         }
         
-        if (User::checkAccess('dict.edit') && !$meaning->texts()->count()) {
+        if (User::checkAccess('dict.edit')) {
+//dd($meaning->texts()->count());            
             if (!$meaning->texts()->count()) {
                 $meaning->addTextLinks();
             } else {

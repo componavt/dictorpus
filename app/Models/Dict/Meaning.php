@@ -516,6 +516,8 @@ class Meaning extends Model
         if (!$words) {
             $words = $this->getWordsByWordforms();
         }
+//dd($words);        
+        
         if (!$words) {
             return;
         }

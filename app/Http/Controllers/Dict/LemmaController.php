@@ -288,7 +288,7 @@ class LemmaController extends Controller
             return Redirect::to('/dict/lemma/'.($this->args_by_get))
                            ->withErrors('error.no_lemma');
 
-        $update_text_links = (int)$request->input('update_text_links');
+        $update_text_links = (int)$request->update_text_links;
 
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $relations = Relation::getList();
@@ -602,7 +602,8 @@ class LemmaController extends Controller
         // updates links with text examples
 //        $lemma->updateTextLinks();
                 
-        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).'&update_text_links=1')
+        
+        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).($this->args_by_get ? '&' : '?').'update_text_links=1')
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
