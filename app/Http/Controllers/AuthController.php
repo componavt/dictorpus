@@ -61,7 +61,6 @@ class AuthController extends Controller
      */
     public function loginProcess(Request $request)
     {
-//dd(1);
         try
         {
             $this->validate($request, [
@@ -71,7 +70,7 @@ class AuthController extends Controller
             $remember = (bool) $request->remember;
             if (Sentinel::authenticate($request->all(), $remember))
             {
-                return Redirect::intended('/');
+                return Redirect::back();//intended('/');
             }
             $errors = \Lang::get('error.incorrect_login_pass');
             return Redirect::back()
@@ -103,7 +102,7 @@ class AuthController extends Controller
             $errors = \Lang::get('error.account_throttle', array('delay'=>$delay));
 //            "Ваш аккаунт блокирован на {$delay} секунд.";
         }
-        return Redirect::back()
+        return Redirect::back()//->getTargetUrl()
             ->withInput()
             ->withErrors($errors);
     }
