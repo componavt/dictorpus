@@ -34,7 +34,6 @@
             <?php
                 $link_to_texts = '/corpus/text?search_lang%5B%5D='.$url_args['search_lang'].'&search_word='.$word->word;
                 $is_linked = $word->isLinkedWithLemmaByLang($url_args['search_lang']);
-//dd($url_args);               
             ?>
                     @if ($url_args['search_linked']===NULL || $url_args['search_linked']=="1" && $is_linked || $url_args['search_linked']=="0" && !$is_linked)
             <tr>
@@ -44,7 +43,7 @@
                         {{$word->word}}
                     </a>
                 </td>
-                <td data-th="{{ trans('messages.frequency') }}">{{$word->frequency}}</td>
+                <td data-th="{{ trans('messages.frequency') }}">{{$word->frequency}} - {{$is_linked}}</td>
                 <td data-th="{{ trans('corpus.has_link_with_lemma') }}">
                     @if($is_linked)
                     +

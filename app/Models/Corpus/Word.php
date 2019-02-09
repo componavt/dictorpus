@@ -235,15 +235,15 @@ class Word extends Model
         $word_t_l = mb_strtolower($word_t);
         $lemmas = Lemma::where('lang_id',$lang_id)
                 //where('lemma', 'like', $word)
-                ->whereRaw("lemma like '$word_t' or lemma like '$word_t_l'");
+                ->whereRaw("lemma_for_search like '$word_t' or lemma_for_search like '$word_t_l'");
 //whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id  ." and (lemma like '$word_t' or lemma like '$word_t_l' or id in $lemma_q))")
-//dd($lemmas);        
+//dd($lemmas);   
         if ($lemmas->count()) {
-            return true;
+            return $lemmas->count();//true;
         }
          //return false;
        
-        $wordforms = Wordform::whereRaw("(wordform like '$word_t' or wordform like '$word_t_l')")
+        $wordforms = Wordform::whereRaw("(wordform_for_search like '$word_t' or wordform_for_search like '$word_t_l')")
                 //where('wordform', 'like', $word)
                    ->whereIn('id',function($query) use ($lang_id) {
                        $query ->select('wordform_id')->from('lemma_wordform')
@@ -253,7 +253,7 @@ class Word extends Model
                                 });
                    });
         if ($wordforms->count()) {
-            return true;
+            return $wordforms->count();//true;
         }
     }
     
