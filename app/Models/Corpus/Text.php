@@ -275,13 +275,24 @@ class Text extends Model
                             });
     }
 
+    public function processTextBeforeSaving($text) {
+        $text = str_replace("&sub;b&sup;", "<b>", $text);
+        $text = str_replace("&sub;/b&sup;", "</b>", $text);
+        $text = str_replace("&sub;sup&sup;", "<sup>", $text);
+        $text = str_replace("&sub;/sup&sup;", "</sup>", $text);
+        return $text;
+    }
+
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
         
         $text = self::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
+//dd($request->text);
 
-        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
+        $text->fill($request->only('corpus_id','lang_id','title','text_xml'));
+        $text->text = $text->processTextBeforeSaving($request->text);
+//dd($text->text);
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();
         
