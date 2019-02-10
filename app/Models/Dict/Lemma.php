@@ -140,10 +140,10 @@ class Lemma extends Model
             foreach($wordform_coll as $wordform) {
                 $w = $wordform->wordform;
                 if ($with_search_link) { 
-                    $word = Word::where('word', 'like',$wordform->wordform_for_search)->first();
-                    if ($word) {
+                    $word_count = Word::where('word', 'like',$wordform->wordform_for_search)->count();
+                    if ($word_count) {
                         $w = '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?lang_id='.$this->lang_id
-                           . '&search_word='.$wordform->wordform_for_search.'&'.$wordform->id). '">'.$w.'</a>';
+                           . '&search_word='.$wordform->wordform_for_search.'&'.$wordform->id). '" title="'.$word_count.'">'.$w.'</a>';
                     }
                 }
                 $wordform_arr[]=$w;
@@ -1065,8 +1065,10 @@ class Lemma extends Model
                              ->wherePivot('gramset_id',$gramset_id)
                              ->wherePivot('dialect_id',$dialect_id)
                              ->get()->pluck('wordform')->toArray();
-            if (!in_array($wordform, $wordform_exists)) {
-                $this->addWordforms($wordform, $gramset_id, $dialect_id);
+            foreach ((array)$wordform as $w) {
+                if (!in_array($w, $wordform_exists)) {
+                    $this->addWordforms($wordform, $gramset_id, $dialect_id);
+                }
             }
         }
     }
@@ -1088,8 +1090,16 @@ class Lemma extends Model
         foreach ($gramsets as $gramset_id) {
             $wordform_obj = $this->wordforms()
                    ->wherePivot('gramset_id',$gramset_id) 
-                   ->wherePivot('dialect_id',$dialect_id)->first();
-            $wordforms[$gramset_id] = $wordform_obj ? $wordform_obj->wordform : ''; 
+                   ->wherePivot('dialect_id',$dialect_id)->get();
+            if (sizeof($wordform_obj)>1) {
+                $tmp = [];
+                foreach ($wordform_obj as $w) {
+                    $tmp[] = $w->wordform;
+                }
+                $wordforms[$gramset_id] = join (', ', $tmp);                    
+            } else {
+                $wordforms[$gramset_id] = isset($wordform_obj[0]) ? $wordform_obj[0]->wordform : ''; 
+            }
         }
 //var_dump($wordforms);        
         return $wordforms;

@@ -194,7 +194,7 @@ class GrammaticTest extends TestCase
     // ------------------------------------------------------wordformsByTemplate
     
     public function testWordformsByTemplateIncorrectLang() {
-        $lang_id = 1;
+        $lang_id = 3;
         $pos_id = 0;
         $dialect_id=47;
         $template = "ativo, ativo, ativo, ativu, ativo, ativo";
@@ -204,11 +204,33 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testWordformsByTemplateIncorrectPOS() {
+    public function testWordformsByTemplateKarelianIncorrectPOS() {
         $lang_id = 4;
         $pos_id = 3; // conjunction
         $dialect_id=47;
         $template = "ativo, ativo, ativo, ativu, ativo, ativo";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = [$template, false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateVepsIncorrectPOS() {
+        $lang_id = 1; // veps
+        $pos_id = 3; // conjunction
+        $dialect_id=43; // New written Veps
+        $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = [$template, false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateVepsIncorrectTemplate() {
+        $lang_id = 1; // veps
+        $pos_id = 3; // conjunction
+        $dialect_id=43; // New written Veps
+        $template = "{ativo, ativo, ativo, ativu, ativo}";
         $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
         
         $expected = [$template, false, $template, NULL];
@@ -237,7 +259,6 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    // падает на 91, 103, 151, 
     public function testWordformsByTemplateTulla() {
         $lang_id = 4;
         $pos_id = 11;
@@ -252,6 +273,52 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
+    
+    public function testWordformsByTemplateVeps() {
+        $lang_id = 1;
+        $pos_id = 5; // proper noun
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|aba|i|jon|jod|joid}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21324; // abai 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplateVepsSg() {
+        $lang_id = 1;
+        $pos_id = 14; // proper noun
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|n=sg|Amerik||an|ad}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21531; //Amerik 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplateVepsPl() {
+        $lang_id = 1;
+        $pos_id = 14; // proper noun
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21530; //Alamad 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
 /*    
     public function testWordformsByTemplatePieni() {
         $lang_id = 4;
@@ -459,4 +526,33 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStemsFromTemplateMultiNum() {
+        $lang_id = 1; // veps
+        $pos_id = 5; // noun
+        $template = "vep-decl-stems|adjektiv||an|ad|id";
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
+        
+        $expected = [['adjektiv', 'adjektiva', '', 'adjektivad', 'adjektivi', null], null];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateSg() {
+        $lang_id = 1; // veps
+        $pos_id = 5; // noun
+        $template = "vep-decl-stems|n=sg|Amerik||an|ad";
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
+        
+        $expected = [['Amerik', 'Amerika', '', 'Amerikad', '', ''], 'sg'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplatePl() {
+        $lang_id = 1; // veps
+        $pos_id = 5; // noun
+        $template = "vep-decl-stems|n=pl|Alama|d|id";
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
+        
+        $expected = [['Alamad', '', '', '', 'Alamai', ''], 'pl'];
+        $this->assertEquals( $expected, $result);        
+    }
 }

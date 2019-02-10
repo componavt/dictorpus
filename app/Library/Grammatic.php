@@ -11,7 +11,7 @@ class Grammatic
 {
     public static function getListForAutoComplete($lang_id, $pos_id) {
         $gramsets = [];
-        if ($lang_id != 4) {// is not Proper Karelian  
+        if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
             return $gramsets;
         }
         
@@ -29,15 +29,97 @@ class Grammatic
                         178, 179, 282, 180, 181];
 
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            $gramsets = [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15, 
-//                         2, 24, 22];
-                         2, 24, 22, 279, 59, 23, 60, 61, 280, 62, 64, 65, 66, 281];
+            if ($lang_id == 1) {
+                $gramsets = [1, 56,  3,  4,  7,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19,
+                             2, 57, 24, 22, 58, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
+            } else {
+                $gramsets = [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15, 
+                             2, 24, 22, 279, 59, 23, 60, 61, 280, 62, 64, 65, 66, 281];
+            }
         }
         return $gramsets;
     }
     
+    /**
+     * For Veps:
+     * template-name|base|nom-sg-suff|gen-sg-suff|par-sg-suff|par-pl-suff
+     * vep-decl-stems|adjektiv||an|ad|id
+     * 
+     * template-name|n=sg|base|nom-sg-suff|gen-sg-suff|par-sg-suff
+     * vep-decl-stems|n=sg|Amerik||an|ad
+     * 
+     * template-name|n=pl|base|gen-sg-suff|par-pl-suff
+     * vep-decl-stems|n=pl|Alama|d|id
+     * 
+     * 
+     * @param String $template
+     * @param Int $lang_id
+     * @param Int $pos_id
+     * @return type
+     */
+    public static function stemsFromTemplate($template, $lang_id, $pos_id) {
+        $name_num = null;
+        if ($lang_id == 1) {
+            if (!in_array($pos_id, PartOfSpeech::getNameIDs())
+                || !preg_match('/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs)) {
+                return [null, $name_num];
+            } 
+            if (preg_match("/^n=(.+)$/", $regs[1], $regs1)) {
+                $name_num = $regs1[1];
+            }
+            if ($name_num == 'sg') {
+                $base = $regs[2];
+                $stems[0] = $base.$regs[3];
+                $nom_sg_suff = $regs[3];
+                $gen_sg_suff = $regs[4];
+                $par_sg_suff = $regs[5];
+                $par_pl_suff = '';
+            } elseif ($name_num == 'pl') {
+                $base = $regs[2];
+                $nom_pl_suff = $regs[3];
+                $stems[0] = $base.$nom_pl_suff;
+                $nom_sg_suff =  '';
+                $par_sg_suff = '';
+                $par_pl_suff = $regs[4];
+            } else {
+                $base = $regs[1];
+                $stems[0] = $base.$regs[2];
+                $nom_sg_suff = $regs[2];
+                $gen_sg_suff = $regs[3];
+                $par_sg_suff = $regs[4];
+                $par_pl_suff = $regs[5];
+            }
+            
+            if ($name_num=='sg') {
+                $stems[4] = '';
+            } else {
+                if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs1)) {
+                    return [null, $name_num];
+                }
+                $stems[4] = $base. $regs1[1];
+            }
+            if ($name_num=='pl') {
+                $stems[1] = $stems[3] = '';
+            } else {
+                if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
+                    return [null, $name_num];
+                }
+                $stems[1] = $base. $regs1[1];
+                $stems[3] = $base. $par_sg_suff;
+            }
+            $stems[2] = $stems[5] = '';
+        } else {
+            $stems = preg_split('/,/',$template);
+            for ($i=0; $i<sizeof($stems); $i++) {
+                $stems[$i] = trim($stems[$i]);
+            }
+        }
+        
+        return [$stems, $name_num];
+    }
+
     public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id) {
-        if ($lang_id != 4) {// is not Proper Karelian  
+        if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
             return [$template, false, $template, NULL];
         }
         
@@ -45,14 +127,11 @@ class Grammatic
             return [$template, false, $template, NULL];
         }
         
-        if (!preg_match('/\{([^\}]+)\}/', $template, $list)) {
+        if (!preg_match('/\{+([^\}]+)\}+/', $template, $list)) {
             return [$template, false, $template, NULL];
         }
         
-        $stems = preg_split('/,/',$list[1]);
-        for ($i=0; $i<sizeof($stems); $i++) {
-            $stems[$i] = trim($stems[$i]);
-        }
+        list($stems, $name_num) = self::stemsFromTemplate($list[1], $lang_id, $pos_id);
         
         if (!isset($stems[0])) {
             return [$template, false, $template, NULL];
@@ -62,25 +141,33 @@ class Grammatic
         $wordforms = [];
         
         if ($pos_id == PartOfSpeech::getVerbID()) {
-            if (sizeof ($stems) != 8) {
+            if (!in_array($lang_id, [4]) || sizeof ($stems) != 8) {
                 return [$stems[0], false, $template, NULL];
             }
             foreach ($gramsets as $gramset_id) {
                 $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
             }
         } else {
+//            if ($lang_id == 1 && sizeof ($stems) != 4 || sizeof ($stems) != 6) {
             if (sizeof ($stems) != 6) {
                 return [$stems[0], false, $template, NULL];
             }
             foreach ($gramsets as $gramset_id) {
-                $wordforms[$gramset_id] = self::nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
+                $wordforms[$gramset_id] = self::nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
             }
         }
         list($max_stem, $inflexion) = self::maxStem($stems);
         return [$stems[0], $wordforms, $max_stem, $inflexion];
     }
     
-    public static function nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id) {
+    public static function nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num) {
+        if ($lang_id == 1) {
+            return self::nounWordformVepsByStems($stems, $gramset_id, $dialect_id, $name_num);
+        }
+        return self::nounWordformKarelianByStems($stems, $gramset_id, $lang_id, $dialect_id);
+    }
+    
+    public static function nounWordformKarelianByStems($stems, $gramset_id, $lang_id, $dialect_id) {
         $stem1_i = preg_match("/i$/u", $stems[1]);
         $stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
         
@@ -92,7 +179,7 @@ class Grammatic
             case 4: // партитив, ед. ч. 
                 return $stems[3];
             case 277: // эссив, ед. ч. 
-                return $stems[2] . 'n'. self::garmVowel($stems[2],'a');
+                return $stems[2]. 'n'. self::garmVowel($stems[2],'a');
             case 5: // транслатив, ед. ч. 
                 return $stems[1] . ($stem1_i ? 'ksi' : 'kši');
             case 8: // инессив, ед. ч. 
@@ -111,10 +198,11 @@ class Grammatic
                 return $stems[1].'nke';
             case 15: // пролатив, ед. ч. 
                 return $stems[1].'čči';
+                                
             case 2: // номинатив, мн. ч. 
-                return $stems[1].'t';
+                return $stems[1]. 't';
             case 24: // генитив, мн. ч. 
-                return $stems[4].'n';
+                return $stems[4]. 'n';
             case 22: // партитив, мн. ч. 
                 return $stems[5] . ($stem5_oi ? 'd'.self::garmVowel($stems[5],'a') : 'e' );
             case 279: // эссив, мн. ч.
@@ -139,6 +227,117 @@ class Grammatic
                 return $stems[4].'čči';
             case 281: // инструктив, мн. ч. 
                 return $stems[4].'n';
+        }
+        return '';
+    }
+
+    public static function illSgEnding($stem) {
+        $last_let = mb_substr($stem, -1, 1);
+        $before_last_let = mb_substr($stem, -2, 1);
+        if ($before_last_let == 'h' && self::isVowel($last_let)) {
+            $ill_sg_ending = preg_match("/i$/u", $stem) ? 'že' : 'ze';
+        } else {
+            $ill_sg_ending = 'h'. (self::isVowel($last_let) 
+                                ? ($last_let=='i' ? 'e' : $last_let) 
+                                : 'a');
+        }  
+        return $ill_sg_ending;
+    }
+    
+    public static function illPlEnding($stem) {
+        $last_let = mb_substr($stem, -1, 1);
+        $before_last_let = mb_substr($stem, -2, 1);
+        if ($before_last_let == 'h' && self::isVowel($last_let)) {
+            $ill_ending = preg_match("/i$/u", $stem) ? 'že' : 'ze';
+        } else {
+            $ill_ending = 'h'. (self::isVowel($last_let) 
+                                ? ($last_let=='i' ? 'e' : $last_let) 
+                                : 'i');
+        }  
+        return $ill_ending;
+    }
+    
+    public static function nounWordformVepsByStems($stems, $gramset_id, $dialect_id, $name_num) {
+        $s_sg = preg_match("/i$/u", $stems[1]) ? 'š' : 's';
+        $s_pl = preg_match("/i$/u", $stems[4]) ? 'š' : 's';
+        
+        switch ($gramset_id) {
+            case 1: // номинатив, ед. ч. 
+                return $name_num != 'pl' ? $stems[0] : '';
+            case 56: // аккузатив, ед. ч. 
+            case 3: // генитив, ед. ч. 
+                return $stems[1] ? $stems[1].'n' : '';
+            case 4: // партитив, ед. ч. 
+                return $stems[3];
+            case 7: // эссив-инструктив, ед. ч. 
+                return $stems[1] ? $stems[1]. 'n' : '';
+            case 5: // транслатив, ед. ч. 
+                return $stems[1] ? $stems[1]. 'k'. $s_sg : '';
+            case 8: // инессив, ед. ч. 
+                return $stems[1] ? $stems[1]. $s_sg : '';
+            case 9: // элатив, ед. ч. 
+                return $stems[1] ? $stems[1]. $s_sg. 'päi' : '';
+            /*case 10: // иллатив, ед. ч. 
+                return $stems[2].'h';*/
+            case 11: // адессив, ед. ч. 
+                return $stems[1] ? $stems[1] . 'l' : '';
+            case 12: // аблатив, ед. ч. 
+                return $stems[1] ? $stems[1] . 'lpäi' : '';
+            case 13: // аллатив, ед. ч. 
+                return $stems[1] ? $stems[1] . 'le' : '';
+            case 6: // абессив, ед. ч. 
+                return $stems[1] ? $stems[1] . 'ta' : '';
+            case 14: // комитатив, ед. ч. 
+                return $stems[1] ? $stems[1].'nke' : '';
+            case 15: // пролатив, ед. ч. 
+                return $stems[3] ? $stems[3].'me' : '';
+            case 17: //аппроксиматив, ед. ч. 
+                return $stems[1] ? $stems[1].'nno, '. $stems[1].'nnoks' : '';
+            case 20: //эгрессив, ед. ч. 
+                return $stems[1] ? $stems[1].'nnopäi' : '';
+            case 16: //терминатив, ед. ч. 
+                return $stems[1] ? $stems[1].'lesai, '. $stems[1].'ssai' : '';
+            case 19: //адитив, ед. ч. 
+                return $stems[1] ? $stems[1].'lepäi' : '';
+                
+                
+            case 2: // номинатив, мн. ч. 
+            case 57: // аккузатив, мн. ч. 
+                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'d' : '');
+            case 24: // генитив, мн. ч. 
+                return $stems[4] ? $stems[4]. 'den' : '';
+            case 22: // партитив, мн. ч. 
+                return $stems[4] ? $stems[4] . 'd' : '';
+            case 58: // эссив-инструктив, мн. ч. 
+                return $stems[4] ? $stems[4]. 'n' : '';
+            case 59: // транслатив, мн. ч. 
+                return $stems[4] ? $stems[4]. 'k'. $s_pl : '';
+            case 23: // инессив, мн. ч.
+                return $stems[4] ? $stems[4] . $s_pl : '';
+            case 60: // элатив, мн. ч.
+                return $stems[4] ? $stems[4] . $s_pl. 'päi' : '';
+            case 61: // иллатив, мн. ч. 
+                return $stems[4] ? $stems[4].self::illPlEnding($stems[4]) : '';
+            case 25: // адессив, мн. ч.
+                return $stems[4] ? $stems[4] . 'l' : '';
+            case 62: // аблатив, мн. ч.
+                return $stems[4] ? $stems[4] . 'lpäi' : '';
+            case 63: // аллатив, ед. ч. 
+                return $stems[4] ? $stems[4] . 'le' : '';
+            case 64: // абессив, мн. ч.
+                return $stems[4] ? $stems[4] . 'ta' : '';
+            case 65: // комитатив, мн. ч. 
+                return $stems[4] ? $stems[4].'denke' : '';
+            case 66: // пролатив, мн. ч. 
+                return $stems[4] ? $stems[4].'dme' : '';
+            case 18: //аппроксиматив, мн. ч. 
+                return $stems[4] ? $stems[4].'denno, '. $stems[4].'dennoks' : '';
+            case 69: //эгрессив, мн. ч. 
+                return $stems[4] ? $stems[4].'dennopäi' : '';
+            case 67: //терминатив, мн. ч. 
+                return $stems[4] ? $stems[4].self::illPlEnding($stems[4]).'sai, '. $stems[4].'lesai' : '';
+            case 68: //адитив, мн. ч. 
+                return $stems[4] ? $stems[4].self::illPlEnding($stems[4]).'päi, '. $stems[4].'lepäi' : '';
         }
         return '';
     }

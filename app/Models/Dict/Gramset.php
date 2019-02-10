@@ -247,15 +247,31 @@ class Gramset extends Model
     }
     
     /**
+     * 1 - nominative, singular
+     * 2 - nominative, plural
+     * 3 - genetive, singular
+     * 4 - partitive, singular
+     * 22 - partitive, plural
+     * 24 - genetive, plural
      * 
-     * @param INT $pos_id - part of speech's ID
+     * 26 - indicative, presence, 1st, sg
+     * 28 - indicative, presence, 3st, sg
+     * 31 - indicative, presence, 3st, pl
+     * 170 - infinite
+     * 
+     * @param INT $pos_id - part of speech ID
      * @param BOOLEAN $is_plural = 1, if lemma is plural noun
+     * @param INT $lang_id - language ID, 5 - livvic
      * @return ARRAY or NULL
      */
-    public static function dictionaryGramsets($pos_id, $is_plural=NULL) {
+    public static function dictionaryGramsets($pos_id, $is_plural=NULL, $lang_id=5) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
             if ($is_plural) {
-                return [0=>24, 1=>22, 3=>2];
+                if ($lang_id == 1) { // vepsian
+                    return [1=>22, 3=>2];
+                } else {
+                    return [0=>24, 1=>22, 3=>2];
+                }
             } else {
                 return [0=>3, 1=>4, 2=>22, 3=>1];
             }

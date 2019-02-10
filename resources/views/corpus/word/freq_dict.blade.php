@@ -43,7 +43,7 @@
                         {{$word->word}}
                     </a>
                 </td>
-                <td data-th="{{ trans('messages.frequency') }}">{{$word->frequency}} - {{$is_linked}}</td>
+                <td data-th="{{ trans('messages.frequency') }}">{{$word->frequency}}</td>
                 <td data-th="{{ trans('corpus.has_link_with_lemma') }}">
                     @if($is_linked)
                     +
