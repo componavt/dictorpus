@@ -1078,6 +1078,9 @@ class Grammatic
         $stem = $stems[0];
 
         for ($i=1; $i<sizeof($stems); $i++) {
+            if (!$stems[$i]) {
+                continue;
+            }
             while (!preg_match("/^".$stem."/", $stems[$i])) {
                 $inflexion = mb_substr($stem, -1, 1). $inflexion;
                 $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
