@@ -19,6 +19,7 @@
                 {!! Form::close() !!}
             @endif
         </h3>
+
         @if ($lemma->wordforms()->count())
         <?php $key=1; ?>
         <table class="table-bordered table-striped">
@@ -40,24 +41,27 @@
                     </th>
                 @endforeach
             </tr>
+            
             @foreach ($lemma->existGramsetsGrouped() as $category_name => $category_gramsets)
             <tr>
                 <td></td>
                 <td colspan="2"><b><big>{{$category_name}}</big></b></td>
             </tr>
-                @foreach ($category_gramsets as $gramset_id => $gramset_name)
+                @if($category_gramsets)
+                    @foreach ($category_gramsets as $gramset_id => $gramset_name)
             <tr>
                 <td>{{$key++}}.</td>
                 <td>
                     {{$gramset_name}}
                 </td>
-                @foreach (array_keys($lemma->existDialects()) as $dialect_id)
+                        @foreach (array_keys($lemma->existDialects()) as $dialect_id)
                 <td>
                     <?php print $lemma->wordform($gramset_id, $dialect_id, 1);?>
                 </td>
-                @endforeach
+                        @endforeach
             </tr>
-                @endforeach
+                    @endforeach
+                @endif
             @endforeach
         </table>
         @endif
