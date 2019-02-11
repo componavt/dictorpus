@@ -36,6 +36,7 @@
                 <th>{{ trans('dict.lemmas') }}</th>
                 <th>{{ trans('dict.wordforms') }}</th>
                 @if (User::checkAccess('ref.edit'))
+                <th>{{ trans('dict.gramset_category') }}</th>
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
             </tr>
@@ -68,6 +69,10 @@
                 </td>
                 
                 @if (User::checkAccess('ref.edit'))
+                <td data-th="{{ trans('dict.gramset_category') }}">
+                  {{ $gramset->gramsetCategory ? $gramset->gramsetCategory->name : ''}}
+                </td>
+                
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
                                                            'is_button' => true,

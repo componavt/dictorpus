@@ -16,6 +16,12 @@
                  'attributes'=>['size' => 2],
                  'title' => trans('messages.sequence_number')])         
 
+        @include('widgets.form.formitem._select', 
+                ['name' => 'gramset_category_id', 
+                 'values' => $gramset_category_values,
+                 'title' => trans('dict.gramset_category')
+                ]) 
+                    
         @include('widgets.form.formitem._select2',
                 ['name' => 'parts_of_speech',
                  'title' => trans('dict.pos'),

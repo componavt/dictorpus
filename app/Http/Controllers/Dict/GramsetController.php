@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
 use App\Models\Dict\Gramset;
+use App\Models\Dict\GramsetCategory;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 
@@ -197,6 +198,9 @@ class GramsetController extends Controller
      */
     public function edit($id)
     {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
         $gramset = Gramset::find($id); 
         $pos_values = PartOfSpeech::getGroupedList();
         
@@ -211,22 +215,18 @@ class GramsetController extends Controller
             $lang_value[] = $lang->id;
         }        
 
+        $gramset_category_values = GramsetCategory::getList();
+        
         $grams = [];        
         foreach (GramCategory::all()->sortBy('sequence_number') as $gc) {         //   id is gram_category_id
             $grams[$gc->name_en] = ['name'=> $gc->name,
                                     'grams' => [NULL=>''] + Gram::getList($gc->id)];
         }
 
-        return view('dict.gramset.edit')
-                  ->with(['grams' => $grams,
-                          'gramset' => $gramset,
-                          'lang_value'=>$lang_value,
-                          'lang_values'=>$lang_values,
-                          'pos_value'=>$pos_value,
-                          'pos_values'=>$pos_values,
-                          'args_by_get'    => $this->args_by_get,
-                          'url_args'       => $this->url_args,
-                         ]);
+        return view('dict.gramset.edit',
+                  compact('grams', 'gramset', 'gramset_category_values',
+                          'lang_value', 'lang_values', 'pos_value',
+                          'pos_values', 'args_by_get', 'url_args'));
     }
 
     /**

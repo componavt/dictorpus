@@ -10,7 +10,7 @@ use App\Models\Dict\PartOfSpeech;
 class Gramset extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['gram_id_number', 'gram_id_case', 'gram_id_tense', 'gram_id_person', 'gram_id_mood', 
+    protected $fillable = ['gram_id_number', 'gram_id_case', 'gram_id_tense', 'gram_id_person', 'gram_id_mood', 'gramset_category_id',
                            'sequence_number', 'gram_id_negation', 'gram_id_infinitive', 'gram_id_voice','gram_id_participle','gram_id_reflexive'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -25,6 +25,11 @@ class Gramset extends Model
         parent::boot();
     }
 
+    public function gramsetCategory()
+    {
+        return $this->belongsTo(GramsetCategory::class);
+    }
+    
     // Gramset __belongs_to__ Dialect
     public function dialect()
     {

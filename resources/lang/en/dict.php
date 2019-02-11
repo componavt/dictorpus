@@ -45,6 +45,7 @@ return [
     'gram_category' => 'Grammatical category',
     'gram_list' => 'Grammatical attributes',
     'gram_removed' => 'Grammatical attribute ":name" is removed successfully.',
+    'gramset_category' => 'Set category',
     'gramset_has_wordform' => 'There are wordforms with these grammatical attributes',
     'gramset_removed' => 'Set of grammatical attributes ":name" is removed successfully.',
     'gramsets' => 'grammatical attributes',
