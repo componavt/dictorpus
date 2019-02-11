@@ -861,3 +861,5 @@ update wordforms set wordform_for_search=replace(wordform_for_search, '\'' , '')
 
 UPDATE lemma_wordform set dialect_id=44 where lemma_id=3697;
 UPDATE lemma_wordform set dialect_id=43 where lemma_id=2306;
+
+-- php artisan make:migration add_field_in_gramsets_table
