@@ -87,9 +87,12 @@ class Gramset extends Model
                                         $query ->select('gramset_id')->from('gramset_pos')
                                                ->where('lang_id', $lang_id)
                                                ->where('pos_id', $pos_id);
-                                    });
+                                    })->orderBy('sequence_number');
     }
     
+    //public static function gramsetCategories($categories)
+
+
     public static function getGroupedList($lang_id, $pos_id) {
         $groups = [];
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
@@ -102,6 +105,7 @@ class Gramset extends Model
                     }
                 }
             }
+//        } elseif ($pos_id == PartOfSpeech::getVerbID()) {
         } else {
             $gramsets = self::gramsetsLangPOS($lang_id, $pos_id)->get();
             foreach ($gramsets as $gramset) {

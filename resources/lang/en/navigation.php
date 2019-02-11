@@ -20,6 +20,7 @@ return [
     'districts' => 'Districts',
     'dumps' => 'Dumps',
     'genres' => 'genres',
+    'gramset_categories' => 'Categories of grammatical attribute sets',
     'gramsets' => 'Sets of grammatical attributes',
     'grants' => 'Grants',
     'grams' => 'Grammemes',

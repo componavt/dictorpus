@@ -856,4 +856,8 @@ update lemmas set lemma_for_search=replace(lemma_for_search, '\'', '');
 update wordforms set wordform=replace(wordform, '\'', '’');
 update wordforms set wordform_for_search=replace(wordform_for_search, '\'' , '');
 
+-- php artisan make:model Models\Dict\GramsetCategory --migration
+-- php artisan make:controller Dict\GramsetCategoryController
 
+UPDATE lemma_wordform set dialect_id=44 where lemma_id=3697;
+UPDATE lemma_wordform set dialect_id=43 where lemma_id=2306;

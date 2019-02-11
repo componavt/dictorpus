@@ -165,6 +165,11 @@ Route::group(
                                     'store' => 'gramset.store',
                                     'destroy' => 'gramset.destroy']]);
 
+        Route::resource('dict/gramset_category', 'Dict\GramsetCategoryController',
+                       ['names' => ['update' => 'gramset_category.update',
+                                    'store' => 'gramset_category.store',
+                                    'destroy' => 'gramset_category.destroy']]);
+
         Route::resource('dict/lang', 'Dict\LangController',
                        ['names' => ['update' => 'lang.update',
                                     'store' => 'lang.store',

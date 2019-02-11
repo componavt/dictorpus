@@ -25,6 +25,7 @@ return [
     'animacy' => 'animate',
     'inanimacy' => 'inanimate',
     'case' => 'Case',
+    'category_removed' => 'Сategory ":name" is removed successfully.',
     'code' => 'code',
     'conll' => 'Code CONLL',
     'create_new_lemma' => 'Create a new lemma',
@@ -77,6 +78,7 @@ return [
                    3 => 'ordinal',
                    4 => 'fractional'],
     
+    'of_category' => 'of category',
     'of_dialect' => 'of dialect',
     'of_example' => 'of example',
     'of_gram' => 'of grammatical attribute',
@@ -93,6 +95,10 @@ return [
     'phrase_lemmas' => 'Phrase lemmas',
     'phrases' => 'Phrases',
     'pos' => 'part of speech',
+    'pos_category' => 'POS category',
+    'pos_categories' => [2 => 'verb',
+                         1 => 'name'],
+    
     'pos_category_1' => 'Open class words',
     'pos_category_2' => 'Closed class words',
     'pos_category_3' => 'Other',
@@ -150,6 +156,8 @@ return [
     'verb' => 'verb',
     'voice' => 'voice',
     'wordform' => 'wordform',
-    'wordforms_linked_many_lemmas' => 'Wordforms associated with more than one lemma',
     'wordforms' => 'wordforms',
+    'wordforms_linked_many_lemmas' => 'Wordforms associated with more than one lemma',
+    'wordform_field_comments' => 'Wordforms separated by comma or /',
+    'wordforms_field_comments' => 'Standard 3 word forms via , or ;'
 ];
