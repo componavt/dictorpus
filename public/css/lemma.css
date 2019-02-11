@@ -110,13 +110,14 @@
     color: #337ab7;
 }
 
-.word-form-table {
-    width: 100%;
+.word-form-table th,
+.word-form-table td {
+    padding: 5px 10px;
 }
 
 .word-form-table td {
     padding: 0 5px;
-    width: 33%;
+/*    width: 33%; */
 }
 
 .big-size {

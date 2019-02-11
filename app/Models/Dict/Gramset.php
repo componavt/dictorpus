@@ -95,22 +95,27 @@ class Gramset extends Model
                                     })->orderBy('sequence_number');
     }
     
-    //public static function gramsetCategories($categories)
+    public static function getGroupedListByPOS($pos_category_id, $lang_id, $pos_id) {
+        $groups = [];
+//dd(GramsetCategory::getList($pos_category_id), $lang_id, $pos_id);        
+        foreach (GramsetCategory::getList($pos_category_id) as $category_id => $category_name) {
+            $gramsets = self::gramsetsLangPOS($lang_id, $pos_id)
+                    ->where('gramset_category_id', $category_id)->get();
+//dd($gramsets);
+            foreach ($gramsets as $gramset) {
+                $groups[$category_name][$gramset->id] = $gramset->inCategoryString();
+            }
+        }
+//dd($groups);        
+        return $groups;
+    }
 
-
-    public static function getGroupedList($lang_id, $pos_id) {
+    public static function getGroupedList($pos_id, $lang_id) {
         $groups = [];
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            foreach (Gram::getList(GramCategory::getIDByName('number')) as $category_id => $category_name) {
-                $gramsets = self::gramsetsLangPOS($lang_id, $pos_id)
-                        ->where('gram_id_number', $category_id)->get();
-                foreach ($gramsets as $gramset) {
-                    if ($gramset->gram_id_case){
-                        $groups[$category_name][$gramset->id] = $gramset->gramCase->name_short;
-                    }
-                }
-            }
-//        } elseif ($pos_id == PartOfSpeech::getVerbID()) {
+            $groups = self::getGroupedListByPOS(1, $lang_id, $pos_id);
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) {
+            $groups = self::getGroupedListByPOS(2, $lang_id, $pos_id);
         } else {
             $gramsets = self::gramsetsLangPOS($lang_id, $pos_id)->get();
             foreach ($gramsets as $gramset) {
@@ -119,10 +124,6 @@ class Gramset extends Model
         }
 //dd($groups);        
         return $groups;
-    }
-
-    public function inCategoryString(String $glue=', ', $with_number=false) : String
-    {
     }
 
     public function toCONLL() {
@@ -188,6 +189,51 @@ class Gramset extends Model
                             });
         }
         return $builder;
+    }
+
+    public function inCategoryString($with_number=false) : String
+    {
+        $pos_category_id = $this->gramsetCategory->pos_category_id;
+        if ($pos_category_id ==1) {
+            if ($this->gram_id_case){
+                $out = $this->gramCase->name_short;
+            }
+        } else {
+            $list = array();
+            if ($this->gram_id_infinitive){
+                $list[] = $this->gramInfinitive->name_short;
+            }
+
+            if ($this->gram_id_number){
+                $list[] = $this->gramNumber->name_short;
+            }
+
+            if ($this->gram_id_person){
+                $list[] = $this->gramPerson->name_short;
+            }
+
+            if ($this->gram_id_case){
+                $list[] = $this->gramCase->name_short;
+            }
+
+            if ($this->gram_id_negation == 53){ // connegative
+                $list[] = $this->gramNegation->name_short;
+            }
+        
+            if ($this->gram_id_voice){
+                $list[] = $this->gramVoice->name_short;
+            }
+
+            if ($this->gram_id_participle){
+                $list[] = $this->gramParticiple->name_short;
+            }
+            
+            $out = join(', ', $list);
+        }
+        if ($with_number) {
+            $out = $this->sequence_number .') '.$out;
+        }
+        return $out;
     }
 
     /** Gets concatenated list of grammatical attributes for this gramset

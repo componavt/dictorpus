@@ -31,19 +31,18 @@ class GramsetCategory extends Model
      * 
      * @return Array [1=>'Vepsian',..]
      */
-    public static function getList($without=[])
+    public static function getList($pos_category_id=NULL)
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $languages = self::orderBy('sequence_number')
-                //orderBy('name_'.$locale)
-                ->get();
-        
+        $languages = self::orderBy('sequence_number');
+        if ($pos_category_id) {
+            $languages->where('pos_category_id',$pos_category_id);
+        }
+                
         $list = array();
-        foreach ($languages as $row) {
-            if (!in_array($row->id, $without)) {
-                $list[$row->id] = $row->name;
-            }
+        foreach ($languages->get() as $row) {
+            $list[$row->id] = $row->name;
         }
         
         return $list;         

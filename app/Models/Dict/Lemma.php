@@ -409,7 +409,7 @@ class Lemma extends Model
 //                           ->groupBy('id')
                            ->get();
          
-        foreach (Gramset::getGroupedList($this->lang_id, $this->pos_id) as $category_name => $category_gramsets) {
+        foreach (Gramset::getGroupedList($this->pos_id, $this->lang_id) as $category_name => $category_gramsets) {
             foreach ($category_gramsets as $gramset_id => $gramset_name) {
                 if ($gramset_coll->contains($gramset_id)) {
                     $gramsets[$category_name][$gramset_id] = $gramset_name;
@@ -460,7 +460,7 @@ class Lemma extends Model
      * @return Collection of Wordform Objects
      */
     public function wordformsWithAllGramsets($dialect_id=NULL){
-        $gramsets = Gramset::getGroupedList($this->lang_id, $this->pos_id);
+        $gramsets = Gramset::getGroupedList($this->pos_id, $this->lang_id);
         if ($dialect_id) {
             $dialects = [$dialect_id => Dialect::getNameByID($dialect_id)];
         } else {

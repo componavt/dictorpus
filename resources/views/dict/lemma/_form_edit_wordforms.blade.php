@@ -14,7 +14,7 @@
                         @foreach ($category_gramsets as $gramset_id => $dialect_wordform)
                     <tr>
                         <td>
-                            {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString(', ',true)}}&nbsp;
+                            {{\App\Models\Dict\Gramset::find($gramset_id)->inCategoryString(true)}}&nbsp;
                         </td>
                         <td>@include('widgets.form.formitem._text',
                                ['name' => 'lang_wordforms['.$gramset_id.']['.$dialect_id.']',
