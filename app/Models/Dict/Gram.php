@@ -83,13 +83,17 @@ class Gram extends Model
      * @param int $category_id
      * @return Array [1=>'номинатив',..]
      */
-    public static function getList(int $category_id)
+    public static function getList(int $category_id, $with_short_name=true)
     {
         $grams = self::getByCategory($category_id);
                 
         $list = [];
         foreach ($grams as $gram) {
-            $list[$gram->id] = $gram->getNameWithShort();
+            if ($with_short_name) {
+                $list[$gram->id] = $gram->getNameWithShort();
+            } else {
+                $list[$gram->id] = $gram->name;
+            }
         }
         
         return $list;         

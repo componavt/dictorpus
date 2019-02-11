@@ -394,6 +394,32 @@ class Lemma extends Model
     } 
     
     /**
+     * Gets array of unique grammatical sets, that has any wordforms of this lemma
+     * 
+     * @return Array [NULL=>'', 
+     *                  26=>'индикатив, презенс, 1 л., ед. ч., положительная форма',...]
+     */
+    public function existGramsetsGrouped()
+    {
+        $gramsets = [];
+        if ($this->wordforms()->wherePivot('gramset_id',NULL)->count()) {
+            $gramsets[NULL] ='';
+        }
+        $gramset_coll=$this->gramsets()
+//                           ->groupBy('id')
+                           ->get();
+         
+        foreach (Gramset::getGroupedList($this->lang_id, $this->pos_id) as $category_name => $category_gramsets) {
+            foreach ($category_gramsets as $gramset_id => $gramset_name) {
+                if ($gramset_coll->contains($gramset_id)) {
+                    $gramsets[$category_name][$gramset_id] = $gramset_name;
+                }
+            }
+        }
+        return $gramsets;
+    } 
+    
+    /**
      * Gets a collection of wordforms with gramsets and sorted by sequence_number of gramsets
      * @return Collection of Wordform Objects
      * 

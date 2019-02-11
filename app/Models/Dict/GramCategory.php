@@ -64,4 +64,12 @@ class GramCategory extends Model
         
         return $list;         
     }
+    
+    public static function getIDByName($name) {
+        $category = self::where('name_en', $name)->first();
+        if (!$category) {
+            return null;
+        }
+        return $category->id;
+    }
 }

@@ -40,7 +40,12 @@
                     </th>
                 @endforeach
             </tr>
-            @foreach ($lemma->existGramsets() as $gramset_id=>$gramset_name)
+            @foreach ($lemma->existGramsetsGrouped() as $category_name => $category_gramsets)
+            <tr>
+                <td></td>
+                <td colspan="2"><b><big>{{$category_name}}</big></b></td>
+            </tr>
+                @foreach ($category_gramsets as $gramset_id => $gramset_name)
             <tr>
                 <td>{{$key++}}.</td>
                 <td>
@@ -52,6 +57,7 @@
                 </td>
                 @endforeach
             </tr>
+                @endforeach
             @endforeach
         </table>
         @endif

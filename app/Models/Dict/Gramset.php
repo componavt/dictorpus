@@ -4,6 +4,7 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+//use App\Library\Grammatic;
 use App\Models\Dict\PartOfSpeech;
 
 class Gramset extends Model
@@ -81,6 +82,28 @@ class Gramset extends Model
         return $this->belongsTo(Gram::class, 'gram_id_reflexive');
     }*/
     
+    public static function getGroupedList($lang_id, $pos_id) {
+        $groups = [];
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
+            foreach (Gram::getList(GramCategory::getIDByName('number')) as $category_id => $category_name) {
+                $gramsets = Gramset::where('gram_id_number', $category_id)
+                                   ->whereIn('id', function ($query) use ($lang_id, $pos_id) {
+                                        $query ->select('gramset_id')->from('gramset_pos')
+                                               ->where('lang_id', $lang_id)
+                                               ->where('pos_id', $pos_id);
+                                   })->get();
+                foreach ($gramsets as $gramset) {
+                    if ($gramset->gram_id_case){
+                        $groups[$category_name][$gramset->id] = $gramset->gramCase->name_short;
+                    }
+                }
+            }
+        }
+//dd($groups);        
+        return $groups;
+    }
+
+
     public function toCONLL() {
             $feats = [];
             $fields = ['Number', 'Case', 'Tense', 'Person', 'Mood', 'Negation', 'Infinitive', 'Voice', 'Participle'];
