@@ -460,7 +460,7 @@ class Lemma extends Model
      * @return Collection of Wordform Objects
      */
     public function wordformsWithAllGramsets($dialect_id=NULL){
-        $gramsets = Gramset::getList($this->pos_id,$this->lang_id);
+        $gramsets = Gramset::getGroupedList($this->lang_id, $this->pos_id);
         if ($dialect_id) {
             $dialects = [$dialect_id => Dialect::getNameByID($dialect_id)];
         } else {
@@ -468,19 +468,22 @@ class Lemma extends Model
         }
         
         $wordforms = NULL;
-        foreach (array_keys($gramsets) as $gramset_id) {
-    //                         ->withPivot('dialect_id',NULL)
-            foreach (array_keys($dialects) as $dialect_id) {
-                if (!(int)$dialect_id) {
-                    $dialect_id = NULL;
+//dd($gramsets);            
+        foreach ($gramsets as $category_name => $category_gramsets) {
+            foreach (array_keys($category_gramsets) as $gramset_id) {
+        //                         ->withPivot('dialect_id',NULL)
+                foreach (array_keys($dialects) as $dialect_id) {
+                    if (!(int)$dialect_id) {
+                        $dialect_id = NULL;
+                    }
+    //dd($dialect_id);        
+                    $wordform = $this->wordforms()
+                                     ->wherePivot('gramset_id',$gramset_id)
+                                     ->wherePivot('dialect_id', $dialect_id)
+                                     //->first();
+                                     ->get();
+                    $wordforms[$category_name][$gramset_id][$dialect_id] = $wordform;
                 }
-//dd($dialect_id);        
-                $wordform = $this->wordforms()
-                                 ->wherePivot('gramset_id',$gramset_id)
-                                 ->wherePivot('dialect_id', $dialect_id)
-                                 //->first();
-                                 ->get();
-                $wordforms[$gramset_id][$dialect_id] = $wordform;
             }
         }
 //dd($wordforms);        

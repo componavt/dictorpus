@@ -7,7 +7,11 @@
                     <th>{{$dialect_name}}</th>
                 </tr>
                 @if ($lemma->wordformsWithAllGramsets($dialect_id))
-                    @foreach ($lemma->wordformsWithAllGramsets($dialect_id) as $gramset_id => $dialect_wordform)
+                    @foreach ($lemma->wordformsWithAllGramsets($dialect_id) as $category_name => $category_gramsets)
+                    <tr>
+                        <td colspan="3"><b><big>{{$category_name}}</big></b></td>
+                    </tr>
+                        @foreach ($category_gramsets as $gramset_id => $dialect_wordform)
                     <tr>
                         <td>
                             {{\App\Models\Dict\Gramset::find($gramset_id)->gramsetString(', ',true)}}&nbsp;
@@ -23,6 +27,7 @@
                                  'value' =>$dialect_id]) 
                         </td>
                    </tr>
+                        @endforeach
                     @endforeach
                 @endif
                 @foreach ($lemma->wordformsWithoutGramsets() as $key=>$wordform)
