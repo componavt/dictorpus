@@ -85,4 +85,18 @@ class WordController extends Controller
         return view('corpus.word.freq_dict',
                 compact('lang_values', 'words', 'args_by_get', 'url_args'));
     }
+/*    
+    public function updateMeaningLinks() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $words = Word::where('checked',0)->first();
+            if ($word) {
+                $meanings
+                $word->checked=1;
+                $word->save();   
+            } else {
+                $is_all_checked = true;
+            }
+        }
+    }*/
 }

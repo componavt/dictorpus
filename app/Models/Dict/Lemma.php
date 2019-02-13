@@ -143,7 +143,7 @@ class Lemma extends Model
                     $word_count = Word::where('word', 'like',$wordform->wordform_for_search)->count();
                     if ($word_count) {
                         $w = '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?lang_id='.$this->lang_id
-                           . '&search_word='.$wordform->wordform_for_search.'&'.$wordform->id). '" title="'.$word_count.'">'.$w.'</a>';
+                           . '&search_word='.$wordform->wordform_for_search). '" title="'.$word_count.'">'.$w.'</a>';
                     }
                 }
                 $wordform_arr[]=$w;
@@ -317,6 +317,9 @@ class Lemma extends Model
         $this-> phraseLemmas()->detach();
         if ($this->reverseLemma) {
             $this->reverseLemma->delete();
+        }        
+        if ($this->features) {
+            $this->features->delete();
         }
         
         $meanings = $this->meanings;
