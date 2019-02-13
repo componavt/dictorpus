@@ -734,17 +734,6 @@ class Text extends Model
         return $checked_words;
     }
     
-    public function getMeaningsByWord($word) {
-        $word_t = addcslashes($word,"'%");
-        $word_t_l = mb_strtolower($word_t);
-        $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word_t' or wordform like '$word_t_l')";
-        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
-        $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id
-                           ." and (lemma_for_search like '$word_t' or lemma_for_search like '$word_t_l' or id in $lemma_q))")
-                           ->get();    
-        return $meanings;
-    }
-    
     public function getMeaningsByWid($w_id) {
         $meanings = $this->meanings();
 var_dump($meanings);        
@@ -782,7 +771,7 @@ var_dump($meanings);
             list($sxe, $word_for_DB) = $this->searchToMerge($sxe, $w_id, $word_for_DB, $left_words);
             
             $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_DB]);
-            foreach ($this->getMeaningsByWord($word_for_DB) as $meaning) {
+            foreach (Word::getMeaningsByWord($word_for_DB) as $meaning) {
                 $meaning_id = $meaning->id;
                 $relevance = isset($checked_sent_words[$word_count][$meaning_id][0]) && $checked_sent_words[$word_count][$meaning_id][0] == $word 
                            ? $relevance = $checked_sent_words[$word_count][$meaning_id][1] : 1;
@@ -1231,8 +1220,7 @@ var_dump($meanings);
             $count = 1;
 //var_dump($sentence);            
             foreach ($sentence->w as $w) {
-//dd((int)$w['id']);                
-                $words = Word::toCONLL($this->id, (int)$w['id']);
+                $words = Word::toCONLL($this->id, (int)$w['id'], (string)$w);
                 if (!$words) {
                     $out .= "$count\tERROR\n";
                     continue;

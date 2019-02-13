@@ -649,8 +649,8 @@ class TextController extends Controller
 //dd(ini_get('memory_limit'));
         $date = Carbon::now();
         $date_now = $date->toDateString();
-//        foreach ([4, 5, 6, 1] as $lang_id) {
-            $lang_id = 1;
+        foreach ([4, 5, 6, 1] as $lang_id) {
+//            $lang_id = 6;
             $lang = Lang::find($lang_id);
             $filename = 'export/conll/vepkar-'.$date_now.'-'.$lang->code.'.txt';
             Storage::disk('public')->put($filename, "# ".$lang->name);
@@ -661,7 +661,7 @@ class TextController extends Controller
                 Storage::disk('public')->append($filename, $text->toCONLL());
             }
             print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
-//        }
+        }
     }
 
     /**

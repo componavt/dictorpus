@@ -200,31 +200,31 @@ class Word extends Model
         $this->save();
     }
     
-    public static function toCONLL($text_id, $w_id) {
-        $word = self::getByTextWid($text_id, $w_id);
-//dd($word);        
+    public static function toCONLL($text_id, $w_id, $word) {
+        $word_obj = self::getByTextWid($text_id, $w_id);
+//dd($word_obj);        
 
-        if (!$word || !$word->word) {
+        if (!$word_obj) {
             return NULL;
         }
         
-        $lemmas = $word->getLemmas();
+        $lemmas = $word_obj->getLemmas();
 //if ($text_id==1 && $w_id==73) {   
 //    dd($lemmas);
 //}
 //dd($lemmas);        
         if (!$lemmas || !$lemmas->count()) {
-            return [$word->word."\tUNKN\t_\t_\t_\t_\t_\t_\t_"];
+            return [$word."\tUNKN\t_\t_\t_\t_\t_\t_\t_"];
         }
         $lines = [];
         foreach ($lemmas as $lemma) {
-            $line = $word->word."\t".$lemma->lemma."\t";
+            $line = $word."\t".$lemma->lemma."\t";
             if ($lemma->pos && !in_array($lemma->pos->code, ['PHRASE','PRE'])) { // фразеологизм, предикатив
                 $line .= $lemma->pos->code;
             } else {
                 $line .= 'UNKN';
             }
-            $lines[] = $line."\t_\t".$lemma->featsToCONLL($word->word)."\t_\t_\t_\t_";
+            $lines[] = $line."\t_\t".$lemma->featsToCONLL($word)."\t_\t_\t_\t_";
         }
         return $lines;
     }
@@ -265,6 +265,17 @@ class Word extends Model
                         $query->select('word_id')->from('meaning_text');
         });
         return $examples->count();
+    }
+    
+    public static function getMeaningsByWord($word) {
+//        $word_t = addcslashes($word,"'%");
+        $word_t_l = mb_strtolower($word_t);
+        $wordform_q = "(SELECT id from wordforms where lower(wordform_for_search) like '$word_t_l')";
+        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
+        $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id
+                           ." and (lemma_for_search like '$word_t' or lemma_for_search like '$word_t_l' or id in $lemma_q))")
+                           ->get();    
+        return $meanings;
     }
     
 }
