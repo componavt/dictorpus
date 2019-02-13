@@ -1315,9 +1315,9 @@ var_dump($meanings);
     }*/
           
     public static function countExamples(){
-        $examples = DB::table('meaning_text')->select('text_id', 'w_id')->groupBy('text_id', 'w_id')->get();
-//        $examples = DB::table('meaning_text')->select('text_id', 'sentence_id')->groupBy('text_id', 'sentence_id')->get();
-        return sizeof($examples);
+//        $examples = DB::table('meaning_text')->select('text_id', 'w_id')->groupBy('text_id', 'w_id')->get();
+//        return sizeof($examples);
+        return DB::table('meaning_text')->count();
     }
           
     public static function countCheckedExamples(){

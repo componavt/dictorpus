@@ -36,10 +36,16 @@
                             <td>{{trans('stats.total_words')}}</td><td>{{$total_words}}</td>
                         </tr>
                         <tr>
+                            <td>{{trans('stats.total_marked_words')}}</td><td>{{$total_marked_words}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{trans('stats.marked_words_to_all')}}</td><td>{{$marked_words_to_all}}</td>
+                        </tr>
+                        <tr>
                             <td>{{trans('stats.total_checked_words')}}</td><td>{{$total_checked_words}}</td>
                         </tr>
                         <tr>
-                            <td>{{trans('stats.all_words_to_checked')}}</td><td>{{$all_words_to_checked}}</td>
+                            <td>{{trans('stats.checked_words_to_marked')}}</td><td>{{$checked_words_to_marked}}</td>
                         </tr>
                         
                         <tr>
@@ -52,7 +58,7 @@
                             <td>{{trans('stats.total_checked_examples')}}</td><td>{{$total_checked_examples}}</td>
                         </tr>
                         <tr>
-                            <td>{{trans('stats.all_examples_to_checked')}}</td><td>{{$all_examples_to_checked}}</td>
+                            <td>{{trans('stats.checked_examples_to_all')}}</td><td>{{$checked_examples_to_all}}</td>
                         </tr>
                         
                         <tr>

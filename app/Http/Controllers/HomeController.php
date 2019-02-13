@@ -58,6 +58,7 @@ class HomeController extends Controller
         $total_checked_examples = Text::countCheckedExamples();
         $total_checked_words = Text::countCheckedWords(); 
         $total_examples = Text::countExamples();
+//dd($total_examples);        
         $total_informants = Informant::count();
         $total_lemmas = Lemma::count();
         $total_meanings = Meaning::count();
@@ -68,18 +69,21 @@ class HomeController extends Controller
         $total_translations = Meaning::countTranslations();
         $total_wordforms = Wordform::count();
         $total_words = Word::count(); 
+        $total_marked_words = Word::countMarked();
         $total_users = User::count(); 
         
 //        $persFormatter = new \NumberFormatter("en-US", \NumberFormatter::PERCENT); 
 //        $all_word_to_check = $persFormatter->format($total_checked_words/$total_words);
 
-        $all_words_to_checked = 100*$total_checked_words/$total_words;
-        $all_examples_to_checked = 100*$total_checked_examples/$total_examples;
+        $marked_words_to_all = 100*$total_marked_words/$total_words;
+        $checked_words_to_marked = 100*$total_checked_words/$total_marked_words;
+        $checked_examples_to_all = 100*$total_checked_examples/$total_examples;
         
         return view('page.stats')
                 ->with([
-                        'all_words_to_checked' => number_format($all_words_to_checked, 2,',', ' '),
-                        'all_examples_to_checked' => number_format($all_examples_to_checked, 2,',', ' '),
+                        'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
+                        'checked_words_to_marked' => number_format($checked_words_to_marked, 2,',', ' '),
+                        'marked_words_to_all' => number_format($marked_words_to_all, 2,',', ' '),
                         'total_active_editors' => number_format($total_active_editors, 0, ',', ' '),
                         'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
                         'total_checked_words' => number_format($total_checked_words, 0, ',', ' '),
@@ -94,6 +98,7 @@ class HomeController extends Controller
                         'total_translations' => number_format($total_translations, 0, ',', ' '),
                         'total_wordforms' => number_format($total_wordforms, 0, ',', ' '),
                         'total_words' => number_format($total_words, 0, ',', ' '),
+                        'total_marked_words' => number_format($total_marked_words, 0, ',', ' '),
                         'total_users' => number_format($total_users, 0, ',', ' '),
                        ]);
     }

@@ -257,4 +257,14 @@ class Word extends Model
         }
     }
     
+    /**
+     * The number of words linked with lemmas
+     */
+    public static function countMarked() {
+        $examples = self::whereIn('id', function ($query) {
+                        $query->select('word_id')->from('meaning_text');
+        });
+        return $examples->count();
+    }
+    
 }

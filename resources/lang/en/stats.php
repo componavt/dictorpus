@@ -12,8 +12,9 @@ return [
     */
 
 
-    'all_words_to_checked' => 'Ratio of bound words to the total number of words (in %)',
-    'all_examples_to_checked' => 'Ratio of verified examples to total number of examples (in %)',
+    'checked_words_to_marked' => 'The ratio of verified words to the total number of marked words (in%)',
+    'checked_examples_to_all' => 'Ratio of verified examples to total number of examples (in %)',
+    'marked_words_to_all' => 'The ratio of marked words to the total number of words (in%)',
     
     'meanings' => 'Meanings of words',
     'translations' => 'Translations',
