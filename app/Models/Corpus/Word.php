@@ -4,6 +4,8 @@ namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
 
+use DB;
+
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
@@ -267,15 +269,55 @@ class Word extends Model
         return $examples->count();
     }
     
-    public static function getMeaningsByWord($word) {
+    // wordform_for_search and $word are in lower case
+    public static function getMeaningsByWord($word, $lang_id=NULL) {
 //        $word_t = addcslashes($word,"'%");
-        $word_t_l = mb_strtolower($word_t);
-        $wordform_q = "(SELECT id from wordforms where lower(wordform_for_search) like '$word_t_l')";
+//        $word_t_l = mb_strtolower($word_t);
+//        $wordform_q = "(SELECT id from wordforms where lower(wordform_for_search) like '$word_t_l')";
+        $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word')";
         $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
-        $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id
-                           ." and (lemma_for_search like '$word_t' or lemma_for_search like '$word_t_l' or id in $lemma_q))")
+        $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$lang_id
+                           ." and (lemma_for_search like '$word' or id in $lemma_q))")
                            ->get();    
         return $meanings;
     }
     
+    public function addMeaning($meaning_id, $text_id, $sentence_id, $w_id, $relevance) {
+        $this->meanings()->attach($meaning_id,
+                ['sentence_id'=>$sentence_id,
+                 'text_id'=>$text_id,
+                 'w_id'=>$w_id,
+                 'relevance'=>$relevance]);        
+    }
+    
+    /**
+     * 
+     * @param Array $checked_relevances [meaning1_id => [word, relevance1], meaning2_id => [word, relevance2], ... ]
+     * @param INT $lang_id
+     */
+    public function setMeanings($checked_relevances, $lang_id=NULL) {
+        if (!$lang_id) {
+            $lang_id = Text::getLangIDbyID($this->text_id);
+        }
+        foreach (self::getMeaningsByWord($this->word, $lang_id) as $meaning) {
+            $meaning_id = $meaning->id;
+            $relevance = isset($checked_relevances[$meaning_id][0]) && $checked_relevances[$meaning_id][0] == $this->word 
+                       ? $checked_relevances[$meaning_id][1] : 1;
+            $this->addMeaning($meaning_id, $this->text_id, $this->sentence_id, $this->w_id, $relevance);
+        }
+    }
+
+    // get old checked links
+    public static function checkedMeaningRelevances($text_id, $w_id, $word) {
+        $relevances = [];
+        $meanings = DB::table("meaning_text")
+                  ->where('text_id',$text_id)
+                  ->where('w_id',$w_id)
+                  ->where('relevance','<>',1)->get();
+        foreach ($meanings as $meaning) {
+            $relevances[$meaning->meaning_id] =
+                    [$word, $meaning->relevance];
+        }
+        return $relevances;
+    }
 }

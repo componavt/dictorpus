@@ -160,7 +160,7 @@ function changeWordBlock(text_id, w_id, meaning_id) {
 }
 
 function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects) {
-alert('/dict/lemma/wordform/update?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&w_id='+w_id+'&dialects='+dialects);        
+//alert('/dict/lemma/wordform/update?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&w_id='+w_id+'&dialects='+dialects);        
     $.ajax({
         url: '/dict/lemma/wordform/update', 
         data: {text_id: text_id, 

@@ -186,6 +186,14 @@ class Text extends Model
         }
         return $value;
     }
+    
+    public static function getLangIDbyID($id) {
+        $text=self::find($id);
+        if (!$text) {
+            return null;
+        }
+        return $text->lang_id;
+    }
 
     public static function search(Array $url_args) {
         // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
@@ -718,15 +726,9 @@ class Text extends Model
             $s_id = (int)$sentence->attributes()->id;
             $word_count = 0;
             foreach ($sentence->children()->w as $word) {
-                //$checked_words[$s_id][$word_count] = [];                
-                $meanings = DB::table("meaning_text")
-                          ->where('text_id',$this->id)
-                          ->where('w_id',(int)$word->attributes()->id)
-                          ->where('relevance','<>',1)->get();
-                foreach ($meanings as $meaning) {
-                    $checked_words[$s_id][$word_count][$meaning->meaning_id] =
-                            [(string)$word, $meaning->relevance];
-                }
+                $checked_words[$s_id][$word_count] = 
+                    Word::checkedMeaningRelevances($this->id, 
+                            (int)$word->attributes()->id, (string)$word);                
                 $word_count++;
             }
         }
@@ -766,18 +768,19 @@ var_dump($meanings);
         $left_words = [];
         foreach ($sent_words as $word) {
             $w_id = (int)$word->attributes()->id;
-            $word_for_DB = Grammatic::changeLetters((string)$word,$this->lang_id);
+            $word_for_search = Grammatic::changeLetters((string)$word,$this->lang_id);
 
-            list($sxe, $word_for_DB) = $this->searchToMerge($sxe, $w_id, $word_for_DB, $left_words);
+            list($sxe, $word_for_search) = $this->searchToMerge($sxe, $w_id, $word_for_search, $left_words);
             
-            $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_DB]);
-            foreach (Word::getMeaningsByWord($word_for_DB) as $meaning) {
+            $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_search]);
+            $word_obj->setMeanings($checked_sent_words[$word_count], $this->lang_id);
+/*            foreach (Word::getMeaningsByWord($word_for_search, $this->lang_id) as $meaning) {
                 $meaning_id = $meaning->id;
                 $relevance = isset($checked_sent_words[$word_count][$meaning_id][0]) && $checked_sent_words[$word_count][$meaning_id][0] == $word 
                            ? $relevance = $checked_sent_words[$word_count][$meaning_id][1] : 1;
                 $this->addMeaning($meaning_id, $s_id, $word_obj->id, $w_id, $relevance);
-            }
-            $left_words[$w_id] = $word_for_DB;
+            }*/
+            $left_words[$w_id] = $word_for_search;
             $word_count++;
         }
 //dd($sent_words);        

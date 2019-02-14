@@ -671,7 +671,7 @@ class Grammatic
 
     public static function toSearchForm($word) {
         $word = str_replace('’','',$word);
-//        $word = mb_strtolower($word);
+        $word = mb_strtolower($word);
         return $word;
     }
 

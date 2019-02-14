@@ -184,7 +184,7 @@ class LemmaController extends Controller
             return;
         }
 
-        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
+        $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
         $dialect_values = Dialect::getList($lemma->lang_id); //['NULL'=>'']+
         $meaning_values = Meaning::getList($lemma_id);
         

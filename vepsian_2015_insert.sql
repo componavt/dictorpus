@@ -867,5 +867,8 @@ UPDATE lemma_wordform set dialect_id=43 where lemma_id=2306;
 select count(*) from words where word <> lower(word) collate utf8_bin; --94549
 alter table words add checked tinyint(1) not null default 0;
 
+update words set checked=0;
+
 update words set word=lower(word);
-update wordforms set wordform=lower(word);
+update wordforms set wordform_for_search=lower(wordform_for_search);
+update lemmas set lemma_for_search=lower(lemma_for_search);

@@ -25,7 +25,8 @@ class WordController extends Controller
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
-                         ['only' => ['create','store','edit','update','destroy']]);
+                         ['only' => ['create','store','edit','update','destroy',
+                                     'updateMeaningLinks']]);
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
@@ -85,18 +86,27 @@ class WordController extends Controller
         return view('corpus.word.freq_dict',
                 compact('lang_values', 'words', 'args_by_get', 'url_args'));
     }
-/*    
+    
     public function updateMeaningLinks() {
         $is_all_checked = false;
         while (!$is_all_checked) {
-            $words = Word::where('checked',0)->first();
+            $word = Word::where('checked',0)
+                    ->where('text_id',1)->first();
+//dd($word);            
             if ($word) {
-                $meanings
+                // save old checked links
+                $checked_relevances =  Word::checkedMeaningRelevances(
+                        $word->text_id, $word->w_id, $word->word);  
+                // delete all links
+                DB::statement("DELETE FROM meaning_text WHERE text_id=".$word->text_id." and w_id=".$word->w_id);
+                // search new links
+                $word->setMeanings($checked_relevances);
                 $word->checked=1;
                 $word->save();   
             } else {
                 $is_all_checked = true;
             }
         }
-    }*/
+        print 'done';
+    }
 }
