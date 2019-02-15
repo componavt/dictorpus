@@ -9,6 +9,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
+use App\Library\Grammatic;
+
 //use App\Models\Dict\Gramset;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lemma;
@@ -61,7 +63,7 @@ class WordformController extends Controller
         $wordforms = Wordform::orderBy('wordform');
         
         if ($this->url_args['search_wordform']) {
-            $wordforms = $wordforms->where('wordform','like', $this->url_args['search_wordform']);
+            $wordforms = $wordforms->where('wordform_for_search','like', Grammatic::toSearchForm($this->url_args['search_wordform']));
         } 
 
         $search_lang = $this->url_args['search_lang'];

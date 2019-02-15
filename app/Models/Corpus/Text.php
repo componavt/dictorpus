@@ -279,7 +279,8 @@ class Text extends Model
         return $texts->whereIn('id',function($query) use ($word){
                                 $query->select('text_id')
                                 ->from('words')
-                                ->where('word','like', $word);
+//                                ->where('word','like', $word);
+                                ->where('word', 'like', Grammatic::toSearchForm($word));
                             });
     }
 

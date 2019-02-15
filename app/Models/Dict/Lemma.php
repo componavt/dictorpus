@@ -974,7 +974,7 @@ class Lemma extends Model
         return $lemmas->whereIn('wordform_id',function($query) use ($wordform){
                             $query->select('id')
                             ->from('wordforms')
-                            ->where('wordform','like', $wordform);
+                            ->where('wordform_for_search','like', Grammatic::toSearchForm($wordform));
                         });
     }
     
@@ -989,7 +989,8 @@ class Lemma extends Model
         if (!$lemma) {
             return $lemmas;
         }
-        return $lemmas->where('lemma','like',$lemma);
+//        return $lemmas->where('lemma','like',$lemma);
+        return $lemmas->where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma));
     }
     
     public static function searchByLang($lemmas, $lang) {

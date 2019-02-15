@@ -277,8 +277,8 @@ class Word extends Model
         $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word')";
         $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
         $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$lang_id
-                           ." and (lemma_for_search like '$word' or id in $lemma_q))")
-                           ->get();    
+                            ." and (lemma_for_search like '$word' or id in $lemma_q))")
+                  ->get();    
         return $meanings;
     }
     

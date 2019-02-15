@@ -677,7 +677,7 @@ class Grammatic
 
     public static function toRightForm($word) {
         $word = trim($word);
-        $word = preg_replace("/['`]/", "’", $word);
+        $word = preg_replace("/['´`]+/", "’", $word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         return $word;
     }

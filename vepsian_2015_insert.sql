@@ -872,3 +872,7 @@ update words set checked=0;
 update words set word=lower(word);
 update wordforms set wordform_for_search=lower(wordform_for_search);
 update lemmas set lemma_for_search=lower(lemma_for_search);
+
+alter table lemmas change `lemma_for_search` `lemma_for_search` varchar(100) collate utf8_bin NOT NULL;
+alter table wordforms change `wordform_for_search` `wordform_for_search` varchar(100) collate utf8_bin NOT NULL;
+alter table words change `word` `word` varchar(100) collate utf8_bin NOT NULL;
