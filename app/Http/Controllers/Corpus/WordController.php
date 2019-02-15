@@ -91,7 +91,8 @@ class WordController extends Controller
         $is_all_checked = false;
         while (!$is_all_checked) {
             $word = Word::where('checked',0)
-                    ->where('text_id',1)->first();
+                    //->where('text_id',1)
+                    ->first();
 //dd($word);            
             if ($word) {
                 // save old checked links
