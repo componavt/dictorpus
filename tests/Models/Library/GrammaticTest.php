@@ -193,148 +193,6 @@ class GrammaticTest extends TestCase
        
     // ------------------------------------------------------wordformsByTemplate
     
-    public function testWordformsByTemplateIncorrectLang() {
-        $lang_id = 3;
-        $pos_id = 0;
-        $dialect_id=47;
-        $template = "ativo, ativo, ativo, ativu, ativo, ativo";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-        
-        $expected = [$template, false, $template, NULL];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testWordformsByTemplateKarelianIncorrectPOS() {
-        $lang_id = 4;
-        $pos_id = 3; // conjunction
-        $dialect_id=47;
-        $template = "ativo, ativo, ativo, ativu, ativo, ativo";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-        
-        $expected = [$template, false, $template, NULL];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testWordformsByTemplateVepsIncorrectPOS() {
-        $lang_id = 1; // veps
-        $pos_id = 3; // conjunction
-        $dialect_id=43; // New written Veps
-        $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-        
-        $expected = [$template, false, $template, NULL];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testWordformsByTemplateVepsIncorrectTemplate() {
-        $lang_id = 1; // veps
-        $pos_id = 3; // conjunction
-        $dialect_id=43; // New written Veps
-        $template = "{ativo, ativo, ativo, ativu, ativo}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-        
-        $expected = [$template, false, $template, NULL];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testWordformsByTemplateWithoutTemplate() {
-        $lang_id = 4;
-        $pos_id = 5;
-        $dialect_id=47;
-        $template = "ativo, ativo, ativo, ativu, ativo, ativo";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-        
-        $expected = [$template, false, $template, NULL];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testWordformsByTemplateIncorrectNumberOfStems() {
-        $lang_id = 4;
-        $pos_id = 5;
-        $dialect_id=47;
-        $template = "{ativo, ativo, ativo, ativu, ativo}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-        
-        $expected = ['ativo', false, $template, NULL];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testWordformsByTemplateTulla() {
-        $lang_id = 4;
-        $pos_id = 11;
-        $dialect_id=47;
-        $template = "{tulla, tule, tule, tuli, tuli, tul, tulla, tuld}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-//dd($result);        
-        $lemma_id = 21337; //tulla 
-        $lemma = Lemma::find($lemma_id); 
-
-        $expected = $lemma->getWordformsForTest($dialect_id);
-//dd($result);        
-        $this->assertEquals( $expected, $result[1]);        
-    }
-    
-    public function testWordformsByTemplateVeps() {
-        $lang_id = 1;
-        $pos_id = 5; // proper noun
-        $dialect_id=43;
-        $template = "{{vep-decl-stems|aba|i|jon|jod|joid}}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-//dd($result);        
-        $lemma_id = 21324; // abai 
-        $lemma = Lemma::find($lemma_id); 
-
-        $expected = $lemma->getWordformsForTest($dialect_id);
-//dd($result);        
-        $this->assertEquals( $expected, $result[1]);        
-    }
-    
-    public function testWordformsByTemplateVepsSg() {
-        $lang_id = 1;
-        $pos_id = 14; // proper noun
-        $dialect_id=43;
-        $template = "{{vep-decl-stems|n=sg|Amerik||an|ad}}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-//dd($result);        
-        $lemma_id = 21531; //Amerik 
-        $lemma = Lemma::find($lemma_id); 
-
-        $expected = $lemma->getWordformsForTest($dialect_id);
-//dd($result);        
-        $this->assertEquals( $expected, $result[1]);        
-    }
-    
-    public function testWordformsByTemplateVepsPl() {
-        $lang_id = 1;
-        $pos_id = 14; // proper noun
-        $dialect_id=43;
-        $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-//dd($result);        
-        $lemma_id = 21530; //Alamad 
-        $lemma = Lemma::find($lemma_id); 
-
-        $expected = $lemma->getWordformsForTest($dialect_id);
-//dd($result);        
-        $this->assertEquals( $expected, $result[1]);        
-    }
-    
-/*    
-    public function testWordformsByTemplatePieni() {
-        $lang_id = 4;
-        $pos_id = 1; //adjective
-        $dialect_id=47;
-        $template = "{pieni, piene, piene, piendä, pieni, pieni}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-//dd($result);        
-        $lemma_id = 21360; //pieni 
-        $lemma = Lemma::find($lemma_id); 
-        $dialect_id=46;
-        $expected = $lemma->getWordformsForTest($dialect_id);
-//dd($result);        
-        $this->assertEquals( $expected, $result[1]);        
-    }
-*/    
     public function testNegativeVerbForInd1Sing() {
         $lang_id = 4;
         $gramset_id = 70; // индикатив, презенс, 1 л., ед. ч., отриц
@@ -555,4 +413,178 @@ class GrammaticTest extends TestCase
         $expected = [['Alamad', '', '', '', 'Alamai', ''], 'pl'];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testWordformsByTemplateIncorrectLang() {
+        $lang_id = 3;
+        $pos_id = 0;
+        $dialect_id=47;
+        $template = "ativo, ativo, ativo, ativu, ativo, ativo";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = [$template, false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateKarelianIncorrectPOS() {
+        $lang_id = 4;
+        $pos_id = 3; // conjunction
+        $dialect_id=47;
+        $template = "ativo, ativo, ativo, ativu, ativo, ativo";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = [$template, false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateVepsIncorrectPOS() {
+        $lang_id = 1; // veps
+        $pos_id = 3; // conjunction
+        $dialect_id=43; // New written Veps
+        $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = [$template, false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateVepsIncorrectTemplate() {
+        $lang_id = 1; // veps
+        $pos_id = 3; // conjunction
+        $dialect_id=43; // New written Veps
+        $template = "{ativo, ativo, ativo, ativu, ativo}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = [$template, false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateWithoutTemplate() {
+        $lang_id = 4;
+        $pos_id = 5;
+        $dialect_id=47;
+        $template = "ativo, ativo, ativo, ativu, ativo, ativo";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = [$template, false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateIncorrectNumberOfStems() {
+        $lang_id = 4;
+        $pos_id = 5;
+        $dialect_id=47;
+        $template = "{ativo, ativo, ativo, ativu, ativo}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+        
+        $expected = ['ativo', false, $template, NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsByTemplateTulla() {
+        $lang_id = 4;
+        $pos_id = 11;
+        $dialect_id=47;
+        $template = "{tulla, tule, tule, tuli, tuli, tul, tulla, tuld}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21337; //tulla 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplateVeps() {
+        $lang_id = 1;
+        $pos_id = 5; // proper noun
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|aba|i|jon|jod|joid}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21324; // abai 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplateVepsSg() {
+        $lang_id = 1;
+        $pos_id = 14; // proper noun
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|n=sg|Amerik||an|ad}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21531; //Amerik 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplateVepsPl() {
+        $lang_id = 1;
+        $pos_id = 14; // proper noun
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21530; //Alamad 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+/*    
+    public function testWordformsByTemplatePieni() {
+        $lang_id = 4;
+        $pos_id = 1; //adjective
+        $dialect_id=47;
+        $template = "{pieni, piene, piene, piendä, pieni, pieni}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21360; //pieni 
+        $lemma = Lemma::find($lemma_id); 
+        $dialect_id=46;
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+*/    
+    
+    public function testWordformsByTemplateVepsVerbVoikta() {
+        $lang_id = 1;
+        $pos_id = 11; // verb
+        $dialect_id=43;
+        $template = "{{vep-conj-stems|voik|ta|ab|i}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 82; //voikta
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplateVepsVerbNullDialect() {
+        $lang_id = 1;
+        $pos_id = 11; // verb
+        $dialect_id=null;
+        $template = "{{vep-conj-stems|töndu|da|b|i}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 1540; //tönduda
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
 }
