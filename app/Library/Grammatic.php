@@ -219,11 +219,11 @@ class Grammatic
                 list($stems, $name_num) = self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id);
                 return [$stems, $name_num, $regs[1], $regs[2]];
             } elseif ($pos_id == PartOfSpeech::getVerbID() && 
-                preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u',$template, $regs)) {
+                preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs)) {
 //dd($regs);                
                 return [self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id), null, $regs[1], $regs[2]];
             }
-                return [null, $name_num];
+                return [null, $name_num, null, null];
         } else {
             $stems = preg_split('/,/',$template);
             for ($i=0; $i<sizeof($stems); $i++) {
