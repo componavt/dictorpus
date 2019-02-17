@@ -216,10 +216,12 @@ class Grammatic
         if ($lang_id == 1) {
             if (in_array($pos_id, PartOfSpeech::getNameIDs()) && 
                 preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs)) {
-                return self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id);
+                list($stems, $name_num) = self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id);
+                return [$stems, $name_num, $regs[1], $regs[2]];
             } elseif ($pos_id == PartOfSpeech::getVerbID() && 
                 preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u',$template, $regs)) {
-                return [self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id), $name_num];
+//dd($regs);                
+                return [self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id), null, $regs[1], $regs[2]];
             }
                 return [null, $name_num];
         } else {
@@ -229,7 +231,7 @@ class Grammatic
             }
         }
         
-        return [$stems, $name_num];
+        return [$stems, $name_num, null, null];
     }
 
     public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id) {
@@ -244,7 +246,7 @@ class Grammatic
             return [$template, false, $template, NULL];
         }
         
-        list($stems, $name_num) = self::stemsFromTemplate($list[1], $lang_id, $pos_id);
+        list($stems, $name_num, $max_stem, $inflexion) = self::stemsFromTemplate($list[1], $lang_id, $pos_id);
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
         if (!isset($stems[0])) {
             return [$template, false, $template, NULL];
@@ -269,8 +271,10 @@ class Grammatic
                 $wordforms[$gramset_id] = self::nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
             }
         }
-        list($max_stem, $inflexion) = self::maxStem($stems);
-        return [$stems[0], $wordforms, $max_stem, $inflexion];
+        if (!$max_stem) {
+            list($max_stem, $inflexion) = self::maxStem($stems);
+        }
+        return [$max_stem.$inflexion, $wordforms, $max_stem, $inflexion];
     }
     
     public static function nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num) {
