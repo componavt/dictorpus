@@ -82,8 +82,9 @@
         
         @if ($text->text)
         <?php   if ($text->text_xml) :
-                    $markup_text = $text->setLemmaLink($text->text_xml);
-                    $markup_text = str_replace("<s id=\"","<s class=\"sentence\" id=\"text_s",$markup_text);
+                    $markup_text = $text->setLemmaLink($text->text_xml, 
+                                            isset($url_args['search_word'])? $url_args['search_word']: '', 
+                                            isset($url_args['search_sentence'])? $url_args['search_sentence']: '');
                 else :
                     $markup_text = nl2br($text->text);
                 endif; 

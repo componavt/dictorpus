@@ -30,7 +30,7 @@ if (isset($w[0])) {
     <br><i>{!! $sentence['trans_s'] !!}</i>
 @endif
 @if ($sentence['text'])
-(<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id) }}" 
+(<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id. '?search_sentence='.$sentence['s_id']) }}" 
     title="{{$place_title}}">
     {{$sentence['text']->title}}</a>)
     @if (isset($is_edit) && User::checkAccess('dict.edit'))

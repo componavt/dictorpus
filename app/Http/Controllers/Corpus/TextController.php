@@ -57,6 +57,7 @@ class TextController extends Controller
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
                     'search_recorder' => $request->input('search_recorder'),
+                    'search_sentence' => (int)$request->input('search_sentence'),
                     'search_title'    => $request->input('search_title'),
                     'search_word'     => $request->input('search_word'),
                     'search_text'     => $request->input('search_text'),

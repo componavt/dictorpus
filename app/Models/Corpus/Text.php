@@ -904,10 +904,11 @@ var_dump($meanings);
     /**
      * Gets markup text with links from words to related lemmas
 
-     * @param $markup_text String
+     * @param String $markup_text 
+     * @param String $search_word 
      * @return String markup text
      **/
-    public function setLemmaLink($markup_text){
+    public function setLemmaLink($markup_text, $search_word=null, $search_sentence=null){
         $text_id = (int)$this->id;
         list($sxe,$error_message) = self::toXML($markup_text,'');
         if ($error_message) {
@@ -916,7 +917,7 @@ var_dump($meanings);
         $sentences = $sxe->xpath('//s');
         foreach ($sentences as $sentence) {
             $sentence_id = (int)$sentence->attributes()->id;
-//dd($sentence);       
+//dd($sentence);     
             foreach ($sentence->children() as $word) {
                 $word_id = (int)$word->attributes()->id;
                 if (!$word_id) {
@@ -973,13 +974,23 @@ var_dump($meanings);
                         $button_edit->addAttribute('class','glyphicon glyphicon-pencil');
                     }
                 } elseif (User::checkAccess('corpus.edit')) {
-                    $word_class .= 'lemma-linked call-add-wordform';
+                    $word_class = 'lemma-linked call-add-wordform';
+                }
+                
+                if ($search_word && (string)$word == $search_word) {
+                    $word_class .= ' word-marked';
                 }
                 
                 if ($word_class) {
                     $word->addAttribute('class',$word_class);
                 }
             }
+            $sentence_class = "sentence";
+            if ($search_sentence && $search_sentence==$sentence_id) {
+                $sentence_class .= " word-marked";
+            }
+            $sentence->addAttribute('class',$sentence_class);
+            $sentence->attributes()->id = 'text_s'.$sentence_id;
         }
         
         return $sxe->asXML();

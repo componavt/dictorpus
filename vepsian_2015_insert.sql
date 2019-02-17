@@ -876,3 +876,6 @@ update lemmas set lemma_for_search=lower(lemma_for_search);
 alter table lemmas change `lemma_for_search` `lemma_for_search` varchar(100) collate utf8_bin NOT NULL;
 alter table wordforms change `wordform_for_search` `wordform_for_search` varchar(100) collate utf8_bin NOT NULL;
 alter table words change `word` `word` varchar(100) collate utf8_bin NOT NULL;
+
+select count(*) from words where text_id in (select id from texts where lang_id=1); --396680
+select count(*) from words where text_id in (select id from texts where lang_id=1) and id in (select word_id from meaning_text); --274839 -- 69%
