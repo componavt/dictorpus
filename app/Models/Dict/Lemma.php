@@ -140,9 +140,15 @@ class Lemma extends Model
             foreach($wordform_coll as $wordform) {
                 $w = $wordform->wordform;
                 if ($with_search_link) { 
-                    $word_count = Word::where('word', 'like',$wordform->wordform_for_search)->count();
+                    $lang_id = $this->lang_id;
+                    $word_count = Word::where('word', 'like',$wordform->wordform_for_search)
+                                ->whereIn('text_id', function ($query) use ($lang_id) {
+                                    $query->select('id')->from('texts')
+                                          ->where('lang_id', $lang_id);
+                                })
+                                ->count();
                     if ($word_count) {
-                        $w = '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?lang_id='.$this->lang_id
+                        $w = '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?search_lang='.$lang_id
                            . '&search_word='.$wordform->wordform_for_search). '" title="'.$word_count.'">'.$w.'</a>';
                     }
                 }
