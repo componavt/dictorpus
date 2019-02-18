@@ -83,20 +83,20 @@ class Grammatic
         if ($name_num == 'sg') {
             $base = $regs[2];
             $stems[0] = $base.$regs[3];
-            $nom_sg_suff = $regs[3];
+            $base_suff = $nom_sg_suff = $regs[3];
             $gen_sg_suff = $regs[4];
             $par_sg_suff = $regs[5];
             $par_pl_suff = '';
         } elseif ($name_num == 'pl') {
             $base = $regs[2];
-            $nom_pl_suff = $regs[3];
+            $base_suff = $nom_pl_suff = $regs[3];
             $stems[0] = $base.$nom_pl_suff;
             $nom_sg_suff = $par_sg_suff = '';
             $par_pl_suff = $regs[4];
         } else {
             $base = $regs[1];
             $stems[0] = $base.$regs[2];
-            $nom_sg_suff = $regs[2];
+            $base_suff = $nom_sg_suff = $regs[2];
             $gen_sg_suff = $regs[3];
             $par_sg_suff = $regs[4];
             $par_pl_suff = $regs[5];
@@ -120,7 +120,7 @@ class Grammatic
             $stems[3] = $base. $par_sg_suff;
         }
         $stems[2] = $stems[5] = '';
-        return [$stems, $name_num];
+        return [$stems, $name_num, $base, $base_suff];
     }
     
     public static function rightConsonant($d, $l) {
@@ -216,8 +216,7 @@ class Grammatic
         if ($lang_id == 1) {
             if (in_array($pos_id, PartOfSpeech::getNameIDs()) && 
                 preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs)) {
-                list($stems, $name_num) = self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id);
-                return [$stems, $name_num, $regs[1], $regs[2]];
+                return self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id);
             } elseif ($pos_id == PartOfSpeech::getVerbID() && 
                 preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs)) {
 //dd($regs);                
