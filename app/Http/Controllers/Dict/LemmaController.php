@@ -225,6 +225,8 @@ class LemmaController extends Controller
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
         $lemma->save();
 
+        LemmaFeature::store($lemma->id, $request);
+        
         $lemma->createDictionaryWordforms($wordforms, $request->plur_tan);
         $lemma->storePhrase($request->phrase);
         $lemma->storeReverseLemma($stem, $inflexion);
