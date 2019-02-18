@@ -6,6 +6,24 @@
                     <th class="warning">{{trans('dict.wordform_field_comments')}}</th>
                     <th>{{$dialect_name}}</th>
                 </tr>
+                @foreach ($lemma->wordformsWithoutGramsets() as $key=>$wordform)
+                <tr>
+                    <td>
+                        @include('widgets.form.formitem._select', 
+                                ['name' => 'empty_wordforms['.$key.'][gramset]', 
+                                 'values' =>$gramset_values]) 
+                    </td>
+                    <td>@include('widgets.form.formitem._text', 
+                           ['name' => 'empty_wordforms['.$key.'][wordform]', 
+                            'special_symbol' => true,
+                            'value'=> $wordform->wordform])</td>
+                    <td>
+                        @include('widgets.form.formitem._select', 
+                                ['name' => 'empty_wordforms['.$key.'][dialect]', 
+                                 'values' =>$dialect_values]) 
+                    </td>
+               </tr>
+                @endforeach
                 @if ($lemma->wordformsWithAllGramsets($dialect_id))
                     @foreach ($lemma->wordformsWithAllGramsets($dialect_id) as $category_name => $category_gramsets)
                     <tr>
@@ -30,24 +48,6 @@
                         @endforeach
                     @endforeach
                 @endif
-                @foreach ($lemma->wordformsWithoutGramsets() as $key=>$wordform)
-                <tr>
-                    <td>
-                        @include('widgets.form.formitem._select', 
-                                ['name' => 'empty_wordforms['.$key.'][gramset]', 
-                                 'values' =>$gramset_values]) 
-                    </td>
-                    <td>@include('widgets.form.formitem._text', 
-                           ['name' => 'empty_wordforms['.$key.'][wordform]', 
-                            'special_symbol' => true,
-                            'value'=> $wordform->wordform])</td>
-                    <td>
-                        @include('widgets.form.formitem._select', 
-                                ['name' => 'empty_wordforms['.$key.'][dialect]', 
-                                 'values' =>$dialect_values]) 
-                    </td>
-               </tr>
-                @endforeach
             </table>
         </div>
 
