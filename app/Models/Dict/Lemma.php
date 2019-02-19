@@ -970,6 +970,7 @@ class Lemma extends Model
                          ->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
                                 }]);
+//dd($lemmas->toSql());                                
         return $lemmas;
     }
     
@@ -996,7 +997,11 @@ class Lemma extends Model
             return $lemmas;
         }
 //        return $lemmas->where('lemma','like',$lemma);
-        return $lemmas->where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma));
+        return $lemmas->where(function ($query) use ($lemma) {
+                            $query -> where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma))
+                                   -> orWhere('lemma_for_search', 'like', $lemma)
+                                   -> where('lemma_for_search', '');
+                });
     }
     
     public static function searchByLang($lemmas, $lang) {
