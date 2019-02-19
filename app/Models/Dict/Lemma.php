@@ -778,6 +778,7 @@ class Lemma extends Model
     
     public static function parseLemmaField($data) {
 //dd($data);        
+        $inflexion = NULL;
         $lemma = Grammatic::toRightForm($data['lemma']);
         $wordforms = '';//trim($data['wordforms']); убрано поле из формы леммы
 //dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);        
@@ -786,7 +787,6 @@ class Lemma extends Model
         if ($gramset_wordforms) {
             return [$lemma, $wordforms, $stem, $inflexion, $gramset_wordforms];
         }
-        $inflexion = NULL;
         $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
         if ($parsing) {
             $lemma = $regs[1];

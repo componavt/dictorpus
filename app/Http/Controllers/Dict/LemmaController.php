@@ -226,11 +226,11 @@ class LemmaController extends Controller
         $lemma->save();
 
         LemmaFeature::store($lemma->id, $request);
-        
-        $lemma->createDictionaryWordforms($wordforms, $request->plur_tan);
         $lemma->storePhrase($request->phrase);
         $lemma->storeReverseLemma($stem, $inflexion);
+        
         $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
+        $lemma->createDictionaryWordforms($wordforms, $request->plur_tan, $request->dialect_id);
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -562,14 +562,14 @@ class LemmaController extends Controller
         $lemma->save();
         
         LemmaFeature::store($lemma->id, $request);
-        
-        $lemma->createDictionaryWordforms($wordforms_list);    
         $lemma->storePhrase($request->phrase);
         $lemma->storeReverseLemma($stem, $inflexion);
+        
+        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
+        $lemma->createDictionaryWordforms($wordforms_list, $request->plur_tan, $request->dialect_id);    
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);
-        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
 
         // new meanings, i.e. meanings created by user in form now
         Meaning::storeLemmaMeanings($request->new_meanings, $id);
