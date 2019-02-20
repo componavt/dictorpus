@@ -35,10 +35,12 @@
         </h2>
 
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
+        @if ($lemma->pos)
         <p>
             <b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}  
             @include('dict.lemma.show.features')
         </p>
+        @endif
         @if ($lemma->phraseLemmasListWithLink())
         <p>
             <b>{{trans('dict.phrase_lemmas')}}:</b> {!!$lemma->phraseLemmasListWithLink()!!}
