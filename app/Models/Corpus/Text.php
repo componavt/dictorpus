@@ -284,14 +284,6 @@ class Text extends Model
                             });
     }
 
-    public function processTextBeforeSaving($text) {
-        $text = str_replace("&sub;b&sup;", "<b>", $text);
-        $text = str_replace("&sub;/b&sup;", "</b>", $text);
-        $text = str_replace("&sub;sup&sup;", "<sup>", $text);
-        $text = str_replace("&sub;/sup&sup;", "</sup>", $text);
-        return $text;
-    }
-
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
         
@@ -299,8 +291,9 @@ class Text extends Model
         $old_text = $text->text;
 //dd($request->text);
 
-        $text->fill($request->only('corpus_id','lang_id','title','text_xml'));
-        $text->text = $text->processTextBeforeSaving($request->text);
+        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
+//        $text->fill($request->only('corpus_id','lang_id','title','text_xml'));
+//        $text->text = $text->processTextBeforeSaving($request->text);
 //dd($text->text);
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();
@@ -570,11 +563,23 @@ class Text extends Model
     public static function process($str):String{
         $str = str_replace(">","&sup;",$str);
         $str = str_replace("<","&sub;",$str);
+        $str = str_replace("&sub;b&sup;", "<b>", $str);
+        $str = str_replace("&sub;/b&sup;", "</b>", $str);
+        $str = str_replace("&sub;sup&sup;", "<sup>", $str);
+        $str = str_replace("&sub;/sup&sup;", "</sup>", $str);
 //        $str = str_replace(">","&gt;",$str);
 //        $str = str_replace("<","&lt;",$str);
         return $str;
     }
     
+    public function processTextBeforeSaving($text) {
+        $text = str_replace("&sub;b&sup;", "<b>", $text);
+        $text = str_replace("&sub;/b&sup;", "</b>", $text);
+        $text = str_replace("&sub;sup&sup;", "<sup>", $text);
+        $text = str_replace("&sub;/sup&sup;", "</sup>", $text);
+        return $text;
+    }
+
     /**
      * Gets a markup text with sentences
      *
