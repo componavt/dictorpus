@@ -879,3 +879,8 @@ alter table words change `word` `word` varchar(100) collate utf8_bin NOT NULL;
 
 select count(*) from words where text_id in (select id from texts where lang_id=1); --396680
 select count(*) from words where text_id in (select id from texts where lang_id=1) and id in (select word_id from meaning_text); --274839 -- 69%
+
+select count(*) from lemmas where lemma_for_search='';
+update lemmas set lemma_for_search=lower(replace(lemma, '’', '')) where lemma_for_search='';
+select count(*) from wordforms where wordform_for_search='';
+update wordforms set wordform_for_search=lower(replace(wordform, '’', '')) where wordform_for_search='';
