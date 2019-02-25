@@ -763,7 +763,7 @@ class Lemma extends Model
         
         $wordform_list[3] = $this->lemma;
         
-        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $plural);
+        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $plural, $this->lang_id);
         if ($gramsets == NULL) { return; }
         
         $dialect = $this->firstDialect();
