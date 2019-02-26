@@ -74,8 +74,8 @@ class Grammatic
      * @param Int $pos_id
      * @return Array
      */
-    public static function nameStemsFromVepsTemplate($regs, $lang_id, $pos_id) {
-        $name_num = null;
+    public static function nameStemsFromVepsTemplate($regs, $lang_id, $pos_id, $name_num = null) {
+//dd($regs, $name_num);        
         $stems = [];
         if (preg_match("/^n=(.+)$/", $regs[1], $regs1)) {
             $name_num = $regs1[1];
@@ -85,7 +85,7 @@ class Grammatic
             $stems[0] = $base.$regs[3];
             $base_suff = $nom_sg_suff = $regs[3];
             $gen_sg_suff = $regs[4];
-            $par_sg_suff = $regs[5];
+            $par_sg_suff = isset($regs[5]) ? $regs[5] : '';
             $par_pl_suff = '';
         } elseif ($name_num == 'pl') {
             $base = $regs[2];
@@ -99,7 +99,17 @@ class Grammatic
             $base_suff = $nom_sg_suff = $regs[2];
             $gen_sg_suff = $regs[3];
             $par_sg_suff = $regs[4];
-            $par_pl_suff = $regs[5];
+            $par_pl_suff = isset($regs[5]) ? $regs[5] : '';
+        }
+        
+        if ($name_num=='pl') {
+            $stems[1] = $stems[3] = '';
+        } else {
+            if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
+                return [null, $name_num];
+            }
+            $stems[1] = $base. $regs1[1];
+            $stems[3] = $base. $par_sg_suff;
         }
 
         if ($name_num=='sg') {
@@ -109,15 +119,6 @@ class Grammatic
                 return [null, $name_num];
             }
             $stems[4] = $base. $regs1[1];
-        }
-        if ($name_num=='pl') {
-            $stems[1] = $stems[3] = '';
-        } else {
-            if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
-                return [null, $name_num];
-            }
-            $stems[1] = $base. $regs1[1];
-            $stems[3] = $base. $par_sg_suff;
         }
         $stems[2] = $stems[5] = '';
         return [$stems, $name_num, $base, $base_suff];
@@ -154,6 +155,7 @@ class Grammatic
      * @return array
      */
     public static function verbStemsFromVepsTemplate($regs, $lang_id, $pos_id) {
+//dd($regs);        
         $stems = [];
 //dd(sizeof($regs));        
         if (sizeof($regs)!=5) {
@@ -211,18 +213,19 @@ class Grammatic
      * @param Int $pos_id
      * @return Array
      */
-    public static function stemsFromTemplate($template, $lang_id, $pos_id) {
-        $name_num = null;
+    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null) {
         if ($lang_id == 1) {
-            if (in_array($pos_id, PartOfSpeech::getNameIDs()) && 
-                preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs)) {
-                return self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id);
+            if (in_array($pos_id, PartOfSpeech::getNameIDs()) &&
+                (preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
+                preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)[\;\,]?\s*-?([^\,\;]*)\)/", $template, $regs))) {                    
+                return self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id, $name_num);                
             } elseif ($pos_id == PartOfSpeech::getVerbID() && 
-                preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs)) {
-//dd($regs);                
+                (preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs) ||
+                preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {                    
+//dd($regs);         
                 return [self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id), null, $regs[1], $regs[2]];
             }
-                return [null, $name_num, null, null];
+            return [null, $name_num, null, null];
         } else {
             $stems = preg_split('/,/',$template);
             for ($i=0; $i<sizeof($stems); $i++) {
@@ -233,7 +236,7 @@ class Grammatic
         return [$stems, $name_num, null, null];
     }
 
-    public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id) {
+    public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id, $name_num=null) {
         if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
             return [$template, false, $template, NULL];
         }
@@ -241,11 +244,12 @@ class Grammatic
             return [$template, false, $template, NULL];
         }
         
-        if (!preg_match('/\{+([^\}]+)\}+/', $template, $list)) {
+        if (!preg_match('/\{+([^\}]+)\}+/', $template, $list) &&
+                !($lang_id==1 && preg_match("/^([^\s\(]+\s*\([^\,\;]+\,\s*[^\,\;]+[\;\,]?\s*[^\,\;]*\))/", $template, $list))) {
             return [$template, false, $template, NULL];
         }
         
-        list($stems, $name_num, $max_stem, $inflexion) = self::stemsFromTemplate($list[1], $lang_id, $pos_id);
+        list($stems, $name_num, $max_stem, $inflexion) = self::stemsFromTemplate($list[1], $lang_id, $pos_id, $name_num);
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
         if (!isset($stems[0])) {
             return [$template, false, $template, NULL];
