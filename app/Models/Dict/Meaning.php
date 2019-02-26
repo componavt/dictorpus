@@ -164,6 +164,26 @@ class Meaning extends Model
         return $sentences;
     }
     
+    public function remove() {
+        DB::table('meaning_relation')
+          ->where('meaning1_id',$this->id)->delete();
+        DB::table('meaning_relation')
+          ->where('meaning2_id',$this->id)->delete();
+        
+        DB::table('meaning_translation')
+          ->where('meaning1_id',$this->id)->delete();
+        DB::table('meaning_translation')
+          ->where('meaning2_id',$this->id)->delete();
+
+        DB::table('meaning_text')
+          ->where('meaning_id',$this->id)->delete();
+
+        foreach ($this->meaningTexts as $meaning_text) {
+            $meaning_text -> delete();
+        }
+        $this->delete();
+    }
+
     /**
      * Gets all meaning texts and returns string:
      * 

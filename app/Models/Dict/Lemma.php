@@ -282,7 +282,6 @@ class Lemma extends Model
     }
     
     public function phraseMeaning(){
-        $locale = LaravelLocalization::getCurrentLocale();  
         $interpretation = [];
         foreach ($this->meanings as $meaning_obj) {
             $interpretation[] = $meaning_obj->getMultilangMeaningTextsStringLocale();
@@ -331,20 +330,7 @@ class Lemma extends Model
         $meanings = $this->meanings;
 
         foreach ($meanings as $meaning) {
-            DB::table('meaning_relation')
-              ->where('meaning2_id',$meaning->id)->delete();
-
-            DB::table('meaning_translation')
-              ->where('meaning2_id',$meaning->id)->delete();
-
-            DB::table('meaning_text')
-              ->where('meaning_id',$meaning->id)->delete();
-
-            $meaning_texts = $meaning->meaningTexts;
-            foreach ($meaning_texts as $meaning_text) {
-                $meaning_text -> delete();
-            }
-            $meaning -> delete();
+            $meaning -> remove();
         }
 
         $this->delete();
