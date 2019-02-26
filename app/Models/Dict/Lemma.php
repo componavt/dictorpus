@@ -784,7 +784,7 @@ class Lemma extends Model
 //dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);    
         $name_num = isset($data['plur_tan']) && $data['plur_tan'] ? 'pl' : null;
         list($lemma, $gramset_wordforms, $stem, $inflexion) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
-        
+//dd($gramset_wordforms);        
         if ($gramset_wordforms) {
             return [$lemma, $wordforms, $stem, $inflexion, $gramset_wordforms];
         }

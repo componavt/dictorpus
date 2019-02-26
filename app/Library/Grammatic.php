@@ -155,6 +155,7 @@ class Grammatic
      * @return array
      */
     public static function verbStemsFromVepsTemplate($regs, $lang_id, $pos_id) {
+//dd($regs);        
         $stems = [];
 //dd(sizeof($regs));        
         if (sizeof($regs)!=5) {
@@ -213,16 +214,15 @@ class Grammatic
      * @return Array
      */
     public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null) {
-        $shab = "/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)[\;\,]\s*-?([^\,\;]*)\)/";
         if ($lang_id == 1) {
             if (in_array($pos_id, PartOfSpeech::getNameIDs()) &&
                 (preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
-                preg_match($shab, $template, $regs))) {                    
+                preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)[\;\,]?\s*-?([^\,\;]*)\)/", $template, $regs))) {                    
                 return self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id, $name_num);                
             } elseif ($pos_id == PartOfSpeech::getVerbID() && 
                 (preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs) ||
-                preg_match($shab, $template, $regs))) {                    
-//dd($regs);                
+                preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {                    
+//dd($regs);         
                 return [self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id), null, $regs[1], $regs[2]];
             }
             return [null, $name_num, null, null];
