@@ -884,3 +884,6 @@ select count(*) from lemmas where lemma_for_search='';
 update lemmas set lemma_for_search=lower(replace(lemma, '’', '')) where lemma_for_search='';
 select count(*) from wordforms where wordform_for_search='';
 update wordforms set wordform_for_search=lower(replace(wordform, '’', '')) where wordform_for_search='';
+
+update gram_categories set sequence_number=6 where id=1;
+update gram_categories set sequence_number=7 where id=2;

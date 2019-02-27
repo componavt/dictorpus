@@ -16,7 +16,7 @@
         @endif
         </p>
         
-        <?php $column_num = ceil(sizeof($grams)/3);
+        <?php $column_num = 4;
            $count = 1; ?>
         <div class="row">
         @foreach($grams as $name => $grams_list)
@@ -45,7 +45,7 @@
         </div>
         <div class="row">
             <?php endif; ?>
-            <?php $count ++; ?>
+            <?php $count++; ?>
         @endforeach
         </div>
 @stop
