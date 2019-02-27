@@ -114,8 +114,13 @@ class GramsetController extends Controller
      */
     public function create()
     {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
         $pos_values = PartOfSpeech::getGroupedList();
         $lang_values = Lang::getList();
+        
+        $gramset_category_values = GramsetCategory::getList();
         
         $grams = [];        
         foreach (GramCategory::all()->sortBy('sequence_number') as $gc) {         //   id is gram_category_id
@@ -123,13 +128,10 @@ class GramsetController extends Controller
                                     'grams' => [NULL=>''] + Gram::getList($gc->id)];
         }
 
-        return view('dict.gramset.create')
-                  ->with(['grams' => $grams,
-                          'lang_values'=>$lang_values,
-                          'pos_values'=>$pos_values,
-                          'args_by_get'    => $this->args_by_get,
-                          'url_args'       => $this->url_args,
-                         ]);
+        return view('dict.gramset.create',
+                  compact('grams', 'gramset_category_values',
+                          'lang_values', 'pos_values',
+                          'args_by_get', 'url_args'));
     }
 
     /**
