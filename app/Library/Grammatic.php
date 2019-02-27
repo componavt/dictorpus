@@ -18,18 +18,18 @@ class Grammatic
         if ($pos_id == PartOfSpeech::getVerbID()) {
             if ($lang_id == 1) {
             $gramsets = [26,  27,  28,  29,  30,  31, 295, 296, 
-/*                         70,  71,  72,  73,  78,  79, */
+                         70,  71,  72,  73,  78,  79, 
                          32,  33,  34,  35,  36,  37, 297, 298,
-/*                80,  81,  82,  83,  84,  85, 
-                         86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
+                         80,  81,  82,  83,  84,  85, 
+/*                         86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
                          98,  99, 100, 101, 102, 103, 104, 105, 107, 108, 106, 109,*/
                               51,  52,  53,  54,  55, 299, 300,
-/*                50,  74,       76,  77,  */
+                         50,  74,       76,  77, 
                          38,  39,  40,  41,  42,  43, 301,
                 /* conditional presence negative */
                          44,  45,  46,  47,  48,  49, 302,
-/*                116, 117, 118, 119, 120, 121,
-                        135, 125, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+                        116, 117, 118, 119, 120, 121,
+/*                        135, 125, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
                         146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157,
                         158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169,*/
                         170, 171, 172, 173, 174, 175, 176, 177,
@@ -82,11 +82,11 @@ class Grammatic
      *          4 => основа кондиционала, 
      *          5 => основа потенциала, 
      *          6 => d/t - предпоследняя буква инфинитива
-     *          7 => a/ä - последняя буква инфинитива
+     *          7 => a/ä - последняя буква инфинитива]
      * 
-     * @param type $regs
-     * @param type $lang_id
-     * @param type $pos_id
+     * @param Array $regs
+     * @param Int $lang_id
+     * @param Int $pos_id
      * @return array
      */
     public static function verbStemsFromVepsTemplate($regs, $lang_id, $pos_id) {
@@ -768,6 +768,16 @@ class Grammatic
         return '';
     }
 
+    /**
+     * stems = [0 => основа инфинитива, 
+     *          1 => основа презенса, 
+     *          2 => основа имперфекта,
+     *          3 => основа актив 2-го причастия
+     *          4 => основа кондиционала, 
+     *          5 => основа потенциала, 
+     *          6 => d/t - предпоследняя буква инфинитива
+     *          7 => a/ä - последняя буква инфинитива]
+     */
     public static function verbWordformVepsByStems($stems, $gramset_id, $lang_id) {
         $g = self::rightConsonant($stems[6], 'g');
         switch ($gramset_id) {
@@ -832,6 +842,8 @@ class Grammatic
                 return $stems[4].'ižit';
             case 43: // 64. кондиционал, презенс, 3 л., мн.ч., пол. 
                 return $stems[4]. 'ižiba';
+            case 301: // 150. кондиционал, презенс, коннегатив, ед.ч. 
+                return $stems[4]. 'iži';
                 
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
                 return $stems[3].'nuižin';
@@ -846,6 +858,8 @@ class Grammatic
                 return $stems[3].'nuižit';
             case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., пол. 
                 return $stems[3].'nuižiba';
+            case 302: // 152. кондиционал, имперфект, коннегатив, ед.ч. 
+                return $stems[3]. 'nuiži';
 
             case 170: // 131. I инфинитив 
                 return $stems[0]. $stems[6]. $stems[7];
@@ -872,140 +886,110 @@ class Grammatic
                 return '';
             case 181: // 143. пассив, 2-е причастие 
                 return $stems[0]. $stems[6]. 'ud';
-        }
-/*
+
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., отриц. 
-                return self::negativeForm(70, $lang_id). $stems[1];
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., отриц. 
-                return self::negativeForm(71, $lang_id). $stems[1];
             case 72: // 9. индикатив, презенс, 3 л., ед.ч., отриц. 
-                return self::negativeForm(72, $lang_id). $stems[1];
+                return self::negativeForm($gramset_id, $lang_id). $stems[1];
             case 73: //10. индикатив, презенс, 1 л., мн.ч., отриц. 
-                return self::negativeForm(73, $lang_id). $stems[1];
             case 78: // 11. индикатив, презенс, 2 л., мн.ч., отриц. 
-                return self::negativeForm(78, $lang_id). $stems[1];
             case 79: // 12. индикатив, презенс, 3 л., мн.ч., отриц. 
-                return self::negativeForm(79, $lang_id). $stems[6];
+                return self::negativeForm($gramset_id, $lang_id). $stems[0]. $g. 'oi';
 
-             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
-                return self::negativeForm(80, $lang_id). self::perfectForm($stems[5], $lang_id);
+            case 80: // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
-                return self::negativeForm(81, $lang_id). self::perfectForm($stems[5], $lang_id);
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., отриц. 
-                return self::negativeForm(82, $lang_id). self::perfectForm($stems[5], $lang_id);
+                return self::negativeForm($gramset_id, $lang_id). $stems[1]. 'nd';
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., отриц. 
-                return self::negativeForm(83, $lang_id). self::perfectForm($stems[5], $lang_id);
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., отриц. 
-                return self::negativeForm(84, $lang_id). self::perfectForm($stems[5], $lang_id);
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., отриц. 
-                return self::negativeForm(85, $lang_id). $stems[7]. self::garmVowel($stems[7],'u');
-
+                return self::negativeForm($gramset_id, $lang_id). $stems[3]. 'nugoi';
+/*
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., пол. 
-                return self::auxForm(86, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
-                return self::auxForm(87, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 88: // 27. индикатив, перфект, 3 л., ед.ч., пол. 
                 return self::auxForm(88, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 89: // 28. индикатив, перфект, 1 л., мн.ч., пол. 
-                return self::auxForm(89, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 90: // 29. индикатив, перфект, 2 л., мн.ч., пол. 
-                return self::auxForm(90, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 91: // 30. индикатив, перфект, 3 л., мн.ч., пол. 
                 return self::auxForm(91, $lang_id, $dialect_id). $stems[7]. self::garmVowel($stems[7],'u');
 
             case 92: // 31. индикатив, перфект, 1 л., ед.ч., отриц. 
-                return self::auxForm(92, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 93: // 32. индикатив, перфект, 2 л., ед.ч., отриц. 
-                return self::auxForm(93, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 94: // 33. индикатив, перфект, 3 л., ед.ч., отриц. 
                 return self::auxForm(94, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 95: // 34. индикатив, перфект, 1 л., мн.ч., отриц. 
-                return self::auxForm(95, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 96: // 35. индикатив, перфект, 2 л., мн.ч., отриц. 
-                return self::auxForm(96, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 97: // 36. индикатив, перфект, 3 л., мн.ч., отриц. 
                 return 'ei ole './/self::auxForm(97, $lang_id, $dialect_id). 
                        $stems[7]. self::garmVowel($stems[7],'u');
 
             case 98: // 37. индикатив, плюсквамперфект, 1 л., ед.ч., пол. 
-                return self::auxForm(98, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 99: // 38. индикатив, плюсквамперфект, 2 л., ед.ч., пол. 
-                return self::auxForm(99, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., пол. 
                 return self::auxForm(100, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 101: // 40. индикатив, плюсквамперфект, 1 л., мн.ч., пол. 
-                return self::auxForm(101, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 102: // 41. индикатив, плюсквамперфект, 2 л., мн.ч., пол. 
-                return self::auxForm(102, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., пол. 
                 return self::auxForm(103, $lang_id, $dialect_id). $stems[7]. self::garmVowel($stems[7],'u');
 
             case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., отриц. 
-                return self::auxForm(104, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., отриц. 
-                return self::auxForm(105, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 106: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., отриц. 
                 return self::auxForm(106, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 107: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., отриц. 
-                return self::auxForm(107, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 108: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., отриц. 
-                return self::auxForm(108, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id);
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., отриц. 
                 return 'ei oldu '. $stems[7]. self::garmVowel($stems[7],'u'); //self::auxForm(109, $lang_id, $dialect_id)
-
+*/
             case 50: // 54. императив, 2 л., ед.ч., отр. 
-                return self::negativeForm(50, $lang_id). self::imp3SingPolByStem($stems[5], $stems[0], $dialect_id);
             case 74: // 55. императив, 3 л., ед.ч., отр. 
-                return self::negativeForm(74, $lang_id). self::imp3SingPolByStem($stems[5], $stems[0], $dialect_id);
+                return self::negativeForm($gramset_id, $lang_id). $stems[1];
             case 76: // 57. императив, 2 л., мн.ч., отр. 
-                return self::negativeForm(76, $lang_id). self::imp2PlurPolByStem($stems[5], $stems[0], $dialect_id);
             case 77: // 58. императив, 3 л., мн.ч., отр. 
-                return self::negativeForm(77, $lang_id). self::imp3SingPolByStem($stems[5], $stems[0], $dialect_id);
+                return self::negativeForm($gramset_id, $lang_id). $stems[0]. $g. 'oi';
 
-            кондиционал, презенс, отриц
+            case 303: // 151. кондиционал, презенс, коннегатив, мн.ч. 
+                return $stems[4]. 'ižigoi';
+            case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
+            case 111: // 66. кондиционал, презенс, 1 л., ед.ч., отр. 
+            case 112: // 67. кондиционал, презенс, 1 л., ед.ч., отр. 
+                return self::negativeForm($gramset_id, $lang_id). $stems[4]. 'iži';
+            case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
+            case 114: // 69. кондиционал, презенс, 1 л., мн.ч., отр. 
+            case 115: // 70. кондиционал, презенс, 1 л., мн.ч., отр. 
+                return self::negativeForm($gramset_id, $lang_id). $stems[4]. 'ižigoi';
  
             case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm(116, $lang_id). self::condImp3SingPolByStem($stems[4], $stems[0], $dialect_id);
             case 117: // 78. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm(117, $lang_id). self::condImp3SingPolByStem($stems[4], $stems[0], $dialect_id);
             case 118: // 79. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm(118, $lang_id). self::condImp3SingPolByStem($stems[4], $stems[0], $dialect_id);
+                return self::negativeForm($gramset_id, $lang_id). self::condImp3SingPolByStem($stems[4], $stems[0], $dialect_id);
             case 119: // 80. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm(119, $lang_id). self::condImp3SingPolByStem($stems[4], $stems[0], $dialect_id);
             case 120: // 81. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm(120, $lang_id). self::condImp3SingPolByStem($stems[4], $stems[0], $dialect_id);
             case 121: // 82. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm(121, $lang_id). $stems[7]. self::garmVowel($stems[7],'a'). 'is’';
+                return self::negativeForm($gramset_id, $lang_id). $stems[7]. self::garmVowel($stems[7],'a'). 'is’';
                 
-            кондиционал, перфект
+/*            кондиционал, перфект
  
             case 135: // 95. кондиционал, плюсквамперфект, 1 л., ед.ч., пол. 
-                return 'olizin '. self::perfectForm($stems[5], $lang_id);
             case 125: // 96. кондиционал, плюсквамперфект, 2 л., ед.ч., пол. 
-                return 'olizit '. self::perfectForm($stems[5], $lang_id);
             case 136: // 97. кондиционал, плюсквамперфект, 3 л., ед.ч., пол. 
                 return 'olis’ '. self::perfectForm($stems[5], $lang_id);
             case 137: // 98. кондиционал, плюсквамперфект, 1 л., мн.ч., пол. 
-                return 'olizima '. self::perfectForm($stems[5], $lang_id);
             case 138: // 99. кондиционал, плюсквамперфект, 2 л., мн.ч., пол. 
-                return 'olizija '. self::perfectForm($stems[5], $lang_id);
             case 139: // 100. кондиционал, плюсквамперфект, 3 л., мн.ч., пол. 
                 return 'olis’ '. $stems[7] . self::garmVowel($stems[7],'u');
                 
             case 140: // 101. кондиционал, плюсквамперфект, 1 л., ед.ч., отр. 
-                return 'en olis’ '. self::perfectForm($stems[5], $lang_id);
             case 141: // 102. кондиционал, плюсквамперфект, 2 л., ед.ч., отр. 
-                return 'et olis’ '. self::perfectForm($stems[5], $lang_id);
             case 142: // 103. кондиционал, плюсквамперфект, 3 л., ед.ч., отр. 
                 return 'ei olis’ '. self::perfectForm($stems[5], $lang_id);
             case 143: // 104. кондиционал, плюсквамперфект, 1 л., мн.ч., отр. 
-                return 'emmä olis’ '. self::perfectForm($stems[5], $lang_id);
             case 144: // 105. кондиционал, плюсквамперфект, 2 л., мн.ч., отр. 
-                return 'että olis’ '. self::perfectForm($stems[5], $lang_id);
             case 145: // 106. кондиционал, плюсквамперфект, 3 л., мн.ч., отр. 
                 return 'ei olis’ '. $stems[7] . self::garmVowel($stems[7],'u');
-                
-*/        
+*/                
+        
         return '';
     }
 
