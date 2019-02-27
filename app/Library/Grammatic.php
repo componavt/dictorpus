@@ -59,71 +59,6 @@ class Grammatic
         return $gramsets;
     }
 
-    /**
-     * template-name|base|nom-sg-suff|gen-sg-suff|par-sg-suff|par-pl-suff
-     * vep-decl-stems|adjektiv||an|ad|id
-     * 
-     * template-name|n=sg|base|nom-sg-suff|gen-sg-suff|par-sg-suff
-     * vep-decl-stems|n=sg|Amerik||an|ad
-     * 
-     * template-name|n=pl|base|gen-sg-suff|par-pl-suff
-     * vep-decl-stems|n=pl|Alama|d|id
-     * 
-     * @param Array $regs
-     * @param Int $lang_id
-     * @param Int $pos_id
-     * @return Array
-     */
-    public static function nameStemsFromVepsTemplate($regs, $lang_id, $pos_id, $name_num = null) {
-//dd($regs, $name_num);        
-        $stems = [];
-        if (preg_match("/^n=(.+)$/", $regs[1], $regs1)) {
-            $name_num = $regs1[1];
-        }
-        if ($name_num == 'sg') {
-            $base = $regs[2];
-            $stems[0] = $base.$regs[3];
-            $base_suff = $nom_sg_suff = $regs[3];
-            $gen_sg_suff = $regs[4];
-            $par_sg_suff = isset($regs[5]) ? $regs[5] : '';
-            $par_pl_suff = '';
-        } elseif ($name_num == 'pl') {
-            $base = $regs[2];
-            $base_suff = $nom_pl_suff = $regs[3];
-            $stems[0] = $base.$nom_pl_suff;
-            $nom_sg_suff = $par_sg_suff = '';
-            $par_pl_suff = $regs[4];
-        } else {
-            $base = $regs[1];
-            $stems[0] = $base.$regs[2];
-            $base_suff = $nom_sg_suff = $regs[2];
-            $gen_sg_suff = $regs[3];
-            $par_sg_suff = $regs[4];
-            $par_pl_suff = isset($regs[5]) ? $regs[5] : '';
-        }
-        
-        if ($name_num=='pl') {
-            $stems[1] = $stems[3] = '';
-        } else {
-            if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
-                return [null, $name_num];
-            }
-            $stems[1] = $base. $regs1[1];
-            $stems[3] = $base. $par_sg_suff;
-        }
-
-        if ($name_num=='sg') {
-            $stems[4] = '';
-        } else {
-            if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs1)) {
-                return [null, $name_num];
-            }
-            $stems[4] = $base. $regs1[1];
-        }
-        $stems[2] = $stems[5] = '';
-        return [$stems, $name_num, $base, $base_suff];
-    }
-    
     public static function rightConsonant($d, $l) {
         $consonants = ["d" => ["b"=>"b", "d"=>"d", "g"=>"g"],
                        "t" => ["b"=>"p", "d"=>"t", "g"=>"k"]];
@@ -207,6 +142,113 @@ class Grammatic
         return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
                 $cond_stem, $potn_stem, $cons, $harmony];        
     }
+    
+    /**
+     * template-name|base|nom-sg-suff|gen-sg-suff|par-sg-suff|par-pl-suff
+     * vep-decl-stems|adjektiv||an|ad|id
+     * 
+     * @param Array $regs
+     * @param Int $lang_id
+     * @param Int $pos_id
+     * @return Array
+     */
+    public static function nameStemsFromVepsTemplate($regs) {
+//dd($regs, $name_num);        
+        $base = $regs[1];
+        $base_suff = $regs[2];
+        $gen_sg_suff = $regs[3];
+        $par_sg_suff = $regs[4];
+        $par_pl_suff = $regs[5];
+
+        if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs_gen)) {
+            return [null, null, null];
+        }
+        if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs_par)) {
+            return [null, null, null];
+        }
+        
+        $stems[0] = $base.$regs[2];
+        $stems[1] = $base. $regs_gen[1];
+        $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs_gen[1].'d');
+        $stems[4] = $base. $regs_par[1];
+        $stems[2] = $stems[5] = '';
+        return [$stems, $base, $base_suff];
+    }
+
+    /**
+     * template-name|n=pl|base|base-suff|par-pl-suff
+     * vep-decl-stems|n=pl|Alama|d|id
+     * 
+     * OR
+     * base|base-suff (-par-pl-suff)
+     * Alama|d (-id)
+     * 
+     * @param Array $regs [base, base-suff, par-pl-suff]
+     * @return Array
+     */
+    public static function nameStemsPlFromVepsTemplate($regs) {
+        $base = $regs[1];
+        $base_suff = $regs[2];
+        $par_pl_suff = $regs[3];
+
+        if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs1)) {
+            return [null, null, null];
+        }
+        
+        $stems[0] = $base.$base_suff;                
+        $stems[4] = $base. $regs1[1];
+        $stems[1] = $stems[2] = $stems[3] = $stems[5] = '';
+        return [$stems, $base, $base_suff];
+    }
+
+    /**
+     * template-name|n=sg|base|nom-sg-suff|gen-sg-suff|par-sg-suff
+     * vep-decl-stems|n=sg|Amerik||an|ad
+     * 
+     * @param Array $regs
+     * @return Array
+     */
+    public static function nameStemsSgFromVepsTemplate($regs) {
+        $base = $regs[1];
+        $base_suff = $regs[2];
+        $gen_sg_suff = $regs[3];
+        $par_sg_suff = $regs[4];
+
+        if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
+            return [null, null, null];
+        }
+        
+        $stems[0] = $base.$base_suff;        
+        $stems[1] = $base. $regs1[1];
+        $stems[3] = $base. $par_sg_suff;
+        $stems[2] = $stems[4] = $stems[5] = '';
+        return [$stems, $base, $base_suff];
+    }
+    
+    public static function stemsFromVepsTemplate($template, $lang_id, $pos_id, $name_num = null) {
+        $stems = $base = $base_suff = null;
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            if (preg_match("/^vep-decl-stems\|n=sg\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u",$template, $regs)) {
+                $name_num = 'sg';
+                list($stems, $base, $base_suff) =  self::nameStemsSgFromVepsTemplate($regs);
+            } elseif (preg_match("/^vep-decl-stems\|n=pl\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
+                    ($name_num == 'pl' && preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template, $regs))) {
+                $name_num = 'pl';
+                list($stems, $base, $base_suff) =  self::nameStemsPlFromVepsTemplate($regs);
+            } elseif (preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
+                    preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
+                list($stems, $base, $base_suff) = self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id, $name_num);
+            }
+        } elseif ($pos_id == PartOfSpeech::getVerbID() && 
+            (preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs) ||
+            preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {                    
+//dd($regs);     
+            $base = $regs[1];
+            $base_suff = $regs[2];
+            $stems = self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id);
+        }
+        return [$stems, $name_num, $base, $base_suff];
+    }
     /**
      * @param String $template
      * @param Int $lang_id
@@ -215,17 +257,7 @@ class Grammatic
      */
     public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null) {
         if ($lang_id == 1) {
-            if (in_array($pos_id, PartOfSpeech::getNameIDs()) &&
-                (preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
-                preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)[\;\,]?\s*-?([^\,\;]*)\)/", $template, $regs))) {                    
-                return self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id, $name_num);                
-            } elseif ($pos_id == PartOfSpeech::getVerbID() && 
-                (preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs) ||
-                preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {                    
-//dd($regs);         
-                return [self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id), null, $regs[1], $regs[2]];
-            }
-            return [null, $name_num, null, null];
+            return self::stemsFromVepsTemplate($template, $lang_id, $pos_id, $name_num);                
         } else {
             $stems = preg_split('/,/',$template);
             for ($i=0; $i<sizeof($stems); $i++) {
@@ -377,6 +409,14 @@ class Grammatic
         return $ill_ending;
     }
     
+    /**
+     * 
+     * @param Array $stems [nom_sg, gen_sg, '', part_sg, part_pl, '']
+     * @param Int $gramset_id
+     * @param Int $dialect_id
+     * @param String $name_num 'sg', 'pl' or null
+     * @return string
+     */
     public static function nounWordformVepsByStems($stems, $gramset_id, $dialect_id, $name_num) {
         $s_sg = preg_match("/i$/u", $stems[1]) ? 'š' : 's';
         $s_pl = preg_match("/i$/u", $stems[4]) ? 'š' : 's';
