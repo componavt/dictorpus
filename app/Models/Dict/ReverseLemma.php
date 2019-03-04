@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReverseLemma extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['reverse_lemma','id','lang_id','inflexion','stem'];//lemma_
+    protected $fillable = ['reverse_lemma','id','lang_id','affix','stem'];//lemma_
     
     // Lemma __belongs_to__ Lang
     public function lemma()
@@ -51,5 +51,33 @@ class ReverseLemma extends Model
         });
     }
     
+    public static function inflexionGroups($lang_id, $pos_id, $dialect_id) {
+        $groups = [];
+        if (!$lang_id || !$dialect_id || ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs()))) {
+            return $groups;
+        }
+        $gramsets = Gramset::dictionaryGramsets($pos_id, NULL, $lang_id);
+        $lemmas = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)->get();
+        foreach ($lemmas as $lemma) {
+            $affixes = [];
+            list($stem, $lemma_affix) = $lemma->getStemAffix();
+            for ($i=0; $i<sizeof($gramsets)-1; $i++) {
+                $wordform = $lemma->wordform($gramsets[$i], $dialect_id);
+                if (!$wordform) {
+                    continue;
+                }
+                if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
+                    $affixes[$i] = $regs[1];
+                }
+            }
+            $affixes[3] = $lemma_affix;
+//dd($affixes);            
+            if (sizeof($affixes) == 4) {
+                $groups[join('_',$affixes)][$lemma->id] = $lemma->lemma;
+            }
+        }
+        ksort($groups);
+        return $groups;
+    }
     
 }

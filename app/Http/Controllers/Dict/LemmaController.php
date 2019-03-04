@@ -217,7 +217,7 @@ class LemmaController extends Controller
 /*        if ($data['pos_id'] != 11) { // is not verb
             $data['reflexive'] = 0;
         }*/
-        list($data['lemma'], $wordforms, $stem, $inflexion, $gramset_wordforms) 
+        list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms) 
                 = Lemma::parseLemmaField($data);
         $request->replace($data);
         
@@ -227,7 +227,7 @@ class LemmaController extends Controller
 
         LemmaFeature::store($lemma->id, $request);
         $lemma->storePhrase($request->phrase);
-        $lemma->storeReverseLemma($stem, $inflexion);
+        $lemma->storeReverseLemma($stem, $affix);
         
         $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
         $lemma->createDictionaryWordforms($wordforms, $request->plur_tan, $request->dialect_id);
@@ -257,7 +257,7 @@ class LemmaController extends Controller
         ]);
         
         $data = $request->all();
-        list($data['lemma'], $data['wordforms'], $stem, $inflexion) 
+        list($data['lemma'], $data['wordforms'], $stem, $affix) 
                 = Lemma::parseLemmaField(trim($data['lemma']));
         $request->replace($data);
         
@@ -266,7 +266,7 @@ class LemmaController extends Controller
         $lemma->save();
 
         $lemma->createDictionaryWordforms($request->wordforms, $request->plur_tan);
-        $lemma->storeReverseLemma($stem, $inflexion);
+        $lemma->storeReverseLemma($stem, $affix);
         $new_meanings[0]=['meaning_n' => 1,
                           'meaning_text' =>
                             [Lang::getIDByCode('ru') => $request->meaning]];    
@@ -418,8 +418,8 @@ class LemmaController extends Controller
         $dialect_value = User::userDialects();
         $dialect_values = Dialect::getList($lemma->lang_id);
         
-        $lemma_value = $lemma->reverseLemma && $lemma->reverseLemma->inflexion 
-                     ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->inflexion 
+        $lemma_value = $lemma->reverseLemma && $lemma->reverseLemma->affix 
+                     ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->affix 
                      : $lemma->lemma;
         
         return view('dict.lemma.edit',
@@ -551,7 +551,7 @@ class LemmaController extends Controller
         
         // LEMMA UPDATING
 //dd($request->all());        
-        list($new_lemma, $wordforms_list, $stem, $inflexion, $gramset_wordforms) 
+        list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms) 
                 = Lemma::parseLemmaField($request->all());
         
         $lemma->lemma = $new_lemma;
@@ -563,7 +563,7 @@ class LemmaController extends Controller
         
         LemmaFeature::store($lemma->id, $request);
         $lemma->storePhrase($request->phrase);
-        $lemma->storeReverseLemma($stem, $inflexion);
+        $lemma->storeReverseLemma($stem, $affix);
         
         $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
         $lemma->createDictionaryWordforms($wordforms_list, $request->plur_tan, $request->dialect_id);    

@@ -13,7 +13,8 @@ use App\Library\Grammatic;
 use App\Models\User;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
-//use App\Models\Dict\Meaning;
+
+use App\Models\Dict\PartOfSpeech;
 
 class Lemma extends Model
 {
@@ -176,6 +177,13 @@ class Lemma extends Model
         return array_unique($gramsets);
     }
     
+    public function getStemAffix() {
+        if (!$this->reverseLemma) {
+            $this->createReverseLemma();
+        }
+        return [$this->reverseLemma->stem, $this->reverseLemma->affix];        
+    }
+
     public function getWordformsCONLL($word) {
         $gramsets = $this->getGramsetsByWord($word);
         $features = [];
@@ -521,18 +529,18 @@ class Lemma extends Model
     }
     
     public function extractStem() {
-        $inflexion = '';
+        $affix = '';
         $stem = $this->lemma;
 //print "\n".join("\n ",$this->uniqueWordforms())."\n";
 
         foreach ($this->uniqueWordforms() as $wordform) {
             while (!preg_match("/^".$stem."/", $wordform)) {
-                $inflexion = mb_substr($stem, -1, 1). $inflexion;
+                $affix = mb_substr($stem, -1, 1). $affix;
                 $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
 //print "\n$wordform, $stem";                
             }
         }
-        return [$stem, $inflexion];
+        return [$stem, $affix];
     }
     
     /**
@@ -764,15 +772,15 @@ class Lemma extends Model
     
     public static function parseLemmaField($data) {
 //dd($data);        
-        $inflexion = NULL;
+        $affix = NULL;
         $lemma = Grammatic::toRightForm($data['lemma']);
         $wordforms = '';//trim($data['wordforms']); убрано поле из формы леммы
 //dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);    
         $name_num = isset($data['plur_tan']) && $data['plur_tan'] ? 'pl' : null;
-        list($lemma, $gramset_wordforms, $stem, $inflexion) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
+        list($lemma, $gramset_wordforms, $stem, $affix) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
 //dd($gramset_wordforms);        
         if ($gramset_wordforms) {
-            return [$lemma, $wordforms, $stem, $inflexion, $gramset_wordforms];
+            return [$lemma, $wordforms, $stem, $affix, $gramset_wordforms];
         }
         $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
         if ($parsing) {
@@ -782,15 +790,15 @@ class Lemma extends Model
         $lemma = str_replace('||','',$lemma);
         if (preg_match("/^(.+)\|(.*)$/",$lemma,$rregs)){
             $stem = $rregs[1];
-            $inflexion = $rregs[2];
-            $lemma = $stem.$inflexion;
+            $affix = $rregs[2];
+            $lemma = $stem.$affix;
         } else {
             $stem = $lemma;
         }
       
         if (!$parsing) {
-//var_dump([$parsing, $lemma, $wordforms, $stem, $inflexion]);
-            return [$lemma, $wordforms, $stem, $inflexion, false];
+//var_dump([$parsing, $lemma, $wordforms, $stem, $affix]);
+            return [$lemma, $wordforms, $stem, $affix, false];
         }
 
         $regs[2] = str_replace('-', $stem, $regs[2]);
@@ -806,7 +814,7 @@ class Lemma extends Model
             $wordforms .= '; '.$regs[5];
         }
         
-        return [$lemma,$wordforms, $stem, $inflexion, false];
+        return [$lemma,$wordforms, $stem, $affix, false];
     }
     
     public function storePhrase($lemmas) {
@@ -816,32 +824,32 @@ class Lemma extends Model
         }
     }
     
-    public function storeReverseLemma($stem=NULL, $inflexion=NULL) {
+    public function storeReverseLemma($stem=NULL, $affix=NULL) {
         $reverse_lemma = ReverseLemma::find($this->id);
-//dd($stem, $inflexion);
+//dd($stem, $affix);
         if ($reverse_lemma) {
             $reverse = $this->reverse();
-            if (!$stem && !$inflexion) {
-                list($stem, $inflexion) = $this->extractStem();
+            if (!$stem && !$affix) {
+                list($stem, $affix) = $this->extractStem();
             }
 
             $reverse_lemma->reverse_lemma = $reverse;
             $reverse_lemma->lang_id = $this->lang_id;
             $reverse_lemma->stem = $stem;
-            $reverse_lemma->inflexion = $inflexion;
+            $reverse_lemma->affix = $affix;
             
             $reverse_lemma -> save();
         } else {
-            $this->createReverseLemma($stem, $inflexion);
+            $this->createReverseLemma($stem, $affix);
         }
         
     }
     
-    public function createReverseLemma($stem=NULL, $inflexion=NULL) {
+    public function createReverseLemma($stem=NULL, $affix=NULL) {
         $reverse_lemma = $this->reverse();
 //print "<p>".$reverse_lemma.', '.$this->id; 
-        if (!$stem && !$inflexion) {
-            list($stem, $inflexion) = $this->extractStem();
+        if (!$stem && !$affix) {
+            list($stem, $affix) = $this->extractStem();
         }
         
         ReverseLemma::create([
@@ -849,7 +857,7 @@ class Lemma extends Model
             'reverse_lemma' => $reverse_lemma,
             'lang_id' => $this->lang_id,
             'stem' => $stem,
-            'inflexion' => $inflexion]);
+            'affix' => $affix]);
     }
     
     /**

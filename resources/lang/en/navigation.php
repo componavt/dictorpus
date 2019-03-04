@@ -26,6 +26,7 @@ return [
     'grams' => 'Grammemes',
     'help' => 'Help',
     'home' => 'Home',
+    'inflexion_groups' => 'Inflexion groups',
     'informants' => 'Informants',
     'langs'  => 'Languages',
     'lemmas' => 'Lemmas',

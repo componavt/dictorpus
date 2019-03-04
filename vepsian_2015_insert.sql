@@ -887,3 +887,5 @@ update wordforms set wordform_for_search=lower(replace(wordform, '’', '')) whe
 
 update gram_categories set sequence_number=6 where id=1;
 update gram_categories set sequence_number=7 where id=2;
+
+--php artisan make:migration change_column_inflexion_in_reverse_lemmas

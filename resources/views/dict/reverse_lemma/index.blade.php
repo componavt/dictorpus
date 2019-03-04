@@ -30,7 +30,7 @@
                 <td data-th="{{ trans('dict.lemma') }}" class="big-size to-right">
                     @if ($reverse_lemma && $reverse_lemma->lemma)
                     <a href="lemma/{{$reverse_lemma->id}}{{$args_by_get}}">
-                        {{$reverse_lemma->stem}}<b>{{$reverse_lemma->inflexion}}</b></a>
+                        {{$reverse_lemma->stem}}<b>{{$reverse_lemma->affix}}</b></a>
                     @endif
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">

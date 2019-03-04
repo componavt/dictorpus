@@ -371,6 +371,18 @@ class Gramset extends Model
         return NULL;
     }
 
+    public static function dictionaryGramsetNames($lang_id, $pos_id) {
+        $names = [];
+        $gramsets = self::dictionaryGramsets($pos_id, NULL, $lang_id);
+        
+        if (!$gramsets) {
+            return $names;
+        }
+        foreach ($gramsets as $gramset_id) {
+            $names[] = self::getStringByID($gramset_id);
+        }
+        return $names;
+    }
 }
 
 /*

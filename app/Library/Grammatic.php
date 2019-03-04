@@ -281,7 +281,7 @@ class Grammatic
             return [$template, false, $template, NULL];
         }
         
-        list($stems, $name_num, $max_stem, $inflexion) = self::stemsFromTemplate($list[1], $lang_id, $pos_id, $name_num);
+        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($list[1], $lang_id, $pos_id, $name_num);
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
         if (!isset($stems[0])) {
             return [$template, false, $template, NULL];
@@ -307,9 +307,9 @@ class Grammatic
             }
         }
         if (!$max_stem) {
-            list($max_stem, $inflexion) = self::maxStem($stems);
+            list($max_stem, $affix) = self::maxStem($stems);
         }
-        return [$max_stem.$inflexion, $wordforms, $max_stem, $inflexion];
+        return [$max_stem.$affix, $wordforms, $max_stem, $affix];
     }
     
     public static function nounWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num) {
@@ -960,14 +960,16 @@ class Grammatic
             case 115: // 70. кондиционал, презенс, 1 л., мн.ч., отр. 
                 return self::negativeForm($gramset_id, $lang_id). $stems[4]. 'ižigoi';
  
+            case 304: // 152. кондиционал, имперфект, коннегатив, мн.ч. 
+                return $stems[3]. 'nuižigoi';
             case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 117: // 78. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 118: // 79. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm($gramset_id, $lang_id). self::condImp3SingPolByStem($stems[4], $stems[0], $dialect_id);
+                return self::negativeForm($gramset_id, $lang_id). $stems[3]. 'nuiži';
             case 119: // 80. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 120: // 81. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 121: // 82. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return self::negativeForm($gramset_id, $lang_id). $stems[7]. self::garmVowel($stems[7],'a'). 'is’';
+                return self::negativeForm($gramset_id, $lang_id). $stems[3]. 'nuižigoi';
                 
 /*            кондиционал, перфект
  
@@ -989,7 +991,7 @@ class Grammatic
             case 145: // 106. кондиционал, плюсквамперфект, 3 л., мн.ч., отр. 
                 return 'ei olis’ '. $stems[7] . self::garmVowel($stems[7],'u');
 */                
-        
+        }
         return '';
     }
 
@@ -1503,7 +1505,7 @@ class Grammatic
     }
 */    
     public static function maxStem($stems) {
-        $inflexion = '';
+        $affix = '';
         $stem = $stems[0];
 
         for ($i=1; $i<sizeof($stems); $i++) {
@@ -1511,11 +1513,11 @@ class Grammatic
                 continue;
             }
             while (!preg_match("/^".$stem."/", $stems[$i])) {
-                $inflexion = mb_substr($stem, -1, 1). $inflexion;
+                $affix = mb_substr($stem, -1, 1). $affix;
                 $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
             }
         }
-        return [$stem, $inflexion];
+        return [$stem, $affix];
         
     }
 }

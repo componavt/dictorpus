@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dict;
 use Illuminate\Http\Request;
 use DB;
 
+use App\Models\Dict\Dialect;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
@@ -32,6 +34,7 @@ class ReverseLemmaController extends Controller
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
+                    'search_dialect'  => (int)$request->input('search_dialect'),
                     'search_lang'     => (int)$request->input('search_lang'),
                     'search_pos'      => (int)$request->input('search_pos'),
                 ];
@@ -76,6 +79,32 @@ class ReverseLemmaController extends Controller
         return view('dict.reverse_lemma.index',
                 compact('lang_values', 'reverse_lemmas', 'numAll',
                         'pos_values', 'args_by_get', 'url_args'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     * 
+     */
+    public function inflexionGroups()
+    {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        $groups = $gramset_heads = [];
+        if ($url_args['search_lang'] && $url_args['search_pos'] && $url_args['search_dialect']) {
+            $groups = ReverseLemma::inflexionGroups($url_args['search_lang'], $url_args['search_pos'], $url_args['search_dialect']);
+            $gramset_heads = Gramset::dictionaryGramsetNames($url_args['search_lang'], $url_args['search_pos']);
+        }
+//dd($groups);        
+        $lang_values = Lang::getListWithQuantity('reverseLemmas');
+        $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        $dialect_values = $url_args['search_lang'] ? ['NULL'=>''] + Dialect::getList($url_args['search_lang']) : ['NULL'=>''] + Dialect::getList();
+
+        return view('dict.reverse_lemma.inflexion_groups',
+                compact('dialect_values', 'gramset_heads', 'groups', 
+                        'lang_values', 'pos_values', 'args_by_get', 'url_args'));
     }
 
     public function tmpCreateAllReverse() {

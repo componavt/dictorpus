@@ -126,6 +126,7 @@ Route::group(
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
 
         Route::get('dict/reverse_lemma/', 'Dict\ReverseLemmaController@index');
+        Route::get('dict/reverse_lemma/inflexion_groups', 'Dict\ReverseLemmaController@inflexionGroups');
         Route::get('dict/reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
 
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
