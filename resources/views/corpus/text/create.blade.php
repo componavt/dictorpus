@@ -32,7 +32,7 @@
     $(".multiple-select-dialect").select2({
         width: '100%',
         ajax: {
-          url: "/corpus/text/dialect_list",
+          url: "/dict/dialect/list",
           dataType: 'json',
           delay: 250,
           data: function (params) {
@@ -46,6 +46,11 @@
               results: data
             };
           },          
+          error: function(jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+')'; 
+            alert(text);           
+          },
           cache: true
         }
     });    

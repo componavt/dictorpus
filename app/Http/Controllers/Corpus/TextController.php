@@ -128,7 +128,7 @@ class TextController extends Controller
         $recorder_values = Recorder::getList();
         $dialect_values = Dialect::getList();
         $genre_values = Genre::getList();        
-        
+//dd($dialect_values);        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.create',

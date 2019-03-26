@@ -254,6 +254,7 @@ class DialectController extends Controller
             $list[]=['id'  => $dialect->id, 
                      'text'=> $dialect->name];
         }  
+//dd($list);        
 //dd(sizeof($dialects));
         return Response::json($list);
 
