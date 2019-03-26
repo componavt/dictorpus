@@ -257,8 +257,10 @@ class LemmaController extends Controller
         ]);
         
         $data = $request->all();
-        list($data['lemma'], $data['wordforms'], $stem, $affix) 
-                = Lemma::parseLemmaField(trim($data['lemma']));
+        list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms) 
+                = Lemma::parseLemmaField($data);
+//        list($data['lemma'], $data['wordforms'], $stem, $affix) 
+  //              = Lemma::parseLemmaField(trim($data['lemma']));
         $request->replace($data);
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
