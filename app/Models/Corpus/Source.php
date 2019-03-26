@@ -23,7 +23,9 @@ class Source extends Model
     }
     
     public static function removeByID($id) {
-        self::find($id)->delete();
+        $obj = self::find($id);
+        if (!$obj) { return;}
+        $obj->delete();
     }    
 
     /**

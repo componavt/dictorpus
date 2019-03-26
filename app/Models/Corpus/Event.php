@@ -78,11 +78,10 @@ class Event extends Model
     
     public static function removeByID($id) {
         $event = self::find($id);
-        if ($event) {
-            $event->informants()->detach();
-            $event->recorders()->detach();
-            $event->delete();
-        }
+        if (!$event) { return; }
+        $event->informants()->detach();
+        $event->recorders()->detach();
+        $event->delete();
     }    
 
     /**
