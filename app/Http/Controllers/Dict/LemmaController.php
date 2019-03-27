@@ -214,14 +214,11 @@ class LemmaController extends Controller
         ]);
         
         $data = $request->all();
-/*        if ($data['pos_id'] != 11) { // is not verb
-            $data['reflexive'] = 0;
-        }*/
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms) 
                 = Lemma::parseLemmaField($data);
         $request->replace($data);
         
-        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id')); //,'reflexive'
+        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
         $lemma->save();
 
@@ -259,16 +256,17 @@ class LemmaController extends Controller
         $data = $request->all();
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms) 
                 = Lemma::parseLemmaField($data);
-//        list($data['lemma'], $data['wordforms'], $stem, $affix) 
-  //              = Lemma::parseLemmaField(trim($data['lemma']));
         $request->replace($data);
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
         $lemma->save();
 
-        $lemma->createDictionaryWordforms($request->wordforms, $request->plur_tan);
         $lemma->storeReverseLemma($stem, $affix);
+        
+        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
+        $lemma->createDictionaryWordforms($wordforms, $request->plur_tan, $request->dialect_id);
+
         $new_meanings[0]=['meaning_n' => 1,
                           'meaning_text' =>
                             [Lang::getIDByCode('ru') => $request->meaning]];    
