@@ -669,6 +669,28 @@ class TextController extends Controller
         }
     }
 
+    /*
+     * vepkar-20190129-vep
+     */
+    public function exportSentencesToLines() {//Request $request
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+//dd(ini_get('memory_limit'));
+        $date = Carbon::now();
+        $date_now = $date->toDateString();
+        $lang_id = 1;
+        $lang = Lang::find($lang_id);
+        $filename = 'export/vepkar-'.$date_now.'-'.$lang->code.'.txt';
+        Storage::disk('public')->put($filename, "# ".$lang->name);
+        $texts = Text::where('lang_id',$lang_id)
+//                    ->where('id',1416)
+                ->get();
+        foreach ($texts as $text) {
+            Storage::disk('public')->append($filename, $text->sentencesToLines());
+        }
+        print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
+    }
+
     /**
      * SQL: select lower(word) as l_word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, l_word LIMIT 30;
      * SQL: select word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, word LIMIT 30;

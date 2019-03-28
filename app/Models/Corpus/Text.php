@@ -1210,7 +1210,7 @@ var_dump($meanings);
         return $texts;
     }
     
-    public static function processTextForCONLL($sentence) {
+    public static function processSentenceForExport($sentence) {
         $sentence = trim(str_replace("\n"," ",strip_tags($sentence)));
         return str_replace("\'","'",$sentence);
     }
@@ -1221,24 +1221,18 @@ var_dump($meanings);
         if ($error_message) {
             return NULL;
         }
-//print "<pre>";        
         $sentences = $sxe->xpath('//s');
-//asXML        
-//        $sentences = Word::where('text_id', $this->id)->groupBy('sentence_id')
-//                   ->select('sentence_id')->orderBy('sentence_id')->get();
-//dd($sentences);       
         $is_last_item = sizeof($sentences);
         foreach ($sentences as $sentence) {
             $out .= "# text_id = ".$this->id."\n".
                     "# sent_id = ".$this->id."-".$sentence['id']."\n".
                     //$sentence->asXML()."\n".
-                    "# text = ".Text::processTextForCONLL($sentence->asXML())."\n";
-            $trans_text = Text::processTextForCONLL($this->getTransSentence($sentence['id']));
+                    "# text = ".Text::processSentenceForExport($sentence->asXML())."\n";
+            $trans_text = Text::processSentenceForExport($this->getTransSentence($sentence['id']));
             if ($trans_text) {
                 $out .= "# text_ru = ".$trans_text."\n";
             }
             $count = 1;
-//var_dump($sentence);            
             foreach ($sentence->w as $w) {
                 $words = Word::toCONLL($this->id, (int)$w['id'], (string)$w);
                 if (!$words) {
@@ -1255,6 +1249,20 @@ var_dump($meanings);
             if ($is_last_item-- > 1) {
                 $out .= "\n";
             }
+        }
+        return $out;
+    }
+    
+    public function sentencesToLines() {
+        $out = "";
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        if ($error_message) {
+            return NULL;
+        }
+        $sentences = $sxe->xpath('//s');
+        $is_last_item = sizeof($sentences);
+        foreach ($sentences as $sentence) {
+            $out .= Text::processSentenceForExport($sentence->asXML());
         }
         return $out;
     }
