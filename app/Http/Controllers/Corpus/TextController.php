@@ -47,7 +47,7 @@ class TextController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
                                      'addExample', 'editExample', 'updateExamples', 
-                                     'markupText', 'exportToCONLL',
+                                     'markupText', 'exportToCONLL', 'exportSentencesToLines',
                                      'markupAllEmptyTextXML','markupAllTexts']]);
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
