@@ -1262,7 +1262,11 @@ var_dump($meanings);
         $sentences = $sxe->xpath('//s');
         $is_last_item = sizeof($sentences);
         foreach ($sentences as $sentence) {
-            $out .= Text::processSentenceForExport($sentence->asXML())."\n";
+            $words = [];
+            foreach ($sentence->w as $w) {
+                $words[] = (string)$w;
+            }
+            $out .= join('|',$words)."\n";
         }
         return $out;
     }

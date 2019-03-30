@@ -670,7 +670,11 @@ class TextController extends Controller
     }
 
     /*
+     * export for word2vec 
+     * each sentences in new line
+     * sentences - words delived by | 
      * vepkar-20190129-vep
+     * 
      */
     public function exportSentencesToLines() {//Request $request
         ini_set('max_execution_time', 7200);
