@@ -231,6 +231,41 @@ class Word extends Model
         return $lines;
     }
     
+    /**
+     * 
+     * 
+     * @param Int $text_id
+     * @param Int $w_id
+     * @param String $word
+     * @return string
+     */
+    public static function uniqueLemmaWords($text_id, $w_id, $word) {
+        $word_obj = self::getByTextWid($text_id, $w_id);
+//dd($word_obj);        
+
+        if (!$word_obj) {
+            return $word;
+        }
+        
+        $lemmas = $word_obj->getLemmas();
+//if ($text_id==1 && $w_id==73) {   
+//    dd($lemmas);
+//}
+//dd($lemmas);        
+        if (!$lemmas || !$lemmas->count()) {
+            return $word;
+        }
+        $lemma_words = [];
+        foreach ($lemmas as $lemma) {
+            $lemma_words[] = $lemma->lemma;
+        }
+        if (!sizeof($lemma_words)) {
+            return $word;
+        }
+        $lemma_words = array_unique($lemma_words);
+        return join('|',$lemma_words);
+    }
+    
     public function isLinkedWithLemmaByLang($lang_id) {
         $word = $this->word;
         $word_t = addcslashes($word,"'%");

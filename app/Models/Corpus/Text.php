@@ -1264,7 +1264,7 @@ var_dump($meanings);
         foreach ($sentences as $sentence) {
             $words = [];
             foreach ($sentence->w as $w) {
-                $words[] = (string)$w;
+                $words[] = Word::uniqueLemmaWords($this->id, (int)$w['id'], (string)$w);
             }
             $out .= join('|',$words)."\n";
         }
