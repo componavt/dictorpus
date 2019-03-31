@@ -10,6 +10,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
+use Storage;
 
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
@@ -17,6 +18,8 @@ use App\Library\Grammatic;
 use App\Models\User;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Gram;
+use App\Models\Dict\GramCategory;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -44,7 +47,7 @@ class LemmaController extends Controller
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                           ['only' => ['create','store','edit','update','destroy',
-                                      'editExample', 'removeExample',
+                                      'editExample', 'removeExample', 'exportAnnotationConll',
                                       'editExamples','updateExamples', 
                                       'createMeaning', 'storeSimple',
                                       'createWordform', 'updateWordformFromText',
@@ -1054,6 +1057,44 @@ class LemmaController extends Controller
     }
     
     /*
+     * annotation for CONLL
+     */
+    public function exportAnnotationConll() {
+        $filename = 'export/conll/annotation.txt';
+        
+        Storage::disk('public')->put($filename, "# Parts of speech");
+        $parts_of_speech = PartOfSpeech::all()->sortBy('name_en');
+        foreach ($parts_of_speech as $pos) {
+            Storage::disk('public')->append($filename, $pos->name_en. "\t". $pos->code);            
+        }
+        
+        Storage::disk('public')->append($filename, "\n# Lemma features");
+        $lemma_feature = new LemmaFeature;
+        foreach ($lemma_feature->feas_conll_codes as $name=>$info) {
+            $named_keys = [];
+            if (preg_match("/^(.+)_id$/", $name, $regs) && is_array(trans('dict.'.$regs[1].'s'))) {
+                $named_keys = trans('dict.'.$regs[1].'s');
+//dd($named_keys);                
+            }
+            foreach ($info as $key=>$code) {
+                Storage::disk('public')->append($filename, "$name=".(isset($named_keys[$key]) ? $named_keys[$key] : $key)."\t$code");
+            }
+        }
+        
+        Storage::disk('public')->append($filename, "\n# Grammatical attributes");
+        $gram_categories = GramCategory::all()->sortBy('sequence_number');
+        foreach ($gram_categories as $gram_category) {
+            $grams = Gram::where('gram_category_id',$gram_category->id)->orderBy('sequence_number')->get();
+            foreach ($grams as $gram) {
+                Storage::disk('public')->append($filename, $gram_category->name_en. '='. $gram->name_en. "\t". $gram->conll);            
+            }
+        }
+        
+        print  '<p><a href="'.Storage::url($filename).'">annotation</a>';            
+    }
+
+
+    /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences
      * 
@@ -1089,7 +1130,7 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
             }
             $wordform->delete();
         }
-    }*/
+    }
     
     public function tmpMoveReflexive() {
         $lemmas=Lemma::where('reflexive',1)->get();
