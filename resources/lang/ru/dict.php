@@ -156,6 +156,7 @@ return [
     'tense' => 'время',
     'transitive' => 'переходный',
     'translation' => 'перевод',
+    'unimorph' => 'Код UniMorph',
     'verb' => 'глагол',
     'voice' => 'залог',
     'wordform' => 'словоформа',

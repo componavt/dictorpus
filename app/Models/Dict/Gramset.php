@@ -383,6 +383,13 @@ class Gramset extends Model
         }
         return $names;
     }
+    
+    public function toUniMorph($pos_code) {
+        $features = [$pos_code];
+        
+        
+        return $features;
+    }
 }
 
 /*

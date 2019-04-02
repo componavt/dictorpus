@@ -426,17 +426,17 @@ class Lemma extends Model
      * Gets a collection of wordforms with gramsets and sorted by sequence_number of gramsets
      * @return Collection of Wordform Objects
      * 
-     * ФУНКЦИИЯ НЕ ИСПОЛЬЗУЕТСЯ НИГДЕ?
      */
     public function wordformsWithGramsets(){
-        $dialects = existDialects();
+//        $dialects = Dialect::existDialects();
         $wordforms = $this->wordforms()->get();
 
         foreach ($wordforms as $wordform) {
             $gramset = $wordform->lemmaDialectGramset($this->id,NULL)->first(); // А МОЖЕТ МАССИВ?
             if ($gramset) {
-                $wordform->gramset_id = $gramset->id;
-                $wordform->gramsetString = $gramset->gramsetString();
+                $wordform->gramset = $gramset;
+//                $wordform->gramset_id = $gramset->id;
+//                $wordform->gramsetString = $gramset->gramsetString();
                 $wordform->sequence_number = $gramset->sequence_number;
             }
         }      
@@ -1144,6 +1144,28 @@ class Lemma extends Model
         return $wordforms;
     }
 
+    public function toUniMorph() {
+        $pos_id = $this->pos_id;
+        
+        if (!in_array($pos_id, PartOfSpeech::getNameIDs()) && $pos_id != PartOfSpeech::getVerbID()) {
+            return false;
+        } 
+        $pos = PartOfSpeech::find($pos_id);
+        if (!$pos) { return false; }
+        
+        $pos_code = $pos->unimorph;
+        $wordforms = $this->wordformsWithGramsets();//wordforms;
+        if (!$wordforms) { return false; }
+//dd($wordforms);
+        $lines = [];
+        foreach ($wordforms as $wordform) {
+            $gramset=$wordform->gramset;
+            if (!$gramset) { continue; }
+            $features = $gramset->toUniMorph($pos_code);
+            $lines[] = $this->lemma."\t".$wordform->wordform."\t".join(';',$features);
+        }
+        return join("\n", $lines);
+    }
     /*    
     public static function totalCount(){
         return self::count();

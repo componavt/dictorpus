@@ -30,6 +30,8 @@
         
         <p><i>{{ trans('dict.conll')}}:</i> <b>{{ $gram->conll }}</b></p>
         
+        <p><i>{{ trans('dict.unimorph')}}:</i> <b>{{ $gram->unimorph }}</b></p>
+        
         <p><i>{{ trans('messages.sequence_number') }}:</i> <b>{{ $gram->sequence_number}}</b></p>
         
         

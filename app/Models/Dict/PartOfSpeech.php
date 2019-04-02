@@ -49,6 +49,22 @@ class PartOfSpeech extends Model
         return $code;
     }
         
+    // muttator
+    public function getUnimorphAttribute()
+    {
+        $code = $this->code;
+        if (in_array($code, ['CCONJ', 'SCONJ'])) {
+            $code = "CONJ";
+        } elseif ($code == 'NOUN') {
+            $code = "N";
+        } elseif ($code == 'PRON') {
+            $code = "PRO";
+        } elseif ($code == 'VERB') {
+            $code = "V";
+        }
+        return $code;
+    }
+        
     // PartOfSpeech __has_many__ Gramset
     public function gramsets()
     {

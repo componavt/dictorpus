@@ -154,6 +154,7 @@ return [
     'tense' => 'Tense',
     'transitive' => 'transitive',
     'translation' => 'translation',
+    'unimorph' => 'UniMorph code',
     'verb' => 'verb',
     'voice' => 'voice',
     'wordform' => 'wordform',

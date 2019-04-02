@@ -29,12 +29,12 @@
                     @else
                         {{ $gramzik->name }}
                     @endif
-                    @if ($gramzik->{$short_name_column})
+{{--                    @if ($gramzik->{$short_name_column})
                         ({{ $gramzik->{$short_name_column} }})
-                    @endif
+                    @endif --}}
                     @if (User::checkAccess('ref.edit'))
-                        @if ($gramzik->conll)
-                            ({{ $gramzik->conll }})
+                        @if ($gramzik->unimorph)
+                            ({{ $gramzik->unimorph }})
                         @endif
                         @include('widgets.form.button._edit', ['route' => '/dict/gram/'.$gramzik->id.'/edit', 'without_text' => 1])                        
                     @endif

@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
 use Storage;
+use Carbon\Carbon;
 
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
@@ -48,7 +49,7 @@ class LemmaController extends Controller
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                           ['only' => ['create','store','edit','update','destroy',
                                       'editExample', 'removeExample', 'exportAnnotationConll',
-                                      'editExamples','updateExamples', 
+                                      'editExamples','updateExamples', 'exportToUniMorph',
                                       'createMeaning', 'storeSimple',
                                       'createWordform', 'updateWordformFromText',
                                       'editWordforms','updateWordforms']]);
@@ -1093,6 +1094,34 @@ class LemmaController extends Controller
         print  '<p><a href="'.Storage::url($filename).'">annotation</a>';            
     }
 
+    /*
+     * vepkar-20190129-vep
+     */
+    public function exportToUniMorph() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        $date = Carbon::now();
+        $date_now = $date->toDateString();
+        
+//        foreach ([4, 5, 6, 1] as $lang_id) {
+            $lang_id = 6;
+            $lang = Lang::find($lang_id);
+            $filename = 'export/unimorph/vepkar-'.$date_now.'-'.$lang->code.'.txt';
+            Storage::disk('public')->put($filename, "# ".$lang->name);
+            $lemmas = Lemma::where('lang_id',$lang_id)
+//                    ->where('id',1416)
+//                    ->take(100)
+                    ->orderBy('lemma')
+                    ->get();
+            foreach ($lemmas as $lemma) {
+                $line = $lemma->toUniMorph();
+                if ($line) {
+                    Storage::disk('public')->append($filename, $line);
+                }
+            }
+            print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
+//    }      
+    }
 
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms

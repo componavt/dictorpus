@@ -104,6 +104,7 @@ Route::group(
                         ->name('lemma.update.wordforms');
         
         Route::get('dict/lemma/export/conll/annotation', 'Dict\LemmaController@exportAnnotationConll'); 
+        Route::get('dict/lemma/export/unimorph', 'Dict\LemmaController@exportToUniMorph'); 
 
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
