@@ -385,10 +385,15 @@ class Gramset extends Model
     }
     
     public function toUniMorph($pos_code) {
-        $features = [$pos_code];
-        
-        
-        return $features;
+        $feats = [$pos_code];
+        $fields = ['Infinitive', 'Participle','Voice', 'Tense', 'Mood', 'Negation', 'Person', 'Case','Number'];
+        foreach ($fields as $field) {
+            $name = 'gram'.$field;
+            if ($this->$name && $this->$name->unimorph) {
+                $feats[] = $this->$name->unimorph;
+            }
+        }        
+        return $feats;
     }
 }
 
