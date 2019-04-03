@@ -196,7 +196,8 @@ class Gramset extends Model
         $pos_category_id = $this->gramsetCategory->pos_category_id;
         if ($pos_category_id ==1) {
             if ($this->gram_id_case){
-                $out = $this->gramCase->name_short;
+//                $out = $this->gramCase->name_short;
+                $out = $this->gramCase->name;
             }
         } else {
             $list = array();
@@ -204,12 +205,12 @@ class Gramset extends Model
                 $list[] = $this->gramInfinitive->name_short;
             }
 
-            if ($this->gram_id_number){
-                $list[] = $this->gramNumber->name_short;
-            }
-
             if ($this->gram_id_person){
                 $list[] = $this->gramPerson->name_short;
+            }
+
+            if ($this->gram_id_number){
+                $list[] = $this->gramNumber->name_short;
             }
 
             if ($this->gram_id_case){
@@ -389,7 +390,12 @@ class Gramset extends Model
         $fields = ['Infinitive', 'Participle','Voice', 'Tense', 'Mood', 'Negation', 'Person', 'Case','Number'];
         foreach ($fields as $field) {
             $name = 'gram'.$field;
+//print "<P>$name";   
+//if ($this->$name) {            dd($this->$name); }
             if ($this->$name && $this->$name->unimorph) {
+                if (preg_match("/^V\./",$this->$name->unimorph) && $feats[0] == 'V') {
+                    unset($feats[0]);
+                }
                 $feats[] = $this->$name->unimorph;
             }
         }        

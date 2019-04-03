@@ -411,7 +411,7 @@ class Lemma extends Model
         $gramset_coll=$this->gramsets()
 //                           ->groupBy('id')
                            ->get();
-         
+       
         foreach (Gramset::getGroupedList($this->pos_id, $this->lang_id) as $category_name => $category_gramsets) {
             foreach ($category_gramsets as $gramset_id => $gramset_name) {
                 if ($gramset_coll->contains($gramset_id)) {
