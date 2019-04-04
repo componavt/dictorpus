@@ -2,13 +2,29 @@
                              'method' => 'get']) 
         !!}
 <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-3">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_wordform', 
                  'special_symbol' => true,
                 'value' => $url_args['search_wordform'],
                 'attributes'=>['placeholder'=>trans('dict.wordform')]])
     </div>
+    <div class="col-sm-4">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_lang', 
+                 'values' =>$lang_values,
+                 'value' =>$url_args['search_lang'],
+                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
+    </div>
+    <div class="col-sm-5">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_dialect', 
+                 'values' =>$dialect_values,
+                 'value' =>$url_args['search_dialect'],
+                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
+    </div>
+</div>    
+<div class="row">
     <div class="col-sm-3">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_pos', 
@@ -16,21 +32,14 @@
                  'value' =>$url_args['search_pos'],
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
     </div>
-    <div class="col-sm-2">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_lang', 
-                 'values' =>$lang_values,
-                 'value' =>$url_args['search_lang'],
-                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
+    <div class="col-sm-5">
+                        @include('widgets.form.formitem._select', 
+                        ['name' => 'search_gramset', 
+                         'values' =>$gramset_values,
+                         'value' =>$url_args['search_gramset'],
+                         'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
     </div>
-    <div class="col-sm-2">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_dialect', 
-                 'values' =>$dialect_values,
-                 'value' =>$url_args['search_dialect'],
-                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
-    </div>
-    <div class="col-sm-3 search-button-b">       
+    <div class="col-sm-4 search-button-b">       
         <span>
         {{trans('messages.show_by')}}
         </span>
@@ -43,5 +52,6 @@
         </span>
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
-</div>                 
+</div>    
+
         {!! Form::close() !!}

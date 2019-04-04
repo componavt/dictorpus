@@ -770,6 +770,11 @@ class Lemma extends Model
         }
     }
     
+    /**
+     * 
+     * @param Array $data = ['lemma'=>'lemma_string', 'lang_id'=>lang_int, 'pos_id'=>pos_int, 'dialect_id'=>dialect_int];
+     * @return type
+     */
     public static function parseLemmaField($data) {
 //dd($data);        
         $affix = NULL;

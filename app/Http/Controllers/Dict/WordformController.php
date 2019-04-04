@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Library\Grammatic;
 
-//use App\Models\Dict\Gramset;
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
@@ -29,12 +29,14 @@ class WordformController extends Controller
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:dict.edit,/dict/wordform/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:dict.edit,/dict/wordform/', ['only' => [
+            'create','store','edit','update','destroy','tmpFixNegativeVepsVerbForms']]);
         
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
                     'search_dialect'  => (int)$request->input('search_dialect'),
+                    'search_gramset'  => (int)$request->input('search_gramset'),
                     'search_lang'     => (int)$request->input('search_lang'),
                     'search_pos'      => (int)$request->input('search_pos'),
                     'search_wordform' => $request->input('search_wordform'),
@@ -60,63 +62,19 @@ class WordformController extends Controller
      */
     public function index()
     {
-        $wordforms = Wordform::orderBy('wordform');
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
         
-        if ($this->url_args['search_wordform']) {
-            $wordforms = $wordforms->where('wordform_for_search','like', Grammatic::toSearchForm($this->url_args['search_wordform']));
-        } 
-
-        $search_lang = $this->url_args['search_lang'];
-        $search_pos = $this->url_args['search_pos'];
-        $search_dialect = $this->url_args['search_dialect'];
-
-        if ($search_dialect || !$search_lang) {
-            $dialect = Dialect::find($search_dialect);
-            if ($dialect) {
-                $search_lang = $this->url_args['search_lang'] =
-                        $dialect->lang_id;
-            }
-        }
-//        if ($search_lang || $search_pos || $search_dialect) {
-            $wordforms = $wordforms->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id');
-//        }
-        
-        if ($search_lang) {
-            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($search_lang){
-                        $query->select('id')
-                        ->from(with(new Lemma)->getTable())
-                        ->where('lang_id', $search_lang);
-                    });
-        } 
-         
-        if ($search_pos) {
-            $wordforms = $wordforms->whereIn('lemma_id',function($query) use ($search_pos){
-                        $query->select('id')
-                        ->from(with(new Lemma)->getTable())
-                        ->where('pos_id',$search_pos);
-                    });
-        } 
-         
-        if ($search_dialect) {
-            $wordforms = $wordforms->where('dialect_id',$search_dialect);
-                    
-/*            $wordforms = $wordforms->whereIn('id',function($query) use ($search_dialect){
-                        $query->select('wordform_id')
-                        ->from("lemma_wordform")
-                        ->where('dialect_id',$search_dialect);
-                    }); */
-        } 
-//dd($wordforms->toSql());        
-         
+        $wordforms = Wordform::search($url_args);
         $numAll = $wordforms->count();
         
-        $wordforms = $wordforms->paginate($this->url_args['limit_num']);
+        $wordforms = $wordforms->paginate($url_args['limit_num']);
                 //take($limit_num)->get();
         
         foreach ($wordforms as $wordform) {
             $lemmas = [];
             foreach ($wordform->lemmas as $lemma) {
-               if (!$search_lang || $lemma->lang_id == $search_lang) {
+               if (!$url_args['search_lang'] || $lemma->lang_id == $url_args['search_lang']) {
                    $lemmas[$lemma->id] = $lemma;
                } 
             }
@@ -130,17 +88,11 @@ class WordformController extends Controller
         //$lang_values = Lang::getListWithQuantity('wordforms');
                                 
         $dialect_values = Dialect::getList();
- 
-        return view('dict.wordform.index')
-                  ->with([
-                      'dialect_values' => $dialect_values,
-                      'lang_values' => $lang_values,
-                      'numAll' => $numAll,
-                      'pos_values' => $pos_values,
-                      'wordforms' => $wordforms,
-                      'args_by_get'    => $this->args_by_get,
-                      'url_args'       => $this->url_args,
-                   ]);
+        $gramset_values = Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
+
+        return view('dict.wordform.index',
+                compact('dialect_values', 'gramset_values', 'lang_values', 'numAll',
+                        'pos_values', 'wordforms', 'args_by_get', 'url_args'));
     }
     
     /**
@@ -331,8 +283,6 @@ class WordformController extends Controller
                 
         endforeach;
      }
- *
- */  
     
     public function tempCheckWordformsWithSpaces(Request $request) {
 //print "<pre>";        
@@ -355,6 +305,38 @@ class WordformController extends Controller
             print "</p>";
         }
     }    
+ *
+ */  
+    
+    public function tmpFixNegativeVepsVerbForms() {
+        $lang_id = 1;
+        $gramsets = [70, 71, 72, 73, 78, 79, 80, 81, 82, 83, 84, 85, 50, 74, 76, 77, 116, 117, 118, 119, 120, 121];
+        $dialect_id=43;
+        foreach ($gramsets as $gramset_id) {
+            $negation = Grammatic::negativeForm($gramset_id, $lang_id);
+            $lemmas = Lemma::where('lang_id', $lang_id)
+                    ->whereIn('id', function($query) use ($dialect_id, $gramset_id) {
+                        $query->select('lemma_id')->from('lemma_wordform')
+                              ->where('gramset_id',$gramset_id)
+                              ->where('dialect_id',$dialect_id);
+                    })->where('id','<>',828)->where('id','<>',652)
+                    ->orderBy('lemma')->get();
+            $count = 1;
+            foreach($lemmas as $lemma) {
+                foreach ($lemma->wordforms()->wherePivot('gramset_id', $gramset_id)->get() as $wordform) {
+                    if (preg_match("/^".$negation."/", $wordform->wordform)) { continue; }
+                    $new_wordform = $negation.$wordform->wordform;
+                    print "<p>".$count++.'. '.$lemma->id.'. '.$new_wordform;
+                    $lemma->wordforms()
+                          ->wherePivot('wordform_id',$wordform->id)
+                          ->wherePivot('gramset_id',$gramset_id)
+                          ->wherePivot('dialect_id',$dialect_id)
+                          ->detach();                    
+                    $lemma->addWordform($new_wordform, $gramset_id, $dialect_id); 
+                }
+            }
+        }
+    }
 }
 
 // a lemma and wordform related by more than once

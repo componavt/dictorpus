@@ -143,4 +143,12 @@ class Dialect extends Model
     public static function totalCount(){
         return self::count();
     } */    
+    
+    public static function getLangIDByID($dialect_id) {
+        $dialect = self::find($dialect_id);
+        if (!$dialect) {
+            return NULL;
+        }
+        return $dialect->lang_id;
+    }
 }

@@ -98,13 +98,13 @@ class LemmaController extends Controller
         $lemmas = Lemma::search($url_args);
         $numAll = $lemmas->count();
 //dd($lemmas->toSql()); 
-        $lemmas = $lemmas->paginate($this->url_args['limit_num']);         
+        $lemmas = $lemmas->paginate($url_args['limit_num']);         
 //dd($lemmas);        
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
         
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('lemmas');
-        $gramset_values = Gramset::getList($this->url_args['search_pos'],$this->url_args['search_lang'],true);
+        $gramset_values = Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
 
         return view('dict.lemma.index',
                 compact('gramset_values', 'lang_values', 'lemmas', 'numAll',

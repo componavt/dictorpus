@@ -778,7 +778,8 @@ class Grammatic
      *          6 => d/t - предпоследняя буква инфинитива
      *          7 => a/ä - последняя буква инфинитива]
      */
-    public static function verbWordformVepsByStems($stems, $gramset_id, $lang_id) {
+    public static function verbWordformVepsByStems($stems, $gramset_id, $dialect_id) {
+        $lang_id = 1;
         $g = self::rightConsonant($stems[6], 'g');
         switch ($gramset_id) {
             case 26: // 1. индикатив, презенс, 1 л., ед.ч., пол. 
@@ -1076,9 +1077,6 @@ class Grammatic
         return $word;
     }
     public static function negativeForm($gramset_id, $lang_id) {
-        if ($lang_id != 4) {
-            return '';
-        }
         $neg_lemma = Lemma::where('lang_id', $lang_id)->whereLemma('ei')
                           ->where('pos_id',PartOfSpeech::getIDByCode('AUX'))->first();
         if (!$neg_lemma) {

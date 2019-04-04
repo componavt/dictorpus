@@ -48,9 +48,10 @@ class LemmaTest extends TestCase
     public function testParseLemmaField()
     {
         $lemma_field="abei|";
-        $result = Lemma::parseLemmaField($lemma_field);
+        $data = ['lemma'=>$lemma_field, 'lang_id'=>null, 'pos_id'=>null, 'dialect_id'=>null];
+        $result = Lemma::parseLemmaField($data);
         
-        $expected = ['abei','','abei',''];
+        $expected = ['abei','','abei','', false];
         $this->assertEquals( $expected, $result);        
     }
     

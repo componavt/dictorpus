@@ -193,7 +193,7 @@ class GrammaticTest extends TestCase
        
     // ------------------------------------------------------wordformsByTemplate
     
-    public function testNegativeVerbForInd1Sing() {
+    public function testNegativeKarelianVerbForInd1Sing() {
         $lang_id = 4;
         $gramset_id = 70; // индикатив, презенс, 1 л., ед. ч., отриц
         $result = Grammatic::negativeForm($gramset_id, $lang_id);
@@ -208,6 +208,15 @@ class GrammaticTest extends TestCase
         $result = Grammatic::negativeForm($gramset_id, $lang_id);
         
         $expected = 'et ';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testNegativeVepsVerbForInd1Sing() {
+        $lang_id = 1;
+        $gramset_id = 70; // индикатив, презенс, 1 л., ед. ч., отриц
+        $result = Grammatic::negativeForm($gramset_id, $lang_id);
+        
+        $expected = 'en ';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -586,7 +595,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result[1]);        
     }
 */    
-    
+/*    
     public function testWordformsByTemplateVepsVerbVoikta() {
         $lang_id = 1;
         $pos_id = 11; // verb
@@ -601,11 +610,11 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-    
+   
     public function testWordformsByTemplateVepsVerbNullDialect() {
         $lang_id = 1;
         $pos_id = 11; // verb
-        $dialect_id=null;
+        $dialect_id=43;
         $template = "{{vep-conj-stems|töndu|da|b|i}}";
         $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
 //dd($result);        
@@ -616,5 +625,5 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-    
+*/    
 }

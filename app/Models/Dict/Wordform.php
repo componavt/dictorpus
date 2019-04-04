@@ -8,6 +8,8 @@ use DB;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
+use App\Library\Grammatic;
+
 class Wordform extends Model
 {
     /**
@@ -190,4 +192,67 @@ class Wordform extends Model
         }
     }    
     
+    public static function search(Array $url_args) {
+        $wordforms = self::orderBy('wordform');
+        $wordforms = self::searchByWordform($wordforms, $url_args['search_wordform']);
+
+        if ($url_args['search_dialect'] || !$url_args['search_lang']) {
+             $url_args['search_lang'] = Dialect::getLangIDByID($url_args['search_dialect']);
+        }
+//        if ($search_lang || $search_pos || $search_dialect) {
+        $wordforms = $wordforms->join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id');
+//        }
+        $wordforms = self::searchByGramset($wordforms, $url_args['search_gramset']);
+        $wordforms = self::searchByLang($wordforms, $url_args['search_lang']);
+        $wordforms = self::searchByPOS($wordforms, $url_args['search_pos']);
+        $wordforms = self::searchByDialect($wordforms, $url_args['search_dialect']);
+//dd($wordforms->toSql());        
+        return $wordforms;
+    }
+    
+    public static function searchByWordform($wordforms, $wordform) {
+        $wordform = Grammatic::toSearchForm($wordform);
+        if (!$wordform) {
+            return $wordforms;
+        }
+        return 
+            $wordforms->where('wordform_for_search','like', $wordform);
+    }
+    
+    public static function searchByDialect($wordforms, $dialect) {
+        if (!$dialect) {
+            return $wordforms;
+        }
+        return $wordforms->where('dialect_id',$dialect);
+    }
+    
+    public static function searchByGramset($wordforms, $gramset) {
+        if (!$gramset) {
+            return $wordforms;
+        }
+        return $wordforms->where('gramset_id',$gramset);
+    }
+    
+    public static function searchByLang($wordforms, $lang) {
+        if (!$lang) {
+            return $wordforms;
+        }
+        return $wordforms->whereIn('lemma_id',function($query) use ($lang){
+                    $query->select('id')
+                    ->from(with(new Lemma)->getTable())
+                    ->where('lang_id', $lang);
+                });
+    }
+    
+    public static function searchByPOS($wordforms, $pos) {
+        if (!$pos) {
+            return $wordforms;
+        }
+        return $wordforms->whereIn('lemma_id',function($query) use ($pos){
+                    $query->select('id')
+                    ->from(with(new Lemma)->getTable())
+                    ->where('pos_id',$pos);
+                });
+    }
+        
 }
