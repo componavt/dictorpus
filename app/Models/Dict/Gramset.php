@@ -392,11 +392,13 @@ class Gramset extends Model
             $name = 'gram'.$field;
 //print "<P>$name";   
 //if ($this->$name) {            dd($this->$name); }
-            if ($this->$name && $this->$name->unimorph) {
-                if (preg_match("/^V\./",$this->$name->unimorph) && $feats[0] == 'V') {
-                    unset($feats[0]);
-                }
-                $feats[] = $this->$name->unimorph;
+            if ($this->$name) {
+                if ($this->$name->unimorph) {
+                    if (preg_match("/^V\./",$this->$name->unimorph) && $feats[0] == 'V') {
+                        unset($feats[0]);
+                    }
+                    $feats[] = $this->$name->unimorph;
+                } else { return false; } // если нет кода для какой-то грамемы, то эту словоформу не выгружаем (например, инфинитив 2)
             }
         }        
         return $feats;

@@ -625,5 +625,35 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-*/    
+    
+    public function testWordformsByTemplateVepsVerbAstta() {
+        $lang_id = 1;
+        $pos_id = 11; // verb
+        $dialect_id=43;
+        $template = "{{vep-conj-stems|ast|ta|ub|ui}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 56; //astta
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+   
+    public function testWordformsByTemplateVepsVerbValita() {
+        $lang_id = 1;
+        $pos_id = 11; // verb
+        $dialect_id=43;
+        $template = "{{vep-conj-stems|vali|ta|čeb|či}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 1126; //valita
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+*/   
 }

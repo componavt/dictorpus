@@ -1106,20 +1106,23 @@ class LemmaController extends Controller
 //        foreach ([4, 5, 6, 1] as $lang_id) {
             $lang_id = 6;
             $lang = Lang::find($lang_id);
-            $filename = 'export/unimorph/vepkar-'.$date_now.'-'.$lang->code.'.txt';
-            Storage::disk('public')->put($filename, "# ".$lang->name);
-            $lemmas = Lemma::where('lang_id',$lang_id)
-//                    ->where('id',1416)
-//                    ->take(100)
-                    ->orderBy('lemma')
-                    ->get();
-            foreach ($lemmas as $lemma) {
-                $line = $lemma->toUniMorph();
-                if ($line) {
-                    Storage::disk('public')->append($filename, $line);
+            $dialects = Dialect::where('lang_id',$lang_id)->get();
+            foreach ($dialects as $dialect) {
+                $filename = 'export/unimorph/vepkar-'.$date_now.'-'.$dialect->code.'.txt';
+                Storage::disk('public')->put($filename, "# ".$dialect->name_en);
+                $lemmas = Lemma::where('lang_id',$lang_id)
+    //                    ->where('id',1416)
+    //                    ->take(100)
+                        ->orderBy('lemma')
+                        ->get();
+                foreach ($lemmas as $lemma) {
+                    $line = $lemma->toUniMorph($dialect->id);
+                    if ($line) {
+                        Storage::disk('public')->append($filename, $line);
+                    }
                 }
+                print  '<p><a href="'.Storage::url($filename).'">'.$dialect->name_en.'</a>';            
             }
-            print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
 //    }      
     }
 

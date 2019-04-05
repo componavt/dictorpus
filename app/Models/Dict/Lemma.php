@@ -427,12 +427,13 @@ class Lemma extends Model
      * @return Collection of Wordform Objects
      * 
      */
-    public function wordformsWithGramsets(){
+    public function wordformsWithGramsets($dialect_id=NULL){
 //        $dialects = Dialect::existDialects();
         $wordforms = $this->wordforms()->get();
-
+dd($wordforms);
         foreach ($wordforms as $wordform) {
-            $gramset = $wordform->lemmaDialectGramset($this->id,NULL)->first(); // А МОЖЕТ МАССИВ?
+            $gramset = $wordform->lemmaDialectGramset($this->id,$dialect_id)->first(); // А МОЖЕТ МАССИВ?
+            
             if ($gramset) {
                 $wordform->gramset = $gramset;
 //                $wordform->gramset_id = $gramset->id;
@@ -1149,7 +1150,7 @@ class Lemma extends Model
         return $wordforms;
     }
 
-    public function toUniMorph() {
+    public function toUniMorph($dialect_id) {
         $pos_id = $this->pos_id;
         
         if (!in_array($pos_id, PartOfSpeech::getNameIDs()) && $pos_id != PartOfSpeech::getVerbID()) {
@@ -1159,14 +1160,16 @@ class Lemma extends Model
         if (!$pos) { return false; }
         
         $pos_code = $pos->unimorph;
-        $wordforms = $this->wordformsWithGramsets();//wordforms;
+//dd($this->wordforms);              
+        $wordforms = $this->wordforms()->wherePivot('dialect_id',$dialect_id)->get();//wordformsWithGramsets();
+//dd($dialect_id, $wordforms);
         if (!$wordforms) { return false; }
-//dd($wordforms);
         $lines = [];
         foreach ($wordforms as $wordform) {
-            $gramset=$wordform->gramset;
+            $gramset=$wordform->gramsetPivot();
             if (!$gramset) { continue; }
             $features = $gramset->toUniMorph($pos_code);
+            if (!$features) { continue; }
             $lines[] = $this->lemma."\t".$wordform->wordform."\t".join(';',$features);
         }
         return join("\n", $lines);

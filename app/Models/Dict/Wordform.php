@@ -52,6 +52,7 @@ class Wordform extends Model
         return $builder;
     }
 
+    
     public function lemmaDialectGramset($lemma_id, $dialect_id=NULL)
     {
         $builder = $this->belongsToMany(Gramset::class, 'lemma_wordform')
@@ -84,6 +85,12 @@ class Wordform extends Model
         return $wordform;
     }
 
+    public function gramsetPivot() {
+        $gramset_id=$this->pivot->gramset_id;
+        if (!$gramset_id) { return; }
+        $gramset = Gramset::find($gramset_id);
+        return $gramset;
+    }
     /**
      * Store wordform in nominative for nouns (NOUN), adjectives(ADJ)
      * and infinitive for verbs (VERB)
