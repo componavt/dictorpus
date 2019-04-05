@@ -48,8 +48,8 @@ class LemmaController extends Controller
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                           ['only' => ['create','store','edit','update','destroy',
-                                      'editExample', 'removeExample', 'exportAnnotationConll',
-                                      'editExamples','updateExamples', 'exportToUniMorph',
+                                      'editExample', 'removeExample',
+                                      'editExamples','updateExamples',
                                       'createMeaning', 'storeSimple',
                                       'createWordform', 'updateWordformFromText',
                                       'editWordforms','updateWordforms']]);
@@ -1057,75 +1057,6 @@ class LemmaController extends Controller
                         );
     }
     
-    /*
-     * annotation for CONLL
-     */
-    public function exportAnnotationConll() {
-        $filename = 'export/conll/annotation.txt';
-        
-        Storage::disk('public')->put($filename, "# Parts of speech");
-        $parts_of_speech = PartOfSpeech::all()->sortBy('name_en');
-        foreach ($parts_of_speech as $pos) {
-            Storage::disk('public')->append($filename, $pos->name_en. "\t". $pos->code);            
-        }
-        
-        Storage::disk('public')->append($filename, "\n# Lemma features");
-        $lemma_feature = new LemmaFeature;
-        foreach ($lemma_feature->feas_conll_codes as $name=>$info) {
-            $named_keys = [];
-            if (preg_match("/^(.+)_id$/", $name, $regs) && is_array(trans('dict.'.$regs[1].'s'))) {
-                $named_keys = trans('dict.'.$regs[1].'s');
-//dd($named_keys);                
-            }
-            foreach ($info as $key=>$code) {
-                Storage::disk('public')->append($filename, "$name=".(isset($named_keys[$key]) ? $named_keys[$key] : $key)."\t$code");
-            }
-        }
-        
-        Storage::disk('public')->append($filename, "\n# Grammatical attributes");
-        $gram_categories = GramCategory::all()->sortBy('sequence_number');
-        foreach ($gram_categories as $gram_category) {
-            $grams = Gram::where('gram_category_id',$gram_category->id)->orderBy('sequence_number')->get();
-            foreach ($grams as $gram) {
-                Storage::disk('public')->append($filename, $gram_category->name_en. '='. $gram->name_en. "\t". $gram->conll);            
-            }
-        }
-        
-        print  '<p><a href="'.Storage::url($filename).'">annotation</a>';            
-    }
-
-    /*
-     * vepkar-20190129-vep
-     */
-    public function exportToUniMorph() {
-        ini_set('max_execution_time', 7200);
-        ini_set('memory_limit', '512M');
-        $date = Carbon::now();
-        $date_now = $date->toDateString();
-        
-//        foreach ([4, 5, 6, 1] as $lang_id) {
-            $lang_id = 6;
-            $lang = Lang::find($lang_id);
-            $dialects = Dialect::where('lang_id',$lang_id)->get();
-            foreach ($dialects as $dialect) {
-                $filename = 'export/unimorph/vepkar-'.$date_now.'-'.$dialect->code.'.txt';
-                Storage::disk('public')->put($filename, "# ".$dialect->name_en);
-                $lemmas = Lemma::where('lang_id',$lang_id)
-    //                    ->where('id',1416)
-    //                    ->take(100)
-                        ->orderBy('lemma')
-                        ->get();
-                foreach ($lemmas as $lemma) {
-                    $line = $lemma->toUniMorph($dialect->id);
-                    if ($line) {
-                        Storage::disk('public')->append($filename, $line);
-                    }
-                }
-                print  '<p><a href="'.Storage::url($filename).'">'.$dialect->name_en.'</a>';            
-            }
-//    }      
-    }
-
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences

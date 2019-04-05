@@ -84,14 +84,11 @@ Route::group(
         Route::get('corpus/text/full_updated_list', 'Corpus\TextController@fullUpdatedList');
         Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
         Route::get('corpus/text/word/create_checked_block', 'Corpus\TextController@getWordCheckedBlock');
-        Route::get('corpus/text/export/conll', 'Corpus\TextController@exportToCONLL');        
-        Route::get('corpus/text/export/sentences', 'Corpus\TextController@exportSentencesToLines');        
         Route::get('corpus/text/freq_symb', 'Corpus\TextController@frequencySymb');
         
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
 
-        
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
 
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
@@ -103,9 +100,6 @@ Route::group(
         Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')
                         ->name('lemma.update.wordforms');
         
-        Route::get('dict/lemma/export/conll/annotation', 'Dict\LemmaController@exportAnnotationConll'); 
-        Route::get('dict/lemma/export/unimorph', 'Dict\LemmaController@exportToUniMorph'); 
-
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
         Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
@@ -159,6 +153,12 @@ Route::group(
 //        Route::get('corpus/text/tmpProcessOldLetters', 'Corpus\TextController@tmpProcessOldLetters');
         Route::get('corpus/video', 'Corpus\VideoController@index');
         
+        Route::get('export/conll', 'Library\ExportController@exportTextsToCONLL');        
+        Route::get('export/conll/annotation', 'Library\ExportController@exportAnnotationConll'); 
+        Route::get('export/sentences', 'Library\ExportController@exportSentencesToLines');                
+        Route::get('export/unimorph', 'Library\ExportController@exportLemmasToUniMorph'); 
+        Route::get('export/lemma_with_pos', 'Library\ExportController@exportLemmasWithPOS');
+
         Route::resource('dict/dialect', 'Dict\DialectController',
                        ['names' => ['update' => 'dialect.update',
                                     'store' => 'dialect.store',

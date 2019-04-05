@@ -47,7 +47,7 @@ class TextController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
                                      'addExample', 'editExample', 'updateExamples', 
-                                     'markupText', 'exportToCONLL', 'exportSentencesToLines',
+                                     'markupText',
                                      'markupAllEmptyTextXML','markupAllTexts']]);
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
@@ -645,56 +645,6 @@ class TextController extends Controller
                 ->with(['sentence'=>$sentence,'relevance'=>'', 'count'=>'']);
     }
     
-    /*
-     * vepkar-20190129-vep
-     */
-    public function exportToCONLL() {//Request $request
-        ini_set('max_execution_time', 7200);
-        ini_set('memory_limit', '512M');
-//dd(ini_get('memory_limit'));
-        $date = Carbon::now();
-        $date_now = $date->toDateString();
-        foreach ([4, 5, 6, 1] as $lang_id) {
-//            $lang_id = 6;
-            $lang = Lang::find($lang_id);
-            $filename = 'export/conll/vepkar-'.$date_now.'-'.$lang->code.'.txt';
-            Storage::disk('public')->put($filename, "# ".$lang->name);
-            $texts = Text::where('lang_id',$lang_id)
-//                    ->where('id',1416)
-                    ->get();
-            foreach ($texts as $text) {
-                Storage::disk('public')->append($filename, $text->toCONLL());
-            }
-            print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
-        }
-    }
-
-    /*
-     * export for word2vec 
-     * each sentences in new line
-     * sentences - words separated by | 
-     * vepkar-20190129-vep
-     * 
-     */
-    public function exportSentencesToLines() {//Request $request
-        ini_set('max_execution_time', 7200);
-        ini_set('memory_limit', '512M');
-//dd(ini_get('memory_limit'));
-        $date = Carbon::now();
-        $date_now = $date->toDateString();
-        $lang_id = 1;
-        $lang = Lang::find($lang_id);
-        $filename = 'export/vepkar-'.$date_now.'-'.$lang->code.'.txt';
-        Storage::disk('public')->put($filename, "# ".$lang->name);
-        $texts = Text::where('lang_id',$lang_id)
-//                    ->where('id',1416)
-                ->get();
-        foreach ($texts as $text) {
-            Storage::disk('public')->append($filename, $text->sentencesToLines());
-        }
-        print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
-    }
-
     /**
      * SQL: select lower(word) as l_word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, l_word LIMIT 30;
      * SQL: select word, count(*) as frequency from words where text_id in (select id from texts where lang_id=1) group by word order by frequency DESC, word LIMIT 30;
