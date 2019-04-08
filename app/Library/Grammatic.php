@@ -146,14 +146,17 @@ class Grammatic
     /**
      * template-name|base|nom-sg-suff|gen-sg-suff|par-sg-suff|par-pl-suff
      * vep-decl-stems|adjektiv||an|ad|id
+     * OR
+     * abidkirje|ine (-žen, -št, -ižid)
+     * abekirj (-an, -oid)
      * 
-     * @param Array $regs
+     * @param Array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff, 5=>par-pl-suff]
      * @param Int $lang_id
      * @param Int $pos_id
-     * @return Array
+     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>'', 3=>part_sg, 4=>part_pl, 5=>''], $base, $base_suff]
      */
     public static function nameStemsFromVepsTemplate($regs) {
-//dd($regs, $name_num);        
+//dd($regs);        
         $base = $regs[1];
         $base_suff = $regs[2];
         $gen_sg_suff = $regs[3];
@@ -168,10 +171,11 @@ class Grammatic
         }
         
         $stems[0] = $base.$regs[2];
-        $stems[1] = $base. $regs_gen[1];
-        $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs_gen[1].'d');
-        $stems[4] = $base. $regs_par[1];
-        $stems[2] = $stems[5] = '';
+        $stems[1] = $base. $regs_gen[1]; // single genetive base 
+        $stems[2] = '';
+        $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs_gen[1].'d'); // single partitive
+        $stems[4] = $base. $regs_par[1]; // plural partitive base
+        $stems[5] = '';
         return [$stems, $base, $base_suff];
     }
 
@@ -237,16 +241,18 @@ class Grammatic
                 list($stems, $base, $base_suff) =  self::nameStemsPlFromVepsTemplate($regs);
             } elseif (preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
                     preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
+//dd($regs);     
                 list($stems, $base, $base_suff) = self::nameStemsFromVepsTemplate($regs, $lang_id, $pos_id, $name_num);
             }
         } elseif ($pos_id == PartOfSpeech::getVerbID() && 
             (preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs) ||
-            preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {                    
+            preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {      
 //dd($regs);     
             $base = $regs[1];
             $base_suff = $regs[2];
             $stems = self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id);
         }
+//dd($stems);                
         return [$stems, $name_num, $base, $base_suff];
     }
     /**

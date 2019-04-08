@@ -224,6 +224,7 @@ class LemmaController extends Controller
         
         $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+//dd('stop');        
         $lemma->save();
 
         LemmaFeature::store($lemma->id, $request);
