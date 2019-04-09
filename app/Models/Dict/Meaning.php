@@ -484,6 +484,7 @@ class Meaning extends Model
         $lang_id = $lemma_obj->lang_id;
 //        $strs = ["word like '".addcslashes($lemma_obj->lemma,"'")."'"];
         $strs = ["word like '".$lemma_obj->lemma_for_search."'"];
+//dd($lemma_obj->wordforms);        
         foreach ($lemma_obj->wordforms as $wordform_obj) {
             $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
             //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
@@ -491,6 +492,7 @@ class Meaning extends Model
             $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
         }
         $cond = join(' OR ',array_unique($strs));
+//dd($cond);        
 /*        $unique_strs = array_unique($strs);
             
          // select all words matched with <lemma> from texts with lemma's lang
@@ -536,7 +538,8 @@ class Meaning extends Model
         if (!$words) {
             $words = $this->getWordsByWordforms();
         }
-//dd($words);        
+//dd($words);                
+        $this->texts()->detach();
         
         if (!$words) {
             return;
@@ -553,7 +556,6 @@ class Meaning extends Model
                             ];
         }
 
-        $this->texts()->detach();
         foreach ($text_links as $link) {
 //print "<br>meaning: ".$this->id."; text:".$link['text_id'];            
             $this->texts()->attach($link['text_id'],$link['other_fields']);

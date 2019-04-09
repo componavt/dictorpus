@@ -67,6 +67,7 @@ function reloadExamples(i) {
 }   
 
 function loadExamples(route, id) {
+//alert(route+'/'+id);    
     $("#img-loading_"+ id).show();    
     $.ajax({
         url: route+'/'+id, 

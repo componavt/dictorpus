@@ -232,6 +232,7 @@ class Grammatic
     public static function stemsFromVepsTemplate($template, $lang_id, $pos_id, $name_num = null) {
         $stems = $base = $base_suff = null;
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+//dd($template);            
             if (preg_match("/^vep-decl-stems\|n=sg\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u",$template, $regs)) {
                 $name_num = 'sg';
                 list($stems, $base, $base_suff) =  self::nameStemsSgFromVepsTemplate($regs);
@@ -288,7 +289,7 @@ class Grammatic
         }
         
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($list[1], $lang_id, $pos_id, $name_num);
-//if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
+//dd($stems);                
         if (!isset($stems[0])) {
             return [$template, false, $template, NULL];
         }
