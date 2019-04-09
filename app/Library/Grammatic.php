@@ -176,6 +176,7 @@ class Grammatic
         $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs_gen[1].'d'); // single partitive
         $stems[4] = $base. $regs_par[1]; // plural partitive base
         $stems[5] = '';
+//dd('stems:',$stems);        
         return [$stems, $base, $base_suff];
     }
 
@@ -209,14 +210,15 @@ class Grammatic
      * template-name|n=sg|base|nom-sg-suff|gen-sg-suff|par-sg-suff
      * vep-decl-stems|n=sg|Amerik||an|ad
      * 
-     * @param Array $regs
-     * @return Array
+     * @param Array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff]
+     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>'', 3=>part_sg, 4=>part_pl, 5=>''], $base, $base_suff]
      */
     public static function nameStemsSgFromVepsTemplate($regs) {
+//dd($regs);        
         $base = $regs[1];
         $base_suff = $regs[2];
         $gen_sg_suff = $regs[3];
-        $par_sg_suff = (isset($par_sg_suff)) ? $regs[4] : null;
+        $par_sg_suff = (isset($regs[4])) ? $regs[4] : null;
 
         if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
             return [null, null, null];
@@ -224,8 +226,10 @@ class Grammatic
        
         $stems[0] = $base.$base_suff;        
         $stems[1] = $base. $regs1[1];
+        $stems[2] = '';
         $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs1[1]);
-        $stems[2] = $stems[4] = $stems[5] = '';
+        $stems[4] = $stems[5] = '';
+//dd($stems);        
         return [$stems, $base, $base_suff];
     }
     
@@ -234,6 +238,7 @@ class Grammatic
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
 //dd($template);            
             if (preg_match("/^vep-decl-stems\|n=sg\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u",$template, $regs) ||
+                    ($name_num == 'sg' && preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\,?\s*-?([^\,\;]*)\)/", $template, $regs)) ||
                     (preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template, $regs))) {
 //dd($regs);     
                 $name_num = 'sg';
@@ -255,7 +260,7 @@ class Grammatic
             $base_suff = $regs[2];
             $stems = self::verbStemsFromVepsTemplate($regs, $lang_id, $pos_id);
         }
-//dd($stems);                
+//dd('stems:',$stems);                
         return [$stems, $name_num, $base, $base_suff];
     }
     /**
@@ -1526,5 +1531,14 @@ class Grammatic
         }
         return [$stem, $affix];
         
+    }
+    
+    public static function nameNumFromNumberField($number) {
+        if ($number==1) {
+            return 'pl';
+        } elseif ($number==2) {
+            return 'sg';            
+        }
+        return null;
     }
 }

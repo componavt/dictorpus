@@ -232,7 +232,7 @@ class LemmaController extends Controller
         $lemma->storeReverseLemma($stem, $affix);
         
         $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $lemma->createDictionaryWordforms($wordforms, $request->plur_tan, $request->dialect_id);
+        $lemma->createDictionaryWordforms($wordforms, $request->number, $request->dialect_id);
             
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -270,7 +270,7 @@ class LemmaController extends Controller
         $lemma->storeReverseLemma($stem, $affix);
         
         $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $lemma->createDictionaryWordforms($wordforms, $request->plur_tan, $request->dialect_id);
+        $lemma->createDictionaryWordforms($wordforms, $request->number, $request->dialect_id);
 
         $new_meanings[0]=['meaning_n' => 1,
                           'meaning_text' =>
@@ -571,7 +571,7 @@ class LemmaController extends Controller
         $lemma->storeReverseLemma($stem, $affix);
         
         $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $lemma->createDictionaryWordforms($wordforms_list, $request->plur_tan, $request->dialect_id);    
+        $lemma->createDictionaryWordforms($wordforms_list, $request->number, $request->dialect_id);    
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);

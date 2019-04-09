@@ -12,21 +12,22 @@ class LemmaFeature extends Model
 {
     public $timestamps = false;
     public $incrementing=false;
-    protected $fillable = ['id','animacy','abbr','plur_tan','reflexive',
+    protected $fillable = ['id','animacy','abbr','number','reflexive',
         'transitive','prontype_id','numtype_id','degree_id','advtype_id'];
     public $featuresByPOS = [1  => ['degree_id'],                   // adjective
                              2  => ['advtype_id', 'degree_id'],     // adverb
-                             5  => ['animacy', 'abbr', 'plur_tan'], // noun
+                             5  => ['animacy', 'abbr', 'number'], // noun
                              6  => ['numtype_id'],                  // numeral
                              10 => ['prontype_id'],                 // pronoun
                              11 => ['reflexive', 'transitive'],     // verb                             
-                             14 => ['animacy', 'abbr', 'plur_tan'], // proper noun
+                             14 => ['animacy', 'abbr', 'number'], // proper noun
                             ];
     public $feas_conll_codes = [
         'animacy'    => [1 => 'Animacy=Anim',
                          0 => 'Animacy=Inan'],
         'abbr'       => [1 => 'Abbr=Yes'],
-        'plur_tan'   => [1 => 'Number=Plur'],
+        'number'     => [1 => 'Number=Plur', 
+                         2 => 'Number=Sing'],
         'reflexive'  => [1 => 'Reflex=Yes'],
         'transitive' => [1 => 'Subcat=Trans',
                          0 => 'Subcat=Intr'],
@@ -127,6 +128,8 @@ class LemmaFeature extends Model
             $value = $this->$field;
             if (preg_match('/^(.+)_id$/',$field,$regs)) {
                 $features[$field] = ['title'=>$regs[1], 'value'=>$value];
+            } elseif ($field == 'number') {
+                $features[$field] = ['title'=>'number', 'value'=>$value];
             } elseif($value===0) {
                 $features[$field] = 'in'.$field;
             } elseif($value) {
@@ -137,7 +140,7 @@ class LemmaFeature extends Model
     }
     
     public static function store($id, $request) {
-//dd($request);        
+//dd($request->all());        
         $lemma_feature = LemmaFeature::find($id);
         if (!$lemma_feature) {
             $lemma_feature = LemmaFeature::create(['id'=>$id]);
@@ -172,7 +175,7 @@ class LemmaFeature extends Model
                 if ($feas[$value]!==''):
                     $features[] = $feas[$value];
                 else:
-dd($field);                    
+//dd($field);                    
                 endif;
             endif;
         }

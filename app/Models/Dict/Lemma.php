@@ -782,7 +782,7 @@ dd($wordforms);
         $lemma = Grammatic::toRightForm($data['lemma']);
         $wordforms = '';//trim($data['wordforms']); убрано поле из формы леммы
 //dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);    
-        $name_num = isset($data['plur_tan']) && $data['plur_tan'] ? 'pl' : null;
+        $name_num = isset($data['number']) ? Grammatic::nameNumFromNumberField($data['number']) : null;
         list($lemma, $gramset_wordforms, $stem, $affix) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
 //dd('gramset_wordforms:',$gramset_wordforms);        
         if ($gramset_wordforms) {

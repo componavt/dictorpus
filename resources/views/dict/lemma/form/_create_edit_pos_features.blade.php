@@ -4,9 +4,10 @@
         @include('widgets.form.formitem._checkbox_for_field', 
                 ['name' => 'abbr', 
                  'title'=>trans('dict.abbr')])
-        @include('widgets.form.formitem._checkbox_for_field', 
-                ['name' => 'plur_tan', 
-                 'title'=>trans('dict.plur_tan')])
+        @include('widgets.form.formitem._select_for_field', 
+                ['name' => 'number', 
+                 'without_id' => true,
+                 'lang_file'=> 'dict'])
                  
         @include('widgets.form.formitem._checkbox_for_field', 
                 ['name' => 'reflexive', 

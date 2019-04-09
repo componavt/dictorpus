@@ -1,6 +1,6 @@
 <?php 
 $features = [];
-//dd($lemma->features->nonNullableFeatures());
+//dd($lemma->features->filledFeatures());
 if ($lemma->features) {
     foreach (array_values($lemma->features->filledFeatures()) as $field) {
        if (is_array($field)) {

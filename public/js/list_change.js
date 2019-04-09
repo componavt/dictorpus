@@ -8,7 +8,7 @@ function posSelect() {
             } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun
                 $("#animacy-field").show().prop("disabled", false);
                 $("#abbr-field").show().prop("disabled", false);
-                $("#plur_tan-field").show().prop("disabled", false);
+                $("#number-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==6) { // is numeral
                 $("#numtype-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==10) { // is pronoun
