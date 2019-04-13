@@ -53,6 +53,17 @@ class User extends EloquentUser
         return $this->belongsToMany(Dialect::class, 'dialect_user');
     }
     
+    public static function registration($input) {
+        $sentuser = Sentinel::register($input);
+        
+        $user = self::find($sentuser->id);
+        $user->city = $input['city'];
+        $user->country = $input['country'];
+        $user->affilation = $input['affilation'];
+        $user->save();
+        
+        return $sentuser;
+    }
     /**
      * Get the fillable attributes for the model.
      *

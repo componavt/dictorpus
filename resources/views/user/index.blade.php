@@ -16,9 +16,8 @@
                 <th>No</th>
                 <th>E-mail</th>
                 <th>{{ trans('auth.name') }}</th>
-                <th>{{ trans('auth.roles') }}</th>
-                <th>{{ trans('navigation.langs') }}</th>
-                <th>{{ trans('auth.last_login') }}</th>
+                <th>{{ trans('auth.city') }} / {{ trans('auth.affilation') }}</th>
+                <th>{{ trans('auth.roles') }} / {{ trans('navigation.langs') }}</th>
                 <th>{{ trans('auth.last_activity') }}</th>
                 @if (User::checkAccess('user.edit'))
                 <th>{{ trans('messages.actions') }}</th>
@@ -31,10 +30,26 @@
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="E-mail">{{$user->email}}</td>
                 <td data-th="{{ trans('auth.name') }}">{{$user->first_name}} {{$user->last_name}}</td>
-                <td data-th="{{ trans('auth.roles') }}">{{$user->rolesNames()}}</td>
-                <td data-th="{{ trans('navigation.langs') }}">{{$user->langString()}}</td>
-                <td data-th="{{ trans('auth.last_login') }}">{{$user->last_login}}</td>
-                <td data-th="{{ trans('auth.last_activity') }}">{{$user->getLastActionTime()}}</td>
+                <td data-th="{{ trans('auth.city') }} / {{ trans('auth.affilation') }}">
+                    {{$user->country}}@if ($user->city)
+                    , {{$user->city}}
+                    @endif
+                    @if ($user->affilation)
+                    , {{$user->affilation}}
+                    @endif
+                </td>
+                <td data-th="{{ trans('auth.roles') }} / {{ trans('navigation.langs') }}">
+                    {{$user->rolesNames()}}
+                    @if ($user->langString())
+                    <br>{{$user->langString()}}
+                    @endif
+                </td>
+                <td data-th="{{ trans('auth.last_activity') }}">
+                    {{$user->last_login}}
+                    @if ($user->getLastActionTime())
+                    <br>{{$user->getLastActionTime()}}
+                    @endif
+                </td>
                 @if (User::checkAccess('user.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit', 

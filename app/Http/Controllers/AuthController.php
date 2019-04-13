@@ -18,6 +18,8 @@ use CurlHttp;
 
 //use Barryvdh\Debugbar\Facade as Debugbar;
 
+use App\Models\User;
+
 class AuthController extends Controller
 {
 
@@ -135,10 +137,11 @@ class AuthController extends Controller
                 ->withErrors(\Lang::get('error.email_is_registered'));
         }
         
-        if ($sentuser = Sentinel::register($input))
+        if ($sentuser = User::registration($input))
         {
             $activation = Activation::create($sentuser);
             $code = $activation->code;
+            
             $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function($m) use ($sentuser)
             {
                 $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
