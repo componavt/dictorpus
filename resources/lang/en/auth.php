@@ -12,7 +12,10 @@ return [
 
     'account_is_created' => 'Your account has been created. Check Email to activate.',
     'account_is_activated' => 'Account is activated.',
+    'affilation' => 'Affilation',
+    'city' => 'City',
     'confirm' => 'Confirm',
+    'country' => 'Country',
     'first_name' => 'First name',
     'last_activity' => 'Last activity',
     'last_name' => 'Last name',

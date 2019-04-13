@@ -20,6 +20,9 @@ $without_enter_form = true;
     @include('widgets.form.formitem._password', ['name' => 'password_confirm', 'title' => trans('auth.password_confirm'), 'placeholder' => trans('auth.password') ])
     @include('widgets.form.formitem._text', ['name' => 'first_name', 'title' => trans('auth.first_name')])
     @include('widgets.form.formitem._text', ['name' => 'last_name', 'title' => trans('auth.last_name') ])
+    @include('widgets.form.formitem._text', ['name' => 'country', 'title' => trans('auth.country') ])
+    @include('widgets.form.formitem._text', ['name' => 'city', 'title' => trans('auth.city') ])
+    @include('widgets.form.formitem._text', ['name' => 'affilation', 'title' => trans('auth.affilation') ])
     @include('widgets.form.formitem._submit', ['title' => trans('auth.register')])
     {!! Form::close() !!}
     

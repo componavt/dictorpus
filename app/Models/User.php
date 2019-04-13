@@ -14,7 +14,7 @@ use App\Models\Dict\Lang;
 
 class User extends EloquentUser
 {
-    protected $fillable = ['email','first_name','last_name','permissions'];
+    protected $fillable = ['email','first_name','last_name','permissions', 'country', 'city', 'affilation'];
     protected $perm_list = ['admin','dict.edit','corpus.edit','ref.edit','user.edit'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;

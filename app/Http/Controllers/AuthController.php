@@ -122,6 +122,9 @@ class AuthController extends Controller
             'password_confirm' => 'required|same:password',
             'first_name' => 'required',
             'last_name' => 'required',
+            'city' => 'required',
+            'country' => 'required',
+            'affilation' => 'required',
         ]);
         $input = $request->all();
         $credentials = [ 'email' => $request->email ];

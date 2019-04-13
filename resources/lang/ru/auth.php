@@ -12,7 +12,10 @@ return [
     
     'account_is_created' => 'Ваш аккаунт создан. Проверьте Email для активации.',
     'account_is_activated' => 'Аккаунт активирован.',
+    'affilation' => 'Организация',
+    'city' => 'Город',
     'confirm' => 'Подтвердить',
+    'country' => 'Страна',
     'first_name' => 'Имя',
     'last_activity' => 'Последняя активность',
     'last_login' => 'Последний вход',
