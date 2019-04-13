@@ -22,9 +22,59 @@ class Source extends Model
         parent::boot();
     }
     
+    // Source __has_many__ Texts
+    public function texts()
+    {
+        return $this->hasMany(Text::class);
+    }
+
+    /**
+     * if Source doesn't exist, 
+     *      creates new and returns id of Source
+     * elseif Source is updated (data of Source is modified)
+     *      if other texts with this Source exist, 
+     *          creates new and returns id of Source
+     *      else 
+     *          updates Source if it exists 
+     * 
+     * @param INT $source_id or NULL
+     * @param ARRAY $data_to_fill
+     * @return INT or NULL
+     */
+    public static function fillByData($source_id, $request_data) {
+        $source_fields = ['title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'];
+        foreach ($source_fields as $column) {
+            $data_to_fill[$column] = ($request_data['source_'.$column]) ? $request_data['source_'.$column] : NULL;
+        }
+        if (!$source_id) {
+            $source = Source::firstOrCreate($data_to_fill);
+            $source_id = $source->id;
+        } else {
+            $source = Source::find($source_id);
+            $source_is_updated = false;
+            foreach ($data_to_fill as $column=> $data_value) {
+                if ($data_value != $source->$column) {
+                    $source_is_updated = true;
+                }
+            }
+            if ($source_is_updated) {
+                if ($source->texts && $source->texts()->count()>1) { // other texts with this Source exist
+                    $source_new = Source::firstOrCreate($data_to_fill);
+                    $source_id = $source_new->id;
+                } else {
+                    $source->fill($data_to_fill);
+                    $source->save();
+                }
+            }
+        }
+        return $source_id;
+    }
+
     public static function removeByID($id) {
         $obj = self::find($id);
-        if (!$obj) { return;}
+        if (!$obj || $obj->texts) { 
+            return;
+        }        
         $obj->delete();
     }    
 

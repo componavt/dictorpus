@@ -475,17 +475,18 @@ class Text extends Model
     }
 
     /**
-     * Checks request data. If the request data is not null, 
-     * updates Source if it exists or creates new and returns id of Source
+     * Checks request data. 
+     * If the request data is not null, 
+     *  update source data
      * 
      * If the request data is null and Source exists, 
-     * destroy it and sets source_id in Text as NULL.
+     *      destroys it and sets source_id in Text as NULL.
      * 
      * @return INT or NULL
      */
     public function storeSource($request_data){
         $is_empty_data = true;
-        if(array_filter($request_data)) {
+        if(array_filter($request_data)) { // returns unempty items of array
             $is_empty_data = false;
         }
         if ($this) {
@@ -495,21 +496,10 @@ class Text extends Model
         }
 
         if (!$is_empty_data) {
-            foreach (['title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'] as $column) {
-                $data_to_fill[$column] = ($request_data['source_'.$column]) ? $request_data['source_'.$column] : NULL;
-            }
-            if ($source_id) {
-                $source = Source::find($source_id)->fill($data_to_fill);
-                $source->save();
-            } else {
-                $source = Source::firstOrCreate($data_to_fill);
-                $this->source_id = $source->id;
-                $this->save();
-            }
- //       dd($source);
-            return $source->id;
-            
-        } elseif ($source_id) {
+            $this->source_id = Source::fillByData($source_id, $request_data);
+            $this->save();
+        } 
+        elseif ($source_id) {
             $this->source_id = NULL;
             $this->save();
             
