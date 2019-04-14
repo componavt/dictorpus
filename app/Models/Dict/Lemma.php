@@ -1063,9 +1063,15 @@ dd($wordforms);
                 $old_dialect_id = (!(int)$old_dialect_id) ? NULL : (int)$old_dialect_id; 
                 $this->deleteWordforms($gramset_id, $old_dialect_id);
                 
-                $dialect_id = (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id])
-                        ? (int)$dialects[$gramset_id] : NULL;
-                $this->addWordforms($wordform_texts, $gramset_id, $dialect_id);
+                if (isset($dialects[$gramset_id]) && $dialects[$gramset_id]=='all' ) {
+                    foreach (Dialect::getByLang($this->lang_id) as $dialect) {
+                        $this->addWordforms($wordform_texts, $gramset_id, $dialect->id);
+                    }
+                } else {
+                    $dialect_id = (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id])
+                            ? (int)$dialects[$gramset_id] : NULL;
+                    $this->addWordforms($wordform_texts, $gramset_id, $dialect_id);
+                }
             }
         }
 //exit(0); 

@@ -69,6 +69,9 @@ class Dialect extends Model
         }
     }
 
+    public static function getByLang($lang_id) {
+        return self::where('lang_id', $lang_id)->get();
+    }
     /** Gets list of dialects for language $lang_id,
      * if $lang_id is empty, gets all dialects
      * 

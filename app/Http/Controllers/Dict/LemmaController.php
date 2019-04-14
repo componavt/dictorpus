@@ -454,7 +454,7 @@ class LemmaController extends Controller
 //dd($lemma->wordformsWithAllGramsets($dialect_id));        
         $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
 //        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
-        $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id);
+        $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id)+['all'=>'ДЛЯ ВСЕХ ДИАЛЕКТОВ'];
         return view('dict.lemma.edit_wordforms')
                   ->with(array(
                                'dialect_id' => $dialect_id,
