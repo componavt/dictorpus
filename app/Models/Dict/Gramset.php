@@ -375,6 +375,8 @@ class Gramset extends Model
     public static function dictionaryGramsetNames($lang_id, $pos_id) {
         $names = [];
         $gramsets = self::dictionaryGramsets($pos_id, NULL, $lang_id);
+        $last = array_pop($gramsets);   
+        array_unshift($gramsets,$last); 
         
         if (!$gramsets) {
             return $names;

@@ -57,7 +57,7 @@ class ReverseLemma extends Model
             return $groups;
         }
         $gramsets = Gramset::dictionaryGramsets($pos_id, NULL, $lang_id);
-        $lemmas = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)->get();
+        $lemmas = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)->orderBy('lemma')->get();
         foreach ($lemmas as $lemma) {
             $affixes = [];
             list($stem, $lemma_affix) = $lemma->getStemAffix();
