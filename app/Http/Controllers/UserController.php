@@ -34,10 +34,15 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::orderBy('id','desc')->get();
+        $roles = Role::getList();
+        $users = [];
         
-        return view('user.index')
-                    ->with(['users' => $users]);
+        foreach (Role::all() as $role) {
+            $users[$role->id] = $role->users->sortByDesc('id');
+        }
+        
+        return view('user.index',
+                    compact('users','roles'));
     }
 
     /**

@@ -11,12 +11,12 @@
                  'title'=> trans('auth.last_name')])
                  
         @include('widgets.form.formitem._text', 
-                ['name' => 'city', 
-                 'title'=> trans('auth.city')])
-                 
-        @include('widgets.form.formitem._text', 
                 ['name' => 'country', 
                  'title'=> trans('auth.country')])
+                 
+        @include('widgets.form.formitem._text', 
+                ['name' => 'city', 
+                 'title'=> trans('auth.city')])
                  
         @include('widgets.form.formitem._text', 
                 ['name' => 'affilation', 
