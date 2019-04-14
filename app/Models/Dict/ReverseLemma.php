@@ -66,9 +66,17 @@ class ReverseLemma extends Model
                 if (!$wordform) {
                     continue;
                 }
-                if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
-                    $affixes[$i] = $regs[1];
+//if (preg_match("/,/",$wordform)) {dd($wordform); }               
+                $wordforms = preg_split("/,\s*/", $wordform);
+//if (preg_match("/,/",$wordform)) {dd($wordforms); }               
+                $aff = [];
+                foreach ($wordforms as $word) {
+                    if (preg_match("/^".$stem."(.*)$/u", $word, $regs)) {
+                        $aff[] = $regs[1];
+                    }
                 }
+//if (preg_match("/,/",$wordform)) {dd($aff); }                               
+                $affixes[$i] = join(", ", $aff);
             }
             $affixes[3] = $lemma_affix;
 //dd($affixes);            
