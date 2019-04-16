@@ -153,7 +153,7 @@ class Grammatic
      * @param Array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff, 5=>par-pl-suff]
      * @param Int $lang_id
      * @param Int $pos_id
-     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>'', 3=>part_sg, 4=>part_pl, 5=>''], $base, $base_suff]
+     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>base_part_pl, 5=>''], $base, $base_suff]
      */
     public static function nameStemsFromVepsTemplate($regs) {
 //dd($regs);        
@@ -172,8 +172,8 @@ class Grammatic
         
         $stems[0] = $base.$regs[2];
         $stems[1] = $base. $regs_gen[1]; // single genetive base 
-        $stems[2] = '';
-        $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs_gen[1].'d'); // single partitive
+        $stems[2] = mb_substr($stems[1],0,-1); // single illative base
+        $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs_gen[1].'d'); // single partitive base
         $stems[4] = $base. $regs_par[1]; // plural partitive base
         $stems[5] = '';
 //dd('stems:',$stems);        
@@ -201,8 +201,9 @@ class Grammatic
         }
         
         $stems[0] = $base.$base_suff;                
+        $stems[1] = $stems[2] = $stems[3] = '';
         $stems[4] = $base. $regs1[1];
-        $stems[1] = $stems[2] = $stems[3] = $stems[5] = '';
+        $stems[5] = '';
         return [$stems, $base, $base_suff];
     }
 
@@ -211,7 +212,7 @@ class Grammatic
      * vep-decl-stems|n=sg|Amerik||an|ad
      * 
      * @param Array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff]
-     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>'', 3=>part_sg, 4=>part_pl, 5=>''], $base, $base_suff]
+     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>'', 5=>''], $base, $base_suff]
      */
     public static function nameStemsSgFromVepsTemplate($regs) {
 //dd($regs);        
@@ -226,7 +227,7 @@ class Grammatic
        
         $stems[0] = $base.$base_suff;        
         $stems[1] = $base. $regs1[1];
-        $stems[2] = '';
+        $stems[2] = mb_substr($stems[1],0,-1); // single illative base
         $stems[3] = $base. ($par_sg_suff ? $par_sg_suff : $regs1[1]);
         $stems[4] = $stems[5] = '';
 //dd($stems);        
@@ -397,35 +398,9 @@ class Grammatic
         return '';
     }
 
-    public static function illSgEnding($stem) {
-        $last_let = mb_substr($stem, -1, 1);
-        $before_last_let = mb_substr($stem, -2, 1);
-        if ($before_last_let == 'h' && self::isVowel($last_let)) {
-            $ill_sg_ending = preg_match("/i$/u", $stem) ? 'že' : 'ze';
-        } else {
-            $ill_sg_ending = 'h'. (self::isVowel($last_let) 
-                                ? ($last_let=='i' ? 'e' : $last_let) 
-                                : 'a');
-        }  
-        return $ill_sg_ending;
-    }
-    
-    public static function illPlEnding($stem) {
-        $last_let = mb_substr($stem, -1, 1);
-        $before_last_let = mb_substr($stem, -2, 1);
-        if ($before_last_let == 'h' && self::isVowel($last_let)) {
-            $ill_ending = preg_match("/i$/u", $stem) ? 'že' : 'ze';
-        } else {
-            $ill_ending = 'h'. (self::isVowel($last_let) 
-                                ? ($last_let=='i' ? 'e' : $last_let) 
-                                : 'i');
-        }  
-        return $ill_ending;
-    }
-    
     /**
      * 
-     * @param Array $stems [nom_sg, gen_sg, '', part_sg, part_pl, '']
+     * @param Array $stems [nom_sg, gen_sg, ill_sg, part_sg, part_pl, '']
      * @param Int $gramset_id
      * @param Int $dialect_id
      * @param String $name_num 'sg', 'pl' or null
@@ -451,8 +426,8 @@ class Grammatic
                 return $stems[1] ? $stems[1]. $s_sg : '';
             case 9: // элатив, ед.ч. 
                 return $stems[1] ? $stems[1]. $s_sg. 'päi' : '';
-            /*case 10: // иллатив, ед.ч. 
-                return $stems[2].'h';*/
+            case 10: // иллатив, ед.ч. 
+                return illSgVeps($stems[1], $stems[2]);
             case 11: // адессив, ед.ч. 
                 return $stems[1] ? $stems[1] . 'l' : '';
             case 12: // аблатив, ед.ч. 
@@ -485,13 +460,13 @@ class Grammatic
             case 58: // эссив-инструктив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'n' : '';
             case 59: // транслатив, мн.ч. 
-                return $stems[4] ? $stems[4]. 'k'. $s_pl : '';
+                return $stems[4] ? $stems[4]. 'kš' : '';
             case 23: // инессив, мн.ч.
-                return $stems[4] ? $stems[4] . $s_pl : '';
+                return $stems[4] ? $stems[4]. 'š' : '';
             case 60: // элатив, мн.ч.
-                return $stems[4] ? $stems[4] . $s_pl. 'päi' : '';
+                return $stems[4] ? $stems[4]. 'špäi' : '';
             case 61: // иллатив, мн.ч. 
-                return $stems[4] ? $stems[4].self::illPlEnding($stems[4]) : '';
+                return $stems[4] ? $stems[4].(preg_match("/hi$/",$stems[4]) ? 'že' : 'he') : '';
             case 25: // адессив, мн.ч.
                 return $stems[4] ? $stems[4] . 'l' : '';
             case 62: // аблатив, мн.ч.
@@ -509,13 +484,42 @@ class Grammatic
             case 69: //эгрессив, мн.ч. 
                 return $stems[4] ? $stems[4].'dennopäi' : '';
             case 67: //терминатив, мн.ч. 
-                return $stems[4] ? $stems[4].self::illPlEnding($stems[4]).'sai, '. $stems[4].'lesai' : '';
+                return $stems[4] ? $stems[4].(preg_match("/hi$/",$stems[4]) ? 'ž' : 'h').'esai, '. $stems[4].'lesai' : '';
             case 68: //адитив, мн.ч. 
-                return $stems[4] ? $stems[4].self::illPlEnding($stems[4]).'päi, '. $stems[4].'lepäi' : '';
+                return $stems[4] ? $stems[4].(preg_match("/hi$/",$stems[4]) ? 'ž' : 'h').'epäi, '. $stems[4].'lepäi' : '';
+        }
+        return '';
+    }
+    
+    /**
+     * основа 1 + he (если основа 1 оканчивается на i)
+     * основа 4 + ze (если основа 1 оканчивается на hV)
+     * основа 4 +  hV
+     * 
+     * @param type $stem1
+     * @param type $stem4
+     * @return string
+     */
+    public function illSgVeps($stem1, $stem2){
+        if (preg_match("/i$/",$stem1)) {
+            return $stem1. 'he';
+        } elseif (preg_match("/h[auoeüäö]$/",$stem1)) {
+            return $stem2. 'ze';
+        } else {
+            $last_letter = mb_substr($stem1,-1,1);
+            return $stem2. 'h'. $last_letter;
         }
         return '';
     }
 
+    public static function illPlVepsEnding($stem) {
+        if (preg_match("/hi$/",$stem)) {
+            return 'že';
+        } else {
+            return 'he';
+        }
+    }
+    
     public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id) {
         if ($lang_id == 1) {
             return self::verbWordformVepsByStems($stems, $gramset_id, $dialect_id);
