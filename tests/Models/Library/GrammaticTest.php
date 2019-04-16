@@ -220,84 +220,6 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testPerfectVerbFormTulla() {
-        $lang_id = 4;
-        $stem = 'tul';
-        $result = Grammatic::perfectForm($stem, $lang_id);
-        
-        $expected = 'tullun';
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testPerfectVerbFormAndua() {
-        $lang_id = 4;
-        $stem = 'anda';
-        $result = Grammatic::perfectForm($stem, $lang_id);
-        
-        $expected = 'andan';
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testAuxFormIndPerf2SingPol() {
-        $lang_id = 4;
-        $gramset_id = 87; // индикатив, перфект, 2 л., ед. ч., пол
-        $dialect_id=47;
-        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
-        
-        $expected = 'olet ';
-        $this->assertEquals( $expected, $result);        
-    }
-/*    
-    public function testAuxFormIndPerf3PlurNeg() {
-        $lang_id = 4;
-        $gramset_id = 97; // 36. индикатив, перфект, 3 л., мн. ч., отриц
-        $dialect_id=47;
-        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
-        
-        $expected = 'ei ole ';
-        $this->assertEquals( $expected, $result);        
-    }
-*/    
-    public function testAuxFormIndPlurf3PlurNeg() {
-        $lang_id = 4;
-        $gramset_id = 103; // 42. индикатив, плюсквамперфект, 3 л., мн. ч., пол.
-        $dialect_id=47;
-        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
-        
-        $expected = 'oldih ';
-        $this->assertEquals( $expected, $result);        
-    }
-   
-    public function testAuxFormCondPlur3SingPol() {
-        $lang_id = 4;
-        $gramset_id = 136; // 97. кондиционал, плюсквамперфект, 3 л., ед. ч., пол.
-        $dialect_id=47;
-        $result = Grammatic::auxForm($gramset_id, $lang_id, $dialect_id);
-        
-        $expected = 'olis’ ';
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testimp3SingPolByStem() {
-        $stem5 = 'lien';
-        $lemma = 'lietä';
-        $dialect_id=47;
-        $result = Grammatic::imp3SingPolByStem($stem5, $lemma, $dialect_id);
-        
-        $expected = 'liekkäh';
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testimp2PlurPolByStem() {
-        $stem5 = 'lien';
-        $lemma = 'lietä'; 
-        $dialect_id=47;
-        $result = Grammatic::imp2PlurPolByStem($stem5, $lemma, $dialect_id);
-        
-        $expected = 'liekkiä';
-        $this->assertEquals( $expected, $result);        
-    }
-    
     public function testverbWordformByStemsAndazin() {
         $lang_id = 4;
         $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
@@ -353,24 +275,6 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testGarmVowelBack1Let() {
-        $stem = 'anda';
-        $vowel = 'a';
-        $result = Grammatic::garmVowel($stem, $vowel);
-        
-        $expected = 'a';
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testGarmVowelFront2Let() {
-        $stem = 'mäne';
-        $vowel = 'ou';
-        $result = Grammatic::garmVowel($stem, $vowel);
-        
-        $expected = 'öy';
-        $this->assertEquals( $expected, $result);        
-    }
-    
     public function testToRightFormApostroph() {
         $word = "ändäis'";
         $result = Grammatic::toRightForm($word);
@@ -390,66 +294,6 @@ class GrammaticTest extends TestCase
         $result = Grammatic::maxStem($stems);
         
         $expected = ['an', 'dua'];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testStemsFromTemplateMultiNum() {
-        $lang_id = 1; // veps
-        $pos_id = 5; // noun
-        $template = "vep-decl-stems|adjektiv||an|ad|id";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
-        
-        $expected = [['adjektiv', 'adjektiva', '', 'adjektivad', 'adjektivi', ''], null, 'adjektiv', ''];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testStemsFromTemplateSg() {
-        $lang_id = 1; // veps
-        $pos_id = 5; // noun
-        $template = "vep-decl-stems|n=sg|Amerik||an|ad";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
-        
-        $expected = [['Amerik', 'Amerika', '', 'Amerikad', '', ''], 'sg', 'Amerik', ''];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testStemsFromTemplatePl() {
-        $lang_id = 1; // veps
-        $pos_id = 5; // noun
-        $template = "vep-decl-stems|n=pl|Alama|d|id";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
-//dd($result);        
-        $expected = [['Alamad', '', '', '', 'Alamai', ''], 'pl', 'Alama', 'd'];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testStemsFromTemplateNounPlDict() {
-        $lang_id = 1; // veps
-        $pos_id = 5; // noun
-        $template = "Alama|d (-id)";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, 'pl');
-//dd($result);        
-        $expected = [['Alamad', '', '', '', 'Alamai', ''], 'pl', 'Alama', 'd'];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testStemsFromTemplateNounDict2Suff() {
-        $lang_id = 1; // veps
-        $pos_id = 5; // noun
-        $template = "abekirj (-an, -oid)";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
-//dd($result);        
-        $expected = [['abekirj', 'abekirja', '', 'abekirjad', 'abekirjoi', ''], null, 'abekirj', ''];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testStemsFromTemplateNounDict3Suff() {
-        $lang_id = 1; // veps
-        $pos_id = 5; // noun
-        $template = "abidkirje|ine (-žen, -št, -ižid)";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
-//dd($result);        
-        $expected = [['abidkirjeine', 'abidkirježe', '', 'abidkirješt', 'abidkirjeiži', ''], null, 'abidkirje', 'ine'];
         $this->assertEquals( $expected, $result);        
     }
     

@@ -895,3 +895,8 @@ update gram_categories set sequence_number=7 where id=2;
 --php artisan make:migration change_column_plur_tan_in_lemma_features
 
 --php artisan make:migration add_fields_in_users_table
+
+--php artisan make:test Models\Library\Grammatic\KarVerbTest
+--php artisan make:test Models\Library\Grammatic\KarGramTest
+--php artisan make:test Models\Library\Grammatic\VepsGramTest
+--php artisan make:test Models\Library\Grammatic\VepsNameTest
