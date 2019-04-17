@@ -49,7 +49,7 @@ class VepsNameTest extends TestCase
         $stems = ['su','pü','ma','pä','so','vö','ö','voi'];
         $result = [];
         foreach ($stems as $stem) {
-            $result[] = VepsName::countSyllable($stem);
+            $result[] = VepsName::illSgBase($stem);
         }
 //dd($result);        
         $expected = ['su','pü','ma','pä','so','vö','ö','voi'];
@@ -60,10 +60,10 @@ class VepsNameTest extends TestCase
         $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi'];
         $result = [];
         foreach ($stems as $stem) {
-            $result[] = VepsName::countSyllable($stem);
+            $result[] = VepsName::illSgBase($stem);
         }
 //dd($result);        
-        $expected = ['mec','kaiv','lum','sen','vil','verk','keg', 'maid','agj','pert','un', 'veikoi', 'soboi'];
+        $expected = ['mec','kaivo','lum','sen','vil','verko','kego', 'maid','agja','pert','un', 'veikoi', 'soboi'];
         $this->assertEquals( $expected, $result);        
     }
         
@@ -71,10 +71,43 @@ class VepsNameTest extends TestCase
         $stems = ['sizare','kirvhe','armha','nagrhe','abajo','abido'];
         $result = [];
         foreach ($stems as $stem) {
-            $result[] = VepsName::countSyllable($stem);
+            $result[] = VepsName::illSgBase($stem);
         }
 //dd($result);        
         $expected = ['sizare','kirvhe','armha','nagrhe','abajo','abido'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testIllSg1() {
+        $stems = ['su','pü','ma','pä','so','vö','ö','voi'];
+        $result = [];
+        foreach ($stems as $stem) {
+            $result[] = VepsName::illSg($stem);
+        }
+//dd($result);        
+        $expected = ['suhu','pühü','maha','pähä','soho','vöhö','öhö','voihe'];
+        $this->assertEquals( $expected, $result);        
+    }
+        
+    public function testIllSg2() {
+        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi'];
+        $result = [];
+        foreach ($stems as $stem) {
+            $result[] = VepsName::illSg($stem);
+        }
+//dd($result);        
+        $expected = ['mecha','kaivoho','lumhe','senhe','vilhu','verkoho','kegoho', 'maidho','agjaha','perthe','unhe', 'veikoihe', 'soboihe'];
+        $this->assertEquals( $expected, $result);        
+    }
+        
+    public function testIllSg3() {
+        $stems = ['sizare','kirvhe','armha','nagrhe','abajo','abido'];
+        $result = [];
+        foreach ($stems as $stem) {
+            $result[] = VepsName::illSg($stem);
+        }
+//dd($result);        
+        $expected = ['sizarehe','kirvheze','armhaze','nagrheze','abajohe','abidohe'];
         $this->assertEquals( $expected, $result);        
     }
 }

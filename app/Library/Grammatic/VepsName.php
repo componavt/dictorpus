@@ -226,7 +226,7 @@ class VepsName
      */
     public static function countSyllable($stem1) {
         $consonant = "[".self::consSet()."]";
-        $syllable = $consonant."?’?".$consonant."?’?[".self::vowelSet()."][i]?";
+        $syllable = $consonant."?’?".$consonant."?’?[".self::vowelSet()."]i?";
         if (preg_match("/^".$syllable."$/u",$stem1)) {
             return 1;
         } elseif (preg_match("/^".$syllable.$syllable."$/u",$stem1)) {
@@ -235,9 +235,17 @@ class VepsName
         return 3;
     }
     
+    //consonant after which the vowel escapes before
+    public static function consSetEscapeV() {
+        return "pbdfsšzžcčhmnlt"; // jgvkr
+    }
+    
+    /*
+     * base of illative singular
+     */
     public static function illSgBase($stem1) {
-        if (self::countSyllable($stem1)) {
-            return mb_substr($stem1,0,-1);
+        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelSet()."]$/u",$stem1, $regs)) {
+            return $regs[1];
         }
         return $stem1;
     }
@@ -250,14 +258,18 @@ class VepsName
      * @param type $stem4
      * @return string
      */
-    public static function illSg($stem1, $stem2){
-        if (preg_match("/i$/",$stem1)) {
-            return $stem1. 'he';
-        } elseif (preg_match("/h[auoeüäö]$/",$stem1)) {
+    public static function illSg($stem1, $stem2=null){
+        if (!$stem2) {
+            $stem2 = self::illSgBase($stem1);
+        }
+        if (self::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
+            return $stem2. 'he';
+        } elseif (self::countSyllable($stem1)<3 && preg_match("/([".self::vowelSet()."])$/u",$stem1, $regs)) {
+            return $stem2. 'h'. $regs[1];
+        } elseif (preg_match("/h[".self::vowelSet()."]$/",$stem1)) {
             return $stem2. 'ze';
         } else {
-            $last_letter = mb_substr($stem1,-1,1);
-            return $stem2. 'h'. $last_letter;
+            return $stem2. 'he';
         }
         return '';
     }
