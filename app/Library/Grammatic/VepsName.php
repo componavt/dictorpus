@@ -110,7 +110,7 @@ class VepsName
         $stems[1] = $base. $regs1[1];
         if (!self::isRightVowelBase($stems[1])) {return $out;}
         
-        $stems[2] = mb_substr($stems[1],0,-1); // single illative base
+        $stems[2] = self::illSgBase($stems[1]); // single illative base
         $stems[3] = $par_sg_suff ? $base.$par_sg_suff : $stems[1].'d';
         $stems[4] = $stems[5] = '';
 //dd($stems);        
@@ -225,7 +225,8 @@ class VepsName
      * @return INT 1 - односложное, 2 - двусложное, 3 - многосложное
      */
     public static function countSyllable($stem1) {
-        $syllable = "[".self::consSet()."’]{0,2}[".self::vowelSet()."][i]?";
+        $consonant = "[".self::consSet()."]";
+        $syllable = $consonant."?’?".$consonant."?’?[".self::vowelSet()."][i]?";
         if (preg_match("/^".$syllable."$/u",$stem1)) {
             return 1;
         } elseif (preg_match("/^".$syllable.$syllable."$/u",$stem1)) {
@@ -235,7 +236,10 @@ class VepsName
     }
     
     public static function illSgBase($stem1) {
-        mb_substr($stems[1],0,-1);
+        if (self::countSyllable($stem1)) {
+            return mb_substr($stem1,0,-1);
+        }
+        return $stem1;
     }
     /**
      * основа 1 + he (если основа 1 оканчивается на i)
