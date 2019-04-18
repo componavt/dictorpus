@@ -16,7 +16,7 @@ class VepsName
         return false;
     }
 
-    public static function getListForAutoComplete($pos_id) {
+    public static function getListForAutoComplete() {
         return $gramsets = [1, 56,  3,  4,  7,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19,
                             2, 57, 24, 22, 58, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
     }
@@ -76,7 +76,7 @@ class VepsName
         $base = $regs[1];
         $base_suff = $regs[2];
         $par_pl_suff = $regs[3];
-
+//dd($par_pl_suff);        
         if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs1)) {
             return [null, null, null];
         }
@@ -85,6 +85,7 @@ class VepsName
         $stems[1] = $stems[2] = $stems[3] = '';
         $stems[4] = $base. $regs1[1];
         $stems[5] = '';
+//dd($stems);        
         return [$stems, $base, $base_suff];
     }
 
@@ -146,7 +147,7 @@ class VepsName
             case 9: // элатив, ед.ч. 
                 return $stems[1] ? $stems[1]. $s_sg. 'päi' : '';
             case 10: // иллатив, ед.ч. 
-                return self::illSg($stems[1], $stems[2]);
+                return $stems[1] ? self::illSg($stems[1], $stems[2]) : '';
             case 11: // адессив, ед.ч. 
                 return $stems[1] ? $stems[1] . 'l' : '';
             case 12: // аблатив, ед.ч. 
@@ -164,9 +165,9 @@ class VepsName
             case 20: //эгрессив, ед.ч. 
                 return $stems[1] ? $stems[1].'nnopäi' : '';
             case 16: //терминатив, ед.ч. 
-                return $stems[1] ? $stems[1].'lesai, '. $stems[1].'ssai' : '';
+                return $stems[1] ? self::illSg($stems[1], $stems[2]).'sai, '. $stems[1]. 'lesai' : '';
             case 19: //адитив, ед.ч. 
-                return $stems[1] ? $stems[1].'lepäi' : '';
+                return $stems[1] ? self::illSg($stems[1], $stems[2]).'päi, '. $stems[1]. 'lepäi' : '';
                 
                 
             case 2: // номинатив, мн.ч. 
@@ -218,6 +219,10 @@ class VepsName
         return "aoueiäöü";
     }
     
+    public static function vowelEscapeSet() {
+        return "aoueäöü";
+    }
+    
     /**
      * Сколько слогов в гласной основе?
      * 
@@ -244,7 +249,7 @@ class VepsName
      * base of illative singular
      */
     public static function illSgBase($stem1) {
-        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelSet()."]$/u",$stem1, $regs)) {
+        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelEscapeSet()."]$/u",$stem1, $regs)) {
             return $regs[1];
         }
         return $stem1;
@@ -264,13 +269,21 @@ class VepsName
         }
         if (self::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
             return $stem2. 'he';
+        } elseif (self::countSyllable($stem1)>2 && preg_match("/h[".self::vowelSet()."]$/",$stem1)) {
+            return $stem2. 'ze';
+        } elseif (preg_match("/([".self::vowelSet()."])$/u",$stem1, $regs)) {
+            return $stem2. 'h'. $regs[1];
+        }
+/*        
+        if (self::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
+            return $stem2. 'he';
         } elseif (self::countSyllable($stem1)<3 && preg_match("/([".self::vowelSet()."])$/u",$stem1, $regs)) {
             return $stem2. 'h'. $regs[1];
         } elseif (preg_match("/h[".self::vowelSet()."]$/",$stem1)) {
             return $stem2. 'ze';
         } else {
             return $stem2. 'he';
-        }
+        } */
         return '';
     }
 

@@ -115,6 +115,12 @@ class Lemma extends Model
         return $builder;//->get();
     }
     
+    public function wordformsByGramsetDialect($gramset_id, $dialect_id){
+        return $this->wordforms()->orderBy('wordform')
+                    ->wherePivot('gramset_id',$gramset_id)
+                    ->wherePivot('dialect_id',$dialect_id)
+                    ->get();
+    }
     /**
      *  Gets wordforms for given gramset and dialect
      * 
@@ -130,10 +136,8 @@ class Lemma extends Model
         if (!$dialect_id) {
             $dialect_id=NULL;
         }
-        $wordform_coll = $this->wordforms()
-                         ->wherePivot('gramset_id',$gramset_id)
-                         ->wherePivot('dialect_id',$dialect_id)
-                         ->get();
+        $wordform_coll = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
+        
         if (!$wordform_coll) {
             return NULL;
         } else {
@@ -1139,17 +1143,15 @@ dd($wordforms);
         $gramsets = Grammatic::getListForAutoComplete($lang_id, $pos_id);
 //dd($gramsets);        
         foreach ($gramsets as $gramset_id) {
-            $wordform_obj = $this->wordforms()
-                   ->wherePivot('gramset_id',$gramset_id) 
-                   ->wherePivot('dialect_id',$dialect_id)->get();
-            if (sizeof($wordform_obj)>1) {
+            $wordform_coll = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
+            if (sizeof($wordform_coll)>1) {
                 $tmp = [];
-                foreach ($wordform_obj as $w) {
+                foreach ($wordform_coll as $w) {
                     $tmp[] = $w->wordform;
                 }
                 $wordforms[$gramset_id] = join (', ', $tmp);                    
             } else {
-                $wordforms[$gramset_id] = isset($wordform_obj[0]) ? $wordform_obj[0]->wordform : ''; 
+                $wordforms[$gramset_id] = isset($wordform_coll[0]) ? $wordform_coll[0]->wordform : ''; 
             }
         }
 //var_dump($wordforms);        

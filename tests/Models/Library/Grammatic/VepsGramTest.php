@@ -11,6 +11,15 @@ use App\Library\Grammatic\VepsGram;
 
 class VepsGramTest extends TestCase
 {
+    public function testStemsFromTemplateNounPlDict() {
+        $pos_id = 5; // noun
+        $template = "Alama|d (-id)";
+        $result = VepsGram::stemsFromTemplate($template, $pos_id, 'pl');
+//dd($result);        
+        $expected = [['Alamad', '', '', '', 'Alamai', ''], 'pl', 'Alama', 'd'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testStemsFromTemplateMultiNum() {
         $pos_id = 5; // noun
         $template = "vep-decl-stems|adjektiv||an|ad|id";
@@ -38,15 +47,6 @@ class VepsGramTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testStemsFromTemplateNounPlDict() {
-        $pos_id = 5; // noun
-        $template = "Alama|d (-id)";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, 'pl');
-//dd($result);        
-        $expected = [['Alamad', '', '', '', 'Alamai', ''], 'pl', 'Alama', 'd'];
-        $this->assertEquals( $expected, $result);        
-    }
-    
     public function testStemsFromTemplateNounDict2Suff() {
         $pos_id = 5; // noun
         $template = "abekirj (-an, -oid)";
@@ -64,5 +64,5 @@ class VepsGramTest extends TestCase
         $expected = [['abidkirjeine', 'abidkirježe', 'abidkirježe', 'abidkirješt', 'abidkirjeiži', ''], null, 'abidkirje', 'ine'];
         $this->assertEquals( $expected, $result);        
     }
-    
+   
 }

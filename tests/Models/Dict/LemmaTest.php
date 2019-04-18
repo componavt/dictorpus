@@ -75,4 +75,17 @@ class LemmaTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
  
+    public function testWordformTerminativ()
+    {
+        $lemma_id = 21531;
+        $gramset_id = 16;
+        $dialect_id=43;
+        
+        $lemma = Lemma::find($lemma_id);
+        $result = $lemma->wordform($gramset_id,$dialect_id);
+        
+        $expected = 'Amerikahesai, Amerikalesai';
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

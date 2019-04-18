@@ -423,23 +423,6 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result[1]);        
     }
     
-/*    
-    public function testWordformsByTemplatePieni() {
-        $lang_id = 4;
-        $pos_id = 1; //adjective
-        $dialect_id=47;
-        $template = "{pieni, piene, piene, piendä, pieni, pieni}";
-        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
-//dd($result);        
-        $lemma_id = 21360; //pieni 
-        $lemma = Lemma::find($lemma_id); 
-        $dialect_id=46;
-        $expected = $lemma->getWordformsForTest($dialect_id);
-//dd($result);        
-        $this->assertEquals( $expected, $result[1]);        
-    }
-*/    
-/*    
     public function testWordformsByTemplateVepsVerbVoikta() {
         $lang_id = 1;
         $pos_id = 11; // verb
@@ -470,6 +453,23 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result[1]);        
     }
     
+/*    
+    public function testWordformsByTemplatePieni() {
+        $lang_id = 4;
+        $pos_id = 1; //adjective
+        $dialect_id=47;
+        $template = "{pieni, piene, piene, piendä, pieni, pieni}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 21360; //pieni 
+        $lemma = Lemma::find($lemma_id); 
+        $dialect_id=46;
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+*/    
+/*    
     public function testWordformsByTemplateVepsVerbAstta() {
         $lang_id = 1;
         $pos_id = 11; // verb

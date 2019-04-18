@@ -107,7 +107,47 @@ class VepsNameTest extends TestCase
             $result[] = VepsName::illSg($stem);
         }
 //dd($result);        
-        $expected = ['sizarehe','kirvheze','armhaze','nagrheze','abajohe','abidohe'];
+        $expected = ['sizarehe','kirvheze','armhaze','nagrheze','abajoho','abidoho'];
         $this->assertEquals( $expected, $result);        
     }
+/*    
+    public function testWordformsByTemplatePl() {
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
+        $result = VepsName::wordformsByTemplate($template, $dialect_id);
+//dd($result);        
+        $lemma_id = 21530; //Alamad 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplate() {
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|aba|i|jon|jod|joid}}";
+        $result = VepsName::wordformsByTemplate($template, $dialect_id);
+//dd($result);        
+        $lemma_id = 21324; // abai 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
+    public function testWordformsByTemplateSg() {
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|n=sg|Amerik||an|ad}}";
+        $result = VepsName::wordformsByTemplate($template, $dialect_id);
+//dd($result);        
+        $lemma_id = 21531; //Amerik 
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+*/    
 }

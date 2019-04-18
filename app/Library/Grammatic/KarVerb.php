@@ -2,6 +2,7 @@
 
 namespace App\Library\Grammatic;
 
+use App\Library\Grammatic;
 use App\Library\Grammatic\KarGram;
 
 use App\Models\Dict\Gramset;
@@ -463,23 +464,6 @@ class KarVerb
             $lemma = $regs[1]. 'e';
         }
         return $lemma. 'n';
-    }
-    
-    /**
-     * 135. III инфинитив, иллатив   
-     * основа 5 + mh + a/ä (если основа 5 оканчивается на Vi, и это единственные гласные в основе 5)
-     *          + m + a/ä + h + a/ä (если основа 5 оканчивается на C)
-     * 
-     * @param String $lemma
-     */
-    public static function inf3Ill($lemma, $harmony) {
-        if (preg_match("/^[^aeiouüäö-][aeiouüäö]i?$/u", $lemma)) {
-            return $lemma. 'mh'. $harmony;
-        } elseif (preg_match("/[^aeiouüäö]$/u", $lemma)) {
-//var_dump($lemma);        
-            return $lemma. 'm'. $harmony. 'h'. $harmony;
-        }
-        return '';
     }
     
     /**

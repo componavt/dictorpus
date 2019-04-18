@@ -43,22 +43,24 @@ class VepsGram
     public static function stemsFromTemplate($template, $pos_id, $name_num = null) {
         $stems = $base = $base_suff = null;
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-//dd($template);            
-            if (preg_match("/^vep-decl-stems\|n=sg\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u",$template, $regs) ||
-                    ($name_num == 'sg' && preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\,?\s*-?([^\,\;]*)\)/", $template, $regs)) ||
-                    (preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template, $regs))) {
-//dd($regs);     
-                $name_num = 'sg';
-                list($stems, $base, $base_suff) =  VepsName::stemsSgFromTemplate($regs);
-            } elseif (preg_match("/^vep-decl-stems\|n=pl\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
+//dd($template,preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template));            
+            if (preg_match("/^vep-decl-stems\|n=pl\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
                     ($name_num == 'pl' && preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template, $regs))) {
+//dd(1, $regs);     
                 $name_num = 'pl';
                 list($stems, $base, $base_suff) =  VepsName::stemsPlFromTemplate($regs);
+            } elseif (preg_match("/^vep-decl-stems\|n=sg\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u",$template, $regs) ||
+                    ($name_num == 'sg' && preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\,?\s*-?([^\,\;]*)\)/", $template, $regs)) ||
+                    (preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template, $regs))) {
+//dd(2, $regs);     
+                $name_num = 'sg';
+                list($stems, $base, $base_suff) =  VepsName::stemsSgFromTemplate($regs);
             } elseif (preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
                     preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
-//dd($regs);     
+//dd(3, $regs);     
                 list($stems, $base, $base_suff) = VepsName::stemsFromTemplate($regs, $pos_id, $name_num);
             }
+//dd(4);
         } elseif ($pos_id == PartOfSpeech::getVerbID() && 
             (preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs) ||
             preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {      

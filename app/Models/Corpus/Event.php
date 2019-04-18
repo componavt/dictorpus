@@ -136,8 +136,8 @@ class Event extends Model
         $informants = DB::table('event_informant')->where('event_id', $this->id)->lists('informant_id');    
 //var_dump($informants);
 //var_dump($new_data['event_informants']);
-        if (sizeof(array_diff($informants,$new_data['event_informants']))
-                || sizeof(array_diff($new_data['event_informants'],$informants))) {
+        if (sizeof(array_diff($informants,(array)$new_data['event_informants']))
+                || sizeof(array_diff((array)$new_data['event_informants'],$informants))) {
             return 0; } // different informants
         
         $recorders = DB::table('event_recorder')->where('event_id', $this->id)->lists('recorder_id');    

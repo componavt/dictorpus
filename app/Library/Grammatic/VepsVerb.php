@@ -2,6 +2,7 @@
 
 namespace App\Library\Grammatic;
 
+use App\Library\Grammatic;
 use App\Library\Grammatic\VepsGram;
 
 use App\Models\Dict\Gramset;
@@ -13,7 +14,7 @@ class VepsVerb
 {
     public static function getListForAutoComplete() {
         return [26,  27,  28,  29,  30,  31, 295, 296, 
-                     70,  71,  72,  73,  78,  79, 
+//                     70,  71,  72,  73,  78,  79, 
                      32,  33,  34,  35,  36,  37, 297, 298,
                      80,  81,  82,  83,  84,  85, 
 /*                         86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
@@ -27,7 +28,7 @@ class VepsVerb
 /*                        135, 125, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
                     146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157,
                     158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169,*/
-                    170, 171, 172, 173, 174, 175, 176, 177,
+//                    170, 171, 172, 173, 174, 175, 176, 177,
                     178, 179, 180, 181];
     }
     
@@ -124,7 +125,7 @@ class VepsVerb
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return $stems[1].'t';
             case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
-                return $stems[0]. $stems[6]. 'as, '.$stems[1]. 'ba';
+                return $stems[1]. 'ba, '. $stems[0]. $stems[6]. 'as';
             case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
                 return $stems[1];
             case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
@@ -323,6 +324,23 @@ class VepsVerb
             case 145: // 106. кондиционал, плюсквамперфект, 3 л., мн.ч., отр. 
                 return 'ei olis’ '. $stems[7] . self::garmVowel($stems[7],'u');
 */                
+        }
+        return '';
+    }
+    
+    /**
+     * 135. III инфинитив, иллатив   
+     * основа 5 + mh + a/ä (если основа 5 оканчивается на Vi, и это единственные гласные в основе 5)
+     *          + m + a/ä + h + a/ä (если основа 5 оканчивается на C)
+     * 
+     * @param String $lemma
+     */
+    public static function inf3Ill($lemma, $harmony) {
+        if (preg_match("/^[^aeiouüäö-][aeiouüäö]i?$/u", $lemma)) {
+            return $lemma. 'mh'. $harmony;
+        } elseif (preg_match("/[^aeiouüäö]$/u", $lemma)) {
+//var_dump($lemma);        
+            return $lemma. 'm'. $harmony. 'h'. $harmony;
         }
         return '';
     }

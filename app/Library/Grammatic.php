@@ -3,7 +3,11 @@
 namespace App\Library;
 
 use App\Library\Grammatic\KarGram;
+use App\Library\Grammatic\KarName;
+use App\Library\Grammatic\KarVerb;
 use App\Library\Grammatic\VepsGram;
+use App\Library\Grammatic\VepsName;
+use App\Library\Grammatic\VepsVerb;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
