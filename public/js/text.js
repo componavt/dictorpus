@@ -99,7 +99,7 @@ function loadDataToWordformModal(text_id, w_id, wordform) {
                     var lemma_id=$( "#choose-lemma option:selected" ).val();
                     if (lemma_id != null) {
                     $.ajax({
-                        url: '/dict/lemma/wordform/create', 
+                        url: '/dict/wordform/create', 
                         data: {lemma_id: lemma_id, text_id: text_id },
                         type: 'GET',
                         success: function(result){

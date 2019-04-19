@@ -102,7 +102,6 @@ Route::group(
         
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
-        Route::get('dict/lemma/meaning/create', 'Dict\LemmaController@createMeaning');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
         Route::get('dict/lemma/phrase_list', 'Dict\LemmaController@phraseList');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
@@ -114,11 +113,11 @@ Route::group(
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
-        Route::get('dict/lemma/wordform/create', 'Dict\LemmaController@createWordform'); 
         Route::get('dict/lemma/wordform/update', 'Dict\LemmaController@updateWordformFromText'); 
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
         Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 
         
+        Route::get('dict/meaning/create', 'Dict\MeaningController@create');
         Route::get('dict/meaning/example/add/{example_id}', 'Dict\MeaningController@addExample');
         Route::get('dict/meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
         Route::get('dict/meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
@@ -129,6 +128,7 @@ Route::group(
         Route::get('dict/reverse_lemma/inflexion_groups', 'Dict\ReverseLemmaController@inflexionGroups');
         Route::get('dict/reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
 
+        Route::get('dict/wordform/create', 'Dict\WordformController@create'); 
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
         Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
         Route::get('dict/wordform/tmpFixNegativeVepsVerbForms', 'Dict\WordformController@tmpFixNegativeVepsVerbForms');

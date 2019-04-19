@@ -15,6 +15,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Lang;
+use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 use App\Models\Corpus\Text;
@@ -29,8 +30,9 @@ class WordformController extends Controller
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:dict.edit,/dict/wordform/', ['only' => [
-            'create','store','edit','update','destroy','tmpFixNegativeVepsVerbForms']]);
+        $this->middleware('auth:dict.edit,/dict/wordform/', 
+                ['except'=>['show', 'withMultipleLemmas']]);
+//                ['only' => ['create','store','edit','update','destroy','tmpFixNegativeVepsVerbForms']]);
         
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
@@ -96,13 +98,40 @@ class WordformController extends Controller
     }
     
     /**
-     * Show the form for creating a new resource.
+     * Shows the form fields for creating a new wordform.
+     * 
+     * Called by ajax request
+     * /dict/wordform/create?lemma_id=10603&text_id=1548
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return Redirect::to('/dict/wordform/');
+        $lemma_id = (int)$request->input('lemma_id');
+        $text_id = (int)$request->input('text_id'); 
+        if (!$lemma_id || !$text_id) {
+            return;
+        }
+        
+        $lemma = Lemma::find($lemma_id);
+        $text = Text::find($text_id);
+        if (!$lemma || !$text) {
+            return;
+        }
+
+        $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
+        $dialect_values = Dialect::getList($lemma->lang_id); //['NULL'=>'']+
+        $meaning_values = Meaning::getList($lemma_id);
+        
+        $pos_name = $lemma->pos->name;
+        $dialect_value = $text->dialectValue();
+        
+        return view('dict.wordform._form_create_fields')
+                  ->with(['dialect_value'=>$dialect_value,
+                          'dialect_values' => $dialect_values,
+                          'gramset_values' => $gramset_values,
+                          'meaning_values' => $meaning_values,
+                          'pos_name'=>$pos_name]);
     }
 
     /**
@@ -305,8 +334,6 @@ class WordformController extends Controller
             print "</p>";
         }
     }    
- *
- */  
     
     public function tmpFixNegativeVepsVerbForms() {
         $lang_id = 1;
@@ -337,6 +364,8 @@ class WordformController extends Controller
             }
         }
     }
+ *
+ */  
 }
 
 // a lemma and wordform related by more than once

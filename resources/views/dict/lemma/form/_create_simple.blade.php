@@ -11,7 +11,7 @@
                  
         @include('dict.lemma.form._create_edit_pos_features') 
 <div id='new-meanings'>
-        @include('dict.lemma._form_create_meaning',
+        @include('dict.meaning._form_create',
                  ['count' => 0,
                   'title' => '',
                   'langs_for_meaning' => $langs_for_meaning

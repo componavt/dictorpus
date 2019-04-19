@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\User;
 
+use App\Models\Dict\Lang;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
 
@@ -25,8 +26,9 @@ class MeaningController extends Controller
     public function __construct()
     {
         $this->middleware('auth:dict.edit,/dict/meaning/', 
-                ['only' => ['create','store','edit','update','destroy',
-                            'createRelation', 'addExample']]);
+                ['except' => ['index', 'loadExamples', 'reloadExamples']]);
+//                ['only' => ['create','store','edit','update','destroy',
+  //                          'createRelation', 'addExample']]);
     }
 
     /**
@@ -40,13 +42,25 @@ class MeaningController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Shows the form for creating a new resource.
+     * 
+     * Called by ajax request
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $count = (int)$request->input('count');
+        $meaning_n = (int)$request->input('meaning_n');
+//        $langs_for_meaning = Lang::getList();
+        $langs_for_meaning = Lang::getListWithPriority();
+                                
+        return view('dict.meaning._form_create')
+                  ->with(array('count' => $count,
+                               'new_meaning_n' => $meaning_n,
+                               'langs_for_meaning' => $langs_for_meaning
+                              )
+                        );
     }
 
     /**

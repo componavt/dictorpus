@@ -50,7 +50,7 @@ class LemmaController extends Controller
                           ['only' => ['create','store','edit','update','destroy',
                                       'editExample', 'removeExample',
                                       'editExamples','updateExamples',
-                                      'createMeaning', 'storeSimple',
+                                      'storeSimple',
                                       'createWordform', 'updateWordformFromText',
                                       'editWordforms','updateWordforms']]);
         
@@ -142,65 +142,6 @@ class LemmaController extends Controller
                   compact('dialect_value', 'dialect_values', 'langs_for_meaning', 
                           'lang_id', 'lang_values', 'new_meaning_n', 'phrase_values', 
                           'pos_id', 'pos_values', 'args_by_get', 'url_args'));
-    }
-
-    /**
-     * Shows the form for creating a new resource.
-     * 
-     * Called by ajax request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createMeaning(Request $request)
-    {
-        $count = (int)$request->input('count');
-        $meaning_n = (int)$request->input('meaning_n');
-//        $langs_for_meaning = Lang::getList();
-        $langs_for_meaning = Lang::getListWithPriority();
-                                
-        return view('dict.lemma._form_create_meaning')
-                  ->with(array('count' => $count,
-                               'new_meaning_n' => $meaning_n,
-                               'langs_for_meaning' => $langs_for_meaning
-                              )
-                        );
-    }
-
-    /**
-     * Shows the form fields for creating a new wordform.
-     * 
-     * Called by ajax request
-     * /dict/lemma/wordform/create?lemma_id=10603&text_id=1548
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createWordform(Request $request)
-    {
-        $lemma_id = (int)$request->input('lemma_id');
-        $text_id = (int)$request->input('text_id'); 
-        if (!$lemma_id || !$text_id) {
-            return;
-        }
-        
-        $lemma = Lemma::find($lemma_id);
-        $text = Text::find($text_id);
-        if (!$lemma || !$text) {
-            return;
-        }
-
-        $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
-        $dialect_values = Dialect::getList($lemma->lang_id); //['NULL'=>'']+
-        $meaning_values = Meaning::getList($lemma_id);
-        
-        $pos_name = $lemma->pos->name;
-        $dialect_value = $text->dialectValue();
-        
-        return view('dict.lemma._form_create_wordform_fields')
-                  ->with(['dialect_value'=>$dialect_value,
-                          'dialect_values' => $dialect_values,
-                          'gramset_values' => $gramset_values,
-                          'meaning_values' => $meaning_values,
-                          'pos_name'=>$pos_name]);
     }
 
     /**

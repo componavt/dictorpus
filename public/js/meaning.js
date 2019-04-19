@@ -3,7 +3,7 @@ function addMeaning() {
         var count = $(this).data("count");
         var meaning_n = $(this).data('meaning_n');
         $.ajax({
-            url: '/dict/lemma/meaning/create/', 
+            url: '/dict/meaning/create/', 
             data: {count: count, meaning_n: meaning_n},
             type: 'GET',
             success: function(result){

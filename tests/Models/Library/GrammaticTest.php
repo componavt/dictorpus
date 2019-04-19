@@ -393,6 +393,21 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result[1]);        
     }
     
+    public function testWordformsByTemplateVepsKoiv() {
+        $lang_id = 1;
+        $pos_id = 5; // proper noun
+        $dialect_id=43;
+        $template = "{{vep-decl-stems|koiv||un|ud|uid}}";
+        $result = Grammatic::wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id);
+//dd($result);        
+        $lemma_id = 550; // koiv
+        $lemma = Lemma::find($lemma_id); 
+
+        $expected = $lemma->getWordformsForTest($dialect_id);
+//dd($result);        
+        $this->assertEquals( $expected, $result[1]);        
+    }
+    
     public function testWordformsByTemplateVepsSg() {
         $lang_id = 1;
         $pos_id = 14; // proper noun

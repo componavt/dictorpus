@@ -900,3 +900,11 @@ update gram_categories set sequence_number=7 where id=2;
 --php artisan make:test Models\Library\Grammatic\KarGramTest
 --php artisan make:test Models\Library\Grammatic\VepsGramTest
 --php artisan make:test Models\Library\Grammatic\VepsNameTest
+
+update lemma_wordform set gramset_id=277 where gramset_id=7 and lemma_id in (select id from lemmas where lang_id=1);
+select count(*) from lemma_wordform where gramset_id=7 and lemma_id in (select id from lemmas where lang_id=1);
+select lang_id, pos_id, count(*) from lemmas where id in (select lemma_id from lemma_wordform where gramset_id=7) group by lang_id, pos_id;
+
+select count(*) from lemma_wordform where gramset_id=58 and lemma_id in (select id from lemmas where lang_id=1);
+select lang_id, pos_id, count(*) from lemmas where id in (select lemma_id from lemma_wordform where gramset_id=58) group by lang_id, pos_id;
+update lemma_wordform set gramset_id=279 where gramset_id=58 and lemma_id in (select id from lemmas where lang_id=1);

@@ -16,7 +16,7 @@
                                   'title'=>trans('corpus.add-wordform'),
                                   'submit_id' => 'save-wordform',
                                   'submit_title' => trans('messages.save'),
-                                  'modal_view'=>'dict.lemma._form_create_wordform'])
+                                  'modal_view'=>'dict.wordform._form_create'])
             @include('widgets.modal',['name'=>'modalAddLemma',
                                   'title'=>trans('corpus.add-lemma'),
                                   'submit_id' => 'save-lemma',

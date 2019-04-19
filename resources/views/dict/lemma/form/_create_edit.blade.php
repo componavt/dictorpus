@@ -62,7 +62,7 @@
 {{-- New meaning --}}
 <div id='new-meanings'>
     @if ($action == 'create')
-        @include('dict.lemma._form_create_meaning',
+        @include('dict.meaning._form_create',
                  ['count' => 0,
                   'new_meaning_n' => $new_meaning_n
                  ])
