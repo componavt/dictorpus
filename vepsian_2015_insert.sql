@@ -908,3 +908,5 @@ select lang_id, pos_id, count(*) from lemmas where id in (select lemma_id from l
 select count(*) from lemma_wordform where gramset_id=58 and lemma_id in (select id from lemmas where lang_id=1);
 select lang_id, pos_id, count(*) from lemmas where id in (select lemma_id from lemma_wordform where gramset_id=58) group by lang_id, pos_id;
 update lemma_wordform set gramset_id=279 where gramset_id=58 and lemma_id in (select id from lemmas where lang_id=1);
+
+--php artisan make:test Models\Dict\LangTest

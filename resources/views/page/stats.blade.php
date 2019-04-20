@@ -39,13 +39,18 @@
                             <td>{{trans('stats.total_marked_words')}}</td><td>{{$total_marked_words}}</td>
                         </tr>
                         <tr>
-                            <td>{{trans('stats.marked_words_to_all')}}</td><td>{{$marked_words_to_all}}</td>
+                            <td>{{trans('stats.marked_words_to_all')}}</td><td>{{$marked_words_to_all}} %</td>
                         </tr>
+                        @foreach($lang_marked as $lang_name => $lang_number) 
+                        <tr>
+                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_number}} %</td>
+                        </tr>
+                        @endforeach
                         <tr>
                             <td>{{trans('stats.total_checked_words')}}</td><td>{{$total_checked_words}}</td>
                         </tr>
                         <tr>
-                            <td>{{trans('stats.checked_words_to_marked')}}</td><td>{{$checked_words_to_marked}}</td>
+                            <td>{{trans('stats.checked_words_to_marked')}}</td><td>{{$checked_words_to_marked}} %</td>
                         </tr>
                         
                         <tr>
@@ -58,7 +63,7 @@
                             <td>{{trans('stats.total_checked_examples')}}</td><td>{{$total_checked_examples}}</td>
                         </tr>
                         <tr>
-                            <td>{{trans('stats.checked_examples_to_all')}}</td><td>{{$checked_examples_to_all}}</td>
+                            <td>{{trans('stats.checked_examples_to_all')}}</td><td>{{$checked_examples_to_all}} %</td>
                         </tr>
                         
                         <tr>

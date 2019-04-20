@@ -295,12 +295,28 @@ class Word extends Model
     }
     
     /**
+     * The number of words in texts with lang_id
+     */
+    public static function countByLang($lang_id=null) {
+        $examples = self::whereIn('text_id', function ($q) use ($lang_id) {
+                $q->select('id')->from('texts')->where('lang_id',$lang_id);
+            });
+        
+        return $examples->count();
+    }
+    
+    /**
      * The number of words linked with lemmas
      */
-    public static function countMarked() {
+    public static function countMarked($lang_id=null) {
         $examples = self::whereIn('id', function ($query) {
                         $query->select('word_id')->from('meaning_text');
         });
+        if ($lang_id) {
+            $examples -> whereIn('text_id', function ($q) use ($lang_id) {
+                $q->select('id')->from('texts')->where('lang_id',$lang_id);
+            });
+        }
         return $examples->count();
     }
     

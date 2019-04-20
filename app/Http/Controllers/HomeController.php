@@ -13,6 +13,7 @@ use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Wordform;
@@ -79,10 +80,13 @@ class HomeController extends Controller
         $checked_words_to_marked = 100*$total_checked_words/$total_marked_words;
         $checked_examples_to_all = 100*$total_checked_examples/$total_examples;
         
+        $lang_marked = Lang::countMarked();
+        
         return view('page.stats')
                 ->with([
                         'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
                         'checked_words_to_marked' => number_format($checked_words_to_marked, 2,',', ' '),
+                        'lang_marked' => $lang_marked,
                         'marked_words_to_all' => number_format($marked_words_to_all, 2,',', ' '),
                         'total_active_editors' => number_format($total_active_editors, 0, ',', ' '),
                         'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),

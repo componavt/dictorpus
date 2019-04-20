@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
 use App\Models\Corpus\Corpus;
-use App\Models\Dict\Lemma;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Word;
+use App\Models\Dict\Lemma;
 
 class Lang extends Model
 {
@@ -229,4 +230,27 @@ class Lang extends Model
         return $url;
     }
     
+    public static function projectLangs() {
+        $lang_coll = self::whereNotIn('code', ['en','ru'])
+                ->orderBy('id')->get();
+        return $lang_coll;       
+    }
+    
+    public static function projectLangIDs() {
+        $ids = [];
+        foreach (self::projectLangs() as $lang) {
+           $ids[] = $lang->id; 
+        }
+        return $ids;       
+    }
+    
+    public static function countMarked() {
+        $out = [];
+        foreach (self::projectLangs() as $lang) {
+            $proc = 100*Word::countMarked($lang->id)/Word::countByLang($lang->id);
+            $out[$lang->name] = number_format($proc, 2, ',', ' ');
+//            $out[$lang->id] = [0=>$lang->name, 1=>number_format($proc, 0, ',', ' ')];
+        }
+        return $out;
+    }
 }
