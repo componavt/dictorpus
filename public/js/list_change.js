@@ -5,8 +5,7 @@ function posSelect() {
             if ($("#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
                 $("#transitive-field").show().prop("disabled", false);
-            } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14
-                    || $("#pos_id option:selected").val()==10) { // is noun or proper noun or pronoun
+            } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun or pronoun
                 $("#animacy-field").show().prop("disabled", false);
                 $("#abbr-field").show().prop("disabled", false);
                 $("#number-field").show().prop("disabled", false);
@@ -14,6 +13,7 @@ function posSelect() {
                 $("#numtype-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==10) { // is pronoun
                 $("#prontype-field").show().prop("disabled", false);
+                $("#number-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==2) { // is adverb
                 $("#advtype-field").show().prop("disabled", false);
                 $("#degree-field").show().prop("disabled", false);
