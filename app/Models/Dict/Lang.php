@@ -248,7 +248,7 @@ class Lang extends Model
         $out = [];
         foreach (self::projectLangs() as $lang) {
             $proc = 100*Word::countMarked($lang->id)/Word::countByLang($lang->id);
-            $out[$lang->name] = number_format($proc, 2, ',', ' ');
+            $out[$lang->name] = number_format($proc, 1, ',', ' ');
 //            $out[$lang->id] = [0=>$lang->name, 1=>number_format($proc, 0, ',', ' ')];
         }
         return $out;

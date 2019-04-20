@@ -18,7 +18,7 @@ class LemmaFeature extends Model
                              2  => ['advtype_id', 'degree_id'],     // adverb
                              5  => ['animacy', 'abbr', 'number'], // noun
                              6  => ['numtype_id'],                  // numeral
-                             10 => ['prontype_id'],                 // pronoun
+                             10 => ['prontype_id', 'number'],                 // pronoun
                              11 => ['reflexive', 'transitive'],     // verb                             
                              14 => ['animacy', 'abbr', 'number'], // proper noun
                             ];

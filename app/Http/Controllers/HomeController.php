@@ -87,7 +87,7 @@ class HomeController extends Controller
                         'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
                         'checked_words_to_marked' => number_format($checked_words_to_marked, 2,',', ' '),
                         'lang_marked' => $lang_marked,
-                        'marked_words_to_all' => number_format($marked_words_to_all, 2,',', ' '),
+                        'marked_words_to_all' => number_format($marked_words_to_all, 1,',', ' '),
                         'total_active_editors' => number_format($total_active_editors, 0, ',', ' '),
                         'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
                         'total_checked_words' => number_format($total_checked_words, 0, ',', ' '),
