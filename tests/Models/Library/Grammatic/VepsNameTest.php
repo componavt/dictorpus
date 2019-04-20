@@ -23,13 +23,13 @@ class VepsNameTest extends TestCase
     }
     
     public function testCountSyllable2() {
-        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi'];
+        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi', 'lauda'];
         $result = [];
         foreach ($stems as $stem) {
             $result[] = VepsName::countSyllable($stem);
         }
 //dd($result);        
-        $expected = [2,2,2,2,2,2,2,2,2,2,2,2,2];
+        $expected = [2,2,2,2,2,2,2,2,2,2,2,2,2,2];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -57,13 +57,13 @@ class VepsNameTest extends TestCase
     }
         
     public function testIllSgBase2() {
-        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi'];
+        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi', 'lauda'];
         $result = [];
         foreach ($stems as $stem) {
             $result[] = VepsName::illSgBase($stem);
         }
 //dd($result);        
-        $expected = ['mec','kaivo','lum','sen','vil','verko','kego', 'maid','agja','pert','un', 'veikoi', 'soboi'];
+        $expected = ['mec','kaivo','lum','sen','vil','verko','kego', 'maid','agja','pert','un', 'veikoi', 'soboi', 'laud'];
         $this->assertEquals( $expected, $result);        
     }
         
@@ -90,13 +90,13 @@ class VepsNameTest extends TestCase
     }
         
     public function testIllSg2() {
-        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi'];
+        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi', 'lauda'];
         $result = [];
         foreach ($stems as $stem) {
             $result[] = VepsName::illSg($stem);
         }
 //dd($result);        
-        $expected = ['mecha','kaivoho','lumhe','senhe','vilhu','verkoho','kegoho', 'maidho','agjaha','perthe','unhe', 'veikoihe', 'soboihe'];
+        $expected = ['mecha','kaivoho','lumhe','senhe','vilhu','verkoho','kegoho', 'maidho','agjaha','perthe','unhe', 'veikoihe', 'soboihe', 'laudha'];
         $this->assertEquals( $expected, $result);        
     }
         

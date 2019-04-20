@@ -84,7 +84,7 @@ class LemmaTest extends TestCase
         $lemma = Lemma::find($lemma_id);
         $result = $lemma->wordform($gramset_id,$dialect_id);
         
-        $expected = 'Amerikahesai, Amerikalesai';
+        $expected = 'Amerikahasai, Amerikalesai';
         $this->assertEquals( $expected, $result);        
     }
     

@@ -38,7 +38,7 @@ a:hover {
     padding: 30px 20px 30px 0;
 }
 
-.user-enter,
+.user-enter-submit-enter,
 .user-enter-input,
 .user-registr-submit {
     display: flex;
@@ -85,6 +85,11 @@ a:hover {
     flex-wrap: nowrap;
     justify-content: space-between;
     margin-top: 5px;
+}
+
+.user-enter-submit input[type="submit"] {
+    font-size: 13px;
+    padding-left: 4px;
 }
 
 .remember-me {
@@ -540,6 +545,9 @@ h2 {
 @media screen and (min-width: 768px) {
     .user-enter {
         padding-top: 63px;
+    }
+    .user-enter-submit input[type="submit"] {
+        font-size: 14px;
     }
 }
 @media screen and (max-width: 991px) {

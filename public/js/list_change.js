@@ -5,7 +5,8 @@ function posSelect() {
             if ($("#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
                 $("#transitive-field").show().prop("disabled", false);
-            } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun
+            } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14
+                    || $("#pos_id option:selected").val()==10) { // is noun or proper noun or pronoun
                 $("#animacy-field").show().prop("disabled", false);
                 $("#abbr-field").show().prop("disabled", false);
                 $("#number-field").show().prop("disabled", false);

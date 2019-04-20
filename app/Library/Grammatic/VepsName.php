@@ -17,8 +17,8 @@ class VepsName
     }
 
     public static function getListForAutoComplete() {
-        return $gramsets = [1, 56,  3,  4,  7,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19,
-                            2, 57, 24, 22, 58, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
+        return $gramsets = [1, 56,  3,  4,  277,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19,
+                            2, 57, 24, 22, 279, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
     }
     
     /**
@@ -138,7 +138,7 @@ class VepsName
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
                 return $stems[3];
-            case 7: // эссив-инструктив, ед.ч. 
+            case 277: // эссив, ед.ч. 
                 return $stems[1] ? $stems[1]. 'n' : '';
             case 5: // транслатив, ед.ч. 
                 return $stems[1] ? $stems[1]. 'k'. $s_sg : '';
@@ -177,7 +177,7 @@ class VepsName
                 return $stems[4] ? $stems[4]. 'den' : '';
             case 22: // партитив, мн.ч. 
                 return $stems[4] ? $stems[4] . 'd' : '';
-            case 58: // эссив-инструктив, мн.ч. 
+            case 279: // эссив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'n' : '';
             case 59: // транслатив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'kš' : '';
@@ -231,7 +231,7 @@ class VepsName
      */
     public static function countSyllable($stem1) {
         $consonant = "[".self::consSet()."]";
-        $syllable = $consonant."?’?".$consonant."?’?[".self::vowelSet()."]i?";
+        $syllable = $consonant."?’?".$consonant."?’?[".self::vowelSet()."][iu]?";
         if (preg_match("/^".$syllable."$/u",$stem1)) {
             return 1;
         } elseif (preg_match("/^".$syllable.$syllable."$/u",$stem1)) {
@@ -249,7 +249,8 @@ class VepsName
      * base of illative singular
      */
     public static function illSgBase($stem1) {
-        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelEscapeSet()."]$/u",$stem1, $regs)) {
+//        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelEscapeSet()."]$/u",$stem1, $regs)) {
+        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelSet()."]$/u",$stem1, $regs)) {
             return $regs[1];
         }
         return $stem1;

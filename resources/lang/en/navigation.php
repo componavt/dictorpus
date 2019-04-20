@@ -32,6 +32,7 @@ return [
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',
     'omonyms' => 'Omonyms',
+    'participants' => 'Participants',
     'parts_of_speech' => 'Parts of speech',
     'permission' => 'Permission',
     'phrases' => 'Phrases',

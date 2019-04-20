@@ -58,6 +58,9 @@ Route::group(
         Route::get('/grants', function () {
             return view('page.grants');
         });
+        Route::get('/participants', function () {
+            return view('page.participants');
+        });
         Route::get('/permission', function () {
             return view('page.permission');
         });

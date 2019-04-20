@@ -32,6 +32,7 @@ return [
     'lemmas' => 'Леммы',
     'logout' => 'Выйти',
     'omonyms' => 'Омонимы',
+    'participants' => 'Участники проекта',
     'parts_of_speech' => 'Части речи',
     'permission' => 'Разрешения',
     'phrases' => 'Фразеологизмы',
