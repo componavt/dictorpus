@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 use App\Library\Grammatic;
+use App\Library\Grammatic\VepsName;
 use App\Models\User;
 
 use App\Models\Dict\Dialect;
@@ -997,6 +998,49 @@ class LemmaController extends Controller
                                'url_args'       => $this->url_args,
                               )
                         );
+    }
+    
+    public function illativeTable() {
+        $lang_id = 1;
+        $dialect_id = 43;
+        $parts_of_speech = PartOfSpeech::getNameIDs();
+//dd($parts_of_speech);        
+        $gramset_gen_sg = 3;
+        $gramset_ill_sg = 10;
+        $gramset_term_sg = 16;
+        $gramset_add_sg = 19;
+        $lemmas = [];
+        foreach ($parts_of_speech as $pos_id) {
+            $pos = PartOfSpeech::find($pos_id);
+            $lemma_coll = Lemma::where('lang_id', $lang_id)
+                           ->where('pos_id', $pos_id)
+                           ->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                           ->where('gramset_id', $gramset_gen_sg)->get();
+            foreach ($lemma_coll as $lemma): 
+                $lemma_wordforms=[
+                    'lemma' => $lemma->lemma,
+                    'gen_sg' => '',
+                    'ill_sg' => ['old'=>$lemma->wordform($gramset_ill_sg, $dialect_id),'new'=>''],
+                    'term_sg' => ['old'=>$lemma->wordform($gramset_term_sg, $dialect_id),'new'=>''],
+                    'add_sg' => ['old'=>$lemma->wordform($gramset_add_sg, $dialect_id),'new'=>''],
+                    ];
+                $gen_wordform = Wordform::find($lemma->wordform_id);
+                if (!$gen_wordform) {
+                    continue;
+                }
+                $lemma_wordforms['gen_sg'] = $gen_wordform->wordform;
+                if (!preg_match("/^(.+)n$/", $lemma_wordforms['gen_sg'], $regs)) {
+                    continue;
+                }
+                $stems = [1=>$regs[1], 2=>VepsName::illSgBase($regs[1])];
+                $lemma_wordforms['ill_sg']['new'] = VepsName::wordformByStems($stems, $gramset_ill_sg, $dialect_id);
+                $lemma_wordforms['term_sg']['new'] = VepsName::wordformByStems($stems, $gramset_term_sg, $dialect_id);
+                $lemma_wordforms['add_sg']['new'] = VepsName::wordformByStems($stems, $gramset_add_sg, $dialect_id);
+                $lemmas[$pos->name][$lemma->id] = $lemma_wordforms;
+            endforeach; 
+        }
+//dd($lemmas);        
+        return view('dict.lemma.illative_table',compact('lemmas'));
     }
     
     /*

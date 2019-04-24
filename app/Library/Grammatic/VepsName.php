@@ -126,9 +126,9 @@ class VepsName
      * @param String $name_num 'sg', 'pl' or null
      * @return string
      */
-    public static function wordformByStems($stems, $gramset_id, $dialect_id, $name_num) {
-        $s_sg = preg_match("/i$/u", $stems[1]) ? 'š' : 's';
-        $s_pl = preg_match("/i$/u", $stems[4]) ? 'š' : 's';
+    public static function wordformByStems($stems, $gramset_id, $dialect_id, $name_num=null) {
+        $s_sg = isset($stems[1]) ? (preg_match("/i$/u", $stems[1]) ? 'š' : 's') : '';
+        $s_pl = isset($stems[4]) ? (preg_match("/i$/u", $stems[4]) ? 'š' : 's') : '';
         
         switch ($gramset_id) {
             case 1: // номинатив, ед.ч. 
@@ -242,7 +242,7 @@ class VepsName
     
     //consonant after which the vowel escapes before
     public static function consSetEscapeV() {
-        return "pbdfsšzžcčhmnlt"; // jgvkr
+        return "pbfsšzžcčmnlt"; // jgvkr
     }
     
     /*

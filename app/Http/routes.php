@@ -136,6 +136,7 @@ Route::group(
         Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
         Route::get('dict/wordform/tmpFixNegativeVepsVerbForms', 'Dict\WordformController@tmpFixNegativeVepsVerbForms');
       
+        Route::get('dict/lemma/illative_table', 'Dict\LemmaController@illativeTable');       
 //        Route::get('dict/gramset/tempInsertGramsetsForReflexive', 'Dict\GramsetController@tempInsertGramsetsForReflexive');       
 //        Route::get('dict/gramset/tempInsertGramsetPosLang', 'Dict\GramsetController@tempInsertGramsetPosLang');       
 //        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');       
