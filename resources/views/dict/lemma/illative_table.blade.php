@@ -20,7 +20,7 @@
         @foreach($lemmas_pos as $lemma_id=>$lemma)
         <tr>
             <td>{{$count++}}</td>
-            <td>{{$lemma['lemma']}}</td>
+            <td><a href="/dict/lemma/{{$lemma_id}}">{{$lemma['lemma']}}</a></td>
             <td>{{$lemma['gen_sg']}}</td>
             <td>
                 @if($lemma['ill_sg']['old'])
