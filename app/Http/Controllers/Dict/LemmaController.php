@@ -1015,7 +1015,9 @@ class LemmaController extends Controller
             $lemma_coll = Lemma::where('lang_id', $lang_id)
                            ->where('pos_id', $pos_id)
                            ->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
-                           ->where('gramset_id', $gramset_gen_sg)->get();
+                           ->where('gramset_id', $gramset_gen_sg)
+                           ->where('dialect_id',$dialect_id)
+                           ->orderBy('lemma')->get();
             foreach ($lemma_coll as $lemma): 
                 $lemma_wordforms=[
                     'lemma' => $lemma->lemma,
