@@ -173,6 +173,27 @@ class Lang extends Model
         return $list;         
     }
         
+    /** Gets list of interface languages: Russian, English 
+     * 
+     * @return Array [2=>'Russian', 3=>'English']
+     */
+    public static function getListInterface()
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $ru_lang = self::where('code','ru')->first();
+        if (!isset($list[$ru_lang->id])) {
+            $list[$ru_lang->id] = $ru_lang->name;
+        }
+        
+        $en_lang = self::where('code','en')->first();
+        if (!isset($list[$en_lang->id])) {
+            $list[$en_lang->id] = $en_lang->name;
+        }
+        
+        return $list;         
+    }
+        
     /** Gets list of languages
      * 
      * @return Array [1=>'Vepsian',..]

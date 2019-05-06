@@ -54,7 +54,7 @@
 </div>
 @if ($action == 'edit')
     @foreach ($lemma->meanings as $meaning)
-        @include('dict.lemma._form_edit_meaning')
+        @include('dict.meaning.form._edit')
     @endforeach
     <?php $count=0;?>
 @endif
@@ -62,7 +62,7 @@
 {{-- New meaning --}}
 <div id='new-meanings'>
     @if ($action == 'create')
-        @include('dict.meaning._form_create',
+        @include('dict.meaning.form._create',
                  ['count' => 0,
                   'new_meaning_n' => $new_meaning_n
                  ])

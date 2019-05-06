@@ -136,7 +136,8 @@ class LemmaController extends Controller
         
         $pos_values = PartOfSpeech::getGroupedList();   
         $lang_values = Lang::getList();
-        $langs_for_meaning = Lang::getListWithPriority();
+//        $langs_for_meaning = Lang::getListWithPriority();
+        $langs_for_meaning = Lang::getListInterface();
         $dialect_values = $lang_id ? Dialect::getList($lang_id) : Dialect::getList(); //['NULL'=>'']+
 //dd($dialect_values);        
         return view('dict.lemma.create',

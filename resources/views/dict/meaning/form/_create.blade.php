@@ -12,13 +12,6 @@
                     <th></th>
                 </tr>
             @foreach ($langs_for_meaning as $lang_id => $lang_text)
-                <tr>
-                    <td>{{ $lang_text }}&nbsp; </td>
-                    <td>@include('widgets.form.formitem._text',
-                       ['name' => 'new_meanings['.$count.'][meaning_text]['.$lang_id.']',
-                        'special_symbol' => true,
-                       ])</td>
-                    <td></td>
-                </tr>
+                @include('dict.meaning.form._lang_meaning_text')
             @endforeach
             </table>
