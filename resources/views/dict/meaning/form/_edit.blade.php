@@ -12,8 +12,7 @@
                 @foreach ($meaning->meaningTextsWithAllLangs() as $meaning_lang => $meaning_text)                
                     @include('dict.meaning.form._lang_meaning_text',
                             ['lang_text' => $meaning_text->lang_name,
-                             'count' => $meaning->id,
-                             'lang_id' => $meaning_lang,
+                             'name' => 'ex_meanings['.$meaning->id.'][meaning_text]['.$meaning_lang.']',
                              'meaning_value' => $meaning_text->meaning_text,
                              'is_translated' => $meaning_lang != $lemma->lang_id
                             ])

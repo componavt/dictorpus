@@ -2,7 +2,7 @@
                     <td>{{ $lang_text }}&nbsp; </td>
                     <td>
                         @include('widgets.form.formitem._text',
-                                ['name' => 'new_meanings['.$count.'][meaning_text]['.$lang_id.']',
+                                ['name' => $name,
                                  'special_symbol' => true,
                                  'value' => isset($meaning_value) ? $meaning_value : ''
                                 ])

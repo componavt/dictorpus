@@ -12,6 +12,8 @@
                     <th></th>
                 </tr>
             @foreach ($langs_for_meaning as $lang_id => $lang_text)
-                @include('dict.meaning.form._lang_meaning_text')
+                @include('dict.meaning.form._lang_meaning_text',
+                        ['name' => 'new_meanings['.$count.'][meaning_text]['.$lang_id.']'
+                        ])
             @endforeach
             </table>
