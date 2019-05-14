@@ -43,10 +43,9 @@ class VepsVerb
      *          7 => a/ä - последняя буква инфинитива]
      * 
      * @param Array $regs
-     * @param Int $pos_id
      * @return array
      */
-    public static function stemsFromTemplate($regs, $pos_id) {
+    public static function stemsFromTemplate($regs) {
 //dd($regs);        
         $stems = [];
 //dd(sizeof($regs));        
@@ -100,6 +99,42 @@ class VepsVerb
                 $cond_stem, $potn_stem, $cons, $harmony];        
     }
     
+    /**
+     * stems = [0 => основа инфинитива, 
+     *          1 => основа презенса, 
+     *          2 => основа имперфекта,
+     *          3 => основа актив 2-го причастия
+     *          4 => основа кондиционала, 
+     *          5 => основа потенциала, 
+     *          6 => d/t - предпоследняя буква инфинитива
+     *          7 => a/ä - последняя буква инфинитива]
+     * 
+     * @param Lemma $lemma_obj
+     * @param Int $dialect_id
+     * @return array
+     */
+    public static function stemsFromWordforms($lemma_obj, $dialect_id) {
+        $stems = [null, null, null, null, null, null, null, null];
+        $lemma = $lemma_obj->lemma;
+        
+        if (preg_match("/^(.*)([dt])([aä])$/u", $regs[2], $regs)) {
+            $stems[0] = $regs[1];
+            $stems[6] = $regs[2];
+            $stems[7] = $regs[3];
+        }
+        
+        $gramset_pres3sg = 28;
+        $wordform_pres3sg = $lemma_obj->wordform($gramset_pres3sg, $dialect_id);
+        if ($wordform_pres3sg && preg_match("/^(.*)b$/u", $regs[3], $regs)) {
+            $stems[1] = $regs[1];
+        }
+        
+        $gramset_imp3sg = 34;
+        $wordform_imp3sg = $lemma_obj->wordform($gramset_imp3sg, $dialect_id);
+        if ($wordform_imp3sg && preg_match("/i$/u", $wordform_imp3sg)) {
+            $stems[2] = $wordform_imp3sg;
+        }
+    }
     /**
      * stems = [0 => основа инфинитива, 
      *          1 => основа презенса, 
