@@ -53,6 +53,7 @@
                 ['name' => 'text', 
                  'special_symbol' => true,
                  'title'=>trans('corpus.text'),
+                 'help_text' =>trans('corpus.text_help'),
                  'attributes' => $attr,
                 ])
         @if ($action == 'edit')
@@ -108,6 +109,7 @@
         <?php $transtext_text_value = ($action=='edit' && $text->transtext) ? ($text->transtext->text) : NULL; ?>
         @include('widgets.form.formitem._textarea', 
                 ['name' => 'transtext.text', 
+                 'help_text' =>trans('corpus.text_help'),
                  'special_symbol' => true,
                  'value' => $transtext_text_value,
                  'title'=>trans('corpus.transtext_text')])

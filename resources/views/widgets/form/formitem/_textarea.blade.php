@@ -22,10 +22,13 @@ $attributes['id'] = $id_name;
 <div class="form-group {!! $errors->has($name) ? 'has-error' : null !!}">
     @if($title)
 	<label for="{{$name}}">{{ $title }}</label>
+        <span class='imp'>{{@isset($help_text) ? $help_text : ''}}</span>
     @endif
     {!! Form::textarea($name, $value, $attributes) !!}
     @if ($special_symbol) 
         @include('dict.special_symbols',['id_name'=>$id_name])
     @endif
-    <p class="help-block">{!! $errors->first($name) !!}</p>
+    <p class="help-block">
+        {!! $errors->first($name) !!}
+    </p>
 </div>

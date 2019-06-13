@@ -84,6 +84,7 @@ return [
     'symbol' => 'symbol',
     
     'text' => 'text',
+    'text_help' => 'You can force the end of a sentence with |',
     'text_fragment' => 'Fragment of text',
     'text_has_checked_meaning' => 'The text is locked for editing, as It has checked up links with lemmas. Changing the text would result in the loss of relevance of the text to lemmas.',
     'text_list' => 'Text list',

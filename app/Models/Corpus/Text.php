@@ -582,7 +582,7 @@ class Text extends Model
         $sen_count = 1;
         $word_count = 1;
 
-        $end1 = ['.','?','!','…'];
+        $end1 = ['.','?','!','…','|'];
         $end2 = ['.»','?»','!»','."','?"','!"','.”','?”','!”'];
         $text = trim($text);
         $pseudo_end = false;
@@ -592,7 +592,7 @@ class Text extends Model
         }
 
         $text = nl2br($text);
-        if (preg_match_all("/(.+?)(\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…{1,})(\s|(<br(| \/)>\s*){1,}|$)/is", // :|
+        if (preg_match_all("/(.+?)(\||\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…{1,})(\s|(<br(| \/)>\s*){1,}|$)/is", // :|
                            $text, $desc_out)) {
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
                 $sentence = trim($desc_out[1][$k]);
@@ -602,10 +602,11 @@ class Text extends Model
                     $out .= $regs[1]."\n";
                     $sentence = trim($regs[3]);
                 }
-                if ($k == sizeof($desc_out[1])-1 && $pseudo_end) {
+                if ($k == sizeof($desc_out[1])-1 && $pseudo_end || $desc_out[2][$k] == '|') {
                     $desc_out[2][$k] = '';
                 }
 
+//                $sentence = str_replace('|','',$sentence);
                 // division on words
                 list($str,$word_count) = self::markupSentence($sentence,$word_count);
 
@@ -734,7 +735,7 @@ class Text extends Model
     
     public function getMeaningsByWid($w_id) {
         $meanings = $this->meanings();
-var_dump($meanings);        
+//var_dump($meanings);        
         /*->wherePivot('text_id',$this->id)
                          ->wherePivot('w_id',$w_id)
                          ->wherePivot('relevance','>',0)->get();
@@ -754,13 +755,18 @@ var_dump($meanings);
 
         foreach ($sxe->children()->s as $sentence) {
             $s_id = (int)$sentence->attributes()->id;
+/*print "<pre>";
+        var_dump($s_id, $sentence->children()->w, isset($checked_words[$s_id]) ? $checked_words[$s_id] : NULL, '____________________<br>');
+print "</pre>";*/
             $sxe = $this->updateMeaningSentence($sxe, $s_id, $sentence->children()->w, isset($checked_words[$s_id]) ? $checked_words[$s_id] : NULL);
         }
     }
     
     public function updateMeaningSentence($sxe, $s_id, $sent_words, $checked_sent_words) {
         $word_count = 0;
-//var_dump($sent_words);
+/*print "<pre>";
+        var_dump($sent_words);
+print "</pre>";*/
         $left_words = [];
         foreach ($sent_words as $word) {
             $w_id = (int)$word->attributes()->id;
@@ -769,7 +775,9 @@ var_dump($meanings);
             list($sxe, $word_for_search) = $this->searchToMerge($sxe, $w_id, $word_for_search, $left_words);
             
             $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_search]);
-            $word_obj->setMeanings($checked_sent_words[$word_count], $this->lang_id);
+            if (isset ($checked_sent_words[$word_count])) {
+                $word_obj->setMeanings($checked_sent_words[$word_count], $this->lang_id);
+            }
 /*            foreach (Word::getMeaningsByWord($word_for_search, $this->lang_id) as $meaning) {
                 $meaning_id = $meaning->id;
                 $relevance = isset($checked_sent_words[$word_count][$meaning_id][0]) && $checked_sent_words[$word_count][$meaning_id][0] == $word 
