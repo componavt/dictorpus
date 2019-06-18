@@ -271,11 +271,30 @@ class Lang extends Model
             $total = Word::countByLang($lang->id);
             $marked = Word::countMarked($lang->id);
             $proc = 100*$marked/$total;
-            $out[$lang->name]['total'] = number_format($total, 0,',', ' ');
-            $out[$lang->name]['marked'] = number_format($marked, 0,',', ' ');
-            $out[$lang->name]['ratio'] = number_format($proc, 1, ',', ' ');
+            $out['total'][$lang->name] = number_format($total, 0,',', ' ');
+            $out['marked'][$lang->name] = number_format($marked, 0,',', ' ');
+            $out['ratio'][$lang->name] = number_format($proc, 1, ',', ' ');
 //            $out[$lang->id] = [0=>$lang->name, 1=>number_format($proc, 0, ',', ' ')];
         }
         return $out;
     }
+    
+    public static function countLemmas() {
+        $out = [];
+        foreach (self::projectLangs() as $lang) {
+            $total = Lemma::countByLang($lang->id);
+            $out[$lang->name] = number_format($total, 0, ',', ' ');
+        }
+        return $out;
+    }
+    
+    public static function countWordforms() {
+        $out = [];
+        foreach (self::projectLangs() as $lang) {
+            $total = Wordform::countByLang($lang->id);
+            $out[$lang->name] = number_format($total, 0, ',', ' ');
+        }
+        return $out;
+    }
+    
 }

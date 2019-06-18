@@ -261,5 +261,14 @@ class Wordform extends Model
                     ->where('pos_id',$pos);
                 });
     }
+
+    public static function countByLang($lang_id) {
+        return DB::table('lemma_wordform')
+                     ->whereIn('lemma_id',function($q) use ($lang_id){
+                         $q->select('id')->from('lemmas')
+                           ->where('lang_id', $lang_id);
+                     })->count();
         
+    }
+    
 }

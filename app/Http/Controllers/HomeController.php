@@ -81,12 +81,16 @@ class HomeController extends Controller
         $checked_examples_to_all = 100*$total_checked_examples/$total_examples;
         
         $lang_marked = Lang::countMarked();
+        $lang_lemmas = Lang::countLemmas();
+        $lang_wordforms = Lang::countWordforms();
         
         return view('page.stats')
                 ->with([
                         'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
                         'checked_words_to_marked' => number_format($checked_words_to_marked, 2,',', ' '),
+                        'lang_lemmas' => $lang_lemmas,
                         'lang_marked' => $lang_marked,
+                        'lang_wordforms' => $lang_wordforms,
                         'marked_words_to_all' => number_format($marked_words_to_all, 1,',', ' '),
                         'total_active_editors' => number_format($total_active_editors, 0, ',', ' '),
                         'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),

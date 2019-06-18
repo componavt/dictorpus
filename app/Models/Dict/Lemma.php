@@ -559,6 +559,10 @@ dd($wordforms);
                 ->where('pos_id',$pos)->count();
     }
     
+    public static function countByLang($lang_id) {
+        return self::where('lang_id', $lang_id)->count();
+    }
+
     /**
      * Gets count of sentence-examples
      * 

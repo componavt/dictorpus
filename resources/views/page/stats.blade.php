@@ -16,9 +16,19 @@
                         <tr>
                             <td>{{trans('navigation.lemmas')}}</td><td><a href="/dict/lemma">{{$total_lemmas}}</a></td>
                         </tr>
+                        @foreach($lang_lemmas as $lang_name => $lang_num) 
+                        <tr>
+                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}}</td>
+                        </tr>
+                        @endforeach
                         <tr>
                             <td>{{trans('navigation.wordforms')}}</td><td><a href="/dict/wordform">{{$total_wordforms}}</a></td>
                         </tr>
+                        @foreach($lang_wordforms as $lang_name => $lang_num) 
+                        <tr>
+                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}}</td>
+                        </tr>
+                        @endforeach
                         <tr>
                             <td>{{trans('stats.meanings')}}</td><td>{{$total_meanings}}</td>
                         </tr>
@@ -35,25 +45,25 @@
                         <tr>
                             <td>{{trans('stats.total_words')}}</td><td>{{$total_words}}</td>
                         </tr>
-                        @foreach($lang_marked as $lang_name => $lang_info) 
+                        @foreach($lang_marked['total'] as $lang_name => $lang_num) 
                         <tr>
-                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_info['total']}}</td>
+                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}}</td>
                         </tr>
                         @endforeach
                         <tr>
                             <td>{{trans('stats.total_marked_words')}}</td><td>{{$total_marked_words}}</td>
                         </tr>
-                        @foreach($lang_marked as $lang_name => $lang_info) 
+                        @foreach($lang_marked['marked'] as $lang_name => $lang_num) 
                         <tr>
-                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_info['marked']}}</td>
+                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}}</td>
                         </tr>
                         @endforeach
                         <tr>
                             <td>{{trans('stats.marked_words_to_all')}}</td><td>{{$marked_words_to_all}} %</td>
                         </tr>
-                        @foreach($lang_marked as $lang_name => $lang_info) 
+                        @foreach($lang_marked['ratio'] as $lang_name => $lang_num) 
                         <tr>
-                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_info['ratio']}} %</td>
+                            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}} %</td>
                         </tr>
                         @endforeach
                         <tr>
