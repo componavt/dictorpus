@@ -40,6 +40,7 @@ return [
     'total_examples' => 'The total number of examples (the number of words in sentences automatically tied to a lemma)',
     'total_checked_examples' => 'Number of verified examples',
     'total_checked_words' => 'The number of words in the text (green color), anchored by experts to any meaning of the word in the dictionary',
+    'total_marked_words' => 'The number of marked words in the texts, i.e. automatically linked to any lemma in the dictionary',
     'total_words' => 'Total words in the texts',
     'total_users' => 'Registered users',
     ];
