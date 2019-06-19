@@ -36,8 +36,9 @@
                 <th>{{ trans('dict.dialect') }}</th>
                 <th>{{ trans('corpus.corpus') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
+                @if (!$url_args['search_word'])
                 <th>{{ trans('messages.translation') }}</th>
-                @if ($url_args['search_word'])
+                @else
                 <th style='text-align: center'>{{ trans('corpus.sentences') }}</th>
                 @endif
                 @if (User::checkAccess('corpus.edit'))
@@ -59,14 +60,19 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
-                <td data-th="{{ trans('corpus.title') }}"><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a></td>
+                <td data-th="{{ trans('corpus.title') }}">
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a>
+                @if ($url_args['search_word'] && $text->transtext)
+                    <br>({{$text->transtext->title}})
+                @endif
+                </td>
+                @if (!$url_args['search_word'])
                 <td data-th="{{ trans('messages.translation') }}">
                     @if ($text->transtext)
                     {{$text->transtext->title}}
                     @endif
                 </td>
-                
-                @if ($url_args['search_word'])
+                @else
                 <td data-th="{{ trans('corpus.sentences') }}">
                     @foreach ($text->sentences($url_args['search_word']) as $sentence_id => $sentence)
                     <ol start="{{$sentence_id}}">
