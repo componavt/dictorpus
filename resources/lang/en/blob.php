@@ -42,6 +42,12 @@ return [
                  <p>the Russian Foundation for Basic Research, grant No. 18-012-00117, "Problems of construction of text corpus of minor peoples of Russia in the case of Open corpus of Veps and Karelian languages", 2018-2020.</p>',
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
                   <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
+    'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
+                    <i>Klyachko E.L., Sorokin A.A., Krizhanovskaya N.B., Krizhanovsky A.A., Ryazanskaya G.M.</i>
+                    Computational Linguistics and Intellectual Technologies: papers from the Annual conference “Dialogue” (Moscow, May 29— June 1, 2019) Issue 18 (25). 2019</p>
+                    
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18516">Semi-automatic methods for adding words to the dictionary of VepKar corpus based on inflectional rules extracted from Wiktionary</a><br>
+                    <i>N.B. Krizhanovskaya, A.A. Krizhanovsky</i>. Proceedings of the international conference "Corpus linguistics ‒ 2019". Saint Petersburg. 2019. Pp. 211-217</p>',
     'participants' => '<dl>'
                     . '<dt><a href="http://mathem.krc.karelia.ru/member.php?id=804&plang=e">Andrey Krizhanovsky</a></dt>'
                     . '<dd>PhD, Leading Research Associate in the Laboratory for Information Computer Technologies, Institute of Applied Mathematical Research, KarRC, RAS</dd><br>'

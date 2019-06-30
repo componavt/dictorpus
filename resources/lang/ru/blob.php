@@ -80,6 +80,29 @@ return [
                   . 'карельской газеты "Oma Mua", вепской газеты "Kodima", альманаха "Taival"  на карельском языке и альманаха "Verez tullei"'
                   . 'на вепсском языке для использования в проекте ВепКар</p>'
                   . '<p>Разрешение <a href="/images/permission_chirkova_slavov.jpg">от Л.В. Чирковой и В.С. Славова</a> на вепсский и русский текст субтитров кинофильма «В чистой воде рыба клюет» (на вепсском "Sel\'ktas vedes kala kokib").</p>',
+    'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=15914">Открытый корпус вепсского и карельского языков (ВепКар): предварительный отбор материалов и словарная часть системы</a><br>
+                    <i>Зайцева Н.Г., Крижановский А.А., Крижановская Н.Б., Пеллинен Н.А., Родионова А.П.</i>                    
+                    Труды международной конференции «Корпусная лингвистика ‒ 2017». ‒ СПб., 2017. С. 172-177.</p>
+                    
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18086">Корпусная лингвистика в прибалтийско-финском исследовательском пространстве (на материале Корпуса вепсского языка и Открытого корпуса вепсского и карельского языков)</a><br>
+                    <i>Зайцева Н.Г., Крижановская Н.Б.</i> Альманах североевропейских и балтийских исследований. Выпуск 3. 2018. C. 264-273. DOI: 10.15393/j103.art.2018.1062</p>
+                    
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
+                    <i>Klyachko E.L., Sorokin A.A., Krizhanovskaya N.B., Krizhanovsky A.A., Ryazanskaya G.M.</i>
+                    Computational Linguistics and Intellectual Technologies: papers from the Annual conference “Dialogue” (Moscow, May 29— June 1, 2019) Issue 18 (25). 2019</p>
+                    
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18516">Автоматизированные методы пополнения словаря корпуса ВепКар на основе правил словоизменения из Викисловаря</a><br>
+                    <i>N.B. Krizhanovskaya, A.A. Krizhanovsky</i>. Труды международной конференции «Корпусная лингвистика ‒ 2019». СПб. 2019. C. 211-217</p>
+
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18515">Представление диалектов в Открытом корпусе вепсского и карельского языков (ВепКар)</a><br>
+                    <i>Крижановский А.А., Крижановская Н.Б., Новак И.П.</i> Труды международной конференции «Корпусная лингвистика ‒ 2019». СПб. 2019. C. 288-295</p>',
+    'publications_about' => '<p><a class="publ-title" href="http://fadn.gov.ru/news/2017/10/03/3406-na-forume-yazykovaya-politika-organizovannom-fadn-rossii-nagradili-laureatov-vserossiyskoy-premii-klyuchevoe-slovo">Всероссийская премия «Ключевое слово»</a><br>     
+                    Федеральное агентство по делам национальностей, 3&nbsp;октября&nbsp;2017&nbsp;г.</p>
+
+                    <p><a class="publ-title" href="https://scientificrussia.ru/articles/proekt-vepkar">Проект ВепКар</a><br>
+                    Научная Россия, 28 мая 2019 г.</p>
+                    
+                    ',
     'welcome_text' => '<p>Добро пожаловать в VepKar — открытый корпус вепсского и карельского языков, 
                        содержащий словари и корпуса прибалтийско-финских языков народов Карелии.</p>
 
@@ -102,13 +125,6 @@ return [
 
                     <p>Проект поддержан <a href="/ru/grants">грантами</a> РГНФ и РФФИ.</p>
 
-                    <p>Если вы используете VepKar или Dictorpus в своей научной работе,
-                    просим ссылаться на эту публикацию:</p>
-
-                    <p><i>Зайцева Н.Г., Крижановский А.А., Крижановская Н.Б., Пеллинен Н.А.,
-                    Родионова А.П. <a href="https://dspace.spbu.ru/bitstream/11701/8786/1/%D0%9A%D0%BE%D1%80%D0%BF%D1%83%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BB%D0%B8%D0%BD%D0%B3%D0%B2%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0-2017%20(%D1%82%D1%80%D1%83%D0%B4%D1%8B%20%D0%BC%D0%B5%D0%B6%D0%B4.%20%D0%BA%D0%BE%D0%BD%D1%84%D0%B5%D1%80.).pdf#page=172">Открытый корпус вепсского и карельского языков
-                    (ВепКар): предварительный отбор материалов и словарная часть
-                    системы</a> // Труды международной конференции «Корпусная
-                    лингвистика ‒ 2017». ‒ СПб., 2017. С. 172-177.</i></p>',
+                    <p><a href="/publ/">Публикации проекта</a></p>',
     
 ];

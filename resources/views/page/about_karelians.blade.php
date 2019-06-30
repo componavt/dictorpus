@@ -4,6 +4,6 @@
 {{ trans('navigation.about_karelians') }}
 @endsection
 
-@section('page-title')
+@section('body')
 {!! trans('blob.about_karelians') !!}
 @endsection
