@@ -581,6 +581,8 @@ class TextController extends Controller
     }
     
     /**
+     * Calls by AJAX, 
+     * adds 
      * /corpus/text/add/example/4254_1500_11_92
      * 
      * @param type $example_id

@@ -562,7 +562,9 @@ class LemmaController extends Controller
      * Saves links 1)text's word with lemma's meaning 
      *             2)wordform with gramset and dialects
      * 
-     * /dict/lemma/wordform/update?lemma_id=10603&text_id=1548&w_id=7&meaning_id=11660&gramset_id=34&dialects[]=44&dialects[]=34
+     * Test: /dict/lemma/wordform/update?lemma_id=10603&text_id=1548&w_id=7&meaning_id=11660&gramset_id=34&dialects[]=44&dialects[]=34
+     *       /dict/lemma/wordform/update?text_id=1548&lemma_id=4235&meaning_id=4350&gramset_id=1&w_id=1&dialects[]=34
+     * 
      * @param Request $request
      * @return Null
      */
@@ -591,8 +593,8 @@ class LemmaController extends Controller
             $wordform = $word -> word;
         }
         
-        $text->addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
         $lemma->addWordformFromText($wordform, $gramset_id, $dialects, $text_id, $w_id);
+        $text->addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
         return 1;            
     }   
     

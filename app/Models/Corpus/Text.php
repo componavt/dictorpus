@@ -832,7 +832,7 @@ print "</pre>";*/
     }
     
     /**
-     * Add link
+     * Add link w_id (word from text) - meaning of lemma
      * 
      * @param Int $lemma - Lemma ID
      * @param Int $meaning_id - Meaning ID
@@ -844,11 +844,10 @@ print "</pre>";*/
         
         $meaning = Meaning::find($meaning_id);
         if (!$meaning) { return; }
-        
-        DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->id
-                . " and w_id=$w_id");
-//                $text->meanings()->where('w_id',$w_id)->detach(); 
+
         foreach ($lemma->meanings as $meaning) {
+            DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->id
+                    . " and w_id=$w_id and meaning_id=".$meaning->id);
             if ($meaning->id == $meaning_id) {
                 $relevance = 5;
             } else {
@@ -859,6 +858,7 @@ print "</pre>";*/
                      'word_id'=>$word->id, 'w_id'=>$w_id,
                      'relevance'=>$relevance]);            
         }
+//dd($this->meanings()->wherePivot('w_id', $w_id)->get());        
     }
     
 // select id from meanings where lemma_id in (SELECT id from lemmas where lemma like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    

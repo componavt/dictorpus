@@ -161,6 +161,20 @@ function changeWordBlock(text_id, w_id, meaning_id) {
     });     
 }
 
+/**
+ * Sends data to server for saving of a word form.
+ * Calls changeWordBlock.
+ * Closes the window.
+ * 
+ * @param {Integer} text_id
+ * @param {Integer} w_id - id of a word in the text
+ * @param {Integer} lemma_id
+ * @param {String} wordform 
+ * @param {Integer} meaning_id
+ * @param {Integer} gramset_id
+ * @param {Array} dialects - array of dialect IDs 
+ * @returns {undefined}
+ */
 function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects) {
 //alert('/dict/lemma/wordform/update?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&w_id='+w_id+'&dialects='+dialects);        
     $.ajax({
@@ -187,6 +201,15 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
     }); 
 }
     
+/**
+ * Adds word forms to the dictionary for the unmarked word.
+ * Opens a window after clicking on the unmarked (black) word.
+ * Calls saveWordform().
+ * 
+ * @param Integer text_id 
+ * @param Integer lang_id
+ * @returns NULL
+ */    
 function addWordform(text_id, lang_id) {
     changeLemmaList(lang_id);
     $(".call-add-wordform").click(function() {

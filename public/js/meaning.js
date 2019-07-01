@@ -102,6 +102,12 @@ function hideExamples(meaning_n) {
     $('#'+link).show();
 }
 
+/*
+ * Adds to the word the selected value of the lemma
+ * 
+ * @param String route - url to script
+ * @returns NULL
+ */
 function addWordMeaning(route) {
     $(".choose-meaning").click(function(){
         var id = $(this).data('add');

@@ -122,13 +122,22 @@ class Wordform extends Model
         }
     }
     
+    public function updateTextWordformLinks($text_id, $w_id, $gramset_id) {
+        if (!$gramset_id) {
+            return;
+        }
+        $wordform->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->detach();
+        $wordform->texts()->attach($text_id,['w_id'=>$w_id, 'gramset_id'=>$gramset_id]);
+        
+        
+    }
     /**
      * Removes all neutral links (relevance=1) from meaning_text
      * and adds new links
      *
      * @return NULL
      */
-    public function updateTextLinks($lemma)
+    public function updateMeaningTextLinks($lemma)
     {        
         $lang_id = $lemma->lang_id;
         $word = addcslashes($this->wordform,"'");

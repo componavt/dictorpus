@@ -874,6 +874,27 @@ dd($wordforms);
             'affix' => $affix]);
     }
     
+    public function addWordformGramsetDialect($wordform_id, $gramset_id, $dialect_id) {
+        $query = "DELETE FROM lemma_wordform WHERE lemma_id=".$this->id
+            . " and wordform_id=".$wordform_id." and gramset_id";
+//print "<p>$query";            
+        if (!$gramset_id) {
+            $gramset_id=NULL;
+            $query .= " is NULL";
+        } else {
+            $query .= "=".(int)$gramset_id;
+        }
+        $query .= " and dialect_id";
+        if (!$dialect_id) {
+            $query .= " is NULL";
+        } else {
+            $query .= "=".(int)$dialect_id;
+        }
+        DB::statement($query);
+        $this-> wordforms()->attach($wordform_id, 
+                ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                                            
+    }
+    
     /**
      * Add wordform found in the text with gramset_id and set of dialects
      * 
@@ -887,34 +908,18 @@ dd($wordforms);
         if (!$word || !$this->pos || !$this->pos->isChangeable()) {
             return;
         }
+//var_dump("word:$word, gramset:$gramset_id, text:$text_id, w_id:$w_id");        
         $wordform = Wordform::firstOrCreate(['wordform'=>$word]);
-        if ($gramset_id) {
-            $wordform->texts()->attach($text_id,['w_id'=>$w_id, 'gramset_id'=>$gramset_id]);
-        }
-        
+//var_dump($wordform->id);    
+        $wordform->updateTextWordformLinks($text_id, $w_id, $gramset_id);
+//dd();        
         if (!sizeof($dialects)) {
             $dialects[0] = NULL;
         }
         foreach ($dialects as $dialect_id) {
-            $query = "DELETE FROM lemma_wordform WHERE lemma_id=".$this->id
-                . " and wordform_id=".$wordform->id." and gramset_id";
-            if (!$gramset_id) {
-                $gramset_id=NULL;
-                $query .= " is NULL";
-            } else {
-                $query .= "=".(int)$gramset_id;
-            }
-            $query .= " and dialect_id";
-            if (!$dialect_id) {
-                $query .= " is NULL";
-            } else {
-                $query .= "=".(int)$dialect_id;
-            }
-            DB::statement($query);
-            $this-> wordforms()->attach($wordform->id, 
-                    ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                                    
+            $this->addWordformGramsetDialect($wordform->id, $gramset_id, $dialect_id);
         }
-        $wordform->updateTextLinks($this);
+        $wordform->updateMeaningTextLinks($this);
     }
     
     public function isExistWordforms($gramset_id, $dialect_id, $wordform_id) {
