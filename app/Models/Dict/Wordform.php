@@ -126,8 +126,8 @@ class Wordform extends Model
         if (!$gramset_id) {
             return;
         }
-        $wordform->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->detach();
-        $wordform->texts()->attach($text_id,['w_id'=>$w_id, 'gramset_id'=>$gramset_id]);
+        $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->detach();
+        $this->texts()->attach($text_id,['w_id'=>$w_id, 'gramset_id'=>$gramset_id]);
         
         
     }
@@ -280,4 +280,13 @@ class Wordform extends Model
         
     }
     
+    static public function findOrCreate($word) {
+        $wordform = self::firstOrCreate(['wordform'=>$word]);
+        $wordform_for_search = Grammatic::toSearchForm($word);
+        if ($wordform->wordform_for_search != $wordform_for_search) {
+            $wordform->wordform_for_search = $wordform_for_search;
+            $wordform->save();
+        }        
+        return $wordform;
+    }
 }

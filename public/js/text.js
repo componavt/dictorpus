@@ -176,9 +176,12 @@ function changeWordBlock(text_id, w_id, meaning_id) {
  * @returns {undefined}
  */
 function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects) {
-//alert('/dict/lemma/wordform/update?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&w_id='+w_id+'&dialects='+dialects);        
+    var route = '/dict/lemma/wordform/update'
+    var test_url = '?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&wordform='+ wordform +'&w_id='+w_id+'&dialects[]='+dialects;
+alert(route + test_url);  
+    
     $.ajax({
-        url: '/dict/lemma/wordform/update', 
+        url: route, 
         data: {text_id: text_id, 
                w_id: w_id,
                lemma_id: lemma_id, 
@@ -195,7 +198,7 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
         },
         error: function (jqXHR, textStatus, errorThrown) {
             var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
-               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: '+route+'/'+id;
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route + test_url;
             alert(text);
         }
     }); 

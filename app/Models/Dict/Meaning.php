@@ -483,23 +483,17 @@ class Meaning extends Model
     {        
         $lemma_obj=$this->lemma;
         $lang_id = $lemma_obj->lang_id;
-//        $strs = ["word like '".addcslashes($lemma_obj->lemma,"'")."'"];
         $strs = ["word like '".$lemma_obj->lemma_for_search."'"];
+        
 //dd($lemma_obj->wordforms);        
         foreach ($lemma_obj->wordforms as $wordform_obj) {
             $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
             //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
-//            $strs[] = "word like '".addcslashes($wordform_obj->wordform,"'")."'";
             $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
         }
         $cond = join(' OR ',array_unique($strs));
 //dd($cond);        
-/*        $unique_strs = array_unique($strs);
-            
-         // select all words matched with <lemma> from texts with lemma's lang
-        $query = "select text_id, sentence_id, w_id, words.id as word_id from words, texts where "
-               . "words.text_id = texts.id and texts.lang_id = ".$lang_id
-               . " and (".join(' OR ',$unique_strs).")"; */
+
         $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
                . " text_id in (select id from texts where lang_id = ".$lang_id
                . ") and (".$cond.")"; 
@@ -539,7 +533,7 @@ dd($relevance);
     }
 
     public function addTextLink($text_id, $sentence_id, $word_id, $w_id, $old_relevance) {
-        $relevance = $this->chooseRelevance($word->text_id, $word->w_id, $old_relevance);
+        $relevance = $this->chooseRelevance($word_id, $w_id, $old_relevance);
         $this->texts()->attach($text_id,
                                 ['sentence_id'=>$sentence_id, 
                                  'word_id'=>$word_id, 

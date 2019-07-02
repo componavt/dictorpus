@@ -1066,7 +1066,7 @@ print "<br><br>".$wordform->id. "=".$wordform->wordform;
                 $gramset_id = $lemma->pivot->gramset_id;
                 $dialect_id = $lemma->pivot->dialect_id;
                 foreach (preg_split("/\//",$wordform->wordform) as $word) {
-                    $wordform_obj = Wordform::firstOrCreate(['wordform'=>trim($word)]);
+                    $wordform_obj = Wordform::findOrCreate(trim($word));
                     $exist_wordforms = $lemma->wordforms()
                                              ->wherePivot('gramset_id',$gramset_id)
                                              ->wherePivot('dialect_id',$dialect_id)

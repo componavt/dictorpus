@@ -909,8 +909,8 @@ dd($wordforms);
             return;
         }
 //var_dump("word:$word, gramset:$gramset_id, text:$text_id, w_id:$w_id");        
-        $wordform = Wordform::firstOrCreate(['wordform'=>$word]);
-//var_dump($wordform->id);    
+        $wordform = Wordform::findOrCreate($word);
+dd($wordform->id);    
         $wordform->updateTextWordformLinks($text_id, $w_id, $gramset_id);
 //dd();        
         if (!sizeof($dialects)) {
@@ -943,7 +943,7 @@ dd($wordforms);
         $trim_word = Grammatic::toRightForm($word);
         if (!$trim_word) { return;}
         
-        $wordform_obj = Wordform::firstOrCreate(['wordform'=>$trim_word]);
+        $wordform_obj = Wordform::findOrCreate($trim_word);
         $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
         $wordform_obj->save();
 
