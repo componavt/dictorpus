@@ -14,8 +14,21 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
+/** List of simple and common functions, which do not depends to any language.
+ * For example, 
+ *      changeLetters() - letters substitution (old and new alphabet in Karelian),
+ *      maxStem() - find maximum constant substring of word forms of the lemma,
+ **/
 class Grammatic
 {
+    /** Common entry point for all languages. 
+     * Lists of ID of gramsets, which have the rules.
+     * That is we know how to generate word forms (using stems, endings and rules) for these gramsets IDs.
+     * 
+     * @param int $lang_id language ID
+     * @param int $pos_id part of speech ID
+     * @return array
+     */
     public static function getListForAutoComplete($lang_id, $pos_id) {
         $gramsets = [];
         if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 

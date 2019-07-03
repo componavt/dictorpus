@@ -10,8 +10,16 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
+/**
+ * Functions related to Karelian grammatic for verbs.
+ */
 class KarVerb
 {
+    /** Lists of ID of gramsets, which have the rules.
+     * That is we know how to generate word forms (using stems, endings and rules) for this gramset ID.
+     * 
+     * @return type list of known gramsets ID
+     */
     public static function getListForAutoComplete() {
         return [26,  27,  28,  29,  30,  31,  70,  71,  72,  73,  78,  79, 
                      32,  33,  34,  35,  36,  37,  80,  81,  82,  83,  84,  85, 

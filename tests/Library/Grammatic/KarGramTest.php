@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Grammatic\KarGram;
 
-// php artisan make:test Models\Library\Grammatic\KarGram
-// ./vendor/bin/phpunit tests/Models/Library/Grammatic\KarGram
+// php artisan make:test Library\Grammatic\KarGram
+// ./vendor/bin/phpunit tests/Library/Grammatic\KarGram
 
 class KarGramTest extends TestCase
 {

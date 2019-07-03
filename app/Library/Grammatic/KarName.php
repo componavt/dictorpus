@@ -9,6 +9,9 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
+/**
+ * Functions related to Karelian grammatic for nominals: nouns, adjectives, numerals and pronouns.
+ */
 class KarName
 {
     public static function getListForAutoComplete() {

@@ -10,6 +10,10 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
+/**
+ * Functions related to Karelian grammatic, 
+ * these functions do not depend to part of speech.
+ */
 class KarGram
 {
     public static function isConsonant($letter) {

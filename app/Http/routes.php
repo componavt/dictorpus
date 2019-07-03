@@ -166,6 +166,8 @@ Route::group(
         Route::get('export/unimorph', 'Library\ExportController@exportLemmasToUniMorph'); 
         Route::get('export/lemma_with_pos', 'Library\ExportController@exportLemmasWithPOS');
 
+        Route::get('import/dict_parser', 'Library\ImportController@dictParser');
+        
         Route::resource('dict/dialect', 'Dict\DialectController',
                        ['names' => ['update' => 'dialect.update',
                                     'store' => 'dialect.store',

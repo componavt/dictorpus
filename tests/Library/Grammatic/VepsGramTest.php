@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Grammatic\VepsGram;
 
-// php artisan make:test Models\Library\Grammatic\VepsGramTest
-// ./vendor/bin/phpunit tests/Models/Library/Grammatic/VepsGramTest
+// php artisan make:test Library\Grammatic\VepsGramTest
+// ./vendor/bin/phpunit tests/Library/Grammatic/VepsGramTest
 
 class VepsGramTest extends TestCase
 {

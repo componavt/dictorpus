@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Grammatic;
 use App\Models\Dict\Lemma;
-// php artisan make:test Models\Library\GrammaticTest
-// ./vendor/bin/phpunit tests/Models/Library/GrammaticTest
+// php artisan make:test Library\GrammaticTest
+// ./vendor/bin/phpunit tests/Library/GrammaticTest
 
 class GrammaticTest extends TestCase
 {

@@ -91,11 +91,17 @@ class PartOfSpeech extends Model
     
     public static function getIDByCode($code)
     {
-        $pos = self::where('code', $code)->first();
+        $pos = self::getByCode($code);
         if ($pos && isset($pos->id)) {
 //dd($pos->id);
             return $pos->id;
         }
+    }
+        
+    public static function getByCode($code)
+    {
+        $pos = self::where('code', $code)->first();
+        return $pos;
     }
         
     /** Gets all parts of speech for this category

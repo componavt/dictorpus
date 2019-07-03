@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Grammatic\KarVerb;
 
-// php artisan make:test Models\Library\Grammatic\KarVerbTest
-// ./vendor/bin/phpunit tests/Models/Library/Grammatic\KarVerbTest
+// php artisan make:test Library\Grammatic\KarVerbTest
+// ./vendor/bin/phpunit tests/Library/Grammatic\KarVerbTest
 
 class KarVerbTest extends TestCase
 {

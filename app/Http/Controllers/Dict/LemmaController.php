@@ -951,10 +951,7 @@ class LemmaController extends Controller
     
     
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     * 
+     * Display a page with list of phrases and lemmas which constitutes these lemmas.
      */
     public function phrases()
     {

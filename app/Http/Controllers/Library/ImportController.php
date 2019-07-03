@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Controllers\Library;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Storage;
+use App\Http\Requests;
+
+
+use App\Library\Import\DictParser;
+
+class ImportController extends Controller
+{
+    public function __construct(Request $request)
+    {
+        // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
+        $this->middleware('auth:admin,/');
+    }
+    
+    /*
+     * Reads text file with dictionary entries
+     * extracts lemmas and writes lemmas, meanings, word forms to DB
+     * 
+     * Line example:
+     * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
+     */
+    public function dictParser() {
+        $filename = 'import/dict_tver.txt';
+//        $filename = 'import/line.txt';
+
+        $file_content = Storage::disk('local')->get($filename);
+        $file_lines = preg_split ("/\r\n/",$file_content);
+        
+        foreach ($file_lines as $line) {
+            $entry = DictParser::parseEntry($line);
+        }
+    }
+    
+}
