@@ -140,14 +140,14 @@ class Wordform extends Model
     public function updateMeaningTextLinks($lemma)
     {        
         $lang_id = $lemma->lang_id;
-        $word = addcslashes($this->wordform,"'");
-        foreach ($lemma->meanings as $meaning) {
-            $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
-               . " text_id in (select id from texts where lang_id = ".$lang_id
-                                . ") and word like '".$word."'";
+        $word = addcslashes($this->wordform_for_search,"'");
+        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+           . " text_id in (select id from texts where lang_id = ".$lang_id
+                            . ") and word like '".$word."'";
 //dd($query);        
-            $words = DB::select($query); 
-            $meaning->updateTextLinks($words);
+        $words = DB::select($query); 
+        foreach ($lemma->meanings as $meaning) {
+            $meaning->updateSomeTextLinks($words);
         }
     }
     

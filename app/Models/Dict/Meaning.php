@@ -430,21 +430,30 @@ class Meaning extends Model
         }
     }
     
-    public function addText($text_id, $sentence_id, $word_id, $w_id, $relevance) {
+    public function chooseRelevance($text_id, $w_id, $old_relevance=1) {
+        if ($old_relevance == 0 ||
+        // if some another meaning has positive evaluation with this sentence, 
+        // it means that this meaning is not suitable for this example
+            DB::table('meaning_text')->where('meaning_id','<>',$this->id)
+              ->where('text_id',$text_id)->where('w_id',$w_id)
+              ->where('relevance','>',1)->count()>0) {
+            return 0;
+        } 
+/*if ($text_id==1548 && $w_id==7) {
+dd($relevance);
+} */       
+        return $old_relevance;
+    }
+
+    public function addTextLink($text_id, $sentence_id, $word_id, $w_id, $old_relevance) {
+        $relevance = $this->chooseRelevance($word_id, $w_id, $old_relevance);
         $this->texts()->attach($text_id,
-                ['sentence_id'=>$sentence_id, 
-                 'word_id'=>$word_id, 
-                 'w_id'=>$w_id, 
-                 'relevance'=>$relevance]);        
+                                ['sentence_id'=>$sentence_id, 
+                                 'word_id'=>$word_id, 
+                                 'w_id'=>$w_id, 
+                                 'relevance'=>$relevance]);        
     }
     
-    // if some another meaning has positive evaluation with this sentence, 
-    // it means that this meaning is not suitable for this example
-    public function isNotSuitableForExample($text_id, $w_id) {
-        return DB::table('meaning_text')->where('meaning_id','<>',$this->id)
-                 ->where('text_id',$text_id)->where('w_id',$w_id)
-                 ->where('relevance','>',1)->count();        
-    }
     /**
      * Add records to meaning_text for new meanings
      *
@@ -457,11 +466,7 @@ class Meaning extends Model
         }
         
         foreach ($words as $word) {
-            $relevance = 1;
-            if ($this->isNotSuitableForExample($word->text_id,$word->w_id)) {
-                $relevance = 0;
-            }
-            $this->addText($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, $relevance);        
+            $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, 1);        
         }
     }
     
@@ -502,21 +507,6 @@ class Meaning extends Model
         return $words;
     }
     
-    public function chooseRelevance($text_id, $w_id, $old_relevance=1) {
-        if ($old_relevance == 0 ||
-        // if some another meaning has positive evaluation with this sentence, 
-        // it means that this meaning is not suitable for this example
-            DB::table('meaning_text')->where('meaning_id','<>',$this->id)
-              ->where('text_id',$text_id)->where('w_id',$w_id)
-              ->where('relevance','>',1)->count()>0) {
-            return 0;
-        } 
-/*if ($text_id==1548 && $w_id==7) {
-dd($relevance);
-} */       
-        return $old_relevance;
-    }
-
     /**
      * Saves relevances <> 1 into array 
      * 
@@ -532,15 +522,6 @@ dd($relevance);
         return $relevances;
     }
 
-    public function addTextLink($text_id, $sentence_id, $word_id, $w_id, $old_relevance) {
-        $relevance = $this->chooseRelevance($word_id, $w_id, $old_relevance);
-        $this->texts()->attach($text_id,
-                                ['sentence_id'=>$sentence_id, 
-                                 'word_id'=>$word_id, 
-                                 'w_id'=>$w_id, 
-                                 'relevance'=>$relevance]);        
-    }
-    
     /**
      * Updates records in the table meaning_text, 
      * which binds the tables meaning and text.
@@ -548,13 +529,9 @@ dd($relevance);
      *
      * @return NULL
      */
-     public function updateTextLinks($words=NULL) {
-//dd($words);                
-        if (!$words) {
-            $words = $this->getWordsByWordforms();
-        }
+     public function updateTextLinks() {
+        $words = $this->getWordsByWordforms();
 //dd($words); 
-// нельзя удалять пока не записаны оценки
         $old_relevances = $this->getRelevances();
 //dd($old_relevances);        
         $this->texts()->detach();
@@ -562,10 +539,26 @@ dd($relevance);
         if (!$words) {
             return;
         }
-        $text_links = [];               
         foreach ($words as $word) {
             $relevance = isset($old_relevances[$word->text_id][$word->w_id]) ? $old_relevances[$word->text_id][$word->w_id] : 1;
             $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, $relevance);
+        }
+    }
+    
+    /**
+     *
+     * @return NULL
+     */
+     public function updateSomeTextLinks($words) {
+        if (!$words) {
+            return;
+        }
+//dd($words);        
+        foreach ($words as $word) {
+            $link = $this->texts()->wherePivot('text_id', $word->text_id)->wherePivot('w_id', $word->w_id);
+            if (!$link) {
+                $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, 1);
+            }
         }
     }
     

@@ -910,7 +910,7 @@ dd($wordforms);
         }
 //var_dump("word:$word, gramset:$gramset_id, text:$text_id, w_id:$w_id");        
         $wordform = Wordform::findOrCreate($word);
-dd($wordform->id);    
+//dd($wordform->id);    
         $wordform->updateTextWordformLinks($text_id, $w_id, $gramset_id);
 //dd();        
         if (!sizeof($dialects)) {
