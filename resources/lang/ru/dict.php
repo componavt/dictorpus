@@ -148,6 +148,7 @@ return [
     'remove-example' => 'этот пример совсем не подходит',
     'reverse_relation' => 'Обратное отношение',
     
+    'select_category' => 'Выберите категорию',
     'select_dialect' => 'Выберите диалект',
     'select_gramset' => 'Выберите набор грамматических признаков',
     'select_lang' => 'Выберите язык',

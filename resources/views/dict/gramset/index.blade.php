@@ -65,7 +65,9 @@
                 </td>
 
                 <td data-th="{{ trans('dict.wordforms') }}">
-                  {{ $gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count() }}
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/wordform/') }}{{$args_by_get_for_out}}&search_gramset={{$gramset->id}}">
+                        {{ $gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count() }}
+                    </a>
                 </td>
                 
                 @if (User::checkAccess('ref.edit'))

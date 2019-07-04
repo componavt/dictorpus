@@ -387,6 +387,58 @@ class Gramset extends Model
         return $names;
     }
     
+    public static function search(Array $url_args) {
+        $gramsets = Gramset::orderBy('sequence_number')
+                  ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id');
+
+        $gramsets = self::searchByLang($gramsets, $url_args['search_lang']);
+        $gramsets = self::searchByPOS($gramsets, $url_args['search_pos']);
+        $gramsets = self::searchByCategory($gramsets, $url_args['search_category']);
+
+        return $gramsets->groupBy('gramsets.id');
+    }
+
+    public static function searchByLang($gramsets, $lang) {
+        if (!$lang) {
+            return $gramsets;
+        }
+        return $gramsets->where('lang_id',$lang);
+    }
+
+    public static function searchByPOS($gramsets, $pos) {
+        if (!$pos) {
+            return $gramsets;
+        }
+        return $gramsets->where('pos_id',$pos);
+    }
+    
+    public static function searchByCategory($gramsets, $category) {
+        if (!$category) {
+            return $gramsets;
+        }
+        return $gramsets->where('gramset_category_id',$category);
+    }
+    
+    /**
+     * checks gramset data and 
+     * remove empty columns for the index page
+     * 
+     * @param Gramset $gramsets
+     */
+    public static function fieldsForIndex($gramsets) {
+        $gram_fields = [];
+        $all_gram_fields = GramCategory::getNames();    
+        foreach ($all_gram_fields as $field) {
+            foreach ($gramsets as $gramset) {
+                if ($gramset->{'gram'.ucfirst($field)} != NULL) {
+                    $gram_fields[] = $field;
+                    continue 2;
+                }
+            }
+        }        
+        return $gram_fields;
+    }
+
     public function toUniMorph($pos_code) {
         $feats = [$pos_code];
         $fields = ['Infinitive', 'Participle','Voice', 'Tense', 'Mood', 'Negation', 'Person', 'Case','Number'];

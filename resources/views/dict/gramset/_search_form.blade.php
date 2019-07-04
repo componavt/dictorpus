@@ -17,6 +17,15 @@
                  'value' => $url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
     </div>
+    <div class="col-sm-4">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_category', 
+                 'values' =>$category_values,
+                 'value' => $url_args['search_category'],
+                 'attributes'=>['placeholder' => trans('dict.select_category') ]]) 
+    </div>
+</div>    
+<div class="row">
     <div class="col-sm-4 search-button-b">       
         <span>
         {{trans('messages.show_by')}}

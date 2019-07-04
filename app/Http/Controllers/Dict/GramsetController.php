@@ -29,6 +29,7 @@ class GramsetController extends Controller
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
+                    'search_category' => (int)$request->input('search_category'),
                     'search_lang'     => (int)$request->input('search_lang'),
                     'search_pos'      => (int)$request->input('search_pos'),
                 ];
@@ -53,58 +54,28 @@ class GramsetController extends Controller
      */
     public function index()
     {   
-        $gram_fields = [];
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $gramsets = Gramset::search($url_args);
+        $numAll = sizeof($gramsets->get());
+        $gramsets = $gramsets->paginate($url_args['limit_num']);         
 
-/*        if (!$this->url_args['search_lang'] || !$this->url_args['search_pos']) {
-            $gramsets = NULL;
-            $numAll = 0;
-        } else {
-*/            $gramsets = Gramset::orderBy('sequence_number')
-                      ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id');
-            
-            if ($this->url_args['search_lang']) {
-                $gramsets = $gramsets->where('lang_id',$this->url_args['search_lang']);
-            }
-                      
-            if ($this->url_args['search_pos']) {
-                $gramsets = $gramsets->where('pos_id',$this->url_args['search_pos']);
-            }
-            
-            $gramsets=$gramsets->groupBy('gramsets.id');
-            $numAll = sizeof($gramsets->get());
-            $gramsets = $gramsets->paginate($this->url_args['limit_num']);         
-
-            $all_gram_fields = GramCategory::getNames();    
-            // remove empty columns
-            foreach ($all_gram_fields as $field) {
-                foreach ($gramsets as $gramset) {
-                    if ($gramset->{'gram'.ucfirst($field)} != NULL) {
-                        $gram_fields[] = $field;
-                        continue 2;
-                    }
-                }
-            }        
-        //} 
-              
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('gramsets');
         $lang_values = Lang::getListWithQuantity('gramsets');
+        $category_values = GramsetCategory::getList();
 
-        $url_args_for_out = $this->url_args;
+        $gram_fields = Gramset::fieldsForIndex($gramsets);
+              
+        $url_args_for_out = $url_args; // for links to lemmas and wordforms
         unset($url_args_for_out['page']);
         $args_by_get_for_out = Lang::searchValuesByURL($url_args_for_out);
         
         
-        return view('dict.gramset.index')
-                ->with([
-                        'gram_fields' => $gram_fields,
-                        'gramsets' => $gramsets,
-                        'lang_values' => $lang_values, 
-                        'numAll' => $numAll,
-                        'pos_values' => $pos_values, 
-                        'args_by_get'    => $this->args_by_get,
-                        'args_by_get_for_out' => $args_by_get_for_out,
-                        'url_args'       => $this->url_args,
-                    ]);
+        return view('dict.gramset.index',
+                compact('gram_fields', 'category_values', 'gramsets', 
+                        'lang_values', 'numAll', 'pos_values', 
+                        'args_by_get', 'args_by_get_for_out', 'url_args'));
     }   
 
     /**

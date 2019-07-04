@@ -147,6 +147,7 @@ return [
     'remove-example' => 'this example is not suitable',
     'reverse_relation' => 'reverse relation',
     
+    'select_category' => 'Select a category',
     'select_dialect' => 'Select a dialect',
     'select_gramset' => 'Select a set of grammatical attributes',
     'select_lang' => 'Select a language',
