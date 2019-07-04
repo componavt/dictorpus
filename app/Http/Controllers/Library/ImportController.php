@@ -39,15 +39,7 @@ print "<pre>";
                 continue;
             }
             $entry = DictParser::parseEntry($line, $dialect_id);
-            if (!$entry) {
-                print "<p><b>$count. ERROR line:</b> $line</p>\n";                
-            } elseif (!isset($entry['lemmas'])) {
-                print "<p><b>$count. ERROR lemma_pos:</b> $line</p>\n";                
-            } elseif (!$entry['lemmas'][0]) {
-                print "<p><b>$count. ERROR lemma:</b> $line</p>\n";                
-            } elseif (!isset($entry['pos_id'])) {
-                print "<p><b>$count. ERROR pos:</b> $line</p>\n";                
-            }
+            self::checkEntry($entry, $line, $count);
 var_dump($entry);            
             $count++;
         }

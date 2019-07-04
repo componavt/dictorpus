@@ -9,7 +9,8 @@ use App\Library\Grammatic;
 class DictParser
 {
     public static function parseEntry($line, $dialect_id) {
-        $line = preg_replace("~\x{00a0}~siu", " ", $line);
+        $line = preg_replace("~\x{00a0}~siu", " ", $line); // non-break space
+        $line = preg_replace("~\x{01c0}~siu", "|", $line); // dental click ǀ
 
         // split by '. - ' into lemma and meanings parts
         if (!preg_match("/^([^\.]+)\.\s+([^\.]*)\.?\s*\–\s+(.+)$/", $line, $regs)) {
@@ -127,7 +128,10 @@ print "<p>Unknown pos</p>";
             $bases[1] = $bases[2] = $base_list[0];
         }
         if ($num=='pl') {
-            $bases[3] = $bases[4] = $bases[5] = '';
+            $bases[3] = '';
+            $bases[4] = $bases[1];
+            $bases[5] = $bases[2];
+            $bases[1] = $bases[2] = '';
         } else {
             $bases[3] = $base_list[1];
             if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[2], $regs)) {
@@ -202,8 +206,8 @@ print "<p>Unknown pos</p>";
         }
         $meaning_part['meanings'][$count++] = $regs[1];
         while (preg_match("/^(.+)\s*".$count."\.\s*(.+)$/", $meaning_part['meanings'][$count-1], $regs)) {
-            $meaning_part['meanings'][$count-1] = treim($regs[1]);
-            $meaning_part['meanings'][$count] = trim($regs[2]);
+            $meaning_part['meanings'][$count-1] = trim($regs[1]);
+            $meaning_part['meanings'][$count++] = trim($regs[2]);
         }
         return $meaning_part;
     }    
@@ -242,6 +246,35 @@ print "<p>Unknown pos</p>";
             $pos_code = $names_to_codes[$name];
             return PartOfSpeech::getIDByCode($pos_code);
             
+        }
+    }
+    
+    public static function checkEntry($entry, $line, $count) {
+        if (!$entry) {
+            print "<p><b>$count. ERROR line:</b> $line</p>\n"; 
+            return;
+        } 
+        if (!isset($entry['lemmas'])) {
+            print "<p><b>$count. ERROR lemma_pos:</b> $line</p>\n";                
+            return;
+        } 
+        if (!$entry['lemmas'][0] || preg_match("/.+\{/",$entry['lemmas'][0]) || mb_strpos('|',$entry['lemmas'][0])) {
+            print "<p><b>$count. ERROR lemma:</b> $line</p>\n";                
+            return;
+        } 
+        if (!isset($entry['pos_id'])) {
+            print "<p><b>$count. ERROR pos:</b> $line</p>\n";                
+            return;
+        } 
+        if (!isset($entry['meanings']) || !is_array($entry['meanings'])) {
+            print "<p><b>$count. ERROR meanings:</b> $line</p>\n";                
+            return;
+        }
+        foreach ($entry['meanings'] as $meaning) {
+            if (preg_match("/\d\./", $meaning)) {
+                print "<p><b>$count. ERROR meaning:</b> $line</p>\n";                
+                return;                
+            }
         }
     }
 }
