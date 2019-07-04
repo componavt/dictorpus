@@ -187,8 +187,24 @@ print "<p>Unknown pos</p>";
         return '{'.join(', ',$bases).'}';
     }
     
+    /** Splits text line to meanings, e.g. "1. first meaning 2. second meaning" 
+     * will return ["first meaning", "second meaning"]
+     * 
+     * @param type $meanings text line from the dictionary
+     * @return type array of strings, that is array of meanings
+     */
     public static function parseMeaningPart($meanings) {
-        $meaning_part['meanings'][0] = $meanings;
+        $count = 1;
+        $meaning_part['meanings'][$count] = $meanings;
+        // only one meaning
+        if (!preg_match("/^".$count."\.\s*(.+)$/", $meaning_part['meanings'][$count], $regs)) {
+            return $meaning_part;
+        }
+        $meaning_part['meanings'][$count++] = $regs[1];
+        while (preg_match("/^(.+)\s*".$count."\.\s*(.+)$/", $meaning_part['meanings'][$count-1], $regs)) {
+            $meaning_part['meanings'][$count-1] = treim($regs[1]);
+            $meaning_part['meanings'][$count] = trim($regs[2]);
+        }
         return $meaning_part;
     }    
     /**
