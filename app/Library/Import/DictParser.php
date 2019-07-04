@@ -3,40 +3,192 @@
 namespace App\Library\Import;
 
 use App\Models\Dict\PartOfSpeech;
-
+use App\Library\Grammatic;
 /** 
  */
 class DictParser
 {
-    public static function parseEntry($line) {
+    public static function parseEntry($line, $dialect_id) {
         $line = preg_replace("~\x{00a0}~siu", " ", $line);
+
         // split by '. - ' into lemma and meanings parts
-        if (!preg_match("/^([^\.]+)\.\s+\–\s+(.+)$/", $line, $regs)) {
-            print "<p><b>ERROR line:</b> $line</p>\n";
-        } else {
-            $lemma_part = self::parseLemmaPart(trim($regs[1]));
-            $meaning_part = self::parseMeaningPart(trim($regs[2]));
-            return array_merge($lemma_part, $meaning_part);
+        if (!preg_match("/^([^\.]+)\.\s+([^\.]*)\.?\s*\–\s+(.+)$/", $line, $regs)) {
+            return false;
         }
+        $num = trim($regs[2]);
+        $lemma_part = self::parseLemmaPart(trim($regs[1]), $num, $dialect_id);
+        $meaning_part = self::parseMeaningPart(trim($regs[3]));
+
+        return array_merge($lemma_part, ['num'=>$num], $meaning_part);
+        
         
     }
 
-    public static function parseLemmaPart($lemma_pos) {
+    public static function parseLemmaPart($lemma_pos, $num, $dialect_id) {
         if (!preg_match("/^(.+)\s+([^\s]+)$/", $lemma_pos, $regs)) {
-            print "<p><b>ERROR lemma:</b> $lemma_pos</p>\n";
-        } else {
-//print '|'.$lemma_pos.'|<br>';
-            $lemma_part['lemma'] = trim($regs[1]);
-print $lemma_part['lemma'].'<br>';
-            $lemma_part['pos_id'] = self::getPOSID(trim($regs[2]));            
-print $lemma_part['pos_id'].'<br>';
+            return ['lemmas' => false];
         }
+        $lemma_part['pos_id'] = self::getPOSID(trim($regs[2]));            
+        $lemma_part['lemmas'] = self::parseLemmas(trim($regs[1]), $num, $dialect_id, $lemma_part['pos_id']);
         return $lemma_part;
+    }
+
+    /**
+     * Lemmas examples:
+     * a
+     * abie {-, -da, -loi}
+     * a|bu {-vu / -bu, -buo, -buloi} 
+     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}, ahavoi|ja {-če / -ččo, -či / -čči, -, -ja, -d}
+     * aijalleh, aijaldi
+     * 
+     * @param type $lemmas
+     * @return type
+     */
+    public static function parseLemmas($lemmas, $num, $dialect_id, $pos_id) {
+        $lemmas = Grammatic::toRightForm($lemmas);
+        if ($dialect_id!=47) { // not tver
+            return [0=>$lemmas];
+        }
+        
+        $lemma_arr=[];
+        $count_brackets = mb_substr_count($lemmas, '}');
+
+        if (!$count_brackets) { // not changeble pos
+            $lemma_arr=preg_split("/\s*,\s*/", $lemmas);
+        } else {
+            $lemma_arr=preg_split("/\}\s*,\s*/", $lemmas);
+            for ($i=0; $i<sizeof($lemma_arr); $i++) {
+                $lemma_arr[$i] = self::toRightTemplate(trim($lemma_arr[$i]), $num, $pos_id);
+            }
+        }
+        return $lemma_arr;
     }    
+    
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * abie {-, -da, -loi}
+     * a|bu {-vu / -bu, -buo, -buloi} 
+     * ai|ga {-ja / -ga, -gua, -joi / -goi}
+     * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
+     * 
+     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}
+     * avau|duo {-du, -du, -du, -vuta, -vutt} (pos=v, num=impers - without base 1 and base 3) - НЕ ПРЕДУСМОТРЕН ШАБЛОН без основ 1 и 3, исправить KarVerb!!!!
+     * 
+     * @param type $lemma_str
+     */
+    public static function toRightTemplate($lemma_str, $num, $pos_id) {
+        if (!preg_match("/^([^\s\{]+)\s*\{([^\}]+)\}?$/", $lemma_str, $regs)) {
+            return $lemma_str;
+        }
+        $base = $bases[0] = $regs[1];
+        $base_str = trim($regs[2]);
+        
+        if (preg_match("/^([^\|]+)\|(.+)$/", $bases[0], $regs)) {
+            $base = $regs[1];
+            $bases[0] = $base.$regs[2];
+        }
+        
+        $base_str = str_replace('-', $base, $base_str);
+//print "<p>$base_str</p>";        
+        $base_list = preg_split("/\s*,\s*/",$base_str);
+
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
+            return self::nominalToRightTemplate($bases, $base_list, $lemma_str, $num);
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) {  
+            return self::verbToRightTemplate($bases, $base_list, $lemma_str, $num);
+        }
+print "<p>Unknown pos</p>";        
+        return $lemma_str;
+    }
+    
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * abie {-, -da, -loi}
+     * a|bu {-vu / -bu, -buo, -buloi} 
+     * ai|ga {-ja / -ga, -gua, -joi / -goi}
+     * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
+     * 
+     * @param type $lemma_str
+     */
+    public static function nominalToRightTemplate($bases, $base_list, $lemma_str, $num) {
+        if (!(sizeof($base_list)==3 || sizeof($base_list)==1 && $num=='pl')) {
+            return $lemma_str;
+        }
+        if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[0], $regs)) {
+            $bases[1] = $regs[1];
+            $bases[2] = $regs[2];
+        } else {
+            $bases[1] = $bases[2] = $base_list[0];
+        }
+        if ($num=='pl') {
+            $bases[3] = $bases[4] = $bases[5] = '';
+        } else {
+            $bases[3] = $base_list[1];
+            if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[2], $regs)) {
+                $bases[4] = $regs[1];
+                $bases[5] = $regs[2];
+            } else {
+                $bases[4] = $bases[5] = $base_list[2];
+            }
+        }
+        return '{'.join(', ',$bases).'}';
+    }
+    
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}
+     * avau|duo {-du, -du, -du, -vuta, -vutt} (pos=v, num=impers - without base 1 and base 3) - НЕ ПРЕДУСМОТРЕН ШАБЛОН без основ 1 и 3, исправить KarVerb!!!!
+     * 
+     * @param type $lemma_str
+     */
+    public static function verbToRightTemplate($bases, $base_list, $lemma_str, $num) {
+        if (sizeof($base_list)!=5) {
+            return $lemma_str;
+        }
+
+        if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[0], $regs)) {
+            $bases[1] = $regs[1];
+            $bases[2] = $regs[2];
+        } else {
+            if ($num=='impers') {
+                $bases[1] = '';
+            } else {
+                $bases[1] = $base_list[0];
+                
+            }
+            $bases[2] = $base_list[0];
+        }
+        
+        if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[1], $regs)) {
+            $bases[3] = $regs[1];
+            $bases[4] = $regs[2];
+        } else {
+            if ($num=='impers') {
+                $bases[3] = '';
+            } else {
+                $bases[3] = $base_list[1];
+                
+            }
+            $bases[4] = $base_list[1];
+        }
+        $bases[5] = $base_list[2];
+        $bases[6] = $base_list[3];
+        $bases[7] = $base_list[4];
+        
+        return '{'.join(', ',$bases).'}';
+    }
     
     public static function parseMeaningPart($meanings) {
         $meaning_part['meanings'][0] = $meanings;
-print $meanings.'<br><br>';
         return $meaning_part;
     }    
     /**

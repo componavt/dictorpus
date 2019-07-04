@@ -27,13 +27,29 @@ class ImportController extends Controller
      */
     public function dictParser() {
         $filename = 'import/dict_tver.txt';
+        $dialect_id=47; // new written tver karelian
 //        $filename = 'import/line.txt';
 
         $file_content = Storage::disk('local')->get($filename);
         $file_lines = preg_split ("/\r\n/",$file_content);
-        
+print "<pre>";        
+        $count = 1;
         foreach ($file_lines as $line) {
-            $entry = DictParser::parseEntry($line);
+            if (!$line) {
+                continue;
+            }
+            $entry = DictParser::parseEntry($line, $dialect_id);
+            if (!$entry) {
+                print "<p><b>$count. ERROR line:</b> $line</p>\n";                
+            } elseif (!isset($entry['lemmas'])) {
+                print "<p><b>$count. ERROR lemma_pos:</b> $line</p>\n";                
+            } elseif (!$entry['lemmas'][0]) {
+                print "<p><b>$count. ERROR lemma:</b> $line</p>\n";                
+            } elseif (!isset($entry['pos_id'])) {
+                print "<p><b>$count. ERROR pos:</b> $line</p>\n";                
+            }
+var_dump($entry);            
+            $count++;
         }
     }
     
