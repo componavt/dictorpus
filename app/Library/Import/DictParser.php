@@ -13,12 +13,12 @@ class DictParser
         $line = preg_replace("~\x{01c0}~siu", "|", $line); // dental click ǀ
 
         // split by '. - ' into lemma and meanings parts
-        if (!preg_match("/^([^\.]+)\.\s+([^\.]*)\.?\s*\–\s+(.+)$/", $line, $regs)) {
+        if (!preg_match("/^([^\.]+)\.\s+([^\.]*)\.?\s*\–\s+(.+)\s+\–\s+(.+)$/", $line, $regs)) {
             return false;
         }
         $num = trim($regs[2]);
         $lemma_part = self::parseLemmaPart(trim($regs[1]), $num, $dialect_id);
-        $meaning_part = self::parseMeaningPart(trim($regs[3]));
+        $meaning_part = self::parseMeaningPart(trim($regs[3]), trim($regs[4]));
 
         return array_merge($lemma_part, ['num'=>$num], $meaning_part);
         
@@ -101,7 +101,7 @@ class DictParser
         } elseif ($pos_id == PartOfSpeech::getVerbID()) {  
             return self::verbToRightTemplate($bases, $base_list, $lemma_str, $num);
         }
-print "<p>Unknown pos</p>";        
+//print "<p>Unknown pos</p>";        
         return $lemma_str;
     }
     
@@ -118,10 +118,10 @@ print "<p>Unknown pos</p>";
      * @param type $lemma_str
      */
     public static function nominalToRightTemplate($bases, $base_list, $lemma_str, $num) {
-        if (!(sizeof($base_list)==3 || sizeof($base_list)==1 && $num=='pl')) {
+        if (!(sizeof($base_list)==3 || sizeof($base_list)==2 && $num=='sing' || sizeof($base_list)==1 && $num=='pl')) {
             return $lemma_str;
         }
-        if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[0], $regs)) {
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
             $bases[1] = $regs[1];
             $bases[2] = $regs[2];
         } else {
@@ -134,7 +134,9 @@ print "<p>Unknown pos</p>";
             $bases[1] = $bases[2] = '';
         } else {
             $bases[3] = $base_list[1];
-            if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[2], $regs)) {
+            if ($num=='sing') {
+                $bases[4] = $bases[5] = '';
+            } elseif (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[2], $regs)) {
                 $bases[4] = $regs[1];
                 $bases[5] = $regs[2];
             } else {
@@ -159,11 +161,11 @@ print "<p>Unknown pos</p>";
             return $lemma_str;
         }
 
-        if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[0], $regs)) {
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
             $bases[1] = $regs[1];
             $bases[2] = $regs[2];
         } else {
-            if ($num=='impers') {
+            if ($num=='impers' || $num=='def') {
                 $bases[1] = '';
             } else {
                 $bases[1] = $base_list[0];
@@ -172,11 +174,11 @@ print "<p>Unknown pos</p>";
             $bases[2] = $base_list[0];
         }
         
-        if (preg_match("/^([^\/\s]+)\s*\/\s*([^\s]+)$/", $base_list[1], $regs)) {
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[1], $regs)) {
             $bases[3] = $regs[1];
             $bases[4] = $regs[2];
         } else {
-            if ($num=='impers') {
+            if ($num=='impers' || $num=='def') {
                 $bases[3] = '';
             } else {
                 $bases[3] = $base_list[1];
@@ -197,20 +199,31 @@ print "<p>Unknown pos</p>";
      * @param type $meanings text line from the dictionary
      * @return type array of strings, that is array of meanings
      */
-    public static function parseMeaningPart($meanings) {
-        $count = 1;
-        $meaning_part['meanings'][$count] = $meanings;
-        // only one meaning
-        if (!preg_match("/^".$count."\.\s*(.+)$/", $meaning_part['meanings'][$count], $regs)) {
-            return $meaning_part;
-        }
-        $meaning_part['meanings'][$count++] = $regs[1];
-        while (preg_match("/^(.+)\s*".$count."\.\s*(.+)$/", $meaning_part['meanings'][$count-1], $regs)) {
-            $meaning_part['meanings'][$count-1] = trim($regs[1]);
-            $meaning_part['meanings'][$count++] = trim($regs[2]);
+    public static function parseMeaningPart($meanings1, $meanings2) {
+        $meanings_r = self::parseMeaningLang($meanings1);
+        $meanings_f = self::parseMeaningLang($meanings2);
+        for ($i=1; $i<= sizeof($meanings_r); $i++) {
+            $meaning_part['meanings'][$i]['r'] = $meanings_r[$i];
+            $meaning_part['meanings'][$i]['f'] = isset($meanings_f[$i]) ? $meanings_f[$i] 
+                    : (sizeof($meanings_f)==1 ? $meanings_f[1] : '');            
         }
         return $meaning_part;
     }    
+    
+    public static function parseMeaningLang($meaning_string) {
+        $count = 1;
+        $meanings[$count] = $meaning_string;
+        // only one meaning
+        if (!preg_match("/^".$count."\.\s*(.+)$/", $meanings[$count], $regs)) {
+            return $meanings;
+        }
+        $meanings[$count++] = $regs[1];
+        while (preg_match("/^(.+)\s*".$count."\.\s*(.+)$/", $meanings[$count-1], $regs)) {
+            $meanings[$count-1] = trim($regs[1]);
+            $meanings[$count++] = trim($regs[2]);
+        }
+        return $meanings;        
+    }
     /**
      * a. – имя прилагательное
      * adv. – наречие
@@ -241,7 +254,7 @@ print "<p>Unknown pos</p>";
             'v' => 'VERB'
         ];
         if (!isset($names_to_codes[$name])) {
-            print "<p><b>ERROR pos:</b> $name</p>\n";
+            return false;
         } else {
             $pos_code = $names_to_codes[$name];
             return PartOfSpeech::getIDByCode($pos_code);
@@ -258,12 +271,12 @@ print "<p>Unknown pos</p>";
             print "<p><b>$count. ERROR lemma_pos:</b> $line</p>\n";                
             return;
         } 
-        if (!$entry['lemmas'][0] || preg_match("/.+\{/",$entry['lemmas'][0]) || mb_strpos('|',$entry['lemmas'][0])) {
-            print "<p><b>$count. ERROR lemma:</b> $line</p>\n";                
+        if (!isset($entry['pos_id']) || !$entry['pos_id']) {
+            print "<p><b>$count. ERROR pos:</b> $line</p>\n";                
             return;
         } 
-        if (!isset($entry['pos_id'])) {
-            print "<p><b>$count. ERROR pos:</b> $line</p>\n";                
+        if (!$entry['lemmas'][0] || preg_match("/.+\{/",$entry['lemmas'][0]) || mb_strpos('|',$entry['lemmas'][0])) {
+            print "<p><b>$count. ERROR lemma:</b> $line</p>\n";                
             return;
         } 
         if (!isset($entry['meanings']) || !is_array($entry['meanings'])) {
@@ -271,8 +284,11 @@ print "<p>Unknown pos</p>";
             return;
         }
         foreach ($entry['meanings'] as $meaning) {
-            if (preg_match("/\d\./", $meaning)) {
-                print "<p><b>$count. ERROR meaning:</b> $line</p>\n";                
+            if (!$meaning['r'] || preg_match("/[0..9]\./", $meaning['r']) || preg_match("/\s+\-\s+/", $meaning['r'])) {
+                print "<p><b>$count. ERROR meaning_r:</b> $line</p>\n";                
+                return;                
+            } elseif (!$meaning['f'] || preg_match("/[0..9]\./", $meaning['f']) || preg_match("/\s+\-\s+/", $meaning['f'])) {
+                print "<p><b>$count. ERROR meaning_f:</b> $line</p>\n";                
                 return;                
             }
         }

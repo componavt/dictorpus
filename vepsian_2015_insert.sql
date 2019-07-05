@@ -913,3 +913,10 @@ update lemma_wordform set gramset_id=279 where gramset_id=58 and lemma_id in (se
 
 --php artisan make:controller ImportController
 --php artisan make:test Library\Import\DictParserTest
+
+-- php artisan make:model Models\Dict\Label --migration
+-- php artisan make:migration create_label_lemma_table --table=label_lemma
+
+-- php artisan migrate
+INSERT INTO `langs` VALUES (7,'Finish','финский','fin',7);
+INSERT INTO `labels` VALUES (1,'for tver book','для тверского самоучителя');

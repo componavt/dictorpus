@@ -26,7 +26,7 @@ class ImportController extends Controller
      * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
      */
     public function dictParser() {
-        $filename = 'import/dict_tver.txt';
+        $filename = 'import/dict_tver2.txt';
         $dialect_id=47; // new written tver karelian
 //        $filename = 'import/line.txt';
 
@@ -39,8 +39,8 @@ print "<pre>";
                 continue;
             }
             $entry = DictParser::parseEntry($line, $dialect_id);
-            self::checkEntry($entry, $line, $count);
-var_dump($entry);            
+            DictParser::checkEntry($entry, $line, $count);
+//var_dump($entry);            
             $count++;
         }
     }
