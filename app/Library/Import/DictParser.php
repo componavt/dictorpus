@@ -345,7 +345,7 @@ class DictParser
      * 
      * @param Array $entry
      */
-    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id) {
+    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id/*, $time_checking*/) {       
         foreach ($entry['lemmas'] as $lemma_template) {
             $data = ['lemma'=>$lemma_template, 
                      'lang_id'=>$lang_id, 
@@ -353,14 +353,19 @@ class DictParser
                      'dialect_id'=>$dialect_id];
             list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms) 
                  = Lemma::parseLemmaField($data);
-            $lemma_in_db = self::findLemma($new_lemma, $entry, $lang_id, $label_id); 
+            $lemma_in_db = self::findLemma($new_lemma, $entry, $lang_id, $label_id/*, $time_checking*/); 
+//$time_finding = microtime(true);            
+//print "<p><b>Time finding ".$entry['lemmas'][0]." :".round($time_finding-$time_checking, 2).'</p>';
             
             if (!$lemma_in_db) {
-                self::storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $lang_id, $dialect_id, $label_id);
+                self::storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $lang_id, $dialect_id, $label_id/*, $time_finding*/);
+print "<p>Lemma <b>$new_lemma</b> is storing</p>";                
             } else {
-                self::updateLemma($lemma_in_db, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id);
-                
+                self::updateLemma($lemma_in_db, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id/*, $time_finding*/);
+print "<p>Lemma <b>$new_lemma</b> is updating</p>";                
             }
+//$time_storing = microtime(true);            
+//print "<p><b>Time storing/updating ".$entry['lemmas'][0]." :".round($time_storing-$time_finding, 2).'</p>';
 //dd($lemma_in_db);            
 //dd($gramset_wordforms);            
             
@@ -370,29 +375,35 @@ class DictParser
     /**
      * search lemmas and gets founded lemma
      */
-    public static function findLemma($stem0, $entry, $lang_id, $label_id) {
+    public static function findLemma($stem0, $entry, $lang_id, $label_id/*, $time_checking*/) {       
         $lemma_founded = false;
         $lemmas=Lemma::where('lemma', 'like', $stem0)
                 ->where('lang_id',$lang_id)
                 ->where('pos_id', $entry['pos_id']);
         if (!$lemmas->count()) {
             return $lemma_founded;
-        }
+        }        
+//$time_finding_lemmas = microtime(true);    
+//print "<p><b>Time finding lemmas ".$entry['lemmas'][0]." :".round($time_finding_lemmas-$time_checking, 2).'</p>';
         
         foreach($lemmas->get() as $lemma) {
+//$time_start_finding_meaning = microtime(true);            
             $meanings_match = true;
-            for ($i=1; $i<=sizeof($entry['meanings']); $i++) {
+            $i=1;
+            while ($meanings_match && $i<=sizeof($entry['meanings'])) {
                 $meaning=$lemma->meanings()->where('meaning_n', $i)->first();
                 if (!$meaning) {
                     $meanings_match = false;
-                    break;
+                } else {
+                    $meaning_text = $meaning->meaningTexts()->where('lang_id',Lang::getIDByCode('ru'))->first();
+                    if (!$meaning_text || $meaning_text->meaning_text != $entry['meanings'][$meaning->meaning_n]['ru']) {
+                        $meanings_match = false;
+                    }
                 }
-                $meaning_text = $meaning->meaningTexts()->where('lang_id',Lang::getIDByCode('ru'))->first();
-                if (!$meaning_text || $meaning_text->meaning_text != $entry['meanings'][$meaning->meaning_n]['ru']) {
-                    $meanings_match = false;
-                    break;
-                }
-            }  
+//$time_finish_finding_meaning = microtime(true);            
+//print "<p><b>Time finding meaning $i ".$entry['lemmas'][0]." :".round($time_finish_finding_meaning-$time_start_finding_meaning, 2).'</p>';
+                $i++;
+            }
             if ($meanings_match) {
                 return $lemma;
             }
@@ -419,29 +430,36 @@ class DictParser
     }
     
     public static function updateLemma($lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id) {
+        $is_label = $lemma->labels()->where('label_id', $label_id)->count();
+        if ($is_label) { // временно выключаем обновление при повторном прогоне
+            return;
+        }
+        if (!$is_label) {
+            $lemma->labels()->attach($label_id);
+        }
+        
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
         $lemma->updated_at = date('Y-m-d H:i:s');
         $lemma->save();
-
-        if (!$lemma->labels()->where('label_id', $label_id)) {
-            $lemma->labels()->attach($label_id);
-        }
         
         LemmaFeature::store($lemma->id, ['number'=>self::getNumberID($entry['num'])]);
         $lemma->storeReverseLemma($stem, $affix);
         
-        $lemma->storeWordformsFromTemplate($gramset_wordforms, $dialect_id); 
-        $lemma->createDictionaryWordforms($wordforms, $entry['num'], $dialect_id);
-                 
         self::storeMeanings($entry['meanings'], $lemma->id);
-        $lemma->updateTextLinks();
+        
+        if ($gramset_wordforms || $wordforms) {
+            $lemma->storeWordformsFromTemplate($gramset_wordforms, $dialect_id); 
+            $lemma->createDictionaryWordforms($wordforms, $entry['num'], $dialect_id);
+
+            $lemma->updateTextLinks();
+        }
     }
     
     public static function storeMeanings($meanings, $lemma_id){
         foreach ($meanings as $meaning_n => $meaning_langs) {
             $meaning_obj = Meaning::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => $meaning_n]);
             foreach ($meaning_langs as $lang=>$meaning_text) {
-                $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => Lang::getIDByCode('ru')]);
+                $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => Lang::getIDByCode($lang)]);
                 $meaning_text_obj -> meaning_text = $meaning_text;
                 $meaning_text_obj -> save();
             }

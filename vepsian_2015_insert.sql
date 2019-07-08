@@ -921,3 +921,5 @@ update lemma_wordform set gramset_id=279 where gramset_id=58 and lemma_id in (se
 INSERT INTO `langs` VALUES (7,'Finish','финский','fi',7);
 INSERT INTO `labels` VALUES (1,'for tver book','для тверского самоучителя');
 update langs set code='fi' where id=7;
+
+-- Test aluššovat, avata, avauduo 

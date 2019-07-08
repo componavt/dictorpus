@@ -987,6 +987,7 @@ dd($wordforms);
         $lemmas = self::searchByPOS($lemmas, $url_args['search_pos']);
         $lemmas = self::searchByID($lemmas, $url_args['search_id']);
         $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning']);
+        $lemmas = self::searchByLabel($lemmas, $url_args['search_label']);
 
         $lemmas = $lemmas
                 //->groupBy('lemmas.id') // отключено, неправильно показывает общее число записей
@@ -1061,6 +1062,16 @@ dd($wordforms);
                             ->where('meaning_text','like', $meaning);
                         });
                     });
+    }
+    
+    public static function searchByLabel($lemmas, $label_id) {
+        if (!$label_id) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id', function ($query) use ($label_id){
+                            $query->select('lemma_id')->from('label_lemma')
+                                  ->where('label_id', $label_id);
+        });
     }
     
     /**

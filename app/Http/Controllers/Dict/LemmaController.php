@@ -60,6 +60,7 @@ class LemmaController extends Controller
                     'page'            => (int)$request->input('page'),
                     'search_gramset'  => (int)$request->input('search_gramset'),
                     'search_id'       => (int)$request->input('search_id'),
+                    'search_label'     => (int)$request->input('search_label'),
                     'search_lang'     => (int)$request->input('search_lang'),
                     'search_lemma'    => $request->input('search_lemma'),
                     'search_meaning'  => $request->input('search_meaning'),

@@ -26,7 +26,7 @@ class ImportController extends Controller
      * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
      */
     public function dictParser() {
-        $filename = 'import/dict_tver3_b.txt';
+        $filename = 'import/dict_tver3.txt';
 //        $filename = 'import/line.txt';
         $lang_id = 4;
         $dialect_id=47; // new written tver karelian
@@ -41,11 +41,18 @@ print "<pre>";
             if (!$line || mb_strlen($line)<2) {
                 continue;
             }
+//$start_time = microtime(true); //начало измерения
             $entry = DictParser::parseEntry($line, $dialect_id);
+//$time_parsing = microtime(true);            
+//print "<p><b>Time parsing ".$entry['lemmas'][0]." :".round($time_parsing-$start_time, 2).'</p>';
             if (DictParser::checkEntry($entry, $line, $count)) {
-var_dump($entry);            
-//dd($entry);            
-                DictParser::saveEntry($entry, $lang_id, $dialect_id, $label_id);
+//var_dump($entry);            
+//dd($entry);      
+//$time_checking = microtime(true);            
+//print "<p><b>Time checking ".$entry['lemmas'][0]." :".round($time_checking-$time_parsing,2).'</p>';
+                DictParser::saveEntry($entry, $lang_id, $dialect_id, $label_id/*, $time_checking*/);
+//$time_saving = microtime(true);            
+//print "<p><b>Time saving ".$entry['lemmas'][0]." :".(float)($time_saving-$time_checking).'</p>';
             }
         }
     }
