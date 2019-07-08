@@ -200,32 +200,24 @@ class Meaning extends Model
     {
         $mean_langs = [];
         $meaning_texts = $this->meaningTexts()->get();
-//dd($meaning_texts->count());                
-//print $this->id;       
- //dd($meaning_texts->toSql());                
        if ($code) {
             $lang = Lang::where('code',$code)->first();
             if ($lang) {
                 $meaning_texts_by_code = $this->meaningTexts()->where('lang_id',$lang->id);
-//print $meaning_texts_by_code->count();                
                 if ($meaning_texts_by_code->count() > 0) {
                     $meaning_texts = $meaning_texts_by_code->get();
                 }
             }
         }
-//dd($meaning_texts->toSql());                
-//dd($meaning_texts->count());                
-//        if ($meaning_texts->count()) {
-            foreach ($meaning_texts as $meaning_text_obj) {
-                $meaning_text = $meaning_text_obj->meaning_text;
-                if ($meaning_text) {
-                    if ($meaning_text_obj->lang->code != $code) {
-                        $meaning_text = $meaning_text_obj->lang->code .': '. $meaning_text;
-                    }
-                    $mean_langs[] = $meaning_text;  
-                } 
-            }
-  //      } 
+        foreach ($meaning_texts as $meaning_text_obj) {
+            $meaning_text = $meaning_text_obj->meaning_text;
+            if ($meaning_text) {
+                if ($meaning_text_obj->lang->code != $code) {
+                    $meaning_text = $meaning_text_obj->lang->code .': '. $meaning_text;
+                }
+                $mean_langs[] = $meaning_text;  
+            } 
+        }
         
         $out = join(', ',$mean_langs);
 
@@ -309,7 +301,7 @@ class Meaning extends Model
         foreach ($meanings as $meaning) {
             $meaning_texts = $meaning['meaning_text'];
             foreach ($meaning_texts as $lang=>$meaning_text) {
-                if (!$meaning_text) {
+                if (!$meaning_text) { // а если все толкования пусты, сотрутся они из базы?
                     unset($meaning_texts[$lang]);
                 }
             }

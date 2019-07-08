@@ -2,18 +2,31 @@
 
 namespace App\Library\Import;
 
-use App\Models\Dict\PartOfSpeech;
 use App\Library\Grammatic;
+use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaFeature;
+use App\Models\Dict\Meaning;
+use App\Models\Dict\MeaningText;
+use App\Models\Dict\PartOfSpeech;
 /** 
  */
 class DictParser
 {
-    public static function parseEntry($line, $dialect_id) {
+    public static function splitLine($line, $dialect_id) {
         $line = preg_replace("~\x{00a0}~siu", " ", $line); // non-break space
         $line = preg_replace("~\x{01c0}~siu", "|", $line); // dental click ǀ
 
         // split by '. - ' into lemma and meanings parts
-        if (!preg_match("/^([^\.]+)\.\s+([^\.]*)\.?\s*\–\s+(.+)\s+\–\s+(.+)$/", $line, $regs)) {
+        if (!preg_match("/^([^\.]+)\.\s*([^\.]*)\.?\s*\–\s*(.+)\s+\–\s+(.+)$/", $line, $regs)) {
+            return false;
+        }
+        return $regs;
+    }
+    
+    public static function parseEntry($line, $dialect_id) {
+        $regs = self::splitLine($line, $dialect_id);
+        if (!$regs) {
             return false;
         }
         $num = trim($regs[2]);
@@ -203,9 +216,9 @@ class DictParser
         $meanings_r = self::parseMeaningLang($meanings1);
         $meanings_f = self::parseMeaningLang($meanings2);
         for ($i=1; $i<= sizeof($meanings_r); $i++) {
-            $meaning_part['meanings'][$i]['r'] = $meanings_r[$i];
-            $meaning_part['meanings'][$i]['f'] = isset($meanings_f[$i]) ? $meanings_f[$i] 
-                    : (sizeof($meanings_f)==1 ? $meanings_f[1] : '');            
+            $meaning_part['meanings'][$i] =
+                ['ru' => $meanings_r[$i],
+                 'fi' => isset($meanings_f[$i]) ? $meanings_f[$i] : (sizeof($meanings_f)==1 ? $meanings_f[1] : '')];            
         }
         return $meaning_part;
     }    
@@ -261,6 +274,14 @@ class DictParser
             
         }
     }
+
+    public static function getNumberID($num) {
+        if ($num=='pl') {
+            return 1;            
+        } else if ($num=='sing') {
+            return 2;
+        }
+    }
     
     public static function checkEntry($entry, $line, $count) {
         if (!$entry) {
@@ -276,20 +297,153 @@ class DictParser
             return;
         } 
         if (!$entry['lemmas'][0] || preg_match("/.+\{/",$entry['lemmas'][0]) || mb_strpos('|',$entry['lemmas'][0])) {
-            print "<p><b>$count. ERROR lemma:</b> $line</p>\n";                
+            print "<p><b>$count. ERROR lemma:</b> $line (".$entry['lemmas'][0].")</p>\n";                
             return;
         } 
         if (!isset($entry['meanings']) || !is_array($entry['meanings'])) {
             print "<p><b>$count. ERROR meanings:</b> $line</p>\n";                
             return;
         }
-        foreach ($entry['meanings'] as $meaning) {
-            if (!$meaning['r'] || preg_match("/[0..9]\./", $meaning['r']) || preg_match("/\s+\-\s+/", $meaning['r'])) {
-                print "<p><b>$count. ERROR meaning_r:</b> $line</p>\n";                
-                return;                
-            } elseif (!$meaning['f'] || preg_match("/[0..9]\./", $meaning['f']) || preg_match("/\s+\-\s+/", $meaning['f'])) {
-                print "<p><b>$count. ERROR meaning_f:</b> $line</p>\n";                
-                return;                
+        foreach ($entry['meanings'] as $meaning_n =>$meaning_lang) {
+            foreach ($meaning_lang as $lang => $meaning_text) {
+                if (!$meaning_text || preg_match("/[0..9]\./", $meaning_text) 
+                        || preg_match("/\s+\-\s+/", $meaning_text)) {
+                    print "<p><b>$count. ERROR meaning_$lang:</b> $line</p>\n";                
+                    return;                
+                }
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Gets entry like
+     * "pos_id" => 3
+     * "lemmas" => [0 => "a"]
+     * "num" => ""
+     * "meanings" => [
+     *      1 => [
+     *          "r" => "а, но"
+     *          "f" => "mutta, vaan, ja"
+     *      ]
+     * ]
+     * OR
+     * "pos_id" => 11
+     * "lemmas" => [0 => "{avauduo, , avaudu, , avaudu, avaudu, avauvuta, avauvutt}"]
+     * "num" => "def"
+     * "meanings" => [
+     *      1 => [
+     *          "r" => "открываться, раскрываться; распускаться"
+     *          "f" => "avautua"
+     *      ]
+     *      2 => [
+     *          "r" => "освобождаться (ото льда и т.д.)"
+     *          "f" => "avautua"
+     *      ]
+     * ]
+     * and saves to DB
+     * 
+     * @param Array $entry
+     */
+    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id) {
+        foreach ($entry['lemmas'] as $lemma_template) {
+            $data = ['lemma'=>$lemma_template, 
+                     'lang_id'=>$lang_id, 
+                     'pos_id'=>$entry['pos_id'], 
+                     'dialect_id'=>$dialect_id];
+            list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms) 
+                 = Lemma::parseLemmaField($data);
+            $lemma_in_db = self::findLemma($new_lemma, $entry, $lang_id, $label_id); 
+            
+            if (!$lemma_in_db) {
+                self::storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $lang_id, $dialect_id, $label_id);
+            } else {
+                self::updateLemma($lemma_in_db, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id);
+                
+            }
+//dd($lemma_in_db);            
+//dd($gramset_wordforms);            
+            
+        }
+    }
+    
+    /**
+     * search lemmas and gets founded lemma
+     */
+    public static function findLemma($stem0, $entry, $lang_id, $label_id) {
+        $lemma_founded = false;
+        $lemmas=Lemma::where('lemma', 'like', $stem0)
+                ->where('lang_id',$lang_id)
+                ->where('pos_id', $entry['pos_id']);
+        if (!$lemmas->count()) {
+            return $lemma_founded;
+        }
+        
+        foreach($lemmas->get() as $lemma) {
+            $meanings_match = true;
+            for ($i=1; $i<=sizeof($entry['meanings']); $i++) {
+                $meaning=$lemma->meanings()->where('meaning_n', $i)->first();
+                if (!$meaning) {
+                    $meanings_match = false;
+                    break;
+                }
+                $meaning_text = $meaning->meaningTexts()->where('lang_id',Lang::getIDByCode('ru'))->first();
+                if (!$meaning_text || $meaning_text->meaning_text != $entry['meanings'][$meaning->meaning_n]['ru']) {
+                    $meanings_match = false;
+                    break;
+                }
+            }  
+            if ($meanings_match) {
+                return $lemma;
+            }
+        }
+    }   
+    
+    public static function storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, 
+                                      $entry, $lang_id, $dialect_id, $label_id) {
+        $lemma = Lemma::create(['lemma'=>$new_lemma,'lang_id'=>$lang_id,'pos_id'=>$entry['pos_id']]);
+        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+        $lemma->save();
+        
+        $lemma->labels()->attach($label_id);
+
+        LemmaFeature::store($lemma->id, ['number'=>self::getNumberID($entry['num'])]);
+        $lemma->storeReverseLemma($stem, $affix);
+        
+        $lemma->storeWordformsFromTemplate($gramset_wordforms, $dialect_id); 
+        $lemma->createDictionaryWordforms($wordforms, $entry['num'], $dialect_id);
+            
+        self::storeMeanings($entry['meanings'], $lemma->id);
+        
+        $lemma->updateTextLinks();
+    }
+    
+    public static function updateLemma($lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id) {
+        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+        $lemma->updated_at = date('Y-m-d H:i:s');
+        $lemma->save();
+
+        if (!$lemma->labels()->where('label_id', $label_id)) {
+            $lemma->labels()->attach($label_id);
+        }
+        
+        LemmaFeature::store($lemma->id, ['number'=>self::getNumberID($entry['num'])]);
+        $lemma->storeReverseLemma($stem, $affix);
+        
+        $lemma->storeWordformsFromTemplate($gramset_wordforms, $dialect_id); 
+        $lemma->createDictionaryWordforms($wordforms, $entry['num'], $dialect_id);
+                 
+        self::storeMeanings($entry['meanings'], $lemma->id);
+        $lemma->updateTextLinks();
+    }
+    
+    public static function storeMeanings($meanings, $lemma_id){
+        foreach ($meanings as $meaning_n => $meaning_langs) {
+            $meaning_obj = Meaning::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => $meaning_n]);
+            foreach ($meaning_langs as $lang=>$meaning_text) {
+                $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_obj->id, 'lang_id' => Lang::getIDByCode('ru')]);
+                $meaning_text_obj -> meaning_text = $meaning_text;
+                $meaning_text_obj -> save();
             }
         }
     }

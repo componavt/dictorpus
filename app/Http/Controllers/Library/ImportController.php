@@ -7,8 +7,8 @@ use App\Http\Controllers\Controller;
 use Storage;
 use App\Http\Requests;
 
-
 use App\Library\Import\DictParser;
+use App\Models\Dict\Lemma;
 
 class ImportController extends Controller
 {
@@ -26,22 +26,27 @@ class ImportController extends Controller
      * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
      */
     public function dictParser() {
-        $filename = 'import/dict_tver2.txt';
-        $dialect_id=47; // new written tver karelian
+        $filename = 'import/dict_tver3_b.txt';
 //        $filename = 'import/line.txt';
+        $lang_id = 4;
+        $dialect_id=47; // new written tver karelian
+        $label_id = 1;
 
         $file_content = Storage::disk('local')->get($filename);
         $file_lines = preg_split ("/\r\n/",$file_content);
 print "<pre>";        
-        $count = 1;
+        $count = 0;
         foreach ($file_lines as $line) {
-            if (!$line) {
+            $count++;
+            if (!$line || mb_strlen($line)<2) {
                 continue;
             }
             $entry = DictParser::parseEntry($line, $dialect_id);
-            DictParser::checkEntry($entry, $line, $count);
-//var_dump($entry);            
-            $count++;
+            if (DictParser::checkEntry($entry, $line, $count)) {
+var_dump($entry);            
+//dd($entry);            
+                DictParser::saveEntry($entry, $lang_id, $dialect_id, $label_id);
+            }
         }
     }
     

@@ -35,7 +35,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_1lemma_1meaning_non_changeble()
     {
         $dialect_id=47;
-        $num='';
         $line = 'a conj. – а, но – mutta, vaan, ja';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -43,8 +42,8 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"a"],
                      "num"=> "",
                      "meanings"=>
-                        [1=>['r'=>"а, но",
-                             'f'=>"mutta, vaan, ja"]]
+                        [1=>['ru'=>"а, но",
+                             'fi'=>"mutta, vaan, ja"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
@@ -52,7 +51,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_1lemma_1meaning_3bases()
     {
         $dialect_id=47;
-        $num='';
         $line = 'abiek|aš {-kaha, -ašta, -kahi} a. – грустный – surullinen';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -60,16 +58,15 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"{abiekaš, abiekkaha, abiekkaha, abiekašta, abiekkahi, abiekkahi}"],
                      "num"=> "",
                      "meanings"=>
-                        [1=>['r'=>"грустный",
-                             'f'=>"surullinen"]]
+                        [1=>['ru'=>"грустный",
+                             'fi'=>"surullinen"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
-    
+     
     public function testParseEntry_1lemma_2meanings_3bases()
     {
         $dialect_id=47;
-        $num='';
         $line = 'čilu|ne {-ze, -sʼtʼa, -zi} s. – 1. погремушка 2. бубенчик – 1. helistin 2. kulkunen';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -77,10 +74,10 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"{čilune, čiluze, čiluze, čilusʼtʼa, čiluzi, čiluzi}"],
                      "num"=> "",
                      "meanings"=>
-                        [1=>['r'=>"погремушка",
-                             'f'=>"helistin"],
-                         2=>['r'=>"бубенчик",
-                             'f'=>"kulkunen"]]
+                        [1=>['ru'=>"погремушка",
+                             'fi'=>"helistin"],
+                         2=>['ru'=>"бубенчик",
+                             'fi'=>"kulkunen"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
@@ -88,7 +85,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_1lemma_1meaning_4bases()
     {
         $dialect_id=47;
-        $num='';
         $line = 'a|bu {-vu : -bu, -buo, -buloi} s. – помощь – apu';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -96,8 +92,8 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"{abu, avu, abu, abuo, abuloi, abuloi}"],
                      "num"=> "",
                      "meanings"=>
-                        [1=>['r'=>"помощь",
-                             'f'=>"apu"]]
+                        [1=>['ru'=>"помощь",
+                             'fi'=>"apu"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
@@ -105,7 +101,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_2lemma_1meaning_7bases()
     {
         $dialect_id=47;
-        $num='';
         $line = 'ahavoi|ja {-če : -čče, -či : -čči, -, -ja, -d}, ahavoit|tua {-a : -ta, -i : -ti, -ta, -eta, -ett} v. – обветрить, высушить ветром (пашню и пр.) – kuivattaa tuulessa';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -115,8 +110,8 @@ class DictParserTest extends TestCase
                          1=>"{ahavoittua, ahavoita, ahavoitta, ahavoiti, ahavoitti, ahavoitta, ahavoiteta, ahavoitett}"],
                      "num"=> "",
                      "meanings"=>
-                        [1=>['r'=>"обветрить, высушить ветром (пашню и пр.)",
-                             'f'=>"kuivattaa tuulessa"]]
+                        [1=>['ru'=>"обветрить, высушить ветром (пашню и пр.)",
+                             'fi'=>"kuivattaa tuulessa"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
@@ -124,7 +119,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_1lemma_2meanings_5bases()
     {
         $dialect_id=47;
-        $num='';
         $line = 'aj|ua {-a, -oi, -a, -eta, -ett} v. – 1. ехать 2. гнать – 1. ajaa 2. ajaa pois';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -132,10 +126,10 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"{ajua, aja, aja, ajoi, ajoi, aja, ajeta, ajett}"],
                      "num"=> "",
                      "meanings"=>
-                        [1=>['r'=>"ехать",
-                             'f'=>"ajaa"],
-                         2=>['r'=>"гнать",
-                             'f'=>"ajaa pois"]]
+                        [1=>['ru'=>"ехать",
+                             'fi'=>"ajaa"],
+                         2=>['ru'=>"гнать",
+                             'fi'=>"ajaa pois"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
@@ -143,7 +137,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_1lemma_2meanings_7bases()
     {
         $dialect_id=47;
-        $num='';
         $line = 'eis|työ {-sy : -ty, -syi : -ty, -ty, -sytä, -sytt} v. – 1. подвинуться, отодвинуться; переместиться 2. двигаться, проходить (о времени, действии) – siirtyä';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -151,10 +144,10 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"{eistyö, eissy, eisty, eissyi, eisty, eisty, eissytä, eissytt}"],
                      "num"=> "",
                      "meanings"=>
-                        [1=>['r'=>"подвинуться, отодвинуться; переместиться",
-                             'f'=>"siirtyä"],
-                         2=>['r'=>"двигаться, проходить (о времени, действии)",
-                             'f'=>"siirtyä"]]
+                        [1=>['ru'=>"подвинуться, отодвинуться; переместиться",
+                             'fi'=>"siirtyä"],
+                         2=>['ru'=>"двигаться, проходить (о времени, действии)",
+                             'fi'=>"siirtyä"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
@@ -162,7 +155,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_1lemma_1meaning_2bases()
     {
         $dialect_id=47;
-        $num='pl';
         $line = 'aluššo|vat {-vi : -bi} s. pl. – нижнее белье – alusvaatteet';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -170,8 +162,8 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"{aluššovat, , , , aluššovi, aluššobi}"],
                      "num"=> "pl",
                      "meanings"=>
-                        [1=>['r'=>"нижнее белье",
-                             'f'=>"alusvaatteet"]]
+                        [1=>['ru'=>"нижнее белье",
+                             'fi'=>"alusvaatteet"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
@@ -179,7 +171,6 @@ class DictParserTest extends TestCase
     public function testParseEntry_1lemma_2meanings_5bases_def()
     {
         $dialect_id=47;
-        $num='';
         $line = 'avau|duo {-du, -du, -du, -vuta, -vutt} v. def. – 1. открываться, раскрываться; распускаться 2. освобождаться (ото льда и т.д.) – avautua';
         $result = DictParser::parseEntry($line, $dialect_id);
         
@@ -187,12 +178,57 @@ class DictParserTest extends TestCase
                      "lemmas"=>[0=>"{avauduo, , avaudu, , avaudu, avaudu, avauvuta, avauvutt}"],
                      "num"=> "def",
                      "meanings"=>
-                        [1=>['r'=>"открываться, раскрываться; распускаться",
-                             'f'=>"avautua"],
-                         2=>['r'=>"освобождаться (ото льда и т.д.)",
-                             'f'=>"avautua"]]
+                        [1=>['ru'=>"открываться, раскрываться; распускаться",
+                             'fi'=>"avautua"],
+                         2=>['ru'=>"освобождаться (ото льда и т.д.)",
+                             'fi'=>"avautua"]]
+                    ];
+        $this->assertEquals( $expected, $result);        
+    }     
+    
+    public function testParseEntry_meaning_with_commas()
+    {
+        $dialect_id=47;
+        $line = 'ni conj. – ни ... ни – ei ... eikä';
+        $result = DictParser::parseEntry($line, $dialect_id);
+        
+        $expected = ["pos_id"=>3,
+                     "lemmas"=>[0=>"ni"],
+                     "num"=> "",
+                     "meanings"=>
+                        [1=>['ru'=>"ни ... ни",
+                             'fi'=>"ei ... eikä"]]
                     ];
         $this->assertEquals( $expected, $result);        
     }
-     
+    
+    public function testParseEntry_1lemma_1meaning_verb_3bases()
+    {
+        $dialect_id=47;
+        $line = 'vihmu|o {-, -, -, , } v. def. – дождить, идти дождю – sataa';
+        $result = DictParser::parseEntry($line, $dialect_id);
+        
+        $expected = ["pos_id"=>11,
+                     "lemmas"=>[0=>"{vihmuo, , vihmu, , vihmu, vihmu, , }"],
+                     "num"=> "def",
+                     "meanings"=>
+                        [1=>['ru'=>"дождить, идти дождю",
+                             'fi'=>"sataa"]]
+                    ];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testSplitLine_1lemma_3bases_1meaning()
+    {
+        $dialect_id=47;
+        $line = 'limon|a {-a, -ua, -oi} s. – лимон – sitruuna';
+        $result = DictParser::splitLine($line, $dialect_id);
+        
+        $expected = [0 => $line,
+                     1 => 'limon|a {-a, -ua, -oi} s',
+                     2 => '',
+                     3 => 'лимон',
+                     4 => 'sitruuna'];
+        $this->assertEquals( $expected, $result);        
+    }
 }

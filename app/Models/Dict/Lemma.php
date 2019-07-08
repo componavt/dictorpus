@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
+use App\Models\Dict\Label;
 use App\Models\Dict\PartOfSpeech;
 
 class Lemma extends Model
@@ -121,6 +122,13 @@ class Lemma extends Model
                     ->wherePivot('dialect_id',$dialect_id)
                     ->get();
     }
+    
+    // Lemma __has_many__ Labels
+    public function labels()
+    {
+        return $this->belongsToMany(Label::class);
+    }
+    
     /**
      *  Gets wordforms for given gramset and dialect
      * 
@@ -331,6 +339,7 @@ class Lemma extends Model
     public function remove() {
         //remove all records from table lemma_wordform
         $this-> wordforms()->detach();
+        $this-> labels()->detach();
         $this-> phraseLemmas()->detach();
         if ($this->reverseLemma) {
             $this->reverseLemma->delete();
@@ -1191,6 +1200,8 @@ dd($wordforms);
         }
         return join("\n", $lines);
     }
+    
+
     /*    
     public static function totalCount(){
         return self::count();
