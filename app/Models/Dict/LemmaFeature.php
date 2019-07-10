@@ -89,7 +89,15 @@ class LemmaFeature extends Model
         $this->delete();
     }
     
-    public function allowFeatures() {
+    public static function getNumberID($name) {
+        if ($name == 'pl') {
+            return 1;
+        } elseif ($name == 'sg') {
+            return 2;
+        }
+    }
+
+        public function allowFeatures() {
 //dd($this->lemma);        
         $pos_id = $this->lemma->pos_id;
         if (isset($this->featuresByPOS[$pos_id])) {

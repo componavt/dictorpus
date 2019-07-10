@@ -99,7 +99,7 @@ class LemmaController extends Controller
 
         $lemmas = Lemma::search($url_args);
         $numAll = $lemmas->count();
-//dd($lemmas->toSql()); 
+
         $lemmas = $lemmas->paginate($url_args['limit_num']);         
 //dd($lemmas);        
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
@@ -161,23 +161,11 @@ class LemmaController extends Controller
 //            'pos_id' => 'numeric',
         ]);
         
-        $data = $request->all();
-        list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms) 
-                = Lemma::parseLemmaField($data);
-        $request->replace($data);
-        
-        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
-        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
-//dd('stop');        
-        $lemma->save();
+        $lemma->storeLemma($request);
 
         LemmaFeature::store($lemma->id, $request);
         $lemma->storePhrase($request->phrase);
-        $lemma->storeReverseLemma($stem, $affix);
         
-        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $lemma->createDictionaryWordforms($wordforms, $request->number, $request->dialect_id);
-            
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
 //        $lemma->updateTextLinks();
@@ -202,19 +190,7 @@ class LemmaController extends Controller
             'pos_id' => 'numeric',
         ]);
         
-        $data = $request->all();
-        list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms) 
-                = Lemma::parseLemmaField($data);
-        $request->replace($data);
-        
-        $lemma = Lemma::create($request->only('lemma','lang_id','pos_id'));
-        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
-        $lemma->save();
-
-        $lemma->storeReverseLemma($stem, $affix);
-        
-        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $lemma->createDictionaryWordforms($wordforms, $request->number, $request->dialect_id);
+        $lemma->storeLemma($request);
 
         $new_meanings[0]=['meaning_n' => 1,
                           'meaning_text' =>
@@ -498,24 +474,8 @@ class LemmaController extends Controller
 //            'pos_id' => 'numeric',
         ]);
         
-        // LEMMA UPDATING
-//dd($request->all());        
-        list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms) 
-                = Lemma::parseLemmaField($request->all());
+        $lemma->updateLemma($request);
         
-        $lemma->lemma = $new_lemma;
-        $lemma->lemma_for_search = Grammatic::toSearchForm($new_lemma);
-        $lemma->lang_id = (int)$request->lang_id;
-        $lemma->pos_id = (int)$request->pos_id;
-        $lemma->updated_at = date('Y-m-d H:i:s');
-        $lemma->save();
-        
-        LemmaFeature::store($lemma->id, $request);
-        $lemma->storePhrase($request->phrase);
-        $lemma->storeReverseLemma($stem, $affix);
-        
-        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $lemma->createDictionaryWordforms($wordforms_list, $request->number, $request->dialect_id);    
         // MEANINGS UPDATING
         // existing meanings
         Meaning::updateLemmaMeanings($request->ex_meanings);

@@ -15,6 +15,55 @@ use App\Models\Dict\PartOfSpeech;
  */
 class KarVerb
 {
+    /**
+     * 0 = infinitive 1
+     * 1 = base of indicative presence 1 sg (indicative presence 1 sg - 'n')
+     * 2 = base of indicative presence 3 sg (3 infinitive illative - 'mah / mäh')
+     * 3 = base of indicative imperfect 1 sg (indicative imperfect 1 sg - 'n')
+     * 4 = indicative imperfect 3 sg
+     * 5 = base of perfect  (2 active participle - 'n?[nlrsš]un')
+     * 6 = base of indicative presence 3 pl (indicative presence 3 pl - 'h')
+     * 7 = base of indicative imperfect 3 pl (indicative imperfect 3 pl - 'ih')
+
+     * @param Lemma $lemma
+     * @param Int $dialect_id
+     * @return array
+     */
+    public static function stemsFromDB($lemma, $dialect_id) {
+        $stems[0] = $lemma->lemma;
+        for ($i=1; $i<8; $i++) {
+            $stems[$i] = NULL;
+        }
+        
+        if (preg_match("/^(.+)n$/", $lemma->wordform(26, $dialect_id), $regs)) { // indicative presence 1 sg
+            $stems[1] = $regs[1];
+        }
+        
+        if (preg_match("/^(.+)m[aä]h$/u", $lemma->wordform(174, $dialect_id), $regs)) { // 3 infinitive illative
+            $stems[2] = $regs[1];
+        }
+        
+        if (preg_match("/^(.+)n$/", $lemma->wordform(32, $dialect_id), $regs)) { // indicative imperfect 1 sg
+            $stems[3] = $regs[1];
+        }
+        
+        $stems[4] = $lemma->wordform(34, $dialect_id); // indicative imperfect 3 sg
+        
+        if (preg_match("/^(.+)n?[nlrsš]un$/", $lemma->wordform(179, $dialect_id), $regs)) { // 2 active participle
+            $stems[5] = $regs[1];
+        }
+        
+        if (preg_match("/^(.+)h$/", $lemma->wordform(31, $dialect_id), $regs)) { // indicative presence 3 pl
+            $stems[6] = $regs[1];
+        }
+        
+        if (preg_match("/^(.+)ih$/", $lemma->wordform(37, $dialect_id), $regs)) { // indicative imperfect 3 pl
+            $stems[7] = $regs[1];
+        }
+        
+        return $stems;
+    }
+
     /** Lists of ID of gramsets, which have the rules.
      * That is we know how to generate word forms (using stems, endings and rules) for this gramset ID.
      * 

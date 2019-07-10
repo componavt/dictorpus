@@ -252,7 +252,7 @@ class Lang extends Model
     }
     
     public static function projectLangs() {
-        $lang_coll = self::whereNotIn('code', ['en','ru'])
+        $lang_coll = self::whereNotIn('code', ['en','ru','fi'])
                 ->orderBy('id')->get();
         return $lang_coll;       
     }

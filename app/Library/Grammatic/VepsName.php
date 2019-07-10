@@ -5,10 +5,43 @@ namespace App\Library\Grammatic;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\PartOfSpeech;
 
 class VepsName
 {
+    /**
+     * 0 = nominativ sg
+     * 1 = base of genetive sg (genetive sg - 'n')
+     * 2 = partitive sg
+     * 3 = base of illative sg (from stem1)
+     * 4 = base of partitive pl (partitive pl - 'd')
+     * 5 = null
+
+     * @param Lemma $lemma
+     * @param Int $dialect_id
+     * @return array
+     */
+    public static function stemsFromDB($lemma, $dialect_id) {
+        $stems[0] = $lemma->lemma;
+        for ($i=1; $i<6; $i++) {
+            $stems[$i] = NULL;
+        }
+        
+        if (preg_match("/^(.+)n$/", $lemma->wordform(3, $dialect_id), $regs)) { //genetive sg
+            $stems[1] = $regs[1];
+        }
+        
+        $stems[2] = $lemma->wordform(4, $dialect_id); // partitive sg
+        $stems[3] = self::illSgBase($stems[1]); // illative sg
+        
+        if (preg_match("/^(.+)d$/", $lemma->wordform(22, $dialect_id), $regs)) { //partitive pl
+            $stems[4] = $regs[1];
+        }
+        
+        return $stems;
+    }
+
     public static function isRightVowelBase($stem) {
         if (preg_match("/[".self::vowelSet()."]$/u", $stem)) {
             return true;

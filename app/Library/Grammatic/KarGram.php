@@ -103,4 +103,11 @@ class KarGram
         return $word;
     }
 
+    public static function stemsFromDB($lemma, $pos_id, $dialect_id) {
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return KarName::stemsFromDB($lemma, $dialect_id);
+        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return KarVerb::stemsFromDB($lemma, $dialect_id);
+        }       
+    }
 }

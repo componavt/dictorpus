@@ -78,6 +78,13 @@ class Lemma extends Model
 //        return $this->hasMany('App\Models\Dict\Meaning'); // is working too
     }
     
+    // Lemma __has_many__ Bases
+    public function bases()
+    {
+        return $this->hasMany(LemmaBase::class);
+//        return $this->hasMany('App\Models\Dict\Meaning'); // is working too
+    }
+    
     // Lemma has many MeaningTexts through Meanings
     public function meaningTexts()
     {
@@ -624,6 +631,55 @@ dd($wordforms);
         return sizeof($texts);
     }
     
+    public function storeLemma($request) {
+        $data = $request->all();
+        list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
+                = Grammatic::parseLemmaField($data);
+        $request->replace($data);
+        
+        $lemma = self::create($request->only('lemma','lang_id','pos_id'));
+        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+        $lemma->save();
+
+        $lemma->storeReverseLemma($stem, $affix);
+        
+        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
+        $lemma->createDictionaryWordforms($wordforms, $request->number, $request->dialect_id);
+        
+        $this->updateBases($stems);        
+    }
+    
+    public function updateLemma($request) {
+        list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems) 
+                = Grammatic::parseLemmaField($request->all());
+        
+        $this->lemma = $new_lemma;
+        $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
+        $this->lang_id = (int)$request->lang_id;
+        $this->pos_id = (int)$request->pos_id;
+        $this->updated_at = date('Y-m-d H:i:s');
+        $this->save();
+        
+        $this->storeReverseLemma($stem, $affix);
+        
+        $this->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
+        $this->createDictionaryWordforms($wordforms_list, $request->number, $request->dialect_id);    
+
+        $this->updateBases($stems, $request->dialect_id);
+        
+        LemmaFeature::store($this->id, $request);
+        $this->storePhrase($request->phrase);
+    }
+    
+    public function updateBases($stems, $dialect_id) {
+        if ($stems) {
+            LemmaBase::updateStemsFromSet($this->id, $stems);
+        } else {
+            LemmaBase::updateStemsFromDB($this, $dialect_id);
+        }
+        
+    }
+
     /**
      * Removes all neutral links (relevance=1) from meaning_text
      * and adds new links for all meanings
@@ -641,7 +697,7 @@ dd($wordforms);
             }
         }
     }
-
+    
     /**
      * Gets sentences for Lemma text examples edition 
      *
@@ -786,58 +842,6 @@ dd($wordforms);
                 $this -> addWordforms($wordform_list[$key], $gramset_id, $dialect->id);
             }
         }
-    }
-    
-    /**
-     * 
-     * @param Array $data = ['lemma'=>'lemma_string', 'lang_id'=>lang_int, 'pos_id'=>pos_int, 'dialect_id'=>dialect_int];
-     * @return type
-     */
-    public static function parseLemmaField($data) {
-//dd($data);        
-        $affix = NULL;
-        $lemma = Grammatic::toRightForm($data['lemma']);
-        $wordforms = '';//trim($data['wordforms']); убрано поле из формы леммы
-//dd($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id']);    
-        $name_num = isset($data['number']) ? Grammatic::nameNumFromNumberField($data['number']) : null;
-        list($lemma, $gramset_wordforms, $stem, $affix) = Grammatic::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
-//dd('gramset_wordforms:',$gramset_wordforms);        
-        if ($gramset_wordforms) {
-            return [$lemma, $wordforms, $stem, $affix, $gramset_wordforms];
-        }
-        $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
-        if ($parsing) {
-            $lemma = $regs[1];
-        }
-        
-        $lemma = str_replace('||','',$lemma);
-        if (preg_match("/^(.+)\|(.*)$/",$lemma,$rregs)){
-            $stem = $rregs[1];
-            $affix = $rregs[2];
-            $lemma = $stem.$affix;
-        } else {
-            $stem = $lemma;
-        }
-      
-        if (!$parsing) {
-//var_dump([$parsing, $lemma, $wordforms, $stem, $affix]);
-            return [$lemma, $wordforms, $stem, $affix, false];
-        }
-
-        $regs[2] = str_replace('-', $stem, $regs[2]);
-        $regs[3] = str_replace('-', $stem, $regs[3]);
-        if (isset($regs[5])) {
-            $regs[5] = str_replace('-', $stem, $regs[5]);
-        }
-//dd($regs);
-//exit(0);        
-
-        $wordforms = $regs[2].', '.$regs[3];
-        if (isset($regs[5])) {
-            $wordforms .= '; '.$regs[5];
-        }
-        
-        return [$lemma,$wordforms, $stem, $affix, false];
     }
     
     public function storePhrase($lemmas) {

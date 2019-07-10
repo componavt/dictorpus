@@ -923,3 +923,5 @@ INSERT INTO `labels` VALUES (1,'for tver book','для тверского сам
 update langs set code='fi' where id=7;
 
 -- Test aluššovat, avata, avauduo 
+
+-- php artisan make:model Models\Dict\LemmaBase --migration

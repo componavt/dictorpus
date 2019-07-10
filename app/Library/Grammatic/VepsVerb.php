@@ -12,6 +12,36 @@ use App\Models\Dict\PartOfSpeech;
 
 class VepsVerb
 {
+    /**
+     * 0 = infinitive 1 (=lemma)
+     * 1 = base of indicative presence 3 sg  (indicative presence 1 sg - 'b')
+     * 2 = indicative imperfect 3 sg
+     * 3 = base of 2 active particle  (conditional imperfect 3 sg - 'nuiži')
+     * 4 = base of conditional  (conditional presence 3 sg - 'iži')
+     * 5 = base of potential (2 active particle - 'nu')
+
+     * @param Lemma $lemma
+     * @param Int $dialect_id
+     * @return array
+     */
+    public static function stemsFromDB($lemma, $dialect_id) {
+        $stems[0] = $lemma->lemma;
+        for ($i=1; $i<6; $i++) {
+            $stems[$i] = NULL;
+        }
+        
+        if (preg_match("/^(.+)b$/", $lemma->wordform(28, $dialect_id), $regs)) { // indicative presence 3 sg
+            $stems[1] = $regs[1];
+        }
+        
+        $stems[2] = $lemma->wordform(34, $dialect_id); // indicative imperfect 3 sg
+        $stems[3] = self::getStem3($stems[0], $stems[1]); // base of 2 active particle
+        $stems[4] = self::getStemCond($stems[1]); // base of conditional
+        $stems[5] = self::getStemPoten($stems[0], $stems[1]); // base of potential
+        
+        return $stems;
+    }
+
     public static function getListForAutoComplete() {
         return [26,  27,  28,  29,  30,  31, 295, 296, 
                      70,  71,  72,  73,  78,  79, 
@@ -67,7 +97,7 @@ class VepsVerb
         }        
         $pres_suff = $regs1[1];
         
-        $inf_stem = $base. $inf_suff;
+        $inf_stem = $base. $inf_suff; // = lemma
         $pres_stem = $base. $pres_suff; 
         if (!preg_match("/[aeiouüäö]$/u", $pres_stem)) { // должен оканчиваться на гласную
             return null;
@@ -76,29 +106,45 @@ class VepsVerb
         if (!preg_match("/i$/u", $past_stem)) { // должен оканчиваться на i
             return null;
         }
+        
+        $cond_stem = self::getStemCond($pres_stem);        
+        $past_actv_ptcp_stem = self::getStem3($inf_stem, $pres_stem);       
+        $potn_stem = self::getStemPoten($inf_stem, $pres_stem);
+        
+        return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
+                $cond_stem, $potn_stem, $cons, $harmony];        
+    }
+    
+    public static function getStem3($stem0, $stem1) {
+        $past_actv_ptcp_stem = $stem0;
+        if (preg_match("/^(.+)([kpsšt])$/u", $stem0, $regs1)) {
+            $inf_stem_voiced = $regs1[1]. VepsGram::ringConsonant($regs1[2]);
+            $pres_stem_novowel = preg_replace("/[aeiouüäö]+$/", "", $stem1);
+            if ($inf_stem_voiced == $pres_stem_novowel) {
+                $past_actv_ptcp_stem = $inf_stem_voiced;
+            }
+        }
+        return $past_actv_ptcp_stem;
+    }
+    
+    public static function getStemCond($pres_stem) {
         $cond_stem = $pres_stem;
 //        if (preg_match("/^(.*[aeiouüäö-]+[^aeiouüäö]+)[eiä]$/u", $pres_stem)) {
         if (preg_match("/^(.+[^aeiouüäö]+)[eiä]$/u", $pres_stem, $regs1) 
                 || preg_match("/^(.+[aeiouüäö]+)i$/u", $pres_stem, $regs1)) {
             $cond_stem = $regs1[1];
         }
-//dd($pres_stem);        
-        $past_actv_ptcp_stem = $inf_stem;
-        if (preg_match("/^(.+)([kpsšt])$/u", $inf_stem, $regs1)) {
-            $inf_stem_voiced = $regs1[1]. VepsGram::ringConsonant($regs1[2]);
-            $pres_stem_novowel = preg_replace("/[aeiouüäö]+$/", "", $pres_stem);
-            if ($inf_stem_voiced == $pres_stem_novowel) {
-                $past_actv_ptcp_stem = $inf_stem_voiced;
-            }
-        }
+        return $cond_stem;
+    }
+    
+    public static function getStemPoten($inf_stem, $pres_stem) {
         $potn_stem = $past_actv_ptcp_stem;
         if (preg_match("/[aeiouüäö]$/u", $inf_stem, $regs1)) {
             $potn_stem = $pres_stem;
         }
-        return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
-                $cond_stem, $potn_stem, $cons, $harmony];        
+        return $potn_stem;
     }
-    
+
     /**
      * stems = [0 => основа инфинитива, 
      *          1 => основа презенса, 
@@ -117,7 +163,7 @@ class VepsVerb
         $stems = [null, null, null, null, null, null, null, null];
         $lemma = $lemma_obj->lemma;
         
-        if (preg_match("/^(.*)([dt])([aä])$/u", $regs[2], $regs)) {
+        if (preg_match("/^(.*)([dt])([aä])$/u", $lemma, $regs)) {
             $stems[0] = $regs[1];
             $stems[6] = $regs[2];
             $stems[7] = $regs[3];

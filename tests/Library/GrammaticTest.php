@@ -377,7 +377,7 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-    
+/*    
     public function testWordformsByTemplateVeps() {
         $lang_id = 1;
         $pos_id = 5; // proper noun
@@ -407,7 +407,7 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-/*    
+    
     public function testWordformsByTemplateVepsNeičukaine() {
         $lang_id = 1;
         $pos_id = 5; // noun
@@ -437,7 +437,7 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-*/    
+
     public function testWordformsByTemplateVepsSur() {
         $lang_id = 1;
         $pos_id = 1; // noun
@@ -512,7 +512,6 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-/*
     public function testWordformsByTemplateVepsVerbAstta() {
         $lang_id = 1;
         $pos_id = 11; // verb
@@ -557,5 +556,16 @@ class GrammaticTest extends TestCase
 //dd($result);        
         $this->assertEquals( $expected, $result[1]);        
     }
-*/   
+*/
+    
+    public function testParseLemmaField()
+    {
+        $lemma_field="abei|";
+        $data = ['lemma'=>$lemma_field, 'lang_id'=>null, 'pos_id'=>null, 'dialect_id'=>null];
+        $result = Grammatic::parseLemmaField($data);
+        
+        $expected = ['abei','','abei','', false];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

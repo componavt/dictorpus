@@ -14,6 +14,45 @@ use App\Models\Dict\PartOfSpeech;
  */
 class KarName
 {
+    /**
+     * 0 = nominativ sg
+     * 1 = base of genetive sg (genetive sg - 'n')
+     * 2 = base of illative sg (illative sg - 'h')
+     * 3 = partitive sg
+     * 4 = base of genetive pl (genetive pl - 'n')
+     * 5 = base of illative pl (illative pl - 'h')
+
+     * @param Lemma $lemma
+     * @param Int $dialect_id
+     * @return array
+     */
+    public static function stemsFromDB($lemma, $dialect_id) {
+        $stems[0] = $lemma->lemma;
+        for ($i=1; $i<6; $i++) {
+            $stems[$i] = NULL;
+        }
+        
+        if (preg_match("/^(.+)n$/", $lemma->wordform(3, $dialect_id), $regs)) { //genetive sg
+            $stems[1] = $regs[1];
+        }
+        
+        if (preg_match("/^(.+)h$/", $lemma->wordform(10, $dialect_id), $regs)) { //illative sg
+            $stems[2] = $regs[1];
+        }
+        
+        $stems[3] = $lemma->wordform(4, $dialect_id); // partitive sg
+        
+        if (preg_match("/^(.+)n$/", $lemma->wordform(10, $dialect_id), $regs)) { //genetive pl
+            $stems[4] = $regs[1];
+        }
+        
+        if (preg_match("/^(.+)h$/", $lemma->wordform(22, $dialect_id), $regs)) { //illative pl
+            $stems[5] = $regs[1];
+        }
+        
+        return $stems;
+    }
+
     public static function getListForAutoComplete() {
         return [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15, 
                 2, 24, 22, 279, 59, 23, 60, 61, 280, 62, 64, 65, 66, 281];

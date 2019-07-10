@@ -45,16 +45,6 @@ class LemmaTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testParseLemmaField()
-    {
-        $lemma_field="abei|";
-        $data = ['lemma'=>$lemma_field, 'lang_id'=>null, 'pos_id'=>null, 'dialect_id'=>null];
-        $result = Lemma::parseLemmaField($data);
-        
-        $expected = ['abei','','abei','', false];
-        $this->assertEquals( $expected, $result);        
-    }
-    
     public function testGetWordformsCONLLVepAnimateNoun()
     {
         $word = "Vellenke";
@@ -74,7 +64,7 @@ class LemmaTest extends TestCase
         $expected = [14];
         $this->assertEquals( $expected, $result);        
     }
- 
+/* 
     public function testWordformTerminativ()
     {
         $lemma_id = 21531;
@@ -87,5 +77,5 @@ class LemmaTest extends TestCase
         $expected = 'Amerikahasai, Amerikalesai';
         $this->assertEquals( $expected, $result);        
     }
-    
+*/    
 }

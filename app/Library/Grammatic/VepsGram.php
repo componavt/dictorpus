@@ -72,4 +72,12 @@ class VepsGram
 //dd('stems:',$stems);                
         return [$stems, $name_num, $base, $base_suff];
     }
+    
+    public static function stemsFromDB($lemma, $dialect_id) {
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return VepsName::stemsFromDB($lemma, $dialect_id);
+        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return VepsVerb::stemsFromDB($lemma, $dialect_id);
+        }       
+    }
 }

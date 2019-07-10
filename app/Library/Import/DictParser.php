@@ -349,19 +349,20 @@ class DictParser
         foreach ($entry['lemmas'] as $lemma_template) {
             $data = ['lemma'=>$lemma_template, 
                      'lang_id'=>$lang_id, 
+                     'number'=>$entry['num'],
                      'pos_id'=>$entry['pos_id'], 
                      'dialect_id'=>$dialect_id];
-            list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms) 
-                 = Lemma::parseLemmaField($data);
+            list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
+                 = Grammatic::parseLemmaField($data);
             $lemma_in_db = self::findLemma($new_lemma, $entry, $lang_id, $label_id/*, $time_checking*/); 
 //$time_finding = microtime(true);            
 //print "<p><b>Time finding ".$entry['lemmas'][0]." :".round($time_finding-$time_checking, 2).'</p>';
             
             if (!$lemma_in_db) {
-                self::storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $lang_id, $dialect_id, $label_id/*, $time_finding*/);
+                self::storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $lang_id, $dialect_id, $label_id, $stems/*, $time_finding*/);
 print "<p>Lemma <b>$new_lemma</b> is storing</p>";                
             } else {
-                self::updateLemma($lemma_in_db, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id/*, $time_finding*/);
+                self::updateLemma($lemma_in_db, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id, $stems/*, $time_finding*/);
 print "<p>Lemma <b>$new_lemma</b> is updating</p>";                
             }
 //$time_storing = microtime(true);            
@@ -411,7 +412,7 @@ print "<p>Lemma <b>$new_lemma</b> is updating</p>";
     }   
     
     public static function storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, 
-                                      $entry, $lang_id, $dialect_id, $label_id) {
+                                      $entry, $lang_id, $dialect_id, $label_id, $stems) {
         $lemma = Lemma::create(['lemma'=>$new_lemma,'lang_id'=>$lang_id,'pos_id'=>$entry['pos_id']]);
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
         $lemma->save();
@@ -429,7 +430,7 @@ print "<p>Lemma <b>$new_lemma</b> is updating</p>";
         $lemma->updateTextLinks();
     }
     
-    public static function updateLemma($lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id) {
+    public static function updateLemma($lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id, $stems) {
         $is_label = $lemma->labels()->where('label_id', $label_id)->count();
         if ($is_label) { // временно выключаем обновление при повторном прогоне
             return;

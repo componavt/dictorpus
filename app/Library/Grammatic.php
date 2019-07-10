@@ -21,6 +21,58 @@ use App\Models\Dict\PartOfSpeech;
  **/
 class Grammatic
 {
+    /**
+     * 
+     * @param Array $data = ['lemma'=>'lemma_string', 'lang_id'=>lang_int, 'pos_id'=>pos_int, 'dialect_id'=>dialect_int];
+     * @return type
+     */
+    public static function parseLemmaField($data) {
+        $lemma = self::toRightForm($data['lemma']);
+        $name_num = isset($data['number']) ? self::nameNumFromNumberField($data['number']) : null;
+        
+        list($lemma, $gramset_wordforms, $stem, $affix, $stems) = self::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
+        if ($gramset_wordforms) {
+            return [$lemma, '', $stem, $affix, $gramset_wordforms, $stems];
+        }
+        return self::wordformsFromDict($lemma);
+    }
+    
+    public static function wordformsFromDict($lemma) {       
+        $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
+        if ($parsing) {
+            $lemma = $regs[1];
+        }
+        
+        $affix = NULL;
+        $lemma = str_replace('||','',$lemma);
+        if (preg_match("/^(.+)\|(.*)$/",$lemma,$rregs)){
+            $stem = $rregs[1];
+            $affix = $rregs[2];
+            $lemma = $stem.$affix;
+        } else {
+            $stem = $lemma;
+        }
+      
+        if (!$parsing) {
+//var_dump([$parsing, $lemma, $wordforms, $stem, $affix]);
+            return [$lemma, '', $stem, $affix, false];
+        }
+
+        $regs[2] = str_replace('-', $stem, $regs[2]);
+        $regs[3] = str_replace('-', $stem, $regs[3]);
+        if (isset($regs[5])) {
+            $regs[5] = str_replace('-', $stem, $regs[5]);
+        }
+//dd($regs);
+//exit(0);        
+
+        $wordforms = $regs[2].', '.$regs[3];
+        if (isset($regs[5])) {
+            $wordforms .= '; '.$regs[5];
+        }
+        
+        return [$lemma, $wordforms, $stem, $affix, false, NULL];
+    }
     /** Common entry point for all languages. 
      * Lists of ID of gramsets, which have the rules.
      * That is we know how to generate word forms (using stems, endings and rules) for these gramsets IDs.
@@ -63,21 +115,21 @@ class Grammatic
 
     public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id, $name_num=null) {
         if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
-            return [$template, false, $template, NULL];
+            return [$template, false, $template, NULL, NULL];
         }
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            return [$template, false, $template, NULL];
+            return [$template, false, $template, NULL, NULL];
         }
         
         if (!preg_match('/\{+([^\}]+)\}+/', $template, $list) &&
                 !($lang_id==1 && preg_match("/".VepsGram::dictTemplate()."/", $template, $list))) {
-            return [$template, false, $template, NULL];
+            return [$template, false, $template, NULL, NULL];
         }
         
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($list[1], $lang_id, $pos_id, $name_num);
 //dd($stems);                
         if (!isset($stems[0])) {
-            return [$template, false, $template, NULL];
+            return [$template, false, $template, NULL, NULL];
         }
         
         $gramsets = self::getListForAutoComplete($lang_id, $pos_id);
@@ -85,7 +137,7 @@ class Grammatic
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
         if ($pos_id == PartOfSpeech::getVerbID()) {
             if (sizeof ($stems) != 8) {
-                return [$stems[0], false, $template, NULL];
+                return [$stems[0], false, $template, NULL, NULL];
             }
             foreach ($gramsets as $gramset_id) {
                 $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
@@ -93,7 +145,7 @@ class Grammatic
         } else {
 //            if ($lang_id == 1 && sizeof ($stems) != 4 || sizeof ($stems) != 6) {
             if (sizeof ($stems) != 6) {
-                return [$stems[0], false, $template, NULL];
+                return [$stems[0], false, $template, NULL, NULL];
             }
             foreach ($gramsets as $gramset_id) {
                 $wordforms[$gramset_id] = self::nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
@@ -102,7 +154,7 @@ class Grammatic
         if (!$max_stem) {
             list($max_stem, $affix) = self::maxStem($stems);
         }
-        return [$max_stem.$affix, $wordforms, $max_stem, $affix];
+        return [$max_stem.$affix, $wordforms, $max_stem, $affix, $stems];
     }
     
     public static function nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num) {
