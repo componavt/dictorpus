@@ -26,7 +26,7 @@ class ImportController extends Controller
      * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
      */
     public function dictParser() {
-        $filename = 'import/dict_tver3.txt';
+        $filename = 'import/dict_tver3_b.txt';
 //        $filename = 'import/line.txt';
         $lang_id = 4;
         $dialect_id=47; // new written tver karelian

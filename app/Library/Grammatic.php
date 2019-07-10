@@ -109,7 +109,7 @@ class Grammatic
         if ($lang_id == 1) {
             return VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $name_num);
         }
-        return KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
+        return KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
     }
     
     public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id) {
