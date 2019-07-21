@@ -2,7 +2,7 @@
 
 Dictorpus is a framework to work with multilingual text corpus integrated with machine-readable dictionary.
 
-Open corpus of Veps and Karelian languages (todo link) is based on Dictorpus.
+[Open corpus of Veps and Karelian languages (VepKar)](http://dictorpus.krc.karelia.ru) is based on Dictorpus.
 
 ## DICTionary + cORPUS = dictorpus
 
