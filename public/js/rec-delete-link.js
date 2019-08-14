@@ -1,6 +1,6 @@
 // Jquery function which listens for click events on elements which have a data-delete attribute
-function recDelete(confirm_message) {
-    $('[data-delete]').click(function(e){
+function recDelete(confirm_message, ev_text='[data-delete]') {
+    $(ev_text).click(function(e){
         e.preventDefault();
         // If the user confirm the delete
         if (confirm(confirm_message)) {

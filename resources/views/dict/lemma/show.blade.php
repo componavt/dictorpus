@@ -16,7 +16,7 @@
         @if (User::checkAccess('dict.edit'))
             | @include('widgets.form.button._delete', 
                        ['route' => 'lemma.destroy', 
-                        'id' => $lemma->id]) 
+                        'args'=>['id' => $lemma->id]]) 
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
@@ -94,7 +94,7 @@
         @endforeach
 
         @if ($lemma->isChangeable())
-            @include('dict.lemma.show.wordforms')
+            @include('dict.lemma_wordform._show')
         @endif
             
         @include('dict.lemma._modal_delete')
@@ -104,6 +104,7 @@
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/meaning.js')!!}
+    {!!Html::script('js/wordform.js')!!}
 @stop
 
 @section('jqueryFunc')
@@ -111,7 +112,7 @@
         loadExamples('{{LaravelLocalization::localizeURL($route_for_load)}}', {{$meaning->id}});
     @endforeach
     
-    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma{{$args_by_get}}');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 /*    toggleExamples();
     addExample('{{LaravelLocalization::localizeURL('/dict/meaning/example/add')}}'); 
     removeExample('{{LaravelLocalization::localizeURL('/dict/lemma/remove/example')}}');

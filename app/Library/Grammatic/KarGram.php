@@ -110,4 +110,12 @@ class KarGram
             return KarVerb::stemsFromDB($lemma, $dialect_id);
         }       
     }
+    
+    public static function getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id) {
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return KarName::getStemFromWordform($lemma, $stem_n, $dialect_id);
+        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return KarVerb::getStemFromWordform($lemma, $stem_n, $dialect_id);
+        }
+    }
 }

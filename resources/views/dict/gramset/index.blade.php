@@ -83,7 +83,7 @@
                     @include('widgets.form.button._delete', 
                              ['is_button' => true,
                               'route' => 'gramset.destroy', 
-                              'id' => $gramset->id,
+                              'args'=>['id' => $gramset->id],
                               'without_text' => true]) 
                 </td>                
                 @endif

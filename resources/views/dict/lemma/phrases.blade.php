@@ -68,7 +68,7 @@
                              ['is_button'=>true, 
                               'without_text' => true,
                               'route' => 'lemma.destroy', 
-                              'id' => $lemma->id,
+                              'args'=>['id' => $lemma->id]
                              ])
                 </td>
                 @endif

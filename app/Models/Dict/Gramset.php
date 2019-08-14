@@ -355,9 +355,9 @@ class Gramset extends Model
      * @param INT $lang_id - language ID, 5 - livvic
      * @return ARRAY or NULL
      */
-    public static function dictionaryGramsets($pos_id, $is_plural=NULL, $lang_id=5) {
+    public static function dictionaryGramsets($pos_id, $number=NULL, $lang_id=5) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            if ($is_plural) {
+            if ($number==1) { // plural
                 if ($lang_id == 1) { // vepsian
                     return [1=>22, 3=>2];
                 } else {

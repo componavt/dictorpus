@@ -73,8 +73,8 @@
                     @include('widgets.form.button._delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,
-                             $route = 'recorder.destroy', 
-                             'id' => $recorder->id])
+                             'route' => 'recorder.destroy', 
+                             'args'=>['id' => $recorder->id]])
                 </td>
                 @endif
             </tr>

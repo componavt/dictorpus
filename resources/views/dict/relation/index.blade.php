@@ -45,7 +45,7 @@
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit', ['is_button'=>true, 'route' => '/dict/relation/'.$relation->id.'/edit'])
-                    @include('widgets.form.button._delete', ['is_button'=>true, $route = 'relation.destroy', 'id' => $relation->id])
+                    @include('widgets.form.button._delete', ['is_button'=>true, $route = 'relation.destroy', 'args'=>['id' => $relation->id]])
                 </td>
                 @endif
             </tr>

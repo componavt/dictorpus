@@ -23,23 +23,32 @@ class VepsName
      * @return array
      */
     public static function stemsFromDB($lemma, $dialect_id) {
-        $stems[0] = $lemma->lemma;
-        for ($i=1; $i<6; $i++) {
-            $stems[$i] = NULL;
+        for ($i=0; $i<6; $i++) {
+            $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id);
         }
-        
-        if (preg_match("/^(.+)n$/", $lemma->wordform(3, $dialect_id), $regs)) { //genetive sg
-            $stems[1] = $regs[1];
-        }
-        
-        $stems[2] = $lemma->wordform(4, $dialect_id); // partitive sg
-        $stems[3] = self::illSgBase($stems[1]); // illative sg
-        
-        if (preg_match("/^(.+)d$/", $lemma->wordform(22, $dialect_id), $regs)) { //partitive pl
-            $stems[4] = $regs[1];
-        }
-        
         return $stems;
+    }
+    
+    public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {
+        switch ($stem_n) {
+            case 0: 
+                return $lemma->lemma;
+            case 1:  //genetive sg
+                if (preg_match("/^(.+)n$/", $lemma->wordform(3, $dialect_id), $regs)) {
+                    return $regs[1];
+                }
+                return NULL;
+            case 2: // partitive sg
+                $part_sg = $lemma->wordform(4, $dialect_id); 
+                return $part_sg ? $part_sg : NULL;
+            case 3: // illative sg
+                return self::illSgBase(self::getStemFromWordform($lemma, 1, $dialect_id)); 
+            case 4: // partitive pl
+                if (preg_match("/^(.+)d$/", $lemma->wordform(22, $dialect_id), $regs)) { 
+                    return $regs[1];
+                }
+                return NULL;
+        }
     }
 
     public static function isRightVowelBase($stem) {

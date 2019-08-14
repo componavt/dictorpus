@@ -82,7 +82,24 @@ class Lemma extends Model
     public function bases()
     {
         return $this->hasMany(LemmaBase::class);
-//        return $this->hasMany('App\Models\Dict\Meaning'); // is working too
+    }
+    
+    /**
+     * @return Array of bases
+     */
+    public function getBases($dialect_id) {
+        $bases=[];
+        for ($i=0; $i<8; $i++) {
+//dd($this->bases);            
+            $base = $this->bases()->where('base_n',$i)->where('dialect_id',$dialect_id)->first();
+            if (!$base) { 
+                $base = Grammatic::getStemFromWordform($this, $i, $this->lang_id,  $this->pos_id, $dialect_id);
+            } else {
+                $base = $base->base;
+            }
+            $bases[$i] = $base ? $base : NULL;
+        }
+        return $bases;
     }
     
     // Lemma has many MeaningTexts through Meanings
@@ -631,51 +648,64 @@ dd($wordforms);
         return sizeof($texts);
     }
     
-    public function storeLemma($request) {
-        $data = $request->all();
+    public static function storeLemma($data) {
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
-        $request->replace($data);
         
-        $lemma = self::create($request->only('lemma','lang_id','pos_id'));
-        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
-        $lemma->save();
+        $lemma = self::store($data['lemma'], $data['pos_id'], $data['lang_id']);
 
-        $lemma->storeReverseLemma($stem, $affix);
+        $lemma->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $data, $data['dialect_id'], $stems);      
         
-        $lemma->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $lemma->createDictionaryWordforms($wordforms, $request->number, $request->dialect_id);
-        
-        $this->updateBases($stems);        
+        return $lemma;
     }
     
-    public function updateLemma($request) {
+    public static function store($lemma, $pos_id, $lang_id) {
+        $lemma = Lemma::create(['lemma'=>$lemma,'lang_id'=>$lang_id,'pos_id'=>$pos_id]);
+        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+        $lemma->save();
+        return $lemma;
+    }
+    
+    public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
+                                  $features, $dialect_id, $stems) {
+        $this->updateBases($stems, $this->pos_id, $dialect_id); 
+        LemmaFeature::store($this->id, $features);
+        $this->storeReverseLemma($stem, $affix);
+                           
+        $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
+        $this->createDictionaryWordforms($wordforms, $features['number'], $dialect_id);
+    }
+    
+    public function updateLemma($data) {
+//dd($data);        
         list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems) 
-                = Grammatic::parseLemmaField($request->all());
-        
+                = Grammatic::parseLemmaField($data);
+//dd($new_lemma);        
         $this->lemma = $new_lemma;
         $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
-        $this->lang_id = (int)$request->lang_id;
-        $this->pos_id = (int)$request->pos_id;
+        $this->lang_id = (int)$data['lang_id'];
+        $this->pos_id = (int)$data['pos_id'];
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
         
-        $this->storeReverseLemma($stem, $affix);
+        $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['dialect_id'], $stems);           
         
-        $this->storeWordformsFromTemplate($gramset_wordforms, $request->dialect_id); // а если диалектов нет?
-        $this->createDictionaryWordforms($wordforms_list, $request->number, $request->dialect_id);    
+        if (isset($data['phrase'])) {
+            $this->storePhrase($data['phrase']);
+        }
+    }
 
-        $this->updateBases($stems, $request->dialect_id);
-        
-        LemmaFeature::store($this->id, $request);
-        $this->storePhrase($request->phrase);
+    public function modify() { 
+        $this->lemma_for_search = Grammatic::toSearchForm($this->lemma);
+        $this->updated_at = date('Y-m-d H:i:s');
+        $this->save();        
     }
     
-    public function updateBases($stems, $dialect_id) {
+    public function updateBases($stems, $pos_id, $dialect_id) {
         if ($stems) {
-            LemmaBase::updateStemsFromSet($this->id, $stems);
+            LemmaBase::updateStemsFromSet($this->id, $stems, $dialect_id);
         } else {
-            LemmaBase::updateStemsFromDB($this, $dialect_id);
+            LemmaBase::updateStemsFromDB($this, $pos_id, $dialect_id);
         }
         
     }
@@ -822,7 +852,7 @@ dd($wordforms);
         return Dialect::where('lang_id', $this->lang_id)->orderBy('sequence_number')->first();
     }
 
-    public function createDictionaryWordforms($wordforms,$plural=NULL) {        
+    public function createDictionaryWordforms($wordforms, $number=NULL, $dialect_id=NULL) {        
 //dd($request->wordforms);        
         if (!isset($wordforms)) { return; }
         
@@ -831,10 +861,15 @@ dd($wordforms);
         
         $wordform_list[3] = $this->lemma;
         
-        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $plural, $this->lang_id);
+        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $number, $this->lang_id);
         if ($gramsets == NULL) { return; }
         
-        $dialect = $this->firstDialect();
+        if ($dialect_id) {
+            $dialect = Dialect::find($dialect_id);
+        }
+        if (!$dialect) {
+            $dialect = $this->firstDialect();
+        }
         if (!$dialect) { return; }
         
         foreach ($gramsets as $key=>$gramset_id) {
@@ -1139,7 +1174,7 @@ dd($wordforms);
         }
     }
     
-    public function storeWordformsFromTemplate($wordforms, $dialect_id) {
+    public function storeWordformsFromSet($wordforms, $dialect_id) {
         if (!$wordforms || !sizeof($wordforms)) {
             return;
         }
@@ -1217,6 +1252,38 @@ dd($wordforms);
     }
     
 
+    public static function urlArgs($request) {
+        $url_args = [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_gramset'  => (int)$request->input('search_gramset'),
+                    'search_id'       => (int)$request->input('search_id'),
+                    'search_label'     => (int)$request->input('search_label'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_lemma'    => $request->input('search_lemma'),
+                    'search_meaning'  => $request->input('search_meaning'),
+                    'search_pos'      => (int)$request->input('search_pos'),
+                    'search_relation' => (int)$request->input('search_relation'),
+                    'search_wordform' => $request->input('search_wordform'),
+                ];
+        
+        if (!$url_args['page']) {
+            $url_args['page'] = 1;
+        }
+        
+        if (!$url_args['search_id']) {
+            $url_args['search_id'] = NULL;
+        }
+        
+        if ($url_args['limit_num']<=0) {
+            $url_args['limit_num'] = 10;
+        } elseif ($url_args['limit_num']>1000) {
+            $url_args['limit_num'] = 1000;
+        }   
+              
+        return $url_args;
+    }
+    
     /*    
     public static function totalCount(){
         return self::count();

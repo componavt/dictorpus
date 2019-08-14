@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Grammatic\VepsName;
 
-// php artisan make:test Library\Grammatic\VepsNameTest
+// php artisan make:test Library/Grammatic/VepsNameTest
 // ./vendor/bin/phpunit tests/Library/Grammatic/VepsNameTest.php
 
 class VepsNameTest extends TestCase

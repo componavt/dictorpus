@@ -19,6 +19,7 @@ class ImportController extends Controller
     }
     
     /*
+     * /import/dict_parser
      * Reads text file with dictionary entries
      * extracts lemmas and writes lemmas, meanings, word forms to DB
      * 
@@ -26,14 +27,14 @@ class ImportController extends Controller
      * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
      */
     public function dictParser() {
-        $filename = 'import/dict_tver3_b.txt';
+        $filename = 'import/dict_tver5.txt';
 //        $filename = 'import/line.txt';
         $lang_id = 4;
         $dialect_id=47; // new written tver karelian
         $label_id = 1;
 
         $file_content = Storage::disk('local')->get($filename);
-        $file_lines = preg_split ("/\r\n/",$file_content);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
 print "<pre>";        
         $count = 0;
         foreach ($file_lines as $line) {

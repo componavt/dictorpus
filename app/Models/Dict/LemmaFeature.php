@@ -147,8 +147,13 @@ class LemmaFeature extends Model
         return $features;
     }
     
-    public static function store($id, $request) {
-//dd($request->all());        
+    /**
+     * 
+     * @param INT $id
+     * @param Array $features
+     */
+    public static function store($id, $features) {
+//dd($features);        
         $lemma_feature = LemmaFeature::find($id);
         if (!$lemma_feature) {
             $lemma_feature = LemmaFeature::create(['id'=>$id]);
@@ -158,9 +163,9 @@ class LemmaFeature extends Model
             if ($field=='id') {
                 continue;
             }
-//print "<p>". $request[$field];           
-            if (isset($request->$field) && $lemma_feature->isAllowFeature($field)) {
-                $lemma_feature->$field = $request->$field;
+//print "<p>". $field;           
+            if (isset($features[$field]) && $lemma_feature->isAllowFeature($field)) {
+                $lemma_feature->$field = $features[$field];
             } else {
                 $lemma_feature->$field = NULL;
             }

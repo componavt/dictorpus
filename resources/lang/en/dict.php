@@ -27,6 +27,7 @@ return [
     'case' => 'Case',
     'category_removed' => 'Сategory ":name" is removed successfully.',
     'code' => 'code',
+    'confirm_delete_wordforms' =>'Do you want to delete word forms for this dialect?',
     'conll' => 'Code CONLL',
     'create_new_lemma' => 'Create a new lemma',
     'degree' => 'degree of comparison',
@@ -34,6 +35,7 @@ return [
                   1 => 'positive',
                   2 => 'comparative',
                   3 => 'superlative'],
+    'check_delete_wordforms' =>'to delete word forms for this dialect',
     'dialect' => 'Dialect',
     'dialect_can_not_be_removed' => 'The dialect can not be removed, there is the related wordforms or texts',
     'dialect_in_lemma_form' => 'Dialect for word form autocompletion',
@@ -164,5 +166,6 @@ return [
     'wordforms' => 'wordforms',
     'wordforms_linked_many_lemmas' => 'Wordforms associated with more than one lemma',
     'wordform_field_comments' => 'Wordforms separated by comma or /',
-    'wordforms_field_comments' => 'Standard 3 word forms via , or ;'
+    'wordforms_field_comments' => 'Standard 3 word forms via , or ;',
+    'wordforms_removed' => 'Wordforms are removed.',
 ];

@@ -5,6 +5,7 @@ namespace App\Library\Import;
 use App\Library\Grammatic;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaBase;
 use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
@@ -72,139 +73,11 @@ class DictParser
         } else {
             $lemma_arr=preg_split("/\}\s*,\s*/", $lemmas);
             for ($i=0; $i<sizeof($lemma_arr); $i++) {
-                $lemma_arr[$i] = self::toRightTemplate(trim($lemma_arr[$i]), $num, $pos_id);
+                $lemma_arr[$i] = Grammatic::toRightTemplate(trim($lemma_arr[$i]), $num, $pos_id);
             }
         }
         return $lemma_arr;
     }    
-    
-    /**
-     * Only for dialect_id=47 (tver)
-     * 
-     * lemma_str examples:
-     * 
-     * abie {-, -da, -loi}
-     * a|bu {-vu / -bu, -buo, -buloi} 
-     * ai|ga {-ja / -ga, -gua, -joi / -goi}
-     * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
-     * 
-     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}
-     * avau|duo {-du, -du, -du, -vuta, -vutt} (pos=v, num=impers - without base 1 and base 3) - НЕ ПРЕДУСМОТРЕН ШАБЛОН без основ 1 и 3, исправить KarVerb!!!!
-     * 
-     * @param type $lemma_str
-     */
-    public static function toRightTemplate($lemma_str, $num, $pos_id) {
-        if (!preg_match("/^([^\s\{]+)\s*\{([^\}]+)\}?$/", $lemma_str, $regs)) {
-            return $lemma_str;
-        }
-        $base = $bases[0] = $regs[1];
-        $base_str = trim($regs[2]);
-        
-        if (preg_match("/^([^\|]+)\|(.+)$/", $bases[0], $regs)) {
-            $base = $regs[1];
-            $bases[0] = $base.$regs[2];
-        }
-        
-        $base_str = str_replace('-', $base, $base_str);
-//print "<p>$base_str</p>";        
-        $base_list = preg_split("/\s*,\s*/",$base_str);
-
-        if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            return self::nominalToRightTemplate($bases, $base_list, $lemma_str, $num);
-        } elseif ($pos_id == PartOfSpeech::getVerbID()) {  
-            return self::verbToRightTemplate($bases, $base_list, $lemma_str, $num);
-        }
-//print "<p>Unknown pos</p>";        
-        return $lemma_str;
-    }
-    
-    /**
-     * Only for dialect_id=47 (tver)
-     * 
-     * lemma_str examples:
-     * 
-     * abie {-, -da, -loi}
-     * a|bu {-vu / -bu, -buo, -buloi} 
-     * ai|ga {-ja / -ga, -gua, -joi / -goi}
-     * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
-     * 
-     * @param type $lemma_str
-     */
-    public static function nominalToRightTemplate($bases, $base_list, $lemma_str, $num) {
-        if (!(sizeof($base_list)==3 || sizeof($base_list)==2 && $num=='sing' || sizeof($base_list)==1 && $num=='pl')) {
-            return $lemma_str;
-        }
-        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
-            $bases[1] = $regs[1];
-            $bases[2] = $regs[2];
-        } else {
-            $bases[1] = $bases[2] = $base_list[0];
-        }
-        if ($num=='pl') {
-            $bases[3] = '';
-            $bases[4] = $bases[1];
-            $bases[5] = $bases[2];
-            $bases[1] = $bases[2] = '';
-        } else {
-            $bases[3] = $base_list[1];
-            if ($num=='sing') {
-                $bases[4] = $bases[5] = '';
-            } elseif (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[2], $regs)) {
-                $bases[4] = $regs[1];
-                $bases[5] = $regs[2];
-            } else {
-                $bases[4] = $bases[5] = $base_list[2];
-            }
-        }
-        return '{'.join(', ',$bases).'}';
-    }
-    
-    /**
-     * Only for dialect_id=47 (tver)
-     * 
-     * lemma_str examples:
-     * 
-     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}
-     * avau|duo {-du, -du, -du, -vuta, -vutt} (pos=v, num=impers - without base 1 and base 3) - НЕ ПРЕДУСМОТРЕН ШАБЛОН без основ 1 и 3, исправить KarVerb!!!!
-     * 
-     * @param type $lemma_str
-     */
-    public static function verbToRightTemplate($bases, $base_list, $lemma_str, $num) {
-        if (sizeof($base_list)!=5) {
-            return $lemma_str;
-        }
-
-        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
-            $bases[1] = $regs[1];
-            $bases[2] = $regs[2];
-        } else {
-            if ($num=='impers' || $num=='def') {
-                $bases[1] = '';
-            } else {
-                $bases[1] = $base_list[0];
-                
-            }
-            $bases[2] = $base_list[0];
-        }
-        
-        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[1], $regs)) {
-            $bases[3] = $regs[1];
-            $bases[4] = $regs[2];
-        } else {
-            if ($num=='impers' || $num=='def') {
-                $bases[3] = '';
-            } else {
-                $bases[3] = $base_list[1];
-                
-            }
-            $bases[4] = $base_list[1];
-        }
-        $bases[5] = $base_list[2];
-        $bases[6] = $base_list[3];
-        $bases[7] = $base_list[4];
-        
-        return '{'.join(', ',$bases).'}';
-    }
     
     /** Splits text line to meanings, e.g. "1. first meaning 2. second meaning" 
      * will return ["first meaning", "second meaning"]
@@ -276,7 +149,7 @@ class DictParser
     }
 
     public static function getNumberID($num) {
-        if ($num=='pl') {
+        if ($num=='pl' || $num=='impers' || $num=='def') {
             return 1;            
         } else if ($num=='sing') {
             return 2;
@@ -306,7 +179,7 @@ class DictParser
         }
         foreach ($entry['meanings'] as $meaning_n =>$meaning_lang) {
             foreach ($meaning_lang as $lang => $meaning_text) {
-                if (!$meaning_text || preg_match("/[0..9]\./", $meaning_text) 
+                if (!$meaning_text || preg_match("/\d\./", $meaning_text) 
                         || preg_match("/\s+\-\s+/", $meaning_text)) {
                     print "<p><b>$count. ERROR meaning_$lang:</b> $line</p>\n";                
                     return;                
@@ -316,62 +189,6 @@ class DictParser
         return true;
     }
     
-    /**
-     * Gets entry like
-     * "pos_id" => 3
-     * "lemmas" => [0 => "a"]
-     * "num" => ""
-     * "meanings" => [
-     *      1 => [
-     *          "r" => "а, но"
-     *          "f" => "mutta, vaan, ja"
-     *      ]
-     * ]
-     * OR
-     * "pos_id" => 11
-     * "lemmas" => [0 => "{avauduo, , avaudu, , avaudu, avaudu, avauvuta, avauvutt}"]
-     * "num" => "def"
-     * "meanings" => [
-     *      1 => [
-     *          "r" => "открываться, раскрываться; распускаться"
-     *          "f" => "avautua"
-     *      ]
-     *      2 => [
-     *          "r" => "освобождаться (ото льда и т.д.)"
-     *          "f" => "avautua"
-     *      ]
-     * ]
-     * and saves to DB
-     * 
-     * @param Array $entry
-     */
-    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id/*, $time_checking*/) {       
-        foreach ($entry['lemmas'] as $lemma_template) {
-            $data = ['lemma'=>$lemma_template, 
-                     'lang_id'=>$lang_id, 
-                     'number'=>$entry['num'],
-                     'pos_id'=>$entry['pos_id'], 
-                     'dialect_id'=>$dialect_id];
-            list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
-                 = Grammatic::parseLemmaField($data);
-            $lemma_in_db = self::findLemma($new_lemma, $entry, $lang_id, $label_id/*, $time_checking*/); 
-//$time_finding = microtime(true);            
-//print "<p><b>Time finding ".$entry['lemmas'][0]." :".round($time_finding-$time_checking, 2).'</p>';
-            
-            if (!$lemma_in_db) {
-                self::storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $lang_id, $dialect_id, $label_id, $stems/*, $time_finding*/);
-print "<p>Lemma <b>$new_lemma</b> is storing</p>";                
-            } else {
-                self::updateLemma($lemma_in_db, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id, $stems/*, $time_finding*/);
-print "<p>Lemma <b>$new_lemma</b> is updating</p>";                
-            }
-//$time_storing = microtime(true);            
-//print "<p><b>Time storing/updating ".$entry['lemmas'][0]." :".round($time_storing-$time_finding, 2).'</p>';
-//dd($lemma_in_db);            
-//dd($gramset_wordforms);            
-            
-        }
-    }
     
     /**
      * search lemmas and gets founded lemma
@@ -411,48 +228,78 @@ print "<p>Lemma <b>$new_lemma</b> is updating</p>";
         }
     }   
     
-    public static function storeLemma($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, 
-                                      $entry, $lang_id, $dialect_id, $label_id, $stems) {
-        $lemma = Lemma::create(['lemma'=>$new_lemma,'lang_id'=>$lang_id,'pos_id'=>$entry['pos_id']]);
-        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
-        $lemma->save();
-        
-        $lemma->labels()->attach($label_id);
-
-        LemmaFeature::store($lemma->id, ['number'=>self::getNumberID($entry['num'])]);
-        $lemma->storeReverseLemma($stem, $affix);
-        
-        $lemma->storeWordformsFromTemplate($gramset_wordforms, $dialect_id); 
-        $lemma->createDictionaryWordforms($wordforms, $entry['num'], $dialect_id);
+    /**
+     * Gets entry like
+     * "pos_id" => 3
+     * "lemmas" => [0 => "a"]
+     * "num" => ""
+     * "meanings" => [
+     *      1 => [
+     *          "r" => "а, но"
+     *          "f" => "mutta, vaan, ja"
+     *      ]
+     * ]
+     * OR
+     * "pos_id" => 11
+     * "lemmas" => [0 => "{avauduo, , avaudu, , avaudu, avaudu, avauvuta, avauvutt}"]
+     * "num" => "def"
+     * "meanings" => [
+     *      1 => [
+     *          "r" => "открываться, раскрываться; распускаться"
+     *          "f" => "avautua"
+     *      ]
+     *      2 => [
+     *          "r" => "освобождаться (ото льда и т.д.)"
+     *          "f" => "avautua"
+     *      ]
+     * ]
+     * and saves to DB
+     * 
+     * @param Array $entry
+     */
+    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id/*, $time_checking*/) {       
+        foreach ($entry['lemmas'] as $lemma_template) {
+            $data = ['lemma'=>$lemma_template, 
+                     'lang_id'=>$lang_id, 
+                     'number'=>$entry['num'],
+                     'pos_id'=>$entry['pos_id'], 
+                     'dialect_id'=>$dialect_id];            
+            list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
+                 = Grammatic::parseLemmaField($data);
+//dd($gramset_wordforms);            
+            $lemma_in_db = self::findLemma($new_lemma, $entry, $lang_id, $label_id/*, $time_checking*/); 
+//$time_finding = microtime(true);            
+//print "<p><b>Time finding ".$entry['lemmas'][0]." :".round($time_finding-$time_checking, 2).'</p>';
+            $features = ['number'=>self::getNumberID($entry['num'])];
             
-        self::storeMeanings($entry['meanings'], $lemma->id);
-        
-        $lemma->updateTextLinks();
-    }
-    
-    public static function updateLemma($lemma, $wordforms, $stem, $affix, $gramset_wordforms, $entry, $dialect_id, $label_id, $stems) {
-        $is_label = $lemma->labels()->where('label_id', $label_id)->count();
-        if ($is_label) { // временно выключаем обновление при повторном прогоне
-            return;
-        }
-        if (!$is_label) {
-            $lemma->labels()->attach($label_id);
-        }
-        
-        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
-        $lemma->updated_at = date('Y-m-d H:i:s');
-        $lemma->save();
-        
-        LemmaFeature::store($lemma->id, ['number'=>self::getNumberID($entry['num'])]);
-        $lemma->storeReverseLemma($stem, $affix);
-        
-        self::storeMeanings($entry['meanings'], $lemma->id);
-        
-        if ($gramset_wordforms || $wordforms) {
-            $lemma->storeWordformsFromTemplate($gramset_wordforms, $dialect_id); 
-            $lemma->createDictionaryWordforms($wordforms, $entry['num'], $dialect_id);
+            $is_label = false;
+            if (!$lemma_in_db) {
+                $lemma_in_db=Lemma::store($new_lemma, $entry['pos_id'], $lang_id);
+                $action = 'storing';
+            } else {
+                $is_label = $lemma_in_db->labels()->where('label_id', $label_id)->count();
+//                if (!$is_label) { // временно выключаем обновление при повторном прогоне тверского словаря
+                    $lemma_in_db->modify();
+ //               }
+                $action = 'updating';
+            }
+  //          if (!$is_label) { // временно выключаем обновление при повторном прогоне тверского словаря
+                $lemma_in_db->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $features, $dialect_id, $stems);
+                if ($gramset_wordforms || $wordforms) {
+                    $lemma_in_db->updateTextLinks();
+                }
+                self::storeMeanings($entry['meanings'], $lemma_in_db->id);
+                if (!$is_label) {
+                    $lemma_in_db->labels()->attach($label_id); 
+                }
+   //         }
+print "<p>Lemma <a href=/dict/lemma/".$lemma_in_db->id.">$new_lemma</a> is $action</p>";   
 
-            $lemma->updateTextLinks();
+//$time_storing = microtime(true);            
+//print "<p><b>Time storing/updating ".$entry['lemmas'][0]." :".round($time_storing-$time_finding, 2).'</p>';
+//dd($lemma_in_db);            
+//dd($gramset_wordforms);            
+            
         }
     }
     

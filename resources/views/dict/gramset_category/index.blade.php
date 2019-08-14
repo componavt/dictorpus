@@ -45,7 +45,7 @@
                             ['is_button'=>true, 
                              'without_text' => 1,
                             'route' => 'gramset_category.destroy', 
-                            'id' => $gramset_category->id])
+                            'args'=>['id' => $gramset_category->id]])
                 </td>
                 @endif
             </tr>

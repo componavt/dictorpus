@@ -72,7 +72,7 @@
                              'without_text' => 1,
                             'url_args' => $url_args,
                             'route' => 'dialect.destroy', 
-                            'id' => $dialect->id])
+                            'args'=>['id' => $dialect->id]])
                 </td>
                 @endif
             </tr>

@@ -55,33 +55,7 @@ class LemmaController extends Controller
                                       'createWordform', 'updateWordformFromText',
                                       'editWordforms','updateWordforms']]);
         
-        $this->url_args = [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
-                    'search_gramset'  => (int)$request->input('search_gramset'),
-                    'search_id'       => (int)$request->input('search_id'),
-                    'search_label'     => (int)$request->input('search_label'),
-                    'search_lang'     => (int)$request->input('search_lang'),
-                    'search_lemma'    => $request->input('search_lemma'),
-                    'search_meaning'  => $request->input('search_meaning'),
-                    'search_pos'      => (int)$request->input('search_pos'),
-                    'search_relation' => (int)$request->input('search_relation'),
-                    'search_wordform' => $request->input('search_wordform'),
-                ];
-        
-        if (!$this->url_args['page']) {
-            $this->url_args['page'] = 1;
-        }
-        
-        if (!$this->url_args['search_id']) {
-            $this->url_args['search_id'] = NULL;
-        }
-        
-        if ($this->url_args['limit_num']<=0) {
-            $this->url_args['limit_num'] = 10;
-        } elseif ($this->url_args['limit_num']>1000) {
-            $this->url_args['limit_num'] = 1000;
-        }   
+        $this->url_args = Lemma::urlArgs($request);  
         
         $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
@@ -161,7 +135,7 @@ class LemmaController extends Controller
 //            'pos_id' => 'numeric',
         ]);
         
-        $lemma->storeLemma($request);
+        $lemma = Lemma::storeLemma($request->all());
 
         LemmaFeature::store($lemma->id, $request);
         $lemma->storePhrase($request->phrase);
@@ -190,7 +164,7 @@ class LemmaController extends Controller
             'pos_id' => 'numeric',
         ]);
         
-        $lemma->storeLemma($request);
+        $lemma = Lemma::storeLemma($request->all());
 
         $new_meanings[0]=['meaning_n' => 1,
                           'meaning_text' =>
@@ -356,39 +330,6 @@ class LemmaController extends Controller
     }
 
     /**
-     * Shows the form for editing of lemma's wordforms.
-     *
-     * @param  int  $id - ID of lemma
-     * @return \Illuminate\Http\Response
-     */
-    public function editWordforms(Request $request, $id)
-    {
-        $dialect_id = (int)$request->dialect_id;
-        $dialect_name = Dialect::getNameByID($dialect_id);
-        
-        if (!$dialect_id) {
-            $dialect_id = NULL;
-        }
-
-        $lemma = Lemma::find($id);
-//dd($lemma->wordformsWithAllGramsets($dialect_id));        
-        $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
-//        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
-        $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id)+['all'=>'ДЛЯ ВСЕХ ДИАЛЕКТОВ'];
-        return view('dict.lemma.edit_wordforms')
-                  ->with(array(
-                               'dialect_id' => $dialect_id,
-                               'dialect_name' => $dialect_name,
-                               'dialect_values' => $dialect_values,
-                               'gramset_values' => $gramset_values,
-                               'lemma' => $lemma,                      
-                               'args_by_get'    => $this->args_by_get,
-                               'url_args'       => $this->url_args,
-                              )
-                        );
-    }
-
-    /**
      * Shows the form for editing of lemma's text examples.
      *
      * @param  int  $id - ID of lemma
@@ -474,7 +415,7 @@ class LemmaController extends Controller
 //            'pos_id' => 'numeric',
         ]);
         
-        $lemma->updateLemma($request);
+        $lemma->updateLemma($request->all());
         
         // MEANINGS UPDATING
         // existing meanings
@@ -489,76 +430,6 @@ class LemmaController extends Controller
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function updateWordforms(Request $request, $id)
-    {
-        $dialect_id = $request->dialect_id;
-        $lemma= Lemma::findOrFail($id);
-        // WORDFORMS UPDATING
-        //remove all records from table lemma_wordform
-        if (!(int)$dialect_id) {
-            $dialect_id = NULL;
-        }
-        $lemma-> wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
-        //add wordforms from full table of gramsets
-        $lemma-> storeWordformGramsets($request->lang_wordforms, $request->lang_wordforms_dialect);
-        //add wordforms without gramsets
-        $lemma-> storeWordformsEmpty($request->empty_wordforms, $dialect_id);
-
-        // updates links with text examples
-//        $lemma->updateTextLinks();
-                
-        
-        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).($this->args_by_get ? '&' : '?').'update_text_links=1')
-                       ->withSuccess(\Lang::get('messages.updated_success'));
-    }
-
-    /**
-     * Saves links 1)text's word with lemma's meaning 
-     *             2)wordform with gramset and dialects
-     * 
-     * Test: /dict/lemma/wordform/update?lemma_id=10603&text_id=1548&w_id=7&meaning_id=11660&gramset_id=34&dialects[]=44&dialects[]=34
-     *       /dict/lemma/wordform/update?text_id=1548&lemma_id=4235&meaning_id=4350&gramset_id=1&w_id=1&dialects[]=34
-     * 
-     * @param Request $request
-     * @return Null
-     */
-    public function updateWordformFromText(Request $request)
-    {
-        $lemma_id = (int)$request->input('lemma_id');
-        $text_id = (int)$request->input('text_id'); 
-        $w_id = (int)$request->input('w_id'); 
-        
-        if (!$lemma_id || !$text_id || !$w_id) {
-            return;
-        }
-
-        $lemma = Lemma::find($lemma_id);
-        $text = Text::find($text_id);
-        $word = Word::getByTextWid($text_id, $w_id);
-        
-        if (!$lemma || !$text || !$word || !$word->sentence_id) { return; }
-        
-        $meaning_id = $request->input('meaning_id'); 
-        $gramset_id = $request->input('gramset_id'); 
-        $dialects = (array)$request->input('dialects'); 
-        
-        $wordform = $request->input('wordform'); 
-        if (!$wordform) {
-            $wordform = $word -> word;
-        }
-        
-        $lemma->addWordformFromText($wordform, $gramset_id, $dialects, $text_id, $w_id);
-        $text->addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
-        return 1;            
-    }   
-    
     /**
      * /dict/lemma/remove/example/5177_1511_1_8
      * 
@@ -626,15 +497,11 @@ class LemmaController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/dict/lemma/'.($this->args_by_get))
-                               ->withErrors($result['error_message']);
-        } else {
             return Redirect::to('/dict/lemma/'.($this->args_by_get))
-                  ->withSuccess($result['message']);
+                           ->withErrors($result['error_message']);
         }
-        
- //       return response()->json(['error' => $error,'response'=>$result],$status_code)
-  //                       ->setCallback(\Request::input('callback'));
+        return Redirect::to('/dict/lemma/'.($this->args_by_get))
+              ->withSuccess($result['message']);
     }
     
     /**

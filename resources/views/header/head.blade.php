@@ -6,8 +6,8 @@
     <title>{{ trans('main.site_abbr') }} :: @yield('title')</title>
     
     <!-- Fonts -->
-    <!--Html::style('css/font-awesome.min.css')-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    {!!Html::style('css/font-awesome_5.6.3.css')!!}
+    <!--link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"-->
 
     <!-- Styles -->
     {!!Html::style('css/bootstrap.min.css')!!}    

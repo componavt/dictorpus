@@ -21,9 +21,12 @@ class CreateLemmaBasesTable extends Migration
             $table->unsignedTinyInteger('base_n');
             $table->string('base', 45)->collate('utf8_bin');  
             
-            $table->unique(['lemma_id', 'base_n']);
+            $table->smallInteger('dialect_id')->unsigned();
+            $table->foreign('dialect_id')->references('id')->on('dialects');
             
-            //$table->timestamps();
+            $table->unique(['lemma_id', 'base_n', 'dialect_id']);
+            
+            $table->timestamps();
         });
     }
 

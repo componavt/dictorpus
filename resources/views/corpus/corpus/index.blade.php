@@ -73,7 +73,7 @@
                              ['is_button'=>true, 
                               'without_text' => true,
                               'route' => 'corpus.destroy', 
-                              'id' => $corpus->id,
+                              'args'=>['id' => $corpus->id],
                              ])
                 </td>
                 @endif

@@ -16,8 +16,8 @@
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
 
         <h3>{{ trans('dict.wordforms') }}</h3>
-        {!! Form::model($lemma, array('method'=>'POST', 'route' => array('lemma.update.wordforms', $lemma->id))) !!}
-        @include('dict.lemma._form_edit_wordforms')
+        {!! Form::model($lemma, array('method'=>'PUT', 'route' => array('lemma_wordform.update', $lemma->id))) !!}
+        @include('dict.lemma_wordform._form_edit')
         @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop

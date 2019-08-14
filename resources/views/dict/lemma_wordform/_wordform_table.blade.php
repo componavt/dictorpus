@@ -1,25 +1,3 @@
-        <h3>
-            {{ trans('dict.wordforms') }}
-            @if (User::checkAccess('dict.edit'))
-                {!! Form::open(['url' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
-                                'method' => 'get'])
-                !!}
-                @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
-            <div class="row">
-                <div class="col-sm-3">
-                @include('widgets.form.formitem._select',
-                        ['name' => 'dialect_id',
-                         'values' =>$dialect_values,
-                         ]) 
-                </div>
-                <div class="col-sm-1">
-                @include('widgets.form.formitem._submit', ['title' => trans('messages.edit')])
-                </div>
-            </div>                 
-                {!! Form::close() !!}
-            @endif
-        </h3>
-
         @if ($lemma->wordforms()->count())
         <?php $key=1; ?>
         <table class="table-bordered table-striped">
@@ -31,11 +9,22 @@
                     {{$dialect_name}}
                     @if (User::checkAccess('dict.edit'))
                         @include('widgets.form.button._edit', 
-                                 ['route' => '/dict/lemma/'.$lemma->id.'/edit/wordforms',
+                                 ['route' => '/dict/lemma_wordform/'.$lemma->id.'/edit',
                                   'args_by_get' => (isset($args_by_get) && $args_by_get) 
                                                     ? $args_by_get.'&dialect_id='.$dialect_id 
                                                     : '?dialect_id='.$dialect_id,
                                   'without_text' => 1])
+{{--                        @include('widgets.form.button._delete', 
+                                   ['route' => 'lemma_wordform.destroy', 
+                                    'without_text' => true,
+                                    'class' => 'delete-wordforms',
+                                    'title' => trans('dict.check_delete_wordforms'),
+                                    'args'=>['id' => $lemma->id, 'dialect_id'=>$dialect_id]]) --}}
+                        @include('widgets.form.button._reload', 
+                                 ['data_reload' => $lemma->id.'_'.$dialect_id,
+                                  'class' => 'reload-wordforms',
+                                  'func' => 'reloadWordforms',
+                                  'title' => trans('messages.reload')])
                     @endif
 
                     </th>

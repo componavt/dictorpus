@@ -10,7 +10,7 @@
             
         @if (User::checkAccess('ref.edit'))
             | @include('widgets.form.button._edit', ['route' => '/dict/gram/'.$gram->id.'/edit'])
-            | @include('widgets.form.button._delete', ['route' => 'gram.destroy', 'id' => $gram->id]) 
+            | @include('widgets.form.button._delete', ['route' => 'gram.destroy', 'args'=>['id' => $gram->id]]) 
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif 

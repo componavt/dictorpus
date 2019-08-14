@@ -25,21 +25,31 @@ class VepsVerb
      * @return array
      */
     public static function stemsFromDB($lemma, $dialect_id) {
-        $stems[0] = $lemma->lemma;
-        for ($i=1; $i<6; $i++) {
-            $stems[$i] = NULL;
+        for ($i=0; $i<6; $i++) {
+            $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id);
         }
-        
-        if (preg_match("/^(.+)b$/", $lemma->wordform(28, $dialect_id), $regs)) { // indicative presence 3 sg
-            $stems[1] = $regs[1];
-        }
-        
-        $stems[2] = $lemma->wordform(34, $dialect_id); // indicative imperfect 3 sg
-        $stems[3] = self::getStem3($stems[0], $stems[1]); // base of 2 active particle
-        $stems[4] = self::getStemCond($stems[1]); // base of conditional
-        $stems[5] = self::getStemPoten($stems[0], $stems[1]); // base of potential
-        
         return $stems;
+    }
+
+    public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {
+        switch ($stem_n) {
+            case 0: 
+                return $lemma->lemma;
+            case 1:  // indicative presence 3 sg
+                if (preg_match("/^(.+)b$/", $lemma->wordform(28, $dialect_id), $regs)) {
+                    return $regs[1];
+                }
+                return NULL;
+            case 2: // indicative imperfect 3 sg
+                $ind_imp_3_sg = $lemma->wordform(34, $dialect_id); 
+                return $ind_imp_3_sg ? $ind_imp_3_sg : NULL;
+            case 3: // base of 2 active particle
+                return self::getStem3(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
+            case 4: // base of conditional
+                return self::getStemCond(self::getStemFromWordform($lemma, 1, $dialect_id));
+            case 5: // base of potential
+                return self::getStemPoten(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
+        }
     }
 
     public static function getListForAutoComplete() {
@@ -73,7 +83,10 @@ class VepsVerb
      *          7 => a/ä - последняя буква инфинитива]
      * 
      * @param Array $regs
-     * @return array
+     * @return array [0=>base_of_infinitive, 1=>base_of_presence, 
+     *                2=>base_of_perfect, 3=>base_of_past_actvive_participle,
+     *                4=>base_of_conditional, 5=>base_of_potentional, 
+     *                6=>consonant (d/t), 7=>vowel (a/ä)]
      */
     public static function stemsFromTemplate($regs) {
 //dd($regs);        
@@ -97,7 +110,7 @@ class VepsVerb
         }        
         $pres_suff = $regs1[1];
         
-        $inf_stem = $base. $inf_suff; // = lemma
+        $inf_stem = $base. $inf_suff; // = lemma without [dt][aä]
         $pres_stem = $base. $pres_suff; 
         if (!preg_match("/[aeiouüäö]$/u", $pres_stem)) { // должен оканчиваться на гласную
             return null;
@@ -107,15 +120,18 @@ class VepsVerb
             return null;
         }
         
+        $past_actv_ptcp_stem = self::getStemPAP($inf_stem, $pres_stem);       
         $cond_stem = self::getStemCond($pres_stem);        
-        $past_actv_ptcp_stem = self::getStem3($inf_stem, $pres_stem);       
-        $potn_stem = self::getStemPoten($inf_stem, $pres_stem);
+        $potn_stem = self::getStemPoten($past_actv_ptcp_stem, $inf_stem, $pres_stem);
         
         return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
                 $cond_stem, $potn_stem, $cons, $harmony];        
     }
     
-    public static function getStem3($stem0, $stem1) {
+    /**
+     * base of past actvive participle
+     */
+    public static function getStemPAP($stem0, $stem1) {
         $past_actv_ptcp_stem = $stem0;
         if (preg_match("/^(.+)([kpsšt])$/u", $stem0, $regs1)) {
             $inf_stem_voiced = $regs1[1]. VepsGram::ringConsonant($regs1[2]);
@@ -137,7 +153,7 @@ class VepsVerb
         return $cond_stem;
     }
     
-    public static function getStemPoten($inf_stem, $pres_stem) {
+    public static function getStemPoten($past_actv_ptcp_stem, $inf_stem, $pres_stem) {
         $potn_stem = $past_actv_ptcp_stem;
         if (preg_match("/[aeiouüäö]$/u", $inf_stem, $regs1)) {
             $potn_stem = $pres_stem;

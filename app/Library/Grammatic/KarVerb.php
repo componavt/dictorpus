@@ -30,38 +30,50 @@ class KarVerb
      * @return array
      */
     public static function stemsFromDB($lemma, $dialect_id) {
-        $stems[0] = $lemma->lemma;
-        for ($i=1; $i<8; $i++) {
-            $stems[$i] = NULL;
+        for ($i=0; $i<8; $i++) {
+            $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id);;
         }
-        
-        if (preg_match("/^(.+)n$/", $lemma->wordform(26, $dialect_id), $regs)) { // indicative presence 1 sg
-            $stems[1] = $regs[1];
-        }
-        
-        if (preg_match("/^(.+)m[aä]h$/u", $lemma->wordform(174, $dialect_id), $regs)) { // 3 infinitive illative
-            $stems[2] = $regs[1];
-        }
-        
-        if (preg_match("/^(.+)n$/", $lemma->wordform(32, $dialect_id), $regs)) { // indicative imperfect 1 sg
-            $stems[3] = $regs[1];
-        }
-        
-        $stems[4] = $lemma->wordform(34, $dialect_id); // indicative imperfect 3 sg
-        
-        if (preg_match("/^(.+)n?[nlrsš]un$/", $lemma->wordform(179, $dialect_id), $regs)) { // 2 active participle
-            $stems[5] = $regs[1];
-        }
-        
-        if (preg_match("/^(.+)h$/", $lemma->wordform(31, $dialect_id), $regs)) { // indicative presence 3 pl
-            $stems[6] = $regs[1];
-        }
-        
-        if (preg_match("/^(.+)ih$/", $lemma->wordform(37, $dialect_id), $regs)) { // indicative imperfect 3 pl
-            $stems[7] = $regs[1];
-        }
-        
         return $stems;
+    }
+
+    public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {
+        switch ($stem_n) {
+            case 0: 
+                return $lemma->lemma;
+            case 1:  // indicative presence 1 sg
+                if (preg_match("/^(.+)n$/", $lemma->wordform(26, $dialect_id), $regs)) {
+                    return $regs[1];
+                }
+                return NULL;
+            case 2: // 3 infinitive illative
+                if (preg_match("/^(.+)m[aä]h$/u", $lemma->wordform(174, $dialect_id), $regs)) { 
+                    return $regs[1];
+                }
+                return NULL;
+            case 3: // indicative imperfect 1 sg
+                if (preg_match("/^(.+)n$/", $lemma->wordform(32, $dialect_id), $regs)) {
+                    return $regs[1];
+                }
+                return NULL;
+            case 4: // indicative imperfect 3 sg
+                $ind_imp_3_sg = $lemma->wordform(34, $dialect_id); 
+                return $ind_imp_3_sg ? $ind_imp_3_sg : NULL;
+            case 5: // 2 active participle
+                if (preg_match("/^(.+)n?[nlrsš]un$/", $lemma->wordform(179, $dialect_id), $regs)) { 
+                    return $regs[1];
+                }
+                return NULL;
+            case 6: // indicative presence 3 pl
+                if (preg_match("/^(.+)h$/", $lemma->wordform(31, $dialect_id), $regs)) { 
+                    return $regs[1];
+                }
+                return NULL;
+            case 7: // indicative imperfect 3 pl
+                if (preg_match("/^(.+)ih$/", $lemma->wordform(37, $dialect_id), $regs)) {
+                    return $regs[1];
+                }
+                return NULL;
+        }
     }
 
     /** Lists of ID of gramsets, which have the rules.

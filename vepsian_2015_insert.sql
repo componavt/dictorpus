@@ -1,4 +1,4 @@
--- SET foreign_key_checks=0;
+c-- SET foreign_key_checks=0;
 
 -- mysqldump -p -uroot --skip-extended-insert vepkar gramsets > vepkar_20160826_gramsets.sql
 
@@ -925,3 +925,7 @@ update langs set code='fi' where id=7;
 -- Test aluššovat, avata, avauduo 
 
 -- php artisan make:model Models\Dict\LemmaBase --migration
+
+-- php artisan make:test 'Library\Grammatic\KarNameTest'
+
+-- php artisan make:controller Dict/LemmaWordformController

@@ -29,14 +29,23 @@ class Grammatic
     public static function parseLemmaField($data) {
         $lemma = self::toRightForm($data['lemma']);
         $name_num = isset($data['number']) ? self::nameNumFromNumberField($data['number']) : null;
-        
-        list($lemma, $gramset_wordforms, $stem, $affix, $stems) = self::wordformsByTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
+       
+        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
+        $lemma = $max_stem. $affix;
+//dd($lemma);        
+        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems);
         if ($gramset_wordforms) {
-            return [$lemma, '', $stem, $affix, $gramset_wordforms, $stems];
+            return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
         }
         return self::wordformsFromDict($lemma);
     }
-    
+/*    
+    public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id) {
+        list($stems, $name_num) = self::stemsFromTemplate($lemma, $lang_id, $pos_id, $dialect_id, $name_num);
+        $gramset_wordforms = self::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        return $gramset_wordforms;
+    }
+*/
     public static function wordformsFromDict($lemma) {       
         $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
         if ($parsing) {
@@ -55,7 +64,7 @@ class Grammatic
       
         if (!$parsing) {
 //var_dump([$parsing, $lemma, $wordforms, $stem, $affix]);
-            return [$lemma, '', $stem, $affix, false];
+            return [$lemma, '', $stem, $affix, false, NULL];
         }
 
         $regs[2] = str_replace('-', $stem, $regs[2]);
@@ -99,76 +108,76 @@ class Grammatic
      * @param String $template
      * @param Int $lang_id
      * @param Int $pos_id
-     * @return Array
+     * @return Array [array_of_stems, name_of_number, max_stem, affix]
      */
     public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null) {
-        if ($lang_id == 1) {
-            return VepsGram::stemsFromTemplate($template, $pos_id, $name_num);                
-        } else {
-            $stems = preg_split('/,/',$template);
-            for ($i=0; $i<sizeof($stems); $i++) {
-                $stems[$i] = trim($stems[$i]);
-            }
-        }        
-        return [$stems, $name_num, null, null];
-    }
-
-    public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id, $name_num=null) {
         if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
-            return [$template, false, $template, NULL, NULL];
+            return [NULL, $name_num, $template, NULL];
         }
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            return [$template, false, $template, NULL, NULL];
+            return [NULL, $name_num, $template, NULL];
         }
         
-        if (!preg_match('/\{+([^\}]+)\}+/', $template, $list) &&
-                !($lang_id==1 && preg_match("/".VepsGram::dictTemplate()."/", $template, $list))) {
-            return [$template, false, $template, NULL, NULL];
+        if ($lang_id == 1) {
+            return VepsGram::stemsFromTemplate($template, $pos_id, $name_num);                
+        } 
+        
+        $template = self::toRightTemplate($template, $name_num, $pos_id);
+        $stems = self::stemsFromFullList($template);
+        if (!$stems || ($pos_id == PartOfSpeech::getVerbID() && sizeof($stems)!=8) // constraints for tver dialects
+                || (in_array($pos_id, PartOfSpeech::getNameIDs()) && sizeof($stems)!=6)) {
+            return [NULL, $name_num, $template, NULL];
+        } 
+        
+        list($max_stem, $affix) = self::maxStem($stems);
+        
+        return [$stems, $name_num, $max_stem, $affix];
+    }
+
+    public static function stemsFromFullList($template) {
+        if (!preg_match('/^\s*\{+([^\}]+)\}+\s*$/', $template, $template_in_brackets)) {
+            return NULL;
         }
         
-        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($list[1], $lang_id, $pos_id, $name_num);
+        $stems = preg_split('/,/',$template_in_brackets[1]);
+        for ($i=0; $i<sizeof($stems); $i++) {
+            $stems[$i] = trim($stems[$i]);
+        }
+
+        return $stems;
+    }
+    
+    public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems) {
 //dd($stems);                
-        if (!isset($stems[0])) {
-            return [$template, false, $template, NULL, NULL];
+        if (!isset($stems[0]) || sizeof($stems)<6) {
+            return false;
         }
         
         $gramsets = self::getListForAutoComplete($lang_id, $pos_id);
         $wordforms = [];
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
-        if ($pos_id == PartOfSpeech::getVerbID()) {
-            if (sizeof ($stems) != 8) {
-                return [$stems[0], false, $template, NULL, NULL];
-            }
-            foreach ($gramsets as $gramset_id) {
-                $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
-            }
-        } else {
-//            if ($lang_id == 1 && sizeof ($stems) != 4 || sizeof ($stems) != 6) {
-            if (sizeof ($stems) != 6) {
-                return [$stems[0], false, $template, NULL, NULL];
-            }
-            foreach ($gramsets as $gramset_id) {
+        foreach ($gramsets as $gramset_id) {
+            if ($pos_id == PartOfSpeech::getVerbID()) {
+                $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
+            } else {
                 $wordforms[$gramset_id] = self::nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
             }
         }
-        if (!$max_stem) {
-            list($max_stem, $affix) = self::maxStem($stems);
-        }
-        return [$max_stem.$affix, $wordforms, $max_stem, $affix, $stems];
+        return $wordforms;
     }
     
-    public static function nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num) {
+    public static function nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
         if ($lang_id == 1) {
             return VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $name_num);
         }
         return KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
     }
     
-    public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id) {
+    public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def=null) {
         if ($lang_id == 1) {
             return VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
         }
-        return KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
+        return KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def);
     }
     
     public static function isLetterChangeable($lang_id) {
@@ -273,8 +282,145 @@ class Grammatic
         if ($number==1) {
             return 'pl';
         } elseif ($number==2) {
-            return 'sg';            
+            return 'sing';            
+        } elseif (in_array($number, ['sing','sg','pl','def','impers'])) {
+            return $number;            
         }
         return null;
+    }
+    
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * abie {-, -da, -loi}
+     * a|bu {-vu / -bu, -buo, -buloi} 
+     * ai|ga {-ja / -ga, -gua, -joi / -goi}
+     * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
+     * 
+     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}
+     * avau|duo {-du, -du, -du, -vuta, -vutt} (pos=v, num=impers - without base 1 and base 3) - НЕ ПРЕДУСМОТРЕН ШАБЛОН без основ 1 и 3, исправить KarVerb!!!!
+     * 
+     * @param type $lemma_str
+     */
+    public static function toRightTemplate($lemma_str, $num, $pos_id) {
+        if (!preg_match("/^([^\s\{]+)\s*\{([^\}]+)\}?$/", $lemma_str, $regs)) {
+            return $lemma_str;
+        }
+        $base = $bases[0] = $regs[1];
+        $base_str = trim($regs[2]);
+        
+        if (preg_match("/^([^\|]+)\|(.+)$/", $bases[0], $regs)) {
+            $base = $regs[1];
+            $bases[0] = $base.$regs[2];
+        }
+        
+        $base_str = str_replace('-', $base, $base_str);
+//print "<p>$base_str</p>";        
+        $base_list = preg_split("/\s*,\s*/",$base_str);
+
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
+            return self::nominalToRightTemplate($bases, $base_list, $lemma_str, $num);
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) {  
+            return self::verbToRightTemplate($bases, $base_list, $lemma_str, $num);
+        }
+//print "<p>Unknown pos</p>";        
+        return $lemma_str;
+    }
+    
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * abie {-, -da, -loi}
+     * a|bu {-vu / -bu, -buo, -buloi} 
+     * ai|ga {-ja / -ga, -gua, -joi / -goi}
+     * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
+     * 
+     * @param type $lemma_str
+     */
+    public static function nominalToRightTemplate($bases, $base_list, $lemma_str, $num) {
+        if (!(sizeof($base_list)==3 || sizeof($base_list)==2 && $num=='sing' || sizeof($base_list)==1 && $num=='pl')) {
+            return $lemma_str;
+        }
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
+            $bases[1] = $regs[1];
+            $bases[2] = $regs[2];
+        } else {
+            $bases[1] = $bases[2] = $base_list[0];
+        }
+        if ($num=='pl') {
+            $bases[3] = '';
+            $bases[4] = $bases[1];
+            $bases[5] = $bases[2];
+            $bases[1] = $bases[2] = '';
+        } else {
+            $bases[3] = $base_list[1];
+            if ($num=='sing') {
+                $bases[4] = $bases[5] = '';
+            } elseif (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[2], $regs)) {
+                $bases[4] = $regs[1];
+                $bases[5] = $regs[2];
+            } else {
+                $bases[4] = $bases[5] = $base_list[2];
+            }
+        }
+        return '{'.join(', ',$bases).'}';
+    }
+    
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}
+     * avau|duo {-du, -du, -du, -vuta, -vutt} (pos=v, num=impers - without base 1 and base 3) - НЕ ПРЕДУСМОТРЕН ШАБЛОН без основ 1 и 3, исправить KarVerb!!!!
+     * 
+     * @param type $lemma_str
+     */
+    public static function verbToRightTemplate($bases, $base_list, $lemma_str, $num) {
+        if (sizeof($base_list)!=5) {
+            return $lemma_str;
+        }
+
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
+            $bases[1] = $regs[1];
+            $bases[2] = $regs[2];
+        } else {
+            if ($num=='impers' || $num=='def') {
+                $bases[1] = '';
+            } else {
+                $bases[1] = $base_list[0];
+                
+            }
+            $bases[2] = $base_list[0];
+        }
+        
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[1], $regs)) {
+            $bases[3] = $regs[1];
+            $bases[4] = $regs[2];
+        } else {
+            if ($num=='impers' || $num=='def') {
+                $bases[3] = '';
+            } else {
+                $bases[3] = $base_list[1];
+                
+            }
+            $bases[4] = $base_list[1];
+        }
+        $bases[5] = $base_list[2];
+        $bases[6] = $base_list[3];
+        $bases[7] = $base_list[4];
+        
+        return '{'.join(', ',$bases).'}';
+    }
+       
+    public static function getStemFromWordform($lemma, $stem_n, $lang_id, $pos_id, $dialect_id) {
+        if ($lang_id == 1) {
+            return VepsGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id);
+        }
+        return KarGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id);
     }
 }

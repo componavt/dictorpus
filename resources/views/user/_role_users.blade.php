@@ -50,7 +50,7 @@
                              ['is_button'=>true, 
                               'without_text' => true,
                               'route' => 'user.destroy', 
-                              'id' => $user->id,
+                              'args'=>['id' => $user->id]
                              ])
                 </td>
                 @endif

@@ -29,7 +29,7 @@
         @if (User::checkAccess('corpus.edit'))
             | @include('widgets.form.button._edit', ['route' => '/corpus/text/'.$text->id.'/edit'])
             | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/markup') }}{{$args_by_get}}">{{ trans('corpus.re-markup') }}</a>            
-            | @include('widgets.form.button._delete', ['route' => 'text.destroy', 'id' => $text->id]) 
+            | @include('widgets.form.button._delete', ['route' => 'text.destroy', 'args'=>['id' => $text->id]]) 
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif 

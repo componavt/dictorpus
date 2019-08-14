@@ -13,8 +13,10 @@ use App\Models\Dict\PartOfSpeech;
 class VepsGram
 {
     public static function dictTemplate() {
-        return "^([^\s\(]+\s*\([^\,\;]+\,?\s*[^\,\;]*[\;\,]?\s*[^\,\;]*\))";
+        return "([^\s\(]+\s*\([^\,\;]+\,?\s*[^\,\;]*[\;\,]?\s*[^\,\;]*\))";
+//        return "([^\s\(]+)";
     }
+    
     public static function rightConsonant($d, $l) {
         $consonants = ["d" => ["b"=>"b", "d"=>"d", "g"=>"g"],
                        "t" => ["b"=>"p", "d"=>"t", "g"=>"k"]];
@@ -41,28 +43,37 @@ class VepsGram
     }
     
     public static function stemsFromTemplate($template, $pos_id, $name_num = null) {
+        $template = trim($template);
+/*dd(preg_match("/".VepsGram::dictTemplate()."/", $template));        
+        if (!preg_match("/".VepsGram::dictTemplate()."/", $template, $template_without_spaces)) {
+            return [NULL, $name_num, $template, NULL];
+        } 
+        $template = $template_without_spaces;    */
         $stems = $base = $base_suff = null;
+        $arg = "([^\|]*)";
+        $div_arg = "\|".$arg;
+      
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-//dd($template,preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template));            
-            if (preg_match("/^vep-decl-stems\|n=pl\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
+//dd($template,preg_match("/^{{vep-decl-stems\|n=pl".$div_arg.$div_arg.$div_arg."}}$/u", $template));            
+            if (preg_match("/^{{vep-decl-stems\|n=pl".$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
                     ($name_num == 'pl' && preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template, $regs))) {
 //dd(1, $regs);     
                 $name_num = 'pl';
                 list($stems, $base, $base_suff) =  VepsName::stemsPlFromTemplate($regs);
-            } elseif (preg_match("/^vep-decl-stems\|n=sg\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)$/u",$template, $regs) ||
+            } elseif (preg_match("/^{{vep-decl-stems\|n=sg".$div_arg.$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
                     ($name_num == 'sg' && preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\,?\s*-?([^\,\;]*)\)/", $template, $regs)) ||
                     (preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;\)]+)\)/", $template, $regs))) {
 //dd(2, $regs);     
                 $name_num = 'sg';
                 list($stems, $base, $base_suff) =  VepsName::stemsSgFromTemplate($regs);
-            } elseif (preg_match("/^vep-decl-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u",$template, $regs) ||
+            } elseif (preg_match("/^{{vep-decl-stems".$div_arg.$div_arg.$div_arg.$div_arg."\|?".$arg."}}$/u",$template, $regs) ||
                     preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
 //dd(3, $regs);     
                 list($stems, $base, $base_suff) = VepsName::stemsFromTemplate($regs, $pos_id, $name_num);
             }
 //dd(4);
         } elseif ($pos_id == PartOfSpeech::getVerbID() && 
-            (preg_match('/^vep-conj-stems\|([^\|]*)\|([^\|]*)\|([^\|]*)\|?([^\|]*)$/u',$template, $regs) ||
+            (preg_match('/^{{vep-conj-stems'.$div_arg.$div_arg.$div_arg.'\|?'.$arg.'}}$/u',$template, $regs) ||
             preg_match("/^([^\s\(\|]+)\|?([^\s\(\|]*)\s*\(-([^\,\;]+)\,\s*-([^\,\;]+)\)/", $template, $regs))) {      
 //dd($regs);     
             $base = $regs[1];
@@ -79,5 +90,13 @@ class VepsGram
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsVerb::stemsFromDB($lemma, $dialect_id);
         }       
+    }
+    
+    public static function getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id) {
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return VepsName::getStemFromWordform($lemma, $stem_n, $dialect_id);
+        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return VepsVerb::getStemFromWordform($lemma, $stem_n, $dialect_id);
+        }
     }
 }

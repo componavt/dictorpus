@@ -2,6 +2,8 @@
 
 namespace App\Models\Dict;
 
+use App\Library\Grammatic\KarGram;
+
 use Illuminate\Database\Eloquent\Model;
 
 /*
@@ -48,7 +50,7 @@ class LemmaBase extends Model
     protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
     protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
     
-    protected $fillable = ['lemma_id','base_n','base'];
+    protected $fillable = ['lemma_id','base_n','base', 'dialect_id'];
     
     public static function boot()
     {
@@ -65,9 +67,9 @@ class LemmaBase extends Model
         return $this->belongsTo(Lemma::class);
     }
     
-    public static function updateStem($lemma_id, $stem_n, $stem) {
+    public static function updateStem($lemma_id, $stem_n, $stem, $dialect_id) {
         $base = self::where('lemma_id', $lemma_id)
-                    ->where('stem_n', $stem_n)->first();
+                    ->where('base_n', $stem_n)->first();
         if (!$stem) {
             if ($base) {
                 $base->remove();                
@@ -75,28 +77,28 @@ class LemmaBase extends Model
             return;
         }
         if (!$base) {
-            $base = self::create(['lemma_id'=>$lemma_id, 'stem_n'=> $stem_n]);
+            $base = self::create(['lemma_id'=>$lemma_id, 'base_n'=> $stem_n, 'dialect_id'=>$dialect_id]);
         }
         $base->base = $stem;
         $base->save();
     }
     
-    public static function updateStemsFromSet($lemma_id, $stems) {
+    public static function updateStemsFromSet($lemma_id, $stems, $dialect_id) {
         if (!$stems) {
             return;
         }
         for ($i=0; $i<sizeof($stems); $i++) {
-            self::updateStem($this->id, $i, $stems[$i]);
+            self::updateStem($lemma_id, $i, $stems[$i], $dialect_id);
         }
     }
     
-    public static function updateStemsFromDB($lemma, $dialect_id) {
+    public static function updateStemsFromDB($lemma, $pos_id, $dialect_id) {
         if ($lemma->lang_id == 1) {
             $stems = VepsGram::stemsFromDB($lemma, $dialect_id);
         } else {
-            $stems = KarGram::stemsFromDB($lemma, $dialect_id);            
+            $stems = KarGram::stemsFromDB($lemma, $pos_id, $dialect_id);            
         }
-        self::updateStemsFromSet($lemma->id, $stems);
+        self::updateStemsFromSet($lemma->id, $stems, $dialect_id);
 //            if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
     }
 }

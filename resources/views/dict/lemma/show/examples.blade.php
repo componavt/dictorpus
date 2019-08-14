@@ -12,6 +12,7 @@
                         @include('widgets.form.button._reload', 
                                  ['data_reload' => $meaning->id,
                                   'class' => 'reload-examples',
+                                  'func' => 'reloadExamples',
                                   'title' => trans('messages.reload')])
                     @else
                         ({{ $sentence_count}})

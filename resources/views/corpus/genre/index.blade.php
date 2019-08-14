@@ -71,8 +71,8 @@
                     @include('widgets.form.button._delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,
-                             $route = 'genre.destroy', 
-                             'id' => $genre->id])
+                             'route' => 'genre.destroy', 
+                             'args'=>['id' => $genre->id]])
                 </td>
                 @endif
             </tr>

@@ -99,12 +99,9 @@ Route::group(
 
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
-        Route::get('dict/lemma/{id}/edit/wordforms', 'Dict\LemmaController@editWordforms');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');
-        Route::post('dict/lemma/{id}/update/wordforms', 'Dict\LemmaController@updateWordforms')
-                        ->name('lemma.update.wordforms');
         
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
@@ -119,10 +116,17 @@ Route::group(
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
-        Route::get('dict/lemma/wordform/update', 'Dict\LemmaController@updateWordformFromText'); 
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
-        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 
+//        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 
         
+        Route::put('dict/lemma_wordform/{id}', 'Dict\LemmaWordformController@update')
+                        ->name('lemma_wordform.update');
+        Route::get('dict/lemma_wordform/{id}/edit/', 'Dict\LemmaWordformController@edit');
+        Route::get('dict/lemma_wordform/store', 'Dict\LemmaWordformController@store'); 
+        Route::put('dict/lemma_wordform/{id}/destroy', 'Dict\LemmaWordformController@update')
+                        ->name('lemma_wordform.destroy');
+        Route::get('dict/lemma_wordform/{id}_{dialect_id}/reload/', 'Dict\LemmaWordformController@reload');
+
         Route::get('dict/meaning/create', 'Dict\MeaningController@create');
         Route::get('dict/meaning/example/add/{example_id}', 'Dict\MeaningController@addExample');
         Route::get('dict/meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
@@ -197,6 +201,11 @@ Route::group(
                        ['names' => ['update' => 'lemma.update',
                                     'store' => 'lemma.store',
                                     'destroy' => 'lemma.destroy']]);
+
+/*        Route::resource('dict/lemma_wordform', 'Dict\LemmaWordformController',
+                       ['names' => ['update' => 'lemma_wordform.update',
+                                    'store' => 'lemma_wordform.store',
+                                    'destroy' => 'lemma_wordform.destroy']]); */
 
         Route::resource('dict/relation', 'Dict\RelationController',
                        ['names' => ['update' => 'relation.update',
