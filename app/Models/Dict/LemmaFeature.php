@@ -79,7 +79,7 @@ class LemmaFeature extends Model
         parent::boot();
     }
     
-    // Lemma __belongs_to__ Lang
+    // Belongs To Relations
     public function lemma()
     {
         return $this->belongsTo(Lemma::class,'id','id');

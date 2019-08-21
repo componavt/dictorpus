@@ -27,6 +27,16 @@ class Lang extends Model
         parent::boot();
     }
     
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Gramsets;
+
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\Corpuses;
+    use \App\Traits\Relations\HasMany\Dialects;
+    use \App\Traits\Relations\HasMany\Lemmas;
+    use \App\Traits\Relations\HasMany\ReverseLemmas;
+    use \App\Traits\Relations\HasMany\Texts;
+    
     public function identifiableName()
     {
         return $this->name;
@@ -79,40 +89,6 @@ class Lang extends Model
         }
     }
            
-    // Lang __has_many__ Lemma
-    public function lemmas()
-    {
-        return $this->hasMany(Lemma::class);
-    }
-
-    public function reverseLemmas()
-    {
-        return $this->hasMany(ReverseLemma::class);
-    }
-
-    // Lang __has_many__ Corpus
-    public function corpuses()
-    {
-        return $this->hasMany(Corpus::class);
-    }
-
-    // Lang __has_many__ Texts
-    public function texts()
-    {
-        return $this->hasMany(Text::class);
-    }
-
-    // Lang __has_many__ Dialects
-    public function dialects()
-    {
-        return $this->hasMany(Dialect::class);
-    }
-
-    // Lang __has_many__ Gramset
-    public function gramsets()
-    {
-        return $this->belongsToMany(Gramset::class,'gramset_pos','lang_id','gramset_id');
-    }
      
     /** Gets list of languages
      * 

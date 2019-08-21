@@ -24,6 +24,19 @@ class PartOfSpeech extends Model
         parent::boot();
     }
     
+    // PartOfSpeech __has_many__ Gramset
+    public function gramsets()
+    {
+        return $this->belongsToMany(Gramset::class,'gramset_pos','pos_id', 'gramset_id')
+                ->orderBy('sequence_number');
+    }
+     
+    // PartOfSpeech __has_many__ Lemma
+    public function lemmas()
+    {
+        return $this->hasMany(Lemma::class,'pos_id');
+    }
+    
     public function identifiableName()
     {
         return $this->name;
@@ -65,19 +78,6 @@ class PartOfSpeech extends Model
         return $code;
     }
         
-    // PartOfSpeech __has_many__ Gramset
-    public function gramsets()
-    {
-        return $this->belongsToMany(Gramset::class,'gramset_pos','pos_id', 'gramset_id')
-                ->orderBy('sequence_number');
-    }
-     
-    // PartOfSpeech __has_many__ Lemma
-    public function lemmas()
-    {
-        return $this->hasMany(Lemma::class,'pos_id');
-    }
-    
     // PartOfSpeech has many Wordforms through Lemma
     public function wordforms()
     {

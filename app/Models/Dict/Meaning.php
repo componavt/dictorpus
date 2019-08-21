@@ -30,63 +30,23 @@ class Meaning extends Model
 
     protected $fillable = ['lemma_id','meaning_n'];
 
-    /**
-     * Meaning __belongs_to__ Lemma
-     *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function lemma()
-    {
-        return $this->belongsTo(Lemma::class);
-    }
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Lemma;
 
-    /**
-     * Meaning __has_many__ MeaningTexts
-     *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function meaningTexts()
-    {
-        return $this->hasMany(MeaningText::class);
-    }
-
-    /**
-     * Meaning __has_many__ Meaning
-     *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function meaningRelations(){
-/*        return $this->belongsToMany(Meaning::class,'meaning_relation','meaning1_id','meaning2_id')
-                    ->withPivot('relation_id');     */
-
-        return $this->belongsToMany(Relation::class,'meaning_relation','meaning1_id','relation_id')
-                    ->withPivot('meaning2_id');
-    }
-
-    /**
-     * Meaning __has_many__ Lang
-     *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function translations(){
-/*        return $this->belongsToMany(Meaning::class,'meaning_relation','meaning1_id','meaning2_id')
-                    ->withPivot('relation_id');     */
-
-        return $this->belongsToMany(Lang::class,'meaning_translation','meaning1_id','lang_id')
-                    ->withPivot('meaning2_id');
-    }
-
-    /**
-     * Meaning __has_many__ Texts
-     *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
-     */
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\MeaningRelations;
+    use \App\Traits\Relations\BelongsToMany\Translations;
+    
     public function texts(){
         return $this->belongsToMany(Text::class,'meaning_text')
                 ->withPivot('w_id')
                 ->withPivot('relevance');
     }
     
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\MeaningTexts;
+
+
     /** Gets list of meanings for lemma $lemma_id,
      * if $lang_id is empty, gets null
      * 

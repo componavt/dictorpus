@@ -25,63 +25,37 @@ class Gramset extends Model
         parent::boot();
     }
 
-    public function gramsetCategory()
-    {
-        return $this->belongsTo(GramsetCategory::class);
-    }
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Dialect;
+    use \App\Traits\Relations\BelongsTo\GramsetCategory;
+    use \App\Traits\Relations\BelongsTo\GramR;
     
-    // Gramset __belongs_to__ Dialect
-    public function dialect()
-    {
-        return $this->belongsTo(Dialect::class);
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\PartsOfSpeech;
+    use \App\Traits\Relations\BelongsToMany\Langs;
+    use \App\Traits\Relations\BelongsToMany\Lemmas;
+
+    public function wordforms($pos_id='', $lang_id=''){
+        $builder = $this->belongsToMany(Wordform::class,'lemma_wordform');
+        if ($pos_id) {
+            $builder = $builder->whereIn('lemma_id',function($query) use ($pos_id){
+                                $query->select('id')
+                                ->from(with(new Lemma)->getTable())
+                                ->where('pos_id', $pos_id);
+                            });
+        }
+        if ($lang_id) {
+            $builder = $builder->whereIn('lemma_id',function($query) use ($lang_id){
+                                $query->select('id')
+                                ->from(with(new Lemma)->getTable())
+                                ->where('lang_id', $lang_id);
+                            });
+        }
+        return $builder;
     }
+
     
     // Gramset __belongs_to__ Gram
-    public function gramNumber()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_number');
-    }
-    
-    public function gramCase()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_case');
-    }
-    
-    public function gramTense()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_tense');
-    }
-    
-    public function gramPerson()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_person');
-    }
-    
-    public function gramMood()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_mood');
-    }
-    
-    public function gramNegation()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_negation');
-    }
-    
-    public function gramInfinitive()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_infinitive');
-    }
-    
-    public function gramVoice()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_voice');
-    }
-    
-    public function gramParticiple()
-    {
-        return $this->belongsTo(Gram::class, 'gram_id_participle');
-    }
-    
 /*    public function gramReflexive()
     {
         return $this->belongsTo(Gram::class, 'gram_id_reflexive');
@@ -137,60 +111,7 @@ class Gramset extends Model
             }
         return $feats;
     }
-
-    // Gramset __has_many__ PartOfSpeech
-    public function parts_of_speech()
-    {
-        return $this->belongsToMany(PartOfSpeech::class,'gramset_pos','gramset_id','pos_id');
-    }
      
-    // Gramset __has_many__ Lang
-    public function langs()
-    {
-        return $this->belongsToMany(Lang::class,'gramset_pos','gramset_id','lang_id');
-    }
-     
-    // Gramset __has_many__ Lemmas
-    public function lemmas($pos_id='', $lang_id=''){
-        $builder = $this->belongsToMany(Lemma::class,'lemma_wordform');
-        if ($pos_id) {
-            $builder = $builder->whereIn('lemma_id',function($query) use ($pos_id){
-                                $query->select('id')
-                                ->from(with(new Lemma)->getTable())
-                                ->where('pos_id', $pos_id);
-                            });
-        }
-        if ($lang_id) {
-            $builder = $builder->whereIn('lemma_id',function($query) use ($lang_id){
-                                $query->select('id')
-                                ->from(with(new Lemma)->getTable())
-                                ->where('lang_id', $lang_id);
-                            });
-        }
-//dd($builder->toSql());        
-        return $builder;
-    }
-
-    // Gramset __has_many__ Wordforms
-    public function wordforms($pos_id='', $lang_id=''){
-        $builder = $this->belongsToMany(Wordform::class,'lemma_wordform');
-        if ($pos_id) {
-            $builder = $builder->whereIn('lemma_id',function($query) use ($pos_id){
-                                $query->select('id')
-                                ->from(with(new Lemma)->getTable())
-                                ->where('pos_id', $pos_id);
-                            });
-        }
-        if ($lang_id) {
-            $builder = $builder->whereIn('lemma_id',function($query) use ($lang_id){
-                                $query->select('id')
-                                ->from(with(new Lemma)->getTable())
-                                ->where('lang_id', $lang_id);
-                            });
-        }
-        return $builder;
-    }
-
     public function inCategoryString($with_number=false) : String
     {
         $pos_category_id = $this->gramsetCategory->pos_category_id;

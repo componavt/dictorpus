@@ -17,8 +17,11 @@ use App\Models\Corpus\Word;
 use App\Models\Dict\Label;
 use App\Models\Dict\PartOfSpeech;
 
+
 class Lemma extends Model
 {
+    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search'];
+    
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -38,7 +41,6 @@ class Lemma extends Model
 //        'deleted_at' => 'Deleted At'
     );
     
-    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search'];
     /**
     * Атрибуты, которые должны быть преобразованы к датам.
     *
@@ -53,37 +55,23 @@ class Lemma extends Model
         parent::boot();
     }
     
-    // Lemma __belongs_to__ Lang
-    public function lang()
-    {
-        return $this->belongsTo(Lang::class);
-    }    
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Lang;
+    use \App\Traits\Relations\BelongsTo\ReverseLemma;
+    use \App\Traits\Relations\BelongsTo\POS;
     
-    public function reverseLemma()
-    {
-        return $this->belongsTo(ReverseLemma::class,'id');
-    }    
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Wordforms;
+    use \App\Traits\Relations\BelongsToMany\Labels;
+   
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\Meanings;
+    use \App\Traits\Relations\HasMany\Bases;
     
-    // Lemma __belongs_to__ PartOfSpeech
-    // $pos_name = PartOfSpeech::find(9)->name_ru;
-    public function pos()
-    {
-        return $this->belongsTo(PartOfSpeech::class);
-    }
-    
-    // Lemma __has_many__ Meanings
-    public function meanings()
-    {
-        return $this->hasMany(Meaning::class);
-//        return $this->hasMany('App\Models\Dict\Meaning'); // is working too
-    }
-    
-    // Lemma __has_many__ Bases
-    public function bases()
-    {
-        return $this->hasMany(LemmaBase::class);
-    }
-    
+    // Scopes
+//    use \App\Models\Scopes\ID;
+//    use \App\Models\Scopes\LangID;
+//    use \App\Models\Scopes\Wordform;
     /**
      * @return Array of bases
      */
@@ -102,13 +90,13 @@ class Lemma extends Model
         return $bases;
     }
     
-    // Lemma has many MeaningTexts through Meanings
+/*     // Lemma has many MeaningTexts through Meanings
     public function meaningTexts()
     {
         return $this->hasManyThrough(MeaningText::class, Meaning::class, 'lemma_id', 'meaning_id');
 //        return $this->hasManyThrough('App\Models\Dict\MeaningText', 'App\Models\Dict\Meaning');
     }
-/*    public function meaning_texts($ids = [])
+   public function meaning_texts($ids = [])
     {
         return MeaningText::whereHas('meanings', function($q) use($ids) { 
                                 $q->whereIn('id', $ids);                             
@@ -127,32 +115,13 @@ class Lemma extends Model
         
     } */   
 
-    /**
-     *  Lemma __has_many__ Wordforms
-     * 
-     * @return Builder
-     */
-    public function wordforms(){
-        $builder = $this->belongsToMany('App\Models\Dict\Wordform','lemma_wordform');
-//        $builder->getQuery()->getQuery()->distinct = TRUE;
-        $builder = $builder->withPivot('gramset_id','dialect_id');
-//        $builder = $builder->join('gramsets', 'gramsets.id', '=', 'lemma_wordform.gramset_id');
-        return $builder;//->get();
-    }
-    
     public function wordformsByGramsetDialect($gramset_id, $dialect_id){
         return $this->wordforms()->orderBy('wordform')
                     ->wherePivot('gramset_id',$gramset_id)
                     ->wherePivot('dialect_id',$dialect_id)
                     ->get();
     }
-    
-    // Lemma __has_many__ Labels
-    public function labels()
-    {
-        return $this->belongsToMany(Label::class);
-    }
-    
+        
     /**
      *  Gets wordforms for given gramset and dialect
      * 

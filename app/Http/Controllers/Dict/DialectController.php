@@ -65,7 +65,7 @@ class DialectController extends Controller
 
         $url_args = ['lang_id'=>$lang_id];
                 
-        $args_by_get = Dialect::searchValuesByURL($url_args);
+        $args_by_get = Lang::searchValuesByURL($url_args);
                 
         return view('dict.dialect.index')
             ->with(['dialects' => $dialects,

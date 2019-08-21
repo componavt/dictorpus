@@ -57,15 +57,8 @@ class LemmaBase extends Model
         parent::boot();
     }
     
-    /**
-     * LemmaBase __belongs_to__ Lemma
-     *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function lemma()
-    {
-        return $this->belongsTo(Lemma::class);
-    }
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Lemma;
     
     public static function updateStem($lemma_id, $stem_n, $stem, $dialect_id) {
         $base = self::where('lemma_id', $lemma_id)

@@ -24,11 +24,17 @@ class Dialect extends Model
         parent::boot();
     }
     
-    // Dialect __belongs_to__ Lang
-    public function lang()
-    {
-        return $this->belongsTo(Lang::class);
-    }    
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Lang;
+
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Texts;
+    
+    public function wordforms(){
+        $builder = $this->belongsToMany(Wordform::class,'lemma_wordform')
+                ->distinct('wordform_id');
+        return $builder;
+    }
 
     /** Gets name of this dialect, takes into account locale.
      * 
@@ -39,19 +45,6 @@ class Dialect extends Model
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_" . $locale;
         return $this->{$column};
-    }
-    
-    // Dialect __has_many__ Wordforms
-    public function wordforms(){
-        $builder = $this->belongsToMany(Wordform::class,'lemma_wordform')
-                ->distinct('wordform_id');
-        return $builder;
-    }
-
-    // Dialect __has_many__ Texts
-    public function texts(){
-        $builder = $this->belongsToMany(Text::class,'dialect_text');
-        return $builder;
     }
 
     /** Gets name of dialects  by ID,
@@ -116,36 +109,6 @@ class Dialect extends Model
         
         return $list;         
     }
-        
-    /** Takes data from search form (part of speech, language) and 
-     * returns string for url such_as 
-     * pos_id=$pos_id&lang_id=$lang_id
-     * IF value is empty, the pair 'argument-value' is ignored
-     * 
-     * @param Array $url_args - array of pairs 'argument-value', f.e. ['pos_id'=>11, lang_id=>1]
-     * @return String f.e. 'pos_id=11&lang_id=1'
-     */
-    public static function searchValuesByURL(Array $url_args=NULL) : String
-    {
-        $url = '';
-        if (isset($url_args) && sizeof($url_args)) {
-            $tmp=[];
-            foreach ($url_args as $a=>$v) {
-                if ($v!='') {
-                    $tmp[] = "$a=$v";
-                }
-            }
-            if (sizeof ($tmp)) {
-                $url .= "?".implode('&',$tmp);
-            }
-        }
-        
-        return $url;
-    }
-    /*
-    public static function totalCount(){
-        return self::count();
-    } */    
     
     public static function getLangIDByID($dialect_id) {
         $dialect = self::find($dialect_id);
@@ -154,4 +117,9 @@ class Dialect extends Model
         }
         return $dialect->lang_id;
     }
+        
+    /*
+    public static function totalCount(){
+        return self::count();
+    } */    
 }

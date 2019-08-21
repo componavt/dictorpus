@@ -45,7 +45,7 @@ class Relation extends Model
      * 
      * @return Relationship, Query Builder
      */
-    public function reverse_relation()
+    public function reverseRelation()
     {
         return $this->belongsTo(Relation::class,'reverse_relation_id');
     } 

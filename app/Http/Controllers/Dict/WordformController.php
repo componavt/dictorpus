@@ -31,7 +31,7 @@ class WordformController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:dict.edit,/dict/wordform/', 
-                ['except'=>['show', 'withMultipleLemmas']]);
+                ['except'=>['show', 'withMultipleLemmas', 'index']]);
 //                ['only' => ['create','store','edit','update','destroy','tmpFixNegativeVepsVerbForms']]);
         
         $this->url_args = [
@@ -67,7 +67,7 @@ class WordformController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $wordforms = Wordform::search($url_args);
+       $wordforms = Wordform::search($url_args);
         $numAll = $wordforms->count();
         
         $wordforms = $wordforms->paginate($url_args['limit_num']);

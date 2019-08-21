@@ -20,15 +20,8 @@ class MeaningText extends Model
 
     protected $fillable = ['lang_id','meaning_id','meaning_text'];
 
-    // MeaningText __belongs_to__ Meaning
-    public function meaning()
-    {
-        return $this->belongsTo(Meaning::class);
-    }
-    
-    // MeaningText __belongs_to__ Lang
-    public function lang()
-    {
-        return $this->belongsTo(Lang::class);
-    }
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Lang;
+    use \App\Traits\Relations\BelongsTo\Meaning;
+   
 }
