@@ -350,7 +350,7 @@ class Lemma extends Model
         $bases = $this->bases;
 
         foreach ($bases as $base) {
-            $base -> remove();
+            $base -> delete();
         }
 
         $this->delete();
