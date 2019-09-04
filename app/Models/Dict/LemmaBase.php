@@ -3,6 +3,7 @@
 namespace App\Models\Dict;
 
 use App\Library\Grammatic\KarGram;
+use App\Library\Grammatic\VepsGram;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -87,7 +88,7 @@ class LemmaBase extends Model
     
     public static function updateStemsFromDB($lemma, $pos_id, $dialect_id) {
         if ($lemma->lang_id == 1) {
-            $stems = VepsGram::stemsFromDB($lemma, $dialect_id);
+            $stems = VepsGram::stemsFromDB($lemma, $pos_id, $dialect_id);
         } else {
             $stems = KarGram::stemsFromDB($lemma, $pos_id, $dialect_id);            
         }

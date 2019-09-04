@@ -117,7 +117,7 @@ class Grammatic
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
             return [NULL, $name_num, $template, NULL];
         }
-        
+
         if ($lang_id == 1) {
             return VepsGram::stemsFromTemplate($template, $pos_id, $name_num);                
         } 

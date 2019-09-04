@@ -49,7 +49,8 @@ class VepsGram
             return [NULL, $name_num, $template, NULL];
         } 
         $template = $template_without_spaces;    */
-        $stems = $base = $base_suff = null;
+        $stems[0] = $base = $template;
+        $base_suff = null;
         $arg = "([^\|]*)";
         $div_arg = "\|".$arg;
       
@@ -84,7 +85,7 @@ class VepsGram
         return [$stems, $name_num, $base, $base_suff];
     }
     
-    public static function stemsFromDB($lemma, $dialect_id) {
+    public static function stemsFromDB($lemma, $pos_id, $dialect_id) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsName::stemsFromDB($lemma, $dialect_id);
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 

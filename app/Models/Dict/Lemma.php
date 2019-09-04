@@ -629,6 +629,7 @@ dd($wordforms);
     }
     
     public static function store($lemma, $pos_id, $lang_id) {
+//dd($lemma);        
         $lemma = Lemma::create(['lemma'=>$lemma,'lang_id'=>$lang_id,'pos_id'=>$pos_id]);
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
         $lemma->save();
@@ -637,12 +638,15 @@ dd($wordforms);
     
     public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
                                   $features, $dialect_id, $stems) {
+//dd($features);        
         $this->updateBases($stems, $this->pos_id, $dialect_id); 
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
-                           
+        
         $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
-        $this->createDictionaryWordforms($wordforms, $features['number'], $dialect_id);
+        $this->createDictionaryWordforms($wordforms, 
+                isset($features['number']) ? $features['number'] : NULL, 
+                $dialect_id);
     }
     
     public function updateLemma($data) {
