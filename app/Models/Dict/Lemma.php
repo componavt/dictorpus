@@ -347,6 +347,12 @@ class Lemma extends Model
             $meaning -> remove();
         }
 
+        $bases = $this->bases;
+
+        foreach ($bases as $base) {
+            $base -> remove();
+        }
+
         $this->delete();
     }
     
