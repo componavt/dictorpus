@@ -121,7 +121,7 @@
 
 @section('jqueryFunc')
     toggleSpecial();
-    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
+    recDelete('{{ trans('messages.confirm_delete') }}');
     highlightSentences();
     addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add/example')}}');
     showLemmaLinked();

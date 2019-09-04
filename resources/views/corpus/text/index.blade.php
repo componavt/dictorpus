@@ -113,7 +113,7 @@
 @section('jqueryFunc')
 
     toggleSpecial();
-    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/text');
+    recDelete('{{ trans('messages.confirm_delete') }}');
     $(".multiple-select-lang").select2();
     $(".multiple-select-corpus").select2();
     

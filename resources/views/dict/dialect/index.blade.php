@@ -88,6 +88,6 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/dialect');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 

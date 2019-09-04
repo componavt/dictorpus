@@ -42,6 +42,6 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/gram');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 

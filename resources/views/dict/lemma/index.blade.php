@@ -115,7 +115,7 @@
 
 @section('jqueryFunc')
     toggleSpecial();
-    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/lemma');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 
 

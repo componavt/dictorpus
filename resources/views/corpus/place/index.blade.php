@@ -101,5 +101,5 @@
 
 @section('jqueryFunc')
     toggleSpecial();
-    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/informant');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop

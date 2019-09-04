@@ -60,7 +60,7 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/relation');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 
 

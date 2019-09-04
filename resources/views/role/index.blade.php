@@ -65,7 +65,7 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/role');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 
 

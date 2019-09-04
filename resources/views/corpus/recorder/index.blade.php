@@ -89,7 +89,7 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/corpus/recorder');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 
 

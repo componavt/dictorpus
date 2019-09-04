@@ -30,6 +30,6 @@
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}', '/dict/gramset');
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 
