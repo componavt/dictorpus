@@ -63,6 +63,34 @@ class VepsName
                             2, 57, 24, 22, 279, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
     }
     
+    public static function stemsFromTemplate($template, $name_num) {
+        $stems[0] = $base = $template;
+        $base_suff = null;
+        $arg = "([^\|]*)";
+        $div_arg = "\|".$arg;
+        $base_shab = "([^\s\(\|]+)";
+        $base_suff_shab = "([^\s\(\|]*)";
+        $okon1_shab = "-([^\,\;\)]+)";
+        $lemma_okon1_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab;
+        
+        // only plural
+        if (preg_match("/^{{vep-decl-stems\|n=pl".$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
+                ($name_num == 'pl' && preg_match($lemma_okon1_shab."\)/", $template, $regs))) {
+            $name_num = 'pl';
+            list($stems, $base, $base_suff) =  VepsName::stemsPlFromTemplate($regs);
+        // only single
+        } elseif (preg_match("/^{{vep-decl-stems\|n=sg".$div_arg.$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
+                ($name_num == 'sg' && preg_match($lemma_okon1_shab."\,?\s*-?([^\,\;]*)\)/", $template, $regs)) ||
+                (preg_match($lemma_okon1_shab."\)/", $template, $regs))) {
+            $name_num = 'sg';
+            list($stems, $base, $base_suff) =  VepsName::stemsSgFromTemplate($regs);
+        // others
+        } elseif (preg_match("/^{{vep-decl-stems".$div_arg.$div_arg.$div_arg.$div_arg."\|?".$arg."}}$/u",$template, $regs) ||
+                preg_match($lemma_okon1_shab."\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
+            list($stems, $base, $base_suff) = VepsName::stemsOthersFromTemplate($regs, $name_num);
+        }
+        return [$name_num, $stems, $base, $base_suff];
+    }
     /**
      * template-name|base|nom-sg-suff|gen-sg-suff|par-sg-suff|par-pl-suff
      * vep-decl-stems|adjektiv||an|ad|id
@@ -75,7 +103,7 @@ class VepsName
      * @param Int $pos_id
      * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>base_part_pl, 5=>''], $base, $base_suff]
      */
-    public static function stemsFromTemplate($regs) {
+    public static function stemsOthersFromTemplate($regs, $name_num=NULL) {
 //dd($regs);    
         $out = [null, null, null];
         $base = $regs[1];
@@ -214,6 +242,7 @@ class VepsName
                 
             case 2: // номинатив, мн.ч. 
             case 57: // аккузатив, мн.ч. 
+//dd($name_num);                
                 return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'d' : '');
             case 24: // генитив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'den' : '';

@@ -30,7 +30,7 @@ class Grammatic
         $lemma = self::toRightForm($data['lemma']);
         $name_num = isset($data['number']) ? self::nameNumFromNumberField($data['number']) : null;
        
-        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num);
+        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num);
         $lemma = $max_stem. $affix;
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems);
@@ -282,7 +282,8 @@ class Grammatic
         if ($number==1) {
             return 'pl';
         } elseif ($number==2) {
-            return 'sing';            
+//            return 'sing';            
+            return 'sg'; // изменено 5.09.2019, проверить при импорте тверского словаря           
         } elseif (in_array($number, ['sing','sg','pl','def','impers'])) {
             return $number;            
         }

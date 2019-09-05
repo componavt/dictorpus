@@ -149,3 +149,7 @@ h4 .fa {
 .img-loading {
     display: none;
 }
+
+.reload-wordforms {
+    cursor: pointer;
+}

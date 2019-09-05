@@ -66,7 +66,7 @@ class LemmaBase extends Model
                     ->where('base_n', $stem_n)->first();
         if (!$stem) {
             if ($base) {
-                $base->remove();                
+                $base->delete();                
             }
             return;
         }

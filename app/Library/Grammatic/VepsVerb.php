@@ -89,22 +89,20 @@ class VepsVerb
      *                6=>consonant (d/t), 7=>vowel (a/ä)]
      */
     public static function stemsFromTemplate($regs) {
-//dd($regs);        
         $stems = [];
-//dd(sizeof($regs));        
         if (sizeof($regs)!=5) {
             return $stems;
         }
         $base  = $regs[1];
         $past_suff = $regs[4];
-//dd($regs[2]);        
+
         if (!preg_match("/^(.*)([dt])([aä])$/u", $regs[2], $regs1)) {
             return null;
         }
         $inf_suff = $regs1[1];
         $cons = $regs1[2];
         $harmony = $regs1[3];
-//dd($regs[3]);        
+
         if (!preg_match("/^(.*)b$/u", $regs[3], $regs1)) {
             return null;
         }        

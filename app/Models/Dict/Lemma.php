@@ -630,7 +630,6 @@ dd($wordforms);
         $lemma = self::store($data['lemma'], $data['pos_id'], $data['lang_id']);
 
         $lemma->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $data, $data['dialect_id'], $stems);      
-        
         return $lemma;
     }
     
@@ -680,7 +679,7 @@ dd($wordforms);
         $this->save();        
     }
     
-    public function updateBases($stems, $pos_id, $dialect_id) {
+    public function updateBases($stems, $pos_id, $dialect_id) {        
         if ($stems) {
             LemmaBase::updateStemsFromSet($this->id, $stems, $dialect_id);
         } else {

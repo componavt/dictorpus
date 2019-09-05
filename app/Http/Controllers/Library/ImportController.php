@@ -25,6 +25,8 @@ class ImportController extends Controller
      * 
      * Line example:
      * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
+     * 
+     * !!!! ----- изменена Grammatic::nameNumFromNumberField -----    sing->sg -----   !!!!!
      */
     public function dictParser() {
         $filename = 'import/dict_tver5.txt';
