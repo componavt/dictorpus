@@ -110,7 +110,21 @@ class VepsNameTest extends TestCase
         $expected = ['sizarehe','kirvheze','armhaze','nagrheze','abajoho','abidoho'];
         $this->assertEquals( $expected, $result);        
     }
-/*    
+
+    public function testStemsFromTemplateCompound() {
+        $template = "abuozuteseli|ne (-žen, -št, -žid)";
+        $num = NULL;
+        $result = VepsName::stemsFromTemplate($template, $num);
+//dd($result);        
+        $expected = [[0=>'abuozuteseline', 
+                      1=>'abuozuteseliže', 
+                      2=>'abuozuteseliže', 
+                      3=>'abuozuteselišt', 
+                      4=>'abuozuteseliži', 
+                      5=>''], $num, 'abuozuteseli', 'ne'];
+        $this->assertEquals( $expected, $result);        
+    }
+    /*    
     public function testWordformsByTemplatePl() {
         $dialect_id=43;
         $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";

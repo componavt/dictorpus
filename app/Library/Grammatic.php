@@ -118,6 +118,9 @@ class Grammatic
             return [NULL, $name_num, $template, NULL];
         }
 
+        if (!preg_match("/\{\{/", $template)) {
+            $template = preg_replace('/\|\|/','',$template);
+        }
         if ($lang_id == 1) {
             return VepsGram::stemsFromTemplate($template, $pos_id, $name_num);                
         } 

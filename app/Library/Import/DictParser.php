@@ -90,8 +90,9 @@ class DictParser
         $meanings_f = self::parseMeaningLang($meanings2);
         for ($i=1; $i<= sizeof($meanings_r); $i++) {
             $meaning_part['meanings'][$i] =
-                ['ru' => $meanings_r[$i],
-                 'fi' => isset($meanings_f[$i]) ? $meanings_f[$i] : (sizeof($meanings_f)==1 ? $meanings_f[1] : '')];            
+                ['ru' => $meanings_r[$i]
+                 //,'fi' => isset($meanings_f[$i]) ? $meanings_f[$i] : (sizeof($meanings_f)==1 ? $meanings_f[1] : '')
+                ];            
         }
         return $meaning_part;
     }    

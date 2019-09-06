@@ -54,7 +54,7 @@ class VepsGram
       
         // nominals
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-            list($name_num, $stems, $base, $base_suff) = VepsName::stemsFromTemplate($template, $name_num);
+            list($stems, $name_num, $base, $base_suff) = VepsName::stemsFromTemplate($template, $name_num);
         // verbs
         } elseif ($pos_id == PartOfSpeech::getVerbID() && 
             (preg_match('/^{{vep-conj-stems'.$div_arg.$div_arg.$div_arg.'\|?'.$arg.'}}$/u',$template, $regs) ||

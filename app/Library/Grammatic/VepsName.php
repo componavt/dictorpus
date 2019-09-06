@@ -89,7 +89,7 @@ class VepsName
                 preg_match($lemma_okon1_shab."\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
             list($stems, $base, $base_suff) = VepsName::stemsOthersFromTemplate($regs, $name_num);
         }
-        return [$name_num, $stems, $base, $base_suff];
+        return [$stems, $name_num, $base, $base_suff];
     }
     /**
      * template-name|base|nom-sg-suff|gen-sg-suff|par-sg-suff|par-pl-suff

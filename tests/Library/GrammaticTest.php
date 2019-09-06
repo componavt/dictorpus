@@ -586,4 +586,19 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStemsFromTemplateCompound() {
+        $template = "abu||ozuteseli|ne (-žen, -št, -žid)";
+        $lang_id = 1;
+        $pos_id = 1; // noun
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'abuozuteseline', 
+                      1=>'abuozuteseliže', 
+                      2=>'abuozuteseliže', 
+                      3=>'abuozuteselišt', 
+                      4=>'abuozuteseliži', 
+                      5=>''], $num, 'abuozuteseli', 'ne'];
+        $this->assertEquals( $expected, $result);        
+    }
 }
