@@ -90,7 +90,7 @@ class VepsVerb
      */
     public static function stemsFromTemplate($regs) {
         $stems = [];
-        if (sizeof($regs)!=5) {
+        if (sizeof($regs)<5) {
             return $stems;
         }
         $base  = $regs[1];

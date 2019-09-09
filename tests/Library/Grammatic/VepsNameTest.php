@@ -124,6 +124,171 @@ class VepsNameTest extends TestCase
                       5=>''], $num, 'abuozuteseli', 'ne'];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testWordformByStemsAccusativ() {
+        $stems = [0=>'abuozuteseline', 
+                  1=>'abuozuteseliže', 
+                  2=>'abuozuteseliže', 
+                  3=>'abuozuteselišt', 
+                  4=>'abuozuteseliži', 
+                  5=>''];
+        $gramset_id = 56;
+        $dialect_id=43;
+        $num = '';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'abuozuteseline, abuozuteseližen';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsAccusativPl() {
+        $stems = [0=>'Alamad', 
+                  1=>'', 
+                  2=>'', 
+                  3=>'', 
+                  4=>'Alamai', 
+                  5=>''];
+        $gramset_id = 56;
+        $dialect_id=43;
+        $num = 'pl';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = '';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsAccusativSg() {
+        $stems = [0=>'Amerik', 
+                  1=>'Amerika', 
+                  2=>'Amerika', 
+                  3=>'Amerika', 
+                  4=>'', 
+                  5=>''];
+        $gramset_id = 56;
+        $dialect_id=43;
+        $num = 'sg';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'Amerik, Amerikan';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsComitativ() {
+        $stems = [0=>'abuozuteseline', 
+                  1=>'abuozuteseliže', 
+                  2=>'abuozuteseliže', 
+                  3=>'abuozuteselišt', 
+                  4=>'abuozuteseliži', 
+                  5=>''];
+        $gramset_id = 14;
+        $dialect_id=43;
+        $num = '';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'abuozuteseliženke';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsComitativPl() {
+        $stems = [0=>'Alamad', 
+                  1=>'', 
+                  2=>'', 
+                  3=>'', 
+                  4=>'Alamai', 
+                  5=>''];
+        $gramset_id = 14;
+        $dialect_id=43;
+        $num = 'pl';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = '';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsComitativSg() {
+        $stems = [0=>'Amerik', 
+                  1=>'Amerika', 
+                  2=>'Amerika', 
+                  3=>'Amerika', 
+                  4=>'', 
+                  5=>''];
+        $gramset_id = 14;
+        $dialect_id=43;
+        $num = 'sg';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'Amerikanke';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsComitativSouth() {
+        $stems = [0=>'abuozuteseline', 
+                  1=>'abuozuteseliže', 
+                  2=>'abuozuteseliže', 
+                  3=>'abuozuteselišt', 
+                  4=>'abuozuteseliži', 
+                  5=>''];
+        $gramset_id = 14;
+        $dialect_id=3;
+        $num = '';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'abuozuteseližedmu, abuozuteseližemu';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsProlativ() {
+        $stems = [0=>'abuozuteseline', 
+                  1=>'abuozuteseliže', 
+                  2=>'abuozuteseliže', 
+                  3=>'abuozuteselišt', 
+                  4=>'abuozuteseliži', 
+                  5=>''];
+        $gramset_id = 15;
+        $dialect_id=43;
+        $num = '';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'abuozuteselištme';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsProlativSouth() {
+        $stems = [0=>'abuozuteseline', 
+                  1=>'abuozuteseliže', 
+                  2=>'abuozuteseliže', 
+                  3=>'abuozuteselišt', 
+                  4=>'abuozuteseliži', 
+                  5=>''];
+        $gramset_id = 15;
+        $dialect_id=3;
+        $num = '';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'abuozuteselištme, abuozuteselišmu';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsProlativPl() {
+        $stems = [0=>'Alamad', 
+                  1=>'', 
+                  2=>'', 
+                  3=>'', 
+                  4=>'Alamai', 
+                  5=>''];
+        $gramset_id = 15;
+        $dialect_id=43;
+        $num = 'pl';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = '';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsProlativSg() {
+        $stems = [0=>'Amerik', 
+                  1=>'Amerika', 
+                  2=>'Amerika', 
+                  3=>'Amerikad', 
+                  4=>'', 
+                  5=>''];
+        $gramset_id = 15;
+        $dialect_id=43;
+        $num = 'sg';
+        $result = VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $num);
+        $expected = 'Amerikadme';
+        $this->assertEquals( $expected, $result);        
+    }
     /*    
     public function testWordformsByTemplatePl() {
         $dialect_id=43;

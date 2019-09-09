@@ -19,7 +19,7 @@ class DictParser
         $line = preg_replace("~\x{01c0}~siu", "|", $line); // dental click ǀ
 
         // split by '. - ' into lemma and meanings parts
-        if (!preg_match("/^([^\.]+)\.\s*([^\.]*)\.?\s*\–\s*(.+)\s+\–\s+(.+)$/", $line, $regs)) {
+        if (!preg_match("/^([^\.]+)\.\s*([^\.]*)\.?\s*\–\s*(.+)\s+\–\s*(.*)$/", $line, $regs)) {
             return false;
         }
         return $regs;

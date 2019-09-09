@@ -204,6 +204,7 @@ class VepsName
             case 1: // номинатив, ед.ч. 
                 return $name_num != 'pl' ? $stems[0] : '';
             case 56: // аккузатив, ед.ч. 
+                return $name_num != 'pl' ? $stems[0].($stems[1] ? ', '.$stems[1].'n' : '') : '';
             case 3: // генитив, ед.ч. 
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
@@ -227,9 +228,9 @@ class VepsName
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1] . 'ta' : '';
             case 14: // комитатив, ед.ч. 
-                return $stems[1] ? $stems[1].'nke' : '';
+                return self::comitSg($stems[1], $dialect_id);
             case 15: // пролатив, ед.ч. 
-                return $stems[3] ? $stems[3].'me' : '';
+                return self::prolSg($stems[3], $dialect_id);
             case 17: //аппроксиматив, ед.ч. 
                 return $stems[1] ? $stems[1].'nno, '. $stems[1].'nnoks' : '';
             case 20: //эгрессив, ед.ч. 
@@ -242,7 +243,6 @@ class VepsName
                 
             case 2: // номинатив, мн.ч. 
             case 57: // аккузатив, мн.ч. 
-//dd($name_num);                
                 return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'d' : '');
             case 24: // генитив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'den' : '';
@@ -367,4 +367,26 @@ class VepsName
         }
     }
     
+    public static function comitSg($stem1, $dialect_id){
+        switch ($dialect_id) {
+            case 4: // средневепсский восточный 
+                return $stem1 ? $stem1. 'dme, '.$stem1. 'me' : '';
+            case 3: // южновепсский 
+                return $stem1 ? $stem1. 'dmu, '.$stem1. 'mu' : '';
+            default:
+                return $stem1 ? $stem1. 'nke' : '';                
+        }        
+    }
+    
+    public static function prolSg($stem3, $dialect_id){
+        $stem3_ = $stem3 ? mb_substr($stem3, 0, -1) : '';
+        switch ($dialect_id) {
+            case 4: // средневепсский восточный 
+                return $stem3 ? $stem3. 'me, '.$stem3_. 'me' : '';
+            case 3: // южновепсский 
+                return $stem3 ? $stem3. 'me, '.$stem3_. 'mu' : '';
+            default:
+                return $stem3 ? $stem3. 'me' : '';                
+        }        
+    }
 }
