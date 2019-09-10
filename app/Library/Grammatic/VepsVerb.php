@@ -208,130 +208,132 @@ class VepsVerb
     public static function wordformByStems($stems, $gramset_id, $dialect_id) {
         $lang_id = 1;
         $g = VepsGram::rightConsonant($stems[6], 'g');
+        $neg_verb = Grammatic::negativeForm($gramset_id, $lang_id);
         switch ($gramset_id) {
             case 26: // 1. индикатив, презенс, 1 л., ед.ч., пол. 
-                return $stems[1].'n';
+                return $stems[1] ? $stems[1].'n' : '';
             case 27: // 2. индикатив, презенс, 2 л., ед.ч., пол. 
-                return $stems[1].'d';
+                return $stems[1] ? $stems[1].'d' : '';
             case 28: // 3. индикатив, презенс, 3 л., ед.ч., пол. 
-                return $stems[1].'b';
+                return $stems[1] ? $stems[1].'b' : '';
             case 29: // 4. индикатив, презенс, 1 л., мн.ч., пол. 
-                return $stems[1].'m';
+                return $stems[1] ? $stems[1].'m' : '';
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
-                return $stems[1].'t';
+                return $stems[1] ? $stems[1].'t' : '';
             case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
-                return $stems[1]. 'ba, '. $stems[0]. $stems[6]. 'as';
+                return IndPres3Pl($stem[0], $stem[1], $stems[6], $dialect_id);
             case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
-                return $stems[1];
+                return $stems[1] ? $stems[1] : '';
             case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
-                return $stems[0]. $g. 'oi';
-
-            case 32: // 13. индикатив, имперфект, 1 л., ед.ч., пол. 
-                return $stems[2]. 'n';
-            case 33: // 14. индикатив, имперфект, 2 л., ед.ч., пол. 
-                return $stems[2]. 'd';
-            case 34: // 15. индикатив, имперфект, 3 л., ед.ч., пол. 
-                return $stems[2];
-            case 35: // 16. индикатив, имперфект, 1 л., мн.ч., пол. 
-                return $stems[2]. 'm';
-            case 36: // 17. индикатив, имперфект, 2 л., мн.ч., пол. 
-                return $stems[2]. 't';
-            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
-                return $stems[2]. 'ba';
-            case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
-                return $stems[1]. 'nd';
-            case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
-                return $stems[3]. 'nugoi';
-
-            case 51: // 49. императив, 2 л., ед.ч., пол 
-                return $stems[1];
-            case 52: // 50. императив, 3 л., ед.ч., пол 
-            case 55: // 53. императив, 3 л., мн.ч., пол 
-                return '';
-            case 53: // 51. императив, 1 л., мн.ч., пол 
-                return $stems[0]. $g. 'am';
-            case 54: // 52. императив, 2 л., мн.ч., пол 
-                return $stems[0]. $g. 'at';
-            case 299: // 148. императив, коннегатив, ед.ч.
-                return $stems[1];
-            case 300: // 149. императив, коннегатив, мн.ч.
-                return $stems[0]. $g. 'oi';
-                
-            case 38: // 59. кондиционал, презенс, 1 л., ед.ч., пол. 
-                return $stems[4].'ižin';
-            case 39: // 60. кондиционал, презенс, 2 л., ед.ч., пол. 
-                return $stems[4].'ižid';
-            case 40: // 61. кондиционал, презенс, 3 л., ед.ч., пол. 
-            case 301: // 150. кондиционал, презенс, коннегатив
-                return $stems[4].'iži';
-            case 41: // 62. кондиционал, презенс, 1 л., мн.ч., пол. 
-                return $stems[4].'ižim';
-            case 42: // 63. кондиционал, презенс, 2 л., мн.ч., пол. 
-                return $stems[4].'ižit';
-            case 43: // 64. кондиционал, презенс, 3 л., мн.ч., пол. 
-                return $stems[4]. 'ižiba';
-            case 301: // 150. кондиционал, презенс, коннегатив, ед.ч. 
-                return $stems[4]. 'iži';
-                
-            case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
-                return $stems[3].'nuižin';
-            case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., пол. 
-                return $stems[3].'nuižid';
-            case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., пол. 
-            case 302: // 151. кондиционал, презенс, коннегатив
-                return $stems[3].'nuiži';
-            case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., пол. 
-                return $stems[3].'nuižim';
-            case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., пол. 
-                return $stems[3].'nuižit';
-            case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., пол. 
-                return $stems[3].'nuižiba';
-            case 302: // 152. кондиционал, имперфект, коннегатив, ед.ч. 
-                return $stems[3]. 'nuiži';
-
-            case 170: // 131. I инфинитив 
-                return $stems[0]. $stems[6]. $stems[7];
-            case 171: // 132. II инфинитив, инессив 
-                return $stems[0]. $stems[6]. 'es';
-            case 172: // 133. II инфинитив, инструктив  
-                return $stems[0]. $stems[6]. 'en';
-            case 173: // 134. III инфинитив, адессив
-                return $stems[5]. 'm'. $stems[7]. 'l';
-            case 174: // 135. III инфинитив, иллатив 
-                return self::inf3Ill($stems[5], $stems[7]);
-            case 175: // 136. III инфинитив, инессив 
-                return $stems[5]. 'm'. $stems[7]. 's';
-            case 176: // 137. III инфинитив, элатив 
-                return $stems[5]. 'm'. $stems[7]. 'späi';
-            case 177: // 138. III инфинитив, абессив 
-                return $stems[5]. 'm'. $stems[7]. 't';
-                
-            case 178: // 139. актив, 1-е причастие 
-                return self::partic1active($stems[1]);
-            case 179: // 140. актив, 2-е причастие 
-                return $stems[5]. 'nu';
-            case 180: // 142. пассив, 1-е причастие 
-                return '';
-            case 181: // 143. пассив, 2-е причастие 
-                return $stems[0]. $stems[6]. 'ud';
+                return $stems[0] ? $stems[0]. $g. 'oi' : '';
 
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., отриц. 
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., отриц. 
             case 72: // 9. индикатив, презенс, 3 л., ед.ч., отриц. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[1];
+                return $stems[1] ? $neg_verb. $stems[1] : '';
             case 73: //10. индикатив, презенс, 1 л., мн.ч., отриц. 
             case 78: // 11. индикатив, презенс, 2 л., мн.ч., отриц. 
             case 79: // 12. индикатив, презенс, 3 л., мн.ч., отриц. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[0]. $g. 'oi';
+                return $stems[0] ? $neg_verb. $stems[0]. $g. 'oi' : '';
+
+            case 32: // 13. индикатив, имперфект, 1 л., ед.ч., пол. 
+                return $stems[2] ? $stems[2]. 'n' : '';
+            case 33: // 14. индикатив, имперфект, 2 л., ед.ч., пол. 
+                return $stems[2] ? $stems[2]. 'd' : '';
+            case 34: // 15. индикатив, имперфект, 3 л., ед.ч., пол. 
+                return $stems[2] ? $stems[2] : '';
+            case 35: // 16. индикатив, имперфект, 1 л., мн.ч., пол. 
+                return $stems[2] ? $stems[2]. 'm' : '';
+            case 36: // 17. индикатив, имперфект, 2 л., мн.ч., пол. 
+                return $stems[2] ? $stems[2]. 't' : '';
+            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
+                return $stems[2] ? $stems[2]. 'ba' : '';
+            case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
+                return $stems[1] ? $stems[1]. 'nd' : '';
+            case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
+                return $stems[3] ? $stems[3]. 'nugoi' : '';
 
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., отриц. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[1]. 'nd';
+                return $stems[1] ? $neg_verb. $stems[1]. 'nd' : '';
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., отриц. 
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., отриц. 
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., отриц. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[3]. 'nugoi';
+                return $stems[3] ? $neg_verb. $stems[3]. 'nugoi' : '';
+                
+            case 51: // 49. императив, 2 л., ед.ч., пол 
+                return $stems[1] ? $stems[1] : '';
+            case 52: // 50. императив, 3 л., ед.ч., пол 
+            case 55: // 53. императив, 3 л., мн.ч., пол 
+                return '';
+            case 53: // 51. императив, 1 л., мн.ч., пол 
+                return $stems[0] ? $stems[0]. $g. 'am' : '';
+            case 54: // 52. императив, 2 л., мн.ч., пол 
+                return $stems[0] ? $stems[0]. $g. 'at' : '';
+            case 299: // 148. императив, коннегатив, ед.ч.
+                return $stems[1] ? $stems[1] : '';
+            case 300: // 149. императив, коннегатив, мн.ч.
+                return $stems[0] ? $stems[0]. $g. 'oi' : '';
+                
+            case 38: // 59. кондиционал, презенс, 1 л., ед.ч., пол. 
+                return $stems[4] ? $stems[4].'ižin' : '';
+            case 39: // 60. кондиционал, презенс, 2 л., ед.ч., пол. 
+                return $stems[4] ? $stems[4].'ižid' : '';
+            case 40: // 61. кондиционал, презенс, 3 л., ед.ч., пол. 
+            case 301: // 150. кондиционал, презенс, коннегатив
+                return $stems[4] ? $stems[4].'iži' : '';
+            case 41: // 62. кондиционал, презенс, 1 л., мн.ч., пол. 
+                return $stems[4] ? $stems[4].'ižim' : '';
+            case 42: // 63. кондиционал, презенс, 2 л., мн.ч., пол. 
+                return $stems[4] ? $stems[4].'ižit' : '';
+            case 43: // 64. кондиционал, презенс, 3 л., мн.ч., пол. 
+                return $stems[4] ? $stems[4]. 'ižiba' : '';
+            case 301: // 150. кондиционал, презенс, коннегатив, ед.ч. 
+                return $stems[4] ? $stems[4]. 'iži' : '';
+                
+            case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
+                return $stems[3] ? $stems[3].'nuižin' : '';
+            case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., пол. 
+                return $stems[3] ? $stems[3].'nuižid' : '';
+            case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., пол. 
+            case 302: // 151. кондиционал, презенс, коннегатив
+                return $stems[3] ? $stems[3].'nuiži' : '';
+            case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., пол. 
+                return $stems[3] ? $stems[3].'nuižim' : '';
+            case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., пол. 
+                return $stems[3] ? $stems[3].'nuižit' : '';
+            case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., пол. 
+                return $stems[3] ? $stems[3].'nuižiba' : '';
+            case 302: // 152. кондиционал, имперфект, коннегатив, ед.ч. 
+                return $stems[3] ? $stems[3]. 'nuiži' : '';
+
+            case 170: // 131. I инфинитив 
+                return $stems[0] && $stems[6] && $stems[7] ? $stems[0]. $stems[6]. $stems[7] : '';
+            case 171: // 132. II инфинитив, инессив 
+                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'es' : '';
+            case 172: // 133. II инфинитив, инструктив  
+                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'en' : '';
+            case 173: // 134. III инфинитив, адессив
+                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 'l' : '';
+            case 174: // 135. III инфинитив, иллатив 
+                return self::inf3Ill($stems[5], $stems[7]);
+            case 175: // 136. III инфинитив, инессив 
+                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 's' : '';
+            case 176: // 137. III инфинитив, элатив 
+                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 'späi' : '';
+            case 177: // 138. III инфинитив, абессив 
+                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 't' : '';
+                
+            case 178: // 139. актив, 1-е причастие 
+                return self::partic1active($stems[1]);
+            case 179: // 140. актив, 2-е причастие 
+                return $stems[5] ? $stems[5]. 'nu' : '';
+            case 180: // 142. пассив, 1-е причастие 
+                return '';
+            case 181: // 143. пассив, 2-е причастие 
+                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ud' : '';
+
 /*
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., пол. 
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
@@ -372,34 +374,34 @@ class VepsVerb
 */
             case 50: // 54. императив, 2 л., ед.ч., отр. 
             case 74: // 55. императив, 3 л., ед.ч., отр. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[1];
+                return $stems[1] ? $neg_verb. $stems[1] : '';
             case 75: // 56. императив, 1 л., мн.ч., отр. 
             case 76: // 57. императив, 2 л., мн.ч., отр. 
             case 77: // 58. императив, 3 л., мн.ч., отр. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[0]. $g. 'oi';
+                return $stems[0] ? $neg_verb. $stems[0]. $g. 'oi' : '';
 
             case 303: // 151. кондиционал, презенс, коннегатив, мн.ч. 
-                return $stems[4]. 'ižigoi';
+                return $stems[4] ? $stems[4]. 'ižigoi' : '';
                 
             case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
             case 111: // 66. кондиционал, презенс, 1 л., ед.ч., отр. 
             case 112: // 67. кондиционал, презенс, 1 л., ед.ч., отр. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[4]. 'iži';
+                return $stems[4] ? $neg_verb. $stems[4]. 'iži' : '';
             case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
             case 114: // 69. кондиционал, презенс, 1 л., мн.ч., отр. 
             case 115: // 70. кондиционал, презенс, 1 л., мн.ч., отр. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[4]. 'ižigoi';
+                return $stems[4] ? $neg_verb. $stems[4]. 'ižigoi' : '';
  
             case 304: // 153. кондиционал, имперфект, коннегатив, мн.ч. 
-                return $stems[3]. 'nuižigoi';
+                return $stems[3] ? $stems[3]. 'nuižigoi' : '';
             case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 117: // 78. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 118: // 79. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[3]. 'nuiži';
+                return $stems[3] ? $neg_verb. $stems[3]. 'nuiži' : '';
             case 119: // 80. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 120: // 81. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 121: // 82. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return Grammatic::negativeForm($gramset_id, $lang_id). $stems[3]. 'nuižigoi';
+                return $stems[3] ? $neg_verb. $stems[3]. 'nuižigoi' : '';
                 
 /*            кондиционал, перфект
  
@@ -433,6 +435,9 @@ class VepsVerb
      * @param String $lemma
      */
     public static function inf3Ill($lemma, $harmony) {
+        if (!$lemma || !$harmony) {
+            return '';
+        }
         if (preg_match("/^[^aeiouüäö-][aeiouüäö]i?$/u", $lemma)) {
             return $lemma. 'mh'. $harmony;
         } elseif (preg_match("/[^aeiouüäö]$/u", $lemma)) {
@@ -451,6 +456,9 @@ class VepsVerb
      * @param String $stem
      */
     public static function partic1active($stem) {
+        if (!$stem) {
+            return '';
+        }
         if (preg_match("/[aeiouüäö]i$/u", $stem)) {
             return $stem;
         } else {
@@ -459,5 +467,18 @@ class VepsVerb
             }
             return $stem. 'i';
         }
+    }
+    
+    public static function IndPres3Pl($stem0, $stem1, $consonant, $dialect_id){
+        if (!$stem0 || !$stem1 || !$consonant) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 43: // младописьменный 
+                return $stems[1]. 'ba';
+            default:
+                return $stems[1]. 'ba, '. $stems[0]. $stems[6]. 'as';
+;                
+        }        
     }
 }
