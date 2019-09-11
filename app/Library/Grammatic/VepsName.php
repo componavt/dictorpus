@@ -198,7 +198,6 @@ class VepsName
      */
     public static function wordformByStems($stems, $gramset_id, $dialect_id, $name_num=null) {
         $s_sg = isset($stems[1]) ? (preg_match("/i$/u", $stems[1]) ? 'š' : 's') : '';
-        $s_pl = isset($stems[4]) ? (preg_match("/i$/u", $stems[4]) ? 'š' : 's') : '';
         
         switch ($gramset_id) {
             case 1: // номинатив, ед.ч. 
@@ -216,15 +215,15 @@ class VepsName
             case 8: // инессив, ед.ч. 
                 return $stems[1] ? $stems[1]. $s_sg : '';
             case 9: // элатив, ед.ч. 
-                return $stems[1] ? $stems[1]. $s_sg. 'päi' : '';
+                return self::elatSg($stems[1], $dialect_id);
             case 10: // иллатив, ед.ч. 
                 return $stems[1] ? self::illSg($stems[1], $stems[2]) : '';
             case 11: // адессив, ед.ч. 
-                return $stems[1] ? $stems[1] . 'l' : '';
+                return self::adesSg($stems[1], $dialect_id);
             case 12: // аблатив, ед.ч. 
-                return $stems[1] ? $stems[1] . 'lpäi' : '';
+                return self::ablatSg($stems[1], $dialect_id);
             case 13: // аллатив, ед.ч. 
-                return $stems[1] ? $stems[1] . 'le' : '';
+                return self::allatSg($stems[1], $dialect_id);
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1] . 'ta' : '';
             case 14: // комитатив, ед.ч. 
@@ -328,35 +327,36 @@ class VepsName
     }
     /**
      * основа 1 + he (если основа 1 оканчивается на i)
-     * основа 4 + ze (если основа 1 оканчивается на hV)
-     * основа 4 +  hV
+     * основа 2 + ze (если основа 1 оканчивается на hV)
+     * основа 2 +  hV
+     * 
+     * если основа 2 ≠ основа1, то + та же формула с основой 1, 
+     * т. е. у двусложных, если выпала гласная, будет по две формы
      * 
      * @param type $stem1
-     * @param type $stem4
+     * @param type $stem2
      * @return string
      */
     public static function illSg($stem1, $stem2=null){
         if (!$stem2) {
             $stem2 = self::illSgBase($stem1);
         }
+        
         if (self::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
-            return $stem2. 'he';
+            $okon = 'he';
         } elseif (self::countSyllable($stem1)>2 && preg_match("/h[".self::vowelSet()."]$/",$stem1)) {
-            return $stem2. 'ze';
+            $okon = 'ze';
         } elseif (preg_match("/([".self::vowelSet()."])$/u",$stem1, $regs)) {
-            return $stem2. 'h'. $regs[1];
-        }
-/*        
-        if (self::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
-            return $stem2. 'he';
-        } elseif (self::countSyllable($stem1)<3 && preg_match("/([".self::vowelSet()."])$/u",$stem1, $regs)) {
-            return $stem2. 'h'. $regs[1];
-        } elseif (preg_match("/h[".self::vowelSet()."]$/",$stem1)) {
-            return $stem2. 'ze';
+            $okon = 'h'. $regs[1];
         } else {
-            return $stem2. 'he';
-        } */
-        return '';
+            return '';
+        }
+        
+        if ($stem1 != $stem2) {
+            return $stem1. $okon. ', '.$stem2. $okon;
+        } else {
+            return $stem1. $okon;
+        }
     }
 
     public static function illPlEnding($stem) {
@@ -368,25 +368,112 @@ class VepsName
     }
     
     public static function comitSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
         switch ($dialect_id) {
-            case 4: // средневепсский восточный 
-                return $stem1 ? $stem1. 'dme, '.$stem1. 'me' : '';
             case 3: // южновепсский 
-                return $stem1 ? $stem1. 'dmu, '.$stem1. 'mu' : '';
+                return $stem1. 'dmu, '.$stem1. 'mu';
+            case 4: // средневепсский восточный 
+                return $stem1. 'dme, '.$stem1. 'me';
             default:
-                return $stem1 ? $stem1. 'nke' : '';                
+                return $stem1. 'nke';                
         }        
     }
     
     public static function prolSg($stem3, $dialect_id){
-        $stem3_ = $stem3 ? mb_substr($stem3, 0, -1) : '';
+        if (!$stem3) {
+            return '';
+        }
+        $stem3_ = mb_substr($stem3, 0, -1);
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem3. 'me, '.$stem3_. 'mu';
+            case 4: // средневепсский восточный 
+                return $stem3. 'me, '.$stem3_. 'me';
+            default:
+                return $stem3. 'me';                
+        }        
+    }
+    
+    public static function elatSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        $stem1 .= preg_match("/i$/u", $stem1) ? 'š' : 's';
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem1. 'pää';
+            case 4: // средневепсский восточный 
+                return $stem1. 'pei';
+            default:
+                return $stem1. 'päi';                
+        }        
+    }
+        
+    public static function adesSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem1. 'a';
+            case 4: // средневепсский восточный 
+                return $stem1. 'ta';
+            case 5: // средневепсский западный 
+                return $stem1. 'u';
+            default:
+                return $stem1. 'l';                
+        }        
+    }
+    
+    public static function ablatSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem1. 'apää';
+            case 4: // средневепсский восточный 
+                return self::base_without_lastV($stem1). 'uu';
+            case 5: // средневепсский западный 
+                return $stem1. 'upäi';
+            default:
+                return $stem1. 'lpäi';                
+        }        
+    }
+    
+    public static function allatSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        
         switch ($dialect_id) {
             case 4: // средневепсский восточный 
-                return $stem3 ? $stem3. 'me, '.$stem3_. 'me' : '';
-            case 3: // южновепсский 
-                return $stem3 ? $stem3. 'me, '.$stem3_. 'mu' : '';
+                return self::base_without_lastV($stem1). 'uupei';
             default:
-                return $stem3 ? $stem3. 'me' : '';                
+                return $stem1. 'le';                
         }        
+    }
+    
+    public static function base_without_lastV($stem){
+        if (preg_match("/^(.+)[".self::vowelSet()."]$/u",$stem, $regs)) {
+            return $regs[1];
+        }
+        return $stem;
+    }
+    public static function approxSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        
+        $approx = $stem1.'nnoks';
+        
+        if ($dialect_id == 43) {
+            $approx = $stem1.'nno, '. $approx;                
+        }    
+        
+        return $approx;
     }
 }

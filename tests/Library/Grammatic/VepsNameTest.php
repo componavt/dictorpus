@@ -96,7 +96,7 @@ class VepsNameTest extends TestCase
             $result[] = VepsName::illSg($stem);
         }
 //dd($result);        
-        $expected = ['mecha','kaivoho','vilhu','verkoho','kegoho','agjaha','perthe', 'veikoihe', 'soboihe'];//,'senhe', 'maidho','unhe', 'laudha','lumhe'
+        $expected = ['mecaha, mecha','kaivoho','viluhu, vilhu','verkoho','kegoho','agjaha','pertihe, perthe', 'veikoihe', 'soboihe'];//,'senhe', 'maidho','unhe', 'laudha','lumhe'
         $this->assertEquals( $expected, $result);        
     }
         
@@ -289,6 +289,128 @@ class VepsNameTest extends TestCase
         $expected = 'Amerikadme';
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testElatSgNewWritten() {
+        $stem1 = 'aida';
+        $dialect_id=43;
+        $result = VepsName::elatSg($stem1, $dialect_id);
+        $expected = 'aidaspäi';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testElatSgSouth() {
+        $stem1 = 'aeda';
+        $dialect_id=3;
+        $result = VepsName::elatSg($stem1, $dialect_id);
+        $expected = 'aedaspää';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testElatSgEast() {
+        $stem1 = 'eida';
+        $dialect_id=4;
+        $result = VepsName::elatSg($stem1, $dialect_id);
+        $expected = 'eidaspei';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    
+    public function testAdesSgNewWritten() {
+        $stem1 = 'aida';
+        $dialect_id=43;
+        $result = VepsName::adesSg($stem1, $dialect_id);
+        $expected = 'aidal';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAdesSgSouth() {
+        $stem1 = 'aeda';
+        $dialect_id=3;
+        $result = VepsName::adesSg($stem1, $dialect_id);
+        $expected = 'aedaa';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAdesSgEast() {
+        $stem1 = 'eida';
+        $dialect_id=4;
+        $result = VepsName::adesSg($stem1, $dialect_id);
+        $expected = 'eidata';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAdesSgWest() {
+        $stem1 = 'aida';
+        $dialect_id=5;
+        $result = VepsName::adesSg($stem1, $dialect_id);
+        $expected = 'aidau';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAblatSgNewWritten() {
+        $stem1 = 'aida';
+        $dialect_id=43;
+        $result = VepsName::ablatSg($stem1, $dialect_id);
+        $expected = 'aidalpäi';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAblatSgSouth() {
+        $stem1 = 'aeda';
+        $dialect_id=3;
+        $result = VepsName::ablatSg($stem1, $dialect_id);
+        $expected = 'aedaapää';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAblatSgEast() {
+        $stem1 = 'eida';
+        $dialect_id=4;
+        $result = VepsName::ablatSg($stem1, $dialect_id);
+        $expected = 'eiduu';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAblatSgWest() {
+        $stem1 = 'aida';
+        $dialect_id=5;
+        $result = VepsName::ablatSg($stem1, $dialect_id);
+        $expected = 'aidaupäi';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAllatSgNewWritten() {
+        $stem1 = 'aida';
+        $dialect_id=43;
+        $result = VepsName::allatSg($stem1, $dialect_id);
+        $expected = 'aidale';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testAllatSgEast() {
+        $stem1 = 'eida';
+        $dialect_id=4;
+        $result = VepsName::allatSg($stem1, $dialect_id);
+        $expected = 'eiduupei';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testApproxSgNewWritten() {
+        $stem1 = 'aida';
+        $dialect_id=43;
+        $result = VepsName::approxSg($stem1, $dialect_id);
+        $expected = 'aidanno, aidannoks';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testApproxSgEast() {
+        $stem1 = 'eida';
+        $dialect_id=4;
+        $result = VepsName::approxSg($stem1, $dialect_id);
+        $expected = 'eidannoks';
+        $this->assertEquals( $expected, $result);        
+    }
+    
     /*    
     public function testWordformsByTemplatePl() {
         $dialect_id=43;
