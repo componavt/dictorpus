@@ -63,6 +63,7 @@ class LemmaBase extends Model
     
     public static function updateStem($lemma_id, $stem_n, $stem, $dialect_id) {
         $base = self::where('lemma_id', $lemma_id)
+                    ->where('dialect_id',$dialect_id)
                     ->where('base_n', $stem_n)->first();
         if (!$stem) {
             if ($base) {
