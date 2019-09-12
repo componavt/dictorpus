@@ -453,7 +453,7 @@ class VepsName
         
         switch ($dialect_id) {
             case 4: // средневепсский восточный 
-                return self::base_without_lastV($stem1). 'uupei';
+                return $stem1. 'lo';
             default:
                 return $stem1. 'le';                
         }        
