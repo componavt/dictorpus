@@ -282,6 +282,7 @@ class Grammatic
     }
     
     public static function nameNumFromNumberField($number) {
+        $number = (string)$number;
         if ($number==1) {
             return 'pl';
         } elseif ($number==2) {

@@ -643,7 +643,7 @@ dd($wordforms);
     
     public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
                                   $features, $dialect_id, $stems) {
-//dd($features);        
+//dd($stems);        
         $this->updateBases($stems, $this->pos_id, $dialect_id); 
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);

@@ -181,7 +181,6 @@ class LemmaWordformController extends Controller
     public function reload($id, $dialect_id) {
         $lemma = Lemma::findOrFail($id);
         $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
-        
         $name_num = Grammatic::nameNumFromNumberField($lemma->features->number); 
 
         $stems = $lemma->getBases($dialect_id);
