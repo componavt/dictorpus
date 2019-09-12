@@ -494,24 +494,31 @@ class VepsName
         }        
     }
     
+    public static function putOkonToIllSg($stem1, $okon){
+        $ills = preg_split("/,\s*/",self::illSg($stem1));
+        $tmp = [];
+        foreach ($ills as $ill) {
+            $tmp[] = $ill. $okon;
+        }
+        return join (', ', $tmp);
+    }
+    
     public static function terminatSg($stem1, $dialect_id){
         if (!$stem1) {
             return '';
         }
         
-        $ill = self::illSg($stem1);
-        
         switch ($dialect_id) {
             case 3: // южновепсский 
-                return $ill. 'saa';
+                return self::putOkonToIllSg($stem1,'saa');
             case 4: // средневепсский восточный 
-                return $ill. 'sei';
+                return self::putOkonToIllSg($stem1,'sei');
             case 5: // средневепсский западный 
-                return $ill. 'ssai';
+                return self::putOkonToIllSg($stem1,'ssai');
             case 43: // младописьменный
-                return $ill. 'sai, '. $stem1. 'lesai';
+                return self::putOkonToIllSg($stem1,'sai'). ', '. $stem1. 'lesai';
             default:
-                return $ill. 'sai';
+                return self::putOkonToIllSg($stem1,'sai');
         }        
     }
     
@@ -520,17 +527,15 @@ class VepsName
             return '';
         }
         
-        $ill = self::illSg($stem1);
-        
         switch ($dialect_id) {
             case 3: // южновепсский 
-                return $ill. 'pää';
+                return self::putOkonToIllSg($stem1,'pää');
             case 4: // средневепсский восточный 
-                return $ill. 'pei';
+                return self::putOkonToIllSg($stem1,'pei');
             case 43: // младописьменный
-                return $ill. 'päi, '. $stem1. 'lepäi';
+                return self::putOkonToIllSg($stem1,'päi'). ', '. $stem1. 'lepäi';
             default:
-                return $ill. 'päi';
+                return self::putOkonToIllSg($stem1,'päi');
         }        
     }
     
