@@ -231,13 +231,13 @@ class VepsName
             case 15: // пролатив, ед.ч. 
                 return self::prolSg($stems[3], $dialect_id);
             case 17: //аппроксиматив, ед.ч. 
-                return $stems[1] ? $stems[1].'nno, '. $stems[1].'nnoks' : '';
+                return self::approxSg($stems[1], $dialect_id);
             case 20: //эгрессив, ед.ч. 
-                return $stems[1] ? $stems[1].'nnopäi' : '';
+                return self::egresSg($stems[1], $dialect_id);
             case 16: //терминатив, ед.ч. 
-                return $stems[1] ? self::illSg($stems[1], $stems[2]).'sai, '. $stems[1]. 'lesai' : '';
+                return self::terminatSg($stems[1], $dialect_id);
             case 19: //адитив, ед.ч. 
-                return $stems[1] ? self::illSg($stems[1], $stems[2]).'päi, '. $stems[1]. 'lepäi' : '';
+                return self::aditSg($stems[1], $dialect_id);
                 
                 
             case 2: // номинатив, мн.ч. 
@@ -246,37 +246,37 @@ class VepsName
             case 24: // генитив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'den' : '';
             case 22: // партитив, мн.ч. 
-                return $stems[4] ? $stems[4] . 'd' : '';
+                return self::partPl($stems[4], $dialect_id);
             case 279: // эссив, мн.ч. 
-                return $stems[4] ? $stems[4]. 'n' : '';
+                return self::essPl($stems[4], $dialect_id);
             case 59: // транслатив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'kš' : '';
             case 23: // инессив, мн.ч.
                 return $stems[4] ? $stems[4]. 'š' : '';
             case 60: // элатив, мн.ч.
-                return $stems[4] ? $stems[4]. 'špäi' : '';
+                return self::elatPl($stems[4], $dialect_id);
             case 61: // иллатив, мн.ч. 
-                return $stems[4] ? $stems[4].(preg_match("/hi$/",$stems[4]) ? 'že' : 'he') : '';
+                return self::illPl($stems[4], $dialect_id);
             case 25: // адессив, мн.ч.
-                return $stems[4] ? $stems[4] . 'l' : '';
+                return self::adesPl($stems[4], $dialect_id);
             case 62: // аблатив, мн.ч.
-                return $stems[4] ? $stems[4] . 'lpäi' : '';
+                return self::ablatPl($stems[4], $dialect_id);
             case 63: // аллатив, ед.ч. 
                 return $stems[4] ? $stems[4] . 'le' : '';
             case 64: // абессив, мн.ч.
                 return $stems[4] ? $stems[4] . 'ta' : '';
             case 65: // комитатив, мн.ч. 
-                return $stems[4] ? $stems[4].'denke' : '';
+                return self::comitPl($stems[4], $dialect_id);
             case 66: // пролатив, мн.ч. 
-                return $stems[4] ? $stems[4].'dme' : '';
+                return self::prolPl($stems[4], $dialect_id);
             case 18: //аппроксиматив, мн.ч. 
-                return $stems[4] ? $stems[4].'denno, '. $stems[4].'dennoks' : '';
+                return self::approxPl($stems[4], $dialect_id);
             case 69: //эгрессив, мн.ч. 
-                return $stems[4] ? $stems[4].'dennopäi' : '';
+                return self::egresPl($stems[4], $dialect_id);
             case 67: //терминатив, мн.ч. 
-                return $stems[4] ? $stems[4].(preg_match("/hi$/",$stems[4]) ? 'ž' : 'h').'esai, '. $stems[4].'lesai' : '';
+                return self::terminatPl($stems[4], $dialect_id);
             case 68: //адитив, мн.ч. 
-                return $stems[4] ? $stems[4].(preg_match("/hi$/",$stems[4]) ? 'ž' : 'h').'epäi, '. $stems[4].'lepäi' : '';
+                return self::aditPl($stems[4], $dialect_id);
         }
         return '';
     }
@@ -312,7 +312,7 @@ class VepsName
     
     //consonant after which the vowel escapes before
     public static function consSetEscapeV() {
-        return "pfsšzžcčlt"; // jgvkrbdhmn
+        return "dpfsšzžcčlt"; // jgvkrbdhmn
     }
     
     /*
@@ -359,12 +359,14 @@ class VepsName
         }
     }
 
-    public static function illPlEnding($stem) {
-        if (preg_match("/hi$/",$stem)) {
-            return 'že';
-        } else {
-            return 'he';
+    public static function illPl($stem4) {
+        if (!$stem4) {
+            return '';
         }
+        if (preg_match("/hi$/",$stem4)) {
+            return $stem4. 'že';
+        }
+        return $stem4. 'he';
     }
     
     public static function comitSg($stem1, $dialect_id){
@@ -463,6 +465,7 @@ class VepsName
         }
         return $stem;
     }
+    
     public static function approxSg($stem1, $dialect_id){
         if (!$stem1) {
             return '';
@@ -475,5 +478,230 @@ class VepsName
         }    
         
         return $approx;
+    }
+    
+    public static function egresSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem1. 'nnopää';
+            case 4: // средневепсский восточный 
+                return $stem1. 'nnoupei';
+            default:
+                return $stem1. 'nnopäi';                
+        }        
+    }
+    
+    public static function terminatSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        
+        $ill = self::illSg($stem1);
+        
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $ill. 'saa';
+            case 4: // средневепсский восточный 
+                return $ill. 'sei';
+            case 5: // средневепсский западный 
+                return $ill. 'ssai';
+            case 43: // младописьменный
+                return $ill. 'sai, '. $stem1. 'lesai';
+            default:
+                return $ill. 'sai';
+        }        
+    }
+    
+    public static function aditSg($stem1, $dialect_id){
+        if (!$stem1) {
+            return '';
+        }
+        
+        $ill = self::illSg($stem1);
+        
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $ill. 'pää';
+            case 4: // средневепсский восточный 
+                return $ill. 'pei';
+            case 43: // младописьменный
+                return $ill. 'päi, '. $stem1. 'lepäi';
+            default:
+                return $ill. 'päi';
+        }        
+    }
+    
+    public static function partPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+            case 4: // средневепсский восточный 
+            case 5: // средневепсский западный 
+                return $stem4. 'd’';
+            default:
+                return $stem4. 'd';                
+        }        
+    }
+    
+    public static function essPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+            case 4: // средневепсский восточный 
+            case 5: // средневепсский западный 
+                return $stem4. 'n’';
+            default:
+                return $stem4. 'n';                
+        }        
+    }
+    
+    public static function elatPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem4. 'špää';
+            case 4: // средневепсский восточный 
+                return $stem4. 'špei';
+            default:
+                return $stem4. 'špäi';                
+        }        
+    }
+    
+    public static function adesPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+            case 4: // средневепсский восточный 
+            case 5: // средневепсский западный 
+                return $stem4. 'l’';
+            default:
+                return $stem4. 'l';                
+        }        
+    }
+    
+    public static function ablatPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem4. 'l’pää';                
+            case 4: // средневепсский восточный 
+                return $stem4. 'l’pei';                
+            case 5: // средневепсский западный 
+                return $stem4. 'l’päi';                
+            default:
+                return $stem4. 'lpäi';                
+        }        
+    }
+    
+    public static function comitPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem4. 'mu';                
+            case 4: // средневепсский восточный 
+                return $stem4. 'd’me';                
+            case 5: // средневепсский западный 
+                return $stem4. 'deke';                
+            default:
+                return $stem4. 'denke';                
+        }        
+    }
+    
+    public static function prolPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem4. 'mu';                
+            case 4: // средневепсский восточный 
+            case 5: // средневепсский западный 
+                return $stem4. 'd’me';                
+            default:
+                return $stem4. 'dme';                
+        }        
+    }
+    
+    public static function approxPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        
+        $approx = $stem4.'dennoks';
+        
+        if ($dialect_id == 43) {
+            $approx = $stem4.'denno, '. $approx;                
+        }    
+        
+        return $approx;
+    }
+    
+    public static function egresPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $stem4. 'delonpää';
+            case 4: // средневепсский восточный 
+                return $stem4. 'dennoupei';
+            default:
+                return $stem4. 'dennopäi';                
+        }        
+    }
+    
+    public static function terminatPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        
+        $ill = self::illPl($stem4);
+        
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $ill. 'saa';
+            case 4: // средневепсский восточный 
+                return $ill. 'sei';
+            case 5: // средневепсский западный 
+                return $ill. 'ssai';
+            case 43: // младописьменный
+                return $ill. 'sai, '. $stem4. 'lesai';
+            default:
+                return $ill. 'sai';
+        }        
+    }
+    
+    public static function aditPl($stem4, $dialect_id){
+        if (!$stem4) {
+            return '';
+        }
+        
+        $ill = self::illPl($stem4);
+        
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return $ill. 'pää';
+            case 4: // средневепсский восточный 
+                return $ill. 'pei';
+            case 43: // младописьменный
+                return $ill. 'päi, '. $stem4. 'lepäi';
+            default:
+                return $ill. 'päi';
+        }        
     }
 }
