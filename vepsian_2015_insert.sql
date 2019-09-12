@@ -929,3 +929,5 @@ update langs set code='fi' where id=7;
 -- php artisan make:test 'Library\Grammatic\KarNameTest'
 
 -- php artisan make:controller Dict/LemmaWordformController
+
+-- php artisan make:migration create_lemma_variants_table --table=lemma_variants
