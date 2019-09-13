@@ -41,6 +41,11 @@
             @include('dict.lemma.show.features')
         </p>
         @endif
+        @if ($lemma->variantsWithLink())
+        <p>
+            <b>{{trans('dict.variants')}}:</b> {!!$lemma->variantsWithLink()!!}
+        </p>
+        @endif
         @if ($lemma->phraseLemmasListWithLink())
         <p>
             <b>{{trans('dict.phrase_lemmas')}}:</b> {!!$lemma->phraseLemmasListWithLink()!!}

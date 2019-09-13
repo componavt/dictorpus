@@ -321,12 +321,15 @@ class LemmaController extends Controller
                      ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->affix 
                      : $lemma->lemma;
         
+        $lemma_variants = $lemma->variants->pluck('lemma', 'id')->toArray();
+        
         return view('dict.lemma.edit',
                     compact('all_meanings', 'lang_values', 'dialect_value', 
-                            'dialect_values', 'langs_for_meaning', 
-                            'lemma', 'lemma_value', 'new_meaning_n', 'phrase_values',
-                            'pos_values', 'relation_values', 'relation_meanings',
-                            'translation_values', 'args_by_get', 'url_args'));
+                            'dialect_values', 'langs_for_meaning', 'lemma', 
+                            'lemma_value', 'lemma_variants', 'new_meaning_n', 
+                            'phrase_values', 'pos_values', 'relation_values', 
+                            'relation_meanings', 'translation_values', 
+                            'args_by_get', 'url_args'));
     }
 
     /**
@@ -672,7 +675,7 @@ class LemmaController extends Controller
      * 
      * @return JSON response
      */
-    public function phraseList(Request $request)
+    public function listWithPosMeaning(Request $request)
     {
         $limit = 1000;
         $search_lemma = $request->input('q').'%';

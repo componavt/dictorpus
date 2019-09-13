@@ -61,8 +61,10 @@ class Lemma extends Model
     use \App\Traits\Relations\BelongsTo\POS;
     
     // Belongs To Many Relations
-    use \App\Traits\Relations\BelongsToMany\Wordforms;
+    use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Labels;
+    use \App\Traits\Relations\BelongsToMany\LemmaVariants;
+    use \App\Traits\Relations\BelongsToMany\Wordforms;
    
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Meanings;
@@ -231,19 +233,6 @@ class Lemma extends Model
     }
     
     /**
-     * Gets Builder of dialects, that has any wordforms of this lemma
-     * 
-     * @return Builder
-     */
-    public function dialects()
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        return $this->belongsToMany(Dialect::class, 'lemma_wordform')
-//                    ->withPivot('gramset_id','wordform_id')
-                    ->orderBy('name_'.$locale);
-    } 
-    
-    /**
      * Gets gramsets, that has any wordforms of this lemma
      * 
      * @return Builder
@@ -306,6 +295,18 @@ class Lemma extends Model
         return join('; ',$interpretation);
     }
     
+    public function variantsWithLink(){
+        $list=[];
+        foreach ($this->variants as $lemma) {
+            $dialects = [];
+            foreach ($lemma->dialects->unique() as $dialect) {
+                $dialects[] = $dialect->name;
+            } 
+            $list[] = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a> ('.join(', ',$dialects).')';
+        }    
+        return join('; ',$list);
+    }
+    
     public function omonymsListWithLink(){
         $lemmas = self::where('lemma',$this->lemma)
                 ->where('lang_id',$this->lang_id)
@@ -330,10 +331,10 @@ class Lemma extends Model
     }   
     
     public function remove() {
-        //remove all records from table lemma_wordform
         $this-> wordforms()->detach();
         $this-> labels()->detach();
         $this-> phraseLemmas()->detach();
+        $this-> variants()->detach();
         if ($this->reverseLemma) {
             $this->reverseLemma->delete();
         }        
@@ -643,10 +644,13 @@ dd($wordforms);
     
     public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
                                   $features, $dialect_id, $stems) {
-//dd($stems);        
         $this->updateBases($stems, $this->pos_id, $dialect_id); 
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
+
+        if (isset($features['variants'])) {
+            $this->storeVariants($features['variants']);
+        }
         
         $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
         $this->createDictionaryWordforms($wordforms, 
@@ -861,6 +865,19 @@ dd($wordforms);
         $this->phraseLemmas()->detach();
         if ($lemmas) {
             $this->phraseLemmas()->attach($lemmas);
+        }
+    }
+    
+    public function storeVariants($lemmas) {
+        $this->variants()->detach();
+        if ($lemmas) {
+            $this->variants()->attach($lemmas);
+        }
+        foreach ($this->variants as $lemma) {
+            $back_link = $lemma->variants()->where('lemma2_id',$this->id)->first();
+            if (!$back_link) {
+                $lemma->variants()->attach($this->id);
+            }
         }
     }
     

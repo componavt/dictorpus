@@ -106,7 +106,7 @@ Route::group(
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
-        Route::get('dict/lemma/phrase_list', 'Dict\LemmaController@phraseList');
+        Route::get('dict/lemma/list_with_pos_meaning', 'Dict\LemmaController@listWithPosMeaning');
         Route::get('dict/lemma/relation', 'Dict\LemmaController@relation');
         Route::get('dict/lemma/remove/example/{example_id}', 'Dict\LemmaController@removeExample');
         Route::get('dict/lemma/omonyms', 'Dict\LemmaController@omonyms');

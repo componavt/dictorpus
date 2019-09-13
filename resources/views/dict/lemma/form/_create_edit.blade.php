@@ -50,6 +50,13 @@
                  'special_symbol' => true,
                  'value' => $lemma_value,
                  'title'=>trans('dict.lemma')])
+        @include('widgets.form.formitem._select2',
+                ['name' => 'variants',
+                 'title' => trans('dict.variants'),
+                 'values' => $lemma_variants,
+                 'value' => array_keys($lemma_variants),
+                 'class'=> 'multiple-select-variants'
+            ])
     </div>
 </div>
 @if ($action == 'edit')
