@@ -304,7 +304,7 @@ class Lemma extends Model
             } 
             $l = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
             if (sizeof($dialects)) {
-                $l .= '('.join(', ',$dialects).')';
+                $l .= ' ('.join(', ',$dialects).')';
             }
             $list[] =  $l;
         }    
