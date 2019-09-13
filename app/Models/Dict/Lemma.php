@@ -302,7 +302,11 @@ class Lemma extends Model
             foreach ($lemma->dialects->unique() as $dialect) {
                 $dialects[] = $dialect->name;
             } 
-            $list[] = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a> ('.join(', ',$dialects).')';
+            $l = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
+            if (sizeof($dialects)) {
+                $l .= '('.join(', ',$dialects).')';
+            }
+            $list[] =  $l;
         }    
         return join('; ',$list);
     }
