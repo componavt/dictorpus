@@ -170,22 +170,25 @@ class LemmaWordformController extends Controller
     }
 
     /**
+     * Get bases from table OR from wordforms
      * Delete and create wordforms again
      * 
-     * Example: /dict/lemma_wordform/22406/reload/
+     * Example: /dict/lemma_wordform/22407_43/reload/
      * 
      * @param Int $id
      * @param Int $dialect_id
      * @return \Illuminate\Http\Response
      */
     public function reload($id, $dialect_id) {
-        $lemma = Lemma::findOrFail($id);
-        $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
-        $name_num = Grammatic::nameNumFromNumberField($lemma->features->number); 
+        $lemma = Lemma::findOrFail($id);        
+        
+        $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
 
         $stems = $lemma->getBases($dialect_id);
 //dd($stems);        
 //dd($name_num);        
+        $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
+
         $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems);
 //dd($gramset_wordforms);        
         if ($gramset_wordforms) {

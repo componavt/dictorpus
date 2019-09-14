@@ -125,6 +125,29 @@ class VepsNameTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStemsFromTemplate_Sg_Without_Num() {
+        $template = "aig||märiče|z (-sen, -st)";
+        $num = NULL;
+        $result = VepsName::stemsFromTemplate($template, $num);
+//dd($result);        
+        $expected = [[0=>'aigmäričez (-sen, -st)'], $num, 'aigmäričez (-sen, -st)', null];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplate_Sg() {
+        $template = "aigmäriče|z (-sen, -st)";
+        $num = 'sg';
+        $result = VepsName::stemsFromTemplate($template, $num);
+//dd($result);        
+        $expected = [[0=>'aigmäričez', 
+                      1=>'aigmäričese', 
+                      2=>'aigmäričese', 
+                      3=>'aigmäričest', 
+                      4=>'', 
+                      5=>''], $num, 'aigmäriče', 'z'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testWordformByStemsAccusativ() {
         $stems = [0=>'abuozuteseline', 
                   1=>'abuozuteseliže', 

@@ -34,6 +34,7 @@ class VepsName
             case 0: 
                 return $lemma->lemma;
             case 1:  //genetive sg
+//dd($lemma->id, $dialect_id, $lemma->wordform(3, $dialect_id));                
                 if (preg_match("/^(.+)n$/", $lemma->wordform(3, $dialect_id), $regs)) {
                     return $regs[1];
                 }
@@ -72,7 +73,7 @@ class VepsName
         $base_suff_shab = "([^\s\(\|]*)";
         $okon1_shab = "-([^\,\;\)]+)";
         $lemma_okon1_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab;
-        
+
         // only plural
         if (preg_match("/^{{vep-decl-stems\|n=pl".$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
                 ($name_num == 'pl' && preg_match($lemma_okon1_shab."\)/", $template, $regs))) {

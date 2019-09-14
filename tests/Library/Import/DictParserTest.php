@@ -318,4 +318,21 @@ class DictParserTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
    
+    public function testParseEntry_Veps_2meanings()
+    {
+        $lang_id=1;
+        $dialect_id=43;
+        $line = 'aigali|ne (-žen, -št, -žid) a. - 1. ранний 2. скороспелый';
+        $result = DictParser::parseEntry($line, $lang_id, $dialect_id);
+//dd($result);        
+        $expected = ["pos_id"=>1,
+                     "lemmas"=>[0=>"aigali|ne (-žen, -št, -žid)"],
+                     "num"=> "",
+                     "meanings"=>
+                        [1=>['ru'=>"ранний"],
+                         2=>['ru'=>"скороспелый"]]
+                    ];
+        $this->assertEquals( $expected, $result);        
+    }
+   
 }
