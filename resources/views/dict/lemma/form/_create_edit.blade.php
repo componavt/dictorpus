@@ -53,8 +53,8 @@
         @include('widgets.form.formitem._select2',
                 ['name' => 'variants',
                  'title' => trans('dict.variants'),
-                 'values' => $lemma_variants,
-                 'value' => array_keys($lemma_variants),
+                 'values' => isset($lemma_variants) ? $lemma_variants : [],
+                 'value' => isset($lemma_variants) ? array_keys($lemma_variants) : [],
                  'class'=> 'multiple-select-variants'
             ])
     </div>
