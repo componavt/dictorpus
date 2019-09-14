@@ -338,7 +338,12 @@ class Lemma extends Model
         $this-> wordforms()->detach();
         $this-> labels()->detach();
         $this-> phraseLemmas()->detach();
-        $this-> variants()->detach();
+        
+        foreach ($this->variants as $lemma) {
+            $lemma->variants()->detach($this->id);
+        }
+        $this->variants()->detach();
+        
         if ($this->reverseLemma) {
             $this->reverseLemma->delete();
         }        
