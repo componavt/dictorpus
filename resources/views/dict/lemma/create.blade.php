@@ -57,7 +57,7 @@
     $(".multiple-select-phrase").select2({
         width: '100%',
         ajax: {
-          url: "/dict/lemma/phrase_list",
+          url: "/dict/lemma/list_with_pos_meaning",
           dataType: 'json',
           delay: 2500,
           data: function (params) {
