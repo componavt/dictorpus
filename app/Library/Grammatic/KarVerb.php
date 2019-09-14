@@ -649,4 +649,51 @@ class KarVerb
         }
     }
     
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}
+     * avau|duo {-du, -du, -du, -vuta, -vutt} (pos=v, num=impers - without base 1 and base 3) - НЕ ПРЕДУСМОТРЕН ШАБЛОН без основ 1 и 3, исправить KarVerb!!!!
+     * 
+     * @param type $lemma_str
+     */
+    public static function toRightTemplate($bases, $base_list, $lemma_str, $num) {
+        if (sizeof($base_list)!=5) {
+            return $lemma_str;
+        }
+
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
+            $bases[1] = $regs[1];
+            $bases[2] = $regs[2];
+        } else {
+            if ($num=='impers' || $num=='def') {
+                $bases[1] = '';
+            } else {
+                $bases[1] = $base_list[0];
+                
+            }
+            $bases[2] = $base_list[0];
+        }
+        
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[1], $regs)) {
+            $bases[3] = $regs[1];
+            $bases[4] = $regs[2];
+        } else {
+            if ($num=='impers' || $num=='def') {
+                $bases[3] = '';
+            } else {
+                $bases[3] = $base_list[1];
+                
+            }
+            $bases[4] = $base_list[1];
+        }
+        $bases[5] = $base_list[2];
+        $bases[6] = $base_list[3];
+        $bases[7] = $base_list[4];
+        
+        return '{'.join(', ',$bases).'}';
+    }
+       
 }

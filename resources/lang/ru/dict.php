@@ -162,7 +162,7 @@ return [
     'transitive' => 'переходный',
     'translation' => 'перевод',
     'unimorph' => 'Код UniMorph',
-    'variants' => 'Фонетические варианты',
+    'variants' => 'фонетические варианты',
     'verb' => 'глагол',
     'voice' => 'залог',
     'wordform' => 'словоформа',

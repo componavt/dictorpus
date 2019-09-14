@@ -101,7 +101,7 @@ class KarName
                 return $stems[1] ? $stems[1].'čči' : '';
                                 
             case 2: // номинатив, мн.ч. 
-                return $name_num == 'pl' ? $stems[0] : ($stems[1] ? $stems[1]. 't' : '');
+                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'t' : '');
             case 24: // генитив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'n' : '';
             case 22: // партитив, мн.ч. 
@@ -132,4 +132,45 @@ class KarName
         return '';
     }
 
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * lemma_str examples:
+     * 
+     * abie {-, -da, -loi}
+     * a|bu {-vu / -bu, -buo, -buloi} 
+     * ai|ga {-ja / -ga, -gua, -joi / -goi}
+     * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
+     * 
+     * @param type $lemma_str
+     */
+    public static function toRightTemplate($bases, $base_list, $lemma_str, $num) {
+        if (!(sizeof($base_list)==3 || sizeof($base_list)==2 && $num=='sg' || sizeof($base_list)==1 && $num=='pl')) {
+            return $lemma_str;
+        }
+        if (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[0], $regs)) {
+            $bases[1] = $regs[1];
+            $bases[2] = $regs[2];
+        } else {
+            $bases[1] = $bases[2] = $base_list[0];
+        }
+        if ($num=='pl') {
+            $bases[3] = '';
+            $bases[4] = $bases[1];
+            $bases[5] = $bases[2];
+            $bases[1] = $bases[2] = '';
+        } else {
+            $bases[3] = $base_list[1];
+            if ($num=='sg') {
+                $bases[4] = $bases[5] = '';
+            } elseif (preg_match("/^([^\/\s]+)\s*[\/\:]\s*([^\s]+)$/", $base_list[2], $regs)) {
+                $bases[4] = $regs[1];
+                $bases[5] = $regs[2];
+            } else {
+                $bases[4] = $bases[5] = $base_list[2];
+            }
+        }
+        return '{'.join(', ',$bases).'}';
+    }
+    
 }

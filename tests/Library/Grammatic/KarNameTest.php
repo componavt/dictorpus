@@ -45,4 +45,5 @@ class KarNameTest extends TestCase
         $expected = 'aluššovat';
         $this->assertEquals( $expected, $result);        
     }
+    
 }

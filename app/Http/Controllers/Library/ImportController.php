@@ -28,12 +28,19 @@ class ImportController extends Controller
      * 
      * !!!! ----- изменена Grammatic::nameNumFromNumberField -----    sing->sg -----   !!!!!
      */
-    public function dictParser() {
-        $filename = 'import/dict_tver5.txt';
-//        $filename = 'import/line.txt';
-        $lang_id = 4;
-        $dialect_id=47; // new written tver karelian
-        $label_id = 1;
+    public function dictParser(Request $request) {
+        $lang_id = (int)$request->input('search_lang');
+        if ($lang_id == 1) {
+            $filename = 'import/dict_veps.txt';
+            $dialect_id=43; // new written veps
+            $label_id = NULL;
+        } else {
+            $filename = 'import/dict_tver5.txt';
+    //        $filename = 'import/line.txt';
+            $lang_id = 4;
+            $dialect_id=47; // new written tver karelian
+            $label_id = 1; 
+        }
 
         $file_content = Storage::disk('local')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
@@ -45,7 +52,8 @@ print "<pre>";
                 continue;
             }
 //$start_time = microtime(true); //начало измерения
-            $entry = DictParser::parseEntry($line, $dialect_id);
+            $entry = DictParser::parseEntry($line, $lang_id, $dialect_id);
+//dd($entry);            
 //$time_parsing = microtime(true);            
 //print "<p><b>Time parsing ".$entry['lemmas'][0]." :".round($time_parsing-$start_time, 2).'</p>';
             if (DictParser::checkEntry($entry, $line, $count)) {

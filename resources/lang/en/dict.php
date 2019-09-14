@@ -160,7 +160,7 @@ return [
     'transitive' => 'transitive',
     'translation' => 'translation',
     'unimorph' => 'UniMorph code',
-    'variants' => 'Phonetic variants',
+    'variants' => 'phonetic variants',
     'verb' => 'verb',
     'voice' => 'voice',
     'wordform' => 'wordform',

@@ -82,4 +82,9 @@ class VepsGram
             return VepsVerb::getStemFromWordform($lemma, $stem_n, $dialect_id);
         }
     }
+    
+    public static function templateForImport() {
+        return "([^\.]+)\.\s*([^\.]*)\.?\s*\-\s*(.+)";
+//        return "([^\.]+)\.\s*([^\.]*)\.?\s*\-\s*(.+)";
+    }
 }

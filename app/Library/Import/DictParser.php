@@ -3,6 +3,9 @@
 namespace App\Library\Import;
 
 use App\Library\Grammatic;
+use App\Library\Grammatic\KarGram;
+use App\Library\Grammatic\VepsGram;
+
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
@@ -14,71 +17,48 @@ use App\Models\Dict\PartOfSpeech;
  */
 class DictParser
 {
-    public static function splitLine($line, $dialect_id) {
+    public static function splitLine($line, $lang_id, $dialect_id) {
         $line = preg_replace("~\x{00a0}~siu", " ", $line); // non-break space
         $line = preg_replace("~\x{01c0}~siu", "|", $line); // dental click ǀ
+        
+        if ($lang_id == 1) {
+            $template = VepsGram::templateForImport();
+        } else {
+            $template = KarGram::templateForImport();
+        }
 
         // split by '. - ' into lemma and meanings parts
-        if (!preg_match("/^([^\.]+)\.\s*([^\.]*)\.?\s*\–\s*(.+)\s+\–\s*(.*)$/", $line, $regs)) {
+        if (!preg_match("/^".$template."$/u", $line, $regs)) {
             return false;
         }
         return $regs;
     }
     
-    public static function parseEntry($line, $dialect_id) {
-        $regs = self::splitLine($line, $dialect_id);
+    public static function parseEntry($line, $lang_id, $dialect_id) {
+        $regs = self::splitLine($line, $lang_id, $dialect_id);
         if (!$regs) {
             return false;
         }
         $num = trim($regs[2]);
-        $lemma_part = self::parseLemmaPart(trim($regs[1]), $num, $dialect_id);
-        $meaning_part = self::parseMeaningPart(trim($regs[3]), trim($regs[4]));
+        $lemma_part = self::parseLemmaPart(trim($regs[1]), $num, $lang_id, $dialect_id);
+        $meaning_part = self::parseMeaningPart(trim($regs[3]), isset($regs[4]) ? trim($regs[4]) : null);
 
-        return array_merge($lemma_part, ['num'=>$num], $meaning_part);
-        
-        
+        return array_merge($lemma_part, ['num'=>$num], $meaning_part);        
     }
 
-    public static function parseLemmaPart($lemma_pos, $num, $dialect_id) {
+    public static function parseLemmaPart($lemma_pos, $num, $lang_id, $dialect_id) {
         if (!preg_match("/^(.+)\s+([^\s]+)$/", $lemma_pos, $regs)) {
             return ['lemmas' => false];
         }
-        $lemma_part['pos_id'] = self::getPOSID(trim($regs[2]));            
-        $lemma_part['lemmas'] = self::parseLemmas(trim($regs[1]), $num, $dialect_id, $lemma_part['pos_id']);
+        $lemma_part['pos_id'] = self::getPOSID(trim($regs[2]));   
+        if ($lang_id != 1) { // разбитие по запятой, если в словарной статье несколько однородных лемм
+            $lemma_part['lemmas'] = KarGram::parseLemmasForImport(trim($regs[1]), $num, $dialect_id, $lemma_part['pos_id']);
+        } else {
+            $lemma_part['lemmas'] = [trim($regs[1])];
+        }
         return $lemma_part;
     }
 
-    /**
-     * Lemmas examples:
-     * a
-     * abie {-, -da, -loi}
-     * a|bu {-vu / -bu, -buo, -buloi} 
-     * ahavoit|tua {-a / -ta, -i / -ti, -ta, -eta, -ett}, ahavoi|ja {-če / -ččo, -či / -čči, -, -ja, -d}
-     * aijalleh, aijaldi
-     * 
-     * @param type $lemmas
-     * @return type
-     */
-    public static function parseLemmas($lemmas, $num, $dialect_id, $pos_id) {
-        $lemmas = Grammatic::toRightForm($lemmas);
-        if ($dialect_id!=47) { // not tver
-            return [0=>$lemmas];
-        }
-        
-        $lemma_arr=[];
-        $count_brackets = mb_substr_count($lemmas, '}');
-
-        if (!$count_brackets) { // not changeble pos
-            $lemma_arr=preg_split("/\s*,\s*/", $lemmas);
-        } else {
-            $lemma_arr=preg_split("/\}\s*,\s*/", $lemmas);
-            for ($i=0; $i<sizeof($lemma_arr); $i++) {
-                $lemma_arr[$i] = Grammatic::toRightTemplate(trim($lemma_arr[$i]), $num, $pos_id);
-            }
-        }
-        return $lemma_arr;
-    }    
-    
     /** Splits text line to meanings, e.g. "1. first meaning 2. second meaning" 
      * will return ["first meaning", "second meaning"]
      * 
@@ -152,7 +132,7 @@ class DictParser
     public static function getNumberID($num) {
         if ($num=='pl' || $num=='impers' || $num=='def') {
             return 1;            
-        } else if ($num=='sing') {
+        } else if ($num=='sing' || $num=='sg') {
             return 2;
         }
     }
@@ -258,7 +238,7 @@ class DictParser
      * 
      * @param Array $entry
      */
-    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id/*, $time_checking*/) {       
+    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id/*, $time_checking*/) {     
         foreach ($entry['lemmas'] as $lemma_template) {
             $data = ['lemma'=>$lemma_template, 
                      'lang_id'=>$lang_id, 
