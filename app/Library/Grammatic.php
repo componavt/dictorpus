@@ -31,6 +31,7 @@ class Grammatic
         $name_num = isset($data['number']) ? self::nameNumFromNumberField($data['number']) : null;
        
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num);
+//dd($max_stem, $affix);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems);
@@ -121,6 +122,7 @@ class Grammatic
         if (!preg_match("/\{\{/", $template)) {
             $template = preg_replace('/\|\|/','',$template);
         }
+     
         if ($lang_id == 1) {
             return VepsGram::stemsFromTemplate($template, $pos_id, $name_num);                
         } 

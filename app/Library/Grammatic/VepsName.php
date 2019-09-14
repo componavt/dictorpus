@@ -64,7 +64,7 @@ class VepsName
     }
     
     public static function stemsFromTemplate($template, $name_num) {
-        $stems[0] = $base = $template;
+        $stems[0] = $base = preg_replace("/\|/",'',$template);
         $base_suff = null;
         $arg = "([^\|]*)";
         $div_arg = "\|".$arg;

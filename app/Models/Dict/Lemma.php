@@ -671,7 +671,7 @@ dd($wordforms);
 //dd($data);        
         list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
-//dd($new_lemma);        
+//dd($new_lemma, $stem, $affix, $stems);        
         $this->lemma = $new_lemma;
         $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
         $this->lang_id = (int)$data['lang_id'];
