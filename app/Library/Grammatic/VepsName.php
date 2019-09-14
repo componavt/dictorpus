@@ -45,7 +45,7 @@ class VepsName
             case 3: // illative sg
                 return self::illSgBase(self::getStemFromWordform($lemma, 1, $dialect_id)); 
             case 4: // partitive pl
-                if (preg_match("/^(.+)d$/", $lemma->wordform(22, $dialect_id), $regs)) { 
+                if (preg_match("/^(.+)".self::partPlOkon($dialect_id)."$/", $lemma->wordform(22, $dialect_id), $regs)) { 
                     return $regs[1];
                 }
                 return NULL;
@@ -106,7 +106,7 @@ class VepsName
      */
     public static function stemsOthersFromTemplate($regs, $name_num=NULL) {
 //dd($regs);    
-        $out = [null, null, null];
+        $out = [[$regs[0]], $regs[0], null];
         $base = $regs[1];
         $base_suff = $regs[2];
         $gen_sg_suff = $regs[3];
@@ -247,7 +247,7 @@ class VepsName
             case 24: // генитив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'den' : '';
             case 22: // партитив, мн.ч. 
-                return self::partPl($stems[4], $dialect_id);
+                return $stems[4] ? $stems[4]. self::partPlOkon($dialect_id) : '';
             case 279: // эссив, мн.ч. 
                 return self::essPl($stems[4], $dialect_id);
             case 59: // транслатив, мн.ч. 
@@ -540,17 +540,14 @@ class VepsName
         }        
     }
     
-    public static function partPl($stem4, $dialect_id){
-        if (!$stem4) {
-            return '';
-        }
+    public static function partPlOkon($dialect_id){
         switch ($dialect_id) {
             case 3: // южновепсский 
             case 4: // средневепсский восточный 
             case 5: // средневепсский западный 
-                return $stem4. 'd’';
+                return 'd’';
             default:
-                return $stem4. 'd';                
+                return 'd';                
         }        
     }
     

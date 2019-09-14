@@ -115,6 +115,7 @@ class DictParser
             'num' => 'NUM',
             'partic' => 'PART',
             'postp' => 'POSTP',
+            'post' => 'POSTP',
             'prep' => 'PREP',
             'pron' => 'PRON',
             's' => 'NOUN',

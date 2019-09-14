@@ -365,7 +365,7 @@ class GrammaticTest extends TestCase
     }
     
     // stemsFromTemplate() karelian nominals
-    public function testStemsByTemplatePieni() {
+    public function testStemsFromTemplatePieni() {
         $lang_id = 4;
         $pos_id = 1; //adjective
 //        $dialect_id=47;
@@ -404,7 +404,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testStemsByTemplateVepsKoiv() {
+    public function testStemsFromTemplateVepsKoiv() {
         $lang_id = 1;
         $pos_id = 5; // noun
         $dialect_id=43;
@@ -416,7 +416,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testStemsByTemplateVepsSg() {
+    public function testStemsFromTemplateVepsSg() {
         $lang_id = 1;
         $pos_id = 14; // proper noun
 //        $dialect_id=43;
@@ -428,7 +428,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testStemsByTemplateVepsPl() {
+    public function testStemsFromTemplateVepsPl() {
         $lang_id = 1;
         $pos_id = 14; // proper noun
 //        $dialect_id=43;
@@ -440,7 +440,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testStemsByTemplateVepsNeičukaine() {
+    public function testStemsFromTemplateVepsNeičukaine() {
         $lang_id = 1;
         $pos_id = 5; // noun
 //        $dialect_id=43;
@@ -452,9 +452,9 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testStemsByTemplateVepsČoma() {
+    public function testStemsFromTemplateVepsČoma() {
         $lang_id = 1;
-        $pos_id = 1; // noun
+        $pos_id = 1; 
 //        $dialect_id=43;
         $template = "čom|a (-an, -id)";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
@@ -464,9 +464,9 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
 
-    public function testStemsByTemplateVepsSur() {
+    public function testStemsFromTemplateVepsSur() {
         $lang_id = 1;
-        $pos_id = 1; // noun
+        $pos_id = 1; 
 //        $dialect_id=43;
         $template = "sur|’ (-en, ’t, -id)";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
@@ -477,7 +477,7 @@ class GrammaticTest extends TestCase
     }
     
     // stemsFromTemplate() veps verbs
-    public function testStemsByTemplateVepsVerbVoikta() {
+    public function testStemsFromTemplateVepsVerbVoikta() {
         $lang_id = 1;
         $pos_id = 11; // verb
 //        $dialect_id=43;
@@ -489,7 +489,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
    
-    public function testStemsByTemplateVepsVerbNullDialect() {
+    public function testStemsFromTemplateVepsVerbNullDialect() {
         $lang_id = 1;
         $pos_id = 11; // verb
 //        $dialect_id=43;
@@ -500,7 +500,7 @@ class GrammaticTest extends TestCase
             1=>null, 2=>'töndu', 3=>'da'];
         $this->assertEquals( $expected, $result);        
     }
-    public function testStemsByTemplateVepsVerbAstta() {
+    public function testStemsFromTemplateVepsVerbAstta() {
         $lang_id = 1;
         $pos_id = 11; // verb
 //        $dialect_id=43;
@@ -512,7 +512,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
        
-    public function testStemsByTemplateVepsVerbValita() {
+    public function testStemsFromTemplateVepsVerbValita() {
         $lang_id = 1;
         $pos_id = 11; // verb
 //        $dialect_id=43;
@@ -565,4 +565,17 @@ class GrammaticTest extends TestCase
                       5=>''], $num, 'Kariel', 'a'];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testStemsFromTemplateVepsWrongPartitiv() {
+        $lang_id = 1;
+        $pos_id = 5; // noun
+//        $dialect_id=43;
+        $template = "neičuka|ine (-ižed, -št, -ižid)";
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
+//dd($result);        
+        $expected = [0=>['neičuka|ine (-ižed, -št, -ižid)'],
+            1=>null, 2=>'neičuka|ine (-ižed, -št, -ižid)', 3=>null];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

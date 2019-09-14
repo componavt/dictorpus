@@ -110,7 +110,7 @@ class VepsNameTest extends TestCase
         $expected = ['sizarehe','kirvheze','armhaze','nagrheze','abajoho','abidoho'];
         $this->assertEquals( $expected, $result);        
     }
-
+    
     public function testStemsFromTemplateCompound() {
         $template = "abuozuteseli|ne (-žen, -št, -žid)";
         $num = NULL;
