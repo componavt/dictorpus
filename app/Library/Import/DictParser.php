@@ -109,6 +109,7 @@ class DictParser
     public static function getPOSID($name) {
         $names_to_codes = [
             'a' => 'ADJ',
+            'adj' => 'ADJ',
             'adv' => 'ADV',
             'conj' => 'CCONJ',
             'interj' => 'INTJ',
@@ -117,6 +118,7 @@ class DictParser
             'postp' => 'POSTP',
             'post' => 'POSTP',
             'prep' => 'PREP',
+            'propn' => 'PROPN',
             'pron' => 'PRON',
             's' => 'NOUN',
             'v' => 'VERB'
