@@ -60,15 +60,15 @@ class VepsName
     }
 
     public static function gramsetListSg() {
-        return $gramsets = [1, 56,  3,  4,  277,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19];
+        return [1, 56,  3,  4,  277,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19];
     }
 
     public static function gramsetListPl() {
-        return $gramsets = [2, 57, 24, 22, 279, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
+        return [2, 57, 24, 22, 279, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
     }
 
     public static function getListForAutoComplete() {
-        return $gramsets = array_merge(self::gramsetListSg(), self::gramsetListPl());
+        return array_merge(self::gramsetListSg(), self::gramsetListPl());
     }
     
     public static function stemsFromTemplate($template, $name_num) {

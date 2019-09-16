@@ -63,18 +63,40 @@ class KarName
         }
     }
 
+    public static function gramsetListSg() {
+        return [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15];
+    }
+
+    public static function gramsetListPl() {
+        return [2, 24, 22, 279, 59, 23, 60, 61, 280, 62, 64, 65, 66, 281];
+    }
+
     public static function getListForAutoComplete() {
-        return [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15, 
-                2, 24, 22, 279, 59, 23, 60, 61, 280, 62, 64, 65, 66, 281];
+        return array_merge(self::gramsetListSg(), self::gramsetListPl());
+    }
+        
+    public static function wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
+        switch ($gramset_id) {
+            case 2: // номинатив, мн.ч. 
+                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'t' : '');
+        }
+        
+        if ($name_num !='pl' && in_array($gramset_id, self::gramsetListSg())) {
+            return self::wordformByStemsSg($stems, $gramset_id, $lang_id, $dialect_id);
+        }
+        
+        if ($name_num !='sg' && in_array($gramset_id, self::gramsetListPl())) {
+            return self::wordformByStemsPl($stems, $gramset_id, $lang_id, $dialect_id);
+        }
+        return '';
     }
     
-    public static function wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
+    public static function wordformByStemsSg($stems, $gramset_id, $lang_id, $dialect_id) {
         $stem1_i = preg_match("/i$/u", $stems[1]);
-        $stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
         
         switch ($gramset_id) {
             case 1: // номинатив, ед.ч. 
-                return $name_num != 'pl' ? $stems[0] : '';
+                return $stems[0];
             case 3: // генитив, ед.ч. 
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
@@ -99,9 +121,13 @@ class KarName
                 return $stems[1] ? $stems[1].'nke' : '';
             case 15: // пролатив, ед.ч. 
                 return $stems[1] ? $stems[1].'čči' : '';
-                                
-            case 2: // номинатив, мн.ч. 
-                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'t' : '');
+        }
+    }
+
+    public static function wordformByStemsPl($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
+        $stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
+        
+        switch ($gramset_id) {
             case 24: // генитив, мн.ч. 
                 return $stems[4] ? $stems[4]. 'n' : '';
             case 22: // партитив, мн.ч. 
@@ -129,7 +155,6 @@ class KarName
             case 281: // инструктив, мн.ч. 
                 return $stems[4] ? $stems[4].'n' : '';
         }
-        return '';
     }
 
     /**
