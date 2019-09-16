@@ -92,7 +92,7 @@ class Lemma extends Model
      */
     public function getBase($base_n, $dialect_id) {
         if (!$dialect_id) {
-            return null;
+            return '';
         }
         $base = $this->bases()->where('base_n',$base_n)->where('dialect_id',$dialect_id)->first();
         if (!$base) { 

@@ -96,6 +96,7 @@ class LemmaWordformController extends Controller
         }
 
         $lemma = Lemma::find($id);
+//dd($lemma->getBase(0, $dialect_id));        
         $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
         $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id)+['all'=>'ДЛЯ ВСЕХ ДИАЛЕКТОВ'];
         
