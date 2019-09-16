@@ -17,6 +17,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaBase;
 
 class LemmaWordformController extends Controller
 {
@@ -98,8 +99,10 @@ class LemmaWordformController extends Controller
         $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
         $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id)+['all'=>'ДЛЯ ВСЕХ ДИАЛЕКТОВ'];
         
+        $base_list = LemmaBase::baseList($lemma->lang_id, $lemma->pos_id);
+                
         return view('dict.lemma_wordform.edit',
-                    compact('dialect_id', 'dialect_name', 'dialect_values', 
+                    compact('base_list','dialect_id', 'dialect_name', 'dialect_values', 
                             'gramset_values', 'lemma', 'args_by_get', 'url_args'));
     }
 
@@ -113,13 +116,15 @@ class LemmaWordformController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $dialect_id = $request->dialect_id;
         $lemma= Lemma::findOrFail($id);
-        // WORDFORMS UPDATING
-        //remove all records from table lemma_wordform
+
+        $dialect_id = $request->dialect_id;
         if (!(int)$dialect_id) {
             $dialect_id = NULL;
         }
+        // WORDFORMS UPDATING
+        //remove all records from table lemma_wordform
+        $lemma->updateBases($request->bases, $lemma->pos_id, $request->dialect_id_for_bases);
         $lemma-> wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
         //add wordforms from full table of gramsets
         $lemma-> storeWordformGramsets($request->lang_wordforms, $request->lang_wordforms_dialect);

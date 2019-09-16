@@ -74,6 +74,7 @@ class Lemma extends Model
 //    use \App\Models\Scopes\ID;
 //    use \App\Models\Scopes\LangID;
 //    use \App\Models\Scopes\Wordform;
+    
     /**
      * @return Array of bases
      */
@@ -81,15 +82,21 @@ class Lemma extends Model
         $bases=[];
         for ($i=0; $i<8; $i++) {
 //dd($this->bases);            
-            $base = $this->bases()->where('base_n',$i)->where('dialect_id',$dialect_id)->first();
-            if (!$base) { 
-                $base = Grammatic::getStemFromWordform($this, $i, $this->lang_id,  $this->pos_id, $dialect_id);
-            } else {
-                $base = $base->base;
-            }
-            $bases[$i] = $base ? $base : NULL;
+            $bases[$i] = self::getBase($i, $dialect_id);
         }
         return $bases;
+    }
+    
+    /**
+     * @return String
+     */
+    public function getBase($base_n, $dialect_id) {
+        $base = $this->bases()->where('base_n',$base_n)->where('dialect_id',$dialect_id)->first();
+        if (!$base) { 
+            return Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
+        } else {
+            return $base->base;
+        }
     }
     
 /*     // Lemma has many MeaningTexts through Meanings

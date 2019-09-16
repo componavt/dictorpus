@@ -1,8 +1,7 @@
-@include('widgets.form._url_args_by_post',['url_args'=>$url_args])
         <div class="table-responsive">
             <table class="word-form-table">
                 <tr>
-                    <th>&nbsp;</th>
+                    <th><h3>{{ trans('dict.wordforms') }}</h3></th>
                     <th class="warning">{{trans('dict.wordform_field_comments')}}</th>
                     <th>{{$dialect_name}}</th>
                 </tr>

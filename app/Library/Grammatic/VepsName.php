@@ -174,14 +174,13 @@ class VepsName
         $gen_sg_suff = $regs[3];
         $par_sg_suff = (isset($regs[4])) ? $regs[4] : null;
 
-        if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
-            return [null, null, null];
-        }
-       
         $stems[0] = $base.$base_suff;        
         $stems[1] = $base. $regs1[1];
-        if (!self::isRightVowelBase($stems[1])) {return $out;}
-        
+
+        if (!self::isRightVowelBase($stems[1]) || !preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
+            return [$regs[0], $regs[0], null];
+        }
+       
         $stems[2] = self::illSgBase($stems[1]); // single illative base
         $stems[3] = $par_sg_suff ? $base.$par_sg_suff : $stems[1].'d';
         $stems[4] = $stems[5] = '';

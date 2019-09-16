@@ -96,4 +96,19 @@ class LemmaBase extends Model
         self::updateStemsFromSet($lemma->id, $stems, $dialect_id);
 //            if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
     }
+    
+    public static function baseList($lang_id, $pos_id) {
+        $base_list_title = 'base_list_'.$lang_id.'_';
+        if ($pos_id == PartOfSpeech::getVerbID()) {
+            $base_list_title .= 'verb';
+        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) {
+            $base_list_title .= 'name';
+        } else {
+            return null;            
+        }
+        
+        return trans('dict.'.$base_list_title);        
+
+    }
+    
 }
