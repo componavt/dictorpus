@@ -699,7 +699,10 @@ dd($wordforms);
         $this->save();        
     }
     
-    public function updateBases($stems, $pos_id, $dialect_id) {        
+    public function updateBases($stems, $pos_id, $dialect_id) {     
+        if (!$dialect_id) {
+            return;
+        }
         if ($stems) {
             LemmaBase::updateStemsFromSet($this->id, $stems, $dialect_id);
         } else {
