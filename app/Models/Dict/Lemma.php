@@ -91,6 +91,9 @@ class Lemma extends Model
      * @return String
      */
     public function getBase($base_n, $dialect_id) {
+        if (!$dialect_id) {
+            return null;
+        }
         $base = $this->bases()->where('base_n',$base_n)->where('dialect_id',$dialect_id)->first();
         if (!$base) { 
             return Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
