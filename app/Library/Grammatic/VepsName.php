@@ -59,9 +59,16 @@ class VepsName
         return false;
     }
 
+    public static function gramsetListSg() {
+        return $gramsets = [1, 56,  3,  4,  277,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19];
+    }
+
+    public static function gramsetListPl() {
+        return $gramsets = [2, 57, 24, 22, 279, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
+    }
+
     public static function getListForAutoComplete() {
-        return $gramsets = [1, 56,  3,  4,  277,  5,  8,  9, 10, 11, 12, 13, 6,  14, 15, 17, 20, 16, 19,
-                            2, 57, 24, 22, 279, 59, 23, 60, 61, 25, 62, 63, 64, 65, 66, 18, 69, 67, 68];
+        return $gramsets = array_merge(self::gramsetListSg(), self::gramsetListPl());
     }
     
     public static function stemsFromTemplate($template, $name_num) {
@@ -174,10 +181,14 @@ class VepsName
         $gen_sg_suff = $regs[3];
         $par_sg_suff = (isset($regs[4])) ? $regs[4] : null;
 
+        if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
+            return [$regs[0], $regs[0], null];
+        }
+        
         $stems[0] = $base.$base_suff;        
         $stems[1] = $base. $regs1[1];
 
-        if (!self::isRightVowelBase($stems[1]) || !preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
+        if (!self::isRightVowelBase($stems[1])) {
             return [$regs[0], $regs[0], null];
         }
        
@@ -197,13 +208,38 @@ class VepsName
      * @return string
      */
     public static function wordformByStems($stems, $gramset_id, $dialect_id, $name_num=null) {
+        switch ($gramset_id) {
+            case 2: // номинатив, мн.ч. 
+            case 57: // аккузатив, мн.ч. 
+                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'d' : '');
+        }
+        
+        if ($name_num !='pl' && in_array($gramset_id, self::gramsetListSg())) {
+            return self::wordformByStemsSg($stems, $gramset_id, $dialect_id);
+        }
+        
+        if ($name_num !='sg' && in_array($gramset_id, self::gramsetListPl())) {
+            return self::wordformByStemsPl($stems[4], $gramset_id, $dialect_id);
+        }
+        return '';
+    }
+    
+    /**
+     * 
+     * @param Array $stems [nom_sg, gen_sg, ill_sg, part_sg, part_pl, '']
+     * @param Int $gramset_id
+     * @param Int $dialect_id
+     * @param String $name_num 'sg', 'pl' or null
+     * @return string
+     */
+    public static function wordformByStemsSg($stems, $gramset_id, $dialect_id) {
         $s_sg = isset($stems[1]) ? (preg_match("/i$/u", $stems[1]) ? 'š' : 's') : '';
         
         switch ($gramset_id) {
             case 1: // номинатив, ед.ч. 
-                return $name_num != 'pl' ? $stems[0] : '';
+                return $stems[0];
             case 56: // аккузатив, ед.ч. 
-                return $name_num != 'pl' ? $stems[0].($stems[1] ? ', '.$stems[1].'n' : '') : '';
+                return $stems[0].($stems[1] ? ', '.$stems[1].'n' : '');
             case 3: // генитив, ед.ч. 
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
@@ -238,47 +274,57 @@ class VepsName
                 return self::terminatSg($stems[1], $dialect_id);
             case 19: //адитив, ед.ч. 
                 return self::aditSg($stems[1], $dialect_id);
-                
-                
-            case 2: // номинатив, мн.ч. 
-            case 57: // аккузатив, мн.ч. 
-                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'d' : '');
-            case 24: // генитив, мн.ч. 
-                return $stems[4] ? $stems[4]. 'den' : '';
-            case 22: // партитив, мн.ч. 
-                return $stems[4] ? $stems[4]. self::partPlOkon($dialect_id) : '';
-            case 279: // эссив, мн.ч. 
-                return self::essPl($stems[4], $dialect_id);
-            case 59: // транслатив, мн.ч. 
-                return $stems[4] ? $stems[4]. 'kš' : '';
-            case 23: // инессив, мн.ч.
-                return $stems[4] ? $stems[4]. 'š' : '';
-            case 60: // элатив, мн.ч.
-                return self::elatPl($stems[4], $dialect_id);
-            case 61: // иллатив, мн.ч. 
-                return self::illPl($stems[4], $dialect_id);
-            case 25: // адессив, мн.ч.
-                return self::adesPl($stems[4], $dialect_id);
-            case 62: // аблатив, мн.ч.
-                return self::ablatPl($stems[4], $dialect_id);
-            case 63: // аллатив, ед.ч. 
-                return $stems[4] ? $stems[4] . 'le' : '';
-            case 64: // абессив, мн.ч.
-                return $stems[4] ? $stems[4] . 'ta' : '';
-            case 65: // комитатив, мн.ч. 
-                return self::comitPl($stems[4], $dialect_id);
-            case 66: // пролатив, мн.ч. 
-                return self::prolPl($stems[4], $dialect_id);
-            case 18: //аппроксиматив, мн.ч. 
-                return self::approxPl($stems[4], $dialect_id);
-            case 69: //эгрессив, мн.ч. 
-                return self::egresPl($stems[4], $dialect_id);
-            case 67: //терминатив, мн.ч. 
-                return self::terminatPl($stems[4], $dialect_id);
-            case 68: //адитив, мн.ч. 
-                return self::aditPl($stems[4], $dialect_id);
         }
-        return '';
+    }
+    
+    /**
+     * 
+     * @param Array $stems [nom_sg, gen_sg, ill_sg, part_sg, part_pl, '']
+     * @param Int $gramset_id
+     * @param Int $dialect_id
+     * @param String $name_num 'sg', 'pl' or null
+     * @return string
+     */
+    public static function wordformByStemsPl($stem4, $gramset_id, $dialect_id) {
+        if (!$stem4) {
+            return '';
+        }
+        switch ($gramset_id) {
+            case 24: // генитив, мн.ч. 
+                return $stem4. 'den';
+            case 22: // партитив, мн.ч. 
+                return $stem4. self::partPlOkon($dialect_id);
+            case 279: // эссив, мн.ч. 
+                return self::essPl($stem4, $dialect_id);
+            case 59: // транслатив, мн.ч. 
+                return $stem4. 'kš';
+            case 23: // инессив, мн.ч.
+                return $stem4. 'š';
+            case 60: // элатив, мн.ч.
+                return self::elatPl($stem4, $dialect_id);
+            case 61: // иллатив, мн.ч. 
+                return self::illPl($stem4, $dialect_id);
+            case 25: // адессив, мн.ч.
+                return self::adesPl($stem4, $dialect_id);
+            case 62: // аблатив, мн.ч.
+                return self::ablatPl($stem4, $dialect_id);
+            case 63: // аллатив, ед.ч. 
+                return $stem4 . 'le';
+            case 64: // абессив, мн.ч.
+                return $stem4 . 'ta';
+            case 65: // комитатив, мн.ч. 
+                return self::comitPl($stem4, $dialect_id);
+            case 66: // пролатив, мн.ч. 
+                return self::prolPl($stem4, $dialect_id);
+            case 18: //аппроксиматив, мн.ч. 
+                return self::approxPl($stem4, $dialect_id);
+            case 69: //эгрессив, мн.ч. 
+                return self::egresPl($stem4, $dialect_id);
+            case 67: //терминатив, мн.ч. 
+                return self::terminatPl($stem4, $dialect_id);
+            case 68: //адитив, мн.ч. 
+                return self::aditPl($stem4, $dialect_id);
+        }
     }
     
     public static function consSet() {

@@ -34,17 +34,6 @@ class LemmaTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    // чередование в диалектах
-    public function testExtractStemVepsNounManyWordforms()
-    {
-        $lemma_id = 744;
-        $lemma = Lemma::find($lemma_id);
-        $result = $lemma->extractStem();
-        
-        $expected = ['','aid'];
-        $this->assertEquals( $expected, $result);        
-    }
-    
     public function testGetWordformsCONLLVepAnimateNoun()
     {
         $word = "Vellenke";
