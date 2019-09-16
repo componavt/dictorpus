@@ -41,25 +41,25 @@ class KarName
                 if (preg_match("/^(.+)n$/", $lemma->wordform(3, $dialect_id), $regs)) {
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 2: //illative sg
                 if (preg_match("/^(.+)h$/", $lemma->wordform(10, $dialect_id), $regs)) { 
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 3: // partitive sg
                 $part_sg = $lemma->wordform(4, $dialect_id); 
-                return $part_sg ? $part_sg : NULL;
+                return $part_sg ? $part_sg : '';
             case 4: //genetive pl
                 if (preg_match("/^(.+)n$/", $lemma->wordform(10, $dialect_id), $regs)) { 
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 5: //illative pl
                 if (preg_match("/^(.+)h$/", $lemma->wordform(22, $dialect_id), $regs)) { 
                     return $regs[1];
                 }
-                return NULL;
+                return '';
         }
     }
 

@@ -39,10 +39,10 @@ class VepsVerb
                 if (preg_match("/^(.+)b$/", $lemma->wordform(28, $dialect_id), $regs)) {
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 2: // indicative imperfect 3 sg
                 $ind_imp_3_sg = $lemma->wordform(34, $dialect_id); 
-                return $ind_imp_3_sg ? $ind_imp_3_sg : NULL;
+                return $ind_imp_3_sg ? $ind_imp_3_sg : '';
             case 3: // base of 2 active particle
                 return self::getStem3(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
             case 4: // base of conditional

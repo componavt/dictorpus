@@ -44,35 +44,35 @@ class KarVerb
                 if (preg_match("/^(.+)n$/", $lemma->wordform(26, $dialect_id), $regs)) {
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 2: // 3 infinitive illative
                 if (preg_match("/^(.+)m[aä]h$/u", $lemma->wordform(174, $dialect_id), $regs)) { 
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 3: // indicative imperfect 1 sg
                 if (preg_match("/^(.+)n$/", $lemma->wordform(32, $dialect_id), $regs)) {
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 4: // indicative imperfect 3 sg
                 $ind_imp_3_sg = $lemma->wordform(34, $dialect_id); 
-                return $ind_imp_3_sg ? $ind_imp_3_sg : NULL;
+                return $ind_imp_3_sg ? $ind_imp_3_sg : '';
             case 5: // 2 active participle
                 if (preg_match("/^(.+)n?[nlrsš]un$/", $lemma->wordform(179, $dialect_id), $regs)) { 
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 6: // indicative presence 3 pl
                 if (preg_match("/^(.+)h$/", $lemma->wordform(31, $dialect_id), $regs)) { 
                     return $regs[1];
                 }
-                return NULL;
+                return '';
             case 7: // indicative imperfect 3 pl
                 if (preg_match("/^(.+)ih$/", $lemma->wordform(37, $dialect_id), $regs)) {
                     return $regs[1];
                 }
-                return NULL;
+                return '';
         }
     }
 
