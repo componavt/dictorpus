@@ -83,7 +83,9 @@ class LemmaBase extends Model
             return;
         }
         for ($i=0; $i<sizeof($stems); $i++) {
-            self::updateStem($lemma_id, $i, $stems[$i], $dialect_id);
+            if (isset($stems[$i])) {
+                self::updateStem($lemma_id, $i, $stems[$i], $dialect_id);
+            }
         }
     }
     

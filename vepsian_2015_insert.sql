@@ -931,3 +931,6 @@ update langs set code='fi' where id=7;
 -- php artisan make:controller Dict/LemmaWordformController
 
 -- php artisan make:migration create_lemma_variants_table --table=lemma_variants
+
+select count(*) FROM lemma_wordform where gramset_id>121 and gramset_id<170 and lemma_id in (select id from lemmas where lang_id=1);
+DELETE FROM lemma_wordform where gramset_id>121 and gramset_id<170 and lemma_id in (select id from lemmas where lang_id=1);
