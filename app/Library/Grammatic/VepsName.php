@@ -39,11 +39,11 @@ class VepsName
                     return $regs[1];
                 }
                 return '';
-            case 2: // partitive sg
+            case 2: // illative sg
+                return self::illSgBase(self::getStemFromWordform($lemma, 1, $dialect_id)); 
+            case 3: // partitive sg
                 $part_sg = $lemma->wordform(4, $dialect_id); 
                 return $part_sg ? $part_sg : '';
-            case 3: // illative sg
-                return self::illSgBase(self::getStemFromWordform($lemma, 1, $dialect_id)); 
             case 4: // partitive pl
                 if (preg_match("/^(.+)".self::partPlOkon($dialect_id)."$/", $lemma->wordform(22, $dialect_id), $regs)) { 
                     return $regs[1];
