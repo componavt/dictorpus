@@ -12,6 +12,18 @@ use App\Models\Dict\PartOfSpeech;
 
 class VepsGram
 {
+    public static function consSet() {
+        return "pbtdkgfvsšzžcčjhmnlr";
+    }
+    
+    public static function consGeminantSet() {
+        return "kgtdpbz";
+    }
+    
+    public static function vowelSet() {
+        return "aoueiäöü";
+    }
+    
     public static function dictTemplate() {
         return "([^\s\(]+\s*\([^\,\;]+\,?\s*[^\,\;]*[\;\,]?\s*[^\,\;]*\))";
 //        return "([^\s\(]+)";

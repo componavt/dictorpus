@@ -53,7 +53,7 @@ class VepsName
     }
 
     public static function isRightVowelBase($stem) {
-        if (preg_match("/[".self::vowelSet()."]$/u", $stem)) {
+        if (preg_match("/[".vepsGram::vowelSet()."]$/u", $stem)) {
             return true;
         }
         return false;
@@ -327,14 +327,6 @@ class VepsName
         }
     }
     
-    public static function consSet() {
-        return "pbtdkgfvsšzžcčjhmnlr";
-    }
-    
-    public static function vowelSet() {
-        return "aoueiäöü";
-    }
-    
     public static function vowelEscapeSet() {
         return "aoueäöü";
     }
@@ -346,8 +338,8 @@ class VepsName
      * @return INT 1 - односложное, 2 - двусложное, 3 - многосложное
      */
     public static function countSyllable($stem1) {
-        $consonant = "[".self::consSet()."]";
-        $syllable = $consonant."?’?".$consonant."?’?[".self::vowelSet()."][iu]?";
+        $consonant = "[".vepsGram::consSet()."]";
+        $syllable = $consonant."?’?".$consonant."?’?[".vepsGram::vowelSet()."][iu]?";
         if (preg_match("/^".$syllable."$/u",$stem1)) {
             return 1;
         } elseif (preg_match("/^".$syllable.$syllable."$/u",$stem1)) {
@@ -366,7 +358,7 @@ class VepsName
      */
     public static function illSgBase($stem1) {
 //        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelEscapeSet()."]$/u",$stem1, $regs)) {
-        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelSet()."]$/u",$stem1, $regs)) {
+        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".vepsGram::vowelSet()."]$/u",$stem1, $regs)) {
             return $regs[1];
         }
         return $stem1;
@@ -390,9 +382,9 @@ class VepsName
         
         if (self::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
             $okon = 'he';
-        } elseif (self::countSyllable($stem1)>2 && preg_match("/h[".self::vowelSet()."]$/",$stem1)) {
+        } elseif (self::countSyllable($stem1)>2 && preg_match("/h[".vepsGram::vowelSet()."]$/",$stem1)) {
             $okon = 'ze';
-        } elseif (preg_match("/([".self::vowelSet()."])$/u",$stem1, $regs)) {
+        } elseif (preg_match("/([".vepsGram::vowelSet()."])$/u",$stem1, $regs)) {
             $okon = 'h'. $regs[1];
         } else {
             return '';
@@ -506,7 +498,7 @@ class VepsName
     }
     
     public static function base_without_lastV($stem){
-        if (preg_match("/^(.+)[".self::vowelSet()."]$/u",$stem, $regs)) {
+        if (preg_match("/^(.+)[".vepsGram::vowelSet()."]$/u",$stem, $regs)) {
             return $regs[1];
         }
         return $stem;

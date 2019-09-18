@@ -560,6 +560,28 @@ class VepsVerb
         }
     }
     
+    public static function IndPres2Sg($stem1, $dialect_id){
+        if (!$stem1) { return ''; }
+        if (in_array($dialect_id, [3, 4, 5]) && 
+            preg_match("/i$/u", $stem1, $regs)) {
+            return $stem1. 'd’';
+        }        
+        return $stem1. 'd';
+    }
+
+    public static function IndPres3Sg($stem1, $dialect_id){
+        if (!$stem1) { return ''; }
+        if ($dialect_id==1) {
+            if (preg_match("/^(.+)([".vepsGram::consGeminantSet()."])(.)$/u", $stem1, $regs)) {
+                $stem1 = $regs[1].$regs[2].$regs[2].$regs[3];    
+            }
+            if (preg_match("/^(.+)e$/u", $stem1, $regs)) {
+                $stem1 = $regs[1].'o';    
+            }
+        }        
+        return $stem1. 'b';
+    }
+
     public static function IndPres1Pl($stem1, $dialect_id){
         if (!$stem1) { return ''; }
        
@@ -591,10 +613,10 @@ class VepsVerb
     public static function IndPres3Pl($stem0, $stem1, $dt, $dialect_id){
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem0 && $gk ? $stem0. $dt. 'ze' : '';
+                return $stem0 && $dt ? $stem0. $dt. 'ze' : '';
             case 4: // средневепсский восточный 
             case 5: // средневепсский западный 
-                return $stem0 && $gk ? $stem0. $dt. 'as' : '';
+                return $stem0 && $dt ? $stem0. $dt. 'as' : '';
             default:
                 return $stem1 ? $stem1. 'ba': '';
         }        
