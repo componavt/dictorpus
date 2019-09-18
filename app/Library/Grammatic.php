@@ -34,7 +34,8 @@ class Grammatic
 //dd($max_stem, $affix);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        
-        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems);
+        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems, 
+                                                    isset($data['reflexive']) ? $data['reflexive'] : null);
         if ($gramset_wordforms) {
             return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
         }
@@ -130,7 +131,7 @@ class Grammatic
         return KarGram::stemsFromTemplate($template, $pos_id, $name_num);                
     }
 
-    public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems) {
+    public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems, $reflexive=null) {
 //dd($stems);                
         if (!isset($stems[0]) || sizeof($stems)<6) {
             return false;
@@ -141,7 +142,7 @@ class Grammatic
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
         foreach ($gramsets as $gramset_id) {
             if ($pos_id == PartOfSpeech::getVerbID()) {
-                $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
+                $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num, $reflexive);
             } else {
                 $wordforms[$gramset_id] = self::nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
             }
@@ -156,9 +157,13 @@ class Grammatic
         return KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
     }
     
-    public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def=null) {
+    public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def=null, $reflexive=null) {
         if ($lang_id == 1) {
-            return VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
+            if ($reflexive) {
+                return VepsVerb::wordformByStemsReflex($stems, $gramset_id, $dialect_id);
+            } else {
+                return VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
+            }
         }
         return KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def);
     }
