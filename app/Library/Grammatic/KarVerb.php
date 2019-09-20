@@ -82,8 +82,10 @@ class KarVerb
      * @return type list of known gramsets ID
      */
     public static function getListForAutoComplete() {
-        return [26,  27,  28,  29,  30,  31,  70,  71,  72,  73,  78,  79, 
-                     32,  33,  34,  35,  36,  37,  80,  81,  82,  83,  84,  85, 
+        return [26,  27,  28,  29,  30,  31, 295, 296, 
+                70,  71,  72,  73,  78,  79, 
+                32,  33,  34,  35,  36,  37, 297, 298, 
+                80,  81,  82,  83,  84,  85, 
                      86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,
                      98,  99, 100, 101, 102, 103, 104, 105, 107, 108, 106, 109,
                           51,  52,       54,  55,       50,  74,       76,  77,  
@@ -110,6 +112,10 @@ class KarVerb
                 return !$def && $stems[1] ? $stems[1] . 'tt'. KarGram::garmVowel($stems[1],'a') : '';
             case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
                 return $stems[6] ? $stems[6].'h' : '';
+            case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
+                return $stems[1] ? $stems[1] : '';
+            case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
+                return $stems[6] ? $stems[6] : '';
 
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., отриц. 
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., отриц. 
@@ -133,6 +139,10 @@ class KarVerb
                 return !$def && $stems[4] ? self::indImp2PlurByStem($stems[4]) : '';
             case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
                 return $stems[7] ? $stems[7] . 'ih' : '';
+            case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
+                return $stems[5] ? self::perfectForm($stems[5], $lang_id) : '';
+            case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
+                return $stems[7] ? IndImperfConnegPl($stems[7]) : '';
 
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
@@ -142,7 +152,7 @@ class KarVerb
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., отриц. 
                 return $stems[5] ? Grammatic::negativeForm($gramset_id, $lang_id). self::perfectForm($stems[5], $lang_id) : '';
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., отриц. 
-                return $stems[7] ? Grammatic::negativeForm(85, $lang_id). $stems[7]. KarGram::garmVowel($stems[7],'u') : '';
+                return $stems[7] ? Grammatic::negativeForm(85, $lang_id). IndImperfConnegPl($stems[7]) : '';
 
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., пол. 
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
@@ -633,6 +643,11 @@ class KarVerb
         return $aux_wordform->wordform. ' ';
     }
     
+    public static function IndImperfConnegPl($stem7) {
+        if (!$stem7) { return; }
+        return $stems7. KarGram::garmVowel($stem7,'u');
+    }
+
     /**
      * 
      * @param String $stem
