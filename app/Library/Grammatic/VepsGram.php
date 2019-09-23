@@ -59,6 +59,7 @@ class VepsGram
     }
     
     public static function stemsFromTemplate($template, $pos_id, $name_num = null) {
+//dd($template);        
         $template = trim($template);
         $stems[0] = $base = $template;
         $base_suff = null;
@@ -74,12 +75,12 @@ class VepsGram
         // verbs
         } elseif ($pos_id == PartOfSpeech::getVerbID() && 
             (preg_match('/^{{vep-conj-stems'.$div_arg.$div_arg.$div_arg.'\|?'.$arg.'}}$/u',$template, $regs) ||
-            preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab."\,\s*-([^\,\;]+)\,?\s*-([^\,\;]*)\)/", $template, $regs))) {      
+            preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab."\,\s*-([^\,\;]+)\,?\s*-?([^\,\;]*)\)/", $template, $regs))) {      
             $base = $regs[1];
             $base_suff = $regs[2];
             $stems = VepsVerb::stemsFromTemplate($regs, $pos_id);
         }
-//dd('stems:',$stems);                
+//dd('stems out:',$stems);                
         return [$stems, $name_num, $base, $base_suff];
     }
     

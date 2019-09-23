@@ -179,7 +179,7 @@ class LemmaWordformController extends Controller
      * Get bases from table OR from wordforms
      * Delete and create wordforms again
      * 
-     * Example: /dict/lemma_wordform/22407_43/reload/
+     * Example: /dict/lemma_wordform/209_1/reload/
      * 
      * @param Int $id
      * @param Int $dialect_id

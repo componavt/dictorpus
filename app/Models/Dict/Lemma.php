@@ -646,7 +646,7 @@ dd($wordforms);
     public static function storeLemma($data) {
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
-        
+dd($gramset_wordforms);        
         $lemma = self::store($data['lemma'], $data['pos_id'], $data['lang_id']);
 
         $lemma->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $data, $data['dialect_id'], $stems);      
