@@ -331,23 +331,6 @@ class VepsName
         return "aoueäöü";
     }
     
-    /**
-     * Сколько слогов в гласной основе?
-     * 
-     * @param String $stem1
-     * @return INT 1 - односложное, 2 - двусложное, 3 - многосложное
-     */
-    public static function countSyllable($stem1) {
-        $consonant = "[".vepsGram::consSet()."]";
-        $syllable = $consonant."?’?".$consonant."?’?[".vepsGram::vowelSet()."][iu]?";
-        if (preg_match("/^".$syllable."$/u",$stem1)) {
-            return 1;
-        } elseif (preg_match("/^".$syllable.$syllable."$/u",$stem1)) {
-            return 2;
-        }
-        return 3;
-    }
-    
     //consonant after which the vowel escapes before
     public static function consSetEscapeV() {
         return "dpfsšzžcčlt"; // jgvkrbdhmn
@@ -358,7 +341,7 @@ class VepsName
      */
     public static function illSgBase($stem1) {
 //        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".self::vowelEscapeSet()."]$/u",$stem1, $regs)) {
-        if (self::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".vepsGram::vowelSet()."]$/u",$stem1, $regs)) {
+        if (VepsGram::countSyllable($stem1)==2 && preg_match("/^(.+[".self::consSetEscapeV()."])[".vepsGram::vowelSet()."]$/u",$stem1, $regs)) {
             return $regs[1];
         }
         return $stem1;
@@ -380,9 +363,9 @@ class VepsName
             $stem2 = self::illSgBase($stem1);
         }
         
-        if (self::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
+        if (VepsGram::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
             $okon = 'he';
-        } elseif (self::countSyllable($stem1)>2 && preg_match("/h[".vepsGram::vowelSet()."]$/",$stem1)) {
+        } elseif (VepsGram::countSyllable($stem1)>2 && preg_match("/h[".vepsGram::vowelSet()."]$/",$stem1)) {
             $okon = 'ze';
         } elseif (preg_match("/([".vepsGram::vowelSet()."])$/u",$stem1, $regs)) {
             $okon = 'h'. $regs[1];

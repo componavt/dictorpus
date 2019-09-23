@@ -73,17 +73,17 @@ class VepsVerbTest extends TestCase
     }
     
     public function testWordformByStemsPresImperf3SgSouth() {
-        $stems = ['peze', 'pes', 'pez', 'pez', 'pez', 'pez', 't', 'a'];
+        $stems = ['pes', 'peze', 'pezi', 'pez', 'pez', 'pez', 't', 'a'];
         $dialect_id = 3; // южновепсский
         $gramset_id = 82;
         $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
        
-        $expected = 'ei pezen, ei pezend';
-        $this->assertEquals( $expected, $result);        
+        $expected = 'ii pezen, ii pezend';
+        $this->assertEquals($expected, $result);        
     }
     
     public function testWordformByStemsPresImperf3PlSouth() {
-        $stems = ['peze', 'pes', 'pez', 'pez', 'pez', 'pez', 't', 'a'];
+        $stems = ['pes', 'peze', 'pezi', 'pez', 'pez', 'pez', 't', 'a'];
         $dialect_id = 3; // южновепсский
         $gramset_id = 85;
         $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);

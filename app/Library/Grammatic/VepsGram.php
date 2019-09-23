@@ -44,6 +44,10 @@ class VepsGram
         }
     }
     
+    public static function sonantSet() {
+        return "bdgvzžjmnlr";
+    }
+    
     public static function getListForAutoComplete($pos_id) {
         $gramsets = [];
         if ($pos_id == PartOfSpeech::getVerbID()) {
@@ -99,4 +103,24 @@ class VepsGram
         return "([^\.]+)\.\s*([^\.]*)\.?\s*\-\s*(.+)";
 //        return "([^\.]+)\.\s*([^\.]*)\.?\s*\-\s*(.+)";
     }
+    
+    /**
+     * Сколько слогов в основе?
+     * 
+     * @param String $stem
+     * @return INT 1 - односложное, 2 - двусложное, 3 - трехсложное, 4 - многосложное
+     */
+    public static function countSyllable($stem) {
+        $consonant = "[".vepsGram::consSet()."]";
+        $syllable = $consonant."?’?".$consonant."?’?[".vepsGram::vowelSet()."][iu]?";
+        if (preg_match("/^".$syllable."$/u",$stem)) {
+            return 1;
+        } elseif (preg_match("/^".$syllable.$syllable."$/u",$stem)) {
+            return 2;
+        } elseif (preg_match("/^".$syllable.$syllable.$syllable."$/u",$stem)) {
+            return 3;
+        }
+        return 4;
+    }
+    
 }
