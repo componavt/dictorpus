@@ -142,7 +142,7 @@ class KarVerb
             case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
                 return $stems[5] ? self::perfectForm($stems[5], $lang_id) : '';
             case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
-                return $stems[7] ? IndImperfConnegPl($stems[7]) : '';
+                return $stems[7] ? self::IndImperfConnegPl($stems[7]) : '';
 
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
