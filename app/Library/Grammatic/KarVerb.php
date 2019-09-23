@@ -645,7 +645,7 @@ class KarVerb
     
     public static function IndImperfConnegPl($stem7) {
         if (!$stem7) { return; }
-        return $stems7. KarGram::garmVowel($stem7,'u');
+        return $stem7. KarGram::garmVowel($stem7,'u');
     }
 
     /**
