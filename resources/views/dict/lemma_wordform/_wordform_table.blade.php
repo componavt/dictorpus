@@ -1,4 +1,4 @@
-        @if ($lemma->wordforms()->count())
+    @if ($lemma->wordforms()->count())
         <?php $key=1; ?>
         <table class="table-bordered table-striped">
             <tr>

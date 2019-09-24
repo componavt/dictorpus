@@ -73,6 +73,7 @@ return [
     'dialect_removed' => 'Dialect ":name" is removed successfully.',
     'dialects' => 'Dialects',
     'example_comment' => 'Checked examples / Unchecked examples / Total number',
+    'generate_wordforms' => 'generate wordforms',
     'gram_attr' => 'Gram. attributes',
     'gram_category' => 'Grammatical category',
     'gram_list' => 'Grammatical attributes',

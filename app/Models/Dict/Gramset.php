@@ -120,6 +120,10 @@ class Gramset extends Model
 //                $out = $this->gramCase->name_short;
                 $out = $this->gramCase->name;
             }
+        } elseif ($this->gramsetCategory->id == 27) { // passive
+            if ($this->gram_id_tense){
+                $out = $this->gramTense->name_short;
+            }
         } else {
             $list = array();
             if ($this->gram_id_infinitive){

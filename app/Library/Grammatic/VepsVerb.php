@@ -514,9 +514,9 @@ class VepsVerb
                     : '';
             case 306: // Пассив имперфект 
                 return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ihe' : '';
-            case 306: // Пассив перфект 
+            case 307: // Пассив перфект 
                 return $stems[0] && $stems[6] ? 'om '. $stems[0]. $stems[6]. 'ud' : '';
-            case 306: // Пассив имперфект 
+            case 308: // Пассив имперфект 
                 return $stems[0] && $stems[6] ? 'oli '. $stems[0]. $stems[6]. 'ud' : '';
         }
     }

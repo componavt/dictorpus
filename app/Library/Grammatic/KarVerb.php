@@ -142,7 +142,7 @@ class KarVerb
             case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
                 return $stems[5] ? self::perfectForm($stems[5], $lang_id) : '';
             case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
-                return $stems[7] ? self::IndImperfConnegPl($stems[7]) : '';
+                return $stems[7] ? self::indImperfConnegPl($stems[7]) : '';
 
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
@@ -152,7 +152,7 @@ class KarVerb
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., отриц. 
                 return $stems[5] ? Grammatic::negativeForm($gramset_id, $lang_id). self::perfectForm($stems[5], $lang_id) : '';
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., отриц. 
-                return $stems[7] ? Grammatic::negativeForm(85, $lang_id). self::IndImperfConnegPl($stems[7]) : '';
+                return $stems[7] ? Grammatic::negativeForm(85, $lang_id). self::indImperfConnegPl($stems[7]) : '';
 
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., пол. 
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
@@ -643,7 +643,7 @@ class KarVerb
         return $aux_wordform->wordform. ' ';
     }
     
-    public static function IndImperfConnegPl($stem7) {
+    public static function indImperfConnegPl($stem7) {
         if (!$stem7) { return; }
         return $stem7. KarGram::garmVowel($stem7,'u');
     }

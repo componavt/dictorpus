@@ -1,9 +1,9 @@
-function reloadWordforms(i) {
+function reloadWordforms(i, attrs='') {
     var id = $(i).data('reload');
     $("#wordforms").empty();
     $("#img-loading_wordforms").show();
     $.ajax({
-        url: '/dict/lemma_wordform/'+ id + '/reload/', 
+        url: '/dict/lemma_wordform/'+ id + '/reload/' + attrs, 
         type: 'GET',
         success: function(result){
             $("#wordforms").html(result);

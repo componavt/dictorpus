@@ -192,9 +192,10 @@ class LemmaWordformController extends Controller
 
         $stems = $lemma->getBases($dialect_id);
 //dd($stems);        
-//dd($name_num);        
-        $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
-
+//dd($name_num);     
+        if (!$request->without_remove) {
+            $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
+        }
         $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems,
                                     ($lemma->features && $lemma->features->reflex) ? 1 : null);
 //dd($gramset_wordforms);        

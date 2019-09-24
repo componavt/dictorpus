@@ -438,7 +438,7 @@ class Lemma extends Model
     {
         $gramsets = [];
         if ($this->wordforms()->wherePivot('gramset_id',NULL)->count()) {
-        $gramsets[NULL][NULL] ='';
+            $gramsets[NULL][NULL] ='';
         }
         $gramset_coll=$this->gramsets()
 //                           ->groupBy('id')
