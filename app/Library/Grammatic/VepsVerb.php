@@ -112,6 +112,19 @@ class VepsVerb
                 $cond_stem, $potn_stem, $cons, $harmony];        
     }
     
+    public static function getStemFromStems($stems, $stem_n, $dialect_id) {
+        switch ($stem_n) {
+            case 3: 
+                return self::getStemPAP($stems[0], $stems[1]);
+            case 4: 
+                return self::getStemCond($stems[1]);
+            case 5: 
+                return self::getStemPoten($stems[3], $stems[0], $stems[1]);
+            default: 
+                return null;
+        }
+    }
+    
     /**
      * base of past actvive participle
      */

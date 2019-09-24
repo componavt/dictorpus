@@ -26,6 +26,10 @@ if(isset($attributes['size'])) {
 } elseif (!isset($attributes['class'])) {
     $attributes['class'] = 'form-control';
 }
+
+if (isset($class)) {
+    $attributes['class'] .= ' '.$class;
+}
 /*
 if(!isset($attributes['placeholder'])) {
     $attributes['placeholder'] = $title;

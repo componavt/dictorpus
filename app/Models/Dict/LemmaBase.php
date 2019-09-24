@@ -89,11 +89,11 @@ class LemmaBase extends Model
         }
     }
     
-    public static function updateStemsFromDB($lemma, $pos_id, $dialect_id) {
+    public static function updateStemsFromDB($lemma, $dialect_id) {
         if ($lemma->lang_id == 1) {
-            $stems = VepsGram::stemsFromDB($lemma, $pos_id, $dialect_id);
+            $stems = VepsGram::stemsFromDB($lemma, $dialect_id);
         } else {
-            $stems = KarGram::stemsFromDB($lemma, $pos_id, $dialect_id);            
+            $stems = KarGram::stemsFromDB($lemma, $dialect_id);            
         }
         self::updateStemsFromSet($lemma->id, $stems, $dialect_id);
 //            if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {

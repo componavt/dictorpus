@@ -1,4 +1,4 @@
-    <h3>{{trans('dict.bases')}} {{$dialect_id}}</h3>
+    <h3>{{trans('dict.bases')}}</h3>
     <table class="table-wide">
     @foreach ($base_list as $base_n=>$base_title)
             <tr>

@@ -285,4 +285,11 @@ class Grammatic
         }
         return KarGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id);
     }
+    
+    public static function getStemFromStems($stems, $stem_n, $lang_id, $pos_id, $dialect_id) {
+        if ($lang_id == 1) {
+            return VepsGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id);
+        }
+        return null;
+    }
 }

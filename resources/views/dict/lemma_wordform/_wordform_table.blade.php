@@ -14,17 +14,13 @@
                                                     ? $args_by_get.'&dialect_id='.$dialect_id 
                                                     : '?dialect_id='.$dialect_id,
                                   'without_text' => 1])
-{{--                        @include('widgets.form.button._delete', 
-                                   ['route' => 'lemma_wordform.destroy', 
-                                    'without_text' => true,
-                                    'class' => 'delete-wordforms',
-                                    'title' => trans('dict.check_delete_wordforms'),
-                                    'args'=>['id' => $lemma->id, 'dialect_id'=>$dialect_id]]) --}}
+
                         @include('widgets.form.button._reload', 
                                  ['data_reload' => $lemma->id.'_'.$dialect_id,
                                   'class' => 'reload-wordforms',
                                   'func' => 'reloadWordforms',
                                   'title' => trans('messages.reload')])
+                        <a onClick="deleteWordforms({{$lemma->id.'_'.$dialect_id}})"><i class="fa fa-trash fa-lg"></i></a>
                     @endif
 
                     </th>

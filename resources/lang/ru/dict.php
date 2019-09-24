@@ -57,6 +57,7 @@ return [
     
     'case' => 'падеж',
     'category_removed' => 'Категория ":name" удалена.',
+    'clear_wordforms' => 'очистить словоформы',
     'code' => 'Код',
     'confirm_delete_wordforms' =>'Вы хотите удалить словоформы для данного диалекта?',
     'conll' => 'Код CONLL',

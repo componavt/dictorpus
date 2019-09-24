@@ -27,6 +27,14 @@
             'on_click'=> 'copyBases('. $lemma->id. ')', 
             'title' => trans('dict.copy_bases')
             ])
+        @include('widgets.form.button._red', [
+            'on_click'=> 'fillWordforms('. $lemma->id. ', '. $dialect_id. ', '. sizeof($base_list).')', 
+            'title' => trans('dict.generate_wordforms')
+            ])
+        @include('widgets.form.button._red', [
+            'on_click'=> 'clearWordforms()', 
+            'title' => trans('dict.clear_wordforms')
+            ])
     @endif
         
     </div>

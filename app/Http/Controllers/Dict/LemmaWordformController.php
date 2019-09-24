@@ -101,7 +101,7 @@ class LemmaWordformController extends Controller
         $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id)+['all'=>'ДЛЯ ВСЕХ ДИАЛЕКТОВ'];
         
         $base_list = LemmaBase::baseList($lemma->lang_id, $lemma->pos_id);
-                
+//dd($lemma->getBase(2, 43, null));                
         return view('dict.lemma_wordform.edit',
                     compact('base_list','dialect_id', 'dialect_name', 'dialect_values', 
                             'gramset_values', 'lemma', 'args_by_get', 'url_args'));
@@ -125,7 +125,7 @@ class LemmaWordformController extends Controller
         }
         // WORDFORMS UPDATING
         //remove all records from table lemma_wordform
-        $lemma->updateBases($request->bases, $lemma->pos_id, $request->dialect_id_for_bases);
+        $lemma->updateBases($request->bases, $request->dialect_id_for_bases);
         $lemma-> wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
         //add wordforms from full table of gramsets
         $lemma-> storeWordformGramsets($request->lang_wordforms, $request->lang_wordforms_dialect);
@@ -193,6 +193,8 @@ class LemmaWordformController extends Controller
         $stems = $lemma->getBases($dialect_id);
 //dd($stems);        
 //dd($name_num);     
+        $lemma->updateBases($stems, $dialect_id);
+        
         if (!$request->without_remove) {
             $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
         }
@@ -211,7 +213,32 @@ class LemmaWordformController extends Controller
         $lemma = Lemma::findOrFail($id);        
         
         $stems = $lemma->getBases();
-        
+//dd($stems);        
         return Response::json($stems);
-}
+    }
+    
+    public function getWordforms(Request $request, $id, $dialect_id) {
+        $lemma = Lemma::findOrFail($id);        
+        $stems = json_decode($request->bases);
+        
+        $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
+        
+
+        $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems,
+                                    ($lemma->features && $lemma->features->reflex) ? 1 : null);
+//dd($stems);        
+        
+//dd($gramset_wordforms);        
+        return Response::json($gramset_wordforms);
+    }
+    
+    public function deleteWordforms($id, $dialect_id) {
+        $lemma = Lemma::findOrFail($id);        
+        
+        $lemma->updateBases($lemma->getBases($dialect_id), $dialect_id);
+        
+        $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
+        
+        return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
+    }
 }

@@ -82,7 +82,7 @@ class Lemma extends Model
         $bases=[];
         for ($i=0; $i<8; $i++) {
 //dd($this->bases);            
-            $bases[$i] = self::getBase($i, $dialect_id);
+            $bases[$i] = self::getBase($i, $dialect_id, $bases);
         }
         return $bases;
     }
@@ -90,22 +90,37 @@ class Lemma extends Model
     /**
      * @return String
      */
-    public function getBase($base_n, $dialect_id=null) {
-/*        if (!$dialect_id) {
-            return '';
-        }*/
-        $base = $this->bases()->where('base_n',$base_n);
-        if ($dialect_id) {
-            $base=$base->where('dialect_id',$dialect_id);
-        }
-        $base=$base->first();
+    public function getBase($base_n, $dialect_id=null, $bases=null) {
+        $base = $this->getBaseFromDB($base_n, $dialect_id);
+
         if ($base) {
-            return $base->base;
-        } elseif ($dialect_id) { 
-            return Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
-        } else {
-            return null;
+            return $base;
         }
+        
+        if ($dialect_id) { 
+            $base = Grammatic::getStemFromStems($bases, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
+            if (!$base) {
+                $base = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
+            }
+            if (!$base) {
+                $base = $this->getBaseFromDB($base_n);
+            }
+        } 
+
+        return $base;
+    }
+    
+    public function getBaseFromDB($base_n, $dialect_id=null) {
+        $base_obj = $this->bases()->where('base_n',$base_n);
+        if ($dialect_id) {
+            $base_obj = $base_obj->where('dialect_id',$dialect_id);
+        }
+        $base_obj = $base_obj->first();
+
+        if ($base_obj) {
+            return $base_obj->base;
+        }
+        return null;
     }
     
 /*     // Lemma has many MeaningTexts through Meanings
@@ -652,7 +667,7 @@ dd($wordforms);
     public static function storeLemma($data) {
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
-dd($gramset_wordforms);        
+//dd($gramset_wordforms);        
         $lemma = self::store($data['lemma'], $data['pos_id'], $data['lang_id']);
 
         $lemma->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $data, $data['dialect_id'], $stems);      
@@ -669,7 +684,7 @@ dd($gramset_wordforms);
     
     public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
                                   $features, $dialect_id, $stems) {
-        $this->updateBases($stems, $this->pos_id, $dialect_id); 
+        $this->updateBases($stems, $dialect_id); 
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
 
@@ -708,14 +723,14 @@ dd($gramset_wordforms);
         $this->save();        
     }
     
-    public function updateBases($stems, $pos_id, $dialect_id) {     
+    public function updateBases($stems, $dialect_id) {     
         if (!$dialect_id) {
             return;
         }
         if ($stems) {
             LemmaBase::updateStemsFromSet($this->id, $stems, $dialect_id);
         } else {
-            LemmaBase::updateStemsFromDB($this, $pos_id, $dialect_id);
+            LemmaBase::updateStemsFromDB($this, $dialect_id);
         }
         
     }

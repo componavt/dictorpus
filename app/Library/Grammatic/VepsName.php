@@ -85,20 +85,30 @@ class VepsName
         if (preg_match("/^{{vep-decl-stems\|n=pl".$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
                 ($name_num == 'pl' && preg_match($lemma_okon1_shab."\)/", $template, $regs))) {
             $name_num = 'pl';
-            list($stems, $base, $base_suff) =  VepsName::stemsPlFromTemplate($regs);
+            list($stems, $base, $base_suff) =  self::stemsPlFromTemplate($regs);
         // only single
         } elseif (preg_match("/^{{vep-decl-stems\|n=sg".$div_arg.$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
                 ($name_num == 'sg' && preg_match($lemma_okon1_shab."\,?\s*-?([^\,\;]*)\)/", $template, $regs)) ||
                 (preg_match($lemma_okon1_shab."\)/", $template, $regs))) {
             $name_num = 'sg';
-            list($stems, $base, $base_suff) =  VepsName::stemsSgFromTemplate($regs);
+            list($stems, $base, $base_suff) =  self::stemsSgFromTemplate($regs);
         // others
         } elseif (preg_match("/^{{vep-decl-stems".$div_arg.$div_arg.$div_arg.$div_arg."\|?".$arg."}}$/u",$template, $regs) ||
                 preg_match($lemma_okon1_shab."\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
-            list($stems, $base, $base_suff) = VepsName::stemsOthersFromTemplate($regs, $name_num);
+            list($stems, $base, $base_suff) = self::stemsOthersFromTemplate($regs, $name_num);
         }
         return [$stems, $name_num, $base, $base_suff];
     }
+    
+    public static function getStemFromStems($stems, $stem_n, $dialect_id) {
+        switch ($stem_n) {
+            case 2: 
+                return self::illSgBase($stems[1]);
+            default: 
+                return null;
+        }
+    }
+    
     /**
      * template-name|base|nom-sg-suff|gen-sg-suff|par-sg-suff|par-pl-suff
      * vep-decl-stems|adjektiv||an|ad|id

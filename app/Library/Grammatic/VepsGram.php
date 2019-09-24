@@ -84,10 +84,10 @@ class VepsGram
         return [$stems, $name_num, $base, $base_suff];
     }
     
-    public static function stemsFromDB($lemma, $pos_id, $dialect_id) {
-        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+    public static function stemsFromDB($lemma, $dialect_id) {
+        if (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsName::stemsFromDB($lemma, $dialect_id);
-        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+        } elseif (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsVerb::stemsFromDB($lemma, $dialect_id);
         }       
     }
@@ -97,6 +97,14 @@ class VepsGram
             return VepsName::getStemFromWordform($lemma, $stem_n, $dialect_id);
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsVerb::getStemFromWordform($lemma, $stem_n, $dialect_id);
+        }
+    }
+    
+    public static function getStemFromStems($stems, $stem_n, $pos_id, $dialect_id) {
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return VepsName::getStemFromStems($stems, $stem_n, $dialect_id);
+        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return VepsVerb::getStemFromStems($stems, $stem_n, $dialect_id);
         }
     }
     

@@ -35,6 +35,7 @@
                         </td>
                         <td>@include('widgets.form.formitem._text',
                                ['name' => 'lang_wordforms['.$gramset_id.']['.$dialect_id.']',
+                                'class' => 'wordform-field',
                                 'special_symbol' => true,
                                 'value'=> $lemma->wordform($gramset_id,$dialect_id)
                                ])</td>

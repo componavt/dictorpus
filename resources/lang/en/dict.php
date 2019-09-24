@@ -56,6 +56,7 @@ return [
                     7 => 'сильная основа пассива'],
     'case' => 'Case',
     'category_removed' => 'Сategory ":name" is removed successfully.',
+    'clear_wordforms' => 'clear wordforms',
     'code' => 'code',
     'confirm_delete_wordforms' =>'Do you want to delete word forms for this dialect?',
     'conll' => 'Code CONLL',

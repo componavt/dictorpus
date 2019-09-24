@@ -104,10 +104,10 @@ class KarGram
         return $word;
     }
 
-    public static function stemsFromDB($lemma, $pos_id, $dialect_id) {
-        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+    public static function stemsFromDB($lemma, $dialect_id) {
+        if (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
             return KarName::stemsFromDB($lemma, $dialect_id);
-        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+        } elseif (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
             return KarVerb::stemsFromDB($lemma, $dialect_id);
         }       
     }
@@ -119,7 +119,7 @@ class KarGram
             return KarVerb::getStemFromWordform($lemma, $stem_n, $dialect_id);
         }
     }
-    
+
     public static function stemsFromFullList($template) {
         if (!preg_match('/^\s*\{+([^\}]+)\}+\s*$/', $template, $template_in_brackets)) {
             return NULL;
