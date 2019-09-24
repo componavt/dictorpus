@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
+use Response;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -32,8 +33,7 @@ class LemmaWordformController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:dict.edit,/dict/lemma/', 
-                          ['only' => ['store','edit','update','destroy', 'reload']]);
+        $this->middleware('auth:dict.edit,/dict/lemma/', ['only' => ['store','edit','update','destroy', 'reload']]);
         
         $this->url_args = Lemma::urlArgs($request);  
         
@@ -185,7 +185,7 @@ class LemmaWordformController extends Controller
      * @param Int $dialect_id
      * @return \Illuminate\Http\Response
      */
-    public function reload($id, $dialect_id) {
+    public function reload(Request $request, $id, $dialect_id) {
         $lemma = Lemma::findOrFail($id);        
         
         $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
@@ -206,4 +206,12 @@ class LemmaWordformController extends Controller
         
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
     }
+    
+    public function getBases($id) {
+        $lemma = Lemma::findOrFail($id);        
+        
+        $stems = $lemma->getBases();
+        
+        return Response::json($stems);
+}
 }

@@ -117,6 +117,7 @@
         loadExamples('{{LaravelLocalization::localizeURL($route_for_load)}}', {{$meaning->id}});
     @endforeach
     
+    chooseDialectForGenerate({{$lemma->id}});
     recDelete('{{ trans('messages.confirm_delete') }}');
 /*    toggleExamples();
     addExample('{{LaravelLocalization::localizeURL('/dict/meaning/example/add')}}'); 

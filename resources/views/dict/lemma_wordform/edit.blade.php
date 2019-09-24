@@ -20,11 +20,22 @@
         
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
+        
+    @if ($dialect_id)
+        @include('widgets.form.button._red', [
+            'id_name' => 'generate-wordforms',
+            'on_click'=> 'copyBases('. $lemma->id. ')', 
+            'title' => trans('dict.copy_bases')
+            ])
+    @endif
+        
     </div>
     
+    @if ($dialect_id)
     <div class="col-sm-6">
     @include('dict.lemma_wordform._form_edit_bases')
     </div>
+    @endif
 </div>
     @include('dict.lemma_wordform._form_edit')
 
@@ -34,6 +45,7 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/wordform.js')!!}
 @stop
 
 @section('jqueryFunc')

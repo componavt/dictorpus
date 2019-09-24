@@ -33,11 +33,11 @@ return [
                     4 => 'основа мн.ч.'],
     'base_list_1_verb' => [
                     0 => 'infinitive base',
-                    1 => 'основа презенса',
-                    2 => 'основа имперфекта',
+                    1 => 'presence base',
+                    2 => 'imperfect base',
                     3 => 'основа 2-го прич. актив ед.ч.',
-                    3 => 'основа кондиционала',
-                    5 => 'основа 3 инфинитива'],
+                    3 => 'conditional base',
+                    5 => 'III infinitive base'],
     'base_list_4_name' => [
                     0 => 'base form',
                     1 => 'слабая гласная основа',
@@ -59,6 +59,7 @@ return [
     'code' => 'code',
     'confirm_delete_wordforms' =>'Do you want to delete word forms for this dialect?',
     'conll' => 'Code CONLL',
+    'copy_bases' => 'copy bases from another dialect',
     'create_new_lemma' => 'Create a new lemma',
     'degree' => 'degree of comparison',
     'degrees' => [NULL=> '',

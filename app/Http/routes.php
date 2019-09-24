@@ -125,6 +125,7 @@ Route::group(
         Route::get('dict/lemma_wordform/store', 'Dict\LemmaWordformController@store'); 
         Route::put('dict/lemma_wordform/{id}/destroy', 'Dict\LemmaWordformController@update')
                         ->name('lemma_wordform.destroy');
+        Route::get('dict/lemma_wordform/{id}/get_bases', 'Dict\LemmaWordformController@getBases');
         Route::get('dict/lemma_wordform/{id}_{dialect_id}/reload/', 'Dict\LemmaWordformController@reload');
 
         Route::get('dict/meaning/create', 'Dict\MeaningController@create');

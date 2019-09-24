@@ -78,7 +78,7 @@ class Lemma extends Model
     /**
      * @return Array of bases
      */
-    public function getBases($dialect_id) {
+    public function getBases($dialect_id=null) {
         $bases=[];
         for ($i=0; $i<8; $i++) {
 //dd($this->bases);            
@@ -90,15 +90,21 @@ class Lemma extends Model
     /**
      * @return String
      */
-    public function getBase($base_n, $dialect_id) {
-        if (!$dialect_id) {
+    public function getBase($base_n, $dialect_id=null) {
+/*        if (!$dialect_id) {
             return '';
+        }*/
+        $base = $this->bases()->where('base_n',$base_n);
+        if ($dialect_id) {
+            $base=$base->where('dialect_id',$dialect_id);
         }
-        $base = $this->bases()->where('base_n',$base_n)->where('dialect_id',$dialect_id)->first();
-        if (!$base) { 
+        $base=$base->first();
+        if ($base) {
+            return $base->base;
+        } elseif ($dialect_id) { 
             return Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
         } else {
-            return $base->base;
+            return null;
         }
     }
     
