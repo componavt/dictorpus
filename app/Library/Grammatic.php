@@ -167,7 +167,7 @@ dd('stems:',$stems);
     public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def=null, $reflexive=null) {
         if ($lang_id == 1) {
             if ($reflexive) {
-                return VepsVerb::wordformByStemsReflex($stems, $gramset_id, $dialect_id);
+                return VepsVerbReflex::wordformByStems($stems, $gramset_id, $dialect_id);
             } else {
                 return VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
             }
