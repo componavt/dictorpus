@@ -11,40 +11,6 @@ use App\Library\Grammatic\VepsName;
 
 class VepsNameTest extends TestCase
 {
-    public function testCountSyllable1() {
-        $stems = ['su','pü','ma','pä','so','vö','ö','voi'];
-        $result = [];
-        foreach ($stems as $stem) {
-            $result[] = VepsName::countSyllable($stem);
-        }
-//dd($result);        
-        $expected = [1,1,1,1,1,1,1,1];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testCountSyllable2() {
-        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi', 'lauda'];
-        $result = [];
-        foreach ($stems as $stem) {
-            $result[] = VepsName::countSyllable($stem);
-        }
-//dd($result);        
-        $expected = [2,2,2,2,2,2,2,2,2,2,2,2,2,2];
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    
-    public function testCountSyllable3() {
-        $stems = ['sizare','kirvhe','armha','nagrhe','abajo','abido'];
-        $result = [];
-        foreach ($stems as $stem) {
-            $result[] = VepsName::countSyllable($stem);
-        }
-//dd($result);        
-        $expected = [3,3,3,3,3,3];
-        $this->assertEquals( $expected, $result);        
-    }
-        
     public function testIllSgBase1() {
         $stems = ['su','pü','ma','pä','so','vö','ö','voi'];
         $result = [];

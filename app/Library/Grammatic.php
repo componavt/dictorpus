@@ -27,11 +27,18 @@ class Grammatic
      * @return type
      */
     public static function parseLemmaField($data) {
+//dd($data);        
         $lemma = self::toRightForm($data['lemma']);
-        $name_num = isset($data['number']) ? self::nameNumFromNumberField($data['number']) : null;
+        if (isset($data['reflexive'])) {
+            $name_num = $data['reflexive'];
+        } elseif (isset($data['number'])) {    
+            $name_num =  self::nameNumFromNumberField($data['number']);
+        } else {
+            $name_num =  null;
+        }
        
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num);
-//dd('stems:',$stems);        
+dd('stems:',$stems);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems, 

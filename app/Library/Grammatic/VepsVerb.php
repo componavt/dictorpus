@@ -74,7 +74,7 @@ class VepsVerb
      *                4=>base_of_conditional, 5=>base_of_potentional, 
      *                6=>consonant (d/t), 7=>vowel (a/ä)]
      */
-    public static function stemsFromTemplate($regs) {
+    public static function stemsFromTemplate($regs, $is_reflex=false) {
         $stems = [];
         if (sizeof($regs)<5) {
             return $stems;
@@ -82,7 +82,8 @@ class VepsVerb
         $base  = $regs[1];
         $past_suff = $regs[4];
 
-        if (!preg_match("/^(.*)([dt])([aä])$/u", $regs[2], $regs1)) {
+        if (!preg_match("/^(.*)([dt])([aä])$/u", $regs[2], $regs1) ||
+            !preg_match("/^(.*)([dt])([aä])s$/u", $regs[2], $regs1)) {
             return null;
         }
         $inf_suff = $regs1[1];
