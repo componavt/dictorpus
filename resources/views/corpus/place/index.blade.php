@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.master')
 
 @section('title')
@@ -32,7 +32,8 @@
                 <th>{{ trans('corpus.region') }}</th>
                 <th>{{ trans('corpus.district') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
-                <th>{{ trans('navigation.texts') }}</th>
+                <th>{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})</th>
+                <th>{{ trans('navigation.texts') }} ({{ trans('corpus.birth_place') }})</th>
                 <th>{{ trans('navigation.informants') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th>{{ trans('messages.actions') }}</th>
@@ -60,14 +61,31 @@
                     <b>{{ \App\Models\Dict\Lang::find($other_name->lang_id)->name }}:</b> {{ $other_name->name }}<br>
                     @endforeach
                 </td>
-                <td data-th="{{ trans('navigation.texts') }}">
-                    @if($place->texts)
+                <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})">
+                    @if($place->texts()->count())
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_place={{$place->id}}">
                         {{ $place->texts()->count() }}
+                    </a>
+                    @else 
+                        0
                     @endif
                 </td>
-                <td data-th="{{ trans('navigation.informants') }}">
-                    @if($place->informants)
+                <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.birth_place') }})">
+                    @if($place->texts()->count())
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_birth_place={{$place->id}}">
+                        {{ $place->countTextBirthPlace() }}
+                    </a>
+                    @else 
+                        0
+                    @endif
+                </td>
+                <td class="number-cell" data-th="{{ trans('navigation.informants') }}">
+                    @if($place->informants()->count())
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/informant/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_birth_place={{$place->id}}">
                         {{ $place->informants()->count() }}
+                    </a>
+                    @else 
+                        0
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
@@ -87,10 +105,7 @@
             @endforeach
         </tbody>
         </table>
-        {!! $places->appends(['limit_num' => $limit_num,
-                              'place_name' => $place_name,
-                              'region_id'=>$region_id,
-                              'district_id'=>$district_id])->render() !!}
+        {!! $places->appends($url_args)->render() !!}
     </div>
 @stop
 

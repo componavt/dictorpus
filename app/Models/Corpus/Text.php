@@ -199,9 +199,11 @@ class Text extends Model
         // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
         // select texts by title from texts and translation texts
         $texts = self::orderBy('title');        
+        $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place']);
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
         $texts = self::searchByInformant($texts, $url_args['search_informant']);
         $texts = self::searchByLang($texts, $url_args['search_lang']);
+        $texts = self::searchByPlace($texts, $url_args['search_place']);
         $texts = self::searchByRecorder($texts, $url_args['search_recorder']);
         $texts = self::searchByTitle($texts, $url_args['search_title']);
         $texts = self::searchByWord($texts, $url_args['search_word']);
@@ -214,10 +216,26 @@ class Text extends Model
         if ($url_args['search_text']) {
             $texts = $texts->where('text','like','%'.$url_args['search_text'].'%');
         } 
+//dd($texts->toSql());                                
 
         return $texts;
     }
 
+    public static function searchByBirthPlace($texts, $place) {
+        if (!$place) {
+            return $texts;
+        }
+        return $texts->whereIn('event_id',function($query) use ($place){
+                    $query->select('event_id')
+                    ->from('event_informant')
+                    ->whereIn('informant_id',function($query) use ($place){
+                        $query->select('id')
+                        ->from('informants')
+                        ->where('birth_place_id',$place);
+                    });
+                });
+    }
+    
     public static function searchByDialects($texts, $dialects) {
         if (!sizeof($dialects)) {
             return $texts;
@@ -245,6 +263,17 @@ class Text extends Model
             return $texts;
         }
         return $texts->whereIn('lang_id',$langs);
+    }
+    
+    public static function searchByPlace($texts, $place) {
+        if (!$place) {
+            return $texts;
+        }
+        return $texts->whereIn('event_id',function($query) use ($place){
+                    $query->select('id')
+                    ->from('events')
+                    ->where('place_id',$place);
+                });
     }
     
     public static function searchByRecorder($texts, $recorder) {

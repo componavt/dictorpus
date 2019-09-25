@@ -486,6 +486,11 @@ h2 {
     font-size: 16px;
 }
 
+.rwd-table .number-cell {
+    font-size: 16px;
+    text-align: center;
+}
+
 @media screen and (max-width: 395px) {    
     .logo img {
         height: auto;

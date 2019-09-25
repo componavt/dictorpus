@@ -24,9 +24,13 @@ class PlaceController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth:corpus.edit,/corpus/place/', ['only' => ['create','store','edit','update','destroy']]);
+
+        $this->url_args = Place::urlArgs($request);  
+        
+        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
     }
 
     /**
@@ -36,72 +40,21 @@ class PlaceController extends Controller
      */
     public function index(Request $request)
     {
-        $place_name = $request->input('place_name');
-        $limit_num = (int)$request->input('limit_num');
-        $region_id = (int)$request->input('region_id');
-        $district_id = (int)$request->input('district_id');
-        $search_id = (int)$request->input('search_id');
-        $page = (int)$request->input('page');
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
 
-        if (!$page) {
-            $page = 1;
-        }
-        
-        if (!$search_id) {
-            $search_id = NULL;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }   
-
-        $locale = LaravelLocalization::getCurrentLocale();
-        $places = Place::orderBy('name_'.$locale);
-
-        if ($place_name) {
-            $places = $places->where(function($q) use ($place_name){
-                            $q->whereIn('id',function($query) use ($place_name){
-                                $query->select('place_id')
-                                ->from(with(new PlaceName)->getTable())
-                                ->where('name','like', $place_name);
-                            })->orWhere('name_en','like', $place_name)
-                              ->orWhere('name_ru','like', $place_name);
-                    });
-        } 
-
-        if ($region_id) {
-            $places = $places->where('region_id',$region_id);
-        } 
-
-        if ($district_id) {
-            $places = $places->where('district_id',$district_id);
-        } 
-
-        if ($search_id) {
-            $places = $places->where('id',$search_id);
-        } 
+        $places = Place::search($url_args);
 
         $numAll = $places->count();
 
-        $places = $places->paginate($limit_num);
+        $places = $places->paginate($url_args['limit_num']);
         
         $region_values = Region::getListWithQuantity('places');
         $district_values = District::getListWithQuantity('places');
 
-        return view('corpus.place.index')
-                    ->with(['places' => $places,
-                            'limit_num' => $limit_num,
-                            'place_name' => $place_name,
-                            'region_id'=>$region_id,
-                            'district_id'=>$district_id,
-                            'search_id'=>$search_id,
-                            'page'=>$page,
-                            'region_values' => $region_values,
-                            'district_values' => $district_values,
-                            'numAll' => $numAll,
-                ]);
+        return view('corpus.place.index', 
+                    compact('places', 'region_values', 'district_values', 
+                            'numAll', 'args_by_get', 'url_args'));
     }
 
     /**

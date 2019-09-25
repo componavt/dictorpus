@@ -9,6 +9,7 @@ use App\Models\Corpus\District;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\PlaceName;
 use App\Models\Corpus\Region;
+use App\Models\Corpus\Text;
 
 class Place extends Model
 {
@@ -167,4 +168,91 @@ class Place extends Model
         return join(', ', $info);
     }    
     
+    public static function urlArgs($request) {
+        $url_args = [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_district'  => (int)$request->input('search_district'),
+                    'search_id'       => (int)$request->input('search_id'),
+                    'search_name'     => $request->input('search_name'),
+                    'search_region'     => (int)$request->input('search_region'),
+                ];
+        
+        if (!$url_args['page']) {
+            $url_args['page'] = 1;
+        }
+        
+        if (!$url_args['search_id']) {
+            $url_args['search_id'] = NULL;
+        }
+        
+        if ($url_args['limit_num']<=0) {
+            $url_args['limit_num'] = 10;
+        } elseif ($url_args['limit_num']>1000) {
+            $url_args['limit_num'] = 1000;
+        }   
+              
+        return $url_args;
+    }
+    
+    public static function search(Array $url_args) {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $places = self::orderBy('name_'.$locale);
+
+        $places = self::searchByDistrict($places, $url_args['search_district']);
+        $places = self::searchByID($places, $url_args['search_id']);
+        $places = self::searchByPlaceName($places, $url_args['search_name']);
+        $places = self::searchByRegion($places, $url_args['search_region']);
+//dd($places->toSql());                                
+        return $places;
+    }
+    
+    public static function searchByPlaceName($places, $place_name) {
+        if (!$place_name) {
+            return $places;
+        }
+        return $places->where(function($q) use ($place_name){
+                        $q->whereIn('id',function($query) use ($place_name){
+                            $query->select('place_id')
+                            ->from(with(new PlaceName)->getTable())
+                            ->where('name','like', $place_name);
+                        })->orWhere('name_en','like', $place_name)
+                          ->orWhere('name_ru','like', $place_name);
+                });
+    }
+    
+    public static function searchByRegion($places, $region_id) {
+        if (!$region_id) {
+            return $places;
+        }
+        return $places->where('region_id',$region_id);
+    }
+    
+    public static function searchByDistrict($places, $district_id) {
+        if (!$district_id) {
+            return $places;
+        }
+        return $places->where('district_id',$district_id);
+    }
+    
+    public static function searchByID($places, $search_id) {
+        if (!$search_id) {
+            return $places;
+        }
+        return $places->where('id',$search_id);
+    }
+    
+    public function countTextBirthPlace() {
+        $place = $this->id;
+        $texts = Text::whereIn('event_id',function($query) use ($place){
+                    $query->select('event_id')
+                    ->from('event_informant')
+                    ->whereIn('informant_id',function($query) use ($place){
+                        $query->select('id')
+                        ->from('informants')
+                        ->where('birth_place_id',$place);
+                    });
+                });
+        return $texts->count();
+    }
 }

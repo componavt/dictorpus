@@ -52,10 +52,12 @@ class TextController extends Controller
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
+                    'search_birth_place' => $request->input('search_birth_place'),
                     'search_corpus'   => (array)$request->input('search_corpus'),
                     'search_dialect'  => (array)$request->input('search_dialect'),
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
+                    'search_place'    => $request->input('search_place'),
                     'search_recorder' => $request->input('search_recorder'),
                     'search_sentence' => (int)$request->input('search_sentence'),
                     'search_title'    => $request->input('search_title'),

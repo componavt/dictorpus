@@ -5,28 +5,28 @@
     <div class="col-sm-1">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_id', 
-                'value' => $search_id,
-                'attributes'=>['placeholder' => 'ID']])                                  
+                 'value' => $url_args['search_id'],
+                 'attributes'=>['placeholder' => 'ID']])                                  
     </div>
     <div class="col-sm-2">
          @include('widgets.form.formitem._text', 
-                ['name' => 'place_name', 
+                ['name' => 'search_name', 
                  'special_symbol' => true,
-                'value' => $place_name,
-                'attributes'=>['placeholder' => trans('corpus.title')]])
+                 'value' => $url_args['search_name'],
+                 'attributes'=>['placeholder' => trans('corpus.title')]])
     </div>
     <div class="col-sm-3">
         @include('widgets.form.formitem._select', 
-                ['name' => 'region_id', 
+                ['name' => 'search_region', 
                  'values' => $region_values,
-                 'value' => $region_id,
+                 'value' => $url_args['search_region'],
                  'attributes' => ['placeholder' => trans('corpus.region')]]) 
     </div>
     <div class="col-sm-3">
         @include('widgets.form.formitem._select', 
-                ['name' => 'district_id', 
+                ['name' => 'search_district', 
                  'values' => $district_values,
-                 'value' => $district_id,
+                 'value' => $url_args['search_district'],
                  'attributes' => ['placeholder' => trans('corpus.district')]]) 
     </div>
     <div class="col-sm-3 search-button-b">       
@@ -35,7 +35,7 @@
         </span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
-                'value' => $limit_num, 
+                'value' => $url_args['limit_num'], 
                 'attributes'=>['size' => 5,
                                'placeholder' => trans('messages.limit_num') ]]) 
         <span>
