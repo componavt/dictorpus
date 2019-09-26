@@ -37,32 +37,50 @@ class VepsVerb
         return $stems;
     }
 
+    public static function parseInf($inf, $is_reflexive) {
+        if (!$is_reflexive && preg_match("/^(.*)([dt])([aä])$/u", $inf, $regs)
+            || $is_reflexive && preg_match("/^(.*)([dt])([aä])[s|kso|ze]$/u", $inf, $regs)) {
+            return $regs;
+        }
+        return null;
+    }
+
+    public static function parsePres3Sg($wordform, $is_reflexive) {
+        if (!$is_reflexive && preg_match("/^(.*[aeiouüäö])b$/u", $wordform, $regs)
+            || $is_reflexive && preg_match("/^(.*[aeiouüäö])[sšzž][eo]?i?$/u", $wordform, $regs)) {
+            return $regs[1];
+        }
+        return '';
+    }
+
+    public static function parseImperf3Sg($wordform, $is_reflexive) {
+        if (!$is_reflexive) {
+            return $wordform;
+        }
+        if (preg_match("/^(.+)he$/u", $wordform, $regs)) {
+            return $regs[1];
+        }
+        return '';
+    }
+
     /**
-     * TODO FOR REFLEXIVE!!
-     * 0 - das
-     * 1 - [sšzž][eo]i?
-     * 2 - he
-     * 
      * @param type $lemma
      * @param type $stem_n
      * @param type $dialect_id
      * @return string
      */
-    public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {
+    public static function getStemFromWordform($lemma, $stem_n, $dialect_id, $is_reflexive=false) {
         switch ($stem_n) {
             case 0: 
-                if (preg_match("/^(.*)([dt])([aä])$/u", $lemma->lemma, $regs)) {
+                $regs = self::parseInf($lemma->lemma, $is_reflexive);
+                if (isset($regs[1])) {
                     return $regs[1];
                 }
                 return '';
             case 1:  // indicative presence 3 sg
-                if (preg_match("/^(.+)b$/", $lemma->wordform(28, $dialect_id), $regs)) {
-                    return $regs[1];
-                }
-                return '';
+                return self::parsePres3Sg($lemma->wordform(28, $dialect_id), $is_reflexive);
             case 2: // indicative imperfect 3 sg
-                $ind_imp_3_sg = $lemma->wordform(34, $dialect_id); 
-                return $ind_imp_3_sg ? $ind_imp_3_sg : '';
+                return parseImperf3Sg($lemma->wordform(34, $dialect_id), $is_reflexive);
             case 3: // base of 2 active particle
                 return self::getStem3(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
             case 4: // base of conditional
@@ -88,7 +106,7 @@ class VepsVerb
      *                4=>base_of_conditional, 5=>base_of_potentional, 
      *                6=>consonant (d/t), 7=>vowel (a/ä)]
      */
-    public static function stemsFromTemplate($regs, $is_reflex=false) {
+    public static function stemsFromTemplate($regs, $is_reflexive=false) {
         $stems = [];
         if (sizeof($regs)<5) {
             return $stems;
@@ -96,24 +114,19 @@ class VepsVerb
         $base  = $regs[1];
         $past_suff = $regs[4];
 
-        if (!$is_reflex && !preg_match("/^(.*)([dt])([aä])$/u", $regs[2], $regs1) ||
-            $is_reflex && !preg_match("/^(.*)([dt])([aä])s$/u", $regs[2], $regs1)) {
+        $regs1 = self::parseInf($regs[2], $is_reflexive);
+        if (!$regs1) {
             return null;
         }
-        $inf_suff = $regs1[1];
+        $inf_stem = $base. $regs1[1]; // = lemma without [dt][aä]
         $cons = $regs1[2];
         $harmony = $regs1[3];
 
-        if (!$is_reflex && !preg_match("/^(.*)b$/u", $regs[3], $regs1)) {
+        $pres_stem = self::parsePres3Sg($base. $regs[3], $is_reflexive);
+        if (!$pres_stem) {
             return null;
         }        
-        $pres_suff = $regs1[1];
         
-        $inf_stem = $base. $inf_suff; // = lemma without [dt][aä]
-        $pres_stem = $base. $pres_suff; 
-        if (!preg_match("/[aeiouüäö]$/u", $pres_stem)) { // должен оканчиваться на гласную
-            return null;
-        }
         $past_stem = $base. $past_suff;
         if (!preg_match("/i$/u", $past_stem)) { // должен оканчиваться на i
             return null;
@@ -350,11 +363,11 @@ class VepsVerb
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., -
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., -
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., -
-                return self::interLists($neg_verb, self::indImperfConnegSg($stems[1], $stems[3], $dialect_id));
+                return Grammatic::interLists($neg_verb, self::indImperfConnegSg($stems[1], $stems[3], $dialect_id));
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., -
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., -
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., -
-                return self::interLists($neg_verb, self::indImperfConnegPl($stems[0], $stems[1], $stems[3], $stems[6], $dialect_id));
+                return Grammatic::interLists($neg_verb, self::indImperfConnegPl($stems[0], $stems[1], $stems[3], $stems[6], $dialect_id));
         }
     }
     
@@ -366,19 +379,19 @@ class VepsVerb
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., +
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., +
             case 88: // 27. индикатив, перфект, 3 л., ед.ч., +
-                return self::interLists($aux_verb, self::partic2activeSg($stems[1], $stems[5], $dialect_id));
+                return Grammatic::interLists($aux_verb, self::partic2activeSg($stems[1], $stems[5], $dialect_id));
             case 89: // 28. индикатив, перфект, 1 л., мн.ч., +
             case 90: // 29. индикатив, перфект, 2 л., мн.ч., +
             case 91: // 30. индикатив, перфект, 3 л., мн.ч., +
-                return self::interLists($aux_verb, self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists($aux_verb, self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
             case 92: // 31. индикатив, перфект, 1 л., ед.ч., -
             case 93: // 32. индикатив, перфект, 2 л., ед.ч., -
             case 94: // 33. индикатив, перфект, 3 л., ед.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[1], $stems[5], $dialect_id));
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[1], $stems[5], $dialect_id));
             case 95: // 34. индикатив, перфект, 1 л., мн.ч., -
             case 96: // 35. индикатив, перфект, 2 л., мн.ч., -
             case 97: // 36. индикатив, перфект, 3 л., мн.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb),  self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb),  self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
         }
     }
     
@@ -390,20 +403,20 @@ class VepsVerb
             case 98: // 37. индикатив, плюсквамперфект, 1 л., ед.ч., +
             case 99: // 38. индикатив, плюсквамперфект, 2 л., ед.ч., +
             case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., +
-                return self::interLists($aux_verb, self::partic2activeSg($stems[1], $stems[5], $dialect_id));
+                return Grammatic::interLists($aux_verb, self::partic2activeSg($stems[1], $stems[5], $dialect_id));
             case 101: // 40. индикатив, плюсквамперфект, 1 л., мн.ч., +
             case 102: // 41. индикатив, плюсквамперфект, 2 л., мн.ч., +
             case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., +
-                return self::interLists($aux_verb, self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists($aux_verb, self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
 
             case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., -
             case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., -
             case 107: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[1], $stems[5], $dialect_id));
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[1], $stems[5], $dialect_id));
             case 108: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., -
             case 106: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., -
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb), self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
         }
     }
     
@@ -459,7 +472,7 @@ class VepsVerb
             case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
             case 111: // 66. кондиционал, презенс, 2 л., ед.ч., отр. 
             case 112: // 67. кондиционал, презенс, 3 л., ед.ч., отр. 
-                return $stems[4] ? self::interLists($neg_verb, self::condPresConSg($stems[4], $dialect_id)) : '';
+                return $stems[4] ? Grammatic::interLists($neg_verb, self::condPresConSg($stems[4], $dialect_id)) : '';
             case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
             case 114: // 69. кондиционал, презенс, 2 л., мн.ч., отр. 
             case 115: // 70. кондиционал, презенс, 3 л., мн.ч., отр. 
@@ -493,7 +506,7 @@ class VepsVerb
             case 119: // 80. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 120: // 81. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 121: // 82. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return $stems[4] ? self::interLists($neg_verb, self::condImperfConSg($stems[4], $dialect_id)) : '';
+                return $stems[4] ? Grammatic::interLists($neg_verb, self::condImperfConSg($stems[4], $dialect_id)) : '';
         }
     }
     
@@ -521,9 +534,9 @@ class VepsVerb
             case 178: // 139. актив, 1-е причастие 
                 return self::partic1active($stems[1]);
             case 179: // 140. актив, 2-е причастие, ед.ч. 
-                return $stems[5] ? $stems[5]. 'nu' : '';
-            case 309: // 141. актив, 2-е причастие, мн.ч. !!!!! TODO
-                return '';
+                return self::partic2activeSg($stem1, $stem5, $dialect_id);
+            case 309: // 141. актив, 2-е причастие, мн.ч. 
+                return self::partic2activePl($stem0, $stem1, $stem5, $dt, $dialect_id);
             case 181: // 143. пассив, 2-е причастие 
                 return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ud' : '';
         }
@@ -1024,20 +1037,6 @@ class VepsVerb
             default:
                 return $stem3 ? $stem3. 'nu'. $kg. 'oi' : '';
         }        
-    }
-    
-    public static function interLists($neg, $list){
-        if (!$list) { return ''; }
-        
-        if (!preg_match("/,/", $list)) {
-            return $neg.$list;
-        }
-        
-        $forms=[];
-        foreach (preg_split("/,\s*/", $list) as $verb) {
-            $forms[] = $neg.$verb;
-        }
-        return join(", ", $forms);
     }
     
     public static function imper3($stem0, $dt){

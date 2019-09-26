@@ -82,7 +82,7 @@ class Lemma extends Model
         $bases=[];
         for ($i=0; $i<8; $i++) {
 //dd($this->bases);            
-            $bases[$i] = self::getBase($i, $dialect_id, $bases);
+            $bases[$i] = $this->getBase($i, $dialect_id, $bases);
         }
         return $bases;
     }
@@ -100,7 +100,8 @@ class Lemma extends Model
         if ($dialect_id) { 
             $base = Grammatic::getStemFromStems($bases, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
             if (!$base) {
-                $base = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id);
+                $is_reflexive = $this->features && $this->features->reflexive ? true : false;
+                $base = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $is_reflexive);
             }
             if (!$base) {
                 $base = $this->getBaseFromDB($base_n);

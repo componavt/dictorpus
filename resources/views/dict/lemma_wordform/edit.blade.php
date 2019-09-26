@@ -19,7 +19,9 @@
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
         
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
-        <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
+        <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}
+            @include('dict.lemma.show.features')
+        </p>
         
     @if ($dialect_id)
         @include('widgets.form.button._red', [

@@ -93,11 +93,11 @@ class VepsGram
         }       
     }
     
-    public static function getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id) {
+    public static function getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id, $is_reflexive) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsName::getStemFromWordform($lemma, $stem_n, $dialect_id);
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-            return VepsVerb::getStemFromWordform($lemma, $stem_n, $dialect_id);
+            return VepsVerb::getStemFromWordform($lemma, $stem_n, $dialect_id, $is_reflexive);
         }
     }
     

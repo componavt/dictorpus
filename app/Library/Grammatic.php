@@ -38,7 +38,7 @@ class Grammatic
         }
        
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num);
-dd('stems:',$stems);        
+//dd('stems:',$stems);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems, 
@@ -286,9 +286,9 @@ dd('stems:',$stems);
         return null;
     }
     
-    public static function getStemFromWordform($lemma, $stem_n, $lang_id, $pos_id, $dialect_id) {
+    public static function getStemFromWordform($lemma, $stem_n, $lang_id, $pos_id, $dialect_id, $is_reflexive) {
         if ($lang_id == 1) {
-            return VepsGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id);
+            return VepsGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id, $is_reflexive);
         }
         return KarGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id);
     }
@@ -299,4 +299,19 @@ dd('stems:',$stems);
         }
         return null;
     }
+    
+    public static function interLists($neg, $list){
+        if (!$list) { return ''; }
+        
+        if (!preg_match("/,/", $list)) {
+            return $neg.$list;
+        }
+        
+        $forms=[];
+        foreach (preg_split("/,\s*/", $list) as $verb) {
+            $forms[] = $neg.$verb;
+        }
+        return join(", ", $forms);
+    }
+    
 }

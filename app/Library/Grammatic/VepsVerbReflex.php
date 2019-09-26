@@ -79,224 +79,6 @@ class VepsVerbReflex
         }
     }
     
-    public static function wordformByStemsIndImperf($stems, $gramset_id, $dialect_id) {
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-        
-        switch ($gramset_id) {
-            case 32: // 13. индикатив, имперфект, 1 л., ед.ч., +
-                return self::indImperf1Sg($stems[2], $dialect_id);
-            case 33: // 14. индикатив, имперфект, 2 л., ед.ч., +
-                return self::indImperf2Sg($stems[2], $dialect_id);
-            case 34: // 15. индикатив, имперфект, 3 л., ед.ч., +
-                return $stems[2] ? $stems[2]. 'he' : '';
-            case 35: // 16. индикатив, имперфект, 1 л., мн.ч., +
-                return self::indImperf1Pl($stems[2], $dialect_id);
-            case 36: // 17. индикатив, имперфект, 2 л., мн.ч., +
-                return self::indImperf2Pl($stems[2], $dialect_id);
-            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., +
-                return self::indImperf3Pl($stems[0], $stems[2], $stems[6], $dialect_id);
-            case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
-                return self::indImperfConnegSg($stems[1], $stems[3], $dialect_id);
-            case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
-                return self::indImperfConnegPl($stems[1], $stems[3], $dialect_id);
-
-            case 80: // 19. индикатив, имперфект, 1 л., ед.ч., -
-            case 81: // 20. индикатив, имперфект, 2 л., ед.ч., -
-            case 82: // 21. индикатив, имперфект, 3 л., ед.ч., -
-                return self::interLists($neg_verb, self::indImperfConnegSg($stems[1], $stems[3], $dialect_id));
-            case 83: // 22. индикатив, имперфект, 1 л., мн.ч., -
-            case 84: // 23. индикатив, имперфект, 2 л., мн.ч., -
-            case 85: // 24. индикатив, имперфект, 3 л., мн.ч., -
-                return self::interLists($neg_verb, self::indImperfConnegPl($stems[0], $stems[1], $stems[3], $stems[6], $dialect_id));
-        }
-    }
-    
-    public static function wordformByStemsIndPerf($stems, $gramset_id, $dialect_id) {
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-        $aux_verb = VepsVerb::auxVerb($gramset_id, $dialect_id);
-
-        switch ($gramset_id) {
-            case 86: // 25. индикатив, перфект, 1 л., ед.ч., +
-            case 87: // 26. индикатив, перфект, 2 л., ед.ч., +
-            case 88: // 27. индикатив, перфект, 3 л., ед.ч., +
-                return self::interLists($aux_verb, self::partic2activeSg($stems[5], $dialect_id));
-            case 89: // 28. индикатив, перфект, 1 л., мн.ч., +
-            case 90: // 29. индикатив, перфект, 2 л., мн.ч., +
-            case 91: // 30. индикатив, перфект, 3 л., мн.ч., +
-                return self::interLists($aux_verb, self::partic2activePl($stems[5], $dialect_id));
-            case 92: // 31. индикатив, перфект, 1 л., ед.ч., -
-            case 93: // 32. индикатив, перфект, 2 л., ед.ч., -
-            case 94: // 33. индикатив, перфект, 3 л., ед.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[5], $dialect_id));
-            case 95: // 34. индикатив, перфект, 1 л., мн.ч., -
-            case 96: // 35. индикатив, перфект, 2 л., мн.ч., -
-            case 97: // 36. индикатив, перфект, 3 л., мн.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb),  self::partic2activePl($stems[5], $dialect_id));
-        }
-    }
-    
-    public static function wordformByStemsIndPlus($stems, $gramset_id, $dialect_id) {
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-        $aux_verb = VepsVerb::auxVerb($gramset_id, $dialect_id);
-
-        switch ($gramset_id) {
-            case 98: // 37. индикатив, плюсквамперфект, 1 л., ед.ч., +
-            case 99: // 38. индикатив, плюсквамперфект, 2 л., ед.ч., +
-            case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., +
-                return self::interLists($aux_verb, self::partic2activeSg($stems[5], $dialect_id));
-            case 101: // 40. индикатив, плюсквамперфект, 1 л., мн.ч., +
-            case 102: // 41. индикатив, плюсквамперфект, 2 л., мн.ч., +
-            case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., +
-                return self::interLists($aux_verb, self::partic2activePl($stems[5], $dialect_id));
-
-            case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., -
-            case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., -
-            case 107: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[5], $dialect_id));
-            case 108: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., -
-            case 106: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., -
-            case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., -
-                return self::interLists(self::interLists($neg_verb, $aux_verb), self::partic2activePl($stems[5], $dialect_id));
-        }
-    }
-    
-    public static function wordformByStemsImper($stems, $gramset_id, $dialect_id) {
-        $g = VepsGram::rightConsonant($stems[6], 'g');
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-
-        switch ($gramset_id) {
-            case 51: // 49. императив, 2 л., ед.ч., + 
-            case 299: // 148. императив, коннегатив, ед.ч.
-                return $stems[1] ? $stems[1] : '';
-            case 52: // 50. императив, 3 л., ед.ч., + 
-            case 55: // 53. императив, 3 л., мн.ч., + 
-                return self::imper3($stems[0], $stems[6]);
-            case 53: // 51. императив, 1 л., мн.ч., + 
-                return $stems[0] ? $stems[0]. $g. 'am' : '';
-            case 54: // 52. императив, 2 л., мн.ч., + 
-                return $stems[0] ? $stems[0]. $g. 'at' : '';
-            case 300: // 149. императив, коннегатив, мн.ч.
-                return self::imperConnegPl($stems[0], $stems[1], $stems[6], $dialect_id);
- 
-            case 50: // 54. императив, 2 л., ед.ч., - 
-                return $stems[1] ? $neg_verb. $stems[1] : '';
-            case 74: // 55. императив, 3 л., ед.ч., -                 
-            case 75: // 56. императив, 1 л., мн.ч., - 
-            case 76: // 57. императив, 2 л., мн.ч., - 
-            case 77: // 58. императив, 3 л., мн.ч., - 
-                return $stems[0] ? $neg_verb. self::imperConnegPl($stems[0], $stems[1], $stems[6], $dialect_id) : '';
-        }
-    }
-    
-    public static function wordformByStemsCondPres($stems, $gramset_id, $dialect_id) {
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-        $stems[4] = self::stemForCond($stems[4], $dialect_id);
-
-        switch ($gramset_id) {
-            case 38: // 59. кондиционал, презенс, 1 л., ед.ч., +
-                return self::condPres1Sg($stems[4], $dialect_id);
-            case 39: // 60. кондиционал, презенс, 2 л., ед.ч., пол. 
-                return self::condPres2Sg($stems[4], $dialect_id);
-            case 40: // 61. кондиционал, презенс, 3 л., ед.ч., пол. 
-            case 301: // 150. кондиционал, презенс, коннегатив
-                return self::condPresConSg($stems[4], $dialect_id);
-            case 41: // 62. кондиционал, презенс, 1 л., мн.ч., +
-                return self::condPres1Pl($stems[4], $dialect_id);
-            case 42: // 63. кондиционал, презенс, 2 л., мн.ч., +
-                return self::condPres2Pl($stems[4], $dialect_id);
-            case 43: // 64. кондиционал, презенс, 3 л., мн.ч., +
-                return self::condPres3Pl($stems[0], $stems[4], $stems[6], $dialect_id);
-            case 303: // 151. кондиционал, презенс, коннегатив, мн.ч. 
-                return self::condPresConSg($stems[0], $stems[4], $stems[6], $dialect_id);
-                                
-            case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
-            case 111: // 66. кондиционал, презенс, 2 л., ед.ч., отр. 
-            case 112: // 67. кондиционал, презенс, 3 л., ед.ч., отр. 
-                return $stems[4] ? self::interLists($neg_verb, self::condPresConSg($stems[4], $dialect_id)) : '';
-            case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
-            case 114: // 69. кондиционал, презенс, 2 л., мн.ч., отр. 
-            case 115: // 70. кондиционал, презенс, 3 л., мн.ч., отр. 
-                return $stems[4] ? $neg_verb. self::condPresConPl($stems[0], $stems[4], $stems[6], $dialect_id) : ''; 
-        }
-    }
-    
-    public static function wordformByStemsCondImperf($stems, $gramset_id, $dialect_id) {
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-
-        switch ($gramset_id) {
-            case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., +
-                return self::condImperf1Sg($stems[3], $dialect_id);
-            case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., +
-                return self::condImperf2Sg($stems[3], $dialect_id);
-            case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., +
-                return self::condImperf3Sg($stems[3], $dialect_id);
-            case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., +
-                return self::condImperf1Pl($stems[3], $dialect_id);
-            case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., +
-                return self::condImperf2Pl($stems[3], $dialect_id);
-            case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., +
-                return self::condImperf3Pl($stems[0], $stems[3], $stems[6], $dialect_id);
-            case 302: // 152. кондиционал, имперфект, коннегатив, ед.ч. 
-            case 304: // 153. кондиционал, имперфект, коннегатив, мн.ч. 
-                return self::condImperfConSg($stems[4], $dialect_id);
-                
-            case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
-            case 117: // 78. кондиционал, имперфект, 1 л., ед.ч., отр. 
-            case 118: // 79. кондиционал, имперфект, 1 л., ед.ч., отр. 
-            case 119: // 80. кондиционал, имперфект, 1 л., ед.ч., отр. 
-            case 120: // 81. кондиционал, имперфект, 1 л., ед.ч., отр. 
-            case 121: // 82. кондиционал, имперфект, 1 л., ед.ч., отр. 
-                return $stems[4] ? self::interLists($neg_verb, self::condImperfConSg($stems[4], $dialect_id)) : '';
-        }
-    }
-    
-    public static function wordformByStemsInf($stems, $gramset_id, $dialect_id) {
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-        
-        switch ($gramset_id) {                
-            case 170: // 131. I инфинитив 
-                return $stems[0] && $stems[6] && $stems[7] ? $stems[0]. $stems[6]. $stems[7] : '';
-            case 171: // 132. II инфинитив, инессив 
-                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'es' : '';
-            case 172: // 133. II инфинитив, инструктив  
-                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'en' : '';
-            case 173: // 134. III инфинитив, адессив
-                return self::inf3Ades($stems[5], $stems[7], $dialect_id);
-            case 174: // 135. III инфинитив, иллатив 
-                return self::inf3Ill($stems[5], $stems[7]);
-            case 175: // 136. III инфинитив, инессив 
-                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 's' : '';
-            case 176: // 137. III инфинитив, элатив 
-                return self::inf3Elat($stems[5], $stems[7], $dialect_id);
-            case 177: // 138. III инфинитив, абессив 
-                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 't' : '';
-                
-            case 178: // 139. актив, 1-е причастие 
-                return self::partic1active($stems[1]);
-            case 179: // 140. актив, 2-е причастие, ед.ч. 
-                return $stems[5] ? $stems[5]. 'nu' : '';
-            case 309: // 141. актив, 2-е причастие, мн.ч. !!!!! TODO
-                return '';
-            case 181: // 143. пассив, 2-е причастие 
-                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ud' : '';
-        }
-    }
-    
-    public static function wordformByStemsPas($stems, $gramset_id, $dialect_id) {       
-        switch ($gramset_id) {                
-            case 305: // Пассив презенс 
-                return $stems[0] && $stems[6] 
-                    ? $stems[0]. $stems[6]. ($dialect_id==1 ? 'aze' : 'as') 
-                    : '';
-            case 306: // Пассив имперфект 
-                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ihe' : '';
-            case 307: // Пассив перфект 
-                return $stems[0] && $stems[6] ? 'om '. $stems[0]. $stems[6]. 'ud' : '';
-            case 308: // Пассив имперфект 
-                return $stems[0] && $stems[6] ? 'oli '. $stems[0]. $stems[6]. 'ud' : '';
-        }
-    }
-    
     public static function indPres1Sg($stem1, $dialect_id){
         if (!$stem1) { return ''; }
 
@@ -431,6 +213,38 @@ class VepsVerbReflex
         }        
     }
     
+    public static function wordformByStemsIndImperf($stems, $gramset_id, $dialect_id) {
+        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
+        
+        switch ($gramset_id) {
+            case 32: // 13. индикатив, имперфект, 1 л., ед.ч., +
+                return self::indImperf1Sg($stems[2], $dialect_id);
+            case 33: // 14. индикатив, имперфект, 2 л., ед.ч., +
+                return self::indImperf2Sg($stems[2], $dialect_id);
+            case 34: // 15. индикатив, имперфект, 3 л., ед.ч., +
+                return $stems[2] ? $stems[2]. 'he' : '';
+            case 35: // 16. индикатив, имперфект, 1 л., мн.ч., +
+                return self::indImperf1Pl($stems[2], $dialect_id);
+            case 36: // 17. индикатив, имперфект, 2 л., мн.ч., +
+                return self::indImperf2Pl($stems[2], $dialect_id);
+            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., +
+                return self::indImperf3Pl($stems[0], $stems[2], $stems[6], $dialect_id);
+            case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
+                return self::indImperfConnegSg($stems[1], $stems[3], $dialect_id);
+            case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
+                return self::indImperfConnegPl($stems[1], $stems[3], $dialect_id);
+
+            case 80: // 19. индикатив, имперфект, 1 л., ед.ч., -
+            case 81: // 20. индикатив, имперфект, 2 л., ед.ч., -
+            case 82: // 21. индикатив, имперфект, 3 л., ед.ч., -
+                return Grammatic::interLists($neg_verb, self::indImperfConnegSg($stems[1], $stems[3], $dialect_id));
+            case 83: // 22. индикатив, имперфект, 1 л., мн.ч., -
+            case 84: // 23. индикатив, имперфект, 2 л., мн.ч., -
+            case 85: // 24. индикатив, имперфект, 3 л., мн.ч., -
+                return Grammatic::interLists($neg_verb, self::indImperfConnegPl($stems[0], $stems[1], $stems[3], $stems[6], $dialect_id));
+        }
+    }
+    
     public static function indImperf1Sg($stem2, $dialect_id){
         if (!$stem2) { return ''; }
        
@@ -530,159 +344,295 @@ class VepsVerbReflex
         }        
     }
     
-    public static function interLists($neg, $list){
-        if (!$list) { return ''; }
-        
-        if (!preg_match("/,/", $list)) {
-            return $neg.$list;
-        }
-        
-        $forms=[];
-        foreach (preg_split("/,\s*/", $list) as $verb) {
-            $forms[] = $neg.$verb;
-        }
-        return join(", ", $forms);
-    }
-    
-    public static function imper3($stem0, $dt){
-        if (!$stem0) {
-            return '';
-        }
-        if (self::isMonobasic($stem0) && in_array(VepsGram::countSyllable($stem0), [1,3])
-            || !self::isMonobasic($stem0) && preg_match("/[".VepsGram::sonantSet()."]$/")) {
-            $a = '';
-        } else {
-            $a = 'a';
-        }
-        return $stem0. VepsGram::rightConsonant($dt, 'g'). $a. 'ha';
+    public static function wordformByStemsIndPerf($stems, $gramset_id, $dialect_id) {
+        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
+        $aux_verb = VepsVerb::auxVerb($gramset_id, $dialect_id);
 
+        switch ($gramset_id) {
+            case 86: // 25. индикатив, перфект, 1 л., ед.ч., +
+            case 87: // 26. индикатив, перфект, 2 л., ед.ч., +
+            case 88: // 27. индикатив, перфект, 3 л., ед.ч., +
+                return Grammatic::interLists($aux_verb, self::partic2activeSg($stems[5], $dialect_id));
+            case 89: // 28. индикатив, перфект, 1 л., мн.ч., +
+            case 90: // 29. индикатив, перфект, 2 л., мн.ч., +
+            case 91: // 30. индикатив, перфект, 3 л., мн.ч., +
+                return Grammatic::interLists($aux_verb, self::partic2activePl($stems[5], $dialect_id));
+            case 92: // 31. индикатив, перфект, 1 л., ед.ч., -
+            case 93: // 32. индикатив, перфект, 2 л., ед.ч., -
+            case 94: // 33. индикатив, перфект, 3 л., ед.ч., -
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[5], $dialect_id));
+            case 95: // 34. индикатив, перфект, 1 л., мн.ч., -
+            case 96: // 35. индикатив, перфект, 2 л., мн.ч., -
+            case 97: // 36. индикатив, перфект, 3 л., мн.ч., -
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb),  self::partic2activePl($stems[5], $dialect_id));
+        }
     }
     
-    public static function imperConnegPl($stem0, $stem1, $dt, $dialect_id){
-        $gk = VepsGram::rightConsonant($dt, 'g');
+    public static function wordformByStemsIndPlus($stems, $gramset_id, $dialect_id) {
+        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
+        $aux_verb = VepsVerb::auxVerb($gramset_id, $dialect_id);
+
+        switch ($gramset_id) {
+            case 98: // 37. индикатив, плюсквамперфект, 1 л., ед.ч., +
+            case 99: // 38. индикатив, плюсквамперфект, 2 л., ед.ч., +
+            case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., +
+                return Grammatic::interLists($aux_verb, self::partic2activeSg($stems[5], $dialect_id));
+            case 101: // 40. индикатив, плюсквамперфект, 1 л., мн.ч., +
+            case 102: // 41. индикатив, плюсквамперфект, 2 л., мн.ч., +
+            case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., +
+                return Grammatic::interLists($aux_verb, self::partic2activePl($stems[5], $dialect_id));
+
+            case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., -
+            case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., -
+            case 107: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., -
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), self::partic2activeSg($stems[5], $dialect_id));
+            case 108: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., -
+            case 106: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., -
+            case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., -
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), self::partic2activePl($stems[5], $dialect_id));
+        }
+    }
+    
+    public static function wordformByStemsImper($stems, $gramset_id, $dialect_id) {
+        $g = VepsGram::rightConsonant($stems[6], 'g');
+        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
+
+        switch ($gramset_id) {
+            case 51: // 49. императив, 2 л., ед.ч., + 
+                return self::imper2Sg($stems[0], $stems[6], $dialect_id);
+            case 52: // 50. императив, 3 л., ед.ч., + 
+                return self::imper3Sg($stems[0], $stems[6], $dialect_id);
+            case 53: // 51. императив, 1 л., мн.ч., + 
+                return self::imper1Pl($stems[0], $stems[6], $dialect_id);
+            case 54: // 52. императив, 2 л., мн.ч., + 
+                return self::imper2Pl($stems[0], $stems[6], $dialect_id);
+            case 55: // 53. императив, 3 л., мн.ч., + 
+                return self::imper3Pl($stems[0], $stems[6], $dialect_id);
+
+            case 299: // 148. императив, коннегатив, ед.ч.
+                return self::imperConnegSg($stems[0], $dt);
+            case 300: // 149. императив, коннегатив, мн.ч.
+                return self::imperConnegPl($stems[0], $stems[6], $dialect_id);
+ 
+            case 50: // 54. императив, 2 л., ед.ч., - 
+                return $neg_verb. self::imperConnegSg($stems[0], $dt);
+            case 74: // 55. императив, 3 л., ед.ч., -                 
+            case 75: // 56. императив, 1 л., мн.ч., - 
+            case 76: // 57. императив, 2 л., мн.ч., - 
+            case 77: // 58. императив, 3 л., мн.ч., - 
+                return $neg_verb. self::imperConnegPl($stems[0], $stems[6], $dialect_id);
+        }
+    }
+    
+    public static function imper2Sg($stem0, $dt, $dialect_id){
+        if (!$stem0) { return ''; }
+
         switch ($dialect_id) {
-            case 1: // северновепсский 
-                return $stem0 && $dt ? $stem0. $gk. 'ii' : '';
-            case 3: // южновепсский 
-                return $stem1 ? $stem1 : '';
+            case 4: // средневепсский восточный 
+                return $stem0. 'o';
             default:
-                return $stem0 ? $stem0. $gk. 'oi' : '';
+                return $stem0. 'e';
         }        
     }
     
-    public static function condForSouth($stem4, $affix) {
-        if (!$stem4) {
-            return '';
-        }
-        if (preg_match("/^(.+)([aou])$/",$stem4, $regs)) {
-            $affix = mb_substr($affix, 1);
-            switch ($regs[2]) {
-                case 'a': return $regs[1].'ä'.$affix;
-                case 'o': return $regs[1].'ö'.$affix;
-                case 'u': return $regs[1].'ü'.$affix;
-            }
-        }
-        return $stem4.$affix;
-        
-    }
+    public static function imper3Sg($stem0, $dt, $dialect_id){
+        if (!$stem0 || !$dt) { return ''; }
+        $gk = VepsGram::rightConsonant($dt, 'g');
 
-    public static function condPres1Sg($stem4, $dialect_id){
-        if (!$stem4) {
-            return '';
-        }
         switch ($dialect_id) {
-            case 43: // младописьменный 
             case 1: // северновепсский 
-                return $stem4. 'ižin';
-            case 3: // южновепсский 
-                return self::condForSouth($stem4, 'ižin’');
+                return $stem0. $gk. 'ahaze';
             default:
-                return $stem4. 'ižin’';
+                return $stem0. $gk. 'ahas';
+        }        
+    }
+    
+    public static function imper1Pl($stem0, $dt, $dialect_id){
+        if (!$stem0 || !$dt) { return ''; }
+        $gk = VepsGram::rightConsonant($dt, 'g');
+
+        switch ($dialect_id) {
+            case 1: // северновепсский 
+                return $stem0. $gk. 'amei';
+            case 3: // южновепсский 
+                return $stem0. $gk. 'amoo';
+            default:
+                return $stem0. $gk. 'amoiš';
+        }        
+    }
+    
+    public static function imper2Pl($stem0, $dt, $dialect_id){
+        if (!$stem0 || !$dt) { return ''; }
+        $gk = VepsGram::rightConsonant($dt, 'g');
+
+        switch ($dialect_id) {
+            case 1: // северновепсский 
+                return $stem0. $gk. 'atei';
+            case 3: // южновепсский 
+                return $stem0. $gk. 'atoo';
+            default:
+                return $stem0. $gk. 'atoiš';
+        }        
+    }
+    
+    public static function imper3Pl($stem0, $dt, $dialect_id){
+        if (!$stem0 || !$dt) { return ''; }
+        $gk = VepsGram::rightConsonant($dt, 'g');
+
+        switch ($dialect_id) {
+            case 1: // северновепсский 
+                return $stem0. $gk. 'ahaze';
+            case 3: // южновепсский 
+                return $stem0. $gk. 'asoo';
+            case 5: // средневепсский западный 
+                return $stem0. $gk. 'asoiš';
+            default:
+                return $stem0. $gk. 'ahas';
+        }        
+    }
+    
+    public static function imperConnegSg($stem0, $dt){
+        if (!$stem0 || !$dt) { return ''; }
+        
+        return $stem0. $dt. 'e';
+    }
+    
+    public static function imperConnegPl($stem0, $dt, $dialect_id){
+        if (!$stem0 || !$dt) { return ''; }
+        $gk = VepsGram::rightConsonant($dt, 'g');
+        
+        switch ($dialect_id) {
+            case 1: // северновепсский 
+                return $stem0. $gk. 'iiže';
+            case 3: // южновепсский 
+                return $stem0. $dt. 'e';
+            default:
+                return $stem0. $gk. 'oiš';
+        }        
+    }
+    
+    public static function wordformByStemsCondPres($stems, $gramset_id, $dialect_id) {
+        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
+        $stems[4] = self::stemForCond($stems[4], $dialect_id);
+
+        switch ($gramset_id) {
+            case 38: // 59. кондиционал, презенс, 1 л., ед.ч., +
+                return self::condPres1Sg($stems[4], $dialect_id);
+            case 39: // 60. кондиционал, презенс, 2 л., ед.ч., пол. 
+                return self::condPres2Sg($stems[4], $dialect_id);
+            case 40: // 61. кондиционал, презенс, 3 л., ед.ч., пол. 
+                return self::condPres3Sg($stems[4], $dialect_id);
+            case 41: // 62. кондиционал, презенс, 1 л., мн.ч., +
+                return self::condPres1Pl($stems[4], $dialect_id);
+            case 42: // 63. кондиционал, презенс, 2 л., мн.ч., +
+                return self::condPres2Pl($stems[4], $dialect_id);
+            case 43: // 64. кондиционал, презенс, 3 л., мн.ч., +
+                return self::condPres3Pl($stems[0], $stems[4], $stems[6], $dialect_id);
+
+            case 301: // 150. кондиционал, презенс, коннегатив
+                return $stems[4] ? $stems[4] . 'ižihe' : '';
+            case 303: // 151. кондиционал, презенс, коннегатив, мн.ч. 
+                return self::condPresConSg($stems[0], $stems[4], $stems[6], $dialect_id);
+                                
+            case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
+            case 111: // 66. кондиционал, презенс, 2 л., ед.ч., отр. 
+            case 112: // 67. кондиционал, презенс, 3 л., ед.ч., отр. 
+                return $stems[4] ? $neg_verb. $stems[4] . 'ižihe' : '';
+            case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
+            case 114: // 69. кондиционал, презенс, 2 л., мн.ч., отр. 
+            case 115: // 70. кондиционал, презенс, 3 л., мн.ч., отр. 
+                return $stems[4] ? $neg_verb. self::condPresConPl($stems[4], $dialect_id) : ''; 
+        }
+    }
+    
+    public static function condPres1Sg($stem4, $dialect_id){
+        if (!$stem4) { return ''; }
+        
+        switch ($dialect_id) {
+            case 1: // северновепсский 
+                return $stem4. 'ižimei';
+            case 3: // южновепсский 
+                return $stem4. 'ižime';
+            default:
+                return $stem4. 'ižimoi';
         }        
     }
     
     public static function condPres2Sg($stem4, $dialect_id){
-        if (!$stem4) {
-            return '';
-        }
+        if (!$stem4) { return ''; }
+        
         switch ($dialect_id) {
-            case 43: // младописьменный 
             case 1: // северновепсский 
-                return $stem4. 'ižid';
-            case 3: // южновепсский 
-                return self::condForSouth($stem4, 'ižid’');
+                return $stem4. 'ižitei';
+            case 3: // южновепсский
+                return $stem4. 'ižite';
             default:
-                return $stem4. 'ižid’';
+                return $stem4. 'ižitoi';
+        }        
+    }
+    
+    public static function condPres3Sg($stem4, $dialect_id){
+        if (!$stem4) { return ''; }
+        
+        switch ($dialect_id) {
+            case 5: // средневепсский западный 
+                return $stem4. 'ižihes';
+            default:
+                return $stem4. 'ižihe';
         }        
     }
     
     public static function condPres1Pl($stem4, $dialect_id){
-        if (!$stem4) {
-            return '';
-        }
+        if (!$stem4) { return ''; }
+        
         switch ($dialect_id) {
-            case 5: // средневепсский западный 
+            case 1: // северновепсский 
                 return $stem4. 'ižimei';
             case 3: // южновепсский 
-                return self::condForSouth($stem4, 'ižimaa');
+                return $stem4. 'ižimoo';
             default:
-                return $stem4. 'ižim';
+                return $stem4. 'ižimoiš';
         }        
     }
     
     public static function condPres2Pl($stem4, $dialect_id){
-        if (!$stem4) {
-            return '';
-        }
+        if (!$stem4) { return ''; }
+
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem4. 'ižid';
-            case 3: // южновепсский 
-                return self::condForSouth($stem4, 'ižitaa');
-            case 4: // средневепсский восточный 
-                return $stem4. 'ižid’';
-            case 5: // средневепсский западный 
                 return $stem4. 'ižitei';
+            case 3: // южновепсский
+                return $stem4. 'ižitoo';
             default:
-                return $stem4. 'ižit';
+                return $stem4. 'ižitoiš';
         }        
     }
     
-    public static function condPres3Pl($stem0, $stem4, $dt, $dialect_id){
+    public static function condPres3Pl($stem4, $dialect_id){
+        if (!$stem4) { return ''; }
+        
         switch ($dialect_id) {
-            case 1: // северновепсский 
-                return $stem0 && $dt ? $stem0. $dt. 'eiž' : '';
             case 3: // южновепсский 
-                return self::condForSouth($stem4, 'ižiba');
+                return $stem4. 'ižihoo';
+            case 4: // средневепсский восточный 
+                return $stem4. 'ižihezoi, '. $stem4. 'ižihezoiš';
+            case 5: // средневепсский западный 
+                return $stem4. 'ižihezoiš';
             default:
-                return $stem4 ? $stem4. 'ižiba' : '';
-        }        
-    }
-    
-    public static function condPresConSg($stem4, $dialect_id){
-        if (!$stem4) {
-            return '';
-        }
-        switch ($dialect_id) {
-            case 1: // северновепсский 
-                return $stem4. 'iž, '. $stem4. 'iži';
-            case 3: // южновепсский 
-                return self::condForSouth($stem4, 'iž');
-            default:
-                return $stem4. 'iži';
+                return $stem4. 'ižihe';
         }        
     }
     
     public static function condPresConPl($stem0, $stem4, $dt, $dialect_id){
+        if (!$stem4) { return ''; }
+        
         switch ($dialect_id) {
-            case 1: // северновепсский 
-                return $stem0 && $dt ? $stem0. $dt. 'eiž' : '';
             case 3: // южновепсский 
-                return self::condForSouth($stem4, 'iž');
+                return $stem4. 'ižihoo';
             case 5: // средневепсский западный 
-                return $stem4 ? $stem4. 'ižigoi' : '';
+                return $stem4. 'ižihezoiš';
             default:
-                return $stem4 ? $stem4. 'iži' : '';
+                return $stem4. 'ižihe';
         }        
     }
     
@@ -697,177 +647,211 @@ class VepsVerbReflex
         return $stem4;
     }
 
-    public static function condImperf1Sg($stem3, $dialect_id){
-        if (!$stem3) {
-            return '';
+    public static function wordformByStemsCondImperf($stems, $gramset_id, $dialect_id) {
+        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
+
+        switch ($gramset_id) {
+            case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., +
+                return self::condImperf1Sg($stems[3], $dialect_id);
+            case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., +
+                return self::condImperf2Sg($stems[3], $dialect_id);
+            case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., +
+                return self::condImperf3Sg($stems[3], $dialect_id);
+            case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., +
+                return self::condImperf1Pl($stems[3], $dialect_id);
+            case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., +
+                return self::condImperf2Pl($stems[3], $dialect_id);
+            case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., +
+                return self::condImperf3Pl($stems[3], $dialect_id);
+                
+            case 302: // 152. кондиционал, имперфект, коннегатив, ед.ч. 
+                return self::condImperfConSg($stems[4], $dialect_id);
+            case 304: // 153. кондиционал, имперфект, коннегатив, мн.ч. 
+                return self::condImperfConPl($stems[4], $dialect_id);
+                
+            case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., - 
+            case 117: // 78. кондиционал, имперфект, 2 л., ед.ч., - 
+            case 118: // 79. кондиционал, имперфект, 3 л., ед.ч., - 
+                return $stems[4] ? Grammatic::interLists($neg_verb, self::condImperfConSg($stems[4], $dialect_id)) : '';
+            case 119: // 80. кондиционал, имперфект, 1 л., мн.ч., - 
+            case 120: // 81. кондиционал, имперфект, 2 л., мн.ч., - 
+            case 121: // 82. кондиционал, имперфект, 3 л., мн.ч., - 
+                return $stems[4] ? Grammatic::interLists($neg_verb, self::condImperfConPl($stems[4], $dialect_id)) : '';
         }
+    }
+    
+    public static function condImperf1Sg($stem3, $dialect_id){
+        if (!$stem3) { return ''; }
+        
         switch ($dialect_id) {
-            case 43: // младописьменный 
-                return $stem3. 'nuižin';
             case 1: // северновепсский 
-                return $stem3. 'nižin';
+                return $stem3. 'nižimei';
+            case 3: // южновепсский 
+                return $stem3. 'nižime';
             default:
-                return $stem3. 'nuižin’';
+                return $stem3. 'nuižimoi';
         }        
     }
     
     public static function condImperf2Sg($stem3, $dialect_id){
-        if (!$stem3) {
-            return '';
-        }
+        if (!$stem3) { return ''; }
+        
         switch ($dialect_id) {
-            case 43: // младописьменный 
-                return $stem3. 'nuižid';
             case 1: // северновепсский 
-                return $stem3. 'nižid';
+                return $stem3. 'nižitei';
+            case 3: // южновепсский 
+                return $stem3. 'nižite';
             default:
-                return $stem3. 'nuižid’';
+                return $stem3. 'nuižitoi';
         }        
     }
     
     public static function condImperf3Sg($stem3, $dialect_id){
-        if (!$stem3) {
-            return '';
-        }
+        if (!$stem3) { return ''; }
+        
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem3. 'niži';
             case 3: // южновепсский 
-                return $stem3. 'nuiž';
+                return $stem3. 'nižihe';
+            case 5: // средневепсский западный 
+                return $stem3. 'nuižihes';
             default:
-                return $stem3. 'nuiži';
+                return $stem3. 'nuižihe';
         }        
     }
     
     public static function condImperf1Pl($stem3, $dialect_id){
-        if (!$stem3) {
-            return '';
-        }
+        if (!$stem3) { return ''; }
+        
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem3. 'nižim';
+                return $stem3. 'nižimei';
             case 3: // южновепсский 
-                return $stem3. 'nuižimaa';
-            case 5: // средневепсский западный 
-                return $stem3. 'nuižimei';
+                return $stem3. 'nižimoo';
             default:
-                return $stem3. 'nuižim';
+                return $stem3. 'nuižimoiš';
         }        
     }
     
     public static function condImperf2Pl($stem3, $dialect_id){
-        if (!$stem3) {
-            return '';
-        }
+        if (!$stem3) { return ''; }
+        
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem3. 'nižid';
+                return $stem3. 'nižitei';
             case 3: // южновепсский 
-                return $stem3. 'nuižitaa';
-            case 4: // средневепсский восточный 
-                return $stem3. 'nuižid’';
-            case 5: // средневепсский западный 
-                return $stem3. 'nuižitei';
+                return $stem3. 'nižitoo';
             default:
-                return $stem3. 'nuižit';
+                return $stem3. 'nuižitoiš';
         }        
     }
     
     public static function condImperf3Pl($stem0, $stem3, $dt, $dialect_id){
+        if (!$stem3) { return ''; }
+        
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem0 && $dt ? $stem0. $dt. 'eniž' : '';
+                return $stem3. 'nižihe';
+            case 3: // южновепсский 
+                return $stem3. 'nižihoo';
+            case 4: // средневепсский восточный 
+                return $stem3. 'nužihezoi, '. $stem3. 'nužihezoiš';
+            case 5: // средневепсский западный 
+                return $stem3. 'nužihezoiš';
             default:
-                return $stem3 ? $stem3. 'nuižiba' : '';
+                return $stem3. 'nuižihe';
         }        
     }
     
     public static function condImperfConSg($stem4, $dialect_id){
-        if (!$stem4) {
-            return '';
-        }
+        if (!$stem4) { return ''; }
+        
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem4. 'niž, '. $stem4. 'niži';
             case 3: // южновепсский 
-                return $stem4. 'nuiž';
+                return $stem4. 'nižihe';
             default:
-                return $stem4. 'nuiži';
+                return $stem4. 'nuižihe';
         }        
     }
-
-    public static function inf3Ades($stem5, $a, $dialect_id){
-        if (!$stem5) {
-            return '';
-        }
+    
+    public static function condImperfConPl($stem4, $dialect_id){
+        if (!$stem4) { return ''; }
+        
         switch ($dialect_id) {
+            case 1: // северновепсский 
+                return $stem4. 'nižihe';
             case 3: // южновепсский 
-                return $stem5. 'm'. $a.$a;
-            case 4: // средневепсский восточный 
-                return $stem5. 'mou';
+                return $stem4. 'nižihoo';
             case 5: // средневепсский западный 
-                return $stem5. 'mau';
+                return $stem3. 'nuižihezoiš';
             default:
-                return $stem5. 'm'. $a. 'l';
+                return $stem4. 'nuižihe';
+        }        
+    }
+    
+    public static function wordformByStemsInf($stems, $gramset_id, $dialect_id) {
+        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
+        
+        switch ($gramset_id) {                
+            case 170: // 131. I инфинитив 
+                return self::inf1($stems[0], $stems[6], $stems[7], $dialect_id);
+/*            case 171: // 132. II инфинитив, инессив 
+                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'es' : '';
+            case 172: // 133. II инфинитив, инструктив  
+                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'en' : '';
+            case 173: // 134. III инфинитив, адессив
+                return self::inf3Ades($stems[5], $stems[7], $dialect_id); */
+            case 174: // 135. III инфинитив, иллатив 
+                return self::inf3Ill($stems[5], $dialect_id);
+/*            case 175: // 136. III инфинитив, инессив 
+                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 's' : '';
+            case 176: // 137. III инфинитив, элатив 
+                return self::inf3Elat($stems[5], $stems[7], $dialect_id);
+            case 177: // 138. III инфинитив, абессив 
+                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 't' : '';
+                
+            case 178: // 139. актив, 1-е причастие 
+                return self::partic1active($stems[1]); */
+            case 179: // 140. актив, 2-е причастие, ед.ч. 
+                return self::partic2activeSg($stems[5], $dialect_id);
+            case 309: // 141. актив, 2-е причастие, мн.ч. !!!!! TODO
+                return self::partic2activePl($stems[5], $dialect_id);
+/*            case 181: // 143. пассив, 2-е причастие 
+                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ud' : '';*/
+        }
+    }
+    
+    public static function inf1($stem0, $dt, $a, $dialect_id){
+        if (!$stem0 || !$dt || !$a) { return ''; }
+        
+        switch ($dialect_id) {
+            case 1: // северновепсский 
+            case 3: // южновепсский 
+                return $stem0. $dt. $a. 'ze';
+            case 4: // средневепсский восточный 
+                return $stem0. $dt. $a. 'kso';
+            default:
+                return $stem0. $dt. $a. 's';
         }        
     }
     
     /**
      * 135. III инфинитив, иллатив   
-     * основа 5 + mh + a/ä (если основа 5 оканчивается на Vi, и это единственные гласные в основе 5)
-     *          + m + a/ä + h + a/ä (если основа 5 оканчивается на C)
-     * 
      * @param String $lemma
      */
-    public static function inf3Ill($lemma, $harmony) {
-        if (!$lemma || !$harmony) {
-            return '';
-        }
-        if (preg_match("/^[^aeiouüäö-][aeiouüäö]i?$/u", $lemma)) {
-            return $lemma. 'mh'. $harmony;
-        } elseif (preg_match("/[^aeiouüäö]$/u", $lemma)) {
-//var_dump($lemma);        
-            return $lemma. 'm'. $harmony. 'h'. $harmony;
-        }
-        return '';
-    }
-
-    public static function inf3Elat($stem5, $a, $dialect_id){
-        if (!$stem5) {
-            return '';
-        }
+    public static function inf3Ill($stem5, $a, $dialect_id) {
+        if (!$stem5 || !$a) { return ''; }
+        
         switch ($dialect_id) {
-            case 43: // младописьменный 
-                return $stem5. 'm'. $a. 'späi';
+            case 1: // северновепсский 
             case 3: // южновепсский 
-                return $stem5. 'm'. $a. 'spää';
+                return $stem5. 'mah'. $a. 'ze';
             default:
-                return $stem5. 'm'. $a. 'spei';
+                return $stem5. 'mah'. $a. 's';
         }        
     }
-    
-    /**
-     * 139. актив, 1-е причастие (Veps)
-     * 
-     * основа 1 (если основа 1 оканчивается на Vi)
-     *         + i (при этом если основа 1 оканчивается на Ce, у основы 1 последняя e заменяется на i)
-     * 
-     * @param String $stem
-     */
-    public static function partic1active($stem) {
-        if (!$stem) {
-            return '';
-        }
-        if (preg_match("/[aeiouüäö]i$/u", $stem)) {
-            return $stem;
-        } else {
-            if (preg_match("/^(.*[aeiouüäö-][^aeiouüäö]+)e$/u", $stem, $regs)) {
-                $stem = $regs[1];
-            }
-            return $stem. 'i';
-        }
-    }
-    
+
     /**
      * 140. актив, 2-е причастие, ед.ч. 
      * 
@@ -901,7 +885,7 @@ class VepsVerbReflex
      * @param Int $dialect_id
      * @return String
      */
-    public static function partic2activePl($stem0, $stem1, $stem5, $dt, $dialect_id) {
+    public static function partic2activePl($stem5, $dialect_id) {
         if (!$stem5) { return; }
         
         switch ($dialect_id) {
