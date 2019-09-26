@@ -80,9 +80,9 @@ class VepsVerb
             case 1:  // indicative presence 3 sg
                 return self::parsePres3Sg($lemma->wordform(28, $dialect_id), $is_reflexive);
             case 2: // indicative imperfect 3 sg
-                return parseImperf3Sg($lemma->wordform(34, $dialect_id), $is_reflexive);
+                return self::parseImperf3Sg($lemma->wordform(34, $dialect_id), $is_reflexive);
             case 3: // base of 2 active particle
-                return self::getStem3(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
+                return self::getStemPAP(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
             case 4: // base of conditional
                 return self::getStemCond(self::getStemFromWordform($lemma, 1, $dialect_id));
             case 5: // base of potential
@@ -134,7 +134,7 @@ class VepsVerb
         
         $past_actv_ptcp_stem = self::getStemPAP($inf_stem, $pres_stem);       
         $cond_stem = self::getStemCond($pres_stem);        
-        $potn_stem = self::getStemPoten($past_actv_ptcp_stem, $inf_stem, $pres_stem);
+        $potn_stem = self::getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem);
         
         return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
                 $cond_stem, $potn_stem, $cons, $harmony];        
@@ -147,7 +147,7 @@ class VepsVerb
             case 4: 
                 return self::getStemCond($stems[1]);
             case 5: 
-                return self::getStemPoten($stems[3], $stems[0], $stems[1]);
+                return self::getStemPoten($stems[0], $stems[1], $stems[3]);
             default: 
                 return null;
         }
@@ -178,8 +178,8 @@ class VepsVerb
         return $cond_stem;
     }
     
-    public static function getStemPoten($past_actv_ptcp_stem, $inf_stem, $pres_stem) {
-        $potn_stem = $past_actv_ptcp_stem;
+    public static function getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem=null) {
+        $potn_stem = isset($past_actv_ptcp_stem) ? $past_actv_ptcp_stem : self::getStemPAP($inf_stem, $pres_stem);
         if (preg_match("/[aeiouüäö]$/u", $inf_stem, $regs1)) {
             $potn_stem = $pres_stem;
         }
@@ -336,7 +336,7 @@ class VepsVerb
             case 73: //10. индикатив, презенс, 1 л., мн.ч., -
             case 78: // 11. индикатив, презенс, 2 л., мн.ч., -
             case 79: // 12. индикатив, презенс, 3 л., мн.ч., -
-                return $stems[0] ? $neg_verb. self::indPresConnegPl($stems[0], $stems[1], $stems[6], $dialect_id) : '';
+                return Grammatic::interLists($neg_verb, self::indPresConnegPl($stems[0], $stems[1], $stems[6], $dialect_id));
         }
     }
     
@@ -510,9 +510,7 @@ class VepsVerb
         }
     }
     
-    public static function wordformByStemsInf($stems, $gramset_id, $dialect_id) {
-        $neg_verb = self::negVerb($gramset_id, $dialect_id);
-        
+    public static function wordformByStemsInf($stems, $gramset_id, $dialect_id) {      
         switch ($gramset_id) {                
             case 170: // 131. I инфинитив 
                 return $stems[0] && $stems[6] && $stems[7] ? $stems[0]. $stems[6]. $stems[7] : '';
@@ -534,9 +532,9 @@ class VepsVerb
             case 178: // 139. актив, 1-е причастие 
                 return self::partic1active($stems[1]);
             case 179: // 140. актив, 2-е причастие, ед.ч. 
-                return self::partic2activeSg($stem1, $stem5, $dialect_id);
+                return self::partic2activeSg($stems[1], $stems[5], $dialect_id);
             case 309: // 141. актив, 2-е причастие, мн.ч. 
-                return self::partic2activePl($stem0, $stem1, $stem5, $dt, $dialect_id);
+                return self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id);
             case 181: // 143. пассив, 2-е причастие 
                 return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ud' : '';
         }

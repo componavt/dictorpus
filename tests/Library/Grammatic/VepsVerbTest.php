@@ -38,7 +38,7 @@ class VepsVerbTest extends TestCase
         $inf_stem = 'voik';
         $pres_stem = 'voika';
         $past_actv_ptcp_stem = 'voik';
-        $result = VepsVerb::getStemPoten($past_actv_ptcp_stem, $inf_stem, $pres_stem);
+        $result = VepsVerb::getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem);
        
         $expected = 'voik';
         $this->assertEquals( $expected, $result);        
@@ -48,7 +48,7 @@ class VepsVerbTest extends TestCase
         $inf_stem = 'ast';
         $pres_stem = 'astu';
         $past_actv_ptcp_stem = 'ast';
-        $result = VepsVerb::getStemPoten($past_actv_ptcp_stem, $inf_stem, $pres_stem);
+        $result = VepsVerb::getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem);
        
         $expected = 'ast';
         $this->assertEquals( $expected, $result);        

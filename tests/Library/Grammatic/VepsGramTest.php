@@ -23,24 +23,24 @@ class VepsGramTest extends TestCase
     }
     
     public function testCountSyllable2() {
-        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi', 'lauda'];
+        $stems = ['meca','kaivo','lume','sene','vilu','verko','kego', 'maido','agja','perti', 'une', 'veikoi', 'soboi', 'lauda','kirvhe','armha','nagrhe'];
         $result = [];
         foreach ($stems as $stem) {
             $result[] = VepsGram::countSyllable($stem);
         }
 //dd($result);        
-        $expected = [2,2,2,2,2,2,2,2,2,2,2,2,2,2];
+        $expected = [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2];
         $this->assertEquals( $expected, $result);        
     }
     
     public function testCountSyllable3() {
-        $stems = ['sizare','kirvhe','armha','nagrhe','abajo','abido'];
+        $stems = ['sizare','abajo','abido'];
         $result = [];
         foreach ($stems as $stem) {
             $result[] = VepsGram::countSyllable($stem);
         }
 //dd($result);        
-        $expected = [3,3,3,3,3,3];
+        $expected = [3,3,3];
         $this->assertEquals( $expected, $result);        
     }
         

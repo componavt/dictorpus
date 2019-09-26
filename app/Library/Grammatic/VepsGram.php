@@ -88,7 +88,7 @@ class VepsGram
     public static function stemsFromDB($lemma, $dialect_id) {
         if (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsName::stemsFromDB($lemma, $dialect_id);
-        } elseif (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
+        } elseif ($lemma->pos_id == PartOfSpeech::getVerbID()) { 
             return VepsVerb::stemsFromDB($lemma, $dialect_id);
         }       
     }
@@ -96,7 +96,7 @@ class VepsGram
     public static function getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id, $is_reflexive) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsName::getStemFromWordform($lemma, $stem_n, $dialect_id);
-        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
             return VepsVerb::getStemFromWordform($lemma, $stem_n, $dialect_id, $is_reflexive);
         }
     }
@@ -104,7 +104,7 @@ class VepsGram
     public static function getStemFromStems($stems, $stem_n, $pos_id, $dialect_id) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsName::getStemFromStems($stems, $stem_n, $dialect_id);
-        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
             return VepsVerb::getStemFromStems($stems, $stem_n, $dialect_id);
         }
     }
@@ -122,7 +122,7 @@ class VepsGram
      */
     public static function countSyllable($stem) {
         $consonant = "[".vepsGram::consSet()."]";
-        $syllable = $consonant."?’?".$consonant."?’?[".vepsGram::vowelSet()."][iu]?";
+        $syllable = "(".$consonant."’?)*[".vepsGram::vowelSet()."][iu]?(".$consonant."’?)*";
         if (preg_match("/^".$syllable."$/u",$stem)) {
             return 1;
         } elseif (preg_match("/^".$syllable.$syllable."$/u",$stem)) {

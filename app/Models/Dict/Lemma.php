@@ -102,6 +102,7 @@ class Lemma extends Model
             if (!$base) {
                 $is_reflexive = $this->features && $this->features->reflexive ? true : false;
                 $base = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $is_reflexive);
+//dd($base_n,$base);                
             }
             if (!$base) {
                 $base = $this->getBaseFromDB($base_n);
