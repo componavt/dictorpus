@@ -300,16 +300,26 @@ class Grammatic
         return null;
     }
     
-    public static function interLists($neg, $list){
+    public static function interLists($neg_list, $list){
         if (!$list) { return ''; }
         
-        if (!preg_match("/,/", $list)) {
-            return $neg.$list;
+        if (!preg_match("/,/", $neg_list) && !preg_match("/,/", $list)) {
+            if ($neg_list) {
+                return $neg_list. ' '. $list;
+            } else {
+                return $list;
+            }
         }
         
         $forms=[];
-        foreach (preg_split("/,\s*/", $list) as $verb) {
-            $forms[] = $neg.$verb;
+        foreach (preg_split("/,\s*/", $neg_list) as $neg) {
+            foreach (preg_split("/,\s*/", $list) as $verb) {
+                if ($neg) {
+                    $forms[] = $neg.' '.$verb;
+                } else {
+                    $forms[] = $verb;
+                }
+            }
         }
         return join(", ", $forms);
     }

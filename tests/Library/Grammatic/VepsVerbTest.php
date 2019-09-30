@@ -54,15 +54,6 @@ class VepsVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testIndPres2Sg() {
-        $stem1 = 'suli';
-        $dialect_id = 3; // южновепсский
-        $result = VepsVerb::IndPres2Sg($stem1, $dialect_id);
-       
-        $expected = 'sulid’';
-        $this->assertEquals( $expected, $result);        
-    }
-    
     public function testIndPres3Sg() {
         $stem1 = 'peze';
         $dialect_id = 1; // северновепсский
@@ -82,13 +73,43 @@ class VepsVerbTest extends TestCase
         $this->assertEquals($expected, $result);        
     }
     
-    public function testWordformByStemsPresImperf3PlSouth() {
+    public function testWordformByStems_IndImperf3PlSouth() {
         $stems = ['pes', 'peze', 'pezi', 'pez', 'pez', 'pez', 't', 'a'];
         $dialect_id = 3; // южновепсский
         $gramset_id = 85; // 24. индикатив, имперфект, 3 л., мн. ч., -
         $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
        
         $expected = 'ebad pezen, ebad pezend';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStems_IndPres3SgNegWest() {
+        $stems = ['sa', 'sa', 'sai', 'sa', 'sa', 'sa', 't', 'a'];
+        $dialect_id = 5; // средневепсский западный
+        $gramset_id = 72; // 9. индикатив, презенс, 3 л., ед. ч., -
+        $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
+       
+        $expected = 'ei sa, ii sa';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStems_IndImperf3SgWest() {
+        $stems = ['sa', 'sa', 'sai', 'sa', 'sa', 'sa', 't', 'a'];
+        $dialect_id = 5; // средневепсский западный
+        $gramset_id = 34; // 15. индикатив, имперфект, 3 л., ед. ч., +
+        $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
+       
+        $expected = 'sa, sai';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStems_IndPerf1PlWest() {
+        $stems = ['sa', 'sa', 'sai', 'sa', 'sa', 'sa', 't', 'a'];
+        $dialect_id = 5; // средневепсский западный
+        $gramset_id = 95; // 34. индикатив, перфект, 1 л., мн. ч., -
+        $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
+       
+        $expected = 'emai ole sanuded, emai uugoi sanuded, emei ole sanuded, emei uugoi sanuded';
         $this->assertEquals( $expected, $result);        
     }
 }

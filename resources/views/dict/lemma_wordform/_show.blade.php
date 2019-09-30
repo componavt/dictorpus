@@ -6,7 +6,7 @@
                 !!}
                 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                 @include('widgets.form.formitem._select',
                         ['name' => 'dialect_id',
                          'values' =>$dialect_values,
@@ -15,7 +15,7 @@
                 <div class="col-sm-2">
                 @include('widgets.form.formitem._submit', ['title' => trans('messages.edit')])
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                 @include('widgets.form.button._red', [
                     'id_name' => 'generate-wordforms',
                     'on_click'=>"reloadWordforms(this, '?without_remove')", 

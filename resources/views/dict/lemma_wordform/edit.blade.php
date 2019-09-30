@@ -23,7 +23,7 @@
             @include('dict.lemma.show.features')
         </p>
         
-    @if ($dialect_id)
+    @if ($dialect_id && is_array($base_list))
         @include('widgets.form.button._red', [
             'id_name' => 'generate-wordforms',
             'on_click'=> 'copyBases('. $lemma->id. ')', 
@@ -41,7 +41,7 @@
         
     </div>
     
-    @if ($dialect_id)
+    @if ($dialect_id && is_array($base_list))
     <div class="col-sm-6">
     @include('dict.lemma_wordform._form_edit_bases')
     </div>
