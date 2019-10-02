@@ -434,7 +434,7 @@ class VepsVerb
             case 53: // 51. императив, 1 л., мн.ч., + 
                 return $stems[0] ? $stems[0]. $g. 'am' : '';
             case 54: // 52. императив, 2 л., мн.ч., + 
-                return $stems[0] ? $stems[0]. $g. 'at' : '';
+                return self::imper2Pl($stems[0], $stems[6], $dialect_id);
             case 300: // 149. императив, коннегатив, мн.ч.
                 return self::imperConnegPl($stems[0], $stems[1], $stems[6], $dialect_id);
  
@@ -607,14 +607,16 @@ class VepsVerb
     }
 
     public static function negVerb1Pl($dialect_id) {
-            switch ($dialect_id) {
-                case 3: // южновепсский 
-                    return 'emaa';
-                case 5: // средневепсский западный 
-                    return 'emai, emei';
-                default:
-                    return 'em';
-            }        
+        switch ($dialect_id) {
+            case 3: // южновепсский 
+                return 'emaa';
+            case 4: // средневепсский восточный 
+                return 'em, emei';
+            case 5: // средневепсский западный 
+                return 'emai, emei';
+            default:
+                return 'em';
+        }        
     }
 
     public static function negVerb2Pl($dialect_id) {
@@ -623,6 +625,8 @@ class VepsVerb
                 return 'et';
             case 3: // южновепсский 
                 return 'etaa';
+            case 4: // средневепсский восточный 
+                return 'ed, etei';
             case 5: // средневепсский западный 
                 return 'etai, etei';
             default:
@@ -924,8 +928,10 @@ class VepsVerb
         switch ($dialect_id) {
             case 3: // южновепсский 
                 return $stem1. 'maa';
+            case 4: // средневепсский восточный 
+                return $stem1. 'm, '. $stem1. 'mei';
             case 5: // средневепсский западный 
-                return $stem1. 'mai'. $stem1. 'mei';
+                return $stem1. 'mai, '. $stem1. 'mei';
             default:
                 return $stem1. 'm';
         }        
@@ -937,8 +943,10 @@ class VepsVerb
         switch ($dialect_id) {
             case 3: // южновепсский 
                 return $stem1. 'taa';
+            case 4: // средневепсский восточный 
+                return $stem1. 'd, '. $stem1. 'tei';
             case 5: // средневепсский западный 
-                return $stem1. 'tai'. $stem1. 'tei';
+                return $stem1. 'tai, '. $stem1. 'tei';
             case 43: // младописьменный
                 return $stem1. 't';
             default:
@@ -979,7 +987,7 @@ class VepsVerb
        
         switch ($dialect_id) {
             case 3: // южновепсский 
-                return $stem2. 'in’';
+                return $stem2. 'in’, '. $stem2. 'n’';
             case 4: // средневепсский восточный 
                 return $stem2. 'n’';
             case 5: // средневепсский западный 
@@ -994,7 +1002,7 @@ class VepsVerb
        
         switch ($dialect_id) {
             case 3: // южновепсский 
-                return $stem2. 'id’';
+                return $stem2. 'id’, '. $stem2. 'd’';
             case 4: // средневепсский восточный 
                 return $stem2. 'd’';
             case 5: // средневепсский западный 
@@ -1086,18 +1094,24 @@ class VepsVerb
         }        
     }
     
+    public static function dropOutA($stem) {
+        if (!$stem) {
+            return '';
+        }
+        
+        if (self::isMonobasic($stem) && in_array(VepsGram::countSyllable($stem), [1,3])
+            || !self::isMonobasic($stem) && preg_match("/[".VepsGram::sonantSet()."]$/")) {
+            return '';
+        }
+        return 'a';
+    }
+
     public static function imper3($stem0, $dt, $gramset_id, $dialect_id){
         if (!$stem0) {
             return '';
         }
-        if (self::isMonobasic($stem0) && in_array(VepsGram::countSyllable($stem0), [1,3])
-            || !self::isMonobasic($stem0) && preg_match("/[".VepsGram::sonantSet()."]$/")) {
-            $a = '';
-        } else {
-            $a = 'a';
-        }
-        $form1 = $stem0. VepsGram::rightConsonant($dt, 'g'). $a. 'ha';
-        if (!($dialect_id == 5 && in_array($gramset_id, [52, 55]))) {
+        $form1 = $stem0. VepsGram::rightConsonant($dt, 'g'). self::dropOutA($stem0). 'ha';
+        if ($dialect_id != 5) {
             return $form1;
         }
         $out[] = $form1;
@@ -1111,6 +1125,19 @@ class VepsVerb
         sort($out);
         return join(', ', $out);
 
+    }
+        
+    public static function imper2Pl($stem0, $dt, $dialect_id){
+        if (!$stem0) {
+            return '';
+        }
+        $kg = VepsGram::rightConsonant($dt, 'g');
+        switch ($dialect_id) {
+            case 4: // средневепсский восточный 
+                return $stem0. $kg. 'ad, '. $stem0. $kg. 'at';
+            default:
+                return $stem0. $kg. 'at';
+        }
     }
     
     public static function imperConnegPl($stem0, $stem1, $dt, $dialect_id){
@@ -1129,16 +1156,19 @@ class VepsVerb
         if (!$stem4) {
             return '';
         }
+        $out = $stem4.$affix;
         if (preg_match("/^(.+)([aou])$/",$stem4, $regs)) {
             $affix = mb_substr($affix, 1);
             switch ($regs[2]) {
-                case 'a': return $regs[1].'ä'.$affix;
-                case 'o': return $regs[1].'ö'.$affix;
-                case 'u': return $regs[1].'ü'.$affix;
+                case 'a': $stem = $regs[1].'ä'.$affix;                    
+                          break;
+                case 'o': $stem = $regs[1].'ö'.$affix;
+                          break;
+                case 'u': $stem = $regs[1].'ü'.$affix;
             }
+            return $out. ', '. $stem;
         }
-        return $stem4.$affix;
-        
+        return $out;        
     }
 
     public static function condPres1Sg($stem4, $dialect_id){

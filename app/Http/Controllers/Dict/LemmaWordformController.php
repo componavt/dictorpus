@@ -203,7 +203,7 @@ class LemmaWordformController extends Controller
 //dd($gramset_wordforms);        
         if ($gramset_wordforms) {
             $lemma->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
-            $lemma->updateTextLinks();
+//            $lemma->updateTextLinks();
         }
         
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 

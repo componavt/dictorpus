@@ -373,10 +373,10 @@ class VepsName
             $stem2 = self::illSgBase($stem1);
         }
         
-        if (VepsGram::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
-            $okon = 'he';
-        } elseif (VepsGram::countSyllable($stem1)>2 && preg_match("/h[".vepsGram::vowelSet()."]$/",$stem1)) {
+        if (preg_match("/h[".vepsGram::vowelSet()."]$/",$stem1)) {
             $okon = 'ze';
+        } elseif (VepsGram::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
+            $okon = 'he';
         } elseif (preg_match("/([".vepsGram::vowelSet()."])$/u",$stem1, $regs)) {
             $okon = 'h'. $regs[1];
         } else {
