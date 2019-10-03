@@ -590,11 +590,11 @@ class VepsVerb
             case 3: // южновепсский 
                 return 'ii';
             case 4: // средневепсский восточный 
-/*                if ($gramset_id ==107) { // Perf
+                if ($gramset_id ==94 || $gramset_id ==107) { // Perf, Plus
                     return '';
-                } else {*/
+                } else {
                     return 'ii';
-                //}
+                }
             case 5: // средневепсский западный 
                 if ($gramset_id ==94 || $gramset_id ==107) { // Perf, Plus
                     return '';
@@ -653,8 +653,9 @@ class VepsVerb
             case 3: // южновепсский 
                 return 'aagam';
             case 4: // средневепсский восточный 
-            case 5: // средневепсский западный 
                 return 'uugam';
+            case 5: // средневепсский западный 
+                return 'algam, uugam';
             default:
                 return 'algam';
         }        
@@ -665,8 +666,9 @@ class VepsVerb
             case 3: // южновепсский 
                 return 'aagat';
             case 4: // средневепсский восточный 
+                return 'uugad, uugat';
             case 5: // средневепсский западный 
-                return 'uugat';
+                return 'algat, uugat';
             default:
                 return 'algat';
         }        
@@ -680,6 +682,8 @@ class VepsVerb
                 return 'algii';
             case 3: // южновепсский 
                 return 'laske ii';
+            case 5: // средневепсский западный 
+                return 'algha, uugha';
             default:
                 return 'uugha';
         }        
@@ -727,6 +731,8 @@ class VepsVerb
         switch ($dialect_id) {
             case 3: // южновепсский 
                 return 'olemaa';
+            case 4: // средневепсский восточный 
+                return 'olem, olemei';
             case 5: // средневепсский западный 
                 return 'olemai, olemei';
             default:
@@ -737,10 +743,11 @@ class VepsVerb
     public static function auxVerbPerf2Pl($dialect_id) {
         switch ($dialect_id) {
             case 1: // северновепсский 
-            case 4: // средневепсский восточный 
                 return 'oled';
             case 3: // южновепсский 
                 return 'oletaa';
+            case 4: // средневепсский восточный 
+                return 'oled, oletei';
             case 5: // средневепсский западный 
                 return 'oletai, oletei';
             default:
@@ -761,6 +768,8 @@ class VepsVerb
         switch ($dialect_id) {
             case 1: // северновепсский 
                 return 'iilä';
+            case 4: // средневепсский восточный 
+                return 'ele, ii ole';
             case 5: // средневепсский западный 
                 return 'ele';
             default:
@@ -822,6 +831,8 @@ class VepsVerb
         switch ($dialect_id) {
             case 3: // южновепсский 
                 return 'oliimaa';
+            case 4: // средневепсский восточный 
+                return 'olim, olimei';
             case 5: // средневепсский западный 
                 return 'oliimai, olimei';
             default:
@@ -836,7 +847,7 @@ class VepsVerb
             case 3: // южновепсский 
                 return 'oliita';
             case 4: // средневепсский восточный 
-                return 'olid’';
+                return 'olid’, olitei';
             case 5: // средневепсский западный 
                 return 'oliitai, olitei';
             default:
@@ -864,9 +875,12 @@ class VepsVerb
             case 3: // южновепсский 
                 return 'olen, olend';
             case 4: // средневепсский восточный 
-                return 'olend';
+                if ($gramset_id ==107) { // 3SgNeg
+                    return 'ii olend, iilend, ii uunu';
+                }                
+                return 'olend, uunu';
             case 5: // средневепсский западный 
-                if ($gramset_id ==107) { // 3Sg
+                if ($gramset_id ==107) { // 3SgNeg
                     return 'ei olen, ii olet, ele';
                 }                
                 return 'olen, olet';
@@ -1080,17 +1094,19 @@ class VepsVerb
         }        
     }
     
-    public static function indImperfConnegPl($stem0, $stem1, $stem3, $dt, $dialect_id){
+    public static function indImperfConnegPl($stem0, $stem1, $stem5, $dt, $dialect_id){
         $kg = VepsGram::rightConsonant($dt, 'g');
         switch ($dialect_id) {
             case 1: // северновепсский 
                 return $stem0 && $dt ? $stem0. $dt. 'ud' : '';
             case 3: // южновепсский 
-                return $stem1 ? $stem1. 'n, '. $stem1. 'nd' : '';
+                return $stem1 ? $stem1. ', '. $stem1. 'n, '. $stem1. 'nd' : '';
+            case 4: // средневепсский восточный 
+                return $stem5 ? $stem5. 'nuded, '. $stem5. 'nuhu, '. $stem5. 'nu'. $kg. 'oi' : '';
             case 5: // средневепсский западный 
-                return $stem1 && $stem3 ? $stem1. 'n, '. $stem3. 'nu'. $kg. 'oi' : '';
+                return $stem1 && $stem5 ? $stem1. 't, '. $stem5. 'nu'. $kg. 'oi' : '';
             default:
-                return $stem3 ? $stem3. 'nu'. $kg. 'oi' : '';
+                return $stem5 ? $stem5. 'nu'. $kg. 'oi' : '';
         }        
     }
     
