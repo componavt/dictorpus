@@ -81,7 +81,6 @@ Route::group(
         Route::post('corpus/text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
 
-//        Route::get('corpus/text/dialect_list', 'Corpus\TextController@dialectList');
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/sentence', 'Corpus\TextController@showWordInSentence');
 

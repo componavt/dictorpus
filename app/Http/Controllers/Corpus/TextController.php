@@ -370,7 +370,7 @@ class TextController extends Controller
     
     /**
      * Gets list of dialects for drop down list in JSON format
-     * Test url: /corpus/text/dialect_list?lang_id=1
+     * Test url: /dict/dialect/list?lang_id=1
      * 
      * @return JSON response
      */

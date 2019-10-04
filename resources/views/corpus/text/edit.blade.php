@@ -33,7 +33,7 @@
     $(".multiple-select-dialect").select2({
         width: '100%',
         ajax: {
-          url: "/corpus/text/dialect_list",
+          url: "/dict/dialect/list",
           dataType: 'json',
           delay: 250,
           data: function (params) {
