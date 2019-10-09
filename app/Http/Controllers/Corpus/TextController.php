@@ -418,8 +418,12 @@ class TextController extends Controller
     /**
      * Markup all texts and transtexts
      * /corpus/text/markup_all_texts
+     * 
      * update texts set checked=0;
      * select count(*) from texts where checked=0;
+     * 
+     * update texts set checked=0 where lang_id=4;
+     * select count(*) from texts where checked=0 and lang_id=4;
      */
     public function markupAllTexts()
     {
@@ -457,7 +461,7 @@ class TextController extends Controller
         $message_error = $text->markup($text->text_xml);
         if ($message_error) {
             return Redirect::to('/corpus/text/'.($text->id))
-                           ->withError($message_error);        
+                           ->withErrors($message_error);        
         }
         $text->save();            
         
