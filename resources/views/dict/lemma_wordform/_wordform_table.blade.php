@@ -20,7 +20,7 @@
                                   'class' => 'reload-wordforms',
                                   'func' => 'reloadWordforms',
                                   'title' => trans('messages.reload')])
-                        <a onClick="deleteWordforms({{$lemma->id.'_'.$dialect_id}})"><i class="fa fa-trash fa-lg"></i></a>
+                        <a style="cursor: pointer" onClick="deleteWordforms('{{$lemma->id.'_'.(!$dialect_id? 'NULL' : $dialect_id)}}')"><i class="fa fa-trash fa-lg"></i></a>
                     @endif
 
                     </th>

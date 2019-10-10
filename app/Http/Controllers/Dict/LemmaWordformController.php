@@ -233,6 +233,9 @@ class LemmaWordformController extends Controller
     }
     
     public function deleteWordforms($id, $dialect_id) {
+        if ($dialect_id == 'NULL') {
+            $dialect_id = NULL;
+        }
         $lemma = Lemma::findOrFail($id);        
         
         $lemma->updateBases($lemma->getBases($dialect_id), $dialect_id);
