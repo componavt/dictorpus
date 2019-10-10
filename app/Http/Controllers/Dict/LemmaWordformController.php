@@ -220,7 +220,7 @@ class LemmaWordformController extends Controller
     public function getWordforms(Request $request, $id, $dialect_id) {
         $lemma = Lemma::findOrFail($id);        
         $stems = json_decode($request->bases);
-        
+//dd($stems);
         $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
         
 

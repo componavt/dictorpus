@@ -293,9 +293,19 @@ class Grammatic
         return KarGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id);
     }
     
-    public static function getStemFromStems($stems, $stem_n, $lang_id, $pos_id, $dialect_id) {
+    /**
+     * 
+     * @param Array $stems
+     * @param Int $stem_n
+     * @param Int $lang_id
+     * @param Int $pos_id
+     * @param Int $dialect_id
+     * @param STRING $lemma
+     * @return String
+     */
+    public static function getStemFromStems($stems, $stem_n, $lang_id, $pos_id, $dialect_id, $lemma) {
         if ($lang_id == 1) {
-            return VepsGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id);
+            return VepsGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma);
         }
         return null;
     }

@@ -36,8 +36,10 @@ return [
                     1 => 'presence base',
                     2 => 'imperfect base',
                     3 => 'основа 2-го прич. актив ед.ч.',
-                    3 => 'conditional base',
-                    5 => 'III infinitive base'],
+                    4 => 'conditional base',
+                    5 => 'III infinitive base',
+                    6 => 'infinitive penultimate letter',
+                    7 => 'infinitive last letter'],
     'base_list_4_name' => [
                     0 => 'base form',
                     1 => 'слабая гласная основа',

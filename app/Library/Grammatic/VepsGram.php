@@ -101,11 +101,20 @@ class VepsGram
         }
     }
     
-    public static function getStemFromStems($stems, $stem_n, $pos_id, $dialect_id) {
+    /**
+     * 
+     * @param Array $stems
+     * @param Int $stem_n
+     * @param Int $pos_id
+     * @param Int $dialect_id
+     * @param STRING $lemma
+     * @return String
+     */
+    public static function getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return VepsName::getStemFromStems($stems, $stem_n, $dialect_id);
         } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
-            return VepsVerb::getStemFromStems($stems, $stem_n, $dialect_id);
+            return VepsVerb::getStemFromStems($stems, $stem_n, $dialect_id, $lemma);
         }
     }
     
