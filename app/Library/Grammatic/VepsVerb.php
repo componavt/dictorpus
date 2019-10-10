@@ -1066,7 +1066,7 @@ class VepsVerb
             case 3: // южновепсский 
                 return $stem2. 'imaa';
             case 5: // средневепсский западный 
-                return $stem2. 'mai'. $stem2. 'mei';
+                return $stem2. 'mai, '. $stem2. 'mei';
             default:
                 return $stem2. 'm';
         }        
@@ -1083,7 +1083,7 @@ class VepsVerb
             case 4: // средневепсский восточный 
                 return $stem2. 'd’';
             case 5: // средневепсский западный 
-                return $stem2. 'tai'. $stem2. 'tei';
+                return $stem2. 'tai, '. $stem2. 'tei';
             default:
                 return $stem2. 't';
         }        
