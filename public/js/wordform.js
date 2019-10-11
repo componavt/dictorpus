@@ -1,5 +1,4 @@
 function deleteWordforms(id) {
-alert(id);    
     $("#wordforms").empty();
     $("#img-loading_wordforms").show();
     $.ajax({
