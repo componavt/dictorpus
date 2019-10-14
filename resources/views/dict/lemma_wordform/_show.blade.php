@@ -30,5 +30,4 @@
 
         <img class="img-loading" id="img-loading_wordforms" src="{{ asset('images/loading.gif') }}">
         <div id="wordforms">
-            @include('dict.lemma_wordform._wordform_table')
         </div>

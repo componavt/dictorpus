@@ -19,10 +19,29 @@ function deleteWordforms(id) {
     }); 
 }  
 
+function loadWordforms(id, url='load') {
+    $("#wordforms").empty();
+    $("#img-loading_wordforms").show();
+    $.ajax({
+        url: '/dict/lemma_wordform/'+ id + '/' + url, 
+        type: 'GET',
+        success: function(result){
+            $("#wordforms").html(result);
+            $("#img-loading_wordforms").hide();                
+        },
+        error: function() {
+            $("#wordforms").html('ERROR'); 
+            $("#img-loading_wordforms").hide();                
+        }
+    }); 
+}   
+
+
 function reloadWordforms(i, attrs='') {
     var id = $(i).data('reload');
 //alert(id)    
-    $("#wordforms").empty();
+    loadWordforms(id, 'reload/' + attrs);
+/*    $("#wordforms").empty();
     $("#img-loading_wordforms").show();
     $.ajax({
         url: '/dict/lemma_wordform/'+ id + '/reload/' + attrs, 
@@ -35,7 +54,7 @@ function reloadWordforms(i, attrs='') {
             $("#wordforms").html('ERROR'); 
             $("#img-loading_wordforms").hide();                
         }
-    }); 
+    }); */
 }   
 
 function chooseDialectForGenerate(lemma_id) {

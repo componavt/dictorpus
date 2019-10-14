@@ -175,6 +175,10 @@ class LemmaWordformController extends Controller
               ->withSuccess($result['message']);        
     }
 
+    public function load($id) {
+        $lemma = Lemma::findOrFail($id);        
+        return view('dict.lemma_wordform._wordform_table', compact('lemma'));         
+    }
     /**
      * Get bases from table OR from wordforms
      * Delete and create wordforms again

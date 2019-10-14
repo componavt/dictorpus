@@ -113,6 +113,7 @@
 @stop
 
 @section('jqueryFunc')
+    loadWordforms({{$lemma->id}});
     @foreach ($lemma->meanings as $meaning)
         loadExamples('{{LaravelLocalization::localizeURL($route_for_load)}}', {{$meaning->id}});
     @endforeach
