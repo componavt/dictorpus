@@ -1027,7 +1027,7 @@ dd($wordforms);
         }
     }
     
-    public function addWordform($word, $gramset_id, $dialect_id) {
+    public function addWordform($word, $gramset_id, $dialect_id) {       
         $trim_word = Grammatic::toRightForm($word);
         if (!$trim_word) { return;}
         
@@ -1038,7 +1038,8 @@ dd($wordforms);
         if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
             return;
         }
-        $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);        
+        $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);    
+//print "<p>". $wordform_obj->wordform ." | $gramset_id | $dialect_id</p>";
     }
     
     public function deleteWordforms($gramset_id, $dialect_id) {
@@ -1222,7 +1223,7 @@ dd($wordforms);
         if (!$dialect_id) {
             $dialect_id = $this->firstDialect();
         }
-        
+//dd($dialect_id, $wordforms);        
         foreach ($wordforms as $gramset_id => $wordform) {
             $wordform_exists = $this->wordforms()
                              ->wherePivot('gramset_id',$gramset_id)

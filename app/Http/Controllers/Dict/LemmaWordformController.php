@@ -204,12 +204,12 @@ class LemmaWordformController extends Controller
         }
         $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems,
                                     ($lemma->features && $lemma->features->reflex) ? 1 : null);
-//dd($gramset_wordforms);        
+//dd($dialect_id, $gramset_wordforms);        
         if ($gramset_wordforms) {
             $lemma->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
 //            $lemma->updateTextLinks();
         }
-        
+//exit(0);        
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
     }
     

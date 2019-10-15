@@ -68,6 +68,7 @@ class ReverseLemmaController extends Controller
            $numAll = 0; 
         } else {
             $numAll = $reverse_lemmas->count();
+//dd($numAll);            
 //dd($lemmas->toSql()); 
             $reverse_lemmas = $reverse_lemmas->paginate($this->url_args['limit_num']);         
 //dd($lemmas);        

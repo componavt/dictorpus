@@ -68,7 +68,7 @@ class ReverseLemma extends Model
                 $aff = [];
                 foreach ($wordforms as $word) {
                     if (preg_match("/^".$stem."(.*)$/u", $word, $regs)) {
-                        $aff[] = $regs[1];
+                        $aff[] = isset($regs[1]) ? $regs[1] : '';
                     }
                 }
 //if (preg_match("/,/",$wordform)) {dd($aff); }                               
