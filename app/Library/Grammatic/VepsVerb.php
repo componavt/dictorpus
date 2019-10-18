@@ -1484,20 +1484,20 @@ class VepsVerb
     
     /**
      * 135. III инфинитив, иллатив   
-     * основа 5 + mh + a/ä (если основа 5 оканчивается на Vi, и это единственные гласные в основе 5)
-     *          + m + a/ä + h + a/ä (если основа 5 оканчивается на C)
+     * основа 5 + mh + a/ä3 (если основа 5 оканчивается на Vi, и глагол — одноосновный, а основа 5 — односложная или трехсложная)
+     * основа 5 + m + a/ä3 + h + a/ä3 (для остальных)
      * 
-     * @param String $lemma
+     * @param String $stem5
      */
-    public static function inf3Ill($lemma, $harmony) {
-        if (!$lemma || !$harmony) {
+    public static function inf3Ill($stem0, $stem1, $stem5, $harmony) {
+        if (!$stem5 || !$harmony) {
             return '';
         }
-        if (preg_match("/^[^aeiouüäö-][aeiouüäö]i?$/u", $lemma)) {
-            return $lemma. 'mh'. $harmony;
+        if ($stem0==$stem1 && (VepsGram::countSyllable($stem5)==1 || VepsGram::countSyllable($stem5)==3) && preg_match("/^[^aeiouüäö-][aeiouüäö]i?$/u", $stem5)) {
+            return $stem5. 'mh'. $harmony;
         } else {
 //var_dump($lemma);        
-            return $lemma. 'm'. $harmony. 'h'. $harmony;
+            return $stem5. 'm'. $harmony. 'h'. $harmony;
         }
         return '';
     }
