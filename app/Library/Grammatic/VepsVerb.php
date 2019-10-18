@@ -1495,7 +1495,7 @@ class VepsVerb
         }
         if (preg_match("/^[^aeiouüäö-][aeiouüäö]i?$/u", $lemma)) {
             return $lemma. 'mh'. $harmony;
-        } elseif (preg_match("/[^aeiouüäö]$/u", $lemma)) {
+        } else {
 //var_dump($lemma);        
             return $lemma. 'm'. $harmony. 'h'. $harmony;
         }
