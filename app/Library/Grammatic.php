@@ -8,6 +8,7 @@ use App\Library\Grammatic\KarVerb;
 use App\Library\Grammatic\VepsGram;
 use App\Library\Grammatic\VepsName;
 use App\Library\Grammatic\VepsVerb;
+use App\Library\Grammatic\VepsVerbReflex;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;

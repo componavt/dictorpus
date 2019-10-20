@@ -24,24 +24,24 @@ class VepsVerbReflex
      *          7 => a/ä - последняя буква инфинитива]
      */
     public static function wordformByStems($stems, $gramset_id, $dialect_id) {
-        if (in_array($gramset_id, self::getListIndPres())) {
+        if (in_array($gramset_id, VepsVerb::getListIndPres())) {
             return self::wordformByStemsIndPres($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListIndImperf())) {
+        } elseif (in_array($gramset_id, VepsVerb::getListIndImperf())) {
             return self::wordformByStemsIndImperf($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListIndPerf())) {
+        } elseif (in_array($gramset_id, VepsVerb::getListIndPerf())) {
             return self::wordformByStemsIndPerf($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListIndPlus())) {
+        } elseif (in_array($gramset_id, VepsVerb::getListIndPlus())) {
             return self::wordformByStemsIndPlus($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListImper())) {
+        } elseif (in_array($gramset_id, VepsVerb::getListImper())) {
             return self::wordformByStemsImper($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListCondPres())) {
+        } elseif (in_array($gramset_id, VepsVerb::getListCondPres())) {
             return self::wordformByStemsCondPres($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListCondImperf())) {
+        } elseif (in_array($gramset_id, VepsVerb::getListCondImperf())) {
             return self::wordformByStemsCondImperf($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListInf())) {
+        } elseif (in_array($gramset_id, VepsVerb::getListInf())) {
             return self::wordformByStemsInf($stems, $gramset_id, $dialect_id);
-        } elseif (in_array($gramset_id, self::getListPas())) {
-            return self::wordformByStemsPas($stems, $gramset_id, $dialect_id);
+/*        } elseif (in_array($gramset_id, VepsVerb::getListPas())) {
+            return self::wordformByStemsPas($stems, $gramset_id, $dialect_id); */
         }
         
         return '';
@@ -410,12 +410,12 @@ class VepsVerbReflex
                 return self::imper3Pl($stems[0], $stems[6], $dialect_id);
 
             case 299: // 148. императив, коннегатив, ед.ч.
-                return self::imperConnegSg($stems[0], $dt);
+                return self::imperConnegSg($stems[0], $stems[6]);
             case 300: // 149. императив, коннегатив, мн.ч.
                 return self::imperConnegPl($stems[0], $stems[6], $dialect_id);
  
             case 50: // 54. императив, 2 л., ед.ч., - 
-                return $neg_verb. self::imperConnegSg($stems[0], $dt);
+                return $neg_verb. self::imperConnegSg($stems[0], $stems[6]);
             case 74: // 55. императив, 3 л., ед.ч., -                 
             case 75: // 56. императив, 1 л., мн.ч., - 
             case 76: // 57. императив, 2 л., мн.ч., - 
@@ -532,7 +532,7 @@ class VepsVerbReflex
             case 301: // 150. кондиционал, презенс, коннегатив
                 return $stems[4] ? $stems[4] . 'ižihe' : '';
             case 303: // 151. кондиционал, презенс, коннегатив, мн.ч. 
-                return self::condPresConSg($stems[0], $stems[4], $stems[6], $dialect_id);
+                return self::condPresConPl($stems[4], $dialect_id);
                                 
             case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
             case 111: // 66. кондиционал, презенс, 2 л., ед.ч., отр. 
@@ -623,7 +623,7 @@ class VepsVerbReflex
         }        
     }
     
-    public static function condPresConPl($stem0, $stem4, $dt, $dialect_id){
+    public static function condPresConPl($stem4, $dialect_id){
         if (!$stem4) { return ''; }
         
         switch ($dialect_id) {
@@ -746,7 +746,7 @@ class VepsVerbReflex
         }        
     }
     
-    public static function condImperf3Pl($stem0, $stem3, $dt, $dialect_id){
+    public static function condImperf3Pl($stem3, $dialect_id){
         if (!$stem3) { return ''; }
         
         switch ($dialect_id) {
@@ -803,7 +803,7 @@ class VepsVerbReflex
             case 173: // 134. III инфинитив, адессив
                 return self::inf3Ades($stems[5], $stems[7], $dialect_id); */
             case 174: // 135. III инфинитив, иллатив 
-                return self::inf3Ill($stems[5], $dialect_id);
+                return self::inf3Ill($stems[5], $stems[7], $dialect_id);
 /*            case 175: // 136. III инфинитив, инессив 
                 return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 's' : '';
             case 176: // 137. III инфинитив, элатив 

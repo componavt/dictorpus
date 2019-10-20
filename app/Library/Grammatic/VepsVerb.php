@@ -107,6 +107,7 @@ class VepsVerb
      *                6=>consonant (d/t), 7=>vowel (a/ä)]
      */
     public static function stemsFromTemplate($regs, $is_reflexive=false) {
+//dd($regs);        
         $stems = [];
         if (sizeof($regs)<5) {
             return $stems;
@@ -128,6 +129,14 @@ class VepsVerb
         }        
         
         $past_stem = $base. $past_suff;
+//dd($past_stem);    
+        if ($is_reflexive) {
+            if (preg_match("/^(.+i)he$/u", $past_stem, $regs_past)) { // должен оканчиваться на ihe
+                $past_stem = $regs_past[1];
+            } else {
+                return null;
+            }
+        }
         if (!preg_match("/i$/u", $past_stem)) { // должен оканчиваться на i
             return null;
         }
