@@ -9,7 +9,7 @@
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
-        @include('dict.lemma.form._create_edit_pos_features') 
+        @include('dict.lemma.form._create_edit_pos_features', ['is_full_form'=>false]) 
 <div id='new-meanings'>
         @include('dict.meaning.form._create',
                  ['count' => 0,

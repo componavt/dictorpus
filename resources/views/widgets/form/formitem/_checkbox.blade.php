@@ -11,12 +11,13 @@ if(! isset($value)) $value = null;
 if(! isset($checked)) $checked = null;
 if(! isset($title)) $title = null;
 if(! isset($tail)) $tail = null;
+$attributes['id'] = $name;
 ?>
 <div class="{!! $errors->has($name) ? 'has-error' : null !!}">
     @if($title)
 	<label for="{{$name}}">{{ $title }}</label>
     @endif
-    {!! Form::checkbox($name, $value, $checked) !!}
+    {!! Form::checkbox($name, $value, $checked, $attributes) !!}
     @if($tail)
 	<label for="{{$name}}">{{ $tail }}</label>
     @endif

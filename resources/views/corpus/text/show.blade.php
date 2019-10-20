@@ -117,6 +117,7 @@
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/text.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
@@ -126,6 +127,7 @@
     addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add/example')}}');
     showLemmaLinked();
     addWordform('{{$text->id}}','{{$text->lang_id}}');
+    posSelect(false);
     
 @stop
 

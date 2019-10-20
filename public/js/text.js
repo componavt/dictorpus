@@ -34,15 +34,10 @@ function showLemmaLinked() {
     });    
 }
 
-function saveLemma(lang_id, lemma, pos_id, meaning, dialect_id) {
+function saveLemma(data) {
     $.ajax({
         url: '/dict/lemma/store_simple', 
-        data: {lang_id: lang_id, 
-               lemma: lemma, 
-               pos_id: pos_id,
-               meaning: meaning,
-               dialect_id: dialect_id
-              },
+        data: data,
         type: 'GET',
         success: function(lemma_id){
             $("#modalAddLemma").modal('hide');
@@ -72,12 +67,14 @@ function addLemma(lang_id) {
     });
     
     $("#save-lemma").click(function(){
-        var lemma = $( "#lemma" ).val();
-        var pos_id = $( "#pos_id option:selected" ).val();
-        var meaning = $( "#new_meanings_0__meaning_text__2_" ).val();
-        var dialect_id = $( "#dialect_id option:selected" ).val();
+        var data = {lang_id: lang_id, lemma: $( "#lemma" ).val(),
+                    pos_id: $( "#pos_id option:selected" ).val(),
+                    meaning: $( "#new_meanings_0__meaning_text__2_" ).val(),
+                    dialect_id: $( "#dialect_id option:selected" ).val(),
+                    number: $( "#number option:selected" ).val(),
+                    reflexive: $( "#reflexive" ).val()};
 //alert("/dict/lemma/store_simple?lang_id="+lang_id+"&lemma="+lemma+"&pos_id="+pos_id+"&meaning="+meaning);    
-        saveLemma(lang_id, lemma, pos_id, meaning, dialect_id);
+        saveLemma(data);
     });
     
     $("#modalAddLemma .close, #modalAddLemma .cancel").on('click', function() {

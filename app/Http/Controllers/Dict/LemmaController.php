@@ -165,6 +165,8 @@ class LemmaController extends Controller
         ]);
         
         $lemma = Lemma::storeLemma($request->all());
+//dd($request->all());
+        LemmaFeature::store($lemma->id, $request);
 
         $new_meanings[0]=['meaning_n' => 1,
                           'meaning_text' =>

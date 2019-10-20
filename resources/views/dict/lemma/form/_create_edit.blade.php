@@ -32,7 +32,7 @@
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
-        @include('dict.lemma.form._create_edit_pos_features') 
+        @include('dict.lemma.form._create_edit_pos_features', ['is_full_form'=>true]) 
                  
         <div id='phrase-field' class="lemma-feature-field">
         @include('widgets.form.formitem._select2',

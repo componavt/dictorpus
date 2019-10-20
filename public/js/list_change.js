@@ -1,26 +1,34 @@
-function posSelect() {
+function posSelect(is_full_form=true) {
     $("#pos_id")
         .change(function () {
             $(".lemma-feature-field").hide().prop("disabled", true);
             if ($("#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
-                $("#transitive-field").show().prop("disabled", false);
+                if (is_full_form) {
+                    $("#transitive-field").show().prop("disabled", false);
+                }
             } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun or pronoun
-                $("#animacy-field").show().prop("disabled", false);
-                $("#abbr-field").show().prop("disabled", false);
+                if (is_full_form) {
+                    $("#animacy-field").show().prop("disabled", false);
+                    $("#abbr-field").show().prop("disabled", false);
+                }
                 $("#number-field").show().prop("disabled", false);
-            } else if ($( "#pos_id option:selected" ).val()==6) { // is numeral
-                $("#numtype-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==10) { // is pronoun
-                $("#prontype-field").show().prop("disabled", false);
+                if (is_full_form) {
+                    $("#prontype-field").show().prop("disabled", false);
+                }
                 $("#number-field").show().prop("disabled", false);
-            } else if ($( "#pos_id option:selected" ).val()==2) { // is adverb
-                $("#advtype-field").show().prop("disabled", false);
-                $("#degree-field").show().prop("disabled", false);
-            } else if ($( "#pos_id option:selected" ).val()==1) { // is adjective
-                $("#degree-field").show().prop("disabled", false);
-            } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
-                $("#phrase-field").show().prop("disabled", false);
+            } else if (is_full_form) {
+                if ($( "#pos_id option:selected" ).val()==6) { // is numeral
+                    $("#numtype-field").show().prop("disabled", false);
+                } else if ($( "#pos_id option:selected" ).val()==2) { // is adverb
+                    $("#advtype-field").show().prop("disabled", false);
+                    $("#degree-field").show().prop("disabled", false);
+                } else if ($( "#pos_id option:selected" ).val()==1) { // is adjective
+                    $("#degree-field").show().prop("disabled", false);
+                } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
+                    $("#phrase-field").show().prop("disabled", false);
+                }
             }
           })
         .change();    
