@@ -53,6 +53,9 @@ class ReverseLemma extends Model
             return $groups;
         }
         $gramsets = Gramset::dictionaryGramsets($pos_id, NULL, $lang_id);
+        $last = array_pop($gramsets);   
+        array_unshift($gramsets,$last); 
+        
         $lemmas = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)->orderBy('lemma')->get();
         foreach ($lemmas as $lemma) {
             $affixes = [];
