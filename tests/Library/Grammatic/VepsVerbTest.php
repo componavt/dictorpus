@@ -79,7 +79,7 @@ class VepsVerbTest extends TestCase
         $gramset_id = 85; // 24. индикатив, имперфект, 3 л., мн. ч., -
         $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
        
-        $expected = 'ebad pezen, ebad pezend';
+        $expected = 'ebad peze, ebad pezen, ebad pezend';
         $this->assertEquals( $expected, $result);        
     }
     

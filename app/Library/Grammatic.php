@@ -58,13 +58,13 @@ class Grammatic
 */
     public static function getAffixFromtemplate($template, $name_num) {       
         $template = preg_replace("/\|\|/",'',$template);
-        if (preg_match("/^(\S*)\|(\S*)$/", $template, $regs)) {
+        if (!preg_match("/\s/", $template) && preg_match("/^([^\{\(]*)\|([^\|]*)$/", $template, $regs)) {
             $base = $regs[1];
             $base_suff = $regs[2];
             $stems[0] = $base.$base_suff;
         } else {
-            $stems[0] = $base = $template;
-            $base_suff = null;
+            $base = $template;
+            $stems = $base_suff = null;
         }
         return [$stems, $name_num, $base, $base_suff];
     }
@@ -135,10 +135,10 @@ class Grammatic
      */
     public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null) {
         if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
-            return [NULL, $name_num, $template, NULL];
+            return Grammatic::getAffixFromtemplate($template, $name_num);
         }
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            return [NULL, $name_num, $template, NULL];
+            return Grammatic::getAffixFromtemplate($template, $name_num);
         }
 
         if (!preg_match("/\{\{/", $template)) {

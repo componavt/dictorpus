@@ -326,7 +326,7 @@ class GrammaticTest extends TestCase
 //        $dialect_id=43; // New written Veps
         $template = "{{vep-decl-stems|n=pl|Alama|d|id}}";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
-        
+//dd($result);        
         $expected = [null, null, $template, NULL];
         $this->assertEquals( $expected, $result);        
     }
@@ -358,6 +358,7 @@ class GrammaticTest extends TestCase
         $pos_id = 5;
 //        $dialect_id=47;
         $template = "{ativo, ativo, ativo, ativu, ativo}";
+  
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
 //dd($result);                
         $expected = [null, null, $template, null];
@@ -596,7 +597,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'abuozuteseli|ne ('], $num, 'abuozuteseli|ne (', NULL];
+        $expected = [NULL, $num, 'abuozuteseli|ne (', NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -640,7 +641,7 @@ class GrammaticTest extends TestCase
         $num = null;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'abudeng|u (-an,'], $num, 'abudeng|u (-an,', NULL];
+        $expected = [NULL, $num, 'abudeng|u (-an,', NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -662,7 +663,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'allekirjut|ada ('], $num, 'alle||kirjut|ada (', NULL];
+        $expected = [NULL, $num, 'allekirjut|ada (', NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -705,8 +706,8 @@ class GrammaticTest extends TestCase
         $pos_id = 11; 
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
-dd($result);        
-        $expected = [[0=>'allekirjut|tua ('], $num, 'alle||kirjut|tua (', NULL];
+//dd($result);        
+        $expected = [NULL, $num, 'allekirjut|tua (', NULL];
         $this->assertEquals( $expected, $result);        
     }
     

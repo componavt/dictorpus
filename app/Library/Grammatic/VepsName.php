@@ -2,6 +2,8 @@
 
 namespace App\Library\Grammatic;
 
+use App\Library\Grammatic;
+
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
