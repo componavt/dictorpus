@@ -47,7 +47,7 @@ class Grammatic
         if ($gramset_wordforms) {
             return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
         }
-        return self::wordformsFromDict($lemma);
+        return self::wordformsFromDict($lemma, $max_stem, $affix);
     }
 /*    
     public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id) {
@@ -69,20 +69,17 @@ class Grammatic
         return [$stems, $name_num, $base, $base_suff];
     }
     
-    public static function wordformsFromDict($lemma) {       
+    public static function wordformsFromDict($lemma, $stem, $affix) {       
         $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
         if ($parsing) {
             $lemma = $regs[1];
         }
         
-        $affix = NULL;
         $lemma = str_replace('||','',$lemma);
         if (preg_match("/^(.+)\|(.*)$/",$lemma,$rregs)){
             $stem = $rregs[1];
             $affix = $rregs[2];
             $lemma = $stem.$affix;
-        } else {
-            $stem = $lemma;
         }
       
         if (!$parsing) {
