@@ -28,7 +28,6 @@ class Grammatic
      * @return type
      */
     public static function parseLemmaField($data) {
-//dd($data);        
         $lemma = self::toRightForm($data['lemma']);
         if (isset($data['reflexive'])) {
             $name_num = $data['reflexive'];
@@ -39,7 +38,8 @@ class Grammatic
         }
        
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num);
-//dd('stems:',$stems);        
+        
+//dd($max_stem, $affix);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems, 
@@ -56,6 +56,19 @@ class Grammatic
         return $gramset_wordforms;
     }
 */
+    public static function getAffixFromtemplate($template, $name_num) {       
+        $template = preg_replace("/\|\|/",'',$template);
+        if (preg_match("/^(\S*)\|(\S*)$/", $template, $regs)) {
+            $base = $regs[1];
+            $base_suff = $regs[2];
+            $stems[0] = $base.$base_suff;
+        } else {
+            $stems[0] = $base = $template;
+            $base_suff = null;
+        }
+        return [$stems, $name_num, $base, $base_suff];
+    }
+    
     public static function wordformsFromDict($lemma) {       
         $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
         if ($parsing) {

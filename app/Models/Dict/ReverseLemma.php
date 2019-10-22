@@ -87,4 +87,15 @@ class ReverseLemma extends Model
         return $groups;
     }
     
+    public function updateStemAffixFromBase($base0) {
+        if (preg_match("/^(.*)\|(.*)$/", $base0, $regs)) {
+            $this->stem = $regs[1];
+            $this->affix = $regs[2];
+        } else {
+            $this->stem = $base0;
+            $this->affix = NULL;            
+        }
+        $this->save();
+        return $this->stem. $this->affix;
+    }
 }

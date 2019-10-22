@@ -578,4 +578,136 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStemsFromTemplateCompoundVepsNoun() {
+        $template = "abu||ozuteseli|ne";
+        $lang_id = 1;
+        $pos_id = 1; // noun
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'abuozuteseline'], $num, 'abuozuteseli', 'ne'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateCompoundVepsNounWrongTemplate() {
+        $template = "abu||ozuteseli|ne (";
+        $lang_id = 1;
+        $pos_id = 1; // noun
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'abuozuteseli|ne ('], $num, 'abuozuteseli|ne (', NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateKarNoun() {
+        $template = "Kariel|a";
+        $lang_id = 4;
+        $pos_id = 1; // noun
+        $num = 'sg';
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'Kariela'], $num, 'Kariel', 'a'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateKarProperNounCompound() {
+        $template = "abu||deng|u";
+        $lang_id = 4;
+        $pos_id = 1; // noun
+        $num = null;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'abudengu'], $num, 'abudeng', 'u'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateOloNounCompound() {
+        $template = "abu||deng|u";
+        $lang_id = 5;
+        $pos_id = 1; // noun
+        $num = null;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'abudengu'], $num, 'abudeng', 'u'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateKarNounCompoundWrongTemplate() {
+        $template = "abu||deng|u (-an,";
+        $lang_id = 5;
+        $pos_id = 1; // noun
+        $num = null;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'abudeng|u (-an,'], $num, 'abudeng|u (-an,', NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateCompoundVepsVerb() {
+        $template = "alle||kirjut|ada";
+        $lang_id = 1;
+        $pos_id = 11; 
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'allekirjutada'], $num, 'allekirjut', 'ada'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateCompoundVepsVerbWrongTemplate() {
+        $template = "alle||kirjut|ada (";
+        $lang_id = 1;
+        $pos_id = 11; 
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'allekirjut|ada ('], $num, 'alle||kirjut|ada (', NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateKarVerb() {
+        $template = "alust|ua";
+        $lang_id = 4;
+        $pos_id = 11; 
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'alustua'], $num, 'alust', 'ua'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateKarVerbCompound() {
+        $template = "alle||kirjut|tua";
+        $lang_id = 4;
+        $pos_id = 11; 
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'allekirjuttua'], $num, 'allekirjut', 'tua'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateOloVerbCompound() {
+        $template = "alle||kirjut|tua";
+        $lang_id = 5;
+        $pos_id = 11; 
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'allekirjuttua'], $num, 'allekirjut', 'tua'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateKarVerbCompoundWrongTemplate() {
+        $template = "alle||kirjut|tua (";
+        $lang_id = 5;
+        $pos_id = 11; 
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+dd($result);        
+        $expected = [[0=>'allekirjut|tua ('], $num, 'alle||kirjut|tua (', NULL];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

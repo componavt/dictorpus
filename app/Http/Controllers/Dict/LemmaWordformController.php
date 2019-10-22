@@ -118,6 +118,10 @@ class LemmaWordformController extends Controller
     public function update(Request $request, $id)
     {
         $lemma= Lemma::findOrFail($id);
+//dd($lemma->reverseLemma);        
+
+        $bases = $request->bases;
+        $bases[0] = $lemma->reverseLemma->updateStemAffixFromBase($bases[0]);
 
         $dialect_id = $request->dialect_id;
         if (!(int)$dialect_id) {
@@ -125,7 +129,7 @@ class LemmaWordformController extends Controller
         }
         // WORDFORMS UPDATING
         //remove all records from table lemma_wordform
-        $lemma->updateBases($request->bases, $request->dialect_id_for_bases);
+        $lemma->updateBases($bases, $request->dialect_id_for_bases);
         $lemma-> wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
         //add wordforms from full table of gramsets
         $lemma-> storeWordformGramsets($request->lang_wordforms, $request->lang_wordforms_dialect);

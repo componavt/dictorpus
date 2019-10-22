@@ -71,11 +71,10 @@ class VepsName
         return array_merge(self::gramsetListSg(), self::gramsetListPl());
     }
     
-    public static function stemsFromTemplate($template, $name_num) {
-        $stems[0] = $base = preg_replace("/\|/",'',$template);
-        $base_suff = null;
+    public static function stemsFromTemplate($template, $name_num) {      
         $arg = "([^\|]*)";
         $div_arg = "\|".$arg;
+        
         $base_shab = "([^\s\(\|]+)";
         $base_suff_shab = "([^\s\(\|]*)";
         $okon1_shab = "-([^\,\;\)]+)";
@@ -96,7 +95,10 @@ class VepsName
         } elseif (preg_match("/^{{vep-decl-stems".$div_arg.$div_arg.$div_arg.$div_arg."\|?".$arg."}}$/u",$template, $regs) ||
                 preg_match($lemma_okon1_shab."\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
             list($stems, $base, $base_suff) = self::stemsOthersFromTemplate($regs, $name_num);
+        } else {
+            return Grammatic::getAffixFromtemplate($template, $name_num);
         }
+//dd($base);        
         return [$stems, $name_num, $base, $base_suff];
     }
     

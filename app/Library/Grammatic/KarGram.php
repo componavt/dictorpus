@@ -140,7 +140,7 @@ class KarGram
 //var_dump($stems);        
         if (!$stems || ($pos_id == PartOfSpeech::getVerbID() && sizeof($stems)!=8) // constraints for tver dialects
                 || (in_array($pos_id, PartOfSpeech::getNameIDs()) && sizeof($stems)!=6)) {
-            return [NULL, $name_num, $template, NULL];
+            return Grammatic::getAffixFromtemplate($template, $name_num);
         } 
         
         list($max_stem, $affix) = Grammatic::maxStem($stems);

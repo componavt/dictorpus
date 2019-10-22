@@ -61,8 +61,7 @@ class VepsGram
     public static function stemsFromTemplate($template, $pos_id, $name_num = null) {
 //dd($template);        
         $template = trim($template);
-        $stems[0] = $base = $template;
-        $base_suff = null;
+        
         $arg = "([^\|]*)";
         $div_arg = "\|".$arg;
         $base_shab = "([^\s\(\|]+)";
@@ -80,6 +79,8 @@ class VepsGram
             $base = $regs[1];
             $base_suff = $regs[2];
             $stems = VepsVerb::stemsFromTemplate($regs, $name_num);
+        } else {
+            return Grammatic::getAffixFromtemplate($template, $name_num);
         }
 //dd('stems out:',$stems);                
         return [$stems, $name_num, $base, $base_suff];
