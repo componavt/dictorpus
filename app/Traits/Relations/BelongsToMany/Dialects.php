@@ -13,4 +13,13 @@ trait Dialects
 //                    ->withPivot('gramset_id','wordform_id')
                     ->orderBy('name_'.$locale);
     }
+    
+    public function getDialectIds() {
+        $dialects = $this->dialects()->groupBy('id')->orderBy('sequence_number')->get();
+        $ids = [];
+        foreach ($dialects as $dialect) {
+            $ids[] = $dialect->id;
+        }
+        return $ids;
+    }
 }

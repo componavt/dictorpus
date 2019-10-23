@@ -51,7 +51,7 @@ class LemmaController extends Controller
                           ['only' => ['create','store','edit','update','destroy',
                                       'editExample', 'removeExample',
                                       'editExamples','updateExamples',
-                                      'storeSimple',
+                                      'storeSimple', 'tmpUpdateStemAffix',
                                       'createWordform', 'updateWordformFromText',
                                       'editWordforms','updateWordforms']]);
         
@@ -878,6 +878,28 @@ class LemmaController extends Controller
         return view('dict.lemma.illative_table',compact('lemmas'));
     }
     
+    public function tmpUpdateStemAffix() {
+print "<pre>";        
+        $lemmas = Lemma::where('id','>',15)->orderBy('id')->take(10)->get();
+        foreach ($lemmas as $lemma) {
+            if (!$lemma->isChangeable()) {
+                $lemma->reverseLemma->stem = $lemma->lemma;
+                $lemma->reverseLemma->affix = null;
+                $lemma->save();
+//var_dump($lemma->lemma, $lemma->reverseLemma);                
+                continue;
+            }
+            $dialects = $lemma->getDialectIds();
+            $max_stem=null; 
+            
+            $dialect_id = $dialects[0];
+            $stems = $lemma->getBases($dialect_id);
+            $lemma->updateBases($stems, $dialect_id);
+dd($lemma->id, $lemma->lang_id, $lemma->lemma, $lemma->getDialectIds(), $stems, $lemma->reverseLemma->stem, $lemma->reverseLemma->affix);            
+        }
+    }
+
+
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences
