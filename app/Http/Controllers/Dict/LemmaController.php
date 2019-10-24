@@ -15,7 +15,7 @@ use Response;
 
 //use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
-//use App\Library\Grammatic;
+use App\Library\Grammatic;
 use App\Library\Grammatic\VepsName;
 use App\Models\User;
 
@@ -879,8 +879,8 @@ class LemmaController extends Controller
     }
     
     public function tmpUpdateStemAffix() {
-print "<pre>";        
-        $lemmas = Lemma::where('id','>',15)->orderBy('id')->take(10)->get();
+//print "<pre>";        
+        $lemmas = Lemma::orderBy('id')->get(); //where('id','>',1)->take(10)
         foreach ($lemmas as $lemma) {
             if (!$lemma->isChangeable()) {
                 $lemma->reverseLemma->stem = $lemma->lemma;
@@ -890,12 +890,35 @@ print "<pre>";
                 continue;
             }
             $dialects = $lemma->getDialectIds();
-            $max_stem=null; 
-            
-            $dialect_id = $dialects[0];
-            $stems = $lemma->getBases($dialect_id);
-            $lemma->updateBases($stems, $dialect_id);
-dd($lemma->id, $lemma->lang_id, $lemma->lemma, $lemma->getDialectIds(), $stems, $lemma->reverseLemma->stem, $lemma->reverseLemma->affix);            
+            $max_stem=$lemma->lemma; 
+            $stems = [];
+            foreach ($dialects as $dialect_id) {
+                $stems_for_max = $stems = $lemma->getBases($dialect_id);
+                $lemma->updateBases($stems, $dialect_id);
+                
+                if ($lemma->lang_id==1 && $lemma->pos_id == PartOfSpeech::getVerbID()) {
+                    $stems_for_max = array_slice($stems, 0, 5);
+                }
+                list($max_stem) = Grammatic::maxStem(array_merge([$max_stem], $stems_for_max), $lemma->lang_id, $lemma->pos_id);
+            }
+            if (preg_match("/^".$max_stem."(.*)/u", $lemma->lemma, $regs)) {
+                $affix = $regs[1];
+            } else {
+                $affix = false;
+            }
+print sprintf("<p><b>id:</b> %s, <b>lang:</b> %s, <b>lemma:</b> <a href=\"/dict/lemma/%s\">%s</a>, <b>dialects:</b> [%s], <b>stems:</b> [%s], <b>max_stem:</b> %s, <b>affix:</b> %s",
+        $lemma->id, $lemma->lang_id, $lemma->id, $lemma->lemma, join(", ",$dialects), join(", ",$stems), $max_stem, $affix);   
+            if ($affix === false) {
+                dd('ERROR');
+            }
+if ($max_stem!=$lemma->reverseLemma->stem && $affix!=$lemma->reverseLemma->affix) {
+print sprintf(", <span style='color:red'><b>reverse_stem:</b> %s, <b>reverse_affix:</b> %s</span>",
+        $lemma->reverseLemma->stem, $lemma->reverseLemma->affix);   
+            $lemma->reverseLemma->stem = $max_stem;
+            $lemma->reverseLemma->affix = $affix;
+            $lemma->save();
+}
+print "</p>";
         }
     }
 

@@ -267,9 +267,11 @@ class Grammatic
         return $word;
     }
 */    
-    public static function maxStem($stems) {
+    public static function maxStem($stems/*, $lang_id=NULL, $pos_id=NULL*/) {
+//dd($lang_id, $pos_id);
         $affix = '';
         $stem = $stems[0];
+//print "<P>$stem</P>";            
 
         for ($i=1; $i<sizeof($stems); $i++) {
             if (!$stems[$i]) {
@@ -279,6 +281,7 @@ class Grammatic
                 $affix = mb_substr($stem, -1, 1). $affix;
                 $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
             }
+//print "<P>".$stems[$i].": $stem</P>";            
         }
         return [$stem, $affix];
         

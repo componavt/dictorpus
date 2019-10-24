@@ -297,6 +297,16 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testMaxStemVepsVerb() {
+        $lang_id = 1;
+        $pos_id = 11;
+        $stems = ['ant', 'anda', 'andoi', 'and', 'anda', 'and', 't', 'a'];
+        $result = Grammatic::maxStem($stems, $lang_id, $pos_id);
+        
+        $expected = ['an', 't'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
     // stemsFromTemplate()
     public function testStemsFromTemplateIncorrectLang() {
         $lang_id = 3;
