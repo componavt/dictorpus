@@ -1146,7 +1146,7 @@ class VepsVerb
         }
         
         if (self::isMonobasic($stem) && in_array(VepsGram::countSyllable($stem), [1,3])
-            || !self::isMonobasic($stem) && preg_match("/[".VepsGram::sonantSet()."]$/")) {
+            || !self::isMonobasic($stem) && preg_match("/[".VepsGram::sonantSet()."]$/", $stem)) {
             return '';
         }
         return 'a';

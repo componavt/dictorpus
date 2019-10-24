@@ -20,6 +20,7 @@ return [
     'informant_accusative' => 'the informant',
     'lang_accusative' => 'the language',
     'lemma_accusative' => 'the lemma',
+    'lemma_for_search_accusative' => 'the lemma search index',
     'meaning_accusative' => 'the meaning :num',
     'meaning_genetiv' => 'of the meaning :num',
     'meaning_text_accusative' => 'the interpretation',
