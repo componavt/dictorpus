@@ -91,6 +91,7 @@ class Lemma extends Model
      * @return String
      */
     public function getBase($base_n, $dialect_id=null, $bases=null) {
+//print         
         $base = $this->getBaseFromDB($base_n, $dialect_id);
 
         if ($base) {

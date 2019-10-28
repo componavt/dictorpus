@@ -107,7 +107,7 @@ class VepsName
     public static function getStemFromStems($stems, $stem_n, $dialect_id) {
         switch ($stem_n) {
             case 2: 
-                return self::illSgBase($stems[1]);
+                return isset($stems[1]) ? self::illSgBase($stems[1]) : null;
             default: 
                 return null;
         }

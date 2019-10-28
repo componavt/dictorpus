@@ -11,8 +11,7 @@ use App\Models\Dict\Wordform;
 // ./vendor/bin/phpunit tests/Models/Dict/LemmaTest
 
 class LemmaTest extends TestCase
-{
-    
+{    
     public function testExtractStemVepsVerbManyWordforms()
     {
         $lemma_id = 828;
@@ -53,6 +52,20 @@ class LemmaTest extends TestCase
         $expected = [14];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testGetBaseVocalPl()
+    {
+        $lemma_id = 26420;
+        $lemma = Lemma::find($lemma_id);
+
+        $base_n = 1;
+        $dialect_id = 43;
+        $result = $lemma->getBase($base_n, $dialect_id);
+        
+        $expected = null;
+        $this->assertEquals( $expected, $result);        
+    }
+    
 /* 
     public function testWordformTerminativ()
     {
