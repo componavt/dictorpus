@@ -199,6 +199,7 @@ return [
     'verb' => 'verb',
     'voice' => 'voice',
     'wordform' => 'wordform',
+    'wordform_comment' => 'Number of wordforms with grammatical attributes [+ Number of wordforms without grammatical attributes]',
     'wordforms' => 'wordforms',
     'wordforms_linked_many_lemmas' => 'Wordforms associated with more than one lemma',
     'wordform_field_comments' => 'Wordforms separated by comma or /',

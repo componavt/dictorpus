@@ -37,8 +37,8 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
-                <th>{{ trans('dict.wordforms') }}</th>
-                <th>{{ trans('messages.examples') }}&nbsp;*</th>
+                <th>{{ trans('dict.wordforms') }}&nbsp;*</th>
+                <th>{{ trans('messages.examples') }}&nbsp;**</th>
                 @if (User::checkAccess('dict.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -109,7 +109,8 @@
         </table>
             {!! $lemmas->appends($url_args)->render() !!}
             
-            <p><big>*</big> -  {{ trans('dict.example_comment') }}
+            <p><big>*</big> -  {{ trans('dict.wordform_comment') }}</p>
+            <p><big>**</big> -  {{ trans('dict.example_comment') }}</p>
         @endif
 
 {{--        @include('dict.lemma._modal_delete') --}}
