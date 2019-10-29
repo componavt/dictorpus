@@ -1039,7 +1039,10 @@ dd($wordforms);
         $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
         $wordform_obj->save();
 
-        $this->wordforms()->detach($wordform_obj->id, ['gramset_id'=>NULL, 'dialect_id'=>NULL]);    
+//        $this->wordforms()->detach($wordform_obj->id, ['gramset_id'=>NULL, 'dialect_id'=>NULL]);    
+        DB::connection('mysql')->table('lemma_wordform')->whereLemmaId($this->id)
+                ->whereWordformId($wordform_obj->id)->whereNull('dialect_id')
+                ->whereNull('gramset_id')->delete();
         
         if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
             return;
