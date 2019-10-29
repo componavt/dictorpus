@@ -65,7 +65,14 @@
                     @endforeach
                 </td>
                 <td data-th="{{ trans('dict.wordforms') }}">
-                    {{$lemma->wordforms ? sizeof($lemma->wordforms) : '0'}}
+                    @if ($lemma->wordforms)
+                    {{$lemma->wordforms()->whereNotNull('gramset_id')->count()}}
+                        @if ($lemma->wordforms()->whereNull('gramset_id')->count())
+                        + <span class="unchecked-count">{{$lemma->wordforms()->whereNull('gramset_id')->count()}}</span>
+                        @endif
+                    @else
+                    0
+                    @endif
                 </td>
                 <td data-th="{{ trans('messages.examples') }}">
                     <?php $total_ex = $lemma->countExamples();?>

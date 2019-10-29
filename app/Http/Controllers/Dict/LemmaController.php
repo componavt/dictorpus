@@ -880,7 +880,7 @@ class LemmaController extends Controller
     
     public function tmpUpdateStemAffix() {
 //print "<pre>";        
-        $lemmas = Lemma::orderBy('id')->take(10)->get(); //where('id','>',1)->take(10)
+        $lemmas = Lemma::orderBy('id')->get(); //where('id','>',1)->take(10)
         foreach ($lemmas as $lemma) {
             if (!$lemma->isChangeable()) {
                 $lemma->reverseLemma->stem = $lemma->lemma;
