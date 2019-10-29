@@ -934,3 +934,7 @@ update langs set code='fi' where id=7;
 
 select count(*) FROM lemma_wordform where gramset_id>121 and gramset_id<170 and lemma_id in (select id from lemmas where lang_id=1);
 DELETE FROM lemma_wordform where gramset_id>121 and gramset_id<170 and lemma_id in (select id from lemmas where lang_id=1);
+
+--!!! ДЛЯ ОТЧЕТА
+select lang_id, count(*) from texts where created_at > '2019-01-01 00:00:00' group by lang_id;
+select lang_id, count(*) from lemmas where created_at > '2019-01-01 00:00:00' group by lang_id;

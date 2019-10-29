@@ -880,7 +880,7 @@ class LemmaController extends Controller
     
     public function tmpUpdateStemAffix() {
 //print "<pre>";        
-        $lemmas = Lemma::orderBy('id')->get(); //where('id','>',1)->take(10)
+        $lemmas = Lemma::orderBy('id')->take(10)->get(); //where('id','>',1)->take(10)
         foreach ($lemmas as $lemma) {
             if (!$lemma->isChangeable()) {
                 $lemma->reverseLemma->stem = $lemma->lemma;
@@ -906,18 +906,20 @@ class LemmaController extends Controller
             } else {
                 $affix = false;
             }
+            if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix || !sizeof($stems)) {
 print sprintf("<p><b>id:</b> %s, <b>lang:</b> %s, <b>lemma:</b> <a href=\"/dict/lemma/%s\">%s</a>, <b>dialects:</b> [%s], <b>stems:</b> [%s], <b>max_stem:</b> %s, <b>affix:</b> %s",
         $lemma->id, $lemma->lang_id, $lemma->id, $lemma->lemma, join(", ",$dialects), join(", ",$stems), $max_stem, $affix);   
-            if ($affix === false) {
-                dd('ERROR');
             }
-if ($max_stem!=$lemma->reverseLemma->stem && $affix!=$lemma->reverseLemma->affix) {
+            if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix) {
 print sprintf(", <span style='color:red'><b>reverse_stem:</b> %s, <b>reverse_affix:</b> %s</span>",
         $lemma->reverseLemma->stem, $lemma->reverseLemma->affix);   
             $lemma->reverseLemma->stem = $max_stem;
             $lemma->reverseLemma->affix = $affix;
-            $lemma->save();
+            $lemma->reverseLemma->save();
 }
+            if ($affix === false) {
+                dd('ERROR');
+            }
 print "</p>";
         }
     }
