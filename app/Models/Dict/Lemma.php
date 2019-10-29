@@ -1032,15 +1032,19 @@ dd($wordforms);
     public function addWordform($word, $gramset_id, $dialect_id) {       
         $trim_word = Grammatic::toRightForm($word);
         if (!$trim_word) { return;}
-        
+/*if ($trim_word == 'fateroidme')   {
+    dd($trim_word);
+} */    
         $wordform_obj = Wordform::findOrCreate($trim_word);
         $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
         $wordform_obj->save();
 
+        $this->wordforms()->detach($wordform_obj->id, ['gramset_id'=>NULL, 'dialect_id'=>NULL]);    
+        
         if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
             return;
         }
-        $this-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);    
+        $this->wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);    
 //print "<p>". $wordform_obj->wordform ." | $gramset_id | $dialect_id</p>";
     }
     
