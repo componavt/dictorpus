@@ -112,4 +112,16 @@ class VepsVerbTest extends TestCase
         $expected = 'emai ole sanuded, emai uugoi sanuded, emei ole sanuded, emei uugoi sanuded';
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testImper_1Base() {
+        $stem0 = 'anasta';
+        $dt = 'd';
+        $stem8 = '';
+        $dialect_id = 43;
+        $gramset_id = 52; // императив, 3 л., ед. ч., +
+        $result = VepsVerb::imper3($stem0, $dt, $stem8, $gramset_id, $dialect_id);
+       
+        $expected = 'anastagha';
+        $this->assertEquals( $expected, $result);        
+    }
 }

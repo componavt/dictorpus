@@ -164,7 +164,7 @@ class VepsVerb
         $past_actv_ptcp_stem = self::getStemPAP($inf_stem, $pres_stem);       
         $cond_stem = self::getStemCond($pres_stem);        
         $potn_stem = self::getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem);
-        $imper = isset($regs[5]) ? $base. $regs[5] : '';
+        $imper = isset($regs[5]) && $regs[5] ? $base. $regs[5] : '';
         
         return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
                 $cond_stem, $potn_stem, $cons, $harmony, $imper];        

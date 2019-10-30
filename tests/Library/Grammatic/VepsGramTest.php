@@ -96,4 +96,13 @@ class VepsGramTest extends TestCase
         $expected = [['abidkirjeine', 'abidkirježe', 'abidkirježe', 'abidkirješt', 'abidkirjeiži', ''], null, 'abidkirje', 'ine'];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testStemsFromTemplateVerb1Base() {
+        $pos_id = 11; // verb
+        $template = "anast|ada (-ab, -i)";
+        $result = VepsGram::stemsFromTemplate($template, $pos_id);
+//dd($result);        
+        $expected = [['anasta', 'anasta', 'anasti', 'anasta', 'anasta', 'anasta', 'd', 'a', ''], null, 'anast', 'ada'];
+        $this->assertEquals( $expected, $result);        
+    }
 }

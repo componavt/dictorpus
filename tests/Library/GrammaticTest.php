@@ -300,8 +300,8 @@ class GrammaticTest extends TestCase
     public function testMaxStemVepsVerb() {
         $lang_id = 1;
         $pos_id = 11;
-        $stems = ['ant', 'anda', 'andoi', 'and', 'anda', 'and', 't', 'a'];
-        $result = Grammatic::maxStem($stems, $lang_id, $pos_id);
+        $stems = ['ant', 'anda', 'andoi', 'and', 'anda', 'and', 't', 'a', ''];
+        $result = Grammatic::maxStem(array_slice($stems, 0, 5), $lang_id, $pos_id);
         
         $expected = ['an', 't'];
         $this->assertEquals( $expected, $result);        
@@ -495,7 +495,7 @@ class GrammaticTest extends TestCase
         $template = "{{vep-conj-stems|voik|ta|ab|i}}";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
 //dd($result);        
-        $expected = [0=>['voik', 'voika', 'voiki', 'voik', 'voika', 'voik', 't', 'a'],
+        $expected = [0=>['voik', 'voika', 'voiki', 'voik', 'voika', 'voik', 't', 'a', ''],
             1=>null, 2=>'voik', 3=>'ta'];
         $this->assertEquals( $expected, $result);        
     }
@@ -507,7 +507,7 @@ class GrammaticTest extends TestCase
         $template = "{{vep-conj-stems|töndu|da|b|i}}";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
 //dd($result);        
-        $expected = [0=>['töndu', 'töndu', 'töndui', 'töndu', 'töndu', 'töndu', 'd', 'a'],
+        $expected = [0=>['töndu', 'töndu', 'töndui', 'töndu', 'töndu', 'töndu', 'd', 'a', ''],
             1=>null, 2=>'töndu', 3=>'da'];
         $this->assertEquals( $expected, $result);        
     }
@@ -518,7 +518,7 @@ class GrammaticTest extends TestCase
         $template = "{{vep-conj-stems|ast|ta|ub|ui}}";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
 //dd($result);        
-        $expected = [0=>['ast', 'astu', 'astui', 'ast', 'astu', 'ast', 't', 'a'],
+        $expected = [0=>['ast', 'astu', 'astui', 'ast', 'astu', 'ast', 't', 'a', ''],
             1=>null, 2=>'ast', 3=>'ta'];
         $this->assertEquals( $expected, $result);        
     }
@@ -530,7 +530,7 @@ class GrammaticTest extends TestCase
         $template = "{{vep-conj-stems|vali|ta|čeb|či}}";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
 //dd($result);        
-        $expected = [0=>['vali', 'valiče', 'valiči', 'vali', 'valič', 'valiče','t','a'],
+        $expected = [0=>['vali', 'valiče', 'valiči', 'vali', 'valič', 'valiče','t','a', ''],
             1=>null, 2=>'vali', 3=>'ta'];
         $this->assertEquals( $expected, $result);        
     }
