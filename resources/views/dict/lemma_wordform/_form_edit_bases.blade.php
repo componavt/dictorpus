@@ -7,8 +7,7 @@
                     @include('widgets.form.formitem._text', 
                        ['name' => 'bases['.$base_n.']', 
                         'special_symbol' => true,
-                        'value'=> $base_n != 0 ? (string)$lemma->getBase($base_n, $dialect_id)
-                            : $lemma->reverseLemma->stem. '|'. $lemma->reverseLemma->affix ])
+                        'value'=> (string)$lemma->getBase($base_n, $dialect_id)])
                 </td>
            </tr>
     @endforeach

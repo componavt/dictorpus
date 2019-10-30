@@ -121,7 +121,7 @@ class LemmaWordformController extends Controller
 //dd($lemma->reverseLemma);        
 
         $bases = $request->bases;
-        $bases[0] = $lemma->reverseLemma->updateStemAffixFromBase($bases[0]);
+//        $bases[0] = $lemma->reverseLemma->updateStemAffixFromBase($bases[0]);
 
         $dialect_id = $request->dialect_id;
         if (!(int)$dialect_id) {
