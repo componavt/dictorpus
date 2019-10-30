@@ -363,7 +363,7 @@ class VepsVerb
             case 27: // 2. индикатив, презенс, 2 л., ед.ч., пол. 
                 return $stems[1] ? $stems[1].'d' : '';
             case 28: // 3. индикатив, презенс, 3 л., ед.ч., пол. 
-                return self::indPres3Sg($stems[0], $stems[1], $stems[6], $dialect_id);
+                return self::indPres3Sg($stems[1], $dialect_id);
             case 29: // 4. индикатив, презенс, 1 л., мн.ч., +
                 return self::indPres1Pl($stems[1], $dialect_id);
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., +
