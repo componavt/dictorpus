@@ -38,7 +38,7 @@ class Grammatic
         }
        
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num);
-        
+//dd($stems);        
 //dd($max_stem, $affix);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        

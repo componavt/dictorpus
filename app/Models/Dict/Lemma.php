@@ -80,7 +80,7 @@ class Lemma extends Model
      */
     public function getBases($dialect_id=null) {
         $bases=[];
-        for ($i=0; $i<8; $i++) {
+        for ($i=0; $i<9; $i++) {
 //dd($this->bases);            
             $bases[$i] = $this->getBase($i, $dialect_id, $bases);
         }

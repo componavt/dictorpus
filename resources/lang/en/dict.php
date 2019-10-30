@@ -39,7 +39,8 @@ return [
                     4 => 'conditional base',
                     5 => 'III infinitive base',
                     6 => 'infinitive penultimate letter',
-                    7 => 'infinitive last letter'],
+                    7 => 'infinitive last letter',
+                    8 => 'imperative 3-d person single' ],
     'base_list_4_name' => [
                     0 => 'base form',
                     1 => 'слабая гласная основа',

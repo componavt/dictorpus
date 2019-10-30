@@ -401,7 +401,7 @@ class VepsVerbReflex
             case 51: // 49. императив, 2 л., ед.ч., + 
                 return self::imper2Sg($stems[0], $stems[6], $dialect_id);
             case 52: // 50. императив, 3 л., ед.ч., + 
-                return self::imper3Sg($stems[0], $stems[6], $dialect_id);
+                return self::imper3Sg($stems[0], $stems[6], $stems[8], $dialect_id);
             case 53: // 51. императив, 1 л., мн.ч., + 
                 return self::imper1Pl($stems[0], $stems[6], $dialect_id);
             case 54: // 52. императив, 2 л., мн.ч., + 
@@ -435,7 +435,10 @@ class VepsVerbReflex
         }        
     }
     
-    public static function imper3Sg($stem0, $dt, $dialect_id){
+    public static function imper3Sg($stem0, $dt, $stem8, $dialect_id){
+        if ($stem8) {
+            return $stem8;
+        }
         if (!$stem0 || !$dt) { return ''; }
         $gk = VepsGram::rightConsonant($dt, 'g');
 

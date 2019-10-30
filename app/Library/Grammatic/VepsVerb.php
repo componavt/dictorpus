@@ -31,7 +31,7 @@ class VepsVerb
      * @return array
      */
     public static function stemsFromDB($lemma, $dialect_id) {
-        for ($i=0; $i<6; $i++) {
+        for ($i=0; $i<7; $i++) {
             $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id);
         }
         return $stems;
@@ -73,10 +73,7 @@ class VepsVerb
         switch ($stem_n) {
             case 0: 
                 $regs = self::parseInf($lemma->lemma, $is_reflexive);
-                if (isset($regs[1])) {
-                    return $regs[1];
-                }
-                return '';
+                return isset($regs[1]) ? $regs[1] : '';
             case 1:  // indicative presence 3 sg
                 return self::parsePres3Sg($lemma->wordform(28, $dialect_id), $is_reflexive);
             case 2: // indicative imperfect 3 sg
@@ -87,10 +84,32 @@ class VepsVerb
                 return self::getStemCond(self::getStemFromWordform($lemma, 1, $dialect_id));
             case 5: // base of potential
                 return self::getStemPoten(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
+            case 6: 
+            case 7: 
+                $regs = self::parseInf($lemma->lemma, $is_reflexive);
+                return isset($regs[$stem_n-4]) ? $regs[$stem_n-4] : '';
+            case 8: 
+                return $lemma->wordform(52, $dialect_id);
         }
     }
     
     /**
+     * regs = [
+     *    0 => вся строка, совпавшая с шаблоном
+     *    1 => неизменяемая часть леммы = основа инфинитива
+     *    2 => изменяемая часть леммы = суффикс инфинитива
+     *    3 => суффикс презенса 3 л. ед.ч.
+     *    4 => суффикс имперфекта 3 л. ед.ч.
+     *    5 => суффикс императива 3 л. ед.ч.]
+     * 
+     * for example:
+     * [  0 => "ahavoi|ta (-čeb, -či, -kaha)"
+     *    1 => "ahavoi"
+     *    2 => "ta"
+     *    3 => "čeb"
+     *    4 => "či"
+     *    5 => "kaha"]
+     * 
      * stems = [0 => основа инфинитива, 
      *          1 => основа презенса, 
      *          2 => основа имперфекта,
@@ -98,13 +117,14 @@ class VepsVerb
      *          4 => основа кондиционала, 
      *          5 => основа потенциала, 
      *          6 => d/t - предпоследняя буква инфинитива
-     *          7 => a/ä - последняя буква инфинитива]
+     *          7 => a/ä - последняя буква инфинитива
+     *          8 => императив 3 л. ед.ч.]
      * 
      * @param Array $regs
      * @return array [0=>base_of_infinitive, 1=>base_of_presence, 
      *                2=>base_of_perfect, 3=>base_of_past_actvive_participle,
      *                4=>base_of_conditional, 5=>base_of_potentional, 
-     *                6=>consonant (d/t), 7=>vowel (a/ä)]
+     *                6=>consonant (d/t), 7=>vowel (a/ä), 8=>imperative_3Sg]
      */
     public static function stemsFromTemplate($regs, $is_reflexive=false) {
 //dd($regs);        
@@ -144,9 +164,10 @@ class VepsVerb
         $past_actv_ptcp_stem = self::getStemPAP($inf_stem, $pres_stem);       
         $cond_stem = self::getStemCond($pres_stem);        
         $potn_stem = self::getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem);
+        $imper = isset($regs[5]) ? $base. $regs[5] : '';
         
         return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
-                $cond_stem, $potn_stem, $cons, $harmony];        
+                $cond_stem, $potn_stem, $cons, $harmony, $imper];        
     }
     
     /**
@@ -455,7 +476,7 @@ class VepsVerb
                 return $stems[1] ? $stems[1] : '';
             case 52: // 50. императив, 3 л., ед.ч., + 
             case 55: // 53. императив, 3 л., мн.ч., + 
-                return self::imper3($stems[0], $stems[6], $gramset_id, $dialect_id);
+                return self::imper3($stems[0], $stems[6], $stems[8], $gramset_id, $dialect_id);
             case 53: // 51. императив, 1 л., мн.ч., + 
                 return $stems[0] ? $stems[0]. $g. 'am' : '';
             case 54: // 52. императив, 2 л., мн.ч., + 
@@ -1152,7 +1173,10 @@ class VepsVerb
         return 'a';
     }
 
-    public static function imper3($stem0, $dt, $gramset_id, $dialect_id){
+    public static function imper3($stem0, $dt, $stem8, $gramset_id, $dialect_id){
+        if ($stem8) {
+            return $stem8;
+        }
         if (!$stem0) {
             return '';
         }
