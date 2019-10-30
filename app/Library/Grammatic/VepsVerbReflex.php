@@ -56,13 +56,13 @@ class VepsVerbReflex
             case 27: // 2. индикатив, презенс, 2 л., ед.ч., пол. 
                 return self::indPres2Sg($stems[1], $dialect_id);
             case 28: // 3. индикатив, презенс, 3 л., ед.ч., пол. 
-                return self::indPres3Sg($stems[0], $stems[1], $stems[6], $dialect_id);
+                return self::indPres3Sg($stems[1], $dialect_id);
             case 29: // 4. индикатив, презенс, 1 л., мн.ч., +
                 return self::indPres1Pl($stems[1], $dialect_id);
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., +
                 return self::indPres2Pl($stems[1], $dialect_id);
             case 31: // 6. индикатив, презенс, 3 л., мн.ч., +
-                return self::indPres3Pl($stems[0], $stems[1], $stems[6], $dialect_id);
+                return self::indPres3Pl($stems[1], $dialect_id);
             case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
                 return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'e' : '';
             case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
@@ -177,7 +177,7 @@ class VepsVerbReflex
         }        
     }
     
-    public static function indPres3Pl($stem0, $stem1, $dt, $dialect_id){
+    public static function indPres3Pl($stem1, $dialect_id){
         if (!$stem1) { return ''; }
         
         if (preg_match("/i$/",$stem1)) {
