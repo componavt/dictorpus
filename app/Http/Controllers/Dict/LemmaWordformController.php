@@ -19,6 +19,7 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
+use App\Models\Dict\PartOfSpeech;
 
 class LemmaWordformController extends Controller
 {
@@ -197,7 +198,8 @@ class LemmaWordformController extends Controller
         $lemma = Lemma::findOrFail($id);        
         
         $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
-
+        $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
+                
         $stems = $lemma->getBases($dialect_id);
 //dd($stems);        
 //dd($name_num);     
@@ -206,8 +208,7 @@ class LemmaWordformController extends Controller
         if (!$request->without_remove) {
             $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
         }
-        $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems,
-                                    ($lemma->features && $lemma->features->reflex) ? 1 : null);
+        $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
 //dd($dialect_id, $gramset_wordforms);        
         if ($gramset_wordforms) {
             $lemma->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
@@ -229,12 +230,11 @@ class LemmaWordformController extends Controller
         $lemma = Lemma::findOrFail($id);        
         $stems = json_decode($request->bases);
         $stems[0] = preg_replace('/\|/', '', $stems[0]);
-//dd($stems);
+//dd($stems);   
         $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
-        
+        $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
 
-        $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems,
-                                    ($lemma->features && $lemma->features->reflex) ? 1 : null);
+        $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
 //dd($stems);        
         
 //dd($gramset_wordforms);        
