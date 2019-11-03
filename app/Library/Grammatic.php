@@ -29,6 +29,9 @@ class Grammatic
      */
     public static function parseLemmaField($data) {
         $lemma = self::toRightForm($data['lemma']);
+        if (isset($data['number']) && $data['number']=='refl') {
+            $data['reflexive'] = 1;
+        }
         if (isset($data['reflexive'])) {
             $name_num = $data['reflexive'];
         } elseif (isset($data['number'])) {    
@@ -44,6 +47,7 @@ class Grammatic
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems, 
                                                     isset($data['reflexive']) ? $data['reflexive'] : null);
+//dd($gramset_wordforms);        
         if ($gramset_wordforms) {
             return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
         }
@@ -294,6 +298,8 @@ class Grammatic
         } elseif ($number==2) {
 //            return 'sing';            
             return 'sg'; // изменено 5.09.2019, проверить при импорте тверского словаря           
+        } elseif ($number=='refl') {
+            return 1;
         } elseif (in_array($number, ['sing','sg','pl','def','impers'])) {
             return $number;            
         }

@@ -247,14 +247,15 @@ class DictParser
                      'lang_id'=>$lang_id, 
                      'number'=>$entry['num'],
                      'pos_id'=>$entry['pos_id'], 
-                     'dialect_id'=>$dialect_id];            
+                     'dialect_id'=>$dialect_id];   
+//dd($data);            
             list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                  = Grammatic::parseLemmaField($data);
 //dd($gramset_wordforms);            
             $lemma_in_db = self::findLemma($new_lemma, $entry, $lang_id, $label_id/*, $time_checking*/); 
 //$time_finding = microtime(true);            
 //print "<p><b>Time finding ".$entry['lemmas'][0]." :".round($time_finding-$time_checking, 2).'</p>';
-            $features = ['number'=>self::getNumberID($entry['num'])];
+            $features = ['number'=>self::getNumberID($entry['num']), 'reflexive'=>$entry['num']=='refl' ? 1: null];
             
             $is_label = false;
             if (!$lemma_in_db) {

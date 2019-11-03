@@ -667,7 +667,7 @@ dd($wordforms);
         return sizeof($texts);
     }
     
-    public static function storeLemma($data) {
+    public static function storeLemma($data) {        
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
 //dd($gramset_wordforms);        
@@ -687,6 +687,7 @@ dd($wordforms);
     
     public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
                                   $features, $dialect_id, $stems) {
+//dd($features);        
         $this->updateBases($stems, $dialect_id); 
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
