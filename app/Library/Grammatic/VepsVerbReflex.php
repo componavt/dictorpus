@@ -228,20 +228,20 @@ class VepsVerbReflex
             case 36: // 17. индикатив, имперфект, 2 л., мн.ч., +
                 return self::indImperf2Pl($stems[2], $dialect_id);
             case 37: // 18. индикатив, имперфект, 3 л., мн.ч., +
-                return self::indImperf3Pl($stems[0], $stems[2], $stems[6], $dialect_id);
+                return self::indImperf3Pl($stems[2], $dialect_id);
             case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
-                return self::indImperfConnegSg($stems[1], $stems[3], $dialect_id);
+                return self::indImperfConnegSg($stems[3], $dialect_id);
             case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
-                return self::indImperfConnegPl($stems[1], $stems[3], $dialect_id);
+                return self::indImperfConnegPl($stems[3], $dialect_id);
 
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., -
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., -
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., -
-                return Grammatic::interLists($neg_verb, self::indImperfConnegSg($stems[1], $stems[3], $dialect_id));
+                return Grammatic::interLists($neg_verb, self::indImperfConnegSg($stems[3], $dialect_id));
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., -
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., -
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., -
-                return Grammatic::interLists($neg_verb, self::indImperfConnegPl($stems[0], $stems[1], $stems[3], $stems[6], $dialect_id));
+                return Grammatic::interLists($neg_verb, self::indImperfConnegPl($stems[3], $dialect_id));
         }
     }
     
