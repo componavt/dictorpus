@@ -297,7 +297,7 @@ class VepsVerbReflex
         }        
     }
     
-    public static function indImperf3Pl($stem0, $stem2, $dt, $dialect_id){
+    public static function indImperf3Pl($stem2, $dialect_id){
         if (!$stem2) { return ''; }
         
         switch ($dialect_id) {
