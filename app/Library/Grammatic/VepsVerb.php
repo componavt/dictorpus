@@ -578,7 +578,7 @@ class VepsVerb
             case 176: // 137. III инфинитив, элатив 
                 return self::inf3Elat($stems[5], $stems[7], $dialect_id);
             case 177: // 138. III инфинитив, абессив 
-                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 't' : '';
+                return $stems[5] && $stems[7] ? $stems[5]. 'm'. $stems[7]. 'ta' : '';
                 
             case 178: // 139. актив, 1-е причастие 
                 return self::partic1active($stems[1]);
