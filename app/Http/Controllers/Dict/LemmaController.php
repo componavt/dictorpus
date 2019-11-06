@@ -15,7 +15,7 @@ use Response;
 
 //use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
-use App\Library\Grammatic;
+//use App\Library\Grammatic;
 use App\Library\Grammatic\VepsName;
 use App\Models\User;
 
@@ -53,7 +53,8 @@ class LemmaController extends Controller
                                       'editExamples','updateExamples',
                                       'storeSimple', 'tmpUpdateStemAffix',
                                       'createWordform', 'updateWordformFromText',
-                                      'editWordforms','updateWordforms']]);
+                                      'editWordforms','updateWordforms', 'checkWordforms'
+                              ]]);
         
         $this->url_args = Lemma::urlArgs($request);  
         
@@ -878,6 +879,52 @@ class LemmaController extends Controller
         return view('dict.lemma.illative_table',compact('lemmas'));
     }
     
+    public function checkWordforms(Request $request) {
+        $lang_id = 1;
+//dd(PartOfSpeech::getNameIDs());        
+        $parts_of_speech = array_merge(PartOfSpeech::getNameIDs(),[PartOfSpeech::getVerbID()]);
+        $lemmas = [];
+        foreach ($parts_of_speech as $pos_id) {
+            $pos = PartOfSpeech::find($pos_id);
+            $gramset_list = Gramset::getList($pos_id, $lang_id, true);
+            $lemma_coll = Lemma::whereLangId($lang_id)->wherePosId($pos_id)
+                    ->where('lemma', 'like', 'a%')->orderBy('lemma')->take(1)->get();
+//dd ($lemma_coll);           
+            foreach ($lemma_coll as $lemma) {
+    //print "<p>".$lemma->lemma." : ".$lemma->pos->code."</p>";            
+    /*            if (!$lemma->pos->isChangeable()) {
+                    continue;
+                }
+    */            
+                $dialects = $lemma->dialects()->whereNotNull('dialect_id')->get();
+                if (!$dialects) {
+                    continue;
+                }
+                $lemma_dialect = [];
+                foreach ($dialects as $dialect) {
+                    $gramset_wordforms = $lemma->generateWordforms($dialect->id);
+//dd($gramset_wordforms);                    
+                    if (!$gramset_wordforms) {
+                        continue(2);
+                    }
+                    foreach ($gramset_wordforms as $gramset_id=>$new_wordform) {
+                        $old_wordform = $lemma->wordform($gramset_id,$dialect->id);
+                        if ($old_wordform != $new_wordform) {
+                            $lemma_dialect[$dialect->name][$gramset_list[$gramset_id]] = [0=>$old_wordform, 1=>$new_wordform];
+                        }
+                    }
+                }
+//dd($lemma_dialect);                
+                if (sizeof($lemma_dialect)) {
+                    $lemmas[$pos->name][$lemma->id]=['lemma'=>$lemma->lemma, 'dialects'=>$lemma_dialect];
+                }
+            }
+        }
+//dd($lemmas);        
+        return view('dict.lemma.check_wordforms',compact('lemmas'));
+        
+    }
+/*    
     public function tmpUpdateStemAffix() {
 //print "<pre>";        
         $lemmas = Lemma::orderBy('id')->get(); //where('id','>',1)->take(10)

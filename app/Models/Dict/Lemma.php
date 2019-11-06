@@ -1302,6 +1302,15 @@ dd($wordforms);
         return join("\n", $lines);
     }
     
+    public function generateWordforms($dialect_id) {
+        $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
+        $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;
+
+        $stems = $this->getBases($dialect_id);
+//dd($stems);        
+//dd($name_num);     
+        return Grammatic::wordformsByStems($this->lang_id, $this->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+    }
 
     public static function urlArgs($request) {
         $url_args = [

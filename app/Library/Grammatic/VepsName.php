@@ -15,8 +15,8 @@ class VepsName
     /**
      * 0 = nominativ sg
      * 1 = base of genetive sg (genetive sg - 'n')
-     * 2 = partitive sg
-     * 3 = base of illative sg (from stem1)
+     * 2 = base of illative sg (from stem1)
+     * 3 = partitive sg
      * 4 = base of partitive pl (partitive pl - 'd')
      * 5 = null
 
