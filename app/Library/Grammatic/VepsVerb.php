@@ -587,7 +587,7 @@ class VepsVerb
             case 309: // 141. актив, 2-е причастие, мн.ч. 
                 return self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id);
             case 181: // 143. пассив, 2-е причастие 
-                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'ud' : '';
+                return self::partic2passive($stems[0], $stems[6]);
         }
     }
     
@@ -1149,7 +1149,7 @@ class VepsVerb
         $kg = VepsGram::rightConsonant($dt, 'g');
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem0 && $dt ? $stem0. $dt. 'ud' : '';
+                return self::partic2passive($stem0, $dt);
             case 3: // южновепсский 
                 return $stem1 ? $stem1. ', '. $stem1. 'n, '. $stem1. 'nd' : '';
             case 4: // средневепсский восточный 
@@ -1613,5 +1613,11 @@ class VepsVerb
             default:
                 return $stem5 ? $stem5. 'nuded' : '';
         }        
+    }
+    public static function partic2passive($stem0, $dt) {
+        if (!$stem0 || !$dt) {
+            return '';
+        }
+        return $stem0. $stem6. 'ud';
     }
 }
