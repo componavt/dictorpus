@@ -1111,10 +1111,11 @@ dd($wordforms);
             return $lemmas;
         }
 //        return $lemmas->where('lemma','like',$lemma);
+//var_dump (Grammatic::toSearchForm($lemma), $lemma);
         return $lemmas->where(function ($query) use ($lemma) {
                             $query -> where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma))
-                                   -> orWhere('lemma_for_search', 'like', $lemma)
-                                   -> where('lemma_for_search', '');
+                                   -> orWhere('lemma_for_search', 'like', $lemma);
+//                                   -> where('lemma_for_search', '');
                 });
     }
     
