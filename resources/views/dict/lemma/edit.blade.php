@@ -36,9 +36,11 @@
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/lemma.js')!!}
 @stop
 
 @section('jqueryFunc')
+    checkLemmaForm();
     toggleSpecial();
     addMeaning();
     posSelect();
