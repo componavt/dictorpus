@@ -187,7 +187,9 @@ class WordformController extends Controller
         ]);
         
         // LEMMA UPDATING
-        $wordform->wordform = trim($request->wordform);
+        $trim_word = Grammatic::toRightForm($request->wordform);        
+        $wordform->wordform = trim($trim_word);
+        $wordform->wordform_for_search = Grammatic::toSearchForm($trim_word);
         $wordform->save();
         
         return Redirect::to('/dict/wordform/'.($this->args_by_get))
