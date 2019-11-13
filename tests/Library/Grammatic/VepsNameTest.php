@@ -497,3 +497,11 @@ class VepsNameTest extends TestCase
     }
 */    
 }
+
+/**
+ * TODO!!!
+ * написать тесты для неправильных шаблонов
+ * hörm (-ad, -id) (у генетива *n)
+ * homeh (-en, -t) (без указания sg)
+ * kartohk||pudr (-on, oid) (отсутствует тире)
+ */

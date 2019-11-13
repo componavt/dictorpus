@@ -1608,6 +1608,7 @@ class VepsVerb
         switch ($dialect_id) {
             case 1: // северновепсский 
                 return $stem0 && $dt ? $stem0. $dt. 'ud' : '';
+                return '';
             case 3: // южновепсский 
                 return $stem1 ? $stem1. 'n, '. $stem1. 'nd' : '';
             default:
@@ -1618,6 +1619,6 @@ class VepsVerb
         if (!$stem0 || !$dt) {
             return '';
         }
-        return $stem0. $stem6. 'ud';
+        return $stem0. $dt. 'ud';
     }
 }
