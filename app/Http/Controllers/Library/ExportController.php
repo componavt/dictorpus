@@ -67,6 +67,7 @@ class ExportController extends Controller
     public function exportLemmasToUniMorph() {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
+        $dir_name = "export/unimorph/2019-11/";
         $date = Carbon::now();
         $date_now = $date->toDateString();
         
@@ -75,7 +76,7 @@ class ExportController extends Controller
             $lang = Lang::find($lang_id);
             $dialects = Dialect::where('lang_id',$lang_id)->get();
             foreach ($dialects as $dialect) {
-                $filename = 'export/unimorph/vepkar-'.$date_now.'-'.$dialect->code.'.txt';
+                $filename = $dir_name.'vepkar-'.$date_now.'-'.$dialect->code.'.txt';
                 $lemmas = Lemma::where('lang_id',$lang_id)
     //                    ->where('id',1416)
     //                    ->take(100)
