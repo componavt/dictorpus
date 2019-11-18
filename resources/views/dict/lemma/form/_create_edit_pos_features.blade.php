@@ -31,5 +31,9 @@
         @include('widgets.form.formitem._select_for_field', 
                 ['name' => 'degree', 
                  'lang_file'=> 'dict'])
+                 
+        @include('widgets.form.formitem._select_for_field', 
+                ['name' => 'comptype', 
+                 'lang_file'=> 'dict'])
 @endif                 
 

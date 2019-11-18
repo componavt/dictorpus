@@ -951,3 +951,5 @@ select lemma_id from lemma_bases where base_n=3 and lemma_id in (select id from 
 
 delete from lemma_bases where base_n=2 and lemma_id in (select id from lemmas where lang_id=1 and pos_id in (1,5,6,10,14,20)) and (base like '%d' or base like '%t');
 delete from lemma_bases where base_n=3 and lemma_id in (select id from lemmas where lang_id=1 and pos_id in (1,5,6,10,14,20)) and base not like '%d' and base not like '%t';
+
+-- php artisan make:migration add_field_comptype_in_lemma_features_table

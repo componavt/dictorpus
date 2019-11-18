@@ -13,7 +13,7 @@ class LemmaFeature extends Model
     public $timestamps = false;
     public $incrementing=false;
     protected $fillable = ['id','animacy','abbr','number','reflexive',
-        'transitive','prontype_id','numtype_id','degree_id','advtype_id'];
+        'transitive','prontype_id','numtype_id','degree_id','advtype_id', 'comptype_id'];
     public $featuresByPOS = [1  => ['degree_id'],                   // adjective
                              2  => ['advtype_id', 'degree_id'],     // adverb
                              5  => ['animacy', 'abbr', 'number'], // noun
@@ -21,6 +21,7 @@ class LemmaFeature extends Model
                              10 => ['prontype_id', 'number'],                 // pronoun
                              11 => ['reflexive', 'transitive'],     // verb                             
                              14 => ['animacy', 'abbr', 'number'], // proper noun
+                             19 => ['comptype_id'], // phrases
                             ];
     public $feas_conll_codes = [
         'animacy'    => [1 => 'Animacy=Anim',
@@ -100,6 +101,7 @@ class LemmaFeature extends Model
         public function allowFeatures() {
 //dd($this->lemma);        
         $pos_id = $this->lemma->pos_id;
+//dd($pos_id);        
         if (isset($this->featuresByPOS[$pos_id])) {
             return $this->featuresByPOS[$pos_id];
         } 
@@ -164,6 +166,7 @@ class LemmaFeature extends Model
                 continue;
             }
 //print "<p>". $field;           
+//dd($lemma_feature->isAllowFeature('comptype_id'));            
             if (isset($features[$field]) && $lemma_feature->isAllowFeature($field)) {
                 $lemma_feature->$field = $features[$field];
             } else {

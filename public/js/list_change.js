@@ -28,6 +28,7 @@ function posSelect(is_full_form=true) {
                     $("#degree-field").show().prop("disabled", false);
                 } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
                     $("#phrase-field").show().prop("disabled", false);
+                    $("#comptype-field").show().prop("disabled", false);
                 }
             }
           })
