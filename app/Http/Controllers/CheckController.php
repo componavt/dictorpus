@@ -61,18 +61,17 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
                            ->where('dialect_id',$dialect_id)
                            ->orderBy('lemma')->get();
             foreach ($lemma_coll as $lemma): 
-                $lemma_wordforms=[
-                    'lemma' => $lemma->lemma,
-                    'gen_sg' => '',
-                    'ill_sg' => ['old'=>$lemma->wordform($gramset_ill_sg, $dialect_id),'new'=>''],
-                    'term_sg' => ['old'=>$lemma->wordform($gramset_term_sg, $dialect_id),'new'=>''],
-                    'add_sg' => ['old'=>$lemma->wordform($gramset_add_sg, $dialect_id),'new'=>''],
-                    ];
                 $gen_wordform = Wordform::find($lemma->wordform_id);
                 if (!$gen_wordform) {
                     continue;
                 }
-                $lemma_wordforms['gen_sg'] = $gen_wordform->wordform;
+                $lemma_wordforms=[
+                    'lemma' => $lemma->lemma,
+                    'gen_sg' => $gen_wordform->wordform,
+                    'ill_sg' => ['old'=>$lemma->wordform($gramset_ill_sg, $dialect_id),'new'=>''],
+                    'term_sg' => ['old'=>$lemma->wordform($gramset_term_sg, $dialect_id),'new'=>''],
+                    'add_sg' => ['old'=>$lemma->wordform($gramset_add_sg, $dialect_id),'new'=>''],
+                    ];
                 if (!preg_match("/^(.+)n$/", $lemma_wordforms['gen_sg'], $regs)) {
                     continue;
                 }
@@ -80,7 +79,28 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
                 $lemma_wordforms['ill_sg']['new'] = VepsName::wordformByStems($stems, $gramset_ill_sg, $dialect_id);
                 $lemma_wordforms['term_sg']['new'] = VepsName::wordformByStems($stems, $gramset_term_sg, $dialect_id);
                 $lemma_wordforms['add_sg']['new'] = VepsName::wordformByStems($stems, $gramset_add_sg, $dialect_id);
-                $lemmas[$pos->name][$lemma->id] = $lemma_wordforms;
+                
+                if ($lemma_wordforms['ill_sg']['new'] != $lemma_wordforms['ill_sg']['old']) {
+                    $lemma->deleteWordforms($gramset_ill_sg, $dialect_id);
+                    $lemma->addWordforms($lemma_wordforms['ill_sg']['new'], $gramset_ill_sg, $dialect_id);
+                    $lemma_wordforms['ill_sg']['old'] = $lemma->wordform($gramset_ill_sg, $dialect_id);
+                }
+                if ($lemma_wordforms['term_sg']['new'] != $lemma_wordforms['term_sg']['old']) {
+                    $lemma->deleteWordforms($gramset_term_sg, $dialect_id);
+                    $lemma->addWordforms($lemma_wordforms['term_sg']['new'], $gramset_term_sg, $dialect_id);
+                    $lemma_wordforms['term_sg']['old'] = $lemma->wordform($gramset_term_sg, $dialect_id);
+                }
+                if ($lemma_wordforms['add_sg']['new'] != $lemma_wordforms['add_sg']['old']) {
+                    $lemma->deleteWordforms($gramset_add_sg, $dialect_id);
+                    $lemma->addWordforms($lemma_wordforms['add_sg']['new'], $gramset_add_sg, $dialect_id);
+                    $lemma_wordforms['add_sg']['old'] = $lemma->wordform($gramset_add_sg, $dialect_id);
+                }
+
+                if ($lemma_wordforms['ill_sg']['new'] != $lemma_wordforms['ill_sg']['old'] ||
+                    $lemma_wordforms['term_sg']['new'] != $lemma_wordforms['term_sg']['old'] || 
+                    $lemma_wordforms['add_sg']['new'] != $lemma_wordforms['add_sg']['old']) {
+                        $lemmas[$pos->name][$lemma->id] = $lemma_wordforms;
+                }
             endforeach; 
         }
 //dd($lemmas);        
