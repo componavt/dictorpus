@@ -51,6 +51,7 @@ return [
     'to' => 'на',
     'total' => 'всего',
     'translation' => 'Перевод',
+    'type' => 'Тип',
     'updated_success' => 'Обновление завершено',
     'view' => 'показать',
 ];

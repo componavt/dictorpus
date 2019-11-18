@@ -33,6 +33,7 @@
                 <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
+                <th>{{ trans('messages.type') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
                 @if (User::checkAccess('dict.edit'))
@@ -47,6 +48,11 @@
                 <td data-th="{{ trans('dict.lang') }}">
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
+                    @endif
+                </td>
+                <td data-th="{{ trans('messages.type') }}">
+                    @if($lemma->features && $lemma->features->comptype_id)
+                        {{$lemma->features->comptype_id}}
                     @endif
                 </td>
                 <td data-th="{{ trans('dict.interpretation') }}">
