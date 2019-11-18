@@ -74,6 +74,29 @@ Route::group(
 
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
+
+        Route::get('check/addCompTypeToPhrases', 'CheckController@addCompTypeToPhrases');
+        Route::get('check/illative_table', 'CheckController@illativeTable');       
+        Route::get('check/wordforms', 'CheckController@checkWordforms');
+//        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
+//        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
+//        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 
+//        Route::get('dict/gramset/tempInsertGramsetsForReflexive', 'Dict\GramsetController@tempInsertGramsetsForReflexive');       
+//        Route::get('dict/gramset/tempInsertGramsetPosLang', 'Dict\GramsetController@tempInsertGramsetPosLang');       
+//        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');       
+//        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
+//        Route::get('dict/lemma/meaning/meaning_text/tempJoinMeaningText', 'Dict\MeaningTextController@tempJoinMeaningText');        
+//        Route::get('dict/lemma/wordform/tempInsertVepsianWordform', 'Dict\WordformController@tempInsertVepsianWordform');
+//        Route::get('corpus/source/tempInsertVepsianSource', 'Corpus\SourceController@tempInsertVepsianSource');
+//        Route::get('corpus/place/tempInsertVepsianPlace', 'Corpus\PlaceController@tempInsertVepsianPlace');
+//        Route::get('corpus/informant/tempInsertVepsianInformant', 'Corpus\InformantController@tempInsertVepsianInformant');
+//        Route::get('corpus/recorder/tempInsertVepsianRecorder', 'Corpus\RecorderController@tempInsertVepsianRecorder');
+//        Route::get('corpus/text/tempInsertVepsianText', 'Corpus\TextController@tempInsertVepsianText');
+//        Route::get('corpus/text/tempInsertVepsianDialectText', 'Corpus\TextController@tempInsertVepsianDialectText');
+//        Route::get('corpus/text/tempInsertVepsianGenreText', 'Corpus\TextController@tempInsertVepsianGenreText');
+//        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
+//        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
+//        Route::get('corpus/text/tmpProcessOldLetters', 'Corpus\TextController@tmpProcessOldLetters');
         
         Route::get('corpus/text/add/example/{example_id}', 'Corpus\TextController@addExample');
 /*        Route::get('corpus/corpus/list', 'Corpus\CorpusController@corpusList');*/
@@ -102,7 +125,6 @@ Route::group(
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');
         
-        Route::get('dict/lemma/check_wordforms', 'Dict\LemmaController@checkWordforms');
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
@@ -116,9 +138,6 @@ Route::group(
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
-//        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
-//        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
-//        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 
         
         Route::put('dict/lemma_wordform/{id}', 'Dict\LemmaWordformController@update')
                         ->name('lemma_wordform.update');
@@ -148,25 +167,8 @@ Route::group(
         Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
         Route::get('dict/wordform/tmpFixNegativeVepsVerbForms', 'Dict\WordformController@tmpFixNegativeVepsVerbForms');
       
-        Route::get('dict/lemma/illative_table', 'Dict\LemmaController@illativeTable');       
-//        Route::get('dict/gramset/tempInsertGramsetsForReflexive', 'Dict\GramsetController@tempInsertGramsetsForReflexive');       
-//        Route::get('dict/gramset/tempInsertGramsetPosLang', 'Dict\GramsetController@tempInsertGramsetPosLang');       
-//        Route::get('dict/lemma/tempInsertVepsianLemmas', 'Dict\LemmaController@tempInsertVepsianLemmas');       
-//        Route::get('dict/lemma/meaning/tempInsertVepsianMeanings', 'Dict\MeaningController@tempInsertVepsianMeanings');
-//        Route::get('dict/lemma/meaning/meaning_text/tempJoinMeaningText', 'Dict\MeaningTextController@tempJoinMeaningText');        
-//        Route::get('dict/lemma/wordform/tempInsertVepsianWordform', 'Dict\WordformController@tempInsertVepsianWordform');
-//        Route::get('corpus/source/tempInsertVepsianSource', 'Corpus\SourceController@tempInsertVepsianSource');
-//        Route::get('corpus/place/tempInsertVepsianPlace', 'Corpus\PlaceController@tempInsertVepsianPlace');
-//        Route::get('corpus/informant/tempInsertVepsianInformant', 'Corpus\InformantController@tempInsertVepsianInformant');
-//        Route::get('corpus/recorder/tempInsertVepsianRecorder', 'Corpus\RecorderController@tempInsertVepsianRecorder');
-//        Route::get('corpus/text/tempInsertVepsianText', 'Corpus\TextController@tempInsertVepsianText');
-//        Route::get('corpus/text/tempInsertVepsianDialectText', 'Corpus\TextController@tempInsertVepsianDialectText');
-//        Route::get('corpus/text/tempInsertVepsianGenreText', 'Corpus\TextController@tempInsertVepsianGenreText');
         Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
-//        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
-//        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
-//        Route::get('corpus/text/tmpProcessOldLetters', 'Corpus\TextController@tmpProcessOldLetters');
         Route::get('corpus/video', 'Corpus\VideoController@index');
         
         Route::get('export/conll', 'Library\ExportController@exportTextsToCONLL');        
