@@ -93,9 +93,50 @@ class ExportController extends Controller
                         Storage::disk('public')->append($filename, $line);
                     }
                 }
-                print  '<p><a href="'.Storage::url($filename).'">'.$dialect->name_en.'</a>';            
+                if ($count) {
+                    print  '<p><a href="'.Storage::url($filename).'">'.$dialect->name_en.'</a>';            
+                }
             }
 //        }      
+    }
+
+    /*
+     * vepkar-20190129-vep
+     */
+    public function exportCompoundsToUniMorph() {
+//        ini_set('max_execution_time', 7200);
+//        ini_set('memory_limit', '512M');
+        $dir_name = "export/unimorph/2019-11/";
+        $date = Carbon::now();
+        $date_now = $date->toDateString();
+        
+        foreach ([4, 5, 6, 1] as $lang_id) {
+//            $lang_id = 1;
+            $lang = Lang::find($lang_id);
+            $filename = $dir_name.'vepkar-'.$date_now.'-'.$lang->code.'_compounds.txt';
+
+            $lemmas = Lemma::where('lang_id',$lang_id)
+                           ->where('pos_id', PartOfSpeech::getPhraseID())
+//                    ->where('id',1416)
+//                    ->take(100)
+                    ->orderBy('lemma')
+                    ->get();
+            $count = 0;
+            foreach ($lemmas as $lemma) {
+                $line = $lemma->compoundToUniMorph();
+                if ($line) {
+                    $count++;
+                    if ($count==1) {
+                        Storage::disk('public')->put($filename, $line); 
+                    } else {
+                        Storage::disk('public')->append($filename, $line);
+                    }
+                }
+            }
+            if ($count) {
+                print  '<p><a href="'.Storage::url($filename).'">'.$lang->name_en.'</a>';  
+            }
+        }      
     }
 
     /*

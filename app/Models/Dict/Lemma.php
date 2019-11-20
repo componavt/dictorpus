@@ -1205,7 +1205,7 @@ dd($wordforms);
      * Stores relations with array of wordform (without gramsets изначально) and create Wordform if is not exists
      * 
      * @param array $wordforms array of wordforms with pairs "id of gramset - wordform"
-     * @param Lemma $lemma_id object of lemma
+     * @param Int $dialect_id 
      * 
      * @return NULL
      */
@@ -1301,6 +1301,21 @@ dd($wordforms);
             $lines[] = $this->lemma."\t".$wordform->wordform."\t".join(';',$features);
         }
         return join("\n", $lines);
+    }
+    
+    public function compoundToUniMorph() {
+        if ($this->features && $this->features->comptype_id) {
+            $comptype = $this->features->comptype_id;
+        } else {
+            $comptype = '';
+        }
+        $lemmas = $this->phraseLemmas;
+        if (!$lemmas) { return false; }
+        $tmp = [];
+        foreach ($lemmas as $lemma) {
+            $tmp[] = $lemma->lemma;
+        }
+        return $this->lemma. "\t$comptype\t". join(";", $tmp);
     }
     
     public function generateWordforms($dialect_id) {

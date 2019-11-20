@@ -171,11 +171,12 @@ Route::group(
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
         Route::get('corpus/video', 'Corpus\VideoController@index');
         
+        Route::get('export/compounds_for_unimorph', 'Library\ExportController@exportCompoundsToUniMorph'); 
         Route::get('export/conll', 'Library\ExportController@exportTextsToCONLL');        
         Route::get('export/conll/annotation', 'Library\ExportController@exportAnnotationConll'); 
+        Route::get('export/lemma_with_pos', 'Library\ExportController@exportLemmasWithPOS');
         Route::get('export/sentences', 'Library\ExportController@exportSentencesToLines');                
         Route::get('export/unimorph', 'Library\ExportController@exportLemmasToUniMorph'); 
-        Route::get('export/lemma_with_pos', 'Library\ExportController@exportLemmasWithPOS');
 
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
         
