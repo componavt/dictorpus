@@ -941,6 +941,27 @@ select lang_id, count(*) from texts where created_at > '2019-01-01 00:00:00' and
 select count(*) from lemmas where created_at > '2019-01-01 00:00:00' and created_at < '2019-11-01 00:00:00';
 select lang_id, count(*) from lemmas where created_at > '2019-01-01 00:00:00' and created_at < '2019-11-01 00:00:00' group by lang_id;
 
+select count(*) from texts where created_at > '2019-01-01 00:00:00';
+22-11-2019: 668
+select lang_id, count(*) from texts where created_at > '2019-01-01 00:00:00' group by lang_id;
+1: 190
+4: 255
+5: 173
+6: 50
+select count(*) from lemmas where created_at > '2019-01-01 00:00:00';
+22-11-2019: 9460
+select lang_id, count(*) from lemmas where created_at > '2019-01-01 00:00:00' group by lang_id;
+1: 5266
+4: 2886
+5: 712
+6: 596
+
+select count(*) from lemma_wordform where lemma_id in (select id from lemmas where lang_id=4);
+lang=1: 29-12-2018: 10820; 22-11-2019: 329381;  (318561)
+lang=4: 29-12-2018: 545; 22-11-2019: 127934;    (127389)
+lang=5: 29-12-2018: 61337; 22-11-2019: 63847;   (2510)
+lang=6: 29-12-2018: 371; 22-11-2019: 452;       (81)
+
 --php artisan make:test Models\Library\Grammatic\VepsVerbReflexTest
 
  select count(*) from lemma_bases where base_n=2 and lemma_id in (select id from lemmas where lang_id=1 and pos_id in (1,5,6,10,14,20)) and (base like '%d' or base like '%t');
