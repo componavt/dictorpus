@@ -5,6 +5,10 @@
 {{ trans('navigation.lemmas') }}
 @stop
 
+@section('headExtra')
+    {!!Html::style('css/history.css')!!}
+@stop
+
 @section('body')
     @foreach ($lemmas as $pos_name=>$lemmas_pos)
     <h3>{{$pos_name}}</h3>
@@ -18,6 +22,7 @@
             <td>{{$gramset_name}}</td>
             <td>{{$wordforms[0]}}</td>
             <td>{{$wordforms[1]}}</td>
+            <td>{!!$wordforms[2]!!}</td>
         </tr>
                 @endforeach
             @endforeach

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Caxy\HtmlDiff\HtmlDiff;
+use Caxy\HtmlDiff\HtmlDiffConfig;
 
 use App\Library\Grammatic\VepsName;
 
@@ -114,15 +116,16 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
      * @return type
      */
     public function checkWordforms(Request $request) {
+        $diffConfig = new HtmlDiffConfig();
         $lang_id = 1;
-//dd(PartOfSpeech::getNameIDs());        
-        $parts_of_speech = array_merge(PartOfSpeech::getNameIDs(),[PartOfSpeech::getVerbID()]);
+//        $parts_of_speech = array_merge(PartOfSpeech::getNameIDs(),[PartOfSpeech::getVerbID()]);
         $lemmas = [];
-        foreach ($parts_of_speech as $pos_id) {
+  //      foreach ($parts_of_speech as $pos_id) {
+        $pos_id=11;
             $pos = PartOfSpeech::find($pos_id);
             $gramset_list = Gramset::getList($pos_id, $lang_id, true);
             $lemma_coll = Lemma::whereLangId($lang_id)->wherePosId($pos_id)
-                    ->where('lemma', 'like', 'a%')->orderBy('lemma')->take(10)->get();
+                    ->where('lemma', 'like', 'a%')->orderBy('lemma')->take(1)->get();
 //dd ($lemma_coll);           
             foreach ($lemma_coll as $lemma) {
     //print "<p>".$lemma->lemma." : ".$lemma->pos->code."</p>";            
@@ -143,8 +146,11 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
                     }
                     foreach ($gramset_wordforms as $gramset_id=>$new_wordform) {
                         $old_wordform = $lemma->wordform($gramset_id,$dialect->id);
-                        if ($old_wordform != $new_wordform) {
-                            $lemma_dialect[$dialect->name][$gramset_list[$gramset_id]] = [0=>$old_wordform, 1=>$new_wordform];
+                        
+                        if (trim($old_wordform) != trim($new_wordform)) {
+                            $htmlDiff = HtmlDiff::create($old_wordform, $new_wordform,$diffConfig);
+//dd($htmlDiff);
+                            $lemma_dialect[$dialect->name][$gramset_list[$gramset_id]] = [0=>$old_wordform, 1=>$new_wordform, 2=>$htmlDiff->build()];
                         }
                     }
                 }
@@ -153,7 +159,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
                     $lemmas[$pos->name][$lemma->id]=['lemma'=>$lemma->lemma, 'dialects'=>$lemma_dialect];
                 }
             }
-        }
+        //}
 //dd($lemmas);        
         return view('dict.lemma.check_wordforms',compact('lemmas'));
         
