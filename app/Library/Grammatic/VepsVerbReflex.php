@@ -71,11 +71,11 @@ class VepsVerbReflex
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., -
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., -
             case 72: // 9. индикатив, презенс, 3 л., ед.ч., -
-                return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'e' : '';
+                return $stems[0] && $stems[6] ? $neg_verb. ' '. $stems[0]. $stems[6]. 'e' : '';
             case 73: //10. индикатив, презенс, 1 л., мн.ч., -
             case 78: // 11. индикатив, презенс, 2 л., мн.ч., -
             case 79: // 12. индикатив, презенс, 3 л., мн.ч., -
-                return $stems[0] ? $neg_verb. self::indPresConnegPl($stems[0], $stems[1], $stems[6], $dialect_id) : '';
+                return $stems[0] ? $neg_verb. ' '. self::indPresConnegPl($stems[0], $stems[1], $stems[6], $dialect_id) : '';
         }
     }
     
@@ -415,12 +415,12 @@ class VepsVerbReflex
                 return self::imperConnegPl($stems[0], $stems[6], $dialect_id);
  
             case 50: // 54. императив, 2 л., ед.ч., - 
-                return $neg_verb. self::imperConnegSg($stems[0], $stems[6]);
+                return $neg_verb. ' '. self::imperConnegSg($stems[0], $stems[6]);
             case 74: // 55. императив, 3 л., ед.ч., -                 
             case 75: // 56. императив, 1 л., мн.ч., - 
             case 76: // 57. императив, 2 л., мн.ч., - 
             case 77: // 58. императив, 3 л., мн.ч., - 
-                return $neg_verb. self::imperConnegPl($stems[0], $stems[6], $dialect_id);
+                return $neg_verb. ' '. self::imperConnegPl($stems[0], $stems[6], $dialect_id);
         }
     }
     
@@ -540,11 +540,11 @@ class VepsVerbReflex
             case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
             case 111: // 66. кондиционал, презенс, 2 л., ед.ч., отр. 
             case 112: // 67. кондиционал, презенс, 3 л., ед.ч., отр. 
-                return $stems[4] ? $neg_verb. $stems[4] . 'ižihe' : '';
+                return $stems[4] ? $neg_verb. ' '. $stems[4] . 'ižihe' : '';
             case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
             case 114: // 69. кондиционал, презенс, 2 л., мн.ч., отр. 
             case 115: // 70. кондиционал, презенс, 3 л., мн.ч., отр. 
-                return $stems[4] ? $neg_verb. self::condPresConPl($stems[4], $dialect_id) : ''; 
+                return $stems[4] ? $neg_verb. ' '. self::condPresConPl($stems[4], $dialect_id) : ''; 
         }
     }
     
