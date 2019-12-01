@@ -81,7 +81,7 @@ class ExportController extends Controller
         }
 
         foreach ([4, 5, 6, 1] as $lang_id) {
-            Export::lemmasToUnimorph($lang_id);
+            Export::lemmasToUnimorph($lang_id, $dir_name, $date_now);
         }      
     }
 
