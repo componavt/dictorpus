@@ -394,12 +394,11 @@ class VepsVerbReflex
     }
     
     public static function wordformByStemsImper($stems, $gramset_id, $dialect_id) {
-        $g = VepsGram::rightConsonant($stems[6], 'g');
         $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
 
         switch ($gramset_id) {
             case 51: // 49. императив, 2 л., ед.ч., + 
-                return self::imper2Sg($stems[0], $stems[6], $dialect_id);
+                return self::imper2Sg($stems[0], $dialect_id);
             case 52: // 50. императив, 3 л., ед.ч., + 
                 return self::imper3Sg($stems[0], $stems[6], $stems[8], $dialect_id);
             case 53: // 51. императив, 1 л., мн.ч., + 
@@ -424,7 +423,7 @@ class VepsVerbReflex
         }
     }
     
-    public static function imper2Sg($stem0, $dt, $dialect_id){
+    public static function imper2Sg($stem0, $dialect_id){
         if (!$stem0) { return ''; }
 
         switch ($dialect_id) {
@@ -787,15 +786,13 @@ class VepsVerbReflex
             case 3: // южновепсский 
                 return $stem4. 'nižihoo';
             case 5: // средневепсский западный 
-                return $stem3. 'nuižihezoiš';
+                return $stem4. 'nuižihezoiš';
             default:
                 return $stem4. 'nuižihe';
         }        
     }
     
     public static function wordformByStemsInf($stems, $gramset_id, $dialect_id) {
-        $neg_verb = VepsVerb::negVerb($gramset_id, $dialect_id);
-        
         switch ($gramset_id) {                
             case 170: // 131. I инфинитив 
                 return self::inf1($stems[0], $stems[6], $stems[7], $dialect_id);
