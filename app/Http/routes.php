@@ -58,6 +58,9 @@ Route::group(
         Route::get('/grants', function () {
             return view('page.grants');
         });
+        Route::get('/help/text/show', function () {
+            return view('help.text.show');
+        });
         Route::get('/participants', function () {
             return view('page.participants');
         });
@@ -67,11 +70,11 @@ Route::group(
         Route::get('/permission', function () {
             return view('page.permission');
         });
-        
-        Route::get('/help/text/show', function () {
-            return view('help.text.show');
+        Route::get('/service', function () {
+            return view('page.service');
         });
 
+        
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
 

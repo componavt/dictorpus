@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use Storage;
 use Carbon\Carbon;
 
+use App\Library\Export;
+
 use App\Models\Corpus\Text;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gram;
@@ -64,40 +66,23 @@ class ExportController extends Controller
     /*
      * vepkar-20190129-vep
      */
-    public function exportLemmasToUniMorph() {
+    public function exportLemmasToUniMorph(Request $request) {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         $dir_name = "export/unimorph/2019-11/";
         $date = Carbon::now();
         $date_now = $date->toDateString();
         
-//        foreach ([4, 5, 6, 1] as $lang_id) {
-            $lang_id = 6;
-            $lang = Lang::find($lang_id);
-            $dialects = Dialect::where('lang_id',$lang_id)->get();
-            foreach ($dialects as $dialect) {
-                $filename = $dir_name.'vepkar-'.$date_now.'-'.$dialect->code.'.txt';
-                $lemmas = Lemma::where('lang_id',$lang_id)
-    //                    ->where('id',1416)
-    //                    ->take(100)
-                        ->orderBy('lemma')
-                        ->get();
-                $count = 0;
-                foreach ($lemmas as $lemma) {
-                    $line = $lemma->toUniMorph($dialect->id);
-                    if ($line) {
-                        $count++;
-                        if ($count==1) {
-                            Storage::disk('public')->put($filename, "# ".$lang->name_en.': '.$dialect->name_en);                            
-                        }
-                        Storage::disk('public')->append($filename, $line);
-                    }
-                }
-                if ($count) {
-                    print  '<p><a href="'.Storage::url($filename).'">'.$dialect->name_en.'</a>';            
-                }
-            }
-//        }      
+        $lang_id = (int)$request->input('search_lang');
+        
+        if ($lang_id) {
+            Export::lemmasToUnimorph($lang_id, $dir_name, $date_now);
+            return;
+        }
+
+        foreach ([4, 5, 6, 1] as $lang_id) {
+            Export::lemmasToUnimorph($lang_id);
+        }      
     }
 
     /*

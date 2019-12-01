@@ -47,6 +47,7 @@ return [
     'reverse_dictionary' => 'Обратный словарь лемм',
     'reverse_dictionary_wordform' => 'Обратный словарь словоформ',
     'roles' => 'Роли',
+    'service' => 'Служебное',
     'stats' => 'Статистика',
     'text_frequency' => 'Частота символов в текстах',
     'texts' => 'Тексты',

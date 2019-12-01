@@ -47,6 +47,7 @@ return [
     'reverse_dictionary' => 'Lemma reverse dictionary',
     'reverse_dictionary_wordform' => 'Wordform reverse dictionary',
     'roles' => 'Roles',
+    'service' => 'Service',
     'stats' => 'Statistics',
     'text_frequency' => 'Frequency of symbols in texts',
     'texts' => 'Texts',
