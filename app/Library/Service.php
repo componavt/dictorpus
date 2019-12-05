@@ -26,7 +26,7 @@ class Service
                                });
                        })
                        //->count();
-                       ->orderBy('id')->take(10)
+                       ->orderBy('id')//->take(10)
 //                       ->whereId(17)        
                        ->get(); 
 //dd($lemmas);                     
