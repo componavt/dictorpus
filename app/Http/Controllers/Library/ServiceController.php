@@ -1,21 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Controllers\Controller;
 use Caxy\HtmlDiff\HtmlDiff;
 use Caxy\HtmlDiff\HtmlDiffConfig;
 
 use App\Library\Grammatic\VepsName;
+use App\Library\Service;
 
 use App\Models\Dict\Gramset;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
-class CheckController extends Controller
+class ServiceController extends Controller
 {
      /**
      * Instantiate a new new controller instance.
@@ -28,6 +31,17 @@ class CheckController extends Controller
         $this->middleware('auth:admin,/');
     }
     
+    public function index() {
+        $langs = [];
+        foreach (Lang::projectLangIDs() as $l_id) {
+            $langs[$l_id]['name']=Lang::getNameById($l_id);
+            $langs[$l_id]['affix_count'] = number_format(Wordform::countWithoutAffixes($l_id), 0, ',', ' ');
+        }
+        
+        return view('page.service')
+                ->with(['langs' => $langs]);
+        
+    }
     public function addCompTypeToPhrases() {
         $lemmas = Lemma::where('pos_id', PartOfSpeech::getPhraseID())->orderBy('lemma')->get();
         foreach ($lemmas as $lemma) {
@@ -163,6 +177,19 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
 //dd($lemmas);        
         return view('dict.lemma.check_wordforms',compact('lemmas'));
         
+    }
+    
+    function addWordformAffixes(Request $request) {
+        $lang_id = (int)$request->input('search_lang');
+        
+        if ($lang_id) {
+            Service::addWordformAffixesForLang($lang_id);
+            return;
+        }
+
+        foreach (Lang::projectLangIDs() as $lang_id) {
+            Service::addWordformAffixesForLang($lang_id);
+        }      
     }
 /*    
     public function tmpUpdateStemAffix() {

@@ -109,5 +109,5 @@ class HomeController extends Controller
                         'total_marked_words' => number_format($total_marked_words, 0, ',', ' '),
                         'total_users' => number_format($total_users, 0, ',', ' '),
                        ]);
-    }
+    }    
 }

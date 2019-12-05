@@ -179,6 +179,18 @@ class Wordform extends Model
             return true;
         }        
     }
+    
+    public function updateAffix($lemma_id, $gramset_id, $affix) {
+        DB::statement("UPDATE lemma_wordform SET affix='".$affix."' WHERE wordform_id='". $this->id. "' AND lemma_id='$lemma_id' AND gramset_id='$gramset_id'");
+/*        $lws = LemmaWordform::where('wordform_id', $this->id)
+                            ->where('lemma_id', $lemma_id)
+                            ->where('gramset_id', $gramset_id)->get();
+        foreach ($lws as $wordform) {
+            $wordform->affix = $affix;
+            $wordform ->save();
+        }*/
+    }
+    
     /**
      * called for the wordforms which contains white spaces (many-word wordforms)
      * search for words in the text following in the same sequence as in the wordform
@@ -271,15 +283,11 @@ class Wordform extends Model
     }
 
     public static function countByLang($lang_id) {
-        return DB::table('lemma_wordform')
-                     ->whereIn('lemma_id',function($q) use ($lang_id){
-                         $q->select('id')->from('lemmas')
-                           ->where('lang_id', $lang_id);
-                     })->count();
+        return LemmaWordform::selectWhereLang($lang_id)->count();
         
     }
     
-    static public function findOrCreate($word) {
+    public static function findOrCreate($word) {
         $wordform = self::firstOrCreate(['wordform'=>$word]);
         $wordform_for_search = Grammatic::toSearchForm($word);
         if ($wordform->wordform_for_search != $wordform_for_search) {
@@ -288,4 +296,15 @@ class Wordform extends Model
         }        
         return $wordform;
     }
+    
+    public static function countWithoutAffixes($lang_id) {
+        return LemmaWordform::selectWhereLang($lang_id)
+                ->whereNull('affix')
+                ->whereIn('wordform_id',function($query){
+                          $query->select('id')->from('wordforms')
+                                ->where('wordform','NOT LIKE','% %');
+                  })
+                ->count();        
+    }
+    
 }

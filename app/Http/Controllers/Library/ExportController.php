@@ -80,7 +80,7 @@ class ExportController extends Controller
             return;
         }
 
-        foreach ([4, 5, 6, 1] as $lang_id) {
+        foreach (Lang::projectLangIDs() as $lang_id) {
             Export::lemmasToUnimorph($lang_id, $dir_name, $date_now);
         }      
     }

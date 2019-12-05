@@ -976,3 +976,5 @@ delete from lemma_bases where base_n=3 and lemma_id in (select id from lemmas wh
 -- php artisan make:migration add_field_comptype_in_lemma_features_table
 
 -- php artisan make:controller CheckController
+
+-- php artisan make:migration add_field_affix_in_lemma_wordform_table

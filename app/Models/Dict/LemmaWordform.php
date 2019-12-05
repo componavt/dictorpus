@@ -4,6 +4,8 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 
+use DB;
+
 class LemmaWordform extends Model
 {
     protected $table = 'lemma_wordform';
@@ -30,4 +32,12 @@ class LemmaWordform extends Model
     
  * 
  */
+    public static function selectWhereLang($lang_id) {
+        return DB::table('lemma_wordform')
+                     ->whereIn('lemma_id',function($q) use ($lang_id){
+                         $q->select('id')->from('lemmas')
+                           ->where('lang_id', $lang_id);
+                     });        
+    }
+    
 }
