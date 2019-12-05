@@ -32,7 +32,9 @@ class Service
 //dd($lemmas);                     
         foreach ($lemmas as $lemma) {
             list($stem, $affix) = $lemma->getStemAffix();
-            if (!$stem) { continue; }
+            if (!$stem) { 
+print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> - WRONG STEM</p>';                
+                continue; }
             
             $wordforms = $lemma->wordforms()->where('wordform','NOT LIKE','% %')->whereNull('affix')->whereNotNull('gramset_id')->get();
 //dd($lemma);
