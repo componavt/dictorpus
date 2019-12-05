@@ -90,6 +90,7 @@ class Wordform extends Model
         $gramset = Gramset::find($gramset_id);
         return $gramset;
     }
+    
     /**
      * Store wordform in nominative for nouns (NOUN), adjectives(ADJ)
      * and infinitive for verbs (VERB)
@@ -100,6 +101,7 @@ class Wordform extends Model
     public static function storeInitialWordforms($lemma) {
 //dd($lemma);
         $pos_code = $lemma->pos->code;
+        $affix = $lemma->reverseLemma->affix;
 //dd($pos_code); 
         $dialects = array_keys(Dialect::getList($lemma->lang_id));
 //dd($dialects);        
@@ -116,7 +118,7 @@ class Wordform extends Model
 //dd($wordform_obj);            
             foreach ($dialects as $dialect_id) {
 //dd($dialect_id);                
-                $lemma-> wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                
+                $lemma->wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix'=>$affix]);                
             }
         }
     }

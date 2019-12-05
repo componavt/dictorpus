@@ -965,7 +965,7 @@ dd($wordforms);
             'affix' => $affix]);
     }
     
-    public function addWordformGramsetDialect($wordform_id, $gramset_id, $dialect_id) {
+    public function addWordformGramsetDialect($wordform_id, $gramset_id, $dialect_id, $affix) {
         $query = "DELETE FROM lemma_wordform WHERE lemma_id=".$this->id
             . " and wordform_id=".$wordform_id." and gramset_id";
 //print "<p>$query";            
@@ -983,8 +983,31 @@ dd($wordforms);
         }
         DB::statement($query);
         $this-> wordforms()->attach($wordform_id, 
-                ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);                                            
+                ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix' => $affix]);                                            
     }
+
+    /**
+     * 
+     * @param String $wordform
+     * @return string
+     */
+    public function affixForWordform($wordform) {
+/*                $wordform_comp = preg_split("/\s/", $wordform->wordform); we don't take analytic forms
+                $last_comp = array_pop($wordform_comp);
+                if (preg_match("/^".$stem."(.*)$/u", $last_comp, $regs)) { */
+        if (preg_match("/\s/", $wordform)) {
+            return NULL;
+        }
+        $stem = $this->reverseLemma->stem;
+        if (!$stem) {
+            return NULL;
+        }
+        if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
+            return $regs[1];
+        }
+       return '#';
+    }
+    
     
     /**
      * Add wordform found in the text with gramset_id and set of dialects
@@ -1008,7 +1031,7 @@ dd($wordforms);
             $dialects[0] = NULL;
         }
         foreach ($dialects as $dialect_id) {
-            $this->addWordformGramsetDialect($wordform->id, $gramset_id, $dialect_id);
+            $this->addWordformGramsetDialect($wordform->id, $gramset_id, $dialect_id,  $this->affixForWordform($wordform->wordform));
         }
         $wordform->updateMeaningTextLinks($this);
     }
@@ -1048,7 +1071,8 @@ dd($wordforms);
         if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
             return;
         }
-        $this->wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id]);    
+        $this->wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 
+                                                       'affix'=>$this->affixForWordform($wordform_obj->wordform)]);    
 //print "<p>". $wordform_obj->wordform ." | $gramset_id | $dialect_id</p>";
     }
     

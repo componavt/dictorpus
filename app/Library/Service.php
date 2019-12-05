@@ -25,11 +25,9 @@ class Service
                                       ->where('wordform','NOT LIKE','% %');
                                });
                        })
-                       //->count();
                        ->orderBy('id')//->take(10)
 //                       ->whereId(17)        
                        ->get(); 
-//dd($lemmas);                     
         foreach ($lemmas as $lemma) {
             list($stem, $affix) = $lemma->getStemAffix();
             if (!$stem) { 
@@ -37,19 +35,8 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> - WRONG STE
                 continue; }
             
             $wordforms = $lemma->wordforms()->where('wordform','NOT LIKE','% %')->whereNull('affix')->whereNotNull('gramset_id')->get();
-//dd($lemma);
-//dd($wordforms);
             foreach ($wordforms as $wordform) {
-//dd($wordform->pivot->gramset_id);
-/*                $wordform_comp = preg_split("/\s/", $wordform->wordform); we don't take analytic forms
-                $last_comp = array_pop($wordform_comp);
-                if (preg_match("/^".$stem."(.*)$/u", $last_comp, $regs)) { */
-                if (preg_match("/^".$stem."(.*)$/u", $wordform->wordform, $regs)) {
-//dd($stem, $wordform->wordform, $regs);                    
-                    $w_affix = $regs[1];
-                } else {
-                    $w_affix = '#';
-                }
+                $w_affix = $lemma->affixForWordform($wordform->wordform);
 //print "<p>".$lemma->lemma. " = ". $wordform->wordform. " = $w_affix</p>";  
                 $wordform->updateAffix($lemma->id, $wordform->pivot->gramset_id, $w_affix);
             }
