@@ -273,6 +273,10 @@ class KarVerb
                 return !$def && $stems[5] ? self::potencialForm($stems[5], 'ett'.KarGram::garmVowel($stems[5], 'a'), $lang_id, $dialect_id) : '';
             case 151: // 112. потенциал, презенс, 3 л., мн.ч., пол. 
                 return $stems[7] ? $stems[7]. KarGram::garmVowel($stems[7], 'anneh') : '';
+            case 310: // 158. потенциал, презенс, коннегатив 
+                return $stems[5] ? self::potencialForm($stems[5], 'e', $lang_id, $dialect_id) : '';
+            case 311: // 159. потенциал, презенс, коннегатив, 3 л. мн.ч.
+                return $stems[7] ? $stems[7]. KarGram::garmVowel($stems[7], 'anne') : '';
 
             case 152: // 113. потенциал, презенс, 1 л., ед.ч., отр. 
             case 153: // 114. потенциал, презенс, 2 л., ед.ч., отр. 

@@ -297,9 +297,17 @@ class Wordform extends Model
         return $wordform;
     }
     
+    /**
+     * select count(*) from lemma_wordform where affix is NULL and gramset_id is not NULL and wordform_id in (select id from wordforms where wordform not like '% %') and lemma_id in (select id from lemmas where lang_id=1);
+
+     * 
+     * @param type $lang_id
+     * @return type
+     */
     public static function countWithoutAffixes($lang_id) {
         return LemmaWordform::selectWhereLang($lang_id)
                 ->whereNull('affix')
+                ->whereNotNull('gramset_id')
                 ->whereIn('wordform_id',function($query){
                           $query->select('id')->from('wordforms')
                                 ->where('wordform','NOT LIKE','% %');

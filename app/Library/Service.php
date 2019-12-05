@@ -43,7 +43,8 @@ class Service
                 $last_comp = array_pop($wordform_comp);
                 if (preg_match("/^".$stem."(.*)$/u", $last_comp, $regs)) { */
                 if (preg_match("/^".$stem."(.*)$/u", $wordform->wordform, $regs)) {
-                    $w_affix = $regs[1];
+//dd($stem, $wordform->wordform, $regs);                    
+                    //$w_affix = $regs[1];
                 } else {
                     $w_affix = '#';
                 }
