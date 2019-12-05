@@ -44,7 +44,7 @@ class Service
                 if (preg_match("/^".$stem."(.*)$/u", $last_comp, $regs)) { */
                 if (preg_match("/^".$stem."(.*)$/u", $wordform->wordform, $regs)) {
 //dd($stem, $wordform->wordform, $regs);                    
-                    //$w_affix = $regs[1];
+                    $w_affix = $regs[1];
                 } else {
                     $w_affix = '#';
                 }
