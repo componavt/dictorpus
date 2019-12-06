@@ -23,6 +23,7 @@ return [
                     5 => 'quantity or degree',
                     6 => 'modal nature'],
     'animacy' => 'animate',
+    'affixes' => 'affixes',
     'inanimacy' => 'inanimate',
     'bases' => 'Bases',
     'base_list_1_name' => [

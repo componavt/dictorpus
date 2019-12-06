@@ -70,6 +70,12 @@ Route::group(
         Route::get('/permission', function () {
             return view('page.permission');
         });
+        Route::get('/corpus/frequency', function () {
+            return view('page.corpus_freq');
+        });
+        Route::get('/dict/selections', function () {
+            return view('page.dict_selections');
+        });
         
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
@@ -115,6 +121,7 @@ Route::group(
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
         
+        Route::get('/dict/lemma_wordform/affix_freq', 'Dict\LemmaWordformController@affixFrequency');
         Route::put('dict/lemma_wordform/{id}', 'Dict\LemmaWordformController@update')
                         ->name('lemma_wordform.update');
         Route::get('dict/lemma_wordform/{id}/edit/', 'Dict\LemmaWordformController@edit');

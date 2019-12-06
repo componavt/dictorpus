@@ -978,3 +978,6 @@ delete from lemma_bases where base_n=3 and lemma_id in (select id from lemmas wh
 -- php artisan make:controller CheckController
 
 -- php artisan make:migration add_field_affix_in_lemma_wordform_table
+
+select pos_id, gramset_id, affix, REVERSE(affix) as reverse_affix from lemma_wordform, lemmas where lemma_wordform.lemma_id=lemmas.id and gramset_id is not null and affix is not null and lang_id=1 group by pos_id, gramset_id, affix ORDER BY pos_id, gramset_id, affix;
+select pos_id, gramset_id, affix, count(*) from lemma_wordform, lemmas where lemma_wordform.lemma_id=lemmas.id and gramset_id is not null and affix is not null and lang_id=1 group by pos_id, gramset_id, affix ORDER BY pos_id, REVERSE(affix), gramset_id;

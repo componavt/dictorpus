@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
 use Response;
+use DB;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -253,4 +254,47 @@ class LemmaWordformController extends Controller
         
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
     }
+
+    /**
+     * select pos_id, gramset_id, affix, count(*) from lemma_wordform, lemmas where lemma_wordform.lemma_id=lemmas.id and gramset_id is not null and affix is not null and lang_id=1 
+     * group by pos_id, gramset_id, affix ORDER BY pos_id, count(*) DESC, REVERSE(affix), gramset_id;
+     * 
+     * @param Request $request
+     * @return type
+     */
+    public function affixFrequency(Request $request) {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        if ($url_args['search_lang']) {
+            $lemmas = Lemma::select('pos_id', 'gramset_id', 'affix', DB::raw('count(*) as frequency'))
+                            ->join('lemma_wordform','lemmas.id','=','lemma_wordform.lemma_id')
+                            ->whereLangId($url_args['search_lang'])
+                            ->whereNotNull('gramset_id')
+                            ->whereNotNull('affix')
+                            ->groupBy('pos_id', 'gramset_id', 'affix')
+                            ->orderBy('pos_id')
+                            ->orderBy(DB::raw('count(*)'), 'DESC')
+                            ->orderBy(DB::raw('REVERSE(affix)'), 'DESC')
+                            ->orderBy('gramset_id');
+                        
+            if ($url_args['search_pos']) {
+                $lemmas = $lemmas->wherePosId($url_args['search_pos']);
+            } 
+
+//var_dump($words->toSql());        
+            $lemmas = $lemmas 
+                    ->take($this->url_args['limit_num'])
+//                    ->take(1000)
+                    ->get();
+        } else {
+            $lemmas = NULL;
+        }
+        $lang_values = Lang::getList();
+        $pos_values = PartOfSpeech::getList();
+        
+        return view('dict.lemma_wordform.affix_freq',
+                compact('lang_values', 'lemmas', 'pos_values', 'args_by_get', 'url_args'));
+    }
+    
 }

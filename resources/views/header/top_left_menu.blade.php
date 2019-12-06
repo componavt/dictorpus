@@ -26,12 +26,10 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}">{{ trans('navigation.lemmas') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/wordform') }}">{{ trans('navigation.wordforms') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/relation') }}">{{ trans('navigation.relations') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/omonyms') }}">{{ trans('navigation.omonyms') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/phrases') }}">{{ trans('navigation.phrases') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/reverse_lemma') }}">{{ trans('navigation.reverse_dictionary') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/reverse_lemma/inflexion_groups') }}">{{ trans('navigation.inflexion_groups') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_new_list/') }}">{{ trans('dict.new_lemmas') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_updated_list/') }}">{{ trans('dict.last_updated_lemmas') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/selections') }}">{{ trans('navigation.dict_selections') }}</a></li>
                         </ul>
                     </li>
                     
@@ -67,8 +65,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/recorder') }}">{{ trans('navigation.recorders') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/') }}">{{ trans('corpus.new_texts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/') }}">{{ trans('corpus.last_updated_texts') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/word/freq_dict') }}">{{ trans('navigation.word_frequency') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/freq_symb') }}">{{ trans('navigation.text_frequency') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/frequency') }}">{{ trans('navigation.corpus_freq') }}</a></li>
                         </ul>
                     </li>
                 </ul>
