@@ -189,6 +189,7 @@ return [
     
     'remove-example' => 'this example is not suitable',
     'reverse_relation' => 'reverse relation',
+    'right_sort' => 'by final letters',
     
     'select_category' => 'Select a category',
     'select_dialect' => 'Select a dialect',

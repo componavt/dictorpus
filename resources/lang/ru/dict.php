@@ -191,6 +191,7 @@ return [
     
     'remove-example' => 'этот пример совсем не подходит',
     'reverse_relation' => 'Обратное отношение',
+    'right_sort' => 'по конечным буквам',
     
     'select_category' => 'Выберите категорию',
     'select_dialect' => 'Выберите диалект',

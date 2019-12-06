@@ -6,6 +6,7 @@
 @stop
 
 @section('headExtra')
+    <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
     {!!Html::style('css/table.css')!!}
 @stop
 
@@ -13,30 +14,40 @@
         @include('dict.lemma_wordform._search_form',['url' => '/dict/lemma_wordform/affix_freq']) 
 
         @if ($lemmas)
-        <table class="table table-striped rwd-table wide-md">
+        <table id="affixTable" class="table table-striped rwd-table wide-md">
         <thead>
             <tr>
                 <th>No</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.gramsets') }}</th>
                 <th>{{ trans('dict.affixes') }}</th>
+                <th>{{ trans('dict.right_sort') }}</th>
                 <th>{{ trans('messages.frequency') }}</th>
             </tr>
         </thead>
         <tbody>
             @foreach($lemmas as $lemma)
-                @if ($list_count<=$url_args['limit_num'])
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
-                <td data-th="{{ trans('dict.pos') }}">{{$lemma->pos_id}}</td>
-                <td data-th="{{ trans('dict.gramsets') }}">{{$lemma->gramset_id}}</td>
-                <td data-th="{{ trans('dict.affixes') }}">{{$lemma->affix}}</td>
-                <td data-th="{{ trans('messages.frequency') }}">{{$lemma->frequency}}</td>
+                <td data-th="{{ trans('dict.pos') }}">{{$lemma->pos->name}}</td>
+                <td data-th="{{ trans('dict.gramsets') }}">{{\App\Models\Dict\Gramset::getStringByID($lemma->gramset_id)}}</td>
+                <td data-th="{{ trans('dict.affixes') }}" style="text-align: right">{{$lemma->affix}}</td>
+                <td data-th="{{ trans('dict.right_sort') }}" style="color: white">{{$lemma->reverse_affix}}</td>
+                <td data-th="{{ trans('messages.frequency') }}" style="text-align: right">{{$lemma->frequency}}</td>
             </tr>
-                @endif
             @endforeach
         </tbody>
         </table>
         @endif
     </div>
+@stop
+
+@section('footScriptExtra')
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+@stop
+
+@section('jqueryFunc')
+    $(document).ready( function () {
+        $('#affixTable').DataTable();
+    } );
 @stop

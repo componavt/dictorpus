@@ -241,6 +241,20 @@ class Lang extends Model
         return $ids;       
     }
     
+    public static function nonProjectLangs() {
+        $lang_coll = self::whereIn('code', ['en','ru','fi'])
+                ->orderBy('id')->get();
+        return $lang_coll;       
+    }
+    
+    public static function nonProjectLangIDs() {
+        $ids = [];
+        foreach (self::nonProjectLangs() as $lang) {
+           $ids[] = $lang->id; 
+        }
+        return $ids;       
+    }
+    
     public static function countMarked() {
         $out = [];
         foreach (self::projectLangs() as $lang) {

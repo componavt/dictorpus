@@ -265,36 +265,62 @@ class LemmaWordformController extends Controller
     public function affixFrequency(Request $request) {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        
+//        $lang_values = Lang::getList(Lang::nonProjectLangIDs());
+        $lemmas_for_lang = Lemma::select('lang_id', DB::raw('count(*) as frequency'))
+                        ->join('lemma_wordform','lemmas.id','=','lemma_wordform.lemma_id')
+                        ->whereNotNull('gramset_id')
+                        ->whereNotNull('affix')
+                        ->groupBy('lang_id')
+                        ->orderBy('frequency', 'DESC')
+                        ->get();
+        $lang_values = [];
+        foreach ($lemmas_for_lang as $lemma) {
+            $lang_values[$lemma->lang_id] = $lemma->lang->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
+        }
+
+//        $pos_values = PartOfSpeech::getList();
+        $lemmas_for_pos = Lemma::select('pos_id', DB::raw('count(*) as frequency'))
+                        ->join('lemma_wordform','lemmas.id','=','lemma_wordform.lemma_id')
+                        ->whereNotNull('gramset_id')
+                        ->whereNotNull('affix')
+                        ->groupBy('pos_id')
+                        ->orderBy('frequency', 'DESC')
+                        ->get();
+        $pos_values = [NULL=>''];
+        foreach ($lemmas_for_pos as $lemma) {
+            $pos_values[$lemma->pos_id] = $lemma->pos->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
+        }
 
         if ($url_args['search_lang']) {
-            $lemmas = Lemma::select('pos_id', 'gramset_id', 'affix', DB::raw('count(*) as frequency'))
+            $lemmas = Lemma::select('pos_id', 'gramset_id', 'affix', DB::raw('REVERSE(affix) as reverse_affix'), DB::raw('count(*) as frequency'))
                             ->join('lemma_wordform','lemmas.id','=','lemma_wordform.lemma_id')
                             ->whereLangId($url_args['search_lang'])
                             ->whereNotNull('gramset_id')
                             ->whereNotNull('affix')
                             ->groupBy('pos_id', 'gramset_id', 'affix')
                             ->orderBy('pos_id')
+                            ->orderBy(DB::raw('REVERSE(affix)'))
                             ->orderBy(DB::raw('count(*)'), 'DESC')
-                            ->orderBy(DB::raw('REVERSE(affix)'), 'DESC')
                             ->orderBy('gramset_id');
                         
             if ($url_args['search_pos']) {
                 $lemmas = $lemmas->wherePosId($url_args['search_pos']);
             } 
 
-//var_dump($words->toSql());        
+//var_dump($words->toSql());  
+//            $totalNumber = sizeof($lemmas->get());
             $lemmas = $lemmas 
-                    ->take($this->url_args['limit_num'])
+//                    ->take($this->url_args['limit_num'])
 //                    ->take(1000)
                     ->get();
+            $totalNumber = sizeof($lemmas);
         } else {
             $lemmas = NULL;
         }
-        $lang_values = Lang::getList();
-        $pos_values = PartOfSpeech::getList();
         
         return view('dict.lemma_wordform.affix_freq',
-                compact('lang_values', 'lemmas', 'pos_values', 'args_by_get', 'url_args'));
+                compact('lang_values', 'lemmas', 'pos_values', 'args_by_get', 'url_args')); //, 'totalNumber'
     }
     
 }
