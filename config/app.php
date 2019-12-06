@@ -163,6 +163,7 @@ return [
         
         Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class,
         
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
 //        PhpConsole\Laravel\ServiceProvider::class,  // debug
 //        Barryvdh\Debugbar\ServiceProvider::class,   //composer require barryvdh/laravel-debugbar  // also debugger
     ],

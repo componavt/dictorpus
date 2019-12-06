@@ -6,7 +6,8 @@
 @stop
 
 @section('headExtra')
-    <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <!--link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"-->
+    <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css">
     {!!Html::style('css/table.css')!!}
 @stop
 
@@ -18,7 +19,9 @@
         <thead>
             <tr>
                 <th>No</th>
+                @if (!$url_args['search_pos'])
                 <th>{{ trans('dict.pos') }}</th>
+                @endif
                 <th>{{ trans('dict.gramsets') }}</th>
                 <th>{{ trans('dict.affixes') }}</th>
                 <th>{{ trans('dict.right_sort') }}</th>
@@ -29,7 +32,9 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
+                @if (!$url_args['search_pos'])
                 <td data-th="{{ trans('dict.pos') }}">{{$lemma->pos->name}}</td>
+                @endif
                 <td data-th="{{ trans('dict.gramsets') }}">{{\App\Models\Dict\Gramset::getStringByID($lemma->gramset_id)}}</td>
                 <td data-th="{{ trans('dict.affixes') }}" style="text-align: right">{{$lemma->affix}}</td>
                 <td data-th="{{ trans('dict.right_sort') }}" style="color: white">{{$lemma->reverse_affix}}</td>
@@ -44,6 +49,7 @@
 
 @section('footScriptExtra')
     <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
 @stop
 
 @section('jqueryFunc')

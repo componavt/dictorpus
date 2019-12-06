@@ -15,6 +15,8 @@ use Response;
 
 //use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
+use App\Charts\LemmaNumByLang;
+
 //use App\Library\Grammatic;
 use App\Library\Grammatic\VepsName;
 use App\Models\User;
@@ -83,9 +85,30 @@ class LemmaController extends Controller
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('lemmas');
         $gramset_values = Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
+        
+        $chart = new LemmaNumByLang;
+        $langs = Lang::getList(Lang::nonProjectLangIDs());
+        $ch_labels = $ch_data = [];
+        foreach ($langs as $lang_id=>$lang_name) {
+            $ch_labels[] = $lang_name;
+            $lemma_data[] = Lemma::whereLangId($lang_id)->count();
+            $wordform_data[] = Wordform::join('lemma_wordform','wordforms.id','=','lemma_wordform.wordform_id')
+                        ->whereIn('lemma_id', function ($q) use ($lang_id){
+                           $q->select('id')->from('lemmas')->whereLangId($lang_id);                           
+                        })
+                        ->count();
+        }
+        $chart->labels($ch_labels);
+        $chart->dataset(\Lang::trans('dict.LemmaNumByLang'), 'horizontalBar', $lemma_data)
+              ->options([
+//            'backgroundColor' => ['#ff0000', '#00ff00', '#0000ff', '#000000'],
+            'backgroundColor' => '#ff0000',
+            ]);
+        $chart->dataset(\Lang::trans('dict.WordformNumByLang'), 'horizontalBar', $wordform_data)
+              ->options(['backgroundColor' => '#00ff00']);
 
         return view('dict.lemma.index',
-                compact('gramset_values', 'lang_values', 'lemmas', 'numAll',
+                compact('chart', 'gramset_values', 'lang_values', 'lemmas', 'numAll',
                         'pos_values', 'args_by_get', 'url_args'));
     }
 
