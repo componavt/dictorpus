@@ -21,7 +21,6 @@ Route::group(
     function()
     {
         Route::get('/','HomeController@index');
-        Route::get('/stats','HomeController@stats');
 
         // Вызов страницы регистрации пользователя
         Route::get('register', 'AuthController@register');   
@@ -121,7 +120,7 @@ Route::group(
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
         
-        Route::get('/dict/lemma_wordform/affix_freq', 'Dict\LemmaWordformController@affixFrequency');
+        Route::get('dict/lemma_wordform/affix_freq', 'Dict\LemmaWordformController@affixFrequency');
         Route::put('dict/lemma_wordform/{id}', 'Dict\LemmaWordformController@update')
                         ->name('lemma_wordform.update');
         Route::get('dict/lemma_wordform/{id}/edit/', 'Dict\LemmaWordformController@edit');
@@ -187,6 +186,10 @@ Route::group(
 //        Route::get('corpus/text/markup_all_empty_text_xml', 'Corpus\TextController@markupAllEmptyTextXML');
 //        Route::get('corpus/text/tempStripSlashes', 'Corpus\TextController@tempStripSlashes');
 //        Route::get('corpus/text/tmpProcessOldLetters', 'Corpus\TextController@tmpProcessOldLetters');
+        
+        Route::get('stats','Library\StatsController@index');
+        Route::get('stats/by_dict','Library\StatsController@byDict');
+        Route::get('stats/by_corp','Library\StatsController@byCorp');
         
         Route::resource('dict/dialect', 'Dict\DialectController',
                        ['names' => ['update' => 'dialect.update',

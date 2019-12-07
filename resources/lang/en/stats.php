@@ -11,6 +11,8 @@ return [
     |
     */
 
+    'chart_LemmaNumByLang' => 'The number of lemmas by languages (in 10³)',
+    'chart_WordformNumByLang' => 'The number of wordforms by languages (in 10³)',
 
     'checked_words_to_marked' => 'The ratio of verified words to the total number of marked words',
     'checked_examples_to_all' => 'Ratio of verified examples to total number of examples',

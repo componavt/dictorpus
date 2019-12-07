@@ -983,3 +983,5 @@ select pos_id, gramset_id, affix, REVERSE(affix) as reverse_affix from lemma_wor
 select pos_id, gramset_id, affix, count(*) from lemma_wordform, lemmas where lemma_wordform.lemma_id=lemmas.id and gramset_id is not null and affix is not null and lang_id=1 group by pos_id, gramset_id, affix ORDER BY pos_id, REVERSE(affix), gramset_id;
 
 -- php artisan make:chart LemmaNumByLang
+
+-- php artisan make:controller Library\StatsController

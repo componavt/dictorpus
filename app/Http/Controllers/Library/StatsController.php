@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Http\Controllers\Library;
+
+//use Illuminate\Http\Request;
+
+//use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+use App\Charts\LemmaNumByLang;
+
+use App\Models\User;
+use App\Models\Corpus\Informant;
+use App\Models\Corpus\Place;
+use App\Models\Corpus\Recorder;
+use App\Models\Corpus\Text;
+use App\Models\Corpus\Word;
+use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
+use App\Models\Dict\Meaning;
+use App\Models\Dict\Wordform;
+
+class StatsController extends Controller
+{
+    public function index()
+    {
+        $total_users = User::count(); 
+        $total_active_editors = User::countActiveEditors(); 
+        return view('stats.index')
+                ->with(['total_users' => number_format($total_users, 0, ',', ' '),
+                        'total_active_editors' => number_format($total_active_editors, 0, ',', ' ')]);
+    }
+    
+    public function byDict()
+    {
+        $total_lemmas = Lemma::count();
+        $lang_lemmas = Lang::countLemmas();
+        
+        $total_wordforms = Wordform::count();
+        $lang_wordforms = Lang::countWordforms();
+        
+        $total_meanings = Meaning::count();
+        $total_relations = Meaning::countRelations();
+        $total_translations = Meaning::countTranslations();
+        
+/*        $langs = Lang::getList(Lang::nonProjectLangIDs());
+        $ch_labels = $ch_data = [];
+        foreach ($langs as $lang_id=>$lang_name) {
+            $ch_labels[] = $lang_name;
+            $lemma_data[] = Lemma::whereLangId($lang_id)->count();
+            $wordform_data[] = Wordform::join('lemma_wordform','wordforms.id','=','lemma_wordform.wordform_id')
+                        ->whereIn('lemma_id', function ($q) use ($lang_id){
+                           $q->select('id')->from('lemmas')->whereLangId($lang_id);                           
+                        })
+                        ->count();
+        }
+*/
+        $chart = new LemmaNumByLang;
+        $chart->labels(array_keys($lang_lemmas));
+        $chart->dataset(\Lang::trans('stats.chart_LemmaNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_lemmas)))
+              ->color('#ff0000')
+              ->backgroundColor('#ff0000');
+        $chart->dataset(\Lang::trans('stats.chart_WordformNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_wordforms)))
+              ->color('#00ff00')
+              ->backgroundColor('#00ff00');
+
+        return view('stats.by_dict')
+                ->with(['chart' => $chart, 
+                        'lang_lemmas' => $lang_lemmas,
+                        'lang_wordforms' => $lang_wordforms,
+                        'total_lemmas' => number_format($total_lemmas, 0, ',', ' '),
+                        'total_meanings' => number_format($total_meanings, 0, ',', ' '),
+                        'total_relations' => number_format($total_relations, 0, ',', ' '),
+                        'total_translations' => number_format($total_translations, 0, ',', ' '),
+                        'total_wordforms' => number_format($total_wordforms, 0, ',', ' '),
+                       ]);
+    }    
+    
+    public function byCorp()
+    {
+        $total_texts = Text::count();
+        $total_informants = Informant::count();
+        $total_places = Place::count();
+        $total_recorders = Recorder::count();
+        
+        $total_words = Word::count(); 
+        $total_marked_words = Word::countMarked();
+        $marked_words_to_all = 100*$total_marked_words/$total_words;
+        $lang_marked = Lang::countMarked();
+        
+        $total_checked_examples = Text::countCheckedExamples();
+        $total_checked_words = Text::countCheckedWords(); 
+        $checked_words_to_marked = 100*$total_checked_words/$total_marked_words;
+        
+        $total_examples = Text::countExamples();
+        $checked_examples_to_all = 100*$total_checked_examples/$total_examples;
+                
+        return view('stats.by_corp')
+                ->with([
+                        'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
+                        'checked_words_to_marked' => number_format($checked_words_to_marked, 2,',', ' '),
+                        'lang_marked' => $lang_marked,
+                        'marked_words_to_all' => number_format($marked_words_to_all, 1,',', ' '),
+                        'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
+                        'total_checked_words' => number_format($total_checked_words, 0, ',', ' '),
+                        'total_examples' => number_format($total_examples, 0, ',', ' '),
+                        'total_informants' => number_format($total_informants, 0, ',', ' '),
+                        'total_places' => number_format($total_places, 0, ',', ' '),
+                        'total_recorders' => number_format($total_recorders, 0, ',', ' '),
+                        'total_texts' => number_format($total_texts, 0, ',', ' '),
+                        'total_words' => number_format($total_words, 0, ',', ' '),
+                        'total_marked_words' => number_format($total_marked_words, 0, ',', ' '),
+                       ]);
+    }    
+}
