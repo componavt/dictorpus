@@ -208,7 +208,9 @@ class Wordform extends Model
     }
     
     public function updateAffix($lemma_id, $gramset_id, $affix) {
-        DB::statement("UPDATE lemma_wordform SET affix='".$affix."' WHERE wordform_id='". $this->id. "' AND lemma_id='$lemma_id' AND gramset_id='$gramset_id'");
+//        DB::statement("UPDATE lemma_wordform SET affix='".str_replace("’","\’",$affix)."' WHERE wordform_id='". $this->id. "' AND lemma_id='$lemma_id' AND gramset_id='$gramset_id'");
+        DB::table('lemma_wordform')->whereWordformId($this->id)->whereLemmaId($lemma_id)->whereGramsetId($gramset_id)
+                ->update(["affix"=>$affix]);
 /*        $lws = LemmaWordform::where('wordform_id', $this->id)
                             ->where('lemma_id', $lemma_id)
                             ->where('gramset_id', $gramset_id)->get();
@@ -349,5 +351,11 @@ class Wordform extends Model
                                 ->where('wordform','NOT LIKE','% %');
                   })
                 ->count();        
-    }        
+    }      
+    
+    public static function countWrongAffixes($lang_id) {
+        return LemmaWordform::selectWhereLang($lang_id)
+                ->whereAffix('#')
+                ->count();        
+    }      
 }

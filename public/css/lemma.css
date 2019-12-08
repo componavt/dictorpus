@@ -151,6 +151,7 @@ h4 .fa {
     display: none;
 }
 
-.reload-wordforms {
+.reload-wordforms,
+reload-stem-affix-by-wordforms {
     cursor: pointer;
 }

@@ -1381,7 +1381,9 @@ dd($wordforms);
 
         $wordforms =[$this->lemma];
         foreach ($this->wordforms as $wordform) {
-            $wordforms[]=$wordform->wordform;
+            if (!preg_match("/\s/", $wordform->wordform)) {
+                $wordforms[]=$wordform->wordform;
+            }
         }
 //dd((array)$wordforms);            
         list($max_stem) = Grammatic::maxStem($wordforms);

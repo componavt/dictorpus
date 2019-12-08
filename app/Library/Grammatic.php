@@ -22,6 +22,10 @@ use App\Models\Dict\PartOfSpeech;
  **/
 class Grammatic
 {
+    public static function langsWithRules () {
+        return [1,4];
+    }
+
     /**
      * 
      * @param Array $data = ['lemma'=>'lemma_string', 'lang_id'=>lang_int, 'pos_id'=>pos_int, 'dialect_id'=>dialect_int];

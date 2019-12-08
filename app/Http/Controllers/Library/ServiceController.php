@@ -36,6 +36,7 @@ class ServiceController extends Controller
         foreach (Lang::projectLangIDs() as $l_id) {
             $langs[$l_id]['name']=Lang::getNameById($l_id);
             $langs[$l_id]['affix_count'] = number_format(Wordform::countWithoutAffixes($l_id), 0, ',', ' ');
+            $langs[$l_id]['wrong_affix_count'] = number_format(Wordform::countWrongAffixes($l_id), 0, ',', ' ');
         }
         
         return view('page.service')
@@ -190,6 +191,16 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
         foreach (Lang::projectLangIDs() as $lang_id) {
             Service::addWordformAffixesForLang($lang_id);
         }      
+    }
+    
+    function reloadStemAffixes(Request $request) {
+        $lang_id = (int)$request->input('search_lang');
+        
+        if (!$lang_id) {
+            return;
+        }
+
+        Service::reloadStemAffixesForLang($lang_id);
     }
     
     public function tmpUpdateStemAffix() {

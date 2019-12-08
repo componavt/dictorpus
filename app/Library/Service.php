@@ -29,10 +29,35 @@ class Service
 //                       ->whereId(17)        
                        ->get(); 
         foreach ($lemmas as $lemma) {
-            if (!updateWordformAffixes()) {
+            if (!$lemma->updateWordformAffixes()) {
 print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> - WRONG STEM</p>';                
             }
 print "<p>".$lemma->lemma."</p>";                 
         }
     }    
+    
+    public static function reloadStemAffixesForLang($lang_id) {
+        $lemmas = Lemma::where('lang_id',$lang_id)
+                       ->whereIn('id',function($q) use ($lang_id){
+                            $q->select('lemma_id')->from('lemma_wordform')
+                              ->whereAffix('#');
+                       })
+                       ->orderBy('id')//->take(1)
+//                       ->whereId(17)        
+                       ->get(); 
+        foreach ($lemmas as $lemma) {
+            list($max_stem, $affix) = $lemma->getStemAffixByWordforms();
+//dd($max_stem, $affix, $lemma->reverseLemma);            
+            if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix) {
+                $lemma->reverseLemma->stem = $max_stem;
+                $lemma->reverseLemma->affix = $affix;
+                $lemma->reverseLemma->save();
+            }
+
+            $is_success = $lemma->updateWordformAffixes(true);
+print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->stemAffixForm().'</a>';                
+            if (!$is_success) { print ' - WRONG STEM'; }
+print "</p>";                 
+        }
+    }
 }
