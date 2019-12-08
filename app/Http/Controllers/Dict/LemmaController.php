@@ -53,7 +53,8 @@ class LemmaController extends Controller
                                       'editExamples','updateExamples',
                                       'storeSimple', 'tmpUpdateStemAffix',
                                       'createWordform', 'updateWordformFromText',
-                                      'editWordforms','updateWordforms', 'checkWordforms'
+                                      'editWordforms','updateWordforms', 'checkWordforms',
+                                      'reloadStemAffixByWordforms'
                               ]]);
         
         $this->url_args = Lemma::urlArgs($request);  
@@ -321,16 +322,12 @@ class LemmaController extends Controller
         $dialect_value = User::userDialects();
         $dialect_values = Dialect::getList($lemma->lang_id);
         
-        $lemma_value = $lemma->reverseLemma && $lemma->reverseLemma->affix 
-                     ? $lemma->reverseLemma->stem.'|'.$lemma->reverseLemma->affix 
-                     : $lemma->lemma;
-        
         $lemma_variants = $lemma->variants->pluck('lemma', 'id')->toArray();
         
         return view('dict.lemma.edit',
                     compact('all_meanings', 'lang_values', 'dialect_value', 
                             'dialect_values', 'langs_for_meaning', 'lemma', 
-                            'lemma_value', 'lemma_variants', 'new_meaning_n', 
+                            'lemma_variants', 'new_meaning_n', 
                             'phrase_values', 'pos_values', 'relation_values', 
                             'relation_meanings', 'translation_values', 
                             'args_by_get', 'url_args'));
@@ -835,4 +832,28 @@ class LemmaController extends Controller
                         );
     }
     
+    /**
+     * Заново выделить неизменяемую часть по существующим словоформам
+     * и обновить аффиксы у словоформ
+     * Re-highlight the unchangeble part by existing word forms
+     * and update affixes of wordforms
+     * 
+     * @param Int $id
+     * @return string
+     */
+    function reloadStemAffixByWordforms($id) {
+        $lemma = Lemma::find($id);
+        if (!$lemma) { return '';}
+        
+        list($max_stem, $affix) = $lemma->getStemAffixByWordforms();
+        if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix) {
+            $lemma->reverseLemma->stem = $max_stem;
+            $lemma->reverseLemma->affix = $affix;
+            $lemma->reverseLemma->save();
+        }
+        
+        $lemma->updateWordformAffixes(true);
+        
+        return $lemma->stemAffixForm();
+    }
 }

@@ -25,7 +25,7 @@
                                       'lang_id' => null,
 				      'pos_id'=>null,
                                       'lang_values' => $lang_values, 
-                                      'lemma_value' => $lemma_value,
+                                      'lemma_value' => $lemma->stemAffixForm(),
                                       'pos_values'  => $pos_values,
                                       'obj' => $lemma->features])
         {!! Form::close() !!}

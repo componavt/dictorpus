@@ -29,16 +29,8 @@ class Service
 //                       ->whereId(17)        
                        ->get(); 
         foreach ($lemmas as $lemma) {
-            list($stem, $affix) = $lemma->getStemAffix();
-            if (!$stem) { 
+            if (!updateWordformAffixes()) {
 print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> - WRONG STEM</p>';                
-                continue; }
-            
-            $wordforms = $lemma->wordforms()->where('wordform','NOT LIKE','% %')->whereNull('affix')->whereNotNull('gramset_id')->get();
-            foreach ($wordforms as $wordform) {
-                $w_affix = $lemma->affixForWordform($wordform->wordform);
-//print "<p>".$lemma->lemma. " = ". $wordform->wordform. " = $w_affix</p>";  
-                $wordform->updateAffix($lemma->id, $wordform->pivot->gramset_id, $w_affix);
             }
 print "<p>".$lemma->lemma."</p>";                 
         }

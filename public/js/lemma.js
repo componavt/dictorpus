@@ -46,3 +46,21 @@ function checkLemmaForm() {
         }
     });
 }
+
+function reloadStemAffixByWordforms() {
+    var id = $(".reload-stem-affix-by-wordforms").data('reload');
+    $("#lemmaStemAffix").empty();
+    $("#img-loading_stem-affix").show();
+    $.ajax({
+        url: '/dict/lemma/'+ id + '/reload_stem_affix_by_wordforms', 
+        type: 'GET',
+        success: function(result){
+            $("#lemmaStemAffix").html(result);
+            $("#img-loading_stem-affix").hide();                
+        },
+        error: function() {
+            $("#lemmaStemAffix").html('ERROR'); 
+            $("#img-loading_stem-affix").hide();                
+        }
+    }); 
+}   

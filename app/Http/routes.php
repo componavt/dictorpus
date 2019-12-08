@@ -120,6 +120,7 @@ Route::group(
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
+        Route::get('dict/lemma/{id}/reload_stem_affix_by_wordforms', 'Dict\LemmaController@reloadStemAffixByWordforms');
         
         Route::get('dict/lemma_wordform/affix_freq', 'Dict\LemmaWordformController@affixFrequency');
         Route::put('dict/lemma_wordform/{id}', 'Dict\LemmaWordformController@update')

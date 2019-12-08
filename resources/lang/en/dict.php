@@ -186,6 +186,7 @@ return [
                     7 => 'an excellent',
                     5 => 'a good',
                     3 => 'a bad'],
+    'reload-stem-affix-by-wordforms' => 'Re-highlight the unchangeble part by existing word forms',
     
     'remove-example' => 'this example is not suitable',
     'reverse_relation' => 'reverse relation',

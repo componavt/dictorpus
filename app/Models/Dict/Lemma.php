@@ -1342,6 +1342,75 @@ dd($wordforms);
         return $this->lemma. "\t$comptype\t". join(";", $tmp);
     }
     
+    public function stemAffixForm() {
+        return  $this->reverseLemma && $this->reverseLemma->affix 
+                ? $this->reverseLemma->stem.'|'.$this->reverseLemma->affix 
+                : $this->lemma;
+        
+
+    }
+    
+    public function getStemAffixByStems() {
+        if (!$this->isChangeable()) {
+            return [$this->lemma, null];
+        }
+
+        $max_stem=$this->lemma; 
+        $stems = [];
+        foreach ($this->getDialectIds() as $dialect_id) {
+            $stems_for_max = $stems = $this->getBases($dialect_id);
+            $this->updateBases($stems, $dialect_id);
+
+            if ($this->lang_id==1 && $this->pos_id == PartOfSpeech::getVerbID()) {
+            }
+                $stems_for_max = array_slice($stems, 0, 5);
+            list($max_stem) = Grammatic::maxStem(array_merge([$max_stem], $stems_for_max));
+        }
+        if (preg_match("/^".$max_stem."(.*)/u", $this->lemma, $regs)) {
+            $affix = $regs[1];
+        } else {
+            $affix = false;
+        }    
+        return [$max_stem, $affix];
+    }
+    
+    public function getStemAffixByWordforms() {
+        if (!$this->isChangeable()) {
+            return [$this->lemma, null];
+        }
+
+        $wordforms =[$this->lemma];
+        foreach ($this->wordforms as $wordform) {
+            $wordforms[]=$wordform->wordform;
+        }
+//dd((array)$wordforms);            
+        list($max_stem) = Grammatic::maxStem($wordforms);
+//dd($max_stem);            
+        if (preg_match("/^".$max_stem."(.*)/u", $this->lemma, $regs)) {
+            $affix = $regs[1];
+        } else {
+            $affix = false;
+        }    
+        return [$max_stem, $affix];
+    }
+
+    public function updateWordformAffixes($for_all=false) {
+        list($stem, $affix) = $this->getStemAffix();
+        if (!$stem) { return false; }
+
+        $wordforms = $this->wordforms()->where('wordform','NOT LIKE','% %');
+        if (!$for_all) {
+             $wordforms = $wordforms->whereNull('affix');
+        }
+         $wordforms = $wordforms->whereNotNull('gramset_id')->get();
+//dd($wordforms);        
+        foreach ($wordforms as $wordform) {
+            $w_affix = $this->affixForWordform($wordform->wordform);
+//print "<p>".$lemma->lemma. " = ". $wordform->wordform. " = $w_affix</p>";  
+            $wordform->updateAffix($this->id, $wordform->pivot->gramset_id, $w_affix);
+        }  
+        return true;
+    }
     public function generateWordforms($dialect_id) {
         $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
         $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;

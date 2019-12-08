@@ -191,46 +191,22 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
             Service::addWordformAffixesForLang($lang_id);
         }      
     }
-/*    
+    
     public function tmpUpdateStemAffix() {
 //print "<pre>";        
         $lemmas = Lemma::orderBy('id')->get(); //where('id','>',1)->take(10)
         foreach ($lemmas as $lemma) {
-            if (!$lemma->isChangeable()) {
-                $lemma->reverseLemma->stem = $lemma->lemma;
-                $lemma->reverseLemma->affix = null;
-                $lemma->save();
-//var_dump($lemma->lemma, $lemma->reverseLemma);                
-                continue;
-            }
-            $dialects = $lemma->getDialectIds();
-            $max_stem=$lemma->lemma; 
-            $stems = [];
-            foreach ($dialects as $dialect_id) {
-                $stems_for_max = $stems = $lemma->getBases($dialect_id);
-                $lemma->updateBases($stems, $dialect_id);
-                
-                if ($lemma->lang_id==1 && $lemma->pos_id == PartOfSpeech::getVerbID()) {
-                    $stems_for_max = array_slice($stems, 0, 5);
-                }
-                list($max_stem) = Grammatic::maxStem(array_merge([$max_stem], $stems_for_max), $lemma->lang_id, $lemma->pos_id);
-            }
-            if (preg_match("/^".$max_stem."(.*)/u", $lemma->lemma, $regs)) {
-                $affix = $regs[1];
-            } else {
-                $affix = false;
-            }
+            list($max_stem, $affix) = $lemma->getStemAffixByStems();
             if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix || !sizeof($stems)) {
 print sprintf("<p><b>id:</b> %s, <b>lang:</b> %s, <b>lemma:</b> <a href=\"/dict/lemma/%s\">%s</a>, <b>dialects:</b> [%s], <b>stems:</b> [%s], <b>max_stem:</b> %s, <b>affix:</b> %s",
         $lemma->id, $lemma->lang_id, $lemma->id, $lemma->lemma, join(", ",$dialects), join(", ",$stems), $max_stem, $affix);   
             }
             if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix) {
-print sprintf(", <span style='color:red'><b>reverse_stem:</b> %s, <b>reverse_affix:</b> %s</span>",
-        $lemma->reverseLemma->stem, $lemma->reverseLemma->affix);   
-            $lemma->reverseLemma->stem = $max_stem;
-            $lemma->reverseLemma->affix = $affix;
-            $lemma->reverseLemma->save();
-}
+print sprintf(", <span style='color:red'><b>reverse_stem:</b> %s, <b>reverse_affix:</b> %s</span>", $lemma->reverseLemma->stem, $lemma->reverseLemma->affix);   
+                $lemma->reverseLemma->stem = $max_stem;
+                $lemma->reverseLemma->affix = $affix;
+                $lemma->reverseLemma->save();
+            }
             if ($affix === false) {
                 dd('ERROR');
             }
