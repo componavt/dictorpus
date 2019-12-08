@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Response;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -306,70 +307,27 @@ class GramsetController extends Controller
     }
 
     /**
-     * When we add column lang_id in table gramset_pos,
-     * we old records associated with vepsian lang (lang_id=1) and
-     * dublicated existing records for 3 karelian langs (lang_id=4..6)
-     *
-     * @return null
+     * Gets list of gramsets for drop down list in JSON format
+     * Test url: /dict/gramset/list?lang_id=1&pos_id=1
+     * 
+     * @return JSON response
      */
-/*    
-    public function tempInsertGramsetPosLang()
+    public function gramsetList(Request $request)
     {
-        $langs = [4,5,6];
-        $gramset_pos = DB::table('gramset_pos')->where('lang_id',1)->get();
-        foreach ($gramset_pos as $rec) {
-            foreach ($langs as $lang) {
-            DB::table('gramset_pos')->insert([
-                    'gramset_id' => $rec->gramset_id,
-                    'pos_id' => $rec->pos_id,
-                    'lang_id' => $lang
-                ]);
-            }
-        }
-    }
-*/    
-    /**
-     * Reads some gramsets for non-reflexive verbs and 
-     * inserts the same records for reflexive verbs.
-     *
-     * @return null
-     */
-/*    
-    public function tempInsertGramsetsForReflexive()
-    {
-        $reflexive_sequence_number=143;
-        $lang_id = 6; // lude lang
-        $pos_id = 11; // verb
-        $reflex_verb = 47; // id of grammatical attribure 'reflexive verb'
-        $seq_nums = [0=>71, 82=>95, 106=>119]; // ranges of sequence numbers  
-        $langs = [1, 4, 5, 6];
-        
-        foreach ($seq_nums as $min=>$max) {
-            $gramsets = Gramset::orderBy('sequence_number')
-                               ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
-                               ->where('lang_id',$lang_id)
-                               ->where('pos_id',$pos_id)
-                               ->where('sequence_number','>',$min)
-                               ->where('sequence_number','<',$max)
-                               ->get();
-            foreach ($gramsets as $gramset) {
-                $ref_gramset = Gramset::create([
-                    'gram_id_mood' => $gramset->gram_id_mood, 
-                    'gram_id_tense' => $gramset->gram_id_tense, 
-                    'gram_id_person' => $gramset->gram_id_person, 
-                    'gram_id_number' => $gramset->gram_id_number, 
-                    'gram_id_negation' => $gramset->gram_id_negation, 
-                    'gram_id_reflexive' => $reflex_verb,
-                    'sequence_number' => $reflexive_sequence_number++,
-                ]);
 
-                foreach ($langs as $l_id) {
-                    $ref_gramset-> parts_of_speech()
-                                -> attach($pos_id, ['lang_id'=>$l_id]);
-                }
+        $search_gramset = $request->input('q');
+        $lang_id = (int)$request->input('lang_id');
+        $pos_id = (int)$request->input('pos_id');
+        $gramsets = Gramset::getList($pos_id,$lang_id,true);
+
+        $list = [];
+        foreach ($gramsets as $gramset_id =>$gramset_name) {
+            if (preg_match("/".$search_gramset."/", $gramset_name)) {
+                $list[]=['id'  => $gramset_id, 
+                         'text'=> $gramset_name];
             }
-        }
+        }  
+//dd($list);        
+        return Response::json($list);
     }
- * 
- */
 }

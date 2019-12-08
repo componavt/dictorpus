@@ -38,7 +38,10 @@
                 <td data-th="{{ trans('dict.gramsets') }}">{{\App\Models\Dict\Gramset::getStringByID($lemma->gramset_id)}}</td>
                 <td data-th="{{ trans('dict.affixes') }}" style="text-align: right">{{$lemma->affix}}</td>
                 <td data-th="{{ trans('dict.right_sort') }}" style="color: white">{{$lemma->reverse_affix}}</td>
-                <td data-th="{{ trans('messages.frequency') }}" style="text-align: right">{{$lemma->frequency}}</td>
+                <td data-th="{{ trans('messages.frequency') }}" style="text-align: right">
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/wordform/?search_lang=').$url_args['search_lang']
+                                ."&search_pos=".$lemma->pos_id."&search_gramset=".$lemma->gramset_id."&search_affix=".urlencode($lemma->affix) }}">{{$lemma->frequency}}</a>
+                </td>
             </tr>
             @endforeach
         </tbody>

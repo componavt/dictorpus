@@ -66,6 +66,17 @@ class LemmaTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testGetStemAffix()
+    {
+        $lemma_id = 29586;
+        $lemma = Lemma::find($lemma_id);
+
+        $result = $lemma->getStemAffix();
+        
+        $expected = ['Anu','s'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 /* 
     public function testWordformTerminativ()
     {

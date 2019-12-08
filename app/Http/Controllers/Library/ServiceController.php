@@ -319,5 +319,169 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
         }
          
     }
- */    
+ */ 
+    /** 
+     * (1) Copy vepsian.wordform to vepkar.wordforms (without dublicates)
+     * (2) Copy vepsian.lemma_gram_wordform to vepkar.lemma_wordform
+     */
+/*    public function tempInsertVepsianWordform()
+    {
+        $lemma_wordfoms = DB::connection('vepsian')
+                            ->table('lemma_gram_wordform')
+                            ->orderBy('lemma_id','wordform_id')
+                            //->take(1)
+                            ->get();
+ 
+        DB::connection('mysql')->table('lemma_wordform')->delete();
+
+        DB::connection('mysql')->table('wordforms')->delete();
+        DB::connection('mysql')->statement('ALTER TABLE wordforms AUTO_INCREMENT = 1');
+        
+        
+        foreach ($lemma_wordfoms as $lemma_wordform):
+            $veps_wordform = DB::connection('vepsian')
+                            ->table('wordform')
+                            ->find($lemma_wordform->wordform_id);
+            $wordform = Wordform::firstOrNew(['wordform' => $veps_wordform->wordform]); 
+            $wordform->updated_at = $veps_wordform->modified;
+            $wordform->created_at = $veps_wordform->modified;
+            $wordform->save();
+            
+            if ($lemma_wordform->gram_set_id === 0) {
+                $lemma_wordform->gram_set_id = NULL;
+            }
+            
+            DB::connection('mysql')->table('lemma_wordform')->insert([
+                    'lemma_id' => $lemma_wordform->lemma_id,
+                    'wordform_id' => $wordform->id,
+                    'gramset_id' => $lemma_wordform->gram_set_id,
+                    //'created_at' => $wordform->updated_at,
+                    //'updated_at' => $wordform->created_at
+                ]
+            );
+                
+        endforeach;
+     }
+    
+    public function tempCheckWordformsWithSpaces(Request $request) {
+//print "<pre>";        
+        $id = $request->id;
+        $wordforms = Wordform::where('wordform','like','% %');
+        if ($id) {
+            $wordforms = $wordforms->where('id','>',$id);
+        }
+        $wordforms = $wordforms->orderBy('id')->get();//take(10)->
+        $count = 1;
+        foreach ($wordforms as $wordform) {
+            print "<p>".$count++.') '.$wordform->id.', '.$wordform->wordform;
+            if ($wordform->lemmas()->count()) { 
+                print $wordform->trimWord() ? '<br>Wordform saved' : '';
+                $wordform->checkWordformWithSpaces(1);
+            } else {
+                $wordform->delete();
+                print "<br>Wordform deleted";
+            }
+            print "</p>";
+        }
+    }    
+    
+    public function tmpFixNegativeVepsVerbForms() {
+        $lang_id = 1;
+        $gramsets = [70, 71, 72, 73, 78, 79, 80, 81, 82, 83, 84, 85, 50, 74, 76, 77, 116, 117, 118, 119, 120, 121];
+        $dialect_id=43;
+        foreach ($gramsets as $gramset_id) {
+            $negation = Grammatic::negativeForm($gramset_id, $lang_id);
+            $lemmas = Lemma::where('lang_id', $lang_id)
+                    ->whereIn('id', function($query) use ($dialect_id, $gramset_id) {
+                        $query->select('lemma_id')->from('lemma_wordform')
+                              ->where('gramset_id',$gramset_id)
+                              ->where('dialect_id',$dialect_id);
+                    })->where('id','<>',828)->where('id','<>',652)
+                    ->orderBy('lemma')->get();
+            $count = 1;
+            foreach($lemmas as $lemma) {
+                foreach ($lemma->wordforms()->wherePivot('gramset_id', $gramset_id)->get() as $wordform) {
+                    if (preg_match("/^".$negation."/", $wordform->wordform)) { continue; }
+                    $new_wordform = $negation.$wordform->wordform;
+                    print "<p>".$count++.'. '.$lemma->id.'. '.$new_wordform;
+                    $lemma->wordforms()
+                          ->wherePivot('wordform_id',$wordform->id)
+                          ->wherePivot('gramset_id',$gramset_id)
+                          ->wherePivot('dialect_id',$dialect_id)
+                          ->detach();                    
+                    $lemma->addWordform($new_wordform, $gramset_id, $dialect_id); 
+                }
+            }
+        }
+    }
+ *
+ */  
+    /**
+     * When we add column lang_id in table gramset_pos,
+     * we old records associated with vepsian lang (lang_id=1) and
+     * dublicated existing records for 3 karelian langs (lang_id=4..6)
+     *
+     * @return null
+     */
+/*    
+    public function tempInsertGramsetPosLang()
+    {
+        $langs = [4,5,6];
+        $gramset_pos = DB::table('gramset_pos')->where('lang_id',1)->get();
+        foreach ($gramset_pos as $rec) {
+            foreach ($langs as $lang) {
+            DB::table('gramset_pos')->insert([
+                    'gramset_id' => $rec->gramset_id,
+                    'pos_id' => $rec->pos_id,
+                    'lang_id' => $lang
+                ]);
+            }
+        }
+    }
+*/    
+    /**
+     * Reads some gramsets for non-reflexive verbs and 
+     * inserts the same records for reflexive verbs.
+     *
+     * @return null
+     */
+/*    
+    public function tempInsertGramsetsForReflexive()
+    {
+        $reflexive_sequence_number=143;
+        $lang_id = 6; // lude lang
+        $pos_id = 11; // verb
+        $reflex_verb = 47; // id of grammatical attribure 'reflexive verb'
+        $seq_nums = [0=>71, 82=>95, 106=>119]; // ranges of sequence numbers  
+        $langs = [1, 4, 5, 6];
+        
+        foreach ($seq_nums as $min=>$max) {
+            $gramsets = Gramset::orderBy('sequence_number')
+                               ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
+                               ->where('lang_id',$lang_id)
+                               ->where('pos_id',$pos_id)
+                               ->where('sequence_number','>',$min)
+                               ->where('sequence_number','<',$max)
+                               ->get();
+            foreach ($gramsets as $gramset) {
+                $ref_gramset = Gramset::create([
+                    'gram_id_mood' => $gramset->gram_id_mood, 
+                    'gram_id_tense' => $gramset->gram_id_tense, 
+                    'gram_id_person' => $gramset->gram_id_person, 
+                    'gram_id_number' => $gramset->gram_id_number, 
+                    'gram_id_negation' => $gramset->gram_id_negation, 
+                    'gram_id_reflexive' => $reflex_verb,
+                    'sequence_number' => $reflexive_sequence_number++,
+                ]);
+
+                foreach ($langs as $l_id) {
+                    $ref_gramset-> parts_of_speech()
+                                -> attach($pos_id, ['lang_id'=>$l_id]);
+                }
+            }
+        }
+    }
+ * 
+ */
+    
 }

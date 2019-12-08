@@ -6,6 +6,7 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/table.css')!!}
 @stop
 
@@ -89,10 +90,14 @@
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
+    selectDialect('search_lang', '{{ trans('dict.select_dialect') }}');
+    selectGramset('search_lang', 'search_pos', '{{ trans('dict.select_gramset') }}');
 @stop
 

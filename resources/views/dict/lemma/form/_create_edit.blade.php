@@ -14,15 +14,7 @@
                  'value' => $dialect_value,
                  'is_multiple' => false,
                  'title' => trans('dict.dialect_in_lemma_form'),
-                 'class'=>'select-dialect form-control'
-            ])
-        <!--div id='wordforms-field'>
-        @include('widgets.form.formitem._text', 
-                ['name' => 'wordforms', 
-                 'value' => '',
-                 'field_comments' => trans('dict.wordforms_field_comments'),
-                 'title'=>trans('dict.wordforms')])
-        </div-->
+                 'class'=>'select-dialect form-control'])
     </div>
     <div class="col-sm-4">        
         @include('widgets.form.formitem._select',

@@ -59,6 +59,7 @@ class StatsController extends Controller
         $chart->labels(array_keys($lang_lemmas));
         $chart->dataset(\Lang::trans('stats.chart_LemmaNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_lemmas)))
               ->color('#ff0000')
+//              ->fill(false) для графика 'line' убрать заливку
               ->backgroundColor('#ff0000');
         $chart->dataset(\Lang::trans('stats.chart_WordformNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_wordforms)))
               ->color('#00ff00')

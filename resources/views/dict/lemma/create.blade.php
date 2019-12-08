@@ -33,69 +33,7 @@
     toggleSpecial();
     addMeaning();
     posSelect();
-    langSelect();
-    
-    $(".select-dialect").select2({
-        width: '100%',
-        ajax: {
-          url: "/dict/dialect/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              lang_id: $( "#lang_id option:selected" ).val()
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });   
-    
-    $(".multiple-select-phrase").select2({
-        width: '100%',
-        ajax: {
-          url: "/dict/lemma/list_with_pos_meaning",
-          dataType: 'json',
-          delay: 2500,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              lang_id: $( "#lang_id option:selected" ).val(),
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });
-    
-    $(".multiple-select-variants").select2({
-        width: '100%',
-        ajax: {
-          url: "/dict/lemma/list_with_pos_meaning",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              lang_id: $( "#lang_id option:selected" ).val(),
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });
-    
+    selectDialect('lang_id', '{{ trans('dict.select_dialect') }}');
+    selectPhrase();
+    selectVariants();
 @stop

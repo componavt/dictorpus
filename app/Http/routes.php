@@ -99,6 +99,7 @@ Route::group(
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
 
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
+        Route::get('dict/gramset/list', 'Dict\GramsetController@gramsetList');
 
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');

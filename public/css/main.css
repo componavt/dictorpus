@@ -491,6 +491,16 @@ h2 {
     text-align: center;
 }
 
+.form-group .select2-container--default .select2-selection--single {
+    border-radius: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,.075);
+    border-color: #ccc;
+    height: 34px;
+}
+
+.form-group .select2-container .select2-selection--single .select2-selection__rendered {
+    padding: 3px 20px 3px 13px;
+}
 @media screen and (max-width: 395px) {    
     .logo img {
         height: auto;

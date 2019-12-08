@@ -52,8 +52,8 @@ function selectedValuesToURL(varname) {
     return forURL;
 }
 
-function langSelect() {
-    $("#lang_id")
+function langSelect(lang_var="lang_id") {
+    $("#"+lang_var)
         .change(function () {
             //$('.select-dialect').val(null).trigger('change');    
 /*
@@ -66,4 +66,66 @@ function langSelect() {
           })
         .change();    
 }
+
+function selectWithLang(el, url, lang_var, placeholder=''){
+    $(el).select2({
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: url,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#"+lang_var+" option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
+function selectDialect(lang_var, placeholder=''){
+    selectWithLang(".select-dialect", "/dict/dialect/list", lang_var, placeholder);
+}
+
+function selectPhrase(placeholder='') {
+    selectWithLang(".multiple-select-phrase", "/dict/lemma/list_with_pos_meaning", 'lang_id', placeholder);
+}    
+
+function selectVariants(placeholder='') {
+    selectWithLang(".multiple-select-variants", "/dict/lemma/list_with_pos_meaning", 'lang_id', placeholder);
+}
+
+function selectGramset(lang_var, pos_var, placeholder=''){
+    $(".select-gramset").select2({
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/dict/gramset/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#"+lang_var+" option:selected" ).val(),
+              pos_id: $( "#"+pos_var+" option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
 

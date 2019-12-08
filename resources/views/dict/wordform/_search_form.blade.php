@@ -1,6 +1,7 @@
         {!! Form::open(['url' => '/dict/wordform/', 
                              'method' => 'get']) 
         !!}
+        
 <div class="row">
     <div class="col-sm-3">
         @include('widgets.form.formitem._text', 
@@ -17,11 +18,12 @@
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
     </div>
     <div class="col-sm-5">
-        @include('widgets.form.formitem._select', 
+        @include('widgets.form.formitem._select2',
                 ['name' => 'search_dialect', 
                  'values' =>$dialect_values,
-                 'value' =>$url_args['search_dialect'],
-                 'attributes'=>['placeholder' => trans('dict.select_dialect') ]]) 
+                 'value' =>[$url_args['search_dialect']],
+                 'is_multiple' => false,
+                 'class'=>'select-dialect form-control'])
     </div>
 </div>    
 <div class="row">
@@ -33,11 +35,12 @@
                  'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
     </div>
     <div class="col-sm-5">
-                        @include('widgets.form.formitem._select', 
-                        ['name' => 'search_gramset', 
-                         'values' =>$gramset_values,
-                         'value' =>$url_args['search_gramset'],
-                         'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
+        @include('widgets.form.formitem._select2',
+                ['name' => 'search_gramset', 
+                 'values' =>$gramset_values,
+                 'value' =>[$url_args['search_gramset']],
+                 'is_multiple' => false,
+                 'class'=>'select-gramset form-control'])
     </div>
     <div class="col-sm-4 search-button-b">       
         <span>

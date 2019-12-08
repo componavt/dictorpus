@@ -69,6 +69,31 @@ class Wordform extends Model
              ->wherePivot('gramset_id', $gramset_id)->first();
     }
     
+    public static function urlArgs($request) {
+        $url_args = [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_affix'    => $request->input('search_affix'),
+                    'search_dialect'  => (int)$request->input('search_dialect'),
+                    'search_gramset'  => (int)$request->input('search_gramset'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_pos'      => (int)$request->input('search_pos'),
+                    'search_wordform' => $request->input('search_wordform'),
+                ];
+        
+        if (!$url_args['page']) {
+            $url_args['page'] = 1;
+        }
+        
+        if ($url_args['limit_num']<=0) {
+            $url_args['limit_num'] = 10;
+        } elseif ($url_args['limit_num']>1000) {
+            $url_args['limit_num'] = 1000;
+        }   
+        
+        return $url_args;
+    }
+    
     public function getMainPart() {
         mb_internal_encoding("UTF-8");
         $wordform = trim($this -> wordform);
@@ -224,6 +249,7 @@ class Wordform extends Model
     public static function search(Array $url_args) {
         $wordforms = self::orderBy('wordform');
         $wordforms = self::searchByWordform($wordforms, $url_args['search_wordform']);
+        $wordforms = self::searchByAffix($wordforms, $url_args['search_affix']);
 
         if ($url_args['search_dialect'] || !$url_args['search_lang']) {
              $url_args['search_lang'] = Dialect::getLangIDByID($url_args['search_dialect']);
@@ -246,6 +272,14 @@ class Wordform extends Model
         }
         return 
             $wordforms->where('wordform_for_search','like', $wordform);
+    }
+    
+    public static function searchByAffix($wordforms, $affix) {
+        if (!$affix) {
+            return $wordforms;
+        }
+        return 
+            $wordforms->where('affix','like', $affix);
     }
     
     public static function searchByDialect($wordforms, $dialect) {
@@ -315,6 +349,5 @@ class Wordform extends Model
                                 ->where('wordform','NOT LIKE','% %');
                   })
                 ->count();        
-    }
-    
+    }        
 }
