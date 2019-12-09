@@ -111,9 +111,9 @@
         </table>
         @endforeach
 
-        @if ($lemma->isChangeable())
+{{--        @if ($lemma->isChangeable()) --}}
             @include('dict.lemma_wordform._show')
-        @endif
+{{--        @endif --}}
             
         @include('dict.lemma._modal_delete')
 <?php $route_for_load = ($update_text_links) ? '/dict/meaning/examples/reload' : '/dict/meaning/examples/load'; ?>
