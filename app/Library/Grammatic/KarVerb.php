@@ -422,6 +422,11 @@ class KarVerb
     public static function imp3SingPolByStem($stem, $lemma, $dialect_id) {
         $last_let = mb_substr($stem, -1, 1);
         $before_last_let = mb_substr($stem, -2, 1);
+        if ($last_let == '’') {
+            $last_let = $before_last_let;
+            $before_last_let = mb_substr($stem, -3, 1);            
+        }
+        
         $stem_a = (KarGram::isBackVowels($stem) ? 'a': 'ä');
 
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
@@ -453,6 +458,10 @@ class KarVerb
     public static function imp2PlurPolByStem($stem, $lemma, $dialect_id) {
         $last_let = mb_substr($stem, -1, 1);
         $before_last_let = mb_substr($stem, -2, 1);
+        if ($last_let == '’') {
+            $last_let = $before_last_let;
+            $before_last_let = mb_substr($stem, -3, 1);            
+        }
         $stem_ua = (KarGram::isBackVowels($stem) ? 'ua': 'iä');
 
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
@@ -502,6 +511,10 @@ class KarVerb
     public static function inf2Ines($lemma) {
         $last_let = mb_substr($lemma, -1, 1);
         $before_last_let = mb_substr($lemma, -2, 1);
+        if ($last_let == '’') {
+            $last_let = $before_last_let;
+            $before_last_let = mb_substr($stem, -3, 1);            
+        }
         
         if (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let)) {
             return $lemma. (KarGram::isBackVowels($lemma) ? 's’s’a': 'ssä');
@@ -520,6 +533,10 @@ class KarVerb
     public static function inf2Inst($lemma) {
         $last_let = mb_substr($lemma, -1, 1);
         $before_last_let = mb_substr($lemma, -2, 1);
+        if ($last_let == '’') {
+            $last_let = $before_last_let;
+            $before_last_let = mb_substr($stem, -3, 1);            
+        }
         
         if (KarGram::isConsonant($before_last_let) && preg_match("/^(.+)[aä]$/u", $lemma, $regs)) {
             $lemma = $regs[1]. 'e';
@@ -599,6 +616,11 @@ class KarVerb
     public static function partic2active($stem, $lang_id) {
         $last_let = mb_substr($stem, -1, 1);
         $before_last_let = mb_substr($stem, -2, 1);
+        if ($last_let == '’') {
+            $last_let = $before_last_let;
+            $before_last_let = mb_substr($stem, -3, 1);            
+        }
+        
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
             return $stem. 'nnun';
         } elseif (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let)) {
