@@ -668,6 +668,11 @@ class KarVerb
      */
     public static function potencialForm($stem, $affix, $lang_id, $dialect_id) {
         $last_let = mb_substr($stem, -1, 1);
+        if ($last_let == '’') {
+            $last_let = mb_substr($stem, -2, 1);            
+        }
+        
+        
         if (KarGram::isVowel($last_let)) {
             return $stem. 'nn'.$affix;
         } elseif (in_array($last_let, ['n', 'l', 'r', 's', 'š'])) {
