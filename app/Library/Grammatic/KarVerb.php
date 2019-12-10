@@ -590,6 +590,8 @@ class KarVerb
         if ($last_let == '’') {
             $last_let = $before_last_let;
             $before_last_let = mb_substr($stem, -3, 1);            
+        } elseif ($before_last_let == '’') {
+            $before_last_let = mb_substr($stem, -3, 1);            
         }
         
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
