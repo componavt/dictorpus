@@ -41,13 +41,23 @@ class KarVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    // основа 5 заканчивается на ’
-    public function testPerfectVerbFormWithApost() {
+    // in base 5 the last letter = ’
+    public function testPerfectVerbFormWithLastApost() {
         $lang_id = 4;
         $stem = 'avual’';
         $result = KarVerb::perfectForm($stem, $lang_id);
         
         $expected = 'avual’lun';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    // in base 5 the before last letter = ’
+    public function testPerfectVerbFormWithBeforeLastApost() {
+        $lang_id = 4;
+        $stem = 'illas’t’a';
+        $result = KarVerb::perfectForm($stem, $lang_id);
+        
+        $expected = 'illas’t’an';
         $this->assertEquals( $expected, $result);        
     }
     

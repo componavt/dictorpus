@@ -6,7 +6,7 @@ use App\Library\Grammatic;
 use App\Library\Grammatic\KarGram;
 
 use App\Models\Dict\Gramset;
-use App\Models\Dict\Lang;
+//use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
@@ -31,7 +31,7 @@ class KarVerb
      */
     public static function stemsFromDB($lemma, $dialect_id) {
         for ($i=0; $i<8; $i++) {
-            $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id);;
+            $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id);
         }
         return $stems;
     }
@@ -420,12 +420,9 @@ class KarVerb
      */
 
     public static function imp3SingPolByStem($stem, $lemma, $dialect_id) {
-        $last_let = mb_substr($stem, -1, 1);
-        $before_last_let = mb_substr($stem, -2, 1);
-        if ($last_let == '’') {
-            $last_let = $before_last_let;
-            $before_last_let = mb_substr($stem, -3, 1);            
-        }
+        $stem_for_search = Grammatic::toSearchForm($stem);
+        $last_let = mb_substr($stem_for_search, -1, 1);
+        $before_last_let = mb_substr($stem_for_search, -2, 1);
         
         $stem_a = (KarGram::isBackVowels($stem) ? 'a': 'ä');
 
@@ -456,12 +453,9 @@ class KarVerb
      */
 
     public static function imp2PlurPolByStem($stem, $lemma, $dialect_id) {
-        $last_let = mb_substr($stem, -1, 1);
-        $before_last_let = mb_substr($stem, -2, 1);
-        if ($last_let == '’') {
-            $last_let = $before_last_let;
-            $before_last_let = mb_substr($stem, -3, 1);            
-        }
+        $stem_for_search = Grammatic::toSearchForm($stem);
+        $last_let = mb_substr($stem_for_search, -1, 1);
+        $before_last_let = mb_substr($stem_for_search, -2, 1);
         $stem_ua = (KarGram::isBackVowels($stem) ? 'ua': 'iä');
 
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
@@ -506,42 +500,35 @@ class KarVerb
      * начальная форма + s’s’a / ssä (если начальная форма заканчивается на дифтонг (т.е. два гласных): VV)
      * + šša / ššä (если начальная форма заканчивается на согласный + a / ä: Ca / Cä, при этом a / ä переходит в e: a > e, ä > e)     
      * 
-     * @param String $lemma
+     * @param String $stem
      */
-    public static function inf2Ines($lemma) {
-        $last_let = mb_substr($lemma, -1, 1);
-        $before_last_let = mb_substr($lemma, -2, 1);
-        if ($last_let == '’') {
-            $last_let = $before_last_let;
-            $before_last_let = mb_substr($stem, -3, 1);            
-        }
+    public static function inf2Ines($stem) {
+        $stem_for_search = Grammatic::toSearchForm($stem);
+        $last_let = mb_substr($stem_for_search, -1, 1);
+        $before_last_let = mb_substr($stem_for_search, -2, 1);
         
         if (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let)) {
-            return $lemma. (KarGram::isBackVowels($lemma) ? 's’s’a': 'ssä');
-        } elseif (KarGram::isConsonant($before_last_let) && preg_match("/^(.+)[aä]$/u", $lemma, $regs)) {
-            return $regs[1]. 'ešš'. KarGram::garmVowel($lemma,'a');
+            return $stem. (KarGram::isBackVowels($stem) ? 's’s’a': 'ssä');
+        } elseif (KarGram::isConsonant($before_last_let) && preg_match("/^(.+)[aä]$/u", $stem, $regs)) {
+            return $regs[1]. 'ešš'. KarGram::garmVowel($stem,'a');
         }
-        return $lemma;
+        return $stem;
     }
     
     /**
      * 133. II инфинитив, инструктив  
      * начальная форма + n (при этом, если начальная форма заканчивается на согласный + a / ä: Ca / Cä, то a / ä переходит в e: a > e, ä > e)
      * 
-     * @param String $lemma
+     * @param String $stem
      */
-    public static function inf2Inst($lemma) {
-        $last_let = mb_substr($lemma, -1, 1);
-        $before_last_let = mb_substr($lemma, -2, 1);
-        if ($last_let == '’') {
-            $last_let = $before_last_let;
-            $before_last_let = mb_substr($stem, -3, 1);            
-        }
+    public static function inf2Inst($stem) {
+        $stem_for_search = Grammatic::toSearchForm($stem);
+        $before_last_let = mb_substr($stem_for_search, -2, 1);
         
-        if (KarGram::isConsonant($before_last_let) && preg_match("/^(.+)[aä]$/u", $lemma, $regs)) {
-            $lemma = $regs[1]. 'e';
+        if (KarGram::isConsonant($before_last_let) && preg_match("/^(.+)[aä]$/u", $stem, $regs)) {
+            $stem = $regs[1]. 'e';
         }
-        return $lemma. 'n';
+        return $stem. 'n';
     }
     
     /**
@@ -584,15 +571,9 @@ class KarVerb
      * @param String $stem
      */
     public static function perfectForm($stem, $lang_id) {
-        $last_let = mb_substr($stem, -1, 1);
-        $before_last_let = mb_substr($stem, -2, 1);
-        
-        if ($last_let == '’') {
-            $last_let = $before_last_let;
-            $before_last_let = mb_substr($stem, -3, 1);            
-        } elseif ($before_last_let == '’') {
-            $before_last_let = mb_substr($stem, -3, 1);            
-        }
+        $stem_for_search = Grammatic::toSearchForm($stem);
+        $last_let = mb_substr($stem_for_search, -1, 1);
+        $before_last_let = mb_substr($stem_for_search, -2, 1);
         
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
             return $stem. 'n';
@@ -616,12 +597,9 @@ class KarVerb
      * @param String $stem
      */
     public static function partic2active($stem, $lang_id) {
-        $last_let = mb_substr($stem, -1, 1);
-        $before_last_let = mb_substr($stem, -2, 1);
-        if ($last_let == '’') {
-            $last_let = $before_last_let;
-            $before_last_let = mb_substr($stem, -3, 1);            
-        }
+        $stem_for_search = Grammatic::toSearchForm($stem);
+        $last_let = mb_substr($stem_for_search, -1, 1);
+        $before_last_let = mb_substr($stem_for_search, -2, 1);
         
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
             return $stem. 'nnun';
@@ -691,11 +669,8 @@ class KarVerb
      * @param Int $dialect_id
      */
     public static function potencialForm($stem, $affix, $lang_id, $dialect_id) {
-        $last_let = mb_substr($stem, -1, 1);
-        if ($last_let == '’') {
-            $last_let = mb_substr($stem, -2, 1);            
-        }
-        
+        $stem_for_search = Grammatic::toSearchForm($stem);
+        $last_let = mb_substr($stem_for_search, -1, 1);
         
         if (KarGram::isVowel($last_let)) {
             return $stem. 'nn'.$affix;
