@@ -180,6 +180,9 @@ class MeaningController extends Controller
         }
         
         if (User::checkAccess('dict.edit')) {
+            ini_set('max_execution_time', 7200);
+            ini_set('memory_limit', '512M');
+            
 //dd($meaning->texts()->count());            
             if (!$meaning->texts()->count()) {
                 $meaning->addTextLinks();
