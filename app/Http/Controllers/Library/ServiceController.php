@@ -470,5 +470,154 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
     }
  * 
  */
+//select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
+/*
+    public function tmpProcessOldLetters() {
+        $lang_id=5;
+        $words = Word::whereRaw("(word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%')"
+                . " and text_id in (SELECT id from texts where lang_id=5)")  // only livvic texts
+                     ->take(1000)->get();
+//dd($words->toSql());        
+        foreach ($words as $word) {
+//dd($word->word);            
+            $new_word = Grammatic::changeLetters($word->word);
+            $new_word_l = strtolower($new_word);
+            if ($new_word != $word->word) {
+//dd($word->text_id);        
+print "<p>".$word->word;        
+                DB::statement("DELETE FROM meaning_text WHERE word_id=".$word->id);
+                $wordform_q = "(SELECT id from wordforms where wordform like '$new_word' or wordform like '$new_word_l')";
+                $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
+                $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=$lang_id and (lemma like '$new_word' or lemma like '$new_word_l' or id in $lemma_q))")
+                                   ->get();    
+//dd($meanings);    
+                foreach ($meanings as $meaning) {
+                    $meaning->texts()->attach($word->text_id,
+                            ['sentence_id'=>$word->sentence_id,
+                             'word_id'=>$word->id,
+                             'w_id'=>$word->w_id,
+                             'relevance'=>1]);
+                    
+                }
+                $word->word = $new_word;
+                $word->save();
+            }
+//                        $word_for_DB = Word::changeLetters($word_for_DB);
+        }
+        
+    }
+*/
+    /*    public function tempStripSlashes()
+    {
+        $texts = Text::all();
+        foreach ($texts as $text) {
+            $text->title = stripslashes($text->title);
+            $text->text = stripslashes($text->text);
+            $text->save();            
+        }
+        
+    }
+ * 
+ */
+    
+    /*    
+    public function tempInsertVepsianText()
+    {
+        DB::connection('mysql')->table('texts')->delete();
+       
+        DB::connection('mysql')->table('transtexts')->delete();
+
+        $veps_texts = DB::connection('vepsian')
+                            ->table('text')
+                            ->where('lang_id',2)
+                            ->orderBy('id')
+                            //->take(1)
+                            ->get();
+        
+        foreach ($veps_texts as $veps_text):
+            $text = new Transtext;
+            $text->id = $veps_text->id;
+            $text->lang_id = $veps_text->lang_id;
+            $text->title = $veps_text->title;
+            $text->text = $veps_text->text;
+            $text->updated_at = $veps_text->modified;
+            $text->created_at = $veps_text->modified;
+            $text->save();            
+        endforeach;
+
+        $veps_texts = DB::connection('vepsian')
+                            ->table('text')
+                            ->where('lang_id',1)
+                            ->orderBy('id')
+                            //->take(1)
+                            ->get();
+ 
+        foreach ($veps_texts as $veps_text):
+            $text = new Text;
+            $text->id = $veps_text->id;
+            $text->corpus_id = $veps_text->corpus_id;
+            $text->lang_id = $veps_text->lang_id;
+            $text->title = $veps_text->title;
+            $text->text = $veps_text->text;
+            $text->source_id = $veps_text->source_id;
+            $text->event_id = $veps_text->event_id;
+            $text->updated_at = $veps_text->modified;
+            $text->created_at = $veps_text->modified;
+
+            $transtext = DB::connection('vepsian')
+                            ->table('text_pair')
+                            ->where('text1_id',$text->id)
+                            ->first();
+            if ($transtext) {
+                $text->transtext_id = $transtext->text2_id;
+            }
+            $text->save();            
+        endforeach;
+     }
+ */
+/*
+    public function tempInsertVepsianDialectText()
+    {
+        DB::connection('mysql')->table('dialect_text')->delete();
+       
+        $veps_texts = DB::connection('vepsian')
+                            ->table('text_label')
+                            ->join('text','text.id','=','text_label.text_id')
+                            ->where('label_id','<',6)
+                            ->where('lang_id',1)
+                            ->orderBy('text_id')
+                            //->take(1)
+                            ->get();
+        
+        foreach ($veps_texts as $veps_text):
+            DB::connection('mysql')->table('dialect_text')
+                                   ->insert(['dialect_id'=>$veps_text->label_id,
+                                             'text_id'=>$veps_text->text_id]);
+        endforeach;
+     }
+/*    
+    public function tempInsertVepsianGenreText()
+    {
+        DB::connection('mysql')->table('dialect_text')->delete();
+       
+        $veps_texts = DB::connection('vepsian')
+                            ->table('text_label')
+                            ->join('text','text.id','=','text_label.text_id')
+                            ->where('label_id','>',5)
+                            ->where('lang_id',1)
+                            ->orderBy('text_id')
+                            //->take(1)
+                            ->get();
+        
+        foreach ($veps_texts as $veps_text):
+            DB::connection('mysql')->table('genre_text')
+                                   ->insert(['genre_id'=>$veps_text->label_id,
+                                             'text_id'=>$veps_text->text_id]);
+        endforeach;
+     }
+ * 
+ */
+     // select text1_id,text2_id,t1.event_id,t2.event_id  from text_pair, text as t1, text as t2 where t2.lang_id=2 and t2.event_id is not null and text_pair.text1_id=t1.id and text_pair.text2_id=t2.id;
+     // select text1_id,text2_id,text.event_id from text_pair,text where text.lang_id=2 and text.event_id is not null and text_pair.text2_id=text.id;
     
 }

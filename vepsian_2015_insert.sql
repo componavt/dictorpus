@@ -1,4 +1,4 @@
-c-- SET foreign_key_checks=0;
+-- SET foreign_key_checks=0;
 
 -- mysqldump -p -uroot --skip-extended-insert vepkar gramsets > vepkar_20160826_gramsets.sql
 
@@ -985,3 +985,5 @@ select pos_id, gramset_id, affix, count(*) from lemma_wordform, lemmas where lem
 -- php artisan make:chart LemmaNumByLang
 
 -- php artisan make:controller Library\StatsController
+
+select lemmas.id as lem_id, lemma, count(*) as frequency from lemmas, meaning_text, meanings where meaning_text.meaning_id=meanings.id and meanings.lemma_id=lemmas.id and relevance>0 group by lem_id order by frequency DESC LIMIT 50;  

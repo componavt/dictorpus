@@ -10,6 +10,7 @@ use DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
+use LaravelLocalization;
 //use Storage;
 //use Carbon\Carbon;
 
@@ -855,5 +856,59 @@ class LemmaController extends Controller
         $lemma->updateWordformAffixes(true);
         
         return $lemma->stemAffixForm();
+    }
+    
+    /**
+     * SQL: select lemmas.id as lem_id, lemma, count(*) as frequency from lemmas, meaning_text, meanings where meaning_text.meaning_id=meanings.id and meanings.lemma_id=lemmas.id and relevance>0 group by lem_id order by frequency DESC;
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function frequencyInTexts(Request $request) {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $lemmas_for_lang = Lemma::selectFromMeaningText()
+                                ->select('lang_id', DB::raw('count(*) as frequency'))
+                                ->groupBy('lang_id')
+                                ->orderBy('frequency', 'DESC')
+                                ->get();
+        $lang_values = [];
+        foreach ($lemmas_for_lang as $lemma) {
+            $lang_values[$lemma->lang_id] = $lemma->lang->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
+        }
+
+        $lemmas_for_pos = Lemma::selectFromMeaningText()
+                               ->select('pos_id', DB::raw('count(*) as frequency'))
+                               ->whereNotNull('pos_id')
+                               ->groupBy('pos_id')
+                               ->orderBy('frequency', 'DESC')
+                               ->get();
+        $pos_values = [NULL=>''];
+        foreach ($lemmas_for_pos as $lemma) {
+            $pos_values[$lemma->pos_id] = $lemma->pos->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
+        }
+
+
+        if ($url_args['search_lang']) {
+            $lemmas = Lemma::selectFromMeaningText()
+                           ->join('parts_of_speech','parts_of_speech.id','=','lemmas.pos_id')
+                           ->select('lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', DB::raw('count(*) as frequency'))
+                           ->whereLangId($url_args['search_lang'])
+                           ->groupBy('lemma_id')
+                           ->orderBy(DB::raw('count(*)'), 'DESC');
+                        
+            if ($url_args['search_pos']) {
+                $lemmas = $lemmas->wherePosId($url_args['search_pos']);
+            } 
+//dd($lemmas->toSql());
+            $lemmas = $lemmas->get();
+        } else {
+            $lemmas = NULL;
+        }
+                
+        return view('corpus.text.frequency.lemmas',
+                compact('lang_values', 'lemmas', 'pos_values', 'args_by_get', 'url_args'));
     }
 }

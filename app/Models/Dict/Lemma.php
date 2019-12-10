@@ -679,6 +679,9 @@ dd($wordforms);
     
     public static function store($lemma, $pos_id, $lang_id) {
 //dd($lemma);        
+        if (!$pos_id) {
+            $pos_id = NULL;
+        }
         $lemma = Lemma::create(['lemma'=>$lemma,'lang_id'=>$lang_id,'pos_id'=>$pos_id]);
         $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
         $lemma->save();
@@ -711,7 +714,7 @@ dd($wordforms);
         $this->lemma = $new_lemma;
         $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
         $this->lang_id = (int)$data['lang_id'];
-        $this->pos_id = (int)$data['pos_id'];
+        $this->pos_id = (int)$data['pos_id'] ? (int)$data['pos_id'] : NULL;
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
         
@@ -1453,6 +1456,13 @@ dd($wordforms);
         }   
               
         return $url_args;
+    }
+    
+    public static function selectFromMeaningText() {
+        return Lemma::join('meanings','lemmas.id','=','meanings.lemma_id')
+                    ->join('meaning_text','meanings.id','=','meaning_text.meaning_id')
+                    //->whereNotNull('pos_id')        
+                    ->where('relevance', '>', 0);
     }
     
     /*    

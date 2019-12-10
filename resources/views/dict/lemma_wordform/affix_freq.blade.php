@@ -6,7 +6,6 @@
 @stop
 
 @section('headExtra')
-    <!--link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"-->
     <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css">
     {!!Html::style('css/table.css')!!}
 @stop

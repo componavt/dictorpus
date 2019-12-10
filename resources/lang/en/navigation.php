@@ -32,6 +32,8 @@ return [
     'inflexion_groups' => 'Inflexion groups',
     'informants' => 'Informants',
     'langs'  => 'Languages',
+    'lemma_frequency' => 'Frequency dictionary of lemmas marked up in the text',
+    'lemma_frequency_comment' => 'Lemma and the number of links to words in the texts. All links are summed, except the links with the label "does not fit at all". If a word in the text is automatically marked with a lemma with N meanings and these founded meanings have not yet been verified, then all N links will be calculated.',
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',
     'omonyms' => 'Omonyms',
