@@ -38,7 +38,7 @@ return [
     'stats_by_words' => 'Statistics by words in the text',
     'stats_by_examples' => 'Statistics by examples (words in sentences automatically tied to a lemma)',
 
-    'total_active_editors' => 'Active editors (Participants who have activity in the last 30 days)',
+    'total_active_editors' => 'Active editors (participants who have activity in the last 30 days)',
     'total_examples' => 'The total number of examples (the number of words in sentences automatically tied to a lemma)',
     'total_checked_examples' => 'Number of verified examples',
     'total_checked_words' => 'The number of words in the text (green color), anchored by experts to any meaning of the word in the dictionary',

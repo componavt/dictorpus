@@ -569,6 +569,12 @@ class KarVerb
     public static function perfectForm($stem, $lang_id) {
         $last_let = mb_substr($stem, -1, 1);
         $before_last_let = mb_substr($stem, -2, 1);
+        
+        if ($last_let == '’') {
+            $last_let = $before_last_let;
+            $before_last_let = mb_substr($stem, -3, 1);            
+        }
+        
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
             return $stem. 'n';
         } elseif (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let)) {

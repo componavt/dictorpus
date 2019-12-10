@@ -18,7 +18,7 @@ use App\Models\Dict\PartOfSpeech;
 class KarGram
 {
     public static function isConsonant($letter) {
-        $consonants = ['p', 't', 'k', 's', 'h', 'j', 'v', 'l', 'r', 'm', 'n', 'č', 'd'];
+        $consonants = ['p', 't', 'k', 's', 'h', 'j', 'v', 'l', 'r', 'm', 'n', 'č', 'd', 'g'];
         if (in_array($letter, $consonants)) {
             return true;
         } 

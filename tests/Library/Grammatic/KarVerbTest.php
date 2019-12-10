@@ -11,6 +11,17 @@ use App\Library\Grammatic\KarVerb;
 
 class KarVerbTest extends TestCase
 {
+    // основа 5 заканчивается на согласный g + гласный: gV    
+    public function testPerfectVerbFormBringua() {
+        $lang_id = 4;
+        $stem = 'bringa';
+        $result = KarVerb::perfectForm($stem, $lang_id);
+        
+        $expected = 'bringan';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    // основа 5 заканчивается на l
     public function testPerfectVerbFormTulla() {
         $lang_id = 4;
         $stem = 'tul';
@@ -20,12 +31,23 @@ class KarVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    // основа 5 заканчивается на согласный + гласный: СV
     public function testPerfectVerbFormAndua() {
         $lang_id = 4;
         $stem = 'anda';
         $result = KarVerb::perfectForm($stem, $lang_id);
         
         $expected = 'andan';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    // основа 5 заканчивается на ’
+    public function testPerfectVerbFormWithApost() {
+        $lang_id = 4;
+        $stem = 'avual’';
+        $result = KarVerb::perfectForm($stem, $lang_id);
+        
+        $expected = 'avual’lun';
         $this->assertEquals( $expected, $result);        
     }
     
