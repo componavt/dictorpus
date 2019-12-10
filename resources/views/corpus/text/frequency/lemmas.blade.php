@@ -11,6 +11,7 @@
 @stop
 
 @section('body')        
+        <p>{{trans('dict.lemma_frequency_comment')}}</p>
         @include('corpus.text.frequency._search_lemma_form',['url' => '/corpus/text/frequency/lemmas']) 
 
         @if ($lemmas)

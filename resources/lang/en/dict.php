@@ -100,6 +100,7 @@ return [
     'lang_code' => 'Language code',
     'last_updated_lemmas' => 'Last updated lemmas',
     'lemma' => 'lemma',
+    'lemma_frequency_comment' => 'Lemma and the number of links to words in the texts. All links are summed, except the links with the label "does not fit at all". If a word in the text is automatically marked with a lemma with N meanings and these founded meanings have not yet been verified, then all N links will be calculated.',
     'lemma_meaning' => 'lemma with meaning',
     'lemmas' => 'lemmas',
     'lemma_removed' => 'Lemma ":name" is removed successfully.',
