@@ -15,7 +15,7 @@
         @include('corpus.text.frequency._search_lemma_form',['url' => '/corpus/text/frequency/lemmas']) 
 
         @if ($lemmas)
-        <table class="table table-striped rwd-table wide-md">
+        <table id="lemmasTable" class="table table-striped rwd-table wide-md">
         <thead>
             <tr>
                 <th>No</th>
@@ -58,4 +58,14 @@
     </div>
 @stop
 
+@section('footScriptExtra')
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+@stop
+
+@section('jqueryFunc')
+    $(document).ready( function () {
+        $('#lemmasTable').DataTable();
+    } );
+@stop
 
