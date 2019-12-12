@@ -1011,7 +1011,14 @@ dd($wordforms);
        return '#';
     }
     
-    
+    public function meaningIdsToList() {
+        $out = [];
+        foreach ($this->meanings as $meaning) {
+            $out[] = $meaning->id;
+        }
+        return join(',',$out);
+    }
+
     /**
      * Add wordform found in the text with gramset_id and set of dialects
      * 
