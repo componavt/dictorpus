@@ -152,6 +152,6 @@ h4 .fa {
 }
 
 .reload-wordforms,
-reload-stem-affix-by-wordforms {
+.reload-stem-affix-by-wordforms {
     cursor: pointer;
 }

@@ -38,12 +38,14 @@
             </div>
             <div class="col-sm-4" style="text-align: right; font-weight: bold">   
                 <span id="lemmaStemAffix">{{$lemma->stemAffixForm()}}</span>
+            @if (User::checkAccess('dict.edit'))
                 <img class="img-loading" id="img-loading_stem-affix" src="{{ asset('images/loading.gif') }}">
                 @include('widgets.form.button._reload', 
                          ['data_reload' => $lemma->id,
                           'class' => 'reload-stem-affix-by-wordforms',
                           'func' => 'reloadStemAffixByWordforms',
                           'title' => trans('dict.reload-stem-affix-by-wordforms')])
+            @endif
             </div>
         </div>
         

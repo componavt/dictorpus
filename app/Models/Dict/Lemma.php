@@ -1383,7 +1383,7 @@ dd($wordforms);
         }
 
         $wordforms =[$this->lemma];
-        foreach ($this->wordforms as $wordform) {
+        foreach ($this->wordforms()->whereNotNull('gramset_id')->get() as $wordform) {
             if (!preg_match("/\s/", $wordform->wordform)) {
                 $wordforms[]=$wordform->wordform;
             }
