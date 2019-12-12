@@ -1074,8 +1074,13 @@ dd($wordforms);
         if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
             return;
         }
-        $this->wordforms()->attach($wordform_obj->id, ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 
-                                                       'affix'=>$this->affixForWordform($wordform_obj->wordform)]);    
+        if ($gramset_id) {
+            $affix = $this->affixForWordform($wordform_obj->wordform);
+        } else {
+            $affix = NULL;
+        }
+        $this->wordforms()->attach($wordform_obj->id, 
+                                   ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix'=>$affix]);    
 //print "<p>". $wordform_obj->wordform ." | $gramset_id | $dialect_id</p>";
     }
     
