@@ -40,16 +40,9 @@
     <div id="LemmaNumByLangChart" style="margin-top: 20px;">
         {!! $chart->container() !!}
     </div>
-    <script src="https://unpkg.com/vue"></script>
-    <script>
-        var app = new Vue({
-            el: '#LemmaNumByLangChart',
-        });
-    </script>
-    <script src=https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js charset=utf-8></script>
     {!! $chart->script() !!}
 @stop
 
 @section('footScriptExtra')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" charset="utf-8"></script>
 @stop

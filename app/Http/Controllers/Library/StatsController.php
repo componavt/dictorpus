@@ -43,28 +43,28 @@ class StatsController extends Controller
         $total_relations = Meaning::countRelations();
         $total_translations = Meaning::countTranslations();
         
-/*        $langs = Lang::getList(Lang::nonProjectLangIDs());
-        $ch_labels = $ch_data = [];
-        foreach ($langs as $lang_id=>$lang_name) {
-            $ch_labels[] = $lang_name;
-            $lemma_data[] = Lemma::whereLangId($lang_id)->count();
-            $wordform_data[] = Wordform::join('lemma_wordform','wordforms.id','=','lemma_wordform.wordform_id')
-                        ->whereIn('lemma_id', function ($q) use ($lang_id){
-                           $q->select('id')->from('lemmas')->whereLangId($lang_id);                           
-                        })
-                        ->count();
-        }
-*/
         $chart = new LemmaNumByLang;
-        $chart->labels(array_keys($lang_lemmas));
+        $chart->labels(array_keys($lang_lemmas))
+//                ->yAxisTitle('ggggggg')
+//                ->title('9999999999')
+//                ->options(['scales' =>     LemmaNumByLang::chartSetAxes('Date format(DD-MM)','Hours in (24) time format')])
+                ;
         $chart->dataset(\Lang::trans('stats.chart_LemmaNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_lemmas)))
               ->color('#ff0000')
+/*              ->options(['scales' => [
+                    "xAxes" => [
+                        "scaleLabel" => [
+                            "display" => true,
+                            "labelString" => "Time in Seconds",
+                            "fontColor" => "red"
+                        ]
+                    ]]])*/
 //              ->fill(false) для графика 'line' убрать заливку
               ->backgroundColor('#ff0000');
         $chart->dataset(\Lang::trans('stats.chart_WordformNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_wordforms)))
               ->color('#00ff00')
               ->backgroundColor('#00ff00');
-
+//dd($chart);
         return view('stats.by_dict')
                 ->with(['chart' => $chart, 
                         'lang_lemmas' => $lang_lemmas,
