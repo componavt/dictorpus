@@ -66,6 +66,7 @@ class WordformController extends Controller
                if ((!$lang_id || $lemma->lang_id == $lang_id) 
                        && (!$pos_id || $lemma->pos_id == $pos_id)
                   && (!$url_args['search_gramset'] || $lemma->pivot->gramset_id == $url_args['search_gramset'])
+                  && (!$url_args['search_dialect'] || $lemma->pivot->dialect_id == $url_args['search_dialect'])
                    ){
                    $lemmas[$lemma->id] = $lemma;
                } 
