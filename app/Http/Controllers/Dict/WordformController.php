@@ -56,10 +56,17 @@ class WordformController extends Controller
                 //take($limit_num)->get();
         
         $lang_id = $url_args['search_lang'];
+        $pos_id = $url_args['search_pos'];
         foreach ($wordforms as $wordform) {
             $lemmas = [];
+//dd($wordform);            
+//dd($url_args['search_gramset']);            
             foreach ($wordform->lemmas as $lemma) {
-               if (!$lang_id || $lemma->lang_id == $lang_id) {
+//dd($lemma->pivot);                
+               if ((!$lang_id || $lemma->lang_id == $lang_id) 
+                       && (!$pos_id || $lemma->pos_id == $pos_id)
+                  && (!$url_args['search_gramset'] || $lemma->pivot->gramset_id == $url_args['search_gramset'])
+                   ){
                    $lemmas[$lemma->id] = $lemma;
                } 
             }
@@ -74,7 +81,7 @@ class WordformController extends Controller
                                 
         //$dialect_values = Dialect::getList();
         $dialect_values = $lang_id ? Dialect::getList($lang_id): [];
-        $gramset_values = $url_args['search_pos'] ? Gramset::getList($url_args['search_pos'],$lang_id,true): [];
+        $gramset_values = $pos_id ? Gramset::getList($pos_id,$lang_id,true): [];
 
         return view('dict.wordform.index',
                 compact('dialect_values', 'gramset_values', 'lang_values', 'numAll',
