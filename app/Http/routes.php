@@ -171,6 +171,7 @@ Route::group(
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('service/add_wordform_affixes', 'Library\ServiceController@addWordformAffixes');
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
+        Route::get('service/add_unmarked_links', 'Library\ServiceController@addUnmarkedLinks');
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
 //        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 

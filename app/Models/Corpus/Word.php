@@ -320,7 +320,28 @@ class Word extends Model
         return $examples->count();
     }
     
-    // wordform_for_search and $word are in lower case
+    /**
+     * The number of words without links to lemmas
+     */
+    public static function countUnmarked($lang_id=null) {
+        $examples = self::whereNotIn('id', function ($query) {
+                        $query->select('word_id')->from('meaning_text');
+            });
+        if ($lang_id) {
+            $examples -> whereIn('text_id', function ($q) use ($lang_id) {
+                $q->select('id')->from('texts')->where('lang_id',$lang_id);
+            });
+        }
+        return $examples->count();
+    }
+    
+    /**
+     * Search wordforms and lemmas matched with $word and
+     * get meanings (objects) of these lemmas
+     * @param String $word  in lower case
+     * @param Int $lang_id
+     * @return Collection
+     */
     public static function getMeaningsByWord($word, $lang_id=NULL) {
 //        $word_t = addcslashes($word,"'%");
 //        $word_t_l = mb_strtolower($word_t);
@@ -342,20 +363,26 @@ class Word extends Model
     }
     
     /**
+     * set links between a word (of some text) and a meaning
      * 
      * @param Array $checked_relevances [meaning1_id => [word, relevance1], meaning2_id => [word, relevance2], ... ]
      * @param INT $lang_id
+     * $retutn INT - the number of links with meanings
      */
     public function setMeanings($checked_relevances, $lang_id=NULL) {
         if (!$lang_id) {
             $lang_id = Text::getLangIDbyID($this->text_id);
         }
+        $count = 0;
         foreach (self::getMeaningsByWord($this->word, $lang_id) as $meaning) {
+//dd($meaning);            
             $meaning_id = $meaning->id;
             $relevance = isset($checked_relevances[$meaning_id][0]) && $checked_relevances[$meaning_id][0] == $this->word 
                        ? $checked_relevances[$meaning_id][1] : 1;
             $this->addMeaning($meaning_id, $this->text_id, $this->sentence_id, $this->w_id, $relevance);
+            $count++;
         }
+        return $count;
     }
 
     // get old checked links

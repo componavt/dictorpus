@@ -12,6 +12,8 @@ use Caxy\HtmlDiff\HtmlDiffConfig;
 use App\Library\Grammatic\VepsName;
 use App\Library\Service;
 
+use App\Models\Corpus\Word;
+
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -37,6 +39,7 @@ class ServiceController extends Controller
             $langs[$l_id]['name']=Lang::getNameById($l_id);
             $langs[$l_id]['affix_count'] = number_format(Wordform::countWithoutAffixes($l_id), 0, ',', ' ');
             $langs[$l_id]['wrong_affix_count'] = number_format(Wordform::countWrongAffixes($l_id), 0, ',', ' ');
+            $langs[$l_id]['unmarked_words_count'] = number_format(Word::countUnmarked($l_id), 0, ',', ' ');
         }
         
         return view('page.service')
@@ -222,6 +225,28 @@ print sprintf(", <span style='color:red'><b>reverse_stem:</b> %s, <b>reverse_aff
                 dd('ERROR');
             }
 print "</p>";
+        }
+    }
+    
+    public function addUnmarkedLinks(Request $request) {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        $lang_id = (int)$request->input('search_lang');
+        
+        if (!$lang_id) {
+            return;
+        }
+        
+        $words = Word::whereIn('text_id', function ($q) use ($lang_id) {
+                            $q->select('id')->from('texts')->where('lang_id',$lang_id);
+                       })->whereNotIn('id', function ($query) {
+                            $query->select('word_id')->from('meaning_text');
+        })->get();  
+        foreach ($words as $word) {
+            $num_links = $word->setMeanings([], $lang_id);
+            if ($num_links) {
+print "<p>text=".$word->text_id.", sentence_id=".$word->sentence_id.", w_id=".$word->w_id.", word=".$word->word;            
+            }
         }
     }
 

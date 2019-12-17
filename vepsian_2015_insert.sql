@@ -987,3 +987,8 @@ select pos_id, gramset_id, affix, count(*) from lemma_wordform, lemmas where lem
 -- php artisan make:controller Library\StatsController
 
 select lemmas.id as lem_id, lemma, count(*) as frequency from lemmas, meaning_text, meanings where meaning_text.meaning_id=meanings.id and meanings.lemma_id=lemmas.id and relevance>0 group by lem_id order by frequency DESC LIMIT 50;  
+
+select count(*) from words where text_id in (select id from texts where lang_id=1) and id not in (select word_id from meaning_text);
+121960
+356238
+478198

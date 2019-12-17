@@ -37,5 +37,17 @@
             ({{$l_info['wrong_affix_count']}})</li>
     @endforeach
     </ul>
+
+    <p>Проверить в текстах неразмеченные слова и создать новые связи</p>
+    <ul>
+    @foreach ($langs as $l_id=>$l_info)
+        <li>
+            <a href="service/add_unmarked_links?search_lang={{$l_id}}">
+                {{$l_info['name']}}
+            </a> 
+            ({{$l_info['unmarked_words_count']}})</li>
+    @endforeach
+    </ul>
+
     
 @endsection
