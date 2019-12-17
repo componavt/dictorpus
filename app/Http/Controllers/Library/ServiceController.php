@@ -228,6 +228,13 @@ print "</p>";
         }
     }
     
+    /**
+     * Search words of texts, 
+     * 
+     * update words set checked=0;
+     * 
+     * @param Request $request
+     */
     public function addUnmarkedLinks(Request $request) {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
@@ -237,15 +244,26 @@ print "</p>";
             return;
         }
         
-        $words = Word::whereIn('text_id', function ($q) use ($lang_id) {
+        $word_groups = Word::select('word')->whereChecked(0)
+                        ->whereIn('text_id', function ($q) use ($lang_id) {
                             $q->select('id')->from('texts')->where('lang_id',$lang_id);
                        })->whereNotIn('id', function ($query) {
                             $query->select('word_id')->from('meaning_text');
-        })->get();  
-        foreach ($words as $word) {
-            $num_links = $word->setMeanings([], $lang_id);
-            if ($num_links) {
-print "<p>text=".$word->text_id.", sentence_id=".$word->sentence_id.", w_id=".$word->w_id.", word=".$word->word;            
+        })->groupBy('word')->get();  
+        foreach ($word_groups as $group) {
+            $words = Word::where('word', 'like', $group->word)
+                            ->whereIn('text_id', function ($q) use ($lang_id) {
+                                $q->select('id')->from('texts')->where('lang_id',$lang_id);
+                           })->whereNotIn('id', function ($query) {
+                                $query->select('word_id')->from('meaning_text');
+            })->get();  
+            foreach ($words as $word) {
+                $num_links = $word->setMeanings([], $lang_id);
+                if ($num_links) {
+    print "<p>text=".$word->text_id.", sentence_id=".$word->sentence_id.", w_id=".$word->w_id.", word=".$word->word;            
+                }
+                $word->checked=1;
+                $word->save();
             }
         }
     }
