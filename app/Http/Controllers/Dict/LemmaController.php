@@ -431,7 +431,7 @@ class LemmaController extends Controller
         
         //$lemma->updateTextLinks();
                 
-        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).'&update_text_links=1')
+        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get ? $this->args_by_get. '&' : '?').'update_text_links=1')
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
 

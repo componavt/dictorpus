@@ -1,4 +1,4 @@
-function deleteWordforms(id) {
+function deleteWordforms(id, meanings=[]) {
     $("#wordforms").empty();
     $("#img-loading_wordforms").show();
     $.ajax({
@@ -7,6 +7,9 @@ function deleteWordforms(id) {
         success: function(result){
             $("#wordforms").html(result);
             $("#img-loading_wordforms").hide();                
+            $(meanings).each(function(key, id) {
+               reloadExamplesForId(this);
+            });
         },
         error: function() {
             $("#wordforms").html('ERROR'); 
@@ -31,25 +34,7 @@ function loadWordforms(id, url='load', meanings=[]) {
             $("#img-loading_wordforms").hide();                
             $(meanings).each(function(key, id) {
         //console.log(this);        
-               //reloadExamplesForId(this);
-                $("#meaning-examples_"+ id).empty();
-                $("#img-loading_"+ id).show();
-                $.ajax({
-                    url: '/dict/meaning/examples/reload/'+ id, 
-                    type: 'GET',
-                    success: function(result){
-                        $("#meaning-examples_"+ id).html(result);
-                        $("#img-loading_"+ id).hide();                
-                    },
-                    error: function() {
-                        $("#meaning-examples_"+ id).html('ERROR'); 
-            /*        error: function(jqXHR, textStatus, errorThrown) {
-                        var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
-                                   'text status: ('+textStatus+'), error thrown: ('+errorThrown+')'; 
-                        $("#meaning-examples_"+ id).html(text);*/
-                        $("#img-loading_"+ id).hide();                
-                    }
-                }); 
+               reloadExamplesForId(this);
             });
         },
         error: function() {

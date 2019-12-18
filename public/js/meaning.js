@@ -44,8 +44,7 @@ function removeExample(i) {
     });    
 }    
 
-function reloadExamples(i) {
-    var id = $(i).data('reload');
+function reloadExamplesForId(id) {
     $("#meaning-examples_"+ id).empty();
     $("#img-loading_"+ id).show();
     $.ajax({
@@ -64,6 +63,11 @@ function reloadExamples(i) {
             $("#img-loading_"+ id).hide();                
         }
     }); 
+}    
+
+function reloadExamples(i) {
+    var id = $(i).data('reload');
+    reloadExamplesForId(id);
 }   
 
 
