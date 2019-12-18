@@ -262,7 +262,7 @@ print "</p>";
             foreach ($words as $word) {
                 $num_links = $word->setMeanings([], $lang_id);
                 if ($num_links) {
-    print "<p>text=".$word->text_id.", sentence_id=".$word->sentence_id.", w_id=".$word->w_id.", word=".$word->word;            
+    print "<p>text=".$word->text_id.", sentence_id=".$word->sentence_id.", w_id=".$word->w_id.", word=".$word->word. '<span style="color: red">'. $num_links. '</span>';            
                 }
                 $word->checked=1;
                 $word->save();
