@@ -3,11 +3,11 @@ function validateLemma(lemma) {
         return { error: 'Это поле обязательно для заполнения' };
     }
     var lang_id=$('#lang_id').val();
-    var pattern = /^[a-zäöüčšž’\|\-\?\s\,\;\(\)\}\{\:]+$/i;
+    var pattern = /^[a-zäöüčšž’\|\-\?\s\,\;\(\)\}\{\:\.]+$/i;
     if (lang_id == 3) { // English
-        pattern = /^[a-z\|\-\?\s\,\;\(\)]+$/i;
+        pattern = /^[a-z\|\-\?\s\,\;\(\)\.]+$/i;
     } else if (lang_id == 2) { // Russian
-        pattern = /^[а-я\|\-\?\s\,\;\(\)]+$/i;
+        pattern = /^[а-я\|\-\?\s\,\;\(\)\.]+$/i;
     }
     if (lemma.search(pattern) === -1) {
         return { error: 'В поле содержатся недопустимые символы' };
