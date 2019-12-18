@@ -249,7 +249,9 @@ print "</p>";
                             $q->select('id')->from('texts')->where('lang_id',$lang_id);
                        })->whereNotIn('id', function ($query) {
                             $query->select('word_id')->from('meaning_text');
-        })->groupBy('word')->get();  
+        })->groupBy('word')
+        //->take(10)
+        ->get();  
         foreach ($word_groups as $group) {
             $words = Word::where('word', 'like', $group->word)
                             ->whereIn('text_id', function ($q) use ($lang_id) {
