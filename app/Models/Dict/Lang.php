@@ -286,5 +286,4 @@ class Lang extends Model
         }
         return $out;
     }
-    
 }

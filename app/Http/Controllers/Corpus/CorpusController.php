@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
 
+use App\Charts\SubcorpusNumByLang;
+
 use App\Models\Corpus\Corpus;
+use App\Models\Dict\Lang;
 
 class CorpusController extends Controller
 {
@@ -53,15 +56,28 @@ class CorpusController extends Controller
         } 
 
         $numAll = $corpuses->count();
-
         $corpuses = $corpuses->get();
         
-        return view('corpus.corpus.index')
-                    ->with(['corpuses' => $corpuses,
-                            'corpus_name' => $corpus_name,
-                            'search_id'=>$search_id,
-                            'numAll' => $numAll,
-            ]);
+        $lang_corpuses = Corpus::countTextsByIDGroupByLang();     
+//dd($lang_corpuses);        
+        
+        $chart = new SubcorpusNumByLang;
+        $colors = ['CF6', '660000', 'FF9900', '006666'];
+        $count = 0;
+        foreach ($lang_corpuses as $lang_name=>$corpuse_num) {
+//var_dump($lang_name,$corpuses);            
+//print "<br>";
+            if ($count==0) {
+                $chart->labels(array_keys($corpuse_num));                
+            }
+//            $chart->dataset($lang_name, 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$corpuse_num)))
+            $chart->dataset($lang_name, 'horizontalBar', array_values($corpuse_num))
+                  ->color('#'.$colors[$count])
+                  ->backgroundColor('#'.$colors[$count++]);
+        }
+
+        return view('corpus.corpus.index',
+                    compact('chart', 'corpuses', 'corpus_name', 'search_id', 'numAll'));
     }
 
     /**

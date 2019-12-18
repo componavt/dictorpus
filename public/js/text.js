@@ -35,6 +35,7 @@ function showLemmaLinked() {
 }
 
 function saveLemma(data) {
+/*    var lemma = data['lemma'];*/
     $.ajax({
         url: '/dict/lemma/store_simple', 
         data: data,
@@ -43,14 +44,14 @@ function saveLemma(data) {
             $("#modalAddLemma").modal('hide');
             //$( "#lemma" ).val('');
             $( "#new_meanings_0__meaning_text__2_" ).val(null);
-            var newOption = new Option(lemma, lemma_id, false, false);
+/*            var newOption = new Option(lemma, lemma_id, false, false);
             $('#choose-lemma').append(newOption).trigger('change');
             $('#choose-lemma').trigger({
                 type: 'select2:select',
                 params: {
                     data: {id: lemma_id, text: lemma}
                 }
-            });
+            });*/
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);
@@ -240,7 +241,7 @@ function addWordform(text_id, lang_id) {
 //alert(dialects_obj);        
         var dialects = [];
         var dialect;
-        for (i=0; i<dialects_obj.length; i++) {
+        for (var i=0; i<dialects_obj.length; i++) {
             dialect = dialects_obj[i];
             dialects.push(dialects_obj[i].value);
         }

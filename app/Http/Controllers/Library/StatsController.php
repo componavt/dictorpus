@@ -49,7 +49,7 @@ class StatsController extends Controller
 //                ->title('9999999999')
 //                ->options(['scales' =>     LemmaNumByLang::chartSetAxes('Date format(DD-MM)','Hours in (24) time format')])
                 ;
-        $chart->dataset(\Lang::trans('stats.chart_LemmaNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_lemmas)))
+        $chart->dataset(\Lang::trans('stats.chart_LemmaNumByLang'), 'horizontalBar', array_map(function($v){return preg_replace('/\s/','',$v)/1000;}, array_values($lang_lemmas)))
               ->color('#ff0000')
 /*              ->options(['scales' => [
                     "xAxes" => [
@@ -61,7 +61,7 @@ class StatsController extends Controller
                     ]]])*/
 //              ->fill(false) для графика 'line' убрать заливку
               ->backgroundColor('#ff0000');
-        $chart->dataset(\Lang::trans('stats.chart_WordformNumByLang'), 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$lang_wordforms)))
+        $chart->dataset(\Lang::trans('stats.chart_WordformNumByLang'), 'horizontalBar', array_map(function($v){return preg_replace('/\s/','',$v)/1000;},array_values($lang_wordforms)))
               ->color('#00ff00')
               ->backgroundColor('#00ff00');
 //dd($chart);
