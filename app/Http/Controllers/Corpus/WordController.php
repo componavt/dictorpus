@@ -110,4 +110,24 @@ class WordController extends Controller
         }
         print 'done';
     }
+    
+    /**
+     * /corpus/text/word/create_checked_block
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function getWordCheckedBlock(Request $request)
+    {
+        $meaning_id = (int)$request->input('meaning_id');
+        $text_id = (int)$request->input('text_id'); 
+        $w_id = (int)$request->input('w_id'); 
+        $word = Word::where('text_id',$text_id)
+                    ->where('w_id',$w_id)->first();
+        if (!$word || !$word->sentence_id) {
+            return;
+        }
+        return Text::createWordCheckedBlock($meaning_id, $text_id, $word->sentence_id, $w_id);
+    }
+
 }

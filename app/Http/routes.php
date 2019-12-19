@@ -92,7 +92,7 @@ Route::group(
         Route::get('corpus/text/limited_new_list', 'Corpus\TextController@limitedNewList');
         Route::get('corpus/text/full_updated_list', 'Corpus\TextController@fullUpdatedList');
         Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
-        Route::get('corpus/text/word/create_checked_block', 'Corpus\TextController@getWordCheckedBlock');
+        Route::get('corpus/text/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');
         Route::get('corpus/text/frequency/symbols', 'Corpus\TextController@frequencySymbols');
         Route::get('corpus/text/frequency/lemmas', 'Dict\LemmaController@frequencyInTexts');
         

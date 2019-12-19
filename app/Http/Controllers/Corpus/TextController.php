@@ -606,25 +606,6 @@ class TextController extends Controller
     }
 
     /**
-     * /corpus/text/word/create_checked_block
-     * 
-     * @param Request $request
-     * @return string
-     */
-    public function getWordCheckedBlock(Request $request)
-    {
-        $meaning_id = (int)$request->input('meaning_id');
-        $text_id = (int)$request->input('text_id'); 
-        $w_id = (int)$request->input('w_id'); 
-        $word = Word::where('text_id',$text_id)
-                    ->where('w_id',$w_id)->first();
-        if (!$word || !$word->sentence_id) {
-            return;
-        }
-        return Text::createWordCheckedBlock($meaning_id, $text_id, $word->sentence_id, $w_id);
-    }
-
-    /**
      * Shows the sentence with a highlighted word.
      * Receives text ID and word ID (local number in the text),
      * finds sentence in the text, parses xml
