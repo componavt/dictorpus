@@ -62,7 +62,7 @@ class CorpusController extends Controller
 //dd($lang_corpuses);        
         
         $chart = new SubcorpusNumByLang;
-        $colors = ['CF6', '660000', 'FF9900', '006666'];
+        $colors = ['663399', '00BFFF', 'FF9900', '66CDAA'];
         $count = 0;
         foreach ($lang_corpuses as $lang_name=>$corpuse_num) {
 //var_dump($lang_name,$corpuses);            
