@@ -59,7 +59,7 @@
                 <td data-th="{{ trans('messages.in_russian') }}">{{$corpus->name_ru}}</td>
                 <td data-th="{{ trans('navigation.texts') }}">
                     @if($corpus->texts)
-                        {{ $corpus->texts()->count() }}
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}?search_corpus[]={{$corpus->id}}">{{ $corpus->texts()->count() }}</a>
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
