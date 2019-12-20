@@ -46,26 +46,7 @@
     posSelect();
     langSelect();
     
-    $(".select-dialect").select2({
-        width: '100%',
-        ajax: {
-          url: "/dict/dialect/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              lang_id: $( "#lang_id option:selected" ).val()
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });   
+    selectDialect('lang_id', '{{trans('dict.select_dialect')}}');
     
     $(".add-new-relation").click(function(){
         var meaning_id = $(this).attr("data-for");

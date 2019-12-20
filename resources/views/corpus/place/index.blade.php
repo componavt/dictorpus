@@ -31,7 +31,8 @@
             <tr>
                 <th>{{ trans('corpus.region') }}</th>
                 <th>{{ trans('corpus.district') }}</th>
-                <th>{{ trans('corpus.title') }}</th>
+                <th>{{ trans('corpus.name') }}</th>
+                <th>{{ trans('navigation.dialects') }}</th>
                 <th>{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})</th>
                 <th>{{ trans('navigation.texts') }} ({{ trans('corpus.birth_place') }})</th>
                 <th>{{ trans('navigation.informants') }}</th>
@@ -60,6 +61,9 @@
                     @foreach($place->other_names as $other_name)
                     <b>{{ \App\Models\Dict\Lang::find($other_name->lang_id)->name }}:</b> {{ $other_name->name }}<br>
                     @endforeach
+                </td>
+                <td data-th="{{ trans('navigation.dialects') }}">
+                    {{$place->dialectListToString()}}
                 </td>
                 <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})">
                     @if($place->texts()->count())

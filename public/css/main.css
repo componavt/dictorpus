@@ -501,6 +501,11 @@ h2 {
 .form-group .select2-container .select2-selection--single .select2-selection__rendered {
     padding: 3px 20px 3px 13px;
 }
+
+.select2-selection li {
+  white-space: pre-line;
+}
+
 @media screen and (max-width: 395px) {    
     .logo img {
         height: auto;

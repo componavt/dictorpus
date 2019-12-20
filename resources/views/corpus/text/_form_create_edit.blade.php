@@ -13,7 +13,7 @@
                  'values' =>$dialect_values,
                  'value' => $dialect_value,
                  'title' => trans('navigation.dialects'),
-                 'class'=>'multiple-select-dialect form-control'
+                 'class'=>'select-dialect form-control'
             ])
     </div>
     <div class="col-sm-4">

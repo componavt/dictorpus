@@ -72,10 +72,8 @@ class PlaceController extends Controller
         $dialect_values = Dialect::getList(); 
         
         return view('corpus.place.create',
-                  compact(['dialect_values',
-                          'district_values',
-                          'lang_values', 'region_values',
-                         ]));
+                  compact(['dialect_values', 'district_values',
+                          'lang_values', 'region_values']));
     }
 
     /**
@@ -92,7 +90,6 @@ class PlaceController extends Controller
             'district_id' => 'required|numeric',
             'region_id' => 'required|numeric',
         ]);
-        
         $place = Place::create($request->only('district_id','region_id','name_en','name_ru'));
         
         foreach ($request->other_names as $lang => $other_name) {
@@ -102,6 +99,8 @@ class PlaceController extends Controller
                                           'name'=>$other_name]);
             }
         }
+        
+        $place->dialects()->attach($request->dialects);
         
         return Redirect::to('/corpus/place/?search_id='.$place->id)
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -137,14 +136,12 @@ class PlaceController extends Controller
             $other_names[$other_name->lang_id] = $other_name->name;
         }
 
-        $dialect_values = $lang_id ? Dialect::getList($lang_id) : Dialect::getList(); 
+        $dialect_values = Dialect::getList(); 
+        $dialect_value = $place->dialectValue();
         
-        return view('corpus.place.edit')
-                  ->with(['region_values' => $region_values,
-                          'district_values' => $district_values,
-                          'lang_values' => $lang_values,
-                          'other_names' => $other_names,
-                          'place' => $place]);
+        return view('corpus.place.edit',
+                  compact(['dialect_value', 'dialect_values', 'district_values',
+                          'lang_values', 'other_names', 'place', 'region_values']));
     }
 
     /**
@@ -177,6 +174,9 @@ class PlaceController extends Controller
                                           'name'=>$other_name]);
             }
         }
+        
+        $place->dialects()->detach();
+        $place->dialects()->attach($request->dialects);
         
         return Redirect::to('/corpus/place/?search_id='.$place->id)
             ->withSuccess(\Lang::get('messages.updated_success'));        
@@ -212,6 +212,7 @@ class PlaceController extends Controller
                             $event->recorders()->detach();
                             $event->delete();
                         }
+                        $place->dialects()->detach();
                         $place->delete();
                         $result['message'] = \Lang::get('corpus.place_removed', ['name'=>$place_name]);
                     }

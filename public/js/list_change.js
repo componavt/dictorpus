@@ -128,4 +128,27 @@ function selectGramset(lang_var, pos_var, placeholder=''){
     });   
 }
 
-
+function selectDialect(lang_var, placeholder='', allow_clear=false, selector='.select-dialect'){
+    $(selector).select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/dict/dialect/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              lang_id: $( "#"+lang_var+" option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}

@@ -36,6 +36,7 @@ if (!isset($class)) {
     @endif
     
     <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}{{$multiple ? '[]': ''}}" id="{{ $name }}" placeholder="choooose">
+        <!--option></option-->
     @if ($grouped)
         @foreach ($values as $group_name=>$group_values)
         <optgroup label="{{$group_name}}">

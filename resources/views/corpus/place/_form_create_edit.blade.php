@@ -17,18 +17,19 @@
                 ['name' => 'region_id', 
                  'values' =>$region_values,
                  'title' => trans('corpus.region')]) 
+                 
         @include('widgets.form.formitem._select',
                 ['name' => 'lang_id',
                  'values' =>$lang_values,
-                 'value' =>$lang_id,
+                 'is_multiple' => true,
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lemma_lang_id']])
+                 
         @include('widgets.form.formitem._select2',
-                ['name' => 'dialect_id', 
+                ['name' => 'dialects', 
                  'values' =>$dialect_values,
                  'value' => $dialect_value,
-                 'is_multiple' => false,
-                 'title' => trans('dict.dialect'),
+                 'title' => trans('navigation.dialects'),
                  'class'=>'select-dialect form-control'])
     </div>
     <div class="col-sm-6">

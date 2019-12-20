@@ -28,4 +28,11 @@ trait Dialects
         return $value;
     }
 
+    public function dialectListToString() {
+        $out = [];
+        foreach ($this->dialects as $dialect) {
+            $out[] = $dialect->name;
+        }
+        return join(', ',$out);
+    }
 }
