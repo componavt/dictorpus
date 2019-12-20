@@ -994,3 +994,5 @@ select count(*) from words where text_id in (select id from texts where lang_id=
 478198
 
 -- php artisan make:chart SubcorpusNumByLang
+
+-- php artisan make:migration create_dialect_place_table

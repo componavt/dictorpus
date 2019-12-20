@@ -50,6 +50,9 @@ class Place extends Model
         return $this->placeString();//name;
     }    
 
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Dialects;
+    
     public function district()
     {
         return $this->belongsTo(District::class);

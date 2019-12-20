@@ -10,6 +10,8 @@
         {!! Form::open(array('method'=>'POST', 'route' => array('place.store'))) !!}
         @include('corpus.place._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
                                       'action' => 'create',
+                                      'lang_id' => NULL,
+                                      'dialect_value' => [],
                                       'region_values' => $region_values,
                                       'district_values' => $district_values])
         {!! Form::close() !!}

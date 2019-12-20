@@ -9,17 +9,23 @@ trait Dialects
      */
     public function dialects(){
         $locale = LaravelLocalization::getCurrentLocale();
-        return $this->belongsToMany('App\Models\Dict\Dialect', 'lemma_wordform')
-//                    ->withPivot('gramset_id','wordform_id')
+        return $this->belongsToMany('App\Models\Dict\Dialect')
                     ->orderBy('name_'.$locale);
     }
     
-    public function getDialectIds() {
-        $dialects = $this->dialects()->groupBy('id')->orderBy('sequence_number')->get();
-        $ids = [];
-        foreach ($dialects as $dialect) {
-            $ids[] = $dialect->id;
+    /**
+     * Gets IDs of dialects for dialect's form field
+     *
+     * @return Array
+     */
+    public function dialectValue():Array{
+        $value = [];
+        if ($this->dialects) {
+            foreach ($this->dialects as $dialect) {
+                $value[] = $dialect->id;
+            }
         }
-        return $ids;
+        return $value;
     }
+
 }

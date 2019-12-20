@@ -17,6 +17,19 @@
                 ['name' => 'region_id', 
                  'values' =>$region_values,
                  'title' => trans('corpus.region')]) 
+        @include('widgets.form.formitem._select',
+                ['name' => 'lang_id',
+                 'values' =>$lang_values,
+                 'value' =>$lang_id,
+                 'title' => trans('dict.lang'),
+                 'attributes' => ['id'=>'lemma_lang_id']])
+        @include('widgets.form.formitem._select2',
+                ['name' => 'dialect_id', 
+                 'values' =>$dialect_values,
+                 'value' => $dialect_value,
+                 'is_multiple' => false,
+                 'title' => trans('dict.dialect'),
+                 'class'=>'select-dialect form-control'])
     </div>
     <div class="col-sm-6">
         @foreach ($lang_values as $lang_id => $lang_n) 

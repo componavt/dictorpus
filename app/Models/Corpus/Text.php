@@ -29,8 +29,6 @@ class Text extends Model
 {
     protected $fillable = ['corpus_id','lang_id','source_id','event_id','title','text','text_xml'];
 
-//    protected $delimeters = [',', '.', '!', '?', ':', '\'', '"', '[', ']', '(', ')', '{', '}', '«', '»', '=']; // '-',
-
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -43,77 +41,22 @@ class Text extends Model
     {
         parent::boot();
     }
-/*
-    public function getDelimeters()
-    {
-        return $this->delimeters;
-    }
-*/
-    // Text __belongs_to__ Lang
-    public function lang()
-    {
-        return $this->belongsTo(Lang::class);
-    }
-
-    // Text __belongs_to__ Corpus
-    public function corpus()
-    {
-        return $this->belongsTo(Corpus::class);
-    }
-
-    // Text __belongs_to__ Event
-    public function event()
-    {
-        return $this->belongsTo(Event::class);
-    }
-
-    // Text __belongs_to__ Source
-    public function source()
-    {
-        return $this->belongsTo(Source::class);
-    }
-
-    // Text __belongs_to__ Transtext
-    public function transtext()
-    {
-        return $this->belongsTo(Transtext::class);
-    }
-
-    // Text __has_many__ Dialects
-    public function dialects(){
-        $builder = $this->belongsToMany(Dialect::class);
-        return $builder;
-    }
-
-    // Text __has_many__ Genres
-    public function genres(){
-        $builder = $this->belongsToMany(Genre::class);
-        return $builder;
-    }
-
-    // Text __has_many__ Meanings
-    public function meanings(){
-        $builder = $this->belongsToMany(Meaning::class)
-//                 -> withPivot('w_id')
-                 -> withPivot('relevance');
-        return $builder;
-    }
-
-    public function addMeaning($meaning_id, $sentence_id, $word_id, $w_id, $relevance) {
-                        $this->meanings()->attach($meaning_id,
-                                ['sentence_id'=>$sentence_id,
-                                 'word_id'=>$word_id,
-                                 'w_id'=>$w_id,
-                                 'relevance'=>$relevance]);        
-    }
     
-    // Text __has_many__ Words
-    public function words(){
-        return $this->hasMany(Word::class);
-//        return $this->belongsToMany(Word::class,'meaning_text');
-    }
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Corpus;
+    use \App\Traits\Relations\BelongsTo\Event;
+    use \App\Traits\Relations\BelongsTo\Lang;
+    use \App\Traits\Relations\BelongsTo\Source;
+    use \App\Traits\Relations\BelongsTo\Transtext;
 
-    // Text __has_many__ Wordforms
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Dialects;
+    use \App\Traits\Relations\BelongsToMany\Genres;
+    use \App\Traits\Relations\BelongsToMany\Meanings;
+    
+    use \App\Traits\Relations\HasMany\Words;
+
+    // Text __belongsToMany__ Wordforms
     public function wordforms(){
 //        return $this->hasMany(Wordform::class);
         $builder = $this->belongsToMany(Wordform::class,'text_wordform')
@@ -127,74 +70,14 @@ class Text extends Model
         return $this->hasOne(Video::class);
     }
    
-    /**
-     * Gets IDs of informants for informant's form field
-     *
-     * @return Array
-     */
-    public function informantValue():Array{
-        $informant_value = [];
-        if ($this->event && $this->event->informants) {
-            foreach ($this->event->informants as $informant) {
-                $informant_value[] = $informant->id;
-            }
-        }
-        return $informant_value;
-    }
-
-    /**
-     * Gets IDs of recorders for record's form field
-     *
-     * @return Array
-     */
-    public function recorderValue():Array{
-        $recorder_value = [];
-        if ($this->event && $this->event->recorders) {
-            foreach ($this->event->recorders as $recorder) {
-                $recorder_value[] = $recorder->id;
-            }
-        }
-        return $recorder_value;
-    }
-
-    /**
-     * Gets IDs of dialects for dialect's form field
-     *
-     * @return Array
-     */
-    public function dialectValue():Array{
-        $value = [];
-        if ($this->dialects) {
-            foreach ($this->dialects as $dialect) {
-                $value[] = $dialect->id;
-            }
-        }
-        return $value;
-    }
-
-    /**
-     * Gets IDs of genres for genre's form field
-     *
-     * @return Array
-     */
-    public function genreValue():Array{
-        $value = [];
-        if ($this->genres) {
-            foreach ($this->genres as $genre) {
-                $value[] = $genre->id;
-            }
-        }
-        return $value;
+    public function addMeaning($meaning_id, $sentence_id, $word_id, $w_id, $relevance) {
+                        $this->meanings()->attach($meaning_id,
+                                ['sentence_id'=>$sentence_id,
+                                 'word_id'=>$word_id,
+                                 'w_id'=>$w_id,
+                                 'relevance'=>$relevance]);        
     }
     
-    public static function getLangIDbyID($id) {
-        $text=self::find($id);
-        if (!$text) {
-            return null;
-        }
-        return $text->lang_id;
-    }
-
     public static function search(Array $url_args) {
         // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
         // select texts by title from texts and translation texts

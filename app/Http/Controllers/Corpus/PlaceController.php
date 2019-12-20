@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
 
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
 use App\Models\Corpus\District;
@@ -68,12 +69,13 @@ class PlaceController extends Controller
         $district_values = [NULL => ''] + District::getList();
         $lang_values = Lang::getList([Lang::getIDByCode('en'), 
                                       Lang::getIDByCode('ru')]);
+        $dialect_values = Dialect::getList(); 
         
-        return view('corpus.place.create')
-                  ->with(['region_values' => $region_values,
-                          'district_values' => $district_values,
-                          'lang_values' => $lang_values,
-                         ]);
+        return view('corpus.place.create',
+                  compact(['dialect_values',
+                          'district_values',
+                          'lang_values', 'region_values',
+                         ]));
     }
 
     /**
@@ -134,6 +136,8 @@ class PlaceController extends Controller
         foreach($place->other_names as $other_name) {
             $other_names[$other_name->lang_id] = $other_name->name;
         }
+
+        $dialect_values = $lang_id ? Dialect::getList($lang_id) : Dialect::getList(); 
         
         return view('corpus.place.edit')
                   ->with(['region_values' => $region_values,
