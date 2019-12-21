@@ -996,3 +996,7 @@ select count(*) from words where text_id in (select id from texts where lang_id=
 -- php artisan make:chart SubcorpusNumByLang
 
 -- php artisan make:migration create_dialect_place_table
+
+INSERT INTO `regions` VALUES (6,'Novgorod Oblast','Новгородская обл.');
+INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский р-н');
+INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский р-н');

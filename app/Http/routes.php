@@ -163,6 +163,7 @@ Route::group(
         Route::get('export/sentences', 'Library\ExportController@exportSentencesToLines');                
         Route::get('export/unimorph', 'Library\ExportController@exportLemmasToUniMorph'); 
 
+        Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
         Route::get('service', 'Library\ServiceController@index');

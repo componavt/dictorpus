@@ -10,7 +10,7 @@
 @stop
 
 @section('body')        
-        {!! Form::open(['url' => '/corpus/text/freq_symb', 'method' => 'get', 'class'=>'inline']) !!}
+        {!! Form::open(['url' => '/corpus/text/frequency/symbols', 'method' => 'get', 'class'=>'inline']) !!}
         <div class="row">
             <div class="col-md-6">
                 @include('widgets.form.formitem._select', 

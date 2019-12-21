@@ -5,6 +5,9 @@
 @endsection
 
 @section('body')
+    <h3>Импорт</h3>
+    <p><a href="import/concept_parser">Импорт понятий из СОС</a></p>
+    
     <h3>Экспорт</h3>
     <p><a href="export/unimorph">Экспорт словоформ в Unimorph</a>    </p>
     <ul>
