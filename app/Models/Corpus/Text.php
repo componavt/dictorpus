@@ -1303,8 +1303,8 @@ print "</pre>";*/
                 }
             }
         }
-        ksort($symbols);
-//        arsort($symbols);
+//        ksort($symbols);
+        arsort($symbols);
 //dd($symbols);
         return $symbols;
     }

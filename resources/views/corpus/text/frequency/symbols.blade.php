@@ -6,6 +6,7 @@
 @stop
 
 @section('headExtra')
+    <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css">
     {!!Html::style('css/table.css')!!}
 @stop
 
@@ -27,7 +28,7 @@
         {!! Form::close() !!}
 
         @if ($symbols)
-        <table class="table table-striped rwd-table wide-md">
+        <table id="affixTable" class="table table-striped rwd-table wide-md">
         <thead>
             <tr>
                 <th>No</th>
@@ -54,7 +55,7 @@
                         {{mb_ord($symbol)}}
                     </a>
                 </td>
-                <td data-th="{{ trans('messages.frequency') }}">{{$frequency}}</td>
+                <td data-th="{{ trans('messages.frequency') }}">{{(int)$frequency}}</td>
             </tr>
             @endforeach
         </tbody>
@@ -63,4 +64,14 @@
     </div>
 @stop
 
+@section('footScriptExtra')
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+@stop
+
+@section('jqueryFunc')
+    $(document).ready( function () {
+        $('#affixTable').DataTable({serverSide: false});
+    } );
+@stop
 
