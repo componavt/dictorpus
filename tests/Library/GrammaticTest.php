@@ -721,4 +721,11 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testToSearchFormDiakret() {
+        $word = "t΄üuniśt΄üö";
+        $word = Grammatic::toRightForm($word);
+        $result = Grammatic::toSearchForm($word);
+        $expected = "tüunistüö";
+        $this->assertEquals( $expected, $result);        
+    }
 }

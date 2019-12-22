@@ -14,6 +14,7 @@ return [
     'about_project' => 'About project',
     'about_veps' => 'Veps',
     'affix_freq' => 'Affix frequency',
+    'concept_categories' => 'Concept categories',
     'corpus' => 'Corpus',
     'corpus_freq' => 'Frequency vocabularies',
     'corpuses' => 'Corpuses',

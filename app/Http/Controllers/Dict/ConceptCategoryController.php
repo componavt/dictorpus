@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
-use App\Models\Dict\Relation;
+use App\Http\Controllers\Controller;
 
-class RelationController extends Controller
+use App\Models\Dict\ConceptCategory;
+
+class ConceptCategoryController extends Controller
 {
      /**
      * Instantiate a new new controller instance.
@@ -18,7 +18,7 @@ class RelationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/relation/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/concept_category', ['only' => ['create','store','edit','update','destroy']]);
     }
     
     /**
@@ -28,12 +28,9 @@ class RelationController extends Controller
      */
     public function index(Request $request)
     {
-//        $locale = LaravelLocalization::getCurrentLocale();
-//        $relations = Relation::orderBy('name_'.$locale)->get();
-        $relations = Relation::orderBy('sequence_number')->get();
-        
-        return view('dict.relation.index')
-                    ->with(['relations' => $relations]);
+        $concept_categories = ConceptCategory::orderBy('id')->get();
+//dd($concept_categories);        
+        return view('dict.concept_category.index',compact('concept_categories'));
     }
 
     /**
@@ -43,10 +40,10 @@ class RelationController extends Controller
      */
     public function create()
     {
-        $relation_values = [NULL=>''] + Relation::getList();
+        $concept_category_values = [NULL=>''] + ConceptCategory::getList();
 
-        return view('dict.relation.create')
-                  ->with(['relation_values' => $relation_values]);
+        return view('dict.concept_category.create')
+                  ->with(['concept_category_values' => $concept_category_values]);
     }
 
     /**
@@ -58,17 +55,14 @@ class RelationController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
+            'id' => 'required|max:4',
+            'name_en'  => 'max:45',
+            'name_ru'  => 'required|max:45',
         ]);
         
-        if (!$request['reverse_relation_id']) {
-            $request['reverse_relation_id'] = NULL;
-        }
-//dd($request);        
-        $relation = Relation::create($request->all());
+        $concept_category = ConceptCategory::create($request->all());
         
-        return Redirect::to('/dict/relation/')
+        return Redirect::to('/dict/concept_category/')
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
@@ -80,7 +74,7 @@ class RelationController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/dict/relation/');
+        return Redirect::to('/dict/concept_category/');
     }
 
     /**
@@ -91,12 +85,12 @@ class RelationController extends Controller
      */
     public function edit($id)
     {
-        $relation = Relation::find($id); 
-        $relation_values = [NULL=>''] + $relation->getList();
+        $concept_category = ConceptCategory::find($id); 
+        $concept_category_values = [NULL=>''] + $concept_category->getList();
         
-        return view('dict.relation.edit')
-                  ->with(['relation' => $relation,
-                          'relation_values' => $relation_values,
+        return view('dict.concept_category.edit')
+                  ->with(['concept_category' => $concept_category,
+                          'concept_category_values' => $concept_category_values,
                          ]);
     }
 
@@ -110,19 +104,19 @@ class RelationController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
+            'name_en'  => 'max:45',
+            'name_ru'  => 'required|max:45',
         ]);
 //dd($request);       
         
-        if (!$request->reverse_relation_id) {
-            $request->reverse_relation_id = NULL;
+        if (!$request->reverse_concept_category_id) {
+            $request->reverse_concept_category_id = NULL;
         }
         
-        $relation = Relation::find($id);
-        $relation->fill($request->all())->save();
+        $concept_category = ConceptCategory::whereId($id)->first();
+        $concept_category->fill($request->all())->save();
         
-        return Redirect::to('/dict/relation/')
+        return Redirect::to('/dict/concept_category/')
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
@@ -137,13 +131,13 @@ class RelationController extends Controller
         $error = false;
         $status_code = 200;
         $result =[];
-        if($id != "" && $id > 0) {
+        if($id != "") {
             try{
-                $relation = Relation::find($id);
-                if($relation){
-                    $relation_name = $relation->name;
-                    $relation->delete();
-                    $result['message'] = \Lang::get('dict.relation_removed', ['name'=>$relation_name]);
+                $concept_category = ConceptCategory::whereId($id)->first();
+                if($concept_category){
+                    $concept_category_name = $concept_category->name;
+                    $concept_category->delete();
+                    $result['message'] = \Lang::get('dict.category_removed', ['name'=>$concept_category_name]);
                 }
                 else{
                     $error = true;
@@ -162,10 +156,10 @@ class RelationController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/dict/relation/')
+                return Redirect::to('/dict/concept_category/')
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/dict/relation/')
+            return Redirect::to('/dict/concept_category/')
                   ->withSuccess($result['message']);
         }
     }

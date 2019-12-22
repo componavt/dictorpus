@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Storage;
 use App\Http\Requests;
 
+use App\Library\Import\ConceptParser;
 use App\Library\Import\DictParser;
 use App\Models\Dict\Lemma;
 
@@ -73,18 +74,7 @@ print "<pre>";
         $file_content = Storage::disk('local')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
 print "<pre>";        
-        $count = 0;
-        $block_line_num = 1;
-        foreach ($file_lines as $line) {
-            $count++;
-            $line = trim($line);
-            if (!$line) {
-                continue;
-            }
-            
-            if (preg_match("/[^a-zäöüčšž’0-9а-яё\|\-\?\s\,\;\(\)\}\{\:\.\/i̮i̬ń΄u̯ŕĺśź~ηć]/iu", $line)) { //sulaimi(~e)
-                print "<p>В строке $count недопустимый символ<br>$line</p>";
-            }
-        }
+        list($categories, $blocks) = ConceptParser::readBlocks($file_lines);
+dd($categories, $blocks['A11']);        
     }
 }
