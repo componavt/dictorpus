@@ -3,6 +3,9 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+
+use LaravelLocalization;
 
 class Concept extends Model
 {

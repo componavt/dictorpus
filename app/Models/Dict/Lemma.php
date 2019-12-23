@@ -61,7 +61,7 @@ class Lemma extends Model
     use \App\Traits\Relations\BelongsTo\POS;
     
     // Belongs To Many Relations
-    use \App\Traits\Relations\BelongsToMany\Dialects;
+    use \App\Traits\Relations\BelongsToMany\DialectsFromWordforms;
     use \App\Traits\Relations\BelongsToMany\Labels;
     use \App\Traits\Relations\BelongsToMany\LemmaVariants;
     use \App\Traits\Relations\BelongsToMany\Wordforms;

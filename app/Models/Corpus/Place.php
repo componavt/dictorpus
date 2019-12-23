@@ -258,4 +258,17 @@ class Place extends Model
                 });
         return $texts->count();
     }
+    
+    /**
+     * @return Array [<dialect1> => <lang1>, ... ]
+     */
+    public function getDialectLangs() {
+        $out = [];
+        
+        foreach ($this->dialects as $dialect) {
+            $out[$dialect->id] = $dialect->lang_id;
+        }
+        
+        return $out;
+    }
 }

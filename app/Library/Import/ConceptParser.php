@@ -4,7 +4,11 @@ namespace App\Library\Import;
 
 use App\Library\Grammatic;
 
+use App\Models\Corpus\Place;
+
 use App\Models\Dict\Concept;
+use App\Models\Dict\ConceptCategory;
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
@@ -127,5 +131,95 @@ class ConceptParser
             return [];
         }
         return preg_split("/,/", $regs[1]);
+    }
+    
+    public static function saveCategories($categories) {
+        foreach ($categories as $category_id => $category_name) {
+            if (!ConceptCategory::whereId($category_id)->count()) {
+                ConceptCategory::create(['id'=>$category_id, 'name_ru'=>$category_name]);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @return Array [<place_n> => ['id'=><place_id>, ['dialects'=>[<dialect1> => <lang1>, ...]]]
+     */
+    public static function placeDialects() {
+        $places =[
+            "01" => ['id'=>145], 
+            "02" => ['id'=>233],
+            "03" => ['id'=>175],
+            "04" => ['id'=>232],
+            "05" => ['id'=>234],
+            "06" => ['id'=>140],
+            "07" => ['id'=>235],
+            "08" => ['id'=>236],
+            "09" => ['id'=>237],
+            10   => ['id'=>169],
+            11   => ['id'=>197],
+            12   => ['id'=>238],
+            13   => ['id'=>179],
+            14   => ['id'=>239],
+            15   => ['id'=>240],
+            16   => ['id'=>241],
+            17   => ['id'=>242],
+            18   => ['id'=>243],
+            19   => ['id'=>96],
+            20   => ['id'=>244],
+            21   => ['id'=>245],
+            22   => ['id'=>246],
+            23   => ['id'=>247],
+            24   => ['id'=>248],
+            25   => ['id'=>53],
+            26   => ['id'=>78],
+            27   => ['id'=>71],
+            28   => ['id'=>5],
+            29   => ['id'=>26],
+            30   => ['id'=>38]];
+        
+        foreach ($places as $place_n => $place_info) {
+            $place_obj = Place::find($place_info['id']);
+            if (!$place_obj) {
+dd("Населенный пункт $place_n = ".$place_id. " отсутствует в БД!");               
+            }
+            $places[$place_n]['dialects'] = $place_obj->getDialectLangs();
+        }
+        
+        return $places;
+    }
+
+    public static function processBlocks($blocks) {
+        foreach ($blocks as $category_id => $concept_blocks) {
+            foreach ($concept_blocks as $concept_block) {
+dd($concept_block['place_lemmas']);                
+                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas']);
+dd($lemma_dialects);                
+            }
+        }
+    }
+    
+    public static function chooseDialectsForLemmas($places) {
+        $out = [];
+        $place_dialects = self::placeDialects();
+//dd($place_dialects);        
+        foreach ($places as $place_n => $place_lemmas) {
+            $place_id = $place_dialects[$place_n]['id'];
+            $place_dials = $place_dialects[$place_n]['dialects'];
+            foreach ($place_lemmas as $lemma) {
+                foreach ($place_dials as $dialect_id => $lang_id) {
+                    if (!isset($out[$lemma][$lang_id])) {
+                        $out[$lemma][$lang_id] = [];
+                    }
+                    
+                    if (!isset($out[$lemma][$lang_id][$dialect_id])) {
+                        $out[$lemma][$lang_id][$dialect_id] = [];
+                    }
+                    
+                    $out[$lemma][$lang_id][$dialect_id][] = $place_id;
+                }
+            }
+        }
+        return $out;
     }
 }

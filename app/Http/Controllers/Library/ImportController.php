@@ -75,6 +75,9 @@ print "<pre>";
         $file_lines = preg_split ("/\r?\n/",$file_content);
 print "<pre>";        
         list($categories, $blocks) = ConceptParser::readBlocks($file_lines);
-dd($categories, $blocks['A11']);        
+
+        ConceptParser::saveCategories($categories);        
+        ConceptParser::processBlocks($blocks);
+//dd($blocks['A11']);        
     }
 }

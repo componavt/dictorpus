@@ -48,6 +48,15 @@ class ConceptController extends Controller
         return view('dict.concept.create', compact('concept_category_values', 'pos_values'));
     }
 
+    public function validateForm(Request $request) {
+        $this->validate($request, [
+            'concept_category_id'  => 'required|max:4',
+            'pos_id' => 'required|numeric',
+            'text_en'  => 'max:150',
+            'text_ru'  => 'required|max:150',
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -56,13 +65,7 @@ class ConceptController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'concept_category_id'  => 'required|max:4',
-            'pos_id' => 'required|numeric',
-            'text_en'  => 'max:150',
-            'text_ru'  => 'required|max:150',
-        ]);
-//dd($request);        
+        $this->validateForm($request);
         $concept = Concept::create($request->all());
         
         return Redirect::to('/dict/concept/')
@@ -89,12 +92,11 @@ class ConceptController extends Controller
     public function edit($id)
     {
         $concept = Concept::find($id); 
-        $concept_values = [NULL=>''] + $concept->getList();
-        
-        return view('dict.concept.edit')
-                  ->with(['concept' => $concept,
-                          'concept_values' => $concept_values,
-                         ]);
+        $concept_category_values = ConceptCategory::getList();
+        $pos_values = Concept::getPOSList();
+
+        return view('dict.concept.edit', 
+                compact('concept', 'concept_category_values', 'pos_values'));
     }
 
     /**
@@ -106,11 +108,7 @@ class ConceptController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
-        ]);
-//dd($request);       
+        $this->validateForm($request);
         
         $concept = Concept::find($id);
         $concept->fill($request->all())->save();

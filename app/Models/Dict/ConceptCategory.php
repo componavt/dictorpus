@@ -26,8 +26,7 @@ class ConceptCategory extends Model
     
     public function getSectionAttribute() : String
     {
-        return //trans("dict.concept_section_".
-        substr($this->id, 0,1);
+        return trans("dict.concept_section_".substr($this->id, 0,1));
     }    
     
     /** Gets list dropdown form

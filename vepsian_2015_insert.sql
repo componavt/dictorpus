@@ -1002,3 +1002,4 @@ INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский 
 INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский р-н');
 
 -- php artisan make:migration add_field_pos_in_concepts_table
+-- php artisan make:test Library\Import\ConceptParserTest
