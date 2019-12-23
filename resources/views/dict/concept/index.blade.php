@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.concept_categories') }}
+{{ trans('navigation.concepts') }}
 @stop
 
 @section('headExtra')
@@ -11,7 +11,7 @@
 @section('body')        
         <p style="text-align:right">
         @if (User::checkAccess('dict.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/dict/concept_category/create') }}">
+            <a href="{{ LaravelLocalization::localizeURL('/dict/concept/create') }}">
         @endif
             {{ trans('messages.create_new_f') }}
         @if (User::checkAccess('dict.edit'))
@@ -22,8 +22,9 @@
         <table class="table table-striped rwd-table wide-lg">
         <thead>
             <tr>
-                <th>{{ trans('messages.code') }}</th>
-                <th>{{ trans('messages.section') }}</th>
+                <th>ID</th>
+                <th>{{ trans('messages.category') }}</th>
+                <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 @if (User::checkAccess('dict.edit'))
@@ -32,16 +33,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($concept_categories as $concept_category)
+            @foreach($concepts as $concept)
             <tr>
-                <td data-th="{{ trans('messages.code') }}">{{$concept_category->id}}</td>
-                <td data-th="{{ trans('messages.section') }}">{{$concept_category->section}}</td>
-                <td data-th="{{ trans('messages.in_english') }}">{{$concept_category->name_en}}</td>
-                <td data-th="{{ trans('messages.in_russian') }}">{{$concept_category->name_ru}}</td>
+                <td data-th="ID">{{$concept->id}}</td>
+                <td data-th="{{ trans('messages.category') }}">{{$concept->concept_category_id}}</td>
+                <td data-th="{{ trans('dict.pos') }}">{{$concept->pos->name}}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$concept->text_en}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$concept->text_ru}}</td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', ['is_button'=>true, 'route' => '/dict/concept_category/'.$concept_category->id.'/edit'])
-                    @include('widgets.form.button._delete', ['is_button'=>true, $route = 'concept_category.destroy', 'args'=>['id' => $concept_category->id]])
+                    @include('widgets.form.button._edit', ['is_button'=>true, 'route' => '/dict/concept/'.$concept->id.'/edit'])
+                    @include('widgets.form.button._delete', ['is_button'=>true, $route = 'concept.destroy', 'args'=>['id' => $concept->id]])
                 </td>
                 @endif
             </tr>

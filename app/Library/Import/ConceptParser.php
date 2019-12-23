@@ -4,6 +4,7 @@ namespace App\Library\Import;
 
 use App\Library\Grammatic;
 
+use App\Models\Dict\Concept;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
@@ -98,7 +99,7 @@ class ConceptParser
      * @return INT ID of part of speech
      */
     public static function getPOSID($pos_code) {
-        $names_to_codes = ['NOUN', 'VERB', 'ADJ'];
+        $names_to_codes = Concept::getPOSCodes();
         if (!in_array($pos_code, $names_to_codes)) {
             return false;
         } 

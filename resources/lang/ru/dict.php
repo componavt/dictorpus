@@ -63,6 +63,9 @@ return [
     'category_removed' => 'Категория ":name" удалена.',
     'clear_wordforms' => 'очистить словоформы',
     'code' => 'Код',
+    'concept_section_A' => 'ВСЕЛЕННАЯ',
+    'concept_section_B' => 'ЧЕЛОВЕК',
+    'concept_section_C' => 'ЧЕЛОВЕК И ВСЕЛЕННАЯ',
     'confirm_delete_wordforms' =>'Вы хотите удалить словоформы для данного диалекта?',
     'conll' => 'Код CONLL',
     'copy_bases' => 'скопировать основы из другого диалекта',
@@ -127,6 +130,7 @@ return [
                     4 => 'дробное'],
     
     'of_category' => 'категории',
+    'of_concept' => 'понятия',
     'of_dialect' => 'диалекта',
     'of_example' => 'примера',
     'of_gram' => 'грамматического признака',

@@ -197,6 +197,11 @@ Route::group(
         Route::get('stats/by_dict','Library\StatsController@byDict');
         Route::get('stats/by_corp','Library\StatsController@byCorp');
         
+        Route::resource('dict/concept', 'Dict\ConceptController',
+                       ['names' => ['update' => 'concept.update',
+                                    'store' => 'concept.store',
+                                    'destroy' => 'concept.destroy']]);
+        
         Route::resource('dict/concept_category', 'Dict\ConceptCategoryController',
                        ['names' => ['update' => 'concept_category.update',
                                     'store' => 'concept_category.store',

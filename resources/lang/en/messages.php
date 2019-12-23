@@ -14,6 +14,7 @@ return [
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
     'bin_answers' => [1=>'yes', 0=>'no'],
+    'category' => 'category',
     'changed' => 'changed',
     'close' => 'close', 
     'code' => 'code',

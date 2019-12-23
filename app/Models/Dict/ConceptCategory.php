@@ -24,20 +24,25 @@ class ConceptCategory extends Model
 
     use \App\Traits\Methods\getNameAttribute;
     
-    /** Gets list of relations
+    public function getSectionAttribute() : String
+    {
+        return //trans("dict.concept_section_".
+        substr($this->id, 0,1);
+    }    
+    
+    /** Gets list dropdown form
      * 
-     * @return Array ['A11'=>'Небо; небесные тела',..]
+     * @return Array [<key> => <value>,..]
      */
     public static function getList()
     {     
-        $relations = self::orderBy('id')->get();
+        $objs = self::orderBy('id')->get();
         
         $list = array();
-        foreach ($relations as $row) {
-            $list[$row->id] = $row->name;
+        foreach ($objs as $row) {
+            $list[$row->id] = $row->id .'. '. $row->name;
         }
         
         return $list;         
     }
-    
 }

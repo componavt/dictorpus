@@ -15,6 +15,7 @@ return [
     'about_veps' => 'О вепсах',
     'affix_freq' => 'Частота встречаемости аффиксов в словаре',
     'concept_categories' => 'Категории понятий',
+    'concepts' => 'Понятия',
     'corpus' => 'Корпус',
     'corpus_freq' => 'Частотные словари',
     'corpuses' => 'Корпуса',

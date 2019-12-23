@@ -62,6 +62,9 @@ return [
     'category_removed' => 'Сategory ":name" is removed successfully.',
     'clear_wordforms' => 'clear wordforms',
     'code' => 'code',
+    'concept_section_A' => 'UNIVERSE',
+    'concept_section_B' => 'MAN',
+    'concept_section_C' => 'MAN AND THE UNIVERSE',
     'confirm_delete_wordforms' =>'Do you want to delete word forms for this dialect?',
     'conll' => 'Code CONLL',
     'comptype' => 'Compound type',
@@ -126,6 +129,7 @@ return [
                    4 => 'fractional'],
     
     'of_category' => 'of category',
+    'of_concept' => 'of concept',
     'of_dialect' => 'of dialect',
     'of_example' => 'of example',
     'of_gram' => 'of grammatical attribute',

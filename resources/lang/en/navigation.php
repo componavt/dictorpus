@@ -15,6 +15,7 @@ return [
     'about_veps' => 'Veps',
     'affix_freq' => 'Affix frequency',
     'concept_categories' => 'Concept categories',
+    'concepts' => 'Сoncepts',
     'corpus' => 'Corpus',
     'corpus_freq' => 'Frequency vocabularies',
     'corpuses' => 'Corpuses',

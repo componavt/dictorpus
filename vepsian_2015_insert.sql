@@ -1000,3 +1000,5 @@ select count(*) from words where text_id in (select id from texts where lang_id=
 INSERT INTO `regions` VALUES (6,'Novgorod Oblast','Новгородская обл.');
 INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский р-н');
 INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский р-н');
+
+-- php artisan make:migration add_field_pos_in_concepts_table

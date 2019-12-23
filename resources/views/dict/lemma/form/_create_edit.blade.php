@@ -8,6 +8,7 @@
                  'value' =>$lang_id,
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lemma_lang_id']])
+                 
         @include('widgets.form.formitem._select2',
                 ['name' => 'dialect_id', 
                  'values' =>$dialect_values,

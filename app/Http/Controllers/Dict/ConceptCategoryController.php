@@ -40,10 +40,7 @@ class ConceptCategoryController extends Controller
      */
     public function create()
     {
-        $concept_category_values = [NULL=>''] + ConceptCategory::getList();
-
-        return view('dict.concept_category.create')
-                  ->with(['concept_category_values' => $concept_category_values]);
+        return view('dict.concept_category.create');
     }
 
     /**
@@ -86,12 +83,8 @@ class ConceptCategoryController extends Controller
     public function edit($id)
     {
         $concept_category = ConceptCategory::find($id); 
-        $concept_category_values = [NULL=>''] + $concept_category->getList();
         
-        return view('dict.concept_category.edit')
-                  ->with(['concept_category' => $concept_category,
-                          'concept_category_values' => $concept_category_values,
-                         ]);
+        return view('dict.concept_category.edit',compact('concept_category'));
     }
 
     /**

@@ -46,6 +46,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/gram') }}">{{ trans('navigation.grams') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/relation') }}">{{ trans('navigation.relations') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/concept_category') }}">{{ trans('navigation.concept_categories') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/concept') }}">{{ trans('navigation.concepts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/corpus') }}">{{ trans('navigation.corpuses') }}</a></li>
                         </ul>
                     </li>
