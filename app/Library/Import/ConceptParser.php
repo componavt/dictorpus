@@ -84,7 +84,7 @@ class ConceptParser
                 if ($block_line_num < 34) {
                     $block_line_num ++;
                 } else {
-                    $blocks[$category_code][$concept_id] = ['meaning'=>$concept_text, 'lemmas'=>$lemmas, 'place_lemmas'=>$place_lemmas]; 
+                    $blocks[$category_code][$concept_id] = ['meaning'=>$concept_text, 'pos_id'=>$pos_id, 'lemmas'=>$lemmas, 'place_lemmas'=>$place_lemmas]; 
                     $block_line_num = 0;
                 }
             }             
@@ -192,13 +192,19 @@ dd("Населенный пункт $place_n = ".$place_id. " отсутству
     public static function processBlocks($blocks) {
         foreach ($blocks as $category_id => $concept_blocks) {
             foreach ($concept_blocks as $concept_block) {
-dd($concept_block['place_lemmas']);                
+//dd($concept_block);                
                 $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas']);
-dd($lemma_dialects);                
+//dd($lemma_dialects);      
+                list($lang_lemmas, $lang_meanings) = self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], $lemma_dialects);
             }
         }
     }
     
+    /**
+     * 
+     * @param Array $places [<place1_num>=>[<lemma1_num>,...], ...]
+     * @return Array [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
+     */
     public static function chooseDialectsForLemmas($places) {
         $out = [];
         $place_dialects = self::placeDialects();
@@ -221,5 +227,32 @@ dd($lemma_dialects);
             }
         }
         return $out;
+    }
+    
+    /**
+     * @param INT pos_id - ID of part of speech
+     * @param Array $lemmas [<lemma1_num>=><lemma1_text>, ...]
+     * @param Array $lemmas [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
+     * 
+     * @return Array [0=>[<lang1_id>=><lemma1_obj>,...], 1=>[<lang1_id>=><meaning1_obj>,...]]
+     */
+    public static function addLemmas($pos_id, $lemmas, $lemma_places) {
+        foreach ($lemma_places as $lemma_num=> $lemma_langs) {
+            foreach ($lemma_langs as $lang_id=>$dialects) {
+//dd($pos_id, $lemmas[$lemma_num], $lang_id, $dialects);   
+                $lemma_obj = Lemma::wherePosId($pos_id)
+                                  ->where('lemma', 'like', $lemmas[$lemma_num])
+                                  ->whereLangId($lang_id)->get();
+dd($lemma_obj);         
+                if (!sizof($lemma_obj)) {
+                    $lemma_obj = Lemma::store($lemmas[$lemma_num], $pos_id, $lang_id);
+//найти формат массива $request->new_meanings в форме леммы
+//                                        storeLemmaMeanings($meanings, $lemma_id);
+                    // может быть выделить storeLemmaMeaning
+                }
+                $meaning_is_found = false;
+                
+            }
+        }
     }
 }
