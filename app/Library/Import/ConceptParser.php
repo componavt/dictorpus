@@ -199,7 +199,7 @@ dd("Населенный пункт $place_n = ".$place_info['id']. " отсут
                 list($lang_lemmas, $lang_meanings) = 
                         self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], 
                                 $lemma_dialects, $concept_obj);
-dd($lang_lemmas, $lang_meanings);                
+dd($concept_block['meaning'], $lang_lemmas, $lang_meanings);                
             }
         }
     }
@@ -266,8 +266,8 @@ dd($lang_lemmas, $lang_meanings);
                 if (!$meaning_obj->concepts()->where('concept_id', $concept->id)->first()) {                           
                     $meaning_obj->concepts()->attach($concept->id);
                 }
-                $lang_lemmas[$lang_id] = $lemma_obj;
-                $lang_meanings[$lang_id] = $meaning_obj;
+                $lang_lemmas[$lang_id][] = $lemma_obj;
+                $lang_meanings[$lang_id][] = $meaning_obj;
             }
         }
         return [$lang_lemmas, $lang_meanings];
