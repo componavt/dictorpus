@@ -61,9 +61,11 @@ class Lemma extends Model
     use \App\Traits\Relations\BelongsTo\POS;
     
     // Belongs To Many Relations
-    use \App\Traits\Relations\BelongsToMany\DialectsFromWordforms;
+    use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Labels;
     use \App\Traits\Relations\BelongsToMany\LemmaVariants;
+    use \App\Traits\Relations\BelongsToMany\Places;
+    use \App\Traits\Relations\BelongsToMany\WordformDialects;
     use \App\Traits\Relations\BelongsToMany\Wordforms;
    
     // Has Many Relations
@@ -333,7 +335,7 @@ class Lemma extends Model
         $list=[];
         foreach ($this->variants as $lemma) {
             $dialects = [];
-            foreach ($lemma->dialects->unique() as $dialect) {
+            foreach ($lemma->wordformDialects->unique() as $dialect) {
                 $dialects[] = $dialect->name;
             } 
             $l = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
@@ -1372,7 +1374,7 @@ dd($wordforms);
 
         $max_stem=$this->lemma; 
         $stems = [];
-        foreach ($this->getDialectIds() as $dialect_id) {
+        foreach ($this->getWordformDialectIds() as $dialect_id) {
             $stems_for_max = $stems = $this->getBases($dialect_id);
             $this->updateBases($stems, $dialect_id);
 
@@ -1477,6 +1479,24 @@ dd($wordforms);
                     ->where('relevance', '>', 0);
     }
     
+    /**
+     * 
+     * @param array $dialects [<dialect1_id>=>[<place1_id>, ...]
+     */
+    public function addDialectLinks($dialects) {
+        foreach ($dialects as $dialect_id => $places) {
+            if (!$this->dialects()->where('dialect_id', $dialect_id)->first()) {            
+                $this->dialects()->attach($dialect_id);
+            }
+            foreach ($places as $place_id) {
+                if (!$this->places()->where('place_id', $place_id)->first()) {
+                    $this->places()->attach($place_id);
+                }
+            }
+        }
+    }
+
+
     /*    
     public static function totalCount(){
         return self::count();

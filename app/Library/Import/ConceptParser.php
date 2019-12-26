@@ -181,7 +181,7 @@ class ConceptParser
         foreach ($places as $place_n => $place_info) {
             $place_obj = Place::find($place_info['id']);
             if (!$place_obj) {
-dd("Населенный пункт $place_n = ".$place_id. " отсутствует в БД!");               
+dd("Населенный пункт $place_n = ".$place_info['id']. " отсутствует в БД!");               
             }
             $places[$place_n]['dialects'] = $place_obj->getDialectLangs();
         }
@@ -192,10 +192,14 @@ dd("Населенный пункт $place_n = ".$place_id. " отсутству
     public static function processBlocks($blocks) {
         foreach ($blocks as $category_id => $concept_blocks) {
             foreach ($concept_blocks as $concept_block) {
-//dd($concept_block);                
+//dd($concept_block);            
+                $concept_obj = Concept::firstOrCreate(['text_ru'=>$concept_block['meaning']]);
                 $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas']);
 //dd($lemma_dialects);      
-                list($lang_lemmas, $lang_meanings) = self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], $lemma_dialects);
+                list($lang_lemmas, $lang_meanings) = 
+                        self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], 
+                                $lemma_dialects, $concept_obj);
+dd($lang_lemmas, $lang_meanings);                
             }
         }
     }
@@ -230,29 +234,67 @@ dd("Населенный пункт $place_n = ".$place_id. " отсутству
     }
     
     /**
+     * Search objects of lemmas by lemma, pos_id and meaning text. 
+     * Create new lemma if lemma is not found
+     * Stop script if lemmas are found, but the meaning is not found.
+     * 
      * @param INT pos_id - ID of part of speech
      * @param Array $lemmas [<lemma1_num>=><lemma1_text>, ...]
      * @param Array $lemmas [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
      * 
      * @return Array [0=>[<lang1_id>=><lemma1_obj>,...], 1=>[<lang1_id>=><meaning1_obj>,...]]
      */
-    public static function addLemmas($pos_id, $lemmas, $lemma_places) {
+    public static function addLemmas($pos_id, $lemmas, $lemma_places, $concept) {
+        $lang_lemmas = $lang_meanings = [];
+        $meaning_lang = Lang::getIDByCode('ru');
+        
         foreach ($lemma_places as $lemma_num=> $lemma_langs) {
             foreach ($lemma_langs as $lang_id=>$dialects) {
 //dd($pos_id, $lemmas[$lemma_num], $lang_id, $dialects);   
-                $lemma_obj = Lemma::wherePosId($pos_id)
+                $lemma_coll = Lemma::wherePosId($pos_id)
                                   ->where('lemma', 'like', $lemmas[$lemma_num])
                                   ->whereLangId($lang_id)->get();
-dd($lemma_obj);         
-                if (!sizof($lemma_obj)) {
+//dd($lemma_coll);       
+                list($lemma_obj, $meaning_obj) = 
+                        self::searchLemmaByMeaningText($lemma_coll, $concept->text, $meaning_lang, $lang_id);
+                if (!isset($lemma_obj) || !$lemma_obj) {
                     $lemma_obj = Lemma::store($lemmas[$lemma_num], $pos_id, $lang_id);
-//найти формат массива $request->new_meanings в форме леммы
-//                                        storeLemmaMeanings($meanings, $lemma_id);
-                    // может быть выделить storeLemmaMeaning
+                    $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, [$meaning_lang=>$concept->text]);
                 }
-                $meaning_is_found = false;
-                
+                $lemma_obj->addDialectLinks($dialects);
+// добавить проверку на существование связи     
+                if (!$meaning_obj->concepts()->where('concept_id', $concept->id)->first()) {                           
+                    $meaning_obj->concepts()->attach($concept->id);
+                }
+                $lang_lemmas[$lang_id] = $lemma_obj;
+                $lang_meanings[$lang_id] = $meaning_obj;
             }
         }
+        return [$lang_lemmas, $lang_meanings];
+    }
+    
+    public static function searchLemmaByMeaningText($lemma_coll, $meaning_text, $meaning_lang, $search_lang) {
+        if (!sizeof($lemma_coll)) {
+            return [null,null];
+        }
+        foreach ($lemma_coll as $lemma) {
+            $meaning_obj = self::meaningFound($lemma, $meaning_text, $meaning_lang);
+            if ($meaning_obj) {
+                return [$lemma, $meaning_obj];
+            }
+        }
+        print "<p>Нашлись леммы, но нет подходящего значения: <a href=/ru/dict/lemma?search_lang=$search_lang&search_lemma=".$lemma_coll[0]->lemma.
+                "&search_pos_id=".$lemma_coll[0]->pos_id.">проверить</a></p>";
+        exit(1);
+    }
+    
+    public static function meaningFound($lemma, $meaning_text, $meaning_lang) {
+        foreach ($lemma->meanings as $meaning) {
+            $meaning_text_obj = $meaning->meaningTexts()->where('lang_id',$meaning_lang)->first();
+            if ($meaning_text_obj->meaning_text == $meaning_text) {
+                return $meaning;
+            }
+        }            
+        return false;
     }
 }

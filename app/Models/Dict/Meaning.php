@@ -34,6 +34,7 @@ class Meaning extends Model
     use \App\Traits\Relations\BelongsTo\Lemma;
 
     // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Concepts;
     use \App\Traits\Relations\BelongsToMany\MeaningRelations;
     use \App\Traits\Relations\BelongsToMany\Translations;
     
@@ -251,26 +252,43 @@ class Meaning extends Model
 
     /**
      * Stores array of new meanings for the lemma
+     * 
+     * @param Array $meanings [<count>=>["meaning_n" => "1", "meaning_text" => [<lang1_id> => <meaning_text11>,  <lang2_id> => <meaning_text12>, ...]],
+                               <count>+1=>["meaning_n" => "2", "meaning_text" => [<lang1_id> => <meaning_text21>, <lang2_id> => <meaning_text22>, ...],
+     *                         ... ]
+     *                         count=0, if it is a new lemma
      *
      * @return NULL
      */
     public static function storeLemmaMeanings($meanings, $lemma_id){
+//dd($meanings);        
         if (!$meanings || !is_array($meanings)) {
             return;
         }
         foreach ($meanings as $meaning) {
-            $meaning_texts = $meaning['meaning_text'];
-            foreach ($meaning_texts as $lang=>$meaning_text) {
-                if (!$meaning_text) { // а если все толкования пусты, сотрутся они из базы?
-                    unset($meaning_texts[$lang]);
-                }
-            }
+            self::storeLemmaMeaning($lemma_id, (int)$meaning['meaning_n'], $meaning['meaning_text']);
+        }
+    }
 
-            if (sizeof($meaning_texts)){
-                $meaning_obj = self::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => (int)$meaning['meaning_n']]);
-                self::updateLemmaMeaningTexts($meaning_texts, $meaning_obj->id);
+    /**
+     * 
+     * @param int $lemma_id
+     * @param int $meaning_n
+     * @param array $meaning_texts [<lang1_id> => <meaning_text1>,  <lang2_id> => <meaning_text2>, ...]]
+     * @return Meaning - object
+     */
+    public static function storeLemmaMeaning($lemma_id, $meaning_n, $meaning_texts){
+        foreach ($meaning_texts as $lang=>$meaning_text) {
+            if (!$meaning_text) { // а если все толкования пусты, сотрутся они из базы?
+                unset($meaning_texts[$lang]);
             }
         }
+
+        if (sizeof($meaning_texts)){
+            $meaning_obj = self::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => $meaning_n]);
+            self::updateLemmaMeaningTexts($meaning_texts, $meaning_obj->id);
+        }
+        return $meaning_obj;
     }
 
     /**

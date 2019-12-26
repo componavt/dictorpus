@@ -151,7 +151,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
                     continue;
                 }
     */            
-                $dialects = $lemma->dialects()->whereNotNull('dialect_id')->get();
+                $dialects = $lemma->wordformDialects()->whereNotNull('dialect_id')->get();
                 if (!$dialects) {
                     continue;
                 }
