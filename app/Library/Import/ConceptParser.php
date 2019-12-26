@@ -192,7 +192,7 @@ dd("Населенный пункт $place_n = ".$place_info['id']. " отсут
     public static function processBlocks($blocks) {
         foreach ($blocks as $category_id => $concept_blocks) {
             foreach ($concept_blocks as $concept_block) {
-//dd($concept_block);            
+dd($concept_block);            
                 $concept_obj = Concept::firstOrCreate(['text_ru'=>$concept_block['meaning']]);
                 $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas']);
 //dd($lemma_dialects);      
