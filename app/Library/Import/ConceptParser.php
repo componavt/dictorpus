@@ -141,42 +141,48 @@ class ConceptParser
         }
     }
     
+    public static function placeIds() {
+        return [
+            "01" => 145, 
+            "02" => 233,
+            "03" => 175,
+            "04" => 232,
+            "05" => 234,
+            "06" => 140,
+            "07" => 235,
+            "08" => 236,
+            "09" => 237,
+            10   => 169,
+            11   => 197,
+            12   => 238,
+            13   => 179,
+            14   => 239,
+            15   => 240,
+            16   => 241,
+            17   => 242,
+            18   => 243,
+            19   => 96,
+            20   => 244,
+            21   => 245,
+            22   => 246,
+            23   => 247,
+            24   => 248,
+            25   => 53,
+            26   => 78,
+            27   => 71,
+            28   => 5,
+            29   => 26,
+            30   => 38];
+    }
     /**
      * 
      * @return Array [<place_n> => ['id'=><place_id>, ['dialects'=>[<dialect1> => <lang1>, ...]]]
      */
     public static function placeDialects() {
-        $places =[
-            "01" => ['id'=>145], 
-            "02" => ['id'=>233],
-            "03" => ['id'=>175],
-            "04" => ['id'=>232],
-            "05" => ['id'=>234],
-            "06" => ['id'=>140],
-            "07" => ['id'=>235],
-            "08" => ['id'=>236],
-            "09" => ['id'=>237],
-            10   => ['id'=>169],
-            11   => ['id'=>197],
-            12   => ['id'=>238],
-            13   => ['id'=>179],
-            14   => ['id'=>239],
-            15   => ['id'=>240],
-            16   => ['id'=>241],
-            17   => ['id'=>242],
-            18   => ['id'=>243],
-            19   => ['id'=>96],
-            20   => ['id'=>244],
-            21   => ['id'=>245],
-            22   => ['id'=>246],
-            23   => ['id'=>247],
-            24   => ['id'=>248],
-            25   => ['id'=>53],
-            26   => ['id'=>78],
-            27   => ['id'=>71],
-            28   => ['id'=>5],
-            29   => ['id'=>26],
-            30   => ['id'=>38]];
+        $places =[];
+        foreach (self::placeIds() as $place_num => $place_id) {
+            $places[$place_num] = ['id'=>$place_id]; 
+        }
         
         foreach ($places as $place_n => $place_info) {
             $place_obj = Place::find($place_info['id']);
@@ -184,22 +190,26 @@ class ConceptParser
 dd("Населенный пункт $place_n = ".$place_info['id']. " отсутствует в БД!");               
             }
             $places[$place_n]['dialects'] = $place_obj->getDialectLangs();
+            $places[$place_n]['langs'] = array_unique(array_values($places[$place_n]['dialects']));
         }
         
         return $places;
     }
 
     public static function processBlocks($blocks) {
+//dd($blocks);        
+        $place_dialects = self::placeDialects();
         foreach ($blocks as $category_id => $concept_blocks) {
             foreach ($concept_blocks as $concept_block) {
-dd($concept_block);            
-                $concept_obj = Concept::firstOrCreate(['text_ru'=>$concept_block['meaning']]);
-                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas']);
+//dd($concept_block);            
+                $concept_obj = Concept::firstOrCreate(['text_ru'=>$concept_block['meaning'], 'concept_category_id'=>$category_id]);
+                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas'], $place_dialects);
 //dd($lemma_dialects);      
                 list($lang_lemmas, $lang_meanings) = 
                         self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], 
                                 $lemma_dialects, $concept_obj);
-dd($concept_block['meaning'], $lang_lemmas, $lang_meanings);                
+//dd($concept_block['meaning'], $lang_lemmas, $lang_meanings);                
+                self::addSynonims($concept_block['place_lemmas'], $lang_meanings, $place_dialects);
             }
         }
     }
@@ -209,9 +219,8 @@ dd($concept_block['meaning'], $lang_lemmas, $lang_meanings);
      * @param Array $places [<place1_num>=>[<lemma1_num>,...], ...]
      * @return Array [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
      */
-    public static function chooseDialectsForLemmas($places) {
+    public static function chooseDialectsForLemmas($places, $place_dialects) {
         $out = [];
-        $place_dialects = self::placeDialects();
 //dd($place_dialects);        
         foreach ($places as $place_n => $place_lemmas) {
             $place_id = $place_dialects[$place_n]['id'];
@@ -240,9 +249,9 @@ dd($concept_block['meaning'], $lang_lemmas, $lang_meanings);
      * 
      * @param INT pos_id - ID of part of speech
      * @param Array $lemmas [<lemma1_num>=><lemma1_text>, ...]
-     * @param Array $lemmas [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
+     * @param Array $lemma_places [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
      * 
-     * @return Array [0=>[<lang1_id>=><lemma1_obj>,...], 1=>[<lang1_id>=><meaning1_obj>,...]]
+     * @return Array [0=>[<lang1_id>=>[<lemma1_num>=><lemma1_obj>, ...],...], 1=>[<lang1_id>=>[<lemma1_num>=><meaning1_obj>, ...], ...]]
      */
     public static function addLemmas($pos_id, $lemmas, $lemma_places, $concept) {
         $lang_lemmas = $lang_meanings = [];
@@ -266,8 +275,8 @@ dd($concept_block['meaning'], $lang_lemmas, $lang_meanings);
                 if (!$meaning_obj->concepts()->where('concept_id', $concept->id)->first()) {                           
                     $meaning_obj->concepts()->attach($concept->id);
                 }
-                $lang_lemmas[$lang_id][] = $lemma_obj;
-                $lang_meanings[$lang_id][] = $meaning_obj;
+                $lang_lemmas[$lang_id][$lemma_num] = $lemma_obj;
+                $lang_meanings[$lang_id][$lemma_num] = $meaning_obj;
             }
         }
         return [$lang_lemmas, $lang_meanings];
@@ -296,5 +305,37 @@ dd($concept_block['meaning'], $lang_lemmas, $lang_meanings);
             }
         }            
         return false;
+    }
+    
+    /**
+     * 
+     * @param Array $lemma_places [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
+     * @param Array $lang_meanings [<lang1_id>=>[<lemma1_num>=><meaning1_obj>, ...], ...]
+     */
+    public static function addSynonims($place_lemmas, $lang_meanings, $place_dialects) {
+        $synonyms_id = 2;
+//dd($place_lemmas, $lang_lemmas, $place_dialects);      
+        foreach ($place_lemmas as $place_num => $lemma_nums) {
+            if (sizeof($lemma_nums)<2) {
+                continue;
+            }
+print "<p>$place_num: ".join(', ', $lemma_nums)."; ".join(', ', $place_dialects[$place_num]['langs'])."</p>";  
+            foreach ($place_dialects[$place_num]['langs'] as $lang_id) {
+                for ($i=0; $i<sizeof($lemma_nums)-1; $i++) {
+                    for ($j=$i+1; $j<sizeof($lemma_nums); $j++) {
+                        if ($lemma_nums[$i][0] != $lemma_nums[$j][0]) {
+print "<p>".$lemma_nums[$i]."=".$lemma_nums[$j]."</p>";                
+                            $lang_meanings[$lang_id][$lemma_nums[$i]]->meaningRelations()
+                                ->attach($synonyms_id,['meaning2_id'=>$lang_id][$lemma_nums[$j]]);
+                
+                            // reverse relation
+                            $lang_meanings[$lang_id][$lemma_nums[$j]]->meaningRelations()
+                                ->attach($synonyms_id,['meaning2_id'=>$lang_id][$lemma_nums[$i]]);
+                        }
+                    }
+                }
+            }
+        }
+exit(1);        
     }
 }
