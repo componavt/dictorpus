@@ -49,7 +49,7 @@ class Grammatic
 //dd($max_stem, $affix);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        
-        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['dialect_id'], $name_num, $stems, 
+        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'], $name_num, $stems, 
                                                     isset($data['reflexive']) ? $data['reflexive'] : null);
 //dd($gramset_wordforms);        
         if ($gramset_wordforms) {

@@ -92,8 +92,12 @@ function selectWithLang(el, url, lang_var, placeholder=''){
 }
 
 function selectDialect(lang_var, placeholder=''){
-    selectWithLang(".select-dialect", "/dict/dialect/list", lang_var, placeholder);
+    selectWithLang('.select-dialect', "/dict/dialect/list", lang_var, placeholder);
 }
+/*
+function selectDialect(lang_var, placeholder='', dial_var='.select-dialect'){
+    selectWithLang(dial_var, "/dict/dialect/list", lang_var, placeholder);
+}*/
 
 function selectPhrase(placeholder='') {
     selectWithLang(".multiple-select-phrase", "/dict/lemma/list_with_pos_meaning", 'lang_id', placeholder);

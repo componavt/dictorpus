@@ -1006,3 +1006,5 @@ INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский 
 
 -- php artisan make:migration create_dialect_lemma_table
 -- php artisan make:migration create_lemma_place_table
+
+-- php artisan make:migration add_field_phonetics_in_lemma_features_table

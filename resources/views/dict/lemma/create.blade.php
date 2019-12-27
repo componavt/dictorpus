@@ -16,6 +16,7 @@
         @include('dict.lemma.form._create_edit', ['submit_title' => trans('messages.create_new_f'),
                                       'action' => 'create',
                                       'lemma_value' => '',
+                                      'dialects_value' => [],
                                       'obj' => NULL])
         {!! Form::close() !!}
 @stop
@@ -33,7 +34,8 @@
     toggleSpecial();
     addMeaning();
     posSelect();
-    selectDialect('lang_id', '{{ trans('dict.select_dialect') }}');
+    selectWithLang('.select-wordform-dialect', "/dict/dialect/list", 'lang_id', '{{ trans('dict.select_dialect') }}');
+    selectWithLang('.select-dialects', "/dict/dialect/list", 'lang_id', '{{ trans('dict.select_dialect') }}');
     selectPhrase();
     selectVariants();
 @stop

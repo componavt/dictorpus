@@ -16,7 +16,7 @@ if (!isset($grouped)) {
 }
 
 if (!isset($is_multiple) || $is_multiple) {
-    $multiple = ' multiple="multiple"';
+    $multiple = ' multiple';
 } else {
     $multiple = '';
 }

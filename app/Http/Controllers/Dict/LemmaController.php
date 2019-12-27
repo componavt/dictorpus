@@ -109,7 +109,7 @@ class LemmaController extends Controller
 
         $lang_id = User::userLangID();
 //        $dialect_id = User::userDialectID();
-        $dialect_value = User::userDialects();
+        $wordform_dialect_value = User::userDialects();
 //var_dump($dialect_value);        
         $new_meaning_n = 1;
         
@@ -120,7 +120,7 @@ class LemmaController extends Controller
         $dialect_values = $lang_id ? Dialect::getList($lang_id) : Dialect::getList(); //['NULL'=>'']+
 //dd($dialect_values);        
         return view('dict.lemma.create',
-                  compact('dialect_value', 'dialect_values', 'langs_for_meaning', 
+                  compact('wordform_dialect_value', 'dialect_values', 'langs_for_meaning', 
                           'lang_id', 'lang_values', 'new_meaning_n', 'phrase_values', 
                           'pos_id', 'pos_values', 'args_by_get', 'url_args'));
     }
@@ -143,6 +143,7 @@ class LemmaController extends Controller
 
         LemmaFeature::store($lemma->id, $request);
         $lemma->storePhrase($request->phrase);
+        $lemma->storeDialects($request->dialects);
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -320,15 +321,16 @@ class LemmaController extends Controller
             
         $all_meanings = $meaning_relation_values;
         $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
-        $dialect_value = User::userDialects();
+        $wordform_dialect_value = User::userDialects();
         $dialect_values = Dialect::getList($lemma->lang_id);
         
         $lemma_variants = $lemma->variants->pluck('lemma', 'id')->toArray();
+        $dialects_value = $lemma->dialects->pluck('name', 'id')->toArray();
         
         return view('dict.lemma.edit',
-                    compact('all_meanings', 'lang_values', 'dialect_value', 
+                    compact('all_meanings', 'lang_values', 'wordform_dialect_value', 
                             'dialect_values', 'langs_for_meaning', 'lemma', 
-                            'lemma_variants', 'new_meaning_n', 
+                            'lemma_variants', 'new_meaning_n', 'dialects_value',
                             'phrase_values', 'pos_values', 'relation_values', 
                             'relation_meanings', 'translation_values', 
                             'args_by_get', 'url_args'));

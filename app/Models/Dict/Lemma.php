@@ -697,6 +697,10 @@ dd($wordforms);
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
 
+        if (isset($features['dialects'])) {
+            $this->storeDialects($features['dialects']);
+        }
+        
         if (isset($features['variants'])) {
             $this->storeVariants($features['variants']);
         }
@@ -954,6 +958,14 @@ dd($wordforms);
         }
         
     }
+
+    public function storeDialects($dialects) {
+        $this->dialects()->detach();
+        if ($dialects) {
+            $this->dialects()->attach($dialects);
+        }
+    }
+    
     
     public function createReverseLemma($stem=NULL, $affix=NULL) {
         $reverse_lemma = $this->reverse();

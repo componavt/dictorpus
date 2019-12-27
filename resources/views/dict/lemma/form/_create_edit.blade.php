@@ -10,12 +10,11 @@
                  'attributes' => ['id'=>'lemma_lang_id']])
                  
         @include('widgets.form.formitem._select2',
-                ['name' => 'dialect_id', 
+                ['name' => 'dialects', 
                  'values' =>$dialect_values,
-                 'value' => $dialect_value,
-                 'is_multiple' => false,
-                 'title' => trans('dict.dialect_in_lemma_form'),
-                 'class'=>'select-dialect form-control'])
+                 'value' => $dialects_value,
+                 'title' => trans('dict.dialects'),
+                 'class'=>'select-dialects form-control']) 
     </div>
     <div class="col-sm-4">        
         @include('widgets.form.formitem._select',
@@ -50,6 +49,13 @@
                  'value' => isset($lemma_variants) ? array_keys($lemma_variants) : [],
                  'class'=> 'multiple-select-variants'
             ])
+        @include('widgets.form.formitem._select2',
+                ['name' => 'wordform_dialect_id', 
+                 'values' =>$dialect_values,
+                 'value' => $wordform_dialect_value,
+                 'is_multiple' => false,
+                 'title' => trans('dict.dialect_in_lemma_form'),
+                 'class'=>'select-wordform-dialect form-control'])
     </div>
 </div>
 @if ($action == 'edit')
