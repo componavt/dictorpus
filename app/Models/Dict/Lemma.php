@@ -338,6 +338,11 @@ class Lemma extends Model
             foreach ($lemma->wordformDialects->unique() as $dialect) {
                 $dialects[] = $dialect->name;
             } 
+            foreach ($lemma->dialects as $dialect) {
+                if (!in_array($dialect->name, $dialects)) {
+                    $dialects[] = $dialect->name;
+                }
+            }
             $l = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
             if (sizeof($dialects)) {
                 $l .= ' ('.join(', ',$dialects).')';
@@ -724,7 +729,7 @@ dd($wordforms);
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
         
-        $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['dialect_id'], $stems);           
+        $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'], $stems);           
         
         if (isset($data['phrase'])) {
             $this->storePhrase($data['phrase']);
@@ -1131,6 +1136,8 @@ dd($wordforms);
         $lemmas = self::searchByID($lemmas, $url_args['search_id']);
         $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning']);
         $lemmas = self::searchByLabel($lemmas, $url_args['search_label']);
+        $lemmas = self::searchByConcept($lemmas, $url_args['search_concept']);
+        $lemmas = self::searchByDialects($lemmas, $url_args['search_dialects']);
 
         $lemmas = $lemmas
                 //->groupBy('lemmas.id') // отключено, неправильно показывает общее число записей
@@ -1208,6 +1215,21 @@ dd($wordforms);
                     });
     }
     
+    public static function searchByConcept($lemmas, $concept_id) {
+        if (!$concept_id) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query) use ($concept_id){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($query) use ($concept_id){
+                            $query->select('meaning_id')
+                            ->from('concept_meaning')
+                            ->where('concept_id', $concept_id);
+                        });
+                    });
+    }
+    
     public static function searchByLabel($lemmas, $label_id) {
         if (!$label_id) {
             return $lemmas;
@@ -1215,6 +1237,16 @@ dd($wordforms);
         return $lemmas->whereIn('id', function ($query) use ($label_id){
                             $query->select('lemma_id')->from('label_lemma')
                                   ->where('label_id', $label_id);
+        });
+    }
+    
+    public static function searchByDialects($lemmas, $dialects) {
+        if (!$dialects || !sizeof($dialects)) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id', function ($query) use ($dialects){
+                            $query->select('lemma_id')->from('dialect_lemma')
+                                  ->whereIn('dialect_id', $dialects);
         });
     }
     
@@ -1456,6 +1488,8 @@ dd($wordforms);
         $url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
+                    'search_concept'  => (int)$request->input('search_concept'),
+                    'search_dialects' => (array)$request->input('search_dialects'),
                     'search_gramset'  => (int)$request->input('search_gramset'),
                     'search_id'       => (int)$request->input('search_id'),
                     'search_label'     => (int)$request->input('search_label'),

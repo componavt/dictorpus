@@ -6,6 +6,7 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/lemma.css')!!}
     {!!Html::style('css/table.css')!!}
 @stop
@@ -115,13 +116,16 @@
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}');
+    selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.select_dialect') }}');
 @stop
 
 

@@ -167,7 +167,7 @@ class LemmaFeature extends Model
             }
 //print "<p>". $field;           
 //dd($lemma_feature->isAllowFeature('comptype_id'));            
-            if (isset($features[$field]) && $lemma_feature->isAllowFeature($field)) {
+            if ($field == 'phonetics' || isset($features[$field]) && $lemma_feature->isAllowFeature($field)) {
                 $lemma_feature->$field = $features[$field];
             } else {
                 $lemma_feature->$field = NULL;

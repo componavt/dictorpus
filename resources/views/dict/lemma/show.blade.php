@@ -35,9 +35,10 @@
                                   'without_text' => 1])
                     @endif
                 </h2>
+                <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
             </div>
-            <div class="col-sm-4" style="text-align: right; font-weight: bold">   
-                <span id="lemmaStemAffix">{{$lemma->stemAffixForm()}}</span>
+            <div class="col-sm-4" style="text-align: right">   
+                <p><span id="lemmaStemAffix">{{$lemma->stemAffixForm()}}</span>
             @if (User::checkAccess('dict.edit'))
                 <img class="img-loading" id="img-loading_stem-affix" src="{{ asset('images/loading.gif') }}">
                 @include('widgets.form.button._reload', 
@@ -46,15 +47,22 @@
                           'func' => 'reloadStemAffixByWordforms',
                           'title' => trans('dict.reload-stem-affix-by-wordforms')])
             @endif
+                </p>
+                @if (isset($lemma->features->phonetics) && $lemma->features->phonetics)
+                <p><b>{{ trans('dict.phonetics') }}:</b> {{ $lemma->features->phonetics}}</p>
+                @endif
             </div>
         </div>
         
-        <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         @if ($lemma->pos)
         <p>
             <b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}  
             @include('dict.lemma.show.features')
         </p>
+        @endif
+        
+        @if ($lemma->dialectListToString())
+        <p><b>{{ trans('dict.dialects_usage') }}:</b> {{ $lemma->dialectListToString()}}</p>
         @endif
         @if ($lemma->variantsWithLink())
         <p>

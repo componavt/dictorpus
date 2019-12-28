@@ -27,6 +27,7 @@
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
+                <th>{{ trans('dict.lemmas') }}</th>
                 @if (User::checkAccess('dict.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -40,6 +41,13 @@
                 <td data-th="{{ trans('dict.pos') }}">{{$concept->pos->name}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$concept->text_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$concept->text_ru}}</td>
+                <td data-th="{{ trans('dict.lemmas') }}">
+                    @if ($concept->countLemmas())
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}?search_concept={{$concept->id}}">{{$concept->countLemmas()}}</a>
+                    @else
+                    0
+                    @endif
+                </td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit', ['is_button'=>true, 'route' => '/dict/concept/'.$concept->id.'/edit'])

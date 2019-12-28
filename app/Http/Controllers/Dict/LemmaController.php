@@ -85,9 +85,10 @@ class LemmaController extends Controller
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('lemmas');
         $gramset_values = Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
+        $dialect_values = Dialect::getList($url_args['search_lang']);
         
         return view('dict.lemma.index',
-                compact('gramset_values', 'lang_values', 'lemmas', 'numAll',
+                compact('dialect_values', 'gramset_values', 'lang_values', 'lemmas', 'numAll',
                         'pos_values', 'args_by_get', 'url_args'));
     }
 
@@ -322,10 +323,10 @@ class LemmaController extends Controller
         $all_meanings = $meaning_relation_values;
         $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
         $wordform_dialect_value = User::userDialects();
-        $dialect_values = Dialect::getList($lemma->lang_id);
         
         $lemma_variants = $lemma->variants->pluck('lemma', 'id')->toArray();
-        $dialects_value = $lemma->dialects->pluck('name', 'id')->toArray();
+        $dialect_values = Dialect::getList($lemma->lang_id);
+        $dialects_value = $lemma->dialects->pluck('id')->toArray();
         
         return view('dict.lemma.edit',
                     compact('all_meanings', 'lang_values', 'wordform_dialect_value', 

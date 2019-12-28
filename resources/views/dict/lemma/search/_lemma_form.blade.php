@@ -53,6 +53,13 @@
                          'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
             @endif
     </div>
+    <div class="col-sm-6 col-md-4">
+        @include('widgets.form.formitem._select2',
+                ['name' => 'search_dialects',
+                 'values' =>$dialect_values,
+                 'value' =>$url_args['search_dialects'],
+                 'class'=>'select-dialects form-control']) 
+    </div>
         
     <div class="col-sm-6 col-md-4 search-button-b">       
         <span>{{trans('messages.show_by')}}</span>
@@ -63,7 +70,9 @@
         <span>{{ trans('messages.records') }}</span>
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
-</div>                 
+</div>      
+        {!! Form::hidden('search_label', $url_args['search_label']) !!}        
+        {!! Form::hidden('search_concept', $url_args['search_concept']) !!}        
         {!! Form::close() !!}
 
         

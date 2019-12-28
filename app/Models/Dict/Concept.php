@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use LaravelLocalization;
 
+use App\Models\Dict\Lemma;
+
 class Concept extends Model
 {
     public $timestamps = false;
@@ -41,6 +43,9 @@ class Concept extends Model
     use \App\Traits\Relations\BelongsTo\ConceptCategory;
     use \App\Traits\Relations\BelongsTo\POS;
 
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Meanings;
+    
     public function getSectionAttribute() : String
     {
         return trans("dict.concept_section_".substr($this->id, 0,1));
@@ -74,5 +79,16 @@ class Concept extends Model
         }
         
         return $list;         
+    }
+    
+    public function countLemmas() {
+        $concept_id = $this->id;
+        return Lemma::whereIn('id', function($query) use ($concept_id) {
+            $query->select('lemma_id')->from('meanings')
+                  ->whereIn('id', function ($q) use ($concept_id) {
+                      $q->select('meaning_id')->from('concept_meaning')
+                        ->where('concept_id', $concept_id);
+                  });
+        })->count();
     }
 }

@@ -228,23 +228,29 @@ class Grammatic
     public static function toSearchForm($word) {
         $word = str_replace('’','',$word);
         $word = mb_strtolower($word);
-        $word = str_replace('i̮','i',$word);
-        $word = str_replace('̮i','i',$word);
-        $word = str_replace('̬ń','n',$word);
-        $word = str_replace('u̯','u',$word);
-        $word = str_replace('ŕ','r',$word);
-        $word = str_replace('ĺ','l',$word);
-        $word = str_replace('ś','s',$word);
-        $word = str_replace('ź','z',$word);
-        $word = str_replace('η','n',$word);
-        $word = str_replace('ć','c',$word);        
         return $word;
     }
 
-    public static function toRightForm($word) {
+    public static function hasPhonetics($word) {
+        return preg_match("/i̮|̮i|̬ń|u̯|ŕ|ĺ|ś|ź|η|ć/iu", $word);
+    }
+    
+    public static function toRightForm($word, $change_phonetics=true) {
         $word = trim($word);
         $word = preg_replace("/['´`΄]+/", "’", $word);
         $word = preg_replace("/\s{2,}/", " ", $word);
+        if ($change_phonetics) {
+            $word = str_replace('i̮','i',$word);
+            $word = str_replace('̮i','i',$word);
+            $word = str_replace('̬ń','n',$word);
+            $word = str_replace('u̯','u',$word);
+            $word = str_replace('ŕ','r',$word);
+            $word = str_replace('ĺ','l',$word);
+            $word = str_replace('ś','s',$word);
+            $word = str_replace('ź','z',$word);
+            $word = str_replace('η','n',$word);
+            $word = str_replace('ć','c',$word);        
+        }
         return $word;
     }
     public static function negativeForm($gramset_id, $lang_id) {

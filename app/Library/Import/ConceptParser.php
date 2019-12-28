@@ -258,6 +258,11 @@ dd("Населенный пункт $place_n = ".$place_info['id']. " отсут
         $meaning_lang = Lang::getIDByCode('ru');
         
         foreach ($lemma_places as $lemma_num=> $lemma_langs) {
+            if (Grammatic::hasPhonetics($lemmas[$lemma_num])) {
+                $phonetics = Grammatic::toRightForm($lemmas[$lemma_num],false);
+                $lemmas[$lemma_num] = Grammatic::toRightForm($lemmas[$lemma_num]);
+            } 
+            
             foreach ($lemma_langs as $lang_id=>$dialects) {
 //dd($pos_id, $lemmas[$lemma_num], $lang_id, $dialects);   
                 $lemma_coll = Lemma::wherePosId($pos_id)
@@ -271,7 +276,9 @@ dd("Населенный пункт $place_n = ".$place_info['id']. " отсут
                     $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, [$meaning_lang=>$concept->text]);
                 }
                 $lemma_obj->addDialectLinks($dialects);
-// добавить проверку на существование связи     
+                if (isset($phonetics)) {
+                    LemmaFeature::store($lemma_obj->id, ['phonetics'=>$phonetics]);
+                }
                 if (!$meaning_obj->concepts()->where('concept_id', $concept->id)->first()) {                           
                     $meaning_obj->concepts()->attach($concept->id);
                 }

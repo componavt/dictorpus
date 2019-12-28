@@ -155,3 +155,8 @@ h4 .fa {
 .reload-stem-affix-by-wordforms {
     cursor: pointer;
 }
+
+#lemmaStemAffix {
+    font-weight: bold;
+    font-size: 18px;
+}
