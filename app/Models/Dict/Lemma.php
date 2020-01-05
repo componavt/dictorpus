@@ -1488,6 +1488,7 @@ dd($wordforms);
         $url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
+                    'search_affix'    => $request->input('search_affix'),
                     'search_concept'  => (int)$request->input('search_concept'),
                     'search_dialects' => (array)$request->input('search_dialects'),
                     'search_gramset'  => (int)$request->input('search_gramset'),

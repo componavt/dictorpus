@@ -67,8 +67,9 @@ function langSelect(lang_var="lang_id") {
         .change();    
 }
 
-function selectWithLang(el, url, lang_var, placeholder=''){
+function selectWithLang(el, url, lang_var, placeholder='', allow_clear=false){
     $(el).select2({
+        allowClear: allow_clear,
         placeholder: placeholder,
         width: '100%',
         ajax: {
@@ -91,13 +92,9 @@ function selectWithLang(el, url, lang_var, placeholder=''){
     });   
 }
 
-function selectDialect(lang_var, placeholder=''){
-    selectWithLang('.select-dialect', "/dict/dialect/list", lang_var, placeholder);
+function selectDialect(lang_var, placeholder='', allow_clear=false, selector='.select-dialect'){
+    selectWithLang('.select-dialect', "/dict/dialect/list", lang_var, placeholder, allow_clear);
 }
-/*
-function selectDialect(lang_var, placeholder='', dial_var='.select-dialect'){
-    selectWithLang(dial_var, "/dict/dialect/list", lang_var, placeholder);
-}*/
 
 function selectPhrase(placeholder='') {
     selectWithLang(".multiple-select-phrase", "/dict/lemma/list_with_pos_meaning", 'lang_id', placeholder);
@@ -107,8 +104,9 @@ function selectVariants(placeholder='') {
     selectWithLang(".multiple-select-variants", "/dict/lemma/list_with_pos_meaning", 'lang_id', placeholder);
 }
 
-function selectGramset(lang_var, pos_var, placeholder=''){
+function selectGramset(lang_var, pos_var, placeholder='', allow_clear=false){
     $(".select-gramset").select2({
+        allowClear: allow_clear,
         placeholder: placeholder,
         width: '100%',
         ajax: {
@@ -132,27 +130,3 @@ function selectGramset(lang_var, pos_var, placeholder=''){
     });   
 }
 
-function selectDialect(lang_var, placeholder='', allow_clear=false, selector='.select-dialect'){
-    $(selector).select2({
-        allowClear: allow_clear,
-        placeholder: placeholder,
-        width: '100%',
-        ajax: {
-          url: "/dict/dialect/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              lang_id: $( "#"+lang_var+" option:selected" ).val()
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });   
-}

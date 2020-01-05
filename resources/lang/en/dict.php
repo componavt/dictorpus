@@ -23,6 +23,7 @@ return [
                     5 => 'quantity or degree',
                     6 => 'modal nature'],
     'animacy' => 'animate',
+    'affix' => 'affix',
     'affixes' => 'affixes',
     'inanimacy' => 'inanimate',
     'bases' => 'Bases',
@@ -220,4 +221,10 @@ return [
     'wordform_field_comments' => 'Wordforms separated by comma or /',
     'wordforms_field_comments' => 'Standard 3 word forms via , or ;',
     'wordforms_removed' => 'Wordforms are removed.',
+    'wordforms_total' => 'Total number of wordforms',
+    'wordforms_grouped_total' => 'Общее количество словоформ, cгруппированных по частям речи, т.е. все совпадающие словоформы, имеющие общую часть речи, считаются за одну',
+    'unique_wordforms_total' => 'Number of unique wordforms', 
+    'common_wordforms_total' => 'Number of common wordforms', 
+    'in_pos'=>'in :count parts of speech'
+    
 ];

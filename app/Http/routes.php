@@ -54,6 +54,15 @@ Route::group(
         Route::get('/about_karelians', function () {
             return view('page.about_karelians');
         });
+        Route::get('/corpus/frequency', function () {
+            return view('page.corpus_freq');
+        });
+        Route::get('/dict/selections', function () {
+            return view('page.dict_selections');
+        });
+        Route::get('/experiments', function () {
+            return view('experiments/index');
+        });
         Route::get('/grants', function () {
             return view('page.grants');
         });
@@ -63,17 +72,11 @@ Route::group(
         Route::get('/participants', function () {
             return view('page.participants');
         });
-        Route::get('/publ', function () {
-            return view('page.publ');
-        });
         Route::get('/permission', function () {
             return view('page.permission');
         });
-        Route::get('/corpus/frequency', function () {
-            return view('page.corpus_freq');
-        });
-        Route::get('/dict/selections', function () {
-            return view('page.dict_selections');
+        Route::get('/publ', function () {
+            return view('page.publ');
         });
         
         Route::get('/home', 'HomeController@index');
@@ -123,7 +126,6 @@ Route::group(
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
         Route::get('dict/lemma/{id}/reload_stem_affix_by_wordforms', 'Dict\LemmaController@reloadStemAffixByWordforms');
         
-        Route::get('dict/lemma_wordform/affix_freq', 'Dict\LemmaWordformController@affixFrequency');
         Route::put('dict/lemma_wordform/{id}', 'Dict\LemmaWordformController@update')
                         ->name('lemma_wordform.update');
         Route::get('dict/lemma_wordform/{id}/edit/', 'Dict\LemmaWordformController@edit');
@@ -136,6 +138,9 @@ Route::group(
         Route::get('dict/lemma_wordform/{id}_{dialect_id}/get_wordforms', 'Dict\LemmaWordformController@getWordforms');
         Route::get('dict/lemma_wordform/{id}_{dialect_id}/reload/', 'Dict\LemmaWordformController@reload');
 
+        Route::get('dict/lemma_wordform/affix_freq', 'Dict\LemmaWordformController@affixFrequency');
+        Route::get('dict/lemma_wordform/pos_common_wordforms', 'Dict\LemmaWordformController@posCommonWordforms');
+        
         Route::get('dict/meaning/create', 'Dict\MeaningController@create');
         Route::get('dict/meaning/example/add/{example_id}', 'Dict\MeaningController@addExample');
         Route::get('dict/meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
@@ -166,13 +171,19 @@ Route::group(
         Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
+        Route::get('experiments/fill_unique_wordforms', 'Library\ExperimentsController@fillUniqueWordforms');
+        Route::get('experiments/search_pos_gramsets_by_affix', 'Library\ExperimentsController@searchPosGramsetsByAffix');
+        Route::get('experiments/search_pos_gramsets_by_unique_wordforms', 'Library\ExperimentsController@searchPosGramsetsByUniqueWordforms');
+        Route::get('experiments/search_pos_gramsets_by_unique_wordforms_results', 'Library\ExperimentsController@searchPosGramsetsByUniqueWordformsResults');
+        
         Route::get('service', 'Library\ServiceController@index');
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
-        Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
-        Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('service/add_wordform_affixes', 'Library\ServiceController@addWordformAffixes');
-        Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
         Route::get('service/add_unmarked_links', 'Library\ServiceController@addUnmarkedLinks');
+        Route::get('service/correct_data', 'Library\ServiceController@correctData');
+        Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
+        Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
+        Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
 //        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 

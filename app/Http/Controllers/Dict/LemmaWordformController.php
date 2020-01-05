@@ -21,6 +21,7 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
 use App\Models\Dict\PartOfSpeech;
+use \App\Models\Dict\Wordform;
 
 class LemmaWordformController extends Controller
 {
@@ -35,7 +36,8 @@ class LemmaWordformController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:dict.edit,/dict/lemma/', ['only' => ['store','edit','update','destroy', 'reload']]);
+        $this->middleware('auth:dict.edit,/dict/lemma/', 
+                ['only' => ['store','edit','update','destroy', 'reload', 'posCommonWordforms']]);
         
         $this->url_args = Lemma::urlArgs($request);  
         
@@ -308,6 +310,9 @@ class LemmaWordformController extends Controller
                 $lemmas = $lemmas->wherePosId($url_args['search_pos']);
             } 
 
+            if ($url_args['search_affix']) {
+                $lemmas = $lemmas->where('affix', 'like', $url_args['search_affix']);
+            } 
 //var_dump($words->toSql());  
 //            $totalNumber = sizeof($lemmas->get());
             $lemmas = $lemmas 
@@ -322,5 +327,93 @@ class LemmaWordformController extends Controller
         return view('dict.lemma_wordform.affix_freq',
                 compact('lang_values', 'lemmas', 'pos_values', 'args_by_get', 'url_args')); //, 'totalNumber'
     }
-    
+ 
+    public function posCommonWordforms() {
+        $search_lang = 4;
+        $parts_of_speech = PartOfSpeech::changeablePOSList();
+        $pos_wordforms = [];
+        $pairs = [];
+        $prev_pos_id = NULL;
+        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                    ->whereNotNull('gramset_id')
+                    ->whereIn('lemma_id', function($q) use ($search_lang) {
+                          $q->select('id')->from('lemmas')
+                            ->whereLangId($search_lang);                     
+                    });
+        $wordforms_total = number_format($wordforms->count(), 0, ',', ' ');
+
+        $wordforms_grouped = $wordforms->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                ->groupBy('wordform','pos_id')->get();
+        $wordforms_grouped_total = number_format(sizeof($wordforms_grouped), 0, ',', ' ');
+        
+        foreach ($parts_of_speech as $pos) {
+            $pos_id = $pos->id;
+            $coll_wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                    ->whereNotNull('gramset_id')
+                    ->whereIn('lemma_id', function($q) use ($search_lang, $pos_id) {
+                          $q->select('id')->from('lemmas')
+                            ->whereLangId($search_lang)->wherePosId($pos_id);
+                     
+                    })->orderBy('wordform')->get();
+//dd($w);       
+            foreach($coll_wordforms as $wordform) {
+                $w = $wordform->wordform;
+                if (!isset($pos_wordforms[$pos_id][$w]) 
+                        || !in_array($wordform->gramset_id, $pos_wordforms[$pos_id][$w])) {
+                    $pos_wordforms[$pos_id][$w][] = $wordform->gramset_id;
+                }
+/*                
+                if ($prev_pos_id && isset($pos_wordforms[$prev_pos_id][$w])
+                        && (!isset($pairs[$prev_pos_id.'_'.$pos_id]) 
+                                || !in_array($w, $pairs[$prev_pos_id.'_'.$pos_id]))) {
+                    $pairs[$prev_pos_id.'_'.$pos_id][] = $w;
+                }*/
+            }
+            $prev_pos_id = $pos_id;
+        }
+        
+//dd($pos_wordforms);  
+        $common_wordforms = [];
+        $parts_of_speech = array_keys($pos_wordforms);
+        for ($i=0; $i<sizeof($parts_of_speech)-1; $i++) {
+            for ($j=$i+1; $j<sizeof($parts_of_speech); $j++) {
+                $common = array_intersect(array_keys($pos_wordforms[$parts_of_speech[$i]]), 
+                                          array_keys($pos_wordforms[$parts_of_speech[$j]]));
+                if (sizeof($common)) {
+                    $pairs[$parts_of_speech[$i].'_'.$parts_of_speech[$j]] = $common;
+                    foreach ($common as $w) {
+                        $common_wordforms[$w][$parts_of_speech[$i]] = $pos_wordforms[$parts_of_speech[$i]][$w];
+                        $common_wordforms[$w][$parts_of_speech[$j]] = $pos_wordforms[$parts_of_speech[$j]][$w];
+                    }
+                }
+            }
+        }
+        
+        $unique_wordforms = [];
+        foreach ($pos_wordforms as $pos_id => $wordforms) {
+            foreach ($wordforms as $w=>$gramsets) {
+                if (!isset($common_wordforms[$w])) {
+                    $unique_wordforms[$w] = ['pos'=>$pos_id, 'gramsets'=>$gramsets];
+                }
+            }
+        }
+        
+        $common_wordforms_total_counts = [];
+        foreach ($common_wordforms as $w =>$poses) {
+            $common_wordforms_total_counts[sizeof($poses)] = 
+                    !isset($common_wordforms_total_counts[sizeof($poses)])
+                    ? 1 : $common_wordforms_total_counts[sizeof($poses)]+1;
+        }
+//dd($pairs);    
+//dd($unique_wordforms);
+//dd($common_wordforms_total_counts);        
+        $unique_wordforms_total = number_format(sizeof($unique_wordforms), 0, ',', ' ');
+        $common_wordforms_total = number_format(sizeof($common_wordforms), 0, ',', ' ');
+        $search_lang = Lang::getNameById($search_lang);
+        return view('dict.lemma_wordform.pos_common_wordforms',
+                compact('search_lang', 'wordforms_total', 'unique_wordforms_total', 
+                        'common_wordforms_total', 'common_wordforms_total_counts',
+                        'wordforms_grouped_total')); 
+        
+    }
 }

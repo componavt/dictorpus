@@ -97,7 +97,7 @@
 
 @section('jqueryFunc')
     toggleSpecial();
-    selectDialect('search_lang', '{{ trans('dict.select_dialect') }}');
-    selectGramset('search_lang', 'search_pos', '{{ trans('dict.select_gramset') }}');
+    selectDialect('search_lang', '{{ trans('dict.select_dialect') }}', true);
+    selectGramset('search_lang', 'search_pos', '{{ trans('dict.select_gramset') }}', true);
 @stop
 

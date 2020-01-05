@@ -36,16 +36,26 @@ class ServiceController extends Controller
     public function index() {
         $langs = [];
         foreach (Lang::projectLangIDs() as $l_id) {
+            $langs[$l_id]=Lang::getNameById($l_id);
+        }
+        
+        return view('page.service')
+                ->with(['langs' => $langs]);        
+    }
+    
+    public function correctData() {
+        $langs = [];
+        foreach (Lang::projectLangIDs() as $l_id) {
             $langs[$l_id]['name']=Lang::getNameById($l_id);
             $langs[$l_id]['affix_count'] = number_format(Wordform::countWithoutAffixes($l_id), 0, ',', ' ');
             $langs[$l_id]['wrong_affix_count'] = number_format(Wordform::countWrongAffixes($l_id), 0, ',', ' ');
             $langs[$l_id]['unmarked_words_count'] = number_format(Word::countUnmarked($l_id), 0, ',', ' ');
         }
         
-        return view('page.service')
-                ->with(['langs' => $langs]);
-        
+        return view('page.correct_data')
+                ->with(['langs' => $langs]);        
     }
+    
     public function addCompTypeToPhrases() {
         $lemmas = Lemma::where('pos_id', PartOfSpeech::getPhraseID())->orderBy('lemma')->get();
         foreach ($lemmas as $lemma) {

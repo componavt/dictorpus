@@ -1008,3 +1008,16 @@ INSERT INTO `districts` VALUES (33,6,'Valdaysky District','Валдайский 
 -- php artisan make:migration create_lemma_place_table
 
 -- php artisan make:migration add_field_phonetics_in_lemma_features_table
+
+-- php artisan make:migration change_collate_of_field_affix_in_lemma_wordform_table
+
+-- php artisan make:migration create_unique_wordforms_table
+-- php artisan make:controller Library/ExperimentsController
+
+ALTER table unique_wordforms add pos_val float default null;
+ALTER table unique_wordforms add gram_val float default null;
+
+-- php artisan make:chart ExperimentValuation
+
+CREATE TABLE unique_wordforms_with_af LIKE unique_wordforms; 
+INSERT unique_wordforms_with_af SELECT * FROM unique_wordforms;

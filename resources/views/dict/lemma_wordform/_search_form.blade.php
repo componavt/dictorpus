@@ -16,7 +16,15 @@
                          'title' => trans('dict.pos'),
                 ])                 
             </div>
-            <div class="col-md-2 submit-button-b"><br>       
+            <div class="col-md-3">
+            @include('widgets.form.formitem._text',
+                    ['name' => 'search_affix',
+                    'value' => $url_args['search_affix'],
+                    'special_symbol' => true,
+                    'title' => trans('dict.affix')])
+            </div>
+            
+            <div class="col-md-3 submit-button-b"><br>       
                 @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
             </div>
         </div>

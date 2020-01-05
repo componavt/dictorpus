@@ -52,9 +52,11 @@
 @section('footScriptExtra')
     <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     $(document).ready( function () {
         $('#affixTable').DataTable();
     } );

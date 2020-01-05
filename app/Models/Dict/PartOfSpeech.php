@@ -98,6 +98,15 @@ class PartOfSpeech extends Model
         }
     }
         
+    public static function getNameById($id)
+    {
+        $pos = self::find($id);
+        if ($pos && isset($pos->name)) {
+//dd($pos->id);
+            return $pos->name;
+        }
+    }
+        
     public static function getByCode($code)
     {
         $pos = self::where('code', $code)->first();
@@ -204,11 +213,23 @@ class PartOfSpeech extends Model
     }
     
     public function isChangeable() {
-        if ($this->gramsets()) {
+        if ($this->gramsets && sizeof($this->gramsets)) {
             return true;
         } 
         return false;            
     }
+    
+    public static function changeablePOSList() {
+        $out = [];
+        foreach (self::all() as $pos) {
+            if ($pos->isChangeable()) {
+                $out[] = $pos;
+            }
+        } 
+//dd($out);
+        return $out;
+    }
+    
         
 }
 
