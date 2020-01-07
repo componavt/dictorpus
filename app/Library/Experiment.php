@@ -12,7 +12,7 @@ class Experiment
 {
     
     public static function searchPosGramsetsByUniqueWordforms($wordform_obj) {
-        $i=0;
+        $i=1;
         $match_wordforms = NULL;
         $s_wordform = $wordform_obj->wordform;
         while ($i<mb_strlen($s_wordform) && !$match_wordforms) {
@@ -132,6 +132,8 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         while ($i<mb_strlen($s_wordform) && !sizeof($match_wordforms)) {
             $str = mb_substr($s_wordform,$i);
             $match_wordforms = LemmaWordform::join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                     ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                     ->where('wordform', 'not like', '% %') // without analytic forms
                      ->where('wordform_id', '<>', $wordform_obj->wordform_id)
                      ->where('affix', 'like', $str)
                      ->where('lang_id', $search_lang)
