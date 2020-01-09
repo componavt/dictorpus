@@ -1021,3 +1021,5 @@ ALTER table unique_wordforms add gram_val float default null;
 
 CREATE TABLE unique_wordforms_with_af LIKE unique_wordforms; 
 INSERT unique_wordforms_with_af SELECT * FROM unique_wordforms;
+
+-- php artisan make:migration create_search_gramset_table

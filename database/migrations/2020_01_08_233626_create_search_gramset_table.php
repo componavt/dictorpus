@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUniqueWordformsTable extends Migration
+class CreateSearchGramsetTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,11 @@ class CreateUniqueWordformsTable extends Migration
      */
     public function up()
     {
-        Schema::create('search_pos', function (Blueprint $table) {
+        Schema::create('search_gramset', function (Blueprint $table) {
             $table->increments('id');
             $column = $table->string('wordform',50)->unique();
             $column->collation ='utf8_bin';
-            $table->integer('pos_id');
-//            $table->string('gramsets',50);
+            $table->integer('gramset_id');
             $table->string('ending',50);
             $table->float('eval');
             $table->timestamp('created_at')->useCurrent();
@@ -31,6 +30,6 @@ class CreateUniqueWordformsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('search_pos');
+        Schema::drop('search_gramset');
     }
 }
