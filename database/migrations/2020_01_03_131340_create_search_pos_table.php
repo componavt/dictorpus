@@ -17,9 +17,9 @@ class CreateUniqueWordformsTable extends Migration
             $column = $table->string('wordform',50)->unique();
             $column->collation ='utf8_bin';
             $table->integer('pos_id');
-//            $table->string('gramsets',50);
             $table->string('ending',50);
             $table->float('eval');
+            $table->float('eval_gen');
             $table->timestamp('created_at')->useCurrent();
         });
     }

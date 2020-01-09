@@ -19,6 +19,7 @@ class CreateSearchGramsetTable extends Migration
             $table->integer('gramset_id');
             $table->string('ending',50);
             $table->float('eval');
+            $table->float('eval_gen');
             $table->timestamp('created_at')->useCurrent();
         });
     }

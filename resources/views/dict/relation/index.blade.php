@@ -38,8 +38,8 @@
                 <td data-th="{{ trans('messages.in_english') }}">{{$relation->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$relation->name_ru}}</td>
                 <td data-th="{{ trans('dict.reverse_relation') }}">
-                    @if ($relation->reverse_relation)
-                        {{$relation->reverse_relation->name}}
+                    @if ($relation->reverseRelation)
+                        {{$relation->reverseRelation->name}}
                     @endif
                 </td>
                 @if (User::checkAccess('dict.edit'))

@@ -48,6 +48,12 @@ class Relation extends Model
     public function reverseRelation()
     {
         return $this->belongsTo(Relation::class,'reverse_relation_id');
+/*        $reverse_relation_id = $this->reverse_relation_id;
+        if (!$reverse_relation_id) {
+            return false;
+        }
+        return self::find($reverse_relation_id);*/
+        
     } 
     
     // Relation __has_many__ Meanings
