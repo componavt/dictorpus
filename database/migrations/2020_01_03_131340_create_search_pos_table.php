@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUniqueWordformsTable extends Migration
+class CreateSearchPosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +14,15 @@ class CreateUniqueWordformsTable extends Migration
     {
         Schema::create('search_pos', function (Blueprint $table) {
             $table->increments('id');
-            $column = $table->string('wordform',50)->unique();
+            $column = $table->string('wordform',50);
             $column->collation ='utf8_bin';
             $table->integer('pos_id');
-            $table->string('ending',50);
-            $table->float('eval');
-            $table->float('eval_gen');
+            $table->string('ending',50)->nullable();
+            $table->float('eval_end')->nullable();
+            $table->float('eval_end_gen')->nullable();
             $table->timestamp('created_at')->useCurrent();
+            
+            $table->unique([ 'wordform', 'pos_id' ]);
         });
     }
 

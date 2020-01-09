@@ -10,6 +10,7 @@ use App\Http\Requests;
 use App\Library\Experiment;
 
 use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -26,145 +27,241 @@ class ExperimentsController extends Controller
     }
     
     /**
-     * Fill data [wordform, pos ID, gramsets] in table unique_wordforms 
+     * Fill data [wordform, pos ID] in table search_pos
      * 
      * @return \Illuminate\Http\Response
      */
-    public function fillUniqueWordforms() {
+    public function fillSearchPos() {
         $search_lang = 4;
-        $parts_of_speech = PartOfSpeech::changeablePOSList();
-        $pos_wordforms = [];
         $pairs = [];
-        $prev_pos_id = NULL;
         
-        DB::table('unique_wordforms')->all()->delete();
-        DB::statement('ALTER TABLE unique_wordforms AUTO_INCREMENT = 1');
+//        DB::table('search_pos')->all()->delete();
+  //      DB::statement('ALTER TABLE search_pos AUTO_INCREMENT = 1');
+        $lemmas = Lemma::whereLangId($search_lang)->get();
         
-        foreach ($parts_of_speech as $pos) {
-            $pos_id = $pos->id;
-            $coll_wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
-                    ->whereNotNull('gramset_id')
-                    ->whereIn('lemma_id', function($q) use ($search_lang, $pos_id) {
-                          $q->select('id')->from('lemmas')
-                            ->whereLangId($search_lang)->wherePosId($pos_id);
-                     
-                    })->orderBy('wordform')->get();
-//dd($w);       
-            foreach($coll_wordforms as $wordform) {
-                $w = $wordform->wordform;
-                if (!isset($pos_wordforms[$pos_id][$w]) 
-                        || !in_array($wordform->gramset_id, $pos_wordforms[$pos_id][$w])) {
-                    $pos_wordforms[$pos_id][$w][] = $wordform->gramset_id;
+        foreach ($lemmas as $lemma) {
+            if (strlen($lemma->lemma)>1 && !preg_match("/\s/", $lemma->lemma)) {
+                if ($lemma->pos_id == 14) {
+                    $pos_id = 5;
+                } else {
+                    $pos_id = $lemma->pos_id;
                 }
-/*                
-                if ($prev_pos_id && isset($pos_wordforms[$prev_pos_id][$w])
-                        && (!isset($pairs[$prev_pos_id.'_'.$pos_id]) 
-                                || !in_array($w, $pairs[$prev_pos_id.'_'.$pos_id]))) {
-                    $pairs[$prev_pos_id.'_'.$pos_id][] = $w;
-                }*/
-            }
-            $prev_pos_id = $pos_id;
-        }
-        
-//dd($pos_wordforms);  
-        $common_wordforms = [];
-        $parts_of_speech = array_keys($pos_wordforms);
-        for ($i=0; $i<sizeof($parts_of_speech)-1; $i++) {
-            for ($j=$i+1; $j<sizeof($parts_of_speech); $j++) {
-                $common = array_intersect(array_keys($pos_wordforms[$parts_of_speech[$i]]), 
-                                          array_keys($pos_wordforms[$parts_of_speech[$j]]));
-                if (sizeof($common)) {
-                    $pairs[$parts_of_speech[$i].'_'.$parts_of_speech[$j]] = $common;
-                    foreach ($common as $w) {
-                        $common_wordforms[$w][$parts_of_speech[$i]] = $pos_wordforms[$parts_of_speech[$i]][$w];
-                        $common_wordforms[$w][$parts_of_speech[$j]] = $pos_wordforms[$parts_of_speech[$j]][$w];
+                $pairs[$lemma->lemma.'_'.$pos_id] = [$lemma->lemma,$pos_id];
+                foreach ($lemma->wordforms as $wordform) {
+                    if (strlen($wordform->wordform)>1 && !preg_match("/\s/", $wordform->wordform)) { // without analytic forms
+                        $pairs[$wordform->wordform.'_'.$pos_id] = [$wordform->wordform,$pos_id];                
                     }
                 }
             }
         }
-        print "<p>".Lang::getNameById($search_lang)."</p>";
-        
-        foreach ($pos_wordforms as $pos_id => $wordforms) {
-            foreach ($wordforms as $w=>$gramsets) {
-                if (!isset($common_wordforms[$w])) {
-                    sort($gramsets);
-                    DB::table('unique_wordforms')->insert([
-                        'wordform' => $w,
-                        'pos_id'=> $pos_id, 
-                        'gramsets'=> join('_',$gramsets)
-                    ]);
-                }
-            }
+        ksort($pairs);
+//dd($pairs);   
+        foreach ($pairs as $k=>$info) {
+            DB::table('search_pos')->insert([
+                'wordform' => $info[0],
+                'pos_id'=> $info[1]
+            ]);
         }
-        print "<P>Записано ". DB::table('unique_wordforms')->count();
-  
-        
-//dd($pairs);    
-//dd($unique_wordforms);
-//dd($common_wordforms_total_counts);        
-//        $unique_wordforms_total = number_format(sizeof($unique_wordforms), 0, ',', ' ');
-/*        return view('experiments.fill_unique_wordforms',
-                compact('search_lang', //'unique_wordforms_total', 
-                        'unique_wordforms')); */
-        
+print sizeof($pairs).' records are created.';        
     }
     
     /**
-     * select pos_val, count(*) from unique_wordforms where pos_val is not null group by pos_val;
-     * select ROUND(pos_val,1) as val, count(*) from unique_wordforms where pos_val is not null group by val;
+     * Fill data [wordform, gramset ID] in table search_gramset
      * 
-     * удалили аналитические формы 
-     * delete from unique_wordforms where wordform like '% %'; 
-     * и оценки
-     * update unique_wordforms set pos_val=null, gram_val=null;
-     * и прогнали заново
+     * @return \Illuminate\Http\Response
      */
-    public function searchPosGramsetsByUniqueWordforms() {
-        $wordforms = DB::table('unique_wordforms')->whereNull('pos_val')
-                   ->orderBy('id')
-                //->take(100)
-                   ->get();
-//        $pos_val_count = $gram_val_count = [];
-        foreach ($wordforms as $wordform) {
-            list($pos_val, $gram_val) 
-                    = Experiment::searchPosGramsetsByUniqueWordforms($wordform);
-            DB::statement("UPDATE unique_wordforms SET pos_val=".$pos_val
-                         .", gram_val=$gram_val where id=".$wordform->id);
-/*            $pos_val_count[$pos_val] = !isset($pos_val_count[$pos_val])
-                                     ? 1 : 1+$pos_val_count[$pos_val];
-            $gram_val_count[$gram_val] = !isset($gram_val_count[$gram_val])
-                                     ? 1 : 1+$gram_val_count[$gram_val];*/
-        }
-//dd($pos_val_count, $gram_val_count);        
-    }
-    
-    /**
-     * select ROUND(gram_val,1) as val, count(*) from unique_wordforms where gram_val is not null group by val;
-     */
-    public function searchPosGramsetsByUniqueWordformsResults() {
+    public function fillSearchGramset() {
         $search_lang = 4;
-        $search_lang_name = Lang::getNameById($search_lang);
+        $pairs = [];
         
-        $results[0] = Experiment::searchPosGramsetsByUniqueWordformsResults('unique_wordforms_with_af');
-        $results[1] = Experiment::searchPosGramsetsByUniqueWordformsResults('unique_wordforms');
+//        DB::table('search_gramset')->all()->delete();
+  //      DB::statement('ALTER TABLE search_gramset AUTO_INCREMENT = 1');
         
-        return view('experiments.search_pos_gramsets_by_unique_wordforms_results',
-                    compact('search_lang_name', 'results'));
-    }
-    
-    public function searchPosGramsetsByAffix() {
-        $search_lang = 4;
-        $search_lang_name = Lang::getNameById($search_lang);
-        
+        $lemmas = Lemma::whereLangId($search_lang)->get();
         $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                     ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                    ->where('wordform','not like', '% %')
                     ->whereNotNull('gramset_id')
                     ->whereLangId($search_lang)
-                    ->groupBy('wordform','pos_id', 'gramset_id')
-                    ->take(10)->get();
- //dd($wordforms);                    
+                    ->groupBy('wordform','gramset_id')
+                    ->get();
+        
         foreach ($wordforms as $wordform) {
-            list($pos_val, $gram_val) = Experiment::searchPosGramsetsByAffix($wordform, $search_lang);
+            if (!preg_match("/\s/", $wordform->wordform)) { // without analytic forms
+                $pairs[$wordform->wordform.'_'.$wordform->gramset_id] = [$wordform->wordform,$wordform->gramset_id];                
+            }
+        }
+        ksort($pairs);
+//dd($pairs);   
+        foreach ($pairs as $k=>$info) {
+            DB::table('search_gramset')->insert([
+                'wordform' => $info[0],
+                'gramset_id'=> $info[1]
+            ]);
+        }
+print sizeof($pairs).' records are created.';        
+    }
+    
+    /**
+     * select eval_end, count(*) from search_pos where eval_end is not null group by eval_end order by eval_end;
+     * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;     * 
+     */
+/*    
+    public function evaluateSearchPos() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $wordform = DB::table('search_pos')
+                      ->whereNull('eval_end')
+//->where('wordform', 'like','toizih')                    
+                      ->first();
+            if ($wordform) {
+print "<p><b>".$wordform->wordform."</b>";   
+                list($ending,$pos_list) = Experiment::searchPosByWord($wordform->wordform);     
+                if (!$pos_list) {
+                    DB::statement("UPDATE search_pos SET ending=NULL"
+                                 .", eval_end=0, eval_end_gen=0"
+                                 ." where wordform like '".$wordform->wordform."'");
+                    
+                } else {
+print "<br>COUNTS: ";                
+foreach ($pos_list as $p=>$c) {
+    print "<b>$p</b>: $c, ";
+}   
+                    $wordforms = DB::table('search_pos')
+                               ->where('wordform', 'like', $wordform->wordform)
+                               ->get();
+                    $eval_ends = [];
+                    foreach ($wordforms as $w) { 
+                        $eval_ends[$w->id] = Experiment::getEvalForOneValue($pos_list, $w->pos_id);
+    print "<br>".$w->pos_id.": ". $eval_ends[$w->id];
+                    }
+                    $max = max($eval_ends);
+    print "<br><b>max:</b> ".$max;  
+    //dd($eval_ends);
+    //exit(0);
+                    foreach ($eval_ends as $w_id=>$eval_end) {
+                        DB::statement("UPDATE search_pos SET ending='".$ending
+                                     ."', eval_end=$eval_end, eval_end_gen=$max"
+                                     ." where id=".$w_id);
+                    }
+                }
+            } else {
+                $is_all_checked = true;
+            }
         }
     }
+*/    
+    /**
+     * select eval_end, count(*) from search_gramset where eval_end is not null group by eval_end order by eval_end;
+     * select ROUND(eval_end,1) as eval1, count(*) from search_gramset where eval_end is not null group by eval1 order by eval1;     * 
+     */
+    public function evaluateSearchPosGramset(Request $request) {
+        $property = $request->input('property');
+        $is_all_checked = false;
+        $property_id = $property.'_id';
+        $table_name = 'search_'.$property;
+        while (!$is_all_checked) {
+            $wordform = DB::table($table_name)
+                      ->whereNull('eval_end')
+//->where('wordform', 'like','toizih')                    
+                      ->first();
+            if ($wordform) {
+print "<p><b>".$wordform->wordform."</b>";   
+                list($ending,$list) = Experiment::searchPosGramsetByWord($wordform->wordform, $property);     
+                if (!$list) {
+                    DB::statement("UPDATE $table_name SET ending=NULL"
+                                 .", eval_end=0, eval_end_gen=0"
+                                 ." where wordform like '".$wordform->wordform."'");
+                    
+                } else {
+print "<br>COUNTS: ";                
+foreach ($list as $p=>$c) {
+    print "<b>$p</b>: $c, ";
+}   
+                    $wordforms = DB::table($table_name)
+                               ->where('wordform', 'like', $wordform->wordform)
+                               ->get();
+                    $eval_ends = [];
+                    foreach ($wordforms as $w) { 
+                        $eval_ends[$w->id] = Experiment::getEvalForOneValue($list, $w->{$property_id});
+    print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
+                    }
+                    $max = max($eval_ends);
+    print "<br><b>max:</b> ".$max;  
+    //dd($eval_ends);
+//    exit(0);
+                    foreach ($eval_ends as $w_id=>$eval_end) {
+                        DB::statement("UPDATE $table_name SET ending='".$ending
+                                     ."', eval_end=$eval_end, eval_end_gen=$max"
+                                     ." where id=".$w_id);
+                    }
+                }
+            } else {
+                $is_all_checked = true;
+            }
+        }
+    }
+    
+    /**
+     * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
+     */
+    public function resultsSearch(Request $request) {
+        $search_lang = 4;
+        $search_lang_name = Lang::getNameById($search_lang);
+        $property = $request->input('property');
+        $table_name = 'search_'.$property;
+        
+        $results[0] = Experiment::resultsSearch($table_name);
+//        $results[1] = Experiment::resultsSearchPos($table_name);
+        
+        return view('experiments.results_search',
+                    compact('search_lang_name', 'property', 'results'));
+    }
+    
+    public function evaluateSearchGramsetByAffix() {
+        $search_lang = 4;
+        $is_all_checked = false;
+        
+        while (!$is_all_checked) {
+            $wordform = DB::table('search_gramset')
+                      ->whereNull('eval_aff')
+->where('wordform', 'like','toizih')                    
+                      ->first();
+            if ($wordform) {
+print "<p><b>".$wordform->wordform."</b>";   
+                list($affix,$list) = Experiment::searchGramsetByAffix($wordform->wordform, $search_lang);     
+                if (!$list) {
+                    DB::statement("UPDATE search_gramset SET affix=NULL,"
+                                 ." eval_aff=0, eval_aff_gen=0"
+                                 ." where wordform like '".$wordform->wordform."'");
+                    
+                } else {
+print "<br>COUNTS: ";                
+foreach ($list as $p=>$c) {
+    print "<b>$p</b>: $c, ";
+}   
+                    $wordforms = DB::table('search_gramset')
+                               ->where('wordform', 'like', $wordform->wordform)
+                               ->get();
+                    $eval_affs = [];
+                    foreach ($wordforms as $w) { 
+                        $eval_affs[$w->id] = Experiment::getEvalForOneValue($list, $w->gramset_id);
+    print "<br>".$w->gramset_id.": ". $eval_affs[$w->id];
+                    }
+                    $max = max($eval_affs);
+    print "<br><b>max:</b> ".$max;  
+    //dd($eval_affs);
+//    exit(0);
+                    foreach ($eval_affs as $w_id=>$eval_aff) {
+                        DB::statement("UPDATE search_gramset SET affix='$affix',"
+                                     ." eval_aff=$eval_aff, eval_aff_gen=$max"
+                                     ." where id=".$w_id);
+                    }
+                }
+            } else {
+                $is_all_checked = true;
+            }
+        }
+    }
+        
 }

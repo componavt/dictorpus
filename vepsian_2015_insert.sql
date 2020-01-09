@@ -1023,3 +1023,13 @@ CREATE TABLE unique_wordforms_with_af LIKE unique_wordforms;
 INSERT unique_wordforms_with_af SELECT * FROM unique_wordforms;
 
 -- php artisan make:migration create_search_gramset_table
+
+insert into migrations VALUES ('2019_12_26_020126_create_dialect_lemma_table', 56);
+insert into migrations VALUES ('2019_12_26_020344_create_lemma_place_table', 57);
+
+ALTER table search_pos change ending `ending` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL;
+ALTER table search_pos change `eval_end` `eval_end` double(8,2) DEFAULT NULL;
+ALTER table search_pos change `eval_end_gen` `eval_end_gen` double(8,2) DEFAULT NULL;
+UPDATE search_pos set `ending`=NULL, `eval_end`=NULL, `eval_end_gen`=NULL;
+UPDATE search_pos set pos_id=5 where pos_id=14;
+ALTER table search_gramset ADD affix varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL;

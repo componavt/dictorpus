@@ -10,7 +10,105 @@ use App\Models\Dict\LemmaWordform;
 
 class Experiment
 {
+/*    
+    public static function searchPosByWord($word) {
+        $i=1;
+        $match_wordforms = NULL;
+        $ending = $word;
+        while ($i<mb_strlen($word) && !$match_wordforms) {
+            $ending = mb_substr($word,$i);
+            $match_wordforms = DB::table('search_pos')
+                     ->where('wordform', 'not like', $word)
+                     ->where('wordform', 'like', '%'.$ending)->get();
+            $i++;
+        }
+        if (!$match_wordforms) {
+            return [$ending, NULL];
+        }
+//        $match_wordforms = collect($match_wordforms);     
+print "<br><b>$ending</b>";        
+        $pos_list = [];
+        foreach ($match_wordforms as $m_wordform) {
+print "<br>".$m_wordform->wordform.", ".$m_wordform->pos_id;            
+            $pos_list[$m_wordform->pos_id] = !isset($pos_list[$m_wordform->pos_id])
+                                           ? 1 : 1+$pos_list[$m_wordform->pos_id];
+        }
+        arsort($pos_list);
+        return [$ending, $pos_list];
+    }
+*/    
+    public static function searchPosGramsetByWord($word, $property) {
+        $i=1;
+        $property_id = $property.'_id';
+        $match_wordforms = NULL;
+        $ending = $word;
+        while ($i<mb_strlen($word) && !$match_wordforms) {
+            $ending = mb_substr($word,$i);
+            $match_wordforms = DB::table('search_'.$property)
+                     ->where('wordform', 'not like', $word)
+                     ->where('wordform', 'like', '%'.$ending)->get();
+            $i++;
+        }
+        if (!$match_wordforms) {
+            return [NULL, NULL];
+        }
+print "<br><b>$ending</b>";        
+        $list = [];
+        foreach ($match_wordforms as $m_wordform) {
+print "<br>".$m_wordform->wordform.", ".$m_wordform->{$property_id};            
+            $list[$m_wordform->{$property_id}] = !isset($list[$m_wordform->{$property_id}])
+                                           ? 1 : 1+$list[$m_wordform->{$property_id}];
+        }
+        arsort($list);
+        return [$ending, $list];
+    }
     
+    public static function searchGramsetByAffix($word, $search_lang) {
+        $i=1;
+        $match_wordforms = NULL;
+        $ending = $word;
+        while ($i<mb_strlen($word) && (!$match_wordforms || $match_wordforms->count()==0)) {
+            $ending = mb_substr($word,$i);
+            $match_wordforms = LemmaWordform::join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                     ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                     ->where('wordform', 'not like', '% %') // without analytic forms
+                     ->where('wordform_id', '<>', $word)
+                     ->where('affix', 'like', $ending)
+                     ->where('lang_id', $search_lang)
+                     ->groupBy('wordform','gramset_id');
+                     //->get();
+            $i++;
+        }
+//dd($ending, $match_wordforms->get());            
+        if (!$match_wordforms || $match_wordforms->count()==0) {
+            return [NULL, NULL];
+        }
+print "<br><b>$ending</b>";        
+        $list = [];
+        foreach ($match_wordforms->get() as $m_wordform) {
+print "<br>".$m_wordform->wordform.", ".$m_wordform->gramset_id;            
+            $list[$m_wordform->gramset_id] = !isset($list[$m_wordform->gramset_id])
+                                           ? 1 : 1+$list[$m_wordform->gramset_id];
+        }
+        arsort($list);
+        return [$ending, $list];
+    }
+    
+    
+    public static function getEvalForOneValue($counts, $right_value) {
+        reset($counts);
+        $first_key = key($counts);
+        $first_count = current($counts);
+        if (!isset($counts[$right_value])) {
+            $evaluation = 0;  
+        } elseif ($first_count == $counts[$right_value]) {
+            $evaluation = 1;
+        } else {
+            $evaluation = $counts[$right_value] / array_sum($counts);
+        }
+        return $evaluation;
+    }
+/*
     public static function searchPosGramsetsByUniqueWordforms($wordform_obj) {
         $i=1;
         $match_wordforms = NULL;
@@ -66,66 +164,57 @@ print '<br>'.$match_wordform->wordform.', '.$match_wordform->pos_id.', '.$match_
 print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";            
         return [$search_value, $valuation];
     }
+*/
+
     
-    public static function searchPosGramsetsByUniqueWordformsResults($table_name) {
-        $total_num = DB::table($table_name)->whereNotNull('pos_val')->count();
+    public static function resultsSearch($table_name) {
+        $total_num = DB::table($table_name)->whereNotNull('eval_end')->count();
         
-        $pos_val_coll = DB::table($table_name)//->select('gram_val')
-                ->select(DB::raw("ROUND(pos_val,1) as val"), DB::raw("count(*) as count"))
-                ->whereNotNull('pos_val')
-                ->groupBy('val')
-                ->get();
-        $gram_val_coll = DB::table($table_name)//->select('gram_val')
-                ->select(DB::raw("ROUND(gram_val,1) as val"), DB::raw("count(*) as count"))
-                ->whereNotNull('gram_val')
-                ->groupBy('val')
-                ->get();
-//dd($pos_val_coll);   
-        $pos_val = $gram_val = [];
-        $pos_val_proc = $gram_val_proc = ['0'=>0, '0.1-0.5'=>0, '1'=>0];
-        $pos_val_sum=$gram_val_sum=0;
-        foreach ($pos_val_coll as $row) {
-            $pos_val[(string)$row->val] = $row->count;
-            if ($row->val >0 && $row->val<1) {
-                $pos_val_proc['0.1-0.5'] += $row->count;
-            } else {
-                $pos_val_proc[(string)$row->val] = $row->count;                
-            }
-            $pos_val_sum +=$row->count;
-        }
-        foreach ($pos_val_proc as $k => $v) {
-             $pos_val_proc[$k] = round(100*$v/$pos_val_sum, 2);
-        }
-        
-        foreach ($gram_val_coll as $row) {
-            $gram_val[(string)$row->val] = $row->count;
-            if ($row->val >0 && $row->val<1) {
-                $gram_val_proc['0.1-0.5'] += $row->count;
-            } else {
-                $gram_val_proc[(string)$row->val] = $row->count;                
-            }
-            $gram_val_sum +=$row->count;
-        }
-        foreach ($gram_val_proc as $k => $v) {
-             $gram_val_proc[$k] = round(100*$v/$gram_val_sum,2);
-        }
+        list($eval_end,$eval_end_proc) = self::calculateEvalLists($table_name, 'eval_end');
+        list($eval_end_gen,$eval_end_gen_proc) = self::calculateEvalLists($table_name, 'eval_end_gen');
         
         $chart = new ExperimentValuation;
-        $chart->labels(array_keys($pos_val));                
-        $chart->dataset('по частям речи', 'line', array_values($pos_val))
+        $chart->labels(array_keys($eval_end));                
+        $chart->dataset('по отдельности', 'line', array_values($eval_end))
               ->fill(false)
               ->color('#663399')
               ->backgroundColor('#663399');
-        $chart->dataset('по грамсетам', 'line', array_values($gram_val))
+        $chart->dataset('по совокупности', 'line', array_values($eval_end_gen))
               ->fill(false)
               ->color('#00BFFF')
               ->backgroundColor('#00BFFF');
         
-        return ['total_num'=>$total_num, 'pos_val'=>$pos_val, 'gram_val'=>$gram_val, 
-                'chart'=>$chart, 'pos_val_proc'=>$pos_val_proc, 'gram_val_proc'=>$gram_val_proc];
+        return ['total_num'=>$total_num, 'eval_end'=>$eval_end, 'eval_end_gen'=>$eval_end_gen, 
+                'chart'=>$chart, 'eval_end_proc'=>$eval_end_proc, 'eval_end_gen_proc'=>$eval_end_gen_proc];
     }
     
-    public static function searchPosGramsetsByAffix($wordform_obj, $search_lang) {
+    public static function calculateEvalLists($table_name, $field) {
+        $coll = DB::table($table_name)
+                ->select(DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count"))
+                ->whereNotNull($field)
+                ->groupBy('eval')
+                ->orderBy('eval')
+                ->get();
+        
+        $list = [];
+        $list_proc = ['0'=>0, '0.1-0.5'=>0, '1'=>0];
+        $sum=0;
+        foreach ($coll as $row) {
+            $list[(string)$row->eval] = $row->count;
+            if ($row->eval >0 && $row->eval<1) {
+                $list_proc['0.1-0.5'] += $row->count;
+            } else {
+                $list_proc[(string)$row->eval] = $row->count;                
+            }
+            $sum +=$row->count;
+        }
+        foreach ($list_proc as $k => $v) {
+             $list_proc[$k] = round(100*$v/$sum, 2);
+        }
+        return [$list, $list_proc];
+    }
+    
+    public static function searchGramsetsByAffix($wordform_obj, $search_lang) {
         $i=1;
         $match_wordforms = [];
         $s_wordform = $wordform_obj->wordform;

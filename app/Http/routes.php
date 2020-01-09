@@ -171,10 +171,11 @@ Route::group(
         Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
-        Route::get('experiments/fill_unique_wordforms', 'Library\ExperimentsController@fillUniqueWordforms');
-        Route::get('experiments/search_pos_gramsets_by_affix', 'Library\ExperimentsController@searchPosGramsetsByAffix');
-        Route::get('experiments/search_pos_gramsets_by_unique_wordforms', 'Library\ExperimentsController@searchPosGramsetsByUniqueWordforms');
-        Route::get('experiments/search_pos_gramsets_by_unique_wordforms_results', 'Library\ExperimentsController@searchPosGramsetsByUniqueWordformsResults');
+        Route::get('experiments/fill_search_pos', 'Library\ExperimentsController@fillSearchPos');
+        Route::get('experiments/fill_search_gramset', 'Library\ExperimentsController@fillSearchGramset');
+        Route::get('experiments/evaluate_search_gramset_by_affix', 'Library\ExperimentsController@evaluateSearchGramsetByAffix');
+        Route::get('experiments/evaluate_search_table', 'Library\ExperimentsController@evaluateSearchPosGramset');
+        Route::get('experiments/results_search', 'Library\ExperimentsController@resultsSearch');
         
         Route::get('service', 'Library\ServiceController@index');
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
