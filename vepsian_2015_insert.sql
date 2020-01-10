@@ -1033,3 +1033,15 @@ ALTER table search_pos change `eval_end_gen` `eval_end_gen` double(8,2) DEFAULT 
 UPDATE search_pos set `ending`=NULL, `eval_end`=NULL, `eval_end_gen`=NULL;
 UPDATE search_pos set pos_id=5 where pos_id=14;
 ALTER table search_gramset ADD affix varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL;
+
+--Слова с неизвестными окончаниями
+select * from search_pos where ending is NULL;
+--Связь частей речи и длин конечных буквосочетаний
+select pos_id, length(ending) as len, count(*) as count from search_pos where ending is not null group by pos_id, len order by count DESC;
+
+select * from search_pos where length(ending)=21;
+--Части речи и ошибки
+select pos_id, count(*) as count from search_pos where ending is not null group by pos_id order by count DESC;
+select pos_id, count(*) as count from search_pos where ending is not null AND eval_end_gen=0 group by pos_id order by count DESC;
+
+

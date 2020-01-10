@@ -167,25 +167,25 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
 */
 
     
-    public static function resultsSearch($table_name) {
-        $total_num = DB::table($table_name)->whereNotNull('eval_end')->count();
+    public static function resultsSearch($table_name, $field='eval_end') {
+        $total_num = DB::table($table_name)->whereNotNull($field)->count();
         
-        list($eval_end,$eval_end_proc) = self::calculateEvalLists($table_name, 'eval_end');
-        list($eval_end_gen,$eval_end_gen_proc) = self::calculateEvalLists($table_name, 'eval_end_gen');
+        list($eval1,$eval1_proc) = self::calculateEvalLists($table_name, $field);
+        list($eval2,$eval2_proc) = self::calculateEvalLists($table_name, $field.'_gen');
         
         $chart = new ExperimentValuation;
-        $chart->labels(array_keys($eval_end));                
-        $chart->dataset('по отдельности', 'line', array_values($eval_end))
+        $chart->labels(array_keys($eval1));                
+        $chart->dataset('по отдельности', 'line', array_values($eval1))
               ->fill(false)
               ->color('#663399')
               ->backgroundColor('#663399');
-        $chart->dataset('по совокупности', 'line', array_values($eval_end_gen))
+        $chart->dataset('по совокупности', 'line', array_values($eval2))
               ->fill(false)
               ->color('#00BFFF')
               ->backgroundColor('#00BFFF');
         
-        return ['total_num'=>$total_num, 'eval_end'=>$eval_end, 'eval_end_gen'=>$eval_end_gen, 
-                'chart'=>$chart, 'eval_end_proc'=>$eval_end_proc, 'eval_end_gen_proc'=>$eval_end_gen_proc];
+        return ['total_num'=>$total_num, 'eval1'=>$eval1, 'eval2'=>$eval2, 
+                'chart'=>$chart, 'eval1_proc'=>$eval1_proc, 'eval2_proc'=>$eval2_proc];
     }
     
     public static function calculateEvalLists($table_name, $field) {
@@ -274,5 +274,49 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return [$search_value, $valuation];
     }
     
-    
+    /**
+     * !!!!TODO ДЛЯ грамсетов отобрать 10 самых частотных словоформ
+     * ИЛИ упорядочить не по алфавиту, а 
+     * select max(length(ending) as max from search_gramset;
+     * 
+     * @param type $table_name
+     * @param type $field
+     * @param type $names
+     * @return type
+     */
+    public static function lenEndDistribution($table_name, $field, $names) {
+        $coll = DB::table($table_name)
+                ->select($field, DB::raw('length(ending) as len'), DB::raw('count(*) as count'))
+                ->whereNotNull('ending')
+                ->groupBy($field, 'len')
+                ->orderBy('len')
+                ->orderBy($field)
+                ->get();
+        $max = DB::table($table_name)
+                ->select(DB::raw('max(length(ending)) as max'))
+                ->whereNotNull('ending')
+                ->first()->max;
+//dd($max);        
+        $min = DB::table($table_name)
+                ->select(DB::raw('min(length(ending)) as min'))
+                ->whereNotNull('ending')
+                ->first()->min;
+        $list = [];
+        foreach ($coll as $p) {
+            $list[$names[$p->{$field}]][$p->len] = $p->count;
+        }
+        ksort($list);
+        
+        $len_list = range($min,$max);
+        foreach ($list as $p_name => $p_info) {
+            foreach ($len_list as $l) {
+                if (!isset($p_info[$l])) {
+                    $list[$p_name][$l] = '-';
+                }
+            }
+            ksort($list[$p_name]);
+        }
+//dd($list);        
+        return [$list, $len_list];
+    }
 }

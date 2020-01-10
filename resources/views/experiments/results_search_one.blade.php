@@ -11,19 +11,19 @@
                 <th>По отдельности</th>
                 <th>По совокупности</th>
             </tr>
-            @foreach ($results['eval_end'] as $v => $c) 
+            @foreach ($results['eval1'] as $v => $c) 
             <tr>
                 <td style="text-align: right">{{$v}}</td>
                 <td style="text-align: right">{{$c}}</td>
-                <td style="text-align: right">{{$results['eval_end_gen'][$v]}}</td>
+                <td style="text-align: right">{{$results['eval2'][$v]}}</td>
             </tr>
             @endforeach
             <tr><th colspan='3'>в процентах</td></tr>
-            @foreach ($results['eval_end_proc'] as $v => $c) 
+            @foreach ($results['eval1_proc'] as $v => $c) 
             <tr>
                 <td style="text-align: right">{{$v}}</td>
                 <td style="text-align: right">{{$c}}%</td>
-                <td style="text-align: right">{{$results['eval_end_gen_proc'][$v]}}%</td>
+                <td style="text-align: right">{{$results['eval2_proc'][$v]}}%</td>
             </tr>
             @endforeach
         </table>

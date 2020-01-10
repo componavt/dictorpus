@@ -9,6 +9,7 @@ use App\Http\Requests;
 
 use App\Library\Experiment;
 
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
@@ -103,55 +104,6 @@ print sizeof($pairs).' records are created.';
     }
     
     /**
-     * select eval_end, count(*) from search_pos where eval_end is not null group by eval_end order by eval_end;
-     * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;     * 
-     */
-/*    
-    public function evaluateSearchPos() {
-        $is_all_checked = false;
-        while (!$is_all_checked) {
-            $wordform = DB::table('search_pos')
-                      ->whereNull('eval_end')
-//->where('wordform', 'like','toizih')                    
-                      ->first();
-            if ($wordform) {
-print "<p><b>".$wordform->wordform."</b>";   
-                list($ending,$pos_list) = Experiment::searchPosByWord($wordform->wordform);     
-                if (!$pos_list) {
-                    DB::statement("UPDATE search_pos SET ending=NULL"
-                                 .", eval_end=0, eval_end_gen=0"
-                                 ." where wordform like '".$wordform->wordform."'");
-                    
-                } else {
-print "<br>COUNTS: ";                
-foreach ($pos_list as $p=>$c) {
-    print "<b>$p</b>: $c, ";
-}   
-                    $wordforms = DB::table('search_pos')
-                               ->where('wordform', 'like', $wordform->wordform)
-                               ->get();
-                    $eval_ends = [];
-                    foreach ($wordforms as $w) { 
-                        $eval_ends[$w->id] = Experiment::getEvalForOneValue($pos_list, $w->pos_id);
-    print "<br>".$w->pos_id.": ". $eval_ends[$w->id];
-                    }
-                    $max = max($eval_ends);
-    print "<br><b>max:</b> ".$max;  
-    //dd($eval_ends);
-    //exit(0);
-                    foreach ($eval_ends as $w_id=>$eval_end) {
-                        DB::statement("UPDATE search_pos SET ending='".$ending
-                                     ."', eval_end=$eval_end, eval_end_gen=$max"
-                                     ." where id=".$w_id);
-                    }
-                }
-            } else {
-                $is_all_checked = true;
-            }
-        }
-    }
-*/    
-    /**
      * select eval_end, count(*) from search_gramset where eval_end is not null group by eval_end order by eval_end;
      * select ROUND(eval_end,1) as eval1, count(*) from search_gramset where eval_end is not null group by eval1 order by eval1;     * 
      */
@@ -202,22 +154,6 @@ foreach ($list as $p=>$c) {
         }
     }
     
-    /**
-     * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
-     */
-    public function resultsSearch(Request $request) {
-        $search_lang = 4;
-        $search_lang_name = Lang::getNameById($search_lang);
-        $property = $request->input('property');
-        $table_name = 'search_'.$property;
-        
-        $results[0] = Experiment::resultsSearch($table_name);
-//        $results[1] = Experiment::resultsSearchPos($table_name);
-        
-        return view('experiments.results_search',
-                    compact('search_lang_name', 'property', 'results'));
-    }
-    
     public function evaluateSearchGramsetByAffix() {
         $search_lang = 4;
         $is_all_checked = false;
@@ -225,7 +161,7 @@ foreach ($list as $p=>$c) {
         while (!$is_all_checked) {
             $wordform = DB::table('search_gramset')
                       ->whereNull('eval_aff')
-->where('wordform', 'like','toizih')                    
+//->where('wordform', 'like','toizih')                    
                       ->first();
             if ($wordform) {
 print "<p><b>".$wordform->wordform."</b>";   
@@ -264,4 +200,49 @@ foreach ($list as $p=>$c) {
         }
     }
         
+    /**
+     * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
+     * 
+     * Связь частей речи и длин конечных буквосочетаний
+     * select pos_id, length(ending) as len, count(*) as count from search_pos where ending is not null group by pos_id, len order by count DESC;
+     * 
+     * Части речи и ошибки
+     * select pos_id, count(*) as count from search_pos where ending is not null group by pos_id order by count DESC;
+     * select pos_id, count(*) as count from search_pos where ending is not null AND eval_end_gen=0 group by pos_id order by count DESC;
+     * 
+     */
+    public function resultsSearchPos() {
+        $search_lang = 4;
+        $search_lang_name = Lang::getNameById($search_lang);
+        $property = 'pos';
+        $table_name = 'search_'.$property;
+        $pos_names = PartOfSpeech::getList();
+        
+        $results[0] = Experiment::resultsSearch($table_name);
+        
+        list($p_list, $len_list) = Experiment::lenEndDistribution($table_name, 'pos_id', $pos_names);
+        
+        return view('experiments.results_search',
+                    compact('search_lang_name', 'property', 'results', 'len_list', 'p_list'));
+    }
+    
+    /**
+     * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
+     */
+    public function resultsSearchGramset() {
+        $search_lang = 4;
+        $search_lang_name = Lang::getNameById($search_lang);
+        $property = 'gramset';
+        $table_name = 'search_'.$property;
+        $gram_names = Gramset::getList(0);
+        
+        $results[0] = Experiment::resultsSearch($table_name);
+            $results[1] = Experiment::resultsSearch($table_name, 'eval_aff');
+            
+        list($p_list, $len_list) = Experiment::lenEndDistribution($table_name, 'gramset_id', $gram_names);
+        
+        return view('experiments.results_search',
+                    compact('search_lang_name', 'property', 'results', 'len_list', 'p_list'));
+    }
+    
 }
