@@ -220,10 +220,12 @@ foreach ($list as $p=>$c) {
         
         $results[0] = Experiment::resultsSearch($table_name);
         
-        list($p_list, $len_list) = Experiment::lenEndDistribution($table_name, 'pos_id', $pos_names);
+        $results[2] = Experiment::lenEndDistribution($table_name, 'pos_id', $pos_names);
+        
+        $result[3] = Experiment::shiftErrors($table_name, 'pos_id');
         
         return view('experiments.results_search',
-                    compact('search_lang_name', 'property', 'results', 'len_list', 'p_list'));
+                    compact('search_lang_name', 'property', 'results'));
     }
     
     /**
@@ -237,12 +239,12 @@ foreach ($list as $p=>$c) {
         $gram_names = Gramset::getList(0);
         
         $results[0] = Experiment::resultsSearch($table_name);
-            $results[1] = Experiment::resultsSearch($table_name, 'eval_aff');
+        $results[1] = Experiment::resultsSearch($table_name, 'eval_aff');
             
-        list($p_list, $len_list) = Experiment::lenEndDistribution($table_name, 'gramset_id', $gram_names);
+        $results[2] = Experiment::lenEndDistribution($table_name, 'gramset_id', $gram_names);
         
         return view('experiments.results_search',
-                    compact('search_lang_name', 'property', 'results', 'len_list', 'p_list'));
+                    compact('search_lang_name', 'property', 'results'));
     }
     
 }

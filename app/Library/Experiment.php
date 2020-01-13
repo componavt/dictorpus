@@ -10,33 +10,7 @@ use App\Models\Dict\LemmaWordform;
 
 class Experiment
 {
-/*    
-    public static function searchPosByWord($word) {
-        $i=1;
-        $match_wordforms = NULL;
-        $ending = $word;
-        while ($i<mb_strlen($word) && !$match_wordforms) {
-            $ending = mb_substr($word,$i);
-            $match_wordforms = DB::table('search_pos')
-                     ->where('wordform', 'not like', $word)
-                     ->where('wordform', 'like', '%'.$ending)->get();
-            $i++;
-        }
-        if (!$match_wordforms) {
-            return [$ending, NULL];
-        }
-//        $match_wordforms = collect($match_wordforms);     
-print "<br><b>$ending</b>";        
-        $pos_list = [];
-        foreach ($match_wordforms as $m_wordform) {
-print "<br>".$m_wordform->wordform.", ".$m_wordform->pos_id;            
-            $pos_list[$m_wordform->pos_id] = !isset($pos_list[$m_wordform->pos_id])
-                                           ? 1 : 1+$pos_list[$m_wordform->pos_id];
-        }
-        arsort($pos_list);
-        return [$ending, $pos_list];
-    }
-*/    
+    
     public static function searchPosGramsetByWord($word, $property) {
         $i=1;
         $property_id = $property.'_id';
@@ -62,7 +36,19 @@ print "<br>".$m_wordform->wordform.", ".$m_wordform->{$property_id};
         arsort($list);
         return [$ending, $list];
     }
-    
+    public static function searchPosGramsetByEnding($word, $ending, $table_name, $field) {
+        $match_wordforms = DB::table($table_name)
+                 ->where('wordform', 'not like', $word)
+                 ->where('wordform', 'like', '%'.$ending)->get();
+        $list = [];
+        foreach ($match_wordforms as $m_wordform) {
+            $list[$m_wordform->{$field}] = !isset($list[$m_wordform->{$field}])
+                                           ? 1 : 1+$list[$m_wordform->{$field}];
+        }
+        arsort($list);
+        return $list;
+    }
+        
     public static function searchGramsetByAffix($word, $search_lang) {
         $i=1;
         $match_wordforms = NULL;
@@ -285,12 +271,11 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
      * @return type
      */
     public static function lenEndDistribution($table_name, $field, $names) {
-        $coll = DB::table($table_name)
-                ->select($field, DB::raw('length(ending) as len'), DB::raw('count(*) as count'))
+        $name_coll = DB::table($table_name)
+                ->select($field, DB::raw('count(*) as count'))
                 ->whereNotNull('ending')
-                ->groupBy($field, 'len')
-                ->orderBy('len')
-                ->orderBy($field)
+                ->groupBy($field)
+                ->orderBy('count', 'DESC')
                 ->get();
         $max = DB::table($table_name)
                 ->select(DB::raw('max(length(ending)) as max'))
@@ -302,10 +287,18 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 ->whereNotNull('ending')
                 ->first()->min;
         $list = [];
-        foreach ($coll as $p) {
-            $list[$names[$p->{$field}]][$p->len] = $p->count;
+        foreach ($name_coll as $name) {
+            $len_coll = DB::table($table_name)
+                    ->select(DB::raw('length(ending) as len'), DB::raw('count(*) as count'))
+                    ->whereNotNull('ending')
+                    ->where($field, $name->{$field})
+                    ->groupBy('len')
+                    ->orderBy('len')
+                    ->get();
+            foreach ($len_coll as $l) {
+                $list[$names[$name->{$field}]][$l->len] = $l->count;
+            }
         }
-        ksort($list);
         
         $len_list = range($min,$max);
         foreach ($list as $p_name => $p_info) {
@@ -316,7 +309,35 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             }
             ksort($list[$p_name]);
         }
-//dd($list);        
-        return [$list, $len_list];
+//dd($list);   
+        $chart = self::lenEndDistributionChart($len_list, $list, $field);
+        return ['p_list'=>$list, 'len_list'=>$len_list, 'chart' => $chart];
     }
+    
+    public static function lenEndDistributionChart($len_list, $p_list, $field) {        
+        $chart = new ExperimentValuation;
+        $chart->labels($len_list);   
+        foreach ($p_list as $p_name => $p_info) {
+            $chart->dataset($p_name, 'bar', array_values($p_info))
+                  ->fill(false)
+                  ->color('#663399')
+                  ->backgroundColor('#663399');
+        }
+        return $chart;
+    }
+    
+    public static function shiftErrors($table_name, $field) {
+        $name_coll = DB::table($table_name)
+                ->select($field, 'wordform', 'ending', DB::raw('count(*) as count'))
+                ->whereNotNull('ending')
+                ->where('eval_end_gen',0)
+                ->groupBy($field)
+                ->orderBy('count', 'DESC')
+                ->get();
+//dd($name_coll);    
+        foreach ($name_coll as $p) {
+            $list = self::searchPosGramsetByEnding($p->wordform, $p->ending, $property, $field);
+        }
+    }
+    
 }
