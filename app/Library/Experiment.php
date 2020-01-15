@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use DB;
+use Storage;
 
 use \App\Charts\ExperimentValuation;
 
@@ -326,9 +327,10 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return $chart;
     }
     
-    public static function shiftErrors($table_name, $field) {
+    public static function createShiftErrors($table_name, $field) {
+        $shift_list = [];
         $name_coll = DB::table($table_name)
-                ->select($field, 'wordform', 'ending', DB::raw('count(*) as count'))
+                ->select($field, DB::raw('count(*) as count'))
                 ->whereNotNull('ending')
                 ->where('eval_end_gen',0)
                 ->groupBy($field)
@@ -336,8 +338,47 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 ->get();
 //dd($name_coll);    
         foreach ($name_coll as $p) {
-            $list = self::searchPosGramsetByEnding($p->wordform, $p->ending, $property, $field);
+            $w_coll = DB::table($table_name)
+                    ->select('wordform', 'ending')
+                    ->whereNotNull('ending')
+                    ->where('eval_end_gen',0)
+                    ->where($field, $p->{$field})
+                    ->get();
+            foreach ($w_coll as $w) {        
+                $list = self::searchPosGramsetByEnding($w->wordform, $w->ending, $table_name, $field);
+                reset($list);
+                $search_p = key($list);
+                $shift_list[$p->{$field}][$search_p] = !isset($shift_list[$p->{$field}][$search_p])
+                                                       ? 1 : 1+ $shift_list[$p->{$field}][$search_p];
+            }
         }
+        return $shift_list;        
     }
-    
+     public static function readShiftErrors($filename, $p_names) {
+        $out = [];
+        $file_content = Storage::disk('public')->get($filename);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+//dd($file_lines);        
+        foreach ($file_lines as $line) {
+            list($p1,$p2,$count) = preg_split ("/\t/",$line);
+            $out[$p_names[$p1]][$p_names[$p2]] = $count;
+        }
+//dd($out);        
+        return $out;
+     }
+     
+     public static function readShiftErrorsForDot($filename, $min_limit) {
+        $out = [];
+        $file_content = Storage::disk('public')->get($filename);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+//dd($file_lines);        
+        foreach ($file_lines as $line) {
+            list($p1,$p2,$count) = preg_split ("/\t/",$line);
+            if ($count>$min_limit) {
+                $out[$p1][$p2] = $count;
+            }
+        }
+//dd($out);        
+        return $out;
+     }
 }

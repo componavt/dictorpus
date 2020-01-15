@@ -6,6 +6,8 @@ use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use Storage;
+use Carbon\Carbon;
 
 use App\Library\Experiment;
 
@@ -199,7 +201,68 @@ foreach ($list as $p=>$c) {
             }
         }
     }
+
+    public function exportErrorShift(Request $request) {
+        $search_lang = 4;
+        $property = $request->input('property');
+        $property_id = $property.'_id';
+        $table_name = 'search_'.$property;
         
+        $dir_name = "export/error_shift/";
+        $filename = $dir_name.$property.'-'.$search_lang.'.txt';
+        Storage::disk('public')->put($filename, ''); 
+        $shift_list = Experiment::createShiftErrors($table_name, $property_id);
+        foreach ($shift_list as $p1 =>$p_info) {
+            foreach ($p_info as $p2 => $count) {
+                Storage::disk('public')->append($filename, "$p1\t$p2\t$count");
+            }
+        }
+print 'done.';        
+}
+    
+    public function exportErrorShiftToDot(Request $request) {
+        $search_lang = 4;
+        $property = $request->input('property');
+        $property_id = $property.'_id';
+        $table_name = 'search_'.$property;
+        if ($property == 'pos') {
+            $p_names = PartOfSpeech::getList();
+            $colors=[1=>1, 5=>2, 11=>3, 10=>4, 6=>5];
+        } else {
+            $p_names = Gramset::getList(0);
+            $colors=[1=>1, 4=>2, 51=>3, 3=>4, 170=>5, 26=>6, 30=>7, 6=>8];
+        }
+        
+        $dir_name = "export/error_shift/";
+        foreach([100,50,20,10] as $min_limit) {
+            $file_with_data = $dir_name.$property.'-'.$search_lang.'.txt';
+            $shift_list = Experiment::readShiftErrorsForDot($file_with_data, $min_limit);
+            
+            $filename = $dir_name.$property.'-'.$search_lang.'_'.$min_limit.'.dot';
+            Storage::disk('public')->put($filename, "digraph G {\n".
+                    "edge[colorscheme=accent8]\n"); 
+            foreach (array_keys($shift_list) as $p1) {
+                Storage::disk('public')->append($filename, "$p1\t[label=\"$p1. ".$p_names[$p1]."\"];");
+            }
+            Storage::disk('public')->append($filename, '');
+            foreach ($shift_list as $p1 =>$p_info) {
+                foreach ($p_info as $p2 => $weight) {
+                    $line = "$p1 -> $p2\t[label=\"$weight\", weight=$weight";
+                    if ($weight>100 && isset($colors[$p1]))  {
+                        $line .=", color=".$colors[$p1];
+                    } elseif($weight<50) {
+                        $line .=", style=dotted";
+                    }
+                    $line .="];";
+                    Storage::disk('public')->append($filename, $line);
+                }
+                Storage::disk('public')->append($filename, '');
+            }
+            Storage::disk('public')->append($filename, "}"); 
+        }
+print 'done.';        
+}
+    
     /**
      * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
      * 
@@ -216,13 +279,16 @@ foreach ($list as $p=>$c) {
         $search_lang_name = Lang::getNameById($search_lang);
         $property = 'pos';
         $table_name = 'search_'.$property;
-        $pos_names = PartOfSpeech::getList();
+        $p_names = PartOfSpeech::getList();
         
         $results[0] = Experiment::resultsSearch($table_name);
         
-        $results[2] = Experiment::lenEndDistribution($table_name, 'pos_id', $pos_names);
+        $results[2] = Experiment::lenEndDistribution($table_name, 'pos_id', $p_names);
         
-        $result[3] = Experiment::shiftErrors($table_name, 'pos_id');
+        $dir_name = "export/error_shift/";
+        $filename = $dir_name.$property.'-'.$search_lang.'.txt';
+        $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
+        $results[3]['limit'] = 6;
         
         return view('experiments.results_search',
                     compact('search_lang_name', 'property', 'results'));
@@ -236,12 +302,17 @@ foreach ($list as $p=>$c) {
         $search_lang_name = Lang::getNameById($search_lang);
         $property = 'gramset';
         $table_name = 'search_'.$property;
-        $gram_names = Gramset::getList(0);
+        $p_names = Gramset::getList(0);
         
         $results[0] = Experiment::resultsSearch($table_name);
         $results[1] = Experiment::resultsSearch($table_name, 'eval_aff');
             
-        $results[2] = Experiment::lenEndDistribution($table_name, 'gramset_id', $gram_names);
+        $results[2] = Experiment::lenEndDistribution($table_name, 'gramset_id', $p_names);
+        
+        $dir_name = "export/error_shift/";
+        $filename = $dir_name.$property.'-'.$search_lang.'.txt';
+        $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
+        $results[3]['limit'] = 9;
         
         return view('experiments.results_search',
                     compact('search_lang_name', 'property', 'results'));

@@ -119,6 +119,7 @@ return [
     'name_short' => 'short name',
     'negation' => 'negation',
     'new_lemmas'=>'New lemmas',
+    'num_shift_error' => 'Number of erroneous transitions for the first :num',
     'number' => 'Number',
     'numbers' => [NULL=> '',
                     2 => 'singularia tantum',

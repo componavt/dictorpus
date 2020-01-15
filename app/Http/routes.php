@@ -171,6 +171,8 @@ Route::group(
         Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
+        Route::get('experiments/export_error_shift', 'Library\ExperimentsController@exportErrorShift');
+        Route::get('experiments/export_error_shift_to_dot', 'Library\ExperimentsController@exportErrorShiftToDot');
         Route::get('experiments/fill_search_pos', 'Library\ExperimentsController@fillSearchPos');
         Route::get('experiments/fill_search_gramset', 'Library\ExperimentsController@fillSearchGramset');
         Route::get('experiments/evaluate_search_gramset_by_affix', 'Library\ExperimentsController@evaluateSearchGramsetByAffix');

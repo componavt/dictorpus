@@ -18,29 +18,12 @@
     
     @if (isset($results[2]))
         <h3>Распределение длин конечного буквосочетания</h3>
-        <table class="table-bordered">
-            <tr>
-                <th>Length</th>
-                @foreach ($results[2]['len_list'] as $l)
-                <th>{{$l}}</th>
-                @endforeach
-            </tr>
-            @foreach ($results[2]['p_list'] as $p_name => $p_info)
-            <tr>
-                <th>{{$p_name}}</th>
-                <?php $max = max($p_info);?>
-                @foreach ($p_info as $len => $count)
-                <td<?php print $count==$max ? ' style="color: red; fonr-weight: bold;"' : ''; ?>>
-                    {{$count}}</td>
-                @endforeach            
-            </tr>
-            @endforeach            
-        </table>
-        
-        <div id="ValuationChart">
-            {!! $results[2]['chart']->container() !!}
-        </div>
-        {!! $results[2]['chart']->script() !!}
+        @include('experiments.end_len_distribution', ['results'=>$results[2]])
+    @endif
+
+    @if (isset($results[3]))
+        <h3>{{trans('dict.num_shift_error', ['num'=>$results[3]['limit']])}}</h3>
+        @include('experiments.shift_error', ['results'=>$results[3]])
     @endif
 
 @stop
