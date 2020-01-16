@@ -1044,4 +1044,7 @@ select * from search_pos where length(ending)=21;
 select pos_id, count(*) as count from search_pos where ending is not null group by pos_id order by count DESC;
 select pos_id, count(*) as count from search_pos where ending is not null AND eval_end_gen=0 group by pos_id order by count DESC;
 
+-- php artisan make:migration add_field_lang_to_search_pos_table
+-- php artisan make:migration add_field_lang_to_search_gramset_table
+
 

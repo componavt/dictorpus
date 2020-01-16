@@ -367,18 +367,56 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return $out;
      }
      
-     public static function readShiftErrorsForDot($filename, $min_limit) {
-        $out = [];
+     public static function readShiftErrorsForDot($filename, $table_name, $property_id, $min_limit, $p_names) {
+        $node_list = $totals = $edge_list = [];
         $file_content = Storage::disk('public')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
 //dd($file_lines);        
         foreach ($file_lines as $line) {
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
-            if ($count>$min_limit) {
-                $out[$p1][$p2] = $count;
+            if (!isset( $nodes[$p1])) {
+                $totals[$p1] = DB::table($table_name)
+                          ->whereNotNull('ending')
+                          ->where($property_id, $p1)
+                          ->count();
+            }
+            if (!isset( $nodes[$p2])) {
+                $totals[$p2] = DB::table($table_name)
+                          ->whereNotNull('ending')
+                          ->where($property_id, $p2)
+                          ->count();
+            }
+            $w = 100*$count/$totals[$p1];
+            if($w < 10) {
+                $weight = round($w, 1); // 2.4% if < 10%
+            } else {
+                $weight = round($w);
+            }
+            if ($weight>$min_limit) {
+                $edge_list[$p1][$p2] = $weight;
             }
         }
+        
+        foreach ($edge_list as $p1 =>$p_info) {
+            $node_list[$p1] = $totals[$p1];
+            
+            foreach ($p_info as $p2 => $weight) {
+                $node_list[$p2] = $totals[$p2];
+            }
+        }
+//dd($node_list);        
+//        print "<pre>";
+//var_dump($edge_list);        
+        arsort($node_list);
+//dd($node_list);        
+        
+        foreach ($node_list as $node => $total) {
+if (!isset($p_names[$node])) {
+    print "unknown $node";
+}            
+            $node_list[$node] = preg_replace('/\s+/','\n',$p_names[$node]).'\n'.$total;
+        }
 //dd($out);        
-        return $out;
+        return [$node_list, $edge_list];
      }
 }

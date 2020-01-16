@@ -225,32 +225,46 @@ print 'done.';
         $property = $request->input('property');
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
+        $color_names = ['darkgreen', 'darkgoldenrod3', 'brown', 'aquamarine3', 'darkorange2', 'crimson', 'indigo', 'navyblue', 'mistyrose3', 'peru'];
+        $limit_color = 10;
+        $limit_dotted = 10;
         if ($property == 'pos') {
             $p_names = PartOfSpeech::getList();
-            $colors=[1=>1, 5=>2, 11=>3, 10=>4, 6=>5];
+            $range = range(0,20,10);
         } else {
             $p_names = Gramset::getList(0);
-            $colors=[1=>1, 4=>2, 51=>3, 3=>4, 170=>5, 26=>6, 30=>7, 6=>8];
+            $range = range(0,10,1);
         }
         
         $dir_name = "export/error_shift/";
-        foreach([100,50,20,10] as $min_limit) {
+        foreach($range as $min_limit) {
             $file_with_data = $dir_name.$property.'-'.$search_lang.'.txt';
-            $shift_list = Experiment::readShiftErrorsForDot($file_with_data, $min_limit);
-            
+            list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($file_with_data, $table_name, $property_id, $min_limit, $p_names);
+//dd($node_list, $edge_list);            
             $filename = $dir_name.$property.'-'.$search_lang.'_'.$min_limit.'.dot';
-            Storage::disk('public')->put($filename, "digraph G {\n".
-                    "edge[colorscheme=accent8]\n"); 
-            foreach (array_keys($shift_list) as $p1) {
-                Storage::disk('public')->append($filename, "$p1\t[label=\"$p1. ".$p_names[$p1]."\"];");
+            Storage::disk('public')->put($filename, "digraph G {\n");
+//                    "edge[colorscheme=accent8]\n"); 
+            $colors = $p_total = [];
+            $count_color = 0;
+            foreach ($node_list as $node=>$label) {
+                $line = "$node\t[label=\"".$label.'"';
+                if ($count_color < 3) {
+                    $line .=", peripheries=2";                    
+                }
+                if ($count_color < sizeof($color_names)) {
+                    $colors[$node] = $color_names[$count_color++];
+                    $line .=", color=".$colors[$node];                    
+                }
+                $line .= '];';
+                Storage::disk('public')->append($filename, $line);
             }
             Storage::disk('public')->append($filename, '');
-            foreach ($shift_list as $p1 =>$p_info) {
+            foreach ($edge_list as $p1 =>$p_info) {
                 foreach ($p_info as $p2 => $weight) {
-                    $line = "$p1 -> $p2\t[label=\"$weight\", weight=$weight";
-                    if ($weight>100 && isset($colors[$p1]))  {
+                    $line = "$p1 -> $p2\t[label=\"$weight %\", weight=$weight";
+                    if ($weight>$limit_color && isset($colors[$p1]))  {
                         $line .=", color=".$colors[$p1];
-                    } elseif($weight<50) {
+                    } elseif($weight<$limit_dotted) {
                         $line .=", style=dotted";
                     }
                     $line .="];";

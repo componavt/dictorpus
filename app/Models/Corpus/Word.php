@@ -322,9 +322,11 @@ class Word extends Model
     
     /**
      * The number of words without links to lemmas
+     * select count(*) from words where checked=0 and id not in (select word_id from meaning_text) and text_id in (select id from texts where lang_id=1);
+     * 
      */
     public static function countUnmarked($lang_id=null) {
-        $examples = self::whereNotIn('id', function ($query) {
+        $examples = self::whereChecked(0)->whereNotIn('id', function ($query) {
                         $query->select('word_id')->from('meaning_text');
             });
         if ($lang_id) {

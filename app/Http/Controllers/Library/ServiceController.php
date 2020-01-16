@@ -242,6 +242,7 @@ print "</p>";
      * Search words of texts, 
      * 
      * update words set checked=0;
+     * select count(*) from words where checked=0 and text_id in (select id from texts where lang_id=1) and id not in (select word_id from meaning_text);
      * 
      * @param Request $request
      */
