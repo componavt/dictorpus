@@ -28,7 +28,15 @@ class ExperimentsController extends Controller
     {
         $this->middleware('auth:admin,/');
     }
-    
+
+    public function index() {
+        $langs = []; 
+        foreach ([1,4] as $l) {
+            $langs[$l] = Lang::getNameById($l);
+        }
+        
+        return view('experiments/index', compact('langs'));
+    }    
     /**
      * Fill data [wordform, pos ID] in table search_pos
      * 

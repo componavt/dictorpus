@@ -1047,4 +1047,7 @@ select pos_id, count(*) as count from search_pos where ending is not null AND ev
 -- php artisan make:migration add_field_lang_to_search_pos_table
 -- php artisan make:migration add_field_lang_to_search_gramset_table
 
+UPDATE search_pos SET lang_id=4;
+UPDATE search_gramset SET lang_id=4;
+
 

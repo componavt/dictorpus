@@ -60,9 +60,6 @@ Route::group(
         Route::get('/dict/selections', function () {
             return view('page.dict_selections');
         });
-        Route::get('/experiments', function () {
-            return view('experiments/index');
-        });
         Route::get('/grants', function () {
             return view('page.grants');
         });
@@ -171,6 +168,7 @@ Route::group(
         Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
+        Route::get('experiments/', 'Library\ExperimentsController@index');
         Route::get('experiments/export_error_shift', 'Library\ExperimentsController@exportErrorShift');
         Route::get('experiments/export_error_shift_to_dot', 'Library\ExperimentsController@exportErrorShiftToDot');
         Route::get('experiments/fill_search_pos', 'Library\ExperimentsController@fillSearchPos');
