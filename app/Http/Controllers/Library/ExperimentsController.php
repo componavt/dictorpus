@@ -49,9 +49,11 @@ class ExperimentsController extends Controller
         
 //        DB::table('search_pos')->all()->delete();
   //      DB::statement('ALTER TABLE search_pos AUTO_INCREMENT = 1');
+/*        
         $lemmas = Lemma::whereLangId($search_lang)
                        ->where(DB::raw("length(lemma)"), ">", 1)
                        ->where('lemma', 'not like', '% %')
+                       ->whereNotNull('pos_id')
                        ->groupBy('lemma','pos_id')
                        ->orderBy('lemma')->get();
         
@@ -61,14 +63,17 @@ print "<P>lemma: ".$lemma->lemma.', '.$lemma->pos_id;
             $count += $lemma_writed;
 print ", $lemma_writed, $count</p>";
         }
-        
+*/        
         $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                     ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                     ->where('wordform','not like', '% %')
+                    ->whereNotNull('pos_id')
                     ->whereNotNull('gramset_id')
                     ->whereLangId($search_lang)
-                    ->groupBy('wordform','pos_id')
+                    //->groupBy('wordform','pos_id')
                     ->get();
+                //->count();
+dd($wordforms);        
         foreach ($wordforms as $wordform) {
 print "<P>wordform: ".$wordform->wordform.', '.$wordform->pos_id;
             $wordform_writed = Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $wordform->pos_id);
@@ -85,34 +90,37 @@ print '$count records are writed.';
      */
     public function fillSearchGramset(Request $request) {
         $search_lang =  $request->input('search_lang');
-        $pairs = [];
+        $table_name = 'search_gramset';
+        $count = 0;
         
 //        DB::table('search_gramset')->all()->delete();
   //      DB::statement('ALTER TABLE search_gramset AUTO_INCREMENT = 1');
         
-        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+/*        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                     ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                     ->where('wordform','not like', '% %')
                     ->whereNotNull('gramset_id')
                     ->whereLangId($search_lang)
                     ->groupBy('wordform','gramset_id')
+                    ->get();*/
+        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                    ->where('wordform','not like', '% %')
+                    ->whereIn('lemma_id', function($query) use($search_lang) {
+                        $query->select('id')->from('lemmas')
+                              ->whereLangId($search_lang);
+                    })
+                    ->whereNotNull('gramset_id')
+                    ->groupBy('wordform','gramset_id')
                     ->get();
         
+dd($wordforms);        
         foreach ($wordforms as $wordform) {
-            if (!preg_match("/\s/", $wordform->wordform)) { // without analytic forms
-                $pairs[$wordform->wordform.'_'.$wordform->gramset_id] = [$wordform->wordform,$wordform->gramset_id];                
-            }
+print "<P>wordform: ".$wordform->wordform.', '.$wordform->gramset_id;
+            $wordform_writed = Experiment::writePosGramset($table_name, 'gramset_id', $search_lang, $wordform->wordform, $wordform->gramset_id);
+            $count += $wordform_writed;
+print ", $wordform_writed, $count</p>";
         }
-        ksort($pairs);
-//dd($pairs);   
-        foreach ($pairs as $k=>$info) {
-            DB::table('search_gramset')->insert([
-                'lang_id' => $search_lang,
-                'wordform' => $info[0],
-                'gramset_id'=> $info[1]
-            ]);
-        }
-print sizeof($pairs).' records are created.';        
+print '$count records are created.';        
     }
     
     /**
