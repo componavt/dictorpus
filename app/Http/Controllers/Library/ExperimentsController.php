@@ -49,7 +49,7 @@ class ExperimentsController extends Controller
         
 //        DB::table('search_pos')->all()->delete();
   //      DB::statement('ALTER TABLE search_pos AUTO_INCREMENT = 1');
-/*        
+        
         $lemmas = Lemma::whereLangId($search_lang)
                        ->where(DB::raw("length(lemma)"), ">", 1)
                        ->where('lemma', 'not like', '% %')
@@ -63,23 +63,35 @@ print "<P>lemma: ".$lemma->lemma.', '.$lemma->pos_id;
             $count += $lemma_writed;
 print ", $lemma_writed, $count</p>";
         }
-*/        
-        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
-                    ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
-                    ->where('wordform','not like', '% %')
-                    ->whereNotNull('pos_id')
-                    ->whereNotNull('gramset_id')
-                    ->whereLangId($search_lang)
-                    //->groupBy('wordform','pos_id')
-                    ->get();
-                //->count();
-dd($wordforms);        
-        foreach ($wordforms as $wordform) {
-print "<P>wordform: ".$wordform->wordform.', '.$wordform->pos_id;
-            $wordform_writed = Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $wordform->pos_id);
-            $count += $wordform_writed;
-print ", $wordform_writed, $count</p>";
+        
+        $start = 0;
+        $limit = 1000;
+        $wordfoms_exists=true;
+        while ($wordfoms_exists) {
+            $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                        ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                        ->where('wordform','not like', '% %')
+                        ->whereNotNull('pos_id')
+                        ->whereNotNull('gramset_id')
+                        ->whereLangId($search_lang)
+                        ->groupBy('wordform','pos_id')
+                        ->skip($start)
+                        ->take($limit)
+                        ->get();
+                    //->count();
+    //dd($wordforms);   
+            if (!$wordforms) {
+                $wordfoms_exists = false;
+            } else {
+                foreach ($wordforms as $wordform) {
+        print "<P>wordform: ".$wordform->wordform.', '.$wordform->pos_id;
+                    $wordform_writed = Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $wordform->pos_id);
+                    $count += $wordform_writed;
+    print ", $wordform_writed, $count</p>";
+                }
+                $start +=$limit;
             }
+        }
 print '$count records are writed.';        
     }
     
