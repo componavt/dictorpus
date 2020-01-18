@@ -24,7 +24,7 @@ class ExperimentsController extends Controller
      *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct()
     {
         $this->middleware('auth:admin,/');
     }
@@ -42,8 +42,8 @@ class ExperimentsController extends Controller
      * 
      * @return \Illuminate\Http\Response
      */
-    public function fillSearchPos() {
-        $search_lang = 4;
+    public function fillSearchPos(Request $request) {
+        $search_lang =  $request->input('search_lang');
         $pairs = [];
         
 //        DB::table('search_pos')->all()->delete();
@@ -66,9 +66,10 @@ class ExperimentsController extends Controller
             }
         }
         ksort($pairs);
-//dd($pairs);   
+dd($pairs);   
         foreach ($pairs as $k=>$info) {
             DB::table('search_pos')->insert([
+                'lang_id' => $search_lang,
                 'wordform' => $info[0],
                 'pos_id'=> $info[1]
             ]);
@@ -81,8 +82,8 @@ print sizeof($pairs).' records are created.';
      * 
      * @return \Illuminate\Http\Response
      */
-    public function fillSearchGramset() {
-        $search_lang = 4;
+    public function fillSearchGramset(Request $request) {
+        $search_lang =  $request->input('search_lang');
         $pairs = [];
         
 //        DB::table('search_gramset')->all()->delete();
@@ -106,6 +107,7 @@ print sizeof($pairs).' records are created.';
 //dd($pairs);   
         foreach ($pairs as $k=>$info) {
             DB::table('search_gramset')->insert([
+                'lang_id' => $search_lang,
                 'wordform' => $info[0],
                 'gramset_id'=> $info[1]
             ]);
@@ -118,22 +120,24 @@ print sizeof($pairs).' records are created.';
      * select ROUND(eval_end,1) as eval1, count(*) from search_gramset where eval_end is not null group by eval1 order by eval1;     * 
      */
     public function evaluateSearchPosGramset(Request $request) {
+        $search_lang =  $request->input('search_lang');
         $property = $request->input('property');
         $is_all_checked = false;
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
         while (!$is_all_checked) {
             $wordform = DB::table($table_name)
+                      ->whereLangId($search_lang)
                       ->whereNull('eval_end')
 //->where('wordform', 'like','toizih')                    
                       ->first();
             if ($wordform) {
 print "<p><b>".$wordform->wordform."</b>";   
-                list($ending,$list) = Experiment::searchPosGramsetByWord($wordform->wordform, $property);     
+                list($ending,$list) = Experiment::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
                 if (!$list) {
                     DB::statement("UPDATE $table_name SET ending=NULL"
                                  .", eval_end=0, eval_end_gen=0"
-                                 ." where wordform like '".$wordform->wordform."'");
+                                 ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
                     
                 } else {
 print "<br>COUNTS: ";                
@@ -141,6 +145,7 @@ foreach ($list as $p=>$c) {
     print "<b>$p</b>: $c, ";
 }   
                     $wordforms = DB::table($table_name)
+                               ->whereLangId($search_lang)
                                ->where('wordform', 'like', $wordform->wordform)
                                ->get();
                     $eval_ends = [];
@@ -164,12 +169,13 @@ foreach ($list as $p=>$c) {
         }
     }
     
-    public function evaluateSearchGramsetByAffix() {
-        $search_lang = 4;
+    public function evaluateSearchGramsetByAffix(Request $request) {
+        $search_lang =  $request->input('search_lang');
         $is_all_checked = false;
         
         while (!$is_all_checked) {
             $wordform = DB::table('search_gramset')
+                      ->whereLangId($search_lang)
                       ->whereNull('eval_aff')
 //->where('wordform', 'like','toizih')                    
                       ->first();
@@ -179,7 +185,7 @@ print "<p><b>".$wordform->wordform."</b>";
                 if (!$list) {
                     DB::statement("UPDATE search_gramset SET affix=NULL,"
                                  ." eval_aff=0, eval_aff_gen=0"
-                                 ." where wordform like '".$wordform->wordform."'");
+                                 ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
                     
                 } else {
 print "<br>COUNTS: ";                
@@ -187,6 +193,7 @@ foreach ($list as $p=>$c) {
     print "<b>$p</b>: $c, ";
 }   
                     $wordforms = DB::table('search_gramset')
+                               ->whereLangId($search_lang)
                                ->where('wordform', 'like', $wordform->wordform)
                                ->get();
                     $eval_affs = [];
@@ -211,7 +218,7 @@ foreach ($list as $p=>$c) {
     }
 
     public function exportErrorShift(Request $request) {
-        $search_lang = 4;
+        $search_lang =  $request->input('search_lang');
         $property = $request->input('property');
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
@@ -219,7 +226,7 @@ foreach ($list as $p=>$c) {
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
         Storage::disk('public')->put($filename, ''); 
-        $shift_list = Experiment::createShiftErrors($table_name, $property_id);
+        $shift_list = Experiment::createShiftErrors($search_lang, $table_name, $property_id);
         foreach ($shift_list as $p1 =>$p_info) {
             foreach ($p_info as $p2 => $count) {
                 Storage::disk('public')->append($filename, "$p1\t$p2\t$count");
@@ -229,7 +236,7 @@ print 'done.';
 }
     
     public function exportErrorShiftToDot(Request $request) {
-        $search_lang = 4;
+        $search_lang =  $request->input('search_lang');
         $property = $request->input('property');
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
@@ -247,7 +254,7 @@ print 'done.';
         $dir_name = "export/error_shift/";
         foreach($range as $min_limit) {
             $file_with_data = $dir_name.$property.'-'.$search_lang.'.txt';
-            list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($file_with_data, $table_name, $property_id, $min_limit, $p_names);
+            list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names);
 //dd($node_list, $edge_list);            
             $filename = $dir_name.$property.'-'.$search_lang.'_'.$min_limit.'.dot';
             Storage::disk('public')->put($filename, "digraph G {\n");
@@ -296,16 +303,16 @@ print 'done.';
      * select pos_id, count(*) as count from search_pos where ending is not null AND eval_end_gen=0 group by pos_id order by count DESC;
      * 
      */
-    public function resultsSearchPos() {
-        $search_lang = 4;
+    public function resultsSearchPos(Request $request) {
+        $search_lang =  $request->input('search_lang');
         $search_lang_name = Lang::getNameById($search_lang);
         $property = 'pos';
         $table_name = 'search_'.$property;
         $p_names = PartOfSpeech::getList();
         
-        $results[0] = Experiment::resultsSearch($table_name);
+        $results[0] = Experiment::resultsSearch($search_lang, $table_name);
         
-        $results[2] = Experiment::lenEndDistribution($table_name, 'pos_id', $p_names);
+        $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'pos_id', $p_names);
         
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
@@ -319,15 +326,15 @@ print 'done.';
     /**
      * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
      */
-    public function resultsSearchGramset() {
-        $search_lang = 4;
+    public function resultsSearchGramset(Request $request) {
+        $search_lang =  $request->input('search_lang');
         $search_lang_name = Lang::getNameById($search_lang);
         $property = 'gramset';
         $table_name = 'search_'.$property;
         $p_names = Gramset::getList(0);
         
-        $results[0] = Experiment::resultsSearch($table_name);
-        $results[1] = Experiment::resultsSearch($table_name, 'eval_aff');
+        $results[0] = Experiment::resultsSearch($search_lang, $table_name);
+        $results[1] = Experiment::resultsSearch($search_lang, $table_name, 'eval_aff');
             
         $results[2] = Experiment::lenEndDistribution($table_name, 'gramset_id', $p_names);
         

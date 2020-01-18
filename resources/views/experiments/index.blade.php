@@ -6,16 +6,66 @@
 
 @section('body')
     <h3>Поиск части речи по аналогии среди лемм и словоформ</h3>
-    <p><a href="experiments/fill_search_pos">Сформировать множество лемм и словоформ для поиска части речи</a></p>
-    <p><a href="experiments/evaluate_search_table?property=pos">Вычислить долю правильных ответов</a></p>
-    <p><a href="experiments/export_error_shift?property=pos">Экспортировать таблицу ошибочных переходов</a></p>
-    <p><a href="experiments/export_error_shift_to_dot?property=pos">Экспортировать таблицу ошибочных переходов в DOT-файл</a></p>
-    <p><a href="experiments/results_search_pos">Вывод результатов</a></p>
+    <p>Сформировать множество лемм и словоформ для поиска части речи</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/fill_search_pos?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Вычислить долю правильных ответов</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/evaluate_search_table?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу ошибочных переходов</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу ошибочных переходов в DOT-файл</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift_to_dot?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Вывод результатов</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/results_search_pos?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
 
     <h3>Поиск грамсетов по множеству словоформ</h3>
-    <p><a href="experiments/fill_search_gramset">Сформировать множество словоформ для поиска грамсета</a></p>
-    <p><a href="experiments/evaluate_search_table?property=gramset">Вычислить долю правильных ответов при поиске по конечным буквосочетаниям</a></p>
-    <p><a href="experiments/evaluate_search_gramset_by_affix">Вычислить долю правильных ответов при поиске по псевдоокончаниям</a></p>
-    <p><a href="experiments/export_error_shift?property=gramset">Экспортировать таблицу ошибочных переходов</a></p>
-    <p><a href="experiments/results_search_gramset">Вывод результатов</a></p>
+    <p>Сформировать множество словоформ для поиска грамсета</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/fill_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Вычислить долю правильных ответов при поиске по конечным буквосочетаниям</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/evaluate_search_table?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Вычислить долю правильных ответов при поиске по псевдоокончаниям</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу ошибочных переходов</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Вывод результатов</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/results_search_gramset&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
 @endsection

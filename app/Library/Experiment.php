@@ -12,7 +12,7 @@ use App\Models\Dict\LemmaWordform;
 class Experiment
 {
     
-    public static function searchPosGramsetByWord($word, $property) {
+    public static function searchPosGramsetByWord($lang_id, $word, $property) {
         $i=1;
         $property_id = $property.'_id';
         $match_wordforms = NULL;
@@ -20,6 +20,7 @@ class Experiment
         while ($i<mb_strlen($word) && !$match_wordforms) {
             $ending = mb_substr($word,$i);
             $match_wordforms = DB::table('search_'.$property)
+                     ->whereLangId($lang_id)
                      ->where('wordform', 'not like', $word)
                      ->where('wordform', 'like', '%'.$ending)->get();
             $i++;
@@ -37,8 +38,10 @@ print "<br>".$m_wordform->wordform.", ".$m_wordform->{$property_id};
         arsort($list);
         return [$ending, $list];
     }
-    public static function searchPosGramsetByEnding($word, $ending, $table_name, $field) {
+    
+    public static function searchPosGramsetByEnding($lang_id, $word, $ending, $table_name, $field) {
         $match_wordforms = DB::table($table_name)
+                 ->whereLangId($lang_id)
                  ->where('wordform', 'not like', $word)
                  ->where('wordform', 'like', '%'.$ending)->get();
         $list = [];
@@ -95,70 +98,13 @@ print "<br>".$m_wordform->wordform.", ".$m_wordform->gramset_id;
         }
         return $evaluation;
     }
-/*
-    public static function searchPosGramsetsByUniqueWordforms($wordform_obj) {
-        $i=1;
-        $match_wordforms = NULL;
-        $s_wordform = $wordform_obj->wordform;
-        while ($i<mb_strlen($s_wordform) && !$match_wordforms) {
-            $str = mb_substr($s_wordform,$i);
-            $match_wordforms = DB::table('unique_wordforms')
-                     ->where('wordform', 'not like', $s_wordform)
-                     ->where('wordform', 'like', '%'.$str)->get();
-            $i++;
-        }
-        $match_wordforms = collect($match_wordforms);        
-print "<p>$s_wordform, $str, ".$wordform_obj->pos_id.", ".$wordform_obj->gramsets;   
-        if ($match_wordforms) {
-            list($search_pos,$pos_val)=Experiment::valuationPosGramsetsByUniqueWordforms(
-                    $match_wordforms, 'pos_id', $wordform_obj->pos_id);
-            if ($pos_val>0) {
-                list($search_gramsets,$gram_val)=Experiment::valuationPosGramsetsByUniqueWordforms(
-//                    $match_wordforms->where('pos_id',$search_pos), 'gramsets', $wordform_obj->gramsets);
-                    $match_wordforms, 'gramsets', $wordform_obj->gramsets);
-            } else {
-                //$search_gramsets = null;
-                $gram_val = 0;
-            }
-        }
-        return [$pos_val, $gram_val];
-    }
     
-    public static function valuationPosGramsetsByUniqueWordforms($match_wordforms, $property, $right_value) {
-        $counts = [];
-        foreach ($match_wordforms as $match_wordform) {
-if ($property=='pos_id') {            
-print '<br>'.$match_wordform->wordform.', '.$match_wordform->pos_id.', '.$match_wordform->gramsets; 
-}
-            $counts[$match_wordform->{$property}] = !isset($counts[$match_wordform->{$property}])
-                                                  ? 1 : 1+$counts[$match_wordform->{$property}];
-        }
-        arsort($counts);
-        reset($counts);
-        $first_key = key($counts);
-        $first_count = current($counts);
-//dd($first_count);        
-        if (!isset($counts[$right_value])) {
-            $valuation = 0;  
-            $search_value = null;
-        } elseif ($first_count == $counts[$right_value]) {
-            $valuation = 1;
-            $search_value = $right_value;
-        } else {
-            $valuation = $counts[$right_value] / array_sum($counts);
-            $search_value = $right_value;
-        }
-print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";            
-        return [$search_value, $valuation];
-    }
-*/
-
-    
-    public static function resultsSearch($table_name, $field='eval_end') {
-        $total_num = DB::table($table_name)->whereNotNull($field)->count();
+    public static function resultsSearch($lang_id, $table_name, $field='eval_end') {
+        $total_num = DB::table($table_name)->whereLangId($lang_id)
+                       ->whereNotNull($field)->count();
         
-        list($eval1,$eval1_proc) = self::calculateEvalLists($table_name, $field);
-        list($eval2,$eval2_proc) = self::calculateEvalLists($table_name, $field.'_gen');
+        list($eval1,$eval1_proc) = self::calculateEvalLists($lang_id, $table_name, $field);
+        list($eval2,$eval2_proc) = self::calculateEvalLists($lang_id, $table_name, $field.'_gen');
         
         $chart = new ExperimentValuation;
         $chart->labels(array_keys($eval1));                
@@ -175,9 +121,10 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 'chart'=>$chart, 'eval1_proc'=>$eval1_proc, 'eval2_proc'=>$eval2_proc];
     }
     
-    public static function calculateEvalLists($table_name, $field) {
+    public static function calculateEvalLists($lang_id, $table_name, $field) {
         $coll = DB::table($table_name)
                 ->select(DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count"))
+                ->whereLangId($lang_id)
                 ->whereNotNull($field)
                 ->groupBy('eval')
                 ->orderBy('eval')
@@ -271,26 +218,30 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
      * @param type $names
      * @return type
      */
-    public static function lenEndDistribution($table_name, $field, $names) {
+    public static function lenEndDistribution($lang_id, $table_name, $field, $names) {
         $name_coll = DB::table($table_name)
                 ->select($field, DB::raw('count(*) as count'))
+                ->whereLangId($lang_id)
                 ->whereNotNull('ending')
                 ->groupBy($field)
                 ->orderBy('count', 'DESC')
                 ->get();
         $max = DB::table($table_name)
                 ->select(DB::raw('max(length(ending)) as max'))
+                ->whereLangId($lang_id)
                 ->whereNotNull('ending')
                 ->first()->max;
 //dd($max);        
         $min = DB::table($table_name)
                 ->select(DB::raw('min(length(ending)) as min'))
+                ->whereLangId($lang_id)
                 ->whereNotNull('ending')
                 ->first()->min;
         $list = [];
         foreach ($name_coll as $name) {
             $len_coll = DB::table($table_name)
                     ->select(DB::raw('length(ending) as len'), DB::raw('count(*) as count'))
+                    ->whereLangId($lang_id)
                     ->whereNotNull('ending')
                     ->where($field, $name->{$field})
                     ->groupBy('len')
@@ -327,10 +278,11 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return $chart;
     }
     
-    public static function createShiftErrors($table_name, $field) {
+    public static function createShiftErrors($lang_id, $table_name, $field) {
         $shift_list = [];
         $name_coll = DB::table($table_name)
                 ->select($field, DB::raw('count(*) as count'))
+                ->whereLangId($lang_id)
                 ->whereNotNull('ending')
                 ->where('eval_end_gen',0)
                 ->groupBy($field)
@@ -340,12 +292,13 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         foreach ($name_coll as $p) {
             $w_coll = DB::table($table_name)
                     ->select('wordform', 'ending')
+                    ->whereLangId($lang_id)
                     ->whereNotNull('ending')
                     ->where('eval_end_gen',0)
                     ->where($field, $p->{$field})
                     ->get();
             foreach ($w_coll as $w) {        
-                $list = self::searchPosGramsetByEnding($w->wordform, $w->ending, $table_name, $field);
+                $list = self::searchPosGramsetByEnding($lang_id, $w->wordform, $w->ending, $table_name, $field);
                 reset($list);
                 $search_p = key($list);
                 $shift_list[$p->{$field}][$search_p] = !isset($shift_list[$p->{$field}][$search_p])
@@ -367,7 +320,7 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return $out;
      }
      
-     public static function readShiftErrorsForDot($filename, $table_name, $property_id, $min_limit, $p_names) {
+     public static function readShiftErrorsForDot($lang_id, $filename, $table_name, $property_id, $min_limit, $p_names) {
         $node_list = $totals = $edge_list = [];
         $file_content = Storage::disk('public')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
@@ -376,12 +329,14 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
             if (!isset( $nodes[$p1])) {
                 $totals[$p1] = DB::table($table_name)
+                          ->whereLangId($lang_id)
                           ->whereNotNull('ending')
                           ->where($property_id, $p1)
                           ->count();
             }
             if (!isset( $nodes[$p2])) {
                 $totals[$p2] = DB::table($table_name)
+                          ->whereLangId($lang_id)
                           ->whereNotNull('ending')
                           ->where($property_id, $p2)
                           ->count();
