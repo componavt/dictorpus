@@ -12,20 +12,23 @@ use App\Models\Dict\LemmaWordform;
 class Experiment
 {
     public static function writePosGramset($table_name, $property_name, $search_lang, $wordform, $property_id) {
+        if ($property_name=='pos_id' && $property_id == 14) {
+            $property_id = 5;
+        }
         $lemma_exists = DB::table($table_name)
                           ->whereLangId($search_lang)
                           ->where($property_name, $property_id)
                           ->where('wordform', 'like', $wordform)
                           ->count();
         if ($lemma_exists) {
-            return FALSE;
+            return 0;
         }
         DB::table($table_name)->insert([
             'lang_id' => $search_lang,
             'wordform' => $wordform,
             $property_name => $property_id
         ]);
-        return TRUE;
+        return 1;
     }
 
     public static function searchPosGramsetByWord($lang_id, $word, $property) {
