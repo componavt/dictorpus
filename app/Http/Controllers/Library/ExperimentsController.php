@@ -48,22 +48,23 @@ class ExperimentsController extends Controller
         
 //        DB::table('search_pos')->all()->delete();
   //      DB::statement('ALTER TABLE search_pos AUTO_INCREMENT = 1');
-        $lemmas = Lemma::whereLangId($search_lang)->orderBy('lemma')->get();
+        $lemmas = Lemma::whereLangId($search_lang)
+                       ->where(DB::raw("length(lemma)"), ">", 1)
+                       ->where('lemma', 'not like', '% %')
+                       ->orderBy('lemma')->get();
         
         foreach ($lemmas as $lemma) {
-            if (strlen($lemma->lemma)>1 && !preg_match("/\s/", $lemma->lemma)) {
-                if ($lemma->pos_id == 14) {
-                    $pos_id = 5;
-                } else {
-                    $pos_id = $lemma->pos_id;
-                }
+            if ($lemma->pos_id == 14) {
+                $pos_id = 5;
+            } else {
+                $pos_id = $lemma->pos_id;
+            }
 //                $pairs[$lemma->lemma.'_'.$pos_id] = [$lemma->lemma,$pos_id];
-                Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $lemma->lemma, $pos_id);
-                foreach ($lemma->wordforms as $wordform) {
-                    if (strlen($wordform->wordform)>1 && !preg_match("/\s/", $wordform->wordform)) { // without analytic forms
+            Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $lemma->lemma, $pos_id);
+            foreach ($lemma->wordforms as $wordform) {
+                if (strlen($wordform->wordform)>1 && !preg_match("/\s/", $wordform->wordform)) { // without analytic forms
 //                        $pairs[$wordform->wordform.'_'.$pos_id] = [$wordform->wordform,$pos_id];                
-                        Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $pos_id);
-                    }
+                    Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $pos_id);
                 }
             }
         }
