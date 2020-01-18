@@ -44,11 +44,11 @@ class ExperimentsController extends Controller
      */
     public function fillSearchPos(Request $request) {
         $search_lang =  $request->input('search_lang');
-        $pairs = [];
+        $table_name = 'search_pos';
         
 //        DB::table('search_pos')->all()->delete();
   //      DB::statement('ALTER TABLE search_pos AUTO_INCREMENT = 1');
-        $lemmas = Lemma::whereLangId($search_lang)->get();
+        $lemmas = Lemma::whereLangId($search_lang)->orderBy('lemma')->get();
         
         foreach ($lemmas as $lemma) {
             if (strlen($lemma->lemma)>1 && !preg_match("/\s/", $lemma->lemma)) {
@@ -57,24 +57,17 @@ class ExperimentsController extends Controller
                 } else {
                     $pos_id = $lemma->pos_id;
                 }
-                $pairs[$lemma->lemma.'_'.$pos_id] = [$lemma->lemma,$pos_id];
+//                $pairs[$lemma->lemma.'_'.$pos_id] = [$lemma->lemma,$pos_id];
+                Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $lemma->lemma, $pos_id);
                 foreach ($lemma->wordforms as $wordform) {
                     if (strlen($wordform->wordform)>1 && !preg_match("/\s/", $wordform->wordform)) { // without analytic forms
-                        $pairs[$wordform->wordform.'_'.$pos_id] = [$wordform->wordform,$pos_id];                
+//                        $pairs[$wordform->wordform.'_'.$pos_id] = [$wordform->wordform,$pos_id];                
+                        Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $pos_id);
                     }
                 }
             }
         }
-        ksort($pairs);
-dd($pairs);   
-        foreach ($pairs as $k=>$info) {
-            DB::table('search_pos')->insert([
-                'lang_id' => $search_lang,
-                'wordform' => $info[0],
-                'pos_id'=> $info[1]
-            ]);
-        }
-print sizeof($pairs).' records are created.';        
+print 'All records are writed.';        
     }
     
     /**
