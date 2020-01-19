@@ -108,29 +108,31 @@ print '$count records are writed.';
 //        DB::table('search_gramset')->all()->delete();
   //      DB::statement('ALTER TABLE search_gramset AUTO_INCREMENT = 1');
         
-/*        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+        $start = 0;
+        $limit = 1000;
+        $wordfoms_exists=true;
+        while ($wordfoms_exists) {
+        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                     ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                     ->where('wordform','not like', '% %')
                     ->whereNotNull('gramset_id')
                     ->whereLangId($search_lang)
                     ->groupBy('wordform','gramset_id')
-                    ->get();*/
-        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
-                    ->where('wordform','not like', '% %')
-                    ->whereIn('lemma_id', function($query) use($search_lang) {
-                        $query->select('id')->from('lemmas')
-                              ->whereLangId($search_lang);
-                    })
-                    ->whereNotNull('gramset_id')
-                    ->groupBy('wordform','gramset_id')
+                    ->skip($start)
+                    ->take($limit)
                     ->get();
         
-dd($wordforms);        
-        foreach ($wordforms as $wordform) {
+            if (!$wordforms) {
+                $wordfoms_exists = false;
+            } else {
+                foreach ($wordforms as $wordform) {
 print "<P>wordform: ".$wordform->wordform.', '.$wordform->gramset_id;
-            $wordform_writed = Experiment::writePosGramset($table_name, 'gramset_id', $search_lang, $wordform->wordform, $wordform->gramset_id);
-            $count += $wordform_writed;
+                    $wordform_writed = Experiment::writePosGramset($table_name, 'gramset_id', $search_lang, $wordform->wordform, $wordform->gramset_id);
+                    $count += $wordform_writed;
 print ", $wordform_writed, $count</p>";
+                }
+                $start +=$limit;
+            }
         }
 print '$count records are created.';        
     }
