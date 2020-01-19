@@ -64,6 +64,7 @@ print "<P>lemma: ".$lemma->lemma.', '.$lemma->pos_id;
 print ", $lemma_writed, $count</p>";
         }
         
+// select wordform, pos_id from wordforms, lemma_wordform, lemmas where wordforms.id=lemma_wordform.wordform_id and lemmas.id=lemma_wordform.lemma_id and wordform not like '% %' and pos_id is not null and gramset_id is not null and lang_id=1 group by wordform, pos_id;
         $start = 0;
         $limit = 1000;
         $wordfoms_exists=true;
@@ -80,7 +81,7 @@ print ", $lemma_writed, $count</p>";
                         ->get();
                     //->count();
     //dd($wordforms);   
-            if (!$wordforms) {
+            if (!sizeof($wordforms)) {
                 $wordfoms_exists = false;
             } else {
                 foreach ($wordforms as $wordform) {
@@ -122,7 +123,7 @@ print '$count records are writed.';
                     ->take($limit)
                     ->get();
         
-            if (!$wordforms) {
+            if (!sizeof($wordforms)) {
                 $wordfoms_exists = false;
             } else {
                 foreach ($wordforms as $wordform) {
