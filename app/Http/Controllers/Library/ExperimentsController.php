@@ -34,7 +34,11 @@ class ExperimentsController extends Controller
         $totals = [];
         foreach ([1,4] as $l) {
             $langs[$l] = Lang::getNameById($l);
-            $totals[$l]['eval_pos_compl_proc'] = Experiment::evaluationCompletedInProcents('search_pos',$l);
+            $totals[$l]['total_in_pos'] = number_format(Experiment::totalFill('search_pos',$l), 0, ',', ' ');
+            $totals[$l]['eval_pos_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l), 2);
+            
+            $totals[$l]['total_in_gramset'] = number_format(Experiment::totalFill('search_gramset',$l), 0, ',', ' ');
+            $totals[$l]['eval_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l), 2);
         }
         
         return view('experiments/index', compact('langs', 'totals'));

@@ -455,11 +455,18 @@ if (!isset($p_names[$node])) {
 //dd($out);        
         return [$node_list, $edge_list];
      }
-     
-     public static function evaluationCompletedInProcents($table_name, $lang_id) {
-        $total_num = DB::table($table_name)
+
+     public static function totalFill($table_name, $lang_id) {
+        return DB::table($table_name)
                        ->whereLangId($lang_id)
                        ->count();
+     }
+     
+     public static function evaluationCompletedInProcents($table_name, $lang_id) {
+        $total_num = self::totalFill($table_name, $lang_id); 
+        if (!$total_num) {
+            return 0;
+        }
         $completed = DB::table($table_name)
                        ->whereLangId($lang_id)
                        ->whereNotNull('eval_end')
