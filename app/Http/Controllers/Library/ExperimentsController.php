@@ -31,7 +31,7 @@ class ExperimentsController extends Controller
 
     public function index() {
         $langs = []; 
-        $totals[];
+        $totals = [];
         foreach ([1,4] as $l) {
             $langs[$l] = Lang::getNameById($l);
             $totals[$l]['eval_pos_compl_proc'] = Experiment::evaluationCompletedInProcents('search_pos',$l);
