@@ -78,6 +78,41 @@ class Lemma extends Model
 //    use \App\Models\Scopes\Wordform;
     
     /**
+     * Gets gramsets, that has any wordforms of this lemma
+     * 
+     * @return Builder
+     */
+    public function gramsets()
+    {
+        return $this->belongsToMany(Gramset::class, 'lemma_wordform')
+                    ->orderBy('sequence_number');
+    } 
+    
+    // Lemma __has one__ LemmaFeature
+    public function features()
+    {
+        return $this->hasOne(LemmaFeature::class,'id','id');
+    }    
+    
+    public function phraseLemmas(){
+        $builder = $this->belongsToMany(Lemma::class,'lemma_phrase','phrase_id');
+        return $builder;
+    }
+
+    public function phrases(){
+        $builder = $this->belongsToMany(Lemma::class,'lemma_phrase','lemma_id','phrase_id');
+        return $builder;
+    }
+
+    public static function getLemmaById($id) {
+        $obj = self::find($id);
+        if (!$obj) {
+            return FALSE;
+        }
+        return $obj->lemma;
+    }
+    
+    /**
      * @return Array of bases
      */
     public function getBases($dialect_id=null) {
@@ -268,33 +303,6 @@ class Lemma extends Model
         return join('#',$features);
     }
     
-    /**
-     * Gets gramsets, that has any wordforms of this lemma
-     * 
-     * @return Builder
-     */
-    public function gramsets()
-    {
-        return $this->belongsToMany(Gramset::class, 'lemma_wordform')
-                    ->orderBy('sequence_number');
-    } 
-    
-    // Lemma __has one__ LemmaFeature
-    public function features()
-    {
-        return $this->hasOne(LemmaFeature::class,'id','id');
-    }    
-    
-    public function phraseLemmas(){
-        $builder = $this->belongsToMany(Lemma::class,'lemma_phrase','phrase_id');
-        return $builder;
-    }
-
-    public function phrases(){
-        $builder = $this->belongsToMany(Lemma::class,'lemma_phrase','lemma_id','phrase_id');
-        return $builder;
-    }
-
     public function phraseListWithLink(){
         if (!$this->phrases()) {
             return NULL;

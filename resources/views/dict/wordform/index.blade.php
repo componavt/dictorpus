@@ -36,12 +36,20 @@
         </thead>
         <tbody>
             @foreach($wordforms as $wordform)
-                @foreach($wordform['lemmas'] as $key=>$lemma) 
+            <?php 
+            if ($wordform->lemma_id) {
+                $lemma_obj = \App\Models\Dict\Lemma::find($wordform->lemma_id);
+                $lemma = (!$lemma_obj || !isset($lemma_obj->lemma))
+                       ? '' : $lemma_obj->lemma;
+                $pos_name = (!$lemma_obj || !isset($lemma_obj->pos->name))
+                          ? '' : $lemma_obj->pos->name;
+                $lang_name = (!$lemma_obj || !isset($lemma_obj->lang->name))
+                           ? '' : $lemma_obj->lang->name;
+            }
+            ?>
             <tr>
-                    @if ($key==0)
-                <td data-th="No" rowspan='{{sizeof($wordform['lemmas'])}}'>{{ $list_count++ }}</td>
-                <td data-th="{{ trans('dict.wordform') }}" rowspan='{{sizeof($wordform['lemmas'])}}'>{{$wordform->wordform}}</td>
-                    @endif
+                <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('dict.wordform') }}">{{$wordform->wordform}}</td>
                 <td data-th="{{ trans('dict.gram_attr') }}">
                     <?php 
                     if($wordform->gramset_id) {
@@ -52,20 +60,15 @@
                     } ?>
                 </td>
                 <td data-th="{{ trans('dict.lemmas') }}">
-                    @if (sizeof($wordform['lemmas'])>1)
-                        {{$key+1}}.
+                    @if($wordform->lemma_id && $lemma) 
+                    <a href="lemma/{{$wordform->lemma_id}}{{$args_by_get}}">{{$lemma}}</a>
                     @endif
-                    <a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">
-                    @if($lemma->pos)
-                        {{$lemma->pos->name}}
-                    @endif
+                    {{$pos_name}}
                 </td>
                 <td data-th="{{ trans('dict.lang') }}">
-                    @if($lemma->lang)
-                        {{$lemma->lang->name}}
-                    @endif
+                    {{$lang_name}}
                 </td>
                 <td data-th="{{ trans('dict.dialect') }}">
                     @if($wordform->dialect_id)
@@ -81,7 +84,6 @@
                 </td>
                 @endif
             </tr>
-                @endforeach
             @endforeach
         </tbody>
         </table>

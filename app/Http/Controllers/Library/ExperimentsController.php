@@ -51,8 +51,9 @@ class ExperimentsController extends Controller
   //      DB::statement('ALTER TABLE search_pos AUTO_INCREMENT = 1');
         
         $lemmas = Lemma::whereLangId($search_lang)
-                       ->where(DB::raw("length(lemma)"), ">", 1)
+                       ->where(DB::raw("length(lemma)"), ">", 2)
                        ->where('lemma', 'not like', '% %')
+                       ->where('lemma','not like', '-%')
                        ->whereNotNull('pos_id')
                        ->groupBy('lemma','pos_id')
                        ->orderBy('lemma')->get();
@@ -72,6 +73,8 @@ print ", $lemma_writed, $count</p>";
             $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                         ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                         ->where('wordform','not like', '% %')
+                        ->where('wordform','not like', '-%')
+                        ->where(DB::raw("length(wordform)"), ">", 2)
                         ->whereNotNull('pos_id')
                         ->whereNotNull('gramset_id')
                         ->whereLangId($search_lang)
@@ -113,15 +116,17 @@ print '$count records are writed.';
         $limit = 1000;
         $wordfoms_exists=true;
         while ($wordfoms_exists) {
-        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
-                    ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
-                    ->where('wordform','not like', '% %')
-                    ->whereNotNull('gramset_id')
-                    ->whereLangId($search_lang)
-                    ->groupBy('wordform','gramset_id')
-                    ->skip($start)
-                    ->take($limit)
-                    ->get();
+// select wordform, gramset_id from wordforms, lemma_wordform, lemmas where wordforms.id=lemma_wordform.wordform_id and lemmas.id=lemma_wordform.lemma_id and wordform not like '% %' and pos_id is not null and gramset_id is not null and lang_id=1 group by wordform, gramset_id;
+            $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                        ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                        ->where(DB::raw("length(wordform)"), ">", 2)
+                        ->where('wordform','not like', '% %')
+                        ->whereNotNull('gramset_id')
+                        ->whereLangId($search_lang)
+                        ->groupBy('wordform','gramset_id')
+                        ->skip($start)
+                        ->take($limit)
+                        ->get();
         
             if (!sizeof($wordforms)) {
                 $wordfoms_exists = false;
