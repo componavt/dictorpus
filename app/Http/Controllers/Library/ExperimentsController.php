@@ -31,11 +31,13 @@ class ExperimentsController extends Controller
 
     public function index() {
         $langs = []; 
+        $totals[];
         foreach ([1,4] as $l) {
             $langs[$l] = Lang::getNameById($l);
+            $totals[$l]['eval_pos_compl_proc'] = Experiment::evaluationCompletedInProcents('search_pos',$l);
         }
         
-        return view('experiments/index', compact('langs'));
+        return view('experiments/index', compact('langs', 'totals'));
     }    
     /**
      * Fill data [wordform, pos ID] in table search_pos

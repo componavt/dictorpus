@@ -15,7 +15,8 @@
     <p>Вычислить долю правильных ответов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/evaluate_search_table?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        <li><a href="experiments/evaluate_search_table?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+        ({{$totals[$lang_id]['eval_pos_compl_proc']}})</li>
     @endforeach
     </ul>
     <p>Экспортировать таблицу ошибочных переходов</p>

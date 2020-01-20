@@ -1054,3 +1054,35 @@ CREATE INDEX lang_wordform ON search_pos (lang_id, wordform);
 CREATE INDEX lang_wordform ON search_gramset (lang_id, wordform);
 
 --php artisan make:test Library\ExperimentTest
+
+--https://vike.io/ru/239548/ in Laravel
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `search_pos_completed`$$
+CREATE PROCEDURE `search_pos_completed`(in lang int, out completed_proc decimal(10,2))
+BEGIN
+    declare total_num, total_completed INT Default 0; 
+    select count(*) into total_num from search_pos where lang_id=lang;
+    select 100*count(*)/total_num into completed_proc from search_pos where lang_id=lang and eval_end is not null;
+
+END
+$$
+DELIMITER ;
+call search_pos_completed(1, @completed_proc);
+select @completed_proc;
+
+/*
+DROP FUNCTION IF EXISTS `search_pos_completed_func`$$
+CREATE FUNCTION `search_pos_completed`(lang int)
+RETURNS decimal
+BEGIN
+    declare total_num, total_completed, completed_proc INT Default 0; 
+    select count(*) into total_num from search_pos where lang_id=lang;
+    select count(*) into total_completed from search_pos where lang_id=lang and eval_end is not null;
+    SET completed_proc=100*total_completed/total_num;
+    RETURN (completed_proc);
+END
+$$
+
+set completed_proc = search_pos_completed_func(1);
+select completed_proc;
+*/
