@@ -9,6 +9,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\Corpus\Word;
+use App\Models\Corpus\Text;
+
 use App\Models\Dict\Lang;
 
 class WordController extends Controller
