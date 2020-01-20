@@ -324,8 +324,10 @@ print 'done.';
         
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
-        $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
-        $results[3]['limit'] = 6;
+        if (Storage::disk('public')->exists($filename)) {
+            $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
+            $results[3]['limit'] = 6;
+        }
         
         return view('experiments.results_search',
                     compact('search_lang_name', 'property', 'results'));
@@ -348,9 +350,10 @@ print 'done.';
         
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
-        $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
-        $results[3]['limit'] = 9;
-        
+        if (Storage::disk('public')->exists($filename)) {
+            $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
+            $results[3]['limit'] = 9;
+        }
         return view('experiments.results_search',
                     compact('search_lang_name', 'property', 'results'));
     }
