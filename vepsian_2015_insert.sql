@@ -1053,3 +1053,4 @@ UPDATE search_gramset SET lang_id=4;
 CREATE INDEX lang_wordform ON search_pos (lang_id, wordform);
 CREATE INDEX lang_wordform ON search_gramset (lang_id, wordform);
 
+--php artisan make:test Library\ExperimentTest

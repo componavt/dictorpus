@@ -39,6 +39,34 @@ class Experiment
         while ($i<mb_strlen($word) && !$match_wordforms) {
             $ending = mb_substr($word,$i);
             $match_wordforms = DB::table('search_'.$property)
+                     ->select($property_id, DB::raw('count(*) as count'))
+                     ->whereLangId($lang_id)
+                     ->where('wordform', 'not like', $word)
+                     ->where('wordform', 'like', '%'.$ending)
+                     ->groupBy($property_id)
+                     ->orderBy(DB::raw('count(*)'), 'DESC')
+                     ->get();
+            $i++;
+        }
+        if (!$match_wordforms) {
+            return [NULL, NULL];
+        }
+//print "<br><b>$ending</b>";        
+        $list = [];
+        foreach ($match_wordforms as $m_wordform) {
+            $list[$m_wordform->{$property_id}] = $m_wordform->count;
+        }
+        return [$ending, $list];
+    }
+    
+    public static function searchPosGramsetByWordWithWList($lang_id, $word, $property) {
+        $i=1;
+        $property_id = $property.'_id';
+        $match_wordforms = NULL;
+        $ending = $word;
+        while ($i<mb_strlen($word) && !$match_wordforms) {
+            $ending = mb_substr($word,$i);
+            $match_wordforms = DB::table('search_'.$property)
                      ->whereLangId($lang_id)
                      ->where('wordform', 'not like', $word)
                      ->where('wordform', 'like', '%'.$ending)->get();
@@ -47,10 +75,10 @@ class Experiment
         if (!$match_wordforms) {
             return [NULL, NULL];
         }
-print "<br><b>$ending</b>";        
+//print "<br><b>$ending</b>";        
         $list = [];
         foreach ($match_wordforms as $m_wordform) {
-print "<br>".$m_wordform->wordform.", ".$m_wordform->{$property_id};            
+//print "<br>".$m_wordform->wordform.", ".$m_wordform->{$property_id};            
             $list[$m_wordform->{$property_id}] = !isset($list[$m_wordform->{$property_id}])
                                            ? 1 : 1+$list[$m_wordform->{$property_id}];
         }
