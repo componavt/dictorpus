@@ -71,7 +71,7 @@ function addLemma(lang_id) {
         var data = {lang_id: lang_id, lemma: $( "#lemma" ).val(),
                     pos_id: $( "#pos_id option:selected" ).val(),
                     meaning: $( "#new_meanings_0__meaning_text__2_" ).val(),
-                    dialect_id: $( "#dialect_id option:selected" ).val(),
+                    wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
                     number: $( "#number option:selected" ).val(),
                     reflexive: $( "#reflexive" ).val()};
 //alert("/dict/lemma/store_simple?lang_id="+lang_id+"&lemma="+lemma+"&pos_id="+pos_id+"&meaning="+meaning);    
