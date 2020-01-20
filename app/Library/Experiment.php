@@ -31,6 +31,40 @@ class Experiment
         return 1;
     }
 
+    public static function evaluateSearchPosGramset($search_lang, $table_name, $property, $wordform) {
+        $property_id = $property.'_id';
+print "<p><b>".$wordform->wordform."</b>";   
+        list($ending,$list) = self::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
+        if (!$list) {
+            DB::statement("UPDATE $table_name SET ending=NULL"
+                         .", eval_end=0, eval_end_gen=0"
+                         ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
+
+        } else {
+print "<br>COUNTS: ";                
+foreach ($list as $p=>$c) {
+print "<b>$p</b>: $c, ";
+}   
+            $wordforms = DB::table($table_name)
+                       ->whereLangId($search_lang)
+                       ->where('wordform', 'like', $wordform->wordform)
+                       ->get();
+            $eval_ends = [];
+            foreach ($wordforms as $w) { 
+                $eval_ends[$w->id] = self::getEvalForOneValue($list, $w->{$property_id});
+print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
+            }
+            $max = max($eval_ends);
+print "<br><b>max:</b> ".$max;  
+            foreach ($eval_ends as $w_id=>$eval_end) {
+                DB::statement("UPDATE $table_name SET ending='".$ending
+                             ."', eval_end=$eval_end, eval_end_gen=$max"
+                             ." where id=".$w_id);
+            }
+        }
+        
+    }
+
     public static function searchPosGramsetByWord($lang_id, $word, $property) {
         $i=1;
         $property_id = $property.'_id';

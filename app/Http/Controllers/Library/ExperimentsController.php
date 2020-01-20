@@ -151,45 +151,19 @@ print '$count records are created.';
         $search_lang =  $request->input('search_lang');
         $property = $request->input('property');
         $is_all_checked = false;
-        $property_id = $property.'_id';
         $table_name = 'search_'.$property;
         while (!$is_all_checked) {
-            $wordform = DB::table($table_name)
-                      ->whereLangId($search_lang)
-                      ->whereNull('eval_end')
-//->where('wordform', 'like','toizih')                    
-                      ->first();
-            if ($wordform) {
-print "<p><b>".$wordform->wordform."</b>";   
-                list($ending,$list) = Experiment::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
-                if (!$list) {
-                    DB::statement("UPDATE $table_name SET ending=NULL"
-                                 .", eval_end=0, eval_end_gen=0"
-                                 ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
-                    
-                } else {
-print "<br>COUNTS: ";                
-foreach ($list as $p=>$c) {
-    print "<b>$p</b>: $c, ";
-}   
-                    $wordforms = DB::table($table_name)
-                               ->whereLangId($search_lang)
-                               ->where('wordform', 'like', $wordform->wordform)
-                               ->get();
-                    $eval_ends = [];
-                    foreach ($wordforms as $w) { 
-                        $eval_ends[$w->id] = Experiment::getEvalForOneValue($list, $w->{$property_id});
-    print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
-                    }
-                    $max = max($eval_ends);
-    print "<br><b>max:</b> ".$max;  
-    //dd($eval_ends);
-//    exit(0);
-                    foreach ($eval_ends as $w_id=>$eval_end) {
-                        DB::statement("UPDATE $table_name SET ending='".$ending
-                                     ."', eval_end=$eval_end, eval_end_gen=$max"
-                                     ." where id=".$w_id);
-                    }
+            $wordforms = DB::table($table_name)
+                           ->select('wordform')
+                           ->whereLangId($search_lang)
+                           ->whereNull('eval_end')
+                           ->groupBy('wordform')
+                           ->take(100)
+                           ->get();
+                      //->first();
+            if ($wordforms) {
+                foreach ($wordforms as $wordform) {
+                    Experiment::evaluateSearchPosGramset($search_lang, $table_name, $property, $wordform);
                 }
             } else {
                 $is_all_checked = true;
