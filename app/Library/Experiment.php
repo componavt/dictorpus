@@ -224,7 +224,7 @@ print "<br>".$m_wordform->wordform.", ".$m_wordform->gramset_id;
             $sum +=$row->count;
         }
         foreach ($list_proc as $k => $v) {
-             $list_proc[$k] = round(100*$v/$sum, 2);
+             $list_proc[$k] = $sum==0 ? 0 : round(100*$v/$sum, 2);
         }
         return [$list, $list_proc];
     }
