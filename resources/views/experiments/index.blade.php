@@ -20,16 +20,28 @@
         ({{$totals[$lang_id]['eval_pos_compl_proc']}}%)</li>
     @endforeach
     </ul>
-    <p>Экспортировать таблицу ошибочных переходов</p>
+    <p>Экспортировать таблицу самых ошибочных переходов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        <li><a href="experiments/export_error_shift?property=pos&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
-    <p>Экспортировать таблицу ошибочных переходов в DOT-файл</p>
+    <p>Экспортировать таблицу самых ошибочных переходов в DOT-файл</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift_to_dot?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        <li><a href="experiments/export_error_shift_to_dot?property=pos&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу всех ошибочных переходов</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу всех ошибочных переходов в DOT-файл</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift_to_dot?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
     <p>Вывод результатов</p>

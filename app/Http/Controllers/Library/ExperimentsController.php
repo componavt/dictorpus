@@ -227,14 +227,20 @@ foreach ($list as $p=>$c) {
 
     public function exportErrorShift(Request $request) {
         $search_lang =  $request->input('search_lang');
+        $all_errors =  $request->input('all');
         $property = $request->input('property');
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
         
         $dir_name = "export/error_shift/";
-        $filename = $dir_name.$property.'-'.$search_lang.'.txt';
+        $filename = $dir_name.$property.'-'.$search_lang;
+        if ($all_errors) {
+            $filename .= '_all';
+        }
+        $filename .= '.txt';
+            
         Storage::disk('public')->put($filename, ''); 
-        $shift_list = Experiment::createShiftErrors($search_lang, $table_name, $property_id);
+        $shift_list = Experiment::createShiftErrors($search_lang, $table_name, $property_id, $all_errors);
         foreach ($shift_list as $p1 =>$p_info) {
             foreach ($p_info as $p2 => $count) {
                 Storage::disk('public')->append($filename, "$p1\t$p2\t$count");
@@ -245,12 +251,10 @@ print 'done.';
     
     public function exportErrorShiftToDot(Request $request) {
         $search_lang =  $request->input('search_lang');
+        $all_errors =  $request->input('all');
         $property = $request->input('property');
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
-        $color_names = ['darkgreen', 'darkgoldenrod3', 'brown', 'aquamarine3', 'darkorange2', 'crimson', 'indigo', 'navyblue', 'mistyrose3', 'peru'];
-        $limit_color = 10;
-        $limit_dotted = 10;
         if ($property == 'pos') {
             $p_names = PartOfSpeech::getList();
             $range = range(0,20,10);
@@ -261,41 +265,17 @@ print 'done.';
         
         $dir_name = "export/error_shift/";
         foreach($range as $min_limit) {
-            $file_with_data = $dir_name.$property.'-'.$search_lang.'.txt';
+            $file_with_data = $dir_name.$property.'-'.$search_lang;
+            $filename = $dir_name.$property.'-'.$search_lang;
+            if ($all_errors) {
+                $file_with_data .= '_all';
+                $filename .= '_all';
+            }
+            $file_with_data .= '.txt';
+            $filename .= '_'.$min_limit.'.dot';
             list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names);
 //dd($node_list, $edge_list);            
-            $filename = $dir_name.$property.'-'.$search_lang.'_'.$min_limit.'.dot';
-            Storage::disk('public')->put($filename, "digraph G {\n");
-//                    "edge[colorscheme=accent8]\n"); 
-            $colors = $p_total = [];
-            $count_color = 0;
-            foreach ($node_list as $node=>$label) {
-                $line = "$node\t[label=\"".$label.'"';
-                if ($count_color < 3) {
-                    $line .=", peripheries=2";                    
-                }
-                if ($count_color < sizeof($color_names)) {
-                    $colors[$node] = $color_names[$count_color++];
-                    $line .=", color=".$colors[$node];                    
-                }
-                $line .= '];';
-                Storage::disk('public')->append($filename, $line);
-            }
-            Storage::disk('public')->append($filename, '');
-            foreach ($edge_list as $p1 =>$p_info) {
-                foreach ($p_info as $p2 => $weight) {
-                    $line = "$p1 -> $p2\t[label=\"$weight %\", weight=$weight";
-                    if ($weight>$limit_color && isset($colors[$p1]))  {
-                        $line .=", color=".$colors[$p1];
-                    } elseif($weight<$limit_dotted) {
-                        $line .=", style=dotted";
-                    }
-                    $line .="];";
-                    Storage::disk('public')->append($filename, $line);
-                }
-                Storage::disk('public')->append($filename, '');
-            }
-            Storage::disk('public')->append($filename, "}"); 
+            Experiment::writeShiftErrorsToDot($filename, $node_list, $edge_list);
         }
 print 'done.';        
 }

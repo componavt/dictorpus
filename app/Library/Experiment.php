@@ -359,36 +359,45 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return $chart;
     }
     
-    public static function createShiftErrors($lang_id, $table_name, $field) {
+    public static function createShiftErrors($lang_id, $table_name, $field, $all=false) {
         $shift_list = [];
-        $name_coll = DB::table($table_name)
-                ->select($field, DB::raw('count(*) as count'))
-                ->whereLangId($lang_id)
-                ->whereNotNull('ending')
-                ->where('eval_end_gen',0)
-                ->groupBy($field)
-                ->orderBy('count', 'DESC')
-                ->get();
+        $name_coll = self::selectErrors($lang_id, $table_name, $all)
+                   ->select($field, DB::raw('count(*) as count'))
+                   ->groupBy($field)
+                   ->orderBy('count', 'DESC')
+                   ->get();
 //dd($name_coll);    
         foreach ($name_coll as $p) {
-            $w_coll = DB::table($table_name)
+            $w_coll = self::selectErrors($lang_id, $table_name, $all)
                     ->select('wordform', 'ending')
-                    ->whereLangId($lang_id)
-                    ->whereNotNull('ending')
-                    ->where('eval_end_gen',0)
                     ->where($field, $p->{$field})
                     ->get();
             foreach ($w_coll as $w) {        
                 $list = self::searchPosGramsetByEnding($lang_id, $w->wordform, $w->ending, $table_name, $field);
                 reset($list);
                 $search_p = key($list);
-                $shift_list[$p->{$field}][$search_p] = !isset($shift_list[$p->{$field}][$search_p])
+                if ($p->{$field} != $search_p) {
+                    $shift_list[$p->{$field}][$search_p] = !isset($shift_list[$p->{$field}][$search_p])
                                                        ? 1 : 1+ $shift_list[$p->{$field}][$search_p];
+                }
             }
         }
         return $shift_list;        
     }
-     public static function readShiftErrors($filename, $p_names) {
+
+    public static function selectErrors($lang_id, $table_name, $all=false) {
+        $builder = DB::table($table_name)
+                   ->whereLangId($lang_id)
+                   ->whereNotNull('ending');
+        if($all) {
+            $builder->where('eval_end', '<>', 1);
+        } else {
+            $builder->where('eval_end_gen',0);            
+        }
+        return $builder;
+    }
+    
+    public static function readShiftErrors($filename, $p_names) {
         $out = [];
         $file_content = Storage::disk('public')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
@@ -446,22 +455,54 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 $node_list[$p2] = $totals[$p2];
             }
         }
-//dd($node_list);        
-//        print "<pre>";
-//var_dump($edge_list);        
         arsort($node_list);
-//dd($node_list);        
         
         foreach ($node_list as $node => $total) {
-if (!isset($p_names[$node])) {
-    print "unknown $node";
-}            
+            if (!isset($p_names[$node])) {
+                print "unknown $node";
+            }            
             $node_list[$node] = preg_replace('/\s+/','\n',$p_names[$node]).'\n'.$total;
         }
-//dd($out);        
         return [$node_list, $edge_list];
      }
 
+    public static function writeShiftErrorsToDot($filename, $node_list, $edge_list) {
+        $color_names = ['darkgreen', 'darkgoldenrod3', 'brown', 'aquamarine3', 'darkorange2', 'crimson', 'indigo', 'navyblue', 'mistyrose3', 'peru'];
+        $limit_color = 10;
+        $limit_dotted = 10;
+        Storage::disk('public')->put($filename, "digraph G {\n");
+//                    "edge[colorscheme=accent8]\n"); 
+        $colors = $p_total = [];
+        $count_color = 0;
+        foreach ($node_list as $node=>$label) {
+            $line = "$node\t[label=\"".$label.'"';
+            if ($count_color < 3) {
+                $line .=", peripheries=2";                    
+            }
+            if ($count_color < sizeof($color_names)) {
+                $colors[$node] = $color_names[$count_color++];
+                $line .=", color=".$colors[$node];                    
+            }
+            $line .= '];';
+            Storage::disk('public')->append($filename, $line);
+        }
+        Storage::disk('public')->append($filename, '');
+        foreach ($edge_list as $p1 =>$p_info) {
+            foreach ($p_info as $p2 => $weight) {
+                $line = "$p1 -> $p2\t[label=\"$weight %\", weight=$weight";
+                if ($weight>$limit_color && isset($colors[$p1]))  {
+                    $line .=", color=".$colors[$p1];
+                } elseif($weight<$limit_dotted) {
+                    $line .=", style=dotted";
+                }
+                $line .="];";
+                Storage::disk('public')->append($filename, $line);
+            }
+            Storage::disk('public')->append($filename, '');
+        }
+        Storage::disk('public')->append($filename, "}"); 
+    }
+    
      public static function totalFill($table_name, $lang_id) {
         return DB::table($table_name)
                        ->whereLangId($lang_id)
