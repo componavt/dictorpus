@@ -410,6 +410,9 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         $file_lines = preg_split ("/\r?\n/",$file_content);
 //dd($file_lines);        
         foreach ($file_lines as $line) {
+            if (!$line) {
+                continue;
+            }
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
             if (!isset( $nodes[$p1])) {
                 $totals[$p1] = DB::table($table_name)
