@@ -1053,6 +1053,8 @@ UPDATE search_gramset SET lang_id=4;
 CREATE INDEX lang_wordform ON search_pos (lang_id, wordform);
 CREATE INDEX lang_wordform ON search_gramset (lang_id, wordform);
 
+DELETE FROM search_gramset where wordform like '-%';
+
 --php artisan make:test Library\ExperimentTest
 
 --https://vike.io/ru/239548/ in Laravel
