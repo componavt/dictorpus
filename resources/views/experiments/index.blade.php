@@ -69,7 +69,8 @@
     <p>Вычислить долю правильных ответов при поиске по псевдоокончаниям</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a>
+        ({{$totals[$lang_id]['eval_gramset_aff_compl_proc']}}%)</li>
     @endforeach
     </ul>
     <p>Экспортировать таблицу ошибочных переходов</p>

@@ -38,7 +38,8 @@ class ExperimentsController extends Controller
             $totals[$l]['eval_pos_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l), 2);
             
             $totals[$l]['total_in_gramset'] = number_format(Experiment::totalFill('search_gramset',$l), 0, ',', ' ');
-            $totals[$l]['eval_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l), 2);
+            $totals[$l]['eval_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, 'eval_end'), 2);
+            $totals[$l]['eval_gramset_aff_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, 'eval_aff'), 2);
         }
         
         return view('experiments/index', compact('langs', 'totals'));

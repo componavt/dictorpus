@@ -509,14 +509,14 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                        ->count();
      }
      
-     public static function evaluationCompletedInProcents($table_name, $lang_id) {
+     public static function evaluationCompletedInProcents($table_name, $lang_id, $field = 'eval_end') {
         $total_num = self::totalFill($table_name, $lang_id); 
         if (!$total_num) {
             return 0;
         }
         $completed = DB::table($table_name)
                        ->whereLangId($lang_id)
-                       ->whereNotNull('eval_end')
+                       ->whereNotNull($field)
                        ->count();
         return 100*$completed/$total_num; 
      }
