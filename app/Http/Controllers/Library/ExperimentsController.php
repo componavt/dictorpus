@@ -183,42 +183,15 @@ print '$count records are created.';
         $is_all_checked = false;
         
         while (!$is_all_checked) {
-            $wordform = DB::table('search_gramset')
+            $wordforms = DB::table('search_gramset')
                       ->whereLangId($search_lang)
                       ->whereNull('eval_aff')
-//->where('wordform', 'like','toizih')                    
-                      ->first();
-            if ($wordform) {
-print "<p><b>".$wordform->wordform."</b>";   
-                list($affix,$list) = Experiment::searchGramsetByAffix($wordform->wordform, $search_lang);     
-                if (!$list) {
-                    DB::statement("UPDATE search_gramset SET affix=NULL,"
-                                 ." eval_aff=0, eval_aff_gen=0"
-                                 ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
-                    
-                } else {
-print "<br>COUNTS: ";                
-foreach ($list as $p=>$c) {
-    print "<b>$p</b>: $c, ";
-}   
-                    $wordforms = DB::table('search_gramset')
-                               ->whereLangId($search_lang)
-                               ->where('wordform', 'like', $wordform->wordform)
-                               ->get();
-                    $eval_affs = [];
-                    foreach ($wordforms as $w) { 
-                        $eval_affs[$w->id] = Experiment::getEvalForOneValue($list, $w->gramset_id);
-    print "<br>".$w->gramset_id.": ". $eval_affs[$w->id];
-                    }
-                    $max = max($eval_affs);
-    print "<br><b>max:</b> ".$max;  
-    //dd($eval_affs);
-//    exit(0);
-                    foreach ($eval_affs as $w_id=>$eval_aff) {
-                        DB::statement("UPDATE search_gramset SET affix='$affix',"
-                                     ." eval_aff=$eval_aff, eval_aff_gen=$max"
-                                     ." where id=".$w_id);
-                    }
+                      ->groupBy('wordform')
+                      ->take(100)
+                      ->get();
+            if ($wordforms) {
+                foreach ($wordforms as $wordform) {
+                    Experiment::evaluateSearchGramsetByAffix($wordform, $search_lang);
                 }
             } else {
                 $is_all_checked = true;
@@ -253,6 +226,7 @@ print 'done.';
     public function exportErrorShiftToDot(Request $request) {
         $search_lang =  $request->input('search_lang');
         $all_errors =  $request->input('all');
+        $with_claster =  $request->input('with_claster');
         $property = $request->input('property');
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
@@ -276,7 +250,7 @@ print 'done.';
             $filename .= '_'.$min_limit.'.dot';
             list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names);
 //dd($node_list, $edge_list);            
-            Experiment::writeShiftErrorsToDot($filename, $node_list, $edge_list);
+            Experiment::writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster);
         }
 print 'done.';        
 }

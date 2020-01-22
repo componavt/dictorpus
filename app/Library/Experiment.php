@@ -134,7 +134,81 @@ print "<br><b>max:</b> ".$max;
         return $list;
     }
         
+    public static function evaluateSearchGramsetByAffix($wordform, $search_lang) {
+print "<p><b>".$wordform->wordform."</b>";   
+                list($affix,$list) = Experiment::searchGramsetByAffix($wordform->wordform, $search_lang);     
+                if (!$list) {
+                    DB::statement("UPDATE search_gramset SET affix=NULL,"
+                                 ." eval_aff=0, eval_aff_gen=0"
+                                 ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
+                    
+                } else {
+print "<br>COUNTS: ";                
+foreach ($list as $p=>$c) { print "<b>$p</b>: $c, ";}   
+                    $wordforms = DB::table('search_gramset')
+                               ->whereLangId($search_lang)
+                               ->where('wordform', 'like', $wordform->wordform)
+                               ->get();
+                    $eval_affs = [];
+                    foreach ($wordforms as $w) { 
+                        $eval_affs[$w->id] = Experiment::getEvalForOneValue($list, $w->gramset_id);
+print "<br>".$w->gramset_id.": ". $eval_affs[$w->id];
+                    }
+                    $max = max($eval_affs);
+print "<br><b>max:</b> ".$max;  
+                    foreach ($eval_affs as $w_id=>$eval_aff) {
+                        DB::statement("UPDATE search_gramset SET affix='$affix',"
+                                     ." eval_aff=$eval_aff, eval_aff_gen=$max"
+                                     ." where id=".$w_id);
+                    }
+                }
+    }
+
+    /**
+     * select gramset_id, count(*) as count from lemma_wordform, lemmas, wordforms where affix like 'ija' and lemma_wordform.lemma_id=lemmas.id and  lemma_wordform.wordform_id=wordforms.id and wordform  not like '% %' and wordform not like 'Aasija' and lang_id=4 group by gramset_id order by count desc;
+     * select gramset_id, count(*) as count from lemma_wordform where affix like 'ija' and lemma_id in (select id from lemmas where lang_id=4) and wordform_id in (select id from wordforms where wordform  not like '% %' and wordform not like 'Aasija') group by gramset_id order by count;
+     * 
+     * @param type $word
+     * @param type $search_lang
+     * @return type
+     */
     public static function searchGramsetByAffix($word, $search_lang) {
+        $i=1;
+        $match_wordforms = NULL;
+        $ending = $word;
+        while ($i<mb_strlen($word) && (!$match_wordforms || $match_wordforms->count()==0)) {
+            $ending = mb_substr($word,$i);
+            $match_wordforms = LemmaWordform::where('affix', 'like', $ending)
+                     ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                     ->where('lang_id', $search_lang)
+                     ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                     ->where('wordform', 'not like', '% %') // without analytic forms
+                     ->where('wordform', 'not like', $word)
+                     ->select('gramset_id', DB::raw('count(*) as count'))
+                     ->groupBy('gramset_id')
+                     ->orderBy(DB::raw('count(*)'), 'DESC');
+                     //->get();
+            $i++;
+        }
+        if (!$match_wordforms || $match_wordforms->count()==0) {
+            return [NULL, NULL];
+        }
+//print "<br><b>$ending</b>";        
+        $list = [];
+        foreach ($match_wordforms->get() as $m_wordform) {
+            $list[$m_wordform->gramset_id] = $m_wordform->count;
+        }
+        return [$ending, $list];
+    }
+    
+    /**
+     * select wordform_id,gramset_id from lemma_wordform, lemmas, wordforms where lemma_wordform.lemma_id=lemmas.id and  lemma_wordform.wordform_id=wordforms.id and wordform  not like '% %' and wordform not like 'Aasija' and lang_id=4 and affix like 'ija';
+     * 
+     * @param type $word
+     * @param type $search_lang
+     * @return type
+     */
+    public static function searchGramsetByAffixWithWList($word, $search_lang) {
         $i=1;
         $match_wordforms = NULL;
         $ending = $word;
@@ -143,7 +217,7 @@ print "<br><b>max:</b> ".$max;
             $match_wordforms = LemmaWordform::join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                      ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                      ->where('wordform', 'not like', '% %') // without analytic forms
-                     ->where('wordform_id', '<>', $word)
+                     ->where('wordform', 'not like', $word)
                      ->where('affix', 'like', $ending)
                      ->where('lang_id', $search_lang)
                      ->groupBy('wordform','gramset_id');
@@ -154,17 +228,16 @@ print "<br><b>max:</b> ".$max;
         if (!$match_wordforms || $match_wordforms->count()==0) {
             return [NULL, NULL];
         }
-print "<br><b>$ending</b>";        
+//print "<br><b>$ending</b>";        
         $list = [];
         foreach ($match_wordforms->get() as $m_wordform) {
-print "<br>".$m_wordform->wordform.", ".$m_wordform->gramset_id;            
+//print "<br>".$m_wordform->wordform.", ".$m_wordform->gramset_id;            
             $list[$m_wordform->gramset_id] = !isset($list[$m_wordform->gramset_id])
                                            ? 1 : 1+$list[$m_wordform->gramset_id];
         }
         arsort($list);
         return [$ending, $list];
     }
-    
     
     public static function getEvalForOneValue($counts, $right_value) {
         reset($counts);
@@ -466,10 +539,14 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return [$node_list, $edge_list];
      }
 
-    public static function writeShiftErrorsToDot($filename, $node_list, $edge_list) {
+    public static function writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster) {
         $color_names = ['darkgreen', 'darkgoldenrod3', 'brown', 'aquamarine3', 'darkorange2', 'crimson', 'indigo', 'navyblue', 'mistyrose3', 'peru'];
         $limit_color = 10;
         $limit_dotted = 10;
+        
+        if ($with_claster) {
+            $node_list = self::groupGramsetNodeList($node_list);
+        }
         Storage::disk('public')->put($filename, "digraph G {\n");
 //                    "edge[colorscheme=accent8]\n"); 
         $colors = $p_total = [];
@@ -519,5 +596,14 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                        ->whereNotNull($field)
                        ->count();
         return 100*$completed/$total_num; 
-     }
+    }
+    
+    public static function groupGramsetNodeList($node_list) {
+        return $node_list;
+        $grouped_list = [0=>[], 1=>[], 'other'=>[]];
+        foreach ($node_list as $gramset_id => $gramset_name) {
+            
+        }
+        return $grouped_list;
+    }
 }
