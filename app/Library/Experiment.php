@@ -247,7 +247,7 @@ print "<br>".$m_wordform->wordform.", ".$m_wordform->gramset_id;
         
 print "<p>$s_wordform, $str, ".$wordform_obj->pos_id.", ".$wordform_obj->gramset_id;   
         if (sizeof($match_wordforms)) {
-            list($search_pos,$pos_val)=Experiment::valuationPosGramsetsByAffix(
+            list($search_pos,$pos_val) = self::valuationPosGramsetsByAffix(
                     $match_wordforms, 'pos_id', $wordform_obj->pos_id);
             if ($pos_val>0) {
                 list($search_gramsets,$gram_val)=Experiment::valuationPosGramsetsByAffix(
