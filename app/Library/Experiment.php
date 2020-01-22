@@ -247,7 +247,7 @@ print "<br>".$m_wordform->wordform.", ".$m_wordform->gramset_id;
         
 print "<p>$s_wordform, $str, ".$wordform_obj->pos_id.", ".$wordform_obj->gramset_id;   
         if (sizeof($match_wordforms)) {
-            list($search_pos,$pos_val)=Experiment::valuationPosGramsetsByAffix(
+            list($search_pos,$pos_val) = self::valuationPosGramsetsByAffix(
                     $match_wordforms, 'pos_id', $wordform_obj->pos_id);
             if ($pos_val>0) {
                 list($search_gramsets,$gram_val)=Experiment::valuationPosGramsetsByAffix(
@@ -509,14 +509,14 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                        ->count();
      }
      
-     public static function evaluationCompletedInProcents($table_name, $lang_id) {
+     public static function evaluationCompletedInProcents($table_name, $lang_id, $field = 'eval_end') {
         $total_num = self::totalFill($table_name, $lang_id); 
         if (!$total_num) {
             return 0;
         }
         $completed = DB::table($table_name)
                        ->whereLangId($lang_id)
-                       ->whereNotNull('eval_end')
+                       ->whereNotNull($field)
                        ->count();
         return 100*$completed/$total_num; 
      }
