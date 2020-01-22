@@ -72,10 +72,28 @@
         <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
-    <p>Экспортировать таблицу ошибочных переходов</p>
+    <p>Экспортировать таблицу самых ошибочных переходов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        <li><a href="experiments/export_error_shift?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу самых ошибочных переходов в DOT-файл</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу всех ошибочных переходов</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    <p>Экспортировать таблицу всех ошибочных переходов в DOT-файл</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
     <p>Вывод результатов</p>
