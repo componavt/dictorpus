@@ -26,7 +26,7 @@
                                     <a class="user-registr-link" href="/reset">{!!trans('auth.reset')!!}</span></a>
                                 </div>
                                 <div class="remember-me">
-                                    <label><input type="checkbox" hidden><span></span></label>
+                                    <label><input name="remember" type="checkbox" hidden><span></span></label>
                                     <span class="user-enter-remember-text">{{trans('auth.remember')}}</span>
                                 </div>
                                 <div class="user-enter-submit">
