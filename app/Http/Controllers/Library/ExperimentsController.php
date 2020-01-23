@@ -62,6 +62,7 @@ class ExperimentsController extends Controller
                        ->where('lemma', 'not like', '% %')
                        ->where('lemma','not like', '-%')
                        ->whereNotNull('pos_id')
+                       ->where('pos_id', '<>', 12) // вспомогательный глагол
                        ->groupBy('lemma','pos_id')
                        ->orderBy('lemma')->get();
         
@@ -130,6 +131,7 @@ print '$count records are writed.';
                         ->where('wordform','not like', '% %')
                         ->whereNotNull('gramset_id')
                         ->whereLangId($search_lang)
+                        ->where('pos_id', '<>', 12) // вспомогательный глагол
                         ->groupBy('wordform','gramset_id')
                         ->skip($start)
                         ->take($limit)
@@ -246,11 +248,14 @@ print 'done.';
                 $file_with_data .= '_all';
                 $filename .= '_all';
             }
+            if ($with_claster) {
+                $filename .= '_sub';
+            }
             $file_with_data .= '.txt';
             $filename .= '_'.$min_limit.'.dot';
             list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names);
 //dd($node_list, $edge_list);            
-            Experiment::writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster);
+            Experiment::writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster, $property);
         }
 print 'done.';        
 }

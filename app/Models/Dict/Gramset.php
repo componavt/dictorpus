@@ -262,7 +262,17 @@ class Gramset extends Model
         return $list;         
     }
     
-    /**
+    public static function isIdForName($id) {
+        $gramset = self::find($id);
+        return $gramset->parts_of_speech[0]->isName();
+    }
+
+    public static function isIdForVerb($id) {
+        $gramset = self::find($id);
+        return $gramset->parts_of_speech[0]->isVerb();
+    }
+
+        /**
      * 1 - nominative, singular
      * 2 - nominative, plural
      * 3 - genetive, singular

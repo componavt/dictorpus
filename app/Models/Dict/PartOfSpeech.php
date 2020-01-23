@@ -137,9 +137,25 @@ class PartOfSpeech extends Model
                 self::getIDByCode('PROPN'), 
                 self::getIDByCode('PRE')];
     }
-
+    
+    public static function isNameId($id) {
+        return in_array($id, self::getNameIDs());
+    }
+    
+    public function isName() {
+        return self::isNameId($this->id);
+    }
+    
     public static function getVerbID() {
         return self::getIDByCode('VERB');
+    }
+    
+    public static function isVerbId($id) {
+        return $id==self::getVerbID();
+    }
+    
+    public function isVerb() {
+        return self::isVerbId($this->id);
     }
     
     /** Gets list of parts of speech, sorts by category and alphabetically 

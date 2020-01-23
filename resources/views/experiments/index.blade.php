@@ -114,6 +114,13 @@
     @endforeach
     </ul>
     
+    <p>Экспортировать таблицу всех ошибочных переходов в DOT-файл c кластерами</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&with_claster=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
+    
     <p>Вывод результатов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)

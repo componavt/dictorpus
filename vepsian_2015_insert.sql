@@ -1088,3 +1088,6 @@ $$
 set completed_proc = search_pos_completed_func(1);
 select completed_proc;
 */
+
+DELETE FROM search_pos where pos_id=12; -- вспомогательный глагол
+DELETE FROM search_gramset where gramset_id in (select gramset_id from gramset_pos where pos_id=12);

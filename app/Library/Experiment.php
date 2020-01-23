@@ -7,6 +7,7 @@ use Storage;
 
 use \App\Charts\ExperimentValuation;
 
+use App\Models\Dict\Gramset;
 use App\Models\Dict\LemmaWordform;
 
 class Experiment
@@ -539,22 +540,50 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return [$node_list, $edge_list];
      }
 
-    public static function writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster) {
+    public static function writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster, $property) {
         $color_names = ['darkgreen', 'darkgoldenrod3', 'brown', 'aquamarine3', 'darkorange2', 'crimson', 'indigo', 'navyblue', 'mistyrose3', 'peru'];
         $limit_color = 10;
         $limit_dotted = 10;
+        $double_line_limit = 1000;
         
-        if ($with_claster) {
-            $node_list = self::groupGramsetNodeList($node_list);
-        }
         Storage::disk('public')->put($filename, "digraph G {\n");
 //                    "edge[colorscheme=accent8]\n"); 
-        $colors = $p_total = [];
+        $colors = [];
+        if ($with_claster) {
+            $colors = self::writeNodesWithSub($filename, $node_list, $colors, $color_names, $double_line_limit);
+        } else {
+            $colors = self::writeNodes($filename, $node_list, $colors, $color_names, $double_line_limit, $property);
+        }
+        Storage::disk('public')->append($filename, '');
+        self::writeEdges($filename, $edge_list, $limit_color, $colors, $limit_dotted);
+        Storage::disk('public')->append($filename, "}"); 
+    }
+    
+    /**
+     * TODO !!!
+     * shape=box for gramset=name
+     * 
+     * @param type $filename
+     * @param type $node_list
+     * @param type $colors
+     * @param type $color_names
+     * @param type $duble_line_limit
+     * @return type
+     */
+    public static function writeNodes($filename, $node_list, $colors, $color_names, $double_line_limit, $property='pos') {
         $count_color = 0;
         foreach ($node_list as $node=>$label) {
             $line = "$node\t[label=\"".$label.'"';
-            if ($count_color < 3) {
+            if (preg_match("/(\d+)$/", $label, $regs)) {
+                $total = $regs[1];
+            } else {
+                $total=0;
+            }
+            if ($total > $double_line_limit) {
                 $line .=", peripheries=2";                    
+            }
+            if ($property=='gramset' && Gramset::isIdForName($node)) {
+                $line .=", shape=box";                    
             }
             if ($count_color < sizeof($color_names)) {
                 $colors[$node] = $color_names[$count_color++];
@@ -563,7 +592,26 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             $line .= '];';
             Storage::disk('public')->append($filename, $line);
         }
-        Storage::disk('public')->append($filename, '');
+        return $colors;
+    }
+
+    public static function writeNodesWithSub($filename, $node_list, $colors, $color_names, $double_line_limit) {
+        $clasters = [0=>"label = \"Name gramsets\";\nstyle=filled;\ncolor=lightgrey;\n", 
+                     1=>"label = \"Verb gramsets\";\ncolor=blue;\n"];
+        $node_list = self::groupGramsetNodeList($node_list);
+        $count = 0;
+        foreach ($node_list as $claster_id => $nodes) {
+            if (isset($clasters[$claster_id])) {
+                Storage::disk('public')->append($filename, "subgraph cluster".$claster_id." {\n".$clasters[$claster_id]);    
+            }
+            self::writeNodes($filename, $nodes, $colors, $color_names, $double_line_limit);
+            if (isset($clasters[$claster_id])) {
+                Storage::disk('public')->append($filename, "}\n");
+            }
+        }
+    }
+    
+    public static function writeEdges($filename, $edge_list, $limit_color, $colors, $limit_dotted) {
         foreach ($edge_list as $p1 =>$p_info) {
             foreach ($p_info as $p2 => $weight) {
                 $line = "$p1 -> $p2\t[label=\"$weight %\", weight=$weight";
@@ -577,10 +625,9 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             }
             Storage::disk('public')->append($filename, '');
         }
-        Storage::disk('public')->append($filename, "}"); 
     }
-    
-     public static function totalFill($table_name, $lang_id) {
+
+    public static function totalFill($table_name, $lang_id) {
         return DB::table($table_name)
                        ->whereLangId($lang_id)
                        ->count();
@@ -599,10 +646,15 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     }
     
     public static function groupGramsetNodeList($node_list) {
-        return $node_list;
         $grouped_list = [0=>[], 1=>[], 'other'=>[]];
         foreach ($node_list as $gramset_id => $gramset_name) {
-            
+            if (Gramset::isIdForName($gramset_id)) {
+                $grouped_list[0][$gramset_id] = $gramset_name;
+            } elseif (Gramset::isIdForVerb($gramset_id)) {
+                $grouped_list[1][$gramset_id] = $gramset_name;                
+            } else {
+                $grouped_list['other'][$gramset_id] = $gramset_name;                
+            }
         }
         return $grouped_list;
     }
