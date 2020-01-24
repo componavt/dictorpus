@@ -124,7 +124,7 @@
     <p>Вывод результатов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/results_search_gramset&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        <li><a href="experiments/results_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
 </div>

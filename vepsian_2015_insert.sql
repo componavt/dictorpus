@@ -1091,3 +1091,6 @@ select completed_proc;
 
 DELETE FROM search_pos where pos_id=12; -- вспомогательный глагол
 DELETE FROM search_gramset where gramset_id in (select gramset_id from gramset_pos where pos_id=12);
+
+CREATE INDEX lang_eval_aff ON search_gramset (lang_id, eval_aff);
+CREATE INDEX lemma_wordform_affix ON lemma_wordform (affix);
