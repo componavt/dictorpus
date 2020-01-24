@@ -1094,3 +1094,18 @@ DELETE FROM search_gramset where gramset_id in (select gramset_id from gramset_p
 
 CREATE INDEX lang_eval_aff ON search_gramset (lang_id, eval_aff);
 CREATE INDEX lemma_wordform_affix ON lemma_wordform (affix);
+
+-- N words linked to dictionary automatically
+select count(*) from words where id in (select word_id from meaning_text) and text_id in (select id from texts where lang_id=1);
+
+-- N words linked to lemmas having a complete paradigm
+-- количество слов в текстах, связанные с леммами, имеющими полные парадигмы
+select count(*) from words where id in (select word_id from meaning_text where meaning_id in (select id from meanings where lemma_id in (select id from lemmas where lang_id=1 and id in (select lemma_id from lemma_wordform group by lemma_id having count(*)>20))));
+select count(*) from words where id in (select word_id from meaning_text where meaning_id in (select id from meanings where lemma_id in (select id from lemmas where lang_id=4 and id in (select lemma_id from lemma_wordform group by lemma_id having count(*)>20))));
+
+
+-- Доля к общему числу ошибок
+select count(*) from search_pos where lang_id=1; -- 339431, 4: 71091
+select count(*) from search_pos where eval_end_gen=0 and lang_id=1; -- 14191, 4: 4925
+select count(*) from search_pos where eval_end_gen=0 and pos_id=11 and lang_id=1; -- 1385, 4: 763
+select count(*) from search_pos where eval_end_gen=0 and pos_id in (5, 14) and lang_id=1; -- 5973, 4: 1641
