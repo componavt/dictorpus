@@ -306,7 +306,7 @@ print 'done.';
         $results[0] = Experiment::resultsSearch($search_lang, $table_name);
         $results[1] = Experiment::resultsSearch($search_lang, $table_name, 'eval_aff');
             
-        $results[2] = Experiment::lenEndDistribution($lang_id, $table_name, 'gramset_id', $p_names);
+        $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'gramset_id', $p_names);
         
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
