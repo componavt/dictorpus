@@ -23,13 +23,13 @@ class VepsNameTest extends TestCase
     }
         
     public function testIllSgBase2() {
-        $stems = ['meca','kaivo','vilu','verko','kego','agja','perti', 'veikoi', 'soboi', 'eida']; //,'sene','lume', 'maido', 'une', 'lauda'
+        $stems = ['meca','kaivo','vilu','verko','kego','agja','perti', 'veikoi', 'soboi', 'eida', 'banka']; //,'sene','lume', 'maido', 'une', 'lauda'
         $result = [];
         foreach ($stems as $stem) {
             $result[] = VepsName::illSgBase($stem);
         }
 //dd($result);        
-        $expected = ['mec','kaivo','vil','verko','kego','agja','pert', 'veikoi', 'soboi', 'eid']; //,'sen','lum', 'maid','un', 'laud'
+        $expected = ['mec','kaivo','vil','verk','kego','agja','pert', 'veikoi', 'soboi', 'eid', 'bank']; //,'sen','lum', 'maid','un', 'laud'
         $this->assertEquals( $expected, $result);        
     }
         
@@ -62,7 +62,7 @@ class VepsNameTest extends TestCase
             $result[] = VepsName::illSg($stem);
         }
 //dd($result);        
-        $expected = ['mecaha, mecha','kaivoho','viluhu, vilhu','verkoho','kegoho','agjaha','pertihe, perthe', 'veikoihe', 'soboihe', 'eidaha, eidha'];//,'senhe', 'maidho','unhe', 'laudha','lumhe'
+        $expected = ['mecaha, mecha','kaivoho','viluhu, vilhu','verkoho, verkho','kegoho','agjaha','pertihe, perthe', 'veikoihe', 'soboihe', 'eidaha, eidha'];//,'senhe', 'maidho','unhe', 'laudha','lumhe'
         $this->assertEquals( $expected, $result);        
     }
         

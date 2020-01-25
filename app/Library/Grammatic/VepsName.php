@@ -347,7 +347,7 @@ class VepsName
     
     //consonant after which the vowel escapes before
     public static function consSetEscapeV() {
-        return "dpfsšzžcčltn"; // jgvkrbdhm
+        return "dpfsšzžcčltk"; // jgvkrbdhm
     }
     
     /*
