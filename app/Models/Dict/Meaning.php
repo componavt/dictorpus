@@ -287,8 +287,9 @@ class Meaning extends Model
         if (sizeof($meaning_texts)){
             $meaning_obj = self::firstOrCreate(['lemma_id' => $lemma_id, 'meaning_n' => $meaning_n]);
             self::updateLemmaMeaningTexts($meaning_texts, $meaning_obj->id);
+            return $meaning_obj;
         }
-        return $meaning_obj;
+        return null;
     }
 
     /**
