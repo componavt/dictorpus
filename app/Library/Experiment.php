@@ -56,7 +56,7 @@ print "<b>$p</b>: $c, ";
                 list($eval_ends[$w->id], $winners[$w->id]) = self::getEvalForOneValue($list, $w->{$property_id});
 print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
             }
-dd($winners);
+//dd($winners);
             $max = max($eval_ends);
             reset($list);
 print "<br><b>max:</b> ".$max;  
