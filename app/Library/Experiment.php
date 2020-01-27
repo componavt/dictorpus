@@ -560,8 +560,6 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     }
     
     /**
-     * TODO !!!
-     * shape=box for gramset=name
      * 
      * @param type $filename
      * @param type $node_list
