@@ -13,8 +13,8 @@ class AddFieldsWinToSearchGramsetTable extends Migration
     public function up()
     {
         Schema::table('search_gramset', function (Blueprint $table) {
-            $table->smallInteger('win_end')->unsigned();
-            $table->smallInteger('win_aff')->unsigned();
+            $table->smallInteger('win_end')->unsigned()->nullable();
+            $table->smallInteger('win_aff')->unsigned()->nullable();
         });
     }
 
