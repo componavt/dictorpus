@@ -52,6 +52,7 @@ print "<b>$p</b>: $c, ";
                        ->get();
             $eval_ends = [];
             foreach ($wordforms as $w) { 
+                self::writeList($table_name.'_list', $w->id, $property_id, 'end', $list);
                 $eval_ends[$w->id] = self::getEvalForOneValue($list, $w->{$property_id});
 print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
             }
@@ -64,6 +65,17 @@ print "<br><b>max:</b> ".$max;
             }
         }
         
+    }
+    
+    public static function writeList($table_name_list, $search_id, $property_name, $type, $list) {
+        foreach ($list as $p_id =>$count) {
+            DB::table($table_name_list)->insert([
+                'search_id' => $search_id,
+                $property_name => $p_id,
+                'count' => $count,
+                'type' => $type
+            ]);
+        }
     }
 
     public static function searchPosGramsetByWord($lang_id, $word, $property) {
@@ -137,7 +149,7 @@ print "<br><b>max:</b> ".$max;
         
     public static function evaluateSearchGramsetByAffix($wordform, $search_lang) {
 print "<p><b>".$wordform->wordform."</b>";   
-                list($affix,$list) = Experiment::searchGramsetByAffix($wordform->wordform, $search_lang);     
+                list($affix,$list) = self::searchGramsetByAffix($wordform->wordform, $search_lang);     
                 if (!$list) {
                     DB::statement("UPDATE search_gramset SET affix=NULL,"
                                  ." eval_aff=0, eval_aff_gen=0"
@@ -152,7 +164,7 @@ foreach ($list as $p=>$c) { print "<b>$p</b>: $c, ";}
                                ->get();
                     $eval_affs = [];
                     foreach ($wordforms as $w) { 
-                        $eval_affs[$w->id] = Experiment::getEvalForOneValue($list, $w->gramset_id);
+                        $eval_affs[$w->id] = self::getEvalForOneValue($list, $w->gramset_id);
 print "<br>".$w->gramset_id.": ". $eval_affs[$w->id];
                     }
                     $max = max($eval_affs);

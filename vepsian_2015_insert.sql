@@ -1109,3 +1109,5 @@ select count(*) from search_pos where lang_id=1; -- 339431, 4: 71091
 select count(*) from search_pos where eval_end_gen=0 and lang_id=1; -- 14191, 4: 4925
 select count(*) from search_pos where eval_end_gen=0 and pos_id=11 and lang_id=1; -- 1385, 4: 763
 select count(*) from search_pos where eval_end_gen=0 and pos_id in (5, 14) and lang_id=1; -- 5973, 4: 1641
+
+-- php artisan make:migration create_search_gramset_list_table

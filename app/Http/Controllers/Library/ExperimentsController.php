@@ -153,6 +153,7 @@ print '$count records are created.';
     }
     
     /**
+     * update search_gramset set eval_end=NULL, eval_end_gen=NULL, ending=NULL where lang_id=4;
      * select eval_end, count(*) from search_gramset where eval_end is not null group by eval_end order by eval_end;
      * select ROUND(eval_end,1) as eval1, count(*) from search_gramset where eval_end is not null group by eval1 order by eval1;     * 
      */
@@ -217,6 +218,7 @@ print '$count records are created.';
             
         Storage::disk('public')->put($filename, ''); 
         $shift_list = Experiment::createShiftErrors($search_lang, $table_name, $property_id, $all_errors);
+//dd($shift_list);        
         foreach ($shift_list as $p1 =>$p_info) {
             foreach ($p_info as $p2 => $count) {
                 Storage::disk('public')->append($filename, "$p1\t$p2\t$count");
