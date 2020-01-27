@@ -65,8 +65,7 @@ print "<br><b>max:</b> ".$max;
                              ."', eval_end=$eval_end, eval_end_gen=$max"
                              .", win_end=".$winners[$w_id]." where id=".$w_id);
             }
-        }
-        
+        }        
     }
     
     public static function writeList($table_name_list, $search_id, $property_name, $type, $list) {
@@ -452,28 +451,24 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     
 // select gramset_id from search_gramset_list where type='end' and search_id=1 order by count desc limit 1;    
 // select gramset_id from search_gramset_list where type='end' group by order by count desc limit 1;    
-// select gramset_id, win_end, count(*) from search_gramset where lang_id=4 and win_end is not null and eval_end<>1 order by gramset_id, win_end;    
+// select gramset_id, win_end, count(*) from search_gramset where lang_id=4 and win_end is not null and eval_end<>1 group by gramset_id, win_end order by gramset_id, win_end;    
     public static function createShiftErrors($lang_id, $table_name, $field, $all=false) {
         $shift_list = [];
         $name_coll = self::selectErrors($lang_id, $table_name, $all)
-                   ->select($field, DB::raw('count(*) as count'))
+                   ->select($field)
                    ->groupBy($field)
-                   ->orderBy('count', 'DESC')
+                   ->orderBy(DB::raw('count(*)'), 'DESC')
                    ->get();
 //dd($name_coll);    
         foreach ($name_coll as $p) {
             $w_coll = self::selectErrors($lang_id, $table_name, $all)
-                    ->select('wordform', 'ending')
+                    ->select('win_end', DB::raw('count(*) as count'))
                     ->where($field, $p->{$field})
+                    ->groupBy('win_end')
+                    ->orderBy('count', 'DESC')
                     ->get();
             foreach ($w_coll as $w) {        
-                $list = self::searchPosGramsetByEnding($lang_id, $w->wordform, $w->ending, $table_name, $field);
-                reset($list);
-                $search_p = key($list);
-                if ($p->{$field} != $search_p) {
-                    $shift_list[$p->{$field}][$search_p] = !isset($shift_list[$p->{$field}][$search_p])
-                                                       ? 1 : 1+ $shift_list[$p->{$field}][$search_p];
-                }
+                $shift_list[$p->{$field}][$w->win_end] = $w->count;
             }
         }
         return $shift_list;        
@@ -482,6 +477,7 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     public static function selectErrors($lang_id, $table_name, $all=false) {
         $builder = DB::table($table_name)
                    ->whereLangId($lang_id)
+                   ->whereNotNull('win_end')
                    ->whereNotNull('ending');
         if($all) {
             $builder->where('eval_end', '<>', 1);
@@ -675,5 +671,27 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             }
         }
         return $grouped_list;
+    }
+    
+    public static function writeWinners($search_lang, $table_name, $property, $wordform, $type) {
+        $property_id = $property.'_id';
+        list($ending,$list) = self::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
+        if (!$list) {
+            DB::statement("UPDATE $table_name SET win_end=NULL"
+                         ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
+            return;
+        } else {
+            $wordforms = DB::table($table_name)
+                       ->whereLangId($search_lang)
+                       ->where('wordform', 'like', $wordform->wordform)
+                       ->get();
+            $winners = [];
+            foreach ($wordforms as $w) { 
+                list($tmp, $winners[$w->id]) = self::getEvalForOneValue($list, $w->{$property_id});
+            }
+            foreach ($winners as $w_id=>$winner) {
+                DB::statement("UPDATE $table_name SET win_end=".$winner." where id=".$w_id);
+            }
+        }        
     }
 }

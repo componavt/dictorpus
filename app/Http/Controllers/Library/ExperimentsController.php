@@ -153,7 +153,7 @@ print '$count records are created.';
     }
     
     /**
-     * update search_gramset set eval_end=NULL, eval_end_gen=NULL, ending=NULL where lang_id=4;
+     * update search_gramset set eval_end=NULL, eval_end_gen=NULL, ending=NULL, win_end=NULL where lang_id=4;
      * select eval_end, count(*) from search_gramset where eval_end is not null group by eval_end order by eval_end;
      * select ROUND(eval_end,1) as eval1, count(*) from search_gramset where eval_end is not null group by eval1 order by eval1;     * 
      */
@@ -202,6 +202,32 @@ print '$count records are created.';
         }
     }
 
+    public function writeWinners(Request $request) {
+        $search_lang =  $request->input('search_lang');
+        $property = $request->input('property');
+        $type = $request->input('type');
+        $is_all_checked = false;
+        $table_name = 'search_'.$property;
+        while (!$is_all_checked) {
+            $wordforms = DB::table($table_name)
+                           ->select('wordform')
+                           ->whereLangId($search_lang)
+                           ->whereNotNull('eval_'.$type)
+                           ->whereNull('win_'.$type)
+                           ->groupBy('wordform')
+                           ->take(100)
+                           ->get();
+                      //->first();
+            if ($wordforms) {
+                foreach ($wordforms as $wordform) {
+                    Experiment::writeWinners($search_lang, $table_name, $property, $wordform, $type);
+                }
+            } else {
+                $is_all_checked = true;
+            }
+        }
+    }
+    
     public function exportErrorShift(Request $request) {
         $search_lang =  $request->input('search_lang');
         $all_errors =  $request->input('all');

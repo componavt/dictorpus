@@ -25,34 +25,41 @@
     @endforeach
     </ul>
     
-    <p>Экспортировать таблицу самых ошибочных переходов</p>
+    <p>Экспортировать таблицу</p>
     <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift?property=pos&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
-    </ul>
+        <p>САМЫХ ошибочных переходов (==0)</p> 
+        <ul>
+            <p>в TXT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift?property=pos&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul><br>
+            <p>в DOT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift_to_dot?property=pos&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul>
+        </ul><br>
     
-    <p>Экспортировать таблицу самых ошибочных переходов в DOT-файл</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift_to_dot?property=pos&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
+        <p>ВСЕХ ошибочных переходов (<1)</p>
+        <ul>
+            <p>в TXT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul><br>
+
+            <p>в DOT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift_to_dot?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul>
+        </ul>
     </ul>
-    
-    <p>Экспортировать таблицу всех ошибочных переходов</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
-    </ul>
-    
-    <p>Экспортировать таблицу всех ошибочных переходов в DOT-файл</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift_to_dot?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
-    </ul>
-    
     <p>Вывод результатов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
@@ -71,54 +78,66 @@
     @endforeach
     </ul>
     
-    <p>Вычислить долю правильных ответов при поиске по конечным буквосочетаниям</p>
+    <p>Вычислить долю правильных ответов при поиске</p>
     <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/evaluate_search_table?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a> 
-        ({{$totals[$lang_id]['eval_gramset_compl_proc']}}%)</li>
-    @endforeach
-    </ul>
-    <p>Вычислить долю правильных ответов при поиске по псевдоокончаниям</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a>
-        ({{$totals[$lang_id]['eval_gramset_aff_compl_proc']}}%)</li>
-    @endforeach
-    </ul>
-    
-    <p>Экспортировать таблицу самых ошибочных переходов</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
+        <p>по конечным буквосочетаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/evaluate_search_table?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+            ({{$totals[$lang_id]['eval_gramset_compl_proc']}}%)</li>
+        @endforeach
+        </ul><br>
+        <p>по псевдоокончаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a>
+            ({{$totals[$lang_id]['eval_gramset_aff_compl_proc']}}%)</li>
+        @endforeach
+        </ul>
     </ul>
     
-    <p>Экспортировать таблицу самых ошибочных переходов в DOT-файл</p>
+    <p>Экспортировать таблицу</p>
     <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
-    </ul>
+        <p>САМЫХ ошибочных переходов (==0)</p> 
+        <ul>
+            <p>в TXT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul><br>
+
+            <p>в DOT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul>
+        </ul><br>
     
-    <p>Экспортировать таблицу всех ошибочных переходов</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
-    </ul>
-    
-    <p>Экспортировать таблицу всех ошибочных переходов в DOT-файл</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
-    </ul>
-    
-    <p>Экспортировать таблицу всех ошибочных переходов в DOT-файл c кластерами</p>
-    <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&with_claster=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
-    @endforeach
+        <p>ВСЕХ ошибочных переходов (<1)</p>
+        <ul>
+            <p>в TXT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul><br>
+
+            <p>в DOT-файл</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul><br>
+
+            <p>в DOT-файл c кластерами</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&with_claster=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul>
+        </ul>
     </ul>
     
     <p>Вывод результатов</p>
