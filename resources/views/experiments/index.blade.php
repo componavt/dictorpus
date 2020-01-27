@@ -25,6 +25,14 @@
     @endforeach
     </ul>
     
+    <p>Записать победителя</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/write_winners?property=pos&type=end&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+        ({{$totals[$lang_id]['pos_win_proc']}}%)</li>
+    @endforeach
+    </ul>
+    
     <p>Экспортировать таблицу</p>
     <ul>
         <p>САМЫХ ошибочных переходов (==0)</p> 
@@ -92,6 +100,24 @@
         @foreach ($langs as $lang_id => $lang_name)
             <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a>
             ({{$totals[$lang_id]['eval_gramset_aff_compl_proc']}}%)</li>
+        @endforeach
+        </ul>
+    </ul>
+    
+    <p>Записать победителя при поиске</p>
+    <ul>
+        <p>по конечным буквосочетаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/write_winners?property=gramset&type=end&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+            ({{$totals[$lang_id]['gramset_win_end_proc']}}%)</li>
+        @endforeach
+        </ul><br>
+        <p>по псевдоокончаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/write_winners?property=gramset&type=aff&search_lang={{$lang_id}}">{{$lang_name}}</a>
+            ({{$totals[$lang_id]['win_aff_proc']}}%)</li>
         @endforeach
         </ul>
     </ul>

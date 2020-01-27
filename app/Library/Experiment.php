@@ -647,8 +647,8 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                        ->count();
      }
      
-     public static function evaluationCompletedInProcents($table_name, $lang_id, $field = 'eval_end') {
-        $total_num = self::totalFill($table_name, $lang_id); 
+     public static function evaluationCompletedInProcents($table_name, $lang_id, $total_num, $field = 'eval_end') {
+//        $total_num = self::totalFill($table_name, $lang_id); 
         if (!$total_num) {
             return 0;
         }
@@ -675,7 +675,7 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     
     public static function writeWinners($search_lang, $table_name, $property, $wordform, $type) {
         $property_id = $property.'_id';
-        list($ending,$list) = self::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
+        list($tmp,$list) = self::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
         if (!$list) {
             DB::statement("UPDATE $table_name SET win_end=NULL"
                          ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
