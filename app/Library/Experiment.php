@@ -38,7 +38,7 @@ print "<p><b>".$wordform->wordform."</b>";
         list($ending,$list) = self::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
         if (!$list) {
             DB::statement("UPDATE $table_name SET ending=NULL"
-                         .", eval_end=0, eval_end_gen=0"
+                         .", eval_end=0, eval_end_gen=0, win_end=NULL"
                          ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
 
         } else {
@@ -50,18 +50,19 @@ print "<b>$p</b>: $c, ";
                        ->whereLangId($search_lang)
                        ->where('wordform', 'like', $wordform->wordform)
                        ->get();
-            $eval_ends = [];
+            $eval_ends = $winners = [];
             foreach ($wordforms as $w) { 
-                self::writeList($table_name.'_list', $w->id, $property_id, 'end', $list);
-                $eval_ends[$w->id] = self::getEvalForOneValue($list, $w->{$property_id});
+//                self::writeList($table_name.'_list', $w->id, $property_id, 'end', $list);
+                list($eval_ends[$w->id], $winners[$w->id]) = self::getEvalForOneValue($list, $w->{$property_id});
 print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
             }
             $max = max($eval_ends);
+            reset($list);
 print "<br><b>max:</b> ".$max;  
             foreach ($eval_ends as $w_id=>$eval_end) {
                 DB::statement("UPDATE $table_name SET ending='".$ending
                              ."', eval_end=$eval_end, eval_end_gen=$max"
-                             ." where id=".$w_id);
+                             .", win_end=".$winners[$w_id]." where id=".$w_id);
             }
         }
         
@@ -162,17 +163,17 @@ foreach ($list as $p=>$c) { print "<b>$p</b>: $c, ";}
                                ->whereLangId($search_lang)
                                ->where('wordform', 'like', $wordform->wordform)
                                ->get();
-                    $eval_affs = [];
+                    $eval_affs = $winners = [];
                     foreach ($wordforms as $w) { 
-                        $eval_affs[$w->id] = self::getEvalForOneValue($list, $w->gramset_id);
+                        list ($eval_affs[$w->id], $winners[$w->id]) = self::getEvalForOneValue($list, $w->gramset_id);
 print "<br>".$w->gramset_id.": ". $eval_affs[$w->id];
                     }
                     $max = max($eval_affs);
 print "<br><b>max:</b> ".$max;  
                     foreach ($eval_affs as $w_id=>$eval_aff) {
                         DB::statement("UPDATE search_gramset SET affix='$affix',"
-                                     ." eval_aff=$eval_aff, eval_aff_gen=$max"
-                                     ." where id=".$w_id);
+                                     ." eval_aff=$eval_aff, eval_aff_gen=$max,"
+                                     ." win_aff=".$winners[$w_id]." where id=".$w_id);
                     }
                 }
     }
@@ -258,12 +259,15 @@ print "<br><b>max:</b> ".$max;
         $first_count = current($counts);
         if (!isset($counts[$right_value])) {
             $evaluation = 0;  
+            $winner = $first_key;
         } elseif ($first_count == $counts[$right_value]) {
             $evaluation = 1;
+            $winner = $right_value;
         } else {
             $evaluation = $counts[$right_value] / array_sum($counts);
+            $winner = $first_key;
         }
-        return $evaluation;
+        return [$evaluation, $winner];
     }
     
     public static function resultsSearch($lang_id, $table_name, $field='eval_end') {
@@ -445,6 +449,9 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return $chart;
     }
     
+// select gramset_id from search_gramset_list where type='end' and search_id=1 order by count desc limit 1;    
+// select gramset_id from search_gramset_list where type='end' group by order by count desc limit 1;    
+// select gramset_id, win_end, count(*) from search_gramset where lang_id=4 and win_end is not null and eval_end<>1 order by gramset_id, win_end;    
     public static function createShiftErrors($lang_id, $table_name, $field, $all=false) {
         $shift_list = [];
         $name_coll = self::selectErrors($lang_id, $table_name, $all)
