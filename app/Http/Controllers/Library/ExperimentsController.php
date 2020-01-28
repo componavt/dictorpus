@@ -206,7 +206,7 @@ print '$count records are created.';
             }
         }
     }
-
+//select count(*) from search_gramset where lang_id=1 and eval_end is not null and win_end is null and ending is NULL;
     public function writeWinners(Request $request) {
         $search_lang =  $request->input('search_lang');
         $property = $request->input('property');
@@ -223,6 +223,7 @@ print '$count records are created.';
                            ->take(100)
                            ->get();
                       //->first();
+//dd($wordforms);            
             if ($wordforms) {
                 foreach ($wordforms as $wordform) {
                     Experiment::writeWinners($search_lang, $table_name, $property, $wordform, $type);
