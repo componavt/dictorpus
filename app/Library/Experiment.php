@@ -135,6 +135,9 @@ print "<br><b>max:</b> ".$max;
     }
     
     public static function searchPosGramsetByEnding($lang_id, $word, $ending, $table_name, $field) {
+        if (!$ending) {
+            return [];
+        }
         $match_wordforms = DB::table($table_name)
                  ->whereLangId($lang_id)
                  ->where('wordform', 'not like', $word)
@@ -150,32 +153,32 @@ print "<br><b>max:</b> ".$max;
         
     public static function evaluateSearchGramsetByAffix($wordform, $search_lang) {
 print "<p><b>".$wordform->wordform."</b>";   
-                list($affix,$list) = self::searchGramsetByAffix($wordform->wordform, $search_lang);     
-                if (!$list) {
-                    DB::statement("UPDATE search_gramset SET affix=NULL,"
-                                 ." eval_aff=0, eval_aff_gen=0"
-                                 ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
-                    
-                } else {
+        list($affix,$list) = self::searchGramsetByWordformAffix($wordform->wordform, $search_lang);     
+        if (!$list) {
+            DB::statement("UPDATE search_gramset SET affix=NULL,"
+                         ." eval_aff=0, eval_aff_gen=0"
+                         ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
+
+        } else {
 print "<br>COUNTS: ";                
 foreach ($list as $p=>$c) { print "<b>$p</b>: $c, ";}   
-                    $wordforms = DB::table('search_gramset')
-                               ->whereLangId($search_lang)
-                               ->where('wordform', 'like', $wordform->wordform)
-                               ->get();
-                    $eval_affs = $winners = [];
-                    foreach ($wordforms as $w) { 
-                        list ($eval_affs[$w->id], $winners[$w->id]) = self::getEvalForOneValue($list, $w->gramset_id);
+            $wordforms = DB::table('search_gramset')
+                       ->whereLangId($search_lang)
+                       ->where('wordform', 'like', $wordform->wordform)
+                       ->get();
+            $eval_affs = $winners = [];
+            foreach ($wordforms as $w) { 
+                list ($eval_affs[$w->id], $winners[$w->id]) = self::getEvalForOneValue($list, $w->gramset_id);
 print "<br>".$w->gramset_id.": ". $eval_affs[$w->id];
-                    }
-                    $max = max($eval_affs);
+            }
+            $max = max($eval_affs);
 print "<br><b>max:</b> ".$max;  
-                    foreach ($eval_affs as $w_id=>$eval_aff) {
-                        DB::statement("UPDATE search_gramset SET affix='$affix',"
-                                     ." eval_aff=$eval_aff, eval_aff_gen=$max,"
-                                     ." win_aff=".$winners[$w_id]." where id=".$w_id);
-                    }
-                }
+            foreach ($eval_affs as $w_id=>$eval_aff) {
+                DB::statement("UPDATE search_gramset SET affix='$affix',"
+                             ." eval_aff=$eval_aff, eval_aff_gen=$max,"
+                             ." win_aff=".$winners[$w_id]." where id=".$w_id);
+            }
+        }
     }
 
     /**
@@ -186,7 +189,7 @@ print "<br><b>max:</b> ".$max;
      * @param type $search_lang
      * @return type
      */
-    public static function searchGramsetByAffix($word, $search_lang) {
+    public static function searchGramsetByWordformAffix($word, $search_lang) {
         $i=1;
         $match_wordforms = NULL;
         $ending = $word;
@@ -251,6 +254,27 @@ print "<br><b>max:</b> ".$max;
         }
         arsort($list);
         return [$ending, $list];
+    }
+    
+    public static function searchGramsetByAffix($wordform, $search_lang) {
+        $match_wordforms = LemmaWordform::where('affix', 'like', $wordform->affix)
+                 ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                 ->where('lang_id', $search_lang)
+                 ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                 ->where('wordform', 'not like', '% %') // without analytic forms
+                 ->where('wordform', 'not like', $wordform->wordform)
+                 ->select('gramset_id', DB::raw('count(*) as count'))
+                 ->groupBy('gramset_id')
+                 ->orderBy(DB::raw('count(*)'), 'DESC');
+                 //->get();
+        if ($match_wordforms->count()==0) {
+            return [];
+        }
+        $list = [];
+        foreach ($match_wordforms->get() as $m_wordform) {
+            $list[$m_wordform->gramset_id] = $m_wordform->count;
+        }
+        return $list;
     }
     
     public static function getEvalForOneValue($counts, $right_value) {
@@ -318,7 +342,7 @@ print "<br><b>max:</b> ".$max;
         }
         return [$list, $list_proc];
     }
-    
+/*    
     public static function searchGramsetsByAffix($wordform_obj, $search_lang) {
         $i=1;
         $match_wordforms = [];
@@ -349,7 +373,7 @@ print "<p>$s_wordform, $str, ".$wordform_obj->pos_id.", ".$wordform_obj->gramset
         }
         return [$pos_val, $gram_val];
     }
-    
+*/    
     public static function valuationPosGramsetsByAffix($match_wordforms, $property, $right_value) {
         $counts = [];
 //dd($match_wordforms);        
@@ -675,8 +699,13 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     
     public static function writeWinners($search_lang, $table_name, $property, $wordform, $type) {
         $property_id = $property.'_id';
-        list($ending,$list) = self::searchPosGramsetByWord($search_lang, $wordform->wordform, $property);     
-        if (!$list) {
+
+        if ($type == 'affix') {
+            $list = self::searchGramsetByAffix($wordform, $search_lang);
+        } else {
+            $list = self::searchPosGramsetByEnding($search_lang, $wordform->wordform, $wordform->ending, $table_name, $property_id);
+        }
+        if (!$list || !sizeof($list)) {
             DB::statement("UPDATE $table_name SET win_end=NULL"
                          ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
             return;
@@ -690,7 +719,7 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 list($tmp, $winners[$w->id]) = self::getEvalForOneValue($list, $w->{$property_id});
             }
             foreach ($winners as $w_id=>$winner) {
-                DB::statement("UPDATE $table_name SET win_end=".$winner." where id=".$w_id);
+                DB::statement("UPDATE $table_name SET win_".$type."=".$winner." where id=".$w_id);
             }
         }        
     }
