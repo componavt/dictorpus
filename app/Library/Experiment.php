@@ -139,15 +139,17 @@ print "<br><b>max:</b> ".$max;
             return [];
         }
         $match_wordforms = DB::table($table_name)
-                 ->whereLangId($lang_id)
-                 ->where('wordform', 'not like', $word)
-                 ->where('wordform', 'like', '%'.$ending)->get();
+                ->select($field, DB::raw('count(*) as count'))
+                ->whereLangId($lang_id)
+                ->where('wordform', 'not like', $word)
+                ->where('wordform', 'like', '%'.$ending)
+                ->groupBy($field)
+                ->orderBy(DB::raw('count(*)'), 'DESC')
+                ->get();
         $list = [];
         foreach ($match_wordforms as $m_wordform) {
-            $list[$m_wordform->{$field}] = !isset($list[$m_wordform->{$field}])
-                                           ? 1 : 1+$list[$m_wordform->{$field}];
+            $list[$m_wordform->{$field}] = $m_wordform->count;
         }
-        arsort($list);
         return $list;
     }
         
