@@ -177,6 +177,7 @@ Route::group(
         Route::get('experiments/evaluate_search_table', 'Library\ExperimentsController@evaluateSearchPosGramset');
         Route::get('experiments/results_search_gramset', 'Library\ExperimentsController@resultsSearchGramset');
         Route::get('experiments/results_search_pos', 'Library\ExperimentsController@resultsSearchPos');
+        Route::get('experiments/write_winners', 'Library\ExperimentsController@writeWinners');
         
         Route::get('service', 'Library\ServiceController@index');
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
