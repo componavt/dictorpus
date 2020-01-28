@@ -215,7 +215,7 @@ print '$count records are created.';
         $table_name = 'search_'.$property;
         while (!$is_all_checked) {
             $wordforms = DB::table($table_name)
-                           ->select('wordform')
+                           //->select('wordform')
                            ->whereLangId($search_lang)
                            ->whereNotNull('eval_'.$type)
                            ->whereNull('win_'.$type)
