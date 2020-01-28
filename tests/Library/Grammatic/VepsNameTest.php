@@ -23,13 +23,13 @@ class VepsNameTest extends TestCase
     }
         
     public function testIllSgBase2() {
-        $stems = ['meca','kaivo','vilu','verko','kego','agja','perti', 'veikoi', 'soboi', 'eida', 'banka']; //,'sene','lume', 'maido', 'une', 'lauda'
+        $stems = ['meca','kaivo','vilu','verko','kego','agja','perti', 'veikoi', 'soboi', 'eida', 'banka', 'hodra']; //,'sene','lume', 'maido', 'une', 'lauda'
         $result = [];
         foreach ($stems as $stem) {
             $result[] = VepsName::illSgBase($stem);
         }
 //dd($result);        
-        $expected = ['mec','kaivo','vil','verk','kego','agja','pert', 'veikoi', 'soboi', 'eid', 'bank']; //,'sen','lum', 'maid','un', 'laud'
+        $expected = ['mec','kaivo','vil','verk','kego','agja','pert', 'veikoi', 'soboi', 'eid', 'bank', 'hodr']; //,'sen','lum', 'maid','un', 'laud'
         $this->assertEquals( $expected, $result);        
     }
         
