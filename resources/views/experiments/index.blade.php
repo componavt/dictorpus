@@ -157,6 +157,13 @@
             @endforeach
             </ul><br>
 
+            <p>в DOT-файл (кроме единичных случаев, total>1)</p>
+            <ul>
+            @foreach ($langs as $lang_id => $lang_name)
+                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&total_limit=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+            @endforeach
+            </ul><br>
+
             <p>в DOT-файл c кластерами</p>
             <ul>
             @foreach ($langs as $lang_id => $lang_name)

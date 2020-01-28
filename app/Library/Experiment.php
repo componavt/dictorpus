@@ -527,7 +527,7 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         return $out;
      }
      
-     public static function readShiftErrorsForDot($lang_id, $filename, $table_name, $property_id, $min_limit, $p_names) {
+     public static function readShiftErrorsForDot($lang_id, $filename, $table_name, $property_id, $min_limit, $p_names, $total_limit) {
         $node_list = $totals = $edge_list = [];
         $file_content = Storage::disk('public')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
@@ -537,15 +537,18 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 continue;
             }
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
-            if (!isset( $nodes[$p1])) {
-                $totals[$p1] = DB::table($table_name)
+            if ($total_limit && $count<$total_limit) {
+                continue;
+            }
+            if (!isset( $totals[$p1])) {
+                $totals[(string)$p1] = DB::table($table_name)
                           ->whereLangId($lang_id)
                           ->whereNotNull('ending')
                           ->where($property_id, $p1)
                           ->count();
             }
-            if (!isset( $nodes[$p2])) {
-                $totals[$p2] = DB::table($table_name)
+            if (!isset( $totals[$p2])) {
+                $totals[(string)$p2] = DB::table($table_name)
                           ->whereLangId($lang_id)
                           ->whereNotNull('ending')
                           ->where($property_id, $p2)

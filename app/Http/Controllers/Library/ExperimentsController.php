@@ -263,30 +263,36 @@ print 'done.';
         $all_errors =  $request->input('all');
         $with_claster =  $request->input('with_claster');
         $property = $request->input('property');
+        $total_limit = $request->input('total_limit'); // total of pos (gramsets) > $total_limit
+        
         $property_id = $property.'_id';
         $table_name = 'search_'.$property;
         if ($property == 'pos') {
             $p_names = PartOfSpeech::getList();
-            $range = range(0,20,10);
+            $range = range(0,20,10); // отсекаем ребра весом меньше чем $min_limit
         } else {
             $p_names = Gramset::getList(0);
             $range = range(0,10,1);
         }
         
         $dir_name = "export/error_shift/";
-        foreach($range as $min_limit) {
+        foreach($range as $min_limit) { // отсекаем ребра весом меньше чем $min_limit
             $file_with_data = $dir_name.$property.'-'.$search_lang;
             $filename = $dir_name.$property.'-'.$search_lang;
             if ($all_errors) {
                 $file_with_data .= '_all';
                 $filename .= '_all';
             }
+            if ($total_limit) {
+                $filename .= '_part'.$total_limit;
+            }
             if ($with_claster) {
                 $filename .= '_sub';
             }
+            
             $file_with_data .= '.txt';
             $filename .= '_'.$min_limit.'.dot';
-            list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names);
+            list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names, $total_limit);
 //dd($node_list, $edge_list);            
             Experiment::writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster, $property);
         }
