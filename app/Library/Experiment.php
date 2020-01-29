@@ -539,9 +539,6 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 continue;
             }
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
-            if ($total_limit && $count<$total_limit) {
-                continue;
-            }
             if (!isset( $totals[$p1])) {
                 $totals[(string)$p1] = DB::table($table_name)
                           ->whereLangId($lang_id)
@@ -555,6 +552,9 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                           ->whereNotNull('ending')
                           ->where($property_id, $p2)
                           ->count();
+            }
+            if ($total_limit && $totals[$p1]<=$total_limit) {
+                continue;
             }
             $w = 100*$count/$totals[$p1];
             if($w < 10) {
