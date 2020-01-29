@@ -382,7 +382,7 @@ print 'done.';
                    ->get();
 
         return view('experiments.error_list',
-                    compact('search_lang', 'search_lang_name', 'property', 'wordforms'));
+                    compact('search_lang', 'search_lang_name', 'property', 'type', 'wordforms'));
     }
     
 }
