@@ -26,7 +26,8 @@ class ExperimentsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:admin,/');
+//        $this->middleware('auth:admin,/');
+        $this->middleware('auth:dict.edit,/'); 
     }
 
     public function index() {
@@ -356,6 +357,32 @@ print 'done.';
         }
         return view('experiments.results_search',
                     compact('search_lang_name', 'property', 'results'));
+    }
+    
+    public function errorList(Request $request) {
+        $search_lang =  $request->input('search_lang');
+        $search_lang_name = Lang::getNameById($search_lang);
+        $property = $request->input('property');
+        $type = $request->input('type');
+        if ($type=='aff') {
+            $tale='affix';
+        } else {
+            $tale='ending';
+        }
+        $property_id = $property.'_id';
+        $table_name = 'search_'.$property;
+        
+        $wordforms = DB::table($table_name)
+                   ->whereLangId($search_lang)
+                   ->where('eval_'.$type.'_gen',0)
+                   ->orderBy($property_id)
+                   ->orderBy('win_'.$type)
+                   ->orderBy('wordform')
+                   ->select('wordform', DB::raw($property_id.' as prop'), DB::raw($tale.' as tale'), DB::raw('win_'.$type.' as winner'))
+                   ->get();
+
+        return view('experiments.error_list',
+                    compact('search_lang', 'search_lang_name', 'property', 'wordforms'));
     }
     
 }

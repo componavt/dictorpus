@@ -4,8 +4,10 @@
                             {{ $user->name }} ({{ $user->rolesNames() }})
                         </div>
                         <div class="user-menu">
-                            @if (User::checkAccess('admin'))
+                            @if (User::checkAccess('dict.edit'))
                             <a href="{{ url('/experiments') }}">{{ trans('navigation.experiments') }}</a>
+                            @endif
+                            @if (User::checkAccess('admin'))
                             <a href="{{ url('/service') }}">{{ trans('navigation.service') }}</a>
                             <a href="{{ url('/user') }}"><i class="fa fa-btn fa-user"></i>{{ trans('navigation.users') }}</a>
                             <a href="{{ url('/role') }}"><i class="fa fa-btn fa-users"></i>{{ trans('navigation.roles') }}</a>

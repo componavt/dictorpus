@@ -158,7 +158,7 @@ print "<p><b>".$wordform->wordform."</b>";
         list($affix,$list) = self::searchGramsetByWordformAffix($wordform->wordform, $search_lang);     
         if (!$list) {
             DB::statement("UPDATE search_gramset SET affix=NULL,"
-                         ." eval_aff=0, eval_aff_gen=0"
+                         ." eval_aff=0, eval_aff_gen=0 win_aff=NULL"
                          ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
 
         } else {

@@ -9,6 +9,7 @@
 <div class="row">
     <div class="col-sm-6">
     <h3>части речи среди лемм и словоформ</h3>
+@if (User::checkAccess('dict.edit'))
     <p>Сформировать множество лемм и словоформ для поиска части речи</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
@@ -68,16 +69,25 @@
             </ul>
         </ul>
     </ul>
+@endif    
     <p>Вывод результатов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
         <li><a href="experiments/results_search_pos?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
+    
+    <p>Вывод ошибок</p>
+    <ul>
+    @foreach ($langs as $lang_id => $lang_name)
+        <li><a href="experiments/error_list?property=pos&type=end&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+    @endforeach
+    </ul>
     </div>
     
     <div class="col-sm-6">
     <h3>грамсетов по множеству словоформ</h3>
+@if (User::checkAccess('dict.edit'))
     <p>Сформировать множество словоформ для поиска грамсета</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
@@ -172,12 +182,29 @@
             </ul>
         </ul>
     </ul>
-    
+@endif    
     <p>Вывод результатов</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
         <li><a href="experiments/results_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
+    </ul>
+    
+    <p>Вывод ошибок</p>
+    <ul>
+        <p>по конечным буквосочетаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/error_list?property=gramset&type=end&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        @endforeach
+        </ul><br>
+        
+        <p>по псевдоокончаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/error_list?property=gramset&type=aff&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        @endforeach
+        </ul>
     </ul>
 </div>
 @endsection
