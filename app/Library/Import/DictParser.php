@@ -247,7 +247,7 @@ class DictParser
                      'lang_id'=>$lang_id, 
                      'number'=>$entry['num'],
                      'pos_id'=>$entry['pos_id'], 
-                     'dialect_id'=>$dialect_id];   
+                     'wordform_dialect_id'=>$dialect_id];   
 //dd($data);            
             list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                  = Grammatic::parseLemmaField($data);
