@@ -20,7 +20,7 @@ class ImportController extends Controller
     }
     
     /*
-     * /import/dict_parser
+     * /import/dict_parser?search_lang=1
      * Reads text file with dictionary entries
      * extracts lemmas and writes lemmas, meanings, word forms to DB
      * 

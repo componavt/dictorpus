@@ -7,6 +7,7 @@
 @section('body')
     <h3>Импорт</h3>
     <p><a href="import/concept_parser">Импорт понятий из СОС</a></p>
+    <p><a href="import/dict_parser?search_lang=1">Парсер вепсского словаря</a>
     
     <h3>Экспорт</h3>
     <p><a href="export/unimorph">Экспорт словоформ в Unimorph</a>    </p>
