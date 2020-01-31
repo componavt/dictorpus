@@ -10,4 +10,17 @@ class Str
         }
         return $word;
     }
+    
+    public static function arrayToString($arr, $b_div='<b>', $e_div='</b>') {
+        $out = '';
+        $count = 1;
+        foreach ($arr as $p=>$c) { 
+            $out .= $b_div."$p".$e_div.": $c";
+            if ($count<sizeof($arr)) {
+                $out .= ", ";
+            }
+            $count++;
+        }   
+        return $out;
+    }
 }

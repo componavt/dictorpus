@@ -169,6 +169,7 @@ Route::group(
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
         Route::get('experiments/', 'Library\ExperimentsController@index');
+        Route::get('experiments/check_word', 'Library\ExperimentsController@checkWord');
         Route::get('experiments/error_list', 'Library\ExperimentsController@errorList');
         Route::get('experiments/export_error_shift', 'Library\ExperimentsController@exportErrorShift');
         Route::get('experiments/export_error_shift_to_dot', 'Library\ExperimentsController@exportErrorShiftToDot');

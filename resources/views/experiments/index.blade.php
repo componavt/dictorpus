@@ -26,13 +26,13 @@
     @endforeach
     </ul>
     
-    <p>Записать победителя</p>
+    <!--p>Записать победителя</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
         <li><a href="experiments/write_winners?property=pos&type=end&search_lang={{$lang_id}}">{{$lang_name}}</a> 
         ({{$totals[$lang_id]['pos_win_proc']}}%)</li>
     @endforeach
-    </ul>
+    </ul-->
     
     <p>Экспортировать таблицу</p>
     <ul>
@@ -83,7 +83,16 @@
         <li><a href="experiments/error_list?property=pos&type=end&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
+    
+    <p>Проверить результат</p>
+    @foreach ($langs as $lang_id => $lang_name)
+        @include('experiments.word_check_form',['property'=>'pos', 'search_lang'=>$lang_id, 'submit_value'=>$lang_name])
+    @endforeach
     </div>
+    
+    
+    
+    
     
     <div class="col-sm-6">
     <h3>грамсетов по множеству словоформ</h3>
@@ -121,7 +130,7 @@
         </ul>
     </ul>
     
-    <p>Записать победителя при поиске</p>
+    <!--p>Записать победителя при поиске</p>
     <ul>
         <p>по конечным буквосочетаниям</p>
         <ul>
@@ -137,7 +146,7 @@
             ({{$totals[$lang_id]['win_aff_proc']}}%)</li>
         @endforeach
         </ul>
-    </ul>
+    </ul-->
     
     <p>Экспортировать таблицу</p>
     <ul>
@@ -213,5 +222,10 @@
         @endforeach
         </ul>
     </ul>
+    
+    <p>Проверить результат</p>
+    @foreach ($langs as $lang_id => $lang_name)
+        @include('experiments.word_check_form',['property'=>'gramset', 'search_lang'=>$lang_id, 'submit_value'=>$lang_name])
+    @endforeach
 </div>
 @endsection

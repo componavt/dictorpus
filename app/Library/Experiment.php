@@ -134,6 +134,7 @@ print "<br><b>max:</b> ".$max;
         return [$ending, $list];
     }
 */    
+    
     public static function searchPosGramsetByEnding($lang_id, $word, $ending, $table_name, $field) {
         if (!$ending) {
             return [];
@@ -309,8 +310,46 @@ print "<br><b>max:</b> ".$max;
         return $list;
     }
     
-    public static function searchGramsetByAffixes($wordform, $search_lang) {
+    public static function searchGramsetByAffixes($wordform, $search_lang, $affix) {
         $list = [];
+        $word = $wordform->wordform;
+        if (!$affix) {
+            $affix = $wordform->affix;        
+        }
+        $i=mb_strpos($word, $affix);
+        if ($i===false) {
+            dd('Incorrect affix "'.$affix.'" of word "'.$word.'"');
+        }
+        while ($i<mb_strlen($word)) {
+            $affix = mb_substr($word,$i);
+            $match_wordforms = LemmaWordform::where('affix', 'like', $affix)
+                     ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                     ->where('lang_id', $search_lang)
+                     ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                     ->where('wordform', 'not like', '% %') // without analytic forms
+                     ->where('wordform', 'not like', $word)
+                     ->select('gramset_id', DB::raw('count(*) as count'))
+                     ->groupBy('gramset_id')
+                     ->orderBy(DB::raw('count(*)'), 'DESC')
+                     ->get();
+            foreach ($match_wordforms as $m_wordform) {
+                $count = self::getEvalCount($m_wordform->count, $affix);
+                $list[$m_wordform->gramset_id] = !isset($list[$m_wordform->gramset_id])  
+                                ? $count : $count + $list[$m_wordform->gramset_id];
+            }
+            $i++;
+        }
+//dd($ending, $match_wordforms->get());            
+        if (!sizeof($list)) { // вряд ли такая ситуация будет, поскольку affix is not null
+            return NULL;
+        }
+//print "<br><b>$ending</b>";        
+        arsort($list);
+        return $list;
+    }
+
+    public static function searchGramsetByAffixesAllLists($wordform, $search_lang) {
+        $list = $lists = [];
         $word = $wordform->wordform;
         $affix = $wordform->affix;        
         $i=mb_strpos($word, $affix);
@@ -330,21 +369,30 @@ print "<br><b>max:</b> ".$max;
                      ->orderBy(DB::raw('count(*)'), 'DESC')
                      ->get();
             foreach ($match_wordforms as $m_wordform) {
-                $count = mb_strlen($affix) * $m_wordform->count;
+                $count = self::getEvalCount($m_wordform->count, $affix);
+//print "<br><span style='color:red'>".$affix."</span>: $count<br>";                
                 $list[$m_wordform->gramset_id] = !isset($list[$m_wordform->gramset_id])  
                                 ? $count : $count + $list[$m_wordform->gramset_id];
             }
+            arsort($list);
+            $lists[$affix] = $list;
             $i++;
         }
 //dd($ending, $match_wordforms->get());            
-        if (!sizeof($list)) { // вряд ли такая ситуация будет, поскольку affix is not null
+        if (!sizeof($lists)) { // вряд ли такая ситуация будет, поскольку affix is not null
             return NULL;
         }
 //print "<br><b>$ending</b>";        
-        arsort($list);
-        return $list;
+        return $lists;
     }
     
+    public static function getEvalCount($count, $ending) {
+//        return mb_strlen($ending) * $count;
+//        return log($count, mb_strlen($ending)+1);
+        return $count * pow(mb_strlen($ending),10);
+    }
+
+
     public static function getEvalForOneValue($counts, $right_value) {
         reset($counts);
         $first_key = key($counts);

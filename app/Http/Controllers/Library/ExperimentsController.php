@@ -399,4 +399,19 @@ print 'done.';
                     compact('search_lang', 'search_lang_name', 'property', 'type', 'wordforms'));
     }
     
+    public function checkWord(Request $request) {
+        $search_lang =  $request->input('search_lang');
+        $property =  $request->input('property');
+        $word =  $request->input('word');
+        $property_id = $property.'_id';
+        $table_name = 'search_'.$property;
+        
+        $wordforms = DB::table($table_name)
+                   ->whereLangId($search_lang)
+                   ->where('wordform', 'like', $word)
+                   ->get();
+        
+        return view('experiments.check_word',
+                    compact('wordforms', 'property', 'property_id', 'search_lang', 'table_name'));
+    }
 }
