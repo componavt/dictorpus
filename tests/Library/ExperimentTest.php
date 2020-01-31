@@ -232,6 +232,15 @@ print  "\n".$wordform->wordform."\n";
                       284 => "indicative,\n2nd,\nsg\n1"]];
         $result = Experiment::groupGramsetNodeList($node_list);
         $this->assertEquals($expected, $result);        
-    }
+    }  
     
+    public function testFirstPositionOfAffix()
+    {
+        $wordform = 'Alamad';
+        $affix = 'mad';
+        $result = mb_strpos($wordform, $affix);
+        $expected = 3;
+        $this->assertEquals($expected, $result);        
+    }
+
 }

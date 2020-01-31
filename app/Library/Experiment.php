@@ -106,7 +106,7 @@ print "<br><b>max:</b> ".$max;
         }
         return [$ending, $list];
     }
-    
+/*    
     public static function searchPosGramsetByWordWithWList($lang_id, $word, $property) {
         $i=1;
         $property_id = $property.'_id';
@@ -133,7 +133,7 @@ print "<br><b>max:</b> ".$max;
         arsort($list);
         return [$ending, $list];
     }
-    
+*/    
     public static function searchPosGramsetByEnding($lang_id, $word, $ending, $table_name, $field) {
         if (!$ending) {
             return [];
@@ -183,6 +183,36 @@ print "<br><b>max:</b> ".$max;
         }
     }
 
+    public static function evaluateSearchGramsetByAllAffixes($wordform, $search_lang) {
+print "<p><b>".$wordform->wordform."</b>";   
+        $list = self::searchGramsetByAffixes($wordform, $search_lang);     
+        $affix = $wordform->affix;
+        if (!$list) {
+            DB::statement("UPDATE search_gramset SET eval_affs=0, eval_affs_gen=0, "
+                         ." win_affs=NULL where wordform like '"
+                         .$wordform->wordform."' and lang_id=".$search_lang);
+
+        } else {
+print "<br>COUNTS: ";                
+foreach ($list as $p=>$c) { print "<b>$p</b>: $c, ";}   
+            $wordforms = DB::table('search_gramset')
+                       ->whereLangId($search_lang)
+                       ->where('wordform', 'like', $wordform->wordform)
+                       ->get();
+            $eval_affs = $winners = [];
+            foreach ($wordforms as $w) { 
+                list ($eval_affs[$w->id], $winners[$w->id]) = self::getEvalForOneValue($list, $w->gramset_id);
+print "<br>".$w->gramset_id.": ". $eval_affs[$w->id];
+            }
+            $max = max($eval_affs);
+print "<br><b>max:</b> ".$max;  
+            foreach ($eval_affs as $w_id=>$eval_aff) {
+                DB::statement("UPDATE search_gramset SET eval_affs=$eval_aff, "
+                             ."eval_affs_gen=$max, win_affs=".$winners[$w_id]." where id=".$w_id);
+            }
+        }
+    }
+
     /**
      * select gramset_id, count(*) as count from lemma_wordform, lemmas, wordforms where affix like 'ija' and lemma_wordform.lemma_id=lemmas.id and  lemma_wordform.wordform_id=wordforms.id and wordform  not like '% %' and wordform not like 'Aasija' and lang_id=4 group by gramset_id order by count desc;
      * select gramset_id, count(*) as count from lemma_wordform where affix like 'ija' and lemma_id in (select id from lemmas where lang_id=4) and wordform_id in (select id from wordforms where wordform  not like '% %' and wordform not like 'Aasija') group by gramset_id order by count;
@@ -226,7 +256,7 @@ print "<br><b>max:</b> ".$max;
      * @param type $word
      * @param type $search_lang
      * @return type
-     */
+     *//*
     public static function searchGramsetByAffixWithWList($word, $search_lang) {
         $i=1;
         $match_wordforms = NULL;
@@ -256,7 +286,7 @@ print "<br><b>max:</b> ".$max;
         }
         arsort($list);
         return [$ending, $list];
-    }
+    }*/
     
     public static function searchGramsetByAffix($wordform, $search_lang) {
         $match_wordforms = LemmaWordform::where('affix', 'like', $wordform->affix)
@@ -276,6 +306,42 @@ print "<br><b>max:</b> ".$max;
         foreach ($match_wordforms->get() as $m_wordform) {
             $list[$m_wordform->gramset_id] = $m_wordform->count;
         }
+        return $list;
+    }
+    
+    public static function searchGramsetByAffixes($wordform, $search_lang) {
+        $list = [];
+        $word = $wordform->wordform;
+        $affix = $wordform->affix;        
+        $i=mb_strpos($word, $affix);
+        if ($i===false) {
+            dd('Incorrect affix "'.$affix.'" of word "'.$word.'"');
+        }
+        while ($i<mb_strlen($word)) {
+            $affix = mb_substr($word,$i);
+            $match_wordforms = LemmaWordform::where('affix', 'like', $affix)
+                     ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                     ->where('lang_id', $search_lang)
+                     ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                     ->where('wordform', 'not like', '% %') // without analytic forms
+                     ->where('wordform', 'not like', $word)
+                     ->select('gramset_id', DB::raw('count(*) as count'))
+                     ->groupBy('gramset_id')
+                     ->orderBy(DB::raw('count(*)'), 'DESC')
+                     ->get();
+            foreach ($match_wordforms as $m_wordform) {
+                $count = mb_strlen($affix) * $m_wordform->count;
+                $list[$m_wordform->gramset_id] = !isset($list[$m_wordform->gramset_id])  
+                                ? $count : $count + $list[$m_wordform->gramset_id];
+            }
+            $i++;
+        }
+//dd($ending, $match_wordforms->get());            
+        if (!sizeof($list)) { // вряд ли такая ситуация будет, поскольку affix is not null
+            return NULL;
+        }
+//print "<br><b>$ending</b>";        
+        arsort($list);
         return $list;
     }
     

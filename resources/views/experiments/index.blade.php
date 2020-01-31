@@ -105,11 +105,18 @@
             ({{$totals[$lang_id]['eval_gramset_compl_proc']}}%)</li>
         @endforeach
         </ul><br>
-        <p>по псевдоокончаниям</p>
+        <p>по самым длинным псевдоокончаниям</p>
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
             <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a>
             ({{$totals[$lang_id]['eval_gramset_aff_compl_proc']}}%)</li>
+        @endforeach
+        </ul><br>
+        <p>по всем псевдоокончаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/evaluate_search_gramset_by_affix?all=1&search_lang={{$lang_id}}">{{$lang_name}}</a>
+            ({{$totals[$lang_id]['eval_gramset_affs_compl_proc']}}%)</li>
         @endforeach
         </ul>
     </ul>

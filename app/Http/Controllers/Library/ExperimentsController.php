@@ -44,6 +44,7 @@ class ExperimentsController extends Controller
             $totals[$l]['total_in_gramset'] = number_format($total_gramset, 0, ',', ' ');
             $totals[$l]['eval_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_end'), 2);
             $totals[$l]['eval_gramset_aff_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_aff'), 2);
+            $totals[$l]['eval_gramset_affs_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_affs'), 2);
             $totals[$l]['gramset_win_end_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'win_end'), 2);
             $totals[$l]['win_aff_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'win_aff'), 2);
         }
@@ -189,24 +190,36 @@ print '$count records are created.';
     
     public function evaluateSearchGramsetByAffix(Request $request) {
         $search_lang =  $request->input('search_lang');
+        $is_all =  $request->input('all');
         $is_all_checked = false;
         
         while (!$is_all_checked) {
             $wordforms = DB::table('search_gramset')
-                      ->whereLangId($search_lang)
-                      ->whereNull('eval_aff')
-                      ->groupBy('wordform')
+                      ->whereLangId($search_lang);
+            if ($is_all) {
+                $wordforms = $wordforms->whereNull('eval_affs')
+                          ->whereNotNull('affix');
+            } else {
+                $wordforms = $wordforms->whereNull('eval_aff');
+            }
+            $wordforms = $wordforms->groupBy('wordform')
                       ->take(100)
                       ->get();
+//dd($wordforms);            
             if ($wordforms) {
                 foreach ($wordforms as $wordform) {
-                    Experiment::evaluateSearchGramsetByAffix($wordform, $search_lang);
+                    if ($is_all) {
+                        Experiment::evaluateSearchGramsetByAllAffixes($wordform, $search_lang);                        
+                    } else {
+                        Experiment::evaluateSearchGramsetByAffix($wordform, $search_lang);
+                    }
                 }
             } else {
                 $is_all_checked = true;
             }
         }
     }
+    
 //select count(*) from search_gramset where lang_id=1 and eval_end is not null and win_end is null and ending is NULL;
     public function writeWinners(Request $request) {
         $search_lang =  $request->input('search_lang');
@@ -346,6 +359,7 @@ print 'done.';
         
         $results[0] = Experiment::resultsSearch($search_lang, $table_name);
         $results[1] = Experiment::resultsSearch($search_lang, $table_name, 'eval_aff');
+        $results[4] = Experiment::resultsSearch($search_lang, $table_name, 'eval_affs');
             
         $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'gramset_id', $p_names);
         

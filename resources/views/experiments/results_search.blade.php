@@ -12,8 +12,13 @@
     @include('experiments.results_search_one', ['results'=>$results[0]])
     
     @if (isset($results[1]))
-        <h3>Поиск по псевдоокончаниям</h3>
+        <h3>Поиск по самым длинным псевдоокончаниям</h3>
         @include('experiments.results_search_one', ['results'=>$results[1]])
+    @endif
+    
+    @if (isset($results[4]))
+        <h3>Поиск по всем псевдоокончаниям</h3>
+        @include('experiments.results_search_one', ['results'=>$results[4]])
     @endif
     
     @if (isset($results[2]))
