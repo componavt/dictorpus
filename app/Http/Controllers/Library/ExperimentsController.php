@@ -344,6 +344,7 @@ print 'done.';
         $p_names = PartOfSpeech::getList();
         
         $results[0] = Experiment::resultsSearch($search_lang, $table_name);
+        $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
         
         $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'pos_id', $p_names);
         
@@ -369,6 +370,7 @@ print 'done.';
         $p_names = Gramset::getList(0);
         
         $results[0] = Experiment::resultsSearch($search_lang, $table_name);
+        $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
         $results[1] = Experiment::resultsSearch($search_lang, $table_name, 'eval_aff');
         $results[4] = Experiment::resultsSearch($search_lang, $table_name, 'eval_affs');
             

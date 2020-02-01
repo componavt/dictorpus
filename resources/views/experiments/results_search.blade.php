@@ -8,8 +8,11 @@
     <h2>Оценка результатов</h2>
     <p><b>Язык:</b> {{$search_lang_name}}</p>
     
-    <h3>Поиск по конечным буквосочетаниям</h3>
+    <h3>Поиск по самым длинным конечным буквосочетаниям</h3>
     @include('experiments.results_search_one', ['results'=>$results[0]])
+    
+    <h3>Поиск по всем конечным буквосочетаниям</h3>
+    @include('experiments.results_search_one', ['results'=>$results[5]])
     
     @if (isset($results[1]))
         <h3>Поиск по самым длинным псевдоокончаниям</h3>
