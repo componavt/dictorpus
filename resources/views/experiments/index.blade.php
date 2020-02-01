@@ -20,10 +20,20 @@
     
     <p>Вычислить долю правильных ответов</p>
     <ul>
-    @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/evaluate_search_table?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a> 
-        ({{$totals[$lang_id]['eval_pos_compl_proc']}}%)</li>
-    @endforeach
+        <p>по самым длинным конечным буквосочетаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/evaluate_search_table?property=pos&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+            ({{$totals[$lang_id]['eval_pos_compl_proc']}}%)</li>
+        @endforeach
+        </ul><br>
+        <p>по всем конечным буквосочетаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/evaluate_search_table?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+            ({{$totals[$lang_id]['eval_pos_compl_proc']}}%)</li>
+        @endforeach
+        </u>        
     </ul>
     
     <!--p>Записать победителя</p>
@@ -107,10 +117,17 @@
     
     <p>Вычислить долю правильных ответов при поиске</p>
     <ul>
-        <p>по конечным буквосочетаниям</p>
+        <p>по самым длинным конечным буквосочетаниям</p>
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
             <li><a href="experiments/evaluate_search_table?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+            ({{$totals[$lang_id]['eval_gramset_compl_proc']}}%)</li>
+        @endforeach
+        </ul><br>
+        <p>по всем конечным буквосочетаниям</p>
+        <ul>
+        @foreach ($langs as $lang_id => $lang_name)
+            <li><a href="experiments/evaluate_search_table?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a> 
             ({{$totals[$lang_id]['eval_gramset_compl_proc']}}%)</li>
         @endforeach
         </ul><br>

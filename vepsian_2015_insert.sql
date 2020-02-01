@@ -1114,4 +1114,7 @@ select count(*) from search_pos where eval_end_gen=0 and pos_id in (5, 14) and l
 -- php artisan make:migration add_fields_win_to_search_gramset_table
 -- php artisan make:migration add_fields_win_to_search_pos_table
 -- php artisan make:migration add_fields_affs_to_search_gramset_table
+-- php artisan make:migration add_fields_ends_to_search_pos_table
+-- php artisan make:migration add_fields_ends_to_search_gramset_table
 
+UPDATE search_gramset set eval_affs=NULL, eval_affs_gen=NULL, win_affs=NULL where lang_id=4;

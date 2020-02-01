@@ -7,6 +7,8 @@ use Storage;
 
 use \App\Charts\ExperimentValuation;
 
+use App\Library\Str;
+
 use App\Models\Dict\Gramset;
 use App\Models\Dict\LemmaWordform;
 
@@ -42,10 +44,41 @@ print "<p><b>".$wordform->wordform."</b>";
                          ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
 
         } else {
-print "<br>COUNTS: ";                
-foreach ($list as $p=>$c) {
-print "<b>$p</b>: $c, ";
-}   
+print "<br>COUNTS: ".Str::arrayToString($list);
+            $wordforms = DB::table($table_name)
+                       ->whereLangId($search_lang)
+                       ->where('wordform', 'like', $wordform->wordform)
+                       ->get();
+            $eval_ends = $winners = [];
+            foreach ($wordforms as $w) { 
+//                self::writeList($table_name.'_list', $w->id, $property_id, 'end', $list);
+                list($eval_ends[$w->id], $winners[$w->id]) = self::getEvalForOneValue($list, $w->{$property_id});
+print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
+            }
+//dd($winners);
+            $max = max($eval_ends);
+            reset($list);
+print "<br><b>max:</b> ".$max;  
+            foreach ($eval_ends as $w_id=>$eval_end) {
+                DB::statement("UPDATE $table_name SET ending='".$ending
+                             ."', eval_end=$eval_end, eval_end_gen=$max"
+                             .", win_end=".$winners[$w_id]." where id=".$w_id);
+            }
+        }        
+    }
+    
+    public static function evaluateSearchPosGramsetByAllEndings($search_lang, $table_name, $property, $wordform) {
+        $property_id = $property.'_id';
+print "<p><b>".$wordform->wordform."</b>";   
+        $ending = $wordform->ending;
+        $list = self::searchPosGramsetByAllEndings($search_lang, $wordform, $property);     
+        if (!$list) {
+            DB::statement("UPDATE $table_name SET ending=NULL"
+                         .", eval_end=0, eval_end_gen=0, win_end=NULL"
+                         ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
+
+        } else {
+print "<br>COUNTS: ".Str::arrayToString($list);
             $wordforms = DB::table($table_name)
                        ->whereLangId($search_lang)
                        ->where('wordform', 'like', $wordform->wordform)
@@ -105,6 +138,42 @@ print "<br><b>max:</b> ".$max;
             $list[$m_wordform->{$property_id}] = $m_wordform->count;
         }
         return [$ending, $list];
+    }
+    
+    public static function searchPosGramsetByAllEndings($lang_id, $wordform, $property, $ending='') {
+print "<p><b>".$wordform->wordform."</b>";   
+        $list = [];
+        $property_id = $property.'_id';
+        $word = $wordform->wordform;
+        if (!$ending) {
+            $ending = $wordform->ending;        
+        }
+        $i=mb_strpos($word, $ending);
+        if ($i===false) {
+            dd('Incorrect ending "'.$ending.'" of word "'.$word.'"');
+        }
+        while ($i<mb_strlen($word)) {
+            $ending = mb_substr($word,$i);
+            $match_wordforms = DB::table('search_'.$property)
+                     ->select($property_id, DB::raw('count(*) as count'))
+                     ->whereLangId($lang_id)
+                     ->where('wordform', 'not like', $word)
+                     ->where('wordform', 'like', '%'.$ending)
+                     ->groupBy($property_id)
+                     ->orderBy(DB::raw('count(*)'), 'DESC')
+                     ->get();
+            foreach ($match_wordforms as $m_wordform) {
+                $count = self::getEvalCount($m_wordform->count, $ending);
+                $list[$m_wordform->{$property_id}] =  !isset($list[$m_wordform->{$property_id}]) 
+                            ? $count : $count +  $list[$m_wordform->{$property_id}];
+            }
+            $i++;
+        }
+        if (!sizeof($list)) {
+            NULL;
+        }
+//print "<br><b>$ending</b>";        
+        return $list;
     }
 /*    
     public static function searchPosGramsetByWordWithWList($lang_id, $word, $property) {
@@ -340,11 +409,10 @@ print "<br><b>max:</b> ".$max;
             $i++;
         }
 //dd($ending, $match_wordforms->get());            
-        if (!sizeof($list)) { // вряд ли такая ситуация будет, поскольку affix is not null
+        if (!sizeof($list)) { // вряд ли такая ситуация будет, поскольку ending is not null
             return NULL;
         }
 //print "<br><b>$ending</b>";        
-        arsort($list);
         return $list;
     }
 

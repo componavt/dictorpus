@@ -167,20 +167,29 @@ print '$count records are created.';
     public function evaluateSearchPosGramset(Request $request) {
         $search_lang =  $request->input('search_lang');
         $property = $request->input('property');
+        $is_all = $request->input('all');
         $is_all_checked = false;
         $table_name = 'search_'.$property;
         while (!$is_all_checked) {
             $wordforms = DB::table($table_name)
-                           ->select('wordform')
-                           ->whereLangId($search_lang)
-                           ->whereNull('eval_end')
-                           ->groupBy('wordform')
-                           ->take(100)
-                           ->get();
-                      //->first();
+//                           ->select('wordform', 'ending')
+                           ->whereLangId($search_lang);
+            if ($is_all) {
+                $wordforms = $wordforms->whereNull('eval_ends')
+                          ->whereNotNull('ending');
+            } else {
+                $wordforms = $wordforms->whereNull('eval_end');
+            }
+            $wordforms = $wordforms->groupBy('wordform')
+                      ->take(100)
+                      ->get();
             if ($wordforms) {
                 foreach ($wordforms as $wordform) {
-                    Experiment::evaluateSearchPosGramset($search_lang, $table_name, $property, $wordform);
+                    if ($is_all) {
+                        Experiment::evaluateSearchPosGramsetByAllEndings($search_lang, $table_name, $property, $wordform);
+                    } else {
+                        Experiment::evaluateSearchPosGramset($search_lang, $table_name, $property, $wordform);
+                    }
                 }
             } else {
                 $is_all_checked = true;
