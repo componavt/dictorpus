@@ -31,7 +31,7 @@
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
             <li><a href="experiments/evaluate_search_table?property=pos&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a> 
-            ({{$totals[$lang_id]['eval_pos_compl_proc']}}%)</li>
+            ({{$totals[$lang_id]['evals_pos_compl_proc']}}%)</li>
         @endforeach
         </u>        
     </ul>
@@ -128,7 +128,7 @@
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
             <li><a href="experiments/evaluate_search_table?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a> 
-            ({{$totals[$lang_id]['eval_gramset_compl_proc']}}%)</li>
+            ({{$totals[$lang_id]['evals_gramset_compl_proc']}}%)</li>
         @endforeach
         </ul><br>
         <p>по самым длинным псевдоокончаниям</p>

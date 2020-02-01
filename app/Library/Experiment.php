@@ -73,8 +73,7 @@ print "<p><b>".$wordform->wordform."</b>";
         $ending = $wordform->ending;
         $list = self::searchPosGramsetByAllEndings($search_lang, $wordform, $property);     
         if (!$list) {
-            DB::statement("UPDATE $table_name SET ending=NULL"
-                         .", eval_end=0, eval_end_gen=0, win_end=NULL"
+            DB::statement("UPDATE $table_name SET eval_ends=0, eval_ends_gen=0, win_ends=NULL"
                          ." where wordform like '".$wordform->wordform."' and lang_id=".$search_lang);
 
         } else {
@@ -94,9 +93,8 @@ print "<br>".$w->{$property_id}.": ". $eval_ends[$w->id];
             reset($list);
 print "<br><b>max:</b> ".$max;  
             foreach ($eval_ends as $w_id=>$eval_end) {
-                DB::statement("UPDATE $table_name SET ending='".$ending
-                             ."', eval_end=$eval_end, eval_end_gen=$max"
-                             .", win_end=".$winners[$w_id]." where id=".$w_id);
+                DB::statement("UPDATE $table_name SET eval_ends=$eval_end, eval_ends_gen=$max"
+                             .", win_ends=".$winners[$w_id]." where id=".$w_id);
             }
         }        
     }

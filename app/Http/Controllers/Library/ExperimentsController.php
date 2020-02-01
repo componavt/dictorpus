@@ -38,11 +38,13 @@ class ExperimentsController extends Controller
             $total_pos = Experiment::totalFill('search_pos',$l);
             $totals[$l]['total_in_pos'] = number_format($total_pos, 0, ',', ' ');
             $totals[$l]['eval_pos_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l, $total_pos), 2);
+            $totals[$l]['evals_pos_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l, $total_pos, 'eval_ends'), 2);
             $totals[$l]['pos_win_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l, $total_pos, 'win_end'), 2);
             
             $total_gramset = Experiment::totalFill('search_gramset',$l);
             $totals[$l]['total_in_gramset'] = number_format($total_gramset, 0, ',', ' ');
             $totals[$l]['eval_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_end'), 2);
+            $totals[$l]['evals_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_ends'), 2);
             $totals[$l]['eval_gramset_aff_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_aff'), 2);
             $totals[$l]['eval_gramset_affs_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_affs'), 2);
             $totals[$l]['gramset_win_end_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'win_end'), 2);
