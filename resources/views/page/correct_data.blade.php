@@ -39,5 +39,14 @@
     @endforeach
     </ul>
 
+    <p>Проверить окончания у словоформ по флективным правилам</p>
+    <ul>
+    @foreach ($langs as $l_id=>$l_info)
+        <li>
+            <a href="service/check_wordforms_by_rules?search_lang={{$l_id}}">
+                {{$l_info['name']}}
+            </a></li>
+    @endforeach
+    </ul>
     
 @endsection

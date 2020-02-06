@@ -216,6 +216,19 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
         Service::reloadStemAffixesForLang($lang_id);
     }
     
+    function checkWordformsByRules(Request $request) {
+        $lang_id = (int)$request->input('search_lang');
+        
+        if ($lang_id) {
+            Service::checkWordformsByRules($lang_id);
+            return;
+        }
+
+        foreach (Lang::projectLangIDs() as $lang_id) {
+            Service::checkWordformsByRules($lang_id);
+        }      
+    }
+    
     public function tmpUpdateStemAffix() {
 //print "<pre>";        
         $lemmas = Lemma::orderBy('id')->get(); //where('id','>',1)->take(10)

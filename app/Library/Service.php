@@ -60,4 +60,19 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->stemAffixForm().'</a>';
 print "</p>";                 
         }
     }
+    
+    public static function checkWordformsByRules($lang_id) {
+/*        
+        $table_name = 'search_gramset';
+        
+        $wordforms = DB::table($table_name)
+                   ->whereLangId($lang_id)
+                   ->*/
+        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                         ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                         ->whereLangId($lang_id)
+                         ->select('gramset_id')
+                         ->groupBy('gramset_id')
+                         ->get();
+    }
 }

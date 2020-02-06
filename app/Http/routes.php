@@ -185,6 +185,7 @@ Route::group(
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
         Route::get('service/add_wordform_affixes', 'Library\ServiceController@addWordformAffixes');
         Route::get('service/add_unmarked_links', 'Library\ServiceController@addUnmarkedLinks');
+        Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('service/correct_data', 'Library\ServiceController@correctData');
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
