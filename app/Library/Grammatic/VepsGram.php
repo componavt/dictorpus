@@ -146,4 +146,11 @@ class VepsGram
         return 4;
     }
     
+    public static function getAffixesForGramset($gramset_id) {
+        if (in_array($gramset_id, VepsName::getListForAutoComplete())) {
+            return VepsName::getAffixesForGramset($gramset_id);
+        } elseif (in_array($gramset_id, VepsVerb::getListForAutoComplete())) {
+            return VepsVerb::getAffixesForGramset($gramset_id);
+        }
+    }
 }

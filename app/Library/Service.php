@@ -68,11 +68,28 @@ print "</p>";
         $wordforms = DB::table($table_name)
                    ->whereLangId($lang_id)
                    ->*/
-        $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
-                         ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+        $gramsets = LemmaWordform::join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                          ->whereLangId($lang_id)
+                         ->whereNotNull('gramset_id')
                          ->select('gramset_id')
                          ->groupBy('gramset_id')
                          ->get();
+        
+        foreach ($gramsets as $gramset) {
+            $affixes = Grammatic::getAffixesForGramset($gramset->gramset_id, $lang_id);
+            $query = [];
+            foreach($affixes as $affix) {
+                $query[] = "wordform like '%".$affix."'";
+            }
+            $query = "(".join(" OR ", $query).")";
+            $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+                         ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+                         ->whereLangId($lang_id)
+                         ->whereGramsetId()
+                         ->where(DB::raw($query));
+ dd($wordforms)->toSql;       
+            //$wordforms->count();
+            
+        }
     }
 }

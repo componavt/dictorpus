@@ -374,4 +374,11 @@ class Grammatic
         return join(", ", $forms);
     }
     
+    public static function getAffixesForGramset($gramset_id, $lang_id) {
+        if ($lang_id == 1) {
+            return VepsGram::getAffixesForGramset($gramset_id);
+        } elseif ($lang_id == 4) {
+            return KarGram::getAffixesForGramset($gramset_id);
+        }
+    }
 }

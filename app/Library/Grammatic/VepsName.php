@@ -741,4 +741,79 @@ class VepsName
                 return $ill. 'päi';
         }        
     }
+    
+    public static function getAffixesForGramset($gramset_id) {
+        switch ($gramset_id) {
+            case 56: // аккузатив, ед.ч. 
+            case 3: // генитив, ед.ч. 
+            case 277: // эссив, ед.ч. 
+                return ['n'];
+            case 4: // партитив, ед.ч. 
+                return ['t', 'd'];
+            case 5: // транслатив, ед.ч. 
+                return ['ks', 'kš'];
+            case 8: // инессив, ед.ч. 
+                return ['s', 'š'];
+            case 9: // элатив, ед.ч. 
+                return ['späi', 'špäi', 'spää', 'špää', 'spei', 'špei'];
+            case 10: // иллатив, ед.ч. 
+                return ['ze', 'he', 'hä', 'ha', 'ho', 'hu', 'hö', 'hü'];
+            case 11: // адессив, ед.ч. 
+                return ['a', 'l', 'ta', 'u'];
+            case 12: // аблатив, ед.ч. 
+                return ['lpäi', 'apää', 'uu', 'upäi'];
+            case 13: // аллатив, ед.ч. 
+                return ['le', 'lo'];
+            case 6: // абессив, ед.ч. 
+            case 64: // абессив, мн.ч.
+                return ['ta'];
+            case 14: // комитатив, ед.ч. 
+                return ['nke', 'me', 'mu']; // dme, dmu
+            case 15: // пролатив, ед.ч. 
+                return ['me', 'mu']; // dme
+            case 17: //аппроксиматив, ед.ч. 
+                return ['nno', 'nnoks'];
+            case 20: //эгрессив, ед.ч. 
+                return ['nnopäi', 'nnopää', 'nnoupei'];
+            case 16: //терминатив, ед.ч. 
+                return ['sai', 'saä', 'sei']; // ssai, lesai
+            case 19: //адитив, ед.ч. 
+            case 68: //адитив, мн.ч. 
+                return ['päi', 'pää', 'pei']; // lepäi
+
+            case 2: // 21. номинатив, мн. ч.  
+            case 57: // 22. аккузатив, мн. ч.  
+                return ['d'];
+            case 24: // генитив, мн.ч. 
+                return ['den'];
+            case 22: // партитив, мн.ч. 
+                return ['d', 'd’'];
+            case 279: // эссив, мн.ч. 
+                return ['n', 'n’'];
+            case 59: // транслатив, мн.ч. 
+                return ['kš'];
+            case 23: // инессив, мн.ч.
+                return ['š'];
+            case 60: // элатив, мн.ч.
+                return ['špäi', 'špää', 'špei'];
+            case 61: // иллатив, мн.ч. 
+                return ['he', 'že'];
+            case 25: // адессив, мн.ч.
+                return ['l', 'l’'];
+            case 62: // аблатив, мн.ч.
+                return ['lpäi', 'l’pää', 'l’pei', 'l’päi'];
+            case 63: // аллатив, ед.ч. 
+                return ['le'];
+            case 65: // комитатив, мн.ч. 
+                return ['denke', 'mu', 'd’me', 'deke'];
+            case 66: // пролатив, мн.ч. 
+                return ['dme', 'mu', 'd’me'];
+            case 18: //аппроксиматив, мн.ч. 
+                return ['denno', 'dennoks'];
+            case 69: //эгрессив, мн.ч. 
+                return ['dennopäi', 'delonpää', 'dennoupei'];
+            case 67: //терминатив, мн.ч. 
+                return ['sai', 'saa', 'sei']; // ssai, lesai
+        }
+    }
 }

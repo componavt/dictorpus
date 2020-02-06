@@ -223,4 +223,11 @@ class KarGram
         return $lemma_str;
     }
     
+    public static function getAffixesForGramset($gramset_id) {
+        if (in_array($gramset_id, KarName::getListForAutoComplete())) {
+            return KarName::getAffixesForGramset($gramset_id);
+        } elseif (in_array($gramset_id, KarVerb::getListForAutoComplete())) {
+            return KarVerb::getAffixesForGramset($gramset_id);
+        }
+    }
 }
