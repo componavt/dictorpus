@@ -198,4 +198,50 @@ class KarName
         return '{'.join(', ',$bases).'}';
     }
     
+    public static function getAffixesForGramset($gramset_id) {
+        switch ($gramset_id) {
+            case 3: // генитив, ед.ч. 
+            case 24: // генитив, мн.ч. 
+            case 281: // инструктив, мн.ч. 
+                return ['n'];
+            case 277: // эссив, ед.ч. 
+            case 279: // эссив, мн.ч.
+                return ['na', 'nä'];
+            case 5: // транслатив, ед.ч. 
+                return ['kši', 'ksi'];
+            case 8: // инессив, ед.ч. 
+                return ['šša', 'ššä', 'ssa', 'ssä'];
+            case 9: // элатив, ед.ч. 
+                return ['šta', 'štä', 'sta', 'stä'];
+            case 10: // иллатив, ед.ч. 
+            case 61: // иллатив, мн.ч. 
+                return ['h'];
+            case 278: // адессив-аллатив, ед.ч. 
+            case 280: // адессив-аллатив, мн.ч.
+                return ['lla', 'llä'];
+            case 12: // аблатив, ед.ч. 
+            case 62: // аблатив, мн.ч.
+                return ['lda', 'ldä'];
+            case 6: // абессив, ед.ч. 
+            case 64: // абессив, мн.ч.
+                return ['tta', 'ttä'];
+            case 14: // комитатив, ед.ч. 
+            case 65: // комитатив, мн.ч. 
+                return ['nke'];
+            case 15: // пролатив, ед.ч. 
+            case 66: // пролатив, мн.ч. 
+                return ['čči'];
+            case 2: // номинатив, мн.ч. 
+                return ['t'];
+            case 22: // партитив, мн.ч. 
+                return ['e', 'da', 'dä'];
+            case 59: // транслатив, мн.ч. 
+                return ['ksi'];
+            case 23: // инессив, мн.ч.
+                return ['ssa', 'ssä'];
+            case 60: // элатив, мн.ч.
+                return ['sta', 'stä'];
+        }
+    }
+    
 }
