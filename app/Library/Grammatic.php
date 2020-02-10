@@ -380,5 +380,6 @@ class Grammatic
         } elseif ($lang_id == 4) {
             return KarGram::getAffixesForGramset($gramset_id);
         }
+        return [];
     }
 }

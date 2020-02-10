@@ -229,5 +229,6 @@ class KarGram
         } elseif (in_array($gramset_id, KarVerb::getListForAutoComplete())) {
             return KarVerb::getAffixesForGramset($gramset_id);
         }
+        return [];
     }
 }

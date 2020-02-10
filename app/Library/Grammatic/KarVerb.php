@@ -816,7 +816,7 @@ class KarVerb
                 return ['kah', 'käh', 'gah', 'gäh']; // 'kkah', 'kkäh'
             case 54: // 52. императив, 2 л., мн.ч., пол 
             case 76: // 57. императив, 2 л., мн.ч., отр. 
-                return ['kua', 'kiä', 'gua', 'gäh']; // 'kkua', 'kkiä'                
+                return ['kua', 'kiä', 'gua', 'giä']; // 'kkua', 'kkiä'                
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
                 return ['zin'];
             case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., пол. 
@@ -873,10 +873,11 @@ class KarVerb
             case 178: // 139. актив, 1-е причастие 
                 return ['ja', 'jä'];
             case 179: // 140. актив, 2-е причастие 
-                return ['nun', 'lun', 'run', 'sun', 'šun']; // nnun
+                return ['un']; // nnun, 'nun', 'lun', 'run', 'sun', 'šun', 'l’un'
             case 180: // 142. пассив, 1-е причастие 
                 return ['ava', 'ävä'];
         }
+        return [];
     }
        
 }

@@ -242,6 +242,7 @@ class KarName
             case 60: // элатив, мн.ч.
                 return ['sta', 'stä'];
         }
+        return [];
     }
     
 }

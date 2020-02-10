@@ -2,8 +2,12 @@
 
 namespace App\Library;
 
+use DB;
+
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\Wordform;
 
 class Service
@@ -77,19 +81,29 @@ print "</p>";
         
         foreach ($gramsets as $gramset) {
             $affixes = Grammatic::getAffixesForGramset($gramset->gramset_id, $lang_id);
+            if (!sizeof($affixes)) {
+                continue;
+            }
             $query = [];
             foreach($affixes as $affix) {
                 $query[] = "wordform like '%".$affix."'";
             }
-            $query = "(".join(" OR ", $query).")";
+            $query = "!(".join(" OR ", $query).")";
             $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                          ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                          ->whereLangId($lang_id)
-                         ->whereGramsetId()
-                         ->where(DB::raw($query));
- dd($wordforms)->toSql;       
-            //$wordforms->count();
-            
+                         ->whereGramsetId($gramset->gramset_id)
+                         ->whereRaw($query)
+                         ->groupBy('wordform','gramset_id')
+                         ->get();
+ //dd($wordforms->toSql());       
+            if (!$wordforms || !sizeof($wordforms)) {
+                continue;
+            }
+            print "<h2>".Gramset::getStringByID($gramset->gramset_id)."</h2>\n";
+            foreach ($wordforms as $wordform) {
+                print "<p><a href=\"/dict/wordform?search_gramset=".$gramset->gramset_id."&search_lang=".$lang_id."&search_wordform=".$wordform->wordform."\">".$wordform->wordform."</a></p>\n";
+            }
         }
     }
 }

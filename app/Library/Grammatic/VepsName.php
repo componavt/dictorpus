@@ -815,5 +815,6 @@ class VepsName
             case 67: //терминатив, мн.ч. 
                 return ['sai', 'saa', 'sei']; // ssai, lesai
         }
+        return [];
     }
 }

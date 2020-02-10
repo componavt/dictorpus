@@ -152,5 +152,6 @@ class VepsGram
         } elseif (in_array($gramset_id, VepsVerb::getListForAutoComplete())) {
             return VepsVerb::getAffixesForGramset($gramset_id);
         }
+        return [];
     }
 }

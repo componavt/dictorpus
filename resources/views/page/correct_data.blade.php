@@ -6,10 +6,10 @@
 
 @section('body')
     <h3>Исправить данные</h3>
-    <p><a href="service/add_wordform_affixes">Добавить аффиксы словоформам</a> (с грамсетами и неаналитические формы (без пробелов))</p>
+    <p><a href="/service/add_wordform_affixes">Добавить аффиксы словоформам</a> (с грамсетами и неаналитические формы (без пробелов))</p>
     <ul>
     @foreach ($langs as $l_id=>$l_info)
-        <li><a href="service/add_wordform_affixes?search_lang={{$l_id}}">{{$l_info['name']}}</a> ({{$l_info['affix_count']}})</li>
+        <li><a href="/service/add_wordform_affixes?search_lang={{$l_id}}">{{$l_info['name']}}</a> ({{$l_info['affix_count']}})</li>
     @endforeach
     </ul>
     
@@ -18,7 +18,7 @@
     @foreach ($langs as $l_id=>$l_info)
         <li>
         @if (!in_array($l_id, \App\Library\Grammatic::langsWithRules()))
-            <a href="service/reload_stem_affixes?search_lang={{$l_id}}">
+            <a href="/service/reload_stem_affixes?search_lang={{$l_id}}">
         @endif
                 {{$l_info['name']}}
         @if (!in_array($l_id, \App\Library\Grammatic::langsWithRules()))
@@ -32,7 +32,7 @@
     <ul>
     @foreach ($langs as $l_id=>$l_info)
         <li>
-            <a href="service/add_unmarked_links?search_lang={{$l_id}}">
+            <a href="/service/add_unmarked_links?search_lang={{$l_id}}">
                 {{$l_info['name']}}
             </a> 
             ({{$l_info['unmarked_words_count']}})</li>
@@ -43,7 +43,7 @@
     <ul>
     @foreach ($langs as $l_id=>$l_info)
         <li>
-            <a href="service/check_wordforms_by_rules?search_lang={{$l_id}}">
+            <a href="/service/check_wordforms_by_rules?search_lang={{$l_id}}">
                 {{$l_info['name']}}
             </a></li>
     @endforeach

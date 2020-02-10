@@ -1625,43 +1625,53 @@ class VepsVerb
     public static function getAffixesForGramset($gramset_id) {
         switch ($gramset_id) {
             case 26: // 1. индикатив, презенс, 1 л., ед.ч., +
-                return ['n'];
+                return ['n',        'mei', 'me', 'mi', 'moi'];
             case 27: // 2. индикатив, презенс, 2 л., ед.ч., пол. 
-                return ['d'];
+                return ['d',        'tei', 'te', 'ti', 'toi'];
             case 28: // 3. индикатив, презенс, 3 л., ед.ч., пол. 
-                return ['b'];
+                return ['b',        'ze', 'že', 'zhe', 'se', 'še', 'si', 'ši', 'soi', 'šoi'];
             case 29: // 4. индикатив, презенс, 1 л., мн.ч., +
-                return ['m', 'maa', 'mei', 'mai'];
+                return ['m', 'maa', 'mei', 'mai', 'moo', 'mi', 'moiš'];
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., +
-                return ['t', 'd', 'taa', 'tei', 'tai'];
+                return ['t', 'd', 'taa', 'tei', 'tai', 'too', 'ti', 'toiš'];
             case 31: // 6. индикатив, презенс, 3 л., мн.ч., +
-                return ['taze', 'daze', 'tas', 'das', 'ba'];
+                return ['taze', 'daze', 'tas', 'das', 'ba',         'ze', 'že', 'soo', 'šoo', 'soiš', 'šoiš'];
+            case 295:  //144. индикатив, презенс, коннегатив, ед.ч.
+                //for regular verb - vocal, for reflex - d/t + e
+            case 70: // 7. индикатив, презенс, 1 л., ед.ч., -
+            case 71: // 8. индикатив, презенс, 2 л., ед.ч., -
+            case 72: // 9. индикатив, презенс, 3 л., ед.ч., -
+            case 299:  // 148. императив, коннегатив, ед.ч.
+            case 50: // 54. императив, 2 л., ед. ч., - 
+                return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü',         'de', 'te'];
             case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
             case 73: //10. индикатив, презенс, 1 л., мн.ч., -
             case 78: // 11. индикатив, презенс, 2 л., мн.ч., -
             case 79: // 12. индикатив, презенс, 3 л., мн.ч., -
-                return ['gii', 'kii', 'goi', 'koi'];
+                return ['gii', 'kii', 'goi', 'koi',         'giiže', 'kiiže', 'goiš', 'koiš', 'te'];
                 
             case 32: // 13. индикатив, имперфект, 1 л., ед.ч., +
-                return ['n', 'n’']; //, 'in', 'in’'
+                return ['n', 'n’',      'mei', 'ime', 'moi']; //, 'in', 'in’'
             case 33: // 14. индикатив, имперфект, 2 л., ед.ч., +
-                return ['d', 'd’']; //, 'id', 'id’'
+                return ['d', 'd’',      'tei', 'ite', 'toi']; //, 'id', 'id’'
+            case 34: // 15. индикатив, имперфект, 3 л., ед.ч., +
+                return ['i', '’',       'he']; 
             case 35: // 16. индикатив, имперфект, 1 л., мн.ч., +
-                return ['m', 'imaa', 'mei', 'mai'];
+                return ['m', 'imaa', 'mei', 'mai',      'imoo', 'moiš'];
             case 36: // 17. индикатив, имперфект, 2 л., мн.ч., +
-                return ['t', 'd', 'itaa', 'd’', 'tei', 'tai'];
+                return ['t', 'd', 'itaa', 'd’', 'tei', 'tai',      'itoo', 'toiš'];
             case 37: // 18. индикатив, имперфект, 3 л., мн.ч., +
-                return ['tihe', 'dihe', 't’he', 'd’he', 'iba', 'ba'];
+                return ['iba', 'ba',        'ihoo', 'hezoiš', 'hezoi', 'he']; // 'tihe', 'dihe', 't’he', 'd’he', 
             case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., -
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., -
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., -
-                return ['nd', 'nu', 'n', 't'];
+                return ['nd', 'nu', 'n', 't',       'nuze', 'nuzhe', 'nukse', 'nus'];
             case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., -
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., -
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., -
-                return ['nd', 'nukoi', 'nugoi', 'n', 't'];
+                return ['nd', 'nukoi', 'nugoi', 'n', 't',       'nuze', 'nuzhe', 'nuksoi', 'nus', 'nuksoiš', 'nusoi'];
                 
             case 179: // 140. актив, 2-е причастие, ед.ч. 
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., +
@@ -1676,10 +1686,10 @@ class VepsVerb
             case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., -
             case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., -
             case 107: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., -
-                return ['nd', 'nu', 'n'];
+                return ['nd', 'nu', 'n',       'nuze', 'nuzhe', 'nukse', 'nus'];
                 
             case 309: // 141. актив, 2-е причастие, мн.ч. 
-                return ['nd', 'nu', 'nuded'];
+                return ['nd', 'nu', 'nuded',       'nuze', 'nuzhoo', 'nukse', 'nus', 'nusoi'];
             case 181: // 143. пассив, 2-е причастие 
                 return ['dud', 'tud'];
                 
@@ -1695,69 +1705,74 @@ class VepsVerb
             case 108: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., -
             case 106: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., -
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., -
-                return ['nd', 'nu', 'nuded', 'dud', 'tud'];
+                return ['nd', 'nu', 'nuded', 'dud', 'tud',       'nuze', 'nuzhoo', 'nukse', 'nus', 'nusoi'];
 
+            case 51: // 49. императив, 2 л., ед.ч., + 
+                return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü']; // for reflex :        'to', 'do', 'te', 'de'
             case 52: // 50. императив, 3 л., ед.ч., + 
-                return ['gaha', 'kaha', 'b'];
+                return ['gaha', 'kaha', 'b',        'gahaze', 'kahaze', 'gahas', 'kahas'];
             case 53: // 51. императив, 1 л., мн.ч., + 
-                return ['gam', 'kam'];
+                return ['gam', 'kam',       'gamei', 'kamei', 'gamoo', 'kamoo', 'gamoiš', 'kamoiš'];
             case 54: // 52. императив, 2 л., мн.ч., + 
-                return ['gad', 'kad', 'gat', 'kat'];
+                return ['gad', 'kad', 'gat', 'kat',         'gatei', 'katei', 'gatoo', 'katoo', 'gatoiš', 'katoiš'];
             case 55: // 53. императив, 3 л., мн.ч., + 
-                return ['gaha', 'kaha', 'ba'];
-            case 300: // 149. императив, коннегатив, мн.ч.
+                return ['gaha', 'kaha', 'ba',        'gahaze', 'kahaze', 'gahas', 'kahas', 'gasoo', 'kasoo', 'gasoiš', 'kasoiš'];                              
+                
+                case 300: // 149. императив, коннегатив, мн.ч.
             case 74: // 55. императив, 3 л., ед.ч., -                 
-                return ['goi', 'koi', 'gii', 'kii'];
+                return ['goi', 'koi', 'gii', 'kii',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
             case 75: // 56. императив, 1 л., мн.ч., - 
-                return ['goi', 'koi', 'gii', 'kii', 'gam', 'kam']; 
+                return ['goi', 'koi', 'gii', 'kii', 'gam', 'kam',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de']; 
             case 76: // 57. императив, 2 л., мн.ч., - 
-                return ['goi', 'koi', 'gii', 'kii', 'gat', 'kat'];
+                return ['goi', 'koi', 'gii', 'kii', 'gat', 'kat',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
             case 77: // 58. императив, 3 л., мн.ч., - 
-                return ['goi', 'koi', 'gii', 'kii', 'gaha', 'kaha'];
+                return ['goi', 'koi', 'gii', 'kii', 'gaha', 'kaha',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
 
             case 38: // 59. кондиционал, презенс, 1 л., ед.ч., +
-                return ['ižin', 'ižin’']; 
+                return ['ižin', 'ižin’',        'ižimei', 'ižime', 'ižimoi']; 
             case 39: // 60. кондиционал, презенс, 2 л., ед.ч., пол. 
-                return ['ižid', 'ižid’']; 
+                return ['ižid', 'ižid’',        'ižitei', 'ižite', 'ižitoi']; 
             case 40: // 61. кондиционал, презенс, 3 л., ед.ч., пол. 
-            case 301: // 150. кондиционал, презенс, коннегатив
+                return ['iž', 'iži',        'ižihe', 'ižihes']; 
+            case 41: // 62. кондиционал, презенс, 1 л., мн.ч., +
+                return ['ižimaa', 'ižimai', 'ižimei', 'ižim',        'ižimoo', 'ižimoiš']; 
+            case 42: // 63. кондиционал, презенс, 2 л., мн.ч., +
+                return ['ižitaa', 'ižitai', 'ižitei', 'ižit', 'ižid', 'ižid’',        'ižitoo', 'ižitoiš']; 
+            case 43: // 64. кондиционал, презенс, 3 л., мн.ч., +
+                return ['deiž', 'teiž', 'ižiba',        'ižihoo', 'ižihezoi', 'ižihezoiš', 'ižihe']; 
             case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
             case 111: // 66. кондиционал, презенс, 2 л., ед.ч., отр. 
             case 112: // 67. кондиционал, презенс, 3 л., ед.ч., отр. 
-                return ['iž', 'iži']; 
-            case 41: // 62. кондиционал, презенс, 1 л., мн.ч., +
-                return ['ižimaa', 'ižimai', 'ižimei', 'ižim']; 
-            case 42: // 63. кондиционал, презенс, 2 л., мн.ч., +
-                return ['ižitaa', 'ižitai', 'ižitei', 'ižit', 'ižid', 'ižid’']; 
-            case 43: // 64. кондиционал, презенс, 3 л., мн.ч., +
-                return ['deiž', 'teiž', 'ižiba']; 
+                return ['iž', 'iži',        'ižihe']; 
             case 303: // 151. кондиционал, презенс, коннегатив, мн.ч. 
             case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
             case 114: // 69. кондиционал, презенс, 2 л., мн.ч., отр. 
             case 115: // 70. кондиционал, презенс, 3 л., мн.ч., отр. 
-                return ['deiž', 'teiž', 'iž', 'ižigoi', 'iži']; 
+                return ['deiž', 'teiž', 'iž', 'ižigoi', 'iži',      'iižihoo', 'ižihezoiš', 'ižihe']; 
                                 
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., +
-                return ['nuižin', 'nižin', 'nižin’', 'nuižin’', 'nuužin’']; 
+                return ['nuižin', 'nižin', 'nižin’', 'nuižin’', 'nuužin’',      'nižimei', 'nižime', 'nuižimoi']; 
             case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., +
-                return ['nuižid', 'nižid', 'nižid’', 'nuižid’', 'nuužid’']; 
+                return ['nuižid', 'nižid', 'nižid’', 'nuižid’', 'nuužid’',      'nižitei', 'nižite', 'nuižitoi']; 
             case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., +
+                return ['nuiž', 'niž', 'niži', 'nuiži', 'nuuž',     'nižihe', 'nižihes', 'nuižihe']; 
+            case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., +
+                return ['nuižim', 'nižim', 'nuižimaa', 'nuužimaa', 'nuižimai', 'nuižimei',      'nižimei', 'nižimoo', 'nuižimoiš']; 
+            case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., +
+                return ['nuižit', 'nuižid', 'nižid', 'nuižitaa', 'nuužitaa', 'nižid’', 'nuižid’', 'nuižitai', 'nuižitei',      'nižitei', 'nižitoo', 'nuižitoiš']; 
+            case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., +
+                return ['deniž', 'teniž', 'nuižiba', 'nuužiba', 'nuižiiba',     'nižihe', 'nižihoo', 'nuižihe', 'nužihezoi', 'nužihezoiš']; 
             case 302: // 152. кондиционал, имперфект, коннегатив, ед.ч. 
             case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 117: // 78. кондиционал, имперфект, 2 л., ед.ч., отр. 
             case 118: // 79. кондиционал, имперфект, 3 л., ед.ч., отр. 
+                return ['nuiž', 'niž', 'niži', 'nuiži', 'nuuž',     'nižihe', 'nuižihe']; 
             case 119: // 80. кондиционал, имперфект, 1 л., мн.ч., отр. 
             case 120: // 81. кондиционал, имперфект, 2 л., мн.ч., отр. 
-            case 121: // 82. кондиционал, имперфект, 3 л., мн.ч., отр. 
-                return ['nuiž', 'niž', 'niži', 'nuiži', 'nuuž']; 
-            case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., +
-                return ['nuižim', 'nižim', 'nuižimaa', 'nuužimaa', 'nuižimai', 'nuižimei']; 
-            case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., +
-                return ['nuižit', 'nuižid', 'nižid', 'nuižitaa', 'nuužitaa', 'nižid’', 'nuižid’', 'nuižitai', 'nuižitei']; 
-            case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., +
-                return ['deniž', 'teniž', 'nuižiba', 'nuužiba', 'nuižiiba']; 
+                return ['nuiž', 'niž', 'niži', 'nuiži', 'nuuž',     'nižihe', 'nižihoo', 'nuižihe', 'nuižihezoiš']; 
             case 304: // 153. кондиционал, имперфект, коннегатив, мн.ч. 
-                return ['deniž', 'teniž', 'nuiž', 'niž', 'niži', 'nuiži', 'nuuž']; 
+            case 121: // 82. кондиционал, имперфект, 3 л., мн.ч., отр. 
+                return ['deniž', 'teniž', 'nuiž', 'niž', 'niži', 'nuiži', 'nuuž',     'nižihe', 'nižihoo', 'nuižihe', 'nuižihezoiš']; 
                 
             case 305: // Пассив презенс 
                 return ['daze', 'taze', 'das', 'tas']; 
@@ -1768,7 +1783,7 @@ class VepsVerb
                 return ['dud', 'tud']; 
                 
             case 170: // 131. I инфинитив 
-                return ['da', 'ta', 'dä', 'tä']; 
+                return ['da', 'ta', 'dä', 'tä',         'daze', 'taze', 'däze', 'täze', 'dakso', 'takso', 'däkso', 'täkso', 'das', 'tas', 'däs', 'täs']; 
             case 171: // 132. II инфинитив, инессив 
                 return ['des', 'tes']; 
             case 172: // 133. II инфинитив, инструктив  
@@ -1776,7 +1791,7 @@ class VepsVerb
             case 173: // 134. III инфинитив, адессив
                 return ['mal', 'mäl', 'maa', 'mää', 'mou', 'mau']; 
             case 174: // 135. III инфинитив, иллатив 
-                return ['mha', 'mhä', 'maha', 'mähä']; 
+                return ['mha', 'mhä', 'maha', 'mähä',       'mahaze', 'mähäze', 'mahas', 'mähäs']; 
             case 175: // 136. III инфинитив, инессив 
                 return ['mas', 'mäs']; 
             case 176: // 137. III инфинитив, элатив 
@@ -1784,6 +1799,7 @@ class VepsVerb
             case 177: // 138. III инфинитив, абессив 
                 return ['mata', 'mäta']; 
         }
+        return [];
     }
     
 }
