@@ -744,7 +744,6 @@ class VepsName
     
     public static function getAffixesForGramset($gramset_id) {
         switch ($gramset_id) {
-            case 56: // аккузатив, ед.ч. 
             case 3: // генитив, ед.ч. 
             case 277: // эссив, ед.ч. 
                 return ['n'];
