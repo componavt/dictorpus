@@ -1755,7 +1755,7 @@ class VepsVerb
             case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., +
                 return ['nuižid', 'nižid', 'nižid’', 'nuižid’', 'nuužid’',      'nižitei', 'nižite', 'nuižitoi']; 
             case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., +
-                return ['nuiž', 'niž', 'niži', 'nuiži', 'nuuž',     'nižihe', 'nižihes', 'nuižihe']; 
+                return ['nuiž', 'niž', 'niži', 'nuiži', 'nuuž',     'nižihe', 'nuižihes', 'nuižihe']; 
             case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., +
                 return ['nuižim', 'nižim', 'nuižimaa', 'nuužimaa', 'nuižimai', 'nuižimei',      'nižimei', 'nižimoo', 'nuižimoiš']; 
             case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., +
