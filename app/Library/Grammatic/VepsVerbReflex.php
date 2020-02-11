@@ -757,7 +757,7 @@ class VepsVerbReflex
             case 3: // южновепсский 
                 return $stem3. 'nižihoo';
             case 4: // средневепсский восточный 
-                return $stem3. 'nužihezoi, '. $stem3. 'nužihezoiš';
+                return $stem3. 'nuižihezoi, '. $stem3. 'nuižihezoiš';
             case 5: // средневепсский западный 
                 return $stem3. 'nužihezoiš';
             default:
