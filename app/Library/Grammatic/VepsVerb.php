@@ -1722,11 +1722,11 @@ class VepsVerb
             case 74: // 55. императив, 3 л., ед.ч., -                 
                 return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü','goi', 'koi', 'gii', 'kii',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
             case 75: // 56. императив, 1 л., мн.ч., - 
-                return ['goi', 'koi', 'gii', 'kii', 'gam', 'kam',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de']; 
+                return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü','goi', 'koi', 'gii', 'kii', 'gam', 'kam',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de']; 
             case 76: // 57. императив, 2 л., мн.ч., - 
-                return ['goi', 'koi', 'gii', 'kii', 'gat', 'kat',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
+                return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü','goi', 'koi', 'gii', 'kii', 'gat', 'kat',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
             case 77: // 58. императив, 3 л., мн.ч., - 
-                return ['goi', 'koi', 'gii', 'kii', 'gaha', 'kaha',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
+                return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü','goi', 'koi', 'gii', 'kii', 'gaha', 'kaha',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
 
             case 38: // 59. кондиционал, презенс, 1 л., ед.ч., +
                 return ['žin', 'žin’',        'žimei', 'žime', 'žimoi']; //'ižin', 'ižin’',        'ižimei', 'ižime', 'ižimoi'
