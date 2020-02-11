@@ -776,7 +776,7 @@ class VepsName
             case 20: //эгрессив, ед.ч. 
                 return ['nnopäi', 'nnopää', 'nnoupei'];
             case 16: //терминатив, ед.ч. 
-                return ['sai', 'saä', 'sei']; // ssai, lesai
+                return ['sai', 'saa', 'sei']; // ssai, lesai
             case 19: //адитив, ед.ч. 
             case 68: //адитив, мн.ч. 
                 return ['päi', 'pää', 'pei']; // lepäi
