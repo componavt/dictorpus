@@ -1716,7 +1716,7 @@ class VepsVerb
             case 54: // 52. императив, 2 л., мн.ч., + 
                 return ['gad', 'kad', 'gat', 'kat',         'gatei', 'katei', 'gatoo', 'katoo', 'gatoiš', 'katoiš'];
             case 55: // 53. императив, 3 л., мн.ч., + 
-                return ['gaha', 'kaha', 'ba',        'gahaze', 'kahaze', 'gahas', 'kahas', 'gasoo', 'kasoo', 'gasoiš', 'kasoiš'];                              
+                return ['gaha', 'kaha', 'gha', 'kha', 'ba',        'gahaze', 'kahaze', 'gahas', 'kahas', 'gasoo', 'kasoo', 'gasoiš', 'kasoiš'];                              
                 
                 case 300: // 149. императив, коннегатив, мн.ч.
             case 74: // 55. императив, 3 л., ед.ч., -                 
