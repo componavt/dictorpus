@@ -1729,26 +1729,26 @@ class VepsVerb
                 return ['goi', 'koi', 'gii', 'kii', 'gaha', 'kaha',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
 
             case 38: // 59. кондиционал, презенс, 1 л., ед.ч., +
-                return ['ižin', 'ižin’',        'ižimei', 'ižime', 'ižimoi']; 
+                return ['žin', 'žin’',        'žimei', 'žime', 'žimoi']; //'ižin', 'ižin’',        'ižimei', 'ižime', 'ižimoi'
             case 39: // 60. кондиционал, презенс, 2 л., ед.ч., пол. 
-                return ['ižid', 'ižid’',        'ižitei', 'ižite', 'ižitoi']; 
+                return ['žid', 'žid’',        'žitei', 'žite', 'žitoi']; // 'ižid', 'ižid’',        'ižitei', 'ižite', 'ižitoi'
             case 40: // 61. кондиционал, презенс, 3 л., ед.ч., пол. 
-                return ['iž', 'iži',        'ižihe', 'ižihes']; 
+                return ['ž', 'ži',        'žihe', 'žihes']; // 'iž', 'iži',        'ižihe', 'ižihes'
             case 41: // 62. кондиционал, презенс, 1 л., мн.ч., +
-                return ['ižimaa', 'ižimai', 'ižimei', 'ižim',        'ižimoo', 'ižimoiš']; 
+                return ['žimaa', 'žimai', 'žimei', 'žim',        'žimoo', 'žimoiš']; // 'ižimaa', 'ižimai', 'ižimei', 'ižim',        'ižimoo', 'ižimoiš'
             case 42: // 63. кондиционал, презенс, 2 л., мн.ч., +
-                return ['ižitaa', 'ižitai', 'ižitei', 'ižit', 'ižid', 'ižid’',        'ižitoo', 'ižitoiš']; 
+                return ['žitaa', 'žitai', 'žitei', 'žit', 'žid', 'žid’',        'žitoo', 'žitoiš']; // 'ižitaa', 'ižitai', 'ižitei', 'ižit', 'ižid', 'ižid’',        'ižitoo', 'ižitoiš'
             case 43: // 64. кондиционал, презенс, 3 л., мн.ч., +
-                return ['deiž', 'teiž', 'ižiba',        'ižihoo', 'ižihezoi', 'ižihezoiš', 'ižihe']; 
+                return ['deiž', 'teiž', 'žiba',        'žihoo', 'žihezoi', 'žihezoiš', 'žihe']; // 'deiž', 'teiž', 'ižiba',        'ižihoo', 'ižihezoi', 'ižihezoiš', 'ižihe'
             case 110: // 65. кондиционал, презенс, 1 л., ед.ч., отр. 
             case 111: // 66. кондиционал, презенс, 2 л., ед.ч., отр. 
             case 112: // 67. кондиционал, презенс, 3 л., ед.ч., отр. 
-                return ['iž', 'iži',        'ižihe']; 
+                return ['ž', 'ži',        'žihe']; // 'iž', 'iži',        'ižihe'
             case 303: // 151. кондиционал, презенс, коннегатив, мн.ч. 
             case 113: // 68. кондиционал, презенс, 1 л., мн.ч., отр. 
             case 114: // 69. кондиционал, презенс, 2 л., мн.ч., отр. 
             case 115: // 70. кондиционал, презенс, 3 л., мн.ч., отр. 
-                return ['deiž', 'teiž', 'iž', 'ižigoi', 'iži',      'iižihoo', 'ižihezoiš', 'ižihe']; 
+                return ['deiž', 'teiž', 'ž', 'žigoi', 'ži',      'ižihoo', 'žihezoiš', 'žihe']; // 'iž', 'ižigoi', 'iži',      'iižihoo', 'ižihezoiš', 'ižihe'
                                 
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., +
                 return ['nuižin', 'nižin', 'nižin’', 'nuižin’', 'nuužin’',      'nižimei', 'nižime', 'nuižimoi']; 
