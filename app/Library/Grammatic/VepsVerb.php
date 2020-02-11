@@ -1720,7 +1720,7 @@ class VepsVerb
                 
                 case 300: // 149. императив, коннегатив, мн.ч.
             case 74: // 55. императив, 3 л., ед.ч., -                 
-                return ['goi', 'koi', 'gii', 'kii',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
+                return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü','goi', 'koi', 'gii', 'kii',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de'];
             case 75: // 56. императив, 1 л., мн.ч., - 
                 return ['goi', 'koi', 'gii', 'kii', 'gam', 'kam',         'goiš', 'koiš', 'giiže', 'kiiže', 'te', 'de']; 
             case 76: // 57. императив, 2 л., мн.ч., - 
