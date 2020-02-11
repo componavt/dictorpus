@@ -1151,7 +1151,7 @@ class VepsVerb
             case 1: // северновепсский 
                 return self::partic2passive($stem0, $dt);
             case 3: // южновепсский 
-                return $stem1 ? $stem1. ', '. $stem1. 'n, '. $stem1. 'nd' : '';
+                return $stem1 ? $stem1. 'n, '. $stem1. 'nd' : '';
             case 5: // средневепсский западный 
                 return $stem1 && $stem5 ? $stem1. 't, '. $stem5. 'nu'. $kg. 'oi' : '';
             default:
