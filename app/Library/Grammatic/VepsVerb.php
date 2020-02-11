@@ -1789,7 +1789,7 @@ class VepsVerb
             case 173: // 134. III инфинитив, адессив
                 return ['mal', 'mäl', 'maa', 'mää', 'mou', 'mau']; 
             case 174: // 135. III инфинитив, иллатив 
-                return ['mha', 'mhä', 'maha', 'mähä',       'mahaze', 'mähäze', 'mahas', 'mähäs']; 
+                return ['mha', 'mhä', 'maha', 'mähä',       'mahaze', 'mahäze', 'mahas', 'mahäs']; 
             case 175: // 136. III инфинитив, инессив 
                 return ['mas', 'mäs']; 
             case 176: // 137. III инфинитив, элатив 
