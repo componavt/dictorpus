@@ -1671,7 +1671,7 @@ class VepsVerb
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., -
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., -
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., -
-                return ['nd', 'nukoi', 'nugoi', 'n', 't',       'nuze', 'nuzhe', 'nuksoi', 'nus', 'nuksoiš', 'nusoi'];
+                return ['tud','dud','nd', 'nukoi', 'nugoi', 'n', 't',       'nuze', 'nuzhe', 'nuksoi', 'nus', 'nuksoiš', 'nusoi'];
                 
             case 179: // 140. актив, 2-е причастие, ед.ч. 
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., +
