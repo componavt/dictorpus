@@ -66,7 +66,7 @@ class VepsVerbReflex
             case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
                 return $stems[0] && $stems[6] ? $stems[0]. $stems[6]. 'e' : '';
             case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
-                return self::indPresConnegPl($stems[0], $stems[1], $stems[6], $dialect_id);
+                return self::indPresConnegPl($stems[0], $stems[6], $dialect_id);
 
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., -
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., -
@@ -75,7 +75,7 @@ class VepsVerbReflex
             case 73: //10. индикатив, презенс, 1 л., мн.ч., -
             case 78: // 11. индикатив, презенс, 2 л., мн.ч., -
             case 79: // 12. индикатив, презенс, 3 л., мн.ч., -
-                return $stems[0] ? Grammatic::interLists($neg_verb, self::indPresConnegPl($stems[0], $stems[1], $stems[6], $dialect_id)) : '';
+                return $stems[0] ? Grammatic::interLists($neg_verb, self::indPresConnegPl($stems[0], $stems[6], $dialect_id)) : '';
         }
     }
     
