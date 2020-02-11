@@ -1710,7 +1710,7 @@ class VepsVerb
             case 51: // 49. императив, 2 л., ед.ч., + 
                 return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü']; // for reflex :        'to', 'do', 'te', 'de'
             case 52: // 50. императив, 3 л., ед.ч., + 
-                return ['gaha', 'kaha', 'b',        'gahaze', 'kahaze', 'gahas', 'kahas'];
+                return ['gaha', 'kaha', 'gha', 'kha', 'b',        'gahaze', 'kahaze', 'gahas', 'kahas'];
             case 53: // 51. императив, 1 л., мн.ч., + 
                 return ['gam', 'kam',       'gamei', 'kamei', 'gamoo', 'kamoo', 'gamoiš', 'kamoiš'];
             case 54: // 52. императив, 2 л., мн.ч., + 
