@@ -749,7 +749,7 @@ class VepsName
             case 277: // эссив, ед.ч. 
                 return ['n'];
             case 4: // партитив, ед.ч. 
-                return ['t', 'd'];
+                return ['t', 'd', 't’'];
             case 5: // транслатив, ед.ч. 
                 return ['ks', 'kš'];
             case 8: // инессив, ед.ч. 
