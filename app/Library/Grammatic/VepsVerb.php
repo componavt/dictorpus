@@ -1703,7 +1703,7 @@ class VepsVerb
             case 108: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., -
             case 106: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., -
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., -
-                return ['nd', 'nu', 'nuded', 'dud', 'tud',       'nuze', 'nuzhoo', 'nukse', 'nus', 'nusoi'];
+                return ['nd', 'n', 'nuded', 'dud', 'tud',       'nuze', 'nuzhoo', 'nukse', 'nus', 'nusoi'];
 
             case 51: // 49. императив, 2 л., ед.ч., + 
                 return ['a', 'o', 'u', 'e', 'i', 'ä', 'ö', 'ü']; // for reflex :        'to', 'do', 'te', 'de'
