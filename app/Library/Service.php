@@ -8,6 +8,7 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaWordform;
+use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
 class Service
@@ -102,7 +103,12 @@ print "</p>";
             }
             print "<h2>".Gramset::getStringByID($gramset->gramset_id)."</h2>\n";
             foreach ($wordforms as $wordform) {
-                print "<p><a href=\"/dict/wordform?search_gramset=".$gramset->gramset_id."&search_lang=".$lang_id."&search_wordform=".$wordform->wordform."\">".$wordform->wordform."</a></p>\n";
+                if (preg_match("/^([^\-]+)\-/", $wordform->wordform, $regs)) {
+                    if (preg_match("/[".join('$|',$affixes)."$]/",$regs[1])) {
+                        continue;
+                    }
+                }
+                print "<p><a href=\"/dict/wordform?search_gramset=".$gramset->gramset_id."&search_lang=".$lang_id."&search_wordform=".$wordform->wordform."\">".$wordform->wordform."</a>, ". PartOfSpeech::getNameById($wordform->pos_id)."</p>\n";
             }
         }
     }
