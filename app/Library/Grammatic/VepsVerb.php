@@ -1687,7 +1687,7 @@ class VepsVerb
                 return ['nd', 'nu', 'n',       'nuze', 'nuzhe', 'nukse', 'nus'];
                 
             case 309: // 141. актив, 2-е причастие, мн.ч. 
-                return ['nd', 'nu', 'nuded',       'nuze', 'nuzhoo', 'nukse', 'nus', 'nusoi'];
+                return ['nd', 'n', 'nuded',       'nuze', 'nuzhoo', 'nukse', 'nus', 'nusoi'];
             case 181: // 143. пассив, 2-е причастие 
                 return ['dud', 'tud'];
                 
