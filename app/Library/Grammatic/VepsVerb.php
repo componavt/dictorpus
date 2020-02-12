@@ -181,11 +181,13 @@ class VepsVerb
     public static function getStemFromStems($stems, $stem_n, $dialect_id, $lemma) {
         switch ($stem_n) {
             case 3: 
-                return self::getStemPAP($stems[0], $stems[1]);
+                return isset($stems[0]) && isset($stems[1]) 
+                    ? self::getStemPAP($stems[0], $stems[1]) : null;
             case 4: 
-                return self::getStemCond($stems[1]);
+                return isset($stems[1]) ? self::getStemCond($stems[1]) : null;
             case 5: 
-                return self::getStemPoten($stems[0], $stems[1], $stems[3]);
+                return isset($stems[0]) && isset($stems[1]) && isset($stems[3]) 
+                    ? self::getStemPoten($stems[0], $stems[1], $stems[3]) : null;
             case 6:
                 if (preg_match("/([dt])([aä])$/u", $lemma, $regs)) {
                     return $regs[1];
@@ -194,9 +196,8 @@ class VepsVerb
                 if (preg_match("/([dt])([aä])$/u", $lemma, $regs)) {
                     return $regs[2];
                 }
-            default: 
-                return null;
         }
+         return null;
     }
     
     /**
