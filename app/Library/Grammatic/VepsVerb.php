@@ -1084,7 +1084,11 @@ class VepsVerb
         switch ($dialect_id) {
             case 3: // южновепсский 
             case 5: // средневепсский западный 
-                return mb_substr($stem2, 0, -1). ', '. $stem2;
+                $out = $stem2;
+                if (preg_match("/^(.+[".consSet()."])i$/u", $stem2, $regs)) {
+                    $out = $regs[1]. '’, '. $out;
+                } 
+                return $out;
             default:
                 return $stem2;
         }        
