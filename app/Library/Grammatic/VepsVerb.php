@@ -1085,7 +1085,7 @@ class VepsVerb
             case 3: // южновепсский 
             case 5: // средневепсский западный 
                 $out = $stem2;
-                if (preg_match("/^(.+[".consSet()."])i$/u", $stem2, $regs)) {
+                if (preg_match("/^(.+[". VepsGram::consSet()."])i$/u", $stem2, $regs)) {
                     $out = $regs[1]. '’, '. $out;
                 } 
                 return $out;
