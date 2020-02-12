@@ -1606,7 +1606,7 @@ class VepsVerb
     public static function partic2activePl($stem0, $stem1, $stem5, $dt, $dialect_id) {
         switch ($dialect_id) {
             case 1: // северновепсский 
-                return $stem0 && $dt ? $stem0. $dt. 'ud' : '';
+//                return $stem0 && $dt ? $stem0. $dt. 'ud' : '';
                 return '';
             case 3: // южновепсский 
                 return $stem1 ? $stem1. 'n, '. $stem1. 'nd' : '';
