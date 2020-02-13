@@ -79,7 +79,7 @@ class VepsVerbTest extends TestCase
         $gramset_id = 85; // 24. индикатив, имперфект, 3 л., мн. ч., -
         $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
        
-        $expected = 'ebad peze, ebad pezen, ebad pezend';
+        $expected = 'ebad pezen, ebad pezend';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -99,7 +99,7 @@ class VepsVerbTest extends TestCase
         $gramset_id = 34; // 15. индикатив, имперфект, 3 л., ед. ч., +
         $result = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
        
-        $expected = 'sa, sai';
+        $expected = 'sai';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -124,4 +124,18 @@ class VepsVerbTest extends TestCase
         $expected = 'anastagha';
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testImper3()
+    {
+        $stem0 = 'aht';
+        $dt = 't';
+        $stem8 = 'ahtkaha, laske ahtb, okha ahtb';
+        $gramset_id = 55;
+        $dialect_id = 5;
+        $result = VepsVerb::imper3($stem0, $dt, $stem8, $gramset_id, $dialect_id);
+       
+        $expected = 'ahtkaha, laske ahtba, okha ahtba';
+        $this->assertEquals( $expected, $result);        
+    }
+
 }
