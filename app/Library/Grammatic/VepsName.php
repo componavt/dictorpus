@@ -379,7 +379,8 @@ class VepsName
         
         if (preg_match("/h[".vepsGram::vowelSet()."]$/",$stem1)) {
             $okon = 'ze';
-        } elseif (VepsGram::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
+//        } elseif (VepsGram::countSyllable($stem1)<3 && preg_match("/i$/",$stem1)) {
+        } elseif (preg_match("/i$/",$stem1)) {
             $okon = 'he';
         } elseif (preg_match("/([".vepsGram::vowelSet()."])$/u",$stem1, $regs)) {
             $okon = 'h'. $regs[1];
