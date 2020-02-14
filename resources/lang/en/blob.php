@@ -86,5 +86,6 @@ return [
                         (<a href="https://creativecommons.org/licenses/by/4.0/">CC-BY</a>). 
                         The name of the project "Dictorpus" indicates the union of the dictionary (DICTionary) and the corpus (cORPUS). 
                         The program Dictorpus is designed for teams of linguists working with the languages ​​of the world. 
-                        At the moment, the program includes support and takes into account the features of Vepsian and Karelian languages.</p>',
+                        At the moment, the program includes support and takes into account the features of Vepsian and Karelian languages.</p>
+                        <p>See <a href="/publ/">the publication list.</p>',
 ];
