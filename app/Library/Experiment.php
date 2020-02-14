@@ -529,7 +529,7 @@ print "<br><b>max:</b> ".$max;
                 ->orderBy('eval')
                 ->get();
         
-        $list = [];
+        $list = $list_proc = [];
         $sum=0;
         foreach ($coll as $row) {
             $list[(string)$row->eval] = $row->count;
