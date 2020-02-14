@@ -10,7 +10,7 @@
     
     <h3>Поиск по самым длинным конечным буквосочетаниям</h3>
     @include('experiments.results_search_one', ['results'=>$results[0]])
-    
+{{--    
     <h3>Поиск по всем конечным буквосочетаниям</h3>
     @include('experiments.results_search_one', ['results'=>$results[5]])
     
@@ -33,7 +33,7 @@
         <h3>{{trans('dict.num_shift_error', ['num'=>$results[3]['limit']])}}</h3>
         @include('experiments.shift_error', ['results'=>$results[3]])
     @endif
-
+--}}
 @stop
 
 @section('footScriptExtra')

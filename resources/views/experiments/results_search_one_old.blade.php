@@ -4,19 +4,26 @@
 
         <table class="table-bordered">
             <tr>
-                <th rowspan="2">Evaluation</th>
-                <th colspan="2" style="text-align: center">Quantity of pairs</th>
-                <th colspan="2" style="text-align: center">Percent, %</th>
+                <th rowspan="2">Оценка</th>
+                <th colspan="2" style="text-align: center">Количество</th>
             </tr>
             <tr>
-                <th>All parts of speech</th>
+                <th>По отдельности</th>
+                <th>По совокупности</th>
             </tr>
             @foreach ($results['eval1'] as $v => $c) 
             <tr>
                 <td style="text-align: right">{{$v}}</td>
                 <td style="text-align: right">{{$c}}</td>
-                <td style="text-align: right">{{$results['eval1_proc'][$v]}}</td>
                 <td style="text-align: right">{{$results['eval2'][$v]}}</td>
+            </tr>
+            @endforeach
+            <tr><th colspan='3'>в процентах</td></tr>
+            @foreach ($results['eval1_proc'] as $v => $c) 
+            <tr>
+                <td style="text-align: right">{{$v}}</td>
+                <td style="text-align: right">{{$c}}%</td>
+                <td style="text-align: right">{{$results['eval2_proc'][$v]}}%</td>
             </tr>
             @endforeach
         </table>

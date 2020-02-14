@@ -481,6 +481,28 @@ print "<br><b>max:</b> ".$max;
                        ->whereNotNull($field)->count();
         
         list($eval1,$eval1_proc) = self::calculateEvalLists($lang_id, $table_name, $field);
+//        list($eval2,$eval2_proc) = self::calculateEvalLists($lang_id, $table_name, $field.'_gen');
+        
+        $chart = new ExperimentValuation;
+        $chart->labels(array_keys($eval1));                
+        $chart->dataset('all', 'line', array_values($eval1))
+              ->fill(false)
+              ->color('#663399')
+              ->backgroundColor('#663399');
+/*        $chart->dataset('по совокупности', 'line', array_values($eval2))
+              ->fill(false)
+              ->color('#00BFFF')
+              ->backgroundColor('#00BFFF');*/
+        
+        return ['total_num'=>$total_num, 'eval1'=>$eval1, 
+                'chart'=>$chart, 'eval1_proc'=>$eval1_proc];
+    }
+/*    
+    public static function resultsSearchOld($lang_id, $table_name, $field='eval_end') {
+        $total_num = DB::table($table_name)->whereLangId($lang_id)
+                       ->whereNotNull($field)->count();
+        
+        list($eval1,$eval1_proc) = self::calculateEvalLists($lang_id, $table_name, $field);
         list($eval2,$eval2_proc) = self::calculateEvalLists($lang_id, $table_name, $field.'_gen');
         
         $chart = new ExperimentValuation;
@@ -497,7 +519,28 @@ print "<br><b>max:</b> ".$max;
         return ['total_num'=>$total_num, 'eval1'=>$eval1, 'eval2'=>$eval2, 
                 'chart'=>$chart, 'eval1_proc'=>$eval1_proc, 'eval2_proc'=>$eval2_proc];
     }
-    
+*/    
+    public static function calculateEvalLists($lang_id, $table_name, $field) {
+        $coll = DB::table($table_name)
+                ->select(DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count"))
+                ->whereLangId($lang_id)
+                ->whereNotNull($field)
+                ->groupBy('eval')
+                ->orderBy('eval')
+                ->get();
+        
+        $list = [];
+        $sum=0;
+        foreach ($coll as $row) {
+            $list[(string)$row->eval] = $row->count;
+            $sum +=$row->count;
+        }
+        foreach ($list as $k => $v) {
+             $list_proc[$k] = $sum==0 ? 0 : round(100*$v/$sum, 2);
+        }
+        return [$list, $list_proc];
+    }
+/*    
     public static function calculateEvalLists($lang_id, $table_name, $field) {
         $coll = DB::table($table_name)
                 ->select(DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count"))
@@ -524,7 +567,7 @@ print "<br><b>max:</b> ".$max;
         }
         return [$list, $list_proc];
     }
-/*    
+
     public static function searchGramsetsByAffix($wordform_obj, $search_lang) {
         $i=1;
         $match_wordforms = [];
