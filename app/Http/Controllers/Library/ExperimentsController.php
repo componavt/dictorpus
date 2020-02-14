@@ -336,15 +336,17 @@ print 'done.';
      * select pos_id, count(*) as count from search_pos where ending is not null AND eval_end_gen=0 group by pos_id order by count DESC;
      * 
      */
-    public function resultsSearchPos(Request $request) {
+    public function resultsSearchPOS(Request $request) {
         $search_lang =  $request->input('search_lang');
         $search_lang_name = Lang::getNameById($search_lang);
         $property = 'pos';
         $table_name = 'search_'.$property;
         $p_names = PartOfSpeech::getList();
+        $list_limit = 6;
         
         $results[0] = Experiment::resultsSearch($search_lang, $table_name);
-        $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
+        $results[6] = Experiment::resultsSearchByPOS($search_lang, $table_name, $p_names, $list_limit);
+/*        $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
         
         $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'pos_id', $p_names);
         
@@ -354,7 +356,7 @@ print 'done.';
             $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
             $results[3]['limit'] = 6;
         }
-        
+*/        
         return view('experiments.results_search',
                     compact('search_lang_name', 'property', 'results'));
     }

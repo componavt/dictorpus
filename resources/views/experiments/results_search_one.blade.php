@@ -1,15 +1,12 @@
 <div class="row">    
     <div class="col-md-4">
-        <p><b>Всего словоформ:</b> {{$results['total_num']}}</p> 
+        <p><b>Total number of word forms:</b> {{$results['total_num']}}</p> 
 
         <table class="table-bordered">
             <tr>
-                <th rowspan="2">Evaluation</th>
-                <th colspan="2" style="text-align: center">Quantity of pairs</th>
-                <th colspan="2" style="text-align: center">Percent, %</th>
-            </tr>
-            <tr>
-                <th>All parts of speech</th>
+                <th>Evaluation</th>
+                <th style="text-align: center">Quantity of pairs</th>
+                <th style="text-align: center">Percent, %</th>
             </tr>
             @foreach ($results['eval1'] as $v => $c) 
             <tr>

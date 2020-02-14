@@ -481,7 +481,6 @@ print "<br><b>max:</b> ".$max;
                        ->whereNotNull($field)->count();
         
         list($eval1,$eval1_proc) = self::calculateEvalLists($lang_id, $table_name, $field);
-//        list($eval2,$eval2_proc) = self::calculateEvalLists($lang_id, $table_name, $field.'_gen');
         
         $chart = new ExperimentValuation;
         $chart->labels(array_keys($eval1));                
@@ -489,10 +488,31 @@ print "<br><b>max:</b> ".$max;
               ->fill(false)
               ->color('#663399')
               ->backgroundColor('#663399');
-/*        $chart->dataset('по совокупности', 'line', array_values($eval2))
+        
+        return ['total_num'=>$total_num, 'eval1'=>$eval1, 
+                'chart'=>$chart, 'eval1_proc'=>$eval1_proc];
+    }
+        
+    /**
+     * Distribution by parts of speech 
+     * 
+     * @param type $lang_id
+     * @param type $table_name
+     * @param type $field
+     * @return type
+     */
+    public static function resultsSearchByPOS($lang_id, $table_name, $names, $limit, $field='eval_end') {
+        $total_num = DB::table($table_name)->whereLangId($lang_id)
+                       ->whereNotNull($field)->count();
+        
+        list($eval1,$eval1_proc) = self::calculateEvalLists($lang_id, $table_name, $field);
+        
+        $chart = new ExperimentValuation;
+        $chart->labels(array_keys($eval1));                
+        $chart->dataset('all', 'line', array_values($eval1))
               ->fill(false)
-              ->color('#00BFFF')
-              ->backgroundColor('#00BFFF');*/
+              ->color('#663399')
+              ->backgroundColor('#663399');
         
         return ['total_num'=>$total_num, 'eval1'=>$eval1, 
                 'chart'=>$chart, 'eval1_proc'=>$eval1_proc];
