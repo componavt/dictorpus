@@ -16,7 +16,6 @@
                 <td style="text-align: right">{{$v}}</td>
                 <td style="text-align: right">{{$c}}</td>
                 <td style="text-align: right">{{$results['eval1_proc'][$v]}}</td>
-                <td style="text-align: right">{{$results['eval2'][$v]}}</td>
             </tr>
             @endforeach
         </table>
