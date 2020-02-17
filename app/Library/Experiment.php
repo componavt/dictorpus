@@ -501,21 +501,37 @@ print "<br><b>max:</b> ".$max;
      * @param type $field
      * @return type
      */
-    public static function resultsSearchByPOS($lang_id, $table_name, $names, $limit, $field='eval_end') {
+    public static function resultsSearchByPOS($lang_id, $table_name, $names, $color_names, $limit, $field='eval_end') {
         $total_num = DB::table($table_name)->whereLangId($lang_id)
                        ->whereNotNull($field)->count();
-        
-        list($eval1,$eval1_proc) = self::calculateEvalLists($lang_id, $table_name, $field);
+        $default_evals = ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '1'];
+/*        $pos_coll = DB::table($table_name)
+                ->select('pos_id', DB::raw('count(*)'))
+                ->whereLangId($lang_id)
+                ->whereNotNull('ending')
+                ->groupBy('pos_id')
+                ->orderBy(DB::raw('count(*)'), 'DESC')
+                //->take($limit)
+                ->get();*/
+        $pos_coll = [11, 5, 1, 10, 6, 2];
         
         $chart = new ExperimentValuation;
-        $chart->labels(array_keys($eval1));                
-        $chart->dataset('all', 'line', array_values($eval1))
-              ->fill(false)
-              ->color('#663399')
-              ->backgroundColor('#663399');
+        $count=0;
+        foreach ($pos_coll as $pos_id) {          
+            $p_name = $names[$pos_id];
+            list($eval[$p_name],$eval_proc[$p_name]) = self::calculateEvalLists($lang_id, $table_name, $field, $default_evals, 'pos_id', $pos_id);
         
-        return ['total_num'=>$total_num, 'eval1'=>$eval1, 
-                'chart'=>$chart, 'eval1_proc'=>$eval1_proc];
+            if ($count==0) {
+                $chart->labels(array_keys($eval_proc[$p_name]));                
+            }
+            $chart->dataset($p_name, 'line', array_values($eval_proc[$p_name]))
+                  ->fill(false)
+                  ->color($color_names[$count])
+                  ->backgroundColor($color_names[$count]);
+            $count++;
+        }
+        return ['total_num'=>$total_num, 'eval'=>$eval, 
+                'chart'=>$chart, 'eval_proc'=>$eval_proc];
     }
 /*    
     public static function resultsSearchOld($lang_id, $table_name, $field='eval_end') {
@@ -540,16 +556,22 @@ print "<br><b>max:</b> ".$max;
                 'chart'=>$chart, 'eval1_proc'=>$eval1_proc, 'eval2_proc'=>$eval2_proc];
     }
 */    
-    public static function calculateEvalLists($lang_id, $table_name, $field) {
+    public static function calculateEvalLists($lang_id, $table_name, $field, $default_evals=[], $attr_name=NULL, $attr_id=NULL) {
         $coll = DB::table($table_name)
                 ->select(DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count"))
                 ->whereLangId($lang_id)
-                ->whereNotNull($field)
-                ->groupBy('eval')
+                ->whereNotNull($field);
+        if ($attr_name && $attr_id) { 
+            $coll=$coll->where($attr_name, $attr_id);
+        }
+        $coll = $coll->groupBy('eval')
                 ->orderBy('eval')
                 ->get();
         
         $list = $list_proc = [];
+        foreach($default_evals as $v) {
+            $list[$v] = $list_proc[$v] = 0;
+        }
         $sum=0;
         foreach ($coll as $row) {
             $list[(string)$row->eval] = $row->count;

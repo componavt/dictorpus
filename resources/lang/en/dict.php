@@ -209,7 +209,10 @@ return [
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
-    
+
+    'search_pos' => 'Part of speech search by endings',
+    'search_gramset' => 'Gramset search',
+        
     'tense' => 'Tense',
     'transitive' => 'transitive',
     'translation' => 'translation',

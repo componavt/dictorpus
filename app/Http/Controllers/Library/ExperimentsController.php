@@ -9,6 +9,8 @@ use App\Http\Requests;
 use Storage;
 use Carbon\Carbon;
 
+use Arrays;
+
 use App\Library\Experiment;
 
 use App\Models\Dict\Gramset;
@@ -342,10 +344,11 @@ print 'done.';
         $property = 'pos';
         $table_name = 'search_'.$property;
         $p_names = PartOfSpeech::getList();
+        $color_names = ['red', 'blue', 'green', 'orange', 'violet', 'black'];
         $list_limit = 6;
         
         $results[0] = Experiment::resultsSearch($search_lang, $table_name);
-        $results[6] = Experiment::resultsSearchByPOS($search_lang, $table_name, $p_names, $list_limit);
+        $results[6] = Experiment::resultsSearchByPOS($search_lang, $table_name, $p_names, $color_names, $list_limit);
 /*        $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
         
         $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'pos_id', $p_names);

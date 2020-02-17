@@ -1121,3 +1121,5 @@ UPDATE search_gramset set eval_affs=NULL, eval_affs_gen=NULL, win_affs=NULL wher
 
 CREATE INDEX lang_eval_ends ON search_gramset (lang_id, eval_ends);
 CREATE INDEX lang_eval_ends ON search_pos (lang_id, eval_ends);
+
+-- php artisan make:provider DictorpusServiceProvider

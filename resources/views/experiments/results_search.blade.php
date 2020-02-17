@@ -10,8 +10,13 @@
     
     <h3>Поиск по самым длинным конечным буквосочетаниям</h3>
     @include('experiments.results_search_one', ['results'=>$results[0]])
+    <h4>По группам</h4>
+    @include('experiments.results_search_group', ['results'=>$results[6]])
+    
 {{--    
     <h3>Поиск по всем конечным буквосочетаниям</h3>
+    @include('experiments.results_search_one', ['results'=>$results[5]])
+    <h4>По частям речи</h4>
     @include('experiments.results_search_one', ['results'=>$results[5]])
     
     @if (isset($results[1]))

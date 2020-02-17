@@ -166,6 +166,8 @@ return [
         ConsoleTVs\Charts\ChartsServiceProvider::class,
 //        PhpConsole\Laravel\ServiceProvider::class,  // debug
 //        Barryvdh\Debugbar\ServiceProvider::class,   //composer require barryvdh/laravel-debugbar  // also debugger
+        
+        App\Providers\DictorpusServiceProvider::class,
     ],
 
     /*
@@ -225,6 +227,8 @@ return [
 //        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         
         'User' => App\Models\User::class,
+        
+        'Arrays' => App\Helpers\Arrays::class,
     ],
 
 ];
