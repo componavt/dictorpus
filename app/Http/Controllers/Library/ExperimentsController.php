@@ -330,6 +330,8 @@ print 'done.';
     /**
      * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
      * 
+     * select pos_id, count(*) as count from search_pos where eval_end is not null and lang_id=1 group by pos_id order by count DESC;
+     * 
      * Связь частей речи и длин конечных буквосочетаний
      * select pos_id, length(ending) as len, count(*) as count from search_pos where ending is not null group by pos_id, len order by count DESC;
      * 
