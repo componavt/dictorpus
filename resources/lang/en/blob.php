@@ -73,19 +73,32 @@ return [
                     . '<dd>PhD, Junior Research Associate in the Linguistics Section, Institute of Linguistics, Literature and History, KarRC, RAS</dd><br>'
                     . '</dl>',
     'permission' => '',
-    'welcome_text' =>  '<p>Welcome to VepKar - an Open corpus of Veps and Karelian languages, 
-                        containing dictionaries and corpora of the Baltic-Finnish languages ​​of Karelia peoples.</p>
+    'welcome_text' =>  '<p>Welcome to VepKar — an Open corpus of Veps and Karelian languages, 
+                        containing dictionaries and corpora of the Baltic-Finnish languages of Karelia peoples.</p>
 
-                        <p>The VepKar project is a continuation of the work on <a href="http://vepsian.krc.karelia.ru">the Vepsian Language corpus</a>. 
-                        Employees of the Karelian Research Center of the Russian Academy of Sciences fill in the dictionary and add texts 
-                        to the Corpus of Vepsian and Karelian languages. The body of the Karelian language includes the Karelian Proper, 
-                        Livvi-Karelian and Ludic Karelian dialects proper, which have newly created writing tradition (“младописьменный”, mladopis\'mennyy type of languages).</p> 
+                        <p>The VepKar project is a continuation of the work 
+                        on <a href="http://vepsian.krc.karelia.ru">the Vepsian 
+                        Language corpus</a>. 
+                        Employees of the Karelian Research Centre 
+                        of the Russian Academy of Sciences fill in the dictionary and add texts 
+                        to the corpus of Veps and Karelian languages. 
+                        The corpus of the Karelian language includes the Karelian Proper, 
+                        Livvi-Karelian and Ludic Karelian dialects, 
+                        which have newly created writing tradition (“младописьменный”, mladopis\'mennyy type of languages).</p> 
 
-                        <p>The software shell of the VepKar case is an open source project <a href="https://github.com/componavt/dictorpus">Dictorpus</a> 
-                        developed by us and <a href="http://dictorpus.krc.karelia.ru/en/dumps">open data</a> 
-                        (<a href="https://creativecommons.org/licenses/by/4.0/">CC-BY</a>). 
-                        The name of the project "Dictorpus" indicates the union of the dictionary (DICTionary) and the corpus (cORPUS). 
-                        The program Dictorpus is designed for teams of linguists working with the languages ​​of the world. 
-                        At the moment, the program includes support and takes into account the features of Vepsian and Karelian languages.</p>
+                        <p>
+                        The developed corpus manager is an open source 
+                        project <a href="https://github.com/componavt/dictorpus">Dictorpus</a>.
+                        Also the database, including dictionaries and texts 
+                        (see <a href="http://dictorpus.krc.karelia.ru/en/dumps">the list of database dumps</a>), 
+                        have open license (<a href="https://creativecommons.org/licenses/by/4.0/">CC-BY</a>).</p>
+                        
+                        <p>
+                        The name of the project "Dictorpus" indicates the union of the dictionary (DICTionary) 
+                        and the corpus (cORPUS). 
+                        The program Dictorpus is designed for teams of linguists working with the languages​of the world. 
+                        At the moment, the program supports and 
+                        takes into account the features of Veps and Karelian languages.</p>
+                        
                         <p>See <a href="/publ/">the publication list</a>.</p>',
 ];
