@@ -17,7 +17,7 @@ return [
     'permission' => '<ul>'
                   . '<li><a href="/docs/permission_bible.pdf">The permission of the Bible Translation Institute to use the Veps publications published by the Institute for the Veps Corps</a></li><br>'
                   . '<li><a href="/docs/permission_bible_karelian.pdf">The permission of the Bible Translation Institute to use publications published by the Institute on Livvik and North Karelian dialects of the Karelian language for the VepKar project</a></li><br>'
-                  . '<li><a href="/docs/permission_periodika.pdf">Permission of the Periodica publishing house to use the materials of the Karelian newspaper Oma Mua, the Vep newspaper Kodima, the almanac Taival in Karelian and the Verez tullei almanac in the Vepsian language for use in the VepKar project</a></li>'
+                  . '<li><a href="/docs/permission_periodika.pdf">Permission of the Periodica publishing house to use the materials of the Karelian newspaper Oma Mua, the Vep newspaper Kodima, the almanac Taival in Karelian and the Verez tullei almanac in the Veps language for use in the VepKar project</a></li>'
                   . '</ul>',
     'choice_articles' => 'article|articles|articles',
     'choice_texts' => 'text|texts|texts',
@@ -42,11 +42,11 @@ return [
                  <p>the Russian Foundation for Basic Research, grant No. 18-012-00117, "Problems of construction of text corpus of minor peoples of Russia in the case of Open corpus of Veps and Karelian languages", 2018-2020.</p>',
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
                   <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
-    'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
+    'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548&plang=e">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
                     <i>Klyachko E.L., Sorokin A.A., Krizhanovskaya N.B., Krizhanovsky A.A., Ryazanskaya G.M.</i>
                     Computational Linguistics and Intellectual Technologies: papers from the Annual conference “Dialogue” (Moscow, May 29— June 1, 2019) Issue 18 (25). 2019</p>
                     
-                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18516">Semi-automatic methods for adding words to the dictionary of VepKar corpus based on inflectional rules extracted from Wiktionary</a><br>
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18516&plang=e">Semi-automatic methods for adding words to the dictionary of VepKar corpus based on inflectional rules extracted from Wiktionary</a><br>
                     <i>N.B. Krizhanovskaya, A.A. Krizhanovsky</i>. Proceedings of the international conference "Corpus linguistics ‒ 2019". Saint Petersburg. 2019. Pp. 211-217</p>',
     'participants' => '<dl>'
                     . '<dt><a href="http://mathem.krc.karelia.ru/member.php?id=804&plang=e">Andrey Krizhanovsky</a></dt>'
@@ -73,11 +73,11 @@ return [
                     . '<dd>PhD, Junior Research Associate in the Linguistics Section, Institute of Linguistics, Literature and History, KarRC, RAS</dd><br>'
                     . '</dl>',
     'permission' => '',
-    'welcome_text' =>  '<p>Welcome to VepKar — an Open corpus of Veps and Karelian languages, 
+    'welcome_text' =>  '<p>Welcome to VepKar — an Open corpus of Veps and Karelian languages 
                         containing dictionaries and corpora of the Baltic-Finnish languages of Karelia peoples.</p>
 
                         <p>The VepKar project is a continuation of the work 
-                        on <a href="http://vepsian.krc.karelia.ru">the Vepsian 
+                        on <a href="http://vepsian.krc.karelia.ru">the Veps 
                         Language corpus</a>. 
                         Employees of the Karelian Research Centre 
                         of the Russian Academy of Sciences fill in the dictionary and add texts 
@@ -96,7 +96,7 @@ return [
                         <p>
                         The name of the project "Dictorpus" indicates the union of the dictionary (DICTionary) 
                         and the corpus (cORPUS). 
-                        The program Dictorpus is designed for teams of linguists working with the languages​of the world. 
+                        The program Dictorpus is designed for teams of linguists working with the languages​ of the world. 
                         At the moment, the program supports and 
                         takes into account the features of Veps and Karelian languages.</p>
                         
