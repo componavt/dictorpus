@@ -487,10 +487,30 @@ print "<br><b>max:</b> ".$max;
         $chart->dataset('all', 'line', array_values($eval1))
               ->fill(false)
               ->color('#663399')
-              ->backgroundColor('#663399');
+//              ->dashed([10,5])
+              ->backgroundColor('#ffffff');
         
         return ['total_num'=>$total_num, 'eval1'=>$eval1, 
                 'chart'=>$chart, 'eval1_proc'=>$eval1_proc];
+    }
+        
+    public static function resultsSearchAllLangs($langs, $table_name, $colors, $field='eval_end') {
+        $chart = new ExperimentValuation;
+        
+        foreach ($langs as $lang_id => $lang_name) {
+            list($eval[$lang_name],$eval_proc[$lang_id]) = self::calculateEvalLists($lang_id, $table_name, $field);
+
+            if ($lang_id==1) {
+                $chart->labels(array_keys($eval_proc[$lang_id]));                
+            }
+            $chart->dataset($lang_name, 'line', array_values($eval_proc[$lang_id]))
+                  ->fill(false)
+                  ->color($colors[$lang_id])
+    //              ->dashed([10,5])
+//                  ->backgroundColor('#ffffff');
+                  ->backgroundColor($colors[$lang_id]);
+        }
+        return ['eval'=>$eval, 'eval_proc'=>$eval_proc, 'chart'=>$chart];
     }
         
     /**

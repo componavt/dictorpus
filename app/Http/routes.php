@@ -177,6 +177,7 @@ Route::group(
         Route::get('experiments/fill_search_gramset', 'Library\ExperimentsController@fillSearchGramset');
         Route::get('experiments/evaluate_search_gramset_by_affix', 'Library\ExperimentsController@evaluateSearchGramsetByAffix');
         Route::get('experiments/evaluate_search_table', 'Library\ExperimentsController@evaluateSearchPosGramset');
+        Route::get('experiments/results_search', 'Library\ExperimentsController@resultsSearch');
         Route::get('experiments/results_search_gramset', 'Library\ExperimentsController@resultsSearchGramset');
         Route::get('experiments/results_search_pos', 'Library\ExperimentsController@resultsSearchPOS');
         Route::get('experiments/write_winners', 'Library\ExperimentsController@writeWinners');

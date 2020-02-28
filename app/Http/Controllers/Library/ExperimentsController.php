@@ -327,6 +327,20 @@ print 'done.';
 print 'done.';        
 }
     
+    public function resultsSearch(Request $request) {
+        $langs[1] = Lang::getNameById(1);
+        $langs[4] = Lang::getNameById(4);
+        $property =  $request->input('property');
+        $table_name = 'search_'.$property;
+        $color_names = [1=>'red', 4=>'blue'];
+        
+        $results[0] = Experiment::resultsSearchAllLangs($langs, $table_name, $color_names);
+//print "<pre>";
+//        dd($results[0]);        
+        return view('experiments.results_search_all',
+                    compact('property', 'results'));
+    }
+    
     /**
      * select ROUND(eval_end,1) as eval1, count(*) from search_pos where eval_end is not null group by eval1 order by eval1;
      * 
