@@ -1392,7 +1392,7 @@ dd($wordforms);
             if (!$gramset) { continue; }
             $features = $gramset->toUniMorph($pos_code);
             if (!$features) { continue; }
-            $lines[] = $this->lemma."\t".$wordform->wordform."\t".join(';',$features);
+            $lines[] = $this->lemma."\t".$wordform->wordform."\t".$features;
         }
         return join("\n", $lines);
     }

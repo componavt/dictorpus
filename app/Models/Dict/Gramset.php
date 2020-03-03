@@ -389,8 +389,10 @@ class Gramset extends Model
                     $feats[] = $this->$name->unimorph;
                 } else { return false; } // если нет кода для какой-то грамемы, то эту словоформу не выгружаем (например, инфинитив 2)
             }
-        }        
-        return $feats;
+        }  
+//dd($feats);        
+//        return $feats;
+        return join(';',$feats);
     }
 }
 

@@ -53,4 +53,17 @@ class GramsetTest extends TestCase
         $expected = false;
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testToUnimorph()
+    {
+//        $id = 179; // active, 2nd participle 
+        $id = 309; // active, 2nd participle 
+        $pos_code = 'V';
+        $gramset = Gramset::find($id);
+        $result = $gramset->toUnimorph($pos_code);
+        
+        $expected = 'V.PTCP;PST;ACT;PL';
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }
