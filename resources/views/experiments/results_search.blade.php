@@ -16,10 +16,8 @@
         @include('experiments.results_search_group', ['results'=>$results[6]])
     @endif
     
-{{--    
+   
     <h3>Поиск по всем конечным буквосочетаниям</h3>
-    @include('experiments.results_search_one', ['results'=>$results[5]])
-    <h4>По частям речи</h4>
     @include('experiments.results_search_one', ['results'=>$results[5]])
     
     @if (isset($results[1]))
@@ -41,7 +39,7 @@
         <h3>{{trans('dict.num_shift_error', ['num'=>$results[3]['limit']])}}</h3>
         @include('experiments.shift_error', ['results'=>$results[3]])
     @endif
---}}
+
 @stop
 
 @section('footScriptExtra')

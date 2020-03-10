@@ -1,7 +1,7 @@
 <div class="row">    
     <div class="col-md-4">
         <p><b>Total number of word forms:</b> {{$results['total_num']}}</p> 
-
+        @if ($results['total_num'])
         <table class="table-bordered">
             <tr>
                 <th>Evaluation</th>
@@ -23,5 +23,6 @@
             {!! $results['chart']->container() !!}
         </div>
         {!! $results['chart']->script() !!}
+        @endif
     </div>    
 </div>    
