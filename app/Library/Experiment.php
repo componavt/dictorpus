@@ -691,36 +691,25 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     }
     
     /**
-     * !!!!TODO ДЛЯ грамсетов отобрать 10 самых частотных словоформ
-     * ИЛИ упорядочить не по алфавиту, а 
-     * select max(length(ending) as max from search_gramset;
+     * Выбор самых $limit частотных грамсетов
      * 
      * @param type $table_name
      * @param type $field
      * @param type $names
      * @return type
      */
-    public static function lenEndDistribution($lang_id, $table_name, $field, $names) {
+    public static function lenEndDistribution($lang_id, $table_name, $field, $names, $limit) {
         $name_coll = DB::table($table_name)
                 ->select($field, DB::raw('count(*) as count'))
                 ->whereLangId($lang_id)
                 ->whereNotNull('ending')
                 ->groupBy($field)
                 ->orderBy('count', 'DESC')
+                ->take($limit)
                 ->get();
-        $max = DB::table($table_name)
-                ->select(DB::raw('max(length(ending)) as max'))
-                ->whereLangId($lang_id)
-                ->whereNotNull('ending')
-                ->first()->max;
-//dd($max);        
-        $min = DB::table($table_name)
-                ->select(DB::raw('min(length(ending)) as min'))
-                ->whereLangId($lang_id)
-                ->whereNotNull('ending')
-                ->first()->min;
-        $list = [];
+        $list = $ids = [];
         foreach ($name_coll as $name) {
+            $ids[] = $name->{$field};
             $len_coll = DB::table($table_name)
                     ->select(DB::raw('length(ending) as len'), DB::raw('count(*) as count'))
                     ->whereLangId($lang_id)
@@ -734,6 +723,19 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             }
         }
         
+        $max = DB::table($table_name)
+                ->select(DB::raw('max(length(ending)) as max'))
+                ->whereLangId($lang_id)
+                ->whereIn($field, $ids)
+                ->whereNotNull('ending')
+                ->first()->max;
+//dd($max);        
+        $min = DB::table($table_name)
+                ->select(DB::raw('min(length(ending)) as min'))
+                ->whereIn($field, $ids)
+                ->whereLangId($lang_id)
+                ->whereNotNull('ending')
+                ->first()->min;
         $len_list = range($min,$max);
         foreach ($list as $p_name => $p_info) {
             foreach ($len_list as $l) {
@@ -745,7 +747,7 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
         }
 //dd($list);   
         $chart = self::lenEndDistributionChart($len_list, $list, $field);
-        return ['p_list'=>$list, 'len_list'=>$len_list, 'chart' => $chart];
+        return ['p_list'=>$list, 'len_list'=>$len_list, 'chart' => $chart, 'limit'=>$limit];
     }
     
     public static function lenEndDistributionChart($len_list, $p_list, $field) {        

@@ -407,19 +407,20 @@ print 'done.';
         $property = 'gramset';
         $table_name = 'search_'.$property;
         $p_names = Gramset::getList(0);
+        $limit = 9;
         
         $results[0] = Experiment::resultsSearch($search_lang, $table_name);
         $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
         $results[1] = Experiment::resultsSearch($search_lang, $table_name, 'eval_aff');
         $results[4] = Experiment::resultsSearch($search_lang, $table_name, 'eval_affs');
             
-        $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'gramset_id', $p_names);
+        $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'gramset_id', $p_names, $limit);
         
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
         if (Storage::disk('public')->exists($filename)) {
             $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
-            $results[3]['limit'] = 9;
+            $results[3]['limit'] = $limit;
         }
         return view('experiments.results_search',
                     compact('search_lang_name', 'property', 'results'));
