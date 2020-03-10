@@ -27,4 +27,13 @@ class PartOfSpeechTest extends TestCase
         $expected = 11;
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testNotChangeablePOSIdList()
+    {
+        $result = PartOfSpeech::notChangeablePOSIdList();
+//dd($result);        
+        $expected = [2,3,4,7,8,9,15,16,17,18,19];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

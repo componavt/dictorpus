@@ -1123,3 +1123,8 @@ CREATE INDEX lang_eval_ends ON search_gramset (lang_id, eval_ends);
 CREATE INDEX lang_eval_ends ON search_pos (lang_id, eval_ends);
 
 -- php artisan make:provider DictorpusServiceProvider
+
+-- php artisan make:migration change_field_gramset_id_in_search_gramset_table
+
+UPDATE search_gramset set ending=NULL, eval_end=NULL, eval_end_gen=NULL, affix=NULL, eval_aff=NULL, eval_aff_gen=NULL, win_end=NULL, win_aff=NULL, eval_affs=NULL, eval_affs_gen=NULL, win_affs=NULL, eval_ends=NULL, eval_ends_gen=NULL, win_end=NULL where lang_id=4;
+

@@ -29,7 +29,7 @@ class Experiment
         DB::table($table_name)->insert([
             'lang_id' => $search_lang,
             'wordform' => $wordform,
-            $property_name => $property_id
+            $property_name => $property_id ? $property_id : NULL
         ]);
         return 1;
     }
@@ -62,7 +62,7 @@ print "<br><b>max:</b> ".$max;
             foreach ($eval_ends as $w_id=>$eval_end) {
                 DB::statement("UPDATE $table_name SET ending='".$ending
                              ."', eval_end=$eval_end, eval_end_gen=$max"
-                             .", win_end=".$winners[$w_id]." where id=".$w_id);
+                             .", win_end=".($winners[$w_id] ? $winners[$w_id] : 'NULL')." where id=".$w_id);
             }
         }        
     }
@@ -729,8 +729,8 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                     ->groupBy('len')
                     ->orderBy('len')
                     ->get();
-            foreach ($len_coll as $l) {
-                $list[$names[$name->{$field}]][$l->len] = $l->count;
+            foreach ($len_coll as $l) {                
+                $list[isset($names[$name->{$field}]) ? $names[$name->{$field}] : NULL][$l->len] = $l->count;
             }
         }
         

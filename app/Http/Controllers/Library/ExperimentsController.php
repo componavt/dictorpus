@@ -130,7 +130,7 @@ print '$count records are writed.';
         
 //        DB::table('search_gramset')->all()->delete();
   //      DB::statement('ALTER TABLE search_gramset AUTO_INCREMENT = 1');
-        
+/*        
         $start = 0;
         $limit = 1000;
         $wordfoms_exists=true;
@@ -160,7 +160,25 @@ print ", $wordform_writed, $count</p>";
                 $start +=$limit;
             }
         }
-print '$count records are created.';        
+*/        
+        $pos_ids = PartOfSpeech::notChangeablePOSIdList();
+        $lemmas = Lemma::whereLangId($search_lang)
+                       ->where(DB::raw("length(lemma)"), ">", 2)
+                       ->where('lemma', 'not like', '% %')
+                       ->where('lemma','not like', '-%')
+                       ->where('lemma','not like', '=%')
+                       ->whereNotNull('pos_id')
+                       ->whereIn('pos_id', $pos_ids)
+                       ->groupBy('lemma')
+                       ->orderBy('lemma')->get();
+        
+        foreach ($lemmas as $lemma) {
+print "<P>lemma: ".$lemma->lemma.', '.$lemma->pos_id;
+            $lemma_writed = Experiment::writePosGramset($table_name, 'gramset_id', $search_lang, $lemma->lemma, NULL);
+            $count += $lemma_writed;
+print ", $lemma_writed, $count</p>";
+        }
+print "$count records are created.";        
     }
     
     /**

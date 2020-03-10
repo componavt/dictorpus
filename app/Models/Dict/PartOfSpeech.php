@@ -246,7 +246,28 @@ class PartOfSpeech extends Model
         return $out;
     }
     
-        
+    public static function notChangeablePOSList() {
+        $out = [];
+        foreach (self::all() as $pos) {
+            if (!$pos->isChangeable()) {
+                $out[] = $pos;
+            }
+        } 
+//dd($out);
+        return $out;
+    }
+    
+    public static function notChangeablePOSIdList() {
+        $out = [];
+        foreach (self::all() as $pos) {
+            if (!$pos->isChangeable()) {
+                $out[] = $pos->id;
+            }
+        } 
+//dd($out);
+        sort($out);
+        return $out;
+    }
 }
 
 // 
