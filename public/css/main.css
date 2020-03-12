@@ -506,6 +506,9 @@ h2 {
   white-space: pre-line;
 }
 
+.comment {
+    color: #337ab7;
+}
 @media screen and (max-width: 395px) {    
     .logo img {
         height: auto;
