@@ -876,8 +876,9 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             if (!isset($p_names[$node])) {
                 print "unknown $node";
             }            
-            $p_names[$node] = preg_replace("/, positive form/", "", $p_names[$node]);
-            $node_list[$node] = preg_replace('/\s+/','\n',$p_names[$node]).'\n\n'.$total;
+            $node_name = isset($p_names[$node]) ? $p_names[$node] : $node;
+            $node_name = preg_replace("/, positive form/", "", $node_name);
+            $node_list[$node] = preg_replace('/\s+/','\n',$node_name).'\n\n'.$total;
         }
         return [$node_list, $edge_list];
      }
