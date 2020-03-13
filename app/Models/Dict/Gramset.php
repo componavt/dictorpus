@@ -264,6 +264,8 @@ class Gramset extends Model
     
     public static function isIdForName($id) {
         $gramset = self::find($id);
+        if (!$gramset) {return NULL;}
+        
         return $gramset->parts_of_speech[0]->isName();
     }
 
