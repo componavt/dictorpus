@@ -10,7 +10,7 @@
     <h3>Поиск по самым длинным конечным буквосочетаниям</h3>
     @include('experiments.results_search_all_lang', ['results'=>$results[0]])
     
-    @if (isset($results[1]
+    @if (isset($results[1])
         <h3>Поиск по самым длинным псевдоокончаниям</h3>
         @include('experiments.results_search_all_lang', ['results'=>$results[1]])
     @endif
