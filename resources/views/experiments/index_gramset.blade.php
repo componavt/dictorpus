@@ -109,7 +109,7 @@
         </ul>
     </ul>
 @endif    
-    <p>Вывод результатов</p>
+    <p><a href="experiments/results_search?property=gramset">Вывод результатов</a></p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
         <li><a href="experiments/results_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
