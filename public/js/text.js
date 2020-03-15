@@ -35,23 +35,13 @@ function showLemmaLinked() {
 }
 
 function saveLemma(data) {
-/*    var lemma = data['lemma'];*/
     $.ajax({
         url: '/dict/lemma/store_simple', 
         data: data,
         type: 'GET',
         success: function(lemma_id){
             $("#modalAddLemma").modal('hide');
-            //$( "#lemma" ).val('');
             $( "#new_meanings_0__meaning_text__2_" ).val(null);
-/*            var newOption = new Option(lemma, lemma_id, false, false);
-            $('#choose-lemma').append(newOption).trigger('change');
-            $('#choose-lemma').trigger({
-                type: 'select2:select',
-                params: {
-                    data: {id: lemma_id, text: lemma}
-                }
-            });*/
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);
@@ -74,7 +64,6 @@ function addLemma(lang_id) {
                     wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
                     number: $( "#number option:selected" ).val(),
                     reflexive: $( "#reflexive" ).val()};
-//alert("/dict/lemma/store_simple?lang_id="+lang_id+"&lemma="+lemma+"&pos_id="+pos_id+"&meaning="+meaning);    
         saveLemma(data);
     });
     
@@ -96,18 +85,17 @@ function loadDataToWordformModal(text_id, w_id, wordform) {
                 .change(function () {
                     var lemma_id=$( "#choose-lemma option:selected" ).val();
                     if (lemma_id != null) {
-                    $.ajax({
-                        url: '/dict/wordform/create', 
-                        data: {lemma_id: lemma_id, text_id: text_id },
-                        type: 'GET',
-                        success: function(result){
-                            $("#addWordformFields").html(result);               
-                        },
-                        error: function() {
-                            alert('ERROR');
-                        }
-                    }); 
-/*                        $("#"+div_name).load(url+selected_val);*/
+                        $.ajax({
+                            url: '/dict/wordform/create', 
+                            data: {lemma_id: lemma_id, text_id: text_id },
+                            type: 'GET',
+                            success: function(result){
+                                $("#addWordformFields").html(result);               
+                            },
+                            error: function() {
+                                alert('ERROR');
+                            }
+                        }); 
                     }
                 })
                 .change();    
@@ -174,10 +162,8 @@ function changeWordBlock(text_id, w_id, meaning_id) {
  * @returns {undefined}
  */
 function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects) {
-/*    var route = '/dict/lemma/wordform/update' */
     var route = '/dict/lemma_wordform/store';
     var test_url = '?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&wordform='+ wordform +'&w_id='+w_id+'&dialects[]='+dialects;
-//alert(route + test_url);  
     
     $.ajax({
         url: route, 
@@ -189,7 +175,6 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
                gramset_id: gramset_id,
                dialects: dialects
               },
- //       method: 'POST',
         type: 'GET',
         success: function(result){       
             $("#modalAddWordform").modal('hide');
@@ -235,10 +220,8 @@ function addWordform(text_id, lang_id) {
         var lemma_id = $( "#choose-lemma option:selected" ).val();
         var meaning_id = $( "#choose-meaning option:selected" ).val();
         var gramset_id = $( "#choose-gramset option:selected" ).val();
-//        var sentence_id = $("#addWordformSentence s").attr('id');
         var w_id = $("#addWordformSentence .word-marked").attr('id');
         var dialects_obj = $("input[name=choose-dialect]:checked");
-//alert(dialects_obj);        
         var dialects = [];
         var dialect;
         for (var i=0; i<dialects_obj.length; i++) {
