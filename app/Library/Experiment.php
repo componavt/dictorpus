@@ -780,8 +780,10 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                     ->groupBy('win_end')
                     ->orderBy('count', 'DESC')
                     ->get();
-            foreach ($w_coll as $w) {        
-                $shift_list[$p->{$field}][$w->win_end] = $w->count;
+            foreach ($w_coll as $w) {  
+                $out = $p->{$field} ? $p->{$field} : 'NULL';
+                $in = $w->win_end ? $w->win_end : 'NULL';
+                $shift_list[$out][$in] = $w->count;
             }
         }
         return $shift_list;        
@@ -810,13 +812,28 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 continue;
             }
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
-            $out[$p_names[$p1]][$p_names[$p2]] = $count;
+            $p1_name = isset($p_names[$p1]) ? $p_names[$p1] : $p1;
+            $p2_name = isset($p_names[$p2]) ? $p_names[$p2] : $p2;
+            $out[$p1_name][$p2_name] = $count;
         }
 //dd($out);        
         return $out;
      }
      
-     public static function readShiftErrorsForDot($lang_id, $filename, $table_name, $property_id, $min_limit, $p_names, $total_limit) {
+    public static function totalProcessed($lang_id, $table_name, $property_id, $property_value) {
+        $total = DB::table($table_name)
+                  ->whereLangId($lang_id)
+                  ->whereNotNull('ending');
+        if (!$property_value || $property_value == 'NULL') {
+            $total = $total->whereNull($property_id);
+        } else {
+            $total = $total->where($property_id, $property_value);
+        }
+        return $total->count();       
+    }
+
+
+    public static function readShiftErrorsForDot($lang_id, $filename, $table_name, $property_id, $min_limit, $p_names, $total_limit) {
         $node_list = $totals = $edge_list = [];
         $file_content = Storage::disk('public')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
@@ -827,18 +844,10 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             }
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
             if (!isset( $totals[$p1])) {
-                $totals[(string)$p1] = DB::table($table_name)
-                          ->whereLangId($lang_id)
-                          ->whereNotNull('ending')
-                          ->where($property_id, $p1)
-                          ->count();
+                $totals[(string)$p1] = self::totalProcessed($lang_id, $table_name, $property_id, $p1);
             }
             if (!isset( $totals[$p2])) {
-                $totals[(string)$p2] = DB::table($table_name)
-                          ->whereLangId($lang_id)
-                          ->whereNotNull('ending')
-                          ->where($property_id, $p2)
-                          ->count();
+                $totals[(string)$p2] = self::totalProcessed($lang_id, $table_name, $property_id, $p2);
             }
             if ($total_limit && $totals[$p1]<=$total_limit) {
                 continue;
@@ -867,8 +876,9 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             if (!isset($p_names[$node])) {
                 print "unknown $node";
             }            
-            $p_names[$node] = preg_replace("/, positive form/", "", $p_names[$node]);
-            $node_list[$node] = preg_replace('/\s+/','\n',$p_names[$node]).'\n\n'.$total;
+            $node_name = isset($p_names[$node]) ? $p_names[$node] : $node;
+            $node_name = preg_replace("/, positive form/", "", $node_name);
+            $node_list[$node] = preg_replace('/\s+/','\n',$node_name).'\n\n'.$total;
         }
         return [$node_list, $edge_list];
      }

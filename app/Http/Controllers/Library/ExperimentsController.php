@@ -353,6 +353,10 @@ print 'done.';
         $color_names = [1=>'red', 4=>'blue'];
         
         $results[0] = Experiment::resultsSearchAllLangs($langs, $table_name, $color_names);
+        if ($property == 'gramset') {
+            $results[1] = Experiment::resultsSearchAllLangs($langs, $table_name, $color_names, 'eval_aff');
+            
+        }
 //print "<pre>";
 //        dd($results[0]);        
         return view('experiments.results_search_all',
