@@ -1128,3 +1128,9 @@ CREATE INDEX lang_eval_ends ON search_pos (lang_id, eval_ends);
 
 UPDATE search_gramset set ending=NULL, eval_end=NULL, eval_end_gen=NULL, affix=NULL, eval_aff=NULL, eval_aff_gen=NULL, win_end=NULL, win_aff=NULL, eval_affs=NULL, eval_affs_gen=NULL, win_affs=NULL, eval_ends=NULL, eval_ends_gen=NULL, win_end=NULL where lang_id=4;
 
+-- php artisan make:migration change_collate_of_fields_in_search_gramset_table
+UPDATE search_gramset set affix=NULL, eval_aff=NULL, eval_aff_gen=NULL, win_aff=NULL, eval_affs=NULL, eval_affs_gen=NULL, win_affs=NULL  where lang_id=4;
+
+ALTER TABLE search_gramset MODIFY ending VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_bin;
+ALTER TABLE search_gramset MODIFY affix VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_bin;
+ALTER TABLE lemma_wordform MODIFY affix VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_bin;

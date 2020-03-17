@@ -130,7 +130,7 @@ print '$count records are writed.';
         
 //        DB::table('search_gramset')->all()->delete();
   //      DB::statement('ALTER TABLE search_gramset AUTO_INCREMENT = 1');
-/*        
+        
         $start = 0;
         $limit = 1000;
         $wordfoms_exists=true;
@@ -160,7 +160,7 @@ print ", $wordform_writed, $count</p>";
                 $start +=$limit;
             }
         }
-*/        
+        
         $pos_ids = PartOfSpeech::notChangeablePOSIdList();
         $lemmas = Lemma::whereLangId($search_lang)
                        ->where(DB::raw("length(lemma)"), ">", 2)
