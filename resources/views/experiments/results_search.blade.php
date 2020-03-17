@@ -17,8 +17,10 @@
     @endif
     
    
-    <h3>Поиск по всем конечным буквосочетаниям</h3>
-    @include('experiments.results_search_one', ['results'=>$results[5]])
+    @if (isset($results[5]))
+        <h3>Поиск по всем конечным буквосочетаниям</h3>
+        @include('experiments.results_search_one', ['results'=>$results[5]])
+    @endif
     
     @if (isset($results[1]))
         <h3>Поиск по самым длинным псевдоокончаниям</h3>
