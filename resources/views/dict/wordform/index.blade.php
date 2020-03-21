@@ -11,7 +11,14 @@
 @stop
 
 @section('body')
+<div class="row">
+    <div class="col-sm-6 col-lg-5">
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/wordform/with_multiple_lemmas') }}">{{ trans('dict.wordforms_linked_many_lemmas') }}</a></p>
+    </div>
+    <div class="col-sm-6 col-lg-7">
+        <p class="comment" style="text-align: right">{!!trans('messages.search_comment')!!}</p>
+    </div>
+</div>
         
         @include('dict.wordform._search_form') 
 

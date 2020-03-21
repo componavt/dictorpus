@@ -11,7 +11,9 @@
     {!!Html::style('css/table.css')!!}
 @stop
 
-@section('body')        
+@section('body')   
+<div class="row">
+    <div class="col-sm-6 col-md-5 col-lg-4">
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('dict.list_long_lemmas') }}</a> 
             |
@@ -24,7 +26,11 @@
         @endif
 
         </p>
-
+    </div>
+    <div class="col-sm-6 col-md-7 col-lg-8">
+        <p class="comment" style="text-align: right">{!!trans('messages.search_comment')!!}</p>
+    </div>
+</div>
         @include('dict.lemma.search._lemma_form',['url' => '/dict/lemma/']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>

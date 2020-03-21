@@ -44,7 +44,7 @@ return [
     'reload' => 'reload',
     'save' => 'save',
     'search' => 'search',
-    'search_comment' => 'For inexact search in the text fields use the character % to replace any number of characters, the character _  to replace one character.',
+    'search_comment' => 'For inexact search in the text fields use a <span class="warning">percent %</span> to replace any number of characters, a <span class="warning"> underscore _</span>  to replace one character.',
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',
     'show_by' => 'by',

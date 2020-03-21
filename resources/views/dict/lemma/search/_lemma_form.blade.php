@@ -1,4 +1,3 @@
-        <p class="comment">{{trans('messages.search_comment')}}</p>
         {!! Form::open(['url' => $url,
                         'method' => 'get'])
         !!}

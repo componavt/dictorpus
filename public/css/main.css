@@ -507,7 +507,7 @@ h2 {
 }
 
 .comment {
-    color: #337ab7;
+    color: #666;
 }
 @media screen and (max-width: 395px) {    
     .logo img {

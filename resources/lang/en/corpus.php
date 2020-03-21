@@ -87,7 +87,7 @@ return [
     'text_help' => 'You can force the end of a sentence with |<br>You can divide words by the en dash –',
     'text_fragment' => 'Fragment of text',
     'text_has_checked_meaning' => 'The text is locked for editing, as It has checked up links with lemmas. Changing the text would result in the loss of relevance of the text to lemmas.',
-    'text_list' => 'Text list',
+    'text_list' => 'Texts',
     'text_not_found' => 'The text with ID=:id do not found',
     'text_removed' => 'Text ":name" is removed successfully.',
     'text_xml' => 'markup text',

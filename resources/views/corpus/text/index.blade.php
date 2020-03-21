@@ -1,7 +1,7 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('corpus.text_list') }}
 @stop
 
@@ -11,10 +11,10 @@
     {!!Html::style('css/table.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('corpus.text_list') }}</h1>
-        
-        <p style="text-align:right">
+@section('body')
+<div class="row">
+    <div class="col-sm-6 col-md-5 col-lg-4">
+        <p>
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
         @endif
@@ -23,6 +23,11 @@
             </a>
         @endif
         </p>
+    </div>
+    <div class="col-sm-6 col-md-7 col-lg-8">
+        <p class="comment" style="text-align: right">{!!trans('messages.search_comment')!!}</p>
+    </div>
+</div>
         
         @include('corpus.text._search_form',['url' => '/corpus/text/']) 
 
