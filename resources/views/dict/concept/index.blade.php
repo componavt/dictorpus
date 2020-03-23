@@ -38,7 +38,7 @@
             <tr>
                 <td data-th="ID">{{$concept->id}}</td>
                 <td data-th="{{ trans('messages.category') }}">{{$concept->concept_category_id}}</td>
-                <td data-th="{{ trans('dict.pos') }}">{{$concept->pos->name}}</td>
+                <td data-th="{{ trans('dict.pos') }}">{{$concept->pos ? $concept->pos->name: ''}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$concept->text_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$concept->text_ru}}</td>
                 <td data-th="{{ trans('dict.lemmas') }}">
@@ -50,8 +50,15 @@
                 </td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', ['is_button'=>true, 'route' => '/dict/concept/'.$concept->id.'/edit'])
-                    @include('widgets.form.button._delete', ['is_button'=>true, $route = 'concept.destroy', 'args'=>['id' => $concept->id]])
+                    @include('widgets.form.button._edit', [
+                        'is_button'=>true, 
+                        'without_text' => 1,
+                        'route' => '/dict/concept/'.$concept->id.'/edit'])
+                    @include('widgets.form.button._delete', [
+                        'is_button'=>true, 
+                        'without_text' => 1,
+                        'route' => 'concept.destroy', 
+                        'args'=>['id' => $concept->id]])
                 </td>
                 @endif
             </tr>

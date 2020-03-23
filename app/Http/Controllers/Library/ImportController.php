@@ -73,10 +73,13 @@ print "<pre>";
         $filename = 'import/concept_dict_b.txt';
         $file_content = Storage::disk('local')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
-print "<pre>";        
+print "<pre>";   
+//dd($file_lines);
         list($categories, $blocks) = ConceptParser::readBlocks($file_lines);
-
-        ConceptParser::saveCategories($categories);        
+//dd($categories);        
+//dd($blocks);
+        ConceptParser::saveCategories($categories); 
+print "Категории сохранены.";        
         ConceptParser::processBlocks($blocks);
 //dd($blocks['A11']);        
     }

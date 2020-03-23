@@ -138,6 +138,11 @@ class DialectController extends Controller
         $lang_id = (int)$request->input('lang_id');
 
         $dialect = Dialect::find($id); 
+        if (!$dialect) {
+            return Redirect::to('/dict/dialect/')
+                           ->withErrors('messages.record_not_exists');
+        }
+        
         $lang_values = Lang::getList();
         
         $url_args = ['lang_id'=>$lang_id];
@@ -218,8 +223,8 @@ class DialectController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/dict/dialect/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/dict/dialect/')
+                           ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/dict/dialect/')
                   ->withSuccess($result['message']);

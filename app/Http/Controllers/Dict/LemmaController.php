@@ -270,8 +270,11 @@ class LemmaController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        $lemma = Lemma::find($id);
-        
+        $lemma= Lemma::find($id);
+        if (!$lemma) {
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
+                           ->withErrors('error.no_lemma');
+        }
         $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
         $lang_values = Lang::getList();
 //        $gramset_values = ['NULL'=>'']+Gramset::getList($lemma->pos_id,$lemma->lang_id,true);
@@ -346,6 +349,10 @@ class LemmaController extends Controller
     public function editExamples(Request $request, $id)
     {
         $lemma = Lemma::find($id);
+        if (!$lemma) {
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
+                           ->withErrors('error.no_lemma');
+        }
         
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
         $meanings = $lemma->meanings;
@@ -382,6 +389,10 @@ class LemmaController extends Controller
     public function editExample(Request $request, $id, $example_id)
     {
         $lemma = Lemma::find($id);
+        if (!$lemma) {
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
+                           ->withErrors('error.no_lemma');
+        }
         
         list($sentence, $meanings, $meaning_texts) = 
                 Text::preparationForExampleEdit($example_id);
@@ -415,7 +426,11 @@ class LemmaController extends Controller
     public function update(Request $request, $id)
     {
        // https://laravel.com/api/5.1/Illuminate/Database/Eloquent/Model.html#method_touch
-        $lemma= Lemma::findOrFail($id);
+        $lemma= Lemma::find($id);
+        if (!$lemma) {
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
+                           ->withErrors('error.no_lemma');
+        }
         
         $this->validate($request, [
             'lemma'  => 'required|max:255',
@@ -523,7 +538,7 @@ class LemmaController extends Controller
         $lemma = Lemma::find($id);
         if (!$lemma) {
             return Redirect::to('/dict/lemma/'.($this->args_by_get))
-                           ->withErrors(\Lang::get('messages.record_not_exists'));
+                           ->withErrors('error.no_lemma');
         }
 //dd($lemma->revisionHistory);        
         return view('dict.lemma.history')
@@ -847,7 +862,10 @@ class LemmaController extends Controller
      */
     function reloadStemAffixByWordforms($id) {
         $lemma = Lemma::find($id);
-        if (!$lemma) { return '';}
+        if (!$lemma) {
+            return Redirect::to('/dict/lemma/'.($this->args_by_get))
+                           ->withErrors('error.no_lemma');
+        }
         
         list($max_stem, $affix) = $lemma->getStemAffixByWordforms();
         if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix) {
