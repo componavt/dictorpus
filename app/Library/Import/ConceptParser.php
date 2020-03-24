@@ -296,26 +296,31 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
      */
     public static function addLemmas($pos_id, $lemmas, $lemma_places, $concept) {
         $lang_lemmas = $lang_meanings = [];
-        $meaning_lang = Lang::getIDByCode('ru');
+        $meaning_lang_ru = Lang::getIDByCode('ru');
+        $meaning_lang_en = Lang::getIDByCode('en');
         foreach ($lemma_places as $lemma_num => $lemma_langs) {
-            if (Grammatic::hasPhonetics($lemmas[$lemma_num])) {
-                $phonetics = Grammatic::toRightForm($lemmas[$lemma_num], false);
-                $lemmas[$lemma_num] = Grammatic::toRightForm($lemmas[$lemma_num]);
+            $phonetics = Grammatic::toRightForm($lemmas[$lemma_num], false);
+            $lemmas[$lemma_num] = Grammatic::toRightForm($lemmas[$lemma_num]);
+            if ($phonetics == $lemmas[$lemma_num]) {
+                $phonetics = '';
             }
-
             foreach ($lemma_langs as $lang_id => $dialects) {
 //dd($pos_id, $lemmas[$lemma_num], $lang_id, $dialects);   
                 $lemma_coll = Lemma::wherePosId($pos_id)
                                 ->where('lemma', 'like', $lemmas[$lemma_num])
                                 ->whereLangId($lang_id)->get();
 //dd($lemma_coll);       
-                list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text, $meaning_lang, $lang_id);
+                list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id);
                 if (!isset($lemma_obj) || !$lemma_obj) {
                     $lemma_obj = Lemma::store($lemmas[$lemma_num], $pos_id, $lang_id);
-                    $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, [$meaning_lang => $concept->text]);
+                    $meaning_texts = [$meaning_lang_ru => $concept->text_ru, $meaning_lang_en => $concept->text_en];
+                    $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, $meaning_texts);
+                } elseif ($concept->text_en && !$meaning_obj->meaningTexts()->where('lang_id',$meaning_lang_en)->first()) {
+                    $meaning_text_obj = MeaningText::create(['meaning_id' => $meaning_obj->id, 'lang_id' => $meaning_lang_en, 'meaning_text' => $concept->text_en]);
+//                    exit(1);
                 }
                 $lemma_obj->addDialectLinks($dialects);
-                if (isset($phonetics)) {
+                if ($phonetics) {
                     LemmaFeature::store($lemma_obj->id, ['phonetics' => $phonetics]);
                 }
                 if (!$meaning_obj->concepts()->where('concept_id', $concept->id)->first()) {
@@ -367,7 +372,7 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
             if (sizeof($lemma_nums) < 2) {
                 continue;
             }
-            print "<p>$place_num: " . join(', ', $lemma_nums) . "; " . join(', ', $place_dialects[$place_num]['langs']) . "</p>";
+//print "<p>$place_num: " . join(', ', $lemma_nums) . "; " . join(', ', $place_dialects[$place_num]['langs']) . "</p>";
             foreach ($place_dialects[$place_num]['langs'] as $lang_id) {
                 for ($i = 0; $i < sizeof($lemma_nums) - 1; $i++) {
                     for ($j = $i + 1; $j < sizeof($lemma_nums); $j++) {

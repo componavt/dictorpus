@@ -289,6 +289,27 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testToRightFormN() {
+        $word = "päivińka";
+        $result = Grammatic::toRightForm($word);
+        $expected = "päivinka";
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testToRightFormNFalse() {
+        $word = "päivińka";
+        $result = Grammatic::toRightForm($word,false);
+        $expected = "päivińka";
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testToRightFormPaivuFalse() {
+        $word = "päivü";
+        $result = Grammatic::toRightForm($word,false);
+        $expected = "päivü";
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testMaxStem() {
         $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
         $result = Grammatic::maxStem($stems);
@@ -482,7 +503,7 @@ class GrammaticTest extends TestCase
         $template = "sur|’ (-en, ’t, -id)";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
 //dd($result);        
-        $expected = [0=>['sur’', 'sure', 'sure', 'sur’t', 'suri', ''],
+        $expected = [0=>['sur’', 'sure', 'sur', 'sur’t', 'suri', ''],
             1=>null, 2=>'sur', 3=>'’'];
         $this->assertEquals( $expected, $result);        
     }
@@ -538,7 +559,7 @@ class GrammaticTest extends TestCase
     public function testParseLemmaField()
     {
         $lemma_field="abei|";
-        $data = ['lemma'=>$lemma_field, 'lang_id'=>null, 'pos_id'=>null, 'dialect_id'=>null];
+        $data = ['lemma'=>$lemma_field, 'lang_id'=>null, 'pos_id'=>null, 'dialect_id'=>null, 'wordform_dialect_id'=>null];
         $result = Grammatic::parseLemmaField($data);
        
         $expected = ['abei','','abei','', false, null];

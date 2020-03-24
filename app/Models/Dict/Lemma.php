@@ -127,8 +127,7 @@ class Lemma extends Model
     /**
      * @return String
      */
-    public function getBase($base_n, $dialect_id=null, $bases=null) {
-//print         
+    public function getBase($base_n, $dialect_id=null, $bases=null) {        
         $base = $this->getBaseFromDB($base_n, $dialect_id);
 
         if ($base) {
@@ -388,6 +387,8 @@ class Lemma extends Model
         $this-> wordforms()->detach();
         $this-> labels()->detach();
         $this-> phraseLemmas()->detach();
+        $this-> dialects()->detach();
+        $this-> places()->detach();
         
         foreach ($this->variants as $lemma) {
             $lemma->variants()->detach($this->id);

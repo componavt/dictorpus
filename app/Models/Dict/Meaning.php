@@ -140,6 +140,9 @@ class Meaning extends Model
         DB::table('meaning_text')
           ->where('meaning_id',$this->id)->delete();
 
+        DB::table('concept_meaning')
+          ->where('meaning_id',$this->id)->delete();
+
         foreach ($this->meaningTexts as $meaning_text) {
             $meaning_text -> delete();
         }
@@ -161,7 +164,7 @@ class Meaning extends Model
     {
         $mean_langs = [];
         $meaning_texts = $this->meaningTexts()->get();
-       if ($code) {
+        if ($code) {
             $lang = Lang::where('code',$code)->first();
             if ($lang) {
                 $meaning_texts_by_code = $this->meaningTexts()->where('lang_id',$lang->id);
