@@ -223,7 +223,7 @@ return [
     'variants' => 'phonetic variants',
     'verb' => 'verb',
     'voice' => 'voice',
-    'wiki_photo' => 'Photo from Wikimedia Commons',
+    'wiki_photo' => 'Image from Wikimedia Commons',
     'wordform' => 'wordform',
     'wordform_comment' => 'Number of wordforms with grammatical attributes [+ Number of wordforms without grammatical attributes]',
     'wordforms' => 'wordforms',

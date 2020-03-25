@@ -39,7 +39,7 @@ return [
     'invalid_id' => 'Invalid identifier',
     'limit_num' => 'number of records',
     'of' => 'of',
-    'photo' => 'photo',
+    'photo' => 'image',
     'records' => 'records',
     'record_not_exists' => 'Record does not exists.',
     'reload' => 'reload',
