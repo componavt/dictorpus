@@ -1134,3 +1134,5 @@ UPDATE search_gramset set affix=NULL, eval_aff=NULL, eval_aff_gen=NULL, win_aff=
 ALTER TABLE search_gramset MODIFY ending VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_bin;
 ALTER TABLE search_gramset MODIFY affix VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_bin;
 ALTER TABLE lemma_wordform MODIFY affix VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_bin;
+
+-- php artisan make:migration create_label_meaning_table --table=label_meaning
