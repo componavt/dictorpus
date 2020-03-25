@@ -204,6 +204,8 @@ return [
     'right_sort' => 'by final letters',
     
     'select_category' => 'Select a category',
+    'select_concept' => 'Select a concept',
+    'select_concept_category' => 'Select a concept category',
     'select_dialect' => 'Select a dialect',
     'select_gramset' => 'Select a set of grammatical attributes',
     'select_lang' => 'Select a language',

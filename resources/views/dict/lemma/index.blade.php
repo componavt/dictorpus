@@ -132,6 +132,7 @@
     toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}');
     selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.select_dialect') }}');
+    selectConcept('search_concept_category', 'search_pos', '{{ trans('dict.select_concept') }}', true);
 @stop
 
 

@@ -205,6 +205,8 @@ return [
     'right_sort' => 'по конечным буквам',
     
     'select_category' => 'Выберите категорию',
+    'select_concept' => 'Выберите понятие',
+    'select_concept_category' => 'Выберите категорию понятий',
     'select_dialect' => 'Выберите диалект',
     'select_gramset' => 'Выберите набор грамматических признаков',
     'select_lang' => 'Выберите язык',

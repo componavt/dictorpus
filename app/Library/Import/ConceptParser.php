@@ -246,7 +246,7 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
                 $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas'], $place_dialects);
 //dd($lemma_dialects);      
                 list($lang_lemmas, $lang_meanings) = self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], $lemma_dialects, $concept_obj);
-                self::addSynonims($concept_block['place_lemmas'], $lang_meanings, $place_dialects);
+                //self::addSynonims($concept_block['place_lemmas'], $lang_meanings, $place_dialects);
 //dd($lang_lemmas);                
                 self::addPhoneticVariants($lang_lemmas);
                 self::addTranslations($lang_meanings);

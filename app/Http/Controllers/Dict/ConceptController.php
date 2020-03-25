@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Controller;
+use LaravelLocalization;
+use Response;
 
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
@@ -159,5 +161,43 @@ class ConceptController extends Controller
             return Redirect::to('/dict/concept/')
                   ->withSuccess($result['message']);
         }
+    }
+    
+    /**
+     * Gets list of concepts for drop down list in JSON format
+     * Test url: /dict/concept/list?category_id=A11
+     * 
+     * @return JSON response
+     */
+    public function conceptList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $concept_text = '%'.$request->input('q').'%';
+        $category_id = $request->input('category_id');
+        $pos_id = (int)$request->input('pos_id');
+
+        $list = [];
+        $concepts = Concept::where(function($q) use ($concept_text){
+                            $q->where('text_en','like', $concept_text)
+                              ->orWhere('text_ru','like', $concept_text);
+                         });
+        if ($category_id) {                 
+            $concepts = $concepts ->where('concept_category_id',$category_id);
+        }
+        
+        if ($pos_id) {                 
+            $concepts = $concepts ->where('pos_id',$pos_id);
+        }
+        
+        $concepts = $concepts->orderBy('text_'.$locale)->get();
+                         
+        foreach ($concepts as $concept) {
+            $list[]=['id'  => $concept->id, 
+                     'text'=> $concept->text];
+        }  
+//dd($list);        
+//dd(sizeof($concepts));
+        return Response::json($list);
     }
 }

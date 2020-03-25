@@ -20,6 +20,8 @@ use LaravelLocalization;
 use App\Library\Grammatic\VepsName;
 use App\Models\User;
 
+use App\Models\Dict\Concept;
+use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Dialect;
 //use App\Models\Dict\Gram;
 //use App\Models\Dict\GramCategory;
@@ -86,9 +88,12 @@ class LemmaController extends Controller
         $lang_values = Lang::getListWithQuantity('lemmas');
         $gramset_values = Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
         $dialect_values = Dialect::getList($url_args['search_lang']);
-        
+        $concept_category_values = ConceptCategory::getList();
+        $concept_values = [NULL=>'']+Concept::getList($url_args['search_concept_category'], $url_args['search_pos']);
+//dd($url_args['search_concept'], $concept_values);
         return view('dict.lemma.index',
-                compact('dialect_values', 'gramset_values', 'lang_values', 'lemmas', 'numAll',
+                compact('concept_values', 'concept_category_values', 'dialect_values', 
+                        'gramset_values', 'lang_values', 'lemmas', 'numAll',
                         'pos_values', 'args_by_get', 'url_args'));
     }
 

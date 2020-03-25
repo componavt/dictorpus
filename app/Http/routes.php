@@ -99,6 +99,7 @@ Route::group(
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
 
+        Route::get('dict/concept/list', 'Dict\ConceptController@conceptList');
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
         Route::get('dict/gramset/list', 'Dict\GramsetController@gramsetList');
 

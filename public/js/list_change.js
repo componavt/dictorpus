@@ -130,3 +130,29 @@ function selectGramset(lang_var, pos_var, placeholder='', allow_clear=false){
     });   
 }
 
+function selectConcept(category_var, pos_var, placeholder='', allow_clear=false){
+    $(".select-concept").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/dict/concept/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              category_id: $( "#"+category_var+" option:selected" ).val(),
+              pos_id: $( "#"+pos_var+" option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+

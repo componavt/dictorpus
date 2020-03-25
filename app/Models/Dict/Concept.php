@@ -69,13 +69,22 @@ class Concept extends Model
      * 
      * @return Array [<key> => <value>,..]
      */
-    public static function getList()
+    public static function getList($category_id=NULL, $pos_id=NULL)
     {     
-        $objs = self::orderBy('id')->get();
+        $objs = self::orderBy('id');
         
+        if ($category_id) {                 
+            $objs = $objs ->where('concept_category_id',$category_id);
+        }
+        
+        if ($pos_id) {                 
+            $objs = $objs ->where('pos_id',$pos_id);
+        }
+        
+        $objs = $objs->get();
         $list = array();
         foreach ($objs as $row) {
-            $list[$row->id] = $row->name;
+            $list[$row->id] = $row->text;
         }
         
         return $list;         

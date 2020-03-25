@@ -1147,6 +1147,7 @@ dd($wordforms);
         $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning']);
         $lemmas = self::searchByLabel($lemmas, $url_args['search_label']);
         $lemmas = self::searchByConcept($lemmas, $url_args['search_concept']);
+        $lemmas = self::searchByConceptCategory($lemmas, $url_args['search_concept_category']);
         $lemmas = self::searchByDialects($lemmas, $url_args['search_dialects']);
 
         $lemmas = $lemmas
@@ -1236,6 +1237,25 @@ dd($wordforms);
                             $query->select('meaning_id')
                             ->from('concept_meaning')
                             ->where('concept_id', $concept_id);
+                        });
+                    });
+    }
+    
+    public static function searchByConceptCategory($lemmas, $concept_category_id) {
+        if (!$concept_category_id) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query) use ($concept_category_id){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($q1) use ($concept_category_id){
+                            $q1->select('meaning_id')
+                            ->from('concept_meaning')
+                            ->whereIn('concept_id', function($q2) use ($concept_category_id) {
+                                $q2->select('id')
+                                ->from('concepts')
+                                ->where('concept_category_id', $concept_category_id);
+                            });
                         });
                     });
     }
@@ -1499,6 +1519,7 @@ dd($wordforms);
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
                     'search_affix'    => $request->input('search_affix'),
+                    'search_concept_category'  => $request->input('search_concept_category'),
                     'search_concept'  => (int)$request->input('search_concept'),
                     'search_dialects' => (array)$request->input('search_dialects'),
                     'search_gramset'  => (int)$request->input('search_gramset'),

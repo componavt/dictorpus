@@ -503,12 +503,21 @@ h2 {
 }
 
 .select2-selection li {
-  white-space: pre-line;
+    white-space: pre-line;
 }
 
 .comment {
     color: #666;
 }
+
+.search-form div {
+    min-height: 49px;  
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    margin-left: 5px;
+}
+
 @media screen and (max-width: 395px) {    
     .logo img {
         height: auto;

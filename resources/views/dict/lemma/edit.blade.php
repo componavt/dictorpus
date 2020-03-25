@@ -44,7 +44,7 @@
     toggleSpecial();
     addMeaning();
     posSelect();
-    langSelect();
+/*    langSelect();*/
 
     selectWithLang('.select-wordform-dialect', "/dict/dialect/list", 'lang_id', '{{ trans('dict.select_dialect') }}');
     selectWithLang('.select-dialects', "/dict/dialect/list", 'lang_id', '{{ trans('dict.select_dialect') }}');

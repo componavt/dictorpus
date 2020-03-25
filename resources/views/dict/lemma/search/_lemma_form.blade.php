@@ -1,7 +1,7 @@
         {!! Form::open(['url' => $url,
                         'method' => 'get'])
         !!}
-<div class="row">
+<div class="row search-form">
     <div class="col-sm-1">
             @include('widgets.form.formitem._text',
                     ['name' => 'search_id',
@@ -44,21 +44,36 @@
                      'value' =>$url_args['search_pos'],
                      'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
     </div>
+    @if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
     <div class="col-sm-6 col-md-4">
-            @if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
                 @include('widgets.form.formitem._select', 
                         ['name' => 'search_gramset', 
                          'values' =>$gramset_values,
                          'value' =>$url_args['search_gramset'],
                          'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
-            @endif
     </div>
+    @endif
     <div class="col-sm-6 col-md-4">
         @include('widgets.form.formitem._select2',
                 ['name' => 'search_dialects',
                  'values' =>$dialect_values,
                  'value' =>$url_args['search_dialects'],
                  'class'=>'select-dialects form-control']) 
+    </div>
+    <div class="col-sm-6 col-md-4">
+        @include('widgets.form.formitem._select',
+                ['name' => 'search_concept_category',
+                 'values' => $concept_category_values,
+                 'value' =>$url_args['search_concept_category'],
+                 'attributes'=>['placeholder' => trans('dict.select_concept_category') ]]) 
+    </div>
+    <div class="col-sm-6 col-md-4">
+        @include('widgets.form.formitem._select2',
+                ['name' => 'search_concept', 
+                 'is_multiple' => false,
+                 'values' => $concept_values,
+                 'value' => $url_args['search_concept'],
+                 'class'=>'select-concept form-control']) 
     </div>
         
     <div class="col-sm-6 col-md-4 search-button-b">       
@@ -72,7 +87,6 @@
     </div>
 </div>      
         {!! Form::hidden('search_label', $url_args['search_label']) !!}        
-        {!! Form::hidden('search_concept', $url_args['search_concept']) !!}        
         {!! Form::close() !!}
 
         
