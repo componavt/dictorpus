@@ -61,7 +61,7 @@ class ConceptParser {
                 continue;
             }
 
-            self::checkWrongSymbols($line);
+            self::checkWrongSymbols($line, $count);
             if ($block_line_num == 0) { // category
                 $block_line_num++;
                 if (preg_match("/^([ABC]\d{1,3})\s*-\s*(.+)$/", $line, $regs)) {
@@ -116,7 +116,7 @@ class ConceptParser {
         return [$categories, $blocks];
     }
 
-    public static function checkWrongSymbols($line) {
+    public static function checkWrongSymbols($line, $count) {
         if (preg_match("/[^a-zäöüčšž’0-9а-яё\|\-\?\s\,\;\(\)\}\{\:\.\/i̮i̬ń΄u̯ŕĺśź~ηć]/iu", $line)) { //sulaimi(~e)
             print "<p>В строке $count недопустимый символ<br>$line</p>";
         }
