@@ -12,7 +12,7 @@ use App\Models\Dict\Lemma;
 class Concept extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['id', 'concept_category_id', 'pos_id', 'text_en', 'text_ru'];
+    protected $fillable = ['id', 'concept_category_id', 'pos_id', 'text_en', 'text_ru', 'wiki_photo'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 

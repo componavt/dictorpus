@@ -21,5 +21,9 @@
                 ['name' => 'text_ru', 
                  'title'=>trans('dict.name').' '.trans('messages.in_russian')])
                                 
+        @include('widgets.form.formitem._text', 
+                ['name' => 'wiki_photo', 
+                 'title'=>trans('dict.wiki_photo')])
+                                
 
 @include('widgets.form.formitem._submit', ['title' => $submit_title])

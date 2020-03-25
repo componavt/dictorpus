@@ -1,8 +1,27 @@
+<div class='row' style='border-top: 1px #aaa dashed'>
+    <div class='col-sm-4'>
         <h3>@include('widgets.form.formitem._text',
                    ['name' => 'ex_meanings['.$meaning->id.'][meaning_n]',
                     'value'=> $meaning->meaning_n,
                     'attributes'=>['size' => 2],
                     'tail' => trans('dict.meaning')])</h3>
+    </div>
+{{--    <div class='col-sm-4'>
+        @include('widgets.form.formitem._select',
+                ['name' => 'concept_category_id',
+                 'values' => $concept_category_values,
+                 'value' =>$concept_category_id,
+                 'attributes'=>['placeholder' => trans('dict.select_concept_category') ]]) 
+    </div>--}}
+    <div class='col-sm-8'>
+        <br>@include('widgets.form.formitem._select2',
+                ['name' => 'ex_meanings['.$meaning->id.'][concepts]', 
+                 'values' => $concept_values,
+                 'value' => $meaning->concepts->pluck('id')->toArray(),
+                 'class'=>'select-concept form-control']) 
+    </div>
+</div>
+
                 <table class="table-interpretations-translations">
                     <tr>
                         <th>{{ trans('dict.lang') }}</th>

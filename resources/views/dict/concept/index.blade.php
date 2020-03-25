@@ -28,6 +28,7 @@
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
+                <th>{{ trans('messages.photo') }}</th>
                 @if (User::checkAccess('dict.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -48,6 +49,7 @@
                     0
                     @endif
                 </td>
+                <td data-th="{{ trans('messages.photo') }}">{{$concept->wiki_photo ? '+' : ''}}</td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit', [

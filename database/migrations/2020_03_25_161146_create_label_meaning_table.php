@@ -30,6 +30,6 @@ class CreateLabelMeaningTable extends Migration
      */
     public function down()
     {
-        Schema::drop('label_lemma');
+        Schema::drop('label_meaning');
     }
 }

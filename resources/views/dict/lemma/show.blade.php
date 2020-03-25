@@ -104,12 +104,14 @@
             <tr>
                 <td>
                     <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
+                    
+                    @include('dict.lemma.show.meaning.concepts')
+                    
+                    @include('dict.lemma.show.meaning.texts')
 
-                    @include('dict.lemma.show.meaning_texts')
+                    @include('dict.lemma.show.meaning.relations')
 
-                    @include('dict.lemma.show.meaning_relations')
-
-                    @include('dict.lemma.show.meaning_translations')
+                    @include('dict.lemma.show.meaning.translations')
                 </td>
                 <td>
                     <img class="img-loading" id="img-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">

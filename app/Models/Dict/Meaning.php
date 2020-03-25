@@ -301,10 +301,13 @@ class Meaning extends Model
      * @return NULL
      */
     public static function updateLemmaMeanings($meanings){
+//dd($meanings);        
         if (!$meanings || !is_array($meanings)) {
             return;
         }
         foreach ($meanings as $meaning_id => $meaning) {
+//print "<p>".$meaning['meaning_n'];  
+//dd($meaning);
             $meaning_obj = self::find($meaning_id);
 
             self::updateLemmaMeaningTexts($meaning['meaning_text'], $meaning_id);
@@ -313,6 +316,8 @@ class Meaning extends Model
 
             $meaning_obj->updateMeaningTranslations(isset($meaning['translation']) ? $meaning['translation'] : []);
 
+            $meaning_obj->updateConcepts(isset($meaning['concepts']) ? $meaning['concepts'] : []);
+            
             // is meaning has any meaning texts or any relations
             if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count()) { 
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
@@ -402,6 +407,22 @@ class Meaning extends Model
                                        ['meaning2_id'=>$this->id]);
             }
         }
+    }
+    
+    /**
+     * Updates array of meaning concepts 
+     *
+     * @return NULL
+     */
+    public function updateConcepts($concepts)
+    {
+        // removes all concepts from this meaning
+        $this->concepts()->detach();
+        if (!is_array($concepts) || !sizeof($concepts)) {
+            return;
+        }
+//dd($concepts);        
+        $this->concepts()->attach($concepts);
     }
     
     public function chooseRelevance($text_id, $w_id, $old_relevance=1) {

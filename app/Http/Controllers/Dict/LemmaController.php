@@ -335,9 +335,10 @@ class LemmaController extends Controller
         $lemma_variants = $lemma->variants->pluck('lemma', 'id')->toArray();
         $dialect_values = Dialect::getList($lemma->lang_id);
         $dialects_value = $lemma->dialects->pluck('id')->toArray();
+        $concept_values = Concept::getList(NULL, $lemma->pos_id); //[NULL=>'']+
         
         return view('dict.lemma.edit',
-                    compact('all_meanings', 'lang_values', 'wordform_dialect_value', 
+                    compact('all_meanings', 'concept_values', 'lang_values', 'wordform_dialect_value', 
                             'dialect_values', 'langs_for_meaning', 'lemma', 
                             'lemma_variants', 'new_meaning_n', 'dialects_value',
                             'phrase_values', 'pos_values', 'relation_values', 
