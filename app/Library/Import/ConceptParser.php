@@ -18,6 +18,11 @@ use App\Models\Dict\PartOfSpeech;
 /**
  */
 class ConceptParser {
+//    public $parserLabel = 2;    
+    
+    public static function getLabel() {
+        return 2;
+    }
 
     /**
      * parse import text and create two arrays:
@@ -310,7 +315,7 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
                                 ->where('lemma', 'like', $lemmas[$lemma_num])
                                 ->whereLangId($lang_id)->get();
 //dd($lemma_coll);       
-                list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id);
+                list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id, $concept->id);
                 if (!isset($lemma_obj) || !$lemma_obj) {
                     $lemma_obj = Lemma::store($lemmas[$lemma_num], $pos_id, $lang_id);
                     $meaning_texts = [$meaning_lang_ru => $concept->text_ru, $meaning_lang_en => $concept->text_en];
@@ -326,6 +331,9 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
                 if (!$meaning_obj->concepts()->where('concept_id', $concept->id)->first()) {
                     $meaning_obj->concepts()->attach($concept->id);
                 }
+                if (!$meaning_obj->labels()->where('label_id', self::getLabel())->first()) {
+                    $meaning_obj->labels()->attach(self::getLabel());
+                }
                 $lang_lemmas[$lang_id][substr($lemma_num,0,1)][$lemma_num] = $lemma_obj;
                 $lang_meanings[$lang_id][$lemma_num] = $meaning_obj;
 print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (".Lang::getNameByID($lang_id).")</p>";            
@@ -334,12 +342,12 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
         return [$lang_lemmas, $lang_meanings];
     }
 
-    public static function searchLemmaByMeaningText($lemma_coll, $meaning_text, $meaning_lang, $search_lang) {
+    public static function searchLemmaByMeaningText($lemma_coll, $meaning_text, $meaning_lang, $search_lang, $concept_id) {
         if (!sizeof($lemma_coll)) {
             return [null, null];
         }
         foreach ($lemma_coll as $lemma) {
-            $meaning_obj = self::meaningFound($lemma, $meaning_text, $meaning_lang);
+            $meaning_obj = self::meaningFound($lemma, $meaning_text, $meaning_lang, $concept_id);
             if ($meaning_obj) {
                 return [$lemma, $meaning_obj];
             }
@@ -350,8 +358,11 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
         exit(1);
     }
 
-    public static function meaningFound($lemma, $meaning_text, $meaning_lang) {
+    public static function meaningFound($lemma, $meaning_text, $meaning_lang, $concept_id) {
         foreach ($lemma->meanings as $meaning) {
+            if ($meaning->concepts()->where('concept_id', $concept_id)->first()) {
+                return $meaning;
+            }
             $meaning_text_obj = $meaning->meaningTexts()->where('lang_id', $meaning_lang)->first();
             if ($meaning_text_obj->meaning_text == $meaning_text) {
                 return $meaning;

@@ -1138,3 +1138,5 @@ ALTER TABLE lemma_wordform MODIFY affix VARCHAR(25) CHARACTER SET utf8 COLLATE u
 -- php artisan make:migration create_label_meaning_table --table=label_meaning
 
 -- php artisan make:migration add_field_wiki_photo_in_concept_table
+
+INSERT INTO labels VALUES (2, 'from SOS', 'из СОС');
