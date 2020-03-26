@@ -150,6 +150,8 @@ Route::group(
         Route::get('dict/reverse_lemma/inflexion_groups', 'Dict\ReverseLemmaController@inflexionGroups');
         Route::get('dict/reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
 
+        Route::get('dict/concept/sosd/', 'Dict\ConceptController@SOSD');
+        
         Route::get('dict/wordform/create', 'Dict\WordformController@create'); 
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
         Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
