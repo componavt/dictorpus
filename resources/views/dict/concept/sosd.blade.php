@@ -8,7 +8,8 @@
     {!!Html::style('css/table.css')!!}
 @stop
 
-@section('body')        
+@section('body')    
+        <p><b>{{trans('dict.lang')}}</b>: {{$search_lang_name}}
         <table class="table table-striped rwd-table wide-lg">
         <thead>
             <tr>

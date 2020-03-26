@@ -13,6 +13,7 @@ use App\Models\Corpus\Place;
 
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 
 class ConceptController extends Controller
@@ -208,6 +209,7 @@ class ConceptController extends Controller
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $search_lang='6';
+        $search_lang_name = Lang::getNameById($search_lang);
         
         $places = Place::whereIn('id',function ($query) use ($search_lang) {
             $query->select('place_id')->from('dialect_place')
@@ -227,6 +229,7 @@ class ConceptController extends Controller
         
         foreach($concepts as $concept_id => $concept_text) {  
 //dd($concept_id);            
+            $count = 0;
             foreach ($places as $place_id => $place_name) {
                 $concept_lemmas[$concept_text][$place_name] = [];
                 $lemmas = Lemma::whereLangId($search_lang)
@@ -247,11 +250,15 @@ class ConceptController extends Controller
                 }*/
                     })->pluck('lemma')->toArray();
                 $concept_lemmas[$concept_text][$place_name]=join(', ',$lemmas);
+                $count += sizeof($lemmas);
+            }
+            if (!$count) {
+                unset ($concept_lemmas[$concept_text]);
             }
         } 
 //dd($concept_lemmas);  
         $place_names = array_values($places);
         return view('dict.concept.sosd', 
-                compact('concept_lemmas', 'place_names'));
+                compact('concept_lemmas', 'search_lang_name', 'place_names'));
     }
 }
