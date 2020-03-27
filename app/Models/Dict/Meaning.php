@@ -144,7 +144,7 @@ class Meaning extends Model
         DB::table('concept_meaning')
           ->where('meaning_id',$this->id)->delete();*/
 
-        $this->meaningText()->detach();
+        $this->meaningTexts()->detach();
         $this->concepts()->detach();
         $this->labels()->detach();
 
