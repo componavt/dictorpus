@@ -138,11 +138,15 @@ class Meaning extends Model
         DB::table('meaning_translation')
           ->where('meaning2_id',$this->id)->delete();
 
-        DB::table('meaning_text')
+/*        DB::table('meaning_text')
           ->where('meaning_id',$this->id)->delete();
 
         DB::table('concept_meaning')
-          ->where('meaning_id',$this->id)->delete();
+          ->where('meaning_id',$this->id)->delete();*/
+
+        $this->meaningText()->detach();
+        $this->concepts()->detach();
+        $this->labels()->detach();
 
         foreach ($this->meaningTexts as $meaning_text) {
             $meaning_text -> delete();

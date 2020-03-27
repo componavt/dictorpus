@@ -121,10 +121,12 @@ class ConceptParser {
         return [$categories, $blocks];
     }
 
-    public static function checkWrongSymbols($line, $count) {
-        if (preg_match("/[^a-zäöüčšž’0-9а-яё\|\-\?\s\,\;\(\)\}\{\:\.\/i̮i̬ń΄u̯ŕĺśź~ηć]/iu", $line)) { //sulaimi(~e)
+    public static function checkWrongSymbols($line, $count=1) {
+        if (preg_match("/[^a-zäöüčšž’0-9а-яё\|\-\?\s\,\;\(\)\}\{\:\.\/i̮i̬ń΄ηu̯ŕĺśź~ć]/iu", $line)) { //sulaimi(~e)
             print "<p>В строке $count недопустимый символ<br>$line</p>";
+            return false;
         }
+        return true;
     }
 
     /**
@@ -236,7 +238,6 @@ class ConceptParser {
 
     public static function processBlocks($blocks) {
 //dd($blocks);        
-        $place_dialects = self::placeDialects();
         foreach ($blocks as $category_id => $concept_blocks) {
 //dd($concept_blocks);           
             foreach ($concept_blocks as $concept_id => $concept_block) {
@@ -248,7 +249,7 @@ class ConceptParser {
                          'pos_id' => $concept_block['pos_id'],
                          'concept_category_id' => $category_id]);
 print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b></p>";                
-                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas'], $place_dialects);
+                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas']);
 //dd($lemma_dialects);      
                 list($lang_lemmas, $lang_meanings) = self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], $lemma_dialects, $concept_obj);
                 //self::addSynonims($concept_block['place_lemmas'], $lang_meanings, $place_dialects);
@@ -265,7 +266,8 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
      * @param array $places [<place1_num>=>[<lemma1_num>,...], ...]
      * @return array [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
      */
-    public static function chooseDialectsForLemmas($places, $place_dialects) {
+    public static function chooseDialectsForLemmas($places) {
+        $place_dialects = self::placeDialects();
         $out = [];
 //dd($place_dialects);        
         foreach ($places as $place_n => $place_lemmas) {
@@ -303,6 +305,7 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
         $lang_lemmas = $lang_meanings = [];
         $meaning_lang_ru = Lang::getIDByCode('ru');
         $meaning_lang_en = Lang::getIDByCode('en');
+//dd($lemma_places);        
         foreach ($lemma_places as $lemma_num => $lemma_langs) {
             $phonetics = Grammatic::toRightForm($lemmas[$lemma_num], false);
             $lemmas[$lemma_num] = Grammatic::toRightForm($lemmas[$lemma_num]);
