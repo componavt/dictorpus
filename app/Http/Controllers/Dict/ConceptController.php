@@ -59,10 +59,13 @@ class ConceptController extends Controller
      */
     public function create()
     {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
         $concept_category_values = ConceptCategory::getList();
         $pos_values = Concept::getPOSList();
 
-        return view('dict.concept.create', compact('concept_category_values', 'pos_values'));
+        return view('dict.concept.create', compact('concept_category_values', 'pos_values', 'args_by_get', 'url_args'));
     }
 
     public function validateForm(Request $request) {
@@ -108,12 +111,15 @@ class ConceptController extends Controller
      */
     public function edit($id)
     {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
         $concept = Concept::find($id); 
         $concept_category_values = ConceptCategory::getList();
         $pos_values = Concept::getPOSList();
 
         return view('dict.concept.edit', 
-                compact('concept', 'concept_category_values', 'pos_values'));
+                compact('concept', 'concept_category_values', 'pos_values', 'args_by_get', 'url_args'));
     }
 
     /**
