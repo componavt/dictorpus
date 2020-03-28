@@ -77,7 +77,7 @@ print "<pre>";
 //dd($file_lines);
         list($categories, $blocks) = ConceptParser::readBlocks($file_lines);
 //dd($categories);        
-//dd($blocks);
+dd($blocks);
         ConceptParser::saveCategories($categories); 
 print "Категории сохранены.";        
         ConceptParser::processBlocks($blocks);

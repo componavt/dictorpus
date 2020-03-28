@@ -8,6 +8,8 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Library\Str;
+
 use App\Models\Corpus\Word;
 use App\Models\Corpus\Text;
 
@@ -47,7 +49,7 @@ class WordController extends Controller
             $this->url_args['limit_num'] = 1000;
         }   
        
-        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
     
     /**

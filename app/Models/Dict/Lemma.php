@@ -9,6 +9,7 @@ use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
 
 use App\Library\Grammatic;
+use App\Library\Str;
 
 use App\Models\User;
 use App\Models\Corpus\Text;
@@ -1515,9 +1516,7 @@ dd($wordforms);
     }
 
     public static function urlArgs($request) {
-        $url_args = [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
+        $url_args = Str::urlArgs($request) + [
                     'search_affix'    => $request->input('search_affix'),
                     'search_concept_category'  => $request->input('search_concept_category'),
                     'search_concept'  => (int)$request->input('search_concept'),
@@ -1533,20 +1532,10 @@ dd($wordforms);
                     'search_wordform' => $request->input('search_wordform'),
                 ];
         
-        if (!$url_args['page']) {
-            $url_args['page'] = 1;
-        }
-        
         if (!$url_args['search_id']) {
             $url_args['search_id'] = NULL;
         }
         
-        if ($url_args['limit_num']<=0) {
-            $url_args['limit_num'] = 10;
-        } elseif ($url_args['limit_num']>1000) {
-            $url_args['limit_num'] = 1000;
-        }   
-              
         return $url_args;
     }
     

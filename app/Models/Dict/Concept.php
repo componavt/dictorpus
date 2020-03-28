@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Dict\Lemma;
 
 class Concept extends Model
@@ -100,4 +102,53 @@ class Concept extends Model
                   });
         })->count();
     }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_id'       => (int)$request->input('search_id'),
+                    'search_category' => $request->input('search_category'),
+                    'search_text'     => $request->input('search_text'),
+                ];
+        
+        if (!$url_args['search_id']) {
+            $url_args['search_id'] = NULL;
+        }
+        
+        return $url_args;
+    }
+    
+    public static function search(Array $url_args) {
+        $recs = self::orderBy('id');
+
+        $recs = self::searchByID($recs, $url_args['search_id']);
+        $recs = self::searchByCategory($recs, $url_args['search_category']);
+        $recs = self::searchByText($recs, $url_args['search_text']);
+//dd($places->toSql());                                
+        return $recs;
+    }
+    
+    public static function searchByID($recs, $search_id) {
+        if (!$search_id) {
+            return $recs;
+        }
+        return $recs->where('id',$search_id);
+    }
+    
+    public static function searchByCategory($recs, $category_id) {
+        if (!$category_id) {
+            return $recs;
+        }
+        return $recs->where('concept_category_id',$category_id);
+    }
+    
+    public static function searchByText($recs, $text) {
+        if (!$text) {
+            return $recs;
+        }
+        return $recs->where(function($q) use ($text){
+                            $q->where('text_en','like', $text)
+                              ->orWhere('text_ru','like', $text);            
+                });
+    }
+    
 }

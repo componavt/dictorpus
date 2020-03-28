@@ -18,6 +18,10 @@
             </a>
         @endif
         </p>
+
+        @include('dict.concept._search_form',['url' => '/dict/concept/']) 
+
+        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
         
         <table class="table table-striped rwd-table wide-lg">
         <thead>
@@ -67,6 +71,7 @@
             @endforeach
         </tbody>
         </table>
+            {!! $concepts->appends($url_args)->render() !!}
     </div>
 @stop
 

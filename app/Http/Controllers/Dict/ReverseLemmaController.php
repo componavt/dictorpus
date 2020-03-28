@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dict;
 use Illuminate\Http\Request;
 use DB;
 
+use App\Library\Str;
+
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
@@ -49,7 +51,7 @@ class ReverseLemmaController extends Controller
             $this->url_args['limit_num'] = 1000;
         }   
         
-        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
     /**

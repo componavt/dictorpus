@@ -49,8 +49,8 @@ class ConceptParserTest extends TestCase
                            30=>['a7']];
 
         $result = ConceptParser::chooseDialectsForLemmas($place_lemmas);
-dd($result["a1"][4]);        
-        $expected = ["a1"=>[4 => [11=>[145], 7=>[175], 10=>[232], 17=>[234], 18=>[235], 21=>[237], 25=>[169], 26=>[179], 29=>[239]],
+//dd($result["a1"][4]);        
+        $expected = ["a1"=>[4 => [11=>[145], 52=>[233], 7=>[175], 10=>[232], 17=>[234], 18=>[235], 21=>[237], 25=>[169], 26=>[179], 29=>[239]],
                             5=> [30=>[240], 36=>[96]],
                             6=> [38=>[245], 39=>[246], 42=> [247], 41=>[248]]],
                      "a2"=>[4 => [16=>[140]], 
@@ -67,7 +67,7 @@ dd($result["a1"][4]);
     
     public function testCheckWrongSymbols()
     {
-        $line = 'alanko/ala'; // ηgo/alaηg||notko/notk||loga/logo/logandeh/logandez||lodma/lodˊma/lodˊm/lodmu/lodm||orgo/ork/org||ložme||alava||alova paikka||alavo mua||alaw kohtu||madal kohto
+        $line = 'alanko/alaηgo/alaηg||notko/notk||loga/logo/logandeh/logandez||lodma/lod’ma/lod’m/lodmu/lodm||orgo/ork/org||ložme||alava||alova paikka||alavo mua||alaw kohtu||madal kohto'; // 
 
         $result = ConceptParser::checkWrongSymbols($line);
 //dd($result["a5"]);        

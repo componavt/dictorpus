@@ -518,6 +518,19 @@ h2 {
     margin-left: 5px;
 }
 
+.search-b {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+
+.search-b .form-group {
+    margin-bottom: 0;
+}
+
 @media screen and (max-width: 395px) {    
     .logo img {
         height: auto;

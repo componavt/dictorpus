@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Library\Grammatic;
+use App\Library\Str;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
@@ -41,7 +42,7 @@ class LemmaWordformController extends Controller
         
         $this->url_args = Lemma::urlArgs($request);  
         
-        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
     /**

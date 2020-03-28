@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use LaravelLocalization;
 use Response;
 
+use App\Library\Str;
+
 use App\Models\Corpus\Place;
 
 use App\Models\Dict\Concept;
@@ -23,9 +25,11 @@ class ConceptController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth:ref.edit,/dict/concept/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->url_args = Concept::urlArgs($request);          
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
     
     /**
@@ -33,12 +37,19 @@ class ConceptController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $concepts = Concept::orderBy('id')->get();
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        $concepts = Concept::search($url_args);
         
-        return view('dict.concept.index')
-                    ->with(['concepts' => $concepts]);
+        $numAll = $concepts->count();
+        $concepts = $concepts->paginate($url_args['limit_num']);         
+        
+        $category_values = ConceptCategory::getList();
+        
+        return view('dict.concept.index',
+                    compact('category_values', 'concepts', 'numAll', 'args_by_get', 'url_args'));
     }
 
     /**

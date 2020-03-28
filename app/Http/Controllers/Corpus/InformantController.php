@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Dict\Lang;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
@@ -45,7 +47,7 @@ class InformantController extends Controller
         
         $this->url_args['search_id'] = $this->url_args['search_id'] ? $this->url_args['search_id'] : NULL;
         
-        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
     /**

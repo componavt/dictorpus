@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
@@ -31,7 +33,7 @@ class PlaceController extends Controller
 
         $this->url_args = Place::urlArgs($request);  
         
-        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
     /**

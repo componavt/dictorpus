@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Library\Grammatic;
+use App\Library\Str;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
@@ -36,7 +37,7 @@ class WordformController extends Controller
         
         $this->url_args = Wordform::urlArgs($request);  
         
-        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
     /**

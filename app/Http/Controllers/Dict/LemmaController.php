@@ -18,6 +18,8 @@ use LaravelLocalization;
 
 //use App\Library\Grammatic;
 use App\Library\Grammatic\VepsName;
+use App\Library\Str;
+
 use App\Models\User;
 
 use App\Models\Dict\Concept;
@@ -62,7 +64,7 @@ class LemmaController extends Controller
         
         $this->url_args = Lemma::urlArgs($request);  
         
-        $this->args_by_get = Lang::searchValuesByURL($this->url_args);
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
     /**
