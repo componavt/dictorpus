@@ -104,6 +104,7 @@ class Concept extends Model
     }
     
     public static function urlArgs($request) {
+//dd($request->all());        
         $url_args = Str::urlArgs($request) + [
                     'search_id'       => (int)$request->input('search_id'),
                     'search_category' => $request->input('search_category'),

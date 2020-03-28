@@ -27,9 +27,15 @@ class ConceptController extends Controller
      */
     public function __construct(Request $request)
     {
+//dd($request->all());        
+//var_dump($request->input('limit_num'));
         $this->middleware('auth:ref.edit,/dict/concept/', ['only' => ['create','store','edit','update','destroy']]);
-        $this->url_args = Concept::urlArgs($request);          
+        $this->url_args = Concept::urlArgs($request); 
+//dd($this->url_args);        
+//var_dump($this->url_args); 
+//print '<br>';
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
+//var_dump($this->url_args);        
     }
     
     /**
@@ -39,6 +45,7 @@ class ConceptController extends Controller
      */
     public function index()
     {
+//dd($this->url_args);        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         $concepts = Concept::search($url_args);
@@ -88,7 +95,7 @@ class ConceptController extends Controller
         $this->validateForm($request);
         $concept = Concept::create($request->all());
         
-        return Redirect::to('/dict/concept/')
+        return Redirect::to('/dict/concept'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
@@ -131,12 +138,13 @@ class ConceptController extends Controller
      */
     public function update(Request $request, $id)
     {
+//dd($request->all());        
         $this->validateForm($request);
         
         $concept = Concept::find($id);
         $concept->fill($request->all())->save();
         
-        return Redirect::to('/dict/concept/')
+        return Redirect::to('/dict/concept'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
