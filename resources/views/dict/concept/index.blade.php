@@ -13,7 +13,7 @@
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/concept/create') }}">
         @endif
-            {{ trans('messages.create_new_m') }}
+            {{ trans('messages.create_new_g') }}
         @if (User::checkAccess('dict.edit'))
             </a>
         @endif
