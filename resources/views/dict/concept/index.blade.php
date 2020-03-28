@@ -9,11 +9,11 @@
 @stop
 
 @section('body')        
-        <p style="text-align:right">
+        <p>
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/concept/create') }}">
         @endif
-            {{ trans('messages.create_new_f') }}
+            {{ trans('messages.create_new_m') }}
         @if (User::checkAccess('dict.edit'))
             </a>
         @endif
