@@ -239,17 +239,17 @@ class Grammatic
         $word = trim($word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         if ($change_phonetics) {
+            $word = str_replace('η','n',$word);
             $word = str_replace('ń','n',$word);
-            $word = str_replace('i̮','i',$word);
-            $word = str_replace('̮i','i',$word);
             $word = str_replace('̬ń','n',$word);
-            $word = str_replace('u̯','u',$word);
             $word = str_replace('ŕ','r',$word);
-            $word = str_replace('ĺ','l',$word);
+            $word = str_replace('ĺ','l’',$word);
             $word = str_replace('ś','s',$word);
             $word = str_replace('ź','z',$word);
-            $word = str_replace('η','n',$word);
             $word = str_replace('ć','c',$word);        
+            $word = str_replace('i̮','i',$word);
+            $word = str_replace('̮i','i',$word);
+            $word = str_replace('u̯','u',$word);
             $word = preg_replace("/['´`΄]+/", "’", $word);
         }
         return $word;
