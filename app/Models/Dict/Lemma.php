@@ -717,9 +717,9 @@ dd($wordforms);
             $this->storeDialects(isset($features['dialects']) ? $features['dialects'] : []);
 //        }
         
-        if (isset($features['variants'])) {
-            $this->storeVariants($features['variants']);
-        }
+//        if (isset($features['variants'])) {
+            $this->storeVariants(isset($features['variants']) ? $features['variants'] : []);
+//        }
         
         $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
         $this->createDictionaryWordforms($wordforms, 
@@ -943,9 +943,10 @@ dd($wordforms);
     
     public function storeVariants($lemmas) {
         $this->variants()->detach();
-        if ($lemmas) {
-            $this->variants()->attach($lemmas);
+        if (!sizeof($lemmas)) {
+            return;
         }
+        $this->variants()->attach($lemmas);
         foreach ($this->variants as $lemma) {
             $back_link = $lemma->variants()->where('lemma2_id',$this->id)->first();
             if (!$back_link) {
