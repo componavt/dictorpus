@@ -1142,3 +1142,5 @@ ALTER TABLE lemma_wordform MODIFY affix VARCHAR(25) CHARACTER SET utf8 COLLATE u
 INSERT INTO labels VALUES (2, 'from SOS', 'из СОС');
 
 --php artisan make:migration change_text_fields_in_concept_table
+
+alter table lemma_features MODIFY phonetics varchar(45) COLLATE utf8_bin DEFAULT NULL;

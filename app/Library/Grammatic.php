@@ -235,21 +235,41 @@ class Grammatic
         return preg_match("/i̮|̮i|ń|̬ń|u̯|ŕ|ĺ|ś|ź|η|ć/iu", $word);
     }
     
+    /**
+     * перед 'a' 'o' 'u' и на конце слова важно сохранить смягчение, в остальных заменяем на твердую согласную
+     * 
+     * @param string $word
+     * @param boolean $change_phonetics
+     * @return string
+     */
     public static function toRightForm($word, $change_phonetics=true) {
+        $cons = ['ń'=>'n', '̬ń'=>'n', 'ŕ'=>'r', 'ĺ'=>'l', 'ś'=>'s', 'ź'=>'z', 'ć'=>'c']; 
         $word = trim($word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         if ($change_phonetics) {
-            $word = str_replace('η','n',$word);
-            $word = str_replace('ń','n',$word);
+            foreach (['i̬'=>'i', 'i̮'=>'i', '̮i'=>'i', 'i̯'=>'i', 'u̯'=>'u', 'η'=>'n'] as $old =>$new) {
+                $word = str_replace($old, $new, $word);
+            }
+            foreach ($cons as $old =>$new) {
+                $word = preg_replace('/'.$old.'{2}([aou\s])/u', $new.'’'.$new.'’$1', $word);
+                $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
+                if (preg_match('/^(.*)'.$old.'{2}$/u', $word, $regs)) {
+                    $word = $regs[1].$new.'’'.$new.'’';
+                }
+                if (preg_match('/^(.*)'.$old.'$/u', $word, $regs)) {
+                    $word = $regs[1].$new.'’';
+                }
+            }
+            foreach ($cons as $old =>$new) {
+                $word = str_replace($old, $new, $word);
+            }
+/*            $word = str_replace('ń','n',$word);
             $word = str_replace('̬ń','n',$word);
             $word = str_replace('ŕ','r',$word);
-            $word = str_replace('ĺ','l’',$word);
+            $word = str_replace('ĺ','l',$word);
             $word = str_replace('ś','s',$word);
             $word = str_replace('ź','z',$word);
-            $word = str_replace('ć','c',$word);        
-            $word = str_replace('i̮','i',$word);
-            $word = str_replace('̮i','i',$word);
-            $word = str_replace('u̯','u',$word);
+            $word = str_replace('ć','c',$word); */
             $word = preg_replace("/['´`΄]+/", "’", $word);
         }
         return $word;

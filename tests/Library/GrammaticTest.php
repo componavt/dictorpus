@@ -10,7 +10,7 @@ use App\Models\Dict\Lemma;
 // ./vendor/bin/phpunit tests/Library/GrammaticTest
 
 class GrammaticTest extends TestCase
-{
+{/*
     public function testChangeLettersWithoutLang()
     {
         $word = 'tulow';
@@ -309,7 +309,249 @@ class GrammaticTest extends TestCase
         $expected = "päivü";
         $this->assertEquals( $expected, $result);        
     }
+    */
+    public function testToRightFormDiacretInEnd() {
+        $words = ['bukĺ'=>'bukl’', 
+            'd΄umalanbembeĺ'=>'d’umalanbembel’',
+            'hagartuuĺ' => 'hagartuul’',
+            'kaĺĺ' => 'kal’l’',
+            'kažĺ' => 'kažl’',
+            'keviĺĺin tuuĺ' => 'kevillin tuul’',
+            'koĺianbembeĺ' => 'kolianbembel’',
+            'nami̮ĺ' => 'namil’',
+            'pakkuĺ' => 'pakkul’',
+            'pakĺ' => 'pakl’',
+            'pihĺ' => 'pihl’',
+            'st΄ebeĺ' => 'st’ebel’',
+            'tuuĺ' => 'tuul’',
+            'vemmeĺ' => 'vemmel’',
+            'ńiiń' => 'niin’',
+            'niń' => 'nin’',
+            'pakkań' => 'pakkan’',
+            'peń g΄ärvut' => 'pen’ g’ärvut',
+            'svińć' => 'svin’c’',
+            'räbiń' => 'räbin’',
+            'd΄uuŕ' => 'd’uur’',
+            'd΄üuŕ' => 'd’üur’',
+            'g΄üŕ' => 'g’ür’',
+            'hämäŕ' => 'hämär’',
+            'juŕ' => 'jur’',
+            'juuŕ' => 'juur’',
+            'jüŕ' => 'jür’',
+            'kaŕ' => 'kar’'];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
     
+    public function testToRightFormDiacretBeforeA() {
+        $words = ['kaižĺa' => 'kaižl’a',
+            'kazĺa' => 'kazl’a',
+            'koĺakko' => 'kol’akko',
+            'pihĺai' => 'pihl’ai',
+            'viĺĺa' => 'vil’l’a',
+            'perńav' => 'pern’av'];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+    
+    public function testToRightFormDiacretBeforeO() {
+        $words = ['kaĺĺo' => 'kal’l’o',
+            'kĺon' => 'kl’on',
+            'kĺona' => 'kl’ona',
+            'vaĺožńikk' => 'val’ožnikk',
+            'šĺott' => 'šl’ott',
+            'vaĺožńikk' => 'val’ožnikk',
+            'beŕoga' => 'ber’oga',
+            'beŕogaranda' => 'ber’ogaranda'];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+    
+    public function testToRightFormDiacretBeforeU() {
+        $words = ['šĺuakott' => 'šl’uakott',
+            'šĺuboi' => 'šl’uboi',
+            'šĺubuoi' => 'šl’ubuoi',
+            'd΄uońuo' => 'd’uon’uo',
+            'ńuaglahut' => 'n’uaglahut'];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+    
+    public function testToRightFormDiacretOther() {
+        $words = ['d΄ärvenseĺgä'=>'d’ärvenselgä', 
+            'gaĺbuu'=>'galbuu', 
+            'giĺiηgeińe'=>'gilingeine',
+            'hiĺĺeta' => 'hilleta',
+            'hiĺĺetä' => 'hilletä',
+            'järvenšeĺgä' => 'järvenšelgä',
+            'hiĺĺiine' => 'hilliine',
+            'kaĺĺivo' => 'kallivo',
+            'kevättuuĺe' => 'kevättuule',
+            'ĺehmuz' => 'lehmuz',
+            'ĺeht' => 'leht',
+            'ĺehtez' => 'lehtez',
+            'ĺehti' => 'lehti',
+            'ĺehtoz' => 'lehtoz',
+            'ĺeht΄' => 'leht’',
+            'ĺeht΄e' => 'leht’e',
+            'ĺeht΄i' => 'leht’i',
+            'ĺeivät' => 'leivät',
+            'ĺep' => 'lep',
+            'ĺete' => 'lete',
+            'ĺepp' => 'lepp',
+            'ĺeppi' => 'leppi',
+            'ĺeppä' => 'leppä',
+            'ĺeppö' => 'leppö',
+            'ĺeppü' => 'leppü',
+            'ĺiete' => 'liete',
+            'ĺindoi' => 'lindoi',
+            'ĺinčikk' => 'linčikk',
+            'ĺińčikkä' => 'linčikkä',
+            'ĺipo' => 'lipo',
+            'ĺiäd΄žö' => 'liäd’žö',
+            'ĺiäzö' => 'liäzö',
+            'ĺiäzü' => 'liäzü',
+            'ĺiäžmü' => 'liäžmü',
+            'ĺäg' => 'läg',
+            'ĺähte' => 'lähte',
+            'ĺät΄ik' => 'lät’ik',
+            'ĺüĺü' => 'lülü',
+            'piĺve' => 'pilve',
+            'piĺves' => 'pilves',
+            'piĺvez' => 'pilvez',
+            'piĺvikkö' => 'pilvikkö',
+            'saĺm' => 'salm', 
+            'seĺged' => 'selged',
+            'seĺgie' => 'selgie',
+            'seĺgiä' => 'selgiä',
+            'seĺgä' => 'selgä',
+            'seĺitra' => 'selitra',
+            'seĺvä' => 'selvä',
+            'sĺäc' => 'släc',
+            'sĺäč' => 'släč',
+            'tuĺjaańe' => 'tuljaane',
+            'tuĺĺi' => 'tulli',
+            'tuĺĺii' => 'tullii',
+            'tuuĺe' => 'tuule',
+            'tuuĺhagar' => 'tuulhagar',
+            'tuuĺi' => 'tuuli',
+            'zaĺiv' => 'zaliv',
+            'šeĺged' => 'šelged',
+            'šeĺgä' => 'šelgä',
+            'šĺöttü' => 'šlöttü',
+            'šĺöäččä' => 'šlöäččä',
+            'šĺöččä' => 'šlöččä',
+            'šuaĺist΄uo' => 'šualist’uo',
+            'bobaińe' => 'bobaine',
+            'cveteińe' => 'cveteine',
+            'cveti̬ińe' => 'cvetiine',
+            'cvetuińe' => 'cvetuine',
+            'cvetuuńe' => 'cvetuune',
+            'd΄ońikaińe' => 'd’onikaine',
+            'g΄öńikeine' => 'g’önikeine',
+            'hankińi' => 'hankini',
+            'hebocaańe' => 'hebocaane',
+            'hebočeińe' => 'hebočeine',
+            'hepokkaińe' => 'hepokkaine',
+            'hepokkaińi' => 'hepokkaini',
+            'hienońe vihma' => 'hienone vihma',
+            'hienońe vihmańe' => 'hienone vihmane',
+            'himmungańi' => 'himmungani',
+            'hämäräińe' => 'hämäräine',
+            'höbočaińe' => 'höbočaine',
+            'höbočeińe' => 'höbočeine',
+            'kńäziččä' => 'knäziččä',
+            'jońikeińe' => 'jonikeine',
+            'jumalanheboońe' => 'jumalanheboone',
+            'juopukkaińe' => 'juopukkaine',
+            'kandaińe' => 'kandaine',
+            'kannattajańe' => 'kannattajane',
+            'kudmaańe' => 'kudmaane',
+            'kudmeińe' => 'kudmeine',
+            'kuohańi' => 'kuohani',
+            'kuudmaińe' => 'kuudmaine',
+            'kuuhaańe' => 'kuuhaane',
+            'kuvahaańe' => 'kuvahaane',
+            'kuvahaińe' => 'kuvahaine',
+            'kuvahaińi' => 'kuvahaini',
+            'kuvahańe' => 'kuvahane',
+            'käžńä' => 'käžnä',
+            'leińiž' => 'leiniž',
+            'lińdžoi' => 'lindžoi',
+            'luńd΄žuo' => 'lund’žuo',
+            'lunźikaińe' => 'lunzikaine',
+            'lunźikeińe' => 'lunzikeine',
+            'mańdžikka' => 'mandžikka',
+            'mańdžoi' => 'mandžoi',
+            'mańd΄žuo' => 'mand’žuo',
+            'mańd΄žuoi' => 'mand’žuoi',
+            'manźikaińe' => 'manzikaine',
+            'manźikeińe' => 'manzikeine',
+            'mančikkaińi' => 'mančikkaini',
+            'mańčingaini' => 'mančingaini',
+            'mechaańe' => 'mechaane',
+            'mullońe heinä' => 'mullone heinä',
+            'murikeińe' => 'murikeine',
+            'musket sertrikaańe' => 'musket sertrikaane',
+            'mussikkańi' => 'mussikkani',
+            'mučuuńe järvut' => 'mučuune järvut',
+            'ńemak' => 'nemak',
+            'ńem΄' => 'nem’',
+            'ńiakośśi' => 'niakossi',
+            'ńiińi' => 'niini',
+            'nii̯ńi' => 'niini',
+            'ńältä' => 'nältä',
+            'ńäre' => 'näre',
+            'orgi̮ińe' => 'orgiine',
+            'pakaańe' => 'pakaane',
+            'pakaińe' => 'pakaine',
+            'pakeińe' => 'pakeine',
+            'pakkańe' => 'pakkane',
+            'pakkańi' => 'pakkani',
+            'parhaańe' => 'parhaane',
+            'parhaińe' => 'parhaine',
+            'peiveińe' => 'peiveine',
+            'pimedeińe' => 'pimedeine',
+            'počkańe' => 'počkane',
+            'päivińka' => 'päivinka',
+            'päiväńe' => 'päiväne',
+            'päivääńe' => 'päivääne',
+            'päivüöińe' => 'päivüöine',
+            'pääväńe' => 'pääväne',
+            'räbińä' => 'räbinä',
+            'sestrikaańe' => 'sestrikaane',
+            'tuĺjaańe' => 'tuljaane',
+            'tähtheińe' => 'tähtheine',
+            't΄ähtaińe' => 't΄ähtaine',
+            't΄üńištuda' => 't΄üništuda',
+            'urbaańe' => 'urbaane',
+            'urbuuńe' => 'urbuune',
+            'užvańi' => 'užvani',
+            'äńik' => 'änik',
+            'äńiki̬ita' => 'änikiita',
+            'äńikoita' => 'änikoita',
+            'äńiköidä' => 'äniköidä',
+            'čigičaińe' => 'čigičaine',
+            'čigičeińe' => 'čigičeine'];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+/*    
     public function testMaxStem() {
         $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
         $result = Grammatic::maxStem($stems);
@@ -748,5 +990,5 @@ class GrammaticTest extends TestCase
         $result = Grammatic::toSearchForm($word);
         $expected = "tüunistüö";
         $this->assertEquals( $expected, $result);        
-    }
+    }*/
 }
