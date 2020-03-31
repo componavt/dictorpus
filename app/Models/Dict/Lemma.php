@@ -406,7 +406,7 @@ class Lemma extends Model
         $meanings = $this->meanings;
 
         foreach ($meanings as $meaning) {
-            $meaning -> remove();
+            $meaning->remove();
         }
 
         $bases = $this->bases;

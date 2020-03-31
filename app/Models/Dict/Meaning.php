@@ -328,8 +328,7 @@ class Meaning extends Model
                 $meaning_obj -> save();
 
             } else {
-                $meaning_obj->texts()->detach();
-                $meaning_obj -> delete();
+                $meaning_obj->remove();
             }
         }
     }

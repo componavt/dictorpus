@@ -510,7 +510,7 @@ class LemmaController extends Controller
                 $lemma = Lemma::find($id);
                 if($lemma){
                     $result['message'] = \Lang::get('dict.lemma_removed', ['name'=>$lemma->lemma]);
-                    $lemma-> remove();
+                    $lemma->remove();
                 } else{
                     $error = true;
                     $result['error_message'] = \Lang::get('messages.record_not_exists');
