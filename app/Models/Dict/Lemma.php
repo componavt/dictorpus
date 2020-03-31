@@ -978,7 +978,7 @@ dd($wordforms);
 
     public function storeDialects($dialects) {
         $this->dialects()->detach();
-        if (sizeof($dialects)) {
+        if ($dialects && sizeof($dialects)) {
             $this->dialects()->attach($dialects);
         }
     }
