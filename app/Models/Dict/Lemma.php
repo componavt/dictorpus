@@ -714,7 +714,7 @@ dd($wordforms);
         $this->storeReverseLemma($stem, $affix);
 
 //        if (isset($features['dialects'])) {
-            $this->storeDialects($features['dialects']);
+            $this->storeDialects(isset($features['dialects']) ? $features['dialects'] : []);
 //        }
         
         if (isset($features['variants'])) {
@@ -977,7 +977,7 @@ dd($wordforms);
 
     public function storeDialects($dialects) {
         $this->dialects()->detach();
-        if ($dialects) {
+        if (sizeof($dialects)) {
             $this->dialects()->attach($dialects);
         }
     }
