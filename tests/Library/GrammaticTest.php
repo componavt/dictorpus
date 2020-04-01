@@ -310,6 +310,28 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     */
+    public function testToRightFormRemoveApostroph() {
+        $words = [
+            'st΄ebeĺ' => 'stebel’',
+            'peń g΄ärvut' => 'pen’ gärvut',
+            'd΄üuŕ' => 'düur’',
+            'g΄üŕ' => 'gür’',
+            'ĺeht΄e' => 'lehte',
+            'ĺeht΄i' => 'lehti',
+            'ĺät΄ik' => 'lätik',
+            'g΄öńikeine' => 'gönikeine',
+            't΄ähtaińe' => 'tähtaine',
+            't΄üńištuda' => 'tüništuda',
+            't΄üuniśt΄üö' => 'tüunist’üö',
+            'd΄ärvenseĺgä'=>'därvenselgä',
+            ];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+    
     public function testToRightFormDiacretInEnd() {
         $words = ['bukĺ'=>'bukl’', 
             'd΄umalanbembeĺ'=>'d’umalanbembel’',
@@ -322,18 +344,14 @@ class GrammaticTest extends TestCase
             'pakkuĺ' => 'pakkul’',
             'pakĺ' => 'pakl’',
             'pihĺ' => 'pihl’',
-            'st΄ebeĺ' => 'st’ebel’',
             'tuuĺ' => 'tuul’',
             'vemmeĺ' => 'vemmel’',
             'ńiiń' => 'niin’',
             'niń' => 'nin’',
             'pakkań' => 'pakkan’',
-            'peń g΄ärvut' => 'pen’ g’ärvut',
             'svińć' => 'svin’c’',
             'räbiń' => 'räbin’',
             'd΄uuŕ' => 'd’uur’',
-            'd΄üuŕ' => 'd’üur’',
-            'g΄üŕ' => 'g’ür’',
             'hämäŕ' => 'hämär’',
             'juŕ' => 'jur’',
             'juuŕ' => 'juur’',
@@ -354,6 +372,36 @@ class GrammaticTest extends TestCase
             'onduź' => 'onduz’',
             'onź' => 'onz’',
             'varź' => 'varz’'];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+    
+    public function testToRightFormBeforeConsonant() {
+        $words = [
+            'gaĺbuu'=>'gal’buu', 
+            'saĺm' => 'sal’m', 
+            'lińdžoi' => 'lin’džoi',
+            'luńd΄žuo' => 'lun’d’žuo',
+            'mańdžikka' => 'man’džikka',
+            'mańdžoi' => 'man’džoi',
+            'mańd΄žuo' => 'man’d’žuo',
+            'mańd΄žuoi' => 'man’d’žuoi',
+            'koŕb' => 'kor’b',
+            'maŕd΄' => 'mar’d’',
+            'maŕg΄' => 'mar’g’',
+            'mäŕg' => 'mär’g',
+            'mäŕg΄' => 'mär’g’',
+            'oŕhoi' => 'or’hoi',
+            'paŕhan' => 'par’han',
+            'muśt΄oi' => 'mus’t’oi',
+            'muśt΄uo' => 'mus’t’uo',
+            'muśt΄uoi' => 'mus’t’uoi',
+            'vaśk' => 'vas’k',
+            'vaśk΄' => 'vas’k’',
+            ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
             $result[] = Grammatic::toRightForm($word,true);
@@ -414,12 +462,11 @@ class GrammaticTest extends TestCase
     }
     
     public function testToRightFormDiacretOther() {
-        $words = ['d΄ärvenseĺgä'=>'d’ärvenselgä', 
-            'gaĺbuu'=>'galbuu', 
+        $words = [ 
             'giĺiηgeińe'=>'gilingeine',
             'hiĺĺeta' => 'hilleta',
             'hiĺĺetä' => 'hilletä',
-            'järvenšeĺgä' => 'järvenšelgä',
+//            'järvenšeĺgä' => 'järvenšelgä',
             'hiĺĺiine' => 'hilliine',
             'kaĺĺivo' => 'kallivo',
             'kevättuuĺe' => 'kevättuule',
@@ -429,8 +476,6 @@ class GrammaticTest extends TestCase
             'ĺehti' => 'lehti',
             'ĺehtoz' => 'lehtoz',
             'ĺeht΄' => 'leht’',
-            'ĺeht΄e' => 'leht’e',
-            'ĺeht΄i' => 'leht’i',
             'ĺeivät' => 'leivät',
             'ĺep' => 'lep',
             'ĺete' => 'lete',
@@ -450,17 +495,15 @@ class GrammaticTest extends TestCase
             'ĺiäžmü' => 'liäžmü',
             'ĺäg' => 'läg',
             'ĺähte' => 'lähte',
-            'ĺät΄ik' => 'lät’ik',
             'ĺüĺü' => 'lülü',
             'piĺve' => 'pilve',
             'piĺves' => 'pilves',
             'piĺvez' => 'pilvez',
             'piĺvikkö' => 'pilvikkö',
-            'saĺm' => 'salm', 
-            'seĺged' => 'selged',
-            'seĺgie' => 'selgie',
-            'seĺgiä' => 'selgiä',
-            'seĺgä' => 'selgä',
+//            'seĺged' => 'selged',
+//            'seĺgie' => 'selgie',
+//            'seĺgiä' => 'selgiä',
+//            'seĺgä' => 'selgä',
             'seĺitra' => 'selitra',
             'seĺvä' => 'selvä',
             'sĺäc' => 'släc',
@@ -469,11 +512,11 @@ class GrammaticTest extends TestCase
             'tuĺĺi' => 'tulli',
             'tuĺĺii' => 'tullii',
             'tuuĺe' => 'tuule',
-            'tuuĺhagar' => 'tuulhagar',
+//            'tuuĺhagar' => 'tuulhagar',
             'tuuĺi' => 'tuuli',
             'zaĺiv' => 'zaliv',
-            'šeĺged' => 'šelged',
-            'šeĺgä' => 'šelgä',
+//            'šeĺged' => 'šelged',
+//            'šeĺgä' => 'šelgä',
             'šĺöttü' => 'šlöttü',
             'šĺöäččä' => 'šlöäččä',
             'šĺöččä' => 'šlöččä',
@@ -484,7 +527,6 @@ class GrammaticTest extends TestCase
             'cvetuińe' => 'cvetuine',
             'cvetuuńe' => 'cvetuune',
             'd΄ońikaińe' => 'd’onikaine',
-            'g΄öńikeine' => 'g’önikeine',
             'hankińi' => 'hankini',
             'hebocaańe' => 'hebocaane',
             'hebočeińe' => 'hebočeine',
@@ -513,14 +555,8 @@ class GrammaticTest extends TestCase
             'kuvahańe' => 'kuvahane',
             'käžńä' => 'käžnä',
             'leińiž' => 'leiniž',
-            'lińdžoi' => 'lindžoi',
-            'luńd΄žuo' => 'lund’žuo',
             'lunźikaińe' => 'lunzikaine',
             'lunźikeińe' => 'lunzikeine',
-            'mańdžikka' => 'mandžikka',
-            'mańdžoi' => 'mandžoi',
-            'mańd΄žuo' => 'mand’žuo',
-            'mańd΄žuoi' => 'mand’žuoi',
             'manźikaińe' => 'manzikaine',
             'manźikeińe' => 'manzikeine',
             'mančikkaińi' => 'mančikkaini',
@@ -549,7 +585,7 @@ class GrammaticTest extends TestCase
             'peiveińe' => 'peiveine',
             'pimedeińe' => 'pimedeine',
             'počkańe' => 'počkane',
-            'päivińka' => 'päivinka',
+//            'päivińka' => 'päivinka',
             'päiväńe' => 'päiväne',
             'päivääńe' => 'päivääne',
             'päivüöińe' => 'päivüöine',
@@ -558,8 +594,6 @@ class GrammaticTest extends TestCase
             'sestrikaańe' => 'sestrikaane',
             'tuĺjaańe' => 'tuljaane',
             'tähtheińe' => 'tähtheine',
-            't΄ähtaińe' => 't’ähtaine',
-            't΄üńištuda' => 't’üništuda',
             'urbaańe' => 'urbaane',
             'urbuuńe' => 'urbuune',
             'užvańi' => 'užvani',
@@ -570,24 +604,11 @@ class GrammaticTest extends TestCase
             'čigičaińe' => 'čigičaine',
             'čigičeińe' => 'čigičeine',
             'kaŕe' => 'kare',
-            'koŕb' => 'korb',
-            'maŕd΄' => 'mard’',
-            'maŕg΄' => 'marg’',
             'maŕji' => 'marji',
-            'mäŕg' => 'märg',
-            'mäŕg΄' => 'märg’',
-            'oŕhoi' => 'orhoi',
-            'paŕhan' => 'parhan',
             'ŕäbin' => 'räbin',
             'muśśik' => 'mussik',
             'muśśikka' => 'mussikka',
-            'muśt΄oi' => 'must’oi',
-            'muśt΄uo' => 'must’uo',
-            'muśt΄uoi' => 'must’uoi',
             'śera' => 'sera',
-            't΄üuniśt΄üö' => 't’üunist’üö',
-            'vaśk' => 'vask',
-            'vaśk΄' => 'vask’',
             'luuźik' => 'luuzik',
             'maaźik' => 'maazik',
             'oźer' => 'ozer',

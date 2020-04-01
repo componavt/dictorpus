@@ -255,7 +255,7 @@ class Grammatic
                     $word = $regs[1].'n’c’';
                 }
                 $word = preg_replace('/'.$old.'{2}([aou\s])/u', $new.'’'.$new.'’$1', $word);
-                $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
+                $word = preg_replace('/'.$old.'([aoubmdghtk\s])/u', $new.'’$1', $word);
                 if (preg_match('/^(.*)'.$old.'{2}$/u', $word, $regs)) {
                     $word = $regs[1].$new.'’'.$new.'’';
                 }
@@ -274,6 +274,9 @@ class Grammatic
             $word = str_replace('ź','z',$word);
             $word = str_replace('ć','c',$word); */
             $word = preg_replace("/['´`΄]+/", "’", $word);
+            foreach (['i', 'e', 'ä', 'ü', 'ö'] as $let) {
+                $word = str_replace('’'.$let, $let, $word);
+            }
         }
         return $word;
     }

@@ -1144,3 +1144,9 @@ INSERT INTO labels VALUES (2, 'from SOS', 'из СОС');
 --php artisan make:migration change_text_fields_in_concept_table
 
 alter table lemma_features MODIFY phonetics varchar(45) COLLATE utf8_bin DEFAULT NULL;
+
+---------!!!!!!!
+delete from lemma_variants where lemma1_id=lemma2_id;
+
+-- ОДИНАКОВЫЕ ЛЕММЫ - ФОНЕТИЧЕСКИЕ ВАРИАНТЫ (lehti)
+select lemmas1.lemma, lemmas2.lemma from lemma_variants, lemmas as lemmas1, lemmas as lemmas2 where lemma_variants.lemma1_id=lemmas1.id and lemma_variants.lemma2_id=lemmas2.id and lemmas1.lemma=lemmas2.lemma;
