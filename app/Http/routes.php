@@ -171,6 +171,8 @@ Route::group(
         Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
+        Route::get('import/phonetics_to_lemmas', 'Library\ImportController@phoneticsToLemmas');
+
         Route::get('experiments/', 'Library\ExperimentsController@index');
         Route::get('experiments/check_word', 'Library\ExperimentsController@checkWord');
         Route::get('experiments/error_list', 'Library\ExperimentsController@errorList');
@@ -194,6 +196,8 @@ Route::group(
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
+        
+        
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
 //        Route::get('dict/lemma/tmpMoveReflexive', 'Dict\LemmaController@tmpMoveReflexive'); 

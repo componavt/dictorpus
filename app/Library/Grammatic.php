@@ -254,13 +254,20 @@ class Grammatic
                 if (preg_match('/^(.+)ńć$/u', $word, $regs)) {
                     $word = $regs[1].'n’c’';
                 }
-                $word = preg_replace('/'.$old.'{2}([aou\s])/u', $new.'’'.$new.'’$1', $word);
-                $word = preg_replace('/'.$old.'([aoubmdghtk\s])/u', $new.'’$1', $word);
-                if (preg_match('/^(.*)'.$old.'{2}$/u', $word, $regs)) {
+//                $word = preg_replace('/'.$old.'{2}([aou\s])/u', $new.'’'.$new.'’$1', $word);
+                $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
+/*                if (preg_match('/^(.*)'.$old.'{2}$/u', $word, $regs)) {
                     $word = $regs[1].$new.'’'.$new.'’';
-                }
+                }*/
                 if (preg_match('/^(.*)'.$old.'$/u', $word, $regs)) {
                     $word = $regs[1].$new.'’';
+                }
+            }                
+            foreach ($cons as $old =>$new) {
+                $list='lbmdghtkž';
+                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
+                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)$/u", $word, $regs)) {
+                    $word = $regs[1].$new.'’'.$regs[2];
                 }
             }
             foreach ($cons as $old =>$new) {

@@ -10,7 +10,7 @@ use App\Models\Dict\Lemma;
 // ./vendor/bin/phpunit tests/Library/GrammaticTest
 
 class GrammaticTest extends TestCase
-{/*
+{
     public function testChangeLettersWithoutLang()
     {
         $word = 'tulow';
@@ -292,7 +292,7 @@ class GrammaticTest extends TestCase
     public function testToRightFormN() {
         $word = "päivińka";
         $result = Grammatic::toRightForm($word);
-        $expected = "päivinka";
+        $expected = "päivin’ka";
         $this->assertEquals( $expected, $result);        
     }
     
@@ -309,7 +309,7 @@ class GrammaticTest extends TestCase
         $expected = "päivü";
         $this->assertEquals( $expected, $result);        
     }
-    */
+    
     public function testToRightFormRemoveApostroph() {
         $words = [
             'st΄ebeĺ' => 'stebel’',
@@ -322,7 +322,7 @@ class GrammaticTest extends TestCase
             'g΄öńikeine' => 'gönikeine',
             't΄ähtaińe' => 'tähtaine',
             't΄üńištuda' => 'tüništuda',
-            't΄üuniśt΄üö' => 'tüunist’üö',
+            't΄üuniśt΄üö' => 'tüunistüö',
             'd΄ärvenseĺgä'=>'därvenselgä',
             ];
         $result = [];
@@ -385,7 +385,7 @@ class GrammaticTest extends TestCase
             'saĺm' => 'sal’m', 
             'lińdžoi' => 'lin’džoi',
             'luńd΄žuo' => 'lun’d’žuo',
-            'mańdžikka' => 'man’džikka',
+            'mańdžikka' => 'mandžikka',
             'mańdžoi' => 'man’džoi',
             'mańd΄žuo' => 'man’d’žuo',
             'mańd΄žuoi' => 'man’d’žuoi',
@@ -401,6 +401,7 @@ class GrammaticTest extends TestCase
             'muśt΄uoi' => 'mus’t’uoi',
             'vaśk' => 'vas’k',
             'vaśk΄' => 'vas’k’',
+            'tuuĺhagar' => 'tuul’hagar',
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
@@ -466,7 +467,7 @@ class GrammaticTest extends TestCase
             'giĺiηgeińe'=>'gilingeine',
             'hiĺĺeta' => 'hilleta',
             'hiĺĺetä' => 'hilletä',
-//            'järvenšeĺgä' => 'järvenšelgä',
+            'järvenšeĺgä' => 'järvenšelgä',
             'hiĺĺiine' => 'hilliine',
             'kaĺĺivo' => 'kallivo',
             'kevättuuĺe' => 'kevättuule',
@@ -500,10 +501,10 @@ class GrammaticTest extends TestCase
             'piĺves' => 'pilves',
             'piĺvez' => 'pilvez',
             'piĺvikkö' => 'pilvikkö',
-//            'seĺged' => 'selged',
-//            'seĺgie' => 'selgie',
-//            'seĺgiä' => 'selgiä',
-//            'seĺgä' => 'selgä',
+            'seĺged' => 'selged',
+            'seĺgie' => 'selgie',
+            'seĺgiä' => 'selgiä',
+            'seĺgä' => 'selgä',
             'seĺitra' => 'selitra',
             'seĺvä' => 'selvä',
             'sĺäc' => 'släc',
@@ -512,11 +513,10 @@ class GrammaticTest extends TestCase
             'tuĺĺi' => 'tulli',
             'tuĺĺii' => 'tullii',
             'tuuĺe' => 'tuule',
-//            'tuuĺhagar' => 'tuulhagar',
             'tuuĺi' => 'tuuli',
             'zaĺiv' => 'zaliv',
-//            'šeĺged' => 'šelged',
-//            'šeĺgä' => 'šelgä',
+            'šeĺged' => 'šelged',
+            'šeĺgä' => 'šelgä',
             'šĺöttü' => 'šlöttü',
             'šĺöäččä' => 'šlöäččä',
             'šĺöččä' => 'šlöččä',
@@ -585,7 +585,7 @@ class GrammaticTest extends TestCase
             'peiveińe' => 'peiveine',
             'pimedeińe' => 'pimedeine',
             'počkańe' => 'počkane',
-//            'päivińka' => 'päivinka',
+            'päivińka' => 'päivin’ka',
             'päiväńe' => 'päiväne',
             'päivääńe' => 'päivääne',
             'päivüöińe' => 'päivüöine',
@@ -619,7 +619,7 @@ class GrammaticTest extends TestCase
         }
         $this->assertEquals(array_values($words), $result);        
     }
-/*    
+    
     public function testMaxStem() {
         $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
         $result = Grammatic::maxStem($stems);
@@ -1058,5 +1058,5 @@ class GrammaticTest extends TestCase
         $result = Grammatic::toSearchForm($word);
         $expected = "tüunistüö";
         $this->assertEquals( $expected, $result);        
-    }*/
+    }
 }

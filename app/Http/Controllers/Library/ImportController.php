@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Storage;
 use App\Http\Requests;
 
+use App\Library\Grammatic;
 use App\Library\Import\ConceptParser;
 use App\Library\Import\DictParser;
 use App\Models\Dict\Lemma;
@@ -83,4 +84,25 @@ print "Категории сохранены.";
         ConceptParser::processBlocks($blocks);
 //dd($blocks['A11']);        
     }
+
+    public function phoneticsToLemmas() {
+        $infname = 'import/concept_dict_b.txt';
+        $outfname = 'export/concept_words.txt';
+        
+        $file_content = Storage::disk('local')->get($infname);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+        
+print "<pre>";   
+//dd($file_lines);
+        $words = ConceptParser::readWords($file_lines);
+//dd($words);  
+        Storage::disk('public')->put($outfname, "");
+        foreach ($words as $word) {
+            if (preg_match("/[΄ńηŕĺśźć]/ui", $word)) {
+                Storage::disk('public')->append($outfname, $word. " => ". Grammatic::toRightForm($word));            
+            }
+        }
+print "Найдено ".sizeof($words).' слов.';
+    }
+    
 }

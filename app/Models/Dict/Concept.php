@@ -54,7 +54,7 @@ class Concept extends Model
     }    
 
     public static function getPOSCodes() {
-        return ['NOUN', 'VERB', 'ADJ'];
+        return ['NOUN', 'VERB', 'ADJ', 'ADV', 'PRON','AUX'];
     }
 
     public static function getPOSList()

@@ -121,6 +121,69 @@ class ConceptParser {
         return [$categories, $blocks];
     }
 
+    public static function readWords($lines) {
+        $count = $block_line_num = 0;
+        $blocks = [];
+        $category_code = $category_name = '';
+        foreach ($lines as $line) {
+            $count++;
+            $line = trim($line);
+//print "<p>$count) $line\n</p>";            
+            if (!$line) {
+                $block_line_num = 0;
+                continue;
+            }
+
+            self::checkWrongSymbols($line, $count);
+            if ($block_line_num == 0) { // category
+                $block_line_num++;
+                if (preg_match("/^([ABC]\d{1,3})\s*-\s*(.+)$/", $line, $regs)) {
+                    continue;
+                }
+            }
+            if ($block_line_num == 1) { // concept ID
+                if (preg_match("/^(\d{4})$/", $line, $regs)) {
+                    $block_line_num++;
+                    continue;
+                }
+                print "<p>ОШИБОЧНЫЙ КОД ПОНЯТИЯ в $count строке</p>\n";
+                return $blocks;
+            } elseif ($block_line_num == 2) { // POS
+                $pos_id = self::getPOSID($line);
+                if ($pos_id) {
+                    $block_line_num++;
+                    continue;
+                }
+                print "<p>ОШИБОЧНАЯ ЧАСТЬ РЕЧИ в $count строке</p>\n";
+                return $blocks;
+            } elseif ($block_line_num == 3) { // Concept = Meaning
+                $block_line_num++;
+                continue;
+            } elseif ($block_line_num == 4) { // Lemmas
+                $lemmas = self::parseLemmas($line);
+                if (!sizeof($lemmas)) {
+                    print "<p>ОШИБКА РАЗБОРА ЛЕММ в $count строке</p>\n";
+                    return $blocks;
+                }
+                $block_line_num++;
+                $blocks = array_merge($blocks,array_values($lemmas));
+            } elseif ($block_line_num > 4) { // Places
+                $place_num = str_pad($block_line_num - 4, 2, "0", STR_PAD_LEFT);
+                $place_lemmas[$place_num] = self::parsePlace($line, $place_num);
+                if ($place_lemmas[$place_num] === false) {
+                    print "<p>ОШИБКА РАЗБОРА НАСЕЛЕННОГО ПУНКТА в $count строке</p>\n";
+                    return $blocks;
+                }
+                if ($block_line_num < 34) {
+                    $block_line_num ++;
+                } else {
+                    $block_line_num = 0;
+                }
+            }
+        }
+        return $blocks;
+    }
+    
     public static function checkWrongSymbols($line, $count=1) {
         if (preg_match("/[^a-zäöüčšž’0-9а-яё\|\-\?\s\,\;\(\)\}\{\:\.\/i̮i̬ń΄ηu̯ŕĺśź~ć]/iu", $line)) { //sulaimi(~e)
             print "<p>В строке $count недопустимый символ<br>$line</p>";
@@ -148,6 +211,9 @@ class ConceptParser {
         for ($i = 0; $i < sizeof($synonims); $i++) {
             $lemmas = preg_split("/\//", $synonims[$i]);
             for ($j = 0; $j < sizeof($lemmas); $j++) {
+                if (preg_match("/\(/", $lemmas[$j])) {
+                    print "<p>Ошибочная лемма <b>".$lemmas[$j]."</b></p>";
+                }
                 $out[$letters[$i] . (string) ($j + 1)] = $lemmas[$j];
             }
         }
