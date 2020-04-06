@@ -232,7 +232,7 @@ class Grammatic
     }
 
     public static function hasPhonetics($word) {
-        return preg_match("/i̮|̮i|ń|̬ń|u̯|ŕ|ĺ|ś|ź|η|ć/iu", $word);
+        return preg_match("/[i̮̮iń̬ńu̯ŕĺśźηéá|ć/iu", $word);
     }
     
     /**
@@ -243,47 +243,53 @@ class Grammatic
      * @return string
      */
     public static function toRightForm($word, $change_phonetics=true) {
-        $cons = ['ń'=>'n', '̬ń'=>'n', 'ŕ'=>'r', 'ĺ'=>'l', 'ś'=>'s', 'ź'=>'z', 'ć'=>'c']; 
+//$init = $word;
         $word = trim($word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         if ($change_phonetics) {
-            foreach (['i̬'=>'i', 'i̮'=>'i', '̮i'=>'i', 'i̯'=>'i', 'u̯'=>'u', 'η'=>'n'] as $old =>$new) {
+            $cons = ['ń'=>'n', '̬ń'=>'n', 'ŕ'=>'r', 'ĺ'=>'l', 'ś'=>'s', 'ź'=>'z', 'ć'=>'c']; 
+            foreach (['i̬'=>'i', 'i̮'=>'i', '̮i'=>'i', 'i̯'=>'i', 'u̯'=>'u', 'é'=>'e', 'pá'=>'p’a', 'η'=>'n'] as $old =>$new) {
                 $word = str_replace($old, $new, $word);
             }
             foreach ($cons as $old =>$new) {
-                if (preg_match('/^(.+)ńć$/u', $word, $regs)) {
+/*                if (preg_match('/^(.+)ńć$/u', $word, $regs)) {
                     $word = $regs[1].'n’c’';
-                }
-//                $word = preg_replace('/'.$old.'{2}([aou\s])/u', $new.'’'.$new.'’$1', $word);
-                $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
-/*                if (preg_match('/^(.*)'.$old.'{2}$/u', $word, $regs)) {
-                    $word = $regs[1].$new.'’'.$new.'’';
                 }*/
+                $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
                 if (preg_match('/^(.*)'.$old.'$/u', $word, $regs)) {
                     $word = $regs[1].$new.'’';
                 }
             }                
             foreach ($cons as $old =>$new) {
-                $list='lbmdghtkž';
-                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
-                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)$/u", $word, $regs)) {
+                $word = preg_replace('/'.$old."(d['´`΄’]ž)([aou\s])/u", $new.'’$1$2', $word);
+                $word = preg_replace('/'.$old."(dž)([aou\s])/u", $new.'$1$2', $word);
+                $word = preg_replace('/'.$old."(d['´`΄’]ž)$/u", $new.'’$1', $word);
+                $word = preg_replace('/'.$old."(dž)$/u", $new.'$1', $word);
+                $list='lnbmdghtkžptszvrc';
+                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
+//                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
+                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?)$/u", $word, $regs)) {
+//                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)$/u", $word, $regs)) {
                     $word = $regs[1].$new.'’'.$regs[2];
                 }
             }
             foreach ($cons as $old =>$new) {
                 $word = str_replace($old, $new, $word);
             }
-/*            $word = str_replace('ń','n',$word);
-            $word = str_replace('̬ń','n',$word);
-            $word = str_replace('ŕ','r',$word);
-            $word = str_replace('ĺ','l',$word);
-            $word = str_replace('ś','s',$word);
-            $word = str_replace('ź','z',$word);
-            $word = str_replace('ć','c',$word); */
+            
             $word = preg_replace("/['´`΄]+/", "’", $word);
-            foreach (['i', 'e', 'ä', 'ü', 'ö'] as $let) {
-                $word = str_replace('’'.$let, $let, $word);
+//if ($init == 'lat΄ta') {print "\n$word\n";}            
+            foreach (['t','l','s'] as $l) {
+                $word = preg_replace("/".$l."’".$l."([aou\s])/u", $l."’".$l.'’$1', $word);
+                $word = preg_replace("/".$l.$l."’([aou\s])/u", $l."’".$l.'’$1', $word);
+                $word = preg_replace("/".$l."’".$l."$/u", $l."’".$l.'’', $word);
+                $word = preg_replace("/".$l.$l."’$/u", $l."’".$l.'’', $word);
             }
+            
+            foreach (['i', 'e', 'ä', 'ü', 'ö'] as $let) {
+                $word = preg_replace('/’(['.$list. ']?)’?(['.$list. ']?)’?'. $let.'/u', '$1$2'.$let, $word);
+            }
+            $word = str_replace('d’ž', 'dž', $word);
         }
         return $word;
     }

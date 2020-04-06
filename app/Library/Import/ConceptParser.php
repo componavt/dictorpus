@@ -185,7 +185,7 @@ class ConceptParser {
     }
     
     public static function checkWrongSymbols($line, $count=1) {
-        if (preg_match("/[^a-zäöüčšž’0-9а-яё\|\-\?\s\,\;\(\)\}\{\:\.\/i̮i̬ń΄ηu̯ŕĺśź~ć]/iu", $line)) { //sulaimi(~e)
+        if (preg_match("/[^a-zäöüčšž’0-9а-яё\|\-\?\s\,\;\(\)\}\{\:\.\/i̮i̬ń΄ηu̯ŕĺśźćéá]/iu", $line)) { //sulaimi(~e)
             print "<p>В строке $count недопустимый символ<br>$line</p>";
             return false;
         }

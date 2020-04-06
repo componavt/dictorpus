@@ -324,6 +324,110 @@ class GrammaticTest extends TestCase
             't΄üńištuda' => 'tüništuda',
             't΄üuniśt΄üö' => 'tüunistüö',
             'd΄ärvenseĺgä'=>'därvenselgä',
+            
+            'heiеt΄t΄iäččie' => 'heiеttiäččie',
+            'artut΄t΄i' => 'artutti',
+//            't΄vet΄t΄ii' => 't’vettii',
+            'eht΄t΄ä' => 'ehttä',
+            'mustu smorod΄in' => 'mustu smorodin',
+            'pi̮aporot΄t΄i' => 'piaporotti',
+            'höt΄t΄i' => 'hötti',
+            'mut΄t΄i' => 'mutti',
+            'lut΄t΄i' => 'lutti',
+            'lut΄t΄e' => 'lutte',
+            'čid΄ziliusk' => 'čidziliusk',
+            'ĺöt΄t΄ä' => 'löttä',
+            'löt΄t΄ö' => 'löttö',
+            'rubiĺöt΄t΄ä' => 'rubilöttä',
+            'rubiĺöt΄t΄ö' => 'rubilöttö',
+            'moaĺöt΄t΄ö' => 'moalöttö',
+            'čuńź' => 'čun’z’',
+            't΄üt΄t΄ö' => 'tüttö',
+            'roht΄t΄ä' => 'rohttä',
+            'kiit΄t΄iä' => 'kiittiä',
+            'kiit΄t΄ii' => 'kiittii',
+            'kit΄t΄ä' => 'kittä',
+            'mit΄t΄ünäne' => 'mittünäne',
+            'mit΄t΄äine' => 'mittäine',
+            'mit΄t΄e' => 'mitte',
+            'mit΄ńe' => 'mitne',
+            'keikut΄t΄e' => 'keikutte',
+            't΄üh΄geińe' => 'tühgeine',
+            'väjet΄t΄öm' => 'väjettöm',
+            'viät΄t΄ömä' => 'viättömä',
+            'šüwhüt΄t΄iä' => 'šüwhüttiä',
+            'śüwhüt΄t΄ii' => 'süwhüttii',
+//            'siĺkt΄ä' => 'sil’ktä',
+            'iäńet΄t΄ä' => 'iänettä',
+            'hengit΄t΄iä' => 'hengittiä',
+            'hengit΄t΄ii' => 'hengittii',
+            'peit΄t΄üä' => 'peittüä',
+            'peit΄t΄ie' => 'peittie',
+            'peit΄t΄iä' => 'peittiä',
+            'peit΄t΄öä' => 'peittöä',
+            'peit΄t΄ii' => 'peittii',
+            'veńüt΄t΄üäkše' => 'venüttüäkše',
+            'venüt΄t΄öäčie' => 'venüttöäčie',
+            'zavot΄t΄ä' => 'zavottä',
+            'revit΄t΄üä' => 'revittüä',
+            'revit΄t΄iä' => 'revittiä',
+            'revit΄t΄öä' => 'revittöä',
+            'kät΄kie' => 'kätkie',
+            'kät΄kii' => 'kätkii',
+            'it΄et΄t΄äjä' => 'itettäjä',
+            'it΄kettaj' => 'itkettaj',
+            'it΄kijä' => 'itkijä',
+            'it΄kiji' => 'itkiji',
+            'iäńeĺĺä it΄kijä' => 'iänellä itkijä',
+            'p΄räšk' => 'präšk',
+            'šiäńd΄ĺičii' => 'šiändličii',
+            'kit΄kie' => 'kitkie',
+            'panna küt΄küöh' => 'panna kütküöh',
+            'art΄t΄eĺi' => 'artteli',
+            'g΄rähk' => 'grähk',
+            'pit΄kä' => 'pitkä',
+            ];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+    
+    public function testToRightFormDZ() {
+        $words = [
+            'lińdžoi' => 'lindžoi',
+            'lindžuoi' => 'lindžuoi',
+            'luńd΄žuo' => 'lun’džuo',
+            'mańdžikka' => 'mandžikka',
+            'mańdžoi' => 'mandžoi',
+            'mand΄žoi' => 'mandžoi',
+            'mańd΄žuo' => 'man’džuo',
+            'mańd΄žuoi' => 'man’džuoi',
+            'ĺiäd΄žö' => 'liädžö',
+            'lod΄ž' => 'lodž',
+            'ud΄žve' => 'udžve',
+            'lid΄žu' => 'lidžu',
+            'lid΄žut' => 'lidžut',
+            'kud΄žahańe' => 'kudžahane',
+            'kud΄žoi' => 'kudžoi',
+            'kud΄žuo' => 'kudžuo',
+            'kud΄žuoi' => 'kudžuoi',
+            'čid΄žiliuško' => 'čidžiliuško',
+            'čid΄žiliušku' => 'čidžiliušku',
+            'čid΄žiliusku' => 'čidžiliusku',
+            'šid΄žiĺiuška' => 'šidžiliuška',
+            'čid΄žeĺäwšku' => 'čidželäwšku',
+            'čud΄žüĺüškö' => 'čudžülüškö',
+            'čid΄žilüskä' => 'čidžilüskä',
+            'čuńd΄žu' => 'čun’džu',
+            'čońd΄ž' => 'čon’dž',
+            'čuńd΄ž' => 'čun’dž',
+            'küńd΄ži' => 'kündži',
+            'künd΄ži' => 'kündži',
+            'küńd΄ž' => 'kün’dž',
+            'pad΄ža' => 'padža',
+            'häd΄žvä' => 'hädžvä',
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
@@ -371,7 +475,21 @@ class GrammaticTest extends TestCase
             'kuź' => 'kuz’',
             'onduź' => 'onduz’',
             'onź' => 'onz’',
-            'varź' => 'varz’'];
+            'varź' => 'varz’',
+            
+            'artut΄t΄' => 'artut’t’',
+            'artut΄' => 'artut’',
+            'voišieńv' => 'voišien’v',
+            'küńź' => 'kün’z’',
+            'ri̮śś' => 'ris’s’',
+            'ńäńń' => 'nän’n’',
+            'keldboĺeźń' => 'keldbolez’n’',
+            'šäriśś' => 'šäris’s’',
+            'aźź' => 'az’z’',
+            'toŕv' => 'tor’v',
+            'toŕv΄' => 'tor’v’',
+            'miśś' => 'mis’s’'
+            ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
             $result[] = Grammatic::toRightForm($word,true);
@@ -383,12 +501,6 @@ class GrammaticTest extends TestCase
         $words = [
             'gaĺbuu'=>'gal’buu', 
             'saĺm' => 'sal’m', 
-            'lińdžoi' => 'lin’džoi',
-            'luńd΄žuo' => 'lun’d’žuo',
-            'mańdžikka' => 'mandžikka',
-            'mańdžoi' => 'man’džoi',
-            'mańd΄žuo' => 'man’d’žuo',
-            'mańd΄žuoi' => 'man’d’žuoi',
             'koŕb' => 'kor’b',
             'maŕd΄' => 'mar’d’',
             'maŕg΄' => 'mar’g’',
@@ -402,6 +514,8 @@ class GrammaticTest extends TestCase
             'vaśk' => 'vas’k',
             'vaśk΄' => 'vas’k’',
             'tuuĺhagar' => 'tuul’hagar',
+            
+            'hiŕpulo' => 'hir’pulo',
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
@@ -419,14 +533,48 @@ class GrammaticTest extends TestCase
             'perńav' => 'pern’av',
             'kuŕava' => 'kur’ava',
             'kuuŕa' => 'kuur’a',
-            'śeŕanka' => 'ser’anka'];
+            'śeŕanka' => 'ser’anka',
+            'aśśa' => 'as’s’a',
+            'kośśa' => 'kos’s’a',
+            'd΄aśśaĺ' => 'd’as’s’al’',
+            'nuakovaĺńa' => 'nuakoval’n’a',
+            'nakovaĺna' => 'nakoval’na',
+            'nakovaĺn' => 'nakoval’n',
+            'ni̮akovaĺńja' => 'niakovalnja',
+            'sobrańja' => 'sobranja',
+            'ĺämmiśranda' => 'lämmis’randa',
+            
+            'lat΄ta' => 'lat’t’a',
+            ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
             $result[] = Grammatic::toRightForm($word,true);
         }
         $this->assertEquals(array_values($words), $result);        
     }
-    
+/*    
+    public function testToRightFormSost() {
+        $words = ['poĺpäivad' => 'pol’päivad',
+            'poĺpeiv΄ad' => 'pol’peiv’ad',
+            'ńeĺĺanśpei' => 'nel’l’ans’pei',
+            'neĺanśpäi' => 'nel’ans’päi'
+            'baŕbmätas' => 'bar’bmätas',
+            'täuźigääńe' => 'täuz’igääne',
+            't΄äuźigaińe' => 'täuz’igaine',
+            't΄äuźigäińe' => 'täuz’igäine',
+            't΄äuźigääńe' => 'täuz’igääne',
+ 
+            'soĺhiin' => 'sol’hiin',
+            'poŕmi̮i' => 'por’mii',
+            
+            ];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::toRightForm($word,true);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+*/    
     public function testToRightFormDiacretBeforeO() {
         $words = ['kaĺĺo' => 'kal’l’o',
             'kĺon' => 'kl’on',
@@ -440,7 +588,8 @@ class GrammaticTest extends TestCase
             'muuŕoi' => 'muur’oi',
             'muwŕoi' => 'muwr’oi',
             'ŕoun' => 'r’oun',
-            'čeŕohm' => 'čer’ohm'];
+            'čeŕohm' => 'čer’ohm',
+            'suśśod' => 'sus’s’od'];
         $result = [];
         foreach ($words as $word =>$word_exp) {
             $result[] = Grammatic::toRightForm($word,true);
@@ -454,7 +603,10 @@ class GrammaticTest extends TestCase
             'šĺubuoi' => 'šl’ubuoi',
             'd΄uońuo' => 'd’uon’uo',
             'ńuaglahut' => 'n’uaglahut',
-            'muuŕuo' => 'muur’uo'];
+            'muuŕuo' => 'muur’uo',
+            'kut΄kutti̮a' => 'kut’kuttia',
+            'raameńńu' => 'raamen’n’u',
+            ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
             $result[] = Grammatic::toRightForm($word,true);
@@ -490,7 +642,6 @@ class GrammaticTest extends TestCase
             'ĺinčikk' => 'linčikk',
             'ĺińčikkä' => 'linčikkä',
             'ĺipo' => 'lipo',
-            'ĺiäd΄žö' => 'liäd’žö',
             'ĺiäzö' => 'liäzö',
             'ĺiäzü' => 'liäzü',
             'ĺiäžmü' => 'liäžmü',
