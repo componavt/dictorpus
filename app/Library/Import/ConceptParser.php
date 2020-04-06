@@ -375,18 +375,23 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
         foreach ($lemma_places as $lemma_num => $lemma_langs) {
             $phonetics = Grammatic::toRightForm($lemmas[$lemma_num], false);
             $lemmas[$lemma_num] = Grammatic::toRightForm($lemmas[$lemma_num]);
+            if (preg_match("/\s/", $lemmas[$lemma_num])) {
+                $lpos_id = PartOfSpeech::getIDByCode('PHRASE');
+            } else {
+                $lpos_id = $pos_id;
+            }
             if ($phonetics == $lemmas[$lemma_num]) {
                 $phonetics = '';
             }
             foreach ($lemma_langs as $lang_id => $dialects) {
 //dd($pos_id, $lemmas[$lemma_num], $lang_id, $dialects);   
-                $lemma_coll = Lemma::wherePosId($pos_id)
+                $lemma_coll = Lemma::wherePosId($lpos_id)
                                 ->where('lemma', 'like', $lemmas[$lemma_num])
                                 ->whereLangId($lang_id)->get();
 //dd($lemma_coll);       
                 list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id, $concept->id);
                 if (!isset($lemma_obj) || !$lemma_obj) {
-                    $lemma_obj = Lemma::store($lemmas[$lemma_num], $pos_id, $lang_id);
+                    $lemma_obj = Lemma::store($lemmas[$lemma_num], $lpos_id, $lang_id);
                     $meaning_texts = [$meaning_lang_ru => $concept->text_ru, $meaning_lang_en => $concept->text_en];
                     $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, $meaning_texts);
                 } elseif ($concept->text_en && !$meaning_obj->meaningTexts()->where('lang_id',$meaning_lang_en)->first()) {
