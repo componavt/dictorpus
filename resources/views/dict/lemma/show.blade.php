@@ -100,9 +100,8 @@
         @endif
 
         @foreach ($lemma->meanings as $meaning)
-        <table class="table lemma-meaning">
-            <tr>
-                <td>
+        <div class="lemma-meaning">
+            <div class="lemma-meaning-left">
                     <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
                     
                     @include('dict.lemma.show.meaning.concepts')
@@ -112,15 +111,14 @@
                     @include('dict.lemma.show.meaning.relations')
 
                     @include('dict.lemma.show.meaning.translations')
-                </td>
-                <td>
+            </div>
+            <div class="lemma-meaning-examples">
                     <img class="img-loading" id="img-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
                     <div  id="meaning-examples_{{$meaning->id}}">
-{{--                    @include('dict.lemma.show.examples') --}}
                     </div>
-                </td>
+            </div>
             </tr>
-        </table>
+        </div>
         @endforeach
 
         @if ($lemma->isChangeable() || sizeof($lemma->wordforms)>0) 

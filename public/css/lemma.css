@@ -35,6 +35,9 @@
     margin-bottom: 20px;
 }
 
+.lemma-meaning {
+    display: block;
+}
 .lemma-meaning h4 {
     margin-top: 25px;
 }
@@ -159,4 +162,14 @@ h4 .fa {
 #lemmaStemAffix {
     font-weight: bold;
     font-size: 18px;
+}
+
+@media screen and (min-width: 767px) {
+    .lemma-meaning {
+        display: flex;
+    }
+
+    .lemma-meaning-left {
+        padding-right: 20px;
+    }
 }
