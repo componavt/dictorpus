@@ -327,7 +327,7 @@ class GrammaticTest extends TestCase
             
             'heiеt΄t΄iäččie' => 'heiеttiäččie',
             'artut΄t΄i' => 'artutti',
-//            't΄vet΄t΄ii' => 't’vettii',
+//            't΄vet΄t΄ii' => 'tvettii',
             'eht΄t΄ä' => 'ehttä',
             'mustu smorod΄in' => 'mustu smorodin',
             'pi̮aporot΄t΄i' => 'piaporotti',
