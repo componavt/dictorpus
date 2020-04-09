@@ -300,6 +300,8 @@ class Gramset extends Model
                 } else {
                     return [0=>24, 1=>22, 3=>2];
                 }
+            } elseif ($number==2) {
+                return [0=>3, 1=>4, 3=>1];
             } else {
                 return [0=>3, 1=>4, 2=>22, 3=>1];
             }

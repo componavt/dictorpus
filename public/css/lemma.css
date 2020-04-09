@@ -162,6 +162,7 @@ h4 .fa {
 #lemmaStemAffix {
     font-weight: bold;
     font-size: 18px;
+    color: gray;
 }
 
 @media screen and (min-width: 767px) {
