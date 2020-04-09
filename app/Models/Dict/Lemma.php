@@ -1454,11 +1454,12 @@ dd($wordforms);
         }
         $gramsets = Gramset::dictionaryGramsets($this->pos_id, $this->features->number, $this->lang_id);
 //dd($gramsets);        
-        if (!$gramsets || !is_array($gramsets) || !sizeof($gramsets)) { return $out; }
-  
+        if (!$gramsets || !is_array($gramsets) || sizeof($gramsets)<2) { return $out; }
+        array_pop($gramsets);
+        
         $ends = [];
-        for ($i=0; $i<sizeof($gramsets)-1; $i++) {
-            $w = $this->wordformsByGramsetDialect($gramsets[$i], $dialect_id);
+        foreach ($gramsets as $gramset_id) {
+            $w = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
             if (!$w || !isset($w[0]) || !preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w[0]->wordform, $regs)) {
                 return $out;
             }
