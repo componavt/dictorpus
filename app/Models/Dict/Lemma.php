@@ -1459,7 +1459,7 @@ dd($wordforms);
         $ends = [];
         for ($i=0; $i<sizeof($gramsets)-1; $i++) {
             $w = $this->wordformsByGramsetDialect($gramsets[$i], $dialect_id);
-            if (!$w || !preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w[0]->wordform, $regs)) {
+            if (!$w || !isset($w[0]) || !preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w[0]->wordform, $regs)) {
                 return $out;
             }
             $ends[] = '-'.$regs[1];
