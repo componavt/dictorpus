@@ -254,4 +254,11 @@ class Lang extends Model
         }
         return $out;
     }
+    
+    public function mainDialect() {
+        switch ($this->id) {
+            case 1: return 43;
+        }
+        return NULL;
+    }
 }

@@ -1442,9 +1442,29 @@ dd($wordforms);
     public function stemAffixForm() {
         return  $this->reverseLemma && $this->reverseLemma->affix 
                 ? $this->reverseLemma->stem.'|'.$this->reverseLemma->affix 
-                : $this->lemma;
+                : $this->lemma;        
+    }
+    
+    public function dictForm() {
+        $out = $this->stemAffixForm();
+        $dialect_id = $this->lang->mainDialect();
         
-
+        if (!$this->reverseLemma || !$this->reverseLemma->stem || $this->lang_id != 1 || !$dialect_id) { // not veps
+            return $out;
+        }
+        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $this->features->number, $this->lang_id);
+//dd($gramsets);        
+        if ($gramsets == NULL) { return $out; }
+  
+        $ends = [];
+        for ($i=0; $i<sizeof($gramsets)-1; $i++) {
+            $w = $this->wordformsByGramsetDialect($gramsets[$i], $dialect_id);
+            if (!$w || !preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w[0]->wordform, $regs)) {
+                return $out;
+            }
+            $ends[] = '-'.$regs[1];
+        }
+        return $out. " (".join(', ',$ends).")";        
     }
     
     public function getStemAffixByStems() {
