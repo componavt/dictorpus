@@ -1454,7 +1454,7 @@ dd($wordforms);
         }
         $gramsets = Gramset::dictionaryGramsets($this->pos_id, $this->features->number, $this->lang_id);
 //dd($gramsets);        
-        if (!$gramsets || !is_array($gramsets)) { return $out; }
+        if (!$gramsets || !is_array($gramsets) || !sizeof($gramsets)) { return $out; }
   
         $ends = [];
         for ($i=0; $i<sizeof($gramsets)-1; $i++) {
