@@ -11,4 +11,8 @@ trait Dialects
     {
         return $this->hasMany(Dialect::class);
     }
+    
+    public function countDialects() {
+        return $this->dialects()->count();
+    }
 }
