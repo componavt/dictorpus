@@ -389,7 +389,7 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
                                 ->where('lemma', 'like', $lemmas[$lemma_num])
                                 ->whereLangId($lang_id)->get();
 //dd($lemma_coll);       
-                list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id, $concept->id);
+                list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id, $concept->id, $phonetics);
                 if (!isset($lemma_obj) || !$lemma_obj) {
                     $lemma_obj = Lemma::store($lemmas[$lemma_num], $lpos_id, $lang_id);
                     $meaning_texts = [$meaning_lang_ru => $concept->text_ru, $meaning_lang_en => $concept->text_en];
@@ -416,7 +416,7 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
         return [$lang_lemmas, $lang_meanings];
     }
 
-    public static function searchLemmaByMeaningText($lemma_coll, $meaning_text, $meaning_lang, $search_lang, $concept_id) {
+    public static function searchLemmaByMeaningText($lemma_coll, $meaning_text, $meaning_lang, $search_lang, $concept_id, $phonetics) {
         if (!sizeof($lemma_coll)) {
             return [null, null];
         }
@@ -426,7 +426,7 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
                 return [$lemma, $meaning_obj];
             }
         }
-        print "<p>Нашлись леммы <b>".$lemma_coll[0]->lemma."</b>, но нет подходящего значения <b>'".$meaning_text."'</b>: "
+        print "<p>Нашлись леммы <b>".$lemma_coll[0]->lemma."</b> ($phonetics), но нет подходящего значения <b>'".$meaning_text."'</b>: "
                 . "<a href=/ru/dict/lemma?search_lang=$search_lang&search_lemma=" . $lemma_coll[0]->lemma
                 . "&search_pos=" . $lemma_coll[0]->pos_id . ">проверить</a></p>";
         exit(1);
