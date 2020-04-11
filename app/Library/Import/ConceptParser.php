@@ -428,7 +428,7 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
         }
         print "<p>Нашлись леммы <b>".$lemma_coll[0]->lemma."</b>, но нет подходящего значения <b>'".$meaning_text."'</b>: "
                 . "<a href=/ru/dict/lemma?search_lang=$search_lang&search_lemma=" . $lemma_coll[0]->lemma
-                . "&search_pos_id=" . $lemma_coll[0]->pos_id . ">проверить</a></p>";
+                . "&search_pos=" . $lemma_coll[0]->pos_id . ">проверить</a></p>";
         exit(1);
     }
 
