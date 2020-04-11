@@ -1452,7 +1452,7 @@ dd($wordforms);
         if (!$this->reverseLemma || !$this->reverseLemma->stem || $this->lang_id != 1 || !$dialect_id) { // not veps
             return $out;
         }
-        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $this->features->number, $this->lang_id);
+        $gramsets = Gramset::dictionaryGramsets($this->pos_id, isset($this->features->number) ? $this->features->number : NULL, $this->lang_id);
 //dd($gramsets);        
         if (!$gramsets || !is_array($gramsets) || sizeof($gramsets)<2) { return $out; }
         array_pop($gramsets);

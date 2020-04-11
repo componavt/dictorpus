@@ -306,7 +306,11 @@ class Gramset extends Model
                 return [0=>3, 1=>4, 2=>22, 3=>1];
             }
         } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
-            return [0=>26, 1=>28, 2=>31, 3=>170];
+            if ($lang_id == 1) { // vepsian
+                return [0=>28, 1=>34, 2=>52, 3=>170];
+            } else {
+                return [0=>26, 1=>28, 2=>31, 3=>170];
+            }
         }
         return NULL;
     }
