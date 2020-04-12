@@ -17,6 +17,7 @@ use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\PartOfSpeech;
 
 class ConceptController extends Controller
 {
@@ -215,7 +216,7 @@ class ConceptController extends Controller
             $concepts = $concepts ->where('concept_category_id',$category_id);
         }
         
-        if ($pos_id) {                 
+        if ($pos_id && $pos_id !=PartOfSpeech::getIDByCode('PHRASE')) {                 
             $concepts = $concepts ->where('pos_id',$pos_id);
         }
         
