@@ -433,7 +433,7 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
                 . "<a href=/ru/dict/lemma?search_lang=$search_lang&search_lemma=" . $lemma_coll[0]->lemma
                 . "&search_pos=" . $lemma_coll[0]->pos_id . ">проверить</a></p>";
 //        exit(1);
-        return [$lemma, NULL];
+        return [$lemma_coll[0], NULL];
     }
 
     public static function meaningFound($lemma, $meaning_text, $meaning_lang, $concept_id) {
