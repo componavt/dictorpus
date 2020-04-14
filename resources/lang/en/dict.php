@@ -64,6 +64,7 @@ return [
     'clear_wordforms' => 'clear wordforms',
     'code' => 'code',
     'concept' => 'concept',
+    'concept_removed' => 'Сoncept ":name" is removed successfully.',
     'concept_section_A' => 'UNIVERSE',
     'concept_section_B' => 'MAN',
     'concept_section_C' => 'MAN AND THE UNIVERSE',
