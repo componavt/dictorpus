@@ -164,7 +164,7 @@ class ConceptController extends Controller
             try{
                 $concept = Concept::find($id);
                 if($concept){
-                    $concept_name = $concept->name;
+                    $concept_name = $concept->text;
                     $concept->meanings()->detach();
                     $concept->delete();
                     $result['message'] = \Lang::get('dict.concept_removed', ['name'=>$concept_name]);
