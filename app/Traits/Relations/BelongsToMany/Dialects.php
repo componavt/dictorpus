@@ -34,7 +34,7 @@ trait Dialects
             $out[] = $dialect->name;
         }*/
         $out = $this->dialects->pluck('name')->toArray();
-        if (!sizeof($out) && sizeof($out) == $this->lang->countDialects()) {
+        if (!sizeof($out) || $this->lang && sizeof($out) == $this->lang->countDialects()) {
             return NULL;
         }
         return join(', ',$out);
