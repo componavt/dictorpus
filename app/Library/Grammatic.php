@@ -32,7 +32,7 @@ class Grammatic
      * @return type
      */
     public static function parseLemmaField($data) {
-        $lemma = self::toRightForm($data['lemma'],'false');
+        $lemma = self::toRightForm($data['lemma'],false);
         if (isset($data['number']) && $data['number']=='refl') {
             $data['reflexive'] = 1;
         }
