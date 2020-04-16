@@ -32,7 +32,7 @@ class Grammatic
      * @return type
      */
     public static function parseLemmaField($data) {
-        $lemma = self::toRightForm($data['lemma'],false);
+        $lemma = self::toRightForm($data['lemma']);
         if (isset($data['number']) && $data['number']=='refl') {
             $data['reflexive'] = 1;
         }
@@ -236,63 +236,82 @@ class Grammatic
     }
     
     /**
+     * @param string $word
+     * @return string
+     */
+    public static function removeSpaces($word) {
+        $word = trim($word);
+        $word = preg_replace("/\s{2,}/", " ", $word);
+        return $word;
+    }
+    
+    /**
+     * @param string $word
+     * @return string
+     */
+    public static function toRightForm($word) {
+        $word = self::removeSpaces($word);
+        $word = preg_replace("/['´`΄]+/", "’", $word);
+        return $word;
+    }
+    
+    /**
      * перед 'a' 'o' 'u' и на конце слова важно сохранить смягчение, в остальных заменяем на твердую согласную
      * 
      * @param string $word
      * @param boolean $change_phonetics
      * @return string
      */
-    public static function toRightForm($word, $change_phonetics=true) {
+    public static function phoneticsToLemma($word) {
 //$init = $word;
-        $word = trim($word);
-        $word = preg_replace("/\s{2,}/", " ", $word);
-        if ($change_phonetics) {
-            $cons = ['ń'=>'n', '̬ń'=>'n', 'ŕ'=>'r', 'ĺ'=>'l', 'ś'=>'s', 'ź'=>'z', 'ć'=>'c']; 
-            foreach (['i̬'=>'i', 'i̮'=>'i', '̮i'=>'i', 'i̯'=>'i', 'u̯'=>'u', 'é'=>'e', 'pá'=>'p’a', 'η'=>'n'] as $old =>$new) {
-                $word = str_replace($old, $new, $word);
-            }
-            foreach ($cons as $old =>$new) {
-/*                if (preg_match('/^(.+)ńć$/u', $word, $regs)) {
-                    $word = $regs[1].'n’c’';
-                }*/
-                $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
-                if (preg_match('/^(.*)'.$old.'$/u', $word, $regs)) {
-                    $word = $regs[1].$new.'’';
-                }
-            }                
-            foreach ($cons as $old =>$new) {
-                $word = preg_replace('/'.$old."(d['´`΄’]ž)([aou\s])/u", $new.'’$1$2', $word);
-                $word = preg_replace('/'.$old."(dž)([aou\s])/u", $new.'$1$2', $word);
-                $word = preg_replace('/'.$old."(d['´`΄’]ž)$/u", $new.'’$1', $word);
-                $word = preg_replace('/'.$old."(dž)$/u", $new.'$1', $word);
-                $list='lnbmdghtkžptszvrc';
-                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
-//                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
-                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?)$/u", $word, $regs)) {
-//                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)$/u", $word, $regs)) {
-                    $word = $regs[1].$new.'’'.$regs[2];
-                }
-            }
-            foreach ($cons as $old =>$new) {
-                $word = str_replace($old, $new, $word);
-            }
-            
-            $word = preg_replace("/['´`΄]+/", "’", $word);
-//if ($init == 'lat΄ta') {print "\n$word\n";}            
-            foreach (['t','l','s'] as $l) {
-                $word = preg_replace("/".$l."’".$l."([aou\s])/u", $l."’".$l.'’$1', $word);
-                $word = preg_replace("/".$l.$l."’([aou\s])/u", $l."’".$l.'’$1', $word);
-                $word = preg_replace("/".$l."’".$l."$/u", $l."’".$l.'’', $word);
-                $word = preg_replace("/".$l.$l."’$/u", $l."’".$l.'’', $word);
-            }
-            
-            foreach (['i', 'e', 'ä', 'ü', 'ö'] as $let) {
-                $word = preg_replace('/’(['.$list. ']?)’?(['.$list. ']?)’?'. $let.'/u', '$1$2'.$let, $word);
-            }
-            $word = str_replace('d’ž', 'dž', $word);
+        $word = self::removeSpaces($word);
+        
+        $cons = ['ń'=>'n', '̬ń'=>'n', 'ŕ'=>'r', 'ĺ'=>'l', 'ś'=>'s', 'ź'=>'z', 'ć'=>'c']; 
+        foreach (['i̬'=>'i', 'i̮'=>'i', '̮i'=>'i', 'i̯'=>'i', 'u̯'=>'u', 'é'=>'e', 'pá'=>'p’a', 'η'=>'n'] as $old =>$new) {
+            $word = str_replace($old, $new, $word);
         }
+        foreach ($cons as $old =>$new) {
+/*                if (preg_match('/^(.+)ńć$/u', $word, $regs)) {
+                $word = $regs[1].'n’c’';
+            }*/
+            $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
+            if (preg_match('/^(.*)'.$old.'$/u', $word, $regs)) {
+                $word = $regs[1].$new.'’';
+            }
+        }                
+        foreach ($cons as $old =>$new) {
+            $word = preg_replace('/'.$old."(d['´`΄’]ž)([aou\s])/u", $new.'’$1$2', $word);
+            $word = preg_replace('/'.$old."(dž)([aou\s])/u", $new.'$1$2', $word);
+            $word = preg_replace('/'.$old."(d['´`΄’]ž)$/u", $new.'’$1', $word);
+            $word = preg_replace('/'.$old."(dž)$/u", $new.'$1', $word);
+            $list='lnbmdghtkžptszvrc';
+            $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
+//                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
+            if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?)$/u", $word, $regs)) {
+//                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)$/u", $word, $regs)) {
+                $word = $regs[1].$new.'’'.$regs[2];
+            }
+        }
+        foreach ($cons as $old =>$new) {
+            $word = str_replace($old, $new, $word);
+        }
+
+        $word = preg_replace("/['´`΄]+/", "’", $word);
+//if ($init == 'lat΄ta') {print "\n$word\n";}            
+        foreach (['t','l','s'] as $l) {
+            $word = preg_replace("/".$l."’".$l."([aou\s])/u", $l."’".$l.'’$1', $word);
+            $word = preg_replace("/".$l.$l."’([aou\s])/u", $l."’".$l.'’$1', $word);
+            $word = preg_replace("/".$l."’".$l."$/u", $l."’".$l.'’', $word);
+            $word = preg_replace("/".$l.$l."’$/u", $l."’".$l.'’', $word);
+        }
+
+        foreach (['i', 'e', 'ä', 'ü', 'ö'] as $let) {
+            $word = preg_replace('/’(['.$list. ']?)’?(['.$list. ']?)’?'. $let.'/u', '$1$2'.$let, $word);
+        }
+        $word = str_replace('d’ž', 'dž', $word);
         return $word;
     }
+    
     public static function negativeForm($gramset_id, $lang_id) {
         $neg_lemma = Lemma::where('lang_id', $lang_id)->whereLemma('ei')
                           ->where('pos_id',PartOfSpeech::getIDByCode('AUX'))->first();

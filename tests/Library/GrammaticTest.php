@@ -291,21 +291,21 @@ class GrammaticTest extends TestCase
     
     public function testToRightFormN() {
         $word = "päivińka";
-        $result = Grammatic::toRightForm($word);
+        $result = Grammatic::phoneticsToLemma($word);
         $expected = "päivin’ka";
         $this->assertEquals( $expected, $result);        
     }
     
     public function testToRightFormNFalse() {
         $word = "päivińka";
-        $result = Grammatic::toRightForm($word,false);
+        $result = Grammatic::removeSpaces($word); 
         $expected = "päivińka";
         $this->assertEquals( $expected, $result);        
     }
     
     public function testToRightFormPaivuFalse() {
         $word = "päivü";
-        $result = Grammatic::toRightForm($word,false);
+        $result = Grammatic::removeSpaces($word);
         $expected = "päivü";
         $this->assertEquals( $expected, $result);        
     }
@@ -390,7 +390,7 @@ class GrammaticTest extends TestCase
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -432,7 +432,7 @@ class GrammaticTest extends TestCase
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -493,7 +493,7 @@ class GrammaticTest extends TestCase
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -520,7 +520,7 @@ class GrammaticTest extends TestCase
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -549,7 +549,7 @@ class GrammaticTest extends TestCase
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -571,7 +571,7 @@ class GrammaticTest extends TestCase
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -593,7 +593,7 @@ class GrammaticTest extends TestCase
             'suśśod' => 'sus’s’od'];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -610,7 +610,7 @@ class GrammaticTest extends TestCase
             ];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -767,7 +767,7 @@ class GrammaticTest extends TestCase
             'veźi' => 'vezi'];
         $result = [];
         foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::toRightForm($word,true);
+            $result[] = Grammatic::phoneticsToLemma($word);
         }
         $this->assertEquals(array_values($words), $result);        
     }
@@ -1206,7 +1206,7 @@ class GrammaticTest extends TestCase
     
     public function testToSearchFormDiakret() {
         $word = "t΄üuniśt΄üö";
-        $word = Grammatic::toRightForm($word);
+        $word = Grammatic::phoneticsToLemma($word);
         $result = Grammatic::toSearchForm($word);
         $expected = "tüunistüö";
         $this->assertEquals( $expected, $result);        

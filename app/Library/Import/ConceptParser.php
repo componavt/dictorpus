@@ -373,8 +373,8 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
         $meaning_lang_en = Lang::getIDByCode('en');
 //dd($lemma_places);        
         foreach ($lemma_places as $lemma_num => $lemma_langs) {
-            $phonetics = Grammatic::toRightForm($lemmas[$lemma_num], false);
-            $lemmas[$lemma_num] = Grammatic::toRightForm($lemmas[$lemma_num]);
+            $phonetics = Grammatic::removeSpaces($lemmas[$lemma_num]);
+            $lemmas[$lemma_num] = Grammatic::phoneticsToLemma($lemmas[$lemma_num]);
             if (preg_match("/\s/", $lemmas[$lemma_num])) {
                 $lpos_id = PartOfSpeech::getIDByCode('PHRASE');
             } else {
