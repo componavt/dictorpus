@@ -12,7 +12,7 @@ class LemmaFeature extends Model
 {
     public $timestamps = false;
     public $incrementing=false;
-    protected $fillable = ['id','animacy','abbr','number','reflexive', 'phonetics',
+    protected $fillable = ['id','animacy','abbr','number','reflexive',
         'transitive','prontype_id','numtype_id','degree_id','advtype_id', 'comptype_id'];
     public $featuresByPOS = [1  => ['degree_id'],                   // adjective
                              2  => ['advtype_id', 'degree_id'],     // adverb

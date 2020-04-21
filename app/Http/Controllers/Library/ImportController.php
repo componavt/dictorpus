@@ -72,7 +72,7 @@ print "<pre>";
     
     public function conceptParser(Request $request) {
         $fname = (int)$request->input('fname');
-        if (!$fname) {$fname = 'concept_dict_c'; }
+        if (!$fname) {$fname = 'concept_dict_b'; }
         $filename = 'import/'.$fname.'.txt';
         $file_content = Storage::disk('local')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);

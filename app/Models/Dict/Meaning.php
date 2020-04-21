@@ -260,7 +260,14 @@ class Meaning extends Model
         }
         return $relations;
     }
-
+    
+    public function storeDialects($dialects) {
+        $this->dialects()->detach();
+        if ($dialects && sizeof($dialects)) {
+            $this->dialects()->attach($dialects);
+        }
+    }
+    
     /**
      * Stores array of new meanings for the lemma
      * 

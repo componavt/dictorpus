@@ -151,7 +151,7 @@ class LemmaController extends Controller
 
         LemmaFeature::store($lemma->id, $request);
         $lemma->storePhrase($request->phrase);
-        $lemma->storeDialects($request->dialects);
+//        $lemma->storeDialects($request->dialects);
         
         Meaning::storeLemmaMeanings($request->new_meanings, $lemma->id);
         
@@ -336,7 +336,8 @@ class LemmaController extends Controller
         
         $lemma_variants = $lemma->variants->pluck('lemma', 'id')->toArray();
         $dialect_values = Dialect::getList($lemma->lang_id);
-        $dialects_value = $lemma->dialects->pluck('id')->toArray();
+        $dialects_value = !$lemma->dialects ? []
+                                    : $lemma->dialects->pluck('id')->toArray();
         $concept_values = Concept::getList(NULL, $lemma->pos_id !=PartOfSpeech::getIDByCode('PHRASE') ? $lemma->pos_id : NULL); //[NULL=>'']+
         
         return view('dict.lemma.edit',
