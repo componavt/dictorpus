@@ -9,12 +9,12 @@
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lemma_lang_id']])
                  
-        @include('widgets.form.formitem._select2',
+{{--        @include('widgets.form.formitem._select2',
                 ['name' => 'dialects', 
                  'values' =>$dialect_values,
                  'value' => $dialects_value,
                  'title' => trans('dict.dialects_usage'),
-                 'class'=>'select-dialects form-control']) 
+                 'class'=>'select-dialects form-control']) --}}
                  
         @include('widgets.form.formitem._select2',
                 ['name' => 'wordform_dialect_id', 
@@ -51,11 +51,11 @@
                  'value' => $lemma_value,
                  'title'=>trans('dict.lemma')])
                  
-        @include('widgets.form.formitem._text', 
+{{--        @include('widgets.form.formitem._text', 
                 ['name' => 'phonetics', 
                  'special_symbol' => true,
                  'value' => isset($obj->phonetics) ? $obj->phonetics : NULL,
-                 'title'=>trans('dict.phonetics')])
+                 'title'=>trans('dict.phonetics')]) --}}
                  
         @include('widgets.form.formitem._select2',
                 ['name' => 'variants',

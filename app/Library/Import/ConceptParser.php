@@ -97,7 +97,7 @@ class ConceptParser {
                 $block_line_num++;
                 continue;
             } elseif ($block_line_num == 4) { // Lemmas
-                $lemmas = self::parseLemmas($line);
+                $lemmas = self::parseLemmas($line, $concept_id);
                 if (!sizeof($lemmas)) {
                     print "<p>ОШИБКА РАЗБОРА ЛЕММ в $count строке</p>\n";
                     return [$categories, $blocks];
@@ -143,6 +143,7 @@ class ConceptParser {
             }
             if ($block_line_num == 1) { // concept ID
                 if (preg_match("/^(\d{4})$/", $line, $regs)) {
+                    $concept_id = $regs[1];
                     $block_line_num++;
                     continue;
                 }
@@ -160,7 +161,7 @@ class ConceptParser {
                 $block_line_num++;
                 continue;
             } elseif ($block_line_num == 4) { // Lemmas
-                $lemmas = self::parseLemmas($line);
+                $lemmas = self::parseLemmas($line, $concept_id);
                 if (!sizeof($lemmas)) {
                     print "<p>ОШИБКА РАЗБОРА ЛЕММ в $count строке</p>\n";
                     return $blocks;
@@ -204,18 +205,27 @@ class ConceptParser {
         return PartOfSpeech::getIDByCode($pos_code);
     }
 
-    public static function parseLemmas($line) {
+    public static function parseLemmas($line, $concept_id=NULL) {
         $out = [];
         $letters = range('a', 'z');
         $synonims = preg_split("/\|\|/", $line);
         for ($i = 0; $i < sizeof($synonims); $i++) {
-            $lemmas = preg_split("/\//", $synonims[$i]);
-            for ($j = 0; $j < sizeof($lemmas); $j++) {
-                if (preg_match("/\(/", $lemmas[$j])) {
-                    print "<p>Ошибочная лемма <b>".$lemmas[$j]."</b></p>";
+            $phonetics = preg_split("/\//", $synonims[$i]);
+            for ($j = 0; $j < sizeof($phonetics); $j++) {
+                if (preg_match("/\(/", $phonetics[$j])) {
+                    die("Ошибочная лемма <b>".$phonetics[$j]."</b>");
                 }
-                $out[$letters[$i] . (string) ($j + 1)] = $lemmas[$j];
+                if (in_array($phonetics[$j], array_values($out))) {
+                    die("ПОВТОРНОЕ СЛОВО В СПИСКЕ: <b>$concept_id</b>. ". $letters[$i]. (string)(1+$j). '. '. $phonetics[$j]);
+                }
+                $out[$letters[$i] . (string)(1+$j)] = $phonetics[$j];
             }
+        }
+        foreach ($out as $code => $phonetic) {
+            $lemma = Grammatic::phoneticsToLemma($phonetic);
+            $phonetic = Grammatic::removeSpaces($phonetic);
+            $out[$code] = [$lemma, $phonetic];
+            
         }
         return $out;
     }
@@ -303,6 +313,7 @@ class ConceptParser {
     }
 
     public static function processBlocks($blocks) {
+        $place_dialects = self::placeDialects();                    
 //dd($blocks);        
         foreach ($blocks as $category_id => $concept_blocks) {
 //dd($concept_blocks);           
@@ -315,41 +326,48 @@ class ConceptParser {
                          'pos_id' => $concept_block['pos_id'],
                          'concept_category_id' => $category_id]);
 print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b></p>";                
-                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas']);
-//dd($lemma_dialects);      
+                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas'], $concept_block['lemmas'], $place_dialects);
+//dd($lemma_dialects);                
                 list($lang_lemmas, $lang_meanings) = self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], $lemma_dialects, $concept_obj);
-                //self::addSynonims($concept_block['place_lemmas'], $lang_meanings, $place_dialects);
-//dd($lang_lemmas);                
                 self::addPhoneticVariants($lang_lemmas);
                 self::addTranslations($lang_meanings);
-//dd($lang_meanings);                
             }
         }
     }
 
     /**
      * 
-     * @param array $places [<place1_num>=>[<lemma1_num>,...], ...]
-     * @return array [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
+     * @param array $places [<place1_num>=>[<word1_num>,...], ...]
+     * @param array $words [<word1_num>=>[<lemma>, <phonetic>], ...]
+     * @param array $place_dialects [<place1_num>=>["id"=><place_id>, "dialects"=>[<dialect1_id>=><lang1_id>, ...], "langs"=>[<lang1_id>, ...]], ...]
+     * 
+     * @return array ['a'=>[<lemma1>=>[<lang1_id>=>[<phonetic1>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...], ...], ...]
      */
-    public static function chooseDialectsForLemmas($places) {
-        $place_dialects = self::placeDialects();
+    public static function chooseDialectsForLemmas($places, $words, $place_dialects=NULL) {
+        if (!$place_dialects) {
+            $place_dialects = self::placeDialects();            
+        }
         $out = [];
 //dd($place_dialects);        
-        foreach ($places as $place_n => $place_lemmas) {
+        foreach ($places as $place_n => $place_words) {
             $place_id = $place_dialects[$place_n]['id'];
             $place_dials = $place_dialects[$place_n]['dialects'];
-            foreach ($place_lemmas as $lemma) {
+            foreach ($place_words as $word_num) {
+                if (!isset($words[$word_num])) {
+                    dd("НЕТ СЛОВА с КОДОМ <b>$word_num</b>");
+                }
+                $letter = substr($word_num, 0, 1);
+                list($lemma,$phonetic) = $words[$word_num];
                 foreach ($place_dials as $dialect_id => $lang_id) {
-                    if (!isset($out[$lemma][$lang_id])) {
-                        $out[$lemma][$lang_id] = [];
+                    if (!isset($out[$letter][$lemma][$lang_id][$phonetic])) {
+                        $out[$letter][$lemma][$lang_id][$phonetic] = [];
                     }
 
-                    if (!isset($out[$lemma][$lang_id][$dialect_id])) {
-                        $out[$lemma][$lang_id][$dialect_id] = [];
+                    if (!isset($out[$letter][$lemma][$lang_id][$phonetic][$dialect_id])) {
+                        $out[$letter][$lemma][$lang_id][$phonetic][$dialect_id] = [];
                     }
 
-                    $out[$lemma][$lang_id][$dialect_id][] = $place_id;
+                    $out[$letter][$lemma][$lang_id][$phonetic][$dialect_id][] = $place_id;
                 }
             }
         }
@@ -363,63 +381,57 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
      * 
      * @param int pos_id - ID of part of speech
      * @param array $lemmas [<lemma1_num>=><lemma1_text>, ...]
-     * @param array $lemma_places [<lemma1_num>=>[<lang1_id>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...]
+     * @param array $lemma_places ['a'=>[<lemma1>=>[<lang1_id>=>[<phonetic1>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...], ...], ...], ...]
      * 
-     * @return array [0=>[<lang1_id>=>[<lemma1_num>=><lemma1_obj>, ...],...], 1=>[<lang1_id>=>[<lemma1_num>=><meaning1_obj>, ...], ...]]
+     * @return array [0=>[<lang1_id>=>['a'=>[<lemma1_obj>, ...],...],...], 1=>[<lang1_id>=>[<meaning1_obj>, ...], ...]]
      */
     public static function addLemmas($pos_id, $lemmas, $lemma_places, $concept) {
         $lang_lemmas = $lang_meanings = [];
         $meaning_lang_ru = Lang::getIDByCode('ru');
         $meaning_lang_en = Lang::getIDByCode('en');
 //dd($lemma_places);        
-        foreach ($lemma_places as $lemma_num => $lemma_langs) {
-            $phonetics = Grammatic::removeSpaces($lemmas[$lemma_num]);
-            $lemmas[$lemma_num] = Grammatic::phoneticsToLemma($lemmas[$lemma_num]);
-            if (preg_match("/\s/", $lemmas[$lemma_num])) {
-                $lpos_id = PartOfSpeech::getIDByCode('PHRASE');
-            } else {
-                $lpos_id = $pos_id;
-            }
-            if ($phonetics == $lemmas[$lemma_num]) {
-                $phonetics = '';
-            }
-            foreach ($lemma_langs as $lang_id => $dialects) {
-//dd($pos_id, $lemmas[$lemma_num], $lang_id, $dialects);   
-                $lemma_coll = Lemma::wherePosId($lpos_id)
-                                ->where('lemma', 'like', $lemmas[$lemma_num])
-                                ->whereLangId($lang_id)->get();
-//dd($lemma_coll);       
-                list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id, $concept->id, $phonetics);
-                if ($lemma_obj && !$meaning_obj) {
-                    continue;
+        foreach ($lemma_places as $letter => $lemma_langs) {
+            foreach ($lemma_langs as $lemma => $lang_phonetics) {
+                if (preg_match("/\s/", $lemma)) {
+                    $lpos_id = PartOfSpeech::getIDByCode('PHRASE');
+                } else {
+                    $lpos_id = $pos_id;
                 }
-                if (!isset($lemma_obj) || !$lemma_obj) {
-                    $lemma_obj = Lemma::store($lemmas[$lemma_num], $lpos_id, $lang_id);
-                    $meaning_texts = [$meaning_lang_ru => $concept->text_ru, $meaning_lang_en => $concept->text_en];
-                    $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, $meaning_texts);
-                } elseif ($concept->text_en && !$meaning_obj->meaningTexts()->where('lang_id',$meaning_lang_en)->first()) {
-                    $meaning_text_obj = MeaningText::create(['meaning_id' => $meaning_obj->id, 'lang_id' => $meaning_lang_en, 'meaning_text' => $concept->text_en]);
-//                    exit(1);
+
+                foreach ($lang_phonetics as $lang_id => $phonetic_dialects) {            
+        //dd($pos_id, $lemma, $lang_id, $phonetic_dialects);   
+                    $lemma_coll = Lemma::wherePosId($lpos_id)
+                                    ->where('lemma', 'like', $lemma)
+                                    ->whereLangId($lang_id)->get();
+    //dd($lemma_coll);       
+                    list($lemma_obj, $meaning_obj) = self::searchLemmaByMeaningText($lemma_coll, $concept->text_ru, $meaning_lang_ru, $lang_id, $concept->id);
+                    if ($lemma_obj && !$meaning_obj) {
+                        continue;
+                    }
+                    if (!isset($lemma_obj) || !$lemma_obj) {
+                        $lemma_obj = Lemma::store($lemma, $lpos_id, $lang_id);
+                        $meaning_texts = [$meaning_lang_ru => $concept->text_ru, $meaning_lang_en => $concept->text_en];
+                        $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, $meaning_texts);
+                    } elseif ($concept->text_en && !$meaning_obj->meaningTexts()->where('lang_id',$meaning_lang_en)->first()) {
+                        $meaning_text_obj = MeaningText::create(['meaning_id' => $meaning_obj->id, 'lang_id' => $meaning_lang_en, 'meaning_text' => $concept->text_en]);
+                    }
+                    $lemma_obj->updatePhonetics($phonetic_dialects);
+                    
+                    $meaning_obj->updateDialects($phonetic_dialects);                    
+                    $meaning_obj->addConcept($concept->id);
+                    $meaning_obj->addLabel(self::getLabel());                    
+                    
+                    $lang_lemmas[$lang_id][$letter][] = $lemma_obj;
+                    $lang_meanings[$lang_id][] = $meaning_obj;
+                    
+print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (".Lang::getNameByID($lang_id).")</p>";  
                 }
-                $lemma_obj->addDialectLinks($dialects);
-                if ($phonetics) {
-                    LemmaFeature::store($lemma_obj->id, ['phonetics' => $phonetics]);
-                }
-                if (!$meaning_obj->concepts()->where('concept_id', $concept->id)->first()) {
-                    $meaning_obj->concepts()->attach($concept->id);
-                }
-                if (!$meaning_obj->labels()->where('label_id', self::getLabel())->first()) {
-                    $meaning_obj->labels()->attach(self::getLabel());
-                }
-                $lang_lemmas[$lang_id][substr($lemma_num,0,1)][$lemma_num] = $lemma_obj;
-                $lang_meanings[$lang_id][$lemma_num] = $meaning_obj;
-print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (".Lang::getNameByID($lang_id).")</p>";            
             }
         }
         return [$lang_lemmas, $lang_meanings];
     }
 
-    public static function searchLemmaByMeaningText($lemma_coll, $meaning_text, $meaning_lang, $search_lang, $concept_id, $phonetics) {
+    public static function searchLemmaByMeaningText($lemma_coll, $meaning_text, $meaning_lang, $search_lang, $concept_id) {
         if (!sizeof($lemma_coll)) {
             return [null, null];
         }
@@ -429,7 +441,7 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
                 return [$lemma, $meaning_obj];
             }
         }
-        print "<p>Нашлись леммы <b>".$lemma_coll[0]->lemma."</b> ($phonetics), но нет подходящего значения <b>'".$meaning_text."'</b>: "
+        print "<p>Нашлись леммы <b>".$lemma_coll[0]->lemma."</b>, но нет подходящего значения <b>'".$meaning_text."'</b>: "
                 . "<a href=/ru/dict/lemma?search_lang=$search_lang&search_lemma=" . $lemma_coll[0]->lemma
                 . "&search_pos=" . $lemma_coll[0]->pos_id . ">проверить</a></p>";
 //        exit(1);
@@ -534,4 +546,58 @@ print "<p><a href=\"/dict/lemma/".$lemma_obj->id."\">".$lemma_obj->lemma."</a> (
             }
         }
     }
+    
+    public static function checkConcepts($blocks) {
+        $place_dialects = self::placeDialects();                    
+//dd($blocks);        
+        foreach ($blocks as $category_id => $concept_blocks) {
+//dd($concept_blocks);           
+            foreach ($concept_blocks as $concept_code => $concept_block) {
+                $concept_id = (int)$concept_code;
+//dd($category_id, $concept_id, $concept_block);            
+                $concept_obj = Concept::find($concept_id); 
+                if (!$concept_obj) {
+                    die("<b>НЕТ ПОНЯТИЯ $concept_code</b>");
+                }
+                if ($concept_obj->text_ru !=$concept_block['meaning']) {
+                    die("<b>НЕВЕРНОЕ ПОНЯТИЕ $concept_code - ".$concept_block['meaning']."</b>");
+                }
+                if ($concept_obj->pos_id != $concept_block['pos_id']
+                        || $concept_obj->concept_category_id != $category_id) {
+                    die("<b>НЕВЕРНАЯ ЧАСТЬ РЕЧИ ".$concept_block['pos_id']." ПОНЯТИЯ $concept_code - ".$concept_block['meaning']."</b>");
+                }
+                if ($concept_obj->concept_category_id != $category_id) {
+                    die("<b>НЕВЕРНАЯ КАТЕГОРИЯ $category_id ПОНЯТИЯ $concept_code - ".$concept_block['meaning']."</b>");
+                }
+print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b></p>";               
+                $lemma_dialects = self::chooseDialectsForLemmas($concept_block['place_lemmas'], $concept_block['lemmas'], $place_dialects);
+//                list($lang_lemmas, $lang_meanings) = self::addLemmas($concept_block['pos_id'], $concept_block['lemmas'], $lemma_dialects, $concept_obj);
+//dd($lang_lemmas);                
+//                self::addPhoneticVariants($lang_lemmas);
+//                self::addTranslations($lang_meanings);
+//dd($lang_meanings);                
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param array $letter_dialects ["a1" => 
+     *                                  [<lang1_id> => 
+     *                                      [<dialect1_id> => [<place1_id>, ...], 
+     *                                  ...], 
+     *                               ...]
+     * @param array $letter_lemmas  ["a1" => <phonetic>, ...]
+     */
+/*    public static function phoneticsToLemmas($letter_dialects, $letter_phonetics) {
+        $lemmas = [];
+        foreach ($letter_phonetics as $letter => $phonetic) {
+            $lemma = Grammatic::phoneticsToLemma($phonetic);
+            if (isset($lemmas[$lemma])) {
+                
+            } else {
+                
+            }
+        }
+    }    */
 }

@@ -169,6 +169,7 @@ Route::group(
         Route::get('export/unimorph', 'Library\ExportController@exportLemmasToUniMorph'); 
 
         Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
+        Route::get('import/concept_parser_check', 'Library\ImportController@conceptParserCheck');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
 
         Route::get('import/phonetics_to_lemmas', 'Library\ImportController@phoneticsToLemmas');

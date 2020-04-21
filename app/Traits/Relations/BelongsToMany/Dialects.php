@@ -29,10 +29,6 @@ trait Dialects
     }
 
     public function dialectListToString() {
-/*        $out = [];
-        foreach ($this->dialects as $dialect) {
-            $out[] = $dialect->name;
-        }*/
         $out = $this->dialects->pluck('name')->toArray();
         if (!sizeof($out) || $this->lang && sizeof($out) == $this->lang->countDialects()) {
             return NULL;

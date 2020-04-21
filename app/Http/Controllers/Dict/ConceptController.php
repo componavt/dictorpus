@@ -241,11 +241,8 @@ class ConceptController extends Controller
         $places = Place::whereIn('id',function ($query) use ($search_lang) {
             $query->select('place_id')->from('dialect_place')
                   ->whereIn('dialect_id',function ($q1) use ($search_lang) {
-                    $q1->select('dialect_id')->from('dialect_lemma')
-                        ->whereIn('lemma_id',function ($q2) use ($search_lang) {
-                            $q2->select('id')->from('lemmas')
-                               ->where('lang_id',$search_lang);
-                        });
+                    $q1->select('id')->from('dialects')
+                       ->where('lang_id',$search_lang);
                   });
         })->pluck('name_'.$locale, 'id')->toArray();
 //dd($places);        
@@ -259,23 +256,27 @@ class ConceptController extends Controller
             $count = 0;
             foreach ($places as $place_id => $place_name) {
                 $concept_lemmas[$concept_text][$place_name] = [];
-                $lemmas = Lemma::whereLangId($search_lang)
-                    ->whereIn('id', function ($query) use ($concept_id) {
+                $lemma_coll = Lemma::whereLangId($search_lang)
+                    ->whereIn('id', function ($query) use ($concept_id, $place_id) {
                         $query->select('lemma_id')->from('meanings')
                               ->whereIn('id', function ($q) use ($concept_id) {
                                  $q->select('meaning_id')->from('concept_meaning')
                                    ->whereConceptId($concept_id);
+                              })
+                              ->whereIn('id', function ($query) use ($place_id) {
+                                 $query->select('meaning_id')->from('meaning_place')
+                                       ->wherePlaceId($place_id);
                               });
-                    })
-                    ->whereIn('id', function ($query) use ($place_id) {
-                        $query->select('lemma_id')->from('lemma_place')
-                                   ->wherePlaceId($place_id);
-//                    })->get();
-//dd($lemmas);                    
-/*                foreach ($lemmas as $lemma) {
-                    $concept_lemmas[$concept_text][$place_name][$lemma->id]=$lemma->lemma;
-                }*/
-                    })->pluck('lemma')->toArray();
+                    })->get();//pluck('lemma')->toArray();
+                    
+                $lemmas = [];
+                foreach ($lemma_coll as $lemma) {
+                    $phonetic = $lemma->phoneticListToString();
+                    if (!$phonetic) {
+                        $phonetic = $lemma->lemma;
+                    }
+                    $lemmas[] = $phonetic;
+                }
                 $concept_lemmas[$concept_text][$place_name]=join(', ',$lemmas);
                 $count += sizeof($lemmas);
             }

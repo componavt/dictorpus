@@ -6,7 +6,8 @@
 
 @section('body')
     <h3>Импорт</h3>
-    <p><a href="import/concept_parser">Импорт понятий из СОС</a></p>
+    <p><a href="import/concept_parser">Импорт понятий из СОСД</a></p>
+    <p><a href="import/concept_parser_check">Проверка понятий из СОС</a></p>
     <p><a href="import/dict_parser?search_lang=1">Парсер вепсского словаря</a>
     
     <h3>Экспорт</h3>
@@ -20,7 +21,7 @@
     <p><a href="export/compounds_for_unimorph">Экспорт фразеологизмов в Unimorph</a></p>
 
     <h3>Проверить</h3>
-    <p>окончаний у словоформ по флективным правилам</p>
+    <p>окончания у словоформ по флективным правилам</p>
     <ul>
     @foreach ($langs as $l_id=>$l_name)
         <li>

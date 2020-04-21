@@ -1152,3 +1152,17 @@ delete from lemma_variants where lemma1_id=lemma2_id;
 select lemmas1.lemma, lemmas2.lemma from lemma_variants, lemmas as lemmas1, lemmas as lemmas2 where lemma_variants.lemma1_id=lemmas1.id and lemma_variants.lemma2_id=lemmas2.id and lemmas1.lemma=lemmas2.lemma;
 
 --php artisan make:migration change_text_fields_in_concepts_table
+
+-- php artisan make:migration create_dialect_meaning_table
+-- php artisan make:migration create_meaning_place_table
+-- php artisan make:migration create_lemma_phonetics_table
+-- php artisan make:migration create_phonetics_table
+-- php artisan make:migration create_phonetic_dialect_table
+-- php artisan make:migration create_phonetic_place_table
+
+select lemmas.lemma as lemma, lemmas.lang_id as lang_id, concept_id, count(*) as count from lemmas, meanings, concept_meaning where meanings.lemma_id=lemmas.id and concept_meaning.meaning_id=meanings.id group by lemma, lang_id, concept_id having count>1;
+select lemma, lang_id, concept_id, count(*) as count from lemmas, meanings, concept_meaning where meanings.lemma_id=lemmas.id and concept_meaning.meaning_id=meanings.id group by lemma, lang_id, concept_id having count>1;
+
+drop table dialect_lemma;
+drop table lemma_place;
+alter table lemma_features drop column phonetics;

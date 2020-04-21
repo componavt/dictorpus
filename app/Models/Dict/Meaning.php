@@ -35,8 +35,10 @@ class Meaning extends Model
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Concepts;
+    use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Labels;
     use \App\Traits\Relations\BelongsToMany\MeaningRelations;
+    use \App\Traits\Relations\BelongsToMany\Places;
     use \App\Traits\Relations\BelongsToMany\Translations;
     
     public function texts(){
@@ -146,6 +148,8 @@ class Meaning extends Model
 
         $this->concepts()->detach();
         $this->labels()->detach();
+        $this->dialects()->detach();
+        $this->places()->detach();
 
         foreach ($this->meaningTexts as $meaning_text) {
             $meaning_text -> delete();
@@ -568,4 +572,43 @@ dd($relevance);
         return DB::table('meaning_relation')->count();
     }
         
+    /**
+     * 
+     * @param array $phonetic_dialects [<phonetic1>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...]
+     */
+    public function updateDialects($phonetic_dialects) {
+        foreach ($phonetic_dialects as $phonetic => $dialects) {
+            foreach ($dialects as $dialect_id => $places) {
+                $this->addDialect($dialect_id);
+                foreach ($places as $place_id) {
+                    $this->addPlace($place_id);
+                }
+            }
+        }
+    }
+
+    public function addConcept($concept_id) {
+        if (!$this->concepts()->where('concept_id', $concept_id)->first()) {
+            $this->concepts()->attach($concept_id);
+        }
+    }
+    
+    public function addLabel($label_id) {
+        if (!$this->labels()->where('label_id', $label_id)->first()) {
+            $this->labels()->attach($label_id);
+        }
+    }
+    
+    public function addDialect($dialect_id) {
+        if (!$this->dialects()->where('dialect_id', $dialect_id)->first()) {
+            $this->dialects()->attach($dialect_id);
+        }
+    }
+    
+    public function addPlace($place_id) {
+        if (!$this->places()->where('place_id', $place_id)->first()) {
+            $this->places()->attach($place_id);
+        }
+    }
+    
 }

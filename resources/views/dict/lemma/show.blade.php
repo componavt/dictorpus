@@ -48,9 +48,6 @@
                           'title' => trans('dict.reload-stem-affix-by-wordforms')])
             @endif
                 </p>
-                @if (isset($lemma->features->phonetics) && $lemma->features->phonetics)
-                <p><b>{{ trans('dict.phonetics') }}:</b> {{ $lemma->features->phonetics}}</p>
-                @endif
             </div>
         </div>
         
@@ -60,10 +57,14 @@
             @include('dict.lemma.show.features')
         </p>
         @endif
-        
-        @if ($lemma->dialectListToString())
-        <p><b>{{ trans('dict.dialects_usage') }}:</b> {{ $lemma->dialectListToString()}}</p>
+
+        @if ($lemma->phoneticListWithDialectsToString())
+        <p><b>{{ trans('dict.phonetics') }}:</b> {!! $lemma->phoneticListWithDialectsToString()!!}</p>
         @endif
+        
+{{--        @if ($lemma->dialectListToString())
+        <p><b>{{ trans('dict.dialects_usage') }}:</b> {{ $lemma->dialectListToString()}}</p>
+        @endif --}}
         @if ($lemma->variantsWithLink())
         <p>
             <b>{{trans('dict.variants')}}:</b> {!!$lemma->variantsWithLink()!!}
@@ -111,6 +112,11 @@
                     @include('dict.lemma.show.meaning.relations')
 
                     @include('dict.lemma.show.meaning.translations')
+
+        @if ($meaning->dialectListToString())
+        <p><b>{{ trans('dict.dialects_usage') }}:</b> {{ $meaning->dialectListToString()}}</p>
+        @endif
+                    
             </div>
             <div class="lemma-meaning-examples">
                     <img class="img-loading" id="img-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">

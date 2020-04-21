@@ -7,6 +7,7 @@ use DB;
 use URL;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
+use Arrays;
 
 use App\Library\Grammatic;
 use App\Library\Str;
@@ -62,16 +63,17 @@ class Lemma extends Model
     use \App\Traits\Relations\BelongsTo\POS;
     
     // Belongs To Many Relations
-    use \App\Traits\Relations\BelongsToMany\Dialects;
+//    use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Labels;
     use \App\Traits\Relations\BelongsToMany\LemmaVariants;
-    use \App\Traits\Relations\BelongsToMany\Places;
+//    use \App\Traits\Relations\BelongsToMany\Places;
     use \App\Traits\Relations\BelongsToMany\WordformDialects;
     use \App\Traits\Relations\BelongsToMany\Wordforms;
    
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Meanings;
     use \App\Traits\Relations\HasMany\Bases;
+    use \App\Traits\Relations\HasMany\Phonetics;
     
     // Scopes
 //    use \App\Models\Scopes\ID;
@@ -347,9 +349,11 @@ class Lemma extends Model
             foreach ($lemma->wordformDialects->unique() as $dialect) {
                 $dialects[] = $dialect->name;
             } 
-            foreach ($lemma->dialects as $dialect) {
-                if (!in_array($dialect->name, $dialects)) {
-                    $dialects[] = $dialect->name;
+            foreach ($lemma->meanings as $meaning) {
+                foreach($meaning->dialects as $dialect) {
+                    if (!in_array($dialect->name, $dialects)) {
+                        $dialects[] = $dialect->name;
+                    }
                 }
             }
             $l = '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id).'">'.$lemma->lemma.'</a>';
@@ -1189,8 +1193,8 @@ dd($wordforms);
                             $query -> where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma))
                                    -> orWhere('lemma_for_search', 'like', $lemma)
                                    -> orWhereIn('id', function ($q) use ($lemma) {
-                                       $q->select('id')->from('lemma_features')
-                                         ->where('phonetics', 'like', $lemma);
+                                       $q->select('lemma_id')->from('phonetics')
+                                         ->where('phonetic', 'like', $lemma);
                                    });
 //                                   -> where('lemma_for_search', '');
                 });
@@ -1574,21 +1578,23 @@ dd($wordforms);
     
     /**
      * 
-     * @param array $dialects [<dialect1_id>=>[<place1_id>, ...]
+     * @param array $phonetic_dialects [<phonetic1>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...]
      */
-    public function addDialectLinks($dialects) {
-        foreach ($dialects as $dialect_id => $places) {
-            if (!$this->dialects()->where('dialect_id', $dialect_id)->first()) {            
-                $this->dialects()->attach($dialect_id);
+    public function updatePhonetics($phonetic_dialects) {
+/*if ($this->lemma=='pal’l’aine' && $this->lang_id==6) {
+    dd($phonetic_dialects);
+} */       
+        if (sizeof($phonetic_dialects)==1 && $this->lemma==Arrays::array_key_first($phonetic_dialects) && !$this->phonetics()->count()) {
+            return;
+        }
+        foreach ($phonetic_dialects as $phonetic => $dialects) {
+            $phonetic_obj = $this->phonetics()->where('phonetic', $phonetic)->first();
+            if (!$phonetic_obj) {            
+                $phonetic_obj = Phonetic::firstOrCreate(['lemma_id' => $this->id, 'phonetic' => $phonetic]);
             }
-            foreach ($places as $place_id) {
-                if (!$this->places()->where('place_id', $place_id)->first()) {
-                    $this->places()->attach($place_id);
-                }
-            }
+            $phonetic_obj -> updateDialects($dialects);
         }
     }
-
 
     /*    
     public static function totalCount(){

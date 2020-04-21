@@ -72,7 +72,7 @@ print "<pre>";
     
     public function conceptParser(Request $request) {
         $fname = (int)$request->input('fname');
-        if (!$fname) {$fname = 'concept_dict_b'; }
+        if (!$fname) {$fname = 'concept_dict_c'; }
         $filename = 'import/'.$fname.'.txt';
         $file_content = Storage::disk('local')->get($filename);
         $file_lines = preg_split ("/\r?\n/",$file_content);
@@ -85,6 +85,16 @@ print "<pre>";
 print "Категории сохранены.";        
         ConceptParser::processBlocks($blocks);
 //dd($blocks['A11']);        
+    }
+
+    public function conceptParserCheck(Request $request) {
+        $fname = (int)$request->input('fname');
+        if (!$fname) {$fname = 'concept_dict_b'; }
+        $filename = 'import/'.$fname.'.txt';
+        $file_content = Storage::disk('local')->get($filename);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+        list($categories, $blocks) = ConceptParser::readBlocks($file_lines);
+        ConceptParser::checkConcepts($blocks);
     }
 
     public function phoneticsToLemmas() {
