@@ -117,4 +117,19 @@ print "<pre>";
 print "Найдено ".sizeof($words).' слов.';
     }
     
+    public function extractVerbs() {
+        $infname = 'import/livvic_dict.txt';
+        $outfname = 'export/livvic_verbs.txt';
+        
+        $file_content = Storage::disk('local')->get($infname);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+
+        Storage::disk('public')->put($outfname, "");
+
+        foreach ($file_lines as $line) {
+            if (preg_match("/^[^\.]+\s+v\.\s+/", $line)) {
+                Storage::disk('public')->append($outfname, $line);            
+            }
+        }
+    }
 }
