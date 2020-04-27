@@ -275,9 +275,9 @@ class ConceptController extends Controller
                     if (!$phonetic) {
                         $phonetic = $lemma->lemma;
                     }
-                    $lemmas[] = $phonetic;
+                    $lemmas[$lemma->id] = $phonetic;
                 }
-                $concept_lemmas[$concept_text][$place_name]=join(', ',$lemmas);
+                $concept_lemmas[$concept_text][$place_name]=$lemmas;
                 $count += sizeof($lemmas);
             }
             if (!$count) {

@@ -1166,3 +1166,40 @@ select lemma, lang_id, concept_id, count(*) as count from lemmas, meanings, conc
 drop table dialect_lemma;
 drop table lemma_place;
 alter table lemma_features drop column phonetics;
+
+-- 26.04.2020
+-- количество новых лемм (16324)
+select lang_id,count(*) from lemmas where created_at>'2020-02-29' group by lang_id;
+-- количество новых значений (17662)
+select count(*) from meanings where created_at>'2020-02-29';
+-- количество старых слов, получивших новые значения (571)
+select count(*) from lemmas where id in (select lemma_id from meanings where created_at>'2020-02-29') and  created_at<'2020-03-01';
+-- количество понятий (1425)
+select count(*) from concepts;
+-- количество значений лемм, связанных с понятиями (20967)
+select count(*) from meanings where id in (select meaning_id from concept_meaning);
+-- количество старых значений лемм, связанных с понятиями (4022)
+select count(*) from meanings where id in (select meaning_id from concept_meaning) and created_at<'2020-03-01';
+-- количество лемм, связанных с понятиями (19887)
+select count(*) from lemmas where id in (select lemma_id from meanings where id in (select meaning_id from concept_meaning));
+-- количество старых лемм, связанных с понятиями (4160)
+select count(*) from lemmas where id in (select lemma_id from meanings where id in (select meaning_id from concept_meaning)) and created_at<'2020-03-01';
+-- количество переводов (261 698)
+select count(*) from meaning_translation; 
+-- количество переводов между значениями, связанными понятиями (261 540 /2 = 130 770)
+select count(*) from meaning_translation where meaning1_id in (select meaning_id from concept_meaning) and meaning2_id in (select meaning_id from concept_meaning); 
+-- количество новых связей со слова из текстов (59 259)
+select count(*) from meaning_text where meaning_id in (select id from meanings where created_at>'2020-02-29');
+-- количество слов из текста, получивших новые связи с текстами (49 886)
+select count(*) from words where id in (select word_id from meaning_text where meaning_id in (select id from meanings where created_at>'2020-02-29'));
+-- количество новых слов из текста, получивших связи с текстами, т.е. ранее эти слова не были размечены (1 915)
+select count(*) from words where id in (select word_id from meaning_text where meaning_id in (select id from meanings where created_at>'2020-02-29')) and id not in (select word_id from meaning_text where meaning_id in (select id from meanings where created_at<'2020-03-01'));
+
+-- количество новых людиковских лемми (4160)
+select count(*) from lemmas where created_at>'2020-02-29' and lang_id=6;
+
+
+-- Вывод: 1425 понятий, 20 тыс лемм, связанных с понятиями, из них 16 тыс. новых; 130 тыс. переводов (связей между значениями лемм из разных языков, наречий)
+-- При этом было создано 60 тыс. связей между значениями лемм и словами из текста, 50 тыс. слов в текстах получили новые связи. Но только 2 тыс. слов до этого не имели разметки вообще.
+
+-- Найти ливвиковские леммы, у которых генетив оканчивается на iän, а партитив не оканчивается на [td][uy]

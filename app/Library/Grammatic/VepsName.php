@@ -121,6 +121,8 @@ class VepsName
      * abekirj (-an, -oid)
      * 
      * @param Array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff, 5=>par-pl-suff]
+     *                    [0=>"abidkirje|ine (-žen, -št, -ižid)", 1=>"abidkirje", 2=>"ine", 3=>"žen", 4=>"št", 5=>"ižid"]
+     *                    [0=>"abekirj (-an, -oid)", 1=>"", 2=>"an", 3=>"žen", 4=>"oid", 5=>""]
      * @param Int $lang_id
      * @param Int $pos_id
      * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>base_part_pl, 5=>''], $base, $base_suff]
