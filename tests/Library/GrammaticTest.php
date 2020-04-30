@@ -1211,4 +1211,17 @@ class GrammaticTest extends TestCase
         $expected = "tüunistüö";
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testGetStemFromWordform()
+    {/*
+        $id=3539;
+        $lemma = Lemma::findOrFail($id);        
+        $base_n = 4;
+        $dialect_id=null;
+        $result = Grammatic::getStemFromWordform($lemma, $base_n, $lemma->lang_id,  $lemma->pos_id, $dialect_id, $is_reflexive);
+        
+        $expected = 'tulou';
+        $this->assertEquals( $expected, $result);        */
+    }
+    
 }

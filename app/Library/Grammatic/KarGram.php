@@ -26,11 +26,19 @@ class KarGram
     }
     
     public static function isVowel($letter) {
-        $vowels = ['i', 'y', 'u', 'e', 'ö', 'o', 'ä', 'a'];
+        $vowels = ['a', 'i', 'y', 'u', 'e', 'ö', 'o', 'ä'];
         if (in_array($letter, $vowels)) {
             return true;
         } 
         return false;
+    }
+    
+    public static function consSet() {
+        return "bcčdfghjklmnprsšzžtv";
+    }
+    
+    public static function vowelSet() {
+        return "aeiouyäö";
     }
     
     /**
@@ -45,12 +53,12 @@ class KarGram
         return false;
     }
     
-    public static function getListForAutoComplete($pos_id) {
+    public static function getListForAutoComplete($pos_id, $lang_id) {
         $gramsets = [];
         if ($pos_id == PartOfSpeech::getVerbID()) {
             $gramsets = KarVerb::getListForAutoComplete();
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            $gramsets = KarName::getListForAutoComplete();
+            $gramsets = KarName::getListForAutoComplete($lang_id);
         }
         return $gramsets;
     }
@@ -120,6 +128,23 @@ class KarGram
         }
     }
 
+    /**
+     * 
+     * @param Array $stems
+     * @param Int $stem_n
+     * @param Int $pos_id
+     * @param Int $dialect_id
+     * @param STRING $lemma
+     * @return String
+     */
+    public static function getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma) {
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return KarName::getStemFromStems($stems, $stem_n, $dialect_id);
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
+            return KarVerb::getStemFromStems($stems, $stem_n, $dialect_id, $lemma);
+        }
+    }
+    
     public static function stemsFromFullList($template) {
         if (!preg_match('/^\s*\{+([^\}]+)\}+\s*$/', $template, $template_in_brackets)) {
             return NULL;
@@ -133,7 +158,26 @@ class KarGram
         return $stems;
     }
     
-    public static function stemsFromTemplate($template, $pos_id, $name_num) {
+    public static function stemsFromTemplate($template, $pos_id, $name_num, $dialect_id) {
+        if ($dialect_id == 47) {
+            return self::stemsFromTemplateWithBases($template, $pos_id, $name_num);
+        }
+        if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+            return KarName::stemsFromTemplate($template, $name_num);
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) {
+            return KarVerb::stemsFromTemplate($template, $name_num);            
+        }
+    }
+    
+    /**
+     * Only for dialect_id=47 (tver)
+     * 
+     * @param type $template
+     * @param type $pos_id
+     * @param type $name_num
+     * @return type
+     */
+    public static function stemsFromTemplateWithBases($template, $pos_id, $name_num) {
         $template = self::toRightTemplate($template, $name_num, $pos_id);
         
         $stems = self::stemsFromFullList($template);        
@@ -223,8 +267,8 @@ class KarGram
         return $lemma_str;
     }
     
-    public static function getAffixesForGramset($gramset_id) {
-        if (in_array($gramset_id, KarName::getListForAutoComplete())) {
+    public static function getAffixesForGramset($gramset_id, $lang_id) {
+        if (in_array($gramset_id, KarName::getListForAutoComplete($lang_id))) {
             return KarName::getAffixesForGramset($gramset_id);
         } elseif (in_array($gramset_id, KarVerb::getListForAutoComplete())) {
             return KarVerb::getAffixesForGramset($gramset_id);

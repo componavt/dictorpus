@@ -15,17 +15,17 @@ use App\Models\Dict\PartOfSpeech;
 class VepsGram
 {
     public static function consSet() {
-        return "pbtdkgfvsšzžcčjhmnlr";
+        return "bcčdfghjklmnprsšzžtv";
+    }
+    
+    public static function vowelSet() {
+        return "aeiouüäö";
     }
     
     public static function consGeminantSet() {
         return "kgtdpbz";
     }
-    
-    public static function vowelSet() {
-        return "aoueiäöü";
-    }
-    
+        
     public static function dictTemplate() {
         return "([^\s\(]+\s*\([^\,\;]+\,?\s*[^\,\;]*[\;\,]?\s*[^\,\;]*\))";
 //        return "([^\s\(]+)";
@@ -72,7 +72,7 @@ class VepsGram
       
         // nominals
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-            list($stems, $name_num, $base, $base_suff) = VepsName::stemsFromTemplate($template, $name_num);
+            return VepsName::stemsFromTemplate($template, $name_num);
         // verbs
         } elseif ($pos_id == PartOfSpeech::getVerbID() && 
             (preg_match('/^{{vep-conj-stems'.$div_arg.$div_arg.$div_arg.'\|?'.$arg.'}}$/u',$template, $regs) ||

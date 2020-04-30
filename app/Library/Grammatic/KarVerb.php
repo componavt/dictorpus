@@ -35,7 +35,40 @@ class KarVerb
         }
         return $stems;
     }
+        
+    public static function stemsFromTemplate($template, $name_num) {      
+    }
 
+    /**
+     * 
+     * @param Array $stems
+     * @param Int $stem_n
+     * @param Int $dialect_id
+     * @param STRING $lemma
+     * @return String
+     */
+    public static function getStemFromStems($stems, $stem_n, $dialect_id, $lemma) {
+        switch ($stem_n) {
+/*            case 3: 
+                return isset($stems[0]) && isset($stems[1]) 
+                    ? self::getStemPAP($stems[0], $stems[1]) : null;
+            case 4: 
+                return isset($stems[1]) ? self::getStemCond($stems[1]) : null;
+            case 5: 
+                return isset($stems[0]) && isset($stems[1]) && isset($stems[3]) 
+                    ? self::getStemPoten($stems[0], $stems[1], $stems[3]) : null;
+            case 6:
+                if (preg_match("/([dt])([aä])$/u", $lemma, $regs)) {
+                    return $regs[1];
+                }
+            case 7:
+                if (preg_match("/([dt])([aä])$/u", $lemma, $regs)) {
+                    return $regs[2];
+                }*/
+        }
+         return null;
+    }
+    
     public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {
         switch ($stem_n) {
             case 0: 

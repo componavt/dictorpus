@@ -58,9 +58,9 @@ function chooseDialectForGenerate(lemma_id) {
         .change();    
 }
 
-function copyBases(lemma_id) {
+function copyBases(lemma_id, dialect_id) {
     $.ajax({
-        url: '/dict/lemma_wordform/'+ lemma_id + '/get_bases', 
+        url: '/dict/lemma_wordform/'+ lemma_id + '/get_bases?dialect_id'+dialect_id, 
         type: 'GET',
         success: function(result){
             result.forEach(function(item, i, result) {

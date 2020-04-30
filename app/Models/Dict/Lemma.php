@@ -121,8 +121,14 @@ class Lemma extends Model
     public function getBases($dialect_id=null) {
         $bases=[];
         for ($i=0; $i<9; $i++) {
-//dd($this->bases);            
             $bases[$i] = $this->getBase($i, $dialect_id, $bases);
+        }
+        if (!$bases[2]) {
+            $bases[2] = $this->getBase(2, $dialect_id, $bases);            
+        }
+        // for olo base 4 is formed after base5
+        if (!$bases[4]) {
+            $bases[4] = $this->getBase(4, $dialect_id, $bases);            
         }
         return $bases;
     }

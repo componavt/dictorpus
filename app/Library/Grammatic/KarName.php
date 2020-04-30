@@ -2,7 +2,9 @@
 
 namespace App\Library\Grammatic;
 
+use App\Library\Grammatic;
 use App\Library\Grammatic\KarGram;
+use App\Library\Grammatic\KarNameOlo;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
@@ -33,6 +35,18 @@ class KarName
         return $stems;
     }
     
+    public static function getStemFromStems($stems, $stem_n, $dialect_id) {
+        switch ($stem_n) {
+            case 2: 
+                return $stems[0] && isset($stems[1]) && $stems[1] && isset($stems[3]) && $stems[3] 
+                    ?  self::illSgBase($stems[0],$stems[1],$stems[3]) : null;
+            case 4: 
+                return $stems[1] && isset($stems[5]) && $stems[5] ?  self::genPlBase($stems[1],$stems[5]) : null;
+            default: 
+                return null;
+        }
+    }
+    
     public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {
         switch ($stem_n) {
             case 0: 
@@ -51,28 +65,61 @@ class KarName
                 $part_sg = $lemma->wordform(4, $dialect_id); 
                 return $part_sg ? $part_sg : '';
             case 4: //genetive pl
-                if (preg_match("/^(.+)n$/", $lemma->wordform(10, $dialect_id), $regs)) { 
-                    return $regs[1];
-                }
-                return '';
-            case 5: //illative pl
-                if (preg_match("/^(.+)h$/", $lemma->wordform(22, $dialect_id), $regs)) { 
-                    return $regs[1];
-                }
-                return '';
+                return self::getStem4FromWordform($lemma, $dialect_id);
+            case 5: // illative pl (tver) OR partitive pl (olo)
+                return self::getStem5FromWordform($lemma, $dialect_id);
         }
     }
-
-    public static function gramsetListSg() {
-        return [1,  3,  4, 277,  5,  8,  9, 10, 278, 12, 6,  14, 15];
+    
+    public static function getStem4FromWordform($lemma, $dialect_id) {
+        $genPls = preg_split('/,/', $lemma->wordform(24, $dialect_id));
+        $stems4=[];
+        foreach ($genPls as $g) {
+            if ($lemma->lang_id == 4) {
+                if (preg_match("/^(.+)n$/", trim($g), $regs)) { 
+                    $stems4[] = $regs[1];
+                }            
+            } else {
+                if (preg_match("/^(.+?)e??n$/u", trim($g), $regs)) {
+                    $stems4[] = $regs[1];
+                }
+            }
+        }
+        return join('/', $stems4);
+    }
+    
+    public static function getStem5FromWordform($lemma, $dialect_id) {
+        if ($lemma->lang_id == 4) { // illative pl (tver)
+            if (preg_match("/^(.+)h$/", $lemma->wordform(61, $dialect_id), $regs)) { 
+                return $regs[1];
+            }            
+        } else { // partitive pl
+            $partPls = preg_split('/,/', $lemma->wordform(22, $dialect_id));
+            $stems5=[];
+            foreach ($partPls as $p) {
+                $stems5[] = preg_replace('/ii$/', 'i', trim($p));            
+            }
+            return join('/', $stems5);
+        }
+        return '';
+    }
+    
+    public static function gramsetListSg($lang_id) {
+        if ($lang_id==5) {
+            return KarNameOlo::gramsetListSg();
+        }
+        return [1,  3,  4, 277,  5,    8,  9, 10, 278, 12,  6, 14, 15];
     }
 
-    public static function gramsetListPl() {
-        return [2, 24, 22, 279, 59, 23, 60, 61, 280, 62, 64, 65, 66, 281];
+    public static function gramsetListPl($lang_id) {
+        if ($lang_id==5) {
+            return KarNameOlo::gramsetListPl();
+        }
+        return [2, 24, 22, 279, 59,     23, 60, 61, 280, 62, 64, 65, 66, 281];
     }
 
-    public static function getListForAutoComplete() {
-        return array_merge(self::gramsetListSg(), self::gramsetListPl());
+    public static function getListForAutoComplete($lang_id) {
+        return array_merge(self::gramsetListSg($lang_id), self::gramsetListPl($lang_id));
     }
         
     public static function stemsFromTemplate($template, $name_num) {      
@@ -82,18 +129,15 @@ class KarName
         $base_shab = "([^\s\(\|]+)";
         $base_suff_shab = "([^\s\(\|]*)";
         $okon1_shab = "(-?[^\-\,\;\)]+)";
+        $okon3_shab = "(-?[^\-\,\;\)]+\/?-?[^\-\,\;\)]*)";
         $lemma_okon1_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab;
 
         // only plural
-        if ($name_num == 'mon' && preg_match($lemma_okon1_shab.";\s*".$okon1_shab."\)/", $template, $regs)) {
-            $name_num = 'pl';
+        if ($name_num == 'pl' && preg_match($lemma_okon1_shab.",\s*".$okon1_shab."\)/", $template, $regs)) {
+//            $name_num = 'pl';
             list($stems, $base, $base_suff) =  self::stemsPlFromTemplate($regs);
-        // only single
-        } elseif ($name_num == 'mon' && preg_match($lemma_okon1_shab.",\s*".$okon1_shab."\)/", $template, $regs)) {
-            $name_num = 'sg';
-            list($stems, $base, $base_suff) =  self::stemsSgFromTemplate($regs);
         // others
-        } elseif (preg_match($lemma_okon1_shab.",\s*".$okon1_shab.";\s*".$okon1_shab."\)/", $template, $regs)) {
+        } elseif (preg_match($lemma_okon1_shab.",\s*".$okon1_shab.";\s*".$okon3_shab."\)/", $template, $regs)) {
             $name_num = '';
             list($stems, $base, $base_suff) = self::stemsOthersFromTemplate($regs);
         } else {
@@ -114,12 +158,10 @@ class KarName
      * pagan||rengi (-n, -i; -löi)
      * po|udu (-vvan, -udua; -udii)
      * 
-     * @param Array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff, 5=>par-pl-suff]
-     *                    [0=>"paik|ku (-an, -kua; -koi)", 1=>"ku", 3=>"-an", 4=>"-kua", 5=>"-koi"]
-     * @param Int $lang_id
-     * @param Int $pos_id
-     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 3=>part_sg, 4=>base_part_pl], $base, $base_suff]
-     *               [[0=>"paikku", 1=>"paikka", 3=>"paikkua", 4=>"paikkoi"], 
+     * @param array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff, 5=>par-pl-suff]
+     *                    [0=>"paik|ku (-an, -kua; -koi)", 1=>"paik", 2=>"ku", 3=>"-an", 4=>"-kua", 5=>"-koi"]
+     * @return array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>base_gen_pl, 5=>base_part_pl], $base, $base_suff]
+     *               [[0=>'paikku', 1=>'paika', 2=>'paikka', 3=>'paikkua', 4=>'paikoi', 5=>'paikkoi'], 'paik', 'ku']
      */
     public static function stemsOthersFromTemplate($regs) {
 //dd($regs);    
@@ -130,104 +172,180 @@ class KarName
         $par_sg_suff = $regs[4];
         $par_pl_suff = $regs[5];
 
-        if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs_gen)) {
-            return $out;
-        }
-        if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs_par)) {
+        if (!preg_match("/^(.*)n$/u", $gen_sg_suff, $regs_gen)) {
             return $out;
         }
         
-        $stems[0] = $base.$regs[2];
-        $stems[1] = $base. $regs_gen[1]; // single genetive base 
-        if (!self::isRightVowelBase($stems[1])) {return $out;}
-        
-        $stems[2] = self::illSgBase($stems[1]); // single illative base
-        $stems[3] = $par_sg_suff ? $base.$par_sg_suff : $stems[1].'d'; // single partitive base
-        $stems[4] = $base. $regs_par[1]; // plural partitive base
-        $stems[5] = '';
+        if (!preg_match("/i$/", $par_pl_suff)) {
+            return $out;
+        }
+
+        $stems = [0 => $base.$regs[2],
+                  1 => preg_replace("/^\-/",$base,$regs_gen[1]), // single genetive base 
+                  2 => '',
+                  3 => '',
+                  4 => '',
+                  5 => ''];
+        //if (!self::isRightVowelBase($stems[1])) {return $out;}
+        $stems[3] = preg_replace("/^\-/",$base,$par_sg_suff); // single partitive base
+        $stems[2] = self::illSgBase($stems[0],$stems[1],$stems[3]); // single illative base
+        $stems[5] = self::partPlBase($base, $par_pl_suff);
+        $stems[4] = self::genPlBase($stems[1],$stems[5]); // plural partitive base
 //dd('stems:',$stems);        
         return [$stems, $base, $base_suff];
     }
-
+    
     /**
-     * template-name|n=pl|base|base-suff|par-pl-suff
-     * vep-decl-stems|n=pl|Alama|d|id
+     * pordah|at (-ien, -ii)
      * 
-     * OR
-     * base|base-suff (-par-pl-suff)
-     * Alama|d (-id)
-     * 
-     * @param Array $regs [base, base-suff, par-pl-suff]
-     * @return Array
+     * @param array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-pl-suff, 4=>par-pl-suff]
+     *                    [0=>"pordah|at (-ien, -ii)", 1=>"pordah", 2=>"at", 3=>"-ien", 4=>"-ii"]
+     * @return array [stems=[0=>nom_pl, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>base_gen_pl, 5=>base_part_pl], $base, $base_suff]
+     *               [[0=>'pordahat', 1=>'', 2=>'', 3=>'', 4=>'pordahi', 5=>'pordahi'], 'pordah', 'at']
      */
     public static function stemsPlFromTemplate($regs) {
+        $out = [[$regs[0]], $regs[0], null];
         $base = $regs[1];
         $base_suff = $regs[2];
-        $par_pl_suff = $regs[3];
-//dd($par_pl_suff);        
-        if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs1)) {
-            return [null, null, null];
+        $gen_pl_suff = $regs[3];
+        $par_pl_suff = $regs[4];
+
+        if (!preg_match("/^(.*?)e??n$/u", $gen_pl_suff, $regs_gen)) {
+            return $out;
         }
         
-        $stems[0] = $base.$base_suff;                
-        $stems[1] = $stems[2] = $stems[3] = '';
-        $stems[4] = $base. $regs1[1];
-        $stems[5] = '';
-//dd($stems);        
+        if (!preg_match("/i$/u", $par_pl_suff)) {
+            return $out;
+        }
+        
+        $stems = [0 => $base.$regs[2],
+                  1 => '',
+                  2 => '',
+                  3 => '',
+                  4 => preg_replace("/^\-/",$base,$regs_gen[1]),  // plural genetive base 
+                  5 => self::partPlBase($base, $par_pl_suff)];
         return [$stems, $base, $base_suff];
     }
-
-    /**
-     * template-name|n=sg|base|nom-sg-suff|gen-sg-suff|par-sg-suff
-     * vep-decl-stems|n=sg|Amerik||an|ad
-     * 
-     * @param Array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff]
-     * @return Array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>'', 5=>''], $base, $base_suff]
-     */
-    public static function stemsSgFromTemplate($regs) {
-//dd($regs);        
-        $base = $regs[1];
-        $base_suff = $regs[2];
-        $gen_sg_suff = $regs[3];
-        $par_sg_suff = (isset($regs[4])) ? $regs[4] : null;
-
-        if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
-            return [$regs[0], $regs[0], null];
-        }
-        
-        $stems[0] = $base.$base_suff;        
-        $stems[1] = $base. $regs1[1];
-
-        if (!self::isRightVowelBase($stems[1])) {
-            return [$regs[0], $regs[0], null];
-        }
        
-        $stems[2] = self::illSgBase($stems[1]); // single illative base
-        $stems[3] = $par_sg_suff ? $base.$par_sg_suff : $stems[1].'d';
-        $stems[4] = $stems[5] = '';
-//dd($stems);        
-        return [$stems, $base, $base_suff];
+    /**
+     * А. если $stem3 заканчивается на [dt][uy], то =$stem1, при этом возможны замены:
+     *    1) если $stem0 заканчивается на V[uy]zi, а $stem1 на vve,
+     *       то vve > [uy]de
+     *    2) если $stem0 заканчивается на [uy][oö]zi, а $stem1 на vve,
+     *       то vve > [oö]de
+     *    3) если $stem0 заканчивается на zi, a $stem1 заканчивается на
+     *       а) Vve, то ve > de 
+     *       б) rre, то rre > rde
+     *       в) nne, то nne > nde
+     *       г) je, то je > de
+     *       д) ie, то ie > ede
+     *       е) äi, то äi > äde
+     * Б. если в $stem3 конечные VV, то =$stem3-VV
+     *    1) если $stem1 заканчивается на [aä]i, то +e
+     *    2) в остальных случаях + конечный V из $stem1
+     * 
+     * @param string $stem0
+     * @param string $stem1
+     * @param string $stem3
+     * @return string
+     */
+    public static function illSgBase($stem0, $stem1, $stem3) {
+        $V = KarGram::vowelSet();
+        if (preg_match('/[dt][uy]$/u', $stem3)){ // А
+            if (preg_match('/['.$V.']([uy])zi$/u', $stem0, $regs_u)) {
+                $stem1=preg_replace('/vve$/u', $regs_u[1].'de', $stem1); // A.1
+            } elseif (preg_match('/[uy]([oö])zi$/u', $stem0, $regs_o)) {
+                $stem1=preg_replace('/vve$/u', $regs_o[1].'de', $stem1); // A.2                
+            } elseif (preg_match('/zi$/', $stem0)) { // А.3
+                if (preg_match('/^(.*['.$V.'])ve$/u', $stem1, $regs1) // А.3.а
+                        || preg_match('/^(.*r)re$/u', $stem1, $regs1) // А.3.б
+                        || preg_match('/^(.*n)ne$/u', $stem1, $regs1) // А.3.в
+                        || preg_match('/^(.+)je$/u', $stem1, $regs1) // А.3.г
+                        || preg_match('/^(.*ä)i$/u', $stem1, $regs1)) { // А.3.е
+                    $stem1 = $regs1[1].'de';
+                } elseif (preg_match('/^(.+)ie$/u', $stem1, $regs1)) { // А.3.д
+                    $stem1 = $regs1[1].'ede';
+                }
+            }
+            return $stem1;
+        } elseif (preg_match('/^(.*)['.$V.']{2}$/u', $stem3, $regs3)) {
+            $stem3 = $regs3[1];
+            if (preg_match('/[aä]i$/', $stem1)) {
+                $stem3 .= 'e';
+            } elseif (preg_match('/(['.$V.'])$/u', $stem1, $regs1)) {
+                $stem3 .= $regs1[1];
+            }
+            return $stem3;
+        }
     }
-        
+    
+    public static function partPlBase($base, $par_pl_suff) {
+        $out = [];
+        $suffs = preg_split("/\//",$par_pl_suff);
+        foreach ($suffs as $suff) {
+            $word = trim(preg_replace("/^\-/", $base, $suff));
+            $out[] = preg_replace("/ii$/", 'i', $word);
+        }
+        return join('/',$out);
+    }
+    
+    /**
+     * A. если $stem5 заканчивается на kki, tti, ppi, čči, šši, ssi, gi, di, bi,
+     *    то = $stem1 – конечный V + i
+     * Б. если $stem5 заканчивается на loi, löi или Ci, то = $stem5
+     * 
+     * В. в остальных случаях = $stem1 со след. изменениями:
+     *    1) если $stem1 заканчивается на СV, то – конечный V + oi / öi
+     *    2) если $stem1 заканчивается на ua, iä, то – ua, iä → + avoi / ävöi
+     * 
+     * @param string $stem1
+     * @param string $stem5
+     * @return string
+     */
+    public static function genPlBase($stem1, $stem5) {
+        $V = KarGram::vowelSet();
+        $C = KarGram::consSet();
+        $out = [];
+        $stems5 = preg_split("/\//",$stem5);
+        foreach ($stems5 as $stem5) {
+            if (preg_match('/kki$|tti$|ppi$|čči$|šši$|ssi$|[gdb]i$/u', $stem5)){ // А
+                $out[] = preg_replace('/['.$V.']$/u','i',$stem1);
+            } elseif (preg_match('/l[oö]i$|['.$C.']i$/u', $stem5)){ // Б
+                $out[] = $stem5;
+            } else { // В
+                if (preg_match('/^(.+['.$C.'])['.$V.']$/u', $stem1, $regs1)) { // 1
+                    $stem1 = $regs1[1].KarGram::garmVowel($stem1, 'o').'i';
+                } else { 
+                    $stem1=preg_replace('/ua$/u', 'avoi', $stem1); // 2
+                    $stem1=preg_replace('/iä$/u', 'ävöi', $stem1); // 2                
+                }
+                $out[] = $stem1;            
+            }
+        }
+        return join('/',$out);
+    }
+    
     public static function wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
         switch ($gramset_id) {
             case 2: // номинатив, мн.ч. 
                 return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'t' : '');
         }
         
-        if ($name_num !='pl' && in_array($gramset_id, self::gramsetListSg())) {
+        if ($name_num !='pl' && in_array($gramset_id, self::gramsetListSg($lang_id))) {
             return self::wordformByStemsSg($stems, $gramset_id, $lang_id, $dialect_id);
         }
         
-        if ($name_num !='sg' && in_array($gramset_id, self::gramsetListPl())) {
-            return self::wordformByStemsPl($stems, $gramset_id, $lang_id, $dialect_id);
+        if ($name_num !='sg' && in_array($gramset_id, self::gramsetListPl($lang_id))) {
+            if ($lang_id==5) {
+                return KarNameOlo::wordformByStemsPl($stems, $gramset_id, $dialect_id);
+            } else {        
+                return self::wordformByStemsPl($stems, $gramset_id, $dialect_id);
+            }
         }
         return '';
     }
     
     public static function wordformByStemsSg($stems, $gramset_id, $lang_id, $dialect_id) {
-        $stem1_i = preg_match("/i$/u", $stems[1]);
-        
         switch ($gramset_id) {
             case 1: // номинатив, ед.ч. 
                 return $stems[0];
@@ -235,6 +353,23 @@ class KarName
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
                 return $stems[3] ? $stems[3] : '';
+            case 10: // иллатив, ед.ч. 
+                return $stems[2] ? $stems[2].'h' : '';
+            case 14: // комитатив, ед.ч. 
+                return $stems[1] ? $stems[1].'nke' : '';
+        }
+        if ($lang_id==5) {
+            return KarNameOlo::wordformByStemsSg($stems, $gramset_id, $dialect_id);
+        } else {
+            return self::wordformByStemsSgProp($stems, $gramset_id, $dialect_id);
+        }
+        
+    }
+    
+    public static function wordformByStemsSgProp($stems, $gramset_id, $dialect_id) {
+        $stem1_i = preg_match("/i$/u", $stems[1]);
+        
+        switch ($gramset_id) {
             case 277: // эссив, ед.ч. 
                 return $stems[2] ? $stems[2]. 'n'. KarGram::garmVowel($stems[2],'a') : '';
             case 5: // транслатив, ед.ч. 
@@ -243,22 +378,18 @@ class KarName
                 return $stems[1] ? $stems[1] . ($stem1_i ? 'ss' : 'šš'). KarGram::garmVowel($stems[1],'a') : '';
             case 9: // элатив, ед.ч. 
                 return $stems[1] ? $stems[1] . ($stem1_i ? 'st' : 'št'). KarGram::garmVowel($stems[1],'a') : '';
-            case 10: // иллатив, ед.ч. 
-                return $stems[2] ? $stems[2].'h' : '';
             case 278: // адессив-аллатив, ед.ч. 
                 return $stems[1] ? $stems[1] . 'll'. KarGram::garmVowel($stems[1],'a') : '';
             case 12: // аблатив, ед.ч. 
                 return $stems[1] ? $stems[1] . 'ld'. KarGram::garmVowel($stems[1],'a') : '';
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1] . 'tt'. KarGram::garmVowel($stems[1],'a') : '';
-            case 14: // комитатив, ед.ч. 
-                return $stems[1] ? $stems[1].'nke' : '';
             case 15: // пролатив, ед.ч. 
                 return $stems[1] ? $stems[1].'čči' : '';
         }
     }
 
-    public static function wordformByStemsPl($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
+    public static function wordformByStemsPl($stems, $gramset_id, $dialect_id) {
         $stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
         
         switch ($gramset_id) {
@@ -301,7 +432,7 @@ class KarName
      * ai|ga {-ja / -ga, -gua, -joi / -goi}
      * aluššo|vat {-vi / -bi}   (pos=nominals, num=pl - only base 4/ base 5)
      * 
-     * @param type $lemma_str
+     * @param string $lemma_str
      */
     public static function toRightTemplate($bases, $base_list, $lemma_str, $num) {
         if (!(sizeof($base_list)==3 || sizeof($base_list)==2 && $num=='sg' || sizeof($base_list)==1 && $num=='pl')) {

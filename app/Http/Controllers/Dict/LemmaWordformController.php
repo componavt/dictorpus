@@ -106,6 +106,7 @@ class LemmaWordformController extends Controller
         $dialect_values = ['NULL'=>'']+Dialect::getList($lemma->lang_id)+['all'=>'ДЛЯ ВСЕХ ДИАЛЕКТОВ'];
         
         $base_list = LemmaBase::baseList($lemma->lang_id, $lemma->pos_id);
+//dd($base_list);        
 //dd($lemma->getBase(2, 43, null));                
         return view('dict.lemma_wordform.edit',
                     compact('base_list','dialect_id', 'dialect_name', 'dialect_values', 
@@ -222,10 +223,11 @@ class LemmaWordformController extends Controller
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
     }
     
-    public function getBases($id) {
-        $lemma = Lemma::findOrFail($id);        
+    public function getBases(Request $request, $id) {
+        $lemma = Lemma::findOrFail($id);  
+        $dialect_id = (int)$request->dialect_id;
         
-        $stems = $lemma->getBases();
+        $stems = $lemma->getBases($dialect_id);
 //dd($stems);        
         return Response::json($stems);
     }

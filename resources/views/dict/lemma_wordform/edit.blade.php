@@ -26,7 +26,7 @@
     @if ($dialect_id && is_array($base_list))
         @include('widgets.form.button._red', [
             'id_name' => 'generate-wordforms',
-            'on_click'=> 'copyBases('. $lemma->id. ')', 
+            'on_click'=> 'copyBases('. $lemma->id. ', '. $dialect_id .')', 
             'title' => trans('dict.copy_bases')
             ])
         @include('widgets.form.button._red', [

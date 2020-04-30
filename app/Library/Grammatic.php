@@ -22,8 +22,8 @@ use App\Models\Dict\PartOfSpeech;
  **/
 class Grammatic
 {
-    public static function langsWithRules () {
-        return [1,4];
+    public static function langsWithRules() {
+        return [1,4,5];
     }
 
     /**
@@ -44,7 +44,7 @@ class Grammatic
             $name_num =  null;
         }
        
-        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num);
+        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id']);
 //dd($stems);        
 //dd($max_stem, $affix);        
         $lemma = $max_stem. $affix;
@@ -57,13 +57,7 @@ class Grammatic
         }
         return self::wordformsFromDict($lemma, $max_stem, $affix);
     }
-/*    
-    public static function wordformsByTemplate($template, $lang_id, $pos_id, $dialect_id) {
-        list($stems, $name_num) = self::stemsFromTemplate($lemma, $lang_id, $pos_id, $dialect_id, $name_num);
-        $gramset_wordforms = self::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        return $gramset_wordforms;
-    }
-*/
+
     public static function getAffixFromtemplate($template, $name_num) {       
         $template = preg_replace("/\|\|/",'',$template);
         if (!preg_match("/\s/", $template) && preg_match("/^([^\{\(]*)\|([^\|]*)$/", $template, $regs)) {
@@ -120,14 +114,14 @@ class Grammatic
      */
     public static function getListForAutoComplete($lang_id, $pos_id) {
         $gramsets = [];
-        if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
+        if (!in_array($lang_id, self::langsWithRules())) {// is not language with rules
             return $gramsets;
         }
         
         if ($lang_id == 1) {
             $gramsets = VepsGram::getListForAutoComplete($pos_id);
         } else {
-            $gramsets = KarGram::getListForAutoComplete($pos_id);
+            $gramsets = KarGram::getListForAutoComplete($pos_id, $lang_id);
         }
         return $gramsets;
     }
@@ -138,8 +132,8 @@ class Grammatic
      * @param Int $pos_id
      * @return Array [array_of_stems, name_of_number, max_stem, affix]
      */
-    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null) {
-        if (!in_array($lang_id, [4, 1])) {// is not Proper Karelian and Vepsian 
+    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null) {
+        if (!in_array($lang_id, self::langsWithRules())) {// is not langs with rules 
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
@@ -154,7 +148,7 @@ class Grammatic
             return VepsGram::stemsFromTemplate($template, $pos_id, $name_num);                
         } 
         
-        return KarGram::stemsFromTemplate($template, $pos_id, $name_num);                
+        return KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id);                
     }
 
     public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems, $is_reflexive=null) {
@@ -164,6 +158,7 @@ class Grammatic
         }
         
         $gramsets = self::getListForAutoComplete($lang_id, $pos_id);
+//dd($gramsets);        
         $wordforms = [];
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
         foreach ($gramsets as $gramset_id) {
@@ -173,6 +168,7 @@ class Grammatic
                 $wordforms[$gramset_id] = self::nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
             }
         }
+// dd($wordforms);        
         return $wordforms;
     }
     
@@ -405,6 +401,8 @@ class Grammatic
     public static function getStemFromStems($stems, $stem_n, $lang_id, $pos_id, $dialect_id, $lemma) {
         if ($lang_id == 1) {
             return VepsGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma);
+        } else {
+            return KarGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma);
         }
         return null;
     }
