@@ -53,10 +53,36 @@ class KarGram
         return false;
     }
     
+    /**
+     * Сколько слогов в основе?
+     * 
+     * Определение количества слогов – очень важный момент в глагольном словоизменении ливвиковского наречия. Количество слогов в форме равно количеству гласных или любых комбинаций гласных (VV или VVV), разделенных между собой согласными: paganoija – CVCVCVVCV (4 слога), puija – CVVCV (2 слога), andua – VCCVV (2 слога).
+     * 
+     * @param String $stem
+     * @return INT 1 - односложное, 2 - двусложное, 3 - трехсложное, 4 - многосложное
+     */
+    public static function countSyllable($stem) {
+        $C = "[".KarGram::consSet()."]";
+        $C_n= "(".$C."’?)*";
+        $C_o= "(".$C."’?)+";
+        $V = "[".KarGram::vowelSet()."]+";
+//        $syllable = "(".$C."’?)*[".KarGram::vowelSet()."][iu]?(".$C."’?)*";
+        $syllable = $C_n.$V."+(".$C."’?)*";
+        if (preg_match("/^".$C_n.$V.$C_n."$/u",$stem)) {
+            return 1;
+        } elseif (preg_match("/^".$C_n.$V.$C_o.$V.$C_n."$/u",$stem)) {
+            return 2;
+        } elseif (preg_match("/^".$C_n.$V.$C_o.$V.$C_o.$V.$C_n."$/u",$stem)) {
+            return 3;
+        }
+//dd($stem, $syllable.$syllable.$syllable);        
+        return 4;
+    }        
+    
     public static function getListForAutoComplete($pos_id, $lang_id) {
         $gramsets = [];
         if ($pos_id == PartOfSpeech::getVerbID()) {
-            $gramsets = KarVerb::getListForAutoComplete();
+            $gramsets = KarVerb::getListForAutoComplete($lang_id);
         } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) {
             $gramsets = KarName::getListForAutoComplete($lang_id);
         }
@@ -158,14 +184,40 @@ class KarGram
         return $stems;
     }
     
+    /**
+     * verbs:
+     * puhk|eta (-ien/-enen, -ieu/-enou; -etah; -ei/-eni, -ettih)
+     * pakastu|o (-u; -i)
+     * 
+     * @param type $template
+     * @param type $pos_id
+     * @param type $name_num
+     * @param type $dialect_id
+     * @return type
+     */
     public static function stemsFromTemplate($template, $pos_id, $name_num, $dialect_id) {
+        $template = trim($template);
+        
         if ($dialect_id == 47) {
             return self::stemsFromTemplateWithBases($template, $pos_id, $name_num);
         }
+        
+        $base_shab = "([^\s\(\|]+)";
+        $base_suff_shab = "([^\s\(\|]*)";
+        $okon_shab = "(-?[^\-\,\;\)]+\/?-?[^\-\,\;\)]*)";
+      
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return KarName::stemsFromTemplate($template, $name_num);
         } elseif ($pos_id == PartOfSpeech::getVerbID()) {
-            return KarVerb::stemsFromTemplate($template, $name_num);            
+            if (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {  
+                $name_num='def';
+                return [KarVerb::stemsFromTemplateDef($regs), $name_num, $regs[1], $regs[2]];    
+            } elseif (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\,\s*".$okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  
+//dd('regs:',$regs);            
+                return [KarVerb::stemsFromTemplate($regs, $name_num), $name_num, $regs[1], $regs[2]];    
+            }
+        } else {
+            return Grammatic::getAffixFromtemplate($template, $name_num);
         }
     }
     
@@ -270,7 +322,7 @@ class KarGram
     public static function getAffixesForGramset($gramset_id, $lang_id) {
         if (in_array($gramset_id, KarName::getListForAutoComplete($lang_id))) {
             return KarName::getAffixesForGramset($gramset_id);
-        } elseif (in_array($gramset_id, KarVerb::getListForAutoComplete())) {
+        } elseif (in_array($gramset_id, KarVerb::getListForAutoComplete($lang_id))) {
             return KarVerb::getAffixesForGramset($gramset_id);
         }
         return [];

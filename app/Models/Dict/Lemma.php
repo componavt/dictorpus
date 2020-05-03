@@ -1032,6 +1032,9 @@ dd($wordforms);
         if (preg_match("/\s/", $wordform)) {
             return NULL;
         }
+        if (!$this->reverseLemma) {
+            return NULL;
+        }
         $stem = $this->reverseLemma->stem;
         if (!$stem) {
             return NULL;
