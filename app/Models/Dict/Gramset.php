@@ -114,13 +114,12 @@ class Gramset extends Model
      
     public function inCategoryString($with_number=false) : String
     {
-        $pos_category_id = $this->gramsetCategory->pos_category_id;
-        if ($pos_category_id ==1) {
+        if (isset($this->gramsetCategory->pos_category_id) && $this->gramsetCategory->pos_category_id ==1) {
             if ($this->gram_id_case){
 //                $out = $this->gramCase->name_short;
                 $out = $this->gramCase->name;
             }
-        } elseif ($this->gramsetCategory->id == 27) { // passive
+        } elseif (isset($this->gramsetCategory->id) &&  $this->gramsetCategory->id == 27) { // passive
             if ($this->gram_id_tense){
                 $out = $this->gramTense->name_short;
             }
