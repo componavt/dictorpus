@@ -87,7 +87,8 @@ class KarVerbOlo
     }
     
     public static function wordformByStems($stems, $gramset_id, $dialect_id, $def=NULL) {
-        $stem4_modify = self::stemModify($stems[4], $stems[0], "ua|iä", ['o'=>'a', 'i'=> ['a','ä']]);
+//        $stem4_modify = self::stemModify($stems[4], $stems[0], "ua|iä", ['o'=>'a', 'i'=> ['a','ä']]);
+        $lang_id=5;
         switch ($gramset_id) {
             case 28: // 3. индикатив, презенс, 3 л., ед.ч., пол. 
                 return $stems[2];
@@ -96,42 +97,30 @@ class KarVerbOlo
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return !$def && $stems[1] ? $stems[1] . 'tt'. KarGram::garmVowel($stems[1],'o') : '';
 
-            case 70: // 7. индикатив, презенс, 1 л., ед.ч., отриц. 
-            case 71: // 8. индикатив, презенс, 2 л., ед.ч., отриц. 
-            case 73: //10. индикатив, презенс, 1 л., мн.ч., отриц. 
-            case 78: // 11. индикатив, презенс, 2 л., мн.ч., отриц. 
-                return !$def && $stems[1] ? Grammatic::negativeForm($gramset_id, $lang_id). $stems[1] : '';
-            case 72: // 9. индикатив, презенс, 3 л., ед.ч., отриц. 
-                return $stems[1] ? Grammatic::negativeForm($gramset_id, $lang_id). $stems[1] : '';
-            case 79: // 12. индикатив, презенс, 3 л., мн.ч., отриц. 
-                return $stems[6] ? Grammatic::negativeForm(79, $lang_id). $stems[6] : '';
-
             case 32: // 13. индикатив, имперфект, 1 л., ед.ч., пол. 
-                return !$def && $stems[3] ? $stems[3] . 'n' : '';
+                return !$def && $stems[5] ? $stems[5] . 'n' : '';
             case 33: // 14. индикатив, имперфект, 2 л., ед.ч., пол. 
-                return !$def && $stems[3] ? $stems[3] . 't' : '';
+                return !$def && $stems[5] ? $stems[5] . 't' : '';
             case 34: // 15. индикатив, имперфект, 3 л., ед.ч., пол. 
                 return $stems[4] ? $stems[4] : '';
             case 35: // 16. индикатив, имперфект, 1 л., мн.ч., пол. 
-                return !$def && $stems[4] ? self::indImp1PlurByStem($stems[4]) : '';
+                return !$def && $stems[5] ? $stems[5] . 'mm'. KarGram::garmVowel($stems[5],'o') : '';
             case 36: // 17. индикатив, имперфект, 2 л., мн.ч., пол. 
-                return !$def && $stems[4] ? self::indImp2PlurByStem($stems[4]) : '';
-            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
-                return $stems[7] ? $stems[7] . 'ih' : '';
+                return !$def && $stems[5] ? $stems[5] . 'tt'. KarGram::garmVowel($stems[5],'o') : '';
             case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
-                return $stems[5] ? self::perfectForm($stems[5], $lang_id) : '';
+                return self::partic2active($stems[1], $stems[8]);
             case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
-                return $stems[7] ? self::indImperfConnegPl($stems[7]) : '';
+                return self::partic2passive($stems[7]);
 
             case 80: // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., отриц. 
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., отриц. 
-                return !$def && $stems[5] ? Grammatic::negativeForm($gramset_id, $lang_id). self::perfectForm($stems[5], $lang_id) : '';
+                return !$def && $stems[1] && $stems[8] ? Grammatic::negativeForm($gramset_id, $lang_id). self::partic2active($stems[1], $stems[8]) : '';
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., отриц. 
-                return $stems[5] ? Grammatic::negativeForm($gramset_id, $lang_id). self::perfectForm($stems[5], $lang_id) : '';
+                return $stems[1] && $stems[8] ? Grammatic::negativeForm($gramset_id, $lang_id). self::partic2active($stems[1], $stems[8]) : '';
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., отриц. 
-                return $stems[7] ? Grammatic::negativeForm(85, $lang_id). self::indImperfConnegPl($stems[7]) : '';
+                return $stems[7] ? Grammatic::negativeForm(85, $lang_id). self::partic2passive($stems[7]) : '';
 
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., пол. 
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
@@ -324,6 +313,82 @@ class KarVerbOlo
         return '';
     }
 
+    /**
+     * 141. актив, 2-е причастие
+     * 
+     * 1) если п.о.8 заканчивается на СV и в ней два слога, то п.о.8 + nuh / nyh
+     * 2) если п.о.8 заканчивается на СV и в ней три или больше слогов, то п.о.8 > п.о.1 + nnuh / nnyh
+     * 3) если п.о.8 заканчивается на VV, то п.о.8 + nnuh / nnyh
+     * 4) если п.о.8 заканчивается на l, то п.о.8 + luh / lyh
+     * 5) если п.о.8 заканчивается на n, h, то п.о.8 + nuh / nyh
+     * 6) если п.о.8 заканчивается на r, то п.о.8 + ruh / ryh
+     * 7) если п.о.8 заканчивается на s, то п.о.8 + suh / syh
+     * 8) если п.о.8 заканчивается на t, то в п.о.8 t > n → + nuh / nyh
+     * 
+     * @param string $stem
+     */
+    public static function partic2active($stem1, $stem8) {
+        if (!$stem8) {
+            return '';
+        }
+        $C="[".KarGram::consSet()."]";
+        $V="[".KarGram::vowelSet()."]";
+        $garm_u1 = KarGram::garmVowel($stem1,'u');
+        $garm_u8 = KarGram::garmVowel($stem8,'u');
+        
+        if (preg_match("/".$C.$V."$/u", $stem8) && KarGram::countSyllable($stem8)==2) {
+            return $stem8. 'n'.$garm_u8.'h';
+        } elseif (preg_match("/".$C.$V."$/u", $stem8) && KarGram::countSyllable($stem8)>2) {
+            if (!$stem1) {
+                return '';
+            } else {
+                return $stem1. 'nn'.$garm_u1.'h';
+            }
+        } elseif (preg_match("/".$V.$V."$/u", $stem8)) {
+            return $stem8. 'nn'.$garm_u8.'h';
+        } elseif (preg_match("/([lnrs])$/u", $stem8, $regs)) {
+            return $stem8. $regs[1]. $garm_u8.'h';
+        } elseif (preg_match("/h$/u", $stem8)) {
+            return $stem8. 'n'.$garm_u8.'h';
+        } elseif (preg_match("/^(.+)t$/u", $stem8, $regs)) {
+            return $regs[1]. 'nn'.$garm_u8.'h';
+        }
+    }
+    
+    /**
+     * 144. пассив, 2-е причастие
+     * 
+     * п.о.7 + u / y
+     * 
+     * @param string $stem
+     */
+    public static function partic2passive($stem7) {
+        if (!$stem7) {
+            return '';
+        }
+        return $stem7.KarGram::garmVowel($stem8,'u');
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Indicative, Presence, 3rd Person, Singular, Positive
      * 
@@ -536,58 +601,6 @@ class KarVerbOlo
         return $stem;
     }
 
-    /**
-     * 141. актив, 2-е причастие  (сокращенная форма); перфект (форма основного глагола)
-     * 
-     * основа 5 + n (если основа 5 заканчивается на согласный + гласный: СV)
-     * + nun (если основа 5 заканчивается на дифтонг (два гласных подряд: VV) или n)
-     * + lun (если основа 5 заканчивается на l)
-     * + run (если основа 5 заканчивается на r)
-     * + sun (если основа 5 заканчивается на s)
-     * + šun (если основа 5 заканчивается на š)
-     * 
-     * @param String $stem
-     */
-    public static function perfectForm($stem, $lang_id) {
-        $stem_for_search = Grammatic::toSearchForm($stem);
-        $last_let = mb_substr($stem_for_search, -1, 1);
-        $before_last_let = mb_substr($stem_for_search, -2, 1);
-        
-        if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
-            return $stem. 'n';
-        } elseif (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let)) {
-            return $stem. KarGram::garmVowel($stem, 'nun');
-        } elseif (in_array($last_let, ['n', 'l', 'r', 's', 'š'])) {
-            return $stem. $last_let. KarGram::garmVowel($stem, 'un');
-        }
-    }
-      
-    /**
-     * 140. актив, 2-е причастие (karelian proper)
-     * 
-     * основа 5 + nnun (если основа 5 заканчивается на согласный + гласный: СV)
-     * + nun (если основа 5 заканчивается на дифтонг (два гласных подряд: VV) или n)
-     * + lun (если основа 5 заканчивается на l)
-     * + run (если основа 5 заканчивается на r)
-     * + sun (если основа 5 заканчивается на s)
-     * + šun (если основа 5 заканчивается на š)
-     * 
-     * @param String $stem
-     */
-    public static function partic2active($stem, $lang_id) {
-        $stem_for_search = Grammatic::toSearchForm($stem);
-        $last_let = mb_substr($stem_for_search, -1, 1);
-        $before_last_let = mb_substr($stem_for_search, -2, 1);
-        
-        if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
-            return $stem. 'nnun';
-        } elseif (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let)) {
-            return $stem. 'nun';
-        } elseif (in_array($last_let, ['n', 'l', 'r', 's', 'š'])) {
-            return $stem. $last_let. 'un';
-        }
-    }
-    
     public static function auxForm($gramset_id, $lang_id, $dialect_id) {
         if ($lang_id != 4) {
             return '';

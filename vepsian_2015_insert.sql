@@ -1203,3 +1203,4 @@ select count(*) from lemmas where created_at>'2020-02-29' and lang_id=6;
 -- При этом было создано 60 тыс. связей между значениями лемм и словами из текста, 50 тыс. слов в текстах получили новые связи. 
 -- Но только 2 тыс. слов до этого не имели разметки вообще.
 
+-- php artisan make:test Library\Grammatic\KarVerbOloTest

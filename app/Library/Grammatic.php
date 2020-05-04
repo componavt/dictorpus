@@ -37,7 +37,7 @@ class Grammatic
             $data['reflexive'] = 1;
         }
         if (isset($data['reflexive'])) {
-            $name_num = $data['reflexive']; // TODO!!!! эта переменная нужна для 'def' может быть одновременно рефлексивным глагол и  без 1 и 2 лица? если да, то нужно разделить эти переменные
+            $name_num = $data['reflexive']; //  TODO!!!! эта переменная нужна для 'def' может быть одновременно рефлексивным глагол и  без 1 и 2 лица? если да, то нужно разделить эти переменные
         } elseif (isset($data['number'])) {    
             $name_num =  self::nameNumFromNumberField($data['number']);
         } else {

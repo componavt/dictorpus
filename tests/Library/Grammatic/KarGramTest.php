@@ -97,7 +97,7 @@ class KarGramTest extends TestCase
                       4=>'peityi', 
                       5=>'peityi', 
                       6=>'peitytä', 
-                      7=>'peityttih', 
+                      7=>'peitytt', 
                       8=>'peitty'], $num, 'peit', 'työ'];
         $this->assertEquals( $expected, $result);        
     }
@@ -116,7 +116,7 @@ class KarGramTest extends TestCase
                       4=>'pengoi', 
                       5=>'pengoi', 
                       6=>'pengota', 
-                      7=>'pengottih', 
+                      7=>'pengott', 
                       8=>'pengo'], $num, 'peng', 'uo'];
         $this->assertEquals( $expected, $result);        
     }
@@ -135,7 +135,7 @@ class KarGramTest extends TestCase
                       4=>'pidi', 
                       5=>'piji', 
                       6=>'pietä', 
-                      7=>'piettih', 
+                      7=>'piett', 
                       8=>'pidä'], $num, 'pi', 'diä'];
         $this->assertEquals( $expected, $result);        
     }
@@ -154,7 +154,7 @@ class KarGramTest extends TestCase
                       4=>'polgi', 
                       5=>'polli', 
                       6=>'polgieta', 
-                      7=>'polgiettih', 
+                      7=>'polgiett', 
                       8=>'polge'], $num, 'pol', 'gie'];
         $this->assertEquals( $expected, $result);        
     }
@@ -173,7 +173,7 @@ class KarGramTest extends TestCase
                       4=>'ečči', 
                       5=>'eči', 
                       6=>'ečitä', 
-                      7=>'ečittih', 
+                      7=>'ečitt', 
                       8=>'ečči'], $num, 'eč', 'čie'];
         $this->assertEquals( $expected, $result);        
     }
@@ -192,7 +192,7 @@ class KarGramTest extends TestCase
                       4=>'pabaitti', 
                       5=>'pabaiti', 
                       6=>'pabaiteta', 
-                      7=>'pabaitettih', 
+                      7=>'pabaitett', 
                       8=>'pabaitta'], $num, 'pabait', 'tua'];
         $this->assertEquals( $expected, $result);        
     }
@@ -211,7 +211,7 @@ class KarGramTest extends TestCase
                       4=>'paloi', 
                       5=>'paloi', 
                       6=>'paleta', 
-                      7=>'palettih', 
+                      7=>'palett', 
                       8=>'pala'], $num, 'pal', 'ua'];
         $this->assertEquals( $expected, $result);        
     }
@@ -230,7 +230,7 @@ class KarGramTest extends TestCase
                       4=>'pui', 
                       5=>'pui', 
                       6=>'puija', 
-                      7=>'puidih', 
+                      7=>'puid', 
                       8=>'pui'], $num, 'pui', 'ja'];
         $this->assertEquals( $expected, $result);        
     }
@@ -249,7 +249,7 @@ class KarGramTest extends TestCase
                       4=>'joi', 
                       5=>'joi', 
                       6=>'juvva', 
-                      7=>'juodih', 
+                      7=>'juod', 
                       8=>'juo'], $num, 'j', 'uvva'];
         $this->assertEquals( $expected, $result);        
     }
@@ -268,7 +268,7 @@ class KarGramTest extends TestCase
                       4=>'sai', 
                       5=>'sai', 
                       6=>'suaha/suaja', 
-                      7=>'suadih', 
+                      7=>'suad', 
                       8=>'sua'], $num, 's', 'uaha'];
         $this->assertEquals( $expected, $result);        
     }
@@ -287,7 +287,7 @@ class KarGramTest extends TestCase
                       4=>'paganoičči', 
                       5=>'paganoiči', 
                       6=>'paganoija', 
-                      7=>'paganoittih', 
+                      7=>'paganoitt', 
                       8=>'paganoi'], $num, 'paganoi', 'ja'];
         $this->assertEquals( $expected, $result);        
     }
@@ -306,7 +306,7 @@ class KarGramTest extends TestCase
                       4=>'paineli', 
                       5=>'paineli', 
                       6=>'painella', 
-                      7=>'paineltih', 
+                      7=>'painelt', 
                       8=>'painel'], $num, 'painel', 'la'];
         $this->assertEquals( $expected, $result);        
     }
@@ -325,7 +325,7 @@ class KarGramTest extends TestCase
                       4=>'pani', 
                       5=>'pani', 
                       6=>'panna', 
-                      7=>'pandih', 
+                      7=>'pand', 
                       8=>'pan'], $num, 'pan', 'na'];
         $this->assertEquals( $expected, $result);        
     }
@@ -344,7 +344,7 @@ class KarGramTest extends TestCase
                       4=>'pieri', 
                       5=>'pieri', 
                       6=>'piertä', 
-                      7=>'piertih', 
+                      7=>'piert', 
                       8=>'pier'], $num, 'pier', 'tä'];
         $this->assertEquals( $expected, $result);        
     }
@@ -363,7 +363,7 @@ class KarGramTest extends TestCase
                       4=>'pezi', 
                       5=>'pezi', 
                       6=>'pestä', 
-                      7=>'pestih', 
+                      7=>'pest', 
                       8=>'pes'], $num, 'pe', 'stä'];
         $this->assertEquals( $expected, $result);        
     }
@@ -382,7 +382,7 @@ class KarGramTest extends TestCase
                       4=>'paikkai', 
                       5=>'paikkai', 
                       6=>'paikata', 
-                      7=>'paikattih', 
+                      7=>'paikatt', 
                       8=>'paikat'], $num, 'paik', 'ata'];
         $this->assertEquals( $expected, $result);        
     }
@@ -401,7 +401,7 @@ class KarGramTest extends TestCase
                       4=>'puhkei/puhkeni', 
                       5=>'puhkei/puhkeni', 
                       6=>'puhketa', 
-                      7=>'puhkettih', 
+                      7=>'puhkett', 
                       8=>'puhket'], $num, 'puhk', 'eta'];
         $this->assertEquals( $expected, $result);        
     }
@@ -420,7 +420,7 @@ class KarGramTest extends TestCase
                       4=>'paheni', 
                       5=>'paheni', 
                       6=>'paheta', 
-                      7=>'pahettih', 
+                      7=>'pahett', 
                       8=>'pahet'], $num, 'pahe', 'ta'];
         $this->assertEquals( $expected, $result);        
     }
@@ -439,7 +439,7 @@ class KarGramTest extends TestCase
                       4=>'pakičči', 
                       5=>'pakiči', 
                       6=>'pakita', 
-                      7=>'pakittih', 
+                      7=>'pakitt', 
                       8=>'pakit'], $num, 'paki', 'ta'];
         $this->assertEquals( $expected, $result);        
     }
@@ -458,7 +458,7 @@ class KarGramTest extends TestCase
                       4=>'vedi', 
                       5=>'veji', 
                       6=>'vietä', 
-                      7=>'viettih', 
+                      7=>'viett', 
                       8=>'vedä'], $num, 'vediä', ''];
         $this->assertEquals( $expected, $result);        
     }
@@ -477,7 +477,7 @@ class KarGramTest extends TestCase
                       4=>'kuadoi', 
                       5=>'kavoi', 
                       6=>'kuata', 
-                      7=>'kuattih', 
+                      7=>'kuatt', 
                       8=>'kuada'], $num, 'kua', 'dua'];
         $this->assertEquals( $expected, $result);        
     }
@@ -496,7 +496,7 @@ class KarGramTest extends TestCase
                       4=>'jagoi', 
                       5=>'javoi', 
                       6=>'juata', 
-                      7=>'juattih', 
+                      7=>'juatt', 
                       8=>'jaga'], $num, 'jagua', ''];
         $this->assertEquals( $expected, $result);        
     }    
@@ -515,7 +515,7 @@ class KarGramTest extends TestCase
                       4=>'jäi', 
                       5=>'jäi', 
                       6=>'jiähä/jiäjä', 
-                      7=>'jiädih', 
+                      7=>'jiäd', 
                       8=>'jiä'], $num, 'jiä', 'hä'];
         $this->assertEquals( $expected, $result);        
     }
@@ -534,7 +534,7 @@ class KarGramTest extends TestCase
                       4=>'jäi', 
                       5=>'jäi', 
                       6=>'jiähä/jiäjä', 
-                      7=>'jiädih', 
+                      7=>'jiäd', 
                       8=>'jiä'], $num, 'jiä', 'jä'];
         $this->assertEquals( $expected, $result);        
     }
