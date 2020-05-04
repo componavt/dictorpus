@@ -402,7 +402,7 @@ class Grammatic
         if ($lang_id == 1) {
             return VepsGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma);
         } else {
-            return KarGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma);
+            return KarGram::getStemFromStems($stems, $stem_n, $pos_id, $lang_id, $dialect_id, $lemma);
         }
         return null;
     }

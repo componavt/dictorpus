@@ -306,7 +306,7 @@ class KarVerb
      * @param string $lemma
      * @return string
      */
-    public static function getStemFromStems($stems, $stem_n, $dialect_id, $lemma) {
+    public static function getStemFromStems($stems, $stem_n, $lang_id, $dialect_id, $lemma) {
         if ($lang_id==5) {
             return KarVerbOlo::getStemFromStems($stems, $stem_n, $dialect_id, $lemma);
         }
