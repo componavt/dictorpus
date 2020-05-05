@@ -862,9 +862,10 @@ class GrammaticTest extends TestCase
     public function testStemsFromTemplatePieni() {
         $lang_id = 4;
         $pos_id = 1; //adjective
-//        $dialect_id=47;
+        $dialect_id=47;
+        $num = '';
         $template = "{pieni, piene, piene, piendä, pieni, pieni}";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [0=>['pieni', 'piene', 'piene', 'piendä', 'pieni', 'pieni'],
             1=>null, 2=>'pien', 3=>'i'];
@@ -875,9 +876,10 @@ class GrammaticTest extends TestCase
     public function testStemsFromTemplateTulla() {
         $lang_id = 4;
         $pos_id = 11;
-//        $dialect_id=47;
+        $dialect_id=47;
+        $num = '';
         $template = "{tulla, tule, tule, tuli, tuli, tul, tulla, tuld}";
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [0=>['tulla', 'tule', 'tule', 'tuli', 'tuli', 'tul', 'tulla', 'tuld'],
             1=>null, 2=>'tul', 3=>'la'];
@@ -1049,7 +1051,8 @@ class GrammaticTest extends TestCase
         $lang_id = 4;
         $pos_id = 1; // noun
         $num = 'sg';
-        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+        $dialect_id = 47;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'Kariela', 
                       1=>'Kariela', 
@@ -1224,4 +1227,73 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        */
     }
     
+    public function testWordformsByStemsKarVerbOlo() {
+        $template = 'puhk|eta (-ien/-enen, -ieu/-enou; -etah; -ei/-eni, -ettih)';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [26 => 'puhkien, puhkenen',   27 => 'puhkiet, puhkenet',  28 => 'puhkieu, puhkenou',  
+                29 => 'puhkiemmo, puhkenemmo',  30 => 'puhkietto, puhkenetto',  31 => 'puhketah', 295 => 'puhkie, puhkene', 296 => 'puhketa', 
+                70 => 'en puhkie, en puhkene',   71 => 'et puhkie, et puhkene',  72 => 'ei puhkie, ei puhkene',  
+                73 => 'emmo puhkie, emmo puhkene',  78 => 'etto puhkie, etto puhkene',  79 => 'ei puhketa', 
+                32 => 'puhkein, puhkenin',   33 => 'puhkeit, puhkenit',  34 => 'puhkei, puhkeni',  
+                35 => 'puhkeimmo, puhkenimmo',  36 => 'puhkeitto, puhkenitto',  37 => 'puhkettih', 
+                80 => 'en puhkennuh',   81 => 'et puhkennuh',  82 => 'ei puhkennuh',  
+                83 => 'emmo puhkennuh',  84 => 'etto puhkennuh',  85 => 'ei puhkettu', 
+                86 => 'olen puhkennuh',   87 => 'olet puhkennuh',  88 => 'on puhkennuh',  89 => 'olemmo puhkennuh',  90 => 'oletto puhkennuh',  91 => 'on puhkettu',  
+                92 => 'en ole puhkennuh',  93 => 'et ole puhkennuh',  94 => 'ei ole puhkennuh',  95 => 'emmo ole puhkennuh',  96 => 'etto ole puhkennuh',  97 => 'ei olla puhkettu',
+                98 => 'olin puhkennuh',   99 => 'olit puhkennuh', 100 => 'oli puhkennuh', 101 => 'olimmo puhkennuh', 102 => 'olitto puhkennuh', 103 => 'oli puhkettu', 
+                104 => 'en olluh puhkennuh', 105 => 'et olluh puhkennuh', 107 => 'ei olluh puhkennuh', 108 => 'emmo olluh puhkennuh', 106 => 'etto olluh puhkennuh', 109 => 'ei oldu puhkettu',
+                      51 => 'puhkie, puhkene',  52 => 'puhkekkah',  53 => 'puhkekkuammo',  54 => 'puhkekkua, puhkekkuatto',  55 => 'puhkettahes',       
+                      50 => 'älä puhkie, älä puhkene',  74 => 'älgäh puhkekkah',  75 => 'älgiämmö puhkekkuammo',  76 => 'älgiä puhkekkua',  77 => 'äldähes puhkettahes',  
+                38 => 'puhkiezin, puhkenizin',   39 => 'puhkiezit, puhkenizit',  40 => 'puhkies, puhkenis',  
+                41 => 'puhkiezimmo, puhkenizimmo',  42 => 'puhkiezitto, puhkenizitto',  43 => 'puhkettas', 
+                110 => 'en puhkies, en puhkenis', 111 => 'et puhkies, et puhkenis', 112 => 'ei puhkies, ei puhkenis', 
+                113 => 'emmo puhkies, emmo puhkenis', 114 => 'etto puhkies, etto puhkenis', 115 => 'ei puhkettas',
+                44 => 'puhkennuzin',   45 => 'puhkennuzit',  46 => 'puhkennus',  47 => 'puhkennuzimmo',  48 => 'puhkennuzitto',  49 => 'puhketannus', 
+                116 => 'en puhkennus', 117 => 'et puhkennus', 118 => 'ei puhkennus', 119 => 'emmo puhkennus', 120 => 'etto puhkennus', 121 => 'ei puhketannus',
+                122 => 'olizin puhkennuh', 123 => 'olizit puhkennuh', 124 => 'olis puhkennuh', 126 => 'olizimmo puhkennuh', 127 => 'olizitto puhkennuh', 128 => 'oldas puhkettu', 
+                129 => 'en olis puhkennuh', 130 => 'et olis puhkennuh', 131 => 'ei olis puhkennuh', 132 => 'emmo olis puhkennuh', 133 => 'etto olis puhkennuh', 134 => 'ei oldas puhkettu',
+                135 => 'olluzin puhkennuh', 125 => 'olluzit puhkennuh', 136 => 'ollus puhkennuh', 137 => 'olluzimmo puhkennuh', 138 => 'olluzitto puhkennuh', 139 => 'oldanus puhkettu', 
+                140 => 'en ollus puhkennuh', 141 => 'et ollus puhkennuh', 142 => 'ei ollus puhkennuh', 143 => 'emmo ollus puhkennuh', 144 => 'etto ollus puhkennuh', 145 => 'ei oldanus puhkettu',
+                146 => 'puhkennen', 147 => 'puhkennet', 148 => 'puhkennou', 149 => 'puhkennemmo', 150 => 'puhkennetto', 151 => 'puhketanneh', 
+                152 => 'en puhkenne', 153 => 'et puhkenne', 154 => 'ei puhkenne', 155 => 'emmo puhkenne', 156 => 'etto puhkenne', 157 => 'ei puhketanne',
+                158 => 'ollen puhkennuh', 159 => 'ollet puhkennuh', 160 => 'ollou puhkennuh', 161 => 'ollemmo puhkennuh', 162 => 'olletto puhkennuh', 163 => 'oldaneh puhkettu', 
+                164 => 'en olle puhkennuh', 165 => 'et olle puhkennuh', 166 => 'ei olle puhkennuh', 167 => 'emmo olle puhkennuh', 168 => 'etto olle puhkennuh', 169 => 'ei oldane puhkettu',
+                170 => 'puhketa', 171 => 'puhketes', 172 => 'puhketen', 173 => 'puhkiemal, puhkenemal', 174 => 'puhkiemah, puhkenemah', 175 => 'puhkiemas, puhkenemas', 176 => 'puhkiemaspäi, puhkenemaspäi', 177 => 'puhkiemattah, puhkenemattah', 312 => 'puhkiemua, puhkenemua',
+                178 => 'puhkieju, puhkenii, puhkeniju', 179 => 'puhkennuh', 180 => 'puhkettavu', 181 => 'puhkettu'];
+        $this->assertEquals( $expected, $result);        
+    }
+/*    
+    public function testWordformsByStemsKarVerbOlo() {
+        $template = '';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [26 => '',   27 => '',  28 => '',  29 => '',  30 => '',  31 => '', 295 => '', 296 => '', 
+                70 => '',   71 => '',  72 => '',  73 => '',  78 => '',  79 => '', 
+                32 => '',   33 => '',  34 => '',  35 => '',  36 => '',  37 => '', 
+                80 => '',   81 => '',  82 => '',  83 => '',  84 => '',  85 => '', 
+                86 => '',   87 => '',  88 => '',  89 => '',  90 => '',  91 => '',  92 => '',  93 => '',  94 => '',  95 => '',  96 => '',  97 => '',
+                98 => '',   99 => '', 100 => '', 101 => '', 102 => '', 103 => '', 104 => '', 105 => '', 107 => '', 108 => '', 106 => '', 109 => '',
+                      51 => '',  52 => '',  53 => '',  54 => '',  55 => '',       50 => '',  74 => '',  75 => '',  76 => '',  77 => '',  
+                38 => '',   39 => '',  40 => '',  41 => '',  42 => '',  43 => '', 
+                70 => '',   71 => '',  72 => '',  73 => '',  78 => '',  79 => '',
+                44 => '',   45 => '',  46 => '',  47 => '',  48 => '',  49 => '', 116 => '', 117 => '', 118 => '', 119 => '', 120 => '', 121 => '',
+                122 => '', 123 => '', 124 => '', 126 => '', 127 => '', 128 => '', 129 => '', 130 => '', 131 => '', 132 => '', 133 => '', 134 => '',
+                135 => '', 125 => '', 136 => '', 137 => '', 138 => '', 139 => '', 140 => '', 141 => '', 142 => '', 143 => '', 144 => '', 145 => '',
+                146 => '', 147 => '', 148 => '', 149 => '', 150 => '', 151 => '', 
+                152 => '', 153 => '', 154 => '', 155 => '', 156 => '', 157 => '',
+                158 => '', 159 => '', 160 => '', 161 => '', 162 => '', 163 => '', 164 => '', 165 => '', 166 => '', 167 => '', 168 => '', 169 => '',
+                170 => '', 171 => '', 172 => '', 173 => '', 174 => '', 175 => '', 176 => '', 177 => '', 312 => '',
+                178 => '', 179 => '', 282 => '', 180 => '', 181 => ''];
+        $this->assertEquals( $expected, $result);        
+    }
+*/    
 }

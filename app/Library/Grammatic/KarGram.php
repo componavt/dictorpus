@@ -215,6 +215,8 @@ class KarGram
             } elseif (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\,\s*".$okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  
 //dd('regs:',$regs);            
                 return [KarVerb::stemsFromTemplate($regs, $name_num), $name_num, $regs[1], $regs[2]];    
+            } else {
+                return Grammatic::getAffixFromtemplate($template, $name_num);
             }
         } else {
             return Grammatic::getAffixFromtemplate($template, $name_num);

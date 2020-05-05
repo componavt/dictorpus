@@ -100,7 +100,7 @@ class LemmaBase extends Model
     }
     
     public static function baseList($lang_id, $pos_id) {
-        if ($lang_id==5) { $lang_id=4;} // у ливвиковского те же основы
+//        if ($lang_id==5) { $lang_id=4;} // у ливвиковского те же основы
         $base_list_title = 'base_list_'.$lang_id.'_';
         if ($pos_id == PartOfSpeech::getVerbID()) {
             $base_list_title .= 'verb';

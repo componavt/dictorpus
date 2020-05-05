@@ -410,9 +410,9 @@ class Grammatic
     public static function interLists($neg_list, $list){
         if (!$list) { return ''; }
         
-        if (!preg_match("/,/", $neg_list) && !preg_match("/,/", $list)) {
+        if (!preg_match("/,/", $neg_list) && !preg_match("/[,\/]/", $list)) {
             if ($neg_list) {
-                return $neg_list. ' '. $list;
+                return trim($neg_list). ' '. $list;
             } else {
                 return $list;
             }
@@ -420,15 +420,29 @@ class Grammatic
         
         $forms=[];
         foreach (preg_split("/,\s*/", $neg_list) as $neg) {
-            foreach (preg_split("/,\s*/", $list) as $verb) {
+            foreach (preg_split("/[,\/]\s*/", $list) as $verb) {
                 if ($neg) {
-                    $forms[] = $neg.' '.$verb;
+                    $forms[] = trim($neg).' '.$verb;
                 } else {
                     $forms[] = $verb;
                 }
             }
         }
         return join(", ", $forms);
+    }
+    
+    /**
+     * Присоединение морфем к основам, возможно к спискам основ 
+     * @param string $list
+     * @param string $alom
+     */
+    public static function joinMorfToBases($bases, $morf){
+        if (!$bases) { return ''; }
+        $forms=[];
+        foreach (preg_split("/[,\/]\s*/", $bases) as $base) {
+            $forms[] = $base.$morf;
+        }
+        return join(", ", $forms);              
     }
     
     public static function getAffixesForGramset($gramset_id, $lang_id) {
