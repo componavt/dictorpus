@@ -562,17 +562,17 @@ class KarVerb
             case 90: // 29. индикатив, перфект, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id), self::perfectForm($stems[5], $lang_id)) : '';
             case 88: // 27. индикатив, перфект, 3 л., ед.ч., пол. 
-                return $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id), self::perfectForm($stems[5], $lang_id));
             case 91: // 30. индикатив, перфект, 3 л., мн.ч., пол. 
-                return $stems[7] ? self::auxForm(91, $lang_id, $dialect_id). $stems[7]. KarGram::garmVowel($stems[7],'u') : '';
+                return Grammatic::interLists(self::auxForm(91, $lang_id, $dialect_id), $stems[7]. KarGram::garmVowel($stems[7],'u'));
 
             case 92: // 31. индикатив, перфект, 1 л., ед.ч., отриц. 
             case 93: // 32. индикатив, перфект, 2 л., ед.ч., отриц. 
             case 95: // 34. индикатив, перфект, 1 л., мн.ч., отриц. 
             case 96: // 35. индикатив, перфект, 2 л., мн.ч., отриц. 
-                return !$def && $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return !$def ? Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id, '-'), self::perfectForm($stems[5], $lang_id)) : '';
             case 94: // 33. индикатив, перфект, 3 л., ед.ч., отриц. 
-                return $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id, '-'), self::perfectForm($stems[5], $lang_id));
             case 97: // 36. индикатив, перфект, 3 л., мн.ч., отриц. 
                 return $stems[7] ? 'ei ole './/self::auxForm(97, $lang_id, $dialect_id). 
                        $stems[7]. KarGram::garmVowel($stems[7],'u') : '';
@@ -581,19 +581,19 @@ class KarVerb
             case 99: // 38. индикатив, плюсквамперфект, 2 л., ед.ч., пол. 
             case 101: // 40. индикатив, плюсквамперфект, 1 л., мн.ч., пол. 
             case 102: // 41. индикатив, плюсквамперфект, 2 л., мн.ч., пол. 
-                return !$def && $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return !$def ? Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id), self::perfectForm($stems[5], $lang_id)) : '';
             case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., пол. 
-                return $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id), self::perfectForm($stems[5], $lang_id));
             case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., пол. 
-                return $stems[7] ? self::auxForm(103, $lang_id, $dialect_id). $stems[7]. KarGram::garmVowel($stems[7],'u') : '';
+                return Grammatic::interLists(self::auxForm(103, $lang_id, $dialect_id), $stems[7]. KarGram::garmVowel($stems[7],'u'));
 
             case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., отриц. 
             case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., отриц. 
             case 107: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., отриц. 
             case 108: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., отриц. 
-                return !$def && $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return !$def ? Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id, '-'), self::perfectForm($stems[5], $lang_id)) : '';
             case 106: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., отриц. 
-                return $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id, '-'), self::perfectForm($stems[5], $lang_id));
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., отриц. 
                 return $stems[7] ? 'ei oldu '. $stems[7]. KarGram::garmVowel($stems[7],'u') : ''; //self::auxForm(109, $lang_id, $dialect_id)
 
