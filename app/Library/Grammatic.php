@@ -37,20 +37,22 @@ class Grammatic
             $data['reflexive'] = 1;
         }
         if (isset($data['reflexive'])) {
-            $name_num = $data['reflexive']; //  TODO!!!! эта переменная нужна для 'def' может быть одновременно рефлексивным глагол и  без 1 и 2 лица? если да, то нужно разделить эти переменные
-        } elseif (isset($data['number'])) {    
+            $is_reflexive = $data['reflexive']; 
+        } else {
+            $is_reflexive = null;
+        }
+        if (isset($data['number'])) {    
             $name_num =  self::nameNumFromNumberField($data['number']);
         } else {
             $name_num =  null;
         }
        
-        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id']);
+        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id'], $is_reflexive);
 //dd($stems);        
 //dd($max_stem, $affix);        
         $lemma = $max_stem. $affix;
 //dd($lemma);        
-        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'], $name_num, $stems, 
-                                                    isset($data['reflexive']) ? $data['reflexive'] : null);
+        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'], $name_num, $stems, $is_reflexive);
 //dd($gramset_wordforms);        
         if ($gramset_wordforms) {
             return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
@@ -132,7 +134,7 @@ class Grammatic
      * @param Int $pos_id
      * @return Array [array_of_stems, name_of_number, max_stem, affix]
      */
-    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null) {
+    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null, $is_reflexive=null) {
         if (!in_array($lang_id, self::langsWithRules())) {// is not langs with rules 
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
@@ -145,10 +147,10 @@ class Grammatic
         }
      
         if ($lang_id == 1) {
-            return VepsGram::stemsFromTemplate($template, $pos_id, $name_num);                
+            return VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);                
         } 
         
-        return KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id);                
+        return KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);                
     }
 
     public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems, $is_reflexive=null) {

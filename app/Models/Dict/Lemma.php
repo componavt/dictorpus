@@ -616,7 +616,7 @@ dd($wordforms);
     public function extractStem() {
         $affix = '';
         $stem = $this->lemma;
-//print "\n".join("\n ",$this->uniqueWordforms())."\n";
+print "\n".join("\n ",$this->uniqueWordforms())."\n";
 
         foreach ($this->uniqueWordforms() as $wordform) {
             while (!preg_match("/^".$stem."/", $wordform)) {

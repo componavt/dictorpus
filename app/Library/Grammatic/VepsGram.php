@@ -60,7 +60,7 @@ class VepsGram
         return $gramsets;
     }
     
-    public static function stemsFromTemplate($template, $pos_id, $name_num = null) {
+    public static function stemsFromTemplate($template, $pos_id, $name_num = null, $is_reflexive = null) {
 //dd($template);        
         $template = trim($template);
         
@@ -80,7 +80,7 @@ class VepsGram
 //dd('regs:',$regs);            
             $base = $regs[1];
             $base_suff = $regs[2];
-            $stems = VepsVerb::stemsFromTemplate($regs, $name_num);
+            $stems = VepsVerb::stemsFromTemplate($regs, $is_reflexive);
         } else {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }

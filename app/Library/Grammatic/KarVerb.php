@@ -28,10 +28,11 @@ class KarVerb
             return '';
         }
         $out = [];
+        $V = "[".KarGram::vowelSet()."]";
         $words = preg_split("/\//",$wordform);
         foreach ($words as $word) {
-            if (!$is_reflexive && preg_match("/^(.+[".KarGram::vowelSet()."])n$/u", $word, $regs)
-//            || $is_reflexive && preg_match("/^(.*[aeiouüäö])[sšzž][eo]?i?$/u", $wordform, $regs)            
+            if (!$is_reflexive && preg_match("/^(.+".$V.")n$/u", $word, $regs)
+            || $is_reflexive && preg_match("/^(.+".$V.")mm[oö]s$/u", $wordform, $regs)            
                 ) {
             $out[] = $regs[1];
             } else {
@@ -47,15 +48,17 @@ class KarVerb
      * @param type $wordform
      * @return string
      */
-    public static function parsePrs3Pl($wordform) {
+    public static function parsePrs3Pl($wordform, $is_reflexive=null) {
         if (!$wordform) {
             return '';
         }
         $out = [];
         $words = preg_split("/\//",$wordform);
         foreach ($words as $word) {
-            if (preg_match("/^(.+)h$/u", $word, $regs)) {
+            if (!$is_reflexive && preg_match("/^(.+)h$/u", $word, $regs)) {
                 $out[] = $regs[1];
+            }elseif ($is_reflexive && preg_match("/hes$/u", $word)) {
+                $out[] = $word;
             }
         }
         return join('/',$out);
@@ -67,14 +70,15 @@ class KarVerb
      * @param type $wordform
      * @return string
      */
-    public static function parseImp3Pl($wordform) {
+    public static function parseImp3Pl($wordform, $is_reflexive=null) {
         if (!$wordform) {
             return '';
         }
         $out = [];
         $words = preg_split("/\//",$wordform);
         foreach ($words as $word) {
-            if (preg_match("/^(.+)ih$/u", $word, $regs)) {
+            if (!$is_reflexive && preg_match("/^(.+)ih$/u", $word, $regs)
+                    || $is_reflexive && preg_match("/^(.+)ihes$/u", $word, $regs)) {
                 $out[] = $regs[1];
             }
         }
@@ -113,6 +117,14 @@ class KarVerb
         return join('/',$out);
     }
     
+    public static function prsStrongVocalBaseRef($stem2) {
+        if (preg_match("/^.+\s*\/\s*(.+)hes$/u", $stem2, $regs)
+                || preg_match("/^([^\/]+)hes$/u", $stem2, $regs)) {
+            return $regs[1];
+        }
+        return '';
+    }
+    
     /**
      * п.о.5 (слабая основа имперфекта)
      * 
@@ -126,7 +138,59 @@ class KarVerb
      *      iä > ävöi
      *   2) если в п.о.1 больше одного слогов, то =п.о.1 – конечный V или VV (все, что есть до первого согласного с конца) → + конечные i или Vi из  п.о.4
      */
-    public static function weakImpBase($base_of_prs1sg, $imp3sg) {
+    public static function weakImpBase($base_of_prs1sg, $imp3sg, $is_reflexive=null) {
+        if (!$base_of_prs1sg || !$imp3sg) {
+            return '';
+        }
+        $V = "[".KarGram::vowelSet()."]";
+        $not_V = "[^".KarGram::vowelSet()."]";
+        $sh_i = $V."?i"; 
+        //$out = [];
+        $bases_of_prs1sg = preg_split("/\//",$base_of_prs1sg);
+        if ($is_reflexive && preg_match("/^.+\/\s*(.+)hes$/", $imp3sg, $regs)) {
+            for ($i=0; $i<sizeof($bases_of_prs1sg); $i++) {
+                $imp3sgS[$i] = $regs[1];
+            }
+        } else {
+            $imp3sgS = preg_split("/\//",$imp3sg);
+        }
+        for ($i=0; $i<sizeof($bases_of_prs1sg); $i++) {
+            if (!preg_match('/kk'.$sh_i.'$|tt'.$sh_i.'$|pp'.$sh_i.'$|čč'.$sh_i.'$|šš'.$sh_i.'$|ss'.$sh_i.'$|[gdb]'.$sh_i.'$/u', $imp3sg)){ // А
+                $out[]= $imp3sgS[$i];
+            } else {
+                if (KarGram::countSyllable($bases_of_prs1sg[$i])==1) { // Б1
+                    if (preg_match("/^(.*)ie$/u", $bases_of_prs1sg[$i], $regs)
+                            && preg_match("/^.([ie])/u",$imp3sg, $regs1)) {
+                        $bases_of_prs1sg[$i] = $regs[1]. $regs1[1].'ji';
+                    } elseif (preg_match("/^(.*)ua$/u", $bases_of_prs1sg[$i], $regs)) {
+                        $bases_of_prs1sg[$i] = $regs[1]. 'avoi';
+                    } elseif (preg_match("/^(.*)iä$/u", $bases_of_prs1sg[$i], $regs)) {
+                        $bases_of_prs1sg[$i] = $regs[1]. 'ävöi';
+                    }
+                } elseif(preg_match("/^(.+?)".$V."?".$V."$/u", $bases_of_prs1sg[$i], $regs)
+                        && (preg_match("/^.*?".$not_V."(".$sh_i.")$/u", $imp3sg, $regs2))) { // Б2
+                    $bases_of_prs1sg[$i] = $regs[1].$regs2[1];
+                }
+                $out[]= $bases_of_prs1sg[$i];
+            }
+        }
+        return join('/',$out);
+    }
+    
+    /**
+     * п.о.5 (слабая основа имперфекта рефлексивного глагола)
+     * 
+     * А. если в п.о.4 перед конечными i или Vi НЕТ kk, tt, pp, čč, g, d, b, 
+     * то =п.о.4 ($imp3sg)
+     * Б. если в п.о.4 перед конечными i или Vi есть kk, tt, pp, čč, g, d, b, то
+     *   1) если в п.о.1 ($base_of_prs1sg) один слог, то изменяем VV этого слога следующим образом: 
+     *      ie > iji (если в п.о.4 вторая буква i), 
+     *      ie > eji (если в п.о.4 инд. вторая буква e), 
+     *      ua > avoi, 
+     *      iä > ävöi
+     *   2) если в п.о.1 больше одного слогов, то =п.о.1 – конечный V или VV (все, что есть до первого согласного с конца) → + конечные i или Vi из  п.о.4
+     */
+    public static function weakImpBaseRef($base_of_prs1sg, $imp3sg) {
         if (!$base_of_prs1sg || !$imp3sg) {
             return '';
         }
@@ -167,6 +231,34 @@ class KarVerb
                 return $regs[1];
             }
         } elseif (preg_match("/^(.*)[".KarGram::consSet()."][aä]$/u", $inf)) {
+            if (preg_match("/^(.+)[td]$/u", $imp3pl, $regs)) {
+                return $regs[1];
+            }
+        } elseif (preg_match("/".$V.$V."$/u", $inf)) {
+            return $base_prs_strong_vocal;
+        }
+        return '';
+    }
+    
+    /**
+     * п.о.8 (сильная гласная / согласная основа) для рефлексивного глагола
+     * 
+     * с.ф. – kseh (искомая форма)
+     * 
+     * A. если искомая форма заканчивается на Сa или Cä, то 
+     * 1) неизм. + ок5
+     * 2) если в скобках только 2 формы, то второе вместо ок5
+     * → – tihes или dihes
+     * 
+     * Б. если искомая форма заканчивается на VV, то п.о.8=п.о.3
+     */
+    public static function vocalStrongConsRef($inf, $base_prs_strong_vocal) { 
+        if (!preg_match("/^(.+)kseh$/", $inf, $regs)) {
+            return '';
+        }
+        $inf = $regs[1];
+        $V = "[".KarGram::vowelSet()."]";
+        if (preg_match("/^(.*)[".KarGram::consSet()."][aä]$/u", $inf)) {
             if (preg_match("/^(.+)[td]$/u", $imp3pl, $regs)) {
                 return $regs[1];
             }
@@ -224,12 +316,18 @@ class KarVerb
         }                
 
         $prs3sg = preg_replace("/-/", $base, $regs[4]); // stem2
-        $base_prs_strong_vocal = self::prsStrongVocalBase($base_of_prs1sg, $prs3sg); //stem3
+        $base_prs_strong_vocal = $is_reflexive ? self::prsStrongVocalBaseRef($prs3sg)
+                : self::prsStrongVocalBase($base_of_prs1sg, $prs3sg); //stem3
         $imp3sg = preg_replace("/-/", $base, $regs[6]); // stem4
-        $base_imp_weak = self::weakImpBase($base_of_prs1sg, $imp3sg); //stem5
-        $prs3pl = self::parsePrs3Pl(preg_replace("/-/", $base, $regs[5])); //stem6
-        $imp3pl = self::parseImp3Pl(preg_replace("/-/", $base, $regs[7])); //stem7
-        $base_vocal_strong_cons = self::vocalStrongCons($inf, $base_prs_strong_vocal, $imp3pl); // stem8
+        
+        
+        
+        
+        $base_imp_weak = self::weakImpBase($base_of_prs1sg, $imp3sg, $is_reflexive); //stem5
+        $prs3pl = self::parsePrs3Pl(preg_replace("/-/", $base, $regs[5]), $is_reflexive); //stem6
+        $imp3pl = self::parseImp3Pl(preg_replace("/-/", $base, $regs[7]), $is_reflexive); //stem7
+        $base_vocal_strong_cons = $is_reflexive ? self::vocalStrongConsRef($inf, $base_prs_strong_vocal)
+                                    : self::vocalStrongCons($inf, $base_prs_strong_vocal, $imp3pl); // stem8
         return [$inf, $base_of_prs1sg, $prs3sg, 
                 $base_prs_strong_vocal, $imp3sg, $base_imp_weak, 
                 $prs3pl, $imp3pl, $base_vocal_strong_cons];
@@ -267,7 +365,7 @@ class KarVerb
      *                4=>imp3sg, 5=>base_imp_weak, 
      *                6=>prs3pl, 7=>imp3pl, 8=>base_vocal_strong_cons]
      */
-    public static function stemsFromTemplateDef($regs/*, $is_reflexive=false*/) { 
+    public static function stemsFromTemplateDef($regs, $is_reflexive=false) { 
         $stems = [];
         $base = $regs[1];
         $inf = $base. $regs[2]; //stem0
@@ -462,7 +560,7 @@ class KarVerb
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
             case 89: // 28. индикатив, перфект, 1 л., мн.ч., пол. 
             case 90: // 29. индикатив, перфект, 2 л., мн.ч., пол. 
-                return !$def && $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
+                return !$def ? Grammatic::interLists(self::auxForm($gramset_id, $lang_id, $dialect_id), self::perfectForm($stems[5], $lang_id)) : '';
             case 88: // 27. индикатив, перфект, 3 л., ед.ч., пол. 
                 return $stems[5] ? self::auxForm($gramset_id, $lang_id, $dialect_id). self::perfectForm($stems[5], $lang_id) : '';
             case 91: // 30. индикатив, перфект, 3 л., мн.ч., пол. 
@@ -909,11 +1007,73 @@ class KarVerb
         }
     }
     
-    public static function auxForm($gramset_id, $lang_id, $dialect_id) {
+    public static function auxForm($gramset_id, $lang_id, $dialect_id, $negative=null) {
         if ($lang_id != 4) {
             return '';
         }
-        $lemma = 'olla';
+
+        if (in_array($gramset_id,[86])) { // Perf1Sg
+            $aux = 'olen';
+        } elseif (in_array($gramset_id,[87])) { // Perf2Sg
+            $aux =  'olet';
+        } elseif (in_array($gramset_id,[88, 91])) { // Perf3Sg
+            $aux =  'on';
+        } elseif (in_array($gramset_id,[89])) { // Perf1Pl
+            $aux =  'olemma';
+        } elseif (in_array($gramset_id,[90])) { // Perf2Pl
+            $aux = 'oletta';
+        } elseif (in_array($gramset_id,[92,93,94,95,96,97])) { // PerfNeg
+            $aux = 'ole';
+            
+        } elseif (in_array($gramset_id,[98])) { // Plus1Sg
+            $aux = 'olin';
+        } elseif (in_array($gramset_id,[99])) { // Plus2Sg
+            $aux = 'olit';
+        } elseif (in_array($gramset_id,[100])) { // Perf3Sg
+            $aux = 'oli';
+        } elseif (in_array($gramset_id,[101])) { // Plus1Pl
+            $aux = 'olima';
+        } elseif (in_array($gramset_id,[102])) { // Plus2Pl
+            $aux = 'olija';
+        } elseif (in_array($gramset_id,[103])) { // Plus3Pl
+            $aux = 'oldih';
+        } elseif (in_array($gramset_id,[104,105,107,108,106])) { // PlusNeg without PlusSgNeg
+            $aux = 'ollun';
+        } elseif (in_array($gramset_id,[109])) { // PlusSgNeg
+            $aux = 'oldu';
+            
+        } elseif (in_array($gramset_id,[135])) { // CondPlus1Sg
+            $aux = 'olizin';
+        } elseif (in_array($gramset_id,[125])) { // CondPlus2Sg
+            $aux = 'olizit';
+        } elseif (in_array($gramset_id,[136,139, 140,141,142,143,144,145])) { // CondPerf3Sg, CondPlus3Pl, CondPlusNeg
+            $aux = 'olis’';
+        } elseif (in_array($gramset_id,[137])) { // CondPlus1Pl
+            $aux = 'olizima';
+        } elseif (in_array($gramset_id,[138])) { // CondPlus2Pl
+            $aux = 'olizija';
+            
+        } elseif (in_array($gramset_id,[158])) { // PotPerf1Sg
+            $aux = 'lienen';
+        } elseif (in_array($gramset_id,[159])) { // PotPerf2Sg
+            $aux = 'lienet';
+        } elseif (in_array($gramset_id,[160,163])) { // PotPerf3Sg
+            $aux = 'lienöy';
+        } elseif (in_array($gramset_id,[161])) { // PotPerf1Pl
+            $aux = 'lienemmä';
+        } elseif (in_array($gramset_id,[162])) { // PotPerf2Pl
+            $aux = 'lienettä';
+        } elseif (in_array($gramset_id,[164,165,166,167,168,169])) { // PotPerfNeg
+            $aux = 'liene';
+        }
+        if (!isset($aux)) {
+            return '';
+        } elseif ($negative=='-') {
+            return Grammatic::interLists(trim(Grammatic::negativeForm($gramset_id, $lang_id)), $aux);
+        } 
+        return $aux.' ';
+        
+/*        $lemma = 'olla';
         $aux_lemma = Lemma::where('lang_id', $lang_id)->whereLemma($lemma)
                           ->where('pos_id',PartOfSpeech::getIDByCode('VERB'))->first();
         if (!$aux_lemma) {
@@ -933,9 +1093,7 @@ class KarVerb
         }
 
         $aux_number = $gramset->gram_id_number;
-/*        if ($gramset->gram_id_person==23 && $gramset->gram_id_number==2) { // perfect, 3rd, plural //  && $gramset->gram_id_tense != 49
-            $aux_number = 1; // singular
-        } */
+
         $aux_gramset = Gramset::where('gram_id_mood', $gramset->gram_id_mood)
                               ->where('gram_id_person', $gramset->gram_id_person)
                               ->where('gram_id_number', $aux_number)
@@ -944,15 +1102,13 @@ class KarVerb
         if (!$aux_gramset) {
             return '';
         }
-//dd($aux_gramset->id);        
         $aux_wordform = $aux_lemma->wordforms()
                 ->wherePivot('dialect_id', $dialect_id)
                 ->wherePivot('gramset_id', $aux_gramset->id)->first();
-//dd($aux_wordform);        
         if (!$aux_wordform) {
             return '';
         }
-        return $aux_wordform->wordform. ' ';
+        return $aux_wordform->wordform. ' ';*/
     }
     
     public static function indImperfConnegPl($stem7) {

@@ -313,12 +313,14 @@ class KarVerbOlo
             $aux = 'olen';
         } elseif (in_array($gramset_id,[87])) { // Perf2Sg
             $aux =  'olet';
-        } elseif (in_array($gramset_id,[88, 91])) { // Perf3Sg, Perf3Pl
+        } elseif (in_array($gramset_id,[88])) { // Perf3Sg
             $aux =  'on';
         } elseif (in_array($gramset_id,[89])) { // Perf1Pl
             $aux =  'olemmo';
         } elseif (in_array($gramset_id,[90])) { // Perf2Pl
             $aux = 'oletto';
+        } elseif (in_array($gramset_id,[91])) { // Perf3Pl
+            $aux =  'ollah, on';
         } elseif (in_array($gramset_id,[92,93,94,95,96])) { // PerfNeg without Perf3PlNeg
             $aux = 'ole';
         } elseif (in_array($gramset_id,[97])) { // Perf3PlNeg
@@ -328,12 +330,14 @@ class KarVerbOlo
             $aux = 'olin';
         } elseif (in_array($gramset_id,[99])) { // Plus2Sg
             $aux = 'olit';
-        } elseif (in_array($gramset_id,[100, 103])) { // Perf3Sg, Plus3Pl
+        } elseif (in_array($gramset_id,[100])) { // Perf3Sg
             $aux = 'oli';
         } elseif (in_array($gramset_id,[101])) { // Plus1Pl
             $aux = 'olimmo';
         } elseif (in_array($gramset_id,[102])) { // Plus2Pl
             $aux = 'olitto';
+        } elseif (in_array($gramset_id,[103])) { // Plus3Pl
+            $aux = 'oldih, oli';
         } elseif (in_array($gramset_id,[104,105,107,108,106])) { // PlusNeg without PlusSgNeg
             $aux = 'olluh';
         } elseif (in_array($gramset_id,[109])) { // PlusSgNeg
@@ -385,7 +389,7 @@ class KarVerbOlo
         if (!isset($aux)) {
             return '';
         } elseif ($negative=='-') {
-            return trim(Grammatic::negativeForm($gramset_id, $lang_id)). " $aux";
+            return Grammatic::interLists(trim(Grammatic::negativeForm($gramset_id, $lang_id)), $aux);
         } 
         return $aux;
     }
@@ -544,7 +548,7 @@ class KarVerbOlo
     }
 
     public static function condImp3Pl($stem7) {
-        return Grammatic::joinMorfToBases(self::base3PlFrom7($stem7), 'us');                
+        return Grammatic::joinMorfToBases(self::base3PlFrom7($stem7), KarGram::garmVowel($stem7,'us'));                
     }
 
     public static function potenPrsBase($stem1,$stem8) {
