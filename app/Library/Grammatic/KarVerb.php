@@ -136,106 +136,84 @@ class KarVerb
      *      ie > eji (если в п.о.4 инд. вторая буква e), 
      *      ua > avoi, 
      *      iä > ävöi
-     *   2) если в п.о.1 больше одного слогов, то =п.о.1 – конечный V или VV (все, что есть до первого согласного с конца) → + конечные i или Vi из  п.о.4
+     *   2) если в п.о.1 >1 слогов, то =п.о.1 – конечный V или VV (все, что есть до первого согласного с конца) → + конечные i или Vi из  п.о.4
+     * 
+     * Для рефлексивных:
+     * п.о.4 – hes (искомая форма) → Работаем с формой на hes (т.е. если 2 формы: pezih/pezihes, работаем со второй)
+     * 
+     * A. если в искомой форме (п.о.4–hes) перед конечными i или Vi НЕТ kk, tt, pp, čč, šš, g, d, b, то = п.о.8
+     * 
+     * Б. если в искомой форме перед конечными i или Vi есть kk, tt, pp, čč, šš, g, d, b, то
+     * 1) если в п.о.1 один слог, то изменяем VV этого слога следующим образом:
+     *      ie > iji (если в искомой форме вторая буква i), 
+     *      ie > eji (если в искомой форме вторая буква e), 
+     *      ua > avoi, 
+     *      iä > ävöi
+     * 2) если в п.о.1 > 1 слогов, то =п.о.1 – конечный V или VV (все, что есть до первого согласного с конца) → + конечные i или Vi из искомой формы 
      */
-    public static function weakImpBase($base_of_prs1sg, $imp3sg, $is_reflexive=null) {
-        if (!$base_of_prs1sg || !$imp3sg) {
+    public static function weakImpBase($stem1, $stem4, $stem8, $is_reflexive=null) {
+        if (!$stem1 && !$is_reflexive || !$stem4) {
             return '';
         }
         $V = "[".KarGram::vowelSet()."]";
         $not_V = "[^".KarGram::vowelSet()."]";
         $sh_i = $V."?i"; 
-        //$out = [];
-        $bases_of_prs1sg = preg_split("/\//",$base_of_prs1sg);
-        if ($is_reflexive && preg_match("/^.+\/\s*(.+)hes$/", $imp3sg, $regs)) {
-            for ($i=0; $i<sizeof($bases_of_prs1sg); $i++) {
-                $imp3sgS[$i] = $regs[1];
+        $out = [];
+        $stems1 = preg_split("/\//",$stem1);
+        if ($is_reflexive && preg_match("/^.*?\/?\s*([^\/]+)hes$/", $stem4, $regs)) {
+            for ($i=0; $i<sizeof($stems1); $i++) {
+                $stems4[$i] = $regs[1];
             }
         } else {
-            $imp3sgS = preg_split("/\//",$imp3sg);
+            $stems4 = preg_split("/\//",$stem4);
         }
-        for ($i=0; $i<sizeof($bases_of_prs1sg); $i++) {
-            if (!preg_match('/kk'.$sh_i.'$|tt'.$sh_i.'$|pp'.$sh_i.'$|čč'.$sh_i.'$|šš'.$sh_i.'$|ss'.$sh_i.'$|[gdb]'.$sh_i.'$/u', $imp3sg)){ // А
-                $out[]= $imp3sgS[$i];
+        for ($i=0; $i<sizeof($stems1); $i++) {
+            if (!preg_match('/kk'.$sh_i.'$|tt'.$sh_i.'$|pp'.$sh_i.'$|čč'.$sh_i.'$|šš'.$sh_i.'$|ss'.$sh_i.'$|[gdb]'.$sh_i.'$/u', $stems4[$i])){ // А
+/*TODO!!!                if ($is_reflexive) {
+                    $out[]= $stem8;
+                } else {*/
+                    $out[]= $stems4[$i];
+                //}
             } else {
-                if (KarGram::countSyllable($bases_of_prs1sg[$i])==1) { // Б1
-                    if (preg_match("/^(.*)ie$/u", $bases_of_prs1sg[$i], $regs)
-                            && preg_match("/^.([ie])/u",$imp3sg, $regs1)) {
-                        $bases_of_prs1sg[$i] = $regs[1]. $regs1[1].'ji';
-                    } elseif (preg_match("/^(.*)ua$/u", $bases_of_prs1sg[$i], $regs)) {
-                        $bases_of_prs1sg[$i] = $regs[1]. 'avoi';
-                    } elseif (preg_match("/^(.*)iä$/u", $bases_of_prs1sg[$i], $regs)) {
-                        $bases_of_prs1sg[$i] = $regs[1]. 'ävöi';
+                if (KarGram::countSyllable($stems1[$i])==1) { // Б1
+                    if (preg_match("/^(.*)ie$/u", $stems1[$i], $regs)
+                            && preg_match("/^.([ie])/u",$stems4[$i], $regs1)) {
+                        $stems1[$i] = $regs[1]. $regs1[1].'ji';
+                    } elseif (preg_match("/^(.*)ua$/u", $stems1[$i], $regs)) {
+                        $stems1[$i] = $regs[1]. 'avoi';
+                    } elseif (preg_match("/^(.*)iä$/u", $stems1[$i], $regs)) {
+                        $stems1[$i] = $regs[1]. 'ävöi';
                     }
-                } elseif(preg_match("/^(.+?)".$V."?".$V."$/u", $bases_of_prs1sg[$i], $regs)
-                        && (preg_match("/^.*?".$not_V."(".$sh_i.")$/u", $imp3sg, $regs2))) { // Б2
-                    $bases_of_prs1sg[$i] = $regs[1].$regs2[1];
+                } elseif(preg_match("/^(.+?)".$V."?".$V."$/u", $stems1[$i], $regs)
+                        && (preg_match("/^.*?".$not_V."(".$sh_i.")$/u", $stems4[$i], $regs2))) { // Б2
+                    $stems1[$i] = $regs[1].$regs2[1];
                 }
-                $out[]= $bases_of_prs1sg[$i];
+                $out[]= $stems1[$i];
             }
         }
         return join('/',$out);
     }
     
     /**
-     * п.о.5 (слабая основа имперфекта рефлексивного глагола)
-     * 
-     * А. если в п.о.4 перед конечными i или Vi НЕТ kk, tt, pp, čč, g, d, b, 
-     * то =п.о.4 ($imp3sg)
-     * Б. если в п.о.4 перед конечными i или Vi есть kk, tt, pp, čč, g, d, b, то
-     *   1) если в п.о.1 ($base_of_prs1sg) один слог, то изменяем VV этого слога следующим образом: 
-     *      ie > iji (если в п.о.4 вторая буква i), 
-     *      ie > eji (если в п.о.4 инд. вторая буква e), 
-     *      ua > avoi, 
-     *      iä > ävöi
-     *   2) если в п.о.1 больше одного слогов, то =п.о.1 – конечный V или VV (все, что есть до первого согласного с конца) → + конечные i или Vi из  п.о.4
-     */
-    public static function weakImpBaseRef($base_of_prs1sg, $imp3sg) {
-        if (!$base_of_prs1sg || !$imp3sg) {
-            return '';
-        }
-        $V = "[".KarGram::vowelSet()."]";
-        $not_V = "[^".KarGram::vowelSet()."]";
-        $sh_i = $V."?i"; 
-        if (!preg_match('/kk'.$sh_i.'$|tt'.$sh_i.'$|pp'.$sh_i.'$|čč'.$sh_i.'$|šš'.$sh_i.'$|ss'.$sh_i.'$|[gdb]'.$sh_i.'$/u', $imp3sg)){ // А
-            return $imp3sg;
-        }
-        if (KarGram::countSyllable($base_of_prs1sg)==1) { // Б1
-            if (preg_match("/^(.*)ie$/u", $base_of_prs1sg, $regs)
-                    && preg_match("/^.([ie])/u",$imp3sg, $regs1)) {
-                $base_of_prs1sg = $regs[1]. $regs1[1].'ji';
-            } elseif (preg_match("/^(.*)ua$/u", $base_of_prs1sg, $regs)) {
-                $base_of_prs1sg = $regs[1]. 'avoi';
-            } elseif (preg_match("/^(.*)iä$/u", $base_of_prs1sg, $regs)) {
-                $base_of_prs1sg = $regs[1]. 'ävöi';
-            }
-        } elseif(preg_match("/^(.+?)".$V."?".$V."$/u", $base_of_prs1sg, $regs)
-                && (preg_match("/^.*?".$not_V."(".$sh_i.")$/u", $imp3sg, $regs2))) { // Б2
-            $base_of_prs1sg = $regs[1].$regs2[1];
-        }
-        return $base_of_prs1sg;
-    }
-    
-    /**
      * п.о.8 (сильная гласная / согласная основа)
-     * А. если с.ф. ($inf) заканчивается на j[aä] и в c.ф. больше двух слогов, 
+     * А. если с.ф. ($stem0) заканчивается на j[aä] и в c.ф. больше двух слогов, 
      *      то = п.о.7 ($imp3pl) – tt
      * Б. если с.ф. заканчивается на Сa или Cä (в том числе на ja или jä, в котором два слога), 
      *      то = п.о.7 – t или d
-     * В. если с.ф. заканчивается на VV, то =п.о.3 ($base_prs_strong_vocal)
+     * В. если с.ф. заканчивается на VV, то =п.о.3 ($stem3)
      */
-    public static function vocalStrongCons($inf, $base_prs_strong_vocal, $imp3pl) { 
+    public static function vocalStrongCons($stem0, $stem3, $stem7) { 
         $V = "[".KarGram::vowelSet()."]";
-        if (preg_match("/^(.*)j[aä]$/u", $inf) && KarGram::countSyllable($inf)>2) {
-            if (preg_match("/^(.+)tt$/u", $imp3pl, $regs)) {
+        if (preg_match("/^(.*)j[aä]$/u", $stem0) && KarGram::countSyllable($stem0)>2) {
+            if (preg_match("/^(.+)tt$/u", $stem7, $regs)) {
                 return $regs[1];
             }
-        } elseif (preg_match("/^(.*)[".KarGram::consSet()."][aä]$/u", $inf)) {
-            if (preg_match("/^(.+)[td]$/u", $imp3pl, $regs)) {
+        } elseif (preg_match("/^(.*)[".KarGram::consSet()."][aä]$/u", $stem0)) {
+            if (preg_match("/^(.+)[td]$/u", $stem7, $regs)) {
                 return $regs[1];
             }
-        } elseif (preg_match("/".$V.$V."$/u", $inf)) {
-            return $base_prs_strong_vocal;
+        } elseif (preg_match("/".$V.$V."$/u", $stem0)) {
+            return $stem3;
         }
         return '';
     }
@@ -243,27 +221,26 @@ class KarVerb
     /**
      * п.о.8 (сильная гласная / согласная основа) для рефлексивного глагола
      * 
-     * с.ф. – kseh (искомая форма)
+     * с.ф. ($stem0) – kseh (искомая форма)
      * 
      * A. если искомая форма заканчивается на Сa или Cä, то 
-     * 1) неизм. + ок5
-     * 2) если в скобках только 2 формы, то второе вместо ок5
-     * → – tihes или dihes
+     * 1) неизм. + ок5 (stem7) -t/d
+     * 2) если в скобках только 2 формы, то второе вместо ок5 (stem4) – tihes/dihes
      * 
      * Б. если искомая форма заканчивается на VV, то п.о.8=п.о.3
      */
-    public static function vocalStrongConsRef($inf, $base_prs_strong_vocal) { 
-        if (!preg_match("/^(.+)kseh$/", $inf, $regs)) {
+    public static function vocalStrongConsRef($stem0, $stem3, $stem7or4) { 
+        if (!preg_match("/^(.+)kseh$/", $stem0, $regs)) {
             return '';
         }
-        $inf = $regs[1];
+        $stem0 = $regs[1];
         $V = "[".KarGram::vowelSet()."]";
-        if (preg_match("/^(.*)[".KarGram::consSet()."][aä]$/u", $inf)) {
-            if (preg_match("/^(.+)[td]$/u", $imp3pl, $regs)) {
+        if (preg_match("/^(.*)[".KarGram::consSet()."][aä]$/u", $stem0)) {
+            if (preg_match("/^(.+)[td](ihes)?$/u", $stem7or4, $regs)) {
                 return $regs[1];
             }
-        } elseif (preg_match("/".$V.$V."$/u", $inf)) {
-            return $base_prs_strong_vocal;
+        } elseif (preg_match("/".$V.$V."$/u", $stem0)) {
+            return $stem3;
         }
         return '';
     }
@@ -301,36 +278,27 @@ class KarVerb
      *          8 => 'сильная гласная / согласная основа']
      * 
      * @param Array $regs
-     * @return array [0=>inf, 1=>base_of_prs1sg, 
-     *                2=>prs3sg, 3=>base_prs_strong_vocal,
-     *                4=>imp3sg, 5=>base_imp_weak, 
-     *                6=>prs3pl, 7=>imp3pl, 8=>base_vocal_strong_cons]
+     * @return array 
      */
     public static function stemsFromTemplate($regs, $is_reflexive=false) { 
         $stems = [];
         $base = $regs[1];
-        $inf = $base. $regs[2]; //stem0
-        $base_of_prs1sg = self::parsePrs1Sg(preg_replace("/-/", $base, $regs[3]), $is_reflexive); // stem1
-        if (!$base_of_prs1sg) {
+        $stems=['', '', '', '', '', '', '', '', ''];
+        $stems[0] = $base. $regs[2]; //stem0 = infinitive
+        $stems[1] = self::parsePrs1Sg(preg_replace("/-/", $base, $regs[3]), $is_reflexive); // stem1
+        if (!$stems[1]) {
             return null;
         }                
-
-        $prs3sg = preg_replace("/-/", $base, $regs[4]); // stem2
-        $base_prs_strong_vocal = $is_reflexive ? self::prsStrongVocalBaseRef($prs3sg)
-                : self::prsStrongVocalBase($base_of_prs1sg, $prs3sg); //stem3
-        $imp3sg = preg_replace("/-/", $base, $regs[6]); // stem4
-        
-        
-        
-        
-        $base_imp_weak = self::weakImpBase($base_of_prs1sg, $imp3sg, $is_reflexive); //stem5
-        $prs3pl = self::parsePrs3Pl(preg_replace("/-/", $base, $regs[5]), $is_reflexive); //stem6
-        $imp3pl = self::parseImp3Pl(preg_replace("/-/", $base, $regs[7]), $is_reflexive); //stem7
-        $base_vocal_strong_cons = $is_reflexive ? self::vocalStrongConsRef($inf, $base_prs_strong_vocal)
-                                    : self::vocalStrongCons($inf, $base_prs_strong_vocal, $imp3pl); // stem8
-        return [$inf, $base_of_prs1sg, $prs3sg, 
-                $base_prs_strong_vocal, $imp3sg, $base_imp_weak, 
-                $prs3pl, $imp3pl, $base_vocal_strong_cons];
+        $stems[2] = preg_replace("/-/", $base, $regs[4]); // stem2
+        $stems[3] = $is_reflexive ? self::prsStrongVocalBaseRef($stems[2])
+                : self::prsStrongVocalBase($stems[1], $stems[2]); //stem3
+        $stems[4] = preg_replace("/-/", $base, $regs[6]); // stem4
+        $stems[6] = self::parsePrs3Pl(preg_replace("/-/", $base, $regs[5]), $is_reflexive); //stem6
+        $stems[7] = self::parseImp3Pl(preg_replace("/-/", $base, $regs[7]), $is_reflexive); //stem7
+        $stems[8] = $is_reflexive ? self::vocalStrongConsRef($stems[0], $stems[3], $stems[7])
+                                    : self::vocalStrongCons($stems[0], $stems[3], $stems[7]); // stem8
+        $stems[5] = self::weakImpBase($stems[1], $stems[4], $stems[8], $is_reflexive); //stem5
+        return $stems;
     }
 
     /**
@@ -360,19 +328,22 @@ class KarVerb
      *          8 => 'сильная гласная / согласная основа']
      * 
      * @param Array $regs
-     * @return array [0=>inf, 1=>base_of_prs1sg, 
-     *                2=>prs3sg, 3=>base_prs_strong_vocal,
-     *                4=>imp3sg, 5=>base_imp_weak, 
-     *                6=>prs3pl, 7=>imp3pl, 8=>base_vocal_strong_cons]
+     * @return array
      */
     public static function stemsFromTemplateDef($regs, $is_reflexive=false) { 
         $stems = [];
         $base = $regs[1];
-        $inf = $base. $regs[2]; //stem0
+        $stems=['', '', '', '', '', '', '', '', ''];
+        $stems[0] = $base. $regs[2]; //stem0 = infinitive
 
-        $prs3sg = preg_replace("/-/", $base, $regs[3]); // stem2
-        $imp3sg = preg_replace("/-/", $base, $regs[4]); // stem4
-        return [$inf, '', $prs3sg, '', $imp3sg, '', '', '', ''];
+        $stems[2] = preg_replace("/-/", $base, $regs[3]); // stem2
+        $stems[3] = $is_reflexive ? self::prsStrongVocalBaseRef($stems[2])
+                : self::prsStrongVocalBase($stems[1], $stems[2]); //stem3
+        $stems[4] = preg_replace("/-/", $base, $regs[4]); // stem4
+        $stems[8] = $is_reflexive ? self::vocalStrongConsRef($stems[0], $stems[3], $stems[4])
+                                    : self::vocalStrongCons($stems[0], $stems[3], $stems[7]); // stem8
+        $stems[5] = self::weakImpBase($stems[1], $stems[4], $stems[8], $is_reflexive); //stem5
+        return $stems;
     }
 
     /**

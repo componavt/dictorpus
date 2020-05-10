@@ -538,4 +538,147 @@ class KarGramTest extends TestCase
                       8=>'jiä'], $num, 'jiä', 'jä'];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testStemsFromTemplateVerbOloRefPackahtellakseh() {
+        $template = "pačkahtel|lakseh (-emmos, -eh/-ehes; -lаhes; -ih/-ihes, -tihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pačkahtellakseh',            
+                      1=>'pačkahtele', 
+                      2=>'pačkahteleh/pačkahtelehes', 
+                      3=>'pačkahtele', 
+                      4=>'pačkahtelih/pačkahtelihes', 
+                      5=>'pačkahteli', 
+                      6=>'pačkahtellаhes', 
+                      7=>'pačkahtelt', 
+                      8=>'pačkahtel'], $num, 'pačkahtel', 'lakseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateVerbOloRefPackahtuakseh() {
+        $template = "pačkaht|uakseh (-ammos, -ah/-ahes; -etahes; -ih/-ihes, -ettihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pačkahtuakseh',            
+                      1=>'pačkahta', 
+                      2=>'pačkahtah/pačkahtahes', 
+                      3=>'pačkahta', 
+                      4=>'pačkahtih/pačkahtihes', 
+                      5=>'pačkahti', 
+                      6=>'pačkahtetahes', 
+                      7=>'pačkahtett', 
+                      8=>'pačkahta'], $num, 'pačkaht', 'uakseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateVerbOloRefPahoitellakseh() {
+        $template = "pahoit|ellakseh (-telemmos, -teleh/-telehes; -ellahes; -telih/-telihes, -eltihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pahoitellakseh',            
+                      1=>'pahoittele', 
+                      2=>'pahoitteleh/pahoittelehes', 
+                      3=>'pahoittele', 
+                      4=>'pahoittelih/pahoittelihes', 
+                      5=>'pahoitteli', 
+                      6=>'pahoitellahes', 
+                      7=>'pahoitelt', 
+                      8=>'pahoitel'], $num, 'pahoit', 'ellakseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateVerbOloRefPakastuakseh() {
+        $template = "pakast|uakseh (-ah/-ahes; -ih/-ihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pakastuakseh',            
+                      1=>'', 
+                      2=>'pakastah/pakastahes', 
+                      3=>'pakasta', 
+                      4=>'pakastih/pakastihes', 
+                      5=>'pakasti', 
+                      6=>'', 
+                      7=>'', 
+                      8=>'pakasta'], 'def', 'pakast', 'uakseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testStemsFromTemplateVerbOloRefPakitakseh() {
+        $template = "paki|takseh (-čemmos, -ččeh/-ččehes; -tahes; -ččih/-ččihes, -ttihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pakitakseh',            
+                      1=>'pakiče', 
+                      2=>'pakiččeh/pakiččehes', 
+                      3=>'pakičče', 
+                      4=>'pakiččih/pakiččihes', 
+                      5=>'pakiči', 
+                      6=>'pakitahes', 
+                      7=>'pakitt', 
+                      8=>'pakit'], $num, 'paki', 'takseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testStemsFromTemplateVerbOloRefPalkatakseh() {
+        $template = "palk|atakseh (-uammos, -uahes; -atahes; -aihes, -attihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'palkatakseh',            
+                      1=>'palkua', 
+                      2=>'palkuahes', 
+                      3=>'palkua', 
+                      4=>'palkaihes', 
+                      5=>'palkai', 
+//                      5=>'palkat', 
+                      6=>'palkatahes', 
+                      7=>'palkatt', 
+                      8=>'palkat'], $num, 'palk', 'atakseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+/*    
+    public function testStemsFromTemplateVerbOloRef() {
+        $template = "";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'',            
+                      1=>'', 
+                      2=>'', 
+                      3=>'', 
+                      4=>'', 
+                      5=>'', 
+                      6=>'', 
+                      7=>'', 
+                      8=>''], $num, '', ''];
+        $this->assertEquals( $expected, $result);        
+    }
+*/    
 }

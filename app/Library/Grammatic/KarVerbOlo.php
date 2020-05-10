@@ -535,13 +535,9 @@ class KarVerbOlo
         $out = [];
         foreach (preg_split("/\//",$stem7) as $base) {
             if (KarGram::countSyllable($base)==2) {
-                if (preg_match("/^(.+)t$/", $base, $regs)) {
-                    $out[] = $regs[1]. KarGram::garmVowel($base,'ann');
-                } else {
-                    return '';                    
-                }
+                $out[] = preg_replace("/tt$/", 't', $base). KarGram::garmVowel($base,'ann');
             } else {
-                    $out[] = $base. KarGram::garmVowel($base,'an');                    
+                $out[] = $base. KarGram::garmVowel($base,'an');                    
             }
         }
         return join('/',$out);                
