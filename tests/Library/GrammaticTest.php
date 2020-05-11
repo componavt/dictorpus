@@ -198,7 +198,7 @@ class GrammaticTest extends TestCase
         $gramset_id = 70; // индикатив, презенс, 1 л., ед. ч., отриц
         $result = Grammatic::negativeForm($gramset_id, $lang_id);
         
-        $expected = 'en ';
+        $expected = 'en';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -207,7 +207,7 @@ class GrammaticTest extends TestCase
         $gramset_id = 81; // индикатив, имперфект, 2 л., ед. ч., отриц
         $result = Grammatic::negativeForm($gramset_id, $lang_id);
         
-        $expected = 'et ';
+        $expected = 'et';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -216,7 +216,7 @@ class GrammaticTest extends TestCase
         $gramset_id = 70; // индикатив, презенс, 1 л., ед. ч., отриц
         $result = Grammatic::negativeForm($gramset_id, $lang_id);
         
-        $expected = 'en ';
+        $expected = 'en';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1267,6 +1267,154 @@ class GrammaticTest extends TestCase
                 178 => 'puhkieju, puhkenii, puhkeniju', 179 => 'puhkennuh', 180 => 'puhkettavu', 181 => 'puhkettu'];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testWordformsByStemsKarVerbOloRefPackahtellakseh() {
+        $template = 'pačkahtel|lakseh (-emmos, -eh/-ehes; -lаhes; -ih/-ihes, -tihes)';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = true;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+        $expected = [26 => 'pačkahtelemmos',   27 => 'pačkahtelettos',  28 => 'pačkahteleh, pačkahtelehes',  
+                29 => 'pačkahtelemmokseh',  30 => 'pačkahtelettokseh',  31 => 'pačkahtellаhes', 295 => 'pačkahtelei', 296 => 'pačkahtellаhes', 
+                70 => 'en pačkahtelei',   71 => 'et pačkahtelei',  72 => 'ei pačkahtelei',  
+                73 => 'emmo pačkahtelei',  78 => 'etto pačkahtelei',  79 => 'ei pačkahtellаhes', 
+            
+                32 => 'pačkahtelimmos',   33 => 'pačkahtelittos',  34 => 'pačkahtelih, pačkahtelihes',  
+                35 => 'pačkahtelimmokseh',  36 => 'pačkahtelittokseh',  37 => 'pačkahteltihes', 
+                80 => 'en pačkahtelluhes',   81 => 'et pačkahtelluhes',  82 => 'ei pačkahtelluhes',  
+                83 => 'emmo pačkahtelluhes',  84 => 'etto pačkahtelluhes',  85 => 'ei pačkahteltuhes', 
+            
+                86 => 'olen pačkahtelluhes',   87 => 'olet pačkahtelluhes',  88 => 'on pačkahtelluhes',  
+                89 => 'olemmo pačkahtelluhes',  90 => 'oletto pačkahtelluhes',  91 => 'ollah pačkahteltuhes',  
+                92 => 'en ole pačkahtelluhes',  93 => 'et ole pačkahtelluhes',  94 => 'ei ole pačkahtelluhes',  95 => 'emmo ole pačkahtelluhes',  
+                96 => 'etto ole pačkahtelluhes',  97 => 'ei olla pačkahteltuhes',
+                98 => 'olin pačkahtelluhes',   99 => 'olit pačkahtelluhes', 100 => 'oli pačkahtelluhes', 
+                101 => 'olimmo pačkahtelluhes', 102 => 'olitto pačkahtelluhes', 103 => 'oldih pačkahteltuhes', 
+                104 => 'en olluh pačkahtelluhes', 105 => 'et olluh pačkahtelluhes', 107 => 'ei olluh pačkahtelluhes', 
+                108 => 'emmo olluh pačkahtelluhes', 106 => 'etto olluh pačkahtelluhes', 109 => 'ei oldu pačkahteltuhes',
+            
+                      51 => 'pačkahtelei',  52 => 'pačkahtelkahes',  
+                53 => 'pačkahtelkuammokseh',  54 => 'pačkahtelkuattokseh',  55 => 'pačkahteltahes',       
+                      50 => 'älä pačkahtelei',  74 => 'älgäh pačkahtelkahes',  
+                      75 => '',  76 => 'älgiä pačkahtelkuattokseh',  77 => 'äldähes pačkahteltahes',  
+            
+                38 => 'pačkahtelizimmos',   39 => 'pačkahtelizittos',  40 => 'pačkahtelizihes',  
+                41 => 'pačkahtelizimmokseh',  42 => 'pačkahtelizittokseh',  43 => 'pačkahteltazihes', 
+                110 => 'en pačkahtelizihes', 111 => 'et pačkahtelizihes', 112 => 'ei pačkahtelizihes', 
+                113 => 'emmo pačkahtelizihes', 114 => 'etto pačkahtelizihes', 115 => 'ei pačkahteltazihes',
+            
+                44 => 'pačkahtelluzimmos',   45 => 'pačkahtelluzittos',  46 => 'pačkahtelluzihes',  
+                47 => 'pačkahtelluzimmokseh',  48 => 'pačkahtelluzittokseh',  49 => 'pačkahteltanuzihes', 
+                116 => 'en pačkahtelluzihes', 117 => 'et pačkahtelluzihes', 118 => 'ei pačkahtelluzihes', 
+                119 => 'emmo pačkahtelluzihes', 120 => 'etto pačkahtelluzihes', 121 => 'ei pačkahteltanuzihes',
+            
+                122 => 'olizin pačkahtelluhes', 123 => 'olizit pačkahtelluhes', 124 => 'olis pačkahtelluhes', 
+                126 => 'olizimmo pačkahtelluhes', 127 => 'olizitto pačkahtelluhes', 128 => 'oldas pačkahteltuhes', 
+                129 => 'en olis pačkahtelluhes', 130 => 'et olis pačkahtelluhes', 131 => 'ei olis pačkahtelluhes', 
+                132 => 'emmo olis pačkahtelluhes', 133 => 'etto olis pačkahtelluhes', 134 => 'ei oldas pačkahteltuhes',
+            
+                135 => 'olluzin pačkahtelluhes', 125 => 'olluzit pačkahtelluhes', 136 => 'ollus pačkahtelluhes', 
+                137 => 'olluzimmo pačkahtelluhes', 138 => 'olluzitto pačkahtelluhes', 139 => 'oldanus pačkahteltuhes', 
+                140 => 'en ollus pačkahtelluhes', 141 => 'et ollus pačkahtelluhes', 142 => 'ei ollus pačkahtelluhes', 
+                143 => 'emmo ollus pačkahtelluhes', 144 => 'etto ollus pačkahtelluhes', 145 => 'ei oldanus pačkahteltuhes',
+
+                146 => 'pačkahtellemmos', 147 => 'pačkahtellettos', 148 => 'pačkahtellehes', 
+                149 => 'pačkahtellemmokseh', 150 => 'pačkahtellettokseh', 151 => 'pačkahteltanehes', 
+                152 => 'en pačkahtellei', 153 => 'et pačkahtellei', 154 => 'ei pačkahtellei', 
+                155 => 'emmo pačkahtellei', 156 => 'etto pačkahtellei', 157 => 'ei pačkahteltanehes',
+            
+                158 => 'ollen pačkahtelluhes', 159 => 'ollet pačkahtelluhes', 160 => 'ollou pačkahtelluhes', 
+                161 => 'ollemmo pačkahtelluhes', 162 => 'olletto pačkahtelluhes', 163 => 'oldaneh pačkahteltuhes', 
+                164 => 'en olle pačkahtelluhes', 165 => 'et olle pačkahtelluhes', 166 => 'ei olle pačkahtelluhes', 
+                167 => 'emmo olle pačkahtelluhes', 168 => 'etto olle pačkahtelluhes', 169 => 'ei oldane pačkahteltuhes',
+            
+                170 => 'pačkahtellakseh', 171 => '', 172 => '', 
+                173 => '', 174 => '', 175 => '', 
+                176 => '', 177 => '', 312 => '',
+            
+                178 => '', 179 => 'pačkahtelluhes', 180 => '', 181 => 'pačkahteltuhes'];
+        $this->assertEquals( $expected, $result);        
+    }
+  
+    public function testWordformsByStemsKarVerbOloRef() {
+        $template = 'pakast|uakseh (-ah/-ahes; -ih/-ihes)';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = true;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+//dd("\nname_num:".$name_num."\n");        
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+        $expected = [26 => '',   27 => '',  28 => 'pakastah, pakastahes',  29 => '',  30 => '',  31 => '', 
+//                295 => 'pakastai', 296 => '', 
+                295 => '', 296 => '', 
+                70 => '',   71 => '',  72 => 'ei pakastai',  73 => '',  78 => '',  79 => '', 
+                32 => 'pakastimmos',   33 => 'pakastittos',  34 => 'pakastih, pakastihes',  
+                35 => 'pakastimmokseh',  36 => 'pakastittokseh',  37 => '', 
+//                80 => 'en pakastannuhes',   81 => 'et pakastannuhes',  82 => 'ei pakastannuhes',  
+//                83 => 'emmo pakastannuhes',  84 => 'etto pakastannuhes',  85 => '', 
+                80 => '',   81 => '',  82 => '',  83 => '',  84 => '',  85 => '', 
+            
+//                86 => 'olen pakastannuhes',   87 => 'olet pakastannuhes',  88 => 'on pakastannuhes',  
+//                89 => 'olemmo pakastannuhes',  90 => 'oletto pakastannuhes',  91 => '',  
+//                92 => 'en ole pakastannuhes',  93 => 'et ole pakastannuhes',  94 => 'ei ole pakastannuhes',  
+//                95 => 'emmo ole pakastannuhes',  96 => 'etto ole pakastannuhes',  97 => '',
+                86 => '',   87 => '',  88 => '',  89 => '',  90 => '',  91 => '',  92 => '',  93 => '',  94 => '',  95 => '',  96 => '',  97 => '',
+            
+//                98 => 'olin pakastannuhes',   99 => 'olit pakastannuhes', 100 => 'oli pakastannuhes', 
+//                101 => 'olimmo pakastannuhes', 102 => 'olitto pakastannuhes', 103 => '', 
+//                104 => 'en olluh pakastannuhes', 105 => 'et olluh pakastannuhes', 107 => 'ei olluh pakastannuhes', 
+//                108 => 'emmo olluh pakastannuhes', 106 => 'emmo olluh pakastannuhes', 109 => '',
+                98 => '',   99 => '', 100 => '', 101 => '', 102 => '', 103 => '', 104 => '', 105 => '', 107 => '', 108 => '', 106 => '', 109 => '',
+                      51 => '',  52 => 'pakastakkahes',  53 => 'pakastakkuammokseh',  54 => 'pakastakkuattokseh',  55 => '',       
+                      50 => '',  74 => 'älgäh pakastakkahes',  75 => '',  76 => 'älgiä pakastakkuattokseh',  77 => '',  
+            
+                38 => 'pakastazimmos',   39 => 'pakastazittos',  40 => 'pakastazihes',  
+                41 => 'pakastazimmokseh',  42 => 'pakastazittokseh',  43 => '', 
+
+                110 => 'en pakastazihes', 111 => 'et pakastazihes', 112 => 'ei pakastazihes', 
+                113 => 'emmo pakastazihes', 114 => 'etto pakastazihes', 115 => '',
+
+//                44 => 'pakastannuzimmos',   45 => 'pakastannuzittos',  46 => 'pakastannuzihes',  
+//                47 => 'pakastannuzimmokseh',  48 => 'pakastannuzittokseh',  49 => '', 
+//                116 => 'en pakastannuzihes', 117 => 'et pakastannuzihes', 118 => 'ei pakastannuzihes', 
+//                119 => 'emmo  pakastannuzihes', 120 => 'etto  pakastannuzihes', 121 => '',
+                44 => '',   45 => '',  46 => '',  47 => '',  48 => '',  49 => '', 116 => '', 117 => '', 118 => '', 119 => '', 120 => '', 121 => '',
+            
+//                122 => 'olizin pakastannuhes', 123 => 'olizit pakastannuhes', 124 => 'olis pakastannuhes', 
+//                126 => 'olizimmo pakastannuhes', 127 => 'olizitto pakastannuhes', 128 => '', 
+//                129 => 'en olis pakastannuhes', 130 => 'et olis pakastannuhes', 131 => 'ei olis pakastannuhes', 
+//                132 => 'emmo olis pakastannuhes', 133 => 'etto olis pakastannuhes', 134 => '',
+                122 => '', 123 => '', 124 => '', 126 => '', 127 => '', 128 => '', 129 => '', 130 => '', 131 => '', 132 => '', 133 => '', 134 => '',
+            
+//                135 => 'olluzin pakastannuhes', 125 => 'olluzit pakastannuhes', 136 => 'ollus pakastannuhes', 
+//                137 => 'olluzimmo pakastannuhes', 138 => 'olluzitto pakastannuhes', 139 => '', 
+//                140 => 'en ollus pakastannuhes', 141 => 'et ollus pakastannuhes', 142 => 'ei ollus pakastannuhes', 
+//                143 => 'emmo ollus pakastannuhes', 144 => 'etto ollus pakastannuhes', 145 => '',
+                135 => '', 125 => '', 136 => '', 137 => '', 138 => '', 139 => '', 140 => '', 141 => '', 142 => '', 143 => '', 144 => '', 145 => '',
+            
+//                146 => 'pakastannemmos', 147 => 'pakastannettos', 148 => 'pakastannehes', 
+//                149 => 'pakastannemmokseh', 150 => 'pakastannettokseh', 151 => '', 
+//                152 => 'en pakastannei', 153 => 'et pakastannei', 154 => 'ei pakastannei', 
+//                155 => 'emmo pakastannei', 156 => 'etto pakastannei', 157 => '',
+                146 => '', 147 => '', 148 => '', 149 => '', 150 => '', 151 => '', 152 => '', 153 => '', 154 => '', 155 => '', 156 => '', 157 => '',
+            
+//                158 => 'ollen pakastannuhes', 159 => 'ollet pakastannuhes', 160 => 'ollou pakastannuhes', 
+//                161 => 'ollemmo pakastannuhes', 162 => 'olletto pakastannuhes', 163 => '', 
+//                164 => 'en olle  pakastannuhes', 165 => 'et olle  pakastannuhes', 166 => 'ei olle  pakastannuhes', 
+//                167 => 'emmo olle  pakastannuhes', 168 => 'etto olle  pakastannuhes', 169 => '',
+                158 => '', 159 => '', 160 => '', 161 => '', 162 => '', 163 => '', 164 => '', 165 => '', 166 => '', 167 => '', 168 => '', 169 => '',
+            
+                170 => 'pakastuakseh', 171 => '', 172 => '', 173 => '', 174 => '', 175 => '', 176 => '', 177 => '', 312 => '',
+//                178 => '', 179 => 'pakastannuhes', 180 => '', 181 => ''];
+                178 => '', 179 => '', 180 => '', 181 => ''];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 /*    
     public function testWordformsByStemsKarVerbOlo() {
         $template = '';
@@ -1274,7 +1422,8 @@ class GrammaticTest extends TestCase
         $pos_id = 11;
         $name_num=null;
         $dialect_id='';
-        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $is_reflexive = false;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [26 => '',   27 => '',  28 => '',  29 => '',  30 => '',  31 => '', 295 => '', 296 => '', 
                 70 => '',   71 => '',  72 => '',  73 => '',  78 => '',  79 => '', 
@@ -1284,7 +1433,10 @@ class GrammaticTest extends TestCase
                 98 => '',   99 => '', 100 => '', 101 => '', 102 => '', 103 => '', 104 => '', 105 => '', 107 => '', 108 => '', 106 => '', 109 => '',
                       51 => '',  52 => '',  53 => '',  54 => '',  55 => '',       50 => '',  74 => '',  75 => '',  76 => '',  77 => '',  
                 38 => '',   39 => '',  40 => '',  41 => '',  42 => '',  43 => '', 
-                70 => '',   71 => '',  72 => '',  73 => '',  78 => '',  79 => '',
+
+                110 => '', 111 => '', 112 => '', 
+                113 => '', 114 => '', 115 => '',
+
                 44 => '',   45 => '',  46 => '',  47 => '',  48 => '',  49 => '', 116 => '', 117 => '', 118 => '', 119 => '', 120 => '', 121 => '',
                 122 => '', 123 => '', 124 => '', 126 => '', 127 => '', 128 => '', 129 => '', 130 => '', 131 => '', 132 => '', 133 => '', 134 => '',
                 135 => '', 125 => '', 136 => '', 137 => '', 138 => '', 139 => '', 140 => '', 141 => '', 142 => '', 143 => '', 144 => '', 145 => '',

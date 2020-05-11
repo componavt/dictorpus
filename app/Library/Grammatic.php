@@ -5,6 +5,7 @@ namespace App\Library;
 use App\Library\Grammatic\KarGram;
 use App\Library\Grammatic\KarName;
 use App\Library\Grammatic\KarVerb;
+use App\Library\Grammatic\KarVerbOlo;
 use App\Library\Grammatic\VepsGram;
 use App\Library\Grammatic\VepsName;
 use App\Library\Grammatic\VepsVerb;
@@ -189,6 +190,9 @@ class Grammatic
                 return VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
             }
         }
+        if ($lang_id == 5 && $is_reflexive) {
+            return KarVerbOlo::wordformByStemsRef($stems, $gramset_id, $dialect_id, $def);
+        }
         return KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def);
     }
     
@@ -337,7 +341,7 @@ class Grammatic
         if (!$neg_wordform) {
             return '';
         }
-        return $neg_wordform->wordform. ' ';
+        return $neg_wordform->wordform;
     }
     
 /*    
@@ -424,9 +428,9 @@ class Grammatic
         foreach (preg_split("/,\s*/", $neg_list) as $neg) {
             foreach (preg_split("/[,\/]\s*/", $list) as $verb) {
                 if ($neg) {
-                    $forms[] = trim($neg).' '.$verb;
+                    $forms[] = trim($neg).' '.trim($verb);
                 } else {
-                    $forms[] = $verb;
+                    $forms[] = trim($verb);
                 }
             }
         }

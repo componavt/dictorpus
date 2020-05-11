@@ -659,26 +659,144 @@ class KarGramTest extends TestCase
                       8=>'palkat'], $num, 'palk', 'atakseh'];
         $this->assertEquals( $expected, $result);        
     }
-    
-/*    
-    public function testStemsFromTemplateVerbOloRef() {
-        $template = "";
+  
+    public function testStemsFromTemplateVerbOloRefPerguakseh() {
+        $template = "per|guakseh (-rammos, -gahes; -retähes; -gihes, -rettihes)";
         $pos_id = 11; // verb
         $num = '';
         $dialect_id = '';
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
-        $expected = [[0=>'',            
-                      1=>'', 
-                      2=>'', 
-                      3=>'', 
-                      4=>'', 
-                      5=>'', 
-                      6=>'', 
-                      7=>'', 
-                      8=>''], $num, '', ''];
+        $expected = [[0=>'perguakseh',            
+                      1=>'perra', 
+                      2=>'pergahes', 
+                      3=>'perga', 
+                      4=>'pergihes', 
+                      5=>'perri', 
+                      6=>'perretähes', 
+                      7=>'perrett', 
+                      8=>'perga'], $num, 'per', 'guakseh'];
         $this->assertEquals( $expected, $result);        
     }
-*/    
+
+    public function testStemsFromTemplateVerbOloRefPestakseh() {
+        $template = "pe|stäkseh (-zemmös, -zeh/-zehes; -stähes; -zih/-zihes, -stihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pestäkseh',            
+                      1=>'peze', 
+                      2=>'pezeh/pezehes', 
+                      3=>'peze', 
+                      4=>'pezih/pezihes', 
+                      5=>'pezi', 
+                      6=>'pestähes', 
+                      7=>'pest', 
+                      8=>'pes'], $num, 'pe', 'stäkseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testStemsFromTemplateVerbOloRefPidiakseh() {
+        $template = "pi|diäkseh (-emmös, -däh/-dähes; -etähes; -dih/-dihes, -ettihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pidiäkseh',            
+                      1=>'pie', 
+                      2=>'pidäh/pidähes', 
+                      3=>'pidä', 
+                      4=>'pidih/pidihes', 
+                      5=>'piji', 
+                      6=>'pietähes', 
+                      7=>'piett', 
+                      8=>'pidä'], $num, 'pi', 'diäkseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testStemsFromTemplateVerbOloRefPotkiekseh() {
+        $template = "potki|ekseh (-mmos, -h/-hes; -tahes; -h/-hes, -ttihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'potkiekseh',            
+                      1=>'potki', 
+                      2=>'potkih/potkihes', 
+                      3=>'potki', 
+                      4=>'potkih/potkihes', 
+                      5=>'potki', 
+                      6=>'potkitahes', 
+                      7=>'potkitt', 
+                      8=>'potki'], $num, 'potki', 'ekseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testStemsFromTemplateVerbOloRefPuassiekseh() {
+        $template = "puaš|šiekseh (-immos, -šihes; -itahes; -šihes, -ittihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'puaššiekseh',            
+                      1=>'puaši', 
+                      2=>'puaššihes', 
+                      3=>'puašši', 
+                      4=>'puaššihes', 
+                      5=>'puaši', 
+                      6=>'puašitahes', 
+                      7=>'puašitt', 
+                      8=>'puašši'], $num, 'puaš', 'šiekseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testStemsFromTemplateVerbOloRefPunuokseh() {
+        $template = "pun|uokseh (-ommos, -oh/-ohes; -otahes; -oih/-oihes, -ottihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'punuokseh',            
+                      1=>'puno', 
+                      2=>'punoh/punohes', 
+                      3=>'puno', 
+                      4=>'punoih/punoihes', 
+                      5=>'punoi', 
+                      6=>'punotahes', 
+                      7=>'punott', 
+                      8=>'puno'], $num, 'pun', 'uokseh'];
+        $this->assertEquals( $expected, $result);        
+    }
+       
+    public function testStemsFromTemplateVerbOloRefPyrgiekseh() {
+        $template = "pyr|giekseh (-rimmös, -gih/-gihes; -ritähes; -gih/-gihes, -rittihes)";
+        $pos_id = 11; // verb
+        $num = '';
+        $dialect_id = '';
+        $is_reflexive = true;
+        $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
+//dd($result);        
+        $expected = [[0=>'pyrgiekseh',            
+                      1=>'pyrri', 
+                      2=>'pyrgih/pyrgihes', 
+                      3=>'pyrgi', 
+                      4=>'pyrgih/pyrgihes', 
+                      5=>'pyrri', 
+                      6=>'pyrritähes', 
+                      7=>'pyrritt', 
+                      8=>'pyrgi'], $num, 'pyr', 'giekseh'];
+        $this->assertEquals( $expected, $result);        
+    }    
 }
