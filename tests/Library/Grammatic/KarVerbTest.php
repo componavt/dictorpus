@@ -121,4 +121,14 @@ class KarVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStem1FromStem3() {
+        $stems = ['pakasta', 'pakičče', 'puašši', 'pakkua'];
+        
+        foreach ($stems as $stem) {
+            $result[] = KarVerb::stem1FromStem3($stem);
+        }
+        
+        $expected = ['pakasta', 'pakiče', 'puaši', 'pakua'];
+        $this->assertEquals( $expected, $result);        
+    }
 }

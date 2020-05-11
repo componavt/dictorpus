@@ -23,7 +23,7 @@ class KarVerb
      * @param type $is_reflexive
      * @return string
      */
-    public static function parsePrs1Sg($wordform, $is_reflexive) {
+    public static function parsePrs1Sg($wordform, $is_reflexive=false) {
         if (!$wordform) {
             return '';
         }
@@ -40,6 +40,11 @@ class KarVerb
             }
         }
         return join('/',$out);
+    }
+    
+    public static function stem1FromStem3($stem3, $is_reflexive=false) {
+        $V="[".KarGram::vowelSet()."]";        
+        return preg_replace("/[ktpšč]{2}".$V."{1,2}/u", "$1", $stem3);
     }
     
     /**
@@ -141,7 +146,7 @@ class KarVerb
      * Для рефлексивных:
      * п.о.4 – hes (искомая форма) → Работаем с формой на hes (т.е. если 2 формы: pezih/pezihes, работаем со второй)
      * 
-     * A. если в искомой форме (п.о.4–hes) перед конечными i или Vi НЕТ kk, tt, pp, čč, šš, g, d, b, то = п.о.8
+     * A. если в искомой форме (п.о.4–hes) перед конечными i или Vi НЕТ kk, tt, pp, čč, šš, g, d, b, то = искомая форма
      * 
      * Б. если в искомой форме перед конечными i или Vi есть kk, tt, pp, čč, šš, g, d, b, то
      * 1) если в п.о.1 один слог, то изменяем VV этого слога следующим образом:
@@ -169,11 +174,7 @@ class KarVerb
         }
         for ($i=0; $i<sizeof($stems1); $i++) {
             if (!preg_match('/kk'.$sh_i.'$|tt'.$sh_i.'$|pp'.$sh_i.'$|čč'.$sh_i.'$|šš'.$sh_i.'$|ss'.$sh_i.'$|[gdb]'.$sh_i.'$/u', $stems4[$i])){ // А
-/*TODO!!!                if ($is_reflexive) {
-                    $out[]= $stem8;
-                } else {*/
                     $out[]= $stems4[$i];
-                //}
             } else {
                 if (KarGram::countSyllable($stems1[$i])==1) { // Б1
                     if (preg_match("/^(.*)ie$/u", $stems1[$i], $regs)
@@ -286,12 +287,10 @@ class KarVerb
         $stems=['', '', '', '', '', '', '', '', ''];
         $stems[0] = $base. $regs[2]; //stem0 = infinitive
         $stems[1] = self::parsePrs1Sg(preg_replace("/-/", $base, $regs[3]), $is_reflexive); // stem1
-        if (!$stems[1]) {
-            return null;
-        }                
         $stems[2] = preg_replace("/-/", $base, $regs[4]); // stem2
         $stems[3] = $is_reflexive ? self::prsStrongVocalBaseRef($stems[2])
                 : self::prsStrongVocalBase($stems[1], $stems[2]); //stem3
+        
         $stems[4] = preg_replace("/-/", $base, $regs[6]); // stem4
         $stems[6] = self::parsePrs3Pl(preg_replace("/-/", $base, $regs[5]), $is_reflexive); //stem6
         $stems[7] = self::parseImp3Pl(preg_replace("/-/", $base, $regs[7]), $is_reflexive); //stem7
@@ -339,6 +338,9 @@ class KarVerb
         $stems[2] = preg_replace("/-/", $base, $regs[3]); // stem2
         $stems[3] = $is_reflexive ? self::prsStrongVocalBaseRef($stems[2])
                 : self::prsStrongVocalBase($stems[1], $stems[2]); //stem3
+        
+        $stems[1] = self::stem1FromStem3($stems[3]);
+        
         $stems[4] = preg_replace("/-/", $base, $regs[4]); // stem4
         $stems[8] = $is_reflexive ? self::vocalStrongConsRef($stems[0], $stems[3], $stems[4])
                                     : self::vocalStrongCons($stems[0], $stems[3], $stems[7]); // stem8

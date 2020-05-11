@@ -324,6 +324,7 @@ class KarVerbOlo
             case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
                 return !$def ? Grammatic::joinMorfToBases($stems[6],'') : '';
             case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
+                return self::IndPrsConSgRef($stems[3]);
 
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., отриц. 
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., отриц. 
