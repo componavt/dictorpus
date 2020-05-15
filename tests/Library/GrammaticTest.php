@@ -1487,6 +1487,81 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testWordformsByStemsKarVerbOloPalkatakseh() {
+        $template = 'palk|atakseh (-uammos, -uahes; -atahes; -aihes, -attihes)';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = true;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+        $expected = [26 => 'palkuammos',   27 => 'palkuattos',  28 => 'palkuahes',  
+                29 => 'palkuammokseh',  30 => 'palkuattokseh',  31 => 'palkatahes', 
+                295 => 'palkai', 296 => 'palkatahes', 
+                70 => 'en palkai',   71 => 'et palkai',  72 => 'ei palkai',  
+                73 => 'emmo palkai',  78 => 'etto palkai',  79 => 'ei palkatahes', 
+            
+                32 => 'palkaimmos',   33 => 'palkaittos',  34 => 'palkaihes',  
+                35 => 'palkaimmokseh',  36 => 'palkaittokseh',  37 => 'palkattihes', 
+                80 => 'en palkannuhes',   81 => 'et palkannuhes',  82 => 'ei palkannuhes',  
+                83 => 'emmo palkannuhes',  84 => 'etto palkannuhes',  85 => 'ei palkattuhes', 
+            
+                86 => 'olen palkannuhes',   87 => 'olet palkannuhes',  88 => 'on palkannuhes',  
+                89 => 'olemmo palkannuhes',  90 => 'oletto palkannuhes',  91 => 'ollah palkattuhes',  
+                92 => 'en ole palkannuhes',  93 => 'et ole palkannuhes',  94 => 'ei ole palkannuhes',  
+                95 => 'emmo ole palkannuhes',  96 => 'etto ole palkannuhes',  97 => 'ei olla palkattuhes',
+            
+                98 => 'olin palkannuhes',   99 => 'olit palkannuhes', 100 => 'oli palkannuhes', 
+                101 => 'olimmo palkannuhes', 102 => 'olitto palkannuhes', 103 => 'oldih palkattuhes', 
+                104 => 'en olluh palkannuhes', 105 => 'et olluh palkannuhes', 107 => 'ei olluh palkannuhes', 
+                108 => 'emmo olluh palkannuhes', 106 => 'etto olluh palkannuhes', 109 => 'ei oldu palkattuhes',
+            
+                      51 => 'palkai',  52 => 'palkakkahes',  
+                53 => 'palkakkuammokseh',  54 => 'palkakkuattokseh',  55 => 'palkattahes',       
+                      50 => 'älä palkai',  74 => 'älgäh palkakkahes',  
+                75 => '',  76 => 'älgiä palkakkuattokseh',  77 => 'äldähes palkattahes',  
+            
+                38 => 'palkuazimmos',   39 => 'palkuazittos',  40 => 'palkuazihes',  
+                41 => 'palkuazimmokseh',  42 => 'palkuazittokseh',  43 => 'palkattazihes', 
+                110 => 'en palkuazihes', 111 => 'et palkuazihes', 112 => 'ei palkuazihes', 
+                113 => 'emmo palkuazihes', 114 => 'etto palkuazihes', 115 => 'ei palkattazihes',
+
+                44 => 'palkannuzimmos',   45 => 'palkannuzittos',  46 => 'palkannuzihes',  
+                47 => 'palkannuzimmokseh',  48 => 'palkannuzittokseh',  49 => 'palkatannuzihes', 
+                116 => 'en palkannuzihes', 117 => 'et palkannuzihes', 118 => 'ei palkannuzihes', 
+                119 => 'emmo palkannuzihes', 120 => 'etto palkannuzihes', 121 => 'ei palkatannuzihes',
+            
+                122 => 'olizin palkannuhes', 123 => 'olizit palkannuhes', 124 => 'olis palkannuhes', 
+                126 => 'olizimmo palkannuhes', 127 => 'olizitto palkannuhes', 128 => 'oldas palkattuhes', 
+                129 => 'en olis palkannuhes', 130 => 'et olis palkannuhes', 131 => 'ei olis palkannuhes', 
+                132 => 'emmo olis palkannuhes', 133 => 'etto olis palkannuhes', 134 => 'ei oldas palkattuhes',
+            
+                135 => 'olluzin palkannuhes', 125 => 'olluzit palkannuhes', 136 => 'ollus palkannuhes', 
+                137 => 'olluzimmo palkannuhes', 138 => 'olluzitto palkannuhes', 139 => 'oldanus palkattuhes', 
+                140 => 'en ollus palkannuhes', 141 => 'et ollus palkannuhes', 142 => 'ei ollus palkannuhes', 
+                143 => 'emmo ollus palkannuhes', 144 => 'etto ollus palkannuhes', 145 => 'ei oldanus palkattuhes',
+            
+                146 => 'palkannemmos', 147 => 'palkannettos', 148 => 'palkannehes', 
+                149 => 'palkannemmokseh', 150 => 'palkannettokseh', 151 => 'palkatannehes', 
+                152 => 'en palkannei', 153 => 'et palkannei', 154 => 'ei palkannei', 
+                155 => 'emmo palkannei', 156 => 'etto palkannei', 157 => 'ei palkatannehes',
+            
+                158 => 'ollen palkannuhes', 159 => 'ollet palkannuhes', 160 => 'ollou palkannuhes', 
+                161 => 'ollemmo palkannuhes', 162 => 'olletto palkannuhes', 163 => 'oldaneh palkattuhes', 
+                164 => 'en olle palkannuhes', 165 => 'et olle palkannuhes', 166 => 'ei olle palkannuhes', 
+                167 => 'emmo olle palkannuhes', 168 => 'etto olle palkannuhes', 169 => 'ei oldane palkattuhes',
+            
+                170 => 'palkatakseh', 171 => '', 172 => '', 
+                173 => '', 174 => '', 175 => '', 
+                176 => '', 177 => '', 312 => '',
+            
+                178 => '', 179 => 'palkannuhes', 180 => '', 181 => 'palkattuhes'];
+//        $slice = 110;
+//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
+        $this->assertEquals( $expected, $result);        
+    }
+    
 /*    
     public function testWordformsByStemsKarVerbOlo() {
         $template = '';
@@ -1496,7 +1571,7 @@ class GrammaticTest extends TestCase
         $dialect_id='';
         $is_reflexive = false;
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
-        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
         $expected = [26 => '',   27 => '',  28 => '',  
                 29 => '',  30 => '',  31 => '', 295 => '', 296 => '', 
                 70 => '',   71 => '',  72 => '',  
