@@ -1339,7 +1339,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
   
-    public function testWordformsByStemsKarVerbOloRef() {
+    public function testWordformsByStemsKarVerbOloRefDef() {
         $template = 'pakast|uakseh (-ah/-ahes; -ih/-ihes)';
         $lang_id = 5;
         $pos_id = 11;
@@ -1353,69 +1353,213 @@ class GrammaticTest extends TestCase
                 295 => 'pakastai', 296 => '', 
 //                295 => '', 296 => '', 
                 70 => '',   71 => '',  72 => 'ei pakastai',  73 => '',  78 => '',  79 => '', 
-                32 => 'pakastimmos',   33 => 'pakastittos',  34 => 'pakastih, pakastihes',  
-                35 => 'pakastimmokseh',  36 => 'pakastittokseh',  37 => '', 
-                80 => 'en pakastannuhes',   81 => 'et pakastannuhes',  82 => 'ei pakastannuhes',  
-                83 => 'emmo pakastannuhes',  84 => 'etto pakastannuhes',  85 => '', 
+            
+                32 => '',   33 => '',  34 => 'pakastih, pakastihes',  
+                35 => '',  36 => '',  37 => '', 
+                80 => '',   81 => '',  82 => 'ei pakastannuhes',  
+                83 => '',  84 => '',  85 => '', 
 //                80 => '',   81 => '',  82 => '',  83 => '',  84 => '',  85 => '', 
             
-                86 => 'olen pakastannuhes',   87 => 'olet pakastannuhes',  88 => 'on pakastannuhes',  
-                89 => 'olemmo pakastannuhes',  90 => 'oletto pakastannuhes',  91 => '',  
-                92 => 'en ole pakastannuhes',  93 => 'et ole pakastannuhes',  94 => 'ei ole pakastannuhes',  
-                95 => 'emmo ole pakastannuhes',  96 => 'etto ole pakastannuhes',  97 => '',
+                86 => '',   87 => '',  88 => 'on pakastannuhes',  
+                89 => '',  90 => '',  91 => '',  
+                92 => '',  93 => '',  94 => 'ei ole pakastannuhes',  
+                95 => '',  96 => '',  97 => '',
 //                86 => '',   87 => '',  88 => '',  89 => '',  90 => '',  91 => '',  92 => '',  93 => '',  94 => '',  95 => '',  96 => '',  97 => '',
             
-                98 => 'olin pakastannuhes',   99 => 'olit pakastannuhes', 100 => 'oli pakastannuhes', 
-                101 => 'olimmo pakastannuhes', 102 => 'olitto pakastannuhes', 103 => '', 
-                104 => 'en olluh pakastannuhes', 105 => 'et olluh pakastannuhes', 107 => 'ei olluh pakastannuhes', 
-                108 => 'emmo olluh pakastannuhes', 106 => 'etto olluh pakastannuhes', 109 => '',
+                98 => '',   99 => '', 100 => 'oli pakastannuhes', 
+                101 => '', 102 => '', 103 => '', 
+                104 => '', 105 => '', 107 => 'ei olluh pakastannuhes', 
+                108 => '', 106 => '', 109 => '',
 //                98 => '',   99 => '', 100 => '', 101 => '', 102 => '', 103 => '', 104 => '', 105 => '', 107 => '', 108 => '', 106 => '', 109 => '',
-                      51 => '',  52 => 'pakastakkahes',  53 => 'pakastakkuammokseh',  54 => 'pakastakkuattokseh',  55 => '',       
-                      50 => '',  74 => 'älgäh pakastakkahes',  75 => '',  76 => 'älgiä pakastakkuattokseh',  77 => '',  
+                      51 => '',  52 => 'pakastakkahes',  53 => '',  54 => '',  55 => '',       
+                      50 => '',  74 => 'älgäh pakastakkahes',  75 => '',  76 => '',  77 => '',  
             
-                38 => 'pakastazimmos',   39 => 'pakastazittos',  40 => 'pakastazihes',  
-                41 => 'pakastazimmokseh',  42 => 'pakastazittokseh',  43 => '', 
+                38 => '',   39 => '',  40 => 'pakastazihes',  
+                41 => '',  42 => '',  43 => '', 
+                110 => '', 111 => '', 112 => 'ei pakastazihes', 
+                113 => '', 114 => '', 115 => '',
 
-                110 => 'en pakastazihes', 111 => 'et pakastazihes', 112 => 'ei pakastazihes', 
-                113 => 'emmo pakastazihes', 114 => 'etto pakastazihes', 115 => '',
-
-                44 => 'pakastannuzimmos',   45 => 'pakastannuzittos',  46 => 'pakastannuzihes',  
-                47 => 'pakastannuzimmokseh',  48 => 'pakastannuzittokseh',  49 => '', 
-                116 => 'en pakastannuzihes', 117 => 'et pakastannuzihes', 118 => 'ei pakastannuzihes', 
-                119 => 'emmo pakastannuzihes', 120 => 'etto pakastannuzihes', 121 => '',
+                44 => '',   45 => '',  46 => 'pakastannuzihes',  
+                47 => '',  48 => '',  49 => '', 
+                116 => '', 117 => '', 118 => 'ei pakastannuzihes', 
+                119 => '', 120 => '', 121 => '',
 //                44 => '',   45 => '',  46 => '',  47 => '',  48 => '',  49 => '', 116 => '', 117 => '', 118 => '', 119 => '', 120 => '', 121 => '',
             
-                122 => 'olizin pakastannuhes', 123 => 'olizit pakastannuhes', 124 => 'olis pakastannuhes', 
-                126 => 'olizimmo pakastannuhes', 127 => 'olizitto pakastannuhes', 128 => '', 
-                129 => 'en olis pakastannuhes', 130 => 'et olis pakastannuhes', 131 => 'ei olis pakastannuhes', 
-                132 => 'emmo olis pakastannuhes', 133 => 'etto olis pakastannuhes', 134 => '',
+                122 => '', 123 => '', 124 => 'olis pakastannuhes', 
+                126 => '', 127 => '', 128 => '', 
+                129 => '', 130 => '', 131 => 'ei olis pakastannuhes', 
+                132 => '', 133 => '', 134 => '',
 //                122 => '', 123 => '', 124 => '', 126 => '', 127 => '', 128 => '', 129 => '', 130 => '', 131 => '', 132 => '', 133 => '', 134 => '',
             
-                135 => 'olluzin pakastannuhes', 125 => 'olluzit pakastannuhes', 136 => 'ollus pakastannuhes', 
-                137 => 'olluzimmo pakastannuhes', 138 => 'olluzitto pakastannuhes', 139 => '', 
-                140 => 'en ollus pakastannuhes', 141 => 'et ollus pakastannuhes', 142 => 'ei ollus pakastannuhes', 
-                143 => 'emmo ollus pakastannuhes', 144 => 'etto ollus pakastannuhes', 145 => '',
+                135 => '', 125 => '', 136 => 'ollus pakastannuhes', 
+                137 => '', 138 => '', 139 => '', 
+                140 => '', 141 => '', 142 => 'ei ollus pakastannuhes', 
+                143 => '', 144 => '', 145 => '',
 //                135 => '', 125 => '', 136 => '', 137 => '', 138 => '', 139 => '', 140 => '', 141 => '', 142 => '', 143 => '', 144 => '', 145 => '',
             
-                146 => 'pakastannemmos', 147 => 'pakastannettos', 148 => 'pakastannehes', 
-                149 => 'pakastannemmokseh', 150 => 'pakastannettokseh', 151 => '', 
-                152 => 'en pakastannei', 153 => 'et pakastannei', 154 => 'ei pakastannei', 
-                155 => 'emmo pakastannei', 156 => 'etto pakastannei', 157 => '',
+                146 => '', 147 => '', 148 => 'pakastannehes', 
+                149 => '', 150 => '', 151 => '', 
+                152 => '', 153 => '', 154 => 'ei pakastannei', 
+                155 => '', 156 => '', 157 => '',
 //                146 => '', 147 => '', 148 => '', 149 => '', 150 => '', 151 => '', 152 => '', 153 => '', 154 => '', 155 => '', 156 => '', 157 => '',
             
-                158 => 'ollen pakastannuhes', 159 => 'ollet pakastannuhes', 160 => 'ollou pakastannuhes', 
-                161 => 'ollemmo pakastannuhes', 162 => 'olletto pakastannuhes', 163 => '', 
-                164 => 'en olle pakastannuhes', 165 => 'et olle pakastannuhes', 166 => 'ei olle pakastannuhes', 
-                167 => 'emmo olle pakastannuhes', 168 => 'etto olle pakastannuhes', 169 => '',
+                158 => '', 159 => '', 160 => 'ollou pakastannuhes', 
+                161 => '', 162 => '', 163 => '', 
+                164 => '', 165 => '', 166 => 'ei olle pakastannuhes', 
+                167 => '', 168 => '', 169 => '',
 //                158 => '', 159 => '', 160 => '', 161 => '', 162 => '', 163 => '', 164 => '', 165 => '', 166 => '', 167 => '', 168 => '', 169 => '',
             
                 170 => 'pakastuakseh', 171 => '', 172 => '', 173 => '', 174 => '', 175 => '', 176 => '', 177 => '', 312 => '',
                 178 => '', 179 => 'pakastannuhes', 180 => '', 181 => ''];
-//                178 => '', 179 => '', 180 => '', 181 => ''];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsByStemsKarVerbOloBluaznittua() {
+        $template = 'bluaznit|tua (-tau; -ti)';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = false;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [26 => '',   27 => '',  28 => 'bluaznittau',  
+                29 => '',  30 => '',  31 => '', 295 => 'bluaznita', 296 => '', 
+                70 => '',   71 => '',  72 => 'ei bluaznita',  
+                73 => '',  78 => '',  79 => '', 
+            
+                32 => '',   33 => '',  34 => 'bluaznitti',  
+                35 => '',  36 => '',  37 => '', 
+                80 => '',   81 => '',  82 => 'ei bluaznitannuh',  
+                83 => '',  84 => '',  85 => '', 
+            
+                86 => '',   87 => '',  88 => 'on bluaznitannuh',  
+                89 => '',  90 => '',  91 => '',  
+                92 => '',  93 => '',  94 => 'ei ole bluaznitannuh',  
+                95 => '',  96 => '',  97 => '',
+            
+                98 => '',   99 => '', 100 => 'oli bluaznitannuh', 
+                101 => '', 102 => '', 103 => '', 
+                104 => '', 105 => '', 107 => 'ei olluh bluaznitannuh', 
+                108 => '', 106 => '', 109 => '',
+            
+                      51 => '',  52 => 'bluaznittakkah',  
+                53 => '',  54 => '',  55 => '',       
+                      50 => '',  74 => 'älgäh bluaznittakkah',  
+                75 => '',  76 => '',  77 => '',  
+            
+                38 => '',   39 => '',  40 => 'bluaznittas',  
+                41 => '',  42 => '',  43 => '', 
+                110 => '', 111 => '', 112 => 'ei bluaznittas', 
+                113 => '', 114 => '', 115 => '',
+
+                44 => '',   45 => '',  46 => 'bluaznitannus',  
+                47 => '',  48 => '',  49 => '', 
+                116 => '', 117 => '', 118 => 'ei bluaznitannus', 
+                119 => '', 120 => '', 121 => '',
+            
+                122 => '', 123 => '', 124 => 'olis bluaznitannuh', 
+                126 => '', 127 => '', 128 => '', 
+                129 => '', 130 => '', 131 => 'ei olis bluaznitannuh', 
+                132 => '', 133 => '', 134 => '',
+            
+                135 => '', 125 => '', 136 => 'ollus bluaznitannuh', 
+                137 => '', 138 => '', 139 => '', 
+                140 => '', 141 => '', 142 => 'ei ollus bluaznitannuh', 
+                143 => '', 144 => '', 145 => '',
+            
+                146 => '', 147 => '', 148 => 'bluaznitannou', 
+                149 => '', 150 => '', 151 => '', 
+                152 => '', 153 => '', 154 => 'ei bluaznitanne', 
+                155 => '', 156 => '', 157 => '',
+            
+                158 => '', 159 => '', 160 => 'ollou bluaznitannuh', 
+                161 => '', 162 => '', 163 => '', 
+                164 => '', 165 => '', 166 => 'ei olle bluaznitannuh', 
+                167 => '', 168 => '', 169 => '',
+            
+                170 => 'bluaznittua', 171 => 'bluaznittajes', 172 => 'bluaznittajen', 
+                173 => 'bluaznittamal', 174 => 'bluaznittamah', 175 => 'bluaznittamas', 
+                176 => 'bluaznittamaspäi', 177 => 'bluaznittamattah', 312 => 'bluaznittamua',
+            
+//                178 => 'bluaznitai, bluaznittaju', 179 => 'bluaznitannuh', 180 => '', 181 => ''];
+                178 => 'bluaznittai, bluaznittaju', 179 => 'bluaznitannuh', 180 => '', 181 => ''];
         $this->assertEquals( $expected, $result);        
     }
     
 /*    
+    public function testWordformsByStemsKarVerbOlo() {
+        $template = '';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = false;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [26 => '',   27 => '',  28 => '',  
+                29 => '',  30 => '',  31 => '', 295 => '', 296 => '', 
+                70 => '',   71 => '',  72 => '',  
+                73 => '',  78 => '',  79 => '', 
+            
+                32 => '',   33 => '',  34 => '',  
+                35 => '',  36 => '',  37 => '', 
+                80 => '',   81 => '',  82 => '',  
+                83 => '',  84 => '',  85 => '', 
+            
+                86 => '',   87 => '',  88 => '',  
+                89 => '',  90 => '',  91 => '',  
+                92 => '',  93 => '',  94 => '',  
+                95 => '',  96 => '',  97 => '',
+            
+                98 => '',   99 => '', 100 => '', 
+                101 => '', 102 => '', 103 => '', 
+                104 => '', 105 => '', 107 => '', 
+                108 => '', 106 => '', 109 => '',
+            
+                      51 => '',  52 => '',  
+                53 => '',  54 => '',  55 => '',       
+                      50 => '',  74 => '',  
+                75 => '',  76 => '',  77 => '',  
+            
+                38 => '',   39 => '',  40 => '',  
+                41 => '',  42 => '',  43 => '', 
+                110 => '', 111 => '', 112 => '', 
+                113 => '', 114 => '', 115 => '',
+
+                44 => '',   45 => '',  46 => '',  
+                47 => '',  48 => '',  49 => '', 
+                116 => '', 117 => '', 118 => '', 
+                119 => '', 120 => '', 121 => '',
+            
+                122 => '', 123 => '', 124 => '', 
+                126 => '', 127 => '', 128 => '', 
+                129 => '', 130 => '', 131 => '', 
+                132 => '', 133 => '', 134 => '',
+            
+                135 => '', 125 => '', 136 => '', 
+                137 => '', 138 => '', 139 => '', 
+                140 => '', 141 => '', 142 => '', 
+                143 => '', 144 => '', 145 => '',
+            
+                146 => '', 147 => '', 148 => '', 
+                149 => '', 150 => '', 151 => '', 
+                152 => '', 153 => '', 154 => '', 
+                155 => '', 156 => '', 157 => '',
+            
+                158 => '', 159 => '', 160 => '', 
+                161 => '', 162 => '', 163 => '', 
+                164 => '', 165 => '', 166 => '', 
+                167 => '', 168 => '', 169 => '',
+            
+                170 => '', 171 => '', 172 => '', 
+                173 => '', 174 => '', 175 => '', 
+                176 => '', 177 => '', 312 => '',
+            
+                178 => '', 179 => '', 180 => '', 181 => ''];
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testWordformsByStemsKarVerbOlo() {
         $template = '';
         $lang_id = 5;

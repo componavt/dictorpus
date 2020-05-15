@@ -115,11 +115,11 @@ class KarVerbOlo
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., отриц. 
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., отриц. 
-                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2active($stems[1], $stems[8])) : '';
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2active($stems[0], $stems[1], $stems[8], $def)) : '';
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., отриц. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2active($stems[1], $stems[8]));
+                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2active($stems[0], $stems[1], $stems[8], $def));
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., отриц. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2passive($stems[7]));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2passive($stems[7])) : '';
 
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., пол. 
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
@@ -141,19 +141,19 @@ class KarVerbOlo
             case 159: // 120. потенциал, перфект, 2 л., ед.ч., пол. 
             case 161: // 122. потенциал, перфект, 1 л., мн.ч., пол. 
             case 162: // 123. потенциал, перфект, 2 л., мн.ч., пол. 
-                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2active($stems[1], $stems[8])) : '';
+                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2active($stems[0], $stems[1], $stems[8], $def)) : '';
             case 88: // 27. индикатив, перфект, 3 л., ед.ч., пол. 
             case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., пол. 
             case 124: // 85. кондиционал, перфект, 3 л., ед.ч., пол. 
             case 136: // 97. кондиционал, плюсквамперфект, 3 л., ед.ч., пол. 
             case 160: // 121. потенциал, перфект, 3 л., ед.ч., пол. 
-                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2active($stems[1], $stems[8]));
+                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2active($stems[0], $stems[1], $stems[8], $def));
             case 91: // 30. индикатив, перфект, 3 л., мн.ч., пол. 
             case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., пол. 
             case 128: // 88. кондиционал, перфект, 3 л., мн.ч., пол. 
             case 139: // 100. кондиционал, плюсквамперфект, 3 л., мн.ч., пол. 
             case 163: // 124. потенциал, перфект, 3 л., мн.ч., пол. 
-                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2passive($stems[7]));
+                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2passive($stems[7])) : '';
 
             case 92: // 31. индикатив, перфект, 1 л., ед.ч., отриц. 
             case 93: // 32. индикатив, перфект, 2 л., ед.ч., отриц. 
@@ -161,7 +161,7 @@ class KarVerbOlo
             case 96: // 35. индикатив, перфект, 2 л., мн.ч., отриц. 
             case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., отриц. 
             case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., отриц. 
-            case 107: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., отриц. 
+            case 106: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., отриц. 
             case 108: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., отриц. 
             case 129: // 89. кондиционал, перфект, 1 л., ед.ч., отриц. 
             case 130: // 90. кондиционал, перфект, 2 л., ед.ч., отриц. 
@@ -175,19 +175,19 @@ class KarVerbOlo
             case 165: // 126. потенциал, перфект, 2 л., ед.ч., отр. 
             case 167: // 128. потенциал, перфект, 1 л., мн.ч., отр. 
             case 168: // 129. потенциал, перфект, 2 л., мн.ч., отр. 
-                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2active($stems[1], $stems[8])) : '';
+                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2active($stems[0], $stems[1], $stems[8], $def)) : '';
             case 94: // 33. индикатив, перфект, 3 л., ед.ч., отриц. 
-            case 106: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., отриц. 
+            case 107: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., отриц. 
             case 131: // 91. кондиционал, перфект, 3 л., ед.ч., отриц. 
             case 142: // 103. кондиционал, плюсквамперфект, 3 л., ед.ч., отриц. 
             case 166: // 127. потенциал, перфект, 3 л., ед.ч., отр. 
-                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2active($stems[1], $stems[8]));
+                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2active($stems[0], $stems[1], $stems[8], $def));
             case 97: // 36. индикатив, перфект, 3 л., мн.ч., отриц. 
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., отриц. 
             case 134: // 94. кондиционал, перфект, 3 л., мн.ч., отриц. 
             case 145: // 106. кондиционал, плюсквамперфект, 3 л., мн.ч., отриц. 
             case 169: // 130. потенциал, перфект, 3 л., мн.ч., отр. 
-                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2passive($stems[7]));
+                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2passive($stems[7])) : '';
 
             case 52: // 50. императив, 3 л., ед.ч., пол 
                 return Grammatic::joinMorfToBases(self::impBaseSg($stems[8]), KarGram::garmVowel($stems[8],'a').'h');
@@ -196,7 +196,7 @@ class KarVerbOlo
             case 54: // 52. императив, 2 л., мн.ч., пол 
                 return !$def && $stems[8] ? self::impBasePl($stems[8]). ', '. Grammatic::joinMorfToBases(self::impBasePl($stems[8]), 'tt'.KarGram::garmVowel($stems[8],'o')) : '';
             case 55: // 53. императив, 3 л., мн.ч., пол 
-                return Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a').'hes');
+                return !$def ? Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a').'hes') : '';
 
             case 74: // 55. императив, 3 л., ед.ч., отр. 
                 return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::impBaseSg($stems[8]),KarGram::garmVowel($stems[8],'a').'h'));
@@ -205,7 +205,7 @@ class KarVerbOlo
             case 76: // 57. императив, 2 л., мн.ч., отр. 
                 return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::impBasePl($stems[8])): '';
             case 77: // 58. императив, 3 л., мн.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a').'hes'));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a').'hes')) : '';
 
             case 38: // 59. кондиционал, презенс, 1 л., ед.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 'zin') : '';
@@ -218,7 +218,7 @@ class KarVerbOlo
             case 42: // 63. кондиционал, презенс, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 'zitt'. KarGram::garmVowel($stems[4],'o')) : '';
             case 43: // 64. кондиционал, презенс, 3 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a'). 's');
+                return !$def ? Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a'). 's') : '';
 
             case 110: // 70. кондиционал, презенс, 1 л., ед.ч., - 
             case 111: // 71. кондиционал, презенс, 2 л., ед.ч., -
@@ -228,53 +228,53 @@ class KarVerbOlo
             case 112: // 72. кондиционал, презенс, 3 л., ед.ч., -
                 return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 's'));
             case 115: // 79. кондиционал, презенс, 3 л., мн.ч., -
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a'). 's'));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'a'). 's')) : '';
 
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8]), 'zin') : '';
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def), 'zin') : '';
             case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8]), 'zit') : '';
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def), 'zit') : '';
             case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8]), 's');
+                return Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def), 's');
             case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8]), 'zimm'. KarGram::garmVowel($stems[8],'o')) : '';
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def), 'zimm'. KarGram::garmVowel($stems[8],'o')) : '';
             case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8]), 'zitt'.KarGram::garmVowel($stems[8],'o')) : '';
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def), 'zitt'.KarGram::garmVowel($stems[8],'o')) : '';
             case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., пол. 
-                return self::condImp3Pl($stems[7]);
+                return !$def ? self::condImp3Pl($stems[7]) : '';
 
             case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 117: // 78. кондиционал, имперфект, 2 л., ед.ч., отр. 
             case 119: // 80. кондиционал, имперфект, 1 л., мн.ч., отр. 
             case 120: // 81. кондиционал, имперфект, 2 л., мн.ч., отр. 
-                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8]), 's')) : '';
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def), 's')) : '';
             case 118: // 79. кондиционал, имперфект, 3 л., ед.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8]), 's'));
+                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def), 's'));
             case 121: // 82. кондиционал, имперфект, 3 л., мн.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::condImp3Pl($stems[7]));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::condImp3Pl($stems[7])) : '';
                 
             case 146: // 107. потенциал, презенс, 1 л., ед.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), 'n') : '';
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def), 'n') : '';
             case 147: // 108. потенциал, презенс, 2 л., ед.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), 't') : '';
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def), 't') : '';
             case 148: // 109. потенциал, презенс, 3 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::activeBase($stems[1], $stems[8]), KarGram::garmVowel($stems[5], 'ou'));
+                return self::potenPrs3Sg($stems[0], $stems[1], $stems[8], $def);
             case 149: // 110. потенциал, презенс, 1 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), 'mm'. KarGram::garmVowel($stems[5], 'o')) : '';
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def), 'mm'. KarGram::garmVowel($stems[5], 'o')) : '';
             case 150: // 111. потенциал, презенс, 2 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), 'tt'. KarGram::garmVowel($stems[5], 'o')) : '';
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def), 'tt'. KarGram::garmVowel($stems[5], 'o')) : '';
             case 151: // 112. потенциал, презенс, 3 л., мн.ч., пол. 
-                return self::potenPrs3Pl($stems[7]);
+                return !$def ? self::potenPrs3Pl($stems[7]) : '';
 
             case 152: // 113. потенциал, презенс, 1 л., ед.ч., отр. 
             case 153: // 114. потенциал, презенс, 2 л., ед.ч., отр. 
             case 155: // 116. потенциал, презенс, 1 л., мн.ч., отр. 
             case 156: // 117. потенциал, презенс, 2 л., мн.ч., отр. 
-                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::potenPrsBase($stems[1], $stems[8])) : '';
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::potenPrsBase($stems[0], $stems[1], $stems[8]), $def) : '';
             case 154: // 115. потенциал, презенс, 3 л., ед.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::potenPrsBase($stems[1], $stems[8]));
+                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::potenPrsBase($stems[0], $stems[1], $stems[8], $def));
             case 157: // 118. потенциал, презенс, 3 л., мн.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::potenPrs3PlNeg($stems[7]));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::potenPrs3PlNeg($stems[7])) : '';
                 
             case 170: // 131. I инфинитив 
                 return $stems[0];
@@ -298,11 +298,11 @@ class KarVerbOlo
             case 178: // 140. актив, 1-е причастие 
                 return self::partic1active($stems[3]);
             case 179: // 141. актив, 2-е причастие 
-                return self::partic2active($stems[1], $stems[8]);
+                return self::partic2active($stems[0], $stems[1], $stems[8], $def);
             case 180: // 143. пассив, 1-е причастие 
-                return Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7], 'avu'));
+                return !$def ? Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7], 'avu')) : '';
             case 181: // 144. пассив, 2-е причастие 
-                return self::partic2passive($stems[7]);
+                return !$def ? self::partic2passive($stems[7]) : '';
         }
         return '';
     }
@@ -337,15 +337,15 @@ class KarVerbOlo
                 return !$def ? Grammatic::interLists(Grammatic::negativeForm(79, $lang_id), $stems[6]) : '';
                 
             case 32: // 13. индикатив, имперфект, 1 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'mmos'));
+                return !$def ? Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'mmos')) : '';
             case 33: // 14. индикатив, имперфект, 2 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'ttos'));
+                return !$def ? Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'ttos')) : '';
             case 34: // 15. индикатив, имперфект, 3 л., ед.ч., пол. 
                 return Grammatic::joinMorfToBases($stems[4], '');
             case 35: // 16. индикатив, имперфект, 1 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'mmokseh'));
+                return !$def ? Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'mmokseh')) : '';
             case 36: // 17. индикатив, имперфект, 2 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'ttokseh'));
+                return !$def ? Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[5],'ttokseh')): '';
             case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[7], 'ihes') : '';
                 
@@ -358,37 +358,39 @@ class KarVerbOlo
             case 81: // 20. индикатив, имперфект, 2 л., ед.ч., отриц. 
             case 83: // 22. индикатив, имперфект, 1 л., мн.ч., отриц. 
             case 84: // 23. индикатив, имперфект, 2 л., мн.ч., отриц. 
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2active($stems[0], $stems[1], $stems[8], $def, true)) : '';
             case 82: // 21. индикатив, имперфект, 3 л., ед.ч., отриц. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2active($stems[1], $stems[8], true));
+                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2active($stems[0], $stems[1], $stems[8], $def, true));
             case 85: // 24. индикатив, имперфект, 3 л., мн.ч., отриц. 
                 return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::partic2passive($stems[7], true)) : '';
 
             case 86: // 25. индикатив, перфект, 1 л., ед.ч., пол. 
             case 87: // 26. индикатив, перфект, 2 л., ед.ч., пол. 
-            case 88: // 27. индикатив, перфект, 3 л., ед.ч., пол. 
             case 89: // 28. индикатив, перфект, 1 л., мн.ч., пол. 
             case 90: // 29. индикатив, перфект, 2 л., мн.ч., пол.                 
             case 98: // 37. индикатив, плюсквамперфект, 1 л., ед.ч., пол. 
             case 99: // 38. индикатив, плюсквамперфект, 2 л., ед.ч., пол. 
-            case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., пол. 
             case 101: // 40. индикатив, плюсквамперфект, 1 л., мн.ч., пол. 
             case 102: // 41. индикатив, плюсквамперфект, 2 л., мн.ч., пол.                 
             case 122: // 83. кондиционал, перфект, 1 л., ед.ч., пол. 
             case 123: // 84. кондиционал, перфект, 2 л., ед.ч., пол. 
-            case 124: // 85. кондиционал, перфект, 3 л., ед.ч., пол. 
             case 126: // 86. кондиционал, перфект, 1 л., мн.ч., пол. 
             case 127: // 87. кондиционал, перфект, 2 л., мн.ч., пол.                 
             case 135: // 95. кондиционал, плюсквамперфект, 1 л., ед.ч., пол. 
             case 125: // 96. кондиционал, плюсквамперфект, 2 л., ед.ч., пол. 
-            case 136: // 97. кондиционал, плюсквамперфект, 3 л., ед.ч., пол. 
             case 137: // 98. кондиционал, плюсквамперфект, 1 л., мн.ч., пол. 
             case 138: // 99. кондиционал, плюсквамперфект, 2 л., мн.ч., пол.                 
             case 158: // 119. потенциал, перфект, 1 л., ед.ч., пол. 
             case 159: // 120. потенциал, перфект, 2 л., ед.ч., пол. 
-            case 160: // 121. потенциал, перфект, 3 л., ед.ч., пол. 
             case 161: // 122. потенциал, перфект, 1 л., мн.ч., пол. 
             case 162: // 123. потенциал, перфект, 2 л., мн.ч., пол. 
-                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2active($stems[1], $stems[8], true));
+                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2active($stems[0], $stems[1], $stems[8], $def, true)): '';
+            case 88: // 27. индикатив, перфект, 3 л., ед.ч., пол. 
+            case 100: // 39. индикатив, плюсквамперфект, 3 л., ед.ч., пол. 
+            case 124: // 85. кондиционал, перфект, 3 л., ед.ч., пол. 
+            case 136: // 97. кондиционал, плюсквамперфект, 3 л., ед.ч., пол. 
+            case 160: // 121. потенциал, перфект, 3 л., ед.ч., пол. 
+                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id), self::partic2active($stems[0], $stems[1], $stems[8], $def, true));
             case 91: // 30. индикатив, перфект, 3 л., мн.ч., пол.                 
             case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., пол. 
             case 128: // 88. кондиционал, перфект, 3 л., мн.ч., пол.                 
@@ -398,30 +400,31 @@ class KarVerbOlo
 
             case 92: // 31. индикатив, перфект, 1 л., ед.ч., отриц. 
             case 93: // 32. индикатив, перфект, 2 л., ед.ч., отриц. 
-            case 94: // 33. индикатив, перфект, 3 л., ед.ч., отриц. 
             case 95: // 34. индикатив, перфект, 1 л., мн.ч., отриц. 
             case 96: // 35. индикатив, перфект, 2 л., мн.ч., отриц.                 
             case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., отриц. 
             case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., отриц. 
-            case 107: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., отриц. 
             case 108: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., отриц. 
             case 106: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., отриц.                 
             case 129: // 89. кондиционал, перфект, 1 л., ед.ч., отриц. 
             case 130: // 90. кондиционал, перфект, 2 л., ед.ч., отриц. 
-            case 131: // 91. кондиционал, перфект, 3 л., ед.ч., отриц. 
             case 132: // 92. кондиционал, перфект, 1 л., мн.ч., отриц. 
             case 133: // 93. кондиционал, перфект, 2 л., мн.ч., отриц.                 
             case 140: // 101. кондиционал, плюсквамперфект, 1 л., ед.ч., отриц. 
             case 141: // 102. кондиционал, плюсквамперфект, 2 л., ед.ч., отриц. 
-            case 142: // 103. кондиционал, плюсквамперфект, 3 л., ед.ч., отриц. 
             case 143: // 104. кондиционал, плюсквамперфект, 1 л., мн.ч., отриц. 
             case 144: // 105. кондиционал, плюсквамперфект, 2 л., мн.ч., отриц.                 
             case 164: // 125. потенциал, перфект, 1 л., ед.ч., отр. 
             case 165: // 126. потенциал, перфект, 2 л., ед.ч., отр. 
-            case 166: // 127. потенциал, перфект, 3 л., ед.ч., отр. 
             case 167: // 128. потенциал, перфект, 1 л., мн.ч., отр. 
             case 168: // 129. потенциал, перфект, 2 л., мн.ч., отр. 
-                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2active($stems[1], $stems[8], true));
+                return !$def ? Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2active($stems[0], $stems[1], $stems[8], $def, true)): '';
+            case 94: // 33. индикатив, перфект, 3 л., ед.ч., отриц. 
+            case 107: // 45. индикатив, плюсквамперфект, 3 л., ед.ч., отриц. 
+            case 131: // 91. кондиционал, перфект, 3 л., ед.ч., отриц. 
+            case 142: // 103. кондиционал, плюсквамперфект, 3 л., ед.ч., отриц. 
+            case 166: // 127. потенциал, перфект, 3 л., ед.ч., отр. 
+                return Grammatic::interLists(self::auxVerb($gramset_id, $dialect_id, '-'), self::partic2active($stems[0], $stems[1], $stems[8], $def, true));
             case 97: // 36. индикатив, перфект, 3 л., мн.ч., отриц.                 
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., отриц.                 
             case 134: // 94. кондиционал, перфект, 3 л., мн.ч., отриц.
@@ -434,9 +437,9 @@ class KarVerbOlo
             case 52: // 50. императив, 3 л., ед.ч., пол 
                 return Grammatic::joinMorfToBases(self::impBaseSg($stems[8]), KarGram::garmVowel($stems[8],'ahes'));
             case 53: // 51. императив, 1 л., мн.ч., пол 
-                return Grammatic::joinMorfToBases(self::impBasePl($stems[8]), KarGram::garmVowel($stems[8],'mmokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::impBasePl($stems[8]), KarGram::garmVowel($stems[8],'mmokseh')): '';
             case 54: // 52. императив, 2 л., мн.ч., пол 
-                return  Grammatic::joinMorfToBases(self::impBasePl($stems[8]), KarGram::garmVowel($stems[8],'ttokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::impBasePl($stems[8]), KarGram::garmVowel($stems[8],'ttokseh')): '';
             case 55: // 53. императив, 3 л., мн.ч., пол 
                 return !$def ? Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'ahes')): '';
 
@@ -447,73 +450,78 @@ class KarVerbOlo
             case 75: // 56. императив, 1 л., мн.ч., отр. 
                 return '';
             case 76: // 57. императив, 2 л., мн.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id),  Grammatic::joinMorfToBases(self::impBasePl($stems[8]), KarGram::garmVowel($stems[8],'ttokseh')));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id),  Grammatic::joinMorfToBases(self::impBasePl($stems[8]), KarGram::garmVowel($stems[8],'ttokseh'))) : '';
             case 77: // 58. императив, 3 л., мн.ч., отр. 
                 return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'ahes'))): '';
 
             case 38: // 59. кондиционал, презенс, 1 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zimmos'));
+                return !$def ? Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zimmos')) : '';
             case 39: // 60. кондиционал, презенс, 2 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zittos'));
+                return !$def ? Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zittos')) : '';
             case 40: // 61. кондиционал, презенс, 3 л., ед.ч., пол. 
                 return Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 'zihes');
             case 41: // 62. кондиционал, презенс, 1 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zimmokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zimmokseh')) : '';
             case 42: // 63. кондиционал, презенс, 2 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zittokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), KarGram::garmVowel($stems[3],'zittokseh')): '';
             case 43: // 64. кондиционал, презенс, 3 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'azihes')): '';
 
             case 110: // 70. кондиционал, презенс, 1 л., ед.ч., - 
             case 111: // 71. кондиционал, презенс, 2 л., ед.ч., -
-            case 112: // 72. кондиционал, презенс, 3 л., ед.ч., -
             case 113: // 73. кондиционал, презенс, 1 л., мн.ч., -
             case 114: // 78. кондиционал, презенс, 2 л., мн.ч., -
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 'zihes')): '';
+            case 112: // 72. кондиционал, презенс, 3 л., ед.ч., -
+                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 'zihes'));
+            case 112: // 72. кондиционал, презенс, 3 л., ед.ч., -
                 return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 'zihes'));
             case 115: // 79. кондиционал, презенс, 3 л., мн.ч., -
                 return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[7],'azihes'))): '';
 
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8], true), KarGram::garmVowel($stems[1],'mmos'));
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1],'mmos')): '';
             case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8], true), KarGram::garmVowel($stems[1],'ttos'));
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1],'ttos')): '';
             case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8], true), 'hes');
+                return Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def, true), 'hes');
             case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8], true), KarGram::garmVowel($stems[1],'mmokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1],'mmokseh')): '';
             case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8], true), KarGram::garmVowel($stems[1],'ttokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1],'ttokseh')): '';
             case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., пол. 
                 return !$def ? self::condImp3Pl($stems[7], true) : '';
 
             case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 117: // 78. кондиционал, имперфект, 2 л., ед.ч., отр. 
-            case 118: // 79. кондиционал, имперфект, 3 л., ед.ч., отр. 
             case 119: // 80. кондиционал, имперфект, 1 л., мн.ч., отр. 
             case 120: // 81. кондиционал, имперфект, 2 л., мн.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condImpBase($stems[1], $stems[8], true), 'hes'));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def, true), 'hes')): '';
+            case 118: // 79. кондиционал, имперфект, 3 л., ед.ч., отр. 
+                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $def, true), 'hes'));
             case 121: // 82. кондиционал, имперфект, 3 л., мн.ч., отр. 
                 return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::condImp3Pl($stems[7], true)) : '';
                 
             case 146: // 107. потенциал, презенс, 1 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), KarGram::garmVowel($stems[1], 'mmos'));
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1], 'mmos')) : '';
             case 147: // 108. потенциал, презенс, 2 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), KarGram::garmVowel($stems[1], 'ttos'));
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1], 'ttos')): '';
             case 148: // 109. потенциал, презенс, 3 л., ед.ч., пол. 
-                return Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), 'hes');
+                return Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def, true), 'hes');
             case 149: // 110. потенциал, презенс, 1 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), KarGram::garmVowel($stems[1], 'mmokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1], 'mmokseh')): '';
             case 150: // 111. потенциал, презенс, 2 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8]), KarGram::garmVowel($stems[1], 'ttokseh'));
+                return !$def ? Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def, true), KarGram::garmVowel($stems[1], 'ttokseh')): '';
             case 151: // 112. потенциал, презенс, 3 л., мн.ч., пол. 
                 return self::potenPrs3Pl($stems[7], true);
 
             case 152: // 113. потенциал, презенс, 1 л., ед.ч., отр. 
             case 153: // 114. потенциал, презенс, 2 л., ед.ч., отр. 
-            case 154: // 115. потенциал, презенс, 3 л., ед.ч., отр. 
             case 155: // 116. потенциал, презенс, 1 л., мн.ч., отр. 
             case 156: // 117. потенциал, презенс, 2 л., мн.ч., отр. 
-                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::potenPrsBase($stems[1], $stems[8], true), 'i'));
+                return !$def ? Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def, true), 'i')) : '';
+            case 154: // 115. потенциал, презенс, 3 л., ед.ч., отр. 
+                return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), Grammatic::joinMorfToBases(self::potenPrsBase($stems[0], $stems[1], $stems[8], $def, true), 'i'));
             case 157: // 118. потенциал, презенс, 3 л., мн.ч., отр. 
                 return Grammatic::interLists(Grammatic::negativeForm($gramset_id, $lang_id), self::potenPrs3Pl($stems[7], true));
                 
@@ -521,7 +529,7 @@ class KarVerbOlo
                 return $stems[0];
                 
             case 179: // 141. актив, 2-е причастие 
-                return self::partic2active($stems[1], $stems[8], true);
+                return self::partic2active($stems[0], $stems[1], $stems[8], false, true);
             case 181: // 144. пассив, 2-е причастие 
                 return self::partic2passive($stems[7], true);
         }
@@ -664,12 +672,67 @@ class KarVerbOlo
     }
 
     /**
+     * Base of active 2 participle, conditional imperfect, potential presence
+     * FOR IMPERSONAL VERBS
+     * 
+     * 1) если с.ф. заканчивается на VV и в ней 2 слога, то:
+     * - с.ф. – конечные ua + an
+     * - с.ф. – конечные iä + än
+     * - с.ф. – конечные uo + un
+     * - с.ф. – конечные yö + yn
+     * 2) если с.ф. заканчивается на VV и в ней >2 слогов, то:
+     * - с.ф. – конечные ua + ann
+     * - с.ф. – конечные iä + änn
+     * - с.ф. – конечные [uy][öo] + [uy]nn
+     * При этом в с.ф tt > t.
+     * 3) если с.ф. заканчивается на СV, то:
+     * - с.ф. – конечный l[lt][aä] + ll
+     * - с.ф. – конечный [tj][aä] + nn
+     * 
+     * @param string $stem1
+     * @param string $stem8
+     */
+    public static function activeBaseDef($stem0, $is_reflexive=false) {
+        if (!$stem0) {
+            return '';
+        }
+        if ($is_reflexive) {
+            $stem0 = preg_replace('/kseh$/', '', $stem0);
+        }
+//dd($stem0);        
+        $C="[".KarGram::consSet()."]";
+        $V="[".KarGram::vowelSet()."]";
+        if (preg_match("/^(.+)(".$V.$V.")$/u", $stem0, $regs)) {
+            if (KarGram::countSyllable($stem0)==2) {
+                $n = 'n';
+            } else {
+                $n = 'nn';
+                $regs[1] = preg_replace("/tt$/", 't', $regs[1]);
+            }
+            if ($regs[2]=='ua') {
+                return $regs[1].'a'.$n;
+            } elseif ($regs[2]=='iä') { 
+                return $regs[1].'ä'.$n;
+            } elseif ($regs[2]=='uo') { 
+                return $regs[1].'u'.$n;
+            } elseif ($regs[2]=='yö') { 
+                return $regs[1].'y'.$n;
+            }
+        } elseif (preg_match("/^(.+l)[lt][aä]$/u", $stem0)) {
+            return $regs[1].'l';
+        } elseif (preg_match("/^(.+)[tj][aä]$/u", $stem0)) {
+            return $regs[1].'nn';
+        }
+    }
+    /**
      * 141. актив, 2-е причастие
      * @param string $stem1
      * @param string $stem8
      */
-    public static function partic2active($stem1, $stem8, $is_reflexive=false) {
-        return Grammatic::joinMorfToBases(self::activeBase($stem1,$stem8), KarGram::garmVowel($stem8, !$is_reflexive ? 'uh' : 'uhes'));
+    public static function partic2active($stem0, $stem1, $stem8, $def=false, $is_reflexive=false) {
+        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
+        $garm_u = !$def ? KarGram::garmVowel($stem1, 'u') : KarGram::garmVowel($stem0, 'u');
+        return Grammatic::joinMorfToBases($active_base, $garm_u. (!$is_reflexive ? 'h' : 'hes'));
     }
     
     /**
@@ -741,9 +804,10 @@ class KarVerbOlo
      * @param string $stem1
      * @param string $stem8
      */
-    public static function condImpBase($stem1,$stem8, $is_reflexive=false) {
-        return Grammatic::joinMorfToBases(self::activeBase($stem1,$stem8), 
-                KarGram::garmVowel($stem8, !$is_reflexive ? 'u' : 'uzi'));  
+    public static function condImpBase($stem0, $stem1,$stem8, $def=false, $is_reflexive=false) {
+        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
+        $garm_u = !$def ? KarGram::garmVowel($stem8, 'u') : KarGram::garmVowel($stem0, 'u');
+        return Grammatic::joinMorfToBases($active_base, $garm_u. (!$is_reflexive ? '' : 'zi'));  
     }
 
     public static function condPrsBase($stem3) {
@@ -778,8 +842,14 @@ class KarVerbOlo
         return Grammatic::joinMorfToBases(self::base3PlFrom7($stem7), KarGram::garmVowel($stem7,'u'.(!$is_reflexive ? 's' : 'zihes')));                
     }
 
-    public static function potenPrsBase($stem1,$stem8) {
-        return Grammatic::joinMorfToBases(self::activeBase($stem1,$stem8), 'e');                
+    public static function potenPrsBase($stem0, $stem1, $stem8, $def=false, $is_reflexive=false) {
+        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
+        return Grammatic::joinMorfToBases($active_base, 'e');                
+    }
+    
+    public static function potenPrs3Sg($stem0, $stem1,  $stem8, $def=false, $is_reflexive=false) {
+        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
+        return Grammatic::joinMorfToBases($active_base, KarGram::garmVowel($stem8, 'ou'));
     }
 
     public static function potenPrs3Pl($stem7, $is_reflexive=false) {
@@ -793,8 +863,8 @@ class KarVerbOlo
     /**
      * Infinitive II base
      * 
-     * A. если с.ф. заканчивается на ha или hä, то h[aä] > je
-     * Б. если с.ф. заканчивается на Сa или Cä (кроме ha / hä), то конечные a/ä > e 
+     * A. если с.ф. заканчивается на ha/hä, то h[aä] > je
+     * Б. если с.ф. заканчивается на Сa/Cä (кроме ha/hä), то конечные a/ä > e 
      * В. если с.ф. заканчивается на VV, то = п.о.3+ je,
      *       при этом в п.о.3 конечный e > i
      * 

@@ -608,7 +608,7 @@ class KarGramTest extends TestCase
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
         $expected = [[0=>'pakastuakseh',            
-                      1=>'', 
+                      1=>'pakasta', 
                       2=>'pakastah/pakastahes', 
                       3=>'pakasta', 
                       4=>'pakastih/pakastihes', 

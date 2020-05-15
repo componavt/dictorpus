@@ -45,7 +45,7 @@ class KarVerbOloTest extends TestCase
             'paikat', 'puhket', 'pahet', 'pakit', 'vedä', 
             'kuada', 'jaga', 'jiä', 'näh'];
         for ($i=0; $i<sizeof($stems8); $i++) {
-            $result[$i] = KarVerbOlo::partic2active($stems1[$i], $stems8[$i]);
+            $result[$i] = KarVerbOlo::partic2active(null, $stems1[$i], $stems8[$i], null, null);
         }
         $expected = ['peittynyh', 'pengonuh', 'pidänyh', 'polgenuh', 'eččinyh', 
             'pabaitannuh', 'palanuh', 'puinnuh', 'juonnuh', 'suannuh', 
@@ -54,7 +54,30 @@ class KarVerbOloTest extends TestCase
             'kuadanuh', 'jaganuh', 'jiännyh', 'nähnyh'];
         $this->assertEquals( $expected, $result);        
     }
-    
+
+    public function testPartic2activeRef() {
+        $stems1 = ['pačkahtele', 'pačkahta', 'pahoittele', 'pakiče', 'palkua', 
+                   'perra', 'peze', 'pie', 'potki', 'puaši', 'puno', 'pyrri'];
+        $stems8 = ['pačkahtel', 'pačkahta', 'pahoitel', 'pakit', 'palkat', 
+                   'perga', 'pes', 'pidä', 'potki', 'puašši', 'puno', 'pyrgi'];
+        for ($i=0; $i<sizeof($stems8); $i++) {
+            $result[$i] = KarVerbOlo::partic2active(null, $stems1[$i], $stems8[$i], null, true);
+        }
+        $expected = ['pačkahtelluhes', 'pačkahtannuhes', 'pahoitelluhes', 
+            'pakinnuhes', 'palkannuhes', 'perganuhes', 'pessyhes', 'pidänyhes', 
+            'potkinuhes', 'puaššinuhes', 'punonuhes', 'pyrginyhes'];
+        $this->assertEquals( $expected, $result);        
+    }
+        
+    public function testPartic2activeRefDef() {
+        $stems0 = ['pakastuakseh'];
+        for ($i=0; $i<sizeof($stems0); $i++) {
+            $result[$i] = KarVerbOlo::partic2active($stems0[$i], null, null, true, true);
+        }
+        $expected = ['pakastannuhes'];
+        $this->assertEquals( $expected, $result);        
+    }
+        
     public function testImpBaseSg() {
         $stems8 = ['peitty', 'pengo', 'pidä', 'polge', 'ečči', 
             'pabaitta', 'pala', 'pui', 'juo', 'sua', 
@@ -84,7 +107,7 @@ class KarVerbOloTest extends TestCase
             'paikat', 'puhket', 'pahet', 'pakit', 'vedä', 
             'kuada', 'jaga', 'jiä', 'näh'];
         for ($i=0; $i<sizeof($stems8); $i++) {
-            $result[$i] = KarVerbOlo::condImpBase($stems1[$i], $stems8[$i]);
+            $result[$i] = KarVerbOlo::condImpBase(null, $stems1[$i], $stems8[$i], null, null);
         }
         $expected = ['peittyny', 'pengonu', 'pidäny', 'polgenu', 'eččiny', 
             'pabaitannu', 'palanu', 'puinnu', 'juonnu', 'suannu', 
