@@ -77,4 +77,12 @@ class Str
               
         return $url_args;
     }
+    
+    public static function reverse($str){
+        $reverse = '';
+        for ($i = mb_strlen($str); $i>=0; $i--) {
+            $reverse .= mb_substr($str, $i, 1);
+        }
+        return $reverse;
+    }   
 }

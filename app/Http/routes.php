@@ -193,7 +193,7 @@ Route::group(
         Route::get('experiments/search_by_analog/write_winners', 'Library\Experiments\SearchByAnalogController@writeWinners');
 
         Route::get('experiments/vowel_gradation/', 'Library\Experiments\VowelGradationController@index');
-        Route::get('experiments/vowel_gradation/nom_gen_part/{num}', 'Library\Experiments\VowelGradationController@nomGenPart');
+        Route::get('experiments/vowel_gradation/nom_gen_part/{num}/{pos_code}/{sl}/{part_gr}', 'Library\Experiments\VowelGradationController@nomGenPart');
         
         Route::get('service', 'Library\ServiceController@index');
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');

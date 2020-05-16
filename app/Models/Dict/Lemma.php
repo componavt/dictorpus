@@ -387,11 +387,12 @@ class Lemma extends Model
     
     public function reverse(){
         $str = $this->lemma;
-        $reverse = '';
+        return Str::reverse($str);
+/*        $reverse = '';
         for ($i = mb_strlen($str); $i>=0; $i--) {
             $reverse .= mb_substr($str, $i, 1);
         }
-        return $reverse;
+        return $reverse;*/
     }   
     
     public function remove() {

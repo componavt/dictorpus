@@ -7,8 +7,10 @@
 
 @section('body')
 <h2>Поиск закономерностей в чередовании гласных</h2>
-<p>Словоформы имен (существительные и прилагательные) ливвиковского младописьменного варианта, которые
-    в форме номинатива ед. заканчиваются на {{$num==1 ? 'u или a' : 'y или ä'}}, при этом в форме генитива ед. заканчиваются на {{$num==1 ? 'a' : 'ä'}}n</p>
+<p><b>{{$sl}}</b>-сложные <b>{{$pos_name}}</b> ливвиковского младописьменного варианта, которые
+            в форме номинатива ед. заканчиваются на <b>{{$num==1 ? 'u или a' : 'y или ä'}}</b>, при этом в форме генитива ед. заканчиваются на <b>{{$num==1 ? 'a' : 'ä'}}n</b>,
+            a <b>{{$part_gr_name}}</b>
+</p>
 
 <table class="table-bordered">
     <tr>
@@ -17,16 +19,13 @@
         <th>генитив ед.ч.</th>
         <th>партитив мн.ч.</th>
         
-        @foreach ($words as $pos_name => $pos_words) 
-        <tr><td colspan="4" style="text-align:center; font-weight: bold">{{$pos_name}}</td></tr>
-            @foreach ($pos_words as $lemma_id => $lemma)
-            <tr>
-                <td>{{$count++}}</td>
-                <td><a href="/dict/lemma/{{$lemma_id}}">{{$lemma['nom']}}</a></td>
-                <td>{{$lemma['gen']}}</td>
-                <td>{{$lemma['part']}}</td>
-            </tr>
-            @endforeach
+        @foreach ($words as $lemma_id => $lemma)
+        <tr style="text-align: right">
+            <td>{{$count++}}</td>
+            <td><a href="/dict/lemma/{{$lemma_id}}">{{$lemma['nom']}}</a></td>
+            <td>{{$lemma['gen']}}</td>
+            <td>{{$lemma['part']}}</td>
+        </tr>
         @endforeach
     </tr>
 </table>
