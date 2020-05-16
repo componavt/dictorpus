@@ -631,6 +631,7 @@ class KarVerbOlo
         $V="[".KarGram::vowelSet()."]";
         $stem3=preg_replace("/".$V."(".$V.")$/u", "$1", $stem3);
         return Grammatic::joinMorfToBases($stem3, 'i');
+//        return Grammatic::joinMorfToBases($stem3, 'i'). ', '. joinMorfToBases($stem3, 'ihes');
     }
 
     /**

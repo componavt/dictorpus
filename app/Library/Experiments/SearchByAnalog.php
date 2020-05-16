@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library;
+namespace App\Library\Experiments;
 
 use DB;
 use Storage;
@@ -12,7 +12,7 @@ use App\Library\Str;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\LemmaWordform;
 
-class Experiment
+class SearchByAnalog
 {
     public static function writePosGramset($table_name, $property_name, $search_lang, $wordform, $property_id) {
         if ($property_name=='pos_id' && $property_id == 14) {
@@ -651,7 +651,7 @@ print "<p>$s_wordform, $str, ".$wordform_obj->pos_id.", ".$wordform_obj->gramset
             list($search_pos,$pos_val) = self::valuationPosGramsetsByAffix(
                     $match_wordforms, 'pos_id', $wordform_obj->pos_id);
             if ($pos_val>0) {
-                list($search_gramsets,$gram_val)=Experiment::valuationPosGramsetsByAffix(
+                list($search_gramsets,$gram_val)=SearchByAnalog::valuationPosGramsetsByAffix(
                     $match_wordforms, 'gramset_id', $wordform_obj->gramset_id);
             } else {
                 //$search_gramsets = null;

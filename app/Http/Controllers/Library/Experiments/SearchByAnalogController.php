@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Library;
+namespace App\Http\Controllers\Library\Experiments;
 
 use DB;
 use Illuminate\Http\Request;
@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 use Arrays;
 
-use App\Library\Experiment;
+use App\Library\Experiments\SearchByAnalog;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
@@ -19,7 +19,7 @@ use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
-class ExperimentsController extends Controller
+class SearchByAnalogController extends Controller
 {
      /**
      * Instantiate a new new controller instance.
@@ -37,23 +37,23 @@ class ExperimentsController extends Controller
         $totals = [];
         foreach ([1,4] as $l) {
             $langs[$l] = Lang::getNameById($l);
-            $total_pos = Experiment::totalFill('search_pos',$l);
+            $total_pos = SearchByAnalog::totalFill('search_pos',$l);
             $totals[$l]['total_in_pos'] = number_format($total_pos, 0, ',', ' ');
-            $totals[$l]['eval_pos_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l, $total_pos), 2);
-            $totals[$l]['evals_pos_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l, $total_pos, 'eval_ends'), 2);
-            $totals[$l]['pos_win_proc'] = round(Experiment::evaluationCompletedInProcents('search_pos',$l, $total_pos, 'win_end'), 2);
+            $totals[$l]['eval_pos_compl_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_pos',$l, $total_pos), 2);
+            $totals[$l]['evals_pos_compl_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_pos',$l, $total_pos, 'eval_ends'), 2);
+            $totals[$l]['pos_win_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_pos',$l, $total_pos, 'win_end'), 2);
             
-            $total_gramset = Experiment::totalFill('search_gramset',$l);
+            $total_gramset = SearchByAnalog::totalFill('search_gramset',$l);
             $totals[$l]['total_in_gramset'] = number_format($total_gramset, 0, ',', ' ');
-            $totals[$l]['eval_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_end'), 2);
-            $totals[$l]['evals_gramset_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_ends'), 2);
-            $totals[$l]['eval_gramset_aff_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_aff'), 2);
-            $totals[$l]['eval_gramset_affs_compl_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_affs'), 2);
-            $totals[$l]['gramset_win_end_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'win_end'), 2);
-            $totals[$l]['win_aff_proc'] = round(Experiment::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'win_aff'), 2);
+            $totals[$l]['eval_gramset_compl_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_end'), 2);
+            $totals[$l]['evals_gramset_compl_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_ends'), 2);
+            $totals[$l]['eval_gramset_aff_compl_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_aff'), 2);
+            $totals[$l]['eval_gramset_affs_compl_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'eval_affs'), 2);
+            $totals[$l]['gramset_win_end_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'win_end'), 2);
+            $totals[$l]['win_aff_proc'] = round(SearchByAnalog::evaluationCompletedInProcents('search_gramset',$l, $total_gramset, 'win_aff'), 2);
         }
         
-        return view('experiments/index', compact('langs', 'totals'));
+        return view('experiments/search_by_analog/index', compact('langs', 'totals'));
     }    
     /**
      * Fill data [wordform, pos ID] in table search_pos
@@ -79,7 +79,7 @@ class ExperimentsController extends Controller
         
         foreach ($lemmas as $lemma) {
 print "<P>lemma: ".$lemma->lemma.', '.$lemma->pos_id;
-            $lemma_writed = Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $lemma->lemma, $lemma->pos_id);
+            $lemma_writed = SearchByAnalog::writePosGramset($table_name, 'pos_id', $search_lang, $lemma->lemma, $lemma->pos_id);
             $count += $lemma_writed;
 print ", $lemma_writed, $count</p>";
         }
@@ -108,7 +108,7 @@ print ", $lemma_writed, $count</p>";
             } else {
                 foreach ($wordforms as $wordform) {
         print "<P>wordform: ".$wordform->wordform.', '.$wordform->pos_id;
-                    $wordform_writed = Experiment::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $wordform->pos_id);
+                    $wordform_writed = SearchByAnalog::writePosGramset($table_name, 'pos_id', $search_lang, $wordform->wordform, $wordform->pos_id);
                     $count += $wordform_writed;
     print ", $wordform_writed, $count</p>";
                 }
@@ -153,7 +153,7 @@ print '$count records are writed.';
             } else {
                 foreach ($wordforms as $wordform) {
 print "<P>wordform: ".$wordform->wordform.', '.$wordform->gramset_id;
-                    $wordform_writed = Experiment::writePosGramset($table_name, 'gramset_id', $search_lang, $wordform->wordform, $wordform->gramset_id);
+                    $wordform_writed = SearchByAnalog::writePosGramset($table_name, 'gramset_id', $search_lang, $wordform->wordform, $wordform->gramset_id);
                     $count += $wordform_writed;
 print ", $wordform_writed, $count</p>";
                 }
@@ -174,7 +174,7 @@ print ", $wordform_writed, $count</p>";
         
         foreach ($lemmas as $lemma) {
 print "<P>lemma: ".$lemma->lemma.', '.$lemma->pos_id;
-            $lemma_writed = Experiment::writePosGramset($table_name, 'gramset_id', $search_lang, $lemma->lemma, NULL);
+            $lemma_writed = SearchByAnalog::writePosGramset($table_name, 'gramset_id', $search_lang, $lemma->lemma, NULL);
             $count += $lemma_writed;
 print ", $lemma_writed, $count</p>";
         }
@@ -208,9 +208,9 @@ print "$count records are created.";
             if ($wordforms) {
                 foreach ($wordforms as $wordform) {
                     if ($is_all) {
-                        Experiment::evaluateSearchPosGramsetByAllEndings($search_lang, $table_name, $property, $wordform);
+                        SearchByAnalog::evaluateSearchPosGramsetByAllEndings($search_lang, $table_name, $property, $wordform);
                     } else {
-                        Experiment::evaluateSearchPosGramset($search_lang, $table_name, $property, $wordform);
+                        SearchByAnalog::evaluateSearchPosGramset($search_lang, $table_name, $property, $wordform);
                     }
                 }
             } else {
@@ -240,9 +240,9 @@ print "$count records are created.";
             if ($wordforms) {
                 foreach ($wordforms as $wordform) {
                     if ($is_all) {
-                        Experiment::evaluateSearchGramsetByAllAffixes($wordform, $search_lang);                        
+                        SearchByAnalog::evaluateSearchGramsetByAllAffixes($wordform, $search_lang);                        
                     } else {
-                        Experiment::evaluateSearchGramsetByAffix($wordform, $search_lang);
+                        SearchByAnalog::evaluateSearchGramsetByAffix($wordform, $search_lang);
                     }
                 }
             } else {
@@ -271,7 +271,7 @@ print "$count records are created.";
 //dd($wordforms);            
             if ($wordforms) {
                 foreach ($wordforms as $wordform) {
-                    Experiment::writeWinners($search_lang, $table_name, $property, $wordform, $type);
+                    SearchByAnalog::writeWinners($search_lang, $table_name, $property, $wordform, $type);
                 }
             } else {
                 $is_all_checked = true;
@@ -294,7 +294,7 @@ print "$count records are created.";
         $filename .= '.txt';
             
         Storage::disk('public')->put($filename, ''); 
-        $shift_list = Experiment::createShiftErrors($search_lang, $table_name, $property_id, $all_errors);
+        $shift_list = SearchByAnalog::createShiftErrors($search_lang, $table_name, $property_id, $all_errors);
 //dd($shift_list);        
         foreach ($shift_list as $p1 =>$p_info) {
             foreach ($p_info as $p2 => $count) {
@@ -338,9 +338,9 @@ print 'done.';
             
             $file_with_data .= '.txt';
             $filename .= '_'.$min_limit.'.dot';
-            list($node_list, $edge_list) = Experiment::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names, $total_limit);
+            list($node_list, $edge_list) = SearchByAnalog::readShiftErrorsForDot($search_lang, $file_with_data, $table_name, $property_id, $min_limit, $p_names, $total_limit);
 //dd($node_list, $edge_list);            
-            Experiment::writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster, $property);
+            SearchByAnalog::writeShiftErrorsToDot($filename, $node_list, $edge_list, $with_claster, $property);
         }
 print 'done.';        
 }
@@ -352,14 +352,14 @@ print 'done.';
         $table_name = 'search_'.$property;
         $color_names = [1=>'red', 4=>'blue'];
         
-        $results[0] = Experiment::resultsSearchAllLangs($langs, $table_name, $color_names);
+        $results[0] = SearchByAnalog::resultsSearchAllLangs($langs, $table_name, $color_names);
         if ($property == 'gramset') {
-            $results[1] = Experiment::resultsSearchAllLangs($langs, $table_name, $color_names, 'eval_aff');
+            $results[1] = SearchByAnalog::resultsSearchAllLangs($langs, $table_name, $color_names, 'eval_aff');
             
         }
 //print "<pre>";
 //        dd($results[0]);        
-        return view('experiments.results_search_all',
+        return view('experiments.search_by_analog.results_search_all',
                     compact('property', 'results'));
     }
     
@@ -385,20 +385,20 @@ print 'done.';
         $color_names = ['red', 'blue', 'green', 'orange', 'violet', 'black'];
         $list_limit = 6;
         
-        $results[0] = Experiment::resultsSearch($search_lang, $table_name);
-        $results[6] = Experiment::resultsSearchByPOS($search_lang, $table_name, $p_names, $color_names, $list_limit);
-/*        $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
+        $results[0] = SearchByAnalog::resultsSearch($search_lang, $table_name);
+        $results[6] = SearchByAnalog::resultsSearchByPOS($search_lang, $table_name, $p_names, $color_names, $list_limit);
+/*        $results[5] = SearchByAnalog::resultsSearch($search_lang, $table_name, 'eval_ends');
         
-        $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'pos_id', $p_names);
+        $results[2] = SearchByAnalog::lenEndDistribution($search_lang, $table_name, 'pos_id', $p_names);
         
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
         if (Storage::disk('public')->exists($filename)) {
-            $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
+            $results[3]['list'] = SearchByAnalog::readShiftErrors($filename, $p_names);
             $results[3]['limit'] = 6;
         }
 */        
-        return view('experiments.results_search',
+        return view('experiments.search_by_analog.results_search',
                     compact('search_lang_name', 'property', 'results'));
     }
     
@@ -413,20 +413,20 @@ print 'done.';
         $p_names = Gramset::getList(0);
         $limit = 9;
         
-        $results[0] = Experiment::resultsSearch($search_lang, $table_name);
-        $results[5] = Experiment::resultsSearch($search_lang, $table_name, 'eval_ends');
-        $results[1] = Experiment::resultsSearch($search_lang, $table_name, 'eval_aff');
-        $results[4] = Experiment::resultsSearch($search_lang, $table_name, 'eval_affs');
+        $results[0] = SearchByAnalog::resultsSearch($search_lang, $table_name);
+        $results[5] = SearchByAnalog::resultsSearch($search_lang, $table_name, 'eval_ends');
+        $results[1] = SearchByAnalog::resultsSearch($search_lang, $table_name, 'eval_aff');
+        $results[4] = SearchByAnalog::resultsSearch($search_lang, $table_name, 'eval_affs');
             
-        $results[2] = Experiment::lenEndDistribution($search_lang, $table_name, 'gramset_id', $p_names, $limit);
+        $results[2] = SearchByAnalog::lenEndDistribution($search_lang, $table_name, 'gramset_id', $p_names, $limit);
         
         $dir_name = "export/error_shift/";
         $filename = $dir_name.$property.'-'.$search_lang.'.txt';
         if (Storage::disk('public')->exists($filename)) {
-            $results[3]['list'] = Experiment::readShiftErrors($filename, $p_names);
+            $results[3]['list'] = SearchByAnalog::readShiftErrors($filename, $p_names);
             $results[3]['limit'] = $limit;
         }
-        return view('experiments.results_search',
+        return view('experiments.search_by_analog.results_search',
                     compact('search_lang_name', 'property', 'results'));
     }
     
@@ -452,7 +452,7 @@ print 'done.';
                    ->select('wordform', DB::raw($property_id.' as prop'), DB::raw($tale.' as tale'), DB::raw('win_'.$type.' as winner'))
                    ->get();
 
-        return view('experiments.error_list',
+        return view('experiments.search_by_analog.error_list',
                     compact('search_lang', 'search_lang_name', 'property', 'type', 'wordforms'));
     }
     
@@ -468,7 +468,7 @@ print 'done.';
                    ->where('wordform', 'like', $word)
                    ->get();
         
-        return view('experiments.check_word',
+        return view('experiments.search_by_analog.check_word',
                     compact('wordforms', 'property', 'property_id', 'search_lang', 'table_name'));
     }
 }

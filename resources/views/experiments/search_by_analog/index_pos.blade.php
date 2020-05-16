@@ -86,5 +86,5 @@
     
     <p>Проверить результат</p>
     @foreach ($langs as $lang_id => $lang_name)
-        @include('experiments.word_check_form',['property'=>'pos', 'search_lang'=>$lang_id, 'submit_value'=>$lang_name])
+        @include('experiments.search_by_analog.word_check_form',['property'=>'pos', 'search_lang'=>$lang_id, 'submit_value'=>$lang_name])
     @endforeach

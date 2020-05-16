@@ -1204,3 +1204,5 @@ select count(*) from lemmas where created_at>'2020-02-29' and lang_id=6;
 -- Но только 2 тыс. слов до этого не имели разметки вообще.
 
 -- php artisan make:test Library\Grammatic\KarVerbOloTest
+
+-- php artisan make:controller Library\Experiments\VowelGradationController

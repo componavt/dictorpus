@@ -4,10 +4,10 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use App\Library\Experiment;
+use App\Library\Experiments\SearchByAnalog;
 
 // ./vendor/bin/phpunit tests/Library/ExperimentTest
-class ExperimentTest extends TestCase
+class SearchByAnalogTest extends TestCase
 {
     /**
      * A basic test example.
@@ -26,8 +26,8 @@ class ExperimentTest extends TestCase
                   ->get();
         $expected = $result = [];
         foreach ($wordforms as $wordform) {
-            $expected[] = Experiment::searchPosGramsetByWord($lang_id, $wordform->wordform, $property);
-            $result[] = Experiment::searchPosGramsetByWordWithWList($lang_id, $wordform->wordform, $property);
+            $expected[] = SearchByAnalog::searchPosGramsetByWord($lang_id, $wordform->wordform, $property);
+            $result[] = SearchByAnalog::searchPosGramsetByWordWithWList($lang_id, $wordform->wordform, $property);
         }
         $this->assertEquals($expected, $result);        
     }
@@ -44,8 +44,8 @@ class ExperimentTest extends TestCase
         $expected = $result = [];
         foreach ($wordforms as $wordform) {
 print  "\n".$wordform->wordform."\n";           
-            $expected[] = Experiment::searchGramsetByAffixWithWList($wordform->wordform, $lang_id);
-            $result[] = Experiment::searchGramsetByAffix($wordform->wordform, $lang_id);
+            $expected[] = SearchByAnalog::searchGramsetByAffixWithWList($wordform->wordform, $lang_id);
+            $result[] = SearchByAnalog::searchGramsetByAffix($wordform->wordform, $lang_id);
         }
         $this->assertEquals($expected, $result);        
     }
@@ -230,7 +230,7 @@ print  "\n".$wordform->wordform."\n";
                       287 => "indicative,\n2nd,\npl\n1",
                       294 => "imperative,\n3rd,\npl\n1",
                       284 => "indicative,\n2nd,\nsg\n1"]];
-        $result = Experiment::groupGramsetNodeList($node_list);
+        $result = SearchByAnalog::groupGramsetNodeList($node_list);
         $this->assertEquals($expected, $result);        
     }  
     

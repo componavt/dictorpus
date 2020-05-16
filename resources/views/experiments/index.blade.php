@@ -5,14 +5,6 @@
 @endsection
 
 @section('body')
-<H2>Поиск по аналогии</H2>
-<div class="row">
-    <div class="col-sm-6">
-        @include('experiments.index_pos')
-    </div>
-    
-    <div class="col-sm-6">
-        @include('experiments.index_gramset')
-    </div>
-</div>
+<p><a href="/experiments/search_by_analog">Поиск по аналогии</a></p>
+<p><a href="/experiments/vowel_gradation">Поиск закономерностей в чередовании гласных</a></p>
 @endsection

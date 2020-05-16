@@ -13,8 +13,8 @@
         <p>
             по конечным буквосочетаниям<br>
             ending: <b>{{$wordform->ending}}</b><br>
-            <?php $list = \App\Library\Experiment::searchPosGramsetByEnding($search_lang, $wordform->wordform, $wordform->ending, $table_name, $property_id);
-                list($eval, $winner) = \App\Library\Experiment::getEvalForOneValue($list, $wordform->{$property_id});
+            <?php $list = \App\Library\SearchByAnalog::searchPosGramsetByEnding($search_lang, $wordform->wordform, $wordform->ending, $table_name, $property_id);
+                list($eval, $winner) = \App\Library\SearchByAnalog::getEvalForOneValue($list, $wordform->{$property_id});
             ?>
             list: {!!\App\Library\Str::arrayToString($list)!!}<br>
             predicted: <b>{{$winner}}</b><br>                
@@ -25,8 +25,8 @@
         <p>
             по самым длинным псевдоокончаниям<br>
             affix: <b>{{$wordform->affix}}</b><br>
-            <?php $list = \App\Library\Experiment::searchGramsetByAffix($wordform, $search_lang);
-                list($eval, $winner) = \App\Library\Experiment::getEvalForOneValue($list, $wordform->{$property_id});
+            <?php $list = \App\Library\SearchByAnalog::searchGramsetByAffix($wordform, $search_lang);
+                list($eval, $winner) = \App\Library\SearchByAnalog::getEvalForOneValue($list, $wordform->{$property_id});
             ?>
             list: {!!\App\Library\Str::arrayToString($list)!!}<br>
             predicted: <b>{{$winner}}</b><br>                
@@ -37,9 +37,9 @@
             по всем псевдоокончаниям<br>
             affix: <b>{{$wordform->affix}}</b><br>
             <?php 
-                $lists = \App\Library\Experiment::searchGramsetByAffixesAllLists($wordform, $search_lang);
+                $lists = \App\Library\SearchByAnalog::searchGramsetByAffixesAllLists($wordform, $search_lang);
                 $last_list = end($lists);
-                list($eval, $winner) = \App\Library\Experiment::getEvalForOneValue($last_list, $wordform->{$property_id});
+                list($eval, $winner) = \App\Library\SearchByAnalog::getEvalForOneValue($last_list, $wordform->{$property_id});
             ?>
             lists: 
             @foreach ($lists as $affix => $list) 
