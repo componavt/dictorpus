@@ -279,24 +279,24 @@ class KarVerbOlo
             case 170: // 131. I инфинитив 
                 return $stems[0];
             case 171: // 132. II инфинитив, инессив 
-                return Grammatic::joinMorfToBases(self::inf2Base($stems[0], $stems[3]), 's');
+                return !$def ? Grammatic::joinMorfToBases(self::inf2Base($stems[0], $stems[3]), 's') : '';
             case 172: // 133. II инфинитив, инструктив  
-                return Grammatic::joinMorfToBases(self::inf2Base($stems[0], $stems[3]), 'n');
+                return !$def ? Grammatic::joinMorfToBases(self::inf2Base($stems[0], $stems[3]), 'n') : '';
             case 173: // 134. III инфинитив, адессив
-                return Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mal'));
+                return !$def ? Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mal')) : '';
             case 174: // 135. III инфинитив, иллатив 
-                return Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mah'));
+                return !$def ? Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mah')) : '';
             case 175: // 136. III инфинитив, инессив 
-                return Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mas'));
+                return !$def ? Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mas')) : '';
             case 176: // 137. III инфинитив, элатив 
-                return Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'ma').'späi');
+                return !$def ? Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'ma').'späi') : '';
             case 177: // 138. III инфинитив, абессив 
-                return Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mattah'));
+                return !$def ? Grammatic::joinMorfToBases($stems[3], KarGram::garmVowel($stems[3], 'mattah')) : '';
             case 312: // 139. III инфинитив, партитив 
-                return Grammatic::joinMorfToBases($stems[3], KarGram::isBackVowels($stems[3]) ? 'mua': 'miä');
+                return !$def ? Grammatic::joinMorfToBases($stems[3], KarGram::isBackVowels($stems[3]) ? 'mua': 'miä') : '';
                 
             case 178: // 140. актив, 1-е причастие 
-                return self::partic1active($stems[3]);
+                return !$def ? self::partic1active($stems[3]) : '';
             case 179: // 141. актив, 2-е причастие 
                 return self::partic2active($stems[0], $stems[1], $stems[8], $def);
             case 180: // 143. пассив, 1-е причастие 
