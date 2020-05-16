@@ -139,7 +139,8 @@ class KarVerb
     public static function prsStrongVocalBaseRef($stem2) {
         if (preg_match("/^.+\s*\/\s*(.+)hes$/u", $stem2, $regs)
                 || preg_match("/^([^\/]+)hes$/u", $stem2, $regs)) {
-            return preg_replace("/i$/", 'e', $regs[1]);
+//            return preg_replace("/i$/", 'e', $regs[1]);
+            return $regs[1];
         }
         return '';
     }

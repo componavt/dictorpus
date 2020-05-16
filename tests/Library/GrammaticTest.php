@@ -1583,7 +1583,7 @@ class GrammaticTest extends TestCase
         $expected = [26 => 'potkimmos',   27 => 'potkittos',  28 => 'potkih, potkihes',  
                 29 => 'potkimmokseh',  30 => 'potkittokseh',  31 => 'potkitahes', 
                 295 => 'potkei', 296 => 'potkitahes', 
-                70 => 'en potkei',   71 => 'er potkei',  72 => 'ei potkei',  
+                70 => 'en potkei',   71 => 'et potkei',  72 => 'ei potkei',  
                 73 => 'emmo potkei',  78 => 'etto potkei',  79 => 'ei potkitahes', 
             
                 32 => 'potkimmos',   33 => 'potkittos',  34 => 'potkih, potkihes',  
@@ -1594,7 +1594,7 @@ class GrammaticTest extends TestCase
                 86 => 'olen potkinuhes',   87 => 'olet potkinuhes',  88 => 'on potkinuhes',  
                 89 => 'olemmo potkinuhes',  90 => 'oletto potkinuhes',  91 => 'ollah potkittuhes',  
                 92 => 'en ole potkinuhes',  93 => 'et ole potkinuhes',  94 => 'ei ole potkinuhes',  
-                95 => 'ei olla potkittuhes',  96 => 'etto ole potkinuhes',  97 => 'emmo ole potkinuhes',
+                95 => 'emmo ole potkinuhes',  96 => 'etto ole potkinuhes',  97 => 'ei olla potkittuhes',
             
                 98 => 'olin potkinuhes',   99 => 'olit potkinuhes', 100 => 'oli potkinuhes', 
                 101 => 'olimmo potkinuhes', 102 => 'olitto potkinuhes', 103 => 'oldih potkittuhes', 
@@ -1617,7 +1617,7 @@ class GrammaticTest extends TestCase
                 44 => 'potkinuzimmos',   45 => 'potkinuzittos',  46 => 'potkinuzihes',  
                 47 => 'potkinuzimmokseh',  48 => 'potkinuzittokseh',  49 => 'potkitannuzihes', 
                 116 => 'en potkinuzihes', 117 => 'et potkinuzihes', 118 => 'ei potkinuzihes', 
-                119 => 'emmo  potkinuzihes', 120 => 'etto  potkinuzihes', 121 => 'ei potkitannuzihes',
+                119 => 'emmo potkinuzihes', 120 => 'etto potkinuzihes', 121 => 'ei potkitannuzihes',
             
                 122 => 'olizin potkinuhes', 123 => 'olizit potkinuhes', 124 => 'olis potkinuhes', 
                 126 => 'olizimmo potkinuhes', 127 => 'olizitto potkinuhes', 128 => 'oldas potkittuhes', 
@@ -1644,9 +1644,9 @@ class GrammaticTest extends TestCase
                 176 => '', 177 => '', 312 => '',
             
                 178 => '', 179 => 'potkinuhes', 180 => '', 181 => 'potkittuhes'];
-        $slice = 50;
-        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
-//        $this->assertEquals( $expected, $result);        
+//        $slice = 100;
+//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
+        $this->assertEquals( $expected, $result);        
     }
 /*    
     public function testWordformsByStemsKarVerbOlo() {
