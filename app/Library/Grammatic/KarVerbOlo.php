@@ -721,9 +721,9 @@ class KarVerbOlo
             } elseif ($regs[2]=='yö') { 
                 return $regs[1].'y'.$n;
             }
-        } elseif (preg_match("/^(.+l)[lt][aä]$/u", $stem0)) {
+        } elseif (preg_match("/^(.+l)[lt][aä]$/u", $stem0, $regs)) {
             return $regs[1].'l';
-        } elseif (preg_match("/^(.+)[tj][aä]$/u", $stem0)) {
+        } elseif (preg_match("/^(.+)[tj][aä]$/u", $stem0, $regs)) {
             return $regs[1].'nn';
         }
     }

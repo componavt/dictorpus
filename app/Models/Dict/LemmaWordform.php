@@ -4,6 +4,8 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 
+//use App\Library\Grammatic;
+
 use DB;
 
 class LemmaWordform extends Model
@@ -39,5 +41,4 @@ class LemmaWordform extends Model
                            ->where('lang_id', $lang_id);
                      });        
     }
-    
 }

@@ -197,6 +197,18 @@ class Lemma extends Model
         
     } */   
 
+    public function countWordformsByDialect($dialect_id){
+        return $this->wordforms()
+                    ->wherePivot('dialect_id',$dialect_id)
+                    ->count();
+    }
+        
+    public function wordformsByDialect($dialect_id){
+        return $this->wordforms()->orderBy('wordform')
+                    ->wherePivot('dialect_id',$dialect_id)
+                    ->get();
+    }
+        
     public function wordformsByGramsetDialect($gramset_id, $dialect_id){
         return $this->wordforms()->orderBy('wordform')
                     ->wherePivot('gramset_id',$gramset_id)
@@ -617,7 +629,7 @@ dd($wordforms);
     public function extractStem() {
         $affix = '';
         $stem = $this->lemma;
-print "\n".join("\n ",$this->uniqueWordforms())."\n";
+//print "\n".join("\n ",$this->uniqueWordforms())."\n";
 
         foreach ($this->uniqueWordforms() as $wordform) {
             while (!preg_match("/^".$stem."/", $wordform)) {
@@ -1535,16 +1547,31 @@ print "\n".join("\n ",$this->uniqueWordforms())."\n";
         }  
         return true;
     }
-    public function generateWordforms($dialect_id) {
+    public function generateWordforms($dialect_id, $update_bases=false) {
         $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
         $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;
 
         $stems = $this->getBases($dialect_id);
 //dd($stems);        
 //dd($name_num);     
+        if ($update_bases) {
+            $this->updateBases($stems, $dialect_id);
+        }
         return Grammatic::wordformsByStems($this->lang_id, $this->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
     }
 
+    public function reloadWordforms($dialect_id, $with_updateText=false) {
+        $gramset_wordforms = $this->generateWordforms($dialect_id, true); 
+//dd($dialect_id, $gramset_wordforms);        
+        if ($gramset_wordforms) {
+            $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
+            if ($with_updateText) {
+                $this->updateTextLinks();
+            }
+        }
+//exit(0);        
+    }
+    
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
                     'search_affix'    => $request->input('search_affix'),
@@ -1595,7 +1622,7 @@ print "\n".join("\n ",$this->uniqueWordforms())."\n";
             $phonetic_obj -> updateDialects($dialects);
         }
     }
-
+    
     /*    
     public static function totalCount(){
         return self::count();

@@ -201,6 +201,7 @@ Route::group(
         Route::get('service/add_unmarked_links', 'Library\ServiceController@addUnmarkedLinks');
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('service/correct_data', 'Library\ServiceController@correctData');
+        Route::get('service/generate_wordforms', 'Library\ServiceController@generateWordforms');
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');

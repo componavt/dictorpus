@@ -294,6 +294,31 @@ print "</p>";
         }
     }
 
+    public function generateWordforms(Request $request) {
+        $lang_id = (int)$request->input('search_lang');
+        if ($lang_id == 5) {
+            $dialect_id=44;
+        }
+        $pos_code = $request->input('search_pos');
+        if ($pos_code != 'NOUN') {
+            $pos_code = 'ADJ';
+        }
+        $pos = PartOfSpeech::getByCode($pos_code);
+        $pos_id = $pos->id;
+
+        $lemmas = Lemma::where('lang_id', $lang_id)
+                       ->where('pos_id', $pos_id)
+                       ->get();
+        
+        foreach ($lemmas as $lemma) {
+            $w_count = $lemma->countWordformsByDialect($dialect_id);
+            if ($w_count>0 && $w_count<6) {
+                $lemma->reloadWordforms($dialect_id, true);
+print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a>".$w_count."->".$lemma->countWordformsByDialect($dialect_id)."</p>";                
+//exit(0);                
+            }
+        }
+    }
 
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms

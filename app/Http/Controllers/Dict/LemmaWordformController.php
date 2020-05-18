@@ -21,6 +21,7 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
+//use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 use \App\Models\Dict\Wordform;
 
@@ -200,26 +201,15 @@ class LemmaWordformController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function reload(Request $request, $id, $dialect_id) {
-        $lemma = Lemma::findOrFail($id);        
-        
-        $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
-        $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
-                
-        $stems = $lemma->getBases($dialect_id);
-//dd($stems);        
-//dd($name_num);     
-        $lemma->updateBases($stems, $dialect_id);
+        $lemma = Lemma::findOrFail((int)$id);    
+        $dialect_id = (int)$dialect_id;
         
         if (!$request->without_remove) {
             $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
         }
-        $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
-//dd($dialect_id, $gramset_wordforms);        
-        if ($gramset_wordforms) {
-            $lemma->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
-//            $lemma->updateTextLinks();
-        }
-//exit(0);        
+        
+        $lemma->reloadWordforms($dialect_id);
+        
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
     }
     

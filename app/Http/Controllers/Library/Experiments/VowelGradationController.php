@@ -64,6 +64,8 @@ class VowelGradationController extends Controller
         if ($pos_code != 'NOUN') {
             $pos_code = 'ADJ';
         }
+        $sl= (int)$sl;
+        $part_gr = (int)$part_gr;
         $pos_list = ['NOUN' => 'существительные', 'ADJ' => 'прилагательные'];
         $parts = [1=>'парт. мн.ч. на '.$o.'i', 2=> 'парт. мн.ч. на ii', 3=>'два парт. мн.ч.'];
         $part_gr_name = $parts[$part_gr];
