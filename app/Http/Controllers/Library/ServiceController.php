@@ -17,6 +17,7 @@ use App\Models\Corpus\Word;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -305,19 +306,30 @@ print "</p>";
         }
         $pos = PartOfSpeech::getByCode($pos_code);
         $pos_id = $pos->id;
+        
+//        $l_wordforms = LemmaWordform::select()
 
         $lemmas = Lemma::where('lang_id', $lang_id)
                        ->where('pos_id', $pos_id)
+                       ->whereIn('id', function ($query) {
+                           $query->select('lemma_id')->from('lemma_wordform')
+                                 ->groupBy('lemma_id')
+                                 ->havingRaw('count(*) = ?', [4])
+                                 ->orHavingRaw('count(*) = ?', [5]);
+                       })
+                       ->take(10)
                        ->get();
-        
+//  ->count();
+//dd($lemmas);                       
         foreach ($lemmas as $lemma) {
             $w_count = $lemma->countWordformsByDialect($dialect_id);
-            if ($w_count>0 && $w_count<6) {
+//            if ($w_count>0 && $w_count<6) {
                 $lemma->reloadWordforms($dialect_id, true);
-print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a>".$w_count."->".$lemma->countWordformsByDialect($dialect_id)."</p>";                
+print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a> ".$w_count."->".$lemma->countWordformsByDialect($dialect_id)."</p>";                
 //exit(0);                
-            }
+//            }
         }
+
     }
 
     /*
