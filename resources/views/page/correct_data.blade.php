@@ -41,8 +41,14 @@
     
     <p>Сгенерировать словоформы по имеющимся</p>
     <ul>
-        <li><a href="/service/generate_wordforms?search_lang=5&search_pos=NOUN">ливвиковские существительные</a></li>
-        <li><a href="/service/generate_wordforms?search_lang=5&search_pos=ADJ">ливвиковские прилагательные</a></li>
+        @foreach($pos_list as $pos_code => $pos_name)
+        <li>ливвиковские {{$pos_name}}</li>
+        <ul>
+            @for($i=4; $i<6; $i++)
+            <li><a href="/service/generate_wordforms?search_lang=5&search_pos={{$pos_code}}&w_count={{$i}}">с {{$i}} словоформами</a></li>
+            @endfor
+        </ul>
+        @endforeach
     </ul>
     
 @endsection

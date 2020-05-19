@@ -53,8 +53,8 @@ class ServiceController extends Controller
             $langs[$l_id]['unmarked_words_count'] = number_format(Word::countUnmarked($l_id), 0, ',', ' ');
         }
         
-        return view('page.correct_data')
-                ->with(['langs' => $langs]);        
+        $pos_list = ['NOUN'=>'существительные', 'ADJ'=>'прилагательные'];
+        return view('page.correct_data', compact('langs', 'pos_list'));        
     }
     
     public function addCompTypeToPhrases() {
@@ -306,30 +306,44 @@ print "</p>";
         }
         $pos = PartOfSpeech::getByCode($pos_code);
         $pos_id = $pos->id;
+        $w_count = (int)$request->input('w_count');
+        $right_counts = [4=>37, 5=>55];
         
 //        $l_wordforms = LemmaWordform::select()
 
-        $lemmas = Lemma::where('lang_id', $lang_id)
-                       ->where('pos_id', $pos_id)
-                       ->whereIn('id', function ($query) {
-                           $query->select('lemma_id')->from('lemma_wordform')
-                                 ->groupBy('lemma_id')
-                                 ->havingRaw('count(*) = ?', [4])
-                                 ->orHavingRaw('count(*) = ?', [5]);
-                       })
-                       ->take(10)
-                       ->get();
+        $is_all_checked = false;
+        while (!$is_all_checked) {        
+            $lemmas = Lemma::where('lang_id', $lang_id)
+                           ->where('pos_id', $pos_id)
+                           ->whereIn('id', function ($query) use ($w_count) {
+                               $query->select('lemma_id')->from('lemma_wordform')
+                                     ->groupBy('lemma_id')
+                                     ->havingRaw('count(*) = ?', [$w_count]);
+                                     //->orHavingRaw('count(*) = ?', [5]);
+                           })
+                           ->take(10)
+                           ->orderBy('lemma')
+                           ->get();
 //  ->count();
-//dd($lemmas);                       
-        foreach ($lemmas as $lemma) {
-            $w_count = $lemma->countWordformsByDialect($dialect_id);
-//            if ($w_count>0 && $w_count<6) {
-                $lemma->reloadWordforms($dialect_id, true);
-print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a> ".$w_count."->".$lemma->countWordformsByDialect($dialect_id)."</p>";                
-//exit(0);                
-//            }
+//dd($lemmas);   
+            if ($lemmas) {               
+                foreach ($lemmas as $lemma) {
+        //            $w_count = $lemma->countWordformsByDialect($dialect_id);
+        //            if ($w_count>0 && $w_count<6) {
+                    $lemma->reloadWordforms($dialect_id, true);
+                    $w_count_res = $lemma->countWordformsByDialect($dialect_id);                
+                    print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a> ".$w_count."->".$w_count_res."</p>";    
+                    if ($w_count_res != $right_counts[$w_count]) {
+                        dd("INCORRECT WORDFORMS' COUNT!!!");
+                    }
+        //exit(0);                
+        //            }
+                }
+            } else {
+                $is_all_checked = true;
+            }
         }
-
+        print "<p>done.</p>\n";
     }
 
     /*
