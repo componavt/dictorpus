@@ -271,7 +271,7 @@ class KarNameTest extends TestCase
         $this->assertEquals( $expected, $result);                
     }
     
-    public function testStemsFromTemplateP() {
+    public function testStemsFromTemplatePualikkupordahat() {
         $template = 'pualikkupordah|at (-ien, -ii)';
         $name_num = 'pl';
         $result = KarName::stemsFromTemplate($template, $name_num);
@@ -279,6 +279,35 @@ class KarNameTest extends TestCase
         $expected = [['pualikkupordahat', '', '', '', 'pualikkupordahi', 'pualikkupordahi'], 'pl', 'pualikkupordah', 'at'];
         $this->assertEquals( $expected, $result);                
     }
+    
+    public function testStemsFromTemplateKodihuolet() {
+        $template = 'kodihuol|et (-ien/-iloin, -ii/-iloi)';
+        $name_num = 'pl';
+
+        $result = KarName::stemsFromTemplate($template, $name_num);
+
+        $expected = [['kodihuolet', '', '', '', 'kodihuoli/kodihuoliloi', 'kodihuoli/kodihuoliloi'], 'pl', 'kodihuol', 'et'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testParseGenPl() {
+        $base = 'kodihuol';
+        $gen_pl_suf = '-ien/-iloin';
+        $result = KarName::parseGenPl($base, $gen_pl_suf);
+
+        $expected = 'kodihuoli/kodihuoliloi';
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testPartPlBase() {
+        $base = 'kodihuol';
+        $part_pl_suf = '-ii/-iloi';
+        $result = KarName::partPlBase($base, $part_pl_suf);
+
+        $expected = 'kodihuoli/kodihuoliloi';
+        $this->assertEquals( $expected, $result);                
+    }
+    
 /*    
     public function testStemsFromTemplateP() {
         $template = '';

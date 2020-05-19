@@ -123,21 +123,22 @@ class KarName
     }
         
     public static function stemsFromTemplate($template, $name_num) {      
-        $arg = "([^\|]*)";
-        $div_arg = "\|".$arg;
-        
         $base_shab = "([^\s\(\|]+)";
         $base_suff_shab = "([^\s\(\|]*)";
-        $okon1_shab = "(-?[^\-\,\;\)]+)";
-        $okon3_shab = "(-?[^\-\,\;\)]+\/?-?[^\-\,\;\)]*)";
-        $lemma_okon1_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab;
+//        $okon1_shab = "(-?[^\-\,\;\)]+)";
+        $okon3_shab = "(-?[^\-\,\;\)]+?\/?-?[^\-\,\;\)]*)";
+//        $lemma_okon1_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab;
+        $lemma_okon3_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon3_shab;
 
         // only plural
-        if ($name_num == 'pl' && preg_match($lemma_okon1_shab.",\s*".$okon1_shab."\)/", $template, $regs)) {
+        if ($name_num == 'pl' && preg_match($lemma_okon3_shab.",\s*".$okon3_shab."\)/", $template, $regs)) {
 //            $name_num = 'pl';
             list($stems, $base, $base_suff) =  self::stemsPlFromTemplate($regs);
+        // only single
+        } elseif ($name_num == 'sg' && preg_match($lemma_okon3_shab.",\s*".$okon3_shab."\)/", $template, $regs)) {
+            list($stems, $base, $base_suff) =  self::stemsSgFromTemplate($regs);
         // others
-        } elseif (preg_match($lemma_okon1_shab.",\s*".$okon1_shab.";\s*".$okon3_shab."\)/", $template, $regs)) {
+        } elseif (preg_match($lemma_okon3_shab.",\s*".$okon3_shab.";\s*".$okon3_shab."\)/", $template, $regs)) {
             $name_num = '';
             list($stems, $base, $base_suff) = self::stemsOthersFromTemplate($regs);
         } else {
@@ -172,25 +173,56 @@ class KarName
         $par_sg_suff = $regs[4];
         $par_pl_suff = $regs[5];
 
-        if (!preg_match("/^(.*)n$/u", $gen_sg_suff, $regs_gen)) {
+        $stem1 = self::parseGenSg(preg_replace("/\-/", $base, $gen_sg_suff));
+        if (!$stem1) {
             return $out;
         }
         
-        if (!preg_match("/i$/", $par_pl_suff)) {
+        $stem5 = self::partPlBase($base, $par_pl_suff);
+        if (!$stem5) {
             return $out;
         }
 
         $stems = [0 => $base.$regs[2],
-                  1 => preg_replace("/^\-/",$base,$regs_gen[1]), // single genetive base 
+                  1 => $stem1, // single genetive base 
                   2 => '',
-                  3 => '',
+                  3 => preg_replace("/^\-/",$base,$par_sg_suff),
+                  4 => '',
+                  5 => $stem5];
+        $stems[2] = self::illSgBase($stems[0],$stems[1],$stems[3]); // single illative base
+        $stems[4] = self::genPlBase($stems[1],$stems[5]); // plural partitive base
+//dd('stems:',$stems);        
+        return [$stems, $base, $base_suff];
+    }
+    
+    /**
+     * Viändö|i (-in, -idy)
+     * 
+     * @param array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-sg-suff, 4=>par-sg-suff]
+     *                    [0=>"Viändö|i (-in, -idy)", 1=>"Viändö", 2=>"i", 3=>"-in", 4=>"-idy"]
+     * @return array [stems=[0=>nom_sg, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>base_gen_pl, 5=>base_part_pl], $base, $base_suff]
+     *               [[0=>'Viändöi', 1=>'Viändöi', 2=>'Viändöi', 3=>'Viändöidy', 4=>'', 5=>''], 'Viändö', 'i']
+     */
+    public static function stemsSgFromTemplate($regs) {
+//dd($regs);    
+        $out = [[$regs[0]], $regs[0], null];
+        $base = $regs[1];
+        $base_suff = $regs[2];
+        $gen_sg_suff = $regs[3];
+        $par_sg_suff = $regs[4];
+
+        $stem1 = self::parseGenSg(preg_replace("/\-/", $base, $gen_sg_suff));
+        if (!$stem1) {
+            return $out;
+        }
+        
+        $stems = [0 => $base.$regs[2],
+                  1 => $stem1, // single genetive base 
+                  2 => '',
+                  3 => preg_replace("/^\-/",$base,$par_sg_suff),
                   4 => '',
                   5 => ''];
-        //if (!self::isRightVowelBase($stems[1])) {return $out;}
-        $stems[3] = preg_replace("/^\-/",$base,$par_sg_suff); // single partitive base
         $stems[2] = self::illSgBase($stems[0],$stems[1],$stems[3]); // single illative base
-        $stems[5] = self::partPlBase($base, $par_pl_suff);
-        $stems[4] = self::genPlBase($stems[1],$stems[5]); // plural partitive base
 //dd('stems:',$stems);        
         return [$stems, $base, $base_suff];
     }
@@ -198,7 +230,7 @@ class KarName
     /**
      * pordah|at (-ien, -ii)
      * 
-     * @param array $regs [0=>template, 1=>base, 2=>nom-sg-suff, 3=>gen-pl-suff, 4=>par-pl-suff]
+     * @param array $regs [0=>template, 1=>base, 2=>nom-pl-suff, 3=>gen-pl-suff, 4=>par-pl-suff]
      *                    [0=>"pordah|at (-ien, -ii)", 1=>"pordah", 2=>"at", 3=>"-ien", 4=>"-ii"]
      * @return array [stems=[0=>nom_pl, 1=>base_gen_sg, 2=>base_ill_sg, 3=>part_sg, 4=>base_gen_pl, 5=>base_part_pl], $base, $base_suff]
      *               [[0=>'pordahat', 1=>'', 2=>'', 3=>'', 4=>'pordahi', 5=>'pordahi'], 'pordah', 'at']
@@ -209,12 +241,19 @@ class KarName
         $base_suff = $regs[2];
         $gen_pl_suff = $regs[3];
         $par_pl_suff = $regs[4];
+//if  (!$gen_pl_suff || !$par_pl_suff) {dd($regs);}       
 
-        if (!preg_match("/^(.*?)e??n$/u", $gen_pl_suff, $regs_gen)) {
+/*        if (!preg_match("/^(.*?)e??n$/u", $gen_pl_suff, $regs_gen)) {
+            return $out;
+        }*/
+        $stem4 = self::parseGenPl($base, $gen_pl_suff);
+        if (!$stem4) {
             return $out;
         }
         
-        if (!preg_match("/i$/u", $par_pl_suff)) {
+        
+        $stem5 = self::partPlBase($base, $par_pl_suff);
+        if (!$stem5) {
             return $out;
         }
         
@@ -222,11 +261,66 @@ class KarName
                   1 => '',
                   2 => '',
                   3 => '',
-                  4 => preg_replace("/^\-/",$base,$regs_gen[1]),  // plural genetive base 
-                  5 => self::partPlBase($base, $par_pl_suff)];
+                  4 => $stem4,  // plural genetive base 
+                  5 => $stem5];
         return [$stems, $base, $base_suff];
     }
        
+    /**
+     * п.о. 1
+     * 
+     * @param type $wordform
+     * @return string
+     */
+    public static function parseGenSg($wordform) {
+        if (!$wordform) {
+            return '';
+        }
+        $out = [];
+        $V = "[".KarGram::vowelSet()."]";
+        $words = preg_split("/\//",$wordform);
+        foreach ($words as $word) {
+            if (preg_match("/^(.+".$V.")n$/u", $word, $regs)) {
+                $out[] = $regs[1];
+            } else {
+                return '';
+            }
+        }
+        return join('/',$out);
+    }
+    
+    /**
+     * @param type $wordform
+     * @return string
+     */
+    public static function parseGenPl($base, $gen_pl_suff) {
+        $out = [];
+        $V = "[".KarGram::vowelSet()."]";
+        $stems = preg_split("/\/\s*/",preg_replace("/\-/", $base, $gen_pl_suff));
+        foreach ($stems as $stem) {
+            $stem = trim($stem);
+            if (preg_match("/^(.+?i)e?n$/u", $stem, $regs)) {
+                $out[] = $regs[1];
+            } else {
+                return '';
+            }
+        }
+        return join('/',$out);
+    }
+    
+    public static function partPlBase($base, $par_pl_suff) {
+        $out = [];
+        $stems = preg_split("/\/\s*/",preg_replace("/\-/", $base, $par_pl_suff));
+        foreach ($stems as $stem) {
+            $stem = trim($stem);
+            if (!preg_match("/i$/", $stem)) {
+                return '';
+            }
+            $out[] = preg_replace("/ii$/", 'i', $stem);
+        }
+        return join('/',$out);
+    }
+    
     /**
      * А. если $stem3 заканчивается на [dt][uy], то =$stem1, при этом возможны замены:
      *    1) если $stem0 заканчивается на V[uy]zi, а $stem1 на vve,
@@ -277,16 +371,6 @@ class KarName
             }
             return $stem3;
         }
-    }
-    
-    public static function partPlBase($base, $par_pl_suff) {
-        $out = [];
-        $suffs = preg_split("/\//",$par_pl_suff);
-        foreach ($suffs as $suff) {
-            $word = trim(preg_replace("/^\-/", $base, $suff));
-            $out[] = preg_replace("/ii$/", 'i', $word);
-        }
-        return join('/',$out);
     }
     
     /**
