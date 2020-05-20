@@ -216,6 +216,7 @@ class KarGram
 //dd('regs:',$regs);            
                 return [KarVerb::stemsFromTemplate($regs, $is_reflexive), $name_num, $regs[1], $regs[2]];    
             } else {
+//dd("!!!!");                
                 return Grammatic::getAffixFromtemplate($template, $name_num);
             }
         } else {

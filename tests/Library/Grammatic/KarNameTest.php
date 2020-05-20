@@ -290,6 +290,15 @@ class KarNameTest extends TestCase
         $this->assertEquals( $expected, $result);                
     }
     
+    public function testStemsFromTemplateMarrattavy() {
+        $template = 'märrättäv|y (-än, -iä; -ii)';
+        $name_num = '';
+        $result = KarName::stemsFromTemplate($template, $name_num);
+
+        $expected = [['märrättävy', 'märrättävä', 'märrättävä', 'märrättäviä', 'märrättävi', 'märrättävi'], '', 'märrättäv', 'y'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
     public function testParseGenPl() {
         $base = 'kodihuol';
         $gen_pl_suf = '-ien/-iloin';
@@ -316,5 +325,6 @@ class KarNameTest extends TestCase
 
         $expected = [[''], '', '', ''];
         $this->assertEquals( $expected, $result);                
-    }*/
+    }
+ */
 }

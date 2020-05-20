@@ -322,12 +322,11 @@ print "</p>";
                                      //->orHavingRaw('count(*) = ?', [5]);
                            })
                            ->take(10)
-                           ->orderBy('lemma')
-                           ->get();
+                           ->orderBy('lemma');
 //  ->count();
 //dd($lemmas);   
-            if ($lemmas) {               
-                foreach ($lemmas as $lemma) {
+            if ($lemmas->count()) {               
+                foreach ($lemmas->get() as $lemma) {
         //            $w_count = $lemma->countWordformsByDialect($dialect_id);
         //            if ($w_count>0 && $w_count<6) {
                     $lemma->reloadWordforms($dialect_id, true);
