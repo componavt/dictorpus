@@ -1208,3 +1208,5 @@ select count(*) from lemmas where created_at>'2020-02-29' and lang_id=6;
 -- php artisan make:controller Library\Experiments\VowelGradationController
 
 select lemma_id,count(*) as count from lemma_wordform where dialect_id=44 and lemma_id in (select id from lemmas where pos_id=5) group by lemma_id having count=4 or count=5;
+
+-- php artisan make:test Library\Grammatic\KarNameOloTest

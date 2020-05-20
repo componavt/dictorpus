@@ -1482,12 +1482,12 @@ class GrammaticTest extends TestCase
                 164 => '', 165 => '', 166 => 'ei olle bluaznitannuh', 
                 167 => '', 168 => '', 169 => '',
             
-                170 => 'bluaznittua', 171 => 'bluaznittajes', 172 => 'bluaznittajen', 
-                173 => 'bluaznittamal', 174 => 'bluaznittamah', 175 => 'bluaznittamas', 
-                176 => 'bluaznittamaspäi', 177 => 'bluaznittamattah', 312 => 'bluaznittamua',
+                170 => 'bluaznittua', 171 => '', 172 => '', 
+                173 => '', 174 => '', 175 => '', 
+                176 => '', 177 => '', 312 => '',
             
 //                178 => 'bluaznitai, bluaznittaju', 179 => 'bluaznitannuh', 180 => '', 181 => ''];
-                178 => 'bluaznittai, bluaznittaju', 179 => 'bluaznitannuh', 180 => '', 181 => ''];
+                178 => '', 179 => 'bluaznitannuh', 180 => '', 181 => ''];
         $this->assertEquals( $expected, $result);        
     }
     

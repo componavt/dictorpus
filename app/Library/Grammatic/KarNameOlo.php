@@ -49,8 +49,8 @@ class KarNameOlo
     }
 
     public static function wordformByStemsPl($stems, $gramset_id, $dialect_id) {
-        $stem4_Ci = preg_match('/['.KarGram::consSet().']i$/u', $stems[4]);
-        $stem5_Ci = preg_match('/['.KarGram::consSet().']i$/u', $stems[5]);
+        $stem4_Ci = preg_match('/['.KarGram::consSet().']’?i$/u', $stems[4]);
+        $stem5_Ci = preg_match('/['.KarGram::consSet().']’?i$/u', $stems[5]);
         //$stem5_oi = preg_match("/[oö]i$/u", $stems[5]);
         
         switch ($gramset_id) {
