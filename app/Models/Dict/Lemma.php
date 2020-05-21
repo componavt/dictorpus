@@ -1474,12 +1474,20 @@ dd($wordforms);
 //dd($gramsets);        
         $ends = [];
         foreach ($gramsets as $gramset_id) {
-            $w = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
+            $wforms = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
 //print "<p>w:".$w[0]->wordform."</p>";            
-            if (!$w || !isset($w[0]) || !preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w[0]->wordform, $regs)) {
+            if (!$wforms || !isset($wforms[0])) {
                 return $out;
             }
-            $ends[] = '-'.$regs[1];
+            $tmp = [];
+            foreach ($wforms as $w) {
+                if (!preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w->wordform, $regs)) {
+                    return $out;
+                } else {
+                    $tmp[] = '-'.$regs[1];
+                }                
+            }
+            $ends[] = join('/',$tmp);
         }
         return $out. " (".join(', ',$ends).")";        
     }
