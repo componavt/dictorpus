@@ -1,7 +1,9 @@
         <h3>{{ trans('dict.wordforms') }} 
+            <span data-id="{{$lemma->id}}" id="wordform-total">
             @if ($lemma->wordform_total)
-            <span data-id="{{$lemma->id}}" id="wordform-total">({{$lemma->wordform_total}})</span>
+            ({{$lemma->wordform_total}})
             @endif
+            </span>
         </h3>
             @if (User::checkAccess('dict.edit'))
                 {!! Form::open(['url' => '/dict/lemma_wordform/'.$lemma->id.'/edit',
