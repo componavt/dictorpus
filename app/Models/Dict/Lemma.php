@@ -1623,6 +1623,25 @@ dd($wordforms);
         }
     }
     
+    /**
+     * builder for extraction of lemmas having w_count wordforms
+     * 
+     * @param int $lang_id
+     * @param int $pos_id
+     * @param int $w_count
+     * @return type
+     */
+    public static function lemmasWithWordformsByCount($lang_id, $pos_id, $w_count) {
+        return $lemmas = Lemma::where('lang_id', $lang_id)
+                           ->where('pos_id', $pos_id)
+                           ->whereIn('id', function ($query) use ($w_count) {
+                               $query->select('lemma_id')->from('lemma_wordform')
+                                     ->groupBy('lemma_id')
+                                     ->havingRaw('count(*) = ?', [$w_count]);
+                           });        
+    }
+
+
     /*    
     public static function totalCount(){
         return self::count();

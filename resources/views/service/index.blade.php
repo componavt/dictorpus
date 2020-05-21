@@ -25,9 +25,14 @@
     <ul>
     @foreach ($langs as $l_id=>$l_name)
         <li>
-            <a href="/service/check_wordforms_by_rules?search_lang={{$l_id}}">{{$l_name}}</a></li>
+            <a href="service/check_wordforms_by_rules?search_lang={{$l_id}}">{{$l_name}}</a></li>
     @endforeach
     </ul>
     
-    <h3><a href="service/correct_data">Исправить данные</a></h3>
+    <h3>Исправить данные</h3>
+    <p><a href="service/add_wordform_affixes">Добавить аффиксы словоформам</a> (с грамсетами и неаналитические формы (без пробелов))</p>
+    <p><a href="service/add_unmarked_links">Добавить связи текст-словарь</a></p>
+    <p><a href="service/generate_wordforms">Сгенерировать словоформы по имеющимся</a></p>
+    <p><a href="service/calculate_lemma_wordforms">Записать у лемм количество словоформ</a> ({{$count_lemmas_without_wordform_total}})</p>
+    
 @endsection

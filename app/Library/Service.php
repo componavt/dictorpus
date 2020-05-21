@@ -41,6 +41,13 @@ print "<p>".$lemma->lemma."</p>";
         }
     }    
     
+    /**
+     * Choose all lemmas with wordforms having affix=#.
+     * Calculate stem and lemma affix by wordforms.
+     * Update lemma wordform affixes.
+     * 
+     * @param int $lang_id
+     */
     public static function reloadStemAffixesForLang($lang_id) {
         $lemmas = Lemma::where('lang_id',$lang_id)
                        ->whereIn('id',function($q) use ($lang_id){
@@ -111,5 +118,69 @@ print "</p>";
                 print "<p><a href=\"/dict/wordform?search_gramset=".$gramset->gramset_id."&search_lang=".$lang_id."&search_wordform=".$wordform->wordform."\">".$wordform->wordform."</a>, ". PartOfSpeech::getNameById($wordform->pos_id)."</p>\n";
             }
         }
+    }
+    
+    public static function generateWordforms($lang_id, $pos_code, $w_count) {
+        if ($lang_id == 5) {
+            $dialect_id=44;
+        } else {return;}
+        
+        if ($pos_code != 'NOUN') {
+            $pos_code = 'ADJ';
+        }
+        $pos = PartOfSpeech::getByCode($pos_code);
+        $pos_id = $pos->id;
+        $right_counts = [4=>37, 5=>55];
+        
+        $is_all_checked = false;
+        while (!$is_all_checked) {        
+            $lemmas = Lemma::lemmasWithWordformsByCount($lang_id, $pos_id, $w_count)
+                    ->take(10)
+                    ->orderBy('lemma');
+//  ->count();
+//dd($lemmas);   
+            if ($lemmas->count()) {               
+                foreach ($lemmas->get() as $lemma) {
+                    $lemma->reloadWordforms($dialect_id, true);
+                    $w_count_res = $lemma->countWordformsByDialect($dialect_id);                
+                    print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a> ".$w_count."->".$w_count_res."</p>";    
+                    if ($w_count_res != $right_counts[$w_count]) {
+                        dd("INCORRECT WORDFORMS' COUNT!!!");
+                    }
+                }
+            } else {
+                $is_all_checked = true;
+            }
+        }
+        print "<p>done.</p>\n";
+    }
+    
+    /**
+     * Создать массив пар <количество_словоформ у леммы> - <количество лемм с таким числом словоформ>
+     * select lemma_id, count(*) as count from lemma_wordform group by lemma_id order by ;
+     */
+    public static function countLemmaWordforms($lang_id) {
+        $counts = [];
+        
+        return $counts;
+    }
+    
+    /**
+     * Обойти все леммы, посчитать количество словоформ и записать в поле lemmas.wordform_total
+     */
+    public static function calculateLemmaWordforms() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {        
+            $lemmas = Lemma::whereNull('wordform_total')
+                    ->take(10);
+            if ($lemmas->count()) {               
+                foreach ($lemmas->get() as $lemma) {
+                    $lemma->wordform_total = LemmaWordform::whereLemmaId($lemma->id)->count();
+                    $lemma->save();
+                }
+            } else {
+                $is_all_checked = true;
+            }
+        }        
     }
 }

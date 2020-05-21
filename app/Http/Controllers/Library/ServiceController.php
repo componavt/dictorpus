@@ -40,21 +40,31 @@ class ServiceController extends Controller
             $langs[$l_id]=Lang::getNameById($l_id);
         }
         
-        return view('page.service')
-                ->with(['langs' => $langs]);        
+        $count_lemmas_without_wordform_total = Lemma::whereNull('wordform_total')->count();
+        
+        return view('service.index', compact('langs', 'count_lemmas_without_wordform_total'));        
     }
     
-    public function correctData() {
+    function addWordformAffixes(Request $request) {
+        $lang_id = (int)$request->input('search_lang');
+//dd($lang_id);        
+        if ($lang_id) {
+            Service::addWordformAffixesForLang($lang_id);
+            return;
+        }
+/*
+        foreach (Lang::projectLangIDs() as $lang_id) {
+            Service::addWordformAffixesForLang($lang_id);
+        }      */
+        
         $langs = [];
         foreach (Lang::projectLangIDs() as $l_id) {
             $langs[$l_id]['name']=Lang::getNameById($l_id);
             $langs[$l_id]['affix_count'] = number_format(Wordform::countWithoutAffixes($l_id), 0, ',', ' ');
             $langs[$l_id]['wrong_affix_count'] = number_format(Wordform::countWrongAffixes($l_id), 0, ',', ' ');
-            $langs[$l_id]['unmarked_words_count'] = number_format(Word::countUnmarked($l_id), 0, ',', ' ');
         }
         
-        $pos_list = ['NOUN'=>'существительные', 'ADJ'=>'прилагательные'];
-        return view('page.correct_data', compact('langs', 'pos_list'));        
+        return view('service.add_wordform_affixes', compact('langs'));
     }
     
     public function addCompTypeToPhrases() {
@@ -194,19 +204,6 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma. '</a> ('. join('
         
     }
     
-    function addWordformAffixes(Request $request) {
-        $lang_id = (int)$request->input('search_lang');
-        
-        if ($lang_id) {
-            Service::addWordformAffixesForLang($lang_id);
-            return;
-        }
-
-        foreach (Lang::projectLangIDs() as $lang_id) {
-            Service::addWordformAffixesForLang($lang_id);
-        }      
-    }
-    
     function reloadStemAffixes(Request $request) {
         $lang_id = (int)$request->input('search_lang');
         
@@ -261,13 +258,19 @@ print "</p>";
      * @param Request $request
      */
     public function addUnmarkedLinks(Request $request) {
-        ini_set('max_execution_time', 7200);
-        ini_set('memory_limit', '512M');
         $lang_id = (int)$request->input('search_lang');
         
         if (!$lang_id) {
-            return;
+            $langs = [];
+            foreach (Lang::projectLangIDs() as $l_id) {
+                $langs[$l_id]['name']=Lang::getNameById($l_id);
+                $langs[$l_id]['unmarked_words_count'] = number_format(Word::countUnmarked($l_id), 0, ',', ' ');
+            }
+            return view('service.add_unmarked_links', compact('langs'));
         }
+
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
         
         $word_groups = Word::select('word')->whereChecked(0)
                         ->whereIn('text_id', function ($q) use ($lang_id) {
@@ -295,56 +298,27 @@ print "</p>";
         }
     }
 
+    /**
+     * 
+     * @param Request $request
+     */
     public function generateWordforms(Request $request) {
         $lang_id = (int)$request->input('search_lang');
-        if ($lang_id == 5) {
-            $dialect_id=44;
-        }
-        $pos_code = $request->input('search_pos');
-        if ($pos_code != 'NOUN') {
-            $pos_code = 'ADJ';
-        }
-        $pos = PartOfSpeech::getByCode($pos_code);
-        $pos_id = $pos->id;
-        $w_count = (int)$request->input('w_count');
-        $right_counts = [4=>37, 5=>55];
-        
-//        $l_wordforms = LemmaWordform::select()
 
-        $is_all_checked = false;
-        while (!$is_all_checked) {        
-            $lemmas = Lemma::where('lang_id', $lang_id)
-                           ->where('pos_id', $pos_id)
-                           ->whereIn('id', function ($query) use ($w_count) {
-                               $query->select('lemma_id')->from('lemma_wordform')
-                                     ->groupBy('lemma_id')
-                                     ->havingRaw('count(*) = ?', [$w_count]);
-                                     //->orHavingRaw('count(*) = ?', [5]);
-                           })
-                           ->take(10)
-                           ->orderBy('lemma');
-//  ->count();
-//dd($lemmas);   
-            if ($lemmas->count()) {               
-                foreach ($lemmas->get() as $lemma) {
-        //            $w_count = $lemma->countWordformsByDialect($dialect_id);
-        //            if ($w_count>0 && $w_count<6) {
-                    $lemma->reloadWordforms($dialect_id, true);
-                    $w_count_res = $lemma->countWordformsByDialect($dialect_id);                
-                    print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a> ".$w_count."->".$w_count_res."</p>";    
-                    if ($w_count_res != $right_counts[$w_count]) {
-                        dd("INCORRECT WORDFORMS' COUNT!!!");
-                    }
-        //exit(0);                
-        //            }
-                }
-            } else {
-                $is_all_checked = true;
-            }
+        if (!$lang_id) {
+            $pos_list = ['NOUN'=>'существительные', 'ADJ'=>'прилагательные'];
+            $counts = Service::countLemmaWordforms();
+            return view('service.generate_wordforms', compact('pos_list'));
         }
-        print "<p>done.</p>\n";
+        
+        Service::generateWordforms($lang_id, 
+                $request->input('search_pos'), (int)$request->input('w_count'));
     }
 
+    public function calculateLemmaWordforms() {
+        Service::calculateLemmaWordforms();        
+    }
+    
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences
