@@ -204,11 +204,7 @@ class LemmaWordformController extends Controller
         $lemma = Lemma::findOrFail((int)$id);    
         $dialect_id = (int)$dialect_id;
         
-        if (!$request->without_remove) {
-            $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
-        }
-        
-        $lemma->reloadWordforms($dialect_id);
+        $lemma->reloadWordforms($dialect_id, $request->without_remove);
         $lemma->updateWordformTotal();        
         
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 

@@ -1547,7 +1547,7 @@ dd($wordforms);
         }  
         return true;
     }
-    public function generateWordforms($dialect_id, $update_bases=false) {
+    public function generateWordforms($dialect_id, $update_bases=false, $without_remove=false) {
         $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
         $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;
 
@@ -1557,11 +1557,16 @@ dd($wordforms);
         if ($update_bases) {
             $this->updateBases($stems, $dialect_id);
         }
+        
+        if (!$without_remove) {
+            $this->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
+        }
+        
         return Grammatic::wordformsByStems($this->lang_id, $this->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
     }
 
-    public function reloadWordforms($dialect_id, $with_updateText=false) {
-        $gramset_wordforms = $this->generateWordforms($dialect_id, true); 
+    public function reloadWordforms($dialect_id, $with_updateText=false, $without_remove=false) {
+        $gramset_wordforms = $this->generateWordforms($dialect_id, true, $without_remove); 
 //dd($dialect_id, $gramset_wordforms);        
         if ($gramset_wordforms) {
             $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
