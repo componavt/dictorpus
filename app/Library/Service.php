@@ -161,7 +161,15 @@ print "</p>";
      */
     public static function countLemmaWordforms($lang_id) {
         $counts = [];
-        
+        $lemma_counts = Lemma::whereLangId($lang_id)
+                              ->groupBy('wordform_total','pos_id')
+                              ->selectRaw('pos_id, wordform_total, count(*) as count')
+                              ->orderBy('wordform_total')
+                              ->get();
+//dd($lemma_counts);        
+        foreach ($lemma_counts as $count) {
+            $counts[$count->pos_id][$count->wordform_total] = $count->count;
+        }
         return $counts;
     }
     

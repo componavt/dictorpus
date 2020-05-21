@@ -17,14 +17,14 @@
         @endforeach
     </ul>
 
-    <h2>Список словоформ</h2>
+    <h2>Список ливвиковских словоформ</h2>
     <ul>
-        @foreach($pos_list as $pos_code => $pos_name)
-        <li>ливвиковские {{$pos_name}}</li>
+        @foreach($counts as $pos_id=>$pos_count)
+        <li>{{\App\Models\Dict\PartOfSpeech::getNameById($pos_id)}}</li>
         <ul>
-            @foreach($counts as $i=>$count)
-            <li><a href="/service/generate_wordforms?search_lang=5&search_pos={{$pos_code}}&w_count={{$i}}">с {{$i}} словоформами</a> ({{$count}})</li>
-            @endfor
+            @foreach($pos_count as $w_count=>$count)
+            <li><a href="/service/wordforms_by_wordform_total?search_lang=5&search_pos={{$pos_id}}&w_count={{$w_count}}">с {{$w_count}} словоформами</a> ({{$count}})</li>
+            @endforeach
         </ul>
         @endforeach
     </ul>

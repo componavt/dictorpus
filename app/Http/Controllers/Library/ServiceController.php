@@ -307,15 +307,37 @@ print "</p>";
 
         if (!$lang_id) {
             $pos_list = ['NOUN'=>'существительные', 'ADJ'=>'прилагательные'];
-            $counts = Service::countLemmaWordforms();
-            return view('service.generate_wordforms', compact('pos_list'));
+            $counts = Service::countLemmaWordforms(5);
+            return view('service.generate_wordforms', compact('pos_list', 'counts'));
         }
         
         Service::generateWordforms($lang_id, 
                 $request->input('search_pos'), (int)$request->input('w_count'));
     }
 
-    public function calculateLemmaWordforms() {
+    /**
+     * output only wordform list with links 
+     * by search_lang, search_pos, w_count
+     * 
+     * @param Request $request
+     */
+    public function wordformsByWordformTotal(Request $request) {
+        $lang_id = (int)$request->input('search_lang');
+        $pos_id = (int)$request->input('search_pos'); 
+        $w_total = (int)$request->input('w_count');
+        
+        $lemmas = Lemma::whereLangId($lang_id)
+                       ->wherePosId($pos_id)
+                       ->whereWordformTotal($w_total)
+                       ->orderBy('lemma')
+                       ->get();
+        foreach ($lemmas as $lemma) {
+            print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a></p>";
+        }
+
+    }
+
+public function calculateLemmaWordforms() {
         Service::calculateLemmaWordforms();        
     }
     
