@@ -7,6 +7,7 @@ function deleteWordforms(id, meanings=[]) {
         success: function(result){
             $("#wordforms").html(result);
             $("#img-loading_wordforms").hide();                
+            reloadWordformTotal();
             $(meanings).each(function(key, id) {
                reloadExamplesForId(this);
             });
@@ -32,9 +33,9 @@ function loadWordforms(id, url='load', meanings=[]) {
         success: function(result){
             $("#wordforms").html(result);
             $("#img-loading_wordforms").hide();                
+            reloadWordformTotal();
             $(meanings).each(function(key, id) {
         //console.log(this);    
-               reloadWordformTotal();
                reloadExamplesForId(this);
             });
         },
