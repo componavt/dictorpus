@@ -258,6 +258,7 @@ class Lang extends Model
     public function mainDialect() {
         switch ($this->id) {
             case 1: return 43;
+            case 5: return 44;
         }
         return NULL;
     }

@@ -299,7 +299,7 @@ class Gramset extends Model
                 } else {
                     return [0=>24, 1=>22, 3=>2];
                 }
-            } elseif ($number==2) {
+            } elseif ($number==2) { // single
                 return [0=>3, 1=>4, 3=>1];
             } else {
                 return [0=>3, 1=>4, 2=>22, 3=>1];
@@ -307,6 +307,8 @@ class Gramset extends Model
         } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
             if ($lang_id == 1) { // vepsian
                 return [0=>28, 1=>34, 2=>52, 3=>170];
+            } elseif ($lang_id == 5) { // livvi
+                return [0=>26, 1=>28, 2=>31, 3=>34, 4=>37, 5=>170];
             } else {
                 return [0=>26, 1=>28, 2=>31, 3=>170];
             }

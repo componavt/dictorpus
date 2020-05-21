@@ -1464,18 +1464,18 @@ dd($wordforms);
     public function dictForm() {
         $out = $this->stemAffixForm();
         $dialect_id = $this->lang->mainDialect();
-        
-        if (!$this->reverseLemma || !$this->reverseLemma->stem || $this->lang_id != 1 || !$dialect_id) { // not veps
+        if (!$this->reverseLemma || !$this->reverseLemma->stem || !in_array($this->lang_id, [1,5]) || !$dialect_id) { // not veps and livvi
             return $out;
         }
         $gramsets = Gramset::dictionaryGramsets($this->pos_id, isset($this->features->number) ? $this->features->number : NULL, $this->lang_id);
-//dd($gramsets);        
         if (!$gramsets || !is_array($gramsets) || sizeof($gramsets)<2) { return $out; }
         array_pop($gramsets);
         
+//dd($gramsets);        
         $ends = [];
         foreach ($gramsets as $gramset_id) {
             $w = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
+//print "<p>w:".$w[0]->wordform."</p>";            
             if (!$w || !isset($w[0]) || !preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w[0]->wordform, $regs)) {
                 return $out;
             }
