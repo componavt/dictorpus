@@ -5,15 +5,12 @@
         @include('widgets.form.formitem._checkbox_for_field', 
                 ['name' => 'abbr', 
                  'title'=>trans('dict.abbr')])
-@endif                 
-        @include('widgets.form.formitem._select_for_field', 
-                ['name' => 'number', 
-                 'without_id' => true,
-                 'lang_file'=> 'dict'])
-                 
-        @include('widgets.form.formitem._checkbox_for_field', 
-                ['name' => 'reflexive', 
-                 'title'=>trans('dict.reflexive').' '.trans('dict.verb')])
+@endif   
+
+@include('widgets.form.formitem._checkbox_for_field', 
+        ['name' => 'reflexive', 
+         'title'=>trans('dict.reflexive').' '.trans('dict.verb')])
+         
 @if ($is_full_form)                 
         @include('widgets.form.formitem._radio_for_field', 
                 ['name' => 'transitive', 
@@ -37,3 +34,8 @@
                  'lang_file'=> 'dict'])
 @endif                 
 
+@include('widgets.form.formitem._select_for_field', 
+        ['name' => 'number', 
+         'without_id' => true,
+         'lang_file'=> 'dict'])
+                 

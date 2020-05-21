@@ -13,6 +13,11 @@ function posSelect(is_full_form=true) {
                     $("#abbr-field").show().prop("disabled", false);
                 }
                 $("#number-field").show().prop("disabled", false);
+            } else if ($("#pos_id option:selected").val()==1) { // is adjective
+                if (is_full_form) {
+                    $("#degree-field").show().prop("disabled", false);
+                }
+                $("#number-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==10) { // is pronoun
                 if (is_full_form) {
                     $("#prontype-field").show().prop("disabled", false);
@@ -23,8 +28,6 @@ function posSelect(is_full_form=true) {
                     $("#numtype-field").show().prop("disabled", false);
                 } else if ($( "#pos_id option:selected" ).val()==2) { // is adverb
                     $("#advtype-field").show().prop("disabled", false);
-                    $("#degree-field").show().prop("disabled", false);
-                } else if ($( "#pos_id option:selected" ).val()==1) { // is adjective
                     $("#degree-field").show().prop("disabled", false);
                 } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
                     $("#phrase-field").show().prop("disabled", false);
