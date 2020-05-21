@@ -33,7 +33,8 @@ function loadWordforms(id, url='load', meanings=[]) {
             $("#wordforms").html(result);
             $("#img-loading_wordforms").hide();                
             $(meanings).each(function(key, id) {
-        //console.log(this);        
+        //console.log(this);    
+               reloadWordformTotal();
                reloadExamplesForId(this);
             });
         },
@@ -43,6 +44,30 @@ function loadWordforms(id, url='load', meanings=[]) {
         }
     }); 
 }   
+
+
+function reloadWordformTotal() {
+    var block_name = "#wordform-total";
+    var lemma_id = $(block_name).data("id");
+    $(block_name).empty();
+//    $("#img-loading_").show();
+    $.ajax({
+        url: '/dict/lemma/'+lemma_id+'/wordform_total', 
+        type: 'GET',
+        success: function(result){
+            $(block_name).html(result);
+//            $("#img-loading_").hide();                
+        },
+        error: function() {
+            $(block_name).html('ERROR'); 
+/*        error: function(jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+')'; 
+            $("#meaning-examples_"+ id).html(text);*/
+//            $("#img-loading_").hide();                
+        }
+    }); 
+}    
 
 function reloadWordforms(i, attrs='', meanings=[]) {
     var id = $(i).data('reload');

@@ -1,5 +1,8 @@
-        <h3>
-            {{ trans('dict.wordforms') }}
+        <h3>{{ trans('dict.wordforms') }} 
+            @if ($lemma->wordform_total)
+            <span data-id="{{$lemma->id}}" id="wordform-total">({{$lemma->wordform_total}})</span>
+            @endif
+        </h3>
             @if (User::checkAccess('dict.edit'))
                 {!! Form::open(['url' => '/dict/lemma_wordform/'.$lemma->id.'/edit',
                                 'method' => 'get'])
@@ -26,7 +29,7 @@
             </div>                 
                 {!! Form::close() !!}
             @endif
-        </h3>
+        
 
         <img class="img-loading" id="img-loading_wordforms" src="{{ asset('images/loading.gif') }}">
         <div id="wordforms">

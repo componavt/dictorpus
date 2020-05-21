@@ -21,7 +21,7 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
-//use App\Models\Dict\LemmaWordform;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 use \App\Models\Dict\Wordform;
 
@@ -145,7 +145,7 @@ class LemmaWordformController extends Controller
 
         // updates links with text examples
 //        $lemma->updateTextLinks();
-                
+        $lemma->updateWordformTotal();        
         
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).($this->args_by_get ? '&' : '?').'update_text_links=1')
                        ->withSuccess(\Lang::get('messages.updated_success'));
@@ -209,6 +209,7 @@ class LemmaWordformController extends Controller
         }
         
         $lemma->reloadWordforms($dialect_id);
+        $lemma->updateWordformTotal();        
         
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
     }
@@ -246,6 +247,9 @@ class LemmaWordformController extends Controller
         $lemma->updateBases($lemma->getBases($dialect_id), $dialect_id);
         
         $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->detach();
+        
+        $lemma->wordform_total = LemmaWordform::whereLemmaId($lemma->id)->count();
+        $lemma->save();        
         
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 
     }

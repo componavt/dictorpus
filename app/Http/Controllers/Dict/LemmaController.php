@@ -273,11 +273,10 @@ class LemmaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        $lemma= Lemma::find($id);
+        $lemma= Lemma::findOrFail((int)$id);
         if (!$lemma) {
             return Redirect::to('/dict/lemma/'.($this->args_by_get))
                            ->withErrors('error.no_lemma');
@@ -940,5 +939,11 @@ class LemmaController extends Controller
                 
         return view('corpus.text.frequency.lemmas',
                 compact('lang_values', 'lemmas', 'pos_values', 'args_by_get', 'url_args'));
+    }
+    
+    public function getWordformTotal($id) {
+        $lemma= Lemma::findOrFail((int)$id);
+        $lemma->updateWordformTotal();
+        return "(".$lemma->wordform_total.")";
     }
 }

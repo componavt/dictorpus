@@ -109,6 +109,7 @@ Route::group(
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
+        Route::get('dict/lemma/{id}/wordform_total', 'Dict\LemmaController@getWordformTotal'); 
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');
         

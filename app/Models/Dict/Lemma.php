@@ -22,7 +22,7 @@ use App\Models\Dict\PartOfSpeech;
 
 class Lemma extends Model
 {
-    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search'];
+    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search', 'wordform_total'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -1639,6 +1639,11 @@ dd($wordforms);
                                      ->groupBy('lemma_id')
                                      ->havingRaw('count(*) = ?', [$w_count]);
                            });        
+    }
+
+    public function updateWordformTotal(){
+        $this->wordform_total = LemmaWordform::whereLemmaId($this->id)->count();
+        $this->save();                
     }
 
 

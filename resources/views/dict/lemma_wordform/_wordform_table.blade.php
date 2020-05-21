@@ -6,7 +6,7 @@
                 <th>{{ trans('dict.gramsets') }}</th>
                 @foreach ($lemma->existDialects() as $dialect_id=>$dialect_name)
                 <th>
-                    {{$dialect_name}}
+                    {{$dialect_name}} ({{$lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count()}})
                     @if (User::checkAccess('dict.edit'))
                         @include('widgets.form.button._edit', 
                                  ['route' => '/dict/lemma_wordform/'.$lemma->id.'/edit',
