@@ -887,6 +887,20 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    // Olo pezovezi
+    public function testStemsFromTemplateOloPezovezi() {
+        $lang_id = 5;
+        $pos_id = 5; //adjective
+        $dialect_id=44;
+        $num = '';
+        $template = "pezov|ezi (-ien, -etty; -ezii/-ezilöi)";
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [0=>['pezovezi', 'pezovie', 'pezovede', 'pezovetty', 'pezovezi/pezovezilöi', 'pezovezi/pezovezilöi'],
+            1=>null, 2=>'pezov', 3=>'ezi'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
     // stemsFromTemplate() veps nominals
     public function testStemsFromTemplateVeps() {
         $lang_id = 1;
@@ -1227,6 +1241,49 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        */
     }
     
+    public function testWordformsByStemsKarNameOloPezovezi() {
+        $template = 'pezo||v|ezi (-ien, -etty; -ezii/-ezilöi)';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'pezovezi',  56=>'pezovezi, pezovien', 3=>'pezovien',  4=>'pezovetty', 
+            277=>'pezovienny',  5=>'pezoviekse', 6=>'pezoviettäh', 8=>'pezovies',  
+            9=>'pezovies, pezoviespäi', 10=>'pezovedeh',  11=>'pezoviel', 
+            12=>'pezoviel, pezovielpäi', 13=>'pezoviele', 14=>'pezovienke', 15=>'pezovieči', 
+            
+            2=>'pezoviet', 57=>'pezoviet', 24=>'pezovezien, pezovezilöin', 22=>'pezovezii, pezovezilöi', 
+            279=>'pezovezinny, pezovezilöinny', 59=>'pezovezikse, pezovezilöikse', 
+            64=>'pezovezittah, pezovezilöittäh', 23=>'pezovezis, pezovezilöis', 
+            60=>'pezovezis, pezovezispäi, pezovezilöis, pezovezilöispäi', 61=>'pezovezih, pezovezilöih',  
+            25=>'pezovezil, pezovezilöil', 62=>'pezovezil, pezovezilpäi, pezovezilöil, pezovezilöilpäi', 
+            63=>'pezovezile, pezovezilöile', 65=>'pezovezienke, pezovezinneh, pezovezilöinke, pezovezilöinneh', 
+            66=>'pezoveziči, pezovezilöiči', 281=>'pezovezin, pezovezilöin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    // 3. puoli
+    public function testWordformsByStemsKarNameOloPuoli() {
+        $template = 'puol|i (-en, -du; -ii)';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'puoli',  56=>'puoli, puolen', 3=>'puolen',  4=>'puoldu', 
+            277=>'puolennu',  5=>'puolekse', 6=>'puolettah', 8=>'puoles',  
+            9=>'puoles, puolespäi', 10=>'puoleh',  11=>'puolel', 12=>'puolel, puolelpäi', 
+            13=>'puolele', 14=>'puolenke', 15=>'puoleči', 
+            2=>'puolet', 57=>'puolet', 24=>'puolien', 22=>'puolii', 279=>'puolinnu', 
+            59=>'puolikse', 64=>'puolittah', 23=>'puolis', 60=>'puolis, puolispäi', 
+            61=>'puolih',  25=>'puolil', 62=>'puolil, puolilpäi', 63=>'puolile', 
+            65=>'puolienke, puolinneh', 66=>'puoliči', 281=>'puolin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
     // 17. puhketa
     public function testWordformsByStemsKarVerbOloPuhketa() {
         $template = 'puhk|eta (-ien/-enen, -ieu/-enou; -etah; -ei/-eni, -ettih)';
@@ -1649,6 +1706,19 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
 /*    
+    public function testWordformsByStemsKarNameOloP() {
+        $template = 'pezo||v|ezi (-ien, -etty; -ezii/-ezilöi)';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'',  56=>'', 3=>'',  4=>'', 277=>'',  5=>'', 6=>'', 8=>'',  9=>'', 10=>'',  11=>'', 12=>'', 13=>'', 14=>'', 15=>'', 
+            2=>'', 57=>'', 24=>'', 22=>'', 279=>'', 59=>'', 64=>'', 23=>'', 60=>'', 61=>'',  25=>'', 62=>'', 63=>'', 65=>'', 66=>'', 281=>''];
+        $this->assertEquals( $expected, $result);        
+    }
+ * 
     public function testWordformsByStemsKarVerbOlo() {
         $template = '';
         $lang_id = 5;

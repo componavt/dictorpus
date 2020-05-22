@@ -47,6 +47,11 @@ class KarGram
      * @return Boolean
      */
     public static function isBackVowels($word) {
+/*        if (preg_match("/[äöy]/u", $word)) { 
+            return false;
+        }
+        return true;
+*/        
         if (preg_match("/[aou]/u", $word)) { 
             return true;
         }
