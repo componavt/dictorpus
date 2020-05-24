@@ -52,7 +52,7 @@ class KarGram
         }
         return true;
 */        
-        if (preg_match("/\|{2}(.+)$/", $word, $regs)) {
+        if (preg_match("/\|{2}(.+)$/", $word, $regs) || preg_match("/ǁ(.+)$/", $word, $regs)) {
             $word = $regs[1];
         }
         if (preg_match("/[aou]/u", $word)) { 
@@ -97,14 +97,12 @@ class KarGram
         return $gramsets;
     }
     
-    public static function garmVowel($stem, $vowel) {
-        if (!$vowel) {
-            return '';
-        }
-        $frontVowels = ['a'=>'ä', 'o'=>'ö', 'u'=>'y'];
-        if (self::isBackVowels($stem)) {
+    public static function garmVowel($harmony, $vowel) {
+        if (!$vowel || $harmony) {
             return $vowel;
         }
+        
+        $frontVowels = ['a'=>'ä', 'o'=>'ö', 'u'=>'y'];
         $vowels = preg_split("//", $vowel);
         $new_vowels = '';
         foreach ($vowels as $v) {
@@ -204,7 +202,7 @@ class KarGram
      * @return type
      */
     public static function stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive=null) {
-        if ($dialect_id == 47) {
+        if (preg_match("/\{/", $template)) {//if ($dialect_id == 47) {
             return self::stemsFromTemplateWithBases($template, $pos_id, $name_num);
         }
         
@@ -215,13 +213,12 @@ class KarGram
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return KarName::stemsFromTemplate($template, $name_num);
         } elseif ($pos_id == PartOfSpeech::getVerbID()) {
-        $template = preg_replace('/\|\|/','',$template);
             if (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {  
-                $name_num='def';
-                return [KarVerb::stemsFromTemplateDef($regs, $is_reflexive), $name_num, $regs[1], $regs[2]];    
+//dd('regs:',$regs);            
+                return KarVerb::stemsFromTemplateDef($regs, $is_reflexive);    
             } elseif (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\,\s*".$okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  
 //dd('regs:',$regs);            
-                return [KarVerb::stemsFromTemplate($regs, $is_reflexive), $name_num, $regs[1], $regs[2]];    
+                return KarVerb::stemsFromTemplate($regs, $is_reflexive);    
             } else {
 //dd("!!!!");                
                 return Grammatic::getAffixFromtemplate($template, $name_num);

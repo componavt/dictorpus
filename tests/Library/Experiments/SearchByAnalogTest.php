@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Experiments\SearchByAnalog;
 
-// ./vendor/bin/phpunit tests/Library/ExperimentTest
+// ./vendor/bin/phpunit tests/Library/Experiments/SearchByAnalogTest
 class SearchByAnalogTest extends TestCase
 {
     /**

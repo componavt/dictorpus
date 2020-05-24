@@ -62,10 +62,6 @@ class VepsGram
     
     public static function stemsFromTemplate($template, $pos_id, $name_num = null, $is_reflexive = null) {
 //dd($template);        
-        if (!preg_match("/\{\{/", $template)) {
-            $template = preg_replace('/\|\|/','',$template);
-        }
-        
         $arg = "([^\|]*)";
         $div_arg = "\|".$arg;
         $base_shab = "([^\s\(\|]+)";
@@ -80,14 +76,11 @@ class VepsGram
             (preg_match('/^{{vep-conj-stems'.$div_arg.$div_arg.$div_arg.'\|?'.$arg.'}}$/u',$template, $regs) ||
             preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab."\,?\s*-?([^\,\;]*)\,?\s*-?([^\,\;]*)\)/", $template, $regs))) {  
 //dd('regs:',$regs);            
-            $base = $regs[1];
-            $base_suff = $regs[2];
-            $stems = VepsVerb::stemsFromTemplate($regs, $is_reflexive);
+            return VepsVerb::stemsFromTemplate($regs, $is_reflexive);
         } else {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
 //dd('stems out:',$stems);                
-        return [$stems, $name_num, $base, $base_suff];
     }
     
     public static function stemsFromDB($lemma, $dialect_id) {

@@ -51,7 +51,8 @@ class Grammatic
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id'], $is_reflexive);
 //dd($stems);        
 //dd($max_stem, $affix);        
-        $lemma = $max_stem. $affix;
+        $lemma = preg_replace("/\|\|/", '',$max_stem). $affix;
+
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'], $name_num, $stems, $is_reflexive);
 //dd($gramset_wordforms);        
@@ -62,11 +63,10 @@ class Grammatic
     }
 
     public static function getAffixFromtemplate($template, $name_num) {       
-        $template = preg_replace("/\|\|/",'',$template);
         if (!preg_match("/\s/", $template) && preg_match("/^([^\{\(]*)\|([^\|]*)$/", $template, $regs)) {
             $base = $regs[1];
             $base_suff = $regs[2];
-            $stems[0] = $base.$base_suff;
+            $stems[0] = preg_replace("/ǁ/",'',$base).$base_suff;
         } else {
             $base = $template;
             $stems = $base_suff = null;
@@ -135,25 +135,29 @@ class Grammatic
      * @param Int $pos_id
      * @return Array [array_of_stems, name_of_number, max_stem, affix]
      */
-    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null, $is_reflexive=null) {
+    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null, $is_reflexive=null) {       
         $template = trim($template);
-        
         if (!in_array($lang_id, self::langsWithRules())) {// is not langs with rules 
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
-/*
+
         if (!preg_match("/\{\{/", $template)) {
-            $template = preg_replace('/\|\|/','',$template);
+            $template = preg_replace('/\|\|/','ǁ',$template);
         }
-*/     
+     
         if ($lang_id == 1) {
-            return VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);                
-        } 
-        
-        return KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);                
+            list($stems, $name_num, $max_stem, $affix) = VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);  
+        } else {
+            list($stems, $name_num, $max_stem, $affix) = KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);       
+        }
+        $max_stem = preg_replace('/ǁ/','||',$max_stem);
+        if ($lang_id != 1 && is_array($stems) && sizeof($stems)>1) {
+            $stems[10] = KarGram::isBackVowels($max_stem.$affix);
+        }
+        return [$stems, $name_num, $max_stem, $affix];
     }
 
     public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems, $is_reflexive=null) {
@@ -254,6 +258,7 @@ class Grammatic
      * @return string
      */
     public static function toRightForm($word) {
+        $word = trim($word);
         $word = self::removeSpaces($word);
         $word = preg_replace("/['´`΄]+/", "’", $word);
         return $word;

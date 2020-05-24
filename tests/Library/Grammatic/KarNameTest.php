@@ -21,7 +21,7 @@ class KarNameTest extends TestCase
         $lang_id=4;
         $gramset_id = 1;
         $name_num = 'pl';
-        $stems = ['aluššovat', '', '', '', 'aluššovi', 'aluššobi'];
+        $stems = ['aluššovat', '', '', '', 'aluššovi', 'aluššobi', 10=>TRUE];
         $result = KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
         
         $expected = '';
@@ -39,7 +39,7 @@ class KarNameTest extends TestCase
         $lang_id=4;
         $gramset_id = 2;
         $name_num = 'pl';
-        $stems = ['aluššovat', '', '', '', 'aluššovi', 'aluššobi'];
+        $stems = ['aluššovat', '', '', '', 'aluššovi', 'aluššobi', 10=>TRUE];
         $result = KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
         
         $expected = 'aluššovat';
@@ -51,7 +51,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['paikku', 'paika', 'paikka', 'paikkua', 'paikoi', 'paikkoi'], '', 'paik', 'ku'];
+        $expected = [['paikku', 'paika', 'paikka', 'paikkua', 'paikoi', 'paikkoi', 10=>TRUE], '', 'paik', 'ku'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -60,7 +60,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['pajojoukko', 'pajojouko', 'pajojoukko', 'pajojoukkuo', 'pajojoukkoloi', 'pajojoukkoloi'], '', 'pajojouk', 'ko'];
+        $expected = [['pajojoukko', 'pajojouko', 'pajojoukko', 'pajojoukkuo', 'pajojoukkoloi', 'pajojoukkoloi', 10=>TRUE], '', 'pajojouk', 'ko'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -69,7 +69,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['puoli', 'puole', 'puole', 'puoldu', 'puoli', 'puoli'], '', 'puol', 'i'];
+        $expected = [['puoli', 'puole', 'puole', 'puoldu', 'puoli', 'puoli', 10=>TRUE], '', 'puol', 'i'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -78,7 +78,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['päppi', 'päpi', 'päppi', 'päppii', 'päppilöi', 'päppilöi'], '', 'päp', 'pi'];
+        $expected = [['päppi', 'päpi', 'päppi', 'päppii', 'päppilöi', 'päppilöi', 10=>FALSE], '', 'päp', 'pi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -87,7 +87,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['piä', 'piä', 'piä', 'piädy', 'piälöi', 'piälöi'], '', 'piä', ''];
+        $expected = [['piä', 'piä', 'piä', 'piädy', 'piälöi', 'piälöi', 10=>FALSE], '', 'piä', ''];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -96,7 +96,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['pačkeh', 'pačkehe', 'pačkehe', 'pačkehtu', 'pačkehi', 'pačkehi'], '', 'pačkeh', ''];
+        $expected = [['pačkeh', 'pačkehe', 'pačkehe', 'pačkehtu', 'pačkehi', 'pačkehi', 10=>TRUE], '', 'pačkeh', ''];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -105,7 +105,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['pada', 'pua', 'pada', 'padua', 'pavoi', 'padoi'], '', 'pada', ''];
+        $expected = [['pada', 'pua', 'pada', 'padua', 'pavoi', 'padoi', 10=>TRUE], '', 'pada', ''];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -114,16 +114,16 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['poudu', 'povva', 'pouda', 'poudua', 'povvi', 'poudi'], '', 'po', 'udu'];
+        $expected = [['poudu', 'povva', 'pouda', 'poudua', 'povvi', 'poudi', 10=>TRUE], '', 'po', 'udu'];
         $this->assertEquals( $expected, $result);                
     }
     
     public function testStemsFromTemplatePaganrengi() {
-        $template = 'paganrengi (-n, -i; -löi)';
+        $template = 'paganǁrengi (-n, -i; -löi)';
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['paganrengi', 'paganrengi', 'paganrengi', 'paganrengii', 'paganrengilöi', 'paganrengilöi'], '', 'paganrengi', ''];
+        $expected = [['paganrengi', 'paganrengi', 'paganrengi', 'paganrengii', 'paganrengilöi', 'paganrengilöi', 10=>FALSE], '', 'paganǁrengi', ''];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -132,16 +132,16 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['kolmaspäivy', 'kolmanpiä', 'kolmattupäivä', 'kolmattupäiviä', 'kolmanziipäivi', 'kolmanziipäivi'], '', 'kolma', 'späivy'];
+        $expected = [['kolmaspäivy', 'kolmanpiä', 'kolmattupäivä', 'kolmattupäiviä', 'kolmanziipäivi', 'kolmanziipäivi', 10=>TRUE], '', 'kolma', 'späivy'];
         $this->assertEquals( $expected, $result);                
     }
     
     public function testStemsFromTemplatePahavuozi() {
-        $template = 'pahavu|ozi (-vven, -ottu; -ozii)';
+        $template = 'pahaǁvu|ozi (-vven, -ottu; -ozii)';
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['pahavuozi', 'pahavuvve', 'pahavuode', 'pahavuottu', 'pahavuozi', 'pahavuozi'], '', 'pahavu', 'ozi'];
+        $expected = [['pahavuozi', 'pahavuvve', 'pahavuode', 'pahavuottu', 'pahavuozi', 'pahavuozi', 10=>TRUE], '', 'pahaǁvu', 'ozi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -150,7 +150,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['abei', 'abie', 'abie', 'abiedu', 'abieloi', 'abieloi'], '', 'ab', 'ei'];
+        $expected = [['abei', 'abie', 'abie', 'abiedu', 'abieloi', 'abieloi', 10=>TRUE], '', 'ab', 'ei'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -159,7 +159,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['uuzi', 'uvve', 'uude', 'uuttu', 'uuzi', 'uuzi'], '', 'uuzi', ''];
+        $expected = [['uuzi', 'uvve', 'uude', 'uuttu', 'uuzi', 'uuzi', 10=>TRUE], '', 'uuzi', ''];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -168,7 +168,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['vuozi', 'vuvve', 'vuode', 'vuottu', 'vuozi', 'vuozi'], '', 'vu', 'ozi'];
+        $expected = [['vuozi', 'vuvve', 'vuode', 'vuottu', 'vuozi', 'vuozi', 10=>TRUE], '', 'vu', 'ozi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -177,7 +177,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['tozi', 'tove', 'tode', 'tottu', 'tozi', 'tozi'], '', 'to', 'zi'];
+        $expected = [['tozi', 'tove', 'tode', 'tottu', 'tozi', 'tozi', 10=>TRUE], '', 'to', 'zi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -186,7 +186,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['reizi', 'reije', 'reide', 'reisty', 'reizi', 'reizi'], '', 'rei', 'zi'];
+        $expected = [['reizi', 'reije', 'reide', 'reisty', 'reizi', 'reizi', 10=>FALSE], '', 'rei', 'zi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -195,7 +195,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['mägi', 'mäi', 'mäge', 'mägie', 'mägilöi', 'mägilöi'], '', 'mä', 'gi'];
+        $expected = [['mägi', 'mäi', 'mäge', 'mägie', 'mägilöi', 'mägilöi', 10=>FALSE], '', 'mä', 'gi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -204,7 +204,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['lagi', 'lai', 'lage', 'lagie', 'lagiloi', 'lagiloi'], '', 'la', 'gi'];
+        $expected = [['lagi', 'lai', 'lage', 'lagie', 'lagiloi', 'lagiloi', 10=>TRUE], '', 'la', 'gi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -213,7 +213,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['käzi', 'käi', 'käde', 'kätty', 'käzi', 'käzi'], '', 'kä', 'zi'];
+        $expected = [['käzi', 'käi', 'käde', 'kätty', 'käzi', 'käzi', 10=>FALSE], '', 'kä', 'zi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -222,7 +222,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['pedäi', 'pedäjä', 'pedäjä', 'pedäjiä', 'pedäji', 'pedäji'], '', 'pedä', 'i'];
+        $expected = [['pedäi', 'pedäjä', 'pedäjä', 'pedäjiä', 'pedäji', 'pedäji', 10=>FALSE], '', 'pedä', 'i'];
         $this->assertEquals( $expected, $result);                
     }
  
@@ -231,7 +231,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['parzi', 'parre', 'parde', 'partu', 'parzi/parziloi', 'parzi/parziloi'], '', 'par', 'zi'];
+        $expected = [['parzi', 'parre', 'parde', 'partu', 'parzi/parziloi', 'parzi/parziloi', 10=>true], '', 'par', 'zi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -240,16 +240,16 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['kanzi', 'kanne', 'kande', 'kantu', 'kanzi/kanziloi', 'kanzi/kanziloi'], '', 'kan', 'zi'];
+        $expected = [['kanzi', 'kanne', 'kande', 'kantu', 'kanzi/kanziloi', 'kanzi/kanziloi', 10=>true], '', 'kan', 'zi'];
         $this->assertEquals( $expected, $result);                
     }
     
     public function testStemsFromTemplatePezovezi() {
-        $template = 'pezov|ezi (-ien, -etty; -ezii/-ezilöi)';
+        $template = 'pezoǁv|ezi (-ien, -etty; -ezii/-ezilöi)';
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['pezovezi', 'pezovie', 'pezovede', 'pezovetty', 'pezovezi/pezovezilöi', 'pezovezi/pezovezilöi'], '', 'pezov', 'ezi'];
+        $expected = [['pezovezi', 'pezovie', 'pezovede', 'pezovetty', 'pezovezi/pezovezilöi', 'pezovezi/pezovezilöi', 10=>FALSE], '', 'pezoǁv', 'ezi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -258,7 +258,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['kuzi', 'kuze', 'kuze', 'kustu', 'kuzi/kuziloi', 'kuzi/kuziloi'], '', 'ku', 'zi'];
+        $expected = [['kuzi', 'kuze', 'kuze', 'kustu', 'kuzi/kuziloi', 'kuzi/kuziloi', 10=>true], '', 'ku', 'zi'];
         $this->assertEquals( $expected, $result);                
     }
     
@@ -295,7 +295,7 @@ class KarNameTest extends TestCase
         $name_num = '';
         $result = KarName::stemsFromTemplate($template, $name_num);
 
-        $expected = [['märrättävy', 'märrättävä', 'märrättävä', 'märrättäviä', 'märrättävi', 'märrättävi'], '', 'märrättäv', 'y'];
+        $expected = [['märrättävy', 'märrättävä', 'märrättävä', 'märrättäviä', 'märrättävi', 'märrättävi', 10=>false], '', 'märrättäv', 'y'];
         $this->assertEquals( $expected, $result);                
     }
     

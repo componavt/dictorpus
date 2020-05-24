@@ -7,7 +7,19 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Library\Grammatic;
 use App\Models\Dict\Lemma;
 // php artisan make:test Library\GrammaticTest
-// ./vendor/bin/phpunit tests/Library/GrammaticTest
+/* 
+ ./vendor/bin/phpunit tests/Library/GrammaticTest
+ * 
+ ./vendor/bin/phpunit tests/Library/Grammatic/KarGramTest
+ ./vendor/bin/phpunit tests/Library/Grammatic/KarNameOloTest
+ ./vendor/bin/phpunit tests/Library/Grammatic/KarNameTest
+ ./vendor/bin/phpunit tests/Library/Grammatic/KarVerbOloTest
+ ./vendor/bin/phpunit tests/Library/Grammatic/KarVerbTest
+ * 
+ ./vendor/bin/phpunit tests/Library/Grammatic/VepsGramTest
+ ./vendor/bin/phpunit tests/Library/Grammatic/VepsNameTest
+ ./vendor/bin/phpunit tests/Library/Grammatic/VepsVerbTest
+ */
 
 class GrammaticTest extends TestCase
 {
@@ -222,7 +234,7 @@ class GrammaticTest extends TestCase
     
     public function testverbWordformByStemsAndazin() {
         $lang_id = 4;
-        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
+        $stems = [0=>'andua', 1=>'anna', 2=>'anda', 3=>'annoi', 4=>'ando', 5=>'anda', 6=>'anneta', 7=>'annett', 10=>true];
         $gramset_id = 44; //71. кондиционал, имперфект, 1 л., ед. ч., пол.
         $dialect_id=47;
         $result = Grammatic::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
@@ -233,7 +245,7 @@ class GrammaticTest extends TestCase
     
     public function testVerbWordformByStems282Andua() {
         $lang_id = 4;
-        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
+        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett', 10=>true];
         $gramset_id = 282; //141. актив, 2-е причастие  (сокращенная форма); перфект (форма основного глагола)
         $dialect_id=47;
         $result = Grammatic::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
@@ -244,7 +256,7 @@ class GrammaticTest extends TestCase
     
     public function testVerbWordformByStemsActive1Partic() {
         $lang_id = 4;
-        $stems = ['tulla', 'tule', 'tule', 'tuli', 'tuli', 'tul', 'tulla', 'tuld'];
+        $stems = ['tulla', 'tule', 'tule', 'tuli', 'tuli', 'tul', 'tulla', 'tuld', 10=>true];
         $gramset_id = 178; //139. актив, 1-е причастие 
         $dialect_id=47;
         $result = Grammatic::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
@@ -255,7 +267,7 @@ class GrammaticTest extends TestCase
     
     public function testCondImp3SingPolByStemAndazin() {
         $lang_id = 4;
-        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
+        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett', 10=>true];
         $gramset_id = 46; //73. кондиционал, имперфект, 3 л., ед. ч., пол.
         $dialect_id=47;
         $result = Grammatic::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
@@ -266,7 +278,7 @@ class GrammaticTest extends TestCase
     
     public function testPotPres3PlurPolByStemAnnettanneh() {
         $lang_id = 4;
-        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett'];
+        $stems = ['andua', 'anna', 'anda', 'annoi', 'ando', 'anda', 'anneta', 'annett', 10=>true];
         $gramset_id = 151; //12. потенциал, презенс, 3 л., мн. ч., пол.
         $dialect_id=47;
         $result = Grammatic::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id);
@@ -575,7 +587,7 @@ class GrammaticTest extends TestCase
         }
         $this->assertEquals(array_values($words), $result);        
     }
-*/    
+*/   
     public function testToRightFormDiacretBeforeO() {
         $words = ['kaĺĺo' => 'kal’l’o',
             'kĺon' => 'kl’on',
@@ -867,7 +879,7 @@ class GrammaticTest extends TestCase
         $template = "{pieni, piene, piene, piendä, pieni, pieni}";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
 //dd($result);        
-        $expected = [0=>['pieni', 'piene', 'piene', 'piendä', 'pieni', 'pieni'],
+        $expected = [0=>['pieni', 'piene', 'piene', 'piendä', 'pieni', 'pieni', 10=>false],
             1=>null, 2=>'pien', 3=>'i'];
         $this->assertEquals( $expected, $result);        
     }
@@ -881,7 +893,7 @@ class GrammaticTest extends TestCase
         $template = "{tulla, tule, tule, tuli, tuli, tul, tulla, tuld}";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
 //dd($result);        
-        $expected = [0=>['tulla', 'tule', 'tule', 'tuli', 'tuli', 'tul', 'tulla', 'tuld'],
+        $expected = [0=>['tulla', 'tule', 'tule', 'tuli', 'tuli', 'tul', 'tulla', 'tuld', 10=>true],
             1=>null, 2=>'tul', 3=>'la'];
 //dd($result);        
         $this->assertEquals( $expected, $result);        
@@ -893,11 +905,11 @@ class GrammaticTest extends TestCase
         $pos_id = 5; //adjective
         $dialect_id=44;
         $num = '';
-        $template = "pezov|ezi (-ien, -etty; -ezii/-ezilöi)";
+        $template = "pezo||v|ezi (-ien, -etty; -ezii/-ezilöi)";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
 //dd($result);        
-        $expected = [0=>['pezovezi', 'pezovie', 'pezovede', 'pezovetty', 'pezovezi/pezovezilöi', 'pezovezi/pezovezilöi'],
-            1=>null, 2=>'pezov', 3=>'ezi'];
+        $expected = [0=>['pezovezi', 'pezovie', 'pezovede', 'pezovetty', 'pezovezi/pezovezilöi', 'pezovezi/pezovezilöi', 10=>false],
+            1=>null, 2=>'pezo||v', 3=>'ezi'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1056,7 +1068,7 @@ class GrammaticTest extends TestCase
                       2=>'abuozuteseliže', 
                       3=>'abuozuteselišt', 
                       4=>'abuozuteseliži', 
-                      5=>''], $num, 'abuozuteseli', 'ne'];
+                      5=>''], $num, 'abu||ozuteseli', 'ne'];
         $this->assertEquals( $expected, $result);        
     }
    
@@ -1073,7 +1085,8 @@ class GrammaticTest extends TestCase
                       2=>'Kariela', 
                       3=>'Karielua', 
                       4=>'', 
-                      5=>''], $num, 'Kariel', 'a'];
+                      5=>'',
+                      10=>true], $num, 'Kariel', 'a'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1084,7 +1097,7 @@ class GrammaticTest extends TestCase
         $template = "neičuka|ine (-ižed, -št, -ižid)";
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id);
 //dd($result);        
-        $expected = [0=>['neičuka|ine (-ižed, -št, -ižid)'],
+        $expected = [0=>['neičukaine'],
             1=>null, 2=>'neičuka|ine (-ižed, -št, -ižid)', 3=>null];
         $this->assertEquals( $expected, $result);        
     }
@@ -1096,7 +1109,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'abuozuteseline'], $num, 'abuozuteseli', 'ne'];
+        $expected = [[0=>'abuozuteseline'], $num, 'abu||ozuteseli', 'ne'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1107,7 +1120,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [NULL, $num, 'abuozuteseli|ne (', NULL];
+        $expected = [NULL, $num, 'abu||ozuteseli|ne (', NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1129,7 +1142,7 @@ class GrammaticTest extends TestCase
         $num = null;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'abudengu'], $num, 'abudeng', 'u'];
+        $expected = [[0=>'abudengu'], $num, 'abu||deng', 'u'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1140,7 +1153,7 @@ class GrammaticTest extends TestCase
         $num = null;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'abudengu'], $num, 'abudeng', 'u'];
+        $expected = [[0=>'abudengu'], $num, 'abu||deng', 'u'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1151,7 +1164,7 @@ class GrammaticTest extends TestCase
         $num = null;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [NULL, $num, 'abudeng|u (-an,', NULL];
+        $expected = [NULL, $num, 'abu||deng|u (-an,', NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1162,7 +1175,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'allekirjutada'], $num, 'allekirjut', 'ada'];
+        $expected = [[0=>'allekirjutada'], $num, 'alle||kirjut', 'ada'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1173,7 +1186,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [NULL, $num, 'allekirjut|ada (', NULL];
+        $expected = [NULL, $num, 'alle||kirjut|ada (', NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1195,7 +1208,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'allekirjuttua'], $num, 'allekirjut', 'tua'];
+        $expected = [[0=>'allekirjuttua'], $num, 'alle||kirjut', 'tua'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1206,7 +1219,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [[0=>'allekirjuttua'], $num, 'allekirjut', 'tua'];
+        $expected = [[0=>'allekirjuttua'], $num, 'alle||kirjut', 'tua'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1217,7 +1230,7 @@ class GrammaticTest extends TestCase
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
 //dd($result);        
-        $expected = [NULL, $num, 'allekirjut|tua (', NULL];
+        $expected = [NULL, $num, 'alle||kirjut|tua (', NULL];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1240,7 +1253,7 @@ class GrammaticTest extends TestCase
         $expected = 'abaji/abajoi';
         $this->assertEquals( $expected, $result);        
     }
-    
+  
     public function testWordformsByStemsKarNameOloPezovezi() {
         $template = 'pezo||v|ezi (-ien, -etty; -ezii/-ezilöi)';
         $lang_id = 5;
@@ -1256,7 +1269,7 @@ class GrammaticTest extends TestCase
             
             2=>'pezoviet', 57=>'pezoviet', 24=>'pezovezien, pezovezilöin', 22=>'pezovezii, pezovezilöi', 
             279=>'pezovezinny, pezovezilöinny', 59=>'pezovezikse, pezovezilöikse', 
-            64=>'pezovezittah, pezovezilöittäh', 23=>'pezovezis, pezovezilöis', 
+            64=>'pezovezittäh, pezovezilöittäh', 23=>'pezovezis, pezovezilöis', 
             60=>'pezovezis, pezovezispäi, pezovezilöis, pezovezilöispäi', 61=>'pezovezih, pezovezilöih',  
             25=>'pezovezil, pezovezilöil', 62=>'pezovezil, pezovezilpäi, pezovezilöil, pezovezilöilpäi', 
             63=>'pezovezile, pezovezilöile', 65=>'pezovezienke, pezovezinneh, pezovezilöinke, pezovezilöinneh', 

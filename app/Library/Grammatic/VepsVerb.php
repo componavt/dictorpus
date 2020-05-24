@@ -122,52 +122,49 @@ class VepsVerb
      * 
      * @param Array $regs
      * @return array [0=>base_of_infinitive, 1=>base_of_presence, 
-     *                2=>base_of_perfect, 3=>base_of_past_actvive_participle,
+     *                2=>base_of_imperfect, 3=>base_of_past_actvive_participle,
      *                4=>base_of_conditional, 5=>base_of_potentional, 
      *                6=>consonant (d/t), 7=>vowel (a/ä), 8=>imperative_3Sg]
      */
     public static function stemsFromTemplate($regs, $is_reflexive=false) {
 //dd($regs);        
         $stems = [];
-        if (sizeof($regs)<5) {
-            return $stems;
-        }
-        $base  = $regs[1];
+        $base = preg_replace('/ǁ/','',$regs[1]);
         $past_suff = $regs[4];
-
+        
         $regs1 = self::parseInf($regs[2], $is_reflexive);
         if (!$regs1) {
-            return null;
+            return [$stems, null, $regs[0], null];
         }
-        $inf_stem = $base. $regs1[1]; // = lemma without [dt][aä]
-        $cons = $regs1[2];
-        $harmony = $regs1[3];
-
-        $pres_stem = self::parsePres3Sg($base. $regs[3], $is_reflexive);
-        if (!$pres_stem) {
-            return null;
+        $stems[0] = $base. $regs1[1]; // = lemma without [dt][aä]
+        $out = [$stems, null, $regs[0], null];
+        
+        $stems[1] = self::parsePres3Sg($base. $regs[3], $is_reflexive);
+        if (!$stems[1]) {
+            return $out;
         }        
         
-        $past_stem = $base. $past_suff;
+        $stems[2] = $base. $past_suff;
 //dd($past_stem);    
         if ($is_reflexive) {
-            if (preg_match("/^(.+i)he$/u", $past_stem, $regs_past)) { // должен оканчиваться на ihe
-                $past_stem = $regs_past[1];
+            if (preg_match("/^(.+i)he$/u", $stems[2], $regs_past)) { // должен оканчиваться на ihe
+                $stems[2] = $regs_past[1];
             } else {
-                return null;
+                return $out;
             }
         }
-        if (!preg_match("/i$/u", $past_stem)) { // должен оканчиваться на i
-            return null;
+        if (!preg_match("/i$/u", $stems[2])) { // должен оканчиваться на i
+            return $out;
         }
         
-        $past_actv_ptcp_stem = self::getStemPAP($inf_stem, $pres_stem);       
-        $cond_stem = self::getStemCond($pres_stem);        
-        $potn_stem = self::getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem);
-        $imper = isset($regs[5]) && $regs[5] ? $base. $regs[5] : '';
+        $stems[3] = self::getStemPAP($stems[0], $stems[1]);       
+        $stems[4] = self::getStemCond($stems[1]);        
+        $stems[5] = self::getStemPoten($stems[0], $stems[1], $stems[3]);
+        $stems[6] = $regs1[2]; // consonant
+        $stems[7] = $regs1[3]; // harmony
+        $stems[8] = isset($regs[5]) && $regs[5] ? $base. $regs[5] : '';
         
-        return [$inf_stem, $pres_stem, $past_stem, $past_actv_ptcp_stem,
-                $cond_stem, $potn_stem, $cons, $harmony, $imper];        
+        return [$stems, null, $regs[1], $regs[2]];
     }
     
     /**

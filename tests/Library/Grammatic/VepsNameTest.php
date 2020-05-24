@@ -96,7 +96,7 @@ class VepsNameTest extends TestCase
         $num = NULL;
         $result = VepsName::stemsFromTemplate($template, $num);
 //dd($result);        
-        $expected = [null, $num, 'aigmäriče|z (-sen, -st)', null];
+        $expected = [null, $num, 'aig||märiče|z (-sen, -st)', null];
         $this->assertEquals( $expected, $result);        
     }
     

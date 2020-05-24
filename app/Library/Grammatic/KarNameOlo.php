@@ -28,11 +28,11 @@ class KarNameOlo
             case 56: // аккузатив, ед.ч. 
                 return $stems[0].($stems[1] ? ', '.$stems[1].'n' : '');
             case 277: // эссив, ед.ч. 
-                return $stems[1] ? $stems[1].'nn'. KarGram::garmVowel($stems[1].$stems[3],'u') : '';
+                return $stems[1] ? $stems[1].'nn'. KarGram::garmVowel($stems[10],'u') : '';
             case 5: // транслатив, ед.ч. 
                 return $stems[1] ? $stems[1].'kse' : '';
             case 6: // абессив, ед.ч. 
-                return $stems[1] ? $stems[1].'tt'. KarGram::garmVowel($stems[1].$stems[3],'a'). 'h' : '';
+                return $stems[1] ? $stems[1].'tt'. KarGram::garmVowel($stems[10],'a'). 'h' : '';
             case 8: // инессив, ед.ч. 
                 return $stems[1] ? $stems[1].'s' : '';
             case 9: // элатив, ед.ч. 
@@ -57,11 +57,11 @@ class KarNameOlo
             case 22: // партитив, мн.ч. 
                 return self::partPl($stems[5]);
             case 279: // эссив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 'nn'. KarGram::garmVowel($stems[4],'u'));
+                return self::addEndToMultiBase($stems[4], 'nn'. KarGram::garmVowel($stems[10],'u'));
             case 59: // транслатив, мн.ч. 
                 return self::addEndToMultiBase($stems[4], 'kse');
             case 64: // абессив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[4],'a'). 'h');
+                return self::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[10],'a'). 'h');
             case 23: // инессив, мн.ч.
                 return self::addEndToMultiBase($stems[4], 's');
             case 60: // элатив, мн.ч.

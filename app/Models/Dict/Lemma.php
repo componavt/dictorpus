@@ -1052,6 +1052,7 @@ dd($wordforms);
         if (!$stem) {
             return NULL;
         }
+        $stem = preg_replace('/\|\|/','',$stem);
         if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
             return $regs[1];
         }
@@ -1467,6 +1468,7 @@ dd($wordforms);
         if (!$this->reverseLemma || !$this->reverseLemma->stem || !in_array($this->lang_id, [1,5]) || !$dialect_id) { // not veps and livvi
             return $out;
         }
+        $max_stem = preg_replace("/\|\|/", '', $this->reverseLemma->stem);
         $gramsets = Gramset::dictionaryGramsets($this->pos_id, isset($this->features->number) ? $this->features->number : NULL, $this->lang_id);
         if (!$gramsets || !is_array($gramsets) || sizeof($gramsets)<2) { return $out; }
         array_pop($gramsets);
@@ -1481,7 +1483,7 @@ dd($wordforms);
             }
             $tmp = [];
             foreach ($wforms as $w) {
-                if (!preg_match("/^".$this->reverseLemma->stem."(.*)$/u", $w->wordform, $regs)) {
+                if (!preg_match("/^".$max_stem."(.*)$/u", $w->wordform, $regs)) {
                     return $out;
                 } else {
                     $tmp[] = '-'.$regs[1];

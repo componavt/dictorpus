@@ -23,7 +23,7 @@ class KarGramTest extends TestCase
     public function testGarmVowelFront2Let() {
         $stem = 'mäne';
         $vowel = 'ou';
-        $result = KarGram::garmVowel($stem, $vowel);
+        $result = KarGram::garmVowel(KarGram::isBackVowels($stem), $vowel);
         
         $expected = 'öy';
         $this->assertEquals( $expected, $result);        

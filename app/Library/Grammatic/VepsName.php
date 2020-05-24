@@ -86,22 +86,20 @@ class VepsName
         if (preg_match("/^{{vep-decl-stems\|n=pl".$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
                 ($name_num == 'pl' && preg_match($lemma_okon1_shab."\)/", $template, $regs))) {
             $name_num = 'pl';
-            list($stems, $base, $base_suff) =  self::stemsPlFromTemplate($regs);
+            return self::stemsPlFromTemplate($regs);
         // only single
         } elseif (preg_match("/^{{vep-decl-stems\|n=sg".$div_arg.$div_arg.$div_arg.$div_arg."}}$/u",$template, $regs) ||
                 ($name_num == 'sg' && preg_match($lemma_okon1_shab."\,?\s*-?([^\,\;]*)\)/", $template, $regs)) ||
                 (preg_match($lemma_okon1_shab."\)/", $template, $regs))) {
             $name_num = 'sg';
-            list($stems, $base, $base_suff) =  self::stemsSgFromTemplate($regs);
+            return self::stemsSgFromTemplate($regs);
         // others
         } elseif (preg_match("/^{{vep-decl-stems".$div_arg.$div_arg.$div_arg.$div_arg."\|?".$arg."}}$/u",$template, $regs) ||
                 preg_match($lemma_okon1_shab."\,\s*-?([^\,\;]*)[\;\,]?\s*-([^\,\;]+)\)/", $template, $regs)) {
-            list($stems, $base, $base_suff) = self::stemsOthersFromTemplate($regs, $name_num);
+            return self::stemsOthersFromTemplate($regs, $name_num);
         } else {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
-//dd($base);        
-        return [$stems, $name_num, $base, $base_suff];
     }
     
     public static function getStemFromStems($stems, $stem_n, $dialect_id) {
@@ -129,30 +127,32 @@ class VepsName
      */
     public static function stemsOthersFromTemplate($regs, $name_num=NULL) {
 //dd($regs);    
-        $out = [[$regs[0]], $regs[0], null];
-        $base = $regs[1];
-        $base_suff = $regs[2];
+        $base = preg_replace('/ǁ/','',$regs[1]);
+        $stems[0] = $base.$regs[2];
+        $out = [$stems, $name_num, $regs[0], null];
         $gen_sg_suff = $regs[3];
         $par_sg_suff = $regs[4];
         $par_pl_suff = $regs[5];
-
+//dd($stems);
         if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs_gen)) {
             return $out;
         }
+//dd($stems);
         if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs_par)) {
             return $out;
         }
         
-        $stems[0] = $base.$regs[2];
         $stems[1] = $base. $regs_gen[1]; // single genetive base 
-        if (!self::isRightVowelBase($stems[1])) {return $out;}
+        if (!self::isRightVowelBase($stems[1])) {
+            return $out;            
+        }
         
         $stems[2] = self::illSgBase($stems[1]); // single illative base
         $stems[3] = $par_sg_suff ? $base.$par_sg_suff : $stems[1].'d'; // single partitive base
         $stems[4] = $base. $regs_par[1]; // plural partitive base
         $stems[5] = '';
 //dd('stems:',$stems);        
-        return [$stems, $base, $base_suff];
+        return [$stems, $name_num, $regs[1], $regs[2]];
     }
 
     /**
@@ -167,20 +167,20 @@ class VepsName
      * @return Array
      */
     public static function stemsPlFromTemplate($regs) {
-        $base = $regs[1];
-        $base_suff = $regs[2];
+        $base = preg_replace('/ǁ/','',$regs[1]);
+        $stems[0] = $base.$regs[2];                
+        $out = [$stems, 'pl', $regs[0], null];
         $par_pl_suff = $regs[3];
 //dd($par_pl_suff);        
         if (!preg_match("/^(.*)d$/", $par_pl_suff, $regs1)) {
-            return [null, null, null];
+            return $out;
         }
         
-        $stems[0] = $base.$base_suff;                
         $stems[1] = $stems[2] = $stems[3] = '';
         $stems[4] = $base. $regs1[1];
         $stems[5] = '';
 //dd($stems);        
-        return [$stems, $base, $base_suff];
+        return [$stems, 'pl', $regs[1], $regs[2]];
     }
 
     /**
@@ -192,27 +192,27 @@ class VepsName
      */
     public static function stemsSgFromTemplate($regs) {
 //dd($regs);        
-        $base = $regs[1];
-        $base_suff = $regs[2];
+        $base = preg_replace('/ǁ/','',$regs[1]);
+        $stems[0] = $base.$regs[2];                
+        $out = [$stems, 'sg', $regs[0], null];
         $gen_sg_suff = $regs[3];
         $par_sg_suff = (isset($regs[4])) ? $regs[4] : null;
 
         if (!preg_match("/^(.*)n$/", $gen_sg_suff, $regs1)) {
-            return [$regs[0], $regs[0], null];
+            return $out;
         }
         
-        $stems[0] = $base.$base_suff;        
         $stems[1] = $base. $regs1[1];
 
         if (!self::isRightVowelBase($stems[1])) {
-            return [$regs[0], $regs[0], null];
+            return $out;
         }
        
         $stems[2] = self::illSgBase($stems[1]); // single illative base
         $stems[3] = $par_sg_suff ? $base.$par_sg_suff : $stems[1].'d';
         $stems[4] = $stems[5] = '';
 //dd($stems);        
-        return [$stems, $base, $base_suff];
+        return [$stems, 'sg', $regs[1], $regs[2]];
     }
     
     /**

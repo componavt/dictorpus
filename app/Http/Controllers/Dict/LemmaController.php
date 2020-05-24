@@ -876,7 +876,8 @@ class LemmaController extends Controller
         }
         
         list($max_stem, $affix) = $lemma->getStemAffixByWordforms();
-        if ($max_stem!=$lemma->reverseLemma->stem || $affix!=$lemma->reverseLemma->affix) {
+        $lemma_stem = preg_replace("/\|\|/", '', $lemma->reverseLemma->stem);
+        if ($max_stem!=$lemma_stem || $affix!=$lemma->reverseLemma->affix) {
             $lemma->reverseLemma->stem = $max_stem;
             $lemma->reverseLemma->affix = $affix;
             $lemma->reverseLemma->save();
@@ -884,7 +885,7 @@ class LemmaController extends Controller
         
         $lemma->updateWordformAffixes(true);
         
-        return $lemma->stemAffixForm();
+        return $lemma->dictForm();
     }
     
     /**

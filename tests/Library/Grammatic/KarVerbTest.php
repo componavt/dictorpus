@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use App\Library\Grammatic\KarGram;
 use App\Library\Grammatic\KarVerb;
 
 // php artisan make:test Library\Grammatic\KarVerbTest
@@ -15,7 +16,7 @@ class KarVerbTest extends TestCase
     public function testPerfectVerbFormBringua() {
         $lang_id = 4;
         $stem = 'bringa';
-        $result = KarVerb::perfectForm($stem, $lang_id);
+        $result = KarVerb::perfectForm($stem, KarGram::isBackVowels($stem), $lang_id);
         
         $expected = 'bringan';
         $this->assertEquals( $expected, $result);        
@@ -25,7 +26,7 @@ class KarVerbTest extends TestCase
     public function testPerfectVerbFormTulla() {
         $lang_id = 4;
         $stem = 'tul';
-        $result = KarVerb::perfectForm($stem, $lang_id);
+        $result = KarVerb::perfectForm($stem, KarGram::isBackVowels($stem), $lang_id);
         
         $expected = 'tullun';
         $this->assertEquals( $expected, $result);        
@@ -35,7 +36,7 @@ class KarVerbTest extends TestCase
     public function testPerfectVerbFormAndua() {
         $lang_id = 4;
         $stem = 'anda';
-        $result = KarVerb::perfectForm($stem, $lang_id);
+        $result = KarVerb::perfectForm($stem, KarGram::isBackVowels($stem), $lang_id);
         
         $expected = 'andan';
         $this->assertEquals( $expected, $result);        
@@ -45,7 +46,7 @@ class KarVerbTest extends TestCase
     public function testPerfectVerbFormWithLastApost() {
         $lang_id = 4;
         $stem = 'avual’';
-        $result = KarVerb::perfectForm($stem, $lang_id);
+        $result = KarVerb::perfectForm($stem, KarGram::isBackVowels($stem), $lang_id);
         
         $expected = 'avual’lun';
         $this->assertEquals( $expected, $result);        
@@ -55,7 +56,7 @@ class KarVerbTest extends TestCase
     public function testPerfectVerbFormWithBeforeLastApost() {
         $lang_id = 4;
         $stem = 'illas’t’a';
-        $result = KarVerb::perfectForm($stem, $lang_id);
+        $result = KarVerb::perfectForm($stem, KarGram::isBackVowels($stem), $lang_id);
         
         $expected = 'illas’t’an';
         $this->assertEquals( $expected, $result);        
