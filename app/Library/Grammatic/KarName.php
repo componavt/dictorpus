@@ -123,6 +123,9 @@ class KarName
     }
         
     public static function stemsFromTemplate($template, $name_num) {      
+//        $template = preg_replace('/\|\|/','ǁ',$template);
+        $template = preg_replace('/\|\|/','',$template);
+        
         $base_shab = "([^\s\(\|]+)";
         $base_suff_shab = "([^\s\(\|]*)";
 //        $okon1_shab = "(-?[^\-\,\;\)]+)";

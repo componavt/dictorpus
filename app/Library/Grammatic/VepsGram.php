@@ -62,7 +62,9 @@ class VepsGram
     
     public static function stemsFromTemplate($template, $pos_id, $name_num = null, $is_reflexive = null) {
 //dd($template);        
-        $template = trim($template);
+        if (!preg_match("/\{\{/", $template)) {
+            $template = preg_replace('/\|\|/','',$template);
+        }
         
         $arg = "([^\|]*)";
         $div_arg = "\|".$arg;

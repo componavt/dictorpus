@@ -1230,15 +1230,15 @@ class GrammaticTest extends TestCase
     }
     
     public function testGetStemFromWordform()
-    {/*
+    {
         $id=3539;
         $lemma = Lemma::findOrFail($id);        
         $base_n = 4;
-        $dialect_id=null;
-        $result = Grammatic::getStemFromWordform($lemma, $base_n, $lemma->lang_id,  $lemma->pos_id, $dialect_id, $is_reflexive);
+        $dialect_id=44;
+        $result = Grammatic::getStemFromWordform($lemma, $base_n, $lemma->lang_id,  $lemma->pos_id, $dialect_id, $lemma->features ? $lemma->features->is_reflexive : false);
         
-        $expected = 'tulou';
-        $this->assertEquals( $expected, $result);        */
+        $expected = 'abaji/abajoi';
+        $this->assertEquals( $expected, $result);        
     }
     
     public function testWordformsByStemsKarNameOloPezovezi() {

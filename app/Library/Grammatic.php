@@ -136,17 +136,19 @@ class Grammatic
      * @return Array [array_of_stems, name_of_number, max_stem, affix]
      */
     public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null, $is_reflexive=null) {
+        $template = trim($template);
+        
         if (!in_array($lang_id, self::langsWithRules())) {// is not langs with rules 
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
         if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
-
+/*
         if (!preg_match("/\{\{/", $template)) {
             $template = preg_replace('/\|\|/','',$template);
         }
-     
+*/     
         if ($lang_id == 1) {
             return VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);                
         } 
@@ -387,7 +389,7 @@ class Grammatic
         return null;
     }
     
-    public static function getStemFromWordform($lemma, $stem_n, $lang_id, $pos_id, $dialect_id, $is_reflexive) {
+    public static function getStemFromWordform($lemma, $stem_n, $lang_id, $pos_id, $dialect_id, $is_reflexive=false) {
         if ($lang_id == 1) {
             return VepsGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id, $is_reflexive);
         }

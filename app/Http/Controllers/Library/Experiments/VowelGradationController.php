@@ -27,6 +27,8 @@ class VowelGradationController extends Controller
      * 2) выделяем из каждой слова, у которых в ном. ед. 2, 3 и 4 слога (получаем 12 выборок)
      * 3) в каждой отделяем слова, у которых парт. мн. заканчивается на oi / öi и отдельно на ii + отдельно те, у которых 2 варианта дается (получаем 36 выборок) и располагаем слова внутри каждой в алфавитном порядке с конца слова (по форме парт. мн.). Итого получаем 36 выборок
      * 
+     * + Имена, заканчивающиеся на С, в ген. ед. на an, в парт. мн. на 1) oi, 2) ii. 
+     * + И имена, заканчивающиеся на С, в ген. ед. на än, в парт. мн. на 1) öi, 2) ii.
      */
     public function index() {
         $pos_list = ['NOUN' => 'существительные', 'ADJ' => 'прилагательные'];
@@ -49,14 +51,26 @@ class VowelGradationController extends Controller
      * 3) по трехсложным формам: тут варианты есть: проверить по гласным второго слога, по последнему согласному (сочетаниям согласных), или в совокупности. Надо будет смотреть по ходу. 
      * Может, когда выборка будет перед глазами, еще вариант найдется))
      *  
+     * $num = 1, если номинатива ед. заканчиваются на Сu или Сa, при этом в форме генитива ед. заканчиваются на an
+     * $num = 2, если номинатива ед. заканчиваются на Сy или Сä, при этом в форме генитива ед. заканчиваются на än
+     * $num = 3, если номинатива ед. заканчиваются на С, при этом в форме генитива ед. заканчиваются на an
+     * $num = 4, если номинатива ед. заканчиваются на С, при этом в форме генитива ед. заканчиваются на än
+     * 
+     * $pos_code = NOUN | ADJ
+     * 
+     * $sl - количество слогов в номинативе: 2..4
+     * 
+     * $part_gr - одна из групп: 1) парт. мн.ч. на oi/öi; 2) парт. мн.ч. на ii; 3) два парт. мн.ч.
      */
     public function nomGenPart($num, $pos_code, $sl, $part_gr) {
-        if ($num==1) {
+        if ($num==1 || $num==3) {
             $u='u';
             $a='a';
             $o='o';
         } else {
-            $num=2;
+            if ($num!=2) {
+                $num=4;
+            }
             $u='y';
             $a='ä';
             $o='ö';
@@ -75,6 +89,7 @@ class VowelGradationController extends Controller
         $nomSg_id = 1;
         $genSg_id = 3;
         $partPl_id = 22;
+        $template = "[".KarGram::consSet()."]";            
         $words = [];
         
         $pos = PartOfSpeech::getByCode($pos_code);
@@ -85,19 +100,23 @@ class VowelGradationController extends Controller
                         ->join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
                         ->where('gramset_id', $nomSg_id)
                         ->where('dialect_id', $dialect_id)
-                        ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
-                        ->where(function ($query) use($a,$u) {
+                        ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id');
+        
+        if ($num==1 || $num==2) {
+            $lemmas = $lemmas->where(function ($query) use($a,$u) {
                             $query->where('wordform', 'like', '%'.$u)
                                   ->orWhere('wordform', 'like', '%'.$a);
-                        })
-                        ->select(DB::raw("lemmas.id as id, wordform"))
+                        });
+            $template .= "[".$u.$a."]";            
+        }                
+        $lemmas = $lemmas->select(DB::raw("lemmas.id as id, wordform"))
                         ->get();
         foreach ($lemmas as $lemma) {
             $nom = $lemma->wordform;
-            if (!preg_match("/[".KarGram::consSet()."][".$u.$a."]$/u", $nom)) {
+            if (!preg_match("/".$template."$/u", $nom)) {
                 continue;
             }
-            if (KarGram::countSyllable($nom)!=$sl) {
+            if ($sl>0 && KarGram::countSyllable($nom)!=$sl) {
                 continue;
             }
             $gens = preg_split("/,\s*/", $lemma->wordform($genSg_id, $dialect_id));

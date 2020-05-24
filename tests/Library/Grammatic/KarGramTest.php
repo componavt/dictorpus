@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Grammatic\KarGram;
 
-// php artisan make:test Library\Grammatic\KarGram
-// ./vendor/bin/phpunit tests/Library/Grammatic\KarGram
+// php artisan make:test Library\Grammatic\KarGramTest
+// ./vendor/bin/phpunit tests/Library/Grammatic/KarGramTest
 
 class KarGramTest extends TestCase
 {
@@ -799,4 +799,13 @@ class KarGramTest extends TestCase
                       8=>'pyrgi'], $num, 'pyr', 'giekseh'];
         $this->assertEquals( $expected, $result);        
     }    
+    
+    public function testIsBackVowels() {
+        $word = 'pezo||v|ezi';
+        $result = KarGram::isBackVowels($word);
+        
+        $expected = false;
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }
