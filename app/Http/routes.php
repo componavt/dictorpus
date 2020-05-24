@@ -176,6 +176,8 @@ Route::group(
         Route::get('import/concept_parser_check', 'Library\ImportController@conceptParserCheck');
         Route::get('import/dict_parser', 'Library\ImportController@dictParser');
         Route::get('import/extract_livvic_verbs', 'Library\ImportController@extractVerbs');
+        Route::get('import/extract_livvic_compound_words', 'Library\ImportController@extractCompoundWords');
+        Route::get('import/change_stem_for_compound_words', 'Library\ImportController@changeStemForCompoundWords');
 
         Route::get('import/phonetics_to_lemmas', 'Library\ImportController@phoneticsToLemmas');
 

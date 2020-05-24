@@ -10,6 +10,7 @@ use \Venturecraft\Revisionable\Revision;
 use Arrays;
 
 use App\Library\Grammatic;
+use App\Library\Grammatic\KarGram;
 use App\Library\Str;
 
 use App\Models\User;
@@ -122,6 +123,9 @@ class Lemma extends Model
         $bases=[];
         for ($i=0; $i<9; $i++) {
             $bases[$i] = $this->getBase($i, $dialect_id, $bases);
+        }
+        if ($this->lang_id != 1 && $this->reverseLemma) {
+            $bases[10] = KarGram::isBackVowels($this->reverseLemma->stem. $this->reverseLemma->affix);
         }
         if (!$bases[2]) {
             $bases[2] = $this->getBase(2, $dialect_id, $bases);            
@@ -979,6 +983,7 @@ dd($wordforms);
     public function storeReverseLemma($stem=NULL, $affix=NULL) {
         $reverse_lemma = ReverseLemma::find($this->id);
 //dd($stem, $affix);
+//dd($reverse_lemma);
         if ($reverse_lemma) {
             $reverse = $this->reverse();
             if (!$stem && !$affix) {
@@ -1457,13 +1462,16 @@ dd($wordforms);
     }
     
     public function stemAffixForm() {
-        return  $this->reverseLemma && $this->reverseLemma->affix 
-                ? $this->reverseLemma->stem.'|'.$this->reverseLemma->affix 
-                : $this->lemma;        
+        if (!$this->reverseLemma || !$this->reverseLemma->stem) {
+            return $this->lemma;
+        }
+        return  $this->reverseLemma->stem. 
+                ($this->reverseLemma->affix ? '|'.$this->reverseLemma->affix : '');        
     }
     
     public function dictForm() {
         $out = $this->stemAffixForm();
+//dd($out);        
         $dialect_id = $this->lang->mainDialect();
         if (!$this->reverseLemma || !$this->reverseLemma->stem || !in_array($this->lang_id, [1,5]) || !$dialect_id) { // not veps and livvi
             return $out;

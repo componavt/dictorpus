@@ -12,7 +12,7 @@ use App\Library\Grammatic\VepsVerb;
 use App\Library\Grammatic\VepsVerbReflex;
 
 use App\Models\Dict\Gramset;
-use App\Models\Dict\Lang;
+//use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 

@@ -41,7 +41,7 @@ class KarName
                 return isset($stems[0]) && isset($stems[1]) && $stems[1] && isset($stems[3]) && $stems[3] 
                     ?  self::illSgBase($stems[0],$stems[1],$stems[3]) : '';
             case 4: 
-                return isset($stems[1]) && isset($stems[5]) ?  self::genPlBase($stems[1], $stems[5], $stems[10]) : '';
+                return isset($stems[1]) && isset($stems[5]) && isset($stems[10]) ?  self::genPlBase($stems[1], $stems[5], $stems[10]) : '';
             default: 
                 return null;
         }

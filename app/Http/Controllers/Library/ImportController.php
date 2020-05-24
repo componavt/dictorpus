@@ -134,4 +134,55 @@ print "Найдено ".sizeof($words).' слов.';
         }
         print "done.";
     }
+    
+    // import/extract_livvic_compound_words
+    public function extractCompoundWords() {
+        $infname = 'import/livvic_dict.txt';
+        $outfname = 'export/livvic_compound_words.txt';
+        
+        $file_content = Storage::disk('local')->get($infname);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+
+        Storage::disk('public')->put($outfname, "");
+
+        foreach ($file_lines as $line) {
+            if (preg_match("/\|\|/", $line)) {
+                Storage::disk('public')->append($outfname, $line);            
+            }
+        }
+        print "done.";
+    }
+    
+    // import/change_stem_for_compound_words
+    public function changeStemForCompoundWords() {
+        $infname = 'import/livvic_compound_words.txt';
+        $dialect_id = 44;
+        
+        $file_content = Storage::disk('local')->get($infname);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+
+        foreach ($file_lines as $line) {
+            if (preg_match("/^([^\s\(]+)/", $line, $regs)) {
+                $word = preg_replace("/\|/", '', $regs[1]);
+                $lemmas = Lemma::where('lemma', 'like', $word);
+                if ($lemmas->count()) {
+                    if (preg_match("/^(.+[^\|])\|([^\|]+)$/", $regs[1], $regs1)) {
+//preg_replace('/\|\|/','ǁ',$regs[1]);
+                        $stem = $regs1[1];
+                        $affix = $regs1[2];
+                    } else {
+                        $stem=$regs[1];
+                        $affix='';
+                    }
+                    foreach ($lemmas->get() as $lemma) {
+                        $lemma->storeReverseLemma($stem, $affix);
+                        $lemma->reloadWordforms($dialect_id);
+                        $lemma->updateWordformTotal();        
+                        print "<p><a href=\"/dict/lemma/".$lemma->id."\">$regs[1]</a> = $stem + $affix</p>";  
+                    }
+                } 
+            }
+        }
+        print "done.";
+    }
 }
