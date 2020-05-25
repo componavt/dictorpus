@@ -157,6 +157,7 @@ print "Найдено ".sizeof($words).' слов.';
     public function changeStemForCompoundWords() {
         $infname = 'import/livvic_compound_words.txt';
         $dialect_id = 44;
+        $lang_id=5;
         
         $file_content = Storage::disk('local')->get($infname);
         $file_lines = preg_split ("/\r?\n/",$file_content);
@@ -164,7 +165,8 @@ print "Найдено ".sizeof($words).' слов.';
         foreach ($file_lines as $line) {
             if (preg_match("/^([^\s\(]+)/", $line, $regs)) {
                 $word = preg_replace("/\|/", '', $regs[1]);
-                $lemmas = Lemma::where('lemma', 'like', $word);
+                $lemmas = Lemma::where('lemma', 'like', $word)
+                               ->whereLangId($lang_id);
                 if ($lemmas->count()) {
                     if (preg_match("/^(.+[^\|])\|([^\|]+)$/", $regs[1], $regs1)) {
 //preg_replace('/\|\|/','ǁ',$regs[1]);
@@ -176,8 +178,10 @@ print "Найдено ".sizeof($words).' слов.';
                     }
                     foreach ($lemmas->get() as $lemma) {
                         $lemma->storeReverseLemma($stem, $affix);
-                        $lemma->reloadWordforms($dialect_id);
-                        $lemma->updateWordformTotal();        
+                        if (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) {
+                            $lemma->reloadWordforms($dialect_id);
+                            $lemma->updateWordformTotal();        
+                        }
                         print "<p><a href=\"/dict/lemma/".$lemma->id."\">$regs[1]</a> = $stem + $affix</p>";  
                     }
                 } 
