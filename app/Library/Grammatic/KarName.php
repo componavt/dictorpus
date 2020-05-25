@@ -411,6 +411,8 @@ class KarName
         switch ($gramset_id) {
             case 2: // номинатив, мн.ч. 
                 return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? $stems[1].'t' : '');
+            case 57: // аккузатив, мн.ч. 
+                return $lang_id==5 ? ($name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? KarNameOlo::addEndToMultiBase($stems[1], 't') : '')) : '';
         }
         
         if ($name_num !='pl' && in_array($gramset_id, self::gramsetListSg($lang_id))) {

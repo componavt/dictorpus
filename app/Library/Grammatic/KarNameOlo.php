@@ -50,8 +50,6 @@ class KarNameOlo
 
     public static function wordformByStemsPl($stems, $gramset_id, $dialect_id) {
         switch ($gramset_id) {
-            case 57: // аккузатив, мн.ч. 
-                return self::addEndToMultiBase($stems[1], 't');
             case 24: // генитив, мн.ч. 
                 return self::genPl($stems[4], $stems[5]);
             case 22: // партитив, мн.ч. 
