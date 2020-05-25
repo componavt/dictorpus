@@ -1205,6 +1205,8 @@ dd($wordforms);
         if (!$lemma) {
             return $lemmas;
         }
+        
+        $lemma = preg_replace("/\|/", '', $lemma);
 //        return $lemmas->where('lemma','like',$lemma);
 //var_dump (Grammatic::toSearchForm($lemma), $lemma);
         return $lemmas->where(function ($query) use ($lemma) {

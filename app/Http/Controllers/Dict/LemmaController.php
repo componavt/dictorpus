@@ -17,7 +17,7 @@ use LaravelLocalization;
 //use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 //use App\Library\Grammatic;
-use App\Library\Grammatic\VepsName;
+//use App\Library\Grammatic\VepsName;
 use App\Library\Str;
 
 use App\Models\User;
@@ -35,7 +35,7 @@ use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Relation;
-use App\Models\Dict\Wordform;
+//use App\Models\Dict\Wordform;
 use App\Models\Corpus\Text;
 //use App\Models\Corpus\Word;
 
