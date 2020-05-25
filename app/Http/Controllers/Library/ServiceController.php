@@ -337,8 +337,33 @@ print "</p>";
 
     }
 
-public function calculateLemmaWordforms() {
+    public function calculateLemmaWordforms() {
         Service::calculateLemmaWordforms();        
+    }
+
+    /*
+     * Select livvic lemmas with partitives plural more than 2
+     * 
+     *  select lemma_id,count(*) as count from lemma_wordform where gramset_id=22 and dialect_id=44 group by lemma_id having count>2;
+     * 
+     * /service/regenerate_wrong_names
+     */
+    public function reGenerateWrongNames() {
+        $dialect_id = 44; 
+        $partPl_id = 22;
+        
+        $lemmas = Lemma::join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
+                        ->where('gramset_id', $partPl_id)
+                        ->where('dialect_id', $dialect_id)
+                        ->groupBy('lemma_id')
+                        ->havingRaw('count(*)>2')->get();
+//dd($lemmas);        
+        foreach ($lemmas as $lemma) {
+            print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a></p>";
+            $lemma->reloadWordforms($dialect_id);
+            $lemma->updateWordformTotal();        
+        }
+
     }
     
     /*

@@ -206,6 +206,7 @@ Route::group(
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('service/generate_wordforms', 'Library\ServiceController@generateWordforms');
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
+        Route::get('service/regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('service/wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
