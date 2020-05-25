@@ -11,6 +11,7 @@ use App\Library\Grammatic;
 use App\Library\Import\ConceptParser;
 use App\Library\Import\DictParser;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\PartOfSpeech;
 
 class ImportController extends Controller
 {
