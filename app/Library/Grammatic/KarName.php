@@ -390,12 +390,12 @@ class KarName
         $out = [];
         $stems5 = preg_split("/\//",$stem5);
         foreach ($stems5 as $stem5) {
-            if (preg_match('/kki$|tti$|ppi$|čči$|šši$|ssi$|[gdb]i$/u', $stem5)){ // А
+            if (preg_match('/k’?k’?i$|t’?t’?i$|p’?p’?i$|č’?č’?i$|š’?š’?i$|s’?s’?i$|[gdb]’?i$/u', $stem5)){ // А
                 $out[] = preg_replace('/['.$V.']$/u','i',$stem1);
-            } elseif (preg_match('/l[oö]i$|['.$C.']i$/u', $stem5)){ // Б
+            } elseif (preg_match('/l’?[oö]i$|['.$C.']i$/u', $stem5)){ // Б
                 $out[] = $stem5;
             } else { // В
-                if (preg_match('/^(.+['.$C.'])['.$V.']$/u', $stem1, $regs1)) { // 1
+                if (preg_match('/^(.+['.$C.']’?)['.$V.']$/u', $stem1, $regs1)) { // 1
                     $stem1 = $regs1[1].KarGram::garmVowel($harmony, 'o').'i';
                 } else { 
                     $stem1=preg_replace('/ua$/u', 'avoi', $stem1); // 2
