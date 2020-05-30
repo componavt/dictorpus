@@ -86,10 +86,11 @@ function chooseDialectForGenerate(lemma_id) {
 
 function copyBases(lemma_id, dialect_id) {
     $.ajax({
-        url: '/dict/lemma_wordform/'+ lemma_id + '/get_bases?dialect_id'+dialect_id, 
+        url: '/dict/lemma_wordform/'+ lemma_id + '/get_bases?dialect_id='+dialect_id, 
         type: 'GET',
         success: function(result){
-            result.forEach(function(item, i, result) {
+/*    console.log(result);*/
+            $.each(result, function(i, item) {
                 $('#bases_' + i + '_').val(item);
             });
         },
@@ -120,7 +121,7 @@ function fillWordforms(lemma_id, dialect_id, bases_len) {
         type: 'GET',
         data: {bases: basesInJSON},
         success: function(result){
-    console.log(result);
+/*    console.log(result);*/
             $.each(result, function(i, item) {
                 var old_value = $('#lang_wordforms_' + i + '__' + dialect_id + '_').val();
                 var new_value = item;

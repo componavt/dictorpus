@@ -340,6 +340,7 @@ class KarName
      */
     public static function illSgBase($stem0, $stem1, $stem3) {
         $V = KarGram::vowelSet();
+//dd($stem0, $stem1, $stem3);        
         if (preg_match('/[dt][uy]$/u', $stem3)){ // А
             if (preg_match('/['.$V.']([uy])zi$/u', $stem0, $regs_u)) {
                 $stem1=preg_replace('/vve$/u', $regs_u[1].'de', $stem1); // A.1

@@ -134,6 +134,7 @@ class Lemma extends Model
         if (!$bases[4]) {
             $bases[4] = $this->getBase(4, $dialect_id, $bases);            
         }
+//dd($bases);        
         return $bases;
     }
     
@@ -153,7 +154,6 @@ class Lemma extends Model
         if ($base) {
             return $base;
         }
-        
         if ($dialect_id) { 
             $base = Grammatic::getStemFromStems($bases, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $this->lemma);
 //dd($base);
@@ -162,10 +162,10 @@ class Lemma extends Model
                 $base = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $is_reflexive);
 //dd($base_n,$base);                
             }
-            if (!$base) {
-                $base = $this->getBaseFromDB($base_n);
-            }
         } 
+        if (!$base) {
+            $base = $this->getBaseFromDB($base_n);
+        }
 
         return $base;
     }
