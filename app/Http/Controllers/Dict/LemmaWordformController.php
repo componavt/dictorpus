@@ -203,7 +203,6 @@ class LemmaWordformController extends Controller
     public function reload(Request $request, $id, $dialect_id) {
         $lemma = Lemma::findOrFail((int)$id);    
         $dialect_id = (int)$dialect_id;
-        
         $lemma->reloadWordforms($dialect_id, $request->without_remove);
         $lemma->updateWordformTotal();        
         
@@ -224,6 +223,10 @@ class LemmaWordformController extends Controller
         $stems = json_decode($request->bases);
         $stems[0] = preg_replace('/\|/', '', $stems[0]);
 //dd($stems);   
+        if ($lemma->lang_id != 1 && !isset($stems[10])) { // harmony for karelian
+            $stems[10]=$lemma->harmony();
+        }        
+        
         $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
         $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
 

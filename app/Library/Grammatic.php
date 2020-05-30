@@ -171,14 +171,18 @@ class Grammatic
         $wordforms = [];
 //if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
         foreach ($gramsets as $gramset_id) {
-            if ($pos_id == PartOfSpeech::getVerbID()) {
-                $wordforms[$gramset_id] = self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num, $is_reflexive);
-            } else {
-                $wordforms[$gramset_id] = self::nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
-            }
+            $wordforms[$gramset_id] = self::wordformByStems($lang_id, $pos_id, $dialect_id, $gramset_id, $stems, $name_num, $is_reflexive);
         }
 // dd($wordforms);        
         return $wordforms;
+    }
+    
+    public static function wordformByStems($lang_id, $pos_id, $dialect_id, $gramset_id, $stems, $name_num = null, $is_reflexive = null) {
+        if ($pos_id == PartOfSpeech::getVerbID()) {
+            return self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num, $is_reflexive);
+        } else {
+            return self::nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
+        }
     }
     
     public static function nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {

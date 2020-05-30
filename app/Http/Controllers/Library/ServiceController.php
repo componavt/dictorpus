@@ -367,6 +367,37 @@ print "</p>";
     }
     
     /*
+     * Select livvic lemmas with illative plural 
+     * 
+     * 
+     * /service/regenerate_livvic_ill_pl
+     */
+    public function reGenerateLivvicIllPl() {
+        $dialect_id = 44; 
+        $illPl_id = 61;
+        
+        $lemmas = Lemma::join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
+                       ->where('gramset_id', $illPl_id)
+                       ->where('dialect_id', $dialect_id)
+//                       ->take(50)
+                       ->get();
+//dd($lemmas);        
+        foreach ($lemmas as $lemma) {
+            $old_wordform = $lemma->wordform($illPl_id, $dialect_id);
+            $new_wordform = $lemma->generateWordform($illPl_id, $dialect_id, false);
+            print "<p><a href=\"/dict/lemma/".$lemma->lemma_id."\">".$lemma->lemma."</a>";
+            if ($new_wordform && $old_wordform != $new_wordform) {
+                print " (".$old_wordform . ' -> '. $new_wordform.")";
+                $lemma->deleteWordforms($illPl_id, $dialect_id);
+                $lemma->addWordforms($new_wordform, $illPl_id, $dialect_id);
+            }
+            print "</p>";
+        }
+
+    }
+    
+    
+    /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences
      * 

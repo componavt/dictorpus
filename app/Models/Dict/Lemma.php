@@ -125,7 +125,7 @@ class Lemma extends Model
             $bases[$i] = $this->getBase($i, $dialect_id, $bases);
         }
         if ($this->lang_id != 1 && $this->reverseLemma) {
-            $bases[10] = KarGram::isBackVowels($this->reverseLemma->stem. $this->reverseLemma->affix);
+            $bases[10] = $this->harmony();
         }
         if (!$bases[2]) {
             $bases[2] = $this->getBase(2, $dialect_id, $bases);            
@@ -135,6 +135,13 @@ class Lemma extends Model
             $bases[4] = $this->getBase(4, $dialect_id, $bases);            
         }
         return $bases;
+    }
+    
+    public function harmony(){
+        if ($this->lang_id == 1) {
+            return null;
+        }
+        return KarGram::isBackVowels($this->reverseLemma->stem. $this->reverseLemma->affix);
     }
     
     /**
@@ -1567,6 +1574,7 @@ dd($wordforms);
         }  
         return true;
     }
+    
     public function generateWordforms($dialect_id, $update_bases=false, $without_remove=false) {
         $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
         $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;
@@ -1583,6 +1591,20 @@ dd($wordforms);
         }
         
         return Grammatic::wordformsByStems($this->lang_id, $this->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+    }
+
+    public function generateWordform($gramset_id, $dialect_id, $update_bases=false) {
+        $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
+        $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;
+
+        $stems = $this->getBases($dialect_id);
+//dd($stems);        
+//dd($name_num);     
+        if ($update_bases) {
+            $this->updateBases($stems, $dialect_id);
+        }
+        
+        return Grammatic::wordformByStems($this->lang_id, $this->pos_id, $dialect_id, $gramset_id, $stems, $name_num, $is_reflexive);
     }
 
     public function reloadWordforms($dialect_id, $with_updateText=false, $without_remove=false) {

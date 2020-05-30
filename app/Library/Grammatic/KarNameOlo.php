@@ -65,7 +65,7 @@ class KarNameOlo
             case 60: // элатив, мн.ч.
                 return self::addEndToMultiBase($stems[4], 's, späi');
             case 61: // иллатив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'h');
+                return self::addEndToMultiBase($stems[5], 'h');
             case 25: // адессив, мн.ч.
                 return self::addEndToMultiBase($stems[4], 'l');
             case 62: // аблатив, мн.ч.
