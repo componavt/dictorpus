@@ -755,9 +755,9 @@ class KarName
         
         switch ($gramset_id) {
             case 24: // генитив, мн.ч. 
-                return self::genPl($stems[4], $stems[5], $stems[6], $dialect_id);
+                return self::genPl($stems[4], $stems[5], isset($stems[6])? $stems[6]: null, $dialect_id);
             case 22: // партитив, мн.ч. 
-                return self::partPl($stems[5], $stems[6], $stems[10], $dialect_id);
+                return self::partPl($stems[5], isset($stems[6])? $stems[6]: null, $stems[10], $dialect_id);
             case 279: // эссив, мн.ч.
                 return $stems[5] ? $stems[5]. 'n'. $a : '';
             case 59: // транслатив, мн.ч. 
@@ -846,7 +846,7 @@ class KarName
             return '';
         }
         if ($dialect_id==47) {
-            if (preg_match("/[oö]i$/u", $stems[5])) {
+            if (preg_match("/[oö]i$/u", $stem5)) {
                 return $stem5. KarGram::garmVowel($harmony,'da');
             } else {
                 return $stem5. 'e';
