@@ -808,4 +808,19 @@ class KarGramTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testCountSyllableSimple() {
+        $word = 'pyrgiekseh';
+        $result = KarGram::countSyllable($word);
+        
+        $expected = 3;
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testCountSyllableCompound() {
+        $word = 'pezo||vezi';
+        $result = KarGram::countSyllable($word);
+        
+        $expected = 2;
+        $this->assertEquals( $expected, $result);        
+    }
 }

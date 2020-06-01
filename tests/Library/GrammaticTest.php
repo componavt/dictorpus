@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Library\Grammatic;
+use App\Library\Grammatic\KarGram;
 use App\Models\Dict\Lemma;
 // php artisan make:test Library\GrammaticTest
 /* 
@@ -588,7 +589,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals(array_values($words), $result);        
     }
 */   
-    public function testToRightFormDiacretBeforeO() {
+/*    public function testToRightFormDiacretBeforeO() {
         $words = ['kaĺĺo' => 'kal’l’o',
             'kĺon' => 'kl’on',
             'kĺona' => 'kl’ona',
@@ -1297,6 +1298,266 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
 
+    public function testWordformsFromMiniTemplateKarProperNameRanta() {
+        $template = 'ran|ta [na]';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+//dd($stems, KarGram::countSyllable($stems[5]), KarGram::countSyllable($stems[6]));  
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'ranta',  3=>'rannan',  4=>'rantua', 277=>'rantana',  
+                     5=>'rannakši', 8=>'rannašša',  9=>'rannašta', 10=>'rantah', 278=>'rannalla', 
+                     12=>'rannalta', 6=>'rannatta', 14=>'', 15=>'', 
+ 
+            2=>'rannat', 24=>'rantojen', 22=>'rantoja', 279=>'rantoina', 
+            59=>'rannoiksi', 23=>'rannoissa', 60=>'rannoista', 61=>'rantoih', 280=>'rannoilla', 
+            62=>'rannoilta', 64=>'rannoitta', 65=>'rantoineh', 66=>'', 281=>'rannoin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloNameRandu() {
+        $template = 'ran|du [na]';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'randu',  56=>'randu, rannan', 3=>'rannan',  4=>'randua', 277=>'rannannu',  
+                     5=>'rannakse', 6=>'rannattah', 8=>'rannas',  9=>'rannas, rannaspäi', 10=>'randah',  
+                     11=>'rannal', 12=>'rannal, rannalpäi', 13=>'rannale', 14=>'rannanke', 15=>'rannači', 
+ 
+            2=>'rannat', 57=>'rannat', 24=>'rannoin', 22=>'randoi', 279=>'rannoinnu', 
+            59=>'rannoikse', 64=>'rannoittah', 23=>'rannois', 60=>'rannois, rannoispäi', 61=>'randoih',  
+            25=>'rannoil', 62=>'rannoil, rannoilpäi', 63=>'rannoile', 65=>'rannoinke, rannoinneh', 
+            66=>'rannoiči', 281=>'rannoin'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsFromMiniTemplateKarProperNamePelto() {
+        $template = 'pel|to [lo]';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'pelto',  3=>'pellon',  4=>'peltuo', 277=>'peltona',  
+                     5=>'pellokši', 8=>'pellošša',  9=>'pellošta', 10=>'peltoh', 278=>'pellolla', 
+                     12=>'pellolta', 6=>'pellotta', 14=>'', 15=>'', 
+ 
+            2=>'pellot', 24=>'peltojen', 22=>'peltoja', 279=>'peltoloina', 
+            59=>'peltoloiksi', 23=>'peltoloissa', 60=>'peltoloista', 61=>'peltoloih', 280=>'peltoloilla', 
+            62=>'peltoloilta', 64=>'peltoloitta', 65=>'peltoloineh', 66=>'', 281=>'peltoloin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloNamePeldo() {
+        $template = 'pel|do [lo]';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'peldo',  56=>'peldo, pellon', 3=>'pellon',  4=>'pelduo', 277=>'pellonnu',  
+                     5=>'pellokse', 6=>'pellottah', 8=>'pellos',  9=>'pellos, pellospäi', 10=>'peldoh',  
+                     11=>'pellol', 12=>'pellol, pellolpäi', 13=>'pellole', 14=>'pellonke', 15=>'pelloči', 
+ 
+            2=>'pellot', 57=>'pellot', 24=>'peldoloin', 22=>'peldoloi', 279=>'peldoloinnu', 
+            59=>'peldoloikse', 64=>'peldoloittah', 23=>'peldolois', 60=>'peldolois, peldoloispäi', 61=>'peldoloih',  
+            25=>'peldoloil', 62=>'peldoloil, peldoloilpäi', 63=>'peldoloile', 
+            65=>'peldoloinke, peldoloinneh', 66=>'peldoloiči', 281=>'peldoloin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarProperNameMua() {
+        $template = 'mua []';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'mua',  3=>'muan',  4=>'muata', 277=>'muana',  
+                     5=>'muakši', 8=>'muašša',  9=>'muašta', 10=>'muah', 278=>'mualla', 
+                     12=>'mualta', 6=>'muatta', 14=>'', 15=>'', 
+ 
+            2=>'muat', 24=>'maijen', 22=>'maita', 279=>'maina', 
+            59=>'maiksi', 23=>'maissa', 60=>'maista', 61=>'maih', 280=>'mailla', 
+            62=>'mailta', 64=>'maitta', 65=>'maineh', 66=>'', 281=>'main'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloNameMua() {
+        $template = 'mua []';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'mua',  56=>'mua, muan', 3=>'muan',  4=>'muadu', 277=>'muannu',  
+                     5=>'muakse', 6=>'muattah', 8=>'muas',  9=>'muas, muaspäi', 10=>'muah',  
+                     11=>'mual', 12=>'mual, mualpäi', 13=>'muale', 14=>'muanke', 15=>'muači', 
+ 
+            2=>'muat', 57=>'muat', 24=>'mualoin', 22=>'mualoi', 279=>'mualoinnu', 
+            59=>'mualoikse', 64=>'mualoittah', 23=>'mualois', 60=>'mualois, mualoispäi', 61=>'mualoih',  
+            25=>'mualoil', 62=>'mualoil, mualoilpäi', 63=>'mualoile', 65=>'mualoinke, mualoinneh', 
+            66=>'mualoiči', 281=>'mualoin'];
+        $this->assertEquals( $expected, $result);        
+    }
+*/
+    public function testWordformsFromMiniTemplateKarProperNameNuori() {
+        $template = 'nuor|i [e, ]';
+        $lang_id = 4;
+        $pos_id = 1;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+//dd($stems);        
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'nuori',  3=>'nuoren',  4=>'nuorta', 277=>'nuorena',  
+                     5=>'nuorekši', 8=>'nuorešša',  9=>'nuorešta', 10=>'nuoreh', 278=>'nuorella', 
+                     12=>'nuorelta', 6=>'nuoretta', 14=>'', 15=>'', 
+ 
+            2=>'nuoret', 24=>'nuorien', 22=>'nuorie', 279=>'nuorina', 
+            59=>'nuoriksi', 23=>'nuorissa', 60=>'nuorista', 61=>'nuorih', 280=>'nuorilla', 
+            62=>'nuorilta', 64=>'nuoritta', 65=>'nuorineh', 66=>'', 281=>'nuorin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloNameNuori() {
+        $template = 'nuor|i [e, ]';
+        $lang_id = 5;
+        $pos_id = 1;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'nuori',  56=>'nuori, nuoren', 3=>'nuoren',  4=>'nuordu', 277=>'nuorennu',  
+                     5=>'nuorekse', 6=>'nuorettah', 8=>'nuores',  9=>'nuores, nuorespäi', 10=>'nuoreh',  
+                     11=>'nuorel', 12=>'nuorel, nuorelpäi', 13=>'nuorele', 14=>'nuorenke', 15=>'nuoreči', 
+ 
+            2=>'nuoret', 57=>'nuoret', 24=>'nuorien', 22=>'nuorii', 279=>'nuorinnu', 
+            59=>'nuorikse', 64=>'nuorittah', 23=>'nuoris', 60=>'nuoris, nuorispäi', 61=>'nuorih',  
+            25=>'nuoril', 62=>'nuoril, nuorilpäi', 63=>'nuorile', 65=>'nuorienke, nuorinneh', 66=>'nuoriči', 281=>'nuorin'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsFromMiniTemplateKarProperNameLyhyt() {
+        $template = '';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'lyhyt',  3=>'lyhyön',  4=>'lyhyttä', 277=>'lyhyönä',  
+                     5=>'lyhyökši', 8=>'lyhyöššä',  9=>'lyhyöštä', 10=>'lyhyöh', 278=>'lyhyöllä', 
+                     12=>'lyhyöltä', 6=>'lyhyöttä', 14=>'', 15=>'', 
+ 
+            2=>'lyhyöt', 24=>'lyhyijen', 22=>'lyhyitä', 279=>'lyhyinä', 
+            59=>'lyhyiksi', 23=>'lyhyissä', 60=>'lyhyistä', 61=>'lyhyih', 280=>'lyhyillä', 
+            62=>'lyhyiltä', 64=>'lyhyittä', 65=>'lyhyineh', 66=>'', 281=>'lyhyin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloNameLyhyt() {
+        $template = '';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'lyhyt',  56=>'lyhyt, lyhyön', 3=>'lyhyön',  4=>'lyhytty', 277=>'lyhyönny',  
+                     5=>'lyhyökse', 6=>'lyhyöttäh', 8=>'lyhyös',  9=>'lyhyös, lyhyöspäi', 10=>'lyhyöh',  
+                     11=>'lyhyöl', 12=>'lyhyöl, lyhyölpäi', 13=>'lyhyöle', 14=>'lyhyönke', 15=>'lyhyöči', 
+ 
+            2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyzii', 22=>'lyhyzii', 279=>'lyhyzinny', 
+            59=>'lyhyzikse', 64=>'lyhyzittäh', 23=>'lyhyzis', 60=>'lyhyzis, lyhyzispäi', 61=>'lyhyzih',  
+            25=>'lyhyzil', 62=>'lyhyzil, lyhyzilpäi', 63=>'lyhyzile', 
+            65=>'lyhyzienke, lyhyzinneh', 66=>'lyhyziči', 281=>'lyhyzin'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformsFromMiniTemplateKarProperNameVesi() {
+        $template = 've|si [je/te, t]';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'vesi',  3=>'vejen',  4=>'vettä', 277=>'vetenä',  
+                     5=>'vejekši', 8=>'veješšä',  9=>'veještä', 10=>'veteh', 278=>'vejellä', 
+                     12=>'vejeltä', 6=>'vejettä', 14=>'vienke', 15=>'vieči', 
+ 
+            2=>'vejet', 24=>'vesien', 22=>'vesie', 279=>'vesinä', 
+            59=>'vesiksi', 23=>'vesissä', 60=>'vesistä', 61=>'vesih', 280=>'vesillä', 
+            62=>'vesiltä', 64=>'vesittä', 65=>'vesineh', 66=>'', 281=>'vesin'];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloNameVezi() {
+        $template = 'v|ezi [ie/ede, et]';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'vezi',  56=>'vezi, vien', 3=>'vien',  4=>'vetty', 277=>'vienny',  
+                     5=>'viekse', 6=>'viettäh', 8=>'vies',  9=>'vies, viespäi', 10=>'vedeh',  
+                     11=>'viel', 12=>'viel, vielpäi', 13=>'viele', 14=>'', 15=>'', 
+ 
+            2=>'viet', 57=>'viet', 24=>'vezien', 22=>'vezii', 279=>'vezinny', 
+            59=>'vezikse', 64=>'vezittäh', 23=>'vezis', 60=>'vezis, vezispäi', 61=>'vezih',  
+            25=>'vezil', 62=>'vezil, vezilpäi', 63=>'vezile', 
+            65=>'vezienke, vezinneh', 66=>'veziči', 281=>'vezin'];
+        $this->assertEquals( $expected, $result);        
+    }
+    
+/*
+    public function testWordformsFromMiniTemplateKarProperName() {
+        $template = '';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'',  3=>'',  4=>'', 277=>'',  
+                     5=>'', 8=>'',  9=>'', 10=>'', 278=>'', 
+                     12=>'', 6=>'', 14=>'', 15=>'', 
+ 
+            2=>'', 24=>'', 22=>'', 279=>'', 
+            59=>'', 23=>'', 60=>'', 61=>'', 280=>'', 
+            62=>'', 64=>'', 65=>'', 66=>'', 281=>''];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloName() {
+        $template = '';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'',  56=>'', 3=>'',  4=>'', 277=>'',  
+                     5=>'', 6=>'', 8=>'',  9=>'', 10=>'',  
+                     11=>'', 12=>'', 13=>'', 14=>'', 15=>'', 
+ 
+            2=>'', 57=>'', 24=>'', 22=>'', 279=>'', 
+            59=>'', 64=>'', 23=>'', 60=>'', 61=>'',  
+            25=>'', 62=>'', 63=>'', 65=>'', 66=>'', 281=>''];
+        $this->assertEquals( $expected, $result);        
+    }
+*/    
     // 17. puhketa
     public function testWordformsByStemsKarVerbOloPuhketa() {
         $template = 'puhk|eta (-ien/-enen, -ieu/-enou; -etah; -ei/-eni, -ettih)';
@@ -1727,8 +1988,13 @@ class GrammaticTest extends TestCase
         $dialect_id='44';
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'',  56=>'', 3=>'',  4=>'', 277=>'',  5=>'', 6=>'', 8=>'',  9=>'', 10=>'',  11=>'', 12=>'', 13=>'', 14=>'', 15=>'', 
-            2=>'', 57=>'', 24=>'', 22=>'', 279=>'', 59=>'', 64=>'', 23=>'', 60=>'', 61=>'',  25=>'', 62=>'', 63=>'', 65=>'', 66=>'', 281=>''];
+        $expected = [1=>'',  56=>'', 3=>'',  4=>'', 277=>'',  
+                     5=>'', 6=>'', 8=>'',  9=>'', 10=>'',  
+                     11=>'', 12=>'', 13=>'', 14=>'', 15=>'', 
+ 
+            2=>'', 57=>'', 24=>'', 22=>'', 279=>'', 
+            59=>'', 64=>'', 23=>'', 60=>'', 61=>'',  
+            25=>'', 62=>'', 63=>'', 65=>'', 66=>'', 281=>''];
         $this->assertEquals( $expected, $result);        
     }
  * 

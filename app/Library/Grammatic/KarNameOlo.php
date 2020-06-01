@@ -43,6 +43,8 @@ class KarNameOlo
                 return $stems[1] ? $stems[1].'l, '. $stems[1].'lpäi' : '';
             case 13: // аллатив, ед.ч. 
                 return $stems[1] ? $stems[1].'le' : '';
+            case 14: // комитатив, ед.ч. 
+                return $stems[1] ? $stems[1].'nke' : '';
             case 15: // пролатив, ед.ч. 
                 return $stems[1] ? $stems[1].'či' : '';
         }

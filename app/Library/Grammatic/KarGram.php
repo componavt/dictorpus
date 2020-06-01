@@ -6,9 +6,10 @@ use App\Library\Grammatic;
 use App\Library\Grammatic\KarName;
 use App\Library\Grammatic\KarVerb;
 
-use App\Models\Dict\Gramset;
-use App\Models\Dict\Lang;
-use App\Models\Dict\Lemma;
+use App\Models\Dict\Dialect;
+//use App\Models\Dict\Gramset;
+//use App\Models\Dict\Lang;
+//use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
 /**
@@ -70,6 +71,10 @@ class KarGram
      * @return INT 1 - односложное, 2 - двусложное, 3 - трехсложное, 4 - многосложное
      */
     public static function countSyllable($stem) {
+        if (preg_match("/\|\|([^\|]+)$/", $stem, $regs) 
+                || preg_match("/ǁ([^ǁ]+)$/", $stem, $regs) ) {
+            $stem = $regs[1];
+        }
         $C = "[".KarGram::consSet()."]";
         $C_n= "(".$C."’?)*";
         $C_o= "(".$C."’?)+";
@@ -113,6 +118,31 @@ class KarGram
             }
         } 
         return $new_vowels;
+    }
+    
+    /**
+     * дистрибуция свистящих и шипящих согласных: 
+     * 1) если о.1 (stem1) заканчивается на i, используется свистящий вариант
+     * 1) иначе шипящий вариант;
+     * 
+     * @param type $stem
+     * @param type $whistl_str
+     */
+    public static function distrCons($stem1, $whistl_str) {
+        if (!$whistl_str || preg_match("/i$/u", $stem1)) {
+            return $whistl_str;
+        }
+        $hess_consonats = ['s'=>'š'];
+        $letters = preg_split("//", $whistl_str);
+        $new_str = '';
+        foreach ($letters as $v) {
+            if (isset($hess_consonats[$v])) {
+                $new_str .= $hess_consonats[$v];
+            } else {
+                $new_str .= $v;
+            }
+        } 
+        return $new_str;
     }
     
     /**
@@ -211,7 +241,7 @@ class KarGram
         $okon_shab = "(-?[^\-\,\;\)]+\/?-?[^\-\,\;\)]*)";
       
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-            return KarName::stemsFromTemplate($template, $name_num);
+            return KarName::stemsFromTemplate($template, Dialect::getLangIDByID($dialect_id), $pos_id, $name_num);
         } elseif ($pos_id == PartOfSpeech::getVerbID()) {
             if (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {  
 //dd('regs:',$regs);            
