@@ -224,22 +224,27 @@ class KarName
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
 //        if (preg_match("/^(.+?".$C."’?)(".$V.")$/", $stem6, $regs)) {
-        if (preg_match("/^(.+".$C.")(".$V.")$/", $stem6, $regs)) {
+//dd($stem6, $lang_id, $harmony);        
+        if (preg_match("/^(.+".$C.")(".$V.")$/u", $stem6, $regs)) {
 //dd($regs);            
             if (in_array($regs[2], ['a', 'o'])) {
                 return $regs[1].'u'.$regs[2];
-            } elseif (in_array($regs[2], ['ä', 'e'])) {
-                return $regs[1].'i'.$regs[2];
             } elseif (in_array($regs[2], ['y', 'ö'])) {
                 return $regs[1].'yö';
+            } elseif ($regs[2]== 'e') {
+                return $regs[1].'ie';
             } elseif ($regs[2] =='u') {
                 return $regs[1].'uo';
+            } elseif ($regs[2]=='ä' && $lang_id==5) { // livvic
+                return $regs[1].'iä';
+            } elseif ($regs[2]=='ä') { // proper
+                return $regs[1].'yä';
             } elseif ($regs[2] =='i' && $lang_id==5) { // livvic
                 return $regs[1].'ii';
             } elseif ($regs[2] =='i') { // proper
                 return $regs[1].'ie';
             }
-        } elseif (preg_match("/".$V.$V."$/", $stem6)) {
+        } elseif (preg_match("/".$V.$V."$/u", $stem6)) {
             if ($lang_id == 5) {
                 return $stem6.KarGram::garmVowel($harmony,'du');
             } else {
@@ -248,9 +253,9 @@ class KarName
         } else { // ending by consonant
             if ($lang_id == 4) { // proper
                 return $stem6.KarGram::garmVowel($harmony,'ta');                
-            } elseif (preg_match("/[lnr]$/", $stem6)) {
+            } elseif (preg_match("/[lnr]$/u", $stem6)) {
                 return $stem6.KarGram::garmVowel($harmony,'du');
-            } elseif (preg_match("/[hst]$/", $stem6)) {
+            } elseif (preg_match("/[hst]$/u", $stem6)) {
                 return $stem6.KarGram::garmVowel($harmony,'tu');
             }
         }
@@ -294,9 +299,9 @@ class KarName
     public static function stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
-        if ($lang_id == 4 && preg_match("/".$C."’?[oö]$/", $stem6) && $stem0_syll==3) { // А.1
+        if ($lang_id == 4 && preg_match("/".$C."’?[oö]$/u", $stem6) && $stem0_syll==3) { // А.1
             return $stem6.'i';
-        } elseif (preg_match("/".$C."[iuyoö]$/", $stem6)
+        } elseif (preg_match("/".$C."[iuyoö]$/u", $stem6)
                 || preg_match("/".$V."i$/u", $stem6)) { // А.2
             return $stem6.KarGram::garmVowel($harmony,'loi');
         } elseif (preg_match("/^(.+".$C.")e$/u", $stem6, $regs)) { // А.3
