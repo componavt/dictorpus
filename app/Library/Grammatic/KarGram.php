@@ -81,13 +81,21 @@ class KarGram
         $V = "[".KarGram::vowelSet()."]+";
 //        $syllable = "(".$C."’?)*[".KarGram::vowelSet()."][iu]?(".$C."’?)*";
         $syllable = $C_n.$V."+(".$C."’?)*";
+        $template = "$C_n.$V";
+        for ($i=1; $i<20; $i++) {
+            if (preg_match("/^".$template.$C_n."$/u",$stem)) {
+                return $i;
+            }
+            $template .= $C_o.$V;
+        }
+/*        
         if (preg_match("/^".$C_n.$V.$C_n."$/u",$stem)) {
             return 1;
         } elseif (preg_match("/^".$C_n.$V.$C_o.$V.$C_n."$/u",$stem)) {
             return 2;
         } elseif (preg_match("/^".$C_n.$V.$C_o.$V.$C_o.$V.$C_n."$/u",$stem)) {
             return 3;
-        }
+        } */
 //dd($stem, $syllable.$syllable.$syllable);        
         return 4;
     }        
