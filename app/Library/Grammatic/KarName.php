@@ -856,7 +856,7 @@ class KarName
         if (!$stem6) {
             return '';
         }
-dd(preg_match("/^(.+)l[oö]i$/u", $stem5, $regs), KarGram::countSyllable($stem5), KarGram::countSyllable($stem6));        
+//dd(preg_match("/^(.+)l[oö]i$/u", $stem5, $regs), KarGram::countSyllable($stem5), KarGram::countSyllable($stem6));        
         $V = "[".KarGram::vowelSet()."]";
         $C = "[".KarGram::consSet()."]";
         if (preg_match("/".$C."i$/u", $stem5)) {
