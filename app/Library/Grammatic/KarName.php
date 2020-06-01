@@ -392,13 +392,13 @@ class KarName
             return $stem5;
         } elseif (preg_match("/".$C."i$/u", $stem5)) { // Г
             if (preg_match("/čči$|šši$|ssi$|[ktpgdb]i$/u", $stem5)) { // Г.1
-                if (preg_match("/^(.+".$C.")".$V."$/u", $stem1, $regs1)) {
+                if (preg_match("/^(.+".$C.")".$V."$/u", $stem1, $regs)) {
                     return $regs[1].'i';
-                } elseif (preg_match("/^(.+)ie$/u", $stem1, $regs1)) {
+                } elseif (preg_match("/^(.+)ie$/u", $stem1, $regs)) {
                     return $regs[1].'ei';
-                } elseif (preg_match("/^(.+)ua$/u", $stem1, $regs1)) {
+                } elseif (preg_match("/^(.+)ua$/u", $stem1, $regs)) {
                     return $regs[1].'ai';
-                } elseif (preg_match("/^(.+)iä$/u", $stem1, $regs1)) {
+                } elseif (preg_match("/^(.+)iä$/u", $stem1, $regs)) {
                     return $regs[1].'äi';
                 } else {
                     return $stem1;
