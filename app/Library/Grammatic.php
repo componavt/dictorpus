@@ -34,6 +34,7 @@ class Grammatic
      */
     public static function parseLemmaField($data) {
         $lemma = self::toRightForm($data['lemma']);
+//dd($lemma);        
         if (isset($data['number']) && $data['number']=='refl') {
             $data['reflexive'] = 1;
         }
@@ -264,7 +265,7 @@ class Grammatic
     public static function toRightForm($word) {
         $word = trim($word);
         $word = self::removeSpaces($word);
-        $word = preg_replace("/['´`΄]+/", "’", $word);
+        $word = preg_replace("/['´`΄]+/u", "’", $word);
         return $word;
     }
     
