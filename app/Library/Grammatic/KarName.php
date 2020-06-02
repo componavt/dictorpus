@@ -329,12 +329,10 @@ class KarName
             }
         } elseif (preg_match("/".$C."$/u", $stem6)) { // Б
 //            if (preg_match("/^(.+".$C.")e$/u", $stem1, $regs)) {
-            if (preg_match("/^(.+)e$/u", $stem1, $regs)) {
-                if (preg_match("/[sšzž]i$/u", $stem0)) { // Б.1
+            if (preg_match("/^(.+)e$/u", $stem1, $regs) && preg_match("/[sšzž]i$/u", $stem0)) { // Б.1
                     return $stem0;
-                } else { // Б.2
-                    return $regs[1].'i';
-                }
+            } elseif (preg_match("/^(.+".$C.")e$/u", $stem1, $regs) && !preg_match("/[sšzž]i$/u", $stem0)) { // Б.2
+                return $regs[1].'i';
             } elseif (preg_match("/^(.+".$C.")[aä]$/u", $stem1, $regs)) { // Б.3
                     return $regs[1].'i';
             } elseif (preg_match("/^(.+?)(".$V.")(".$V.")$/u", $stem1, $regs)) { // Б.4
