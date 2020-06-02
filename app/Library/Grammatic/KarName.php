@@ -340,7 +340,7 @@ class KarName
                     switch ($regs[2].$regs[3]) { // Б.4.1
                         case 'uo': return $regs[1].'ui';
                         case 'yö': return $regs[1].'yi';
-                        case 'ie': return $regs[1].'yi';
+                        case 'ie': return $regs[1].'ei';
                         default : return $stem1;
                     }
                 } else {
