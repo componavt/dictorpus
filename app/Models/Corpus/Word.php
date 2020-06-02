@@ -357,6 +357,10 @@ class Word extends Model
     }
     
     public function addMeaning($meaning_id, $text_id, $sentence_id, $w_id, $relevance) {
+        if ($this->meanings()->wherePivot('sentence_id',$sentence_id)
+                 ->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)) {
+            return;
+        }
         $this->meanings()->attach($meaning_id,
                 ['sentence_id'=>$sentence_id,
                  'text_id'=>$text_id,
