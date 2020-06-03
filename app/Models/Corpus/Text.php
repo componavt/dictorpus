@@ -90,15 +90,15 @@ class Text extends Model
         $texts = self::searchByRecorder($texts, $url_args['search_recorder']);
         $texts = self::searchByTitle($texts, $url_args['search_title']);
         $texts = self::searchByWord($texts, $url_args['search_word']);
-        //$texts = self::searchByText($texts, $url_args['search_text']);
+        $texts = self::searchByText($texts, $url_args['search_text']);
         
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
         } 
-
+/*
         if ($url_args['search_text']) {
             $texts = $texts->where('text','like','%'.$url_args['search_text'].'%');
-        } 
+        } */
 //dd($texts->toSql());                                
 
         return $texts;
@@ -194,6 +194,20 @@ class Text extends Model
 //                                ->where('word','like', $word);
                                 ->where('word', 'like', Grammatic::toSearchForm($word));
                             });
+    }
+
+    public static function searchByText($texts, $str) {
+        if (!$str) {
+            return $texts;
+        }
+        return $texts->where(function($q) use ($str){
+                        $q->whereIn('transtext_id',function($query) use ($str){
+                            $query->select('id')
+                            ->from(with(new Transtext)->getTable())
+                            ->where('text','like', '%'.$str.'%');
+                        })->orWhere('text','like', '%'.$str.'%');
+                });
+                       //->whereOr('transtexts.title','like', $text_title);
     }
 
     public static function updateByID($request, $id) {
