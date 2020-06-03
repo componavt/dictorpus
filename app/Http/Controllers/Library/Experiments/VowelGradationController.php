@@ -145,4 +145,30 @@ class VowelGradationController extends Controller
         $words = $words->sortBy('part_r');
         return view('experiments/vowel_gradation/nom_gen_part', compact('num', 'words', 'pos_name', 'sl', 'part_gr_name'));
     }    
+    
+    /**
+     * 
+     * глаголы, у которых с.ф. на ua, а 3 л. ед. ч. през. имперф. на oi
+     */
+    public function verbImp3Sg() {
+        $imp3sg = 34;
+        $pos_id=11;
+        $lang_id=5;
+        $dialect_id = 44;
+        $lemmas = Lemma::where('pos_id',$pos_id)
+                        ->whereRaw('lemmas.lang_id='.$lang_id)
+                        ->where('lemma', 'like', '%ua')
+                        ->join('reverse_lemmas', 'reverse_lemmas.id', '=', 'lemmas.id')
+                        ->join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
+                        ->where('gramset_id', $imp3sg)
+                        ->where('dialect_id', $dialect_id)
+                        ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+                        ->where('wordform', 'like', '%oi')
+                        ->select(DB::raw("lemmas.id as id, lemma, wordform"))
+                        ->orderBy('reverse_lemma')
+                        ->get();
+//dd($lemmas);        
+        return view('experiments/vowel_gradation/verb_imp_3sg', compact('lemmas'));
+    }
+    
 }

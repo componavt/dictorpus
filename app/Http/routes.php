@@ -197,6 +197,7 @@ Route::group(
 
         Route::get('experiments/vowel_gradation/', 'Library\Experiments\VowelGradationController@index');
         Route::get('experiments/vowel_gradation/nom_gen_part/{num}/{pos_code}/{sl}/{part_gr}', 'Library\Experiments\VowelGradationController@nomGenPart');
+        Route::get('experiments/vowel_gradation/verb_imp_3sg/', 'Library\Experiments\VowelGradationController@verbImp3Sg');
         
         Route::get('service', 'Library\ServiceController@index');
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
