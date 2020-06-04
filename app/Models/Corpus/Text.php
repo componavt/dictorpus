@@ -676,6 +676,7 @@ class Text extends Model
         if ($error_message) { return $error_message; }
 
         $checked_words = $this->checkedWords($old_xml);
+//dd($checked_words);        
         DB::statement("DELETE FROM words WHERE text_id=".(int)$this->id);
         DB::statement("DELETE FROM meaning_text WHERE text_id=".(int)$this->id);
 
@@ -690,6 +691,7 @@ print "</pre>";*/
     
     public function updateMeaningSentence($sxe, $s_id, $sent_words, $checked_sent_words) {
         $word_count = 0;
+//dd($sent_words);        
 /*print "<pre>";
         var_dump($sent_words);
 print "</pre>";*/
@@ -698,12 +700,12 @@ print "</pre>";*/
             $w_id = (int)$word->attributes()->id;
             $word_for_search = Grammatic::changeLetters((string)$word,$this->lang_id);
 
-            list($sxe, $word_for_search) = $this->searchToMerge($sxe, $w_id, $word_for_search, $left_words);
+//            list($sxe, $word_for_search) = $this->searchToMerge($sxe, $w_id, $word_for_search, $left_words);
             
             $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_search]);
-            if (isset ($checked_sent_words[$word_count])) {
-                $word_obj->setMeanings($checked_sent_words[$word_count], $this->lang_id);
-            }
+//            if (isset ($checked_sent_words[$word_count])) {
+                $word_obj->setMeanings(isset ($checked_sent_words[$word_count])? $checked_sent_words[$word_count] : 1, $this->lang_id);
+//            }
 /*            foreach (Word::getMeaningsByWord($word_for_search, $this->lang_id) as $meaning) {
                 $meaning_id = $meaning->id;
                 $relevance = isset($checked_sent_words[$word_count][$meaning_id][0]) && $checked_sent_words[$word_count][$meaning_id][0] == $word 
@@ -713,7 +715,7 @@ print "</pre>";*/
             $left_words[$w_id] = $word_for_search;
             $word_count++;
         }
-//dd($sent_words);        
+//dd($sent_words);     
         return $sxe;
     }
     

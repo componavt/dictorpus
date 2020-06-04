@@ -344,7 +344,7 @@ class Word extends Model
      * @param Int $lang_id
      * @return Collection
      */
-    public static function getMeaningsByWord($word, $lang_id=NULL) {
+    public static function getMeaningsByWord($word, $lang_id) {
 //        $word_t = addcslashes($word,"'%");
 //        $word_t_l = mb_strtolower($word_t);
 //        $wordform_q = "(SELECT id from wordforms where lower(wordform_for_search) like '$word_t_l')";
@@ -357,8 +357,8 @@ class Word extends Model
     }
     
     public function addMeaning($meaning_id, $text_id, $sentence_id, $w_id, $relevance) {
-        if ($this->meanings()->wherePivot('sentence_id',$sentence_id)
-                 ->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)) {
+        if ($this->meanings()->wherePivot('sentence_id',$sentence_id)->wherePivot('meaning_id',$meaning_id)
+                 ->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->count()) {
             return;
         }
         $this->meanings()->attach($meaning_id,
@@ -380,6 +380,7 @@ class Word extends Model
             $lang_id = Text::getLangIDbyID($this->text_id);
         }
         $count = 0;
+//dd(self::getMeaningsByWord($this->word, $lang_id));        
         foreach (self::getMeaningsByWord($this->word, $lang_id) as $meaning) {
 //dd($meaning);            
             $meaning_id = $meaning->id;

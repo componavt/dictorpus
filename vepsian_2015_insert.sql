@@ -1212,3 +1212,5 @@ select lemma_id,count(*) as count from lemma_wordform where dialect_id=44 and le
 -- php artisan make:test Library\Grammatic\KarNameOloTest
 
 -- php artisan make:migration add_field_total_wordforms_in_lemmas_table
+
+-- php artisan make:test Models\Dict\WordTest
