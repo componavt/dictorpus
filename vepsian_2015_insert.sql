@@ -1214,3 +1214,9 @@ select lemma_id,count(*) as count from lemma_wordform where dialect_id=44 and le
 -- php artisan make:migration add_field_total_wordforms_in_lemmas_table
 
 -- php artisan make:test Models\Dict\WordTest
+
+-- Проверка на дубли в Words
+select text_id, w_id, count(*) as count from words group by text_id, w_id having count>1;
+
+-- Проверка, есть ли связи с несуществующими словами
+select count(*) from meaning_text where word_id not in (select id from words);
