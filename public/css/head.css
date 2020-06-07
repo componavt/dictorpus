@@ -1,0 +1,230 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 6, 2020, 7:49:35 PM
+    Author     : Nataly Krizhanovsky
+*/
+.logo img {
+    height: auto;
+    padding: 30px 0;
+    width: 100%;
+}
+
+.user-enter-submit-enter,
+.user-enter-input,
+.user-registr-submit {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user-enter {
+    align-items: flex-end;
+    flex-direction: column;
+    min-height: 150px;
+    justify-content: space-between;
+}
+
+.user-enter-input  > div,
+.user-registr-submit  > div {
+    width: 100%;
+}
+
+.user-enter label {
+    color: #222222;
+    font-style: italic;
+    font-weight: normal;
+    line-height: 16px;
+}
+
+.user-registr-col {
+    padding-bottom: 10px;
+}
+
+.user-registr-link {
+    color: #222222;
+    font-size: 13px;
+    line-height: 16px;
+    text-decoration: underline;
+}
+
+.user-registr-link span {
+    color: #222222;
+}
+
+.user-enter-submit {
+    align-items:  flex-start;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.user-enter-submit input[type="submit"] {
+    font-size: 13px;
+    padding-left: 4px;
+}
+
+.remember-me {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
+.user-enter-remember-text {
+    color: #8a8a8a;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 12px;
+    margin-top: -7px;
+    max-width: 100px;
+    padding: 0 10px 0 0;
+}
+
+.user-menu-name {
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.user-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    font-size: 11px;
+    text-align: right;
+}
+
+.user-menu a {
+    display: block;
+    white-space: nowrap;
+}
+
+.user-menu a:not(:first-child) {
+    margin-left: 10px;
+}
+
+.user-menu-img {
+    display: none;
+}
+
+@media screen and (max-width: 395px) {    
+}
+
+@media screen and (min-width: 399px) {    
+    .logo img {
+        width: 360px;
+    }
+    .user-menu {
+        font-size: 12px;
+    }
+    .user-enter-input > div {
+        width: 49%;
+    }
+    .user-enter-input > div:first-child {
+        margin-right: 2%;
+    }
+    .user-registr-submit .user-registr-col {
+        margin-right: 2%;
+        width: 45%;
+    }
+    .user-registr-submit .remember-me {
+        width: 33%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 20%;
+    }
+    .user-registr-submit .user-enter-submit .form-group,
+    .user-registr-submit .user-enter-submit .form-group input{
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 450px) {    
+    .user-registr-submit .user-registr-col {
+        margin-right: 2%;
+        width: 49%;
+    }
+    .user-registr-submit .remember-me {
+        width: 31%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 18%;
+    }
+    .user-menu-name {
+        font-size: 20px;
+    }
+    
+    .user-menu-img {
+        display: inline;
+    }
+}
+/* sm */
+@media screen and (min-width: 576px) and (max-width: 767px) {    
+}
+/* md */
+@media screen and (max-width: 767px) {
+    .user-enter {
+        align-items: flex-start;
+        min-height: auto;
+        padding-bottom: 30px;
+    }
+}
+@media screen and (min-width: 768px) {
+    #header {
+        display: flex;
+        justify-content: space-between;
+    }
+    .user-enter {
+        padding-top: 63px;
+    }
+    .user-enter-submit input[type="submit"] {
+        font-size: 14px;
+    }
+    .user-menu-img {
+        display: none;
+    }
+}
+@media screen and (min-width: 992px) {
+    .logo img {
+        padding: 30px 20px 30px 0;
+        width: auto;
+    }
+    .user-menu-name {
+        font-size: 16px;
+        line-height: 16px;
+    }
+    .user-menu a:not(:first-child) {
+        margin-left: 20px;
+    }
+    .user-menu {
+        font-size: 14px;
+    }
+    .user-menu-img {
+        display: inline;
+    }
+}
+/*
+@media screen and (min-width: 768px) and (max-width: 991px) {    
+    .user-registr-submit .remember-me {
+        width: 31%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 18%;
+    }
+}*/
+/* lg */
+@media screen and (min-width: 1200px) {    
+    .user-menu {
+        font-size: 16px;
+    }
+    .user-registr-submit .remember-me {
+        width: 31%;
+    }
+    .user-registr-submit .user-enter-submit {
+        width: 18%;
+    }
+}

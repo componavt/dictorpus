@@ -12,6 +12,7 @@ and open the template in the editor.
 @import url(fonts.css);
 @import url(forms.css);
 @import url(navigation.css);
+@import url(head.css);
 
 body {
     background: url(/images/bg_decor.png) 0 0 no-repeat;
@@ -25,103 +26,6 @@ a:focus,
 a:hover {
     color: #972d1a;
     text-decoration: underline;
-}
-
-/*#header {
-    align-items: center;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-}*/
-
-.logo img {
-    padding: 30px 20px 30px 0;
-}
-
-.user-enter-submit-enter,
-.user-enter-input,
-.user-registr-submit {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.user-enter {
-    align-items: flex-end;
-    flex-direction: column;
-    min-height: 150px;
-    justify-content: space-between;
-}
-
-.user-enter-input  > div,
-.user-registr-submit  > div {
-    width: 100%;
-}
-
-.user-enter label {
-    color: #222222;
-    font-style: italic;
-    font-weight: normal;
-    line-height: 16px;
-}
-
-.user-registr-col {
-    padding-bottom: 10px;
-}
-
-.user-registr-link {
-    color: #222222;
-    font-size: 13px;
-    line-height: 16px;
-    text-decoration: underline;
-}
-
-.user-registr-link span {
-    color: #222222;
-}
-
-.user-enter-submit {
-    align-items:  flex-start;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin-top: 5px;
-}
-
-.user-enter-submit input[type="submit"] {
-    font-size: 13px;
-    padding-left: 4px;
-}
-
-.remember-me {
-    align-items: center;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-}
-
-.user-enter-remember-text {
-    color: #8a8a8a;
-    font-size: 12px;
-    font-style: italic;
-    line-height: 12px;
-    margin-top: -7px;
-    max-width: 100px;
-    padding: 0 10px 0 0;
-}
-
-.user-menu-name {
-    font-size: 20px;
-    margin-bottom: 20px;
-    text-align: right;
-}
-
-.user-menu {
-    font-size: 16px;
-    text-align: right;
-}
-
-.user-menu a:not(:first-child) {
-    margin-left: 20px;
 }
 
 .btn {
@@ -139,7 +43,7 @@ a:hover {
 
 h1 {
     color: #ef3928;
-    font-size: 33px;
+    font-size: 24px;
     font-weight: bold;
     margin: 0 0 20px;
     padding-left: 43px;
@@ -153,12 +57,12 @@ h1:before {
     height: 28px;
     left: 0;
     position: absolute;
-    top: 7px;
+    top: 0;
     width: 28px;
 }
 
 h2 {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: bold;
     line-height: 28px;
     margin: 0 0 20px;
@@ -531,78 +435,22 @@ h2 {
     margin-bottom: 0;
 }
 
-@media screen and (max-width: 395px) {    
-    .logo img {
-        height: auto;
-        padding: 30px 0;
-        width: 100%;
+@media screen and (min-width: 576px) {    
+}
+@media screen and (min-width: 992px) {
+    h1 {
+        font-size: 33px;
     }
-    .user-menu {
-        font-size: 14px;
+    h1:before {
+        top: 7px;
     }
-    .user-menu-name {
-        font-size: 16px;
+    h2 {
+        font-size: 24px;
     }
 }
-
-@media screen and (min-width: 400px) {    
-    .user-enter-input > div {
-        width: 49%;
-    }
-    .user-enter-input > div:first-child {
-        margin-right: 2%;
-    }
-    .user-registr-submit .user-registr-col {
-        margin-right: 2%;
-        width: 45%;
-    }
-    .user-registr-submit .remember-me {
-        width: 33%;
-    }
-    .user-registr-submit .user-enter-submit {
-        width: 20%;
-    }
-    .user-registr-submit .user-enter-submit .form-group,
-    .user-registr-submit .user-enter-submit .form-group input{
-        width: 100%;
-    }
-}
-
-@media screen and (min-width: 450px) {    
-    .user-registr-submit .user-registr-col {
-        margin-right: 2%;
-        width: 49%;
-    }
-    .user-registr-submit .remember-me {
-        width: 31%;
-    }
-    .user-registr-submit .user-enter-submit {
-        width: 18%;
-    }
-}
-/* sm */
-@media screen and (min-width: 576px) and (max-width: 767px) {    
-}
-/* md */
-@media screen and (max-width: 767px) {
-    .user-enter {
-        align-items: flex-start;
-        min-height: auto;
-        padding-bottom: 30px;
-    }
-}
-@media screen and (min-width: 768px) {
-    .user-enter {
-        padding-top: 63px;
-    }
-    .user-enter-submit input[type="submit"] {
-        font-size: 14px;
-    }
-}
-@media screen and (max-width: 991px) {
-    .user-menu-name {
-        font-size: 16px;
-        line-height: 16px;
+@media screen and (min-width: 1200px) {
+    h2 {
+        font-size: 26px;
     }
 }
 @media screen and (max-width: 1199px) {
@@ -610,24 +458,4 @@ h2 {
         font-size: 14px;
         line-height: 18px;
     }
-}/*
-@media screen and (min-width: 768px) and (max-width: 991px) {    
-    .user-registr-submit .remember-me {
-        width: 31%;
-    }
-    .user-registr-submit .user-enter-submit {
-        width: 18%;
-    }
-}*/
-/* lg */
-@media screen and (min-width: 992px) and (max-width: 1199px) {    
-    .user-registr-submit .remember-me {
-        width: 31%;
-    }
-    .user-registr-submit .user-enter-submit {
-        width: 18%;
-    }
-}
-/* xl */
-@media screen and (min-width: 1200px){
 }

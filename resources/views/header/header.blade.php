@@ -1,8 +1,8 @@
-        <header id="header" class="row">
-            <div class="logo col-sm-6">
+        <header id="header">
+            <div class="logo">
                 <a href="/"><img src="/images/logo.{{LaravelLocalization::getCurrentLocale()}}.png"></a>
             </div>
-            <div class="col-sm-6 user-enter">
+            <div class="user-enter">
 <!-- Authentication Links -->            
 @include('header.auth_links')
             </div>

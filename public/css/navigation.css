@@ -1,5 +1,5 @@
 .nav > li > a {
-  padding: 20px 30px;
+  padding: 0 20px 10px;
 }
 
 .navbar-default {
@@ -20,7 +20,7 @@ li.dropdown {
 .navbar-default .navbar-nav > li > .dropdown-toggle {
     border: 1px solid #f2f2f2;
     color: #676767;
-    font-size: 18px;
+    font-size: 12px;
     text-decoration: none;
     text-transform: uppercase;
 }
@@ -38,15 +38,19 @@ li.dropdown {
 }
 
 .caret {
-    border-top: 15px dashed;
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
+    border-top: 10px dashed;
+    border-right: 7px solid transparent;
+    border-left: 7px solid transparent;
     margin-top: -2px;
     color: #676767;
 }
 
 .navbar-default .navbar-nav > .open .caret {
     color: #e7695e;
+}
+
+.navbar-toggle {
+    margin-right: 0;
 }
 
 .dropdown-menu {
@@ -80,7 +84,7 @@ li.dropdown {
 
 .navbar-right {
     color: #7d7d7d;
-    font-size: 16px;
+    font-size: 13px;
 }
 
 .lang-sm::after {
@@ -139,19 +143,37 @@ flex: 1 0 auto;
 }
 
 @media screen and (min-width: 575px) {
+
+    
     .bottom-menu > div {
         padding-right: 20px;
         width: 25%;
     }
 }
 
-@media screen and (max-width: 991px) {
+@media screen and (min-width: 768px) {
     .nav > li > a {
-        padding: 10px 19px;
+        padding: 20px 10px;
     }
-    
     .navbar-default .navbar-nav > li > .dropdown-toggle {
         font-size: 15px;
+    }    
+    .caret {
+        border-top-width: 15px;
+        border-right-width: 10px;
+        border-left-width: 10px;
+    }
+    .navbar-right {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 992px) {    
+    .nav > li > a {
+        padding: 20px 20px;
+    }
+    .navbar-default .navbar-nav > li > .dropdown-toggle {
+        font-size: 16px;
     }    
     .navbar-right {
         margin-right: -15px;
