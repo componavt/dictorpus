@@ -1143,7 +1143,7 @@ print "</pre>";*/
         $texts = [];
         foreach ($revisions as $revision) {
             $text = self::find($revision->revisionable_id);
-            if (!$revision->user_id) {
+            if (!$text || !$revision->user_id) {
                 continue;
             }
             $text->user = User::getNameByID($revision->user_id);
