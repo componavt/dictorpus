@@ -25,8 +25,8 @@
             | <a href="/dict/lemma/{{ $lemma->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
         </p>
 
-        <div class="row">
-            <div class="col-sm-8">
+        <div class="lemma-b">
+            <div>
                 <h2>
                     {{ $lemma->lemma }}
                     @if (User::checkAccess('dict.edit'))
@@ -35,9 +35,8 @@
                                   'without_text' => 1])
                     @endif
                 </h2>
-                <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
             </div>
-            <div class="col-sm-4" style="text-align: right; white-space: nowrap;">   
+            <div class="dict-form">   
                 <p><span id="lemmaStemAffix">{{$lemma->dictForm()}}</span>
             @if (User::checkAccess('dict.edit'))
                 <img class="img-loading" id="img-loading_stem-affix" src="{{ asset('images/loading.gif') }}">
@@ -50,6 +49,7 @@
                 </p>
             </div>
         </div>
+        <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         
         @if ($lemma->pos)
         <p>

@@ -173,4 +173,13 @@ h4 .fa {
     .lemma-meaning-left {
         padding-right: 20px;
     }
+    
+    .lemma-b {
+        display: flex;    
+        justify-content: space-between;
+    }
+    
+    .dict-form {
+        text-align: right; 
+    }
 }
