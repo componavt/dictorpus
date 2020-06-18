@@ -423,6 +423,7 @@ class Lemma extends Model
         $this-> labels()->detach();
         $this-> phraseLemmas()->detach();
         
+        // связи с другими леммами - фонетическими вариантами
         foreach ($this->variants as $lemma) {
             $lemma->variants()->detach($this->id);
         }
@@ -446,6 +447,13 @@ class Lemma extends Model
         foreach ($bases as $base) {
             $base -> delete();
         }
+        
+        // произношения
+        foreach ($this->phonetics as $phonetic) {
+            $phonetic->dialects()->detach();
+            $phonetic->places()->detach();
+            $phonetic->delete();
+        }        
 
 //        $this-> dialects()->detach();
 //        $this-> places()->detach();
