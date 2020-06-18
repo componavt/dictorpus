@@ -422,8 +422,8 @@ class Lemma extends Model
         $this-> wordforms()->detach();
         $this-> labels()->detach();
         $this-> phraseLemmas()->detach();
-//        $this-> dialects()->detach();
-//        $this-> places()->detach();
+        $this-> dialects()->detach();
+        $this-> places()->detach();
         
         foreach ($this->variants as $lemma) {
             $lemma->variants()->detach($this->id);
