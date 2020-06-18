@@ -422,8 +422,6 @@ class Lemma extends Model
         $this-> wordforms()->detach();
         $this-> labels()->detach();
         $this-> phraseLemmas()->detach();
-        $this-> dialects()->detach();
-        $this-> places()->detach();
         
         foreach ($this->variants as $lemma) {
             $lemma->variants()->detach($this->id);
@@ -449,6 +447,10 @@ class Lemma extends Model
             $base -> delete();
         }
 
+//        $this-> dialects()->detach();
+//        $this-> places()->detach();
+        DB::statement("DELETE FROM dialect_lemma WHERE lemma_id=".$this->id);
+        DB::statement("DELETE FROM lemma_place WHERE lemma_id=".$this->id);
         $this->delete();
     }
     
