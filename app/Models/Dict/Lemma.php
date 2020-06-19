@@ -784,9 +784,7 @@ dd($wordforms);
         
         $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'], $stems);           
         
-        if (isset($data['phrase'])) {
-            $this->storePhrase($data['phrase']);
-        }
+        $this->storePhrase(isset($data['phrase']) ? $data['phrase'] : null);
     }
 
     public function modify() { 
