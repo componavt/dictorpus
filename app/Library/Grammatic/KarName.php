@@ -625,7 +625,7 @@ class KarName
                 }
             }
             return $stem1;
-        } elseif (preg_match('/^(.*)'.$V.'{2}$/u', $stem3, $regs3)) {
+        } elseif (preg_match('/^(.*)'.$V.$V.'$/u', $stem3, $regs3)) {
             $stem3 = $regs3[1];
             if (preg_match('/[aä]i$/', $stem1)) {
                 $stem3 .= 'e';

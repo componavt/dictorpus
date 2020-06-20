@@ -496,6 +496,32 @@ class KarNameTest extends TestCase
         $this->assertEquals( $expected, $result);                
     }
     
+    public function testIllSgBaseOloPartSY()
+    {
+        $dialect_id=44; // New written Livvic
+        $lang_id=5;
+        $stem0 = 'iänestämine';
+        $stem1 = 'iänestämize';
+        $stem3 = 'iänestämisty';
+        $result = KarName::illSgBase($stem0, $stem1, $stem3);
+        
+        $expected = 'iänestämize';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testIllSgBaseOloPartUO()
+    {
+        $dialect_id=44; // New written Livvic
+        $lang_id=5;
+        $stem0 = 'rahvasjoukko';
+        $stem1 = 'rahvasjouko';
+        $stem3 = 'rahvasjoukkuo';
+        $result = KarName::illSgBase($stem0, $stem1, $stem3);
+        
+        $expected = 'rahvasjoukko';
+        $this->assertEquals( $expected, $result);        
+    }
+    
 /*    
     public function testStemsFromTemplateP() {
         $template = '';
