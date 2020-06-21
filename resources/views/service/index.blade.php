@@ -20,6 +20,8 @@
     
     <p><a href="export/compounds_for_unimorph">Экспорт фразеологизмов в Unimorph</a></p>
 
+    <p><a href="export/bible">Экспорт вепсской Библии</a></p>
+    
     <h3>Проверить</h3>
     <p>окончания у словоформ по флективным правилам</p>
     <ul>

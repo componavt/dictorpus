@@ -4,6 +4,7 @@ namespace App\Library;
 
 use Storage;
 
+use App\Models\Corpus\Text;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -37,4 +38,34 @@ class Export
         }
     }
     
+    /**
+     * 
+     * @param Collection $text
+     */
+    public static function exportBible($lang_id) {
+        $texts = Text::where('lang_id',$lang_id)
+                     ->whereCorpusId(2)
+                     ->whereIn('source_id', function ($query) {
+                         $query->select('id')->from('sources')
+                               ->where('comment','like','%en=%');
+                     })
+//                    ->where('id',1416)
+//                    
+                ->orderBy('id')
+                ->get();
+//dd($texts->count());                         
+        $lines = [];
+        foreach ($texts as $text) {
+            if (!preg_match("/en=(.+?)\|(.+?)\s*$/", $text->source->comment, $regs)) {
+                dd('ERROR'); 
+            }
+            $book=$regs[1];
+            $chapter=$regs[2];
+            foreach ($text->breakIntoVerses() as $verse => $v_text) {
+                $lines[$book][$chapter][$verse] = $v_text;
+            }
+        }
+//        dd($lines);
+        return $lines;
+    }
 }

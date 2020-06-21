@@ -1200,6 +1200,22 @@ print "</pre>";*/
         return $out;
     }
     
+    public function breakIntoVerses() {
+        $verses = [];
+        $v_text = trim(preg_replace("/\r/",'',preg_replace("/\n/",'',preg_replace("/\|/",'',$this->text))));
+        $prev_verse=0;
+        while (preg_match("/^(.*?)\<sup\>(\d+)\<\/sup\>(.*)$/", $v_text, $regs)) {
+            if ($prev_verse) {
+                $verses[$prev_verse] = trim($regs[1]);
+            }
+            $prev_verse = $regs[2];
+            $v_text = $regs[3];
+        }
+        $verses[$prev_verse]= trim($v_text);
+//dd($this->id, $verses);        
+        return $verses;
+    }
+    
     public function sentencesToLines() {
         $out = "";
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);

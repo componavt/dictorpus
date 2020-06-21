@@ -165,6 +165,7 @@ Route::group(
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
         Route::get('corpus/video', 'Corpus\VideoController@index');
         
+        Route::get('export/bible', 'Library\ExportController@exportBible');        
         Route::get('export/compounds_for_unimorph', 'Library\ExportController@exportCompoundsToUniMorph'); 
         Route::get('export/conll', 'Library\ExportController@exportTextsToCONLL');        
         Route::get('export/conll/annotation', 'Library\ExportController@exportAnnotationConll'); 
