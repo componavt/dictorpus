@@ -69,11 +69,12 @@ class TextTest extends TestCase
     // Self-assured trans-American great-great-grandfather likes sugar-free soda.
     
     /** Let's markup One sentence with hyphens between words (should be treated as one compound word).
+     * Поменялась концепция, теперь в слово может входить только дефис '-', все остальные тире - вне слова
      */
     public function testMarkupTextAndWordWithHyphenInside()
     {
         $source_text   = "Self-assured trans‒American great–great—grandfather likes sugar―free soda.";
-        $expected_xml  = '<s id="1"><w id="1">Self-assured</w> <w id="2">trans‒American</w> <w id="3">great–great—grandfather</w> <w id="4">likes</w> <w id="5">sugar―free</w> <w id="6">soda</w>.</s>';
+        $expected_xml  = '<s id="1"><w id="1">Self-assured</w> <w id="2">trans</w>‒<w id="3">American</w> <w id="4">great</w>–<w id="5">great</w>—<w id="6">grandfather</w> <w id="7">likes</w> <w id="8">sugar</w>―<w id="9">free</w> <w id="10">soda</w>.</s>';
         
         $text = new Text();
         $result_xml = $text->markupText($source_text);

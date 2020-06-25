@@ -509,7 +509,7 @@ class Text extends Model
         $word_count = 1;
 
         $end1 = ['.','?','!','…','|'];
-        $end2 = ['.»','?»','!»','."','?"','!"','.”','?”','!”'];
+        $end2 = ['.»','?»','!»','."','?"','!"','.”','?”','!”','.“'];
         $text = trim($text);
         $pseudo_end = false;
         if (!in_array(mb_substr($text,-1,1),$end1) && !in_array(mb_substr($text,-1,2),$end2)) {

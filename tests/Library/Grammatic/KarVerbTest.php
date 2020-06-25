@@ -52,23 +52,24 @@ class KarVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    // in base 5 the before last letter = ’
-    public function testPerfectVerbFormWithBeforeLastApost() {
+    // northern proper
+    public function testPerfectVerbFormWithBeforeLastItke() {
         $lang_id = 4;
-        $stem = 'illas’t’a';
-        $result = KarVerb::perfectForm($stem, KarGram::isBackVowels($stem), $lang_id);
-        
-        $expected = 'illas’t’an';
+        $stems = ['itke','anta','juo','kapaloi','tul','ruvet','tarit'];
+        $result = [];
+        foreach ($stems as $stem) {
+            $result[] = KarVerb::perfectForm($stem, KarGram::isBackVowels($stem), $lang_id);
+        }
+        $expected = ['itken','antan','juonun','kapaloinun','tullun','ruvennun','tarinnun'];
         $this->assertEquals( $expected, $result);        
     }
     
     public function testAuxFormIndPerf2SingPol() {
-        $lang_id = 4;
         $gramset_id = 87; // индикатив, перфект, 2 л., ед. ч., пол
         $dialect_id=47;
-        $result = KarVerb::auxForm($gramset_id, $lang_id, $dialect_id);
+        $result = KarVerb::auxVerb($gramset_id, $dialect_id);
         
-        $expected = 'olet ';
+        $expected = 'olet';
         $this->assertEquals( $expected, $result);        
     }
 /*    
@@ -83,22 +84,20 @@ class KarVerbTest extends TestCase
     }
 */    
     public function testAuxFormIndPlurf3PlurNeg() {
-        $lang_id = 4;
         $gramset_id = 103; // 42. индикатив, плюсквамперфект, 3 л., мн. ч., пол.
         $dialect_id=47;
-        $result = KarVerb::auxForm($gramset_id, $lang_id, $dialect_id);
+        $result = KarVerb::auxVerb($gramset_id, $dialect_id);
         
-        $expected = 'oldih ';
+        $expected = 'oli';
         $this->assertEquals( $expected, $result);        
     }
    
     public function testAuxFormCondPlur3SingPol() {
-        $lang_id = 4;
         $gramset_id = 136; // 97. кондиционал, плюсквамперфект, 3 л., ед. ч., пол.
         $dialect_id=47;
-        $result = KarVerb::auxForm($gramset_id, $lang_id, $dialect_id);
+        $result = KarVerb::auxVerb($gramset_id, $dialect_id);
         
-        $expected = 'olis’ ';
+        $expected = 'olis’';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -106,7 +105,7 @@ class KarVerbTest extends TestCase
         $stem5 = 'lien';
         $lemma = 'lietä';
         $dialect_id=47;
-        $result = KarVerb::imp3SingPolByStem($stem5, $lemma, $dialect_id);
+        $result = KarVerb::imp3PolByStem($stem5, $lemma, KarGram::isBackVowels($lemma), $dialect_id);
         
         $expected = 'liekkäh';
         $this->assertEquals( $expected, $result);        
@@ -116,20 +115,10 @@ class KarVerbTest extends TestCase
         $stem5 = 'lien';
         $lemma = 'lietä'; 
         $dialect_id=47;
-        $result = KarVerb::imp2PlurPolByStem($stem5, $lemma, $dialect_id);
+        $result = KarVerb::imp2PlurPolByStem($stem5, $lemma, KarGram::isBackVowels($lemma), $dialect_id);
         
         $expected = 'liekkiä';
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testStem1FromStem3() {
-        $stems = ['pakasta', 'pakičče', 'puašši', 'pakkua'];
-        
-        foreach ($stems as $stem) {
-            $result[] = KarVerb::stem1FromStem3($stem);
-        }
-        
-        $expected = ['pakasta', 'pakiče', 'puaši', 'pakua'];
-        $this->assertEquals( $expected, $result);        
-    }
 }

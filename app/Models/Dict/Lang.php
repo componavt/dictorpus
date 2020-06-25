@@ -256,10 +256,16 @@ class Lang extends Model
     }
     
     public function mainDialect() {
-        switch ($this->id) {
+        return self::mainDialectByID($this->id);
+    }
+    
+    public static function mainDialectByID($lang_id) {
+        switch ($lang_id) {
             case 1: return 43;
+            case 4: return 46;
             case 5: return 44;
         }
         return NULL;
     }
+    
 }

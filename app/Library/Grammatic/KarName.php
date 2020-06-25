@@ -129,6 +129,7 @@ class KarName
         $okon3_shab = "(-?[^\-\,\;\)]+?\/?-?[^\-\,\;\)]*)";
 //        $lemma_okon1_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon1_shab;
         $lemma_okon3_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon3_shab;
+        
         // mini template
         if (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\[([^\]]*)\]/", $template, $regs)) {
             return self::stemsFromMiniTemplate($lang_id, $pos_id, $regs);

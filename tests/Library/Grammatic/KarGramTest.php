@@ -87,7 +87,7 @@ class KarGramTest extends TestCase
         $template = "peit|työ (-yn, -tyy; -ytäh; -yi, -yttih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'peittyö',            
@@ -106,7 +106,7 @@ class KarGramTest extends TestCase
         $template = "peng|uo (-on, -ou; -otah; -oi, -ottih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'penguo',            
@@ -125,7 +125,7 @@ class KarGramTest extends TestCase
         $template = "pi|diä (-en, -däy; -etäh; -di, -ettih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'pidiä',            
@@ -144,7 +144,7 @@ class KarGramTest extends TestCase
         $template = "pol|gie (-len, -gou; -gietah; -gi, -giettih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'polgie',            
@@ -163,7 +163,7 @@ class KarGramTest extends TestCase
         $template = "eč|čie (-in, -čiy; -itäh; -či, -ittih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'eččie',            
@@ -182,7 +182,7 @@ class KarGramTest extends TestCase
         $template = "pabait|tua (-an, -tau; -etah; -ti, -ettih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'pabaittua',            
@@ -201,7 +201,7 @@ class KarGramTest extends TestCase
         $template = "pal|ua (-an, -au; -etah; -oi, -ettih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'palua',            
@@ -220,7 +220,7 @@ class KarGramTest extends TestCase
         $template = "pui|ja (-n, -bi; -jah; pui, -dih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'puija',            
@@ -239,7 +239,7 @@ class KarGramTest extends TestCase
         $template = "j|uvva (-uon, -uou; -uvvah; -oi, -uodih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'juvva',            
@@ -258,7 +258,7 @@ class KarGramTest extends TestCase
         $template = "s|uaha (-uan, -uau; -uahah/-uajah; -ai, -uadih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'suaha',            
@@ -277,7 +277,7 @@ class KarGramTest extends TestCase
         $template = "paganoi|ja (-čen, -ččou; -jah; -čči, -ttih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'paganoija',            
@@ -296,7 +296,7 @@ class KarGramTest extends TestCase
         $template = "painel|la (-en, -ou; -lah; -i, -tih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'painella',            
@@ -315,7 +315,7 @@ class KarGramTest extends TestCase
         $template = "pan|na (-en, -ou; -nah; -i, -dih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'panna',            
@@ -334,7 +334,7 @@ class KarGramTest extends TestCase
         $template = "pier|tä (-en, -öy; -täh; -i, -tih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'piertä',            
@@ -353,7 +353,7 @@ class KarGramTest extends TestCase
         $template = "pe|stä (-zen, -zöy; -stäh; -zi, -stih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'pestä',            
@@ -372,7 +372,7 @@ class KarGramTest extends TestCase
         $template = "paik|ata (-kuan, -kuau; -atah; -kai, -attih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'paikata',            
@@ -391,7 +391,7 @@ class KarGramTest extends TestCase
         $template = "puhk|eta (-ien/-enen, -ieu/-enou; -etah; -ei/-eni, -ettih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'puhketa',            
@@ -410,7 +410,7 @@ class KarGramTest extends TestCase
         $template = "pahe|ta (-nen, -nou; -tah; -ni, -ttih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'paheta',            
@@ -429,7 +429,7 @@ class KarGramTest extends TestCase
         $template = "paki|ta (-čen, -ččou; -tah; -čči, -ttih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'pakita',            
@@ -448,7 +448,7 @@ class KarGramTest extends TestCase
         $template = "vediä (vien, vedäy; vietäh; vedi, viettih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'vediä',            
@@ -467,7 +467,7 @@ class KarGramTest extends TestCase
         $template = "kua|dua (-n, -dau; -tah; -doi, -ttih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'kuadua',            
@@ -486,7 +486,7 @@ class KarGramTest extends TestCase
         $template = "jagua (juan, jagau; juatah; jagoi, juattih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'jagua',            
@@ -505,7 +505,7 @@ class KarGramTest extends TestCase
         $template = "jiä|hä (-n, -y; -häh/-jäh; jäi, -dih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'jiähä',            
@@ -524,7 +524,7 @@ class KarGramTest extends TestCase
         $template = "jiä|jä (-n, -y; -häh/-jäh; jäi, -dih)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id);
 //dd($result);        
         $expected = [[0=>'jiäjä',            
@@ -543,7 +543,7 @@ class KarGramTest extends TestCase
         $template = "pačkahtel|lakseh (-emmos, -eh/-ehes; -lаhes; -ih/-ihes, -tihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -563,7 +563,7 @@ class KarGramTest extends TestCase
         $template = "pačkaht|uakseh (-ammos, -ah/-ahes; -etahes; -ih/-ihes, -ettihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -583,7 +583,7 @@ class KarGramTest extends TestCase
         $template = "pahoit|ellakseh (-telemmos, -teleh/-telehes; -ellahes; -telih/-telihes, -eltihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -603,7 +603,7 @@ class KarGramTest extends TestCase
         $template = "pakast|uakseh (-ah/-ahes; -ih/-ihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -623,7 +623,7 @@ class KarGramTest extends TestCase
         $template = "paki|takseh (-čemmos, -ččeh/-ččehes; -tahes; -ččih/-ččihes, -ttihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -643,7 +643,7 @@ class KarGramTest extends TestCase
         $template = "palk|atakseh (-uammos, -uahes; -atahes; -aihes, -attihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -664,7 +664,7 @@ class KarGramTest extends TestCase
         $template = "per|guakseh (-rammos, -gahes; -retähes; -gihes, -rettihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -684,7 +684,7 @@ class KarGramTest extends TestCase
         $template = "pe|stäkseh (-zemmös, -zeh/-zehes; -stähes; -zih/-zihes, -stihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -704,7 +704,7 @@ class KarGramTest extends TestCase
         $template = "pi|diäkseh (-emmös, -däh/-dähes; -etähes; -dih/-dihes, -ettihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -724,7 +724,7 @@ class KarGramTest extends TestCase
         $template = "potki|ekseh (-mmos, -h/-hes; -tahes; -h/-hes, -ttihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -744,7 +744,7 @@ class KarGramTest extends TestCase
         $template = "puaš|šiekseh (-immos, -šihes; -itahes; -šihes, -ittihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -764,7 +764,7 @@ class KarGramTest extends TestCase
         $template = "pun|uokseh (-ommos, -oh/-ohes; -otahes; -oih/-oihes, -ottihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -784,7 +784,7 @@ class KarGramTest extends TestCase
         $template = "pyr|giekseh (-rimmös, -gih/-gihes; -ritähes; -gih/-gihes, -rittihes)";
         $pos_id = 11; // verb
         $num = '';
-        $dialect_id = '';
+        $dialect_id = 44;
         $is_reflexive = true;
         $result = KarGram::stemsFromTemplate($template, $pos_id, $num, $dialect_id, $is_reflexive);
 //dd($result);        
@@ -818,6 +818,14 @@ class KarGramTest extends TestCase
     
     public function testCountSyllableCompound() {
         $word = 'pezo||vezi';
+        $result = KarGram::countSyllable($word);
+        
+        $expected = 2;
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testCountSyllable2() {
+        $word = 'anta';
         $result = KarGram::countSyllable($word);
         
         $expected = 2;

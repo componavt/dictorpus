@@ -12,7 +12,7 @@ use App\Library\Grammatic\VepsVerb;
 use App\Library\Grammatic\VepsVerbReflex;
 
 use App\Models\Dict\Gramset;
-//use App\Models\Dict\Lang;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
@@ -152,6 +152,10 @@ class Grammatic
         if ($lang_id == 1) {
             list($stems, $name_num, $max_stem, $affix) = VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);  
         } else {
+            if (!$dialect_id) {
+                $dialect_id = Lang::mainDialectByID($lang_id);
+//dd($lang_id, $dialect_id);                
+            }
             list($stems, $name_num, $max_stem, $affix) = KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);       
         }
         $max_stem = preg_replace('/ǁ/','||',$max_stem);

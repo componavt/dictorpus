@@ -566,30 +566,8 @@ class GrammaticTest extends TestCase
         }
         $this->assertEquals(array_values($words), $result);        
     }
-/*    
-    public function testToRightFormSost() {
-        $words = ['poĺpäivad' => 'pol’päivad',
-            'poĺpeiv΄ad' => 'pol’peiv’ad',
-            'ńeĺĺanśpei' => 'nel’l’ans’pei',
-            'neĺanśpäi' => 'nel’ans’päi'
-            'baŕbmätas' => 'bar’bmätas',
-            'täuźigääńe' => 'täuz’igääne',
-            't΄äuźigaińe' => 'täuz’igaine',
-            't΄äuźigäińe' => 'täuz’igäine',
-            't΄äuźigääńe' => 'täuz’igääne',
- 
-            'soĺhiin' => 'sol’hiin',
-            'poŕmi̮i' => 'por’mii',
-            
-            ];
-        $result = [];
-        foreach ($words as $word =>$word_exp) {
-            $result[] = Grammatic::phoneticsToLemma($word);
-        }
-        $this->assertEquals(array_values($words), $result);        
-    }
-*/   
-/*    public function testToRightFormDiacretBeforeO() {
+    
+    public function testToRightFormDiacretBeforeO() {
         $words = ['kaĺĺo' => 'kal’l’o',
             'kĺon' => 'kl’on',
             'kĺona' => 'kl’ona',
@@ -1409,7 +1387,7 @@ class GrammaticTest extends TestCase
             66=>'mualoiči', 281=>'mualoin'];
         $this->assertEquals( $expected, $result);        
     }
-*/
+
     public function testWordformsFromMiniTemplateKarProperNameNuori() {
         $template = 'nuor|i [e, ]';
         $lang_id = 4;
@@ -1448,7 +1426,7 @@ class GrammaticTest extends TestCase
     }
     
     public function testWordformsFromMiniTemplateKarProperNameLyhyt() {
-        $template = '';
+        $template = 'lyhy|t [ö, t]';
         $lang_id = 4;
         $pos_id = 5;
         $name_num=null;
@@ -1466,18 +1444,18 @@ class GrammaticTest extends TestCase
     }
 
     public function testWordformsFromMiniTemplateKarOloNameLyhyt() {
-        $template = '';
+        $template = 'lyhy|t [ö, t]';
         $lang_id = 5;
         $pos_id = 5;
         $name_num=null;
-        $dialect_id='44';
+        $dialect_id=44;
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'lyhyt',  56=>'lyhyt, lyhyön', 3=>'lyhyön',  4=>'lyhytty', 277=>'lyhyönny',  
                      5=>'lyhyökse', 6=>'lyhyöttäh', 8=>'lyhyös',  9=>'lyhyös, lyhyöspäi', 10=>'lyhyöh',  
                      11=>'lyhyöl', 12=>'lyhyöl, lyhyölpäi', 13=>'lyhyöle', 14=>'lyhyönke', 15=>'lyhyöči', 
  
-            2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyzii', 22=>'lyhyzii', 279=>'lyhyzinny', 
+            2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyzien', 22=>'lyhyzii', 279=>'lyhyzinny', 
             59=>'lyhyzikse', 64=>'lyhyzittäh', 23=>'lyhyzis', 60=>'lyhyzis, lyhyzispäi', 61=>'lyhyzih',  
             25=>'lyhyzil', 62=>'lyhyzil, lyhyzilpäi', 63=>'lyhyzile', 
             65=>'lyhyzienke, lyhyzinneh', 66=>'lyhyziči', 281=>'lyhyzin'];
@@ -1494,7 +1472,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'vesi',  3=>'vejen',  4=>'vettä', 277=>'vetenä',  
                      5=>'vejekši', 8=>'veješšä',  9=>'veještä', 10=>'veteh', 278=>'vejellä', 
-                     12=>'vejeltä', 6=>'vejettä', 14=>'vienke', 15=>'vieči', 
+                     12=>'vejeltä', 6=>'vejettä', 14=>'', 15=>'', 
  
             2=>'vejet', 24=>'vesien', 22=>'vesie', 279=>'vesinä', 
             59=>'vesiksi', 23=>'vesissä', 60=>'vesistä', 61=>'vesih', 280=>'vesillä', 
@@ -1512,7 +1490,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'vezi',  56=>'vezi, vien', 3=>'vien',  4=>'vetty', 277=>'vienny',  
                      5=>'viekse', 6=>'viettäh', 8=>'vies',  9=>'vies, viespäi', 10=>'vedeh',  
-                     11=>'viel', 12=>'viel, vielpäi', 13=>'viele', 14=>'', 15=>'', 
+                     11=>'viel', 12=>'viel, vielpäi', 13=>'viele', 14=>'vienke', 15=>'vieči', 
  
             2=>'viet', 57=>'viet', 24=>'vezien', 22=>'vezii', 279=>'vezinny', 
             59=>'vezikse', 64=>'vezittäh', 23=>'vezis', 60=>'vezis, vezispäi', 61=>'vezih',  
@@ -1521,43 +1499,6 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-/*
-    public function testWordformsFromMiniTemplateKarProperName() {
-        $template = '';
-        $lang_id = 4;
-        $pos_id = 5;
-        $name_num=null;
-        $dialect_id='46';
-        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
-        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'',  3=>'',  4=>'', 277=>'',  
-                     5=>'', 8=>'',  9=>'', 10=>'', 278=>'', 
-                     12=>'', 6=>'', 14=>'', 15=>'', 
- 
-            2=>'', 24=>'', 22=>'', 279=>'', 
-            59=>'', 23=>'', 60=>'', 61=>'', 280=>'', 
-            62=>'', 64=>'', 65=>'', 66=>'', 281=>''];
-        $this->assertEquals( $expected, $result);        
-    }
-
-    public function testWordformsFromMiniTemplateKarOloName() {
-        $template = '';
-        $lang_id = 5;
-        $pos_id = 5;
-        $name_num=null;
-        $dialect_id='44';
-        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
-        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'',  56=>'', 3=>'',  4=>'', 277=>'',  
-                     5=>'', 6=>'', 8=>'',  9=>'', 10=>'',  
-                     11=>'', 12=>'', 13=>'', 14=>'', 15=>'', 
- 
-            2=>'', 57=>'', 24=>'', 22=>'', 279=>'', 
-            59=>'', 64=>'', 23=>'', 60=>'', 61=>'',  
-            25=>'', 62=>'', 63=>'', 65=>'', 66=>'', 281=>''];
-        $this->assertEquals( $expected, $result);        
-    }
-*/    
     // 17. puhketa
     public function testWordformsByStemsKarVerbOloPuhketa() {
         $template = 'puhk|eta (-ien/-enen, -ieu/-enou; -etah; -ei/-eni, -ettih)';
@@ -1597,6 +1538,8 @@ class GrammaticTest extends TestCase
                 164 => 'en olle puhkennuh', 165 => 'et olle puhkennuh', 166 => 'ei olle puhkennuh', 167 => 'emmo olle puhkennuh', 168 => 'etto olle puhkennuh', 169 => 'ei oldane puhkettu',
                 170 => 'puhketa', 171 => 'puhketes', 172 => 'puhketen', 173 => 'puhkiemal, puhkenemal', 174 => 'puhkiemah, puhkenemah', 175 => 'puhkiemas, puhkenemas', 176 => 'puhkiemaspäi, puhkenemaspäi', 177 => 'puhkiemattah, puhkenemattah', 312 => 'puhkiemua, puhkenemua',
                 178 => 'puhkieju, puhkenii, puhkeniju', 179 => 'puhkennuh', 180 => 'puhkettavu', 181 => 'puhkettu'];
+//        $slice = 50;
+//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1621,11 +1564,11 @@ class GrammaticTest extends TestCase
                 83 => 'emmo pačkahtelluhes',  84 => 'etto pačkahtelluhes',  85 => 'ei pačkahteltuhes', 
             
                 86 => 'olen pačkahtelluhes',   87 => 'olet pačkahtelluhes',  88 => 'on pačkahtelluhes',  
-                89 => 'olemmo pačkahtelluhes',  90 => 'oletto pačkahtelluhes',  91 => 'ollah pačkahteltuhes',  
+                89 => 'olemmo pačkahtelluhes',  90 => 'oletto pačkahtelluhes',  91 => 'ollah pačkahteltuhes, on pačkahteltuhes',  
                 92 => 'en ole pačkahtelluhes',  93 => 'et ole pačkahtelluhes',  94 => 'ei ole pačkahtelluhes',  95 => 'emmo ole pačkahtelluhes',  
                 96 => 'etto ole pačkahtelluhes',  97 => 'ei olla pačkahteltuhes',
                 98 => 'olin pačkahtelluhes',   99 => 'olit pačkahtelluhes', 100 => 'oli pačkahtelluhes', 
-                101 => 'olimmo pačkahtelluhes', 102 => 'olitto pačkahtelluhes', 103 => 'oldih pačkahteltuhes', 
+                101 => 'olimmo pačkahtelluhes', 102 => 'olitto pačkahtelluhes', 103 => 'oldih pačkahteltuhes, oli pačkahteltuhes', 
                 104 => 'en olluh pačkahtelluhes', 105 => 'et olluh pačkahtelluhes', 107 => 'ei olluh pačkahtelluhes', 
                 108 => 'emmo olluh pačkahtelluhes', 106 => 'etto olluh pačkahtelluhes', 109 => 'ei oldu pačkahteltuhes',
             
@@ -1847,12 +1790,12 @@ class GrammaticTest extends TestCase
                 83 => 'emmo palkannuhes',  84 => 'etto palkannuhes',  85 => 'ei palkattuhes', 
             
                 86 => 'olen palkannuhes',   87 => 'olet palkannuhes',  88 => 'on palkannuhes',  
-                89 => 'olemmo palkannuhes',  90 => 'oletto palkannuhes',  91 => 'ollah palkattuhes',  
+                89 => 'olemmo palkannuhes',  90 => 'oletto palkannuhes',  91 => 'ollah palkattuhes, on palkattuhes',  
                 92 => 'en ole palkannuhes',  93 => 'et ole palkannuhes',  94 => 'ei ole palkannuhes',  
                 95 => 'emmo ole palkannuhes',  96 => 'etto ole palkannuhes',  97 => 'ei olla palkattuhes',
             
                 98 => 'olin palkannuhes',   99 => 'olit palkannuhes', 100 => 'oli palkannuhes', 
-                101 => 'olimmo palkannuhes', 102 => 'olitto palkannuhes', 103 => 'oldih palkattuhes', 
+                101 => 'olimmo palkannuhes', 102 => 'olitto palkannuhes', 103 => 'oldih palkattuhes, oli palkattuhes', 
                 104 => 'en olluh palkannuhes', 105 => 'et olluh palkannuhes', 107 => 'ei olluh palkannuhes', 
                 108 => 'emmo olluh palkannuhes', 106 => 'etto olluh palkannuhes', 109 => 'ei oldu palkattuhes',
             
@@ -1896,9 +1839,9 @@ class GrammaticTest extends TestCase
                 176 => '', 177 => '', 312 => '',
             
                 178 => '', 179 => 'palkannuhes', 180 => '', 181 => 'palkattuhes'];
-        $slice = 50;
-        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
-//        $this->assertEquals( $expected, $result);        
+//        $slice = 50;
+//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
+        $this->assertEquals( $expected, $result);        
     }
 
     // Ref: 10. potkiekseh
@@ -1923,12 +1866,12 @@ class GrammaticTest extends TestCase
                 83 => 'emmo potkinuhes',  84 => 'etto potkinuhes',  85 => 'ei potkittuhes', 
             
                 86 => 'olen potkinuhes',   87 => 'olet potkinuhes',  88 => 'on potkinuhes',  
-                89 => 'olemmo potkinuhes',  90 => 'oletto potkinuhes',  91 => 'ollah potkittuhes',  
+                89 => 'olemmo potkinuhes',  90 => 'oletto potkinuhes',  91 => 'ollah potkittuhes, on potkittuhes',  
                 92 => 'en ole potkinuhes',  93 => 'et ole potkinuhes',  94 => 'ei ole potkinuhes',  
                 95 => 'emmo ole potkinuhes',  96 => 'etto ole potkinuhes',  97 => 'ei olla potkittuhes',
             
                 98 => 'olin potkinuhes',   99 => 'olit potkinuhes', 100 => 'oli potkinuhes', 
-                101 => 'olimmo potkinuhes', 102 => 'olitto potkinuhes', 103 => 'oldih potkittuhes', 
+                101 => 'olimmo potkinuhes', 102 => 'olitto potkinuhes', 103 => 'oldih potkittuhes, oli potkittuhes', 
                 104 => 'en olluh potkinuhes', 105 => 'et olluh potkinuhes', 107 => 'ei olluh potkinuhes', 
                 108 => 'emmo olluh potkinuhes', 106 => 'etto olluh potkinuhes', 109 => 'ei oldu potkittuhes',
             
@@ -1975,13 +1918,417 @@ class GrammaticTest extends TestCase
                 176 => '', 177 => '', 312 => '',
             
                 178 => '', 179 => 'potkinuhes', 180 => '', 181 => 'potkittuhes'];
+//        $slice = 70;
+//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    // ---------------- stems for proper karelian verbs from mini templates
+    
+    public function testStemsFromMiniTemplateForProperVerbItkie() {
+        $template = "it|kie [e]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'itkie', 
+                      1=>'ite', 
+                      2=>'itke', 
+                      3=>'iti', 
+                      4=>'itki', 
+                      5=>'itke',
+                      6=>'itetä',
+                      7=>'itett',
+                      10=>FALSE
+            ], $num, 'it', 'kie'];
+        $this->assertEquals( $expected, $result);        
+    }
+       
+    public function testStemsFromMiniTemplateForProperVerbAn() {
+        $template = "an|tua [na]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'antua', 
+                      1=>'anna', 
+                      2=>'anta', 
+                      3=>'annoi', 
+                      4=>'anto', 
+                      5=>'anta',
+                      6=>'anneta',
+                      7=>'annett',
+                      10=>TRUE
+            ], $num, 'an', 'tua'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbJuuvva() {
+        $template = "ju|uvva [o]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'juuvva', 
+                      1=>'juo', 
+                      2=>'juo', 
+                      3=>'joi', 
+                      4=>'joi', 
+                      5=>'juo',
+                      6=>'juuvva',
+                      7=>'juot',
+                      10=>TRUE
+            ], $num, 'ju', 'uvva'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbKapaloija() {
+        $template = "kapaloi|ja [če]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'kapaloija', 
+                      1=>'kapaloiče', 
+                      2=>'kapaloičče', 
+                      3=>'kapaloiči', 
+                      4=>'kapaloičči', 
+                      5=>'kapaloi',
+                      6=>'kapaloija',
+                      7=>'kapaloit',
+                      10=>TRUE
+            ], $num, 'kapaloi', 'ja'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbTul() {
+        $template = "tul|la [e]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'tulla', 
+                      1=>'tule', 
+                      2=>'tule', 
+                      3=>'tuli', 
+                      4=>'tuli', 
+                      5=>'tul',
+                      6=>'tulla',
+                      7=>'tult',
+                      10=>TRUE
+            ], $num, 'tul', 'la'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbRuveta() {
+        $template = "ru|veta [pie]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'ruveta', 
+                      1=>'rupie', 
+                      2=>'rupie', 
+                      3=>'rupei/rupesi', 
+                      4=>'rupei/rupesi', 
+                      5=>'ruvet',
+                      6=>'ruveta',
+                      7=>'ruvett',
+                      10=>TRUE
+            ], $num, 'ru', 'veta'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbTarita() {
+        $template = "tari|ta [če]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'tarita', 
+                      1=>'tariče', 
+                      2=>'taričče', 
+                      3=>'tariči', 
+                      4=>'taričči', 
+                      5=>'tarit',
+                      6=>'tarita',
+                      7=>'taritt',
+                      10=>TRUE
+            ], $num, 'tari', 'ta'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbKaccuo() {
+        $template = "kač|čuo [o]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'kaččuo', 
+                      1=>'kačo', 
+                      2=>'kaččo', 
+                      3=>'kačoi', 
+                      4=>'kaččo', 
+                      5=>'kaččo',
+                      6=>'kačota',
+                      7=>'kačott',
+                      10=>TRUE
+            ], $num, 'kač', 'čuo'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbEccie() {
+        $template = "eč|čie [i]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'eččie', 
+                      1=>'eči', 
+                      2=>'ečči', 
+                      3=>'eči', 
+                      4=>'ečči', 
+                      5=>'ečči',
+                      6=>'ečitä',
+                      7=>'ečitt',
+                      10=>FALSE
+            ], $num, 'eč', 'čie'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbVarata() {
+        $template = "vara|ta [ja]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'varata', 
+                      1=>'varaja', 
+                      2=>'varaja', 
+                      3=>'varasi', 
+                      4=>'varasi', 
+                      5=>'varat',
+                      6=>'varata',
+                      7=>'varatt',
+                      10=>TRUE
+            ], $num, 'vara', 'ta'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbKiantia() {
+        $template = "kiän|tiä [nä]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'kiäntiä', 
+                      1=>'kiännä', 
+                      2=>'kiäntä', 
+                      3=>'kiänni', 
+                      4=>'kiänti', 
+                      5=>'kiäntä',
+                      6=>'kiännetä',
+                      7=>'kiännett',
+                      10=>FALSE
+            ], $num, 'kiän', 'tiä'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbOttua() {
+        $template = "ot|tua [a]";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'ottua', 
+                      1=>'ota', 
+                      2=>'otta', 
+                      3=>'oti', 
+                      4=>'otti', 
+                      5=>'otta',
+                      6=>'oteta',
+                      7=>'otett',
+                      10=>TRUE
+            ], $num, 'ot', 'tua'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testStemsFromMiniTemplateForProperVerbRuatua() {
+        $template = "rua|tua []";
+        $lang_id = 4;
+        $dialect_id = 46;
+        $pos_id = 11; // verb
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+//dd($result);        
+        $expected = [[0=>'ruatua', 
+                      1=>'rua', 
+                      2=>'ruata', 
+                      3=>'ruavoi', 
+                      4=>'ruato', 
+                      5=>'ruata',
+                      6=>'ruata',
+                      7=>'ruatt',
+                      10=>TRUE
+            ], $num, 'rua', 'tua'];
+        $this->assertEquals( $expected, $result);        
+    }
+   
+    public function testWordformsByStemsKarVerbProper() {
+        $template = 'it|kie [e]';
+        $lang_id = 4;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = false;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+        $expected = [26 => 'iten',   27 => 'itet',  28 => 'itköy',  
+                29 => 'itemmä',  30 => 'itettä',  31 => 'itetäh', 295 => 'ite', 296 => 'itetä', 
+                70 => 'en ite',   71 => 'et ite',  72 => 'ei ite',  
+                73 => 'emmä ite',  78 => 'että ite',  79 => 'ei itetä', 
+            
+                32 => 'itin',   33 => 'itit',  34 => 'itki',  
+                35 => 'itkimmä',  36 => 'itkijä',  37 => 'itettih', 297 => 'itken', 298 => 'itetty', 
+                80 => 'en itken',   81 => 'et itken',  82 => 'ei itken',  
+                83 => 'emmä itken',  84 => 'että itken',  85 => 'ei itetty', 
+            
+                86 => 'olen itken',   87 => 'olet itken',  88 => 'on itken',  
+                89 => 'olemma itken',  90 => 'oletta itken',  91 => 'on itetty',  
+                92 => 'en ole itken',  93 => 'et ole itken',  94 => 'ei ole itken',  
+                95 => 'emmä ole itken',  96 => 'että ole itken',  97 => 'ei ole itetty',
+            
+                98 => 'olin itken',   99 => 'olit itken', 100 => 'oli itken', 
+                101 => 'olima itken', 102 => 'olija itken', 103 => 'oli itetty', 
+                104 => 'en ollun itken', 105 => 'et ollun itken', 107 => 'ei ollun itken', 
+                108 => 'emmä ollun itken', 106 => 'että ollun itken', 109 => 'ei oltu itetty',
+            
+                      51 => 'ite',  52 => 'itkekkäh',  
+                53 => 'itkekkä',  54 => 'itkekkyä',  55 => 'itkekkäh',       
+                      50 => 'elä ite',  74 => 'elkäh itkekkäh',  
+                75 => 'elkä itkekkä',  76 => 'elkyä itkekkyä',  77 => 'elkäh itkekkäh',  
+            
+                44 => 'itkisin',   45 => 'itkisit',  46 => 'itkis',  
+                47 => 'itkisimä',  48 => 'itkisijä',  49 => 'itettäis', 
+                116 => 'en itkis', 117 => 'et itkis', 118 => 'ei itkis', 
+                119 => 'emmä itkis', 120 => 'että itkis', 121 => 'ei itettäis',
+            
+                135 => 'olisin itken', 125 => 'olisit itken', 136 => 'olis itken', 
+                137 => 'olisima itken', 138 => 'olisija itken', 139 => 'olis itetty', 
+                140 => 'en olis itken', 141 => 'et olis itken', 142 => 'ei olis itken', 
+                143 => 'emmä olis itken', 144 => 'että olis itken', 145 => 'ei olis itetty',
+            
+                146 => 'itkenen', 147 => 'itkenet', 148 => 'itkenöy',
+                149 => 'itkenemmä', 150 => 'itkenettä', 151 => 'itettäneh', 310 => 'itkene', 311 => 'itettäne', 
+                152 => 'en itkene', 153 => 'et itkene', 154 => 'ei itkene', 
+                155 => 'emmä itkene', 156 => 'että itkene', 157 => 'ei itettäne',
+            
+                158 => 'lienen itken', 159 => 'lienet itken', 160 => 'lienöy itken', 
+                161 => 'lienemmä itken', 162 => 'lienettä itken', 163 => 'lienöy itetty', 
+                164 => 'en liene itken', 165 => 'et liene itken', 166 => 'ei liene itken', 
+                167 => 'emmä liene itken', 168 => 'että liene itken', 169 => 'ei liene itetty',
+            
+                170 => 'itkie', 171 => 'itkieššä', 172 => 'itkien', 
+                173 => 'itkömällä', 174 => 'itkömäh', 175 => 'itkömäššä', 
+                176 => 'itkömäštä', 177 => 'itkömättäh', 
+            
+                178 => 'itkijä', 179 => 'itkenyn', 282=>'itken', 180 => 'itettävä', 181 => 'itetty'];
+//        $slice = 50;
+//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
+        $this->assertEquals( $expected, $result);        
+    }
+    
+/*    
+    public function testWordformsByStemsKarVerbProper() {
+        $template = '';
+        $lang_id = 4;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = false;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+        $expected = [26 => '',   27 => '',  28 => '',  
+                29 => '',  30 => '',  31 => '', 295 => '', 296 => '', 
+                70 => '',   71 => '',  72 => '',  
+                73 => '',  78 => '',  79 => '', 
+            
+                32 => '',   33 => '',  34 => '',  
+                35 => '',  36 => '',  37 => '', 297 => '', 298 => '', 
+                80 => '',   81 => '',  82 => '',  
+                83 => '',  84 => '',  85 => '', 
+            
+                86 => '',   87 => '',  88 => '',  
+                89 => '',  90 => '',  91 => '',  
+                92 => '',  93 => '',  94 => '',  
+                95 => '',  96 => '',  97 => '',
+            
+                98 => '',   99 => '', 100 => '', 
+                101 => '', 102 => '', 103 => '', 
+                104 => '', 105 => '', 107 => '', 
+                108 => '', 106 => '', 109 => '',
+            
+                      51 => '',  52 => '',  
+                53 => '',  54 => '',  55 => '',       
+                      50 => '',  74 => '',  
+                75 => '',  76 => '',  77 => '',  
+            
+                44 => '',   45 => '',  46 => '',  
+                47 => '',  48 => '',  49 => '', 
+                116 => '', 117 => '', 118 => '', 
+                119 => '', 120 => '', 121 => '',
+            
+                135 => '', 125 => '', 136 => '', 
+                137 => '', 138 => '', 139 => '', 
+                140 => '', 141 => '', 142 => '', 
+                143 => '', 144 => '', 145 => '',
+            
+                146 => '', 147 => '', 148 => '', 310 => '', 311 => '', 
+                149 => '', 150 => '', 151 => '', 
+                152 => '', 153 => '', 154 => '', 
+                155 => '', 156 => '', 157 => '',
+            
+                158 => '', 159 => '', 160 => '', 
+                161 => '', 162 => '', 163 => '', 
+                164 => '', 165 => '', 166 => '', 
+                167 => '', 168 => '', 169 => '',
+            
+                170 => '', 171 => '', 172 => '', 
+                173 => '', 174 => '', 175 => '', 
+                176 => '', 177 => '', 
+            
+                178 => '', 179 => '', 282=>'', 180 => '', 181 => ''];
 //        $slice = 100;
 //        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
         $this->assertEquals( $expected, $result);        
     }
-/*    
+
     public function testWordformsByStemsKarNameOloP() {
-        $template = 'pezo||v|ezi (-ien, -etty; -ezii/-ezilöi)';
+        $template = '';
         $lang_id = 5;
         $pos_id = 5;
         $name_num=null;
@@ -1997,7 +2344,7 @@ class GrammaticTest extends TestCase
             25=>'', 62=>'', 63=>'', 65=>'', 66=>'', 281=>''];
         $this->assertEquals( $expected, $result);        
     }
- * 
+  
     public function testWordformsByStemsKarVerbOlo() {
         $template = '';
         $lang_id = 5;
@@ -2101,5 +2448,64 @@ class GrammaticTest extends TestCase
                 178 => '', 179 => '', 282 => '', 180 => '', 181 => ''];
         $this->assertEquals( $expected, $result);        
     }
-*/    
+    public function testWordformsFromMiniTemplateKarProperName() {
+        $template = '';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'',  3=>'',  4=>'', 277=>'',  
+                     5=>'', 8=>'',  9=>'', 10=>'', 278=>'', 
+                     12=>'', 6=>'', 14=>'', 15=>'', 
+ 
+            2=>'', 24=>'', 22=>'', 279=>'', 
+            59=>'', 23=>'', 60=>'', 61=>'', 280=>'', 
+            62=>'', 64=>'', 65=>'', 66=>'', 281=>''];
+        $this->assertEquals( $expected, $result);        
+    }
+
+    public function testWordformsFromMiniTemplateKarOloName() {
+        $template = '';
+        $lang_id = 5;
+        $pos_id = 5;
+        $name_num=null;
+        $dialect_id='44';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [1=>'',  56=>'', 3=>'',  4=>'', 277=>'',  
+                     5=>'', 6=>'', 8=>'',  9=>'', 10=>'',  
+                     11=>'', 12=>'', 13=>'', 14=>'', 15=>'', 
+ 
+            2=>'', 57=>'', 24=>'', 22=>'', 279=>'', 
+            59=>'', 64=>'', 23=>'', 60=>'', 61=>'',  
+            25=>'', 62=>'', 63=>'', 65=>'', 66=>'', 281=>''];
+        $this->assertEquals( $expected, $result);        
+    }
+*/   
+/* исключения, не работают правила    
+    public function testToRightFormSost() {
+        $words = ['poĺpäivad' => 'pol’päivad',
+            'poĺpeiv΄ad' => 'pol’peiv’ad',
+            'ńeĺĺanśpei' => 'nel’l’ans’pei',
+            'neĺanśpäi' => 'nel’ans’päi',
+            'baŕbmätas' => 'bar’bmätas',
+            'täuźigääńe' => 'täuz’igääne',
+            't΄äuźigaińe' => 'täuz’igaine',
+            't΄äuźigäińe' => 'täuz’igäine',
+            't΄äuźigääńe' => 'täuz’igääne',
+ 
+            'soĺhiin' => 'sol’hiin',
+            'poŕmi̮i' => 'por’mii',
+            
+            ];
+        $result = [];
+        foreach ($words as $word =>$word_exp) {
+            $result[] = Grammatic::phoneticsToLemma($word);
+        }
+        $this->assertEquals(array_values($words), $result);        
+    }
+*/   
+    
 }

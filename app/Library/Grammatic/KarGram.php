@@ -42,6 +42,10 @@ class KarGram
         return "aeiouyäö";
     }
     
+    public static function vowelSetWithoutI() {
+        return "aeouyäö";
+    }
+    
     /**
      * Is exists back vowels in the word
      * @param String $word
@@ -65,7 +69,8 @@ class KarGram
     /**
      * Сколько слогов в основе?
      * 
-     * Определение количества слогов – очень важный момент в глагольном словоизменении ливвиковского наречия. Количество слогов в форме равно количеству гласных или любых комбинаций гласных (VV или VVV), разделенных между собой согласными: paganoija – CVCVCVVCV (4 слога), puija – CVVCV (2 слога), andua – VCCVV (2 слога).
+     * Количество слогов в форме равно количеству гласных или любых комбинаций гласных (VV или VVV), разделенных между собой согласными: 
+     * paganoija – CVCVCVVCV (4 слога), puija – CVVCV (2 слога), andua – VCCVV (2 слога).
      * 
      * @param String $stem
      * @return INT 1 - односложное, 2 - двусложное, 3 - трехсложное, 4 - многосложное
@@ -81,7 +86,7 @@ class KarGram
         $V = "[".KarGram::vowelSet()."]+";
 //        $syllable = "(".$C."’?)*[".KarGram::vowelSet()."][iu]?(".$C."’?)*";
         $syllable = $C_n.$V."+(".$C."’?)*";
-        $template = "$C_n.$V";
+        $template = $C_n.$V;
         for ($i=1; $i<20; $i++) {
             if (preg_match("/^".$template.$C_n."$/u",$stem)) {
                 return $i;
@@ -156,17 +161,19 @@ class KarGram
     /**
      * Если $stem заканчивается на одиночный $vowel 
      * т.е. любой согласный + $vowel, то $vowel переходит в $replacement
+     * 
      * @param String $stem
-     * @param String $vowel - one char
-     * @param String $replacement - one char
+     * @param String $vowel - group of chars
+     * @param String $replacement - any string
      */
-    public static function replaceSingVowel($stem, $vowel, $replacement) {
-        $before_last_let = mb_substr($stem, -2, 1);
-        if (self::isConsonant($before_last_let) && preg_match("/^(.+)".$vowel."$/u", $stem, $regs)) {
+    public static function replaceCV($stem, $vowel, $replacement) {
+        $C = "[".KarGram::consSet()."]’?";
+        if (preg_match("/^(.+".$C.")[".$vowel."]$/u", $stem, $regs)) {
             return $regs[1].$replacement;
-        }
+        }  
         return $stem;
-    }
+    }    
+    
     
     public static function changeLetters($word) {
         $word = str_replace('ü','y',$word);
@@ -243,24 +250,12 @@ class KarGram
         if (preg_match("/\{/", $template)) {//if ($dialect_id == 47) {
             return self::stemsFromTemplateWithBases($template, $pos_id, $name_num);
         }
+        $lang_id = Dialect::getLangIDByID($dialect_id);
         
-        $base_shab = "([^\s\(\|]+)";
-        $base_suff_shab = "([^\s\(\|]*)";
-        $okon_shab = "(-?[^\-\,\;\)]+\/?-?[^\-\,\;\)]*)";
-      
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-            return KarName::stemsFromTemplate($template, Dialect::getLangIDByID($dialect_id), $pos_id, $name_num);
+            return KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
         } elseif ($pos_id == PartOfSpeech::getVerbID()) {
-            if (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {  
-//dd('regs:',$regs);            
-                return KarVerb::stemsFromTemplateDef($regs, $is_reflexive);    
-            } elseif (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab."\,\s*".$okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  
-//dd('regs:',$regs);            
-                return KarVerb::stemsFromTemplate($regs, $is_reflexive);    
-            } else {
-//dd("!!!!");                
-                return Grammatic::getAffixFromtemplate($template, $name_num);
-            }
+            return KarVerb::stemsFromTemplate($template, $lang_id, $name_num, $is_reflexive);
         } else {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
