@@ -588,7 +588,7 @@ class KarVerb
             case 176: // 137. III инфинитив, элатив 
                 return self::Inf3Form($stems[2], 'mašta', $stems[10], $dialect_id);
             case 177: // 138. III инфинитив, абессив 
-                return self::Inf3Form($stems[2], $dialect_id==47 ? 'matta' : 'mattah', $stems[10], $dialect_id);
+                return self::Inf3Form($stems[2], 'matta', $stems[10], $dialect_id);
                 
             case 178: // 139. актив, 1-е причастие 
                 return Grammatic::joinMorfToBases(KarGram::replaceCV($stems[2], 'e', 'i'), KarGram::garmVowel($stems[10], 'ja'));
