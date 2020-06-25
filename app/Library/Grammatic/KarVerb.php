@@ -408,7 +408,7 @@ class KarVerb
             case 28: // 3. индикатив, презенс, 3 л., ед.ч., пол. 
                 return $stems[2] ? self::indPres1SingByStem($stems[2], $stems[10]) : '';
             case 29: // 4. индикатив, презенс, 1 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases($stems[1], ($dialect_id==47 ? 'm' : ''). KarGram::garmVowel($stems[10],'ma')) : '';
+                return !$def ? Grammatic::joinMorfToBases($stems[1], KarGram::garmVowel($stems[10],'mma')) : '';
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], KarGram::garmVowel($stems[10],'tta')) : '';
 
@@ -631,7 +631,7 @@ class KarVerb
      * 2) VV: + mma / mmä
      * 
      * OTHERS:
-     * о.4 + mma / mmä
+     * о.4 + ma / mä
      * 
      * @param String $stem
      */
@@ -644,10 +644,10 @@ class KarVerb
         $out = [];
         
         foreach (preg_split("/\s*\/\s*/",$stem) as $base) {
-            if ($dialect_id == 47 && preg_match("/".$C.$V."$/u", $base)) {
-                $out[] = $base. KarGram::garmVowel($harmony, 'ma');
-            } else {
+            if ($dialect_id == 47 && preg_match("/".$V.$V."$/u", $base)) {
                 $out[] = $base. KarGram::garmVowel($harmony, 'mma');
+            } else {
+                $out[] = $base. KarGram::garmVowel($harmony, 'ma');
             }            
         }
         return join(', ', $out);    

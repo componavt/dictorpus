@@ -116,6 +116,11 @@ return [
                     <p><a class="publ-title" href="https://scientificrussia.ru/articles/proekt-vepkar">Проект ВепКар</a><br>
                     Научная Россия, 28 мая 2019 г.</p>
                     
+                    <p><a class="publ-title" href="https://vk.com/@karrc-ludikovskoe-narechie-s-severa-na-ug-materialy-sopostavitelno">Людиковское наречие с севера на юг: материалы «Сопоставительно-ономасиологического словаря диалектов» в Открытом корпусе вепсского и карельского языков (ВепКар)</a><br>
+                    Вконтакте, 27 апреля 2020 г.</p>
+                    
+                    <p><a class="publ-title" href="https://vk.com/@karrc-aleksandr-pavlovich-barancev-nash-znamenityi-zemlyak">Александр Павлович Баранцев – наш знаменитый земляк</a><br>
+                    Вконтакте, 8 июня 2020 г.</p>
                     ',
     'welcome_text' => '<p>Добро пожаловать в VepKar — открытый корпус вепсского и карельского языков, 
                        содержащий словари и корпуса прибалтийско-финских языков народов Карелии.</p>
