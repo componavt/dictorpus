@@ -1099,7 +1099,7 @@ class KarVerb
         }
         $U = $dialect_id != 47 ? KarGram::garmVowel($harmony, 'u') : 'u';
         
-        return self::activeBase($stem, $dialect_id). $U. $dialect_id == 47 ? 'n' : 't';
+        return self::activeBase($stem, $dialect_id). $U. ($dialect_id == 47 ? 'n' : 't');
 /*        
         $stem_for_search = Grammatic::toSearchForm($stem);
         $last_let = mb_substr($stem_for_search, -1, 1);
