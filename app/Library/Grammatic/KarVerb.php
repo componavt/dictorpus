@@ -408,7 +408,7 @@ class KarVerb
             case 28: // 3. индикатив, презенс, 3 л., ед.ч., пол. 
                 return $stems[2] ? self::indPres1SingByStem($stems[2], $stems[10]) : '';
             case 29: // 4. индикатив, презенс, 1 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases($stems[1], KarGram::garmVowel($stems[10],'mma')) : '';
+                return !$def ? Grammatic::joinMorfToBases($stems[1], ($dialect_id==47 ? 'm' : ''). KarGram::garmVowel($stems[10],'ma')) : '';
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], KarGram::garmVowel($stems[10],'tta')) : '';
 
