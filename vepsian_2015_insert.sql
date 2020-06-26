@@ -1220,3 +1220,8 @@ select text_id, w_id, count(*) as count from words group by text_id, w_id having
 
 -- Проверка, есть ли связи с несуществующими словами
 select count(*) from meaning_text where word_id not in (select id from words);
+
+-- Уникальные токены
+select distinct word from words where text_id in (select id from texts where lang_id=1);
+-- Гапаксы
+select word, count(*) as count from words where text_id in (select id from texts where lang_id=1) group by word having count=1;

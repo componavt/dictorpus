@@ -718,7 +718,9 @@ class KarVerb
         $C="[".KarGram::consSet()."]’?";
         $V="[".KarGram::vowelSet()."]";
         
-        $stem5 = preg_replace("/t$/","n",$stem5);
+        if (preg_match("/^(.+)t$/", $stem5, $regs)) {
+            $stem5 = $regs[1].'k';
+        }
         
         if (preg_match("/".$C.$V."$/u", $stem5)) {
             return $stem5. 'kk';
