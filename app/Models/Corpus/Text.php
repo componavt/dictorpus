@@ -974,9 +974,9 @@ print "</pre>";*/
                               ->where('text_id',$this->id)
                               ->orderBy('sentence_id');
         if ($word) {
-            $sentence_builder = $sentence_builder ->where('word','like',$word);
+            $sentence_builder = $sentence_builder ->where('word','like',Grammatic::toSearchForm($word));
         }                                
-//dd($sentence_builder->toSql());        
+//dd($sentence_builder->get());        
         foreach ($sentence_builder->get() as $sentence) {
             $sentences[$sentence->sentence_id]['w_id'][]=$sentence->w_id;
         }

@@ -130,4 +130,13 @@ class KarVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testImpBaseRuveta() {
+        $stem5 = 'varat';
+        //$dialect_id=44;
+        $result = KarVerb::impBase($stem5);
+        
+        $expected = 'varakk';
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

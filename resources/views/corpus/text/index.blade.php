@@ -78,7 +78,7 @@
                     @endif
                 </td>
                 @else
-                <td data-th="{{ trans('corpus.sentences') }}">
+                <td data-th="{{ trans('corpus.sentences') }}">                    
                     @foreach ($text->sentences($url_args['search_word']) as $sentence_id => $sentence)
                     <ol start="{{$sentence_id}}">
                         <li>@include('corpus.text.show_sentence',['count'=>$sentence_id])</li>
