@@ -228,7 +228,7 @@ class KarVerbOlo
         $bases_of_prs1sg = preg_split("/\//",$base_of_prs1sg);
         $prs3sgs = preg_split("/\//",$prs3sg);
         for ($i=0; $i<sizeof($bases_of_prs1sg); $i++) {
-            $base2 = isset($prs3sgs[$i]) ? $prs3sgs[$i] : $prs3sgs[0];
+            $base2 = $prs3sgs[$i] ?? $prs3sgs[0];
             if (!preg_match("/^(.+)[uy]$/u", $base2, $regs) 
                     && !preg_match("/^(.+)bi$/u", $base2, $regs)) {
                 return '';

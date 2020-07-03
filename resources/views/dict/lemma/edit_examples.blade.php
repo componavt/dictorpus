@@ -60,21 +60,11 @@
                 </td>
                 @foreach ($meanings as $meaning)
                 <td>
-                    <?php $relevance = isset($sentence['relevance'][$meaning->id]) 
-                                        ? $sentence['relevance'][$meaning->id]
-                                        : 1;
-                    ?>
                     @include('widgets.form.formitem._select',
                             ['name' => 'relevance['.$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'].']',
                              'values' => trans('dict.relevance_scope'),
-                             'value' => $relevance,
+                             'value' => $sentence['relevance'][$meaning->id] ?? 1,
                             ])
-{{--                    @include('widgets.form.formitem._select_styled',
-                            ['name' => 'relevance['.$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'].']',
-                             'values' => trans('dict.relevance_scope'),
-                             'value' => $relevance,
-                             'styles' => $styles
-                            ]) --}}
                 </td>
                 @endforeach
             </tr>

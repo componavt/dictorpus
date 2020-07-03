@@ -812,8 +812,8 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
                 continue;
             }
             list($p1,$p2,$count) = preg_split ("/\t/",$line);
-            $p1_name = isset($p_names[$p1]) ? $p_names[$p1] : $p1;
-            $p2_name = isset($p_names[$p2]) ? $p_names[$p2] : $p2;
+            $p1_name = $p_names[$p1] ?? $p1;
+            $p2_name = $p_names[$p2] ?? $p2;
             $out[$p1_name][$p2_name] = $count;
         }
 //dd($out);        
@@ -876,7 +876,7 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
             if (!isset($p_names[$node])) {
                 print "unknown $node";
             }            
-            $node_name = isset($p_names[$node]) ? $p_names[$node] : $node;
+            $node_name = $p_names[$node] ?? $node;
             $node_name = preg_replace("/, positive form/", "", $node_name);
             $node_list[$node] = preg_replace('/\s+/','\n',$node_name).'\n\n'.$total;
         }

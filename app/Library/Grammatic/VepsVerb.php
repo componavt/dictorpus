@@ -223,7 +223,7 @@ class VepsVerb
     }
     
     public static function getStemPoten($inf_stem, $pres_stem, $past_actv_ptcp_stem=null) {
-        $potn_stem = isset($past_actv_ptcp_stem) ? $past_actv_ptcp_stem : self::getStemPAP($inf_stem, $pres_stem);
+        $potn_stem = $past_actv_ptcp_stem ?? self::getStemPAP($inf_stem, $pres_stem);
         if (preg_match("/[aeiouüäö]$/u", $inf_stem, $regs1)) {
             $potn_stem = $pres_stem;
         }

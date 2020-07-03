@@ -549,7 +549,7 @@ dd($relevance);
             return;
         }
         foreach ($words as $word) {
-            $relevance = isset($old_relevances[$word->text_id][$word->w_id]) ? $old_relevances[$word->text_id][$word->w_id] : 1;
+            $relevance = $old_relevances[$word->text_id][$word->w_id] ?? 1;
             $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, $relevance);
         }
     }
