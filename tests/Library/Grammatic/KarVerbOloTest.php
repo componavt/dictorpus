@@ -139,4 +139,36 @@ class KarVerbOloTest extends TestCase
         $expected = ['pakasta', 'pakiče', 'puaši', 'pakua'];
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testActiveBaseWithApostroph() {
+        $stem1 = 'kil’l’u';
+        $stem8 = 'kil’l’u';
+        
+        $result = KarVerbOlo::activeBase($stem1,$stem8);
+        
+        $expected = 'kil’l’un';
+        $this->assertEquals( $expected, $result);        
+    }
+    
+    public function testWordformByStemsWithApostroph() {
+        $dialect_id=44;
+        $gramset_id=80; // 19. индикатив, имперфект, 1 л., ед.ч., отриц. 
+        $stems = [0=>'kil’l’uo',
+                  1=>'kil’l’u',
+                  2=>'kil’l’uu',
+                  3=>'kil’l’u',
+                  4=>'kil’l’ui',
+                  5=>'kil’l’ui',
+                  6=>'kil’l’uta',
+                  7=>'kil’l’utt',
+                  8=>'kil’l’u',
+                  10=>TRUE
+                 ];
+        
+        $result = KarVerbOlo::wordformByStems($stems, $gramset_id, $dialect_id);
+        
+        $expected = 'en kil’l’unuh';
+        $this->assertEquals( $expected, $result);        
+    }
+    
 }

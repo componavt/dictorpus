@@ -1147,6 +1147,27 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStemsFromTemplateOloVerbWithApostroph() {
+        $template = "kil’l’u|o (-n, -u; -tah; -i, -ttih)";
+        $lang_id = 5;
+        $pos_id = 11; 
+        $num = NULL;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+//dd($result);        
+        $expected = [[0=>'kil’l’uo',
+                      1=>'kil’l’u',
+                      2=>'kil’l’uu',
+                      3=>'kil’l’u',
+                      4=>'kil’l’ui',
+                      5=>'kil’l’ui',
+                      6=>'kil’l’uta',
+                      7=>'kil’l’utt',
+                      8=>'kil’l’u',
+                      10=>TRUE
+                        ], $num, 'kil’l’u', 'o'];
+        $this->assertEquals( $expected, $result);        
+    }
+
     public function testStemsFromTemplateCompoundVepsVerb() {
         $template = "alle||kirjut|ada";
         $lang_id = 1;
@@ -2213,7 +2234,7 @@ class GrammaticTest extends TestCase
                 73 => 'emmä ite',  78 => 'että ite',  79 => 'ei itetä', 
             
                 32 => 'itin',   33 => 'itit',  34 => 'itki',  
-                35 => 'itkimmä',  36 => 'itkijä',  37 => 'itettih', 297 => 'itken', 298 => 'itetty', 
+                35 => 'itkimä',  36 => 'itkijä',  37 => 'itettih', 297 => 'itken', 298 => 'itetty', 
                 80 => 'en itken',   81 => 'et itken',  82 => 'ei itken',  
                 83 => 'emmä itken',  84 => 'että itken',  85 => 'ei itetty', 
             
@@ -2254,9 +2275,9 @@ class GrammaticTest extends TestCase
             
                 170 => 'itkie', 171 => 'itkieššä', 172 => 'itkien', 
                 173 => 'itkömällä', 174 => 'itkömäh', 175 => 'itkömäššä', 
-                176 => 'itkömäštä', 177 => 'itkömättäh', 
+                176 => 'itkömäštä', 177 => 'itkömättä', 
             
-                178 => 'itkijä', 179 => 'itkenyn', 282=>'itken', 180 => 'itettävä', 181 => 'itetty'];
+                178 => 'itkijä', 179 => 'itkenyt', 282=>'itken', 180 => 'itettävä', 181 => 'itetty'];
 //        $slice = 50;
 //        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
         $this->assertEquals( $expected, $result);        

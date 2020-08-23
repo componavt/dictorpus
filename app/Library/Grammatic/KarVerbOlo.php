@@ -1045,10 +1045,10 @@ class KarVerbOlo
         $out = [];
         foreach (preg_split("/\//",$stem8) as $base) {
             $base = trim($base);
-            if (preg_match("/".$C.$V."$/u", $base) && KarGram::countSyllable($base)==2
+            if (preg_match("/".$C.'’?'.$V."$/u", $base) && KarGram::countSyllable($base)==2
                     || preg_match("/[nh]$/u", $base)) {
                 $out[] = $base. 'n';
-            } elseif (preg_match("/".$C.$V."$/u", $base) && KarGram::countSyllable($base)>2) {
+            } elseif (preg_match("/".$C.'’?'.$V."$/u", $base) && KarGram::countSyllable($base)>2) {
                 $out[] = $stem1 ? $stem1. 'nn' : '';
             } elseif (preg_match("/".$V.$V."$/u", $base)) {
                 $out[] = $base. 'nn';
