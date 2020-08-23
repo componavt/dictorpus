@@ -1155,7 +1155,7 @@ class KarVerbOlo
         $V="[".KarGram::vowelSet()."]";
         $out = [];
         foreach (preg_split("/\//",$stem8) as $base) {
-            if (preg_match("/".$C.$V."$/u", $base) ||
+            if (preg_match("/".$C.'’?'.$V."$/u", $base) ||
                     preg_match("/".$V.$V."$/u", $base) && KarGram::countSyllable($base)>2) {
                 $out[] = $base. 'kk';
             } elseif (preg_match("/".$V.$V."$/u", $base) && KarGram::countSyllable($base)<3
