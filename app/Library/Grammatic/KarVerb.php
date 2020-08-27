@@ -34,9 +34,12 @@ class KarVerb
         // mini template
         if ($lang_id==4 && preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\[([^\]]*)\]/", $template, $regs)) {
             return self::stemsFromMiniTemplate($regs);
-        } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {  
+        } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {
 //dd('regs:',$regs);            
             return KarVerbOlo::stemsFromTemplateDef($regs, $is_reflexive);    
+        } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  // + 3sd pl
+//dd('regs:',$regs);            
+            return KarVerbOlo::stemsFromTemplateDefPl($regs, $is_reflexive);    
         } elseif ($lang_id==5 && preg_match($lemma_okon_shab."\,\s*".$okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  
 //dd('regs:',$regs);            
             return KarVerbOlo::stemsFromFullTemplate($regs, $is_reflexive);    
@@ -384,14 +387,14 @@ class KarVerb
             case 27: // 2. индикатив, презенс, 2 л., ед.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 't') : '';        
             case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases($stems[6],'h') : '';
+                return Grammatic::joinMorfToBases($stems[6],'h');
             case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
                 return Grammatic::joinMorfToBases($stems[1], '');
             case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
-                return !$def ? Grammatic::joinMorfToBases($stems[6], ''): '';
+                return Grammatic::joinMorfToBases($stems[6], '');
                 
             case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
-                return !$def ? Grammatic::joinMorfToBases($stems[7], 'ih') : '';
+                return Grammatic::joinMorfToBases($stems[7], 'ih');
                 
             case 51: // 49. императив, 2 л., ед.ч., пол 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], ''): '';
