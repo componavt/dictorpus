@@ -650,7 +650,7 @@ class KarVerbOlo
             case 112: // 72. кондиционал, презенс, 3 л., ед.ч., -
                 return Grammatic::interLists(self::negVerb($gramset_id, $dialect_id), Grammatic::joinMorfToBases(self::condPrsBase($stems[3]), 's'));
             case 115: // 79. кондиционал, презенс, 3 л., мн.ч., -
-                return !$def ? Grammatic::interLists(self::negVerb($gramset_id, $dialect_id), Grammatic::joinMorfToBases($stems[7], $A.'s')) : '';
+                return Grammatic::interLists(self::negVerb($gramset_id, $dialect_id), Grammatic::joinMorfToBases($stems[7], $A.'s'));
 
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases(self::condImpBase($stems[0], $stems[1], $stems[8], $stems[10], $def), 'zin') : '';
