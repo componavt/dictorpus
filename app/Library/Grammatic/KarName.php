@@ -452,11 +452,12 @@ class KarName
         $stems = [0 => $base.$regs[2],
                   1 => $stem1, // single genetive base 
                   2 => '',
-                  3 => preg_replace("/^\-/",$base,$par_sg_suff),
+                  3 => preg_replace("/\-/",$base,$par_sg_suff),
                   4 => '',
                   5 => $stem5,
                   10 => KarGram::isBackVowels($regs[1].$regs[2]) // harmony
             ];
+//dd($stems);        
         $stems[2] = self::illSgBase($stems[0], $stems[1], $stems[3]); // single illative base
         $stems[4] = self::genPlBase($stems[1], $stems[5], $stems[10]); // plural partitive base
 //dd('stems:',$stems);        
@@ -584,7 +585,7 @@ class KarName
         return join('/',$out);
     }
     
-    /**
+    /** 
      * А. если $stem3 заканчивается на [dt][uy], то =$stem1, при этом возможны замены:
      *    1) если $stem0 заканчивается на V[uy]zi, а $stem1 на vve,
      *       то vve > [uy]de
@@ -608,33 +609,46 @@ class KarName
      */
     public static function illSgBase($stem0, $stem1, $stem3) {
         $V = '['.KarGram::vowelSet().']';
-//dd($stem0, $stem1, $stem3);        
-        if (preg_match('/[dt][uy]$/u', $stem3)){ // А
-            if (preg_match('/'.$V.'([uy])zi$/u', $stem0, $regs_u)) {
-                $stem1=preg_replace('/vve$/u', $regs_u[1].'de', $stem1); // A.1
-            } elseif (preg_match('/[uy]([oö])zi$/u', $stem0, $regs_o)) {
-                $stem1=preg_replace('/vve$/u', $regs_o[1].'de', $stem1); // A.2                
-            } elseif (preg_match('/zi$/', $stem0)) { // А.3
-                if (preg_match('/^(.*'.$V.')ve$/u', $stem1, $regs1) // А.3.а
-                        || preg_match('/^(.*r)re$/u', $stem1, $regs1) // А.3.б
-                        || preg_match('/^(.*n)ne$/u', $stem1, $regs1) // А.3.в
-                        || preg_match('/^(.+)je$/u', $stem1, $regs1) // А.3.г
-                        || preg_match('/^(.*ä)i$/u', $stem1, $regs1)) { // А.3.е
-                    $stem1 = $regs1[1].'de';
-                } elseif (preg_match('/^(.+)ie$/u', $stem1, $regs1)) { // А.3.д
-                    $stem1 = $regs1[1].'ede';
-                }
-            }
-            return $stem1;
-        } elseif (preg_match('/^(.*)'.$V.$V.'$/u', $stem3, $regs3)) {
-            $stem3 = $regs3[1];
-            if (preg_match('/[aä]i$/', $stem1)) {
-                $stem3 .= 'e';
-            } elseif (preg_match('/('.$V.')$/u', $stem1, $regs1)) {
-                $stem3 .= $regs1[1];
-            }
-            return $stem3;
+    //dd($stem0, $stem1, $stem3);        
+        $out = [];
+        $stems1 = preg_split("/\/\s*/", $stem1);
+        $stems3 = preg_split("/\/\s*/", $stem3);
+        if (sizeof($stems3)==2 && sizeof($stems1)==1) {
+            $stems1[1]=$stems1[0];
+        } elseif (sizeof($stems3)==1 && sizeof($stems1)==2) {
+            $stems3[1]=$stems3[0];
         }
+        for ($i=0; $i<sizeof($stems1); $i++) {
+            $stem1 = $stems1[$i];
+            $stem3 = $stems3[$i];
+            if (preg_match('/[dt][uy]$/u', $stem3)){ // А
+                if (preg_match('/'.$V.'([uy])zi$/u', $stem0, $regs_u)) {
+                    $stem1=preg_replace('/vve$/u', $regs_u[1].'de', $stem1); // A.1
+                } elseif (preg_match('/[uy]([oö])zi$/u', $stem0, $regs_o)) {
+                    $stem1=preg_replace('/vve$/u', $regs_o[1].'de', $stem1); // A.2                
+                } elseif (preg_match('/zi$/', $stem0)) { // А.3
+                    if (preg_match('/^(.*'.$V.')ve$/u', $stem1, $regs1) // А.3.а
+                            || preg_match('/^(.*r)re$/u', $stem1, $regs1) // А.3.б
+                            || preg_match('/^(.*n)ne$/u', $stem1, $regs1) // А.3.в
+                            || preg_match('/^(.+)je$/u', $stem1, $regs1) // А.3.г
+                            || preg_match('/^(.*ä)i$/u', $stem1, $regs1)) { // А.3.е
+                        $stem1 = $regs1[1].'de';
+                    } elseif (preg_match('/^(.+)ie$/u', $stem1, $regs1)) { // А.3.д
+                        $stem1 = $regs1[1].'ede';
+                    }
+                }
+                $out[] = $stem1;
+            } elseif (preg_match('/^(.*)'.$V.$V.'$/u', $stem3, $regs3)) {
+                $stem3 = $regs3[1];
+                if (preg_match('/[aä]i$/', $stem1)) {
+                    $stem3 .= 'e';
+                } elseif (preg_match('/('.$V.')$/u', $stem1, $regs1)) {
+                    $stem3 .= $regs1[1];
+                }
+                $out[] = $stem3;
+            }
+        }
+        return join('/',$out);
     }
     
     /**

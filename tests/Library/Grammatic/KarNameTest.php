@@ -10,6 +10,17 @@ use App\Library\Grammatic\KarName;
 
 class KarNameTest extends TestCase
 {
+    public function testStemsFromTemplateMittuine() {
+        $template = 'mittu|ine (-zen/-man, -stu/-mua; -zii/-mii)';
+        $name_num = '';
+        $pos_id=5;
+        $lang_id=5;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [['mittuine', 'mittuze/mittuma', 'mittuze/mittuma', 'mittustu/mittumua', 'mittuzi/mittumi', 'mittuzi/mittumi', 10=>TRUE], '', 'mittu', 'ine'];
+        $this->assertEquals( $expected, $result);     
+    }
+    
     // plural noun, nom sg
     public function testWordformByStems_pl_nom_sg()
     {
