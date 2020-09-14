@@ -1582,9 +1582,22 @@ dd($wordforms);
         }  
         return true;
     }
+
+    /*
+     * Important parameter for wordform generation
+     * number for nominals OR impersonal for verbs
+     * 
+     */
+    public function getNameNum() {
+        if ($this->pos->isVerb()) {
+            return ($this->features && $this->features->impersonal) ? 1 : null; 
+        } else {
+            $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
+        }
+    }
     
     public function generateWordforms($dialect_id, $update_bases=false, $without_remove=false) {
-        $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
+        $name_num = $this->getNameNum(); 
         $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;
 
         $stems = $this->getBases($dialect_id);
@@ -1602,9 +1615,8 @@ dd($wordforms);
     }
 
     public function generateWordform($gramset_id, $dialect_id, $update_bases=false) {
-        $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
+        $name_num = $this->getNameNum(); 
         $is_reflexive = ($this->features && $this->features->reflexive) ? 1 : null;
-
         $stems = $this->getBases($dialect_id);
 //dd($stems);        
 //dd($name_num);     

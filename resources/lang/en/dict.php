@@ -120,6 +120,7 @@ return [
     'gramsets' => 'grammatical attributes',
     'hide_examples' => '&lt; &lt; hide examples',
     
+    'impersonal' => 'impersonal',
     'infinitive' => 'infinitive',
     'interpretation' => 'interpretation',
     'lang' => 'language',
@@ -192,7 +193,7 @@ return [
                     8 => 'relative',
                     9 => 'negative'],
     
-    'reflexive' => 'reflexive',
+//    'reflexive' => 'reflexive',
     'reflexive' => 'reflexive',
     'relation_list' => 'List of semantic relations',
     'relation' => 'Semantic relation',

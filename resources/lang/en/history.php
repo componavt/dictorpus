@@ -17,6 +17,7 @@ return [
     'event_genetiv' => 'of the recording',
     'ieeh_archive_number1_accusative' => 'the part I of the audio archive number',
     'ieeh_archive_number2_accusative' => 'the part II of the audio archive number',
+    'impersonal_accusative' => 'the verbal impersonality',
     'informant_accusative' => 'the informant',
     'lang_accusative' => 'the language',
     'lemma_accusative' => 'the lemma',

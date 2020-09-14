@@ -227,8 +227,12 @@ class LemmaWordformController extends Controller
             $stems[10]=$lemma->harmony();
         }        
         
-        $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
-        $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
+        if ($lemma->pos_id->isVerb()) {
+            $name_num = ($lemma->features && $lemma->features->impersonal) ? 1 : null; 
+            $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
+        } else {
+            $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
+        }
 
         $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
 //dd($stems);        

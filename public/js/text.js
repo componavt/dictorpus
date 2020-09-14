@@ -63,7 +63,8 @@ function addLemma(lang_id) {
                     meaning: $( "#new_meanings_0__meaning_text__2_" ).val(),
                     wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
                     number: $( "#number option:selected" ).val(),
-                    reflexive: $( "#reflexive" ).val()};
+                    reflexive: $( "#reflexive" ).val(),
+                    impersonal: $( "#impersonal" ).val()};
         saveLemma(data);
     });
     

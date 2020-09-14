@@ -4,6 +4,7 @@ function posSelect(is_full_form=true) {
             $(".lemma-feature-field").hide().prop("disabled", true);
             if ($("#pos_id option:selected" ).val()==11) { // is verb
                 $("#reflexive-field").show().prop("disabled", false);
+                $("#impersonal-field").show().prop("disabled", false);
                 if (is_full_form) {
                     $("#transitive-field").show().prop("disabled", false);
                 }

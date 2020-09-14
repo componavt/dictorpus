@@ -10,6 +10,9 @@
 @include('widgets.form.formitem._checkbox_for_field', 
         ['name' => 'reflexive', 
          'title'=>trans('dict.reflexive').' '.trans('dict.verb')])
+@include('widgets.form.formitem._checkbox_for_field', 
+        ['name' => 'impersonal', 
+         'title'=>trans('dict.impersonal').' '.trans('dict.verb')])
          
 @if ($is_full_form)                 
         @include('widgets.form.formitem._radio_for_field', 

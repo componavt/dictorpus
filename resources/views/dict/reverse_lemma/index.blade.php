@@ -36,9 +36,7 @@
                 <td data-th="{{ trans('dict.pos') }}">
                     @if($reverse_lemma->lemma->pos)
                         <span title="{{$reverse_lemma->lemma->pos->name}}">{{$reverse_lemma->lemma->pos->code}}</span>
-                        @if ($reverse_lemma->lemma->reflexive)
-                            ({{ trans('dict.reflexive') }})
-                        @endif
+                        @include('dict.lemma.show.features', ['lemma'=>$reverse_lemma->lemma])
                     @endif
                 </td>
             </tr>
