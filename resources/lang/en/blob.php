@@ -73,7 +73,7 @@ return [
                     . '<dd>PhD, Junior Research Associate in the Linguistics Section, Institute of Linguistics, Literature and History, KarRC, RAS</dd><br>'
                     . '</dl>',
     'permission' => '',
-    'welcome_text' =>  '<p>Welcome to VepKar — an Open corpus of Veps and Karelian languages 
+    'welcome_text' =>  '<p>Welcome to VepKar — the Open corpus of Veps and Karelian languages 
                         containing dictionaries and corpora of the Baltic-Finnish languages of Karelia peoples.</p>
 
                         <p>The VepKar project is a continuation of the work 
