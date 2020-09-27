@@ -232,6 +232,7 @@ class LemmaWordformController extends Controller
             $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
         } else {
             $name_num = ($lemma->features && $lemma->features->number) ? Grammatic::nameNumFromNumberField($lemma->features->number) : null; 
+             $is_reflexive = null;
         }
 
         $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
