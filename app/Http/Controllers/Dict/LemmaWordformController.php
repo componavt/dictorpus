@@ -227,7 +227,7 @@ class LemmaWordformController extends Controller
             $stems[10]=$lemma->harmony();
         }        
         
-        if ($lemma->pos_id->isVerb()) {
+        if ($lemma->pos->isVerb()) {
             $name_num = ($lemma->features && $lemma->features->impersonal) ? 1 : null; 
             $is_reflexive = ($lemma->features && $lemma->features->reflexive) ? 1 : null;
         } else {
