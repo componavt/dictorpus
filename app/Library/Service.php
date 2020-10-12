@@ -7,6 +7,7 @@ use DB;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
@@ -220,6 +221,16 @@ print "</p>";
             'lang_id' => $lang_to
         ]);
         if (!$new_lemma) { return; }
+
+        $lemma_feature = LemmaFeature::find($lemma->id);
+        if ($lemma_feature) {
+            $new_lemma_feature = LemmaFeature::create(['id'=>$new_lemma->id]);
+            foreach ($new_lemma_feature->getFillable() as $field) {
+                if ($field=='id') { continue; }
+                $new_lemma_feature->$field = $lemma_feature->$field;
+            }
+            $new_lemma_feature->save();
+        }
         
         foreach ($lemma->meanings as $meaning) {
             $new_meaning = self::copyMeaning($meaning, $new_lemma);

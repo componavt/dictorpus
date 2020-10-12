@@ -75,8 +75,12 @@
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td><input type='checkbox' name="lemmas[]" value="{{$lemma->id}}"></td>
                 <td data-th="{{ trans('dict.lemma') }}"><a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a></td>
-                <td data-th="{{ trans('dict.lang') }}">{{$lemma->lang->name ?? ''}}</td>
-                <td data-th="{{ trans('dict.pos') }}">{{$lemma->pos->name ?? ''}}</td>
+                <td data-th="{{ trans('dict.pos') }}">
+                    @if($lemma->pos)
+                        {{$lemma->pos->name}}
+                        @include('dict.lemma.show.features')
+                    @endif
+                </td>
                 <td data-th="{{ trans('dict.interpretation') }}">
                     @foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) 
                         {{$meaning_string}}<br>
