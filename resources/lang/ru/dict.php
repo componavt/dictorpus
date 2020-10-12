@@ -131,7 +131,7 @@ return [
     'interpretation' => 'толкование',
     'lang' => 'язык',
     'lang_code' => 'Код языка',
-    'lang_from' => 'с языка',
+    'lang_from' => 'из языка',
     'lang_to' => 'в язык',
     'last_updated_lemmas' => 'Последние измененные леммы',
     'lemma' => 'лемма',
