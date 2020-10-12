@@ -206,6 +206,7 @@ Route::group(
         Route::get('service/add_unmarked_links', 'Library\ServiceController@addUnmarkedLinks');
         Route::get('service/calculate_lemma_wordforms', 'Library\ServiceController@calculateLemmaWordforms');
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
+        Route::get('service/copy_lemmas', 'Library\ServiceController@copyLemmas');
         Route::get('service/generate_wordforms', 'Library\ServiceController@generateWordforms');
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
         Route::get('service/regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');

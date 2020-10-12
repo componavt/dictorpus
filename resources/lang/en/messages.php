@@ -19,6 +19,7 @@ return [
     'close' => 'close', 
     'code' => 'code',
     'confirm_delete' => 'Do you want to delete this item?',
+    'copy' => 'copy',
     'create_new_f' => 'Create a new',
     'create_new_m' => 'Create a new',
     'create_new_g' => 'Create a new',

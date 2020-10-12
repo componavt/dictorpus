@@ -13,8 +13,7 @@
                 ['name' => 'search_lemma',
                 'value' => $url_args['search_lemma'],
                 'special_symbol' => true,
-                'attributes'=>['placeholder'=>trans('dict.lemma')]])
-                               
+                'attributes'=>['placeholder'=>trans('dict.lemma')]])                               
     </div>
     <div class="col-sm-4">
             @include('widgets.form.formitem._text',

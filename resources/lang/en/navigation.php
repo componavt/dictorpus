@@ -16,6 +16,7 @@ return [
     'affix_freq' => 'Affix frequency',
     'concept_categories' => 'Concept categories',
     'concepts' => 'Сoncepts',
+    'copy_lemmas' => 'Copying lemmas',
     'corpus' => 'Corpus',
     'corpus_freq' => 'Frequency vocabularies',
     'corpuses' => 'Corpuses',

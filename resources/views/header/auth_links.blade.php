@@ -6,9 +6,9 @@
                         <div class="user-menu">
                             @if (User::checkAccess('dict.edit'))
                             <a href="{{ url('/experiments') }}">{{ trans('navigation.experiments') }}</a>
+                            <a href="{{ url('/service') }}">{{ trans('navigation.service') }}</a>
                             @endif
                             @if (User::checkAccess('admin'))
-                            <a href="{{ url('/service') }}">{{ trans('navigation.service') }}</a>
                             <a href="{{ url('/user') }}"><i class="fa fa-btn fa-user user-menu-img"></i>{{ trans('navigation.users') }}</a>
                             <a href="{{ url('/role') }}"><i class="fa fa-btn fa-users user-menu-img"></i>{{ trans('navigation.roles') }}</a>
                             @endif

@@ -6,5 +6,6 @@
  * Time: 4:46
  */?>
 <div class="form-group">
-{!! Form::submit($title, array('class' => 'btn btn-primary btn-default')) !!}
+{!! Form::submit($title, ['class' => 'btn btn-primary btn-default', 
+                          'name' => $name ?? null]) !!}
 </div>

@@ -62,7 +62,6 @@ class Str
                     'limit_num' => (int)$request->input('limit_num'),
                     'page'      => (int)$request->input('page'),
                 ];
-//dd($url_args);        
         if (!$url_args['page']) {
             $url_args['page'] = 1;
         }
@@ -72,9 +71,6 @@ class Str
         } elseif ($url_args['limit_num']>1000) {
             $url_args['limit_num'] = 1000;
         }   
-//var_dump($url_args); 
-//print '<br>';
-              
         return $url_args;
     }
     

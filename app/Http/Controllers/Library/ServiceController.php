@@ -11,6 +11,7 @@ use Caxy\HtmlDiff\HtmlDiffConfig;
 
 use App\Library\Grammatic\VepsName;
 use App\Library\Service;
+use App\Library\Str;
 
 use App\Models\Corpus\Word;
 
@@ -31,7 +32,8 @@ class ServiceController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:admin,/');
+        $this->middleware('auth:admin,/', ['except'=>['copyLemmas']]);
+        $this->middleware('auth:dict.edit,/', ['only'=>['copyLemmas']]);
     }
     
     public function index() {
@@ -394,6 +396,54 @@ print "</p>";
             print "</p>";
         }
 
+    }
+    
+    /**
+     * select count(*) from lemmas where lang_id=5 and lemma not in (select lemma from lemmas where lang_id=4);
+     * 
+     * @param Request $request
+     */
+    public function copyLemmas(Request $request) {
+        $lang_to = (int)$request->lang_to;        
+        $url_args = Str::urlArgs($request) + [
+                    'lang_from'  => (int)$request->input('lang_from'),
+                    'lang_to'  => $lang_to,
+                    'search_lemma'    => $request->input('search_lemma'),
+                    'search_pos'    => (int)$request->input('search_pos'),
+                ];        
+//        $args_by_get = Str::searchValuesByURL($url_args);
+        $added_count = null;
+                
+        if ($url_args['lang_from'] && $lang_to) {
+            if ($request->copy_lemmas && $request->lemmas) {
+                $added_count = Service::copyLemmas($lang_to, $request->lemmas);                 
+            }
+            
+            $lemmas = Lemma::whereLangId($url_args['lang_from'])
+                          ->whereNotIn('lemma', function ($query) use ($lang_to) {
+                              $query->select('lemma')->from('lemmas')
+                                    ->whereLangId($lang_to);
+                          });
+            if ($url_args['search_lemma']) {
+                $lemmas = $lemmas->where('lemma', 'like', $url_args['search_lemma']);
+            }             
+            if ($url_args['search_pos']) {
+                $lemmas = $lemmas->wherePosId($url_args['search_pos']);
+            }             
+            $lemmas=$lemmas->orderBy('lemma');
+            $numAll = $lemmas->count();
+            $lemmas = $lemmas->paginate($url_args['limit_num']);                                   
+        } else {
+            $lemmas = null;
+            $numAll = 0;
+        }
+        
+        $lang_values = Lang::getListWithQuantity('reverseLemmas');
+        $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        
+        return view('service.copy_lemmas', 
+                compact('added_count', 'lang_values', 'lemmas', 'numAll', 
+                        'pos_values', 'url_args'));        // , 'args_by_get'
     }
     
     
