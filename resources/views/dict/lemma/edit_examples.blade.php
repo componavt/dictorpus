@@ -74,3 +74,11 @@
         {!! Form::close() !!}
         @endif
 @stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/text.js')!!}
+@stop
+
+@section('jqueryFunc')
+    showLemmaLinked();    
+@stop

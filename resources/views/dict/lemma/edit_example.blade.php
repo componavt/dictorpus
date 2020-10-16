@@ -19,7 +19,7 @@
 
 @section('body')
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
-        <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>''])</p>
+        <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>'', 'with_links' => true])</p>
 
         <p><a href="{{ LaravelLocalization::localizeURL($back_to_url) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
         
@@ -53,3 +53,12 @@
         @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop
+
+@section('footScriptExtra')
+    {!!Html::script('js/text.js')!!}
+@stop
+
+@section('jqueryFunc')
+    showLemmaLinked();    
+@stop
+

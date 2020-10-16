@@ -139,6 +139,7 @@
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/lemma.js')!!}
     {!!Html::script('js/meaning.js')!!}
+    {!!Html::script('js/text.js')!!}
     {!!Html::script('js/wordform.js')!!}
 @stop
 
@@ -150,6 +151,8 @@
     
     chooseDialectForGenerate({{$lemma->id}});
     recDelete('{{ trans('messages.confirm_delete') }}');
+    showLemmaLinked();    
+    
 /*    toggleExamples();
     addExample('{{LaravelLocalization::localizeURL('/dict/meaning/example/add')}}'); 
     removeExample('{{LaravelLocalization::localizeURL('/dict/lemma/remove/example')}}');
