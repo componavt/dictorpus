@@ -424,11 +424,11 @@ class Word extends Model
                     $str = '';
                     foreach ($meaning->lemma->wordforms as $wordform) {
                         if (Grammatic::toSearchForm($wordform->wordform) == $word_text && $wordform->pivot->gramset_id) {
-                            $gramsets[$wordform->id] = $wordform->pivot->gramset_id;
+                            $gramsets[$wordform->pivot->gramset_id] = $wordform->id;
                         }
                     }
     //                $gramset_class = ' gramset-not-checked';
-                    foreach ($gramsets as $wordform_id => $gramset_id) {
+                    foreach ($gramsets as $gramset_id => $wordform_id) {
                         $str .= '<p id="gramsets_'.$w_id.'" class="word-gramset-not-checked">'.Gramset::getStringByID($gramset_id)
                                .'<span data-add="'.$text_id."_".$w_id."_".$wordform_id."_".$gramset_id.
                                 '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordGramset(this)"></span>'

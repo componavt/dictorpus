@@ -955,13 +955,13 @@ print "</pre>";*/
             $gramsets = [];
             foreach ($lemma->wordforms as $wordform) {
                 if (Grammatic::toSearchForm($wordform->wordform) == Grammatic::toSearchForm($word_text) && $wordform->pivot->gramset_id) {
-                    $gramsets[$wordform->id] = $wordform->pivot->gramset_id;
+                    $gramsets[$wordform->pivot->gramset_id] = $wordform->id;
                 }
             }
             if (sizeof($gramsets)) {
                 $gramset_class = ' gramset-not-checked';
             }
-            foreach ($gramsets as $wordform_id => $gramset_id) {                
+            foreach ($gramsets as $gramset_id => $wordform_id) {                
                 $gramset_b = $div_block->addChild('p', Gramset::getStringByID($gramset_id));
                 $gramset_b -> addAttribute('class','word-gramset-not-checked');
                 $gramset_b->addAttribute('id','gramsets_'.$word_id);
