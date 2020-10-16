@@ -96,6 +96,7 @@ class Text extends Model
         $texts = self::searchByPlace($texts, $url_args['search_place']);
         $texts = self::searchByRecorder($texts, $url_args['search_recorder']);
         $texts = self::searchByTitle($texts, $url_args['search_title']);
+        $texts = self::searchByWid($texts, $url_args['search_wid']);
         $texts = self::searchByWord($texts, $url_args['search_word']);
         $texts = self::searchByText($texts, $url_args['search_text']);
         
@@ -200,6 +201,17 @@ class Text extends Model
                                 ->from('words')
 //                                ->where('word','like', $word);
                                 ->where('word', 'like', Grammatic::toSearchForm($word));
+                            });
+    }
+
+    public static function searchByWid($texts, $w_id) {
+        if (!$w_id) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($w_id){
+                                $query->select('text_id')
+                                ->from('words')
+                                ->where('w_id', $w_id);
                             });
     }
 
@@ -839,19 +851,6 @@ print "</pre>";*/
         return $sentence->sentence_id;
     }
 
-    // icon 'pensil'
-    static public function addEditExampleButton($link_block, $text_id, $sentence_id, $word_id) {
-        if (!User::checkAccess('corpus.edit')) {
-            return;
-        }
-        $button_edit_p = $link_block->addChild('p');
-        $button_edit_p->addAttribute('class','text-example-edit'); 
-        $button_edit = $button_edit_p->addChild('a',' ');//,'&#9999;'
-        $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
-                                                                            $sentence_id.'_'.$word_id)); 
-        $button_edit->addAttribute('class','glyphicon glyphicon-pencil');  
-        return $link_block;
-    }
     /**
      * Gets markup text with links from words to related lemmas
 
@@ -863,7 +862,6 @@ print "</pre>";*/
         if (!$markup_text) {
             $markup_text = $this->text_xml;
         }
-        $text_id = (int)$this->id;
         list($sxe,$error_message) = self::toXML($markup_text,'');
         if ($error_message) {
             return $markup_text;
@@ -873,71 +871,7 @@ print "</pre>";*/
             $sentence_id = (int)$sentence->attributes()->id;
 //dd($sentence);     
             foreach ($sentence->children() as $word) {
-                $word_id = (int)$word->attributes()->id;
-                if (!$word_id) {
-                    continue;
-                }
-                $meanings = $this->meanings()->wherePivot('text_id',$text_id)
-                                 ->wherePivot('w_id',$word_id)
-                                 ->wherePivot('relevance','>',0);
-                $word_class = '';
-                if ($meanings->count()) {
-                    $word_class = 'lemma-linked';
-                    $link_block = $word->addChild('div');
-                    $link_block->addAttribute('class','links-to-lemmas');
-                    $link_block->addAttribute('id','links_'.$word_id);
-                    $has_checked_meaning = false;
-                    // output meanings
-                    foreach ($meanings->get() as $meaning) {
-                        $lemma = $meaning->lemma;
-//dd($meaning);
-                        if ($meaning->pivot->relevance >1) {
-                            $has_checked_meaning = true;
-                        }
-                        // link to lemma
-                        $link_div = $link_block->addChild('div');
-                        $link = $link_div->addChild('a',$lemma->lemma);
-                        $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
-                        
-                        // icon 'plus' - for choosing meaning
-                        $locale = LaravelLocalization::getCurrentLocale();
-                        $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
-                        if ($with_edit && !$has_checked_meaning && User::checkAccess('corpus.edit')) {
-                            $add_link = $link_div->addChild('span');
-                            $add_link->addAttribute('data-add',$meaning->id.'_'.$this->id.'_'.$sentence_id.'_'.$word_id);
-                            $add_link->addAttribute('class','fa fa-plus choose-meaning'); //  fa-lg 
-                            $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
-                        }
-                    }
-                    if ($has_checked_meaning) {
-                        $word_class .= ' has-checked';
-                        // gramset
-                        $wordform = $this->wordforms()->wherePivot('w_id',$word_id) -> first();
-                        if ($wordform) {
-                            $gramset_p = $link_block->addChild('p', Gramset::getStringByID($wordform->pivot->gramset_id));
-                            $gramset_p -> addAttribute('class','word_gramset');
-                        }
-                    } elseif ($meanings->count() > 1) {
-                        $word_class .= ' polysemy';                
-                    } else {
-                        $word_class .= ' not-checked';
-                    }
-                    // icon 'pensil'
-                    if ($with_edit) {
-                        $link_block = self::addEditExampleButton($link_block,$text_id, $sentence_id, $word_id);
-                    }
-                } elseif (User::checkAccess('corpus.edit')) {
-                    $word_class = 'lemma-linked call-add-wordform';
-                }
-                
-                if ($search_word && Grammatic::toSearchForm((string)$word) == $search_word 
-                        || $search_w && $word_id==$search_w) {
-                    $word_class .= ' word-marked';
-                }
-                
-                if ($word_class) {
-                    $word->addAttribute('class',$word_class);
-                }
+                $word = $this->editWordBlock($word, $sentence_id, $search_word, $search_sentence, $with_edit, $search_w);
             }
             $sentence_class = "sentence";
             if ($search_sentence && $search_sentence==$sentence_id) {
@@ -950,80 +884,142 @@ print "</pre>";*/
         return $sxe->asXML();
     }
 
-    /**
-     * Gets markup text with links from words to related lemmas
-
-     * @param String $markup_text 
-     * @param String $search_word 
-     * @return String markup text
-     **/
-    /*public function setLemmaLinkInSentence($markup_text, $search_w=null){
-        $text_id = (int)$this->id;
-        list($sxe,$error_message) = self::toXML($markup_text,'');
-        if ($error_message) {
-            return $markup_text;
+    public function editWordBlock($word, $sentence_id, $search_word=null, $search_sentence=null, $with_edit=null, $search_w=null) {
+        $word_id = (int)$word->attributes()->id;
+        if (!$word_id) { return $word; }
+        
+        $meanings = $this->meanings()->wherePivot('text_id',$this->id)
+                         ->wherePivot('w_id',$word_id)
+                         ->wherePivot('relevance','>',0);
+        $word_class = '';
+        if ($meanings->count()) {
+            list ($word, $word_class) = $this->addMeaningsBlock($word, 
+                    $sentence_id, $word_id, $meanings, $with_edit);
+            
+        } elseif (User::checkAccess('corpus.edit')) {
+            $word_class = 'lemma-linked call-add-wordform';
         }
-        list($sentence) = $sxe->xpath('//s');
-            $sentence_id = (int)$sentence->attributes()->id;
-//dd($sentence);     
-            foreach ($sentence->children() as $word) {
-                $word_id = (int)$word->attributes()->id;
-                if (!$word_id) {
-                    continue;
-                }
-                $meanings = $this->meanings()->wherePivot('text_id',$text_id)
-                                 ->wherePivot('w_id',$word_id)
-                                 ->wherePivot('relevance','>',0);
-                $word_class = '';
-                if ($meanings->count()) {
-                    $word_class = 'lemma-linked';
-                    $link_block = $word->addChild('div');
-                    $link_block->addAttribute('class','links-to-lemmas');
-                    $link_block->addAttribute('id','links_'.$word_id);
-                    $has_checked_meaning = false;
-                    // output meanings
-                    foreach ($meanings->get() as $meaning) {
-                        $lemma = $meaning->lemma;
 
-                        if ($meaning->pivot->relevance >1) {
-                            $has_checked_meaning = true;
-                        }
-                        // link to lemma
-                        $link_div = $link_block->addChild('div');
-                        $link = $link_div->addChild('a',$lemma->lemma);
-                        $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
+        if ($search_word && Grammatic::toSearchForm((string)$word) == $search_word 
+                || $search_w && $word_id==$search_w) {
+            $word_class .= ' word-marked';
+        }
 
-                    }
-                    if ($has_checked_meaning) {
-                        $word_class .= ' has-checked';
-                        // gramset
-                        $wordform = $this->wordforms()->wherePivot('w_id',$word_id) -> first();
-                        if ($wordform) {
-                            $gramset_p = $link_block->addChild('p', Gramset::getStringByID($wordform->pivot->gramset_id));
-                            $gramset_p -> addAttribute('class','word_gramset');
-                        }
-                    } elseif ($meanings->count() > 1) {
-                        $word_class .= ' polysemy';                
-                    } else {
-                        $word_class .= ' not-checked';
-                    }
-                }
-                
-                if ($search_w && $word_id==$search_w) {
-                    $word_class .= ' word-marked';
-                }
-                
-                if ($word_class) {
-                    $word->addAttribute('class',$word_class);
+        if ($word_class) {
+            $word->addAttribute('class',$word_class);
+        }
+        return $word;
+    }
+
+    public function addMeaningsBlock($word, $sentence_id, $word_id, $meanings, $with_edit=null) {
+        $word_class = 'lemma-linked';
+        $link_block = $word->addChild('div');
+        $link_block->addAttribute('class','links-to-lemmas');
+        $link_block->addAttribute('id','links_'.$word_id);
+        $has_checked_meaning = false;
+        $right_lemma = null;
+        // output meanings
+        foreach ($meanings->get() as $meaning) {
+            if ($meaning->pivot->relevance >1) {
+                $has_checked_meaning = true;
+                $right_lemma = $meaning->lemma;
+            }
+            // link to lemma
+            $link_block=self::addLinkToLemma($link_block, $meaning->lemma, $meaning, 
+                    $meaning->id.'_'.$this->id.'_'.$sentence_id.'_'.$word_id, 
+                    $has_checked_meaning, $with_edit);
+        }
+        if ($has_checked_meaning) {
+            list($link_block, $gramset_class) = $this->addGramsetBlock($link_block, $word_id, (string)$word, $right_lemma, $with_edit); // gramset
+            $word_class .= ' has-checked'.$gramset_class;
+        } elseif ($meanings->count() > 1) {
+            $word_class .= ' polysemy';                
+        } else {
+            $word_class .= ' not-checked';
+        }
+        if ($with_edit) { // icon 'pensil'
+            $link_block = self::addEditExampleButton($link_block, $this->id, $sentence_id, $word_id);
+        }
+        
+        return [$word, $word_class];        
+    }
+
+    // gramset, linked with word
+    public function addGramsetBlock($div_block, $word_id, $word_text, $lemma, $with_edit=null) {
+        $gramset_class = '';
+        $wordform = $this->wordforms()->wherePivot('w_id',$word_id) -> first();
+        if ($wordform) {
+            $gramset_p = $div_block->addChild('p', Gramset::getStringByID($wordform->pivot->gramset_id));
+            $gramset_p -> addAttribute('class','word-gramset');
+        } elseif ($with_edit && User::checkAccess('corpus.edit')) { 
+            $gramsets = [];
+            foreach ($lemma->wordforms as $wordform) {
+                if (Grammatic::toSearchForm($wordform->wordform) == Grammatic::toSearchForm($word_text) && $wordform->pivot->gramset_id) {
+                    $gramsets[$wordform->id] = $wordform->pivot->gramset_id;
                 }
             }
-            $sentence_class = "sentence";
-            $sentence->addAttribute('class',$sentence_class);
-            $sentence->attributes()->id = 'text_s'.$sentence_id;
-        
-        return $sentence->asXML();
+            if (sizeof($gramsets)) {
+                $gramset_class = ' gramset-not-checked';
+            }
+            foreach ($gramsets as $wordform_id => $gramset_id) {                
+                $gramset_b = $div_block->addChild('p', Gramset::getStringByID($gramset_id));
+                $gramset_b -> addAttribute('class','word-gramset-not-checked');
+                $gramset_b->addAttribute('id','gramsets_'.$word_id);
+                // icon 'plus' - for choosing gramset                    
+                $gramset_b= self::addEditGramsetButton($gramset_b, $this->id."_".$word_id."_".$wordform_id."_".$gramset_id);
+            }
+        }
+        return [$div_block, $gramset_class];
     }
-*/
+
+    // icon 'plus' - for choosing meaning
+    public static function addLinkToLemma($link_block, $lemma, $meaning, $id, $has_checked_meaning, $with_edit) {
+        $link_div = $link_block->addChild('div');
+        $link = $link_div->addChild('a',$lemma->lemma);
+        $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
+
+        $locale = LaravelLocalization::getCurrentLocale();
+        $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
+        // icon 'plus' - for choosing meaning
+        if ($with_edit && !$has_checked_meaning && User::checkAccess('corpus.edit')) {
+            $link_div= self::addEditMeaningButton($link_div, $id);
+        }
+        return $link_block;
+    }
+
+    // icon 'plus' - for choosing gramset
+    public static function addEditGramsetButton($link_div, $id) {
+        $add_link = $link_div->addChild('span');
+        $add_link->addAttribute('data-add',$id);
+        $add_link->addAttribute('class','fa fa-plus choose-gramset'); //  fa-lg 
+        $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
+        $add_link->addAttribute('onClick','addWordGramset(this)');
+        return $link_div;
+    }
+
+    // icon 'plus' - for choosing meaning
+    public static function addEditMeaningButton($link_div, $id) {
+        $add_link = $link_div->addChild('span');
+        $add_link->addAttribute('data-add',$id);
+        $add_link->addAttribute('class','fa fa-plus choose-meaning'); //  fa-lg 
+        $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
+        return $link_div;
+    }
+
+    // icon 'pensil'
+    public static function addEditExampleButton($link_block, $text_id, $sentence_id, $word_id) {
+        if (!User::checkAccess('corpus.edit')) {
+            return;
+        }
+        $button_edit_p = $link_block->addChild('p');
+        $button_edit_p->addAttribute('class','text-example-edit'); 
+        $button_edit = $button_edit_p->addChild('a',' ');//,'&#9999;'
+        $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
+                                                                            $sentence_id.'_'.$word_id)); 
+        $button_edit->addAttribute('class','glyphicon glyphicon-pencil');  
+        return $link_block;
+    }
+    
     public static function createWordCheckedBlock($meaning_id, $text_id, $sentence_id, $w_id) {
             $meaning = Meaning::find($meaning_id);
             if (!$meaning) {
@@ -1036,13 +1032,8 @@ print "</pre>";*/
                  .$meaning->getMultilangMeaningTextsString($locale)
                  .')</span></a></div>';
             
-            $text = Text::find($text_id);
-            if ($text) {
-                $wordform = $text->wordforms()->wherePivot('w_id',$w_id) -> first();
-                if ($wordform) {
-                    $str.='<p class="word_gramset">'.Gramset::getStringByID($wordform->pivot->gramset_id).'</p>';
-                }
-            }
+            $str .= Word::createGramsetBlock($text_id, $w_id);
+            
             $str.='<p class="text-example-edit"><a href="'
                  .LaravelLocalization::localizeURL($url)
                  .'" class="glyphicon glyphicon-pencil"></a>';

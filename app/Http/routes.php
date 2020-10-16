@@ -82,26 +82,28 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         
-        Route::get('corpus/text/add/example/{example_id}', 'Corpus\TextController@addExample');
-/*        Route::get('corpus/corpus/list', 'Corpus\CorpusController@corpusList');*/
+        Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
+        Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
         Route::get('corpus/text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
         Route::post('corpus/text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
-
-        Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
-        Route::get('corpus/text/sentence', 'Corpus\TextController@showWordInSentence');
-
-        Route::get('corpus/text/full_new_list', 'Corpus\TextController@fullNewList');
-        Route::get('corpus/text/limited_new_list', 'Corpus\TextController@limitedNewList');
-        Route::get('corpus/text/full_updated_list', 'Corpus\TextController@fullUpdatedList');
-        Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
-        Route::get('corpus/text/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');
-        Route::get('corpus/text/frequency/symbols', 'Corpus\TextController@frequencySymbols');
+        Route::get('corpus/text/add_example/{example_id}', 'Corpus\TextController@addExample');
         Route::get('corpus/text/frequency/lemmas', 'Dict\LemmaController@frequencyInTexts');
+        Route::get('corpus/text/frequency/symbols', 'Corpus\TextController@frequencySymbols');
+        Route::get('corpus/text/full_new_list', 'Corpus\TextController@fullNewList');
+        Route::get('corpus/text/full_updated_list', 'Corpus\TextController@fullUpdatedList');
+        Route::get('corpus/text/limited_new_list', 'Corpus\TextController@limitedNewList');
+        Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
+        Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
+        Route::get('corpus/text/sentence', 'Corpus\TextController@showWordInSentence');
         
+        Route::get('corpus/word/add_gramset/{id}', 'Corpus\WordController@addGramset');        
+        Route::get('corpus/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');        
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
 
+        Route::get('corpus/video', 'Corpus\VideoController@index');
+        
         Route::get('dict/concept/list', 'Dict\ConceptController@conceptList');
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
         Route::get('dict/gramset/list', 'Dict\GramsetController@gramsetList');
@@ -161,10 +163,6 @@ Route::group(
         Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
         Route::get('dict/wordform/tmpFixNegativeVepsVerbForms', 'Dict\WordformController@tmpFixNegativeVepsVerbForms');
       
-        Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
-        Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
-        Route::get('corpus/video', 'Corpus\VideoController@index');
-        
         Route::get('export/bible', 'Library\ExportController@exportBible');        
         Route::get('export/compounds_for_unimorph', 'Library\ExportController@exportCompoundsToUniMorph'); 
         Route::get('export/conll', 'Library\ExportController@exportTextsToCONLL');        
@@ -205,6 +203,7 @@ Route::group(
         Route::get('service/add_wordform_affixes', 'Library\ServiceController@addWordformAffixes');
         Route::get('service/add_unmarked_links', 'Library\ServiceController@addUnmarkedLinks');
         Route::get('service/calculate_lemma_wordforms', 'Library\ServiceController@calculateLemmaWordforms');
+        Route::get('service/check_meaning_text', 'Library\ServiceController@checkMeaningText');
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('service/copy_lemmas', 'Library\ServiceController@copyLemmas');
         Route::get('service/generate_wordforms', 'Library\ServiceController@generateWordforms');

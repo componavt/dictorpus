@@ -42,6 +42,8 @@
     <p><a href="service/add_unmarked_links">Добавить связи текст-словарь</a></p>
     <p><a href="service/generate_wordforms">Сгенерировать словоформы по имеющимся</a></p>
     <p><a href="service/calculate_lemma_wordforms">Записать у лемм количество словоформ</a> ({{$count_lemmas_without_wordform_total}})</p>
+    <p><a href="service/check_meaning_text">Исправить связи слово-значение (meaning_text)</a> 
+       (исправить случаи, если есть проверенные и непроверенные примеры у одного слова, последним поставить метку "совсем не подходит")</p>
     @endif
     
 @endsection

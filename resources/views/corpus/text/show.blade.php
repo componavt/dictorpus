@@ -83,8 +83,8 @@
         @if ($text->text)
         <?php   if ($text->text_xml) :
                     $markup_text = $text->setLemmaLink($text->text_xml, 
-                                            isset($url_args['search_word'])? $url_args['search_word']: '', 
-                                            isset($url_args['search_sentence'])? $url_args['search_sentence']: '');
+                            $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
+                            true, $url_args['search_wid'] ?? null);
                 else :
                     $markup_text = nl2br($text->text);
                 endif; 
@@ -126,7 +126,8 @@
     toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}');
     highlightSentences();
-    addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add/example')}}');
+    addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add_example')}}');
+{{--    addWordGramset('{{LaravelLocalization::localizeURL('/corpus/word/add_gramset')}}'); --}}
     showLemmaLinked();
     addWordform('{{$text->id}}','{{$text->lang_id}}');
     posSelect(false);

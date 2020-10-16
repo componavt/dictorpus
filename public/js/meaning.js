@@ -123,10 +123,33 @@ function addWordMeaning(route) {
             type: 'GET',
             success: function(result){
                 $("#links_"+ w_id).html(result);
-                $("w#"+w_id).removeClass('polysemy').addClass('has-checked');
+                $("w#"+w_id).removeClass('polysemy').removeClass('not-checked').addClass('has-checked');
             }
         }); 
     });    
+}    
+
+/*
+ * Adds to the word the selected gramset
+ * 
+ * @param string route - url to script
+ * @returns NULL
+ */
+function addWordGramset(el) {
+    
+//    $(".choose-gramset").click(function(){
+        var id = el.getAttribute('data-add');
+        var w_id = el.closest('w').getAttribute('id');
+        
+        $.ajax({
+            url: '/corpus/word/add_gramset/'+id, 
+            type: 'GET',
+            success: function(result){
+                $("#gramsets_"+ w_id).html(result).removeClass('word-gramset-not-checked');
+                $("w#"+w_id).removeClass('gramset-not-checked');
+            }
+        }); 
+//    });    
 }    
 /*
 function addExample(route) {

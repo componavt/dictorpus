@@ -5,8 +5,11 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 
 use DB;
+use User;
 
-use App\Models\Dict\Lang;
+use \App\Library\Grammatic;
+
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Wordform;
@@ -404,5 +407,36 @@ class Word extends Model
                     [$word, $meaning->relevance];
         }
         return $relevances;
+    }
+    
+    public static function createGramsetBlock($text_id, $w_id) {
+        $text = Text::find($text_id);
+        if ($text) {
+            $wordform = $text->wordforms()->wherePivot('w_id',$w_id) -> first();
+            if ($wordform) {
+                return '<p class="word-gramset">'.Gramset::getStringByID($wordform->pivot->gramset_id).'</p>';
+            } elseif (User::checkAccess('corpus.edit')) { 
+                $meaning = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1) -> first();
+//                $str = '???';
+                if (isset($meaning->lemma->wordforms)) {
+                    $word_text=Word::whereTextId($text_id)->whereWId($w_id)->first()->word;
+                    $gramsets = [];
+                    $str = '';
+                    foreach ($meaning->lemma->wordforms as $wordform) {
+                        if (Grammatic::toSearchForm($wordform->wordform) == $word_text && $wordform->pivot->gramset_id) {
+                            $gramsets[$wordform->id] = $wordform->pivot->gramset_id;
+                        }
+                    }
+    //                $gramset_class = ' gramset-not-checked';
+                    foreach ($gramsets as $wordform_id => $gramset_id) {
+                        $str .= '<p id="gramsets_'.$w_id.'" class="word-gramset-not-checked">'.Gramset::getStringByID($gramset_id)
+                               .'<span data-add="'.$text_id."_".$w_id."_".$wordform_id."_".$gramset_id.
+                                '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordGramset(this)"></span>'
+                               .'</p>';
+                    }
+                    return $str;
+                }
+            }
+        }
     }
 }

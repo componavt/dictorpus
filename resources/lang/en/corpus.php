@@ -10,12 +10,14 @@ return [
     |
     */
 
+    'add-gramset' => 'Add grammmatic attributes',
     'add-lemma' => 'Add lemma',
     'add-wordform' => 'Add wordform',
     'archive_krc' => 'audio archive of ILLH, KarRC RAS',
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',
     'comment' => 'comments',
+    'choose-gramset' => 'Choose a gramset',
     
     'corpus' => 'Corpus',
     'corpus_has_text' => 'Corpus ":name" can not be removed, there are texts in this corpus',

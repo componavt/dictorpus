@@ -136,7 +136,7 @@ function changeWordBlock(text_id, w_id, meaning_id) {
     $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('has-checked');
     $("w[id="+w_id+"].has-checked").append('<div class="links-to-lemmas" id="links_'+w_id+'"></div>')
     $.ajax({
-        url: '/corpus/text/word/create_checked_block', 
+        url: '/corpus/word/create_checked_block', 
         data: {text_id: text_id, 
                w_id: w_id,
                meaning_id: meaning_id,
@@ -181,6 +181,8 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
             $("#modalAddWordform").modal('hide');
             changeWordBlock(text_id, w_id, meaning_id);
             clearWordformModal();
+//            $("#modalAddGramset").modal('show');
+            
         },
         error: function (jqXHR, textStatus, errorThrown) {
             var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 

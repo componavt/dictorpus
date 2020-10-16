@@ -63,6 +63,7 @@ class TextController extends Controller
                     'search_recorder' => $request->input('search_recorder'),
                     'search_sentence' => (int)$request->input('search_sentence'),
                     'search_title'    => $request->input('search_title'),
+                    'search_wid'     => $request->input('search_wid'),
                     'search_word'     => $request->input('search_word'),
                     'search_text'     => $request->input('search_text'),
                 ];
@@ -589,7 +590,7 @@ class TextController extends Controller
     /**
      * Calls by AJAX, 
      * adds 
-     * /corpus/text/add/example/4254_1500_11_92
+     * /corpus/text/add_example/4254_1500_11_92
      * 
      * @param type $example_id
      * @return string

@@ -14,6 +14,7 @@ use App\Models\Corpus\Word;
 use App\Models\Corpus\Text;
 
 use App\Models\Dict\Lang;
+use App\Models\Dict\Wordform;
 
 class WordController extends Controller
 {
@@ -134,4 +135,22 @@ class WordController extends Controller
         return Text::createWordCheckedBlock($meaning_id, $text_id, $word->sentence_id, $w_id);
     }
 
+    /**
+     * Calls by AJAX, 
+     * adds 
+     * /corpus/word/add_example/<text_id>_<w_id>_<wordform_id>_<gramset_id>
+     * 
+     * @param type $example_id
+     * @return string
+     */
+    public function addGramset($id)
+    {
+        if (!preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$id,$regs)) {
+            return null;
+        }        
+        $wordform = Wordform::find($regs[3]);
+//dd($wordform->id);    
+        $wordform->updateTextWordformLinks($regs[1],$regs[2],$regs[4]);
+        return Word::createGramsetBlock($regs[1],$regs[2]);
+    }
 }

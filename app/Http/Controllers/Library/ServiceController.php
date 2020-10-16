@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Caxy\HtmlDiff\HtmlDiff;
 use Caxy\HtmlDiff\HtmlDiffConfig;
+use DB;
 
 use App\Library\Grammatic\VepsName;
 use App\Library\Service;
@@ -253,6 +254,7 @@ print "</p>";
     
     /**
      * Search words of texts, 
+     * Ищем неразмеченные слова в текстах, добавляем связи и устававливаем  words.checked=1
      * 
      * update words set checked=0;
      * select count(*) from words where checked=0 and text_id in (select id from texts where lang_id=1) and id not in (select word_id from meaning_text);
@@ -446,7 +448,28 @@ print "</p>";
                         'pos_values', 'url_args'));        // , 'args_by_get'
     }
     
-    
+    /**
+     * select text_id, w_id from meaning_text where word_id in (select word_id from meaning_text where relevance=1) and word_id in (select word_id from meaning_text where relevance>1);
+     */
+    public function checkMeaningText() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        
+        $words = DB::table('meaning_text')->select('text_id', 'w_id')
+                ->whereIn('word_id', function ($query){
+                    $query->select('word_id')->from('meaning_text')
+                          ->where('relevance', '>', 1);
+                })->whereIn('word_id', function ($query){
+                    $query->select('word_id')->from('meaning_text')
+                          ->where('relevance', 1);
+                })->groupBy('text_id', 'w_id')->get();
+        foreach ($words as $word) {
+            print '<p><a href="/corpus/text/'.$word->text_id.'?search_wid='.$word->w_id.'">'.$word->text_id.'_'.$word->w_id.'</a></p>';
+            DB::table('meaning_text')->whereTextId($word->text_id)->whereWId($word->w_id)->where('relevance', '>', 1)->update(['relevance'=>1]);
+        }
+    }
+
+
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences

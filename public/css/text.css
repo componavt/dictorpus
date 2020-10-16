@@ -25,8 +25,16 @@ s {
     color: #2eaf38;
 }
 
+.lemma-linked.has-checked.gramset-not-checked {
+    color: #2eafaf;
+}
+
 .lemma-linked.polysemy {
     color: red;
+}
+
+.lemma-linked p {
+    margin: 0;
 }
 
 .links-to-lemmas {
@@ -51,14 +59,13 @@ s {
 .polysemy .links-to-lemmas {
     background: #dcf7f8;
 }
-/*
 .links-to-lemmas a {
-    display: block;
+    text-decoration: none;
+/*    display: block; */
 }
-*/
+
 .links-to-lemmas a span {
     color: black;
-    text-decoration: none;
 }
 
 w, .text-has-checked-meaning {
@@ -95,16 +102,17 @@ ol {
     text-decoration: none;
 }
 
-.links-to-lemmas .choose-meaning {
+.links-to-lemmas .choose-meaning,
+.links-to-lemmas .choose-gramset {
     color: #f0ad4e;
     cursor: pointer;
     padding-left: 10px;
 }
-
+/*
 .links-to-lemmas div:last-of-type {
     margin-bottom: 10px;
 }
-
+*/
 .corpus-text td:first-of-type {
     padding-right: 20px;
 }
@@ -113,9 +121,20 @@ ol {
     padding-left: 20px;
 }
 
-.word_gramset {
-    color: #c25a22;
+.lemma-linked .word-gramset,
+.lemma-linked .word-gramset-not-checked {
+    border-top: 1px dashed gray;
     font-style: italic;
+    margin-top: 5px;
+    padding-top: 5px;
+}
+
+.lemma-linked .word-gramset {
+    color: #c25a22;
+}
+
+.lemma-linked .word-gramset-not-checked {
+    color: black;
 }
 
 .modal-body {
@@ -129,4 +148,9 @@ ol {
 
 #call-add-lemma {
     cursor: pointer;
+}
+
+.gramset-b {
+    border-top: 1px dashed gray;
+    padding-top: 5px;
 }
