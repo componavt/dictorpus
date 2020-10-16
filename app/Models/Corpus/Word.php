@@ -428,12 +428,14 @@ class Word extends Model
                         }
                     }
     //                $gramset_class = ' gramset-not-checked';
+                    $str .= '<div id="gramsets_'.$w_id.'" class="word-gramset-not-checked">';
                     foreach ($gramsets as $gramset_id => $wordform_id) {
-                        $str .= '<p id="gramsets_'.$w_id.'" class="word-gramset-not-checked">'.Gramset::getStringByID($gramset_id)
+                        $str .= '<p>'.Gramset::getStringByID($gramset_id)
                                .'<span data-add="'.$text_id."_".$w_id."_".$wordform_id."_".$gramset_id.
                                 '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordGramset(this)"></span>'
                                .'</p>';
                     }
+                    $str .= '</div>';
                     return $str;
                 }
             }
