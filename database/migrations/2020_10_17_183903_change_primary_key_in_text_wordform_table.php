@@ -15,7 +15,7 @@ class ChangePrimaryKeyInTextWordformTable extends Migration
         Schema::table('text_wordform', function (Blueprint $table) {
             $table->unsignedSmallInteger('gramset_id')->change();
             
-            $table->dropPrimary(['text_id', 'w_id', 'wordform_id']);
+            $table->dropPrimary();
             $table->primary(['text_id', 'w_id', 'wordform_id', 'gramset_id']);
         });
     }
@@ -28,7 +28,7 @@ class ChangePrimaryKeyInTextWordformTable extends Migration
     public function down()
     {
         Schema::table('text_wordform', function (Blueprint $table) {
-            $table->dropPrimary(['text_id', 'w_id', 'wordform_id', 'gramset_id']);
+            $table->dropPrimary();
             $table->primary(['text_id', 'w_id', 'wordform_id']);
         });
     }
