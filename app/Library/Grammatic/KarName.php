@@ -108,14 +108,14 @@ class KarName
         if ($lang_id==5) {
             return KarNameOlo::gramsetListSg();
         }
-        return [1,  3,  4, 277,  5,    8,  9, 10, 278, 12,  6, 14, 15];
+        return [1,  56, 3,  4, 277,  5,    8,  9, 10, 278, 12,  6, 14, 15];
     }
 
     public static function gramsetListPl($lang_id) {
         if ($lang_id==5) {
             return KarNameOlo::gramsetListPl();
         }
-        return [2, 24, 22, 279, 59,     23, 60, 61, 280, 62, 64, 65, 66, 281];
+        return [2, 57, 24, 22, 279, 59,     23, 60, 61, 280, 62, 64, 65, 66, 281];
     }
 
     public static function getListForAutoComplete($lang_id) {
