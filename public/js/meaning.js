@@ -113,19 +113,17 @@ function hideExamples(meaning_n) {
  * @param String route - url to script
  * @returns NULL
  */
-function addWordMeaning(route) {
-    $(".choose-meaning").click(function(){
-        var id = $(this).data('add');
-        var w_id = $(this).closest('w').attr('id');
-        
-        $.ajax({
-            url: route+'/'+id, 
-            type: 'GET',
-            success: function(result){
-                $("#links_"+ w_id).html(result);
-                $("w#"+w_id).removeClass('polysemy').removeClass('not-checked').addClass('has-checked');
-            }
-        }); 
+function addWordMeaning(el) {
+    var id = el.getAttribute('data-add');
+    var w_id = el.closest('w').getAttribute('id');
+
+    $.ajax({
+        url: '/corpus/text/add_example/'+id, 
+        type: 'GET',
+        success: function(result){
+            $("#links_"+ w_id).html(result);
+            $("w#"+w_id).removeClass('polysemy').removeClass('meaning-not-checked').addClass('meaning-checked');
+        }
     });    
 }    
 
@@ -137,19 +135,17 @@ function addWordMeaning(route) {
  */
 function addWordGramset(el) {
     
-//    $(".choose-gramset").click(function(){
-        var id = el.getAttribute('data-add');
-        var w_id = el.closest('w').getAttribute('id');
-        
-        $.ajax({
-            url: '/corpus/word/add_gramset/'+id, 
-            type: 'GET',
-            success: function(result){
-                $("#gramsets_"+ w_id).html(result).removeClass('word-gramset-not-checked');
-                $("w#"+w_id).removeClass('gramset-not-checked');
-            }
-        }); 
-//    });    
+    var id = el.getAttribute('data-add');
+    var w_id = el.closest('w').getAttribute('id');
+
+    $.ajax({
+        url: '/corpus/word/add_gramset/'+id, 
+        type: 'GET',
+        success: function(result){
+            $("#gramsets_"+ w_id).html(result).removeClass('word-gramset-not-checked');
+            $("w#"+w_id).removeClass('gramset-not-checked').addClass('gramset-checked');
+        }
+    }); 
 }    
 /*
 function addExample(route) {

@@ -117,6 +117,19 @@ class WordController extends Controller
     }
     
     /**
+     * Calls by AJAX, 
+     * adds 
+     * /corpus/word/add_example/<text_id>_<w_id>_<wordform_id>_<gramset_id>
+     * 
+     * @param type $example_id
+     * @return string
+     */
+    public function loadWordBlock($text_id, $w_id)
+    {
+        return Word::createWordBlock((int)$text_id, (int)$w_id);
+    }
+    
+    /**
      * /corpus/text/word/create_checked_block
      * 
      * @param Request $request

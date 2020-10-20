@@ -12,7 +12,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
 }
 
 if (isset($with_links) && $with_links) {
-    $sentence['s'] = $sentence['text']->setLemmaLink($sentence['s'], null, null, false, $sentence['w_id']); 
+    $sentence['s'] = $sentence['text']->setLemmaLink($sentence['s'], null, null, true, $sentence['w_id']); 
 } else {
     list($sxe,$error_message) = \App\Models\Corpus\Text::toXML($sentence['s'],$count);
     $w = $sxe->xpath('//w[@id="'.$sentence['w_id'].'"]');

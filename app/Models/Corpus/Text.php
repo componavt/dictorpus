@@ -60,7 +60,7 @@ class Text extends Model
     public function wordforms(){
 //        return $this->hasMany(Wordform::class);
         $builder = $this->belongsToMany(Wordform::class,'text_wordform')
-                 ->withPivot('w_id') -> withPivot('gramset_id');
+                 ->withPivot('w_id', 'gramset_id', 'relevance');
         return $builder;
     }
 
@@ -263,7 +263,7 @@ class Text extends Model
         $this->genres()->attach($request->genres);
         
         if ($request->text && ($old_text != $request->text || !$this->text_xml)) {
-            $error_message = $this->markup($this->text_xml);
+            $error_message = $this->markup();
         }
 
         $this->push();        
@@ -648,36 +648,16 @@ class Text extends Model
     /**
      * Sets text_xml as a markup text with sentences
      */
-    public function markup($old_xml=null){
+    public function markup(){
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
         $this->text_xml = self::markupText($this->text);
-        $error_message = $this->updateMeaningText($old_xml);
+        $error_message = $this->updateMeaningAndWordformText();
         if ($error_message) {
             return $error_message;
         }
     }
 
-    // saving old checked links
-    public function checkedWords($old_xml) {
-        $checked_words = [];
-        if (!$old_xml) { return $checked_words; } 
-        
-        list($sxe_old,$error_message) = self::toXML($old_xml,$this->id);
-        if (!$sxe_old || $error_message) { return $checked_words; } 
-
-        foreach ($sxe_old->children()->s as $sentence) {
-            $s_id = (int)$sentence->attributes()->id;
-            $word_count = 0;
-            foreach ($sentence->children()->w as $word) {
-                $checked_words[$s_id][$word_count] = 
-                    Word::checkedMeaningRelevances($this->id, 
-                            (int)$word->attributes()->id, (string)$word);                
-                $word_count++;
-            }
-        }
-        
-        return $checked_words;
-    }
-    
     public function getMeaningsByWid($w_id) {
         $meanings = $this->meanings();
 //var_dump($meanings);        
@@ -688,54 +668,169 @@ class Text extends Model
     }
     
     /**
-     * Sets links meaning - text - sentence
+     * Sets links meaning - text - sentence AND text-wordform
      */
-    public function updateMeaningText($old_xml=null){
+    public function updateMeaningAndWordformText(){
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
         if ($error_message) { return $error_message; }
 
-        $checked_words = $this->checkedWords($old_xml);
-//dd($checked_words);        
+//        list($checked_meaning_words, $checked_wordform_words) 
+        $checked_words = $this->checkedWords($this->text_xml);
+//dd($checked_words);
         DB::statement("DELETE FROM words WHERE text_id=".(int)$this->id);
         DB::statement("DELETE FROM meaning_text WHERE text_id=".(int)$this->id);
+        DB::statement("DELETE FROM text_wordform WHERE text_id=".(int)$this->id);
 
         foreach ($sxe->children()->s as $sentence) {
             $s_id = (int)$sentence->attributes()->id;
 /*print "<pre>";
         var_dump($s_id, $sentence->children()->w, isset($checked_words[$s_id]) ? $checked_words[$s_id] : NULL, '____________________<br>');
 print "</pre>";*/
-            $sxe = $this->updateMeaningSentence($sxe, $s_id, $sentence->children()->w, isset($checked_words[$s_id]) ? $checked_words[$s_id] : NULL);
+            $this->updateMeaningAndWordformSentence($s_id, $sentence->children()->w, 
+                    $checked_words[$s_id] ?? NULL);
         }
     }
     
-    public function updateMeaningSentence($sxe, $s_id, $sent_words, $checked_sent_words) {
+    /**
+     * Sets ONLY links text-wordform
+     */
+    public function updateWordformLinks() {
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        if ($error_message) { return $error_message; }
+
+        $checked_words = $this->checkedWords($this->text_xml, false);
+//dd($checked_words);
+        DB::statement("DELETE FROM text_wordform WHERE text_id=".(int)$this->id);
+
+        foreach ($sxe->children()->s as $sentence) {
+            $s_id = (int)$sentence->attributes()->id;
+            $this->updateMeaningAndWordformSentence($s_id, $sentence->children()->w, 
+                    $checked_words[$s_id] ?? NULL, false);
+        }
+    }
+    
+    public function updateMeaningAndWordformSentence($s_id, $sent_words, $checked_sent_words, $set_meanings=true, $set_wordforms=true) {
         $word_count = 0;
-//dd($sent_words);        
-/*print "<pre>";
-        var_dump($sent_words);
-print "</pre>";*/
-        $left_words = [];
         foreach ($sent_words as $word) {
             $w_id = (int)$word->attributes()->id;
             $word_for_search = Grammatic::changeLetters((string)$word,$this->lang_id);
-
-//            list($sxe, $word_for_search) = $this->searchToMerge($sxe, $w_id, $word_for_search, $left_words);
             
-            $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_search]);
-//            if (isset ($checked_sent_words[$word_count])) {
-                $word_obj->setMeanings(isset ($checked_sent_words[$word_count])? $checked_sent_words[$word_count] : 1, $this->lang_id);
-//            }
-/*            foreach (Word::getMeaningsByWord($word_for_search, $this->lang_id) as $meaning) {
-                $meaning_id = $meaning->id;
-                $relevance = isset($checked_sent_words[$word_count][$meaning_id][0]) && $checked_sent_words[$word_count][$meaning_id][0] == $word 
-                           ? $relevance = $checked_sent_words[$word_count][$meaning_id][1] : 1;
-                $this->addMeaning($meaning_id, $s_id, $word_obj->id, $w_id, $relevance);
-            }*/
-            $left_words[$w_id] = $word_for_search;
+            if ($set_meanings) {
+                $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_search]);
+            } else {
+                $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();
+            }
+            $the_same_word = isset($checked_sent_words[$word_count]['w']) && $word_for_search==$checked_sent_words[$word_count]['w'];
+            if ($set_meanings) {
+                $word_obj->setMeanings($the_same_word ? $checked_sent_words[$word_count]['meanings'] : [], $this->lang_id);
+            }
+            if ($set_wordforms) {
+                $this->setWordforms($the_same_word ? $checked_sent_words[$word_count]['wordforms'] : [], $word_obj);
+            }
             $word_count++;
         }
-//dd($sent_words);     
-        return $sxe;
+    }
+    
+    // saving old checked links
+    public function checkedWords($old_xml, $for_meanings=true, $for_wordforms=true) {
+        $checked_words = [];
+        if (!$old_xml) { return $checked_words; } 
+        
+        list($sxe_old,$error_message) = self::toXML($old_xml,$this->id);
+        if (!$sxe_old || $error_message) { return $checked_words; } 
+
+        foreach ($sxe_old->children()->s as $sentence) {
+            $s_id = (int)$sentence->attributes()->id;
+            $word_count = 0;
+            foreach ($sentence->children()->w as $word) {
+                $w_id = (int)$word->attributes()->id;
+                $word_for_search = Grammatic::changeLetters((string)$word,$this->lang_id);
+                $checked_words[$s_id][$word_count]['w'] = $word_for_search;
+                if ($for_meanings) {
+                    $checked_words[$s_id][$word_count]['meanings']
+                            =$this->checkedMeaningRelevances($w_id, $word_for_search);
+                }
+                if ($for_wordforms) {
+                    $checked_words[$s_id][$word_count]['wordforms']
+                            =$this->checkedWordformRelevances($w_id, $word_for_search);                
+                }
+                $word_count++;
+            }
+        }        
+        return $checked_words;
+    }
+    
+    // get old checked links meaning-text
+    public function checkedMeaningRelevances($w_id, $word) {
+        $relevances = [];
+        $meanings = $this->meanings()->wherePivot('w_id',$w_id)
+                         ->wherePivot('relevance','<>',1)->get();
+     
+        foreach ($meanings as $meaning) {
+            $relevances[$meaning->id] = $meaning->pivot->relevance;
+        }
+        return $relevances;
+    }
+    
+    // get old checked links text-wordform
+    public function checkedWordformRelevances($w_id, $word) {
+        $relevances = [];
+        $wordforms = $this->wordforms()->wherePivot('w_id',$w_id)
+                          ->wherePivot('relevance','<>',1)->get();
+        foreach ($wordforms as $wordform) {
+            $relevances[$wordform->id.'_'.$wordform->pivot->gramset_id]
+                       = $wordform->pivot->relevance;
+        }
+        return $relevances;
+    }
+    
+    /**
+     * set links between a word (of some text) and a wordform-gramset in the dictionary
+     * 
+     * @param Array $checked_relevances [<wordform1_id>_<gramset1_id> => [word, relevance1], <wordform2_id>_<gramset2_id> => [word, relevance2], ... ]
+     * @param INT $lang_id
+     * $retutn INT - the number of links with meanings
+     */
+    public function setWordforms($checked_relevances, $word_obj) {
+        if (in_array(2, array_values($checked_relevances))) {
+            $has_checked = true;
+        } else {
+            $has_checked = false;
+        }
+        foreach ($this->getWordformsByWord($word_obj->word) as $wordform) {
+            $wg_id = $wordform->id. '_'. $wordform->gramset_id;
+            $relevance = $checked_relevances[$wg_id] ?? ($has_checked ? 0 : 1);
+            $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->sentence_id, $word_obj->w_id, $relevance);
+        }
+    }
+
+    /**
+     * Search wordforms with gramsets matched with $word
+     * @param String $word  in lower case
+     * @param Int $lang_id
+     * @return Collection
+     */
+    public function getWordformsByWord($word) {
+        $lang_id = $this->lang_id;
+        $wordforms = Wordform::where('wordform_for_search', 'like', $word)
+                   ->join('lemma_wordform','lemma_wordform.wordform_id', '=', 'wordforms.id')
+                   ->whereNotNull('gramset_id')
+                   ->whereIn('lemma_id', function ($query) use ($lang_id) {
+                       $query->select('id')->from('lemmas')->whereLangId($lang_id);
+                   })->get();    
+        return $wordforms;
+    }
+    
+    public function addWordform($wordform_id, $gramset_id, $sentence_id, $w_id, $relevance) {
+        if ($this->wordforms()->wherePivot('wordform_id',$wordform_id)
+                 ->wherePivot('w_id',$w_id)
+                 ->wherePivot('gramset_id',$gramset_id)->count()) {
+            return;
+        }
+        $this->wordforms()->attach($wordform_id,
+                ['w_id'=>$w_id,
+                 'gramset_id' => $gramset_id,
+                 'relevance'=>$relevance]);        
     }
     
     public function searchToMerge($sxe, $last_w_id, $last_word, $left_words) {
@@ -854,9 +949,9 @@ print "</pre>";*/
     /**
      * Gets markup text with links from words to related lemmas
 
-     * @param String $markup_text 
-     * @param String $search_word 
-     * @return String markup text
+     * @param string $markup_text 
+     * @param string $search_word 
+     * @return string markup text
      **/
     public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=null){
         if (!$markup_text) {
@@ -868,7 +963,7 @@ print "</pre>";*/
         }
         $sentences = $sxe->xpath('//s');
         foreach ($sentences as $sentence) {
-            $sentence_id = (int)$sentence->attributes()->id;
+                $sentence_id = (int)$sentence->attributes()->id;
 //dd($sentence);     
             foreach ($sentence->children() as $word) {
                 $word = $this->editWordBlock($word, $sentence_id, $search_word, $search_sentence, $with_edit, $search_w);
@@ -888,13 +983,14 @@ print "</pre>";*/
         $word_id = (int)$word->attributes()->id;
         if (!$word_id) { return $word; }
         
-        $meanings = $this->meanings()->wherePivot('text_id',$this->id)
-                         ->wherePivot('w_id',$word_id)
-                         ->wherePivot('relevance','>',0);
+        $meanings_checked = $this->meanings()->wherePivot('w_id',$word_id)
+                          ->wherePivot('relevance', '>', 1)->count();
+        $meanings_unchecked = $this->meanings()->wherePivot('w_id',$word_id)
+                          ->wherePivot('relevance', 1)->count();
         $word_class = '';
-        if ($meanings->count()) {
-            list ($word, $word_class) = $this->addMeaningsBlock($word, 
-                    $sentence_id, $word_id, $meanings, $with_edit);
+        if ($meanings_checked || $meanings_unchecked) {
+            list ($word, $word_class) = $this->addMeaningsBlock($word, $sentence_id, 
+                    $word_id, $meanings_checked, $meanings_unchecked, $with_edit);
             
         } elseif (User::checkAccess('corpus.edit')) {
             $word_class = 'lemma-linked call-add-wordform';
@@ -911,31 +1007,28 @@ print "</pre>";*/
         return $word;
     }
 
-    public function addMeaningsBlock($word, $sentence_id, $word_id, $meanings, $with_edit=null) {
+    public function addMeaningsBlock($word, $sentence_id, $word_id, $meanings_checked, $meanings_unchecked, $with_edit=null) {
         $word_class = 'lemma-linked';
-        $link_block = $word->addChild('div');
-        $link_block->addAttribute('class','links-to-lemmas');
+        $link_block = $word->addChild('div', '&nbsp;');
         $link_block->addAttribute('id','links_'.$word_id);
+        $link_block->addAttribute('class','links-to-lemmas');
+        $link_block->addAttribute('data-downloaded',0);
         $has_checked_meaning = false;
-        $right_lemma = null;
-        // output meanings
-        foreach ($meanings->get() as $meaning) {
-            if ($meaning->pivot->relevance >1) {
-                $has_checked_meaning = true;
-                $right_lemma = $meaning->lemma;
-            }
-            // link to lemma
-            $link_block=self::addLinkToLemma($link_block, $meaning->lemma, $meaning, 
-                    $meaning->id.'_'.$this->id.'_'.$sentence_id.'_'.$word_id, 
-                    $has_checked_meaning, $with_edit);
-        }
-        if ($has_checked_meaning) {
-            list($link_block, $gramset_class) = $this->addGramsetBlock($link_block, $word_id, (string)$word, $right_lemma, $with_edit); // gramset
-            $word_class .= ' has-checked'.$gramset_class;
-        } elseif ($meanings->count() > 1) {
+        if ($meanings_checked) {
+            $word_class .= ' meaning-checked';
+        } elseif ($meanings_unchecked>1) {
             $word_class .= ' polysemy';                
         } else {
-            $word_class .= ' not-checked';
+            $word_class .= ' meaning-not-checked';
+        }
+        
+        $wordforms = $this->wordforms()->wherePivot('w_id',$word_id);
+        if (!$wordforms->count()) {
+            $word_class .= ' no-gramsets';
+        } elseif ($wordforms->wherePivot('relevance',2)->count()) {
+            $word_class .= ' gramset-checked';
+        } else { 
+            $word_class .= ' gramset-not-checked';
         }
         if ($with_edit) { // icon 'pensil'
             $link_block = self::addEditExampleButton($link_block, $this->id, $sentence_id, $word_id);
@@ -944,35 +1037,6 @@ print "</pre>";*/
         return [$word, $word_class];        
     }
 
-    // gramset, linked with word
-    public function addGramsetBlock($div_block, $word_id, $word_text, $lemma, $with_edit=null) {
-        $gramset_class = '';
-        $wordform = $this->wordforms()->wherePivot('w_id',$word_id) -> first();
-        if ($wordform) {
-            $gramset_p = $div_block->addChild('p', Gramset::getStringByID($wordform->pivot->gramset_id));
-            $gramset_p -> addAttribute('class','word-gramset');
-        } elseif ($with_edit && User::checkAccess('corpus.edit')) { 
-            $gramsets = [];
-            foreach ($lemma->wordforms as $wordform) {
-                if (Grammatic::toSearchForm($wordform->wordform) == Grammatic::toSearchForm($word_text) && $wordform->pivot->gramset_id) {
-                    $gramsets[$wordform->pivot->gramset_id] = $wordform->id;
-                }
-            }
-            if (sizeof($gramsets)) {
-                $gramset_class = ' gramset-not-checked';
-            }
-            foreach ($gramsets as $gramset_id => $wordform_id) {                
-                $gramset_b = $div_block->addChild('p', Gramset::getStringByID($gramset_id));
-                $gramset_b -> addAttribute('class','word-gramset-not-checked');
-                $gramset_b->addAttribute('id','gramsets_'.$word_id);
-                // icon 'plus' - for choosing gramset                    
-                $gramset_b= self::addEditGramsetButton($gramset_b, $this->id."_".$word_id."_".$wordform_id."_".$gramset_id);
-            }
-        }
-        return [$div_block, $gramset_class];
-    }
-
-    // icon 'plus' - for choosing meaning
     public static function addLinkToLemma($link_block, $lemma, $meaning, $id, $has_checked_meaning, $with_edit) {
         $link_div = $link_block->addChild('div');
         $link = $link_div->addChild('a',$lemma->lemma);

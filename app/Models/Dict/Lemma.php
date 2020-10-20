@@ -805,22 +805,88 @@ dd($wordforms);
         
     }
 
+    public function updateTextLinks()
+    {     
+        // With Meanings
+        $words = $this->getWordsForMeanings();
+        if (!$words) {
+            return;
+        }
+        self::updateMeaningTextLinks($words);
+        
+        // With Wordforms;
+        self::updateTextWordformLinks();
+    }
+
     /**
-     * Removes all neutral links (relevance=1) from meaning_text
-     * and adds new links for all meanings
+     * Update meaning-text links or creating new links for all meanings
      *
      * @return NULL
      */
-    public function updateTextLinks()
-    {        
+    public function updateMeaningTextLinks($words=null)
+    {     
+        if (!$words) {
+            $words = $this->getWordsForMeanings();
+        }
+        if (!$words) {
+            return;
+        }
         foreach ($this->meanings as $meaning_obj) {
             // this meaning has not links with texts yet, add them
             if (!$meaning_obj->texts()->count()) {
-                $meaning_obj->addTextLinks();
+                $meaning_obj->addTextLinks($words);
             } else {
-                $meaning_obj->updateTextLinks();
+                $meaning_obj->updateTextLinks($words);
             }
         }
+    }
+    
+    /**
+     * Update text-wordform links or creating new links for all word forms
+     *
+     * @return NULL
+     */
+    public function updateTextWordformLinks()
+    {     
+        foreach ($this->wordforms as $wordform_obj) {
+            $words = $wordform_obj->getWordsForLinks($this->lang_id);
+//dd($words);            
+            if (!$wordform_obj->texts()->wherePivot('gramset_id',$wordform_obj->pivot->gramset_id)->count()) {
+                $wordform_obj->addTextLinks($words, $this->lang_id);
+            } else {
+                $wordform_obj->updateTextLinks($words, $this->lang_id);
+            }
+        }        
+    }
+    
+    /**
+     * Search in texts a lemma and all wordforms of the lemma for creating meaning-text links
+     * 
+     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words, texts where words.text_id = texts.id and texts.lang_id = 5 and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
+     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words where text_id in (select id from texts where lang_id = 5) and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
+     * 
+     * @return Collection
+     */
+    public function getWordsForMeanings()
+    {        
+        $lang_id = $this->lang_id;
+        $strs = ["word like '".$this->lemma_for_search."'"];
+        
+        foreach ($this->wordforms as $wordform_obj) {
+            $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
+            //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
+            $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
+        }
+        if (!sizeof($strs)) {
+            return null;
+        }
+        $cond = join(' OR ',array_unique($strs));
+
+        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+               . " text_id in (select id from texts where lang_id = ".$lang_id
+               . ") and (".$cond.")"; 
+        $words = DB::select($query); 
+        return $words;
     }
     
     /**
@@ -1633,7 +1699,7 @@ dd($wordforms);
         if ($gramset_wordforms) {
             $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
             if ($with_updateText) {
-                $this->updateTextLinks();
+                $this->updateTextWordformLinks();//updateTextLinks();
             }
         }
 //exit(0);        

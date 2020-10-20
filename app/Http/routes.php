@@ -100,6 +100,7 @@ Route::group(
         Route::get('corpus/word/add_gramset/{id}', 'Corpus\WordController@addGramset');        
         Route::get('corpus/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');        
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
+        Route::get('corpus/word/load_word_lock/{text_id}_{w_id}', 'Corpus\WordController@loadWordBlock');       
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
 
         Route::get('corpus/video', 'Corpus\VideoController@index');
@@ -200,8 +201,9 @@ Route::group(
         
         Route::get('service', 'Library\ServiceController@index');
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
+        Route::get('service/add_meaning_text_links', 'Library\ServiceController@addMeaningTextLinks');
+        Route::get('service/add_text_wordform_links', 'Library\ServiceController@addTextWordformLinks');
         Route::get('service/add_wordform_affixes', 'Library\ServiceController@addWordformAffixes');
-        Route::get('service/add_unmarked_links', 'Library\ServiceController@addUnmarkedLinks');
         Route::get('service/calculate_lemma_wordforms', 'Library\ServiceController@calculateLemmaWordforms');
         Route::get('service/check_meaning_text', 'Library\ServiceController@checkMeaningText');
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');

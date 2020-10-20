@@ -39,7 +39,8 @@
     @endif
     @if (User::checkAccess('admin'))
     <p><a href="service/add_wordform_affixes">Добавить аффиксы словоформам</a> (с грамсетами и неаналитические формы (без пробелов))</p>
-    <p><a href="service/add_unmarked_links">Добавить связи текст-словарь</a></p>
+    <p><a href="service/add_meaning_text_links">Добавить связи текст-значения</a></p>
+    <p><a href="service/add_text_wordform_links">Добавить связи текст-словоформы</a></p>
     <p><a href="service/generate_wordforms">Сгенерировать словоформы по имеющимся</a></p>
     <p><a href="service/calculate_lemma_wordforms">Записать у лемм количество словоформ</a> ({{$count_lemmas_without_wordform_total}})</p>
     <p><a href="service/check_meaning_text">Исправить связи слово-значение (meaning_text)</a> 

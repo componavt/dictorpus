@@ -203,7 +203,7 @@ class LemmaWordformController extends Controller
     public function reload(Request $request, $id, $dialect_id) {
         $lemma = Lemma::findOrFail((int)$id);    
         $dialect_id = (int)$dialect_id;
-        $lemma->reloadWordforms($dialect_id, $request->without_remove);
+        $lemma->reloadWordforms($dialect_id, true, $request->without_remove);
         $lemma->updateWordformTotal();        
         
         return view('dict.lemma_wordform._wordform_table', compact('lemma')); 

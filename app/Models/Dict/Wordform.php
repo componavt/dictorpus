@@ -154,11 +154,126 @@ class Wordform extends Model
         if (!$gramset_id) {
             return;
         }
-        $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->detach();
-        $this->texts()->attach($text_id,['w_id'=>$w_id, 'gramset_id'=>$gramset_id]);
-        
-        
+        $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->update(['relevance'=>0]);
+        $wordform_link = $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->wherePivot('gramset_id',$gramset_id);
+        if ($wordform_link->count()) {
+            $wordform_link->update(['relevance'=>2]);
+        } else {
+            $wordform_link = $this->texts()->attach($text_id, ['w_id'=>$w_id, 'gramset_id'=>$gramset_id, 'relevance'=>2]);
+        }
     }
+    
+    /**
+     * Search in texts words matched with this wordform
+     * 
+     * SQL: select text_id, w_id, words.id as word_id from words, texts where words.text_id = texts.id and texts.lang_id = 5 and word like 'olen' LIMIT 1;
+     * 
+     * @return Collection
+     */
+    public function getWordsForLinks($lang_id) {
+        if (!$lang_id) {
+            return null;
+        }
+        $this->trimWord(); // remove extra spaces at the beginning and end of the wordform 
+        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+               . " text_id in (select id from texts where lang_id = ".$lang_id
+               . ") and word like '".$this->wordform_for_search."'"; 
+        $words = DB::select($query); 
+        return $words;
+    }
+
+    /**
+     * Ckeck if any checked meaning exists
+     * Return 0, if it exists
+     * 
+     * @param int $text_id
+     * @param int $w_id
+     * @param int $old_relevance
+     * @return int
+     */
+    public function checkRelevance($text_id, $w_id, $gramset_id, $old_relevance=1) {
+        if ($old_relevance == 0 ||
+        // if some another wordform has positive evaluation with this sentence, 
+        // it means that this wordform is not suitable for this example
+            DB::table('text_wordform')->where('wordform_id','<>',$this->id)
+              ->whereTextId($text_id)->whereWId($w_id)->whereGramsetId($gramset_id)
+              ->where('relevance', 2)->count()>0) {
+            return 0;
+        } 
+/*if ($text_id==1548 && $w_id==7) {
+dd($relevance);
+} */       
+        return $old_relevance;
+    }
+
+    public function addTextLink($text_id, $w_id, $gramset_id, $old_relevance) {
+        $relevance = $this->checkRelevance($text_id, $w_id, $old_relevance);
+        $this->texts()->attach($text_id,
+                                ['gramset_id'=>$gramset_id, 
+                                 'w_id'=>$w_id, 
+                                 'relevance'=>$relevance]);        
+    }
+    
+    /**
+     * Add records to meaning_text for new meanings
+     *
+     * @param Collection $words - collection of Word objects
+     * @return NULL
+     */
+    public function addTextLinks($words=null, $lang_id) {
+        if (!$this->pivot->gramset_id) { return; }
+
+        if (!$words) {
+            $words = $this->getWordsForLinks($lang_id);            
+        }
+        if (!$words) { return; }
+        
+        foreach ($words as $word) {
+            $this->addTextLink($word->text_id, $word->w_id, $this->pivot->gramset_id, 1);        
+        }
+    }
+    
+    /**
+     * Updates records in the table meaning_text, 
+     * which binds the tables meaning and text.
+     * Search in texts a lemma and all wordforms of the lemma.
+     *
+     * @param Collection $words - collection of Word objects
+     * @return NULL
+     */
+     public function updateTextLinks($words=null) {
+        if (!$this->pivot->gramset_id) { return; }
+        
+        if (!$words) {
+            $words = $this->getWordsForLinks($this->lemma->lang_id);            
+        }
+
+        $old_relevances = $this->getRelevances();
+        $this->texts()->detach();
+        if (!$words) { return; }
+        
+        foreach ($words as $word) {
+            $this->addTextLink($word->text_id, $word->w_id, $this->pivot->gramset_id, 
+                   $old_relevances[$word->text_id][$word->w_id] ?? 1);
+        }
+    }
+    
+    /**
+     * Saves relevances <> 1 into array 
+     * 
+     * @return Array
+     */
+    public function getRelevances() {
+        $relevances = [];
+        $texts = $this->texts()->wherePivot('gramset_id', $this->pivot->gramset_id)->get();
+        foreach ($texts as $text) {
+            if ($text->pivot->relevance != 1) {
+                $relevances[$text->id][$text->pivot->w_id] = $text->pivot->relevance;
+            }
+        }
+        return $relevances;
+    }
+
     /**
      * Removes all neutral links (relevance=1) from meaning_text
      * and adds new links

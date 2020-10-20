@@ -5,6 +5,7 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 
 use DB;
+use LaravelLocalization;
 use User;
 
 use \App\Library\Grammatic;
@@ -341,6 +342,30 @@ class Word extends Model
     }
     
     /**
+     * set links between a word (of some text) and a meaning
+     * 
+     * @param Array $checked_relevances [meaning1_id => [word, relevance1], meaning2_id => [word, relevance2], ... ]
+     * @param INT $lang_id
+     * $retutn INT - the number of links with meanings
+     */
+    public function setMeanings($checked_relevances, $lang_id=NULL) {
+        if (!$lang_id) {
+            $lang_id = Text::getLangIDbyID($this->text_id);
+        }
+        $has_checked = false;
+        foreach (array_values($checked_relevances) as $r) {
+            if ($r>1) {
+                $has_checked = true;
+            }
+        }
+        foreach (self::getMeaningsByWord($this->word, $lang_id) as $meaning) {
+            $meaning_id = $meaning->id;
+            $relevance = $checked_relevances[$meaning_id] ?? ($has_checked ? 0 : 1);
+            $this->addMeaning($meaning_id, $this->text_id, $this->sentence_id, $this->w_id, $relevance);
+        }
+    }
+
+    /**
      * Search wordforms and lemmas matched with $word and
      * get meanings (objects) of these lemmas
      * @param String $word  in lower case
@@ -348,9 +373,6 @@ class Word extends Model
      * @return Collection
      */
     public static function getMeaningsByWord($word, $lang_id) {
-//        $word_t = addcslashes($word,"'%");
-//        $word_t_l = mb_strtolower($word_t);
-//        $wordform_q = "(SELECT id from wordforms where lower(wordform_for_search) like '$word_t_l')";
         $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word')";
         $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
         $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$lang_id
@@ -371,73 +393,70 @@ class Word extends Model
                  'relevance'=>$relevance]);        
     }
     
-    /**
-     * set links between a word (of some text) and a meaning
-     * 
-     * @param Array $checked_relevances [meaning1_id => [word, relevance1], meaning2_id => [word, relevance2], ... ]
-     * @param INT $lang_id
-     * $retutn INT - the number of links with meanings
-     */
-    public function setMeanings($checked_relevances, $lang_id=NULL) {
-        if (!$lang_id) {
-            $lang_id = Text::getLangIDbyID($this->text_id);
+    public static function createWordBlock($text_id, $w_id) {
+        if (!$text_id || !$w_id) { return null; }
+        
+        $text = Text::find($text_id);
+        if (!$text) { return null; }
+        
+        $meaning_checked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1)->first();
+        $meaning_unchecked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
+        if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
+        
+        $sentence_id = Word::whereTextId($text_id)->whereWId($w_id)->first()->sentence_id;
+        if (!$sentence_id) {return null;} 
+        
+        $locale = LaravelLocalization::getCurrentLocale();
+        $url = '/corpus/text/'.$text_id.'/edit/example/'.$sentence_id.'_'.$w_id;
+        
+        $str = '<div>';
+        if ($meaning_checked) {
+            $str .= '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning_checked->lemma_id)
+                 .'">'.$meaning_checked->lemma->lemma.'<span> ('
+                 .$meaning_checked->getMultilangMeaningTextsString($locale)
+                 .')</span></a></p>';
+        } else {
+            foreach ($meaning_unchecked as $meaning) {
+                $str .= '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
+                     .'">'.$meaning->lemma->lemma.'<span> ('
+                     .$meaning->getMultilangMeaningTextsString($locale)
+                     .')</span></a><span class="fa fa-plus choose-meaning" data-add="'
+                     .$meaning->id.'_'.$text_id.'_'.$sentence_id.'_'.$w_id.'" title="'
+                     .\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordMeaning(this)"></span></p>';
+            }
         }
-        $count = 0;
-//dd(self::getMeaningsByWord($this->word, $lang_id));        
-        foreach (self::getMeaningsByWord($this->word, $lang_id) as $meaning) {
-//dd($meaning);            
-            $meaning_id = $meaning->id;
-            $relevance = isset($checked_relevances[$meaning_id][0]) && $checked_relevances[$meaning_id][0] == $this->word 
-                       ? $checked_relevances[$meaning_id][1] : 1;
-            $this->addMeaning($meaning_id, $this->text_id, $this->sentence_id, $this->w_id, $relevance);
-            $count++;
-        }
-        return $count;
-    }
+        $str .= '</div>';
 
-    // get old checked links
-    public static function checkedMeaningRelevances($text_id, $w_id, $word) {
-        $relevances = [];
-        $meanings = DB::table("meaning_text")
-                  ->where('text_id',$text_id)
-                  ->where('w_id',$w_id)
-                  ->where('relevance','<>',1)->get();
-        foreach ($meanings as $meaning) {
-            $relevances[$meaning->meaning_id] =
-                    [$word, $meaning->relevance];
-        }
-        return $relevances;
+        $str .= Word::createGramsetBlock($text_id, $w_id);
+
+        $str.='<p class="text-example-edit"><a href="'
+             .LaravelLocalization::localizeURL($url)
+             .'" class="glyphicon glyphicon-pencil"></a>';
+        return $str;
     }
+    
     
     public static function createGramsetBlock($text_id, $w_id) {
         $text = Text::find($text_id);
         if ($text) {
-            $wordform = $text->wordforms()->wherePivot('w_id',$w_id) -> first();
+            $wordform = $text->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',2)->first();
             if ($wordform) {
                 return '<p class="word-gramset">'.Gramset::getStringByID($wordform->pivot->gramset_id).'</p>';
             } elseif (User::checkAccess('corpus.edit')) { 
-                $meaning = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1) -> first();
-//                $str = '???';
-                if (isset($meaning->lemma->wordforms)) {
-                    $word_text=Word::whereTextId($text_id)->whereWId($w_id)->first()->word;
-                    $gramsets = [];
-                    $str = '';
-                    foreach ($meaning->lemma->wordforms as $wordform) {
-                        if (Grammatic::toSearchForm($wordform->wordform) == $word_text && $wordform->pivot->gramset_id) {
-                            $gramsets[$wordform->pivot->gramset_id] = $wordform->id;
-                        }
-                    }
-    //                $gramset_class = ' gramset-not-checked';
-                    $str .= '<div id="gramsets_'.$w_id.'" class="word-gramset-not-checked">';
-                    foreach ($gramsets as $gramset_id => $wordform_id) {
-                        $str .= '<p>'.Gramset::getStringByID($gramset_id)
-                               .'<span data-add="'.$text_id."_".$w_id."_".$wordform_id."_".$gramset_id.
-                                '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordGramset(this)"></span>'
-                               .'</p>';
-                    }
-                    $str .= '</div>';
-                    return $str;
+                $wordforms = $text->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
+                if (!sizeof($wordforms)) { return null; }
+                
+                $str = '<div id="gramsets_'.$w_id.'" class="word-gramset-not-checked">';
+                foreach ($wordforms as $wordform) {
+                    $gramset_id = $wordform->pivot->gramset_id;
+                    $str .= '<p>'.Gramset::getStringByID($gramset_id)
+                         . '<span data-add="'.$text_id."_".$w_id."_".$wordform->id."_".$gramset_id
+                         . '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_gramset').' ('
+                         . $wordform->wordform.')" onClick="addWordGramset(this)"></span>'
+                         . '</p>';
                 }
+                $str .= '</div>';
+                return $str;
             }
         }
     }

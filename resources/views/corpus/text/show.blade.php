@@ -11,18 +11,8 @@
 @stop
 
 @section('body')
-        @if (User::checkAccess('corpus.edit'))
-            @include('widgets.modal',['name'=>'modalAddWordform',
-                                  'title'=>trans('corpus.add-wordform'),
-                                  'submit_id' => 'save-wordform',
-                                  'submit_title' => trans('messages.save'),
-                                  'modal_view'=>'dict.wordform._form_create'])
-            @include('widgets.modal',['name'=>'modalAddLemma',
-                                  'title'=>trans('corpus.add-lemma'),
-                                  'submit_id' => 'save-lemma',
-                                  'submit_title' => trans('messages.save'),
-                                  'modal_view'=>'dict.lemma.form._create_simple'])
-        @endif         
+        @include('corpus.text.modals_for_markup')
+        
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             
@@ -113,24 +103,25 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    
+    {!!Html::script('js/lemma.js')!!}
+    {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/select2.min.js')!!}
-    {!!Html::script('js/text.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
-    {!!Html::script('js/list_change.js')!!}
-    {!!Html::script('js/lemma.js')!!}
+    {!!Html::script('js/text.js')!!}
 @stop
 
 @section('jqueryFunc')
-    checkLemmaForm();
-    toggleSpecial();
     recDelete('{{ trans('messages.confirm_delete') }}');
     highlightSentences();
-    addWordMeaning('{{LaravelLocalization::localizeURL('/corpus/text/add_example')}}');
-{{--    addWordGramset('{{LaravelLocalization::localizeURL('/corpus/word/add_gramset')}}'); --}}
-    showLemmaLinked();
+    
+{{-- show/hide a block with meanings and gramsets --}}
+    showLemmaLinked({{$text->id}}); 
+    
     addWordform('{{$text->id}}','{{$text->lang_id}}');
     posSelect(false);
-    
+    checkLemmaForm();
+    toggleSpecial();    
 @stop
 

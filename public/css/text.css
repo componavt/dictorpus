@@ -17,20 +17,28 @@ s {
     cursor:pointer;
 }
 
-.lemma-linked.not-checked {
+.links-to-lemmas {
+    cursor: auto;
+}
+/* all is checked = green */
+.lemma-linked.meaning-checked.no-gramsets,
+.lemma-linked.meaning-checked.gramset-checked{
+    color: #2eaf38; 
+}
+
+/* meanings is not checked and the lemma has than one meaning = red */
+.lemma-linked.polysemy {
+    color: red;
+}
+
+/*  meanings is not checked and the lemma has one meaning = blue */
+.lemma-linked.meaning-not-checked {
     color: #337ab7;
 }
 
-.lemma-linked.has-checked {
-    color: #2eaf38;
-}
-
-.lemma-linked.has-checked.gramset-not-checked {
+.lemma-linked.meaning-checked.gramset-not-checked,
+.lemma-linked.meaning-not-checked.gramset-checked{
     color: #2eafaf;
-}
-
-.lemma-linked.polysemy {
-    color: red;
 }
 
 .lemma-linked p {
@@ -38,7 +46,7 @@ s {
 }
 
 .links-to-lemmas {
-    background: #ccc;
+    background: #dcf7f8;
     color: black;
     display: none;
     left: 0;
@@ -51,17 +59,22 @@ s {
     z-index:100;
 }
 
-.has-checked .links-to-lemmas {
+.meaning-checked.no-gramsets .links-to-lemmas,
+.meaning-checked.gramset-checked .links-to-lemmas {
     background: #a6f4bc;
 }
-
+/*
 .not-checked .links-to-lemmas,
 .polysemy .links-to-lemmas {
     background: #dcf7f8;
-}
+}*/
 .links-to-lemmas a {
     text-decoration: none;
 /*    display: block; */
+}
+
+.links-to-lemmas a:hover {
+    text-decoration: underline;
 }
 
 .links-to-lemmas a span {

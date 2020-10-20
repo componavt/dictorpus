@@ -439,12 +439,21 @@ class Meaning extends Model
         $this->concepts()->attach($concepts);
     }
     
-    public function chooseRelevance($text_id, $w_id, $old_relevance=1) {
+    /**
+     * Ckeck if any checked meaning exists
+     * Return 0, if it exists
+     * 
+     * @param int $text_id
+     * @param int $w_id
+     * @param int $old_relevance
+     * @return int
+     */
+    public function checkRelevance($text_id, $w_id, $old_relevance=1) {
         if ($old_relevance == 0 ||
         // if some another meaning has positive evaluation with this sentence, 
         // it means that this meaning is not suitable for this example
             DB::table('meaning_text')->where('meaning_id','<>',$this->id)
-              ->where('text_id',$text_id)->where('w_id',$w_id)
+              ->whereTextId($text_id)->whereWId($w_id)
               ->where('relevance','>',1)->count()>0) {
             return 0;
         } 
@@ -455,7 +464,7 @@ dd($relevance);
     }
 
     public function addTextLink($text_id, $sentence_id, $word_id, $w_id, $old_relevance) {
-        $relevance = $this->chooseRelevance($word_id, $w_id, $old_relevance);
+        $relevance = $this->checkRelevance($text_id, $w_id, $old_relevance);
         $this->texts()->attach($text_id,
                                 ['sentence_id'=>$sentence_id, 
                                  'word_id'=>$word_id, 
@@ -466,56 +475,32 @@ dd($relevance);
     /**
      * Add records to meaning_text for new meanings
      *
+     * @param Collection $words - collection of Word objects
      * @return NULL
      */
-    public function addTextLinks() {
-        $words = $this->getWordsByWordforms();
-        if (!$words) {
-            return;
-        }
-        
+    public function addTextLinks($words) {
         foreach ($words as $word) {
             $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, 1);        
         }
     }
     
     /**
-     * (Check comment and remove it:  "Removes all neutral links (relevance=1) from meaning_text").
-     * 
      * Updates records in the table meaning_text, 
      * which binds the tables meaning and text.
      * Search in texts a lemma and all wordforms of the lemma.
      *
-     * TODO: remove duplicates of wordorms from the SQL request.
-     * 
-     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words, texts where words.text_id = texts.id and texts.lang_id = 5 and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
-     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words where text_id in (select id from texts where lang_id = 5) and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
-     * 
      * @return NULL
      */
-    public function getWordsByWordforms()
-    {        
-        $lemma_obj=$this->lemma;
-        $lang_id = $lemma_obj->lang_id;
-        $strs = ["word like '".$lemma_obj->lemma_for_search."'"];
+     public function updateTextLinks($words) {
+        $old_relevances = $this->getRelevances();
+        $this->texts()->detach();
         
-//dd($lemma_obj->wordforms);        
-        foreach ($lemma_obj->wordforms as $wordform_obj) {
-            $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
-            //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
-            $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
+        foreach ($words as $word) {
+            $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, 
+                    $this->checkRelevance($word->text_id, $word->w_id, $old_relevances[$word->text_id][$word->w_id] ?? 1));
         }
-        $cond = join(' OR ',array_unique($strs));
-//dd($cond);        
-
-        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
-               . " text_id in (select id from texts where lang_id = ".$lang_id
-               . ") and (".$cond.")"; 
-//dd($query);        
-        $words = DB::select($query); 
-        return $words;
     }
-    
+
     /**
      * Saves relevances <> 1 into array 
      * 
@@ -532,29 +517,6 @@ dd($relevance);
     }
 
     /**
-     * Updates records in the table meaning_text, 
-     * which binds the tables meaning and text.
-     * Search in texts a lemma and all wordforms of the lemma.
-     *
-     * @return NULL
-     */
-     public function updateTextLinks() {
-        $words = $this->getWordsByWordforms();
-//dd($words); 
-        $old_relevances = $this->getRelevances();
-//dd($old_relevances);        
-        $this->texts()->detach();
-        
-        if (!$words) {
-            return;
-        }
-        foreach ($words as $word) {
-            $relevance = $old_relevances[$word->text_id][$word->w_id] ?? 1;
-            $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, $relevance);
-        }
-    }
-    
-    /**
      *
      * @return NULL
      */
@@ -562,11 +524,12 @@ dd($relevance);
         if (!$words) {
             return;
         }
-//dd($words);        
         foreach ($words as $word) {
             $link = $this->texts()->wherePivot('text_id', $word->text_id)->wherePivot('w_id', $word->w_id);
             if (!$link) {
-                $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, 1);
+                $this->addTextLink($word->text_id, $word->sentence_id, 
+                        $word->word_id, $word->w_id, 
+                        self::getDefaultRelevance($word->text_id, $word->w_id));
             }
         }
     }

@@ -18,11 +18,22 @@ function highlightSentences() {
     );    
 }
 
-function showLemmaLinked() {
-   $(".lemma-linked").click(function() {
-        var block_id = 'links_' + $(this).attr('id');
-        $(".links-to-lemmas").hide();
-        $("#"+block_id).show();
+/**
+ *  show/hide a block with meanings and gramsets by click on a word
+ */
+function showLemmaLinked(text_id) {
+   $(".lemma-linked").click(function(event) {
+        event.preventDefault(); // reload event after AJAX reload
+        var w_id = $(this).attr('id');
+console.log('w_id: '+w_id);        
+        $(".links-to-lemmas").hide(); // hide all open blocks
+        var w_block = $("#links_"+w_id);
+console.log(w_block);        
+        w_block.show();
+        var downloaded = w_block.data('downloaded');
+        if (downloaded === 0) {
+            loadWordBlock(text_id, w_id);
+        }
     });
         
     $(document).mouseup(function (e){
@@ -32,6 +43,22 @@ function showLemmaLinked() {
 			div.hide(); // скрываем его
 		}
     });    
+}
+
+function loadWordBlock(text_id, w_id) {
+    $.ajax({
+        url: '/corpus/word/load_word_lock/' + text_id + '_' + w_id, 
+//        data: data,
+        type: 'GET',
+        success: function(result){
+            $("#links_"+w_id+".links-to-lemmas").html(result);
+            $("#links_"+w_id+".links-to-lemmas").data('downloaded', 1)
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    }); 
 }
 
 function saveLemma(data) {
@@ -106,6 +133,7 @@ function loadDataToWordformModal(text_id, w_id, wordform) {
 
 function clearWordformModal() {
     $("#addWordformFields").html(null);
+    $("#addWordformSentence").html(null);
     $('#choose-lemma').val(null).trigger('change');    
 }
 
@@ -132,20 +160,10 @@ function changeLemmaList(lang_id) {
     }); 
 }
 
-function changeWordBlock(text_id, w_id, meaning_id) {
-    $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('has-checked');
-    $("w[id="+w_id+"].has-checked").append('<div class="links-to-lemmas" id="links_'+w_id+'"></div>')
-    $.ajax({
-        url: '/corpus/word/create_checked_block', 
-        data: {text_id: text_id, 
-               w_id: w_id,
-               meaning_id: meaning_id,
-              },
-        type: 'GET',
-        success: function(result){
-            $("#links_"+ w_id).html(result);
-        }
-    });     
+function changeWordBlock(text_id, w_id) {
+    $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked');
+    $("w[id="+w_id+"]").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
+    loadWordBlock(text_id, w_id);
 }
 
 /**
@@ -179,7 +197,7 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
         type: 'GET',
         success: function(result){       
             $("#modalAddWordform").modal('hide');
-            changeWordBlock(text_id, w_id, meaning_id);
+            changeWordBlock(text_id, w_id);
             clearWordformModal();
 //            $("#modalAddGramset").modal('show');
             

@@ -15,9 +15,12 @@
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
     {!!Html::style('css/text.css')!!}
+    {!!Html::style('css/select2.min.css')!!}
 @stop
 
 @section('body')
+        @include('corpus.text.modals_for_markup')
+
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
         <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>'', 'with_links' => true])</p>
 
@@ -55,10 +58,21 @@
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/lemma.js')!!}
+    {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/meaning.js')!!}
+    {!!Html::script('js/select2.min.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/text.js')!!}
 @stop
 
 @section('jqueryFunc')
-    showLemmaLinked();    
+{{-- show/hide a block with meanings and gramsets --}}
+    showLemmaLinked({{$sentence['text']->id}});    
+    
+    addWordform('{{$sentence['text']->id}}','{{$sentence['text']->lang_id}}');
+    posSelect(false);
+    checkLemmaForm();
+    toggleSpecial();
 @stop
 

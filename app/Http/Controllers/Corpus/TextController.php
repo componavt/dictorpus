@@ -261,7 +261,6 @@ class TextController extends Controller
      */
     public function editExample($id, $example_id)
     {
-        //$text = Text::find($id);
         list($sentence, $meanings, $meaning_texts) = 
                 Text::preparationForExampleEdit($id.'_'.$example_id);
         
@@ -269,17 +268,22 @@ class TextController extends Controller
             return Redirect::to('/corpus/text/'.$id.($this->args_by_get))
                        ->withError(\Lang::get('messages.invalid_id'));            
         } else {
-            return view('dict.lemma.edit_example')
-                      ->with(array(
-                                   'back_to_url'    => '/corpus/text/'.$id,
-                                   'id'             => $id, 
-                                   'meanings'       => $meanings,
-                                   'meaning_texts'  => $meaning_texts,
-                                   'route'          => array('text.update.examples', $id),
-                                   'sentence'       => $sentence,
-                                   'args_by_get'    => $this->args_by_get,
-                                   'url_args'       => $this->url_args,
-                                  )
+            $text = Text::find($id);
+            $pos_values = PartOfSpeech::getGroupedList();   
+            $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
+            $pos_id = PartOfSpeech::getIDByCode('Noun');
+            $text_dialects = $text->dialects;
+            $dialect_value = $text_dialects[0]->id ?? 0;
+            $dialect_values = Dialect::getList($text->lang_id);
+            
+            $back_to_url = '/corpus/text/'.$id;
+            $route = ['text.update.examples', $id];
+            $args_by_get = $this->args_by_get;
+            $url_args = $this->url_args;
+            
+            return view('dict.lemma.edit_example',
+                      compact('back_to_url', 'dialect_value', 'dialect_values', 'langs_for_meaning', 'meanings', 'meaning_texts',
+                              'pos_id', 'pos_values', 'route', 'sentence', 'text', 'args_by_get', 'url_args')
                             );            
         }
     }
@@ -432,7 +436,7 @@ class TextController extends Controller
         while (!$is_all_checked) {
             $text = Text::where('checked',0)->first();
             if ($text) {
-                $message_error = $text->markup($text->text_xml);
+                $message_error = $text->markup();
                 print "<p>$message_error</p>";
                 $text->checked=1;
                 $text->save();   
@@ -456,10 +460,10 @@ class TextController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function markupText(Int $id)
+    public function markupText(int $id)
     {
         $text = Text::find($id);
-        $message_error = $text->markup($text->text_xml);
+        $message_error = $text->markup();
         if ($message_error) {
             return Redirect::to('/corpus/text/'.($text->id))
                            ->withErrors($message_error);        

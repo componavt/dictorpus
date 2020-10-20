@@ -160,9 +160,12 @@ class MeaningController extends Controller
         }
         
         if (User::checkAccess('dict.edit') && !$meaning->texts()->count()) {
-            ini_set('max_execution_time', 7200);
-            ini_set('memory_limit', '512M');
-            $meaning->addTextLinks();
+            $words = $meaning->lemma->getWordsForMeanings();
+            if ($words) {
+                ini_set('max_execution_time', 7200);
+                ini_set('memory_limit', '512M');
+                $meaning->addTextLinks($words);
+            }
         }
         return view('dict.lemma.show.examples')
                   ->with(['meaning' => $meaning,
@@ -182,14 +185,18 @@ class MeaningController extends Controller
         }
         
         if (User::checkAccess('dict.edit')) {
-            ini_set('max_execution_time', 7200);
-            ini_set('memory_limit', '512M');
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', '1024M');
             
 //dd($meaning->texts()->count());            
-            if (!$meaning->texts()->count()) {
-                $meaning->addTextLinks();
-            } else {
-                $meaning->updateTextLinks();
+            $words = $meaning->lemma->getWordsForMeanings();
+            if ($words) {
+                if (!$meaning->texts()->count()) {
+                    $meaning->addTextLinks($words);
+                } else {
+    //dd($meaning);                
+                    $meaning->updateTextLinks($words);
+                }
             }
         }
         return view('dict.lemma.show.examples')
