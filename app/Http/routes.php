@@ -200,10 +200,11 @@ Route::group(
         Route::get('experiments/vowel_gradation/verb_imp_3sg/', 'Library\Experiments\VowelGradationController@verbImp3Sg');
         
         Route::get('service', 'Library\ServiceController@index');
-        Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
+        Route::get('service/add_accusatives', 'Library\ServiceController@addAccusatives');
         Route::get('service/add_meaning_text_links', 'Library\ServiceController@addMeaningTextLinks');
         Route::get('service/add_text_wordform_links', 'Library\ServiceController@addTextWordformLinks');
         Route::get('service/add_wordform_affixes', 'Library\ServiceController@addWordformAffixes');
+        Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
         Route::get('service/calculate_lemma_wordforms', 'Library\ServiceController@calculateLemmaWordforms');
         Route::get('service/check_meaning_text', 'Library\ServiceController@checkMeaningText');
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');

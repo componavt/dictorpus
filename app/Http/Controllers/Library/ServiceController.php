@@ -565,6 +565,36 @@ print '<p>'.$text->id.'</p>';
             }
         }*/
     }
+    
+// select lemma_id, gramset_id, dialect_id, count(*) as count from lemma_wordform where gramset_id=3 group by  lemma_id, gramset_id, dialect_id having count>1;   
+    public function addAccusatives() {
+        $nom_sg_pos = 1;
+        $acc_sg_pos = 56;
+        $gen_sg_pos = 3;
+        $nom_pl_pos = 2;
+        $acc_pl_pos = 57;
+        $lang_id=4;
+        $lemmas = Lemma::whereLangId($lang_id)->whereIn('pos_id', PartOfSpeech::getNameIDs())->orderBy('lemma')->take(10)->get();
+        foreach ($lemmas as $lemma) {            
+            foreach ($lemma->wordforms()->wherePivot('gramset_id',$nom_sg_pos)->get() as $nom_sg) {
+                $dialect_id = $nom_sg->pivot->dialect_id;
+                if (!$lemma->wordforms()->wherePivot('wordform_id',$nom_sg->id)->wherePivot('gramset_id',$acc_sg_pos)->wherePivot('dialect_id', $dialect_id)->count()) {
+                    $lemma->wordforms()->attach($nom_sg->id, ['gramset_id'=>$acc_sg_pos, 'dialect_id'=>$dialect_id]);
+print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";                    
+                }
+                $gen_sg = $lemma->wordforms()->wherePivot('gramset_id',$gen_sg_pos)->wherePivot('dialect_id', $dialect_id)->first();
+                if ($gen_sg && !$lemma->wordforms()->wherePivot('wordform_id',$gen_sg->id)->wherePivot('gramset_id',$acc_sg_pos)->wherePivot('dialect_id', $dialect_id)->count()) {
+                    $lemma->wordforms()->attach($gen_sg->id, ['gramset_id'=>$acc_sg_pos, 'dialect_id'=>$dialect_id]);
+                } 
+            }
+            foreach ($lemma->wordforms()->wherePivot('gramset_id',$nom_pl_pos)->get() as $nom_pl) {
+                $dialect_id = $nom_sg->pivot->dialect_id;
+                if (!$lemma->wordforms()->wherePivot('wordform_id',$nom_pl->id)->wherePivot('gramset_id',$acc_pl_pos)->wherePivot('dialect_id', $dialect_id)->count()) {
+                    $lemma->wordforms()->attach($nom_pl->id, ['gramset_id'=>$acc_pl_pos, 'dialect_id'=>$dialect_id]);
+                }
+            }
+        }
+    }
 
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
