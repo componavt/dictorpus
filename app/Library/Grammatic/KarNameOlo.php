@@ -25,8 +25,6 @@ class KarNameOlo
         
     public static function wordformByStemsSg($stems, $gramset_id, $dialect_id) {
         switch ($gramset_id) {
-            case 56: // аккузатив, ед.ч. 
-                return $stems[0].($stems[1] ? ', '.$stems[1].'n' : '');
             case 277: // эссив, ед.ч. 
                 return $stems[1] ? $stems[1].'nn'. KarGram::garmVowel($stems[10],'u') : '';
             case 5: // транслатив, ед.ч. 
