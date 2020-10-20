@@ -9,7 +9,15 @@
 @stop
 
 @section('body')
-        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}">{{ trans('messages.back_to_list') }}</a></p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}">{{ trans('messages.back_to_list') }}</a>
+        @if (User::checkAccess('corpus.edit'))
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
+        @endif
+            {{ trans('messages.create_new_m') }}
+        @if (User::checkAccess('corpus.edit'))
+            </a>
+        @endif
+        </p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('text.store'))) !!}
         @include('corpus.text._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
