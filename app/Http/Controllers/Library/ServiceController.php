@@ -574,7 +574,7 @@ print '<p>'.$text->id.'</p>';
         $nom_pl_pos = 2;
         $acc_pl_pos = 57;
         $lang_id=4;
-        $lemmas = Lemma::whereLangId($lang_id)->whereIn('pos_id', PartOfSpeech::getNameIDs())->orderBy('lemma')->take(10)->get();
+        $lemmas = Lemma::whereLangId($lang_id)->whereIn('pos_id', PartOfSpeech::getNameIDs())->orderBy('lemma')->get();
         foreach ($lemmas as $lemma) {            
             foreach ($lemma->wordforms()->wherePivot('gramset_id',$nom_sg_pos)->get() as $nom_sg) {
                 $dialect_id = $nom_sg->pivot->dialect_id;
