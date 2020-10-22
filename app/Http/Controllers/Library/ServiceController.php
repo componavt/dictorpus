@@ -472,6 +472,15 @@ print "</p>";
     }
 
     public function addTextWordformLinks() {
+        ini_set('memory_limit', '2048M');
+        $text_id = (int)$request->text_id;
+        if ($text_id) {
+            $text = Text::find($text_id);
+            $text->updateWordformLinks();
+print '<p>'.$text->id.'</p>';  
+            return;          
+        }  
+exit(0);        
         foreach (Text::orderBy('id')->get() as $text) { 
 //            $text_id=831;
   //          $text = Text::find($text_id);

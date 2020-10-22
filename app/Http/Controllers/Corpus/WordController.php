@@ -120,12 +120,16 @@ class WordController extends Controller
      * Calls by AJAX, 
      * adds 
      * /corpus/word/add_example/<text_id>_<w_id>_<wordform_id>_<gramset_id>
+     * /corpus/word/load_word_block/<text_id>_<w_id>
+     * /corpus/word/load_word_block/3154_1
      * 
      * @param type $example_id
      * @return string
      */
     public function loadWordBlock($text_id, $w_id)
     {
+        $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
+        $word->updateMeaningAndWordformText();
         return Word::createWordBlock((int)$text_id, (int)$w_id);
     }
     

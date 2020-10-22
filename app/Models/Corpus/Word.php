@@ -460,4 +460,42 @@ class Word extends Model
             }
         }
     }
+    
+    /**
+     * Sets links meaning - text - sentence AND text-wordform
+     */
+    public function updateMeaningAndWordformText(){
+
+        $checked_meaning_words = $this->checkedMeaningRelevances();
+        DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->text_id ." and w_id=".$this->w_id);
+        $this->setMeanings($checked_meaning_words, $this->text->lang_id);
+
+        $checked_wordform_words = $this->checkedWordformRelevances();
+        DB::statement("DELETE FROM text_wordform WHERE text_id=".$this->text_id ." and w_id=".$this->w_id);
+        $this->text->setWordforms($checked_wordform_words, $this);
+    }
+    
+    // get old checked links meaning-text
+    public function checkedMeaningRelevances() {
+        $relevances = [];
+        $meanings = $this->meanings()->wherePivot('relevance','<>',1)->get();
+     
+        foreach ($meanings as $meaning) {
+            $relevances[$meaning->id] = $meaning->pivot->relevance;
+        }
+        return $relevances;
+    }
+    
+    // get old checked links text-wordform
+    public function checkedWordformRelevances() {
+        $relevances = [];
+        $wordforms = DB::table('text_wordform')->whereTextId($this->text_id)                
+                       ->whereWId($this->w_id)
+                       ->where('relevance','<>',1)->get();
+        foreach ($wordforms as $wordform) {
+            $relevances[$wordform->wordform_id.'_'.$wordform->gramset_id]
+                       = $wordform->relevance;
+        }
+        return $relevances;
+    }    
 }

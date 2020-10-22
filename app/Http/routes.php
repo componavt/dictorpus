@@ -100,7 +100,7 @@ Route::group(
         Route::get('corpus/word/add_gramset/{id}', 'Corpus\WordController@addGramset');        
         Route::get('corpus/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');        
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
-        Route::get('corpus/word/load_word_lock/{text_id}_{w_id}', 'Corpus\WordController@loadWordBlock');       
+        Route::get('corpus/word/load_word_block/{text_id}_{w_id}', 'Corpus\WordController@loadWordBlock');       
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
 
         Route::get('corpus/video', 'Corpus\VideoController@index');
