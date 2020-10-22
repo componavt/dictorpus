@@ -165,15 +165,15 @@ class Meaning extends Model
      *              <lang1_code>: <meaning_on_lang1>; <lang2_code>: <meaning_on_lang2>; ...
      *              if lemma has one meaning 
      * 
-     * @param $code String - language code
+     * @param $lang_code String - language code
      * @return String
      */
-    public function getMultilangMeaningTextsString($code='') :String
+    public function getMultilangMeaningTextsString($lang_code='') :String
     {
         $mean_langs = [];
         $meaning_texts = $this->meaningTexts()->get();
-        if ($code) {
-            $lang = Lang::where('code',$code)->first();
+        if ($lang_code) {
+            $lang = Lang::where('code',$lang_code)->first();
             if ($lang) {
                 $meaning_texts_by_code = $this->meaningTexts()->where('lang_id',$lang->id);
                 if ($meaning_texts_by_code->count() > 0) {
@@ -184,7 +184,7 @@ class Meaning extends Model
         foreach ($meaning_texts as $meaning_text_obj) {
             $meaning_text = $meaning_text_obj->meaning_text;
             if ($meaning_text) {
-                if ($meaning_text_obj->lang->code != $code) {
+                if ($meaning_text_obj->lang->code != $lang_code) {
                     $meaning_text = $meaning_text_obj->lang->code .': '. $meaning_text;
                 }
                 $mean_langs[] = $meaning_text;  

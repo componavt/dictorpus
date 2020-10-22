@@ -1010,10 +1010,15 @@ print "</pre>";*/
 
     public function addMeaningsBlock($word, $sentence_id, $word_id, $meanings_checked, $meanings_unchecked, $with_edit=null) {
         $word_class = 'lemma-linked';
-        $link_block = $word->addChild('div', '&nbsp;');
+        $link_block = $word->addChild('div');
         $link_block->addAttribute('id','links_'.$word_id);
         $link_block->addAttribute('class','links-to-lemmas');
         $link_block->addAttribute('data-downloaded',0);
+        
+        $load_img = $link_block->addChild('img');
+        $load_img->addAttribute('class','img-loading');
+        $load_img->addAttribute('src','/images/waiting_small.gif');
+                
         $has_checked_meaning = false;
         if ($meanings_checked) {
             $word_class .= ' meaning-checked';

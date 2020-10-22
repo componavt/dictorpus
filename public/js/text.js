@@ -46,6 +46,8 @@ console.log(w_block);
 }
 
 function loadWordBlock(text_id, w_id) {
+    $("#links_"+w_id+".links-to-lemmas .img-loading").show();
+
     $.ajax({
         url: '/corpus/word/load_word_block/' + text_id + '_' + w_id, 
 //        data: data,

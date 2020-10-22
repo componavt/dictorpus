@@ -412,13 +412,13 @@ class Word extends Model
         $str = '<div>';
         if ($meaning_checked) {
             $str .= '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning_checked->lemma_id)
-                 .'">'.$meaning_checked->lemma->lemma.'<span> ('
+                 .'">'.$meaning_checked->lemma->lemma.'<span> '.$meaning_checked->lemma->pos->code.' ('
                  .$meaning_checked->getMultilangMeaningTextsString($locale)
                  .')</span></a></p>';
         } else {
             foreach ($meaning_unchecked as $meaning) {
                 $str .= '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
-                     .'">'.$meaning->lemma->lemma.'<span> ('
+                     .'">'.$meaning->lemma->lemma.'<span> '.$meaning->lemma->pos->code.' ('
                      .$meaning->getMultilangMeaningTextsString($locale)
                      .')</span></a><span class="fa fa-plus choose-meaning" data-add="'
                      .$meaning->id.'_'.$text_id.'_'.$sentence_id.'_'.$w_id.'" title="'
