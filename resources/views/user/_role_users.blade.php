@@ -50,6 +50,7 @@
                              ['is_button'=>true, 
                               'without_text' => true,
                               'route' => 'user.destroy', 
+                              'class' => '',
                               'args'=>['id' => $user->id]
                              ])
                 </td>

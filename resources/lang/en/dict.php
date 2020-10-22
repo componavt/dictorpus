@@ -143,6 +143,7 @@ return [
     'name' => 'name',
     'name_short' => 'short name',
     'negation' => 'negation',
+    'new_lemma'=>'New lemma',
     'new_lemmas'=>'New lemmas',
     'num_shift_error' => 'Number of erroneous transitions for the first :num',
     'number' => 'Number',

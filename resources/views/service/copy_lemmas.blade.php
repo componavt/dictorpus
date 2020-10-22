@@ -7,6 +7,7 @@
 
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/table.css')!!}
 @stop
 
@@ -18,15 +19,25 @@
                 ['name' => 'lang_from',
                  'values' =>$lang_values,
                  'value' =>$url_args['lang_from'],
-                 'attributes'=>['placeholder' => trans('dict.lang_from') ]])
+                 'title' => trans('dict.lang_from'),
+                 'attributes'=>['id'=>'lemma_lang_id']])
     </div>        
     <div class="col-sm-4">
         @include('widgets.form.formitem._select',
                 ['name' => 'lang_to',
                  'values' =>$lang_values,
                  'value' =>$url_args['lang_to'],
-                 'attributes'=>['placeholder' => trans('dict.lang_to') ]])
-    </div>
+                 'title' => trans('dict.lang_to') ])
+    </div>        
+    <div class="col-sm-4">
+         @include('widgets.form.formitem._select2',
+                ['name' => 'wordform_dialect_id', 
+                 'values' =>$dialect_values,
+                 'value' => $url_args['wordform_dialect_id'] ?? null,
+                 'is_multiple' => false,
+                 'title' => trans('dict.dialect_in_lemma_form'),
+                 'class'=>'select-wordform-dialect form-control'])
+   </div>
 </div>
 <div class="row">
     <div class="col-sm-4">
@@ -53,9 +64,15 @@
         <span>{{ trans('messages.records') }}</span>
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
-</div>        
-        @if($added_count)
-        <p class='warning'>{{ trans('dict.lemmas_added', ['count'=>$added_count]) }}</p>
+</div>     
+        @if (!$dialect_is_right) {
+            <p class='warning'>{{ trans('dict.dialect_wrong') }}!</p>
+        @elseif($added_lemmas)
+            <p class='warning'>{{ trans('dict.lemmas_added', ['count'=>sizeof($added_lemmas)]) }}</p>
+            @foreach ($added_lemmas as $add_lemma) 
+            <a href="/dict/lemma/{{$add_lemma->id}}">{{$add_lemma->lemma}}</a><br>
+            @endforeach
+            <br>
         @endif
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
 
@@ -66,6 +83,7 @@
                 <th>No</th>
                 <th></th>
                 <th>{{ trans('dict.lemma') }}</th>
+                <th>{{ trans('dict.new_lemma') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
             </tr>
@@ -74,7 +92,13 @@
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td><input type='checkbox' name="lemmas[]" value="{{$lemma->id}}"></td>
-                <td data-th="{{ trans('dict.lemma') }}"><a href="lemma/{{$lemma->id}}">{{$lemma->lemma}}</a></td>
+                <td data-th="{{ trans('dict.lemma') }}"><a href="/dict/lemma/{{$lemma->id}}">{{$lemma->lemma}}</a></td>
+                <td data-th="{{ trans('dict.new_lemma') }}">
+                    @include('widgets.form.formitem._text',
+                            ['name' => 'new_lemmas['.$lemma->id.']',
+                            'value' => $lemma->stemAffixForm(),
+                            'special_symbol' => true])                               
+                </td>                
                 <td data-th="{{ trans('dict.pos') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
@@ -97,11 +121,14 @@
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
+    selectWithLang('.select-wordform-dialect', "/dict/dialect/list", 'lang_id', '{{ trans('dict.select_dialect') }}');    
 @stop
 
 

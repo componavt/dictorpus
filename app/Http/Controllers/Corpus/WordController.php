@@ -16,6 +16,8 @@ use App\Models\Corpus\Text;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Wordform;
 
+use App\Models\User;
+
 class WordController extends Controller
 {
     public $url_args=[];
@@ -128,8 +130,11 @@ class WordController extends Controller
      */
     public function loadWordBlock($text_id, $w_id)
     {
-        $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
-        $word->updateMeaningAndWordformText();
+        
+        if (User::checkAccess('dict.edit')) {
+            $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
+            $word->updateMeaningAndWordformText();
+        }
         return Word::createWordBlock((int)$text_id, (int)$w_id);
     }
     

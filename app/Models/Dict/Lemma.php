@@ -757,11 +757,7 @@ dd($wordforms);
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
 
-//            $this->storeDialects(isset($features['dialects']) ? $features['dialects'] : []);
-        
-//        if (isset($features['variants'])) {
-            $this->storeVariants(isset($features['variants']) ? $features['variants'] : []);
-//        }
+        $this->storeVariants($features['variants'] ?? []);
         
         $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
         $this->createDictionaryWordforms($wordforms, 

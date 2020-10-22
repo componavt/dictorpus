@@ -196,46 +196,53 @@ print "</p>";
         }        
     }
     
-    public static function copyLemmas($lang_to, $lemmas) {
+    public static function copyLemmas($lang_to, $lemmas, $new_lemmas, $dialect_id) {
         if (!is_array($lemmas) || !sizeof($lemmas)) {
             return;
         }
-        $added_lemmas = 0;
+        
+        $added_lemmas = [];
         foreach ($lemmas as $lemma_id) {
             $lemma = Lemma::find($lemma_id);
-            $new_lemma = self::copyLemma($lang_to, $lemma);
+            $new_lemma = self::copyLemma($lang_to, $lemma, $new_lemmas[$lemma_id], $dialect_id);
             if ($new_lemma) {
-                $added_lemmas++;
+                $added_lemmas[] = $new_lemma;
             } 
 //print "<p>".$new_lemma->id."</p>";            
         }
         return $added_lemmas;
     }
     
-    public static function copyLemma($lang_to, $lemma) {
+    public static function copyLemma($lang_to, $lemma, $lemma_field, $dialect_id) {
         if (!$lemma) { return; }
         
-        $new_lemma = Lemma::create([
-            'lemma' => $lemma->lemma,
+        $data = ['lemma'=>$lemma_field, 'lang_id'=>$lang_to, 'pos_id'=>$lemma->pos_id, 'wordform_dialect_id'=>$dialect_id];
+        list($new_lemma_str, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems) 
+                = Grammatic::parseLemmaField($data);
+        
+        $new_lemma_obj = Lemma::create([
+            'lemma' => $new_lemma_str,
+            'lemma_for_search' => Grammatic::toSearchForm($new_lemma_str),
             'pos_id' => $lemma->pos_id,
             'lang_id' => $lang_to
         ]);
-        if (!$new_lemma) { return; }
+        if (!$new_lemma_obj) { return; }
 
         $lemma_feature = LemmaFeature::find($lemma->id);
+        $features = [];
         if ($lemma_feature) {
-            $new_lemma_feature = LemmaFeature::create(['id'=>$new_lemma->id]);
-            foreach ($new_lemma_feature->getFillable() as $field) {
-                if ($field=='id') { continue; }
-                $new_lemma_feature->$field = $lemma_feature->$field;
+            foreach ($lemma_feature->getFillable() as $field) {
+                $features[$field] = $lemma_feature->$field;
             }
-            $new_lemma_feature->save();
         }
+        $new_lemma_obj->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $features, $dialect_id, $stems);           
         
         foreach ($lemma->meanings as $meaning) {
-            $new_meaning = self::copyMeaning($meaning, $new_lemma);
+            $new_meaning = self::copyMeaning($meaning, $new_lemma_obj);
         }
-        return $new_lemma;
+        
+        $new_lemma_obj->updateTextLinks();
+        return $new_lemma_obj;
     }
     
     public static function copyMeaning($meaning, $new_lemma) {

@@ -18,6 +18,7 @@ use App\Library\Str;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -35,8 +36,8 @@ class ServiceController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:admin,/', ['except'=>['copyLemmas']]);
-        $this->middleware('auth:dict.edit,/', ['only'=>['copyLemmas']]);
+        $this->middleware('auth:admin,/', ['except'=>['index', 'copyLemmas']]);
+        $this->middleware('auth:dict.edit,/', ['only'=>['index', 'copyLemmas']]);
     }
     
     public function index() {
@@ -408,19 +409,27 @@ print "</p>";
      * @param Request $request
      */
     public function copyLemmas(Request $request) {
-        $lang_to = (int)$request->lang_to;        
+        $lang_to = (int)$request->lang_to;  
+        
         $url_args = Str::urlArgs($request) + [
                     'lang_from'  => (int)$request->input('lang_from'),
                     'lang_to'  => $lang_to,
+                    'wordform_dialect_id' => (int)$request->input('wordform_dialect_id'),
                     'search_lemma'    => $request->input('search_lemma'),
                     'search_pos'    => (int)$request->input('search_pos'),
                 ];        
 //        $args_by_get = Str::searchValuesByURL($url_args);
-        $added_count = null;
+        $added_lemmas = [];
+        $dialect_is_right = true; 
                 
-        if ($url_args['lang_from'] && $lang_to) {
-            if ($request->copy_lemmas && $request->lemmas) {
-                $added_count = Service::copyLemmas($lang_to, $request->lemmas);                 
+        if ($url_args['lang_from'] && $lang_to) {            
+            if ($request->copy_lemmas && $request->lemmas && $url_args['wordform_dialect_id']) {
+                $dialect = Dialect::find($url_args['wordform_dialect_id']);                
+                if ($dialect->lang_id == $lang_to) {
+                    $added_lemmas = Service::copyLemmas($lang_to, $request->lemmas, $request->new_lemmas, $url_args['wordform_dialect_id']);                 
+                } else {
+                    $dialect_is_right = false;
+                }
             }
             
             $lemmas = Lemma::whereLangId($url_args['lang_from'])
@@ -444,10 +453,11 @@ print "</p>";
         
         $lang_values = Lang::getListWithQuantity('reverseLemmas');
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        $dialect_values = $lang_to ? Dialect::getList($lang_to) : Dialect::getList(); //['NULL'=>'']+
         
         return view('service.copy_lemmas', 
-                compact('added_count', 'lang_values', 'lemmas', 'numAll', 
-                        'pos_values', 'url_args'));        // , 'args_by_get'
+                compact('added_lemmas', 'dialect_is_right', 'dialect_values', 'lang_values', 'lemmas', 
+                        'numAll', 'pos_values', 'url_args'));        // , 'args_by_get'
     }
     
     /**
@@ -471,7 +481,7 @@ print "</p>";
         }
     }
 
-    public function addTextWordformLinks() {
+    public function addTextWordformLinks(Request $request) {
         ini_set('memory_limit', '2048M');
         $text_id = (int)$request->text_id;
         if ($text_id) {

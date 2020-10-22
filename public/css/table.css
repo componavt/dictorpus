@@ -44,6 +44,10 @@
   text-align: left;
 }
 
+td[data-th] .form-group {
+    margin-bottom: -10px;
+}
+
 @media (min-width: 767px) {
   .table-bordered.wide-md > tbody > tr > td {
     border: 1px solid #ddd;
