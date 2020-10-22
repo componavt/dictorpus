@@ -460,6 +460,7 @@ class Text extends Model
         $this->dialects()->detach();
         $this->genres()->detach();
         $this->meanings()->detach();
+        $this->wordforms()->detach();
 
         $this->words()->delete();
         $this->video()->delete();
