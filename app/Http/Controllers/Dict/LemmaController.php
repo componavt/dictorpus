@@ -409,18 +409,19 @@ class LemmaController extends Controller
             return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withError(\Lang::get('messages.invalid_id'));            
         } else {
-            return view('dict.lemma.edit_example')
-                      ->with(array(
-                                   'back_to_url'    => '/dict/lemma/'.$lemma->id,
-                                   'id'             => $lemma->id, 
-                                   'meanings'       => $meanings,
-                                   'meaning_texts'  => $meaning_texts,
-                                   'route'          => array('lemma.update.examples', $id),
-                                   'sentence'       => $sentence,
-                                   'args_by_get'    => $this->args_by_get,
-                                   'url_args'       => $this->url_args,
-                                  )
-                            );            
+//            $pos_values = PartOfSpeech::getGroupedList();   
+  //          $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
+    //        $dialect_values = Dialect::getList($lemma->lang_id);
+            
+            $back_to_url = '/dict/lemma/'.$lemma->id;
+            $route = array('lemma.update.examples', $id);
+            $args_by_get = $this->args_by_get;
+            $url_args = $this->url_args;
+            return view('dict.lemma.edit_example',
+                      compact('back_to_url', 'id', 'meanings', 'meaning_texts',
+                              'route', 'sentence', 'lemma',
+//                              'dialect_values', 'pos_values', 'langs_for_meaning',
+                              'args_by_get', 'url_args'));            
         }
     }
 

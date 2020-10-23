@@ -20,7 +20,7 @@
         @include('widgets.form.formitem._select',
                 ['name' => 'dialect_id', 
                  'values' =>$dialect_values,
-                 'value' => $dialect_value,
+                 'value' => $dialect_value ?? 0,
                  'is_multiple' => false,
                  'title' => trans('dict.dialect_in_lemma_form'),
                  'class'=>'select-dialect form-control'

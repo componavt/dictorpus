@@ -19,10 +19,10 @@
 @stop
 
 @section('body')
-        @include('corpus.text.modals_for_markup')
+{{--        @include('corpus.text.modals_for_markup', ['pos_id'=>$lemma->pos_id]) --}}
 
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
-        <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>'', 'with_links' => true])</p>
+        <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])</p>
 
         <p><a href="{{ LaravelLocalization::localizeURL($back_to_url) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
         
