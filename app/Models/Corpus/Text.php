@@ -699,14 +699,13 @@ print "</pre>";*/
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
         if ($error_message) { return $error_message; }
 
-        $checked_words = $this->checkedWords($this->text_xml, false);
+//        $checked_words = $this->checkedWords($this->text_xml, false);
 //dd($checked_words);
-        DB::statement("DELETE FROM text_wordform WHERE text_id=".(int)$this->id);
+//        DB::statement("DELETE FROM text_wordform WHERE text_id=".(int)$this->id);
 
         foreach ($sxe->children()->s as $sentence) {
             $s_id = (int)$sentence->attributes()->id;
-            $this->updateMeaningAndWordformSentence($s_id, $sentence->children()->w, 
-                    $checked_words[$s_id] ?? NULL, false);
+            $this->updateWordformSentence($s_id, $sentence->children()->w);
         }
     }
     
@@ -728,6 +727,16 @@ print "</pre>";*/
             if ($set_wordforms) {
                 $this->setWordforms($the_same_word ? $checked_sent_words[$word_count]['wordforms'] : [], $word_obj);
             }
+            $word_count++;
+        }
+    }
+    
+    public function updateWordformSentence($s_id, $sent_words) {
+        $word_count = 0;
+        foreach ($sent_words as $word) {
+            $w_id = (int)$word->attributes()->id;
+            $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();
+            $word_obj->updateWordformText();
             $word_count++;
         }
     }
