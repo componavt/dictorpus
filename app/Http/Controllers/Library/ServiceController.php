@@ -486,6 +486,9 @@ print "</p>";
         $text_id = (int)$request->text_id;
         if ($text_id) {
             $text = Text::find($text_id);
+            if (!$text) {
+                return;
+            }
             $text->updateWordformLinks();
 print '<p>'.$text->id.'</p>';  
             return;          
