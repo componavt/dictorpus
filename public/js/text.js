@@ -25,10 +25,10 @@ function showLemmaLinked(text_id) {
    $(".lemma-linked").click(function(event) {
         event.preventDefault(); // reload event after AJAX reload
         var w_id = $(this).attr('id');
-console.log('w_id: '+w_id);        
+//console.log('w_id: '+w_id);        
         $(".links-to-lemmas").hide(); // hide all open blocks
         var w_block = $("#links_"+w_id);
-console.log(w_block);        
+//console.log(w_block);        
         w_block.show();
         var downloaded = w_block.data('downloaded');
         if (downloaded === 0) {
