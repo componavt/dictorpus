@@ -475,6 +475,16 @@ class Word extends Model
         $this->text->setWordforms($checked_wordform_words, $this);
     }
     
+    /**
+     * Sets links meaning - text - sentence AND text-wordform
+     */
+    public function updateWordformText(){
+
+        $checked_wordform_words = $this->checkedWordformRelevances();
+        DB::statement("DELETE FROM text_wordform WHERE text_id=".$this->text_id ." and w_id=".$this->w_id);
+        $this->text->setWordforms($checked_wordform_words, $this);
+    }
+    
     // get old checked links meaning-text
     public function checkedMeaningRelevances() {
         $relevances = [];

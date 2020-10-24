@@ -133,7 +133,9 @@ class WordController extends Controller
         
         if (User::checkAccess('dict.edit')) {
             $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
-            $word->updateMeaningAndWordformText();
+// 2020-10-24 пока отключим, чтобы быстрее работало...            
+//            $word->updateMeaningAndWordformText();
+            $word->updateWordformText();
         }
         return Word::createWordBlock((int)$text_id, (int)$w_id);
     }
