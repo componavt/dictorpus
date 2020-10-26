@@ -591,7 +591,7 @@ class Text extends Model
      */
     public static function markupSentence($sentence,$word_count): Array
     {
-        $delimeters = ',.!?"[](){}«»=„”:%‒–—―'; // - and ' - part of word
+        $delimeters = ',;.!?"[](){}«»=„”:%‒–—―'; // - and ' - part of word
         // different types of dashes and hyphens: '-', '‒', '–', '—', '―' 
         // if dash '-' inside words, then they are part of words,
         // if dash surrounded by spaces, then dashes are not parts of words.
