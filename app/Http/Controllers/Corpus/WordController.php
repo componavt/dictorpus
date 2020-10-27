@@ -33,7 +33,7 @@ class WordController extends Controller
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
-                                     'updateMeaningLinks']]);
+                                     'updateMeaningLinks', 'updateWordBlock']]);
         $this->url_args = [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
@@ -137,6 +137,25 @@ class WordController extends Controller
 //            $word->updateMeaningAndWordformText();
             $word->updateWordformText();
         }
+        return Word::createWordBlock((int)$text_id, (int)$w_id);
+    }
+    
+    /**
+     * Calls by AJAX, 
+     * adds 
+     * /corpus/word/add_example/<text_id>_<w_id>_<wordform_id>_<gramset_id>
+     * /corpus/word/load_word_block/<text_id>_<w_id>
+     * /corpus/word/load_word_block/3154_1
+     * 
+     * @param type $example_id
+     * @return string
+     */
+    public function updateWordBlock($text_id, $w_id)
+    {
+        
+        $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
+        $word->updateMeaningAndWordformText(true);
+        $word->updateWordformText(true);
         return Word::createWordBlock((int)$text_id, (int)$w_id);
     }
     

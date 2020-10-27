@@ -32,7 +32,7 @@ function showLemmaLinked(text_id) {
         w_block.show();
         var downloaded = w_block.data('downloaded');
         if (downloaded === 0) {
-            loadWordBlock(text_id, w_id);
+            loadWordBlock(text_id, w_id, '/corpus/word/load_word_block/');
         }
     });
         
@@ -45,11 +45,20 @@ function showLemmaLinked(text_id) {
     });    
 }
 
-function loadWordBlock(text_id, w_id) {
-    $("#links_"+w_id+".links-to-lemmas .img-loading").show();
+function updateWordBlock(text_id, w_id) {
+//    $("w[id="+w_id+"] .links-to-lemmas").html('<img class="img-loading" src="/images/waiting_small.gif">');
+//console.log("w[id="+w_id+"] .links-to-lemmas");
+//console.log($("w[id="+w_id+"] .links-to-lemmas").html());
+    
+    loadWordBlock(text_id, w_id, '/corpus/word/update_word_block/');
+    $("w[id="+w_id+"]").removeClass('meaning-checked').removeClass('gramset-checked').addClass('meaning-not-checked gramset--not-checked');
+    
+}
 
+function loadWordBlock(text_id, w_id, url) {
+    $("#links_"+w_id+".links-to-lemmas .img-loading").show();
     $.ajax({
-        url: '/corpus/word/load_word_block/' + text_id + '_' + w_id, 
+        url: url + text_id + '_' + w_id, 
 //        data: data,
         type: 'GET',
         success: function(result){

@@ -1045,7 +1045,7 @@ print "</pre>";*/
         } else { 
             $word_class .= ' gramset-not-checked';
         }
-        if ($with_edit) { // icon 'pensil'
+        if (User::checkAccess('corpus.edit') && $with_edit) { // icon 'pensil'
             $link_block = self::addEditExampleButton($link_block, $this->id, $sentence_id, $word_id);
         }
         

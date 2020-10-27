@@ -102,6 +102,7 @@ Route::group(
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
         Route::get('corpus/word/load_word_block/{text_id}_{w_id}', 'Corpus\WordController@loadWordBlock');       
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
+        Route::get('corpus/word/update_word_block/{text_id}_{w_id}', 'Corpus\WordController@updateWordBlock');       
 
         Route::get('corpus/video', 'Corpus\VideoController@index');
         

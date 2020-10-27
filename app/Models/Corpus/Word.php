@@ -420,18 +420,24 @@ class Word extends Model
                 $str .= '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
                      .'">'.$meaning->lemma->lemma.'<span> '.$meaning->lemma->pos->code.' ('
                      .$meaning->getMultilangMeaningTextsString($locale)
-                     .')</span></a><span class="fa fa-plus choose-meaning" data-add="'
-                     .$meaning->id.'_'.$text_id.'_'.$sentence_id.'_'.$w_id.'" title="'
-                     .\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordMeaning(this)"></span></p>';
+                     .')</span></a>';
+                if (User::checkAccess('corpus.edit')) {                
+                    $str .= '<span class="fa fa-plus choose-meaning" data-add="'
+                         .$meaning->id.'_'.$text_id.'_'.$sentence_id.'_'.$w_id.'" title="'
+                         .\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordMeaning(this)"></span></p>';
+                }
             }
         }
         $str .= '</div>';
 
         $str .= Word::createGramsetBlock($text_id, $w_id);
 
-        $str.='<p class="text-example-edit"><a href="'
-             .LaravelLocalization::localizeURL($url)
-             .'" class="glyphicon glyphicon-pencil"></a>';
+        if (User::checkAccess('corpus.edit')) { // icon 'pensil'
+            $str.='<p class="text-example-edit">'
+                 .'<i class="fa fa-sync-alt fa-lg update-word-block" title="'.'" onclick="updateWordBlock('.$text_id.','.$w_id.')"></i>'
+                 .'<a href="'.LaravelLocalization::localizeURL($url)
+                 .'" class="glyphicon glyphicon-pencil"></a></p>';
+        }
         return $str;
     }
     
@@ -464,9 +470,9 @@ class Word extends Model
     /**
      * Sets links meaning - text - sentence AND text-wordform
      */
-    public function updateMeaningAndWordformText(){
+    public function updateMeaningAndWordformText($reset=false){
 
-        $checked_meaning_words = $this->checkedMeaningRelevances();
+        $checked_meaning_words = $reset ? [] : $this->checkedMeaningRelevances();
         DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->text_id ." and w_id=".$this->w_id);
         $this->setMeanings($checked_meaning_words, $this->text->lang_id);
 
@@ -478,9 +484,9 @@ class Word extends Model
     /**
      * Sets links meaning - text - sentence AND text-wordform
      */
-    public function updateWordformText(){
+    public function updateWordformText($reset=false){
 
-        $checked_wordform_words = $this->checkedWordformRelevances();
+        $checked_wordform_words = $reset ? [] : $this->checkedWordformRelevances();
         DB::statement("DELETE FROM text_wordform WHERE text_id=".$this->text_id ." and w_id=".$this->w_id);
         $this->text->setWordforms($checked_wordform_words, $this);
     }
