@@ -78,6 +78,9 @@ Route::group(
         Route::get('/publ', function () {
             return view('page.publ');
         });
+        Route::get('/sources', function () {
+            return view('page.sources');
+        });
         
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
