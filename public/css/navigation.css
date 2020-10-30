@@ -61,10 +61,10 @@ li.dropdown {
 }
 
 .dropdown-menu > li > a {
-    font-size: 16px;
-    line-height: 20px;
+    font-size: 13px;
+    line-height: 19px;
     text-decoration: underline;
-    padding: 7px 20px;
+    padding: 7px 10px;
     white-space: normal;
 }
 
@@ -166,6 +166,9 @@ flex: 1 0 auto;
     .navbar-right {
         font-size: 16px;
     }
+    .dropdown-menu > li > a {
+        padding: 7px 20px;
+    }
 }
 
 @media screen and (min-width: 992px) {    
@@ -186,6 +189,12 @@ flex: 1 0 auto;
     .dropdown-menu > li > a {
         font-size: 13px;
         line-height: 19x;
-    }
-    
+    }    
+}
+
+@media screen and (min-width: 1200px) {    
+    .dropdown-menu > li > a {
+        font-size: 14px;
+        line-height: 20x;
+    }    
 }
