@@ -101,7 +101,7 @@ class KarVerb
      * 2) j[aä] и с.ф. на CV, то – ja/jä → + si;
      * 3) Cä и с.ф. на VV, то ä > i;
      * 4) Ca и с.ф. на VV и в о.8 два слога и в первом есть гласный a (a, au, ai, ua), то a > o;
-     * 5) Ca и с.ф. на VV и в о.8 три или два слога и в первом есть гласные o, u, то a > i;
+     * 5) Ca и с.ф. на VV и в о.8 три или (два слога и в первом есть гласные o, u), то a > i;
      * 6) VV и с.ф. на [vhj][aä], то – первый V из о.8 + i;
      * 7) VV и с.ф. на ta, tä, то – первый V из о.8 + i ~ si
      * 
@@ -128,8 +128,8 @@ class KarVerb
             return $regs[1].'o';            
         } elseif (preg_match("/^(.+".$C.")a$/u", $stem2, $regs) 
                 && preg_match("/".$V.$V."$/u", $stem0)
-                && (KarGram::countSyllable($stem2)==2 || KarGram::countSyllable($stem2)==3)
-                && preg_match("/^(".$C.")*".$V."*[ou]/u", $stem2)) {    // 5
+                && (KarGram::countSyllable($stem2)==3 || KarGram::countSyllable($stem2)==2
+                && preg_match("/^(".$C.")*".$V."*[ou]/u", $stem2))) {    // 5
             return $regs[1].'i';            
         } elseif (preg_match("/^(.+)".$V."(".$V.")$/u", $stem2, $regs) 
                 && preg_match("/[vhj][aä]$/u", $stem0)) {    // 6
