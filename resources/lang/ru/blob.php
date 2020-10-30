@@ -87,7 +87,7 @@ return [
                   . '<p>Разрешение <a href="/docs/permissions/saburova2020.pdf">от В.К. Сабуровой</a> на использование текста книги '
                   . '"Kun juuret alkaa herätä" в проекте ВепКар.</p>'
                   . '<p>Разрешение от Н.Н. Архиповой (Nina Kossi) на использование текстов книг '
-                  . '<a href="/docs/permission_arkhipova.pdf">"Vuuvven lippahaini"</a>, <a href="/images/archipova_pisara-matkalaini.jpg">Pisara-matkalaini</a> в проекте ВепКар.</p>'
+                  . '<a href="/docs/permission_arkhipova.pdf">"Vuuvven lippahaini"</a>, <a href="/images/permissions/archipova_pisara-matkalaini.jpg">Pisara-matkalaini</a> в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/pellinen_illan_netali.jpg">от Н.А. Пеллинен</a> на использование перевода стиха Ольги Смотровой '
                   . '"Il’l’an nedäli" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/kundozerova.jpg">от М.В. Кундозёровой</a> на использование перевода текста '
