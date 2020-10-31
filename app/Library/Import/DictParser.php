@@ -46,6 +46,20 @@ class DictParser
         return array_merge($lemma_part, ['num'=>$num], $meaning_part);        
     }
 
+    public static function parseEntryZaikovVerb($line, $lang_id, $dialect_id) {
+        $template = "([^\[]+\s+\[[^\]\s]*\])\s+(.+)";
+        if (!preg_match("/^".$template."$/u", $line, $regs)) {
+            return false;
+        }
+        if (!$regs) {
+            return false;
+        }
+        $lemma_part = ['pos_id'=>11, 'lemmas'=>[0=>trim($regs[1])]];
+        $meaning_part = self::parseMeaningPart(trim($regs[2]), isset($regs[4]) ? trim($regs[4]) : null);
+
+        return array_merge($lemma_part, ['num'=>''], $meaning_part);        
+    }
+
     public static function parseLemmaPart($lemma_pos, $num, $lang_id, $dialect_id) {
         if (!preg_match("/^(.+)\s+([^\s]+)$/", $lemma_pos, $regs)) {
             return ['lemmas' => false];
@@ -173,18 +187,19 @@ class DictParser
         return true;
     }
     
-    
     /**
-     * search lemmas and gets founded lemma
+     * search lemmas with the same meanings and gets founded lemma
      */
     public static function findLemma($stem0, $entry, $lang_id, $label_id/*, $time_checking*/) {       
-        $lemma_founded = false;
         $lemmas=Lemma::where('lemma', 'like', $stem0)
                 ->where('lang_id',$lang_id)
                 ->where('pos_id', $entry['pos_id']);
         if (!$lemmas->count()) {
-            return $lemma_founded;
-        }        
+            return false;
+        }     
+        return true;
+// 2020-10-31 DON'T COMPARE MEANINGS!!!
+
 //$time_finding_lemmas = microtime(true);    
 //print "<p><b>Time finding lemmas ".$entry['lemmas'][0]." :".round($time_finding_lemmas-$time_checking, 2).'</p>';
         
@@ -241,7 +256,7 @@ class DictParser
      * 
      * @param Array $entry
      */
-    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id/*, $time_checking*/) {     
+    public static function saveEntry($entry, $lang_id, $dialect_id, $label_id=NULL/*, $time_checking*/) {     
         foreach ($entry['lemmas'] as $lemma_template) {
             $data = ['lemma'=>$lemma_template, 
                      'lang_id'=>$lang_id, 
@@ -262,6 +277,8 @@ class DictParser
                 $lemma_in_db=Lemma::store($new_lemma, $entry['pos_id'], $lang_id);
                 $action = 'storing';
             } else {
+                print '<p>Lemma <a href="/dict/lemma?search_lemma='.$new_lemma.'&search_pos='.$entry['pos_id'].'&search_lang='.$lang_id.'">'.$new_lemma.'</a> exists</p>';
+                exit(0);
                 $is_label = $lemma_in_db->labels()->where('label_id', $label_id)->count();
 //                if (!$is_label) { // временно выключаем обновление при повторном прогоне тверского словаря
                     $lemma_in_db->modify();

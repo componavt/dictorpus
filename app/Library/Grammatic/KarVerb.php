@@ -194,7 +194,7 @@ class KarVerb
                 && preg_match("/t[aä]$/u", $stem0)) {    // 6
             return $regs[1].$regs[2].'i/'.$regs[1].$regs[2].'si';            
         }
-        return $stem1.'!!';
+        return $stem1;
     }    
 
     /**

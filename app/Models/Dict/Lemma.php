@@ -251,22 +251,28 @@ class Lemma extends Model
             foreach($wordform_coll as $wordform) {
                 $w = $wordform->wordform;
                 if ($with_search_link) { 
-                    $lang_id = $this->lang_id;
-                    $word_count = Word::where('word', 'like',$wordform->wordform_for_search)
-                                ->whereIn('text_id', function ($query) use ($lang_id) {
-                                    $query->select('id')->from('texts')
-                                          ->where('lang_id', $lang_id);
-                                })
-                                ->count();
-                    if ($word_count) {
-                        $w = '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?search_lang='.$lang_id
-                           . '&search_word='.$wordform->wordform_for_search). '" title="'.$word_count.'">'.$w.'</a>';
-                    }
+                    $w = $this->wordformWithLink($w, $wordform);
                 }
                 $wordform_arr[]=$w;
             }
             return join(', ',$wordform_arr);
         }        
+    }
+
+    public function wordformWithLink($w, $wordform){
+        $lang_id = $this->lang_id;
+        $word_count =  $wordform->texts()->wherePivot('relevance','>',0)->count();
+/*        $word_count = Word::where('word', 'like',$wordform->wordform_for_search)
+                    ->whereIn('text_id', function ($query) use ($lang_id) {
+                        $query->select('id')->from('texts')
+                              ->where('lang_id', $lang_id);
+                    })
+                    ->count();*/
+        if (!$word_count) {
+            return $w;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?search_lang='.$lang_id
+               . '&search_word='.$wordform->wordform_for_search). '" title="'.$word_count.'">'.$w.'</a>';        
     }
     
     public function getWordformsByWord($word) {

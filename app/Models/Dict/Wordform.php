@@ -154,13 +154,16 @@ class Wordform extends Model
         if (!$gramset_id) {
             return;
         }
-        $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->update(['relevance'=>0]);
+        DB::statement('UPDATE text_wordform SET relevance=0'. // всем связям проставим отрицательные
+                      ' WHERE text_id='.$text_id.
+                      ' AND w_id='.$w_id);
+//        $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->update(['relevance'=>0]);
         $wordform_link = $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->wherePivot('gramset_id',$gramset_id);
         if ($wordform_link->count()) {
             $wordform_link->update(['relevance'=>2]);
-        } else {
+        } /*else {
             $wordform_link = $this->texts()->attach($text_id, ['w_id'=>$w_id, 'gramset_id'=>$gramset_id, 'relevance'=>2]);
-        }
+        }*/
     }
     
     /**

@@ -71,6 +71,39 @@ print "<pre>";
         }
     }
     
+    /*
+     * /import/dict_zaikov_verb_parser
+     * Reads text file with dictionary entries
+     * extracts lemmas and writes lemmas, meanings, word forms to DB
+     * 
+     * Line example:
+     * a|bu {-vu / -bu, -buo, -buloi} s. – помощь, поддержка; подспорье
+     * 
+     * !!!! ----- изменена Grammatic::nameNumFromNumberField -----    sing->sg -----   !!!!!
+     */
+    public function dictZaikovVerbParser(Request $request) {
+        $lang_id = 4;
+        $filename = 'import/dict_zaikov_verb.txt';
+        $dialect_id=46; // new written proper karelian
+
+        $file_content = Storage::disk('local')->get($filename);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+print "<pre>";        
+        $count = 0;
+        foreach ($file_lines as $line) {
+            $count++;
+            if (!$line || mb_strlen($line)<2) {
+                continue;
+            }
+            $entry = DictParser::parseEntryZaikovVerb($line, $lang_id, $dialect_id);
+//dd($entry);            
+            if (DictParser::checkEntry($entry, $line, $count)) {
+//dd($entry);      
+                DictParser::saveEntry($entry, $lang_id, $dialect_id);
+            }
+        }
+    }
+    
     public function conceptParser(Request $request) {
         $fname = (int)$request->input('fname');
         if (!$fname) {$fname = 'concept_dict_b'; }

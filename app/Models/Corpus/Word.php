@@ -476,7 +476,7 @@ class Word extends Model
         DB::statement("DELETE FROM meaning_text WHERE text_id=".$this->text_id ." and w_id=".$this->w_id);
         $this->setMeanings($checked_meaning_words, $this->text->lang_id);
 
-        $checked_wordform_words = $this->checkedWordformRelevances();
+        $checked_wordform_words = $reset ? [] : $this->checkedWordformRelevances();
         DB::statement("DELETE FROM text_wordform WHERE text_id=".$this->text_id ." and w_id=".$this->w_id);
         $this->text->setWordforms($checked_wordform_words, $this);
     }

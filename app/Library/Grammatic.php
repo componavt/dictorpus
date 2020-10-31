@@ -30,7 +30,7 @@ class Grammatic
     /**
      * ku|uzi#kymmen (-vven#en, -uttu#dy; -uzii#ii)
      * @param Array $data = ['lemma'=>'lemma_string', 'lang_id'=>lang_int, 'pos_id'=>pos_int, 'wordform_dialect_id'=>dialect_int];
-     * @return type
+     * @return array
      */
     public static function parseLemmaField($data) {
         $lemma = self::toRightForm($data['lemma']);

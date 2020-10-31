@@ -10,6 +10,7 @@
     <p><a href="import/concept_parser">Импорт понятий из СОСД</a></p>
     <p><a href="import/concept_parser_check">Проверка понятий из СОС</a></p>
     <p><a href="import/dict_parser?search_lang=1">Парсер вепсского словаря</a>
+    <p><a href="import/dict_zaikov_verb_parser">Парсер глаголов из словаря Зайкова</a>
     
     <h3>Экспорт</h3>
     <p><a href="export/unimorph">Экспорт словоформ в Unimorph</a>    </p>
