@@ -80,7 +80,7 @@ foreach($histories as $history) {
             @if (sizeof($history_strings))
         <p>
             <span class="date">{{ $dt->formatLocalized(trans('main.datetime_format')) }}</span>
-            {{ $user->name }} 
+            {{ $user ? $user->name : '' }} 
             <ul>
             @foreach($history_strings as $history)
                 <li>{!!$history!!}</li>
