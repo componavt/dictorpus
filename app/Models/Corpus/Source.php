@@ -22,11 +22,8 @@ class Source extends Model
         parent::boot();
     }
     
-    // Source __has_many__ Texts
-    public function texts()
-    {
-        return $this->hasMany(Text::class);
-    }
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\Texts;
 
     /**
      * if Source doesn't exist, 

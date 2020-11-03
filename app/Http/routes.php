@@ -340,6 +340,11 @@ Route::group(
                                     'store' => 'region.store',
                                     'destroy' => 'region.destroy']]);
         
+        Route::resource('corpus/source', 'Corpus\SourceController',
+                       ['names' => ['update' => 'source.update',
+                                    'store' => 'source.store',
+                                    'destroy' => 'source.destroy']]);
+        
         Route::resource('role', 'RoleController',
                        ['names' => ['update' => 'role.update',
                                     'store' => 'role.store',

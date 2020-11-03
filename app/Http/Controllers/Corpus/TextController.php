@@ -658,4 +658,5 @@ class TextController extends Controller
         return view('corpus.text.frequency.symbols',
                 compact('lang_values', 'symbols', 'args_by_get', 'url_args'));
     } 
+    
 }

@@ -769,6 +769,7 @@ dd($wordforms);
         $this->createDictionaryWordforms($wordforms, 
                 isset($features['number']) ? $features['number'] : NULL, 
                 $dialect_id);
+        $this->updateTextWordformLinks();
     }
     
     public function updateLemma($data) {
@@ -814,10 +815,10 @@ dd($wordforms);
         if (!$words) {
             return;
         }
-        self::updateMeaningTextLinks($words);
+        $this->updateMeaningTextLinks($words);
         
         // With Wordforms;
-        self::updateTextWordformLinks();
+        $this->updateTextWordformLinks();
     }
 
     /**
