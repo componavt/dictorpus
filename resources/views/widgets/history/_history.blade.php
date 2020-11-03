@@ -42,7 +42,7 @@ foreach($groups as $i => $group)
 <?php 
 $dt = \Carbon\Carbon::parse($time);
 //dd($all_history);
-$user = \App\Models\User::find($histories[0]->userResponsible()->id) ?? null; 
+$user = $histories[0]->userResponsible() ? \App\Models\User::find($histories[0]->userResponsible()->id) : null; 
 $histories = $histories->sortBy('id');
 $history_strings = [];
 $diffConfig = new Caxy\HtmlDiff\HtmlDiffConfig();
