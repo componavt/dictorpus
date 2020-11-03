@@ -161,7 +161,7 @@ class KarVerb
     public static function stem3FromMiniTemplate($stem0, $stem1, $stem4) {
         $C = "[".KarGram::consSet()."]’?";
         $V = "[".KarGram::vowelSet()."]";
-        
+
         if (preg_match("/".$C."[uyoö]$/u", $stem1)){ // 1
             return $stem1.'i';
         } elseif (preg_match("/^(.+".$C.")e$/u", $stem1, $regs) // 2

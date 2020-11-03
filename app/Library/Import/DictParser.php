@@ -171,6 +171,10 @@ class DictParser
             print "<p><b>$count. ERROR lemma:</b> $line (".$entry['lemmas'][0].")</p>\n";                
             return;
         } 
+        if (!preg_match("/^[a-zäöüčšž’\|\-\?\s\,\;\(\)\}\{\:\.\/\[\]]+$/ui", $entry['lemmas'][0])) {
+            print "<p><b>$count. ERROR lemma (wrong letters in template):</b> $line (".$entry['lemmas'][0].")</p>\n";                
+            return;
+        }
         if (!isset($entry['meanings']) || !is_array($entry['meanings'])) {
             print "<p><b>$count. ERROR meanings:</b> $line</p>\n";                
             return;

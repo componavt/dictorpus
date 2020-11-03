@@ -139,14 +139,24 @@ class KarVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStem2FromMiniTemplateAkkiloija() {
+        $lang_id = 4;
+        $stem0 = 'akkiloija';
+        $stem1 = 'akkiloičе';
+        $result = KarVerb::stem2FromMiniTemplate($stem0, $stem1);
+        
+        $expected = 'akkiloičo';
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testStem3FromMiniTemplate() {
         $lang_id = 4;
-        $stem0 = 'ailaštua';
-        $stem1 = 'ailašša';
-        $stem4 = 'ailašta';
+        $stem0 = 'akkiloija';
+        $stem1 = 'akkiloiče';
+        $stem4 = 'akkiloiče';
         $result = KarVerb::stem3FromMiniTemplate($stem0, $stem1, $stem4);
         
-        $expected = 'ailašši';
+        $expected = 'akkiloiči';
         $this->assertEquals( $expected, $result);        
     }
 }
