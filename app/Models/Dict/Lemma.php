@@ -261,7 +261,7 @@ class Lemma extends Model
 
     public function wordformWithLink($w, $wordform){
         $lang_id = $this->lang_id;
-        $word_count =  $wordform->texts()->wherePivot('relevance','>',0)->count();
+        $word_count =  $wordform->texts()->wherePivot('gramset_id', $wordform->pivot->gramset_id)->wherePivot('relevance','>',0)->count();
 /*        $word_count = Word::where('word', 'like',$wordform->wordform_for_search)
                     ->whereIn('text_id', function ($query) use ($lang_id) {
                         $query->select('id')->from('texts')
