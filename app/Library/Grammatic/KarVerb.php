@@ -33,7 +33,7 @@ class KarVerb
 
         // mini template
         if ($lang_id==4 && preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\[([^\]]*)\]/", $template, $regs)) {
-            return self::stemsFromMiniTemplate($regs);
+            return self::stemsFromMiniTemplate($regs, $name_num);
         } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {
 //dd('regs:',$regs);            
             return KarVerbOlo::stemsFromTemplateDef($regs, $is_reflexive);    
@@ -50,7 +50,7 @@ class KarVerb
         
     }
     
-    public static function stemsFromMiniTemplate($regs) {
+    public static function stemsFromMiniTemplate($regs, $name_num=null) {
         $base = preg_replace('/ǁ/','',$regs[1]);
         $harmony = KarGram::isBackVowels($regs[1].$regs[2]); // harmony
         $stems=[
@@ -62,9 +62,6 @@ class KarVerb
             5=>'',
             6=>'',
             7=>''];
-        $out = [$stems, null, $regs[0], null];
-        
-        $C = "[".KarGram::consSet()."]’?";
         
         $stems[2]=self::stem2FromMiniTemplate($stems[0], $stems[1]); // вспом. сильн. гл.
         $stems[4]=self::stem4FromMiniTemplate($stems[0], $stems[2]);
@@ -73,7 +70,7 @@ class KarVerb
         $stems[6]=self::stem6FromMiniTemplate($stems[0], $stems[1], $harmony); 
         $stems[7]=self::stem7FromMiniTemplate($stems[0], $stems[1], $stems[5]);
         
-        return [$stems, null, $regs[1], $regs[2]];
+        return [$stems, $name_num, $regs[1], $regs[2]];
     }
     
     /**

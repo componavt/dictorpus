@@ -33,6 +33,7 @@ class Grammatic
      * @return array
      */
     public static function parseLemmaField($data) {
+//dd($data);        
         $lemma = self::toRightForm($data['lemma']);
 //dd($lemma);        
         if (isset($data['number']) && $data['number']=='refl') {
@@ -43,17 +44,19 @@ class Grammatic
         } else {
             $is_reflexive = null;
         }
-        if (isset($data['number'])) {    
+        if (isset($data['impersonal']) && $data['impersonal']) {   
+            $name_num = 'def';
+        } elseif (isset($data['number'])) {    
             $name_num =  self::nameNumFromNumberField($data['number']);
         } else {
             $name_num =  null;
         }
        
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id'], $is_reflexive);
+//dd($name_num);
 //dd($stems);        
 //dd($max_stem, $affix);        
         $lemma = preg_replace("/\|\|/", '',$max_stem). $affix;
-
 //dd($lemma);        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'], $name_num, $stems, $is_reflexive);
 //dd($gramset_wordforms);        
