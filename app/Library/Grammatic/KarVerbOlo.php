@@ -505,6 +505,10 @@ class KarVerbOlo
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 'mm'. $O) : '';
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 'tt'. $O) : '';
+            case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
+                return Grammatic::joinMorfToBases($stems[6],'h');
+            case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
+                return Grammatic::joinMorfToBases($stems[6], '');
 
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., отриц. 
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., отриц. 
@@ -526,6 +530,8 @@ class KarVerbOlo
                 return !$def ? Grammatic::joinMorfToBases($stems[5], 'mm'. $O) : '';
             case 36: // 17. индикатив, имперфект, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[5], 'tt'. $O) : '';
+            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
+                return Grammatic::joinMorfToBases($stems[7], 'ih');
 /*            case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
                 return self::partic2active($stems[1], $stems[8]);
             case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.

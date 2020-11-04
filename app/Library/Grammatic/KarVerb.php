@@ -384,16 +384,9 @@ class KarVerb
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 'n') : '';
             case 27: // 2. индикатив, презенс, 2 л., ед.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 't') : '';        
-            case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases($stems[6],'h');
             case 295: // 144. индикатив, презенс, коннегатив, ед.ч.
                 return Grammatic::joinMorfToBases($stems[1], '');
-            case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
-                return Grammatic::joinMorfToBases($stems[6], '');
-                
-            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
-                return Grammatic::joinMorfToBases($stems[7], 'ih');
-                
+                               
             case 51: // 49. императив, 2 л., ед.ч., пол 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], ''): '';
         }
@@ -412,6 +405,10 @@ class KarVerb
                 return !$def ? Grammatic::joinMorfToBases($stems[1], KarGram::garmVowel($stems[10],'mma')) : '';
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], KarGram::garmVowel($stems[10],'tta')) : '';
+            case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
+                return !$def ? Grammatic::joinMorfToBases($stems[6],'h') : '';
+            case 296: // 145. индикатив, презенс, коннегатив, мн.ч.
+                return !$def ? Grammatic::joinMorfToBases($stems[6], '') : '';
 
             case 70: // 7. индикатив, презенс, 1 л., ед.ч., отриц. 
             case 71: // 8. индикатив, презенс, 2 л., ед.ч., отриц. 
@@ -433,6 +430,8 @@ class KarVerb
                 return !$def ? self::indImp1PlurByStem($stems[4], $stems[10], $dialect_id) : '';
             case 36: // 17. индикатив, имперфект, 2 л., мн.ч., пол. 
                 return !$def ? self::indImp2PlurByStem($stems[4], $stems[10]) : '';
+            case 37: // 18. индикатив, имперфект, 3 л., мн.ч., пол. 
+                return !$def ? Grammatic::joinMorfToBases($stems[7], 'ih') : '';
             case 297: // 146. индикатив, имперфект, коннегатив, ед.ч.
                 return $PF;
             case 298: // 147. индикатив, имперфект, коннегатив, мн.ч.
