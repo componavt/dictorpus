@@ -246,7 +246,7 @@ dd($relevance);
      */
      public function updateTextLinks($words=null) {
         if (!$this->pivot->gramset_id) { return; }
-        
+        if (!$this->lemma) { return; }
         if (!$words) {
             $words = $this->getWordsForLinks($this->lemma->lang_id);            
         }
