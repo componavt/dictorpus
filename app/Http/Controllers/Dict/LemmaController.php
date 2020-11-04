@@ -682,7 +682,7 @@ class LemmaController extends Controller
         $lemmas = Lemma::where('lemma','like', $search_lemma)
                        ->where('lang_id',$lang_id);
         if ($pos_id) {
-            $lemmas = $lemmas->where('pos_id',$pos_id);
+            $lemmas = $lemmas->whereIn('pos_id',[$pos_id, PartOfSpeech::getPhraseID()]);
         }
         if ($lemma_id) {
             $lemmas = $lemmas->where('id','<>',$lemma_id);
