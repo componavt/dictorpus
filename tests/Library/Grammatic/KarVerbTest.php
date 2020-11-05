@@ -159,4 +159,15 @@ class KarVerbTest extends TestCase
         $expected = 'akkiloiči';
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testInf3FormKatkie() {
+        $dialect_id=47; // tver
+        $stem2 = 'kätke';
+        $morf = 'mašta';
+        $harmony = false;
+        $result = KarVerb::Inf3Form($stem2, $morf, $harmony, $dialect_id);
+        
+        $expected = 'kätkomašta';
+        $this->assertEquals( $expected, $result);        
+    }
 }

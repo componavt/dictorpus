@@ -281,8 +281,8 @@ class DictParser
                 $lemma_in_db=Lemma::store($new_lemma, $entry['pos_id'], $lang_id);
                 $action = 'storing';
             } else {
-                print '<p>Lemma <a href="/dict/lemma?search_lemma='.$new_lemma.'&search_pos='.$entry['pos_id'].'&search_lang='.$lang_id.'">'.$new_lemma.'</a> exists</p>';
-                exit(0);
+                print '<p><b>Lemma <a href="/dict/lemma?search_lemma='.$new_lemma.'&search_pos='.$entry['pos_id'].'&search_lang='.$lang_id.'">'.$new_lemma.'</a> exists</b></p>';
+                return;
                 $is_label = $lemma_in_db->labels()->where('label_id', $label_id)->count();
 //                if (!$is_label) { // временно выключаем обновление при повторном прогоне тверского словаря
                     $lemma_in_db->modify();
