@@ -1143,7 +1143,7 @@ dd($wordforms);
         }
         $stem = preg_replace('/\|\|/','',$stem);
         if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
-            return $regs[1];
+            return $regs[1] ?? '';
         }
        return '#';
     }
