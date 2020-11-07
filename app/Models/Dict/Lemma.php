@@ -1580,7 +1580,7 @@ dd($wordforms);
                 if (!preg_match("/^".$max_stem."(.*)$/u", $w->wordform, $regs)) {
                     return $out;
                 } else {
-                    $tmp[] = '-'.$regs[1];
+                    $tmp[] = isset($regs[1]) ? '-'.$regs[1] : '';
                 }                
             }
             $ends[] = join('/',$tmp);
