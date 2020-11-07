@@ -145,6 +145,7 @@ class LemmaWordformController extends Controller
 
         // updates links with text examples
 //        $lemma->updateTextLinks();
+        $lemma->updateTextWordformLinks();
         $lemma->updateWordformTotal();        
         
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).($this->args_by_get ? '&' : '?').'update_text_links=1')
