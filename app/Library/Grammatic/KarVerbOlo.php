@@ -1102,17 +1102,16 @@ class KarVerbOlo
      * @param string $stem8
      */
     public static function activeBase($stem1,$stem8) {
-        if (!$stem8) {
-            return '';
-        }
+        if (!$stem8) { return ''; }
+        
         $C="[".KarGram::consSet()."]";
         $V="[".KarGram::vowelSet()."]";
         $out = [];
         foreach (preg_split("/\//",$stem8) as $base) {
             $base = trim($base);
-            if (preg_match("/".$C.'’?'.$V."$/u", $base) && KarGram::countSyllable($base)==2
+            if (preg_match("/".$C.'(’?)'.$V."$/u", $base, $regs) && KarGram::countSyllable($base)==2
                     || preg_match("/[nh]$/u", $base)) {
-                $out[] = $base. 'n';
+                $out[] = $base. 'n'. ($regs[1] ?? '');
             } elseif (preg_match("/".$C.'’?'.$V."$/u", $base) && KarGram::countSyllable($base)>2) {
                 $out[] = $stem1 ? $stem1. 'nn' : '';
             } elseif (preg_match("/".$V.$V."$/u", $base)) {

@@ -1306,11 +1306,11 @@ class GrammaticTest extends TestCase
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
 //dd($stems, KarGram::countSyllable($stems[5]), KarGram::countSyllable($stems[6]));  
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'ranta',  3=>'rannan',  4=>'rantua', 277=>'rantana',  
+        $expected = [1=>'ranta',  56=>'ranta, rannan',  3=>'rannan',  4=>'rantua', 277=>'rantana',  
                      5=>'rannakši', 8=>'rannašša',  9=>'rannašta', 10=>'rantah', 278=>'rannalla', 
                      12=>'rannalta', 6=>'rannatta', 14=>'', 15=>'', 
  
-            2=>'rannat', 24=>'rantojen', 22=>'rantoja', 279=>'rantoina', 
+            2=>'rannat', 57=>'rannat', 24=>'rantojen', 22=>'rantoja', 279=>'rantoina', 
             59=>'rannoiksi', 23=>'rannoissa', 60=>'rannoista', 61=>'rantoih', 280=>'rannoilla', 
             62=>'rannoilta', 64=>'rannoitta', 65=>'rantoineh', 66=>'', 281=>'rannoin'];
         $this->assertEquals( $expected, $result);        
@@ -1343,11 +1343,11 @@ class GrammaticTest extends TestCase
         $dialect_id='46';
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'pelto',  3=>'pellon',  4=>'peltuo', 277=>'peltona',  
+        $expected = [1=>'pelto',  56=>'pelto, pellon',  3=>'pellon',  4=>'peltuo', 277=>'peltona',  
                      5=>'pellokši', 8=>'pellošša',  9=>'pellošta', 10=>'peltoh', 278=>'pellolla', 
                      12=>'pellolta', 6=>'pellotta', 14=>'', 15=>'', 
  
-            2=>'pellot', 24=>'peltojen', 22=>'peltoja', 279=>'peltoloina', 
+            2=>'pellot', 57=>'pellot', 24=>'peltojen', 22=>'peltoja', 279=>'peltoloina', 
             59=>'peltoloiksi', 23=>'peltoloissa', 60=>'peltoloista', 61=>'peltoloih', 280=>'peltoloilla', 
             62=>'peltoloilta', 64=>'peltoloitta', 65=>'peltoloineh', 66=>'', 281=>'peltoloin'];
         $this->assertEquals( $expected, $result);        
@@ -1380,11 +1380,11 @@ class GrammaticTest extends TestCase
         $dialect_id='46';
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'mua',  3=>'muan',  4=>'muata', 277=>'muana',  
+        $expected = [1=>'mua',  56=>'mua, muan',  3=>'muan',  4=>'muata', 277=>'muana',  
                      5=>'muakši', 8=>'muašša',  9=>'muašta', 10=>'muah', 278=>'mualla', 
                      12=>'mualta', 6=>'muatta', 14=>'', 15=>'', 
  
-            2=>'muat', 24=>'maijen', 22=>'maita', 279=>'maina', 
+            2=>'muat', 57=>'muat', 24=>'maijen', 22=>'maita', 279=>'maina', 
             59=>'maiksi', 23=>'maissa', 60=>'maista', 61=>'maih', 280=>'mailla', 
             62=>'mailta', 64=>'maitta', 65=>'maineh', 66=>'', 281=>'main'];
         $this->assertEquals( $expected, $result);        
@@ -1418,11 +1418,11 @@ class GrammaticTest extends TestCase
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
 //dd($stems);        
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'nuori',  3=>'nuoren',  4=>'nuorta', 277=>'nuorena',  
+        $expected = [1=>'nuori',  56=>'nuori, nuoren',  3=>'nuoren',  4=>'nuorta', 277=>'nuorena',  
                      5=>'nuorekši', 8=>'nuorešša',  9=>'nuorešta', 10=>'nuoreh', 278=>'nuorella', 
                      12=>'nuorelta', 6=>'nuoretta', 14=>'', 15=>'', 
  
-            2=>'nuoret', 24=>'nuorien', 22=>'nuorie', 279=>'nuorina', 
+            2=>'nuoret', 57=>'nuoret', 24=>'nuorien', 22=>'nuorie', 279=>'nuorina', 
             59=>'nuoriksi', 23=>'nuorissa', 60=>'nuorista', 61=>'nuorih', 280=>'nuorilla', 
             62=>'nuorilta', 64=>'nuoritta', 65=>'nuorineh', 66=>'', 281=>'nuorin'];
         $this->assertEquals( $expected, $result);        
@@ -1454,11 +1454,11 @@ class GrammaticTest extends TestCase
         $dialect_id='46';
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'lyhyt',  3=>'lyhyön',  4=>'lyhyttä', 277=>'lyhyönä',  
+        $expected = [1=>'lyhyt', 56=>'lyhyt, lyhyön', 3=>'lyhyön',  4=>'lyhyttä', 277=>'lyhyönä',  
                      5=>'lyhyökši', 8=>'lyhyöššä',  9=>'lyhyöštä', 10=>'lyhyöh', 278=>'lyhyöllä', 
                      12=>'lyhyöltä', 6=>'lyhyöttä', 14=>'', 15=>'', 
  
-            2=>'lyhyöt', 24=>'lyhyijen', 22=>'lyhyitä', 279=>'lyhyinä', 
+            2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyijen', 22=>'lyhyitä', 279=>'lyhyinä', 
             59=>'lyhyiksi', 23=>'lyhyissä', 60=>'lyhyistä', 61=>'lyhyih', 280=>'lyhyillä', 
             62=>'lyhyiltä', 64=>'lyhyittä', 65=>'lyhyineh', 66=>'', 281=>'lyhyin'];
         $this->assertEquals( $expected, $result);        
@@ -1472,7 +1472,7 @@ class GrammaticTest extends TestCase
         $dialect_id=44;
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'lyhyt',  56=>'lyhyt, lyhyön', 3=>'lyhyön',  4=>'lyhytty', 277=>'lyhyönny',  
+        $expected = [1=>'lyhyt', 56=>'lyhyt, lyhyön', 3=>'lyhyön',  4=>'lyhytty', 277=>'lyhyönny',  
                      5=>'lyhyökse', 6=>'lyhyöttäh', 8=>'lyhyös',  9=>'lyhyös, lyhyöspäi', 10=>'lyhyöh',  
                      11=>'lyhyöl', 12=>'lyhyöl, lyhyölpäi', 13=>'lyhyöle', 14=>'lyhyönke', 15=>'lyhyöči', 
  
@@ -1491,11 +1491,11 @@ class GrammaticTest extends TestCase
         $dialect_id='46';
         list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
-        $expected = [1=>'vesi',  3=>'vejen',  4=>'vettä', 277=>'vetenä',  
+        $expected = [1=>'vesi', 56=>'vesi, vejen', 3=>'vejen',  4=>'vettä', 277=>'vetenä',  
                      5=>'vejekši', 8=>'veješšä',  9=>'veještä', 10=>'veteh', 278=>'vejellä', 
                      12=>'vejeltä', 6=>'vejettä', 14=>'', 15=>'', 
  
-            2=>'vejet', 24=>'vesien', 22=>'vesie', 279=>'vesinä', 
+            2=>'vejet', 57=>'vejet', 24=>'vesien', 22=>'vesie', 279=>'vesinä', 
             59=>'vesiksi', 23=>'vesissä', 60=>'vesistä', 61=>'vesih', 280=>'vesillä', 
             62=>'vesiltä', 64=>'vesittä', 65=>'vesineh', 66=>'', 281=>'vesin'];
         $this->assertEquals( $expected, $result);        
@@ -2282,6 +2282,18 @@ class GrammaticTest extends TestCase
 //        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
         $this->assertEquals( $expected, $result);        
     }
+    
+    public function testRemoveSoftening()
+    {
+        $words = ['ivual’en', 'ivual’ou', 'ivual’l’a', 'ivual’i', 'ivual’it', 'ivual’l’en'];
+        $result = [];
+        foreach ($words as $word) {
+            $result[] = Grammatic::removeSoftening($word);
+        }
+        $expected = ['ivualen', 'ivual’ou', 'ivual’l’a', 'ivuali', 'ivualit', 'ivual’l’en'];
+        $this->assertEquals( $expected, $result);        
+    }
+        
     
 /*    
     public function testWordformsByStemsKarVerbProper() {

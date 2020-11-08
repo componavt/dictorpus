@@ -12,6 +12,17 @@ use App\Library\Grammatic\KarVerb;
 
 class KarVerbTest extends TestCase
 {
+    public function testActiveBase() {
+        $dialect_id = 46;
+        $stems = ['ivual’'];
+        $result = [];
+        foreach ($stems as $stem5) {
+            $result[] = KarVerb::activeBase($stem5, $dialect_id);
+        }
+        $expected = ['ivual’l’'];
+        $this->assertEquals( $expected, $result);   
+    }
+    
     // основа 5 заканчивается на согласный g + гласный: gV    
     public function testPerfectVerbFormBringua() {
         $lang_id = 4;
@@ -142,10 +153,10 @@ class KarVerbTest extends TestCase
     public function testStem2FromMiniTemplateAkkiloija() {
         $lang_id = 4;
         $stem0 = 'akkiloija';
-        $stem1 = 'akkiloičе';
+        $stem1 = 'akkiloiče';
         $result = KarVerb::stem2FromMiniTemplate($stem0, $stem1);
         
-        $expected = 'akkiloičo';
+        $expected = 'akkiloičče';
         $this->assertEquals( $expected, $result);        
     }
     
@@ -167,7 +178,7 @@ class KarVerbTest extends TestCase
         $harmony = false;
         $result = KarVerb::Inf3Form($stem2, $morf, $harmony, $dialect_id);
         
-        $expected = 'kätkomašta';
+        $expected = 'kätkemäštä'; // в тверском нет замены на o
         $this->assertEquals( $expected, $result);        
     }
 }

@@ -209,9 +209,16 @@ class Grammatic
             }
         }
         if ($lang_id == 5 && $is_reflexive) {
-            return KarVerbOlo::wordformByStemsRef($stems, $gramset_id, $dialect_id, $def);
+            return self::removeSoftening(KarVerbOlo::wordformByStemsRef($stems, $gramset_id, $dialect_id, $def));
         }
-        return KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def);
+        return self::removeSoftening(KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def));
+    }
+    
+    public static function removeSoftening($word) {
+        if (preg_match("/^(.*[^’]l)’([ei].*)$/ui", $word, $regs)) {
+            return $regs[1].$regs[2];
+        }
+        return $word;
     }
     
     public static function isLetterChangeable($lang_id) {

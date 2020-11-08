@@ -1019,22 +1019,29 @@ class KarVerb
      * 
      * Ввожу замену в  о.5 (t > n) 
      * 
-     * основа 5 + n (если основа 5 заканчивается на СV)
-     * + nun (если основа 5 заканчивается на дифтонг (два гласных подряд: VV) или n)
-     * + lun (если основа 5 заканчивается на l)
-     * + run (если основа 5 заканчивается на r)
-     * + sun (если основа 5 заканчивается на s)
-     * + šun (если основа 5 заканчивается на š)
+     * Если основа 5 заканчивается на
+     * 1) СV, то + n
+     * 2) VV,h, то + nun
+     * 3) [nlrsš], то + эта буква + [uy]n
      * 
      * @param String $stem
      */
     public static function perfectForm($stem, $harmony, $lang_id) {
-        if (!$stem) {
-            return '';
-        }
+        if (!$stem) { return ''; }
+        
         $stem = preg_replace("/t$/","n",$stem);
         
+        $C="[".KarGram::consSet()."]’?";
+        $V="[".KarGram::vowelSet()."]";
         
+        if (preg_match("/".$V.$V."$/u", $stem) || preg_match("/h$/u", $stem)) { // 1
+            return $stem. 'n'.KarGram::garmVowel($harmony, 'un');
+        } elseif (preg_match("/".$C.$V."$/u", $stem)) { // 2
+            return $stem. 'n';
+        } elseif (preg_match("/^(.+)([nlrsš]’?)$/u", $stem, $regs)) { // 3
+            return $regs[1].$regs[2].$regs[2].KarGram::garmVowel($harmony, 'un');
+        }
+/*        
         $stem_for_search = Grammatic::toSearchForm($stem);
         $last_let = mb_substr($stem_for_search, -1, 1);
         $before_last_let = mb_substr($stem_for_search, -2, 1);
@@ -1045,7 +1052,7 @@ class KarVerb
             return $stem. KarGram::garmVowel($harmony, 'nun');
         } elseif (in_array($last_let, ['n', 'l', 'r', 's', 'š'])) {
             return $stem. $last_let. KarGram::garmVowel($harmony, 'un');
-        }
+        }*/
     }
     
     /**
