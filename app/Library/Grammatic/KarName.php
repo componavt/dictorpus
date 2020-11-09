@@ -960,20 +960,20 @@ class KarName
                 return ['lla', 'llä'];
             case 12: // аблатив, ед.ч. 
             case 62: // аблатив, мн.ч.
-                return ['lda', 'ldä'];
+                return ['lda', 'ldä', 'lta', 'ltä'];
             case 6: // абессив, ед.ч. 
             case 64: // абессив, мн.ч.
                 return ['tta', 'ttä'];
             case 14: // комитатив, ед.ч. 
             case 65: // комитатив, мн.ч. 
-                return ['nke'];
+                return ['nke', 'neh', 'n’eh'];
             case 15: // пролатив, ед.ч. 
             case 66: // пролатив, мн.ч. 
                 return ['čči'];
             case 2: // номинатив, мн.ч. 
                 return ['t'];
             case 22: // партитив, мн.ч. 
-                return ['e', 'da', 'dä'];
+                return ['e', 'da', 'dä', 'ja', 'jä', 'ta', 'tä'];
             case 59: // транслатив, мн.ч. 
                 return ['ksi'];
             case 23: // инессив, мн.ч.

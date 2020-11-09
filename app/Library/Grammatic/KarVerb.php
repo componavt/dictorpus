@@ -1312,47 +1312,47 @@ class KarVerb
                 return ['kah', 'käh', 'gah', 'gäh']; // 'kkah', 'kkäh'
             case 54: // 52. императив, 2 л., мн.ч., пол 
             case 76: // 57. императив, 2 л., мн.ч., отр. 
-                return ['kua', 'kiä', 'gua', 'giä']; // 'kkua', 'kkiä'                
+                return ['kua', 'kiä', 'gua', 'giä', 'kyä', 'gyä']; // 'kkua', 'kkiä'                
             case 44: // 71. кондиционал, имперфект, 1 л., ед.ч., пол. 
-                return ['zin'];
+                return ['zin', 'sin'];
             case 45: // 72. кондиционал, имперфект, 2 л., ед.ч., пол. 
-                return ['zit'];
+                return ['zit', 'sit'];
             case 46: // 73. кондиционал, имперфект, 3 л., ед.ч., пол. 
             case 116: // 77. кондиционал, имперфект, 1 л., ед.ч., отр. 
             case 117: // 78. кондиционал, имперфект, 2 л., ед.ч., отр. 
             case 119: // 80. кондиционал, имперфект, 1 л., мн.ч., отр. 
             case 120: // 81. кондиционал, имперфект, 2 л., мн.ч., отр. 
             case 118: // 79. кондиционал, имперфект, 3 л., ед.ч., отр. 
-                return ['s’']; // is’ 
+                return ['s’', 's']; // is’ 
             case 47: // 74. кондиционал, имперфект, 1 л., мн.ч., пол. 
-                return ['zima', 'zimä'];
+                return ['zima', 'zimä', 'sima', 'simä'];
             case 48: // 75. кондиционал, имперфект, 2 л., мн.ч., пол. 
-                return ['zija', 'zijä'];
+                return ['zija', 'zijä', 'sija', 'sijä'];
             case 49: // 76. кондиционал, имперфект, 3 л., мн.ч., пол. 
             case 121: // 82. кондиционал, имперфект, 3 л., мн.ч., отр. 
-                return ['ais’', 'äis’'];                               
+                return ['ais’', 'äis’', 'ais', 'äis'];                               
             case 146: // 107. потенциал, презенс, 1 л., ед.ч., пол. 
-                return ['nen', 'len', 'ren', 'sen', 'šen']; // nnen
+                return ['nen', 'len', 'ren', 'sen', 'šen', 'l’en']; // nnen
             case 147: // 108. потенциал, презенс, 2 л., ед.ч., пол. 
-                return ['net', 'let', 'ret', 'set', 'šet']; // nnet
+                return ['net', 'let', 'ret', 'set', 'šet', 'l’et']; // nnet
             case 148: // 109. потенциал, презенс, 3 л., ед.ч., пол. 
-                return ['nou', 'nöy', 'lou', 'löy', 'rou', 'röy', 'sou', 'söy', 'šou', 'šöy']; // 'nnou', 'nnöy'
+                return ['nou', 'nöy', 'lou', 'löy', 'rou', 'röy', 'sou', 'söy', 'šou', 'šöy', 'l’ou', 'l’öy']; // 'nnou', 'nnöy'
             case 149: // 110. потенциал, презенс, 1 л., мн.ч., пол. 
-                return ['nemma', 'nemmä', 'lemma', 'lemmä', 'remma', 'remmä', 'semma', 'semmä', 'šemma', 'šemmä']; // 'nnemma', 'nnemmä'
+                return ['nemma', 'nemmä', 'lemma', 'lemmä', 'remma', 'remmä', 'semma', 'semmä', 'šemma', 'šemmä', 'l’emma', 'l’emmä']; // 'nnemma', 'nnemmä'
             case 150: // 111. потенциал, презенс, 2 л., мн.ч., пол. 
-                return ['netta', 'nettä', 'letta', 'lettä', 'retta', 'rettä', 'setta', 'settä', 'šetta', 'šettä']; // 'nnemma', 'nnemmä'
+                return ['netta', 'nettä', 'letta', 'lettä', 'retta', 'rettä', 'setta', 'settä', 'šetta', 'šettä', 'l’etta', 'l’että']; // 'nnemma', 'nnemmä'
             case 151: // 112. потенциал, презенс, 3 л., мн.ч., пол. 
-                return ['anneh', 'änneh'];
+                return ['anneh', 'änneh', 'aneh', 'äneh'];
             case 310: // 158. потенциал, презенс, коннегатив 
             case 152: // 113. потенциал, презенс, 1 л., ед.ч., отр. 
             case 153: // 114. потенциал, презенс, 2 л., ед.ч., отр. 
+            case 154: // 115. потенциал, презенс, 3 л., ед.ч., отр. 
             case 155: // 116. потенциал, презенс, 1 л., мн.ч., отр. 
             case 156: // 117. потенциал, презенс, 2 л., мн.ч., отр. 
-            case 154: // 115. потенциал, презенс, 3 л., ед.ч., отр. 
-                return ['ne', 'le', 're', 'se', 'še']; // nne
+                return ['ne', 'le', 're', 'se', 'še', 'l’e']; // nne
             case 311: // 159. потенциал, презенс, коннегатив, 3 л. мн.ч.
             case 157: // 118. потенциал, презенс, 3 л., мн.ч., отр. 
-                return ['anne', 'änne'];                
+                return ['anne', 'änne', 'ane', 'äne'];                
             case 171: // 132. II инфинитив, инессив 
                 return ['s’s’a', 'ssä', 'šša', 'ššä']; 
             case 173: // 134. III инфинитив, адессив
@@ -1369,7 +1369,7 @@ class KarVerb
             case 178: // 139. актив, 1-е причастие 
                 return ['ja', 'jä'];
             case 179: // 140. актив, 2-е причастие 
-                return ['un', 'yn']; // nnun, 'nun', 'lun', 'run', 'sun', 'šun', 'l’un'
+                return ['un', 'yn', 'ut', 'yt']; // nnun, 'nun', 'lun', 'run', 'sun', 'šun', 'l’un'
             case 180: // 142. пассив, 1-е причастие 
                 return ['ava', 'ävä'];
         }
