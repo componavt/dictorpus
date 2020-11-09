@@ -3,6 +3,7 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use LaravelLocalization;
 
 //use App\Library\Grammatic;
 use App\Models\Dict\PartOfSpeech;
@@ -158,6 +159,10 @@ class Gramset extends Model
         if ($with_number) {
             $out = $this->sequence_number .') '.$out;
         }
+        
+        if ($this->id == 282) {
+            $out .= ' ('. (LaravelLocalization::getCurrentLocale() == 'ru' ? 'крат. ф.' : 'short form'). ')';
+        }
         return $out;
     }
 
@@ -212,6 +217,10 @@ class Gramset extends Model
         $out = join($glue, $list);
         if ($with_number) {
             $out = $this->sequence_number .'. '.$out;
+        }
+        
+        if ($this->id == 282) {
+            $out .= ' ('. (LaravelLocalization::getCurrentLocale() == 'ru' ? 'крат. ф.' : 'short form'). ')';
         }
         return $out;
     }
