@@ -297,6 +297,9 @@ class Lemma extends Model
         if (!$this->reverseLemma) {
             $this->createReverseLemma();
         }
+        if (!$this->reverseLemma) {
+            dd('It is not possible to create reverse lemma for '.$this->id);
+        }
         return [$this->reverseLemma->stem, $this->reverseLemma->affix];        
     }
 
@@ -656,6 +659,9 @@ dd($wordforms);
     public function extractStem() {
         $affix = '';
         $stem = $this->lemma;
+/*if ($this->id == 42093) {
+   dd($stem, $affix);
+} */       
 //print "\n".join("\n ",$this->uniqueWordforms())."\n";
 
         foreach ($this->uniqueWordforms() as $wordform) {
@@ -1093,12 +1099,12 @@ dd($wordforms);
             list($stem, $affix) = $this->extractStem();
         }
         
-        ReverseLemma::create([
+        $this->reverseLemma = ReverseLemma::create([
             'id' => $this->id,
             'reverse_lemma' => $reverse_lemma,
             'lang_id' => $this->lang_id,
             'stem' => $stem,
-            'affix' => $affix]);
+            'affix' => $affix]);         
     }
     
     public function addWordformGramsetDialect($wordform_id, $gramset_id, $dialect_id, $affix) {
