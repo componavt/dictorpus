@@ -190,6 +190,7 @@ class MeaningController extends Controller
             
 //dd($meaning->texts()->count());            
             $words = $meaning->lemma->getWordsForMeanings();
+//dd($words);            
             if ($words) {
                 if (!$meaning->texts()->count()) {
                     $meaning->addTextLinks($words);
@@ -197,6 +198,8 @@ class MeaningController extends Controller
     //dd($meaning);                
                     $meaning->updateTextLinks($words);
                 }
+            } else {
+                $meaning->texts()->detach();
             }
         }
         return view('dict.lemma.show.examples')
