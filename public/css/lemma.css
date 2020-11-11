@@ -165,6 +165,14 @@ h4 .fa {
     color: gray;
 }
 
+.help-lemma-pos {
+    margin-left: 20px;
+}
+
+.help-lemma-pos h4 {
+    margin-left: -20px;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

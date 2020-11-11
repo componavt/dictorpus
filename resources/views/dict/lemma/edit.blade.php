@@ -7,6 +7,7 @@
 @section('headExtra')
     {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/lemma.css')!!}
+    {!!Html::style('css/buttons.css')!!}
 @stop
 
 @section('body')
@@ -17,8 +18,13 @@
             @if (User::checkAccess('dict.edit'))
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
             @endif
+            | <a href="{{ LaravelLocalization::localizeURL('/help/lemma/form') }}">? {{ trans('navigation.help') }}</a>
         </p>
-        
+
+        @include('widgets.modal',['name'=>'modalHelp',
+                                  'title'=>trans('navigation.help'),
+                                  'modal_view'=>'help.lemma._form'])
+
         {!! Form::model($lemma, array('method'=>'PUT', 'route' => array('lemma.update', $lemma->id))) !!}
         @include('dict.lemma.form._create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit',
@@ -37,6 +43,7 @@
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/lemma.js')!!}
+    {!!Html::script('js/help.js')!!}
 @stop
 
 @section('jqueryFunc')

@@ -435,6 +435,10 @@ h2 {
     margin-bottom: 0;
 }
 
+.help-section h5 {
+    color: #c9302c;
+}
+
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;

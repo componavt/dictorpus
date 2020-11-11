@@ -66,6 +66,9 @@ Route::group(
         Route::get('/grants', function () {
             return view('page.grants');
         });
+        Route::get('/help/lemma/form', function () {
+            return view('help.lemma.form');
+        });
         Route::get('/help/text/show', function () {
             return view('help.text.show');
         });

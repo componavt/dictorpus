@@ -7,15 +7,6 @@
  * Updated: 24.08.2016 by Nataly Krizhanovsky
  */?>
 <?php 
-if(!isset($value)) 
-    $value = null;
-if(!isset($title)) 
-    $title = null;
-if(!isset($tail)) 
-    $tail = null;
-if(!isset($special_symbol)) 
-    $special_symbol = false;
-
 if (!isset($attributes)) {
     $attributes = [];
 }
@@ -30,27 +21,29 @@ if(isset($attributes['size'])) {
 if (isset($class)) {
     $attributes['class'] .= ' '.$class;
 }
-/*
-if(!isset($attributes['placeholder'])) {
-    $attributes['placeholder'] = $title;
-}*/    
+
 $id_name = preg_replace("/[\.\]\[]/","_",$name);
 $attributes['id'] = $id_name;
 
 ?>
 <div class="form-group {!! $errors->has($name) ? 'has-error' : null !!}">
-    @if($title)
+    @if(isset($title) && $title)
 	<label for="{{$name}}">{{ $title }}&nbsp;</label>
     @endif
-    {!! Form::text($name, $value, $attributes) !!}
+    {!! Form::text($name, $value ?? null, $attributes) !!}
 
     @if (isset($field_comments))
     <span class='field_comments'>{{$field_comments}}</span>
     @endif
     
-    @if ($special_symbol) 
+    @if (isset($special_symbol) && $special_symbol) 
         @include('dict.special_symbols',['id_name'=>$id_name])
     @endif
-    {{ $tail }}                                    
+    
+    @if (isset($help_func) && $help_func) 
+    <i class='help-icon far fa-question-circle fa-lg' onClick='{{$help_func}}'></i>
+    @endif
+    
+    {{ $tail ?? '' }}                                    
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

@@ -48,6 +48,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'lemma', 
                  'special_symbol' => true,
+                 'help_func' => 'callHelpLemma()',
                  'value' => $lemma_value,
                  'title'=>trans('dict.lemma')])
                  
