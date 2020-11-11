@@ -759,7 +759,7 @@ class KarName
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1]. 'tt'. $a : '';
             case 14: // комитатив, ед.ч. 
-                return $dialect_id==47 && $stems[1] ? $stems[1].'nke' : '';
+                return $stems[1] ? ($dialect_id==47 ? $stems[1].'nke': self::comPl($stems[4], $stems[5], $dialect_id)) : '';
             case 15: // пролатив, ед.ч. 
                 return $dialect_id==47 && $stems[1] ? $stems[1].'čči' : '';
         }
