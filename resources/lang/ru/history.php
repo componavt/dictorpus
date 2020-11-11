@@ -35,4 +35,5 @@ return [
     'transtext_accusative' => 'текст',
     'transtext_accusative' => 'перевод текста',
     'transtext_genetiv' => 'перевода',
+    'wordform_total_accusative' => 'общее количество словоформ',
 ];

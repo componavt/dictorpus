@@ -1519,5 +1519,8 @@ class KarVerbOlo
         }
         return [];
     }
-       
+
+    public static function templateFromWordforms($wordforms/*, $number*/) { //Безличные?
+        return " (".$wordforms[26].", ".$wordforms[28]."; ".$wordforms[31]."; ".$wordforms[34].", ".$wordforms[37].")";
+    }
 }

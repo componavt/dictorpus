@@ -485,4 +485,12 @@ class Grammatic
         }
         return [];
     }
+    
+    public static function templateFromWordforms($wordforms, $lang_id, $pos_id, $number) {
+        if ($lang_id == 1) { // vepsian
+            return VepsGram::templateFromWordforms($wordforms);
+        } else { 
+            return KarGram::templateFromWordforms($wordforms, $lang_id, $pos_id, $number);
+        }        
+    }
 }

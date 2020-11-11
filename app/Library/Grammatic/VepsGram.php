@@ -149,4 +149,8 @@ class VepsGram
         }
         return [];
     }
+    
+    public static function templateFromWordforms($wordforms) {
+        return " (".join(', ',array_values($wordforms)).")";
+    }
 }

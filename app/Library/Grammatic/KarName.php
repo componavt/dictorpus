@@ -984,4 +984,37 @@ class KarName
         return [];
     }
     
+    public static function templateFromWordforms($wordforms) {
+        foreach ($wordforms as $gramset_id => $wordform) {
+            if (preg_match("/^-(.+)$/", $wordform, $regs)) {
+                $wordforms[$gramset_id] = $regs[1];
+            }
+        }
+        if ($wordforms[3]=='n')  {
+            $wordforms[3]='';
+        } elseif (preg_match("/^(.*)n$/u", $wordforms[3], $regs)) {
+            $wordforms[3]=$regs[1];
+        } else {
+            return null;
+        }
+//dd($wordforms);        
+        
+        if ($wordforms[10]=='h')  {
+            $wordforms[10]='';
+        } elseif (preg_match("/^(.*)h$/u", $wordforms[10], $regs)) {
+            $wordforms[10]=$regs[1];
+        } else {
+            return null;
+        }
+        
+        if ($wordforms[3] != $wordforms[10]) {
+            $wordforms[3] .= '/'.$wordforms[10];
+        }
+        
+        if (!preg_match("/^(.*)t[aä]$/u", $wordforms[4], $regs1)) {
+            return " [".$wordforms[3]."]";            
+        }
+        
+        return " [".$wordforms[3].", $regs1[1]]";
+    }
 }

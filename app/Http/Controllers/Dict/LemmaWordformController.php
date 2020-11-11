@@ -147,6 +147,8 @@ class LemmaWordformController extends Controller
 //        $lemma->updateTextLinks();
         $lemma->updateTextWordformLinks();
         $lemma->updateWordformTotal();        
+        $lemma->updated_at = date('Y-m-d H:i:s');
+        $lemma->save();
         
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get).($this->args_by_get ? '&' : '?').'update_text_links=1')
                        ->withSuccess(\Lang::get('messages.updated_success'));

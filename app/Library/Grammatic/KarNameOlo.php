@@ -197,4 +197,11 @@ class KarNameOlo
         return [];
     }
     
+    public static function templateFromWordforms($wordforms, $number) {
+        if ($number==1 || $number==2) {
+            return " (".join(', ',array_values($wordforms)).")";
+        } else {
+            return " (".$wordforms[3].", ".$wordforms[4]."; ".$wordforms[22].")";
+        }
+    }
 }

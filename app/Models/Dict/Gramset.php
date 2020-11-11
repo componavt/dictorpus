@@ -284,9 +284,10 @@ class Gramset extends Model
 
         /**
      * 1 - nominative, singular
-     * 2 - nominative, plural
      * 3 - genetive, singular
      * 4 - partitive, singular
+     * 10 - illative, singular
+     * 2 - nominative, plural
      * 22 - partitive, plural
      * 24 - genetive, plural
      * 
@@ -302,7 +303,9 @@ class Gramset extends Model
      */
     public static function dictionaryGramsets($pos_id, $number=NULL, $lang_id=5) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            if ($number==1) { // plural
+            if ($lang_id==4) { // proper karelian пока не известно какие нужны формы для plural tantum
+                return [0=>3, 1=>10, 2=>4, 3=>1];                
+            } elseif ($number==1) { // plural
                 if ($lang_id == 1) { // vepsian
                     return [1=>22, 3=>2];
                 } else {
@@ -318,8 +321,8 @@ class Gramset extends Model
                 return [0=>28, 1=>34, 2=>52, 3=>170];
             } elseif ($lang_id == 5) { // livvi
                 return [0=>26, 1=>28, 2=>31, 3=>34, 4=>37, 5=>170];
-            } else {
-                return [0=>26, 1=>28, 2=>31, 3=>170];
+            } elseif($lang_id == 4) { // proper
+                return [0=>28, 3=>170];
             }
         }
         return NULL;

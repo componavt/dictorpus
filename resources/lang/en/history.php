@@ -34,4 +34,5 @@ return [
     'text_accusative' => 'the text',
     'transtext_accusative' => 'the text translation',
     'transtext_genetiv' => 'of the translation',
+    'wordform_total_accusative' => 'total number of wordforms',
 ];

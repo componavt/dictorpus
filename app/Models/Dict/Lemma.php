@@ -1565,16 +1565,16 @@ dd($wordforms);
         $out = $this->stemAffixForm();
 //dd($out);        
         $dialect_id = $this->lang->mainDialect();
-        if (!$this->reverseLemma || !$this->reverseLemma->stem || !in_array($this->lang_id, [1,5]) || !$dialect_id) { // not veps and livvi
+        if (!$this->reverseLemma || !$this->reverseLemma->stem || !in_array($this->lang_id, [1,4,5]) || !$dialect_id) { // not veps and livvi
             return $out;
         }
         $max_stem = preg_replace("/\|\|/", '', $this->reverseLemma->stem);
-        $gramsets = Gramset::dictionaryGramsets($this->pos_id, isset($this->features->number) ? $this->features->number : NULL, $this->lang_id);
+        $gramsets = Gramset::dictionaryGramsets($this->pos_id, $this->features->number ?? NULL, $this->lang_id);
         if (!$gramsets || !is_array($gramsets) || sizeof($gramsets)<2) { return $out; }
-        array_pop($gramsets);
         
+        array_pop($gramsets);       
 //dd($gramsets);        
-        $ends = [];
+        $wordforms = [];
         foreach ($gramsets as $gramset_id) {
             $wforms = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
 //print "<p>w:".$w[0]->wordform."</p>";            
@@ -1589,9 +1589,9 @@ dd($wordforms);
                     $tmp[] = isset($regs[1]) ? '-'.$regs[1] : '';
                 }                
             }
-            $ends[] = join('/',$tmp);
+            $wordforms[$gramset_id] = join('/',$tmp);
         }
-        return $out. " (".join(', ',$ends).")";        
+        return $out. Grammatic::templateFromWordforms($wordforms, $this->lang_id, $this->pos_id, $this->features->number ?? NULL); //" (".join(', ',$wordforms).")";        
     }
     
     public function getStemAffixByStems() {
