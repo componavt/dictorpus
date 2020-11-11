@@ -12,9 +12,9 @@
     Две вертикальные чёрточки (<b>||</b>) показывает части сложного слова.<br>
     Одна вертикальная чёрточка (<b>|</b>) показывает неизменяемую часть слова. В скобках следуют части слова, которые нужно присоединить к неизменяемой части для образования основы или словоформы.<br>
     
-    <div id='help-lemma-lang-5' class='help-lemma-lang'>
+    <div id='help-lemma-lang-1' class='help-lemma-lang'>
         <h3>Вепсский язык</h3>
-        <div id='help-lemma-pos-name' class='help-lemma-pos'>        
+        <div id='help-lemma-1-pos-name' class='help-lemma-pos'>        
             <h4>Именные части речи</h4>
             <h5>Словарный шаблон</h5>
             <p>В <b>круглых</b> скобках представлены через запятую падежные формы</p>
@@ -51,7 +51,7 @@
             <p>Дефис (-) заменяет удаленную из формы неизменяемую часть слова.</p>
         </div>
         
-        <div id='help-lemma-pos-verb' class='help-lemma-pos'>        
+        <div id='help-lemma-1-pos-verb' class='help-lemma-pos'>        
             <h4>Глагол</h4>
             <h5>Словарный шаблон</h5>
             <p>В <b>круглых</b> скобках через запятую приводятся падежные формы 3 лица ед. числа презенса и имперфекта. 
@@ -70,7 +70,7 @@
     
     <div id='help-lemma-lang-4' class='help-lemma-lang'>
         <h3>Cобственно карельское наречие</h3>
-        <div id='help-lemma-pos-name' class='help-lemma-pos'>        
+        <div id='help-lemma-4-pos-name' class='help-lemma-pos'>        
             <h4>Именные части речи</h4>
             <h5>Минимизированный шаблон</h5>
             <p>В <b>квадратных</b> скобках части основ (после удаления слева неизменяемой части) без дефиса, через запятую. 
@@ -102,7 +102,7 @@
             pakkaškuu {-, -da, -loi}<br>
             pais|to {-so : -to, -tuo, -toloi}</p>
         </div>
-        <div id='help-lemma-pos-verb' class='help-lemma-pos'>        
+        <div id='help-lemma-4-pos-verb' class='help-lemma-pos'>        
             <h4>Глагол</h4>
             <h5>Минимизированный шаблон</h5>
             <p>В <b>квадратных</b> скобках часть слабой гласной основы (презенс 1 л., ед. ч. после удаления слева неизменяемой части и справа окончания n) без дефиса.</p>
@@ -128,7 +128,7 @@
     
     <div id='help-lemma-lang-5' class='help-lemma-lang'>
         <h3>Ливвиковское наречие</h3>
-        <div id='help-lemma-pos-name' class='help-lemma-pos'>        
+        <div id='help-lemma-5-pos-name' class='help-lemma-pos'>        
             <h4>Именные части речи</h4>
             <h5>Минимизированный шаблон</h5>
             <p>В <b>квадратных</b> скобках части основ (после удаления слева неизменяемой части) без дефиса, через запятую. 
@@ -163,7 +163,7 @@
             </p>
         </div>
         
-        <div id='help-lemma-pos-verb' class='help-lemma-pos'>        
+        <div id='help-lemma-5-pos-verb' class='help-lemma-pos'>        
             <h4>Глагол</h4>
             <h5>Словарный шаблон</h5>
             <p>В <b>круглых</b> скобках через запятую приводятся формы 1 и 3 лица ед. числа, а после точки с запятой – 3 лица мн. числа настоящего времени

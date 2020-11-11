@@ -11,9 +11,9 @@ function callHelpLemma() {
         if (pos_id) {
             $(".help-lemma-pos").hide();
             if (pos_id==='11') {
-                $("#help-lemma-pos-verb").show();        
+                $("#help-lemma-"+lang_id+"-pos-verb").show();        
             } else if (name_pos.includes(pos_id)) {
-                $("#help-lemma-pos-name").show();        
+                $("#help-lemma-"+lang_id+"-pos-name").show();        
             }
         }
     }
