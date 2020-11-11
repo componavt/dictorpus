@@ -7,11 +7,16 @@
 @section('headExtra')
     {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/lemma.css')!!}
+    {!!Html::style('css/buttons.css')!!}
 @stop
 
 @section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
         
+        @include('widgets.modal',['name'=>'modalHelp',
+                                  'title'=>trans('navigation.help'),
+                                  'modal_view'=>'help.lemma._form'])
+                                  
         {!! Form::open(array('method'=>'POST', 'route' => ['lemma.store'])) !!}
         @include('dict.lemma.form._create_edit', ['submit_title' => trans('messages.create_new_f'),
                                       'action' => 'create',
@@ -27,6 +32,7 @@
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/lemma.js')!!}
+    {!!Html::script('js/help.js')!!}
 @stop
 
 @section('jqueryFunc')
