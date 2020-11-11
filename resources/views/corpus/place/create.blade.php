@@ -12,11 +12,11 @@
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/place/') }}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('place.store'))) !!}
-        @include('corpus.place._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
-                                      'action' => 'create',
+        @include('corpus.place._form_create_edit', ['action' => 'create',
                                       'dialect_value' => [],
                                       'region_values' => $region_values,
                                       'district_values' => $district_values])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.create_new_m')])
         {!! Form::close() !!}
 @stop
 

@@ -10,9 +10,13 @@ return [
     |
     */
 
+    'add_district' => 'Add a district',
     'add-gramset' => 'Add grammmatic attributes',
-    'add-lemma' => 'Add lemma',
-    'add-wordform' => 'Add wordform',
+    'add_informant' => 'Add an informant',
+    'add-lemma' => 'Add a lemma',
+    'add_place' => 'Add a place',
+    'add_recorder' => 'Add a recorder',
+    'add-wordform' => 'Add a wordform',
     'archive_krc' => 'audio archive of ILLH, KarRC RAS',
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',

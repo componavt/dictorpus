@@ -9,7 +9,7 @@
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/recorder/'.$recorder->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($recorder, array('method'=>'PUT', 'route' => array('recorder.update', $recorder->id))) !!}
-        @include('corpus.recorder._form_create_edit', ['submit_title' => trans('messages.save'),
-                                      'action' => 'edit'])
+        @include('corpus.recorder._form_create_edit', ['action' => 'edit'])
+        @include('widgets.form.formitem._submit', ['title' => 'submit_title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop

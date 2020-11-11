@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use DB;
+//use DB;
 use LaravelLocalization;
+use Response;
 
 use App\Library\Str;
 
@@ -69,13 +70,22 @@ class PlaceController extends Controller
     {
         $region_values = Region::getList();
         $district_values = [NULL => ''] + District::getList();
-        $lang_values = Lang::getList([Lang::getIDByCode('en'), 
+        $lang_values = [NULL => ''] + Lang::getList([Lang::getIDByCode('en'), 
                                       Lang::getIDByCode('ru')]);
         $dialect_values = Dialect::getList(); 
         
         return view('corpus.place.create',
                   compact(['dialect_values', 'district_values',
                           'lang_values', 'region_values']));
+    }
+
+    public function validateRequest(Request $request) {
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+            'district_id' => 'required|numeric',
+            'region_id' => 'required|numeric',
+        ]);
     }
 
     /**
@@ -86,14 +96,9 @@ class PlaceController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
-            'district_id' => 'required|numeric',
-            'region_id' => 'required|numeric',
-        ]);
+        $this->validateRequest($request);
         $place = Place::create($request->only('district_id','region_id','name_en','name_ru'));
-        
+
         foreach ($request->other_names as $lang => $other_name) {
             if ($other_name) {
                 $name= PlaceName::create(['place_id'=>$place->id, 
@@ -108,6 +113,14 @@ class PlaceController extends Controller
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
+    public function simpleStore(Request $request)
+    {
+        $this->validateRequest($request);
+        $place = Place::create($request->all());
+        $lang_id=Lang::getIDByCode(LaravelLocalization::getCurrentLocale());
+        return Response::json([$place->id, $place->placeString($lang_id)]);
+    }
+    
     /**
      * Display the specified resource.
      *
@@ -130,7 +143,7 @@ class PlaceController extends Controller
         $place = Place::find($id); 
         $region_values = Region::getList();
         $district_values = [NULL => ''] + District::getList();
-        $lang_values = Lang::getList([Lang::getIDByCode('en'), 
+        $lang_values = [NULL => ''] + Lang::getList([Lang::getIDByCode('en'), 
                                       Lang::getIDByCode('ru')]);
         
         $other_names =[];

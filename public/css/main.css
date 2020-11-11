@@ -439,6 +439,13 @@ h2 {
     color: #c9302c;
 }
 
+.call-add {
+    color: #972d1a;
+    cursor: pointer;
+}
+
+
+
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;

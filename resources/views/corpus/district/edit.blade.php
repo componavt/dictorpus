@@ -9,7 +9,7 @@
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/district/'.$district->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($district, array('method'=>'PUT', 'route' => array('district.update', $district->id))) !!}
-        @include('corpus.district._form_create_edit', ['submit_title' => trans('messages.save'),
-                                      'action' => 'edit'])
+        @include('corpus.district._form_create_edit', ['action' => 'edit'])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop

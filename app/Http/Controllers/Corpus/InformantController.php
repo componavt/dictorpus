@@ -4,17 +4,20 @@ namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use DB;
+//use DB;
 use LaravelLocalization;
+use Response;
 
 use App\Library\Str;
 
 use App\Models\Dict\Lang;
+use App\Models\Corpus\District;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
+use App\Models\Corpus\Region;
 
 class InformantController extends Controller
 {
@@ -102,19 +105,18 @@ class InformantController extends Controller
     public function create()
     {
         $place_values = [NULL => ''] + Place::getList();
+        $region_values = Region::getList();
+        $district_values = District::getList();
         
-        return view('corpus.informant.create')
-                  ->with(['place_values' => $place_values]);
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        return view('corpus.informant.create',
+                  compact('place_values', 'region_values', 'district_values', 
+                          'args_by_get', 'url_args'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+    public function validateRequest(Request $request) {
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
@@ -129,13 +131,31 @@ class InformantController extends Controller
         if (!$request['birth_place_id']) {
             $request['birth_place_id'] = NULL;
         }
+        return $request->all();
+    }
 
-        $informant = Informant::create($request->all());
-        
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data=$this->validateRequest($request);       
+        $informant = Informant::create($data);        
         return Redirect::to('/corpus/informant/?search_id='.$informant->id)
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
+    public function simpleStore(Request $request)
+    {
+        $data=$this->validateRequest($request);       
+        $informant = Informant::create($data);        
+        $lang_id=Lang::getIDByCode(LaravelLocalization::getCurrentLocale());
+        return Response::json([$informant->id, $informant->informantString($lang_id)]);
+    }
+    
     /**
      * Display the specified resource.
      *
@@ -157,10 +177,14 @@ class InformantController extends Controller
     {
         $informant = Informant::find($id); 
         $place_values = [NULL => ''] + Place::getList();
+        $region_values = Region::getList();
+        $district_values = District::getList();
         
-        return view('corpus.informant.edit')
-                  ->with(['place_values' => $place_values,
-                          'informant' => $informant]);
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        return view('corpus.informant.edit',
+                  compact('informant', 'place_values', 'region_values', 
+                          'district_values', 'args_by_get', 'url_args'));
     }
 
     /**

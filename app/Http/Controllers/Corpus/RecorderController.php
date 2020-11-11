@@ -78,6 +78,13 @@ class RecorderController extends Controller
         return view('corpus.recorder.create');
     }
 
+    public function validateRequest(Request $request) {
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -86,17 +93,20 @@ class RecorderController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
-        ]);
-        
+        $this->validateRequest($request);        
         $recorder = Recorder::create($request->all());
         
         return Redirect::to('/corpus/recorder/?search_id='.$recorder->id)
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
+    public function simpleStore(Request $request)
+    {
+        $this->validateRequest($request);        
+        $recorder = Recorder::create($request->all());
+        return $recorder->id;        
+    }
+    
     /**
      * Display the specified resource.
      *

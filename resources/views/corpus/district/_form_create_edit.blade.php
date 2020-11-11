@@ -11,4 +11,3 @@
                  'values' =>$region_values,
                  'title' => trans('corpus.region')]) 
 
-@include('widgets.form.formitem._submit', ['title' => $submit_title])

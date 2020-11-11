@@ -21,12 +21,34 @@
             </a>
         @endif
         </p>
+
+        @include('widgets.modal',['name'=>'modalAddDistrict',
+                              'title'=>trans('corpus.add_district'),
+                              'submit_onClick' => 'saveDistrict()',
+                              'submit_title' => trans('messages.save'),
+                              'modal_view'=>'corpus.district._form_create_edit'])
+        
+        @include('widgets.modal',['name'=>'modalAddPlace',
+                              'title'=>trans('corpus.add_place'),
+                              'submit_onClick' => 'savePlace()',
+                              'submit_title' => trans('messages.save'),
+                              'modal_view'=>'corpus.place._form_create_simple'])
+        
+        @include('widgets.modal',['name'=>'modalAddRecorder',
+                              'title'=>trans('corpus.add_recorder'),
+                              'submit_onClick' => 'saveRecorder()',
+                              'submit_title' => trans('messages.save'),
+                              'modal_view'=>'corpus.recorder._form_create_edit'])
+        
+        @include('widgets.modal',['name'=>'modalAddInformant',
+                              'title'=>trans('corpus.add_informant'),
+                              'submit_onClick' => 'saveInformant()',
+                              'submit_title' => trans('messages.save'),
+                              'modal_view'=>'corpus.informant._form_create_edit'])
         
         {!! Form::model($text, array('method'=>'PUT', 'route' => array('text.update', $text->id))) !!}
         @include('corpus.text._form_create_edit', ['submit_title' => trans('messages.save'),
-                                      'action' => 'edit',
-                                      'lang_values' => $lang_values, 
-                                      'corpus_values'  => $corpus_values])
+                                      'action' => 'edit'])
         {!! Form::close() !!}
 @stop
 
@@ -34,6 +56,7 @@
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/corpus.js')!!}
 @stop
 
 @section('jqueryFunc')

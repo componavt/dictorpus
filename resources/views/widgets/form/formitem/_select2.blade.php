@@ -24,6 +24,7 @@ if (!isset($is_multiple) || $is_multiple) {
 if (!isset($class)) {
     $class = 'multiple-select form-control';
 }
+$id_name = preg_replace("/[\.\]\[]/","_",$name);
 ?>
 <div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}
         <?=isset($group_class)  ? ' '.$group_class : '';?>
@@ -32,10 +33,15 @@ if (!isset($class)) {
         <?=isset($style)  ? ' style="'.$style.'"' : '';?>
      >
     @if($title)
-    <label for="{{$name}}{{$multiple ? '[]': ''}}">{{ $title }}</label>
+    <label for="{{$name}}{{$multiple ? '[]': ''}}">
+        {{ $title }}
+        @if (isset($call_add_onClick)) 
+        <i onClick="{{$call_add_onClick}}" class="call-add fa fa-plus fa-lg" title="{{$call_add_title ?? ''}}"></i>
+        @endif
+    </label>
     @endif
     
-    <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}{{$multiple ? '[]': ''}}" id="{{ $name }}" placeholder="choooose">
+    <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}{{$multiple ? '[]': ''}}" id="{{ $id_name }}" placeholder="choooose">
         <!--option></option-->
     @if ($grouped)
         @foreach ($values as $group_name=>$group_values)

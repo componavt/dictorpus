@@ -13,13 +13,19 @@ if (!isset($attributes)) {
 if (!isset($attributes['class'])) {
     $attributes['class'] = 'form-control';
 }
-$attributes['id'] = $name;
+$id_name = preg_replace("/[\.\]\[]/","_",$name);
+$attributes['id'] = $id_name;
 
 ?>
 
 <div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
     @if($title)
-	<label for="{{$name}}">{{ $title }}</label>
+	<label for="{{$name}}">
+            {{ $title }}
+            @if (isset($call_add_onClick)) 
+            <i onClick="{{$call_add_onClick}}" class="call-add fa fa-plus fa-lg" title="{{$call_add_title ?? ''}}"></i>
+            @endif
+        </label>
     @endif
     
 	{!! Form::select($name, 

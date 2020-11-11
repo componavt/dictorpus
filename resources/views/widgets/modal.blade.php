@@ -13,6 +13,8 @@
             <div class="modal-footer">
                 @if (isset($submit_id))
                 <button type="submit" class="btn btn-success" id="{{ $submit_id }}">{{ $submit_title }}</button>
+                @elseif (isset($submit_onClick))
+                <button type="submit" class="btn btn-success" onClick="{{ $submit_onClick }}">{{ $submit_title }}</button>
                 @endif
                 <button type="button" class="btn btn-default cancel" data-dismiss="modal">{{trans('messages.close')}}</button>
             </div>

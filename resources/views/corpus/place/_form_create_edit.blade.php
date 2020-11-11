@@ -34,13 +34,13 @@
                  'title'=>trans('corpus.name').' ('.\App\Models\Dict\Lang::getNameByCode('en'). ' '. trans('dict.lang').')'])
                  
         @foreach ($lang_values as $lang_id => $lang_n) 
-            @include('widgets.form.formitem._text', 
-                    ['name' => 'other_names['.$lang_id.']', 
-                     'special_symbol' => true,
-                     'value' => $other_names[$lang_id] ?? NULL,
-                     'title'=>trans('corpus.name').' ('.$lang_n.')'])            
+            @if ($lang_id)
+                @include('widgets.form.formitem._text', 
+                        ['name' => 'other_names['.$lang_id.']', 
+                         'special_symbol' => true,
+                         'value' => $other_names[$lang_id] ?? NULL,
+                         'title'=>trans('corpus.name').' ('.$lang_n.')'])    
+            @endif
         @endforeach
     </div>
 </div>                 
-
-@include('widgets.form.formitem._submit', ['title' => $submit_title])
