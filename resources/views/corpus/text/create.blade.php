@@ -11,6 +11,7 @@
 
 @section('body')
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}">{{ trans('messages.back_to_list') }}</a>
+           |
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
         @endif
