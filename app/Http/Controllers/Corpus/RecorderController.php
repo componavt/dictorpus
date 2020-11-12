@@ -48,7 +48,10 @@ class RecorderController extends Controller
         $locale = LaravelLocalization::getCurrentLocale();
         $recorders = Recorder::orderBy('name_'.$locale);
 
-        $recorder_name = $url_args['search_id'];
+        if ($url_args['search_id']) {
+            $recorders = $recorders->where('id', $url_args['search_id']);
+        } 
+        $recorder_name = $url_args['search_name'];
         if ($recorder_name) {
             $recorders = $recorders->where(function($q) use ($recorder_name){
                             $q->where('name_en','like', $recorder_name)
