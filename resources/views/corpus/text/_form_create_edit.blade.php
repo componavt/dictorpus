@@ -83,7 +83,7 @@
                 ['name' => 'event.place_id', 
                  'values' =>$place_values,
                  'value' => $event_place_value,
-                 'call_add_onClick' => 'addPlace()',
+                 'call_add_onClick' => "addPlace('event_place_id')",
                  'call_add_title' => trans('messages.create_new_g'),
                  'title' => trans('corpus.record_place')]) 
         <?php if ($action=='create') { $recorder_value = NULL; } ?>        

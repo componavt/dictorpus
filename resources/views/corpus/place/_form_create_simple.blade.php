@@ -16,3 +16,4 @@
                 ['name' => 'name_en', 
                  'title'=>trans('corpus.name').' ('.\App\Models\Dict\Lang::getNameByCode('en'). ' '. trans('dict.lang').')'])
                  
+        <input type="hidden" id="parent_place" value="birth_place_id">         

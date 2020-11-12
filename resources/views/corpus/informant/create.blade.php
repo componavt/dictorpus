@@ -9,7 +9,7 @@
 
         @include('widgets.modal',['name'=>'modalAddPlace',
                               'title'=>trans('corpus.add_place'),
-                              'submit_onClick' => 'saveBirthPlace()',
+                              'submit_onClick' => 'savePlace()',
                               'submit_title' => trans('messages.save'),
                               'modal_view'=>'corpus.place._form_create_simple'])
         

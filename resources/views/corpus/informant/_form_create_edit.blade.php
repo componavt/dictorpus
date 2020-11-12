@@ -16,3 +16,4 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'birth_date', 
                  'title'=>trans('corpus.year_of_birth')])
+                 

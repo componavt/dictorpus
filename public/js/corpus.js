@@ -36,8 +36,11 @@ function saveDistrict() {
     }); 
 }
 
-function addPlace() {
+function addPlace(parent_field) {
     $("#modalAddPlace").modal('show');
+    $("#modalAddPlace #parent_place").val(parent_field);
+console.log('parent_field: '+parent_field);    
+console.log('parent_field: '+ $("#modalAddPlace #parent_place").val());    
 }
 
 function savePlace() {
@@ -45,6 +48,9 @@ function savePlace() {
     var district_id = $( "#modalAddPlace #district_id" ).val();
     var name_ru = $( "#modalAddPlace #name_ru" ).val();
     var name_en = $( "#modalAddPlace #name_en" ).val();
+
+    var parent_field = $("#modalAddPlace #parent_place").val();
+console.log('parent_field: '+parent_field);    
     var route = '/corpus/place/store';
     var test_url = '?name_ru='+name_ru+'&name_en='+name_en+'&region_id='+region_id+'&district_id='+district_id;
 //alert(route + test_url);    
@@ -57,11 +63,11 @@ function savePlace() {
               },
         type: 'GET',
         success: function(place){       
-console.log('place: ' +place);    
+//console.log('place: ' +place);    
             $("#modalAddPlace").modal('hide');
             if (place[0]) {
                 var opt = new Option(place[1], place[0]);
-                $("#event_place_id").append(opt).trigger('change');
+                $('#'+parent_field).append(opt).trigger('change');
                 opt.setAttribute('selected','selected')
             }
         },
@@ -82,6 +88,7 @@ function saveInformant() {
     var name_en = $( "#modalAddInformant #name_en" ).val();
     var birth_place_id = $( "#modalAddInformant #birth_place_id" ).val();
     var birth_date = $( "#modalAddInformant #birth_date" ).val();
+    
     var route = '/corpus/informant/store';
     var test_url = '?name_ru='+name_ru+'&name_en='+name_en+'&birth_place_id='+birth_place_id+'&birth_date='+birth_date;
     $.ajax({
