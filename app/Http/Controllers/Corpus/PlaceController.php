@@ -109,7 +109,7 @@ class PlaceController extends Controller
         
         $place->dialects()->attach($request->dialects);
         
-        return Redirect::to('/corpus/place/?search_id='.$place->id)
+        return Redirect::to('/corpus/place/?search_id='.$place->id.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
@@ -193,7 +193,7 @@ class PlaceController extends Controller
         $place->dialects()->detach();
         $place->dialects()->attach($request->dialects);
         
-        return Redirect::to('/corpus/place/?search_id='.$place->id)
+        return Redirect::to('/corpus/place/?search_id='.$place->id.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
@@ -249,10 +249,10 @@ class PlaceController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/corpus/place/')
+                return Redirect::to('/corpus/place/'.$this->args_by_get)
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/corpus/place/')
+            return Redirect::to('/corpus/place/'.$this->args_by_get)
                   ->withSuccess($result['message']);
         }
     }
