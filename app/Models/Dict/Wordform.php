@@ -161,9 +161,9 @@ class Wordform extends Model
         $wordform_link = $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->wherePivot('gramset_id',$gramset_id);
         if ($wordform_link->count()) {
             $wordform_link->update(['relevance'=>2]);
-        } /*else {
+        } else {
             $wordform_link = $this->texts()->attach($text_id, ['w_id'=>$w_id, 'gramset_id'=>$gramset_id, 'relevance'=>2]);
-        }*/
+        }
     }
     
     /**

@@ -32,6 +32,7 @@ function showLemmaLinked(text_id) {
         w_block.show();
         var downloaded = w_block.data('downloaded');
         if (downloaded === 0) {
+console.log("showLemmaLinked: text_id, w_id: " + text_id + ','+ w_id );
             loadWordBlock(text_id, w_id, '/corpus/word/load_word_block/');
         }
     });
@@ -57,6 +58,7 @@ function updateWordBlock(text_id, w_id) {
 
 function loadWordBlock(text_id, w_id, url) {
     $("#links_"+w_id+".links-to-lemmas .img-loading").show();
+console.log("loadWordBlock: " + url + text_id + '_' + w_id);
     $.ajax({
         url: url + text_id + '_' + w_id, 
 //        data: data,
@@ -72,14 +74,18 @@ function loadWordBlock(text_id, w_id, url) {
     }); 
 }
 
-function saveLemma(data) {
+function saveLemma(text_id, data) {
     $.ajax({
         url: '/dict/lemma/store_simple', 
         data: data,
         type: 'GET',
         success: function(lemma_id){
+            var opt = new Option(data.lemma, lemma_id);
+            $('#choose-lemma').append(opt).trigger('change');
+            opt.setAttribute('selected','selected');
+            loadLemmaData(lemma_id, text_id);            
             $("#modalAddLemma").modal('hide');
-            $( "#new_meanings_0__meaning_text__2_" ).val(null);
+            $("#new_meanings_0__meaning_text__2_" ).val(null);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);
@@ -88,7 +94,7 @@ function saveLemma(data) {
     }); 
 }
 
-function addLemma(lang_id) {
+function addLemma(text_id, lang_id) {
     $("#call-add-lemma").click(function() {
         $("#modalAddLemma").modal('show'); 
         var wordform = $( "#choose-wordform" ).val();
@@ -103,7 +109,7 @@ function addLemma(lang_id) {
                     number: $( "#number option:selected" ).val(),
                     reflexive: $( "#reflexive" ).val(),
                     impersonal: $( "#impersonal" ).val()};
-        saveLemma(data);
+        saveLemma(text_id, data);
     });
     
     $("#modalAddLemma .close, #modalAddLemma .cancel").on('click', function() {
@@ -124,22 +130,26 @@ function loadDataToWordformModal(text_id, w_id, wordform) {
                 .change(function () {
                     var lemma_id=$( "#choose-lemma option:selected" ).val();
                     if (lemma_id != null) {
-                        $.ajax({
-                            url: '/dict/wordform/create', 
-                            data: {lemma_id: lemma_id, text_id: text_id },
-                            type: 'GET',
-                            success: function(result){
-                                $("#addWordformFields").html(result);               
-                            },
-                            error: function() {
-                                alert('ERROR');
-                            }
-                        }); 
+                        loadLemmaData(lemma_id, text_id);
                     }
                 })
                 .change();    
         }
     });        
+}
+
+function loadLemmaData(lemma_id, text_id) {
+    $.ajax({
+        url: '/dict/wordform/create', 
+        data: {lemma_id: lemma_id, text_id: text_id},
+        type: 'GET',
+        success: function(result){
+            $("#addWordformFields").html(result);               
+        },
+        error: function() {
+            alert('ERROR');
+        }
+    }); 
 }
 
 function clearWordformModal() {
@@ -174,7 +184,7 @@ function changeLemmaList(lang_id) {
 function changeWordBlock(text_id, w_id) {
     $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked');
     $("w[id="+w_id+"]").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
-    loadWordBlock(text_id, w_id);
+    loadWordBlock(text_id, w_id, '/corpus/word/load_word_block/');
 }
 
 /**
@@ -194,6 +204,7 @@ function changeWordBlock(text_id, w_id) {
 function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects) {
     var route = '/dict/lemma_wordform/store';
     var test_url = '?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&wordform='+ wordform +'&w_id='+w_id+'&dialects[]='+dialects;
+console.log("saveWordform: " + test_url);
     
     $.ajax({
         url: route, 
@@ -209,9 +220,7 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
         success: function(result){       
             $("#modalAddWordform").modal('hide');
             changeWordBlock(text_id, w_id);
-            clearWordformModal();
-//            $("#modalAddGramset").modal('show');
-            
+            clearWordformModal();            
         },
         error: function (jqXHR, textStatus, errorThrown) {
             var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
@@ -262,5 +271,5 @@ function addWordform(text_id, lang_id) {
         }
         saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects);
     });
-    addLemma(lang_id);    
+    addLemma(text_id, lang_id);    
 }

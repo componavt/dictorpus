@@ -1175,11 +1175,9 @@ dd($wordforms);
         if (!$word || !$this->pos || !$this->pos->isChangeable()) {
             return;
         }
-//var_dump("word:$word, gramset:$gramset_id, text:$text_id, w_id:$w_id");        
         $wordform = Wordform::findOrCreate($word);
-//dd($wordform->id);    
         $wordform->updateTextWordformLinks($text_id, $w_id, $gramset_id);
-//dd();        
+        
         if (!sizeof($dialects)) {
             $dialects[0] = NULL;
         }

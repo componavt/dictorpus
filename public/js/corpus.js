@@ -68,7 +68,7 @@ console.log('parent_field: '+parent_field);
             if (place[0]) {
                 var opt = new Option(place[1], place[0]);
                 $('#'+parent_field).append(opt).trigger('change');
-                opt.setAttribute('selected','selected')
+                opt.setAttribute('selected','selected');
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
