@@ -1249,11 +1249,11 @@ dd($wordforms);
 
     public static function search(Array $url_args) {
         $lemmas = self::orderBy('lemma');
-        if ($url_args['search_wordform'] || $url_args['search_gramset']) {
-            $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id');
+//        if ($url_args['search_wordform'] || $url_args['search_gramset']) {
+  //          $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id');
             $lemmas = self::searchByWordform($lemmas, $url_args['search_wordform']);
             $lemmas = self::searchByGramset($lemmas, $url_args['search_gramset']);
-        }    
+    //    }    
         $lemmas = self::searchByLemma($lemmas, $url_args['search_lemma']);
         $lemmas = self::searchByLang($lemmas, $url_args['search_lang']);
         $lemmas = self::searchByPOS($lemmas, $url_args['search_pos']);
@@ -1277,18 +1277,31 @@ dd($wordforms);
         if (!$wordform) {
             return $lemmas;
         }
-        return $lemmas->whereIn('wordform_id',function($query) use ($wordform){
+/*        return $lemmas->whereIn('wordform_id',function($query) use ($wordform){
                             $query->select('id')
                             ->from('wordforms')
                             ->where('wordform_for_search','like', Grammatic::toSearchForm($wordform));
-                        });
+                        });*/
+        $wordform_for_search = Grammatic::toSearchForm($wordform);
+        return $lemmas->whereIn('id',function($q) use ($wordform_for_search){
+                            $q->select('lemma_id')->from('lemma_wordform')
+                              ->whereIn('wordform_id',function($query) use ($wordform_for_search){
+                                    $query->select('id')
+                                    ->from('wordforms')
+                                    ->where('wordform_for_search','like', $wordform_for_search);
+                                });
+                            });
     }
     
     public static function searchByGramset($lemmas, $gramset) {
         if (!$gramset) {
             return $lemmas;
         }
-        return $lemmas->where('gramset_id',$gramset);
+//        return $lemmas->where('gramset_id',$gramset);
+        return $lemmas->whereIn('id',function($q) use ($gramset){
+                            $q->select('lemma_id')->from('lemma_wordform')
+                              ->where('gramset_id',$gramset);
+                            });
     }
     
     public static function searchByLemma($lemmas, $lemma) {
