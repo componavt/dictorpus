@@ -14,7 +14,7 @@
         
         {!! Form::model($place, array('method'=>'PUT', 'route' => array('place.update', $place->id))) !!}
         @include('corpus.place._form_create_edit', ['action' => 'edit'])
-        @include('widgets.form.formitem._submit', ['title' => 'submit_title' => trans('messages.save')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop
 
