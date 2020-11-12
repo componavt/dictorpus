@@ -20,6 +20,12 @@
         @endif
         </p>
         
+        @include('widgets.modal',['name'=>'modalAddInformant',
+                              'title'=>trans('corpus.add_informant'),
+                              'submit_onClick' => 'saveInformant()',
+                              'submit_title' => trans('messages.save'),
+                              'modal_view'=>'corpus.informant._form_create_edit'])
+        
         @include('widgets.modal',['name'=>'modalAddDistrict',
                               'title'=>trans('corpus.add_district'),
                               'submit_onClick' => 'saveDistrict()',
@@ -37,12 +43,6 @@
                               'submit_onClick' => 'saveRecorder()',
                               'submit_title' => trans('messages.save'),
                               'modal_view'=>'corpus.recorder._form_create_edit'])
-        
-        @include('widgets.modal',['name'=>'modalAddInformant',
-                              'title'=>trans('corpus.add_informant'),
-                              'submit_onClick' => 'saveInformant()',
-                              'submit_title' => trans('messages.save'),
-                              'modal_view'=>'corpus.informant._form_create_edit'])
         
         {!! Form::open(array('method'=>'POST', 'route' => array('text.store'))) !!}
         @include('corpus.text._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
