@@ -11,7 +11,13 @@
 @stop
 
 @section('body')
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
+        <p>
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
+            @if (User::checkAccess('dict.edit'))
+            | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
+            @endif
+            | <a href="{{ LaravelLocalization::localizeURL('/help/lemma/form') }}">? {{ trans('navigation.help') }}</a>
+        </p>
         
         @include('widgets.modal',['name'=>'modalHelp',
                                   'title'=>trans('navigation.help'),

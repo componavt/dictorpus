@@ -20,6 +20,7 @@
         @if (User::checkAccess('corpus.edit'))
             </a>
         @endif
+            | <a href="{{ LaravelLocalization::localizeURL('/help/text/form') }}">? {{ trans('navigation.help') }}</a>
         </p>
 
         @include('widgets.modal',['name'=>'modalAddInformant',
