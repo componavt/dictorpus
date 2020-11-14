@@ -618,6 +618,41 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         }
     }
 
+    /**
+     * Создать минимальный набор словоформ. 
+     * Если у изменяемой леммы нет основ, создаем основу 0 и генерируем леммы.
+     * 
+     * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_bases where base_n=0);
+     * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_wordform);
+     */
+    public function createInitialWordforms() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $lemmas = Lemma::whereIn('lang_id', [1,4,5])
+//                           ->whereId(3518)
+                           ->whereIn('pos_id', function($query){
+                                $query->select("pos_id")->from("gramset_pos");
+                            })->whereNotIn('id', function($query){
+                                $query->select("lemma_id")->from("lemma_wordform");
+                            })->take(10)->get();
+            if (!sizeof($lemmas)) {
+                $is_all_checked = true;
+            }
+            foreach ($lemmas as $lemma) {
+    //            print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
+                $stems=$lemma->updateBases();
+//dd($stems);                
+                $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, null, 
+                        Grammatic::nameNumFromNumberField($lemma->features->number ?? null), 
+                        $stems, $lemma->features->reflexive ?? null);
+//dd($gramset_wordforms);                
+                $lemma->storeWordformsFromSet($gramset_wordforms); 
+                $lemma->updateTextWordformLinks();
+                print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
+            }
+        }
+    }
+    
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences

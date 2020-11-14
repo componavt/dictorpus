@@ -96,7 +96,7 @@ class LemmaBase extends Model
             $stems = KarGram::stemsFromDB($lemma, $dialect_id);            
         }
         self::updateStemsFromSet($lemma->id, $stems, $dialect_id);
-//            if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
+        return $stems;
     }
     
     public static function baseList($lang_id, $pos_id) {

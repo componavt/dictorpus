@@ -190,9 +190,10 @@ class KarGram
     }
 
     public static function stemsFromDB($lemma, $dialect_id) {
+//dd($lemma->pos_id);        
         if (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
             return KarName::stemsFromDB($lemma, $dialect_id);
-        } elseif (in_array($lemma->pos_id, PartOfSpeech::getNameIDs())) { 
+        } elseif ($lemma->pos_id == PartOfSpeech::getVerbID()) { 
             return KarVerb::stemsFromDB($lemma, $dialect_id);
         }       
     }

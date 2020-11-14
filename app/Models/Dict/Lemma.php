@@ -765,7 +765,12 @@ dd($wordforms);
     public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
                                   $features, $dialect_id, $stems) {
 //dd($features);        
-        $this->updateBases($stems, $dialect_id); 
+        $stems=$this->updateBases($stems, $dialect_id); 
+        if (!$gramset_wordforms && $stems) {
+            $gramset_wordforms = Grammatic::wordformsByStems($this->lang_id, $this->pos_id, null, 
+                    Grammatic::nameNumFromNumberField($this->features->number ?? null), 
+                    $stems, $this->features->reflexive ?? null);
+        }
         LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
 
@@ -802,14 +807,17 @@ dd($wordforms);
         $this->save();        
     }
     
-    public function updateBases($stems, $dialect_id) {     
+    public function updateBases($stems=null, $dialect_id=null) {     
+        if (!$dialect_id) {
+            $dialect_id = Lang::mainDialectByID($this->lang_id);
+        }
         if (!$dialect_id) {
             return;
-        }
+        }        
         if ($stems) {
             LemmaBase::updateStemsFromSet($this->id, $stems, $dialect_id);
         } else {
-            LemmaBase::updateStemsFromDB($this, $dialect_id);
+            return LemmaBase::updateStemsFromDB($this, $dialect_id);
         }
         
     }
@@ -1019,7 +1027,9 @@ dd($wordforms);
     }
     
     public function firstDialect() {
-        return Dialect::where('lang_id', $this->lang_id)->orderBy('sequence_number')->first();
+        $dialect_id = Lang::mainDialectByID($this->lang_id);
+        return Dialect::find($dialect_id);
+//        return Dialect::where('lang_id', $this->lang_id)->orderBy('sequence_number')->first();
     }
 
     public function createDictionaryWordforms($wordforms, $number=NULL, $dialect_id=NULL) {        
@@ -1472,13 +1482,13 @@ dd($wordforms);
         }
     }
     
-    public function storeWordformsFromSet($wordforms, $dialect_id) {
+    public function storeWordformsFromSet($wordforms, $dialect_id=null) {
         if (!$wordforms || !sizeof($wordforms)) {
             return;
         }
         
         if (!$dialect_id) {
-            $dialect_id = $this->firstDialect();
+            $dialect_id = Lang::mainDialectByID($this->lang_id);
         }
 //dd($dialect_id, $wordforms);        
         foreach ($wordforms as $gramset_id => $wordform) {

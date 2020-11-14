@@ -135,7 +135,8 @@ class PartOfSpeech extends Model
                 self::getIDByCode('NUM'), 
                 self::getIDByCode('PRON'), 
                 self::getIDByCode('PROPN'), 
-                self::getIDByCode('PRE')];
+                self::getIDByCode('PRE'),
+                self::getIDByCode('DET')];
     }
     
     public static function isNameId($id) {

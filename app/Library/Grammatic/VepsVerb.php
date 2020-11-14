@@ -31,8 +31,8 @@ class VepsVerb
      * @return array
      */
     public static function stemsFromDB($lemma, $dialect_id) {
-        for ($i=0; $i<7; $i++) {
-            $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id);
+        for ($i=0; $i<9; $i++) {
+            $stems[$i] = self::getStemFromWordform($lemma, $i, $dialect_id, $lemma->features->reflexive ?? null);
         }
         return $stems;
     }
@@ -79,11 +79,11 @@ class VepsVerb
             case 2: // indicative imperfect 3 sg
                 return self::parseImperf3Sg($lemma->wordform(34, $dialect_id), $is_reflexive);
             case 3: // base of 2 active particle
-                return self::getStemPAP(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
+                return self::getStemPAP(self::getStemFromWordform($lemma, 0, $dialect_id, $is_reflexive), self::getStemFromWordform($lemma, 1, $dialect_id, $is_reflexive));
             case 4: // base of conditional
-                return self::getStemCond(self::getStemFromWordform($lemma, 1, $dialect_id));
+                return self::getStemCond(self::getStemFromWordform($lemma, 1, $dialect_id, $is_reflexive));
             case 5: // base of potential
-                return self::getStemPoten(self::getStemFromWordform($lemma, 0, $dialect_id), self::getStemFromWordform($lemma, 1, $dialect_id));
+                return self::getStemPoten(self::getStemFromWordform($lemma, 0, $dialect_id, $is_reflexive), self::getStemFromWordform($lemma, 1, $dialect_id, $is_reflexive));
             case 6: 
             case 7: 
                 $regs = self::parseInf($lemma->lemma, $is_reflexive);

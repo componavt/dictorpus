@@ -224,6 +224,7 @@ Route::group(
         Route::get('service/check_meaning_text', 'Library\ServiceController@checkMeaningText');
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('service/copy_lemmas', 'Library\ServiceController@copyLemmas');
+        Route::get('service/create_initial_wordforms', 'Library\ServiceController@createInitialWordforms');
         Route::get('service/generate_wordforms', 'Library\ServiceController@generateWordforms');
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
         Route::get('service/regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');

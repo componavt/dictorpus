@@ -24,7 +24,7 @@ use App\Models\Dict\PartOfSpeech;
 class Grammatic
 {
     public static function langsWithRules() {
-        return [1,4,5];
+        return [1,4,5,6];
     }
 
     /**
@@ -33,9 +33,7 @@ class Grammatic
      * @return array
      */
     public static function parseLemmaField($data) {
-//dd($data);        
         $lemma = self::toRightForm($data['lemma']);
-//dd($lemma);        
         if (isset($data['number']) && $data['number']=='refl') {
             $data['reflexive'] = 1;
         }
@@ -53,13 +51,9 @@ class Grammatic
         }
        
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id'], $is_reflexive);
-//dd($name_num);
-//dd($stems);        
-//dd($max_stem, $affix);        
         $lemma = preg_replace("/\|\|/", '',$max_stem). $affix;
-//dd($lemma);        
+        
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'], $name_num, $stems, $is_reflexive);
-//dd($gramset_wordforms);        
         if ($gramset_wordforms) {
             return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
         }
@@ -73,7 +67,8 @@ class Grammatic
             $stems[0] = preg_replace("/ǁ/",'',$base).$base_suff;
         } else {
             $base = $template;
-            $stems = $base_suff = null;
+            $stems = null;
+            $base_suff = '';
         }
         return [$stems, $name_num, $base, $base_suff];
     }
@@ -141,10 +136,8 @@ class Grammatic
      */
     public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null, $is_reflexive=null) {       
         $template = trim($template);
-        if (!in_array($lang_id, self::langsWithRules())) {// is not langs with rules 
-            return Grammatic::getAffixFromtemplate($template, $name_num);
-        }
-        if ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
+        if (!in_array($lang_id, self::langsWithRules())// is not langs with rules 
+                || $pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
 
@@ -157,11 +150,11 @@ class Grammatic
         } else {
             if (!$dialect_id) {
                 $dialect_id = Lang::mainDialectByID($lang_id);
-//dd($lang_id, $dialect_id);                
             }
             list($stems, $name_num, $max_stem, $affix) = KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);       
         }
         $max_stem = preg_replace('/ǁ/','||',$max_stem);
+        
         if ($lang_id != 1 && is_array($stems) && sizeof($stems)>1) {
             $stems[10] = KarGram::isBackVowels($max_stem.$affix);
         }
@@ -170,8 +163,12 @@ class Grammatic
 
     public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems, $is_reflexive=null) {
 //dd($stems);                
-        if (!is_array($stems) || !isset($stems[0]) || sizeof($stems)<6) {
+        if (!is_array($stems) || !isset($stems[0])/* || sizeof($stems)<6*/) {
             return false;
+        }
+        
+        if (!$dialect_id) {
+            $dialect_id = Lang::mainDialectByID($lang_id);
         }
         
         $gramsets = self::getListForAutoComplete($lang_id, $pos_id);

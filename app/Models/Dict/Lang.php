@@ -264,6 +264,7 @@ class Lang extends Model
             case 1: return 43;
             case 4: return 46;
             case 5: return 44;
+            case 6: return 45;
         }
         return NULL;
     }

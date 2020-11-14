@@ -25,12 +25,8 @@ class KarNameOlo
         
     public static function wordformByStemsSg($stems, $gramset_id, $dialect_id) {
         switch ($gramset_id) {
-            case 277: // эссив, ед.ч. 
-                return $stems[1] ? $stems[1].'nn'. KarGram::garmVowel($stems[10],'u') : '';
             case 5: // транслатив, ед.ч. 
                 return $stems[1] ? $stems[1].'kse' : '';
-            case 6: // абессив, ед.ч. 
-                return $stems[1] ? $stems[1].'tt'. KarGram::garmVowel($stems[10],'a'). 'h' : '';
             case 8: // инессив, ед.ч. 
                 return $stems[1] ? $stems[1].'s' : '';
             case 9: // элатив, ед.ч. 
@@ -46,6 +42,14 @@ class KarNameOlo
             case 15: // пролатив, ед.ч. 
                 return $stems[1] ? $stems[1].'či' : '';
         }
+        
+        if (!isset($stems[10])) { return ''; }
+        switch ($gramset_id) {
+            case 277: // эссив, ед.ч. 
+                return $stems[1] ? $stems[1].'nn'. KarGram::garmVowel($stems[10],'u') : '';
+            case 6: // абессив, ед.ч. 
+                return $stems[1] ? $stems[1].'tt'. KarGram::garmVowel($stems[10],'a'). 'h' : '';
+        }
     }
 
     public static function wordformByStemsPl($stems, $gramset_id, $dialect_id) {
@@ -54,12 +58,8 @@ class KarNameOlo
                 return self::genPl($stems[4], $stems[5]);
             case 22: // партитив, мн.ч. 
                 return self::partPl($stems[5]);
-            case 279: // эссив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 'nn'. KarGram::garmVowel($stems[10],'u'));
             case 59: // транслатив, мн.ч. 
                 return self::addEndToMultiBase($stems[4], 'kse');
-            case 64: // абессив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[10],'a'). 'h');
             case 23: // инессив, мн.ч.
                 return self::addEndToMultiBase($stems[4], 's');
             case 60: // элатив, мн.ч.
@@ -77,7 +77,15 @@ class KarNameOlo
             case 66: // пролатив, мн.ч. 
                 return self::addEndToMultiBase($stems[4], 'či');
             case 281: // инструктив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'n');
+                return self::addEndToMultiBase($stems[4], 'n');                       
+        }
+        
+        if (!isset($stems[10])) { return ''; }
+        switch ($gramset_id) {
+            case 279: // эссив, мн.ч.
+                return self::addEndToMultiBase($stems[4], 'nn'. KarGram::garmVowel($stems[10],'u'));
+            case 64: // абессив, мн.ч. 
+                return self::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[10],'a'). 'h');        
         }
     }
     

@@ -742,12 +742,21 @@ class KarName
      * @return type
      */
     public static function wordformByStemsSgProp($stems, $gramset_id, $dialect_id) {
+        switch ($gramset_id) {
+            case 5: // транслатив, ед.ч. 
+                return $stems[1] ? $stems[1]. KarGram::distrCons($stems[1], 'ksi') : '';
+            case 14: // комитатив, ед.ч. 
+                return $stems[1] ? ($dialect_id==47 ? $stems[1].'nke': self::comPl($stems[4], $stems[5], $dialect_id)) : '';
+            case 15: // пролатив, ед.ч. 
+                return $dialect_id==47 && $stems[1] ? $stems[1].'čči' : '';
+        }
+        
+        if (!isset($stems[10])) { return ''; }
         $a = KarGram::garmVowel($stems[10],'a');
+        
         switch ($gramset_id) {
             case 277: // эссив, ед.ч. 
                 return $stems[2] ? $stems[2]. 'n'. $a  : '';
-            case 5: // транслатив, ед.ч. 
-                return $stems[1] ? $stems[1]. KarGram::distrCons($stems[1], 'ksi') : '';
             case 8: // инессив, ед.ч. 
                 return $stems[1] ? $stems[1]. KarGram::distrCons($stems[1], 'ss'). $a : '';
             case 9: // элатив, ед.ч. 
@@ -758,43 +767,43 @@ class KarName
                 return $stems[1] ? $stems[1]. 'l'. ($dialect_id==47 ? 'd': 't'). $a : '';
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1]. 'tt'. $a : '';
-            case 14: // комитатив, ед.ч. 
-                return $stems[1] ? ($dialect_id==47 ? $stems[1].'nke': self::comPl($stems[4], $stems[5], $dialect_id)) : '';
-            case 15: // пролатив, ед.ч. 
-                return $dialect_id==47 && $stems[1] ? $stems[1].'čči' : '';
         }
     }
 
     public static function wordformByStemsPl($stems, $gramset_id, $dialect_id) {
-        $a = KarGram::garmVowel($stems[10],'a');
-        
         switch ($gramset_id) {
             case 24: // генитив, мн.ч. 
                 return self::genPl($stems[4], $stems[5], isset($stems[6])? $stems[6]: null, $dialect_id);
-            case 22: // партитив, мн.ч. 
-                return self::partPl($stems[5], isset($stems[6])? $stems[6]: null, $stems[10], $dialect_id);
-            case 279: // эссив, мн.ч.
-                return $stems[5] ? $stems[5]. 'n'. $a : '';
             case 59: // транслатив, мн.ч. 
                 return $stems[4] ? $stems[4].'ksi' : '';
-            case 23: // инессив, мн.ч.
-                return $stems[4] ? $stems[4]. 'ss'. $a : '';
-            case 60: // элатив, мн.ч.
-                return $stems[4] ? $stems[4]. 'st'. $a : '';
             case 61: // иллатив, мн.ч. 
                 return $stems[5] ? $stems[5].'h' : '';
-            case 280: // адессив-аллатив, мн.ч.
-                return $stems[4] ? $stems[4]. 'll'. $a : '';
-            case 62: // аблатив, мн.ч.
-                return $stems[4] ? $stems[4]. 'l'. ($dialect_id==47 ? 'd': 't'). $a : '';
-            case 64: // абессив, мн.ч.
-                return $stems[4] ? $stems[4]. 'tt'. $a : '';
             case 65: // комитатив, мн.ч. 
                 return self::comPl($stems[4], $stems[5], $dialect_id);
             case 66: // пролатив, мн.ч. 
                 return $dialect_id==47 && $stems[4] ? $stems[4].'čči' : '';
             case 281: // инструктив, мн.ч. 
                 return $stems[4] ? $stems[4].'n' : '';
+        }
+        
+        if (!isset($stems[10])) { return ''; }
+        $a = KarGram::garmVowel($stems[10],'a');
+        
+        switch ($gramset_id) {
+            case 22: // партитив, мн.ч. 
+                return self::partPl($stems[5], isset($stems[6])? $stems[6]: null, $stems[10], $dialect_id);
+            case 279: // эссив, мн.ч.
+                return $stems[5] ? $stems[5]. 'n'. $a : '';
+            case 23: // инессив, мн.ч.
+                return $stems[4] ? $stems[4]. 'ss'. $a : '';
+            case 60: // элатив, мн.ч.
+                return $stems[4] ? $stems[4]. 'st'. $a : '';
+            case 280: // адессив-аллатив, мн.ч.
+                return $stems[4] ? $stems[4]. 'll'. $a : '';
+            case 62: // аблатив, мн.ч.
+                return $stems[4] ? $stems[4]. 'l'. ($dialect_id==47 ? 'd': 't'). $a : '';
+            case 64: // абессив, мн.ч.
+                return $stems[4] ? $stems[4]. 'tt'. $a : '';
         }
     }
     
