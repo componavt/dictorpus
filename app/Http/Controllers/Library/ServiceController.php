@@ -482,110 +482,28 @@ print "</p>";
     }
 
     public function addTextWordformLinks(Request $request) {
+//exit(0);
+        ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '2048M');
         $text_id = (int)$request->text_id;
         if ($text_id) {
             $text = Text::find($text_id);
-            if (!$text) {
-                return;
-            }
+            if (!$text) { return; }
+            
             $text->updateWordformLinks();
 print '<p>'.$text->id.'</p>';  
             return;          
         }  
-exit(0);        
-        foreach (Text::orderBy('id')->get() as $text) { 
-//            $text_id=831;
-  //          $text = Text::find($text_id);
+        $texts=Text::
+              where('id', '>', 1800)
+              ->where('id', '<', 1851)
+              ->whereNotIn('id',[1714, 2540, 2541, 2573, 2587, 2617, 2941, 2944, 2950])
+//              where('id', 2980)
+              ->orderBy('id')->take(50)->get();
+        foreach ($texts as $text) { 
             $text->updateWordformLinks();
 print '<p>'.$text->id.'</p>';            
         }
-/*        $words = $text->words->sortBy('w_id');
-        foreach ($words as $word) {
-            $w_id = $word->w_id;
-            $checked_meanings=$text->meanings()->wherePivot('w_id', $w_id)->wherePivot('relevance', '>', 1);
-//dd($checked_meanings->get());            
-            if ($checked_meanings->count()>1) {
-                dd("Ошибка (text:$text_id, w:$w_id): больше одного подтвержденного значения");
-            } 
-            
-            $checked_meaning = $checked_meanings->first();
-            $unchecked_meanings=$text->meanings()->wherePivot('w_id', $w_id)->wherePivot('relevance', 1)->get();
-            $rejected_meanings=$text->meanings()->wherePivot('w_id', $w_id)->wherePivot('relevance', 0)->get();
-            $lemmas = [0=>[], 1=>[], 2=>null];
-            if ($checked_meaning) {
-                if (sizeof($unchecked_meanings)) {
-                    dd("Ошибка (text:$text_id, w:$w_id): есть подтвержденное и непроверенные значения");
-                }
-                $lemmas[2] = $checked_meaning->lemma;
-            } 
-            foreach ($unchecked_meanings as $meaning) {
-                if (!in_array($meaning->lemma, $lemmas[1])) {
-                    $lemmas[1][] = $meaning->lemma;
-                }
-            }
-            foreach ($rejected_meanings as $meaning) {
-                if ($meaning->lemma != $lemmas[2] && !in_array($meaning->lemma, $lemmas[1]) && !in_array($meaning->lemma, $lemmas[0])) {
-                    $lemmas[0][] = $meaning->lemma;
-                }
-            }
-            $checked_wordforms=$text->wordforms()->wherePivot('w_id', $w_id)->wherePivot('relevance', 2);
-            if ($checked_wordforms->count()>1) {
-                dd("Ошибка (text:$text_id, w:$w_id): больше одной подтвержденной словоформы");
-            } 
-            $wordforms = [0=>[], 1=>[], 2=>[]];
-            $checked_wordform = $checked_wordforms->first();
-            if ($checked_wordform) {
-                $wordform_id = $checked_wordform->id;
-                $gramset_id = $checked_wordform->pivot->gramset_id; 
-                if (!$lemmas[2] || $lemmas[2]->wordforms()->wherePivot('wordform_id', $wordform_id)->wherePivot('gramset_id', $gramset_id)->count()) {
-                    $wordforms[2][$wordform_id.'_'.$gramset_id] = [$wordform_id, $gramset_id];
-                    $lemmas[0] = array_merge($lemmas[0], $lemmas[1]);
-                    $lemmas[0] = array_unique($lemmas[0]);
-                    $lemmas[1] = [];
-                }
-            }
-            if (!sizeof($wordforms[2]) && $lemmas[2]) {
-                foreach ($lemmas[2]->wordforms as $wordform) {
-                    $wordform_id = $wordform->id;
-                    $gramset_id = $wordform->pivot->gramset_id;
-                    if ($gramset_id && Grammatic::toSearchForm($wordform->wordform) == $word->word) {
-                        $wordforms[1][$wordform_id.'_'.$gramset_id] = [$wordform_id, $gramset_id];
-                    }
-                }                
-            }
-            foreach ($lemmas[1] as $lemma) {
-                foreach ($lemma->wordforms as $wordform) {
-                    $wordform_id = $wordform->id;
-                    $gramset_id = $wordform->pivot->gramset_id;
-                    if ($gramset_id && Grammatic::toSearchForm($wordform->wordform) == $word->word) {
-                        if (!sizeof($wordforms[2])) {
-                            $wordforms[1][$wordform_id.'_'.$gramset_id] = [$wordform_id, $gramset_id];
-                        } elseif (!isset($wordforms[2][$wordform_id.'_'.$gramset_id])) {
-                            $wordforms[0][$wordform_id.'_'.$gramset_id] = [$wordform_id, $gramset_id];
-                        }
-                    }
-                }
-            }
-            foreach ($lemmas[0] as $lemma) {
-                foreach ($lemma->wordforms as $wordform) {
-                    $wordform_id = $wordform->id;
-                    $gramset_id = $wordform->pivot->gramset_id;
-                    if ($gramset_id && Grammatic::toSearchForm($wordform->wordform) == $word->word 
-                            && !isset($wordforms[2][$wordform_id.'_'.$gramset_id]) 
-                            && !isset($wordforms[1][$wordform_id.'_'.$gramset_id])) {
-                        $wordforms[0][$wordform_id.'_'.$gramset_id] = [$wordform_id, $gramset_id];
-                        
-                    }
-                }
-            }
-            $text->wordforms()->wherePivot('w_id', $w_id)->detach();
-            foreach ($wordforms as $relevance => $r_wordforms) {
-                foreach ($r_wordforms as $tmp => $info) {
-                    $text->wordforms()->attach($info[0], ['w_id'=>$w_id, 'gramset_id'=>$info[1], 'relevance'=>$relevance]);
-                }
-            }
-        }*/
     }
     
 // select lemma_id, gramset_id, dialect_id, count(*) as count from lemma_wordform where gramset_id=3 group by  lemma_id, gramset_id, dialect_id having count>1;   
