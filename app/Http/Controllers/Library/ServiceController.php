@@ -541,12 +541,13 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      * Если у изменяемой леммы нет основ, создаем основу 0 и генерируем леммы.
      * 
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_bases where base_n=0);
-     * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_wordform);
+     * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_wordform) and lang_id=6;
      */
     public function createInitialWordforms() {
         $is_all_checked = false;
         while (!$is_all_checked) {
-            $lemmas = Lemma::whereIn('lang_id', [1,4,5])
+            $lemmas = Lemma::whereIn('lang_id', [1,4,5,6])
+//            $lemmas = Lemma::whereIn('lang_id', [6])
 //                           ->whereId(3518)
                            ->whereIn('pos_id', function($query){
                                 $query->select("pos_id")->from("gramset_pos");
