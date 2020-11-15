@@ -306,6 +306,13 @@ class KarVerb
         switch ($stem_n) {
             case 0: 
                 return $lemma->lemma;
+        }
+        
+        if ($lemma->lang_id==6) {
+            return KarVerbLud::getStemFromWordform($lemma, $stem_n, $dialect_id);
+        }
+        
+        switch ($stem_n) {
             case 1:  // indicative presence 1 sg
                 if (preg_match("/^(.+)n$/", $lemma->wordform(26, $dialect_id), $regs)) {
                     return preg_replace("/,\s*/", '/',$regs[1]);
@@ -361,6 +368,8 @@ class KarVerb
     public static function getListForAutoComplete($lang_id) {
         if ($lang_id==5) {
             return KarVerbOlo::getListForAutoComplete();
+        } if ($lang_id==6) {
+            return KarVerbLud::getListForAutoComplete();
         }
         return [26,   27,  28,  29,  30,  31, 295, 296, 
                 70,   71,  72,  73,  78,  79, 
@@ -379,6 +388,9 @@ class KarVerb
     }
     
     public static function wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def=NULL) {
+        if ($lang_id==6) {
+            return KarVerbLud::wordformByStems($stems, $gramset_id, $dialect_id, $def);
+        }
         switch ($gramset_id) {
             case 26: // 1. индикатив, презенс, 1 л., ед.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 'n') : '';
