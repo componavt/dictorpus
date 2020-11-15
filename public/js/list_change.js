@@ -8,25 +8,30 @@ function posSelect(is_full_form=true) {
                 if (is_full_form) {
                     $("#transitive-field").show().prop("disabled", false);
                 }
+                $("#without_gram-field").show().prop("disabled", false);
             } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun or pronoun
                 if (is_full_form) {
                     $("#animacy-field").show().prop("disabled", false);
                     $("#abbr-field").show().prop("disabled", false);
                 }
                 $("#number-field").show().prop("disabled", false);
+                $("#without_gram-field").show().prop("disabled", false);
             } else if ($("#pos_id option:selected").val()==1) { // is adjective
                 if (is_full_form) {
                     $("#degree-field").show().prop("disabled", false);
                 }
                 $("#number-field").show().prop("disabled", false);
+                $("#without_gram-field").show().prop("disabled", false);
             } else if ($( "#pos_id option:selected" ).val()==10) { // is pronoun
                 if (is_full_form) {
                     $("#prontype-field").show().prop("disabled", false);
                 }
                 $("#number-field").show().prop("disabled", false);
+                $("#without_gram-field").show().prop("disabled", false);
             } else if (is_full_form) {
                 if ($( "#pos_id option:selected" ).val()==6) { // is numeral
                     $("#numtype-field").show().prop("disabled", false);
+                $("#without_gram-field").show().prop("disabled", false);
                 } else if ($( "#pos_id option:selected" ).val()==2) { // is adverb
                     $("#advtype-field").show().prop("disabled", false);
                     $("#degree-field").show().prop("disabled", false);

@@ -12,10 +12,10 @@ class AddCreatedUpdatedWithoutGramInLemmaFeatureTable extends Migration
      */
     public function up()
     {
-        Schema::table('reverse_lemmas', function (Blueprint $table) {
+        Schema::table('lemma_features', function (Blueprint $table) {
+            $table->unsignedTinyInteger('without_gram')->nullable();            
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
-            $table->unsignedTinyInteger('without_gram')->nullable();            
         });
     }
 
@@ -26,7 +26,7 @@ class AddCreatedUpdatedWithoutGramInLemmaFeatureTable extends Migration
      */
     public function down()
     {
-        Schema::table('reverse_lemmas', function (Blueprint $table) {
+        Schema::table('lemma_features', function (Blueprint $table) {
             $table->dropColumn('updated_at');
             $table->dropColumn('created_at');
             $table->dropColumn('without_gram');

@@ -765,13 +765,14 @@ dd($wordforms);
     public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, 
                                   $features, $dialect_id, $stems) {
 //dd($features);        
+        LemmaFeature::store($this->id, $features);
+        
         $stems=$this->updateBases($stems, $dialect_id); 
-        if (!$gramset_wordforms && $stems) {
+        if ($this->features && !$this->features->without_gram && !$gramset_wordforms && $stems) {
             $gramset_wordforms = Grammatic::wordformsByStems($this->lang_id, $this->pos_id, null, 
                     Grammatic::nameNumFromNumberField($this->features->number ?? null), 
                     $stems, $this->features->reflexive ?? null);
         }
-        LemmaFeature::store($this->id, $features);
         $this->storeReverseLemma($stem, $affix);
 
         $this->storeVariants($features['variants'] ?? []);

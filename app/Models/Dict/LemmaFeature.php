@@ -12,15 +12,15 @@ class LemmaFeature extends Model
 {
     public $timestamps = false;
     public $incrementing=false;
-    protected $fillable = ['id','animacy','abbr','number','reflexive','impersonal',
+    protected $fillable = ['id','animacy','abbr','number','reflexive','impersonal', 'without_gram',
         'transitive','prontype_id','numtype_id','degree_id','advtype_id', 'comptype_id'];
-    public $featuresByPOS = [1  => ['degree_id', 'number'],                   // adjective
+    public $featuresByPOS = [1  => ['degree_id', 'number', 'without_gram'],                   // adjective
                              2  => ['advtype_id', 'degree_id'],     // adverb
-                             5  => ['animacy', 'abbr', 'number'], // noun
-                             6  => ['numtype_id'],                  // numeral
-                             10 => ['prontype_id', 'number'],                 // pronoun
-                             11 => ['reflexive', 'transitive', 'impersonal'],     // verb                             
-                             14 => ['animacy', 'abbr', 'number'], // proper noun
+                             5  => ['animacy', 'abbr', 'number', 'without_gram'], // noun
+                             6  => ['numtype_id', 'without_gram'],                  // numeral
+                             10 => ['prontype_id', 'number', 'without_gram'],                 // pronoun
+                             11 => ['reflexive', 'transitive', 'impersonal', 'without_gram'],     // verb                             
+                             14 => ['animacy', 'abbr', 'number', 'without_gram'], // proper noun
                              19 => ['comptype_id'], // phrases
                             ];
     public $feas_conll_codes = [

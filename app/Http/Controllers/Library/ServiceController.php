@@ -542,7 +542,8 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      * 
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_bases where base_n=0);
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_wordform) and lang_id=6;
-     * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and lang_id in [1,4,5,6];
+     * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and lang_id in (1,4,5,6);
+     * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and (id not in (select id from lemma_features) or id in (select id from lemma_features where without_gram  is null or without_gram <> 1)) and lang_id in (1,4,5,6);
      */
     public function createInitialWordforms() {
         $is_all_checked = false;
@@ -551,8 +552,16 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $gramset_id=170;
         while (!$is_all_checked) {
             $lemmas = Lemma::whereIn('lang_id', $langs)
-//            $lemmas = Lemma::whereIn('lang_id', [6])
-                           ->whereNotIn('id',[55]) // unchangable tarbiž
+//                           ->whereNotIn('id',[55]) // unchangable tarbiž
+                           ->where(function($query) {
+                               $query->whereNotIn('id', function($q) {
+                                  $q->select('id')->from('lemma_features');                                    
+                               })->orWhereIn('id', function($q) {
+                                  $q->select('id')->from('lemma_features')
+                                    ->whereNull('without_gram')
+                                    ->orWhere('without_gram', '<>', 1);                                    
+                               });
+                           })
                            ->whereIn('pos_id', $pos)
 /*                           ->whereIn('pos_id', function($query){
                                 $query->select("pos_id")->from("gramset_pos");
@@ -560,7 +569,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                             ->whereNotIn('id', function($query) use ($gramset_id) {
                                 $query->select("lemma_id")->from("lemma_wordform")
                                       ->whereGramsetId($gramset_id);
-                            })->take(1)->get();
+                            })->take(10)->get();
             if (!sizeof($lemmas)) {
                 $is_all_checked = true;
             }

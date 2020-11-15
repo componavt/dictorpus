@@ -248,6 +248,7 @@ return [
     'verb' => 'verb',
     'voice' => 'voice',
     'wiki_photo' => 'Image from Wikimedia Commons',
+    'without_gram' => 'unchangeable',
     'wordform' => 'wordform',
     'wordform_comment' => 'Number of wordforms with grammatical attributes [+ Number of wordforms without grammatical attributes]',
     'wordforms' => 'wordforms',
