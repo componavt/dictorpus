@@ -39,7 +39,7 @@ class VepsVerb
 
     public static function parseInf($inf, $is_reflexive) {
         if (!$is_reflexive && preg_match("/^(.*)([dt]’?)([aä])$/u", $inf, $regs)
-            || $is_reflexive && preg_match("/^(.*)([dt’?])([aä])[s|kso|ze]$/u", $inf, $regs)) {
+            || $is_reflexive && preg_match("/^(.*)([dt]’?)([aä])[s|kso|ze]$/u", $inf, $regs)) {
             return $regs;
         }
         return null;
