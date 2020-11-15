@@ -5,11 +5,6 @@ namespace App\Library\Grammatic;
 use App\Library\Grammatic;
 use App\Library\Grammatic\KarGram;
 
-use App\Models\Dict\Gramset;
-//use App\Models\Dict\Lang;
-use App\Models\Dict\Lemma;
-use App\Models\Dict\PartOfSpeech;
-
 /**
  * Functions related to Karelian grammatic for verbs.
  */
@@ -1350,7 +1345,7 @@ class KarVerbOlo
      * @return string
      */
     public static function inf2Base($stem0, $stem3) {
-        if (!$stem0) {
+        if (!$stem0 || !$stem3) {
             return '';
         }
         $C="[".KarGram::consSet()."]";
