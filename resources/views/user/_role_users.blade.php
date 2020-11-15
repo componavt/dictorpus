@@ -35,9 +35,9 @@
                 </td>
                 <td data-th="{{ trans('auth.last_activity') }}">
                     {{$user->last_login}}
-                    @if ($user->getLastActionTime())
+{{--                    @if ($user->getLastActionTime())
                     <br>{{$user->getLastActionTime()}}
-                    @endif
+                    @endif --}}
                 </td>
                 @if (User::checkAccess('user.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
