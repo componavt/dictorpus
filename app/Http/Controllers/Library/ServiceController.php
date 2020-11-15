@@ -495,8 +495,8 @@ print '<p>'.$text->id.'</p>';
             return;          
         }  
         $texts=Text::
-              where('id', '>', 1800)
-              ->where('id', '<', 1851)
+              where('id', '>', 1850)
+              ->where('id', '<', 1901)
               ->whereNotIn('id',[1714, 2540, 2541, 2573, 2587, 2617, 2941, 2944, 2950])
 //              where('id', 2980)
               ->orderBy('id')->take(50)->get();
@@ -554,7 +554,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $gramset_id=170;
         while (!$is_all_checked) {
             $lemmas = Lemma::whereIn('lang_id', $langs)
-                           ->whereNotIn('id',[827, 866]) 
+                           ->whereNotIn('id',[261, 827, 866]) 
                            ->where(function($query) {
                                $query->whereNotIn('id', function($q) {
                                   $q->select('id')->from('lemma_features');                                    
