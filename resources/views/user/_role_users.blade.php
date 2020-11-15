@@ -35,7 +35,8 @@
                 </td>
                 <td data-th="{{ trans('auth.last_activity') }}">
                     {{$user->last_login}}
-{{--                    @if ($user->getLastActionTime())
+{{-- долго грузится, переделать или грузить через ajax
+                    @if ($user->getLastActionTime())
                     <br>{{$user->getLastActionTime()}}
                     @endif --}}
                 </td>

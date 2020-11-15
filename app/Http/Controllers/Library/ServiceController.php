@@ -547,7 +547,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      */
     public function createInitialWordforms() {
         $is_all_checked = false;
-        $langs = [1,4,5,6];
+        $langs = [1,4,5/*,6*/];
 //        $pos=[1,5,6,10,13,14,20];
         $pos=[11];
 //        $gramset_id=1;
