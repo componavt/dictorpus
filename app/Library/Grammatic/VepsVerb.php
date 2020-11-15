@@ -38,8 +38,8 @@ class VepsVerb
     }
 
     public static function parseInf($inf, $is_reflexive) {
-        if (!$is_reflexive && preg_match("/^(.*)([dt])([aä])$/u", $inf, $regs)
-            || $is_reflexive && preg_match("/^(.*)([dt])([aä])[s|kso|ze]$/u", $inf, $regs)) {
+        if (!$is_reflexive && preg_match("/^(.*)([dt]’?)([aä])$/u", $inf, $regs)
+            || $is_reflexive && preg_match("/^(.*)([dt’?])([aä])[s|kso|ze]$/u", $inf, $regs)) {
             return $regs;
         }
         return null;
@@ -1174,12 +1174,13 @@ class VepsVerb
     }
 
     public static function imper3($stem0, $dt, $stem8, $gramset_id, $dialect_id){
+        if (!$stem0 || !$dt || !$stem8) {
+            return '';
+        }
         if ($stem8 && !preg_match("/\,/", $stem8) && $dialect_id != 5) {
             return $stem8;
         }
-        if (!$stem0) {
-            return '';
-        }
+
         $form1 = $stem0. VepsGram::rightConsonant($dt, 'g'). self::dropOutA($stem0). 'ha';
         if ($dialect_id != 5) {
             return $form1;

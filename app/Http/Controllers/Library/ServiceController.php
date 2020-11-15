@@ -548,11 +548,13 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
     public function createInitialWordforms() {
         $is_all_checked = false;
         $langs = [1,4,5,6];
+//        $pos=[1,5,6,10,13,14,20];
         $pos=[11];
+//        $gramset_id=1;
         $gramset_id=170;
         while (!$is_all_checked) {
             $lemmas = Lemma::whereIn('lang_id', $langs)
-//                           ->whereNotIn('id',[55]) // unchangable tarbiž
+                           ->whereNotIn('id',[827, 866]) 
                            ->where(function($query) {
                                $query->whereNotIn('id', function($q) {
                                   $q->select('id')->from('lemma_features');                                    
