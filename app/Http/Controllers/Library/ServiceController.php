@@ -542,18 +542,25 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      * 
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_bases where base_n=0);
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_wordform) and lang_id=6;
+     * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and lang_id in [1,4,5,6];
      */
     public function createInitialWordforms() {
         $is_all_checked = false;
+        $langs = [1,4,5,6];
+        $pos=[11];
+        $gramset_id=170;
         while (!$is_all_checked) {
-            $lemmas = Lemma::whereIn('lang_id', [1,4,5,6])
+            $lemmas = Lemma::whereIn('lang_id', $langs)
 //            $lemmas = Lemma::whereIn('lang_id', [6])
-//                           ->whereId(3518)
-                           ->whereIn('pos_id', function($query){
+                           ->whereNotIn('id',[55]) // unchangable tarbiž
+                           ->whereIn('pos_id', $pos)
+/*                           ->whereIn('pos_id', function($query){
                                 $query->select("pos_id")->from("gramset_pos");
-                            })->whereNotIn('id', function($query){
-                                $query->select("lemma_id")->from("lemma_wordform");
-                            })->take(10)->get();
+                            })*/
+                            ->whereNotIn('id', function($query) use ($gramset_id) {
+                                $query->select("lemma_id")->from("lemma_wordform")
+                                      ->whereGramsetId($gramset_id);
+                            })->take(1)->get();
             if (!sizeof($lemmas)) {
                 $is_all_checked = true;
             }
@@ -564,9 +571,13 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                 $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, null, 
                         Grammatic::nameNumFromNumberField($lemma->features->number ?? null), 
                         $stems, $lemma->features->reflexive ?? null);
-//dd($gramset_wordforms);                
-                $lemma->storeWordformsFromSet($gramset_wordforms); 
-                $lemma->updateTextWordformLinks();
+//dd($gramset_wordforms);         
+                if ($gramset_wordforms) {
+                    $lemma->storeWordformsFromSet($gramset_wordforms); 
+                    $lemma->updateTextWordformLinks();
+                    $lemma->updated_at = date('Y-m-d H:i:s');
+                    $lemma->save();                    
+                }
                 print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
             }
         }
