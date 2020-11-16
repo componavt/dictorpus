@@ -609,11 +609,12 @@ class TextController extends Controller
     public function addExample($example_id)
     {
         Text::updateExamples([$example_id=>5]);
-        $str = '';
+//        $str = '';
         if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
-            $str = Text::createWordCheckedBlock($regs[1],$regs[2],$regs[3],$regs[4]);
+            return Word::createWordBlock($regs[2],$regs[4]);
+//            return Text::createWordCheckedBlock($regs[1],$regs[2],$regs[3],$regs[4]);
         }
-        return $str;
+//        return $str;
     }
 
     /**

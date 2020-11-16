@@ -1039,7 +1039,7 @@ print "</pre>";*/
         }
         
         $wordforms = $this->wordforms()->wherePivot('w_id',$word_id);
-        if (!$wordforms->count()) {
+        if (!$wordforms->wherePivot('relevance', '>', 0)->count()) {
             $word_class .= ' no-gramsets';
         } elseif ($wordforms->wherePivot('relevance',2)->count()) {
             $word_class .= ' gramset-checked';
@@ -1271,10 +1271,38 @@ print "</pre>";*/
                              .' AND text_id='.$text_id
                              .' AND sentence_id='.$sentence_id
                              .' AND w_id='.$w_id);
+                if ($relevance>1) {
+                    self::updateWordformLinksAfterCheckExample($text_id, $w_id, $meaning_id);
+                }
             }
         }
     }
     
+    /**
+     * Update text-wordform links after choosing meaning.
+     * 
+     * @param type $text_id
+     * @param type $w_id
+     * @param type $meaning_id
+     */
+    public static function updateWordformLinksAfterCheckExample($text_id, $w_id, $meaning_id) {
+        $meaning=Meaning::find($meaning_id);
+        $lemma=$meaning->lemma;
+        $text = Text::find($text_id);
+        foreach($text->wordforms()->wherePivot('w_id',$w_id)->get() as $wordform) {
+//print "<p>".$wordform->id."!!</p>";
+//dd($lemma->wordforms()->where('id', $wordform->id)->count());
+            if (!$lemma->wordforms()->where('id', $wordform->id)->count()) {
+//print "<p>".$wordform->id."!</p>";
+                DB::statement('UPDATE text_wordform SET relevance=0'
+                             .' WHERE wordform_id='.$wordform->id
+                             .' AND text_id='.$text_id
+                             .' AND w_id='.$w_id);
+            }
+        }
+//exit(0);
+    }
+
     public static function lastCreated($limit='') {
         $texts = self::latest();
         if ($limit) {
