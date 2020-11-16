@@ -555,6 +555,7 @@ class Text extends Model
 //                $sentence = str_replace('|','',$sentence);
                 // division on words
                 list($str,$word_count) = self::markupSentence($sentence,$word_count);
+                $str = str_replace('¦', '', $str);
 
                 $out .= "<s id=\"".$sen_count++.'">'.$str.$desc_out[2][$k]."</s>\n";
                 $div = trim($desc_out[3][$k]);

@@ -251,6 +251,9 @@ class Grammatic
 
     public static function toSearchForm($word) {
         $word = str_replace('’','',$word);
+        if (preg_match("/^\-(.+)$/u", $word, $regs)) {
+            $word = $regs[1];
+        }
         $word = mb_strtolower($word);
         return $word;
     }
