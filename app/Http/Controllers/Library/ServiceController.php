@@ -570,8 +570,9 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                ->get();
         foreach ($lemmas as $lemma) {
             DB::statement("DELETE FROM lemma_wordform where lemma_id=". $lemma->lemma_id. " and dialect_id=".$dialect_id);
-            $lemma->createInitialWordforms();
-            print '<p><a href="/ru/dict/lemma/'.$lemma->lemma_id.'">'.$lemma->lemma_id.'</a></p>';
+            $lemma_obj=find($lemma->id);
+            $lemma_obj->createInitialWordforms();
+            print '<p><a href="/ru/dict/lemma/'.$lemma_obj->id.'">'.$lemma_obj->id.'</a></p>';
         }
         
 /*
