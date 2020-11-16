@@ -108,6 +108,20 @@ class Lemma extends Model
         return $builder;
     }
 
+    public function dialectIds(){
+        $ids=[];
+        $lemma_id= $this->id;
+        $dialects = DB::table('dialect_meaning')
+                      ->whereIn('meaning_id', function ($query) use ($lemma_id) {
+                          $query->select('id')->from('meanings')
+                                ->whereLemmaId($lemma_id);
+                      })->get();
+        foreach ($dialects as $dialect) {
+            $ids[]=$dialect->dialect_id;
+        }
+        return $ids;
+    }
+
     public static function getLemmaById($id) {
         $obj = self::find($id);
         if (!$obj) {

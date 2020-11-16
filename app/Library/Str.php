@@ -81,4 +81,18 @@ class Str
         }
         return $reverse;
     }   
+    
+    /* trim equal substrings from the left */
+    public static function trimEqualSubstrFromLeft($str1, $str2) {
+        $is_equal=true;
+        while (mb_strlen($str1)>0 && mb_strlen($str2)>0 && $is_equal) {
+            if (mb_substr($str1,0,1) == mb_substr($str2,0,1)) {
+                $str1 = mb_substr($str1,1);
+                $str2 = mb_substr($str2,1);
+            } else {
+                $is_equal=false;
+            }
+        }
+        return [$str1, $str2];
+    } 
 }

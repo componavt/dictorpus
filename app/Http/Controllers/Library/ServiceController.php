@@ -495,8 +495,8 @@ print '<p>'.$text->id.'</p>';
             return;          
         }  
         $texts=Text::
-              where('id', '>', 1850)
-              ->where('id', '<', 1901)
+              where('id', '>', 1900)
+              ->where('id', '<', 1951)
               ->whereNotIn('id',[1714, 2540, 2541, 2573, 2587, 2617, 2941, 2944, 2950])
 //              where('id', 2980)
               ->orderBy('id')->take(50)->get();
@@ -544,10 +544,39 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_wordform) and lang_id=6;
      * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and lang_id in (1,4,5,6);
      * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and (id not in (select id from lemma_features) or id in (select id from lemma_features where without_gram  is null or without_gram <> 1)) and lang_id in (1,4,5,6);
+     * 
+     * select lemma_id from meanings where id in (select meaning_id from dialect_meaning) and lemma_id in (select lemma_id from lemma_wordform where dialect_id=43 and wordform_id=170) and lemma_id not in (select lemma_id from lemma_wordform where dialect_id=43 and wordform_id<>170);
+     * select lemma_id, count(*) from lemma_wordform where dialect_id=43 and lemma_id in (select lemma_id from meanings where id in (select meaning_id from dialect_meaning)) 
+     * and lemma_id in (select id from lemmas where pos_id=11) group by lemma_id having count(*)<99;
+
      */
     public function createInitialWordforms() {
+        $dialect_id=43;
+        $pos_id=11;
+        $count=99;
+        $lemmas = LemmaWordform::selectRaw("lemma_id, count(*)")
+                               ->whereDialectId($dialect_id)
+                               ->whereIn('lemma_id', function ($q) {
+                                   $q->select('lemma_id')->from('meanings')
+                                     ->whereIn('id',function($q1) {
+                                        $q1->select('meaning_id')->from('dialect_meaning');                                         
+                                     });
+                               })
+                               ->whereIn('lemma_id', function ($q) use ($pos_id) {
+                                   $q->select('id')->from('lemmas')
+                                     ->wherePosId($pos_id);                                         
+                               })
+                               ->groupBy(DB::raw('lemma_id having count(*)<'.$count))
+                               //->take(1)
+                               ->get();
+        foreach ($lemmas as $lemma) {
+            print '<p><a href="/ru/dict/lemma/'.$lemma->lemma_id.'">'.$lemma->lemma_id.'</a></p>';
+//            DB::statement("DELETE FROM lemma_wordform where lemma_id=". $lemma->lemma_id. " and dialect_id=".$dialect_id);
+        }
+        
+/*
         $is_all_checked = false;
-        $langs = [1,4,5/*,6*/];
+        $langs = [4,5,1,6];
 //        $pos=[1,5,6,10,13,14,20];
         $pos=[11];
 //        $gramset_id=1;
@@ -565,33 +594,34 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                });
                            })
                            ->whereIn('pos_id', $pos)
-/*                           ->whereIn('pos_id', function($query){
-                                $query->select("pos_id")->from("gramset_pos");
-                            })*/
                             ->whereNotIn('id', function($query) use ($gramset_id) {
                                 $query->select("lemma_id")->from("lemma_wordform")
                                       ->whereGramsetId($gramset_id);
-                            })->take(10)->get();
+                            })->take(1)->get();
             if (!sizeof($lemmas)) {
                 $is_all_checked = true;
             }
             foreach ($lemmas as $lemma) {
     //            print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
                 $stems=$lemma->updateBases();
-//dd($stems);                
-                $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, null, 
+//dd($stems);            
+                $dialects = $lemma->dialectIds();
+//dd($lemma, $dialects);                
+                $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialects[0] ?? null, 
                         Grammatic::nameNumFromNumberField($lemma->features->number ?? null), 
                         $stems, $lemma->features->reflexive ?? null);
 //dd($gramset_wordforms);         
                 if ($gramset_wordforms) {
-                    $lemma->storeWordformsFromSet($gramset_wordforms); 
+                    $lemma->storeWordformsFromSet($gramset_wordforms, $dialects[0] ?? null); 
                     $lemma->updateTextWordformLinks();
                     $lemma->updated_at = date('Y-m-d H:i:s');
                     $lemma->save();                    
                 }
                 print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
             }
+exit(0);            
         }
+*/        
     }
     
     /*

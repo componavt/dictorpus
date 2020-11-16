@@ -77,6 +77,16 @@ class LemmaTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testDialectIds()
+    {
+        $lemma_id = 17;
+        $lemma = Lemma::find($lemma_id);
+        $result = $lemma->dialectIds();
+        
+        $expected = [1,3,4,5];
+        $this->assertEquals( $expected, $result);        
+    }
+    
 /* 
     public function testWordformTerminativ()
     {

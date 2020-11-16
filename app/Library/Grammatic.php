@@ -162,7 +162,7 @@ class Grammatic
     }
 
     public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems, $is_reflexive=null) {
-//dd($stems);                
+//dd($dialect_id);                
         if (!is_array($stems) || !isset($stems[0]) || sizeof($stems)<6) {
             return false;
         }

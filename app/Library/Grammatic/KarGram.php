@@ -373,12 +373,16 @@ class KarGram
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
             if ($lang_id == 5) { // livvic
                 return KarNameOlo::templateFromWordforms($wordforms, $number);
+            } elseif ($lang_id == 6) { 
+                return KarNameLud::templateFromWordforms($wordforms, $number);
             } else { 
                 return KarName::templateFromWordforms($wordforms);
             }     
         } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
             if ($lang_id == 5) { // livvic
                 return KarVerbOlo::templateFromWordforms($wordforms, $number);
+            } elseif ($lang_id == 6) { 
+                return KarVerbLud::templateFromWordforms($wordforms, $number);
             } else { 
                 return KarVerb::templateFromWordforms($wordforms);
             }     
