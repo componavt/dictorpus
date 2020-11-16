@@ -566,7 +566,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                      ->wherePosId($pos_id);                                         
                                })
                                ->groupBy(DB::raw('lemma_id having count(*)<'.$count))
-                               ->take(1)
+//                               ->take(1)
                                ->get();
         foreach ($lemmas as $lemma) {
             DB::statement("DELETE FROM lemma_wordform where lemma_id=". $lemma->lemma_id. " and dialect_id=".$dialect_id);
