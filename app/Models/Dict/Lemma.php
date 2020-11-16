@@ -1829,6 +1829,22 @@ dd($wordforms);
         $this->save();                
     }
 
+    public function createInitialWordforms() {
+        $stems= $this->updateBases();
+//dd($stems);            
+        $dialects = $this->dialectIds();
+//dd($lemma, $dialects);                
+        $gramset_wordforms = Grammatic::wordformsByStems($this->lang_id, $this->pos_id, $dialects[0] ?? null, 
+                Grammatic::nameNumFromNumberField($this->features->number ?? null), 
+                $stems, $this->features->reflexive ?? null);
+//dd($gramset_wordforms);         
+        if ($gramset_wordforms) {
+            $this->storeWordformsFromSet($gramset_wordforms, $dialects[0] ?? null); 
+            $this->updateTextWordformLinks();
+            $this->updated_at = date('Y-m-d H:i:s');
+            $this->save();                    
+        }
+    }
 
     /*    
     public static function totalCount(){

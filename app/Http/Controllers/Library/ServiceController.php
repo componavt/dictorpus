@@ -546,8 +546,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and (id not in (select id from lemma_features) or id in (select id from lemma_features where without_gram  is null or without_gram <> 1)) and lang_id in (1,4,5,6);
      * 
      * select lemma_id from meanings where id in (select meaning_id from dialect_meaning) and lemma_id in (select lemma_id from lemma_wordform where dialect_id=43 and wordform_id=170) and lemma_id not in (select lemma_id from lemma_wordform where dialect_id=43 and wordform_id<>170);
-     * select lemma_id, count(*) from lemma_wordform where dialect_id=43 and lemma_id in (select lemma_id from meanings where id in (select meaning_id from dialect_meaning)) 
-     * and lemma_id in (select id from lemmas where pos_id=11) group by lemma_id having count(*)<99;
+     * select lemma_id, count(*) from lemma_wordform where dialect_id=43 and lemma_id in (select lemma_id from meanings where id in (select meaning_id from dialect_meaning)) and lemma_id in (select id from lemmas where pos_id=11) group by lemma_id having count(*)<99;
 
      */
     public function createInitialWordforms() {
@@ -567,11 +566,12 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                      ->wherePosId($pos_id);                                         
                                })
                                ->groupBy(DB::raw('lemma_id having count(*)<'.$count))
-                               //->take(1)
+                               ->take(1)
                                ->get();
         foreach ($lemmas as $lemma) {
+            DB::statement("DELETE FROM lemma_wordform where lemma_id=". $lemma->lemma_id. " and dialect_id=".$dialect_id);
+            $lemma->createInitialWordforms();
             print '<p><a href="/ru/dict/lemma/'.$lemma->lemma_id.'">'.$lemma->lemma_id.'</a></p>';
-//            DB::statement("DELETE FROM lemma_wordform where lemma_id=". $lemma->lemma_id. " and dialect_id=".$dialect_id);
         }
         
 /*
@@ -603,20 +603,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
             }
             foreach ($lemmas as $lemma) {
     //            print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
-                $stems=$lemma->updateBases();
-//dd($stems);            
-                $dialects = $lemma->dialectIds();
-//dd($lemma, $dialects);                
-                $gramset_wordforms = Grammatic::wordformsByStems($lemma->lang_id, $lemma->pos_id, $dialects[0] ?? null, 
-                        Grammatic::nameNumFromNumberField($lemma->features->number ?? null), 
-                        $stems, $lemma->features->reflexive ?? null);
-//dd($gramset_wordforms);         
-                if ($gramset_wordforms) {
-                    $lemma->storeWordformsFromSet($gramset_wordforms, $dialects[0] ?? null); 
-                    $lemma->updateTextWordformLinks();
-                    $lemma->updated_at = date('Y-m-d H:i:s');
-                    $lemma->save();                    
-                }
+                $lemma->createInitialWordforms();
                 print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
             }
 exit(0);            
