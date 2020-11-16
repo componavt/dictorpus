@@ -782,6 +782,10 @@ dd($wordforms);
 //dd($features);        
         LemmaFeature::store($this->id, $features);
         
+        if (!$dialect_id) {
+            $dialects = $this->dialectIds();
+            $dialect_id = $dialects[0] ?? null;
+        }
         $stems=$this->updateBases($stems, $dialect_id); 
         if ($this->features && !$this->features->without_gram && !$gramset_wordforms && $stems) {
             $gramset_wordforms = Grammatic::wordformsByStems($this->lang_id, $this->pos_id, null, 
