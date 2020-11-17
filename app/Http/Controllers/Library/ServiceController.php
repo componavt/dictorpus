@@ -550,7 +550,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
 
      */
     public function createInitialWordforms() {
-        $dialect_id=[46,44];//43
+        $dialect_id=44;//46,43
         $pos_id=11;
         $count=1;
         $lemmas = LemmaWordform::selectRaw("lemma_id, count(*)")
