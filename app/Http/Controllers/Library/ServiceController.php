@@ -550,7 +550,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
 
      */
     public function createInitialWordforms() {
-        $dialect_id=44;//46,43
+/*        $dialect_id=44;//46,43
 //        $pos_id=11;
         $pos_ids= PartOfSpeech::getNameIDs();
         $count=2;
@@ -577,7 +577,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
             print '<p><a href="/ru/dict/lemma/'.$lemma_obj->id.'">'.$lemma_obj->id.'</a></p>';
         }
         
-/*
+*/
         $is_all_checked = false;
         $langs = [4,5,1,6];
 //        $pos=[1,5,6,10,13,14,20];
@@ -611,7 +611,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
             }
 exit(0);            
         }
-*/        
+        
     }
     
     /*
