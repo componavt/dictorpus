@@ -497,7 +497,7 @@ print '<p>'.$text->id.'</p>';
         $texts=Text::
               where('id', '>', 2000)
               ->where('id', '<', 2051)
-              ->whereNotIn('id',[1714, 2540, 2541, 2573, 2587, 2617, 2941, 2944, 2950])
+              ->whereNotIn('id',[1714, 2000, 2037, 2038, 2041, 2048, 2540, 2541, 2573, 2587, 2617, 2941, 2944, 2950])
 //              where('id', 2980)
               ->orderBy('id')->take(50)->get();
         foreach ($texts as $text) { 
