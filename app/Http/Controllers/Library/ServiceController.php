@@ -554,7 +554,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $pos_id=11;
         $count=1;
         $lemmas = LemmaWordform::selectRaw("lemma_id, count(*)")
-                               ->whereIn('dialect_id', $dialect_id)
+                               ->where('dialect_id', $dialect_id)
                                ->whereIn('lemma_id', function ($q) {
                                    $q->select('lemma_id')->from('meanings')
                                      ->whereIn('id',function($q1) {
