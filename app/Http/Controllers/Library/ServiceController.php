@@ -599,7 +599,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                         $q1->whereNull('without_gram')
                                         ->orWhere('without_gram', '<>', 1);                                                                            
                                     })
-                                    ->where('number', '<>', $number);
+                                    ->where('number', $number);
                                });
                            })
                            ->whereIn('pos_id', $pos)
