@@ -694,8 +694,6 @@ class KarName
         switch ($gramset_id) {
             case 2: // номинатив, мн.ч. 
                 return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? KarNameOlo::addEndToMultiBase($stems[1], 't') : '');
-            case 56: // аккузатив, ед.ч. 
-                return $stems[0].($stems[1] ? ', '.$stems[1].'n' : '');
             case 57: // аккузатив, мн.ч. 
                 return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? KarNameOlo::addEndToMultiBase($stems[1], 't') : '');
         }
@@ -718,6 +716,8 @@ class KarName
         switch ($gramset_id) {
             case 1: // номинатив, ед.ч. 
                 return $stems[0];
+            case 56: // аккузатив, ед.ч. 
+                return $stems[0].($stems[1] ? ', '.$stems[1].'n' : '');
             case 3: // генитив, ед.ч. 
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
