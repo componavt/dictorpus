@@ -586,7 +586,8 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $gramset_id=2;
 //        $gramset_id=170;
         while (!$is_all_checked) {
-            $lemmas = Lemma::whereIn('lang_id', $langs)
+            // verbs and not plural numerals
+/*            $lemmas = Lemma::whereIn('lang_id', $langs)
                            ->whereNotIn('id',[261, 827, 866]) 
                            ->where(function($query) {
                                $query->whereNotIn('id', function($q) {
@@ -597,14 +598,28 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                         $q1->whereNull('without_gram')
                                         ->orWhere('without_gram', '<>', 1);                                                                            
                                     })
-                                    ->where('number', 1);
+                                    ->where('number', '<>', 1);
                                });
                            })
                            ->whereIn('pos_id', $pos)
                             ->whereNotIn('id', function($query) use ($gramset_id) {
                                 $query->select("lemma_id")->from("lemma_wordform")
                                       ->whereGramsetId($gramset_id);
+                            })->take(1)->get();*/
+
+            // plural numerals
+            $lemmas = Lemma::whereIn('lang_id', $langs)
+//                           ->whereNotIn('id',[261, 827, 866]) 
+                           ->whereIn('id', function($q) {
+                                $q->select('id')->from('lemma_features')
+                                  ->where('number', 1);
+                           })
+                           ->whereIn('pos_id', $pos)
+                            ->whereNotIn('id', function($query) use ($gramset_id) {
+                                $query->select("lemma_id")->from("lemma_wordform")
+                                      ->whereGramsetId($gramset_id);
                             })->take(1)->get();
+                            
             if (!sizeof($lemmas)) {
                 $is_all_checked = true;
             }
