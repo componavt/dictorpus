@@ -583,18 +583,19 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $pos=[1,5,6,10,13,14,20];
 //        $pos=[11];
         $gramset_id=1;
+        $number=1;
 //        $gramset_id=170;
         while (!$is_all_checked) {
             $lemmas = Lemma::whereIn('lang_id', $langs)
                            ->whereNotIn('id',[261, 827, 866]) 
-                           ->where(function($query) {
+                           ->where(function($query) use ($number) {
                                $query->whereNotIn('id', function($q) {
                                   $q->select('id')->from('lemma_features');                                    
-                               })->orWhereIn('id', function($q) {
+                               })->orWhereIn('id', function($q) use ($number) {
                                   $q->select('id')->from('lemma_features')
-                                    ->where(function ($q1) {
+                                    ->where(function ($q1) use ($number) {
                                         $q1->whereNull('without_gram')
-                                        ->orWhere('without_gram', '<>', 1);                                                                            
+                                        ->orWhere('without_gram', '<>', $number);                                                                            
                                     })
                                     ->where('number', '<>', 1);
                                });
