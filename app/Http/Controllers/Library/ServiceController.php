@@ -592,8 +592,11 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                   $q->select('id')->from('lemma_features');                                    
                                })->orWhereIn('id', function($q) {
                                   $q->select('id')->from('lemma_features')
-                                    ->whereNull('without_gram')
-                                    ->orWhere('without_gram', '<>', 1);                                    
+                                    ->where(function ($q1) {
+                                        $q1->whereNull('without_gram')
+                                        ->orWhere('without_gram', '<>', 1);                                                                            
+                                    })
+                                    ->where('number', '<>', 1);
                                });
                            })
                            ->whereIn('pos_id', $pos)
