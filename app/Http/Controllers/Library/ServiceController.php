@@ -588,7 +588,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         while (!$is_all_checked) {
             $lemmas = Lemma::whereIn('lang_id', $langs)
                            ->whereNotIn('id',[261, 827, 866]) 
-                           ->where(function($query) use ($number) {
+                           ->where(function($query) {
                                $query->whereNotIn('id', function($q) {
                                   $q->select('id')->from('lemma_features');                                    
                                })->orWhereIn('id', function($q) {
