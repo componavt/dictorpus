@@ -582,8 +582,10 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $langs = [4,5,1,6];
         $pos=[1,5,6,10,13,14,20];
 //        $pos=[11];
-        $gramset_id=1;
-        $number=1;
+//        $gramset_id=1;
+//        $number=1;
+        $gramset_id=2;
+        $number=2;
 //        $gramset_id=170;
         while (!$is_all_checked) {
             $lemmas = Lemma::whereIn('lang_id', $langs)
@@ -593,11 +595,11 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                   $q->select('id')->from('lemma_features');                                    
                                })->orWhereIn('id', function($q) use ($number) {
                                   $q->select('id')->from('lemma_features')
-                                    ->where(function ($q1) use ($number) {
+                                    ->where(function ($q1) {
                                         $q1->whereNull('without_gram')
-                                        ->orWhere('without_gram', '<>', $number);                                                                            
+                                        ->orWhere('without_gram', '<>', 1);                                                                            
                                     })
-                                    ->where('number', '<>', 1);
+                                    ->where('number', '<>', $number);
                                });
                            })
                            ->whereIn('pos_id', $pos)
