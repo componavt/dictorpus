@@ -71,12 +71,14 @@
                         {{$meaning_string}}<br>
                     @endforeach
                 </td>
-                <td data-th="{{ trans('dict.wordforms') }}">
-                    @if ($lemma->wordforms)
+                <td data-th="{{ trans('dict.wordforms') }}">                    
+                    @if ($lemma->wordforms && $lemma->wordforms()->count())
                     {{$lemma->wordforms()->whereNotNull('gramset_id')->count()}}
                         @if ($lemma->wordforms()->whereNull('gramset_id')->count())
                         + <span class="unchecked-count">{{$lemma->wordforms()->whereNull('gramset_id')->count()}}</span>
                         @endif
+                    @elseif (in_array($lemma->pos_id, $not_changeable_pos_list))
+                    —
                     @else
                     0
                     @endif

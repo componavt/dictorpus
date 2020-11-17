@@ -92,11 +92,12 @@ class LemmaController extends Controller
         $dialect_values = Dialect::getList($url_args['search_lang']);
         $concept_category_values = ConceptCategory::getList();
         $concept_values = [NULL=>'']+Concept::getList($url_args['search_concept_category'], $url_args['search_pos']);
+        $not_changeable_pos_list = PartOfSpeech::notChangeablePOSIdList();
 //dd($url_args['search_concept'], $concept_values);
         return view('dict.lemma.index',
                 compact('concept_values', 'concept_category_values', 'dialect_values', 
                         'gramset_values', 'lang_values', 'lemmas', 'numAll',
-                        'pos_values', 'args_by_get', 'url_args'));
+                        'not_changeable_pos_list', 'pos_values', 'args_by_get', 'url_args'));
     }
 
     /**
