@@ -551,8 +551,9 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      */
     public function createInitialWordforms() {
         $dialect_id=44;//46,43
-        $pos_id=11;
-        $count=1;
+//        $pos_id=11;
+        $pos_ids= PartOfSpeech::getNameIDs();
+        $count=2;
         $lemmas = LemmaWordform::selectRaw("lemma_id, count(*)")
                                ->where('dialect_id', $dialect_id)
                                ->whereIn('lemma_id', function ($q) {
@@ -561,12 +562,12 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                         $q1->select('meaning_id')->from('dialect_meaning');                                         
                                      });
                                })
-                               ->whereIn('lemma_id', function ($q) use ($pos_id) {
+                               ->whereIn('lemma_id', function ($q) use ($pos_ids) {
                                    $q->select('id')->from('lemmas')
-                                     ->wherePosId($pos_id);                                         
+                                     ->whereIn('pos_id',$pos_ids);                                         
                                })
                                ->groupBy(DB::raw('lemma_id having count(*)='.$count))
-//                               ->take(1)
+                               ->take(1)
                                ->get();
         foreach ($lemmas as $lemma) {
 //                print '<p><a href="/ru/dict/lemma/'.$lemma->lemma_id.'">'.$lemma->lemma_id.'</a></p>';
