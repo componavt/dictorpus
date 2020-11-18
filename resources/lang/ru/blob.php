@@ -98,7 +98,7 @@ return [
                   . 'Lyhyt sana "oza" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/remshueva.jpg">от Р.П. Ремшуевой</a> на использование текста стихотворения '
                   . '"Ihanko tosieh?" в проекте ВепКар.</p>'
-                  . '<p>Разрешение <a href="/images/permissions/vorobey.jpg">от Н.П. Ремшуевой</a> на использование текста произведения '
+                  . '<p>Разрешение <a href="/images/permissions/vorobey.jpg">от Н.П. Воробей</a> на использование текста произведения '
                   . '"Olipa kerran koira (ukrainalaini starina)" в проекте ВепКар.</p>',
     'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=15914">Открытый корпус вепсского и карельского языков (ВепКар): предварительный отбор материалов и словарная часть системы</a><br>
                     <i>Зайцева Н.Г., Крижановский А.А., Крижановская Н.Б., Пеллинен Н.А., Родионова А.П.</i>                    
