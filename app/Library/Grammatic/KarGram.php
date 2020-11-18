@@ -362,9 +362,21 @@ class KarGram
     
     public static function getAffixesForGramset($gramset_id, $lang_id) {
         if (in_array($gramset_id, KarName::getListForAutoComplete($lang_id))) {
-            return KarName::getAffixesForGramset($gramset_id);
+            if ($lang_id == 5) { 
+                return KarNameOlo::getAffixesForGramset($gramset_id);
+            } elseif ($lang_id == 6) { 
+                return KarNameLud::getAffixesForGramset($gramset_id);
+            } else {
+                return KarName::getAffixesForGramset($gramset_id);
+            }
         } elseif (in_array($gramset_id, KarVerb::getListForAutoComplete($lang_id))) {
-            return KarVerb::getAffixesForGramset($gramset_id);
+            if ($lang_id == 5) { 
+                return KarVerbOlo::getAffixesForGramset($gramset_id);
+            } elseif ($lang_id == 6) { 
+                return KarVerbLud::getAffixesForGramset($gramset_id);
+            } else {
+                return KarVerb::getAffixesForGramset($gramset_id);
+            }
         }
         return [];
     }

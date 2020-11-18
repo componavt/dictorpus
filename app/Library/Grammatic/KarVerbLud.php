@@ -54,15 +54,15 @@ class KarVerbLud
         } elseif (in_array($gramset_id,[88])) { // Perf3Sg
             $aux =  'on';
         } elseif (in_array($gramset_id,[89])) { // Perf1Pl
-            $aux =  'olemmo';
+            $aux =  'olemme';
         } elseif (in_array($gramset_id,[90])) { // Perf2Pl
-            $aux = 'oletto';
+            $aux = 'olette';
         } elseif (in_array($gramset_id,[91])) { // Perf3Pl
-            $aux =  !$is_reflexive ? 'ollah, on' : 'ollah';
+            $aux =  'oldah';
         } elseif (in_array($gramset_id,[92,93,94,95,96])) { // PerfNeg without Perf3PlNeg
             $aux = 'ole';
         } elseif (in_array($gramset_id,[97])) { // Perf3PlNeg
-            $aux = 'olla';
+            $aux = 'olda';
             
         } elseif (in_array($gramset_id,[98])) { // Plus1Sg
             $aux = 'olin';
@@ -71,58 +71,58 @@ class KarVerbLud
         } elseif (in_array($gramset_id,[100])) { // Perf3Sg
             $aux = 'oli';
         } elseif (in_array($gramset_id,[101])) { // Plus1Pl
-            $aux = 'olimmo';
+            $aux = 'olimme';
         } elseif (in_array($gramset_id,[102])) { // Plus2Pl
-            $aux = 'olitto';
+            $aux = 'olitte';
         } elseif (in_array($gramset_id,[103])) { // Plus3Pl
-            $aux = !$is_reflexive ? 'oldih, oli' : 'oldih';
+            $aux = 'oldih';
         } elseif (in_array($gramset_id,[104,105,107,108,106])) { // PlusNeg without PlusSgNeg
-            $aux = 'olluh';
+            $aux = 'ole';
         } elseif (in_array($gramset_id,[109])) { // PlusSgNeg
             $aux = 'oldu';
             
         } elseif (in_array($gramset_id,[122])) { // CondPerf1Sg
-            $aux = 'olizin';
+            $aux = 'oližin';
         } elseif (in_array($gramset_id,[123])) { // CondPerf2Sg
-            $aux = 'olizit';
+            $aux = 'oližit';
         } elseif (in_array($gramset_id,[124,129,130,131,132,133])) { // CondPerf3Sg, CondPerfNeg wuthout CondPerf3PlNeg
-            $aux = 'olis';
+            $aux = 'oliš';
         } elseif (in_array($gramset_id,[126])) { // CondPerf1Pl
-            $aux = 'olizimmo';
+            $aux = 'oližimme';
         } elseif (in_array($gramset_id,[127])) { // CondPerf2Pl
-            $aux = 'olizitto';
+            $aux = 'oližitte';
         } elseif (in_array($gramset_id,[128,134])) { // CondPerf3Pl, CondPerf3PlNeg
-            $aux = 'oldas';
+            $aux = 'oldaiš';
             
         } elseif (in_array($gramset_id,[135])) { // CondPlus1Sg
-            $aux = 'olluzin';
+            $aux = 'oližin';
         } elseif (in_array($gramset_id,[125])) { // CondPlus2Sg
-            $aux = 'olluzit';
+            $aux = 'oližit';
         } elseif (in_array($gramset_id,[136,140,141,142,143,144])) { // CondPerf3Sg, CondPlusNeg without CondPlusSgNeg
-            $aux = 'ollus';
+            $aux = 'olnuiš';
         } elseif (in_array($gramset_id,[137])) { // CondPlus1Pl
-            $aux = 'olluzimmo';
+            $aux = 'oližimmo';
         } elseif (in_array($gramset_id,[138])) { // CondPlus2Pl
-            $aux = 'olluzitto';
+            $aux = 'oližitto';
         } elseif (in_array($gramset_id,[139, 145])) { // CondPlus3Pl, CondPlus3PlNeg
-            $aux = 'oldanus';
+            $aux = 'oldanuiš';
             
         } elseif (in_array($gramset_id,[158])) { // PotPerf1Sg
-            $aux = 'ollen';
+            $aux = 'lienen';
         } elseif (in_array($gramset_id,[159])) { // PotPerf2Sg
-            $aux = 'ollet';
+            $aux = 'lienet';
         } elseif (in_array($gramset_id,[160])) { // PotPerf3Sg
-            $aux = 'ollou';
+            $aux = 'lienou';
         } elseif (in_array($gramset_id,[161])) { // PotPerf1Pl
-            $aux = 'ollemmo';
+            $aux = 'lienemme';
         } elseif (in_array($gramset_id,[162])) { // PotPerf2Pl
-            $aux = 'olletto';
+            $aux = 'lienette';
         } elseif (in_array($gramset_id,[163])) { // PotPerf3Pl
-            $aux = 'oldaneh';
+            $aux = 'lienou';
         } elseif (in_array($gramset_id,[164,165,166,167,168])) { // PotPerfNeg without PotPerf3PlNeg
-            $aux = 'olle';
+            $aux = 'liene';
         } elseif (in_array($gramset_id,[169])) { // PotPerf3PlNeg
-            $aux = 'oldane';
+            $aux = 'liene';
         }
         if (!isset($aux)) {
             return '';
@@ -140,312 +140,26 @@ class KarVerbLud
         } elseif (in_array($gramset_id,[72, 82, 94, 107, 112, 118, 131, 142, 154, 166, 79, 85, 97, 109, 115, 121, 134, 145, 157, 169])) { // 3Sg, 3Pl
             return 'ei';
         } elseif (in_array($gramset_id,[73, 83, 95, 108, 113, 119, 132, 143, 155, 167])) { // 1Pl
-            return 'emmo';
+            return 'emme';
         } elseif (in_array($gramset_id,[78, 84, 96, 106, 114, 120, 133, 144, 156, 168])) { // 2Pl
-            return 'etto';
+            return 'ette';
         } elseif ($gramset_id ==50) { // Imperative2Sg
             return 'älä';
-        } elseif (in_array($gramset_id,[74])) { // Imperative3Sg
+        } elseif (in_array($gramset_id,[74, 77])) { // Imperative3
             return 'älgäh';        
         } elseif ($gramset_id ==75) { // Imperative1Pl
-            return 'älgiämmö';        
+            return 'älgämme';        
         } elseif ($gramset_id ==76) { // Imperative2Pl
-            return 'älgiä';        
-        } elseif (in_array($gramset_id,[74, 77])) { // Imperative3Pl
-            return 'äldähes';        
+            return 'älgätte';        
         }
     }
     
-    public static function IndPrsConSgRef($stem3) {
-        if (!$stem3) {
-            return '';
-        }
-        $V="[".KarGram::vowelSet()."]";
-        $stem3= preg_replace("/".$V."(".$V.")$/u", "$1", $stem3);
-        $stem3= preg_replace("/i$/", 'e', $stem3);
-
-        return Grammatic::joinMorfToBases($stem3, 'i');
-//        return Grammatic::joinMorfToBases($stem3, 'i'). ', '. joinMorfToBases($stem3, 'ihes');
-    }
-
     /**
-     * Base of active 2 participle, conditional imperfect, potential presence
+     * TODO!!! Проверить для людиковского
      * 
-     * 1) если п.о.8 заканчивается на СV и в ней два слога ИЛИ заканчивается на n, h, 
-     *      то п.о.8 + n
-     * 2) если п.о.8 заканчивается на СV и в ней >2 слогов, то п.о.1 + nn
-     * 3) если п.о.8 заканчивается на VV, то п.о.8 + nnu / nny 
-     * 4) если п.о.8 заканчивается на [lrs], то п.о.8 + [lrs] + u/y
-     * 5) если п.о.8 заканчивается на t, то в п.о.8 t > n → + nu / ny
-     * 
-     * @param string $stem1
-     * @param string $stem8
+     * @param type $gramset_id
+     * @return type
      */
-    public static function activeBase($stem1,$stem8) {
-        if (!$stem8) { return ''; }
-        
-        $C="[".KarGram::consSet()."]";
-        $V="[".KarGram::vowelSet()."]";
-        $out = [];
-        foreach (preg_split("/\//",$stem8) as $base) {
-            $base = trim($base);
-            if (preg_match("/".$C.'(’?)'.$V."$/u", $base, $regs) && KarGram::countSyllable($base)==2
-                    || preg_match("/[nh]$/u", $base)) {
-                $out[] = $base. 'n'. ($regs[1] ?? '');
-            } elseif (preg_match("/".$C.'’?'.$V."$/u", $base) && KarGram::countSyllable($base)>2) {
-                $out[] = $stem1 ? $stem1. 'nn' : '';
-            } elseif (preg_match("/".$V.$V."$/u", $base)) {
-                $out[] = $base. 'nn';
-            } elseif (preg_match("/([lrs])$/u", $base, $regs)) {
-                $out[] = $base. $regs[1];
-            } elseif (preg_match("/^(.+)t$/u", $base, $regs)) {
-                $out[] = $regs[1]. 'nn';
-            }
-        }
-        return join('/',$out);                
-    }
-
-    /**
-     * Base of active 2 participle, conditional imperfect, potential presence
-     * FOR IMPERSONAL VERBS
-     * 
-     * 1) если с.ф. заканчивается на VV и в ней 2 слога, то:
-     * - с.ф. – конечные ua + an
-     * - с.ф. – конечные iä + än
-     * - с.ф. – конечные uo + un
-     * - с.ф. – конечные yö + yn
-     * 2) если с.ф. заканчивается на VV и в ней >2 слогов, то:
-     * - с.ф. – конечные ua + ann
-     * - с.ф. – конечные iä + änn
-     * - с.ф. – конечные [uy][öo] + [uy]nn
-     * При этом в с.ф tt > t.
-     * 3) если с.ф. заканчивается на СV, то:
-     * - с.ф. – конечный l[lt][aä] + ll
-     * - с.ф. – конечный [tj][aä] + nn
-     * 
-     * @param string $stem1
-     * @param string $stem8
-     */
-    public static function activeBaseDef($stem0, $is_reflexive=false) {
-        if (!$stem0) {
-            return '';
-        }
-        if ($is_reflexive) {
-            $stem0 = preg_replace('/kseh$/', '', $stem0);
-        }
-//dd($stem0);        
-        $C="[".KarGram::consSet()."]";
-        $V="[".KarGram::vowelSet()."]";
-        if (preg_match("/^(.+)(".$V.$V.")$/u", $stem0, $regs)) {
-            if (KarGram::countSyllable($stem0)==2) {
-                $n = 'n';
-            } else {
-                $n = 'nn';
-                $regs[1] = preg_replace("/tt$/", 't', $regs[1]);
-            }
-            if ($regs[2]=='ua') {
-                return $regs[1].'a'.$n;
-            } elseif ($regs[2]=='iä') { 
-                return $regs[1].'ä'.$n;
-            } elseif ($regs[2]=='uo') { 
-                return $regs[1].'u'.$n;
-            } elseif ($regs[2]=='yö') { 
-                return $regs[1].'y'.$n;
-            }
-        } elseif (preg_match("/^(.+l)[lt][aä]$/u", $stem0, $regs)) {
-            return $regs[1].'l';
-        } elseif (preg_match("/^(.+)[tj][aä]$/u", $stem0, $regs)) {
-            return $regs[1].'nn';
-        }
-    }
-    /**
-     * 141. актив, 2-е причастие
-     * @param string $stem1
-     * @param string $stem8
-     */
-    public static function partic2active($stem0, $stem1, $stem8, $harmony, $def=false, $is_reflexive=false) {
-        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
-        return Grammatic::joinMorfToBases($active_base, KarGram::garmVowel($harmony, 'u'). (!$is_reflexive ? 'h' : 'hes'));
-    }
-    
-    /**
-     * 144. пассив, 2-е причастие
-     * 
-     * п.о.7 + u / y
-     * 
-     * @param string $stem
-     */
-    public static function partic2passive($stem7, $harmony, $is_reflexive=false) {
-        if (!$stem7) {
-            return '';
-        }
-        return $stem7.KarGram::garmVowel($harmony, !$is_reflexive ? 'u' : 'uhes');
-    }
-
-    /**
-     * Imperative base
-     * 1) если п.о.8=%СV ИЛИ =%VV и в ней >2 слогов, то п.о.8 + kk
-     * 2) если п.о.8=%VV и в ней <3 слогов ИЛИ =%l и в п.о.8 один слог ИЛИ =%n, то п.о.8 + g 
-     * 3) если п.о.8=%l и в п.о.8 >1 слогов ИЛИ =%[rsh] то п.о.8 + k
-     * 4) если п.о.8=%t, то в п.о.8 t > k + k
-     * 
-     * @param string $stem8
-     */
-    public static function impBaseSg($stem8) {
-        if (!$stem8) {
-            return '';
-        }
-        $C="[".KarGram::consSet()."]";
-        $V="[".KarGram::vowelSet()."]";
-        $out = [];
-        foreach (preg_split("/\//",$stem8) as $base) {
-            if (preg_match("/".$C.'’?'.$V."$/u", $base) ||
-                    preg_match("/".$V.$V."$/u", $base) && KarGram::countSyllable($base)>2) {
-                $out[] = $base. 'kk';
-            } elseif (preg_match("/".$V.$V."$/u", $base) && KarGram::countSyllable($base)<3
-                    || preg_match("/l$/u", $base) && KarGram::countSyllable($base)==1 
-                    || preg_match("/n$/u", $base)) {
-                $out[] = $base. 'g';
-            } elseif (preg_match("/l$/u", $base) && KarGram::countSyllable($base)>1 
-                    || preg_match("/[rsh]$/u", $base)) {
-                $out[] = $base. 'k';
-            } elseif (preg_match("/^(.+)t$/u", $base, $regs)) {
-                $out[] = $regs[1]. 'kk';
-            }
-        }
-        return join('/',$out);        
-    }
-
-    public static function impBasePl($stem8) {
-        if (!$stem8) {
-            return '';
-        }
-        $out = [];
-        foreach (preg_split("/\//",self::impBaseSg($stem8)) as $base) {
-            if (KarGram::isBackVowels($base)) {
-                $out[] = $base.'ua';
-            } else {
-                $out[] = $base.'iä';
-            }
-        }
-        return join('/',$out);        
-    }    
-
-    /**
-     * Conditional imperfect base
-     * 
-     * @param string $stem1
-     * @param string $stem8
-     */
-    public static function condImpBase($stem0, $stem1, $stem8, $harmony, $def=false, $is_reflexive=false) {
-        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
-        return Grammatic::joinMorfToBases($active_base, KarGram::garmVowel($harmony, 'u'). (!$is_reflexive ? '' : 'zi'));  
-    }
-
-    public static function condPrsBase($stem3) {
-        if (!$stem3) {
-            return '';
-        }
-        $C="[".KarGram::consSet()."]";
-        $out = [];
-        foreach (preg_split("/\//",$stem3) as $base) {
-            $base = trim($base);
-            $out[] = preg_replace("/(".$C.")e$/", '$1i', $base);
-        }
-        return join('/',$out);                
-    }
-
-    public static function base3PlFrom7($stem7, $harmony) {
-        if (!$stem7) {
-            return '';
-        }
-        $out = [];
-        foreach (preg_split("/\//",$stem7) as $base) {
-            if (KarGram::countSyllable($base)==2) {
-                $out[] = preg_replace("/tt$/", 't', $base). KarGram::garmVowel($harmony,'ann');
-            } else {
-                $out[] = $base. KarGram::garmVowel($harmony,'an');                    
-            }
-        }
-        return join('/',$out);                
-    }
-
-    public static function condImp3Pl($stem7, $harmony, $is_reflexive=false) {
-        return Grammatic::joinMorfToBases(self::base3PlFrom7($stem7, $harmony), KarGram::garmVowel($harmony,'u'.(!$is_reflexive ? 's' : 'zihes')));                
-    }
-
-    public static function potenPrsBase($stem0, $stem1, $stem8, $def=false, $is_reflexive=false) {
-        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
-        return Grammatic::joinMorfToBases($active_base, 'e');                
-    }
-    
-    public static function potenPrs3Sg($stem0, $stem1,  $stem8, $harmony, $def=false, $is_reflexive=false) {
-        $active_base = !$def ? self::activeBase($stem1,$stem8) : self::activeBaseDef($stem0, $is_reflexive);
-        return Grammatic::joinMorfToBases($active_base, KarGram::garmVowel($harmony, 'ou'));
-    }
-
-    public static function potenPrs3Pl($stem7, $harmony, $is_reflexive=false) {
-        return Grammatic::joinMorfToBases(self::base3PlFrom7($stem7, $harmony), !$is_reflexive ? 'eh' : 'ehes');                
-    }
-
-    public static function potenPrs3PlNeg($stem7, $harmony, $is_reflexive=false) {
-        return Grammatic::joinMorfToBases(self::base3PlFrom7($stem7, $harmony), 'e');                
-    }
-    
-    /**
-     * Infinitive II base
-     * 
-     * A. если с.ф. заканчивается на ha/hä, то h[aä] > je
-     * Б. если с.ф. заканчивается на Сa/Cä (кроме ha/hä), то конечные a/ä > e 
-     * В. если с.ф. заканчивается на VV, то = п.о.3+ je,
-     *       при этом в п.о.3 конечный e > i
-     * 
-     * @param type $stem0
-     * @param type $stem3
-     * @return string
-     */
-    public static function inf2Base($stem0, $stem3) {
-        if (!$stem0 || !$stem3) {
-            return '';
-        }
-        $C="[".KarGram::consSet()."]";
-        $V="[".KarGram::vowelSet()."]";
-        $out = [];
-        foreach (preg_split("/\//",$stem0) as $base) {
-            $base = trim($base);
-            if (preg_match("/^(.+)h[aä]$/", $base, $regs)) {
-                $out[] = $regs[1].'je';
-            } elseif (preg_match("/^(.*".$C.")[aä]$/", $base, $regs)) {
-                $out[] = $regs[1].'e';
-            } elseif (preg_match("/".$V.$V."$/", $base)) {
-                foreach (preg_split("/\//",$stem3) as $base3) {
-                    $out[] = preg_replace("/e$/", 'i', $base3).'je';
-                }
-            }
-        }
-        return join('/',$out);                
-    }
-
-    public static function partic1active($stem3, $harmony) {
-        if (!$stem3) {
-            return '';
-        }
-        $C="[".KarGram::consSet()."]";
-        $V="[".KarGram::vowelSet()."]";
-        $out = [];
-        foreach (preg_split("/\//",$stem3) as $base) {
-            $base = trim($base);
-            if (preg_match("/^(.*".$C.")e$/", $base, $regs)) {
-                $out[] = $regs[1].'ii, '.$regs[1].KarGram::garmVowel($harmony,'iju');
-            } elseif (preg_match("/".$V.$V."$/", $base)) {
-                $out[] = $base.KarGram::garmVowel($harmony,'ju');
-            } else {
-                $out[] = $base.'i, '. $base.KarGram::garmVowel($harmony,'ju');
-            }
-        }
-        return join(', ',$out);                
-    }
-    
     public static function getAffixesForGramset($gramset_id) {
         switch ($gramset_id) {
             case 26: // 1. индикатив, презенс, 1 л., ед.ч., пол. 

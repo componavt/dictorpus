@@ -107,6 +107,8 @@ class KarName
     public static function gramsetListSg($lang_id) {
         if ($lang_id==5) {
             return KarNameOlo::gramsetListSg();
+        } elseif ($lang_id==6) {
+            return KarNameLud::gramsetListSg();
         }
         return [1,  56, 3,  4, 277,  5,    8,  9, 10, 278, 12,  6, 14, 15];
     }
@@ -114,6 +116,8 @@ class KarName
     public static function gramsetListPl($lang_id) {
         if ($lang_id==5) {
             return KarNameOlo::gramsetListPl();
+        } elseif ($lang_id==6) {
+            return KarNameLud::gramsetListPl();
         }
         return [2, 57, 24, 22, 279, 59,     23, 60, 61, 280, 62, 64, 65, 66, 281];
     }
