@@ -95,4 +95,8 @@ class Str
         }
         return [$str1, $str2];
     } 
+    
+    public static function intToProc($number) {
+        return round(100*$number, 2). '%';
+    }
 }

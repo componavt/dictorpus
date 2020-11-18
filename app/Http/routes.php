@@ -196,6 +196,7 @@ Route::group(
 
         Route::get('import/phonetics_to_lemmas', 'Library\ImportController@phoneticsToLemmas');
 
+        Route::get('experiments/prediction_by_analog/', 'Library\Experiments\SearchByAnalogController@lemmaGramsetPrediction');
         Route::get('experiments/search_by_analog/', 'Library\Experiments\SearchByAnalogController@index');
         Route::get('experiments/search_by_analog/check_word', 'Library\Experiments\SearchByAnalogController@checkWord');
         Route::get('experiments/search_by_analog/error_list', 'Library\Experiments\SearchByAnalogController@errorList');

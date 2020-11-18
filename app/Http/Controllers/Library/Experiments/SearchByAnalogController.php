@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Arrays;
 
 use App\Library\Experiments\SearchByAnalog;
+use App\Library\Predictor;
+use App\Library\Str;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
@@ -470,5 +472,20 @@ print 'done.';
         
         return view('experiments.search_by_analog.check_word',
                     compact('wordforms', 'property', 'property_id', 'search_lang', 'table_name'));
+    }
+    
+    public function lemmaGramsetPrediction(Request $request) {
+        $uword = $requst->uword ?? 'suappailoi';
+        $lang_id= $requst->lang_id ?? 5;
+//print "<pre>";
+//        list($total_founded, $prediction) = Predictor::lemmaGramsetByAnalog($uword, $lang_id);
+//        dd($total_founded, $prediction);
+        $prediction = Predictor::lemmaGramsetByAnalog($uword, $lang_id);
+        print "<h3>Предсказание для <b>".$uword."</b></h3>".
+                "<p>Может быть это</p>";
+        foreach ($prediction as $l_p_g => $count) {
+            list($lemma, $pos_id, $gramset_id) = preg_split("/\_/", $l_p_g);
+            print "<p>".$lemma.", ".PartOfSpeech::getNameById($pos_id).", ".Gramset::getStringByID($gramset_id)." (".Str::intToProc($count).")</p>";
+        }
     }
 }
