@@ -14,3 +14,15 @@
     ]) 
 
     <div id="addWordformFields"></div>
+        
+    <div id="prediction-block">
+        <div class="waiting blink">{{trans('corpus.wait_while_search')}}</div>
+        <div id="prediction-content"></div>
+    </div>
+
+    @include('widgets.form.formitem._checkbox_group', 
+            ['name' => 'choose-dialect',
+             'checked' => $dialect_value,
+             'values' => $dialect_values,
+             'title' => trans('dict.dialects')]) 
+    

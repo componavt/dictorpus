@@ -114,9 +114,9 @@ function addLemma(text_id, lang_id) {
     
     $("#modalAddLemma .close, #modalAddLemma .cancel").on('click', function() {
         $( "#new_meanings_0__meaning_text__2_" ).val(null);
-    });
-    
+    });   
 }
+
 
 function loadDataToWordformModal(text_id, w_id, wordform, lang_id) {
     $.ajax({
@@ -131,11 +131,10 @@ function loadDataToWordformModal(text_id, w_id, wordform, lang_id) {
                     var lemma_id=$( "#choose-lemma option:selected" ).val();
                     if (lemma_id != null) {
                         loadLemmaData(lemma_id, text_id);
-                        $("#prediction-content").html(null);                          
                     }
                 })
                 .change();    
-            loadPrediction(wordform, lang_id);
+//            loadPrediction(wordform, lang_id);
         }
     });        
 }
@@ -171,16 +170,10 @@ function loadLemmaData(lemma_id, text_id) {
     }); 
 }
 
-/**
- * эта функция не вызывается, если кликнуть за пределы окна
- * 
- */
 function clearWordformModal() {
     $("#addWordformFields").html(null);
     $("#addWordformSentence").html(null);
     $('#choose-lemma').val(null).trigger('change');    
-    $("#prediction-content").html(null);  
-console.log($("#prediction-content").html());    
 }
 
 function changeLemmaList(lang_id) {
@@ -226,9 +219,9 @@ function changeWordBlock(text_id, w_id) {
  * @param {Array} dialects - array of dialect IDs 
  * @returns {undefined}
  */
-function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects, prediction, interpretation) {
+function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects) {
     var route = '/dict/lemma_wordform/store';
-    var test_url = '?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&wordform='+ wordform +'&w_id='+w_id+'&dialects[]='+dialects+'&prediction='+prediction+'&interpretation='+interpretation;
+    var test_url = '?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&wordform='+ wordform +'&w_id='+w_id+'&dialects[]='+dialects;
 console.log("saveWordform: " + test_url);
     
     $.ajax({
@@ -239,9 +232,7 @@ console.log("saveWordform: " + test_url);
                wordform: wordform, 
                meaning_id: meaning_id,
                gramset_id: gramset_id,
-               dialects: dialects,
-               prediction: prediction,
-               interpretation: interpretation
+               dialects: dialects
               },
         type: 'GET',
         success: function(result){       
@@ -282,15 +273,7 @@ function addWordform(text_id, lang_id) {
     $("#modalAddWordform .close, #modalAddWordform .cancel").on('click', function() {
         clearWordformModal();
     });
-/*    
-    $(document).mouseup(function (e){ // событие клика по веб-документу
-		var div = $("#modalAddWordform"); 
-		if (!div.is(e.target) // если клик был не по нашему блоку
-		    && div.has(e.target).length === 0) { // и не по его дочерним элементам
-			clearWordformModal();
-		}
-	});*/
-        
+    
     $("#save-wordform").click(function(){
         var wordform = $( "#choose-wordform" ).val();
         var lemma_id = $( "#choose-lemma option:selected" ).val();
@@ -304,14 +287,7 @@ function addWordform(text_id, lang_id) {
             dialect = dialects_obj[i];
             dialects.push(dialects_obj[i].value);
         }
-        var prediction = $("input[name=prediction]:checked").val();
-        var interpretation = $( "#interpretation" ).val();
-        if (!lemma_id && prediction && !interpretation) {
-            alert('Вы забыли указать значение для предсказанной леммы!');
-            $( "#interpretation" ).focus();
-        } else {
-            saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects, prediction, interpretation);
-        }
+        saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects);
     });
     addLemma(text_id, lang_id);    
 }

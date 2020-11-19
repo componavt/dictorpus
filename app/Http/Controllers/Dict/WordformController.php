@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dict;
 use Illuminate\Http\Request;
 use DB;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
@@ -20,7 +20,6 @@ use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 use App\Models\Corpus\Text;
-use App\Models\Corpus\Word;
 
 class WordformController extends Controller
 {
@@ -113,18 +112,15 @@ class WordformController extends Controller
         }
 
         $gramset_values = ['NULL'=>'']+Gramset::getGroupedList($lemma->pos_id,$lemma->lang_id,true);
-        $dialect_values = Dialect::getList($lemma->lang_id); //['NULL'=>'']+
         $meaning_values = Meaning::getList($lemma_id);
         
         $pos_name = $lemma->pos->name;
+        $dialect_values = Dialect::getList($lemma->lang_id); //['NULL'=>'']+
         $dialect_value = $text->dialectValue();
         
-        return view('dict.wordform._form_create_fields')
-                  ->with(['dialect_value'=>$dialect_value,
-                          'dialect_values' => $dialect_values,
-                          'gramset_values' => $gramset_values,
-                          'meaning_values' => $meaning_values,
-                          'pos_name'=>$pos_name]);
+        return view('dict.wordform._form_create_fields',
+                  compact('dialect_value', 'dialect_values', 'gramset_values',
+                          'meaning_values', 'pos_name'));
     }
 
     /**
@@ -264,7 +260,6 @@ class WordformController extends Controller
                         'url_args'       => $this->url_args,
                          ]);
     }
-    
 }
 
 // a lemma and wordform related by more than once

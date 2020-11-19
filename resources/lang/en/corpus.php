@@ -109,4 +109,5 @@ return [
     'youtube_id' => 'YouTube Identifier',
     'word' => 'Word',
     'unlock' => 'unlock',
+    'wait_while_search' => 'Please wait while searching for possible options ...',
 ];

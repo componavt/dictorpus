@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Corpus;
 use Illuminate\Http\Request;
 use DB;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Library\Str;
+use App\Library\Predictor;
 
 use App\Models\Corpus\Word;
 use App\Models\Corpus\Text;
 
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
+use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
 use App\Models\User;
@@ -195,5 +199,39 @@ class WordController extends Controller
 //dd($wordform->id);    
         $wordform->updateTextWordformLinks($regs[1],$regs[2],$regs[4]);
         return Word::createGramsetBlock($regs[1],$regs[2]);
+    }
+    
+    
+    public function lemmaGramsetPrediction(Request $request) {
+        $uword = $request->uword;
+        $lang_id = (int)$request->lang_id;
+        
+        if (!$uword || !in_array($lang_id, Lang::projectLangIDs())) {
+            return;
+        }
+
+        $exist_lemmas = $prediction = [];        
+        foreach (Predictor::lemmaGramsetByAnalog($uword, $lang_id) as $l_p_g => $count) {
+            list($lemma, $pos_id, $gramset_id) = preg_split("/\_/", $l_p_g);
+            $item = ['lemma'=>$lemma,
+                     'pos'=>PartOfSpeech::getNameById($pos_id),
+                     'gramset'=>Gramset::getStringByID($gramset_id),
+                     'proc'=>Str::intToProc($count)];
+            $lemmas = Lemma::where('lemma', 'like', $lemma)
+                             ->wherePosId($pos_id);
+            if ($lemmas->count()) {
+                foreach ($lemmas->get() as $lemma_obj) {
+                    $exist_lemmas[$lemma_obj->id] = $item;
+                    foreach ($lemma_obj->meanings as $meaning) {
+                        $exist_lemmas[$lemma_obj->id]['meanings'][$lemma_obj->id.'_'.$meaning->id.'_'.$gramset_id]
+                                = $meaning->getMultilangMeaningTextsStringLocale();
+                    }
+                }
+            } else {
+                $prediction[$l_p_g] = $item;
+            }
+        }
+        
+        return view('dict.wordform._prediction', compact('exist_lemmas', 'prediction'));
     }
 }

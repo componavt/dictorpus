@@ -197,6 +197,7 @@ return [
     'pos_category_2' => 'Cлова закрытого класса',
     'pos_category_3' => 'Другие',
     'pos_list' => 'Cписок частей речи',
+    'prediction_interpretation' => 'значение для предсказанной леммы',
     'prontype' => 'разряд местоимения',
     'prontypes' => [NULL=> '',
                     1 => 'личное',

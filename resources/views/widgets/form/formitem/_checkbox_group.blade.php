@@ -16,7 +16,7 @@ if(! isset($title))
 ?>
 <div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
     @if($title)
-        <label for="{{$name}}">{{ $title }}</label><br>
+        <label for="{{$name}}">{{ $title }}</label>
     @endif
     
     @foreach($values as $value=>$t)

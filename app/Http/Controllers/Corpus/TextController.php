@@ -210,13 +210,14 @@ class TextController extends Controller
         $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
         $pos_id = PartOfSpeech::getIDByCode('Noun');
         $dialect_values = Dialect::getList($text->lang_id);
-        $text_dialects = $text->dialects;
-        $dialect_value = $text_dialects[0]->id ?? 0;    
+//        $text_dialects = $text->dialects;
+//        $dialect_value = $text_dialects[0]->id ?? 0;    
+        $dialect_value = $text->dialectValue();
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.show',
                   compact('dialect_value', 'dialect_values', 'labels', 'text', 'args_by_get', 'url_args',
-                          'pos_values', 'pos_id', 'langs_for_meaning'));
+                          'pos_values', 'pos_id', 'langs_for_meaning', 'dialect_value'));
     }
 
     /**

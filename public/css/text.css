@@ -172,3 +172,8 @@ ol {
     padding-right: 10px;
     cursor: pointer;
 }
+
+#prediction-block .waiting {
+    display: none;
+}
+

@@ -21,21 +21,31 @@ class Predictor
      * 
      */
     public static function lemmaGramsetByAnalog(string $uword, int $lang_id): array {
+        $rang_enough = 0.01;
         $first_letter = mb_substr($uword, 0, 1);
         $maybe_proper_noun = $first_letter == mb_strtoupper($first_letter);
         $uword_for_search = Grammatic::toSearchForm($uword);
-        list ($total_founded, $out) = self::lemmasFromOtherLangsByAnalog($uword_for_search, $lang_id);
-//var_dump($out);                    
-        list ($total_founded1, $out) = self::wordformsFromOtherLangsByAnalog($uword_for_search, $lang_id, $out, $maybe_proper_noun);
-//var_dump($out);                    
-        list ($total_founded2, $out) = self::lemmasWordformsByAnalog($uword_for_search, $lang_id, $out, $maybe_proper_noun);
+        list ($total_founded, $out1) = self::lemmasFromOtherLangsByAnalog($uword_for_search, $lang_id);
+//var_dump($out1);                    
+        list ($total_founded1, $out1) = self::wordformsFromOtherLangsByAnalog($uword_for_search, $lang_id, $out1, $maybe_proper_noun);
+//var_dump($out1);                    
+        list ($total_founded2, $out) = self::lemmasWordformsByAnalog($uword_for_search, $lang_id, $maybe_proper_noun);
+        
+        foreach ($out1 as $id=>$count) {
+            $out[$id] = $count + ($out[$id] ?? 0);
+        }
+        arsort($out);
         $total = $total_founded+$total_founded1+$total_founded2;
 //        return [$total, $out];
         
+        $result=[];
         foreach ($out as $id=>$count) {
-            $out[$id] = $count / $total;
+            $rang = $count / $total;
+            if ($rang >  $rang_enough) {
+                $result[$id] = $rang;
+            }
         }
-        return $out;
+        return $result;
     }
     
     /**
@@ -92,10 +102,9 @@ class Predictor
      * 
      * @param string $uword
      * @param int $lang_id
-     * @param array $out other predictions
      * @return array
      */
-    public static function lemmasWordformsByAnalog(string $uword, int $lang_id, array $out, bool $maybe_proper_noun): array {
+    public static function lemmasWordformsByAnalog(string $uword, int $lang_id, bool $maybe_proper_noun): array {
         $found_enough = 10; // порог общего количество найденных вариантов
         $rang_enough=0.5; // порог доли первой пары pos_id-gramset_id среди всех найденных
         $total_founded=0;
@@ -105,6 +114,9 @@ class Predictor
         $len_right = mb_strlen($uright);
         
         while ($len_right > 1 && ($total_founded < $found_enough || $total_founded >= $found_enough && $rang1 <= $rang_enough)) {
+            $out = [];
+            $total_founded=0;
+            
             $uleft .= mb_substr($uright,0,1);
             $uright = mb_substr($uright,1);
             $len_right = mb_strlen($uright);
@@ -176,8 +188,9 @@ class Predictor
                        ->groupBy('pos_id', 'gramset_id', 'reverse_lemmas.affix', 'lemma_wordform.affix')->get();
         foreach ($lemmas as $lemma) {
             list($l_affix, $w_affix) = Str::trimEqualSubstrFromLeft($lemma->l_affix, $lemma->w_affix);
-            if (preg_match("/^(.+)".$w_affix."/u", $uword, $regs)) {
+            if (preg_match("/^(.+)".$w_affix."$/u", $uword, $regs)) {
                 $predict_lemma = $regs[1]. $l_affix;
+//print "$uword - $w_affix + $l_affix = $predict_lemma\n";                
                 list ($total, $out) = self::fillByPosGramset($predict_lemma, $lemma->pos_id, $lemma->gramset_id, $lemma->count, $out, $maybe_proper_noun);
                 $total_founded += $total;
             }

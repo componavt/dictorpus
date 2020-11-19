@@ -55,32 +55,41 @@ class LemmaWordformController extends Controller
      */
     public function store(Request $request)
     {
-        $lemma_id = (int)$request->input('lemma_id');
         $text_id = (int)$request->input('text_id'); 
         $w_id = (int)$request->input('w_id'); 
+        $lemma_id = (int)$request->input('lemma_id');
+        $prediction = $request->input('prediction');
         
-        if (!$lemma_id || !$text_id || !$w_id) {
+        if (!$text_id || !$w_id || !$lemma_id && !$prediction) {
             return;
         }
 
-        $lemma = Lemma::find($lemma_id);
         $text = Text::find($text_id);
         $word = Word::getByTextWid($text_id, $w_id);
         
-        if (!$lemma || !$text || !$word || !$word->sentence_id) { return; }
-        
-        $meaning_id = $request->input('meaning_id'); 
-        $gramset_id = $request->input('gramset_id'); 
+        if (!$text || !$word || !$word->sentence_id) { return; }
+
+        $wordform = $request->input('wordform'); 
+            if (!$wordform) {
+                $wordform = $word -> word;
+            }
+
         $dialects = (array)$request->input('dialects'); 
         
-        $wordform = $request->input('wordform'); 
-        if (!$wordform) {
-            $wordform = $word -> word;
-        }
-        
-        $lemma->addWordformFromText($wordform, $gramset_id, $dialects, $text_id, $w_id);
-        $text->addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
-        return 1;            
+        $lemma = Lemma::find($lemma_id);
+        if ($lemma) {         
+            $meaning_id = $request->input('meaning_id'); 
+            $gramset_id = $request->input('gramset_id'); 
+        } else {
+            $interpretation = $request->input('interpretation');
+            list($lemma, $meaning_id, $gramset_id) = LemmaWordform::storeByPrediction($prediction, $interpretation, $text->lang_id);        
+            if (!$lemma) {
+                return;
+            }
+        }    
+        $lemma -> addWordformFromText($wordform, $gramset_id, $dialects, $text_id, $w_id);
+        $text -> addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
+        return 1;      
     }   
     
     /**

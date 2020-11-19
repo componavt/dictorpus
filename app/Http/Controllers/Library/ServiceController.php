@@ -493,10 +493,10 @@ print "</p>";
             $text->updateWordformLinks();
 print '<p>'.$text->id.'</p>';  
             return;          
-        }  
+        } 
         $texts=Text::
-              where('id', '>', 2150)
-              ->where('id', '<', 2201)
+              where('id', '>', 2177)
+              ->where('id', '<', 2179)
               ->whereNotIn('id',[1714, 2000, 2037, 2038, 2041, 2048, 2540, 2541, 2060, 2061, 2079, 2080, 2081, 2082, 2083, 2084, 2092, 2573, 2587, 2617, 2941, 2944, 2950])
 //              where('id', 2980)
               ->orderBy('id')

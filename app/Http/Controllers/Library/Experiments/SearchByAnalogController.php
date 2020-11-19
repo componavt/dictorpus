@@ -475,11 +475,9 @@ print 'done.';
     }
     
     public function lemmaGramsetPrediction(Request $request) {
-        $uword = $requst->uword ?? 'suappailoi';
-        $lang_id= $requst->lang_id ?? 5;
-//print "<pre>";
-//        list($total_founded, $prediction) = Predictor::lemmaGramsetByAnalog($uword, $lang_id);
-//        dd($total_founded, $prediction);
+        $uword = $request->uword ?? 'suappailoi';
+        $lang_id= $request->lang_id ?? 5;
+print "<pre>";
         $prediction = Predictor::lemmaGramsetByAnalog($uword, $lang_id);
         print "<h3>Предсказание для <b>".$uword."</b></h3>".
                 "<p>Может быть это</p>";

@@ -1845,6 +1845,19 @@ dd($wordforms);
             $this->save();                    
         }
     }
+    
+    public static function findOrCreate($lemma, $pos_id, $lang_id, $interpretation) {
+        $lemmas = self::where('lemma', 'like', $lemma)
+                         ->wherePosID($pos_id)
+                         ->get();
+        if (!$lemmas || sizeof($lemmas)==0) {
+            $lemma_obj = self::store($lemma, $pos_id, $lang_id);
+        } elseif (sizeof($lemmas) >1) {
+// выбрать по значению или создать новую            
+        } else {
+// проверить значение            
+        }
+    }
 
     /*    
     public static function totalCount(){

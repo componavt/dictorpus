@@ -59,5 +59,5 @@ return [
     'type' => 'Type',
     'updated_success' => 'Successfully updated',
     'view' => 'view',
-    
+    'waiting' => 'Please wait, data is loading...',    
 ];

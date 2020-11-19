@@ -114,6 +114,7 @@ Route::group(
         Route::get('corpus/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');        
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
         Route::get('corpus/word/load_word_block/{text_id}_{w_id}', 'Corpus\WordController@loadWordBlock');       
+        Route::get('corpus/word/prediction', 'Corpus\WordController@lemmaGramsetPrediction');
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
         Route::get('corpus/word/update_word_block/{text_id}_{w_id}', 'Corpus\WordController@updateWordBlock');       
 
@@ -175,8 +176,8 @@ Route::group(
         
         Route::get('dict/wordform/create', 'Dict\WordformController@create'); 
         Route::get('dict/wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
-        Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
-        Route::get('dict/wordform/tmpFixNegativeVepsVerbForms', 'Dict\WordformController@tmpFixNegativeVepsVerbForms');
+//        Route::get('dict/wordform/tempCheckWordformsWithSpaces', 'Dict\WordformController@tempCheckWordformsWithSpaces');
+//        Route::get('dict/wordform/tmpFixNegativeVepsVerbForms', 'Dict\WordformController@tmpFixNegativeVepsVerbForms');
       
         Route::get('export/bible', 'Library\ExportController@exportBible');        
         Route::get('export/compounds_for_unimorph', 'Library\ExportController@exportCompoundsToUniMorph'); 
