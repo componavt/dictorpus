@@ -139,7 +139,11 @@ class WordController extends Controller
             $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
 // 2020-10-24 пока отключим, чтобы быстрее работало...            
 //            $word->updateMeaningAndWordformText();
-            $word->updateWordformText();
+// 2020-11-20 добавим условие, потому что сильно тормозит
+            $text = Text::find($text_id);
+            if (!$text->wordforms()->where('w_id', $w_id)->count()) {
+                $word->updateWordformText();
+            }
         }
         return Word::createWordBlock((int)$text_id, (int)$w_id);
     }
