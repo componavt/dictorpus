@@ -151,7 +151,7 @@ class Predictor
                        ->selectRaw('pos_id, count(*) as count')
                        ->groupBy('pos_id')->get();
         foreach ($lemmas as $lemma) {
-            $i=$uword. '_'. $lemma->pos_id. '_';
+            $i=$lemma->lemma. '_'. $lemma->pos_id. '_';
             $out[$i] = $lemma->count + ($out[$i] ?? 0);
             $total_founded += $lemma->count;
         }
@@ -199,6 +199,9 @@ class Predictor
     }
     
     public static function fillByPosGramset(string $predict_lemma, int $pos_id, int $gramset_id, $count, array $out, bool $maybe_proper_noun) {
+        if ($maybe_proper_noun && $pos_id==14) {
+            $predict_lemma = mb_strtoupper(mb_substr($predict_lemma, 0, 1)). mb_substr($predict_lemma, 0, 1);
+        }
         $total_founded = 0;
         $i=$predict_lemma. '_'. $pos_id. '_'. $gramset_id;
         $out[$i] = $count + ($out[$i] ?? 0);
