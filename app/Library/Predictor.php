@@ -200,18 +200,19 @@ class Predictor
     
     public static function fillByPosGramset(string $predict_lemma, int $pos_id, int $gramset_id, $count, array $out, bool $maybe_proper_noun) {
         if ($maybe_proper_noun && $pos_id==14) {
-            $predict_lemma = mb_strtoupper(mb_substr($predict_lemma, 0, 1)). mb_substr($predict_lemma, 0, 1);
+            $predict_lemma = mb_strtoupper(mb_substr($predict_lemma, 0, 1)). mb_substr($predict_lemma, 1);
+//var_dump($predict_lemma, $count);            
         }
         $total_founded = 0;
         $i=$predict_lemma. '_'. $pos_id. '_'. $gramset_id;
         $out[$i] = $count + ($out[$i] ?? 0);
         $total_founded += $count;
         if ($maybe_proper_noun && $pos_id==5) {
-            $i=$predict_lemma. '_14_'. $gramset_id;
+            $i=mb_strtoupper(mb_substr($predict_lemma, 0, 1)). mb_substr($predict_lemma, 1). '_14_'. $gramset_id;
             $out[$i] = $count + ($out[$i] ?? 0);
             $total_founded += $count;
         } elseif (!$maybe_proper_noun && $pos_id==14) {
-            $i=$predict_lemma. '_5_'. $gramset_id;
+            $i= mb_strtolower($predict_lemma). '_5_'. $gramset_id;
             $out[$i] = $count + ($out[$i] ?? 0);
             $total_founded += $count;
         }
