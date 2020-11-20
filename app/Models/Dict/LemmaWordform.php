@@ -44,7 +44,7 @@ class LemmaWordform extends Model
     
     public static function storeByPrediction(string $prediction, string $interpretation, int $lang_id) {
         list($lemma, $meaning_or_pos, $gramset_id) = preg_split("/\_/", $prediction);
-        if (is_int($lemma)) {
+        if ((int)$lemma>0) {
             $lemma_obj = Lemma::find($lemma);
             if (!$lemma_obj) {
                 return [null, null, null];

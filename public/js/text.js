@@ -315,3 +315,7 @@ function addWordform(text_id, lang_id) {
     });
     addLemma(text_id, lang_id);    
 }
+
+function fillInterpretation(str) {
+    $( "#interpretation" ).val(str);
+}

@@ -3,7 +3,7 @@
 <p>
     <b><a href="/dict/lemma/{{$id}}">{{$lemma['lemma']}}</a></b>, {{$lemma['pos']}}, {{$lemma['gramset']}} ({{$lemma['proc']}})
     @foreach ($lemma['meanings'] ?? [] as $m_id => $meaning)
-    <br><input type='radio' name='prediction' value='{{$m_id}}'> {{$meaning}}
+    <br><input type='radio' name='prediction' value='{{$m_id}}' onClick="fillInterpretation('{{$meaning}}')"> {{$meaning}}
     @endforeach
 </p>
 @endforeach       
