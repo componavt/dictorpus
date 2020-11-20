@@ -26,9 +26,10 @@ class Predictor
         $maybe_proper_noun = $first_letter == mb_strtoupper($first_letter);
         $uword_for_search = Grammatic::toSearchForm($uword);
         list ($total_founded, $out1) = self::lemmasFromOtherLangsByAnalog($uword_for_search, $lang_id);
-//var_dump($out1);                    
+//print "<pre>";        
+    //var_dump($out1);                    
         list ($total_founded1, $out1) = self::wordformsFromOtherLangsByAnalog($uword_for_search, $lang_id, $out1, $maybe_proper_noun);
-//var_dump($out1);                    
+    //var_dump($out1);                    
         list ($total_founded2, $out) = self::lemmasWordformsByAnalog($uword_for_search, $lang_id, $maybe_proper_noun);
         
         foreach ($out1 as $id=>$count) {
@@ -151,7 +152,7 @@ class Predictor
                        ->selectRaw('pos_id, count(*) as count')
                        ->groupBy('pos_id')->get();
         foreach ($lemmas as $lemma) {
-            $i=$lemma->lemma. '_'. $lemma->pos_id. '_';
+            $i=$uword. '_'. $lemma->pos_id. '_';
             $out[$i] = $lemma->count + ($out[$i] ?? 0);
             $total_founded += $lemma->count;
         }
@@ -201,7 +202,6 @@ class Predictor
     public static function fillByPosGramset(string $predict_lemma, int $pos_id, int $gramset_id, $count, array $out, bool $maybe_proper_noun) {
         if ($maybe_proper_noun && $pos_id==14) {
             $predict_lemma = mb_strtoupper(mb_substr($predict_lemma, 0, 1)). mb_substr($predict_lemma, 1);
-//var_dump($predict_lemma, $count);            
         }
         $total_founded = 0;
         $i=$predict_lemma. '_'. $pos_id. '_'. $gramset_id;
