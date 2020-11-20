@@ -221,8 +221,9 @@ class WordController extends Controller
                      'pos'=>PartOfSpeech::getNameById($pos_id),
                      'gramset'=>Gramset::getStringByID($gramset_id),
                      'proc'=>Str::intToProc($count)];
-            $lemmas = Lemma::where('lemma', 'like', $lemma)
-                             ->wherePosId($pos_id);
+            $lemmas = Lemma::whereLangId($lang_id)
+                           ->where('lemma', 'like', $lemma)
+                           ->wherePosId($pos_id);
             if ($lemmas->count()) {
                 foreach ($lemmas->get() as $lemma_obj) {
                     $exist_lemmas[$lemma_obj->id] = $item;
