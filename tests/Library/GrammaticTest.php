@@ -24,6 +24,85 @@ use App\Models\Dict\Lemma;
 
 class GrammaticTest extends TestCase
 {
+    // Ref: 10. potkiekseh
+    public function testWordformsByStemsKarVerbOloPotkiekseh() {
+        $template = 'potki|ekseh (-mmos, -h/-hes; -tahes; -h/-hes, -ttihes)';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num=null;
+        $dialect_id='';
+        $is_reflexive = true;
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
+        $expected = [26 => 'potkimmos',   27 => 'potkittos',  28 => 'potkih, potkihes',  
+                29 => 'potkimmokseh',  30 => 'potkittokseh',  31 => 'potkitahes', 
+                295 => 'potkei', 296 => 'potkitahes', 
+                70 => 'en potkei',   71 => 'et potkei',  72 => 'ei potkei',  
+                73 => 'emmo potkei',  78 => 'etto potkei',  79 => 'ei potkitahes', 
+            
+                32 => 'potkimmos',   33 => 'potkittos',  34 => 'potkih, potkihes',  
+                35 => 'potkimmokseh',  36 => 'potkittokseh',  37 => 'potkittihes', 
+                80 => 'en potkinuhes',   81 => 'et potkinuhes',  82 => 'ei potkinuhes',  
+                83 => 'emmo potkinuhes',  84 => 'etto potkinuhes',  85 => 'ei potkittuhes', 
+            
+                86 => 'olen potkinuhes',   87 => 'olet potkinuhes',  88 => 'on potkinuhes',  
+                89 => 'olemmo potkinuhes',  90 => 'oletto potkinuhes',  91 => 'ollah potkittuhes, on potkittuhes',  
+                92 => 'en ole potkinuhes',  93 => 'et ole potkinuhes',  94 => 'ei ole potkinuhes',  
+                95 => 'emmo ole potkinuhes',  96 => 'etto ole potkinuhes',  97 => 'ei olla potkittuhes',
+            
+                98 => 'olin potkinuhes',   99 => 'olit potkinuhes', 100 => 'oli potkinuhes', 
+                101 => 'olimmo potkinuhes', 102 => 'olitto potkinuhes', 103 => 'oldih potkittuhes, oli potkittuhes', 
+                104 => 'en olluh potkinuhes', 105 => 'et olluh potkinuhes', 107 => 'ei olluh potkinuhes', 
+                108 => 'emmo olluh potkinuhes', 106 => 'etto olluh potkinuhes', 109 => 'ei oldu potkittuhes',
+            
+                      51 => 'potkei',  52 => 'potkikkahes',  
+                53 => 'potkikkuammokseh',  54 => 'potkikkuattokseh',  55 => 'potkittahes',       
+                      50 => 'älä potkei',  74 => 'älgäh potkikkahes',  
+                75 => '',  76 => 'älgiä potkikkuattokseh',  77 => 'äldähes potkittahes',  
+            
+//                38 => 'potkizimmos',   39 => 'potkizittos',  40 => 'potkizih, potkizihes',  
+                38 => 'potkizimmos',   39 => 'potkizittos',  40 => 'potkizihes',  
+                41 => 'potkizimmokseh',  42 => 'potkizittokseh',  43 => 'potkittazihes', 
+                110 => 'en potkizihes', 111 => 'et potkizihes', 112 => 'ei potkizihes', 
+                113 => 'emmo potkizihes', 114 => 'etto potkizihes', 115 => 'ei potkittazihes',
+//                110 => 'en potkizih, en potkizihes', 111 => 'et potkizih, et potkizihes', 112 => 'ei potkizih, ei potkizihes', 
+//                113 => 'emmo potkizih, emmo potkizihes', 114 => 'etto potkizih, etto potkizihes', 115 => 'ei potkittazihes',
+
+                44 => 'potkinuzimmos',   45 => 'potkinuzittos',  46 => 'potkinuzihes',  
+                47 => 'potkinuzimmokseh',  48 => 'potkinuzittokseh',  49 => 'potkitannuzihes', 
+                116 => 'en potkinuzihes', 117 => 'et potkinuzihes', 118 => 'ei potkinuzihes', 
+                119 => 'emmo potkinuzihes', 120 => 'etto potkinuzihes', 121 => 'ei potkitannuzihes',
+            
+                122 => 'olizin potkinuhes', 123 => 'olizit potkinuhes', 124 => 'olis potkinuhes', 
+                126 => 'olizimmo potkinuhes', 127 => 'olizitto potkinuhes', 128 => 'oldas potkittuhes', 
+                129 => 'en olis potkinuhes', 130 => 'et olis potkinuhes', 131 => 'ei olis potkinuhes', 
+                132 => 'emmo olis potkinuhes', 133 => 'etto olis potkinuhes', 134 => 'ei oldas potkittuhes',
+            
+                135 => 'olluzin potkinuhes', 125 => 'olluzit potkinuhes', 136 => 'ollus potkinuhes', 
+                137 => 'olluzimmo potkinuhes', 138 => 'olluzitto potkinuhes', 139 => 'oldanus potkittuhes', 
+                140 => 'en ollus potkinuhes', 141 => 'et ollus potkinuhes', 142 => 'ei ollus potkinuhes', 
+                143 => 'emmo ollus potkinuhes', 144 => 'etto ollus potkinuhes', 145 => 'ei oldanus potkittuhes',
+            
+                146 => 'potkinemmos', 147 => 'potkinettos', 148 => 'potkinehes', 
+                149 => 'potkinemmokseh', 150 => 'potkinettokseh', 151 => 'potkitannehes', 
+                152 => 'en potkinei', 153 => 'et potkinei', 154 => 'ei potkinei', 
+                155 => 'emmo potkinei', 156 => 'etto potkinei', 157 => 'ei potkitannehes',
+            
+                158 => 'ollen potkinuhes', 159 => 'ollet potkinuhes', 160 => 'ollou potkinuhes', 
+                161 => 'ollemmo potkinuhes', 162 => 'olletto potkinuhes', 163 => 'oldaneh potkittuhes', 
+                164 => 'en olle potkinuhes', 165 => 'et olle potkinuhes', 166 => 'ei olle potkinuhes', 
+                167 => 'emmo olle potkinuhes', 168 => 'etto olle potkinuhes', 169 => 'ei oldane potkittuhes',
+            
+                170 => 'potkiekseh', 171 => '', 172 => '', 
+                173 => '', 174 => '', 175 => '', 
+                176 => '', 177 => '', 312 => '',
+            
+                178 => '', 179 => 'potkinuhes', 180 => '', 181 => 'potkittuhes'];
+//        $slice = 70;
+//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testChangeLettersWithoutLang()
     {
         $word = 'tulow';
@@ -1308,7 +1387,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'ranta',  56=>'ranta, rannan',  3=>'rannan',  4=>'rantua', 277=>'rantana',  
                      5=>'rannakši', 8=>'rannašša',  9=>'rannašta', 10=>'rantah', 278=>'rannalla', 
-                     12=>'rannalta', 6=>'rannatta', 14=>'', 15=>'', 
+                     12=>'rannalta', 6=>'rannatta', 14=>'rantoineh', 15=>'', 
  
             2=>'rannat', 57=>'rannat', 24=>'rantojen', 22=>'rantoja', 279=>'rantoina', 
             59=>'rannoiksi', 23=>'rannoissa', 60=>'rannoista', 61=>'rantoih', 280=>'rannoilla', 
@@ -1345,7 +1424,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'pelto',  56=>'pelto, pellon',  3=>'pellon',  4=>'peltuo', 277=>'peltona',  
                      5=>'pellokši', 8=>'pellošša',  9=>'pellošta', 10=>'peltoh', 278=>'pellolla', 
-                     12=>'pellolta', 6=>'pellotta', 14=>'', 15=>'', 
+                     12=>'pellolta', 6=>'pellotta', 14=>'peltoloineh', 15=>'', 
  
             2=>'pellot', 57=>'pellot', 24=>'peltojen', 22=>'peltoja', 279=>'peltoloina', 
             59=>'peltoloiksi', 23=>'peltoloissa', 60=>'peltoloista', 61=>'peltoloih', 280=>'peltoloilla', 
@@ -1382,7 +1461,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'mua',  56=>'mua, muan',  3=>'muan',  4=>'muata', 277=>'muana',  
                      5=>'muakši', 8=>'muašša',  9=>'muašta', 10=>'muah', 278=>'mualla', 
-                     12=>'mualta', 6=>'muatta', 14=>'', 15=>'', 
+                     12=>'mualta', 6=>'muatta', 14=>'maineh', 15=>'', 
  
             2=>'muat', 57=>'muat', 24=>'maijen', 22=>'maita', 279=>'maina', 
             59=>'maiksi', 23=>'maissa', 60=>'maista', 61=>'maih', 280=>'mailla', 
@@ -1420,7 +1499,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'nuori',  56=>'nuori, nuoren',  3=>'nuoren',  4=>'nuorta', 277=>'nuorena',  
                      5=>'nuorekši', 8=>'nuorešša',  9=>'nuorešta', 10=>'nuoreh', 278=>'nuorella', 
-                     12=>'nuorelta', 6=>'nuoretta', 14=>'', 15=>'', 
+                     12=>'nuorelta', 6=>'nuoretta', 14=>'nuorineh', 15=>'', 
  
             2=>'nuoret', 57=>'nuoret', 24=>'nuorien', 22=>'nuorie', 279=>'nuorina', 
             59=>'nuoriksi', 23=>'nuorissa', 60=>'nuorista', 61=>'nuorih', 280=>'nuorilla', 
@@ -1456,7 +1535,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'lyhyt', 56=>'lyhyt, lyhyön', 3=>'lyhyön',  4=>'lyhyttä', 277=>'lyhyönä',  
                      5=>'lyhyökši', 8=>'lyhyöššä',  9=>'lyhyöštä', 10=>'lyhyöh', 278=>'lyhyöllä', 
-                     12=>'lyhyöltä', 6=>'lyhyöttä', 14=>'', 15=>'', 
+                     12=>'lyhyöltä', 6=>'lyhyöttä', 14=>'lyhyineh', 15=>'', 
  
             2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyijen', 22=>'lyhyitä', 279=>'lyhyinä', 
             59=>'lyhyiksi', 23=>'lyhyissä', 60=>'lyhyistä', 61=>'lyhyih', 280=>'lyhyillä', 
@@ -1493,7 +1572,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'vesi', 56=>'vesi, vejen', 3=>'vejen',  4=>'vettä', 277=>'vetenä',  
                      5=>'vejekši', 8=>'veješšä',  9=>'veještä', 10=>'veteh', 278=>'vejellä', 
-                     12=>'vejeltä', 6=>'vejettä', 14=>'', 15=>'', 
+                     12=>'vejeltä', 6=>'vejettä', 14=>'vesineh', 15=>'', 
  
             2=>'vejet', 57=>'vejet', 24=>'vesien', 22=>'vesie', 279=>'vesinä', 
             59=>'vesiksi', 23=>'vesissä', 60=>'vesistä', 61=>'vesih', 280=>'vesillä', 
@@ -1865,85 +1944,6 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
 
-    // Ref: 10. potkiekseh
-    public function testWordformsByStemsKarVerbOloPotkiekseh() {
-        $template = 'potki|ekseh (-mmos, -h/-hes; -tahes; -h/-hes, -ttihes)';
-        $lang_id = 5;
-        $pos_id = 11;
-        $name_num=null;
-        $dialect_id='';
-        $is_reflexive = true;
-        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
-        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive);
-        $expected = [26 => 'potkimmos',   27 => 'potkittos',  28 => 'potkih, potkihes',  
-                29 => 'potkimmokseh',  30 => 'potkittokseh',  31 => 'potkitahes', 
-                295 => 'potkei', 296 => 'potkitahes', 
-                70 => 'en potkei',   71 => 'et potkei',  72 => 'ei potkei',  
-                73 => 'emmo potkei',  78 => 'etto potkei',  79 => 'ei potkitahes', 
-            
-                32 => 'potkimmos',   33 => 'potkittos',  34 => 'potkih, potkihes',  
-                35 => 'potkimmokseh',  36 => 'potkittokseh',  37 => 'potkittihes', 
-                80 => 'en potkinuhes',   81 => 'et potkinuhes',  82 => 'ei potkinuhes',  
-                83 => 'emmo potkinuhes',  84 => 'etto potkinuhes',  85 => 'ei potkittuhes', 
-            
-                86 => 'olen potkinuhes',   87 => 'olet potkinuhes',  88 => 'on potkinuhes',  
-                89 => 'olemmo potkinuhes',  90 => 'oletto potkinuhes',  91 => 'ollah potkittuhes, on potkittuhes',  
-                92 => 'en ole potkinuhes',  93 => 'et ole potkinuhes',  94 => 'ei ole potkinuhes',  
-                95 => 'emmo ole potkinuhes',  96 => 'etto ole potkinuhes',  97 => 'ei olla potkittuhes',
-            
-                98 => 'olin potkinuhes',   99 => 'olit potkinuhes', 100 => 'oli potkinuhes', 
-                101 => 'olimmo potkinuhes', 102 => 'olitto potkinuhes', 103 => 'oldih potkittuhes, oli potkittuhes', 
-                104 => 'en olluh potkinuhes', 105 => 'et olluh potkinuhes', 107 => 'ei olluh potkinuhes', 
-                108 => 'emmo olluh potkinuhes', 106 => 'etto olluh potkinuhes', 109 => 'ei oldu potkittuhes',
-            
-                      51 => 'potkei',  52 => 'potkikkahes',  
-                53 => 'potkikkuammokseh',  54 => 'potkikkuattokseh',  55 => 'potkittahes',       
-                      50 => 'älä potkei',  74 => 'älgäh potkikkahes',  
-                75 => '',  76 => 'älgiä potkikkuattokseh',  77 => 'äldähes potkittahes',  
-            
-//                38 => 'potkizimmos',   39 => 'potkizittos',  40 => 'potkizih, potkizihes',  
-                38 => 'potkizimmos',   39 => 'potkizittos',  40 => 'potkizihes',  
-                41 => 'potkizimmokseh',  42 => 'potkizittokseh',  43 => 'potkittazihes', 
-                110 => 'en potkizihes', 111 => 'et potkizihes', 112 => 'ei potkizihes', 
-                113 => 'emmo potkizihes', 114 => 'etto potkizihes', 115 => 'ei potkittazihes',
-//                110 => 'en potkizih, en potkizihes', 111 => 'et potkizih, et potkizihes', 112 => 'ei potkizih, ei potkizihes', 
-//                113 => 'emmo potkizih, emmo potkizihes', 114 => 'etto potkizih, etto potkizihes', 115 => 'ei potkittazihes',
-
-                44 => 'potkinuzimmos',   45 => 'potkinuzittos',  46 => 'potkinuzihes',  
-                47 => 'potkinuzimmokseh',  48 => 'potkinuzittokseh',  49 => 'potkitannuzihes', 
-                116 => 'en potkinuzihes', 117 => 'et potkinuzihes', 118 => 'ei potkinuzihes', 
-                119 => 'emmo potkinuzihes', 120 => 'etto potkinuzihes', 121 => 'ei potkitannuzihes',
-            
-                122 => 'olizin potkinuhes', 123 => 'olizit potkinuhes', 124 => 'olis potkinuhes', 
-                126 => 'olizimmo potkinuhes', 127 => 'olizitto potkinuhes', 128 => 'oldas potkittuhes', 
-                129 => 'en olis potkinuhes', 130 => 'et olis potkinuhes', 131 => 'ei olis potkinuhes', 
-                132 => 'emmo olis potkinuhes', 133 => 'etto olis potkinuhes', 134 => 'ei oldas potkittuhes',
-            
-                135 => 'olluzin potkinuhes', 125 => 'olluzit potkinuhes', 136 => 'ollus potkinuhes', 
-                137 => 'olluzimmo potkinuhes', 138 => 'olluzitto potkinuhes', 139 => 'oldanus potkittuhes', 
-                140 => 'en ollus potkinuhes', 141 => 'et ollus potkinuhes', 142 => 'ei ollus potkinuhes', 
-                143 => 'emmo ollus potkinuhes', 144 => 'etto ollus potkinuhes', 145 => 'ei oldanus potkittuhes',
-            
-                146 => 'potkinemmos', 147 => 'potkinettos', 148 => 'potkinehes', 
-                149 => 'potkinemmokseh', 150 => 'potkinettokseh', 151 => 'potkitannehes', 
-                152 => 'en potkinei', 153 => 'et potkinei', 154 => 'ei potkinei', 
-                155 => 'emmo potkinei', 156 => 'etto potkinei', 157 => 'ei potkitannehes',
-            
-                158 => 'ollen potkinuhes', 159 => 'ollet potkinuhes', 160 => 'ollou potkinuhes', 
-                161 => 'ollemmo potkinuhes', 162 => 'olletto potkinuhes', 163 => 'oldaneh potkittuhes', 
-                164 => 'en olle potkinuhes', 165 => 'et olle potkinuhes', 166 => 'ei olle potkinuhes', 
-                167 => 'emmo olle potkinuhes', 168 => 'etto olle potkinuhes', 169 => 'ei oldane potkittuhes',
-            
-                170 => 'potkiekseh', 171 => '', 172 => '', 
-                173 => '', 174 => '', 175 => '', 
-                176 => '', 177 => '', 312 => '',
-            
-                178 => '', 179 => 'potkinuhes', 180 => '', 181 => 'potkittuhes'];
-//        $slice = 70;
-//        $this->assertEquals(array_slice($expected, 0, $slice, true), array_slice($result, 0, $slice, true));        
-        $this->assertEquals( $expected, $result);        
-    }
-    
     // ---------------- stems for proper karelian verbs from mini templates
     
     public function testStemsFromMiniTemplateForProperVerbItkie() {

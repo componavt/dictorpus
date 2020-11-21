@@ -12,6 +12,16 @@ use App\Library\Grammatic\KarVerb;
 
 class KarVerbTest extends TestCase
 {
+    public function testimp2PlurPolByStem() {
+        $stem5 = 'lien';
+        $lemma = 'lietä'; 
+        $dialect_id=47;
+        $result = KarVerb::imp2PlurPolByStem($stem5, $lemma, KarGram::isBackVowels($lemma), $dialect_id);
+        
+        $expected = 'liekkiä';
+        $this->assertEquals( $expected, $result);        
+    }
+    
     public function testActiveBase() {
         $dialect_id = 46;
         $stems = ['ivual’'];
@@ -119,16 +129,6 @@ class KarVerbTest extends TestCase
         $result = KarVerb::imp3PolByStem($stem5, $lemma, KarGram::isBackVowels($lemma), $dialect_id);
         
         $expected = 'liekkäh';
-        $this->assertEquals( $expected, $result);        
-    }
-    
-    public function testimp2PlurPolByStem() {
-        $stem5 = 'lien';
-        $lemma = 'lietä'; 
-        $dialect_id=47;
-        $result = KarVerb::imp2PlurPolByStem($stem5, $lemma, KarGram::isBackVowels($lemma), $dialect_id);
-        
-        $expected = 'liekkiä';
         $this->assertEquals( $expected, $result);        
     }
     

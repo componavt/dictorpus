@@ -821,6 +821,7 @@ class KarVerbOlo
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], KarGram::garmVowel($stems[10],'ttokseh')) : '';
             case 31: // 6. индикатив, презенс, 3 л., мн.ч., пол. 
+                return !$def && $stems[6] ? $stems[6] : '';
 
             case 32: // 13. индикатив, имперфект, 1 л., ед.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[5], KarGram::garmVowel($stems[10],'mmos')) : '';
@@ -1121,7 +1122,7 @@ class KarVerbOlo
      * @param string $stem1
      * @param string $stem8
      */
-    public static function activeBase($stem1,$stem8) {
+    public static function activeBase($stem1, $stem8) {
         if (!$stem8) { return ''; }
         
         $C="[".KarGram::consSet()."]";
@@ -1131,7 +1132,8 @@ class KarVerbOlo
             $base = trim($base);
             if (preg_match("/".$C.'(’?)'.$V."$/u", $base, $regs) && KarGram::countSyllable($base)==2
                     || preg_match("/[nh]$/u", $base)) {
-                $out[] = $base. 'n'. ($regs[1] ?? '');
+//                $out[] = $base. 'n'. ($regs[1] ?? '');
+                $out[] = $base. 'n';
             } elseif (preg_match("/".$C.'’?'.$V."$/u", $base) && KarGram::countSyllable($base)>2) {
                 $out[] = $stem1 ? $stem1. 'nn' : '';
             } elseif (preg_match("/".$V.$V."$/u", $base)) {

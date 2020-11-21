@@ -784,8 +784,8 @@ class KarVerb
         
         if (KarGram::isConsonant($before_last_let) && KarGram::isVowel($last_let)) {
             return $stem. KarGram::garmVowel($harmony,'kkah');
-        } elseif ($last_let=='n' && preg_match("/t[aä]$/u", $lemma)) {
-            return mb_substr($stem, 0, -1). KarGram::garmVowel($harmony,'kkah');
+        } elseif (preg_match("/t[aä]$/u", $lemma) && (preg_match("/^(.+)[nt]$/", $stem, $regs) or preg_match("/^(.+)[nt]’?$/", $stem, $regs))) {
+            return $regs[1]. KarGram::garmVowel($harmony,'kkah');
         } elseif (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let) 
                 || in_array($last_let, ['l', 'n', 'r'])) {
             return $stem. KarGram::garmVowel($harmony,'gah');
@@ -819,7 +819,6 @@ class KarVerb
         if ($dialect_id != 47) {
             return self::impBase($stem). ($harmony ? 'ua' : 'yä');
         }
-        
         $stem_for_search = Grammatic::toSearchForm($stem);
         $last_let = mb_substr($stem_for_search, -1, 1);
         $before_last_let = mb_substr($stem_for_search, -2, 1);
@@ -829,8 +828,8 @@ class KarVerb
             return $stem. 'kk'. $UA;
         } elseif (in_array($last_let, ['s', 'š'])) {
             return $stem. 'k'. $UA;
-        } elseif ($last_let=='n' && preg_match("/t[aä]$/u", $lemma)) {
-            return mb_substr($stem, 0, -1). 'kk'. $UA;
+        } elseif (preg_match("/t[aä]$/u", $lemma)&& (preg_match("/^(.+)[nt]$/", $stem, $regs) or preg_match("/^(.+)[nt]’?$/", $stem, $regs))) {
+            return $regs[1]. 'kk'. $UA;
         } elseif (KarGram::isVowel($before_last_let) && KarGram::isVowel($last_let)
                 || in_array($last_let, ['l', 'n', 'r'])) {
             return $stem. 'g'. $UA;
@@ -1068,8 +1067,8 @@ class KarVerb
             return $stem. 'n'.KarGram::garmVowel($harmony, 'un');
         } elseif (preg_match("/".$C.$V."$/u", $stem)) { // 2
             return $stem. 'n';
-        } elseif (preg_match("/^(.+)([nlrsš]’?)$/u", $stem, $regs)) { // 3
-            return $regs[1].$regs[2].$regs[2].KarGram::garmVowel($harmony, 'un');
+        } elseif (preg_match("/^(.+)([nlrsš])(’?)$/u", $stem, $regs)) { // 3
+            return $regs[1].$regs[2].($regs[3]).$regs[2].KarGram::garmVowel($harmony, 'un');
         }
 /*        
         $stem_for_search = Grammatic::toSearchForm($stem);

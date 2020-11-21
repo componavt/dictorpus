@@ -1174,7 +1174,7 @@ class VepsVerb
     }
 
     public static function imper3($stem0, $dt, $stem8, $gramset_id, $dialect_id){
-        if (!$stem0 || !$dt || !$stem8) {
+        if (!$stem0 || !$dt) {
             return '';
         }
         if ($stem8 && !preg_match("/\,/", $stem8) && $dialect_id != 5) {
