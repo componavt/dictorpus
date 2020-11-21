@@ -725,7 +725,7 @@ class KarName
             case 3: // генитив, ед.ч. 
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
-                return $stems[3] ? $stems[3] : '';
+                return $stems[3] ? ($dialect_id == 47 && preg_match("/^(.+)yä$/u", $stems[3], $regs) ? $regs[1].'iä' : $stems[3] )  : '';
             case 10: // иллатив, ед.ч. 
                 return $stems[2] ? $stems[2].'h' : '';
         }
