@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Dict;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Response;
-use LaravelLocalization;
+//use LaravelLocalization;
 
 use App\Library\Str;
 
-use App\Models\Corpus\Text;
+//use App\Models\Corpus\Text;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
