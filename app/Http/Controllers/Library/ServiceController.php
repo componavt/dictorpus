@@ -614,7 +614,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                 $query->select("lemma_id")->from("lemma_wordform")
                                       ->whereGramsetId($gramset_id);
                             });//take(1)
-dd($lemmas->count());                            
+//dd($lemmas->count());                            
             // plural numerals
 //select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` in (select `id` from `lemma_features` where `number` = 1) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);            
 /*            $lemmas = Lemma::whereIn('lang_id', $langs)
