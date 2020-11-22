@@ -543,10 +543,14 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      * Создать минимальный набор словоформ. 
      * Если у изменяемой леммы нет основ, создаем основу 0 и генерируем леммы.
      * 
+     * количество изменяемых лемм, у которых нет нулевой основы
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_bases where base_n=0);
-     * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_wordform) and lang_id=6;
+     * количество глаголов наших языков, у которых нет нулевой основы
      * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and lang_id in (1,4,5,6);
+     * количество глаголов наших языков (изменяемых), у которых нет нулевой основы
      * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and (id not in (select id from lemma_features) or id in (select id from lemma_features where without_gram  is null or without_gram <> 1)) and lang_id in (1,4,5,6);
+     * количество именных изменяемых лемм наших языков (не plural singular), у которых нет номинатива ед.ч.
+     * select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` not in (261, 827, 866) and (`id` not in (select `id` from `lemma_features`) or `id` in (select `id` from `lemma_features` where (`without_gram` is null or `without_gram` <> 1) and `number` <> 1)) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);
      * 
      * select lemma_id from meanings where id in (select meaning_id from dialect_meaning) and lemma_id in (select lemma_id from lemma_wordform where dialect_id=43 and wordform_id=170) and lemma_id not in (select lemma_id from lemma_wordform where dialect_id=43 and wordform_id<>170);
      * select lemma_id, count(*) from lemma_wordform where dialect_id=43 and lemma_id in (select lemma_id from meanings where id in (select meaning_id from dialect_meaning)) and lemma_id in (select id from lemmas where pos_id=11) group by lemma_id having count(*)<99;
@@ -609,8 +613,8 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                             ->whereNotIn('id', function($query) use ($gramset_id) {
                                 $query->select("lemma_id")->from("lemma_wordform")
                                       ->whereGramsetId($gramset_id);
-                            })->take(1);
-//dd($lemmas->toSql());                            
+                            });//take(1)
+dd($lemmas->count());                            
             // plural numerals
 //select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` in (select `id` from `lemma_features` where `number` = 1) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);            
 /*            $lemmas = Lemma::whereIn('lang_id', $langs)
