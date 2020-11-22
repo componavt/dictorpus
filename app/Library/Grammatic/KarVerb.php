@@ -1174,9 +1174,9 @@ class KarVerb
             return '';
         }
         
-        if ($dialect_id!=47) {
+//        if ($dialect_id!=47) {
             return self::activeBase($stem, $dialect_id). $affix;
-        }
+/*        }
         
         if (preg_match("/^(.+)([nlrsš]’?)$/u", $stem, $regs)) {
             return $regs[1]. $regs[2]. $regs[2]. $affix;
@@ -1185,7 +1185,7 @@ class KarVerb
         $V="[".KarGram::vowelSet()."]";
         if (preg_match("/".$V."$/u", $stem)) {
             return $stem. 'nn'. $affix;
-        }
+        }*/
 /*        
         $stem_for_search = Grammatic::toSearchForm($stem);
         $last_let = mb_substr($stem_for_search, -1, 1);
