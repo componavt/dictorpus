@@ -1122,7 +1122,7 @@ class KarVerb
         }*/
         
         $stem5 = preg_replace("/t$/","n",$stem5);
-        if ($dialect_id ==47) {
+        if ($dialect_id ==47 && preg_match("/".$C.$V."$/u", $stem5)) {
             return $stem5. 'nn';            
         }
         
