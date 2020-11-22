@@ -617,12 +617,12 @@ class KarVerb
                 return Grammatic::joinMorfToBases(KarGram::replaceCV($stems[2], 'e', 'i'), KarGram::garmVowel($stems[10], 'ja'));
             case 179: // 140. актив, 2-е причастие 
                 return self::partic2active($stems[5], $stems[10], $dialect_id);
+            case 282: // 141. актив, 2-е причастие  (сокращенная форма); перфект (форма основного глагола)
+                return $PF;
             case 180: // 142. пассив, 1-е причастие 
                 return !$def ? Grammatic::joinMorfToBases($stems[7], KarGram::garmVowel($stems[10], 'ava')) : '';
             case 181: // 143. пассив, 2-е причастие 
                 return !$def ? $passive : '';
-            case 282: // 141. актив, 2-е причастие  (сокращенная форма); перфект (форма основного глагола)
-                return $PF;
         }
         return '';
     }
@@ -1135,7 +1135,8 @@ class KarVerb
         if (!$stem) {
             return '';
         }
-        $U = $dialect_id != 47 ? KarGram::garmVowel($harmony, 'u') : 'u';
+//        $U = $dialect_id != 47 ? KarGram::garmVowel($harmony, 'u') : 'u';
+        $U = KarGram::garmVowel($harmony, 'u');
         
         return self::activeBase($stem, $dialect_id). $U. ($dialect_id == 47 ? 'n' : 't');
 /*        
