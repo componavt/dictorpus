@@ -1115,10 +1115,15 @@ class KarVerb
         $V="[".KarGram::vowelSet()."]";
 //        $V_h="[".KarGram::vowelSet()."h]";
         
-        if ($dialect_id !=47) {
+/*        if ($dialect_id !=47) {
             $stem5 = preg_replace("/t$/","n",$stem5);
         } elseif (preg_match("/".$C.$V."$/u", $stem5)) {
             return $stem5. 'nn';
+        }*/
+        
+        $stem5 = preg_replace("/t$/","n",$stem5);
+        if ($dialect_id ==47) {
+            return $stem5. 'nn';            
         }
         
         return $stem5. 'n';
