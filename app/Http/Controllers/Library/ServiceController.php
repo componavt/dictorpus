@@ -494,7 +494,7 @@ print "</p>";
 print '<p>'.$text->id.'</p>';  
             return;          
         } 
-exit(0);        
+//exit(0);        
         $texts=Text::
               where('id', '>', 2480)
               ->where('id', '<', 2665)
