@@ -672,7 +672,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                        ->orderBy('lemma_id')->get();*/
 print "<ol>";                        
         foreach ($lemmas as $lemma) {
-            print "<li>".$lemma->id.' - '.$lemma->lemma.' - '. $lemma->wordform($gramset_id, $dialect_id) .' > '.$lemma->generateWordform($gramset_id, $dialect_id).'</li>';
+            print '<li><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> : '. $lemma->wordform($gramset_id, $dialect_id) .' > '.$lemma->generateWordform($gramset_id, $dialect_id).'</li>';
         }
 print "</ol>";
 
