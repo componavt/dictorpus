@@ -657,7 +657,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                                ->orWhere('wordform', 'like', '%y%nun');
                                         });
                                   });
-                        }) ->orderBy('id')->take(1)->get();
+                        }) ->orderBy('id')->get();
 /*        $lemmas = Lemma::join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id') 
                        ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                        ->whereDialectId($dialect_id)
