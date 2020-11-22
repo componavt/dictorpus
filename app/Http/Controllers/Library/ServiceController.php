@@ -496,7 +496,7 @@ print '<p>'.$text->id.'</p>';
         } 
 exit(0);        
         $texts=Text::
-              where('id', '>', 2400)
+              where('id', '>', 2480)
               ->where('id', '<', 2665)
               ->whereNotIn('id',[1714, 2000, 2037, 2038, 2041, 2048, 2060, 2061, 2079, 2080, 2081, 2082, 2083, 2084, 2092, 2216, 2243, 2363, 2540, 2541, 2573, 2584, 2587, 2617, 2941, 2944, 2950])
 //              where('id', 2980)
@@ -589,8 +589,8 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $langs = [4,5,1,6];
         $pos=[1,5,6,10,13,14,20];
 //        $pos=[11];
-//        $gramset_id=1;
-        $gramset_id=2;
+        $gramset_id=1;
+//        $gramset_id=2;
 //        $gramset_id=170;
         while (!$is_all_checked) {
             // verbs and not plural numerals
@@ -610,10 +610,10 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                });
                            })
                            ->whereIn('pos_id', $pos)
-                            ->whereNotIn('id', function($query) use ($gramset_id) {
+                           ->whereNotIn('id', function($query) use ($gramset_id) {
                                 $query->select("lemma_id")->from("lemma_wordform")
                                       ->whereGramsetId($gramset_id);
-                            });//take(1)
+                            })->take(1);
 //dd($lemmas->count());                            
             // plural numerals
 //select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` in (select `id` from `lemma_features` where `number` = 1) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);            
