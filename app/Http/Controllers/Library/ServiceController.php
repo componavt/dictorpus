@@ -657,7 +657,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                                ->orWhere('wordform', 'like', '%y%nun');
                                         });
                                   });
-                        }) ->orderBy('id')->get();
+                        }) ->orderBy('id')->take(1)->get();
 /*        $lemmas = Lemma::join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id') 
                        ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                        ->whereDialectId($dialect_id)
@@ -672,7 +672,10 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                        ->orderBy('lemma_id')->get();*/
 print "<ol>";                        
         foreach ($lemmas as $lemma) {
-            print '<li><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> : '. $lemma->wordform($gramset_id, $dialect_id) .' > '.$lemma->generateWordform($gramset_id, $dialect_id).'</li>';
+            $new_wordform = $lemma->generateWordform($gramset_id, $dialect_id);
+            print '<li><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> : '. $lemma->wordform($gramset_id, $dialect_id) .' > '.$new_wordform.'</li>';
+            $lemma->deleteWordforms($gramset_id, $dialect_id);
+            $lemma->addWordforms($new_wordform, $gramset_id, $dialect_id);
         }
 print "</ol>";
 
