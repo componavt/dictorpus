@@ -229,6 +229,7 @@ Route::group(
         Route::get('service/create_initial_wordforms', 'Library\ServiceController@createInitialWordforms');
         Route::get('service/generate_wordforms', 'Library\ServiceController@generateWordforms');
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
+        Route::get('service/reGenerateTverPartic2active', 'Library\ServiceController@reGenerateTverPartic2active');
         Route::get('service/regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');
         Route::get('service/regenerate_livvic_ill_pl', 'Library\ServiceController@reGenerateLivvicIllPl');
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');

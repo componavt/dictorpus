@@ -494,6 +494,7 @@ print "</p>";
 print '<p>'.$text->id.'</p>';  
             return;          
         } 
+exit(0);        
         $texts=Text::
               where('id', '>', 2400)
               ->where('id', '<', 2665)
@@ -637,6 +638,46 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         
     }
     
+    /**
+     * select wordform from wordforms, lemma_wordform where lemma_wordform.wordform_id = wordforms.id and gramset_id=179 and dialect_id=47 and (wordform like '%ä%nun' or wordform like '%ö%nun' or wordform like '%y%nun'); 
+     * select lemmas.id, lemma, wordform from wordforms, lemma_wordform, lemmas where lemma_wordform.wordform_id = wordforms.id and lemma_wordform.lemma_id = lemmas.id and gramset_id=179 and dialect_id=47 and (wordform like '%ä%nun' or wordform like '%ö%nun' or wordform like '%y%nun') and lemmas.id< 23260 order by lemma_id; 
+     */
+    public static function reGenerateTverPartic2active() {
+        $gramset_id=179;
+        $dialect_id=47;
+        $lemmas = Lemma::whereIn('id', function ($query) use ($gramset_id, $dialect_id) {
+                            $query->select('lemma_id')->from('lemma_wordform')
+                                  ->whereDialectId($dialect_id)
+                                  ->whereGramsetId($gramset_id)
+                                  ->whereIn('wordform_id', function ($q) {
+                                      $q->select('id')->from('wordforms')
+                                        ->where(function($q2) {
+                                            $q2->where('wordform', 'like', '%ä%nun')
+                                               ->orWhere('wordform', 'like', '%ö%nun')
+                                               ->orWhere('wordform', 'like', '%y%nun');
+                                        });
+                                  });
+                        }) ->orderBy('id')->get();
+/*        $lemmas = Lemma::join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id') 
+                       ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+                       ->whereDialectId($dialect_id)
+                       ->whereGramsetId($gramset_id)
+                       ->where(function($q2) {
+                            $q2->where('wordform', 'like', '%ä%nun')
+                               ->orWhere('wordform', 'like', '%ö%nun')
+                               ->orWhere('wordform', 'like', '%y%nun');
+                       })
+//                       ->select('')
+//                       ->groupBy('lemma_id','lemma','wordform')
+                       ->orderBy('lemma_id')->get();*/
+print "<ol>";                        
+        foreach ($lemmas as $lemma) {
+            print "<li>".$lemma->id.' - '.$lemma->lemma.' - '. $lemma->wordform($gramset_id, $dialect_id) .' > '.$lemma->generateWordform($gramset_id, $dialect_id).'</li>';
+        }
+print "</ol>";
+
+    }
+
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences
