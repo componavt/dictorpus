@@ -8,7 +8,7 @@ use LaravelLocalization;
 class PartOfSpeech extends Model
 {
     protected $table = 'parts_of_speech';
-    protected $fillable = ['name_en', 'name_ru', 'code', 'category'];
+    protected $fillable = ['name_en', 'name_ru', 'code', 'category', 'name_short_ru', 'without_gram'];
     
     public $timestamps = false;
     
@@ -280,6 +280,17 @@ class PartOfSpeech extends Model
 //dd($out);
         sort($out);
         return $out;
+    }
+    
+    public static function posCategories()
+    {   
+        $categories = [];
+        
+        for ($i=1; $i<=3; $i++) {
+            $categories[$i] = \Lang::get('dict.pos_category_'.$i);
+        }
+
+        return $categories;
     }
 }
 

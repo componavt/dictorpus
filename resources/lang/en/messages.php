@@ -13,6 +13,8 @@ return [
     'actions' => 'Actions',
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
+    'bin_answer_0' => 'no',
+    'bin_answer_1' => 'yes',
     'bin_answers' => [1=>'yes', 0=>'no'],
     'category' => 'category',
     'changed' => 'changed',

@@ -306,6 +306,11 @@ Route::group(
                                     'store' => 'lemma_wordform.store',
                                     'destroy' => 'lemma_wordform.destroy']]); */
 
+        Route::resource('dict/pos', 'Dict\PartOfSpeechController',
+                       ['names' => ['update' => 'pos.update',
+                                    'store' => 'pos.store',
+                                    'destroy' => 'pos.destroy']]);
+
         Route::resource('dict/relation', 'Dict\RelationController',
                        ['names' => ['update' => 'relation.update',
                                     'store' => 'relation.store',

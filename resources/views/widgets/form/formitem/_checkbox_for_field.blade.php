@@ -4,5 +4,5 @@
                 ['name' => $name, 
                  'value' => 1,
                  'checked' => $checked,
-                 'title'=>$title])
+                 'title'=>$title ?? null])
         </div>

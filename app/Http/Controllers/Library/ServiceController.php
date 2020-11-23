@@ -587,11 +587,11 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
 */
         $is_all_checked = false;
         $langs = [4,5,1,6];
-        $pos=[1,5,6,10,13,14,20];
-//        $pos=[11];
-        $gramset_id=1;
+//        $pos=[1,5,6,10,13,14,20];
+        $pos=[11];
+//        $gramset_id=1;
 //        $gramset_id=2;
-//        $gramset_id=170;
+        $gramset_id=170;
         while (!$is_all_checked) {
             // verbs and not plural numerals
 // select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` not in (261, 827, 866) and (`id` not in (select `id` from `lemma_features`) or `id` in (select `id` from `lemma_features` where (`without_gram` is null or `without_gram` <> 1) and `number` <> 1)) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);

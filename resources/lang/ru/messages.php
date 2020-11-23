@@ -13,6 +13,8 @@ return [
     'actions' => 'Действия',
     'back_to_list' => 'Вернуться к списку',
     'back_to_show' => 'Вернуться к просмотру',
+    'bin_answer_0' => 'нет',
+    'bin_answer_1' => 'да',
     'bin_answers' => [1=>'да',0=>'нет'],
     'category' => 'категория',
     'changed' => 'изменил(а)',
