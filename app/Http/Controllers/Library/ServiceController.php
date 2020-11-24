@@ -494,7 +494,7 @@ print "</p>";
 print '<p>'.$text->id.'</p>';  
             return;          
         } 
-//exit(0);        
+exit(0);        
         $texts=Text::
               where('id', '>', 2480)
               ->where('id', '<', 2665)
@@ -596,6 +596,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
             // verbs and not plural numerals
 // select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` not in (261, 827, 866) and (`id` not in (select `id` from `lemma_features`) or `id` in (select `id` from `lemma_features` where (`without_gram` is null or `without_gram` <> 1) and `number` <> 1)) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);
             $lemmas = Lemma::whereIn('lang_id', $langs)
+                           ->whereId(827)
                            ->whereNotIn('id',[261, 827, 866]) 
                            ->where(function($query) {
                                $query->whereNotIn('id', function($q) {
@@ -637,7 +638,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                 $lemma->createInitialWordforms();
                 print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
             }
-//exit(0);            
+exit(0);            
         }
         
     }
