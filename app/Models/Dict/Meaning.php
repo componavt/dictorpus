@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
 
+use App\Models\Corpus\Place;
 use App\Models\Corpus\Text;
-use App\Models\Corpus\Transtext;
+//use App\Models\Corpus\Transtext;
 
 use App\Models\Dict\Lang;
 use App\Models\Dict\Relation;
 
-use App\Models\Corpus\Word;
+//use App\Models\Corpus\Word;
 
 class Meaning extends Model
 {
@@ -327,11 +328,13 @@ class Meaning extends Model
 
             self::updateLemmaMeaningTexts($meaning['meaning_text'], $meaning_id);
             
-            $meaning_obj->updateMeaningRelations(isset($meaning['relation']) ? $meaning['relation'] : []);
+            $meaning_obj->updateMeaningRelations($meaning['relation'] ?? []);
 
-            $meaning_obj->updateMeaningTranslations(isset($meaning['translation']) ? $meaning['translation'] : []);
+            $meaning_obj->updateMeaningTranslations($meaning['translation'] ?? []);
 
-            $meaning_obj->updateConcepts(isset($meaning['concepts']) ? $meaning['concepts'] : []);
+            $meaning_obj->updateConcepts($meaning['concepts'] ?? []);
+            
+            $meaning_obj->updatePlaces($meaning['places'] ?? []);
             
             // is meaning has any meaning texts or any relations
             if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count()) { 
@@ -437,6 +440,29 @@ class Meaning extends Model
         }
 //dd($concepts);        
         $this->concepts()->attach($concepts);
+    }
+    
+    /**
+     * Updates array of meaning concepts 
+     *
+     * @return NULL
+     */
+    public function updatePlaces($places)
+    {
+        // removes all concepts from this meaning
+        $this->places()->detach();
+        if (!is_array($places) || !sizeof($places)) {
+            return;
+        }
+//dd($concepts);        
+        $this->places()->attach($places);
+        
+        foreach ($places as $place_id) {
+            $place=Place::find($place_id);
+            foreach ($place->dialects as $dialect) {
+                $this->dialects()->attach($dialect->id);
+            }
+        }
     }
     
     /**

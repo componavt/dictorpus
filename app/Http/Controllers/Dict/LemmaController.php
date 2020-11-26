@@ -22,6 +22,10 @@ use App\Library\Str;
 
 use App\Models\User;
 
+use App\Models\Corpus\Place;
+use App\Models\Corpus\Text;
+//use App\Models\Corpus\Word;
+
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Dialect;
@@ -36,8 +40,6 @@ use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Relation;
 //use App\Models\Dict\Wordform;
-use App\Models\Corpus\Text;
-//use App\Models\Corpus\Word;
 
 class LemmaController extends Controller
 {
@@ -339,13 +341,14 @@ class LemmaController extends Controller
         $dialects_value = !$lemma->dialects ? []
                                     : $lemma->dialects->pluck('id')->toArray();
         $concept_values = Concept::getList(NULL, $lemma->pos_id !=PartOfSpeech::getIDByCode('PHRASE') ? $lemma->pos_id : NULL); //[NULL=>'']+
+        $place_values = Place::getListByLang($lemma->lang_id);
         
         return view('dict.lemma.edit',
                     compact('all_meanings', 'concept_values', 'lang_values', 'wordform_dialect_value', 
                             'dialect_values', 'langs_for_meaning', 'lemma', 
                             'lemma_variants', 'new_meaning_n', 'dialects_value',
                             'phrase_values', 'pos_values', 'relation_values', 
-                            'relation_meanings', 'translation_values', 
+                            'relation_meanings', 'translation_values', 'place_values',
                             'args_by_get', 'url_args'));
     }
 

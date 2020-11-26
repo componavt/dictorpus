@@ -90,6 +90,30 @@ class Place extends Model
      * 
      * @return Array [1=>'Пондала (Pondal), Бабаевский р-н, Вологодская обл.',..]
      */
+    public static function getListByLang($lang_id, $full_name=false)
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        $name_field = 'name_'.$locale;
+        $places = self::whereIn('id', function ($q) use ($lang_id) {
+                            $q->select('place_id')->from('dialect_place')
+                              ->whereIn('dialect_id', function ($q2) use ($lang_id) {
+                                  $q2->select('id')->from('dialects')
+                                     ->whereLangId($lang_id);
+                              });
+                        })->orderBy($name_field)->get();
+        
+        $list = array();
+        foreach ($places as $row) {
+            $list[$row->id] = $full_name ? $row->placeString() : $row->{$name_field};
+        }
+        
+        return $list;         
+    }
+    
+    /** Gets list of places
+     * 
+     * @return Array [1=>'Пондала (Pondal), Бабаевский р-н, Вологодская обл.',..]
+     */
     public static function getList()
     {     
         $locale = LaravelLocalization::getCurrentLocale();

@@ -257,6 +257,47 @@ class PlaceController extends Controller
         }
     }
     
+    /**
+     * Gets list of places for drop down list in JSON format
+     * Test url: /corpus/place/list?lang_id[]=1
+     * 
+     * @return JSON response
+     */
+    public function placeList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        $place_name = '%'.$request->input('q').'%';
+        $lang_ids = (array)$request->input('lang_id');
+//        $lemma_id = (int)$request->input('lemma_id');
+
+        $list = [];
+        $places = Place::where(function($q) use ($place_name){
+                            $q->where('name_en','like', $place_name)
+                              ->orWhere('name_ru','like', $place_name);
+                         });
+        if (sizeof($lang_ids)) {                 
+            $places = $places -> whereIn('id', function ($q) use ($lang_ids) {
+                            $q->select('place_id')->from('dialect_place')
+                              ->whereIn('dialect_id', function ($q2) use ($lang_ids) {
+                                  $q2->select('id')->from('dialects')
+                                     ->whereIn('lang_id',$lang_ids);
+                              });
+                        });
+        }
+        
+        $places = $places->orderBy('name_'.$locale)->get();
+                         
+        foreach ($places as $place) {
+            $list[]=['id'  => $place->id, 
+                     'text'=> $place->name];
+        }  
+//dd($list);        
+//dd(sizeof($places));
+        return Response::json($list);
+
+    }
+    
     /*    
     public function tempInsertVepsianPlace()
     {

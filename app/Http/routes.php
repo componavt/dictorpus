@@ -92,6 +92,7 @@ Route::group(
         Route::get('/dumps','DumpDownloadController@index');
         
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
+        Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
         Route::get('corpus/place/store', 'Corpus\PlaceController@simpleStore');
         Route::get('corpus/recorder/store', 'Corpus\RecorderController@simpleStore');
 

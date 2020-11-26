@@ -55,6 +55,7 @@
 
     selectWithLang('.select-wordform-dialect', "/dict/dialect/list", 'lang_id', '{{ trans('dict.select_dialect') }}');
     selectWithLang('.select-dialects', "/dict/dialect/list", 'lang_id', '{{ trans('dict.select_dialect') }}');
+    selectWithLang('.select-places', "/corpus/place/list", 'lang_id', '{{ trans('dict.meaning_place') }}');
     selectConceptWithoutCategory('pos_id', '{{ trans('dict.select_concept') }}');
     
     $(".add-new-relation").click(function(){

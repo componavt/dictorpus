@@ -1,5 +1,5 @@
 <div class='row' style='border-top: 1px #aaa dashed'>
-    <div class='col-sm-4'>
+    <div class='col-sm-3'>
         <h3>@include('widgets.form.formitem._text',
                    ['name' => 'ex_meanings['.$meaning->id.'][meaning_n]',
                     'value'=> $meaning->meaning_n,
@@ -13,12 +13,19 @@
                  'value' =>$concept_category_id,
                  'attributes'=>['placeholder' => trans('dict.select_concept_category') ]]) 
     </div>--}}
-    <div class='col-sm-8'>
+    <div class='col-sm-3'>
         <br>@include('widgets.form.formitem._select2',
                 ['name' => 'ex_meanings['.$meaning->id.'][concepts]', 
                  'values' => $concept_values,
                  'value' => $meaning->concepts->pluck('id')->toArray(),
                  'class'=>'select-concept form-control']) 
+    </div>
+    <div class='col-sm-6'>
+        <br>@include('widgets.form.formitem._select2',
+                ['name' => 'ex_meanings['.$meaning->id.'][places]', 
+                 'values' => $place_values,
+                 'value' => $meaning->places->pluck('id')->toArray(),
+                 'class'=>'select-places form-control'])        
     </div>
 </div>
 

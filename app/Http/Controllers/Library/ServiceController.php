@@ -545,8 +545,8 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
      * 
      * количество изменяемых лемм, у которых нет нулевой основы
      * select count(*) from lemmas where pos_id in (select pos_id from gramset_pos) and id not in (select lemma_id from lemma_bases where base_n=0);
-     * количество глаголов наших языков, у которых нет нулевой основы
-     * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and lang_id in (1,4,5,6);
+     * количество глаголов наших языков, у которых нет словоформы-инфинитива
+     * select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and (`id` not in (select `id` from `lemma_features`) or `id` in (select `id` from `lemma_features` where (`without_gram` is null or `without_gram` <> 1) and `number` <> 1)) and `pos_id` in (11) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 170);
      * количество глаголов наших языков (изменяемых), у которых нет нулевой основы
      * select count(*) from lemmas where pos_id=11 and id not in (select lemma_id from lemma_wordform where gramset_id=170) and (id not in (select id from lemma_features) or id in (select id from lemma_features where without_gram  is null or without_gram <> 1)) and lang_id in (1,4,5,6);
      * количество именных изменяемых лемм наших языков (не plural singular), у которых нет номинатива ед.ч.
@@ -594,10 +594,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         $gramset_id=170;
         while (!$is_all_checked) {
             // verbs and not plural numerals
-// select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` not in (261, 827, 866) and (`id` not in (select `id` from `lemma_features`) or `id` in (select `id` from `lemma_features` where (`without_gram` is null or `without_gram` <> 1) and `number` <> 1)) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);
             $lemmas = Lemma::whereIn('lang_id', $langs)
-                           ->whereId(827)
-                           ->whereNotIn('id',[261, 827, 866]) 
                            ->where(function($query) {
                                $query->whereNotIn('id', function($q) {
                                   $q->select('id')->from('lemma_features');                                    
