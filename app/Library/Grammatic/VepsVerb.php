@@ -1225,12 +1225,15 @@ class VepsVerb
     
     // средневепсский западный 
     public static function imperNegWest($stem0, $stem1, $dt, $gramset_id) {
+        if (!$stem0 || !$dt) {
+            return '';
+        }
         $conneg = self::imperConnegPl($stem0, $stem1, $dt, 5);
         $gk = VepsGram::rightConsonant($dt, 'g');
         
         switch ($gramset_id) {
             case 74: // 55. императив, 3 л., ед.ч., -  
-                return 'algha '. $stem1. ', uugha '. $stem1. ',  uugha '.$conneg;
+                return $stem1 ? 'algha '. $stem1. ', uugha '. $stem1. ',  uugha '.$conneg : 'uugha '.$conneg;
             case 75: // 56. императив, 1 л., мн.ч., - 
                 return 'algam '. $stem0. $gk. 'am, uugam '. $conneg;
             case 76: // 57. императив, 2 л., мн.ч., - 
