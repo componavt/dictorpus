@@ -299,7 +299,10 @@ class KarVerb
         if ($lang_id==5) {
             return KarVerbOlo::getStemFromStems($stems, $stem_n, $dialect_id, $lemma);
         }
-        return '';
+        switch ($stem_n) {
+            case 0: 
+                return $lemma;
+        }
     }
     
     public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {

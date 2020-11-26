@@ -20,6 +20,8 @@ class KarVerbOlo
      */
     public static function getStemFromStems($stems, $stem_n, $dialect_id, $lemma) {
         switch ($stem_n) {
+            case 0: 
+                return $lemma;
             case 3: 
                 return isset($stems[1]) && isset($stems[2]) 
                     ? self::prsStrongVocalBase($stems[1], $stems[2]) : null;
