@@ -460,7 +460,7 @@ class Meaning extends Model
         foreach ($places as $place_id) {
             $place=Place::find($place_id);
             foreach ($place->dialects as $dialect) {
-                $this->dialects()->update($dialect->id);
+                $this->dialects()->update([$dialect->id]);
             }
         }
     }
