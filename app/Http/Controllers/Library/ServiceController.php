@@ -595,7 +595,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
         while (!$is_all_checked) {
             // verbs and not plural numerals
             $lemmas = Lemma::whereIn('lang_id', $langs)
-/*                           ->where(function($query) {
+                           ->where(function($query) {
                                $query->whereNotIn('id', function($q) {
                                   $q->select('id')->from('lemma_features');                                    
                                })->orWhereIn('id', function($q) {
@@ -603,15 +603,15 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                     ->where(function ($q1) {
                                         $q1->whereNull('without_gram')
                                         ->orWhere('without_gram', '<>', 1);                                                                            
-                                    })
-                                    ->where('number', '<>', 1);
+                                    });
+                                    //->where('number', '<>', 1);
                                });
-                           })*/
+                           })
                            ->whereIn('pos_id', $pos)
                            ->whereNotIn('id', function($query) use ($gramset_id) {
                                 $query->select("lemma_id")->from("lemma_wordform")
                                       ->whereGramsetId($gramset_id);
-                            })/*->take(1)*/;
+                            })->take(10);
 //dd($lemmas->count());                            
             // plural numerals
 //select count(*) from `lemmas` where `lang_id` in (4,5,1,6) and `id` in (select `id` from `lemma_features` where `number` = 1) and `pos_id` in (1,5,6,10,13,14,20) and `id` not in (select `lemma_id` from `lemma_wordform` where `gramset_id` = 2);            
@@ -632,7 +632,7 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
             }
             foreach ($lemmas->get() as $lemma) {
     //            print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
-//                $lemma->createInitialWordforms();
+                $lemma->createInitialWordforms();
                 print '<p><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></p>';
             }
 //exit(0);            
