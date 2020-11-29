@@ -457,13 +457,15 @@ class Meaning extends Model
         }
 //dd($concepts);        
         $this->places()->attach($places);
-        
+        $dialects = [];
         foreach ($places as $place_id) {
             $place=Place::find($place_id);
             foreach ($place->dialects as $dialect) {
-                $this->dialects()->attach($dialect->id);
+                $dialects[]=$dialect->id;
             }
         }
+        $dialects = array_unique($dialects);
+        $this->dialects()->attach($dialects);
     }
     
     /**
