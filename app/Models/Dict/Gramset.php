@@ -322,7 +322,8 @@ class Gramset extends Model
             } elseif ($lang_id == 5) { // livvi
                 return [0=>26, 1=>28, 2=>31, 3=>34, 4=>37, 5=>170];
             } elseif($lang_id == 4) { // proper
-                return [0=>28, 3=>170];
+                return [0=>26, 3=>170];
+//                return [0=>28, 3=>170];
             }
         }
         return NULL;

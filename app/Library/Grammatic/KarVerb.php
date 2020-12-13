@@ -1500,13 +1500,15 @@ class KarVerb
     }
 
     public static function templateFromWordforms($wordforms) {
-        if (!isset($wordforms[28])) {
+        $wordform = $wordforms[26] ?? null; // prs 1st sg
+        if (!$wordform) { 
             return null;
         }
-        if (preg_match("/^-(.+)$/", $wordforms[28], $regs)) {
-            $wordforms[28] = $regs[1];
+        if (preg_match("/^-(.*)n$/", $wordform, $regs) 
+                || preg_match("/^(.*)n$/", $wordform, $regs)) {
+            $wordform = $regs[1];
         }
         
-        return " [".$wordforms[28]."]";
+        return " [".$wordform."]";
     }
 }
