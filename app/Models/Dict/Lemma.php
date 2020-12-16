@@ -885,10 +885,12 @@ dd($wordforms);
      */
     public function updateTextWordformLinks()
     {     
+        $lang_id = $this->lang_id;
         foreach ($this->wordforms as $wordform_obj) {
             $words = $wordform_obj->getWordsForLinks($this->lang_id);
 //dd($words);            
-            if (!$wordform_obj->texts()->wherePivot('gramset_id',$wordform_obj->pivot->gramset_id)->count()) {
+            if (!$wordform_obj->texts()->whereLangId($lang_id)
+                    ->wherePivot('gramset_id',$wordform_obj->pivot->gramset_id)->count()) {
                 $wordform_obj->addTextLinks($words, $this->lang_id);
             } else {
                 $wordform_obj->updateTextLinks($words, $this->lang_id);
