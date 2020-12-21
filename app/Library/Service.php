@@ -222,7 +222,8 @@ print "</p>";
         
         $new_lemma_obj = Lemma::create([
             'lemma' => $new_lemma_str,
-            'lemma_for_search' => Grammatic::toSearchForm($new_lemma_str),
+//            'lemma_for_search' => Grammatic::toSearchForm($new_lemma_str),
+            'lemma_for_search' => Grammatic::changeLetters($new_lemma_str, $lang_to),
             'pos_id' => $lemma->pos_id,
             'lang_id' => $lang_to
         ]);

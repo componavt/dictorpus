@@ -1007,7 +1007,8 @@ print "</pre>";*/
             $word_class = 'lemma-linked call-add-wordform';
         }
 
-        if ($search_word && Grammatic::toSearchForm((string)$word) == $search_word 
+//        if ($search_word && Grammatic::toSearchForm((string)$word) == $search_word 
+        if ($search_word && Grammatic::changeLetters((string)$word, $this->lang_id) == $search_word 
                 || $search_w && $word_id==$search_w) {
             $word_class .= ' word-marked';
         }
@@ -1132,7 +1133,8 @@ print "</pre>";*/
                               ->where('text_id',$this->id)
                               ->orderBy('sentence_id');
         if ($word) {
-            $sentence_builder = $sentence_builder ->where('word','like',Grammatic::toSearchForm($word));
+//            $sentence_builder = $sentence_builder->where('word','like',Grammatic::toSearchForm($word));
+            $sentence_builder = $sentence_builder->where('word','like',Grammatic::changeLetters($word, $this->lang_id));
         }                                
 //dd($sentence_builder->get());        
         foreach ($sentence_builder->get() as $sentence) {

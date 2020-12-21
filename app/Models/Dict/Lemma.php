@@ -772,7 +772,8 @@ dd($wordforms);
             $pos_id = NULL;
         }
         $lemma = Lemma::create(['lemma'=>$lemma,'lang_id'=>$lang_id,'pos_id'=>$pos_id]);
-        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+//        $lemma->lemma_for_search = Grammatic::toSearchForm($lemma->lemma);
+        $lemma->lemma_for_search = Grammatic::changeLetters($lemma->lemma, $lemma->lang_id);
         $lemma->save();
         return $lemma;
     }
@@ -808,10 +809,12 @@ dd($wordforms);
         list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
 //dd($wordforms_list);        
-//dd($new_lemma, $stem, $affix, $stems);        
+//dd($new_lemma, $stem, $affix, $stems);  
+        $lang_id = (int)$data['lang_id'];
         $this->lemma = $new_lemma;
-        $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
-        $this->lang_id = (int)$data['lang_id'];
+//        $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
+        $this->lemma_for_search = Grammatic::changeLetters($new_lemma, $lang_id);
+        $this->lang_id = $lang_id;
         $this->pos_id = (int)$data['pos_id'] ? (int)$data['pos_id'] : NULL;
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
@@ -822,7 +825,8 @@ dd($wordforms);
     }
 
     public function modify() { 
-        $this->lemma_for_search = Grammatic::toSearchForm($this->lemma);
+//        $this->lemma_for_search = Grammatic::toSearchForm($this->lemma);
+        $this->lemma_for_search = Grammatic::changeLetters($this->lemma, $this->lang_id);
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();        
     }
@@ -1244,6 +1248,7 @@ dd($wordforms);
 } */    
         $wordform_obj = Wordform::findOrCreate($trim_word);
         $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
+//        $wordform_obj->wordform_for_search = Grammatic::changeLetters($trim_word, $this->lang_id);
         $wordform_obj->save();
 
 //        $this->wordforms()->detach($wordform_obj->id, ['gramset_id'=>NULL, 'dialect_id'=>NULL]);    

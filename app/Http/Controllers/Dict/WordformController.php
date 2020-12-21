@@ -175,7 +175,7 @@ class WordformController extends Controller
             'wordform'  => 'required|max:255',
         ]);
         
-        // LEMMA UPDATING
+        // Wordform UPDATING
         $trim_word = Grammatic::toRightForm($request->wordform);        
         $wordform->wordform = trim($trim_word);
         $wordform->wordform_for_search = Grammatic::toSearchForm($trim_word);

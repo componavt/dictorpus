@@ -126,6 +126,9 @@ class LemmaController extends Controller
         $lang_values = Lang::getList();
 //        $langs_for_meaning = Lang::getListWithPriority();
         $langs_for_meaning = Lang::getListInterface();
+        $fi_lang = Lang::where('code','fi')->first();
+        $langs_for_meaning[$fi_lang->id] = $fi_lang->name;      
+                
         $dialect_values = $lang_id ? Dialect::getList($lang_id) : Dialect::getList(); //['NULL'=>'']+
 //dd($dialect_values);        
         return view('dict.lemma.create',

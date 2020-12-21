@@ -24,7 +24,8 @@ class Predictor
         $rang_enough = 0.01;
         $first_letter = mb_substr($uword, 0, 1);
         $maybe_proper_noun = $first_letter == mb_strtoupper($first_letter);
-        $uword_for_search = Grammatic::toSearchForm($uword);
+//        $uword_for_search = Grammatic::toSearchForm($uword);
+        $uword_for_search = Grammatic::changeLetters($uword, $lang_id);
         list ($total_founded, $out1) = self::lemmasFromOtherLangsByAnalog($uword_for_search, $lang_id);
 //print "<pre>";        
     //var_dump($out1);                    
