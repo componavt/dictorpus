@@ -155,8 +155,6 @@ class Lang extends Model
      */
     public static function getListInterface()
     {     
-        $locale = LaravelLocalization::getCurrentLocale();
-        
         $ru_lang = self::where('code','ru')->first();
         if (!isset($list[$ru_lang->id])) {
             $list[$ru_lang->id] = $ru_lang->name;
@@ -168,6 +166,18 @@ class Lang extends Model
         }
         
         return $list;         
+    }
+        
+    /** Gets list of main meaning languages: Russian, English, Finnish 
+     * 
+     * @return Array [2=>'Russian', 3=>'English', 7=>'Finnish']
+     */
+    public static function getListForMeaning()
+    {     
+        $langs_for_meaning = self::getListInterface();
+        $fi_lang = self::where('code','fi')->first();
+        $langs_for_meaning[$fi_lang->id] = $fi_lang->name;      
+        return $langs_for_meaning;         
     }
         
     /** Gets list of languages

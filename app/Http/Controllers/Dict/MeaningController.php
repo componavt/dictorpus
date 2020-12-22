@@ -52,9 +52,8 @@ class MeaningController extends Controller
     {
         $count = (int)$request->input('count');
         $meaning_n = (int)$request->input('meaning_n');
-//        $langs_for_meaning = Lang::getList();
-//        $langs_for_meaning = Lang::getListWithPriority();
-        $langs_for_meaning = Lang::getListInterface();
+//        $langs_for_meaning = Lang::getListInterface();
+        $langs_for_meaning = Lang::getListForMeaning();
                                 
         return view('dict.meaning.form._create')
                   ->with(array('count' => $count,
