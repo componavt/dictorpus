@@ -938,7 +938,7 @@ print "</pre>";*/
         if (!$sxe) {
             $error_text = "XML loading error". '('.$id.")\n";
             foreach(libxml_get_errors() as $error) {
-                $error_text .= "\t". $error->message. '('.$id.')';
+                $error_text .= "\t". $error->message;
             }
         }
         return [$sxe,$error_text];

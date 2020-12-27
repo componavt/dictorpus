@@ -140,9 +140,9 @@ class Event extends Model
                 || sizeof(array_diff((array)$new_data['event_informants'],$informants))) {
             return 0; } // different informants
         
-        $recorders = DB::table('event_recorder')->where('event_id', $this->id)->lists('recorder_id');    
-        if (sizeof(array_diff($recorders,$new_data['event_recorders']))
-                || sizeof(array_diff($new_data['event_recorders'],$recorders))) {
+        $recorders = (array)DB::table('event_recorder')->where('event_id', $this->id)->lists('recorder_id');    
+        if (sizeof(array_diff($recorders, (array)$new_data['event_recorders']))
+                || sizeof(array_diff((array)$new_data['event_recorders'],$recorders))) {
             return 0; } // different recorders      
         
         return 2;

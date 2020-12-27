@@ -236,6 +236,7 @@ Route::group(
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('service/wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
+        Route::get('service/check_parallel_texts', 'Library\ServiceController@checkParallelTexts');
         
         
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');

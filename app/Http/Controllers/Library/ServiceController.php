@@ -16,6 +16,7 @@ use App\Library\Service;
 use App\Library\Str;
 
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
@@ -681,6 +682,36 @@ print "<ol>";
         }
 print "</ol>";
 
+    }
+    
+    public function checkParallelTexts() {
+        $texts = Text::whereNotNull('transtext_id')->orderBy('id')->get();
+//dd($texts);       
+        foreach ($texts as $text) {
+//dd($text->id);            
+            list($sxe,$error_message) = Text::toXML($text->text_xml, $text->id);
+//dd($text->text_xml);  
+//dd($sxe);            
+            if ($error_message) { return 'Text XML parsing for '.$text->id. ': '.$error_message; } 
+            
+            $trans_text = Transtext::find($text->transtext_id);
+            if (!$trans_text) {return 'Transtext finding error.';}
+            
+            list($sxe_trans, $error_message) = Text::toXML($trans_text->text_xml, $trans_text->id);
+            if ($error_message) { return 'Transtext XML parsing for '.$text->id. ': '.$error_message; } 
+            
+            $last_sent = $sxe->xpath('/*/s[last()]');
+//dd($last_sent);            
+            $last_id = (int)$last_sent[0]->attributes()->id;
+//dd($text_sent);            
+            
+            $last_sent_trans = $sxe_trans->xpath('/*/s[last()]');
+            $last_id_trans = (int)$last_sent_trans[0]->attributes()->id;
+            
+            if ($last_id != $last_id_trans) {
+                print "<p><a href=\"/ru/corpus/text/".$text->id."\">".$text->title."</a> ($last_id, $last_id_trans)</p>";
+            }
+        }
     }
 
     /*
