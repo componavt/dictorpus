@@ -73,6 +73,7 @@ return [
                     . '<dd>PhD, Junior Research Associate in the Linguistics Section, Institute of Linguistics, Literature and History, KarRC, RAS</dd><br>'
                     . '</dl>',
     'permission' => '',
+    'sources' => '<p><a href="http://resources.krc.karelia.ru/krc/doc/publ2008/onomasiolog_slovar.pdf">Comparative onomasiological dictionary of the Karelian, Veps, and Saami languages</a>. Ju. S. Eliseev, N. G. Zaiceva (eds). 2007. Petrozavodsk: Karelian Research Centre of the Russian Academy of Sciences. Institute of History, Linguistics and Literature. (In Russian)</p>',
     'welcome_text' =>  '<p>Welcome to VepKar — the Open corpus of Veps and Karelian languages 
                         containing dictionaries and corpora of the Baltic-Finnish languages of Karelia peoples.</p>
 

@@ -58,6 +58,7 @@ return [
     'roles' => 'Roles',
     'service' => 'Service',
     'sosd' => 'Comparative-onomasiological dictionary of dialects',
+    'sources' => 'References',
     'stats' => 'Statistics',
     'text_frequency' => 'Frequency of symbols in texts',
     'texts' => 'Texts',
