@@ -713,6 +713,20 @@ print "</ol>";
             }
         }
     }
+    
+    public function tmpFillWordformForSearch() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $wordform = Wordform::whereIn('id', function ($q) {
+                $q->select('wordform_id')->from('lemma_wordform')
+                  ->where('wordform_for_search','');
+            })->orderBy('id')->first();
+exit(0);            
+            DB::statement("UPDATE lemma_wordform SET wordform_for_search='".
+                          Grammatic::changeLetters($wordform->wordform, $lang_to).
+                          "' WHERE wordform_id=".$wordform->id);
+        }
+    }
 
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
