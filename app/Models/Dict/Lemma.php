@@ -1539,6 +1539,14 @@ dd($wordforms);
         return $meanings;
     }
     
+    public function getLangMeaningTexts($lang_code) {
+        $meanings = [];
+        foreach ($this->meanings as $meaning_obj) {
+             $meanings[] = $meaning_obj->getMultilangMeaningTextsString($lang_code);
+        }
+        return $meanings;
+    }
+    
     public function getWordformsForTest($dialect_id) {
         $wordforms = [];
         $lang_id = $this->lang_id;

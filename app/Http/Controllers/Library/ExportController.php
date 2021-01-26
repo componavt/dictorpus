@@ -12,7 +12,6 @@ use Carbon\Carbon;
 use App\Library\Export;
 
 use App\Models\Corpus\Text;
-use App\Models\Dict\Dialect;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
 use App\Models\Dict\Lang;
@@ -223,6 +222,46 @@ class ExportController extends Controller
             //print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
 //        }
             print "done.";
+    }
+    
+    public function forMobile() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        
+        $filename = 'export/for_mobile/langs.csv';
+        Storage::disk('public')->put($filename, '');
+        foreach (Lang::projectLangs() as $lang) {
+            Storage::disk('public')->append($filename, $lang->id.",\"".$lang->name_en."\",\"".$lang->name_ru.'"');
+        }
+        
+        $filename = 'export/for_mobile/parts_of_speech.csv';
+        Storage::disk('public')->put($filename, '');
+        foreach (PartOfSpeech::get() as $pos) {
+            Storage::disk('public')->append($filename, $pos->id.",\"".$pos->name_en."\",\"".$pos->name_ru.'"');
+        }
+        
+        $filename = 'export/for_mobile/gramsets.csv';
+        Storage::disk('public')->put($filename, '');
+        foreach (Export::gramsetsForMobile() as $gramset_id=>$info) {
+            Storage::disk('public')->append($filename, $gramset_id.",\"".$info['en']."\",\"".$info['ru'].'"');
+        }
+        
+        
+        $filename = 'export/for_mobile/lemmas.csv';
+        Storage::disk('public')->put($filename, '');
+//dd(Export::lemmasForMobile());        
+        foreach (Export::lemmasForMobile() as $lemma_id=>$info) {
+            Storage::disk('public')->append($filename, $lemma_id.",\"".$info['lemma']."\",".$info['lang_id'].",".$info['pos_id'].",\"".$info['meaning_ru'].'"');
+        }
+        
+        $filename = 'export/for_mobile/wordforms.csv';
+        Storage::disk('public')->put($filename, '');
+//dd(Export::lemmasForMobile());        
+        foreach (Export::wordformsForMobile() as $wordform_id=>$info) {
+            Storage::disk('public')->append($filename, $wordform_id.",".$info['lemma_id'].",\"".$info['wordform']."\",".$info['gramset_id']);
+        }
+        
+        print "done.";
     }
     
 }

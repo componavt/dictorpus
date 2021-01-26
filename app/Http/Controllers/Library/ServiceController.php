@@ -727,7 +727,7 @@ exit(0);
                           "' WHERE wordform_id=".$wordform->id);
         }
     }
-
+    
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences

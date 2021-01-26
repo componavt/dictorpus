@@ -2,12 +2,15 @@
 
 namespace App\Library;
 
+use LaravelLocalization;
 use Storage;
 
 use App\Models\Corpus\Text;
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\Wordform;
 
 class Export
 {
@@ -67,5 +70,52 @@ class Export
         }
 //        dd($lines);
         return $lines;
+    }
+    
+    public static function lemmasForMobile() {
+        $data=[];
+        $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIDs())
+                        //->take(100)
+                        ->get();
+        foreach ($lemmas as $lemma) {
+            $meanings=$lemma->getLangMeaningTexts('ru');
+            if (!sizeof($meanings)) { continue; }
+            $meaning = preg_replace("/\"/", "'", join("\n", $meanings));
+            $data[$lemma->id] = [
+                'lemma'=>$lemma->lemma,
+                'lang_id'=>$lemma->lang_id,
+                'pos_id'=>$lemma->pos_id,
+                'meaning_ru'=>$meaning];
+        }
+        return $data;
+    }
+    
+    public static function wordformsForMobile() {
+        $data=[];
+        $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+                        ->groupBy('lemma_id', 'wordform_id', 'gramset_id')
+                        ->select('lemma_id', 'wordform', 'gramset_id')
+                        ->take(100)
+                        ->get();
+        $count=1;
+        foreach ($wordforms as $wordform) {
+            $data[$count++] = [
+                'wordform'=>$wordform->wordform,
+                'lemma_id'=>$wordform->lemma_id,
+                'gramset_id'=>$wordform->gramset_id];
+        }
+        return $data;
+    }
+    
+    public static function gramsetsForMobile() {
+        $data=[];
+        foreach (Gramset::get() as $gramset) {
+            $data[$gramset->id]['ru'] = $gramset->gramsetString();
+        }
+        LaravelLocalization::setLocale('en');
+        foreach (Gramset::get() as $gramset) {
+            $data[$gramset->id]['en'] = $gramset->gramsetString();
+        }        
+        return $data;
     }
 }
