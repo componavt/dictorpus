@@ -95,7 +95,7 @@ class Export
         $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                         ->groupBy('lemma_id', 'wordform_id', 'gramset_id')
                         ->select('lemma_id', 'wordform', 'gramset_id')
-                        ->take(100)
+                        //->take(100)
                         ->get();
         $count=1;
         foreach ($wordforms as $wordform) {

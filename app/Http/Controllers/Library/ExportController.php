@@ -227,7 +227,7 @@ class ExportController extends Controller
     public function forMobile() {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        
+/*        
         $filename = 'export/for_mobile/langs.csv';
         Storage::disk('public')->put($filename, '');
         foreach (Lang::projectLangs() as $lang) {
@@ -253,7 +253,7 @@ class ExportController extends Controller
         foreach (Export::lemmasForMobile() as $lemma_id=>$info) {
             Storage::disk('public')->append($filename, $lemma_id.",\"".$info['lemma']."\",".$info['lang_id'].",".$info['pos_id'].",\"".$info['meaning_ru'].'"');
         }
-        
+*/        
         $filename = 'export/for_mobile/wordforms.csv';
         Storage::disk('public')->put($filename, '');
 //dd(Export::lemmasForMobile());        
