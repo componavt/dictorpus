@@ -10,6 +10,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\Wordform;
 
 class Export
@@ -92,17 +93,22 @@ class Export
     
     public static function wordformsForMobile() {
         $data=[];
-        $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
-                        ->groupBy('lemma_id', 'wordform_id', 'gramset_id')
-                        ->select('lemma_id', 'wordform', 'gramset_id')
-                        //->take(100)
+        $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIDs())
+//                        ->take(100)
                         ->get();
         $count=1;
-        foreach ($wordforms as $wordform) {
-            $data[$count++] = [
-                'wordform'=>$wordform->wordform,
-                'lemma_id'=>$wordform->lemma_id,
-                'gramset_id'=>$wordform->gramset_id];
+        foreach ($lemmas as $lemma) {
+            $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+                            ->whereLemmaId($lemma->id)
+                            ->groupBy('wordform_id', 'gramset_id')
+                            ->select('wordform', 'gramset_id')
+                            ->get();
+            foreach ($wordforms as $wordform) {
+                $data[$count++] = [
+                    'wordform'=>$wordform->wordform,
+                    'lemma_id'=>$lemma->id,
+                    'gramset_id'=>$wordform->gramset_id];
+            }
         }
         return $data;
     }
