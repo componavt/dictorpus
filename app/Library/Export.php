@@ -91,24 +91,37 @@ class Export
         return $data;
     }
     
-    public static function wordformsForMobile() {
-        $data=[];
-        $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIDs())
-//                        ->take(100)
-                        ->get();
+    public static function wordformsForMobile(string $filename) {
+        Storage::disk('public')->put($filename, '');
+        
+//        $data=[];
+        $max_lemma_id = Lemma::selectRaw("max(id) as max")->first()->max;
+        
         $count=1;
-        foreach ($lemmas as $lemma) {
-            $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
-                            ->whereLemmaId($lemma->id)
-                            ->groupBy('wordform_id', 'gramset_id')
-                            ->select('wordform', 'gramset_id')
+        $portion=100;
+        $step=0;
+        while ($step*$portion < $max_lemma_id) {
+            $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIDs())
+                           ->where('id', '>', $step*$portion)
+                           ->where('id', '<=', ($step+1)*$portion)
+    //                        ->take(100)
                             ->get();
-            foreach ($wordforms as $wordform) {
-                $data[$count++] = [
-                    'wordform'=>$wordform->wordform,
-                    'lemma_id'=>$lemma->id,
-                    'gramset_id'=>$wordform->gramset_id];
+            foreach ($lemmas as $lemma) {
+                $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+                                ->whereLemmaId($lemma->id)
+                                ->groupBy('wordform_id', 'gramset_id')
+                                ->select('wordform', 'gramset_id')
+                                ->get();
+                foreach ($wordforms as $wordform) {
+                    Storage::disk('public')->append($filename, $count.",".$lemma->id.",\"".$wordform->wordform."\",".$wordform->gramset_id);
+/*                    $data[$count++] = [
+                        'wordform'=>$wordform->wordform,
+                        'lemma_id'=>$lemma->id,
+                        'gramset_id'=>$wordform->gramset_id];*/
+                    $count++;
+                }
             }
+            $step++;
         }
         return $data;
     }

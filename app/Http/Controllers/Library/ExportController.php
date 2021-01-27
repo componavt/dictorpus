@@ -255,12 +255,12 @@ class ExportController extends Controller
         }
 */        
         $filename = 'export/for_mobile/wordforms.csv';
-        Storage::disk('public')->put($filename, '');
-//dd(Export::lemmasForMobile());        
+        Export::wordformsForMobile($filename);
+/*        Storage::disk('public')->put($filename, '');
         foreach (Export::wordformsForMobile() as $wordform_id=>$info) {
             Storage::disk('public')->append($filename, $wordform_id.",".$info['lemma_id'].",\"".$info['wordform']."\",".$info['gramset_id']);
         }
-        
+*/        
         print "done.";
     }
     
