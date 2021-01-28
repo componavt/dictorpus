@@ -92,6 +92,8 @@ class Export
     }
     
     public static function wordformsForMobile(string $filename) {
+        $start=12086;
+        $filename .= '_from_'.$start; 
         Storage::disk('public')->put($filename, '');
         
 //        $data=[];
@@ -100,10 +102,10 @@ class Export
         $count=1;
         $portion=100;
         $step=0;
-        while ($step*$portion < $max_lemma_id) {
+        while ($start+$step*$portion < $max_lemma_id) {
             $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIDs())
-                           ->where('id', '>', $step*$portion)
-                           ->where('id', '<=', ($step+1)*$portion)
+                           ->where('id', '>', $start+$step*$portion)
+                           ->where('id', '<=', $start+($step+1)*$portion)
     //                        ->take(100)
                             ->get();
             foreach ($lemmas as $lemma) {
