@@ -97,8 +97,8 @@ class ConceptCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name_en'  => 'max:45',
-            'name_ru'  => 'required|max:45',
+            'name_en'  => 'max:75',
+            'name_ru'  => 'required|max:75',
         ]);
 //dd($request);       
         
