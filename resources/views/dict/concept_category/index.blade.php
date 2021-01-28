@@ -40,8 +40,15 @@
                 <td data-th="{{ trans('messages.in_russian') }}">{{$concept_category->name_ru}}</td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', ['is_button'=>true, 'route' => '/dict/concept_category/'.$concept_category->id.'/edit'])
-                    @include('widgets.form.button._delete', ['is_button'=>true, $route = 'concept_category.destroy', 'args'=>['id' => $concept_category->id]])
+                    @include('widgets.form.button._edit', [
+                        'is_button'=>true, 
+                        'without_text' => true, 
+                        'route' => '/dict/concept_category/'.$concept_category->id.'/edit'])
+                    @include('widgets.form.button._delete', [
+                        'is_button'=>true, 
+                        'without_text' => true, 
+                        'route' => 'concept_category.destroy', 
+                        'args'=>['id' => $concept_category->id]])
                 </td>
                 @endif
             </tr>
