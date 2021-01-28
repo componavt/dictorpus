@@ -92,14 +92,14 @@ class Export
     }
     
     public static function wordformsForMobile(string $filename) {
-        $start=12086;
+        $start=12085;
+        $count=608794;
         $filename .= '_from_'.$start; 
         Storage::disk('public')->put($filename, '');
         
 //        $data=[];
         $max_lemma_id = Lemma::selectRaw("max(id) as max")->first()->max;
         
-        $count=1;
         $portion=100;
         $step=0;
         while ($start+$step*$portion < $max_lemma_id) {
