@@ -225,7 +225,7 @@ class ExportController extends Controller
     }
     
     public function forMobile() {
-        ini_set('max_execution_time', 7200);
+        ini_set('max_execution_time', 100000);
         ini_set('memory_limit', '512M');
 /*        
         $filename = 'export/for_mobile/langs.csv';

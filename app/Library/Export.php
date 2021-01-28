@@ -92,8 +92,8 @@ class Export
     }
     
     public static function wordformsForMobile(string $filename) {
-        $start=12085;
-        $count=608794;
+        $start=12316;
+        $count=620556;
         $filename .= '_from_'.$start; 
         Storage::disk('public')->put($filename, '');
         
