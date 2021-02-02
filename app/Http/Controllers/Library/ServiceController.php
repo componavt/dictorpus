@@ -717,14 +717,19 @@ print "</ol>";
     public function tmpFillWordformForSearch() {
         $is_all_checked = false;
         while (!$is_all_checked) {
-            $wordform = Wordform::whereIn('id', function ($q) {
-                $q->select('wordform_id')->from('lemma_wordform')
-                  ->where('wordform_for_search','');
-            })->orderBy('id')->first();
-exit(0);            
+//            $lemma = Lemma::orderBy('id')->first();
+            $lemma_wordform = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+                                ->join('lemmas', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
+                                ->where('lemma_wordform.wordform_for_search','')
+                                ->take(1)->first();
+            if ($lemma_wordform) {
             DB::statement("UPDATE lemma_wordform SET wordform_for_search='".
-                          Grammatic::changeLetters($wordform->wordform, $lang_to).
-                          "' WHERE wordform_id=".$wordform->id);
+                          Grammatic::changeLetters($lemma_wordform->wordform, $lemma_wordform->lang_id).
+                          "' WHERE wordform_id=".$lemma_wordform->wordform_id. " and lemma_id=".$lemma_wordform->lemma_id);
+            } else {
+                $is_all_checked = true;
+            }
+//exit(0);            
         }
     }
     

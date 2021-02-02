@@ -237,9 +237,10 @@ class Grammatic
      * @return String
      */
     public static function changeLetters($word,$lang_id=null) {
+//        $word = self::toRightForm($word);        
         $word = self::toSearchForm($word);
-        $word = str_replace("'",'',$word);
-        $word = str_replace("`",'',$word);
+//        $word = str_replace("'",'',$word); 
+//        $word = str_replace("`",'',$word);
         
         if (!$lang_id || $lang_id && !self::isLetterChangeable($lang_id)) {
             return $word;
