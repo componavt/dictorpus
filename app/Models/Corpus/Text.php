@@ -823,7 +823,9 @@ print "</pre>";*/
      */
     public function getWordformsByWord($word) {
         $lang_id = $this->lang_id;
-        $wordforms = Wordform::where('wordform_for_search', 'like', $word)
+// TODO BEFORE COMLETION        
+//        $wordforms = Wordform::where('lemma_wordform.wordform_for_search', 'like', $word)
+        $wordforms = Wordform::where('wordforms.wordform_for_search', 'like', $word)
                    ->join('lemma_wordform','lemma_wordform.wordform_id', '=', 'wordforms.id')
                    ->whereNotNull('gramset_id')
                    ->whereIn('lemma_id', function ($query) use ($lang_id) {
