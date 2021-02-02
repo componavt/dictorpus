@@ -185,7 +185,7 @@ class Predictor
                        ->where('gramset_id', '<>', 0)
                        ->where('reverse_lemmas.affix', 'not like', '#')
                        ->where('lemma_wordform.affix', 'not like', '#')
-                       ->where('wordform_for_search', 'like', '%'.$uright)
+                       ->where('wordforms.wordform_for_search', 'like', '%'.$uright)
                        ->selectRaw('pos_id, gramset_id, reverse_lemmas.affix as l_affix, lemma_wordform.affix as w_affix, count(*) as count')
                        ->groupBy('pos_id', 'gramset_id', 'reverse_lemmas.affix', 'lemma_wordform.affix')->get();
         foreach ($lemmas as $lemma) {
