@@ -19,6 +19,7 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Wordform;
+use App\Models\Dict\LemmaWordform;
 
 class StatsController extends Controller
 {
@@ -36,7 +37,7 @@ class StatsController extends Controller
         $total_lemmas = Lemma::count();
         $lang_lemmas = Lang::countLemmas();
         
-        $total_wordforms = Wordform::count();
+        $total_wordforms = LemmaWordform::count();
         $lang_wordforms = Lang::countWordforms();
         
         $total_meanings = Meaning::count();
