@@ -393,7 +393,7 @@ dd($relevance);
             return $wordforms;
         }
         return 
-            $wordforms->where('wordform_for_search','like', $wordform);
+            $wordforms->where('wordforms.wordform_for_search','like', $wordform);
     }
     
     public static function searchByAffix($wordforms, $affix) {

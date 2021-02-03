@@ -272,20 +272,18 @@ class Word extends Model
     
     public function isLinkedWithLemmaByLang($lang_id) {
         $word = $this->word;
-        $word_t = addcslashes($word,"'%");
+/*        return Word::where('word', 'like', $word)
+                   ->join('meaning_text', 'meaning_text.word_id', '=', 'words.id')
+                   ->count();
+*/        $word_t = addcslashes($word,"'%");
         $word_t_l = mb_strtolower($word_t);
         $lemmas = Lemma::where('lang_id',$lang_id)
-                //where('lemma', 'like', $word)
                 ->whereRaw("lemma_for_search like '$word_t' or lemma_for_search like '$word_t_l'");
-//whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$this->lang_id  ." and (lemma like '$word_t' or lemma like '$word_t_l' or id in $lemma_q))")
-//dd($lemmas);   
         if ($lemmas->count()) {
-            return $lemmas->count();//true;
+            return $lemmas->count();
         }
-         //return false;
        
         $wordforms = Wordform::whereRaw("(wordform_for_search like '$word_t' or wordform_for_search like '$word_t_l')")
-                //where('wordform', 'like', $word)
                    ->whereIn('id',function($query) use ($lang_id) {
                        $query ->select('wordform_id')->from('lemma_wordform')
                               ->whereIn('lemma_id',function($q) use ($lang_id) {
@@ -294,7 +292,7 @@ class Word extends Model
                                 });
                    });
         if ($wordforms->count()) {
-            return $wordforms->count();//true;
+            return $wordforms->count();
         }
     }
     
