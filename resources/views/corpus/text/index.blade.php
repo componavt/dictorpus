@@ -66,6 +66,7 @@
                 </td>
                 <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
                 <td data-th="{{ trans('corpus.title') }}">
+                    {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a>
                 @if ($url_args['search_word'] && $text->transtext)
                     <br>({{$text->transtext->title}})

@@ -54,8 +54,10 @@
                     {{$author->namesToString() ? '('.$author->namesToString().')' : ''}}
                 </td>
                 <td data-th="{{ trans('navigation.texts') }}" style="text-align: center">
-                    @if($author->texts)
-                        {{ $author->texts()->count() }}
+                    @if($author->texts()->count())
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text?search_author=')}} {{$author->id}}">{{ $author->texts()->count() }}</a>
+                    @else
+                    0
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))

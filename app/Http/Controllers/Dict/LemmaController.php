@@ -4,17 +4,11 @@ namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
 use DB;
-//use Gate;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
 use LaravelLocalization;
-//use Storage;
-//use Carbon\Carbon;
-
-//use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 
 use App\Library\Str;
 
@@ -22,13 +16,10 @@ use App\Models\User;
 
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Text;
-//use App\Models\Corpus\Word;
 
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Dialect;
-//use App\Models\Dict\Gram;
-//use App\Models\Dict\GramCategory;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -37,7 +28,6 @@ use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Relation;
-//use App\Models\Dict\Wordform;
 
 class LemmaController extends Controller
 {

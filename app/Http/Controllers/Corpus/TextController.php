@@ -44,33 +44,8 @@ class TextController extends Controller
                                      'addExample', 'editExample', 'updateExamples', 
                                      'markupText',
                                      'markupAllEmptyTextXML','markupAllTexts']]);
-        $this->url_args = [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
-                    'search_birth_place' => $request->input('search_birth_place'),
-                    'search_corpus'   => (array)$request->input('search_corpus'),
-                    'search_dialect'  => (array)$request->input('search_dialect'),
-                    'search_informant'=> $request->input('search_informant'),
-                    'search_lang'     => (array)$request->input('search_lang'),
-                    'search_place'    => $request->input('search_place'),
-                    'search_recorder' => $request->input('search_recorder'),
-                    'search_sentence' => (int)$request->input('search_sentence'),
-                    'search_title'    => $request->input('search_title'),
-                    'search_wid'     => $request->input('search_wid'),
-                    'search_word'     => $request->input('search_word'),
-                    'search_text'     => $request->input('search_text'),
-                ];
+        $this->url_args = Text::urlArgs($request);  
         
-        if (!$this->url_args['page']) {
-            $this->url_args['page'] = 1;
-        }
-        
-        if ($this->url_args['limit_num']<=0) {
-            $this->url_args['limit_num'] = 10;
-        } elseif ($this->url_args['limit_num']>1000) {
-            $this->url_args['limit_num'] = 1000;
-        }   
-       
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 

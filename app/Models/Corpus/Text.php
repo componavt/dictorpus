@@ -8,6 +8,8 @@ use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
 
 use App\Library\Grammatic;
+use App\Library\Str;
+
 use App\Models\User;
 
 use App\Models\Corpus\Event;
@@ -94,6 +96,7 @@ class Text extends Model
         // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
         // select texts by title from texts and translation texts
         $texts = self::orderBy('title');        
+        $texts = self::searchByAuthors($texts, $url_args['search_author']);
         $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place']);
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
         $texts = self::searchByInformant($texts, $url_args['search_informant']);
@@ -140,6 +143,17 @@ class Text extends Model
                     $query->select('text_id')
                     ->from("dialect_text")
                     ->whereIn('dialect_id',$dialects);
+                });
+    }
+    
+    public static function searchByAuthors($texts, $authors) {
+        if (!sizeof($authors)) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($authors){
+                    $query->select('text_id')
+                    ->from("author_text")
+                    ->whereIn('author_id',$authors);
                 });
     }
     
@@ -1540,5 +1554,25 @@ print "</pre>";*/
         arsort($symbols);
 //dd($symbols);
         return $symbols;
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_birth_place' => $request->input('search_birth_place'),
+                    'search_author'  => (array)$request->input('search_author'),
+                    'search_corpus'   => (array)$request->input('search_corpus'),
+                    'search_dialect'  => (array)$request->input('search_dialect'),
+                    'search_informant'=> $request->input('search_informant'),
+                    'search_lang'     => (array)$request->input('search_lang'),
+                    'search_place'    => $request->input('search_place'),
+                    'search_recorder' => $request->input('search_recorder'),
+                    'search_sentence' => (int)$request->input('search_sentence'),
+                    'search_title'    => $request->input('search_title'),
+                    'search_wid'     => $request->input('search_wid'),
+                    'search_word'     => $request->input('search_word'),
+                    'search_text'     => $request->input('search_text'),
+                ];
+        
+        return $url_args;
     }
 }
