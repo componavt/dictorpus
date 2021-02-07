@@ -90,6 +90,10 @@
     });
     
     $(".multiple-select-phrase").select2({
+/*        tags: true,*/
+/*        allowClear: false,
+        tokenSeparators: [' '],
+        maximumSelectionLength: 5,*/
         width: '100%',
         ajax: {
           url: "/dict/lemma/list_with_pos_meaning",

@@ -14,6 +14,7 @@ return [
     'about_project' => 'О проекте',
     'about_veps' => 'О вепсах',
     'affix_freq' => 'Частота встречаемости аффиксов в словаре',
+    'authors' => 'Авторы',
     'concept_categories' => 'Категории понятий',
     'concepts' => 'Понятия',
     'copy_lemmas' => 'Копирование лемм',

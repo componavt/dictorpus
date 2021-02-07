@@ -63,6 +63,14 @@
                      'title'=>trans('corpus.text_xml')])
         @endif
         
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'authors', 
+                 'values' =>$author_values,
+                 'value' => $author_value ?? null,
+                 'call_add_onClick' => 'addAuthor()',
+                 'call_add_title' => trans('messages.create_new_m'),
+                 'title' => trans('corpus.author')]) 
+                 
         {{-- EVENT --}}
         <?php if ($action=='create') { $informant_value = NULL; } ?>        
         @include('widgets.form.formitem._select2', 

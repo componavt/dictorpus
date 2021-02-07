@@ -14,6 +14,7 @@ return [
     'about_project' => 'About project',
     'about_veps' => 'Veps',
     'affix_freq' => 'Affix frequency',
+    'authors' => 'Authors',
     'concept_categories' => 'Concept categories',
     'concepts' => 'Сoncepts',
     'copy_lemmas' => 'Copying lemmas',

@@ -28,7 +28,10 @@
             | <a href="{{ LaravelLocalization::localizeURL('/help/text/show') }}">? {{ trans('navigation.help') }}</a>            
         </p>
         
-        <h2>{{ $text->title }}</h2>
+        <h2>
+            {{ $text->authors ? $text->authorsToString().'.' : '' }}
+            {{ $text->title }}
+        </h2>
         
         @if ($text->video && $text->video->youtube_id)
         <div class="row">
@@ -67,7 +70,11 @@
             <div class="col-sm-6">
         @endif
         @if ($text->title)
-                    <h4>{{ $text->title }}<br>
+                    <h4>
+                        @if ($text->authors)
+                        {{$text->authorsToString()}}<br>
+                        @endif
+                        {{ $text->title }}<br>
                     ({{ $text->lang->name }})</h4>
         @endif      
         

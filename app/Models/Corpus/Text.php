@@ -10,17 +10,12 @@ use \Venturecraft\Revisionable\Revision;
 use App\Library\Grammatic;
 use App\Models\User;
 
-use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Event;
-use App\Models\Corpus\Informant;
 use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
-use App\Models\Dict\Dialect;
-use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
-use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\Wordform;
@@ -50,6 +45,7 @@ class Text extends Model
     use \App\Traits\Relations\BelongsTo\Transtext;
 
     // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Authors;
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Genres;
 //    use \App\Traits\Relations\BelongsToMany\Meanings;
@@ -77,6 +73,15 @@ class Text extends Model
         return $this->hasOne(Video::class);
     }
    
+    public function authorsToString() {
+        $authors = [];
+        foreach ($this->authors as $author) {
+            $name = $author->getNameByLang($this->lang_id);
+            $authors[] = $name ? $name : $author->name;
+        }
+        return join(', ', $authors);
+    }
+
     public function addMeaning($meaning_id, $sentence_id, $word_id, $w_id, $relevance) {
                         $this->meanings()->attach($meaning_id,
                                 ['sentence_id'=>$sentence_id,
@@ -256,6 +261,9 @@ class Text extends Model
         $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
         $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
         
+        $this->authors()->detach();
+        $this->authors()->attach($request->authors);
+
         $this->dialects()->detach();
         $this->dialects()->attach($request->dialects);
 

@@ -4,34 +4,26 @@ namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-//use Carbon\Carbon;
-//use DB;
-//use LaravelLocalization;
 use Response;
 
-//use App\Library\Grammatic;
 use App\Library\Str;
 
+use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
-//use App\Models\Corpus\Event;
 use App\Models\Corpus\District;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
-//use App\Models\Corpus\Source;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
-//use App\Models\Dict\Lemma;
-//use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 
 class TextController extends Controller
@@ -138,13 +130,17 @@ class TextController extends Controller
         $region_values = Region::getList();
         $district_values = District::getList();
         
+        $author_values = Author::getList();
+        $project_langs=Lang::projectLangs(); 
+        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.create',
                   compact('corpus_values', 'dialect_values', 'genre_values',
                           'informant_values', 'lang_values', 'place_values',
                           'recorder_values', 'region_values', 'district_values',
-                          'args_by_get', 'url_args'));
+                          'args_by_get', 'url_args', 
+                          'author_values', 'project_langs'));
     }
 
     /**
@@ -250,6 +246,10 @@ class TextController extends Controller
 
         $region_values = Region::getList();
         $district_values = District::getList();
+
+        $author_values = Author::getList();
+        $author_value = $text->authorValue();
+        $project_langs=Lang::projectLangs(); 
         
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
@@ -258,7 +258,8 @@ class TextController extends Controller
                         'genre_value', 'genre_values', 'informant_value',
                         'informant_values','lang_values', 'place_values','text',
                         'recorder_value', 'recorder_values', 'args_by_get', 'url_args',
-                        'region_values', 'district_values'));
+                        'region_values', 'district_values', 
+                        'author_value', 'author_values', 'project_langs'));
     }
 
     /**

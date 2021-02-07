@@ -462,6 +462,15 @@ h2 {
   100% { color: black; }
 }
 
+.form-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.form-flex .form-group {
+    width: 100%;
+    margin-right: 20px;
+}
 
 @media screen and (min-width: 768px) {   
     .comment {

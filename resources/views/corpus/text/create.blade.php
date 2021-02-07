@@ -21,30 +21,8 @@
         @endif
             | <a href="{{ LaravelLocalization::localizeURL('/help/text/form') }}">? {{ trans('navigation.help') }}</a>
         </p>
-        
-        @include('widgets.modal',['name'=>'modalAddInformant',
-                              'title'=>trans('corpus.add_informant'),
-                              'submit_onClick' => 'saveInformant()',
-                              'submit_title' => trans('messages.save'),
-                              'modal_view'=>'corpus.informant._form_create_edit'])
-        
-        @include('widgets.modal',['name'=>'modalAddDistrict',
-                              'title'=>trans('corpus.add_district'),
-                              'submit_onClick' => 'saveDistrict()',
-                              'submit_title' => trans('messages.save'),
-                              'modal_view'=>'corpus.district._form_create_edit'])
-        
-        @include('widgets.modal',['name'=>'modalAddPlace',
-                              'title'=>trans('corpus.add_place'),
-                              'submit_onClick' => 'savePlace()',
-                              'submit_title' => trans('messages.save'),
-                              'modal_view'=>'corpus.place._form_create_simple'])
-        
-        @include('widgets.modal',['name'=>'modalAddRecorder',
-                              'title'=>trans('corpus.add_recorder'),
-                              'submit_onClick' => 'saveRecorder()',
-                              'submit_title' => trans('messages.save'),
-                              'modal_view'=>'corpus.recorder._form_create_edit'])
+
+        @include('corpus.text.modals_for_edition')
         
         {!! Form::open(array('method'=>'POST', 'route' => array('text.store'))) !!}
         @include('corpus.text._form_create_edit', ['submit_title' => trans('messages.create_new_m'),

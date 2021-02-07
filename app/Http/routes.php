@@ -91,6 +91,7 @@ Route::group(
         Route::get('/home', 'HomeController@index');
         Route::get('/dumps','DumpDownloadController@index');
         
+        Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
         Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
         Route::get('corpus/place/store', 'Corpus\PlaceController@simpleStore');
@@ -323,6 +324,11 @@ Route::group(
         Route::resource('dict/wordform', 'Dict\WordformController',
                        ['names' => ['update' => 'wordform.update']]);
 
+        Route::resource('corpus/author', 'Corpus\AuthorController',
+                       ['names' => ['update' => 'author.update',
+                                    'store' => 'author.store',
+                                    'destroy' => 'author.destroy']]);
+        
         Route::resource('corpus/corpus', 'Corpus\CorpusController',
                        ['names' => ['update' => 'corpus.update',
                                     'store' => 'corpus.store',

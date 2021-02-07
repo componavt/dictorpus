@@ -115,6 +115,33 @@ function saveInformant() {
     }); 
 }
 
+function addAuthor() {
+    $("#modalAddAuthor").modal('show');
+}
+
+function saveAuthor() {
+    var route = '/corpus/author/store';
+    $.ajax({
+        url: route, 
+        data: $( "#modalAddAuthor input" ).serializeArray(),
+        type: 'GET',
+        success: function(author){       
+            $("#modalAddAuthor").modal('hide');
+            if (author) {
+                var newOption = new Option(author[1], author[0], false, false);
+                $('#authors').append(newOption).trigger('change');
+                newOption.setAttribute('selected','selected')
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+console.log($( "#modalAddAuthor input" ).serializeArray());    
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+')';
+            alert(text);
+        }
+    }); 
+}
+
 function addRecorder() {
     $("#modalAddRecorder").modal('show');
 }
