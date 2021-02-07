@@ -29,7 +29,7 @@
         </p>
         
         <h2>
-            {{ $text->authors ? $text->authorsToString().'.' : '' }}
+            {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
             {{ $text->title }}
         </h2>
         
