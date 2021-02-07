@@ -19,7 +19,7 @@ return [
     'add_recorder' => 'Добавить собирателя',
     'add-wordform' => 'Добавить словоформу',
     'archive_krc' => 'ф/архив ИЯЛИ КарНЦ РАН',
-    'author' => 'Автор',
+    'author' => 'Автор текста',
     'author_removed' => 'Автор ":name" удален.',
     'birth_place' => 'место рождения',
     'birth_year' => 'г.р.',
