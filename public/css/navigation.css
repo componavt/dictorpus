@@ -55,14 +55,14 @@ li.dropdown {
 
 .dropdown-menu {
     background-color: #f9f8f8;
-    min-width: 120px;
+    min-width: 150px;
     padding: 0;
     z-index: 1100;
 }
 
 .dropdown-menu > li > a {
     font-size: 13px;
-    line-height: 19px;
+    line-height: 15px;
     text-decoration: underline;
     padding: 7px 10px;
     white-space: normal;
@@ -153,7 +153,7 @@ flex: 1 0 auto;
 
 @media screen and (min-width: 768px) {
     .nav > li > a {
-        padding: 20px 10px;
+        padding: 20px;
     }
     .navbar-default .navbar-nav > li > .dropdown-toggle {
         font-size: 15px;
@@ -167,7 +167,7 @@ flex: 1 0 auto;
         font-size: 16px;
     }
     .dropdown-menu > li > a {
-        padding: 7px 10px;
+        padding: 7px 20px;
     }
 }
 

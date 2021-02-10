@@ -11,7 +11,7 @@ return [
     */
 
     'about_karelians' => 'Karelians',
-    'about_project' => 'About project',
+    'about_project' => 'About',
     'about_veps' => 'Veps',
     'affix_freq' => 'Affix frequency',
     'authors' => 'Authors',
@@ -53,7 +53,7 @@ return [
     'recorders' => 'Recorders',
     'regions' => 'Regions',
     'relations' => 'Relations',
-    'references' => 'Reference tables',
+    'references' => 'Auxiliaries',
     'reverse_dictionary' => 'Lemma reverse dictionary',
     'reverse_dictionary_wordform' => 'Wordform reverse dictionary',
     'roles' => 'Roles',
