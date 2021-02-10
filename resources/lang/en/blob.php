@@ -34,8 +34,7 @@ return [
                          </div>
                          <div class="in_numbers-b">
                             <span class="in_numbers-n"><a href="/en/stats">:total_texts</a></span>
-                            <span>:texts on 6 languages<br>
-                            и <a href="/en/dict/dialect">:total_dialects</a> dialects</span>
+                            <span>on <a href="/en/dict/dialect">:total_dialects</a> dialects</span>
                          </div>',        
     'grants' => '<p>The project was supported by grants:</p>
                  <p>the Russian Foundation for the Humanities, grant No. 15-04-12006, "Veps thesaurus constructing based on word sense disambiguation in multilingual dictionary", 2015-2016.</p>
