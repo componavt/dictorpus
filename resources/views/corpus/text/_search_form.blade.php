@@ -64,7 +64,7 @@
                  'title' => trans('corpus.title')
                 ])                               
     </div>
-    <div class="col-md-4{{$url_args['search_author'] ? '' : ' ext-form'}}">
+    <div class="col-md-4{{sizeof($url_args['search_author']) && $url_args['search_author'][0] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_author', 
                  'values' => $author_values,
