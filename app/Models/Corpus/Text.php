@@ -96,7 +96,8 @@ class Text extends Model
         // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
         // select texts by title from texts and translation texts
         $texts = self::orderBy('title');        
-        $texts = self::searchByAuthors($texts, $url_args['search_author']);
+        $texts = self::searchByAuthor($texts, $url_args['search_author']);
+//        $texts = self::searchByAuthors($texts, $url_args['search_author']);
         $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place']);
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
         $texts = self::searchByInformant($texts, $url_args['search_informant']);
@@ -158,6 +159,17 @@ class Text extends Model
                 });
     }
     
+    public static function searchByAuthor($texts, $author) {
+        if (!$author) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($author){
+                    $query->select('text_id')
+                    ->from("author_text")
+                    ->where('author_id',$author);
+                });
+    }
+/*    
     public static function searchByAuthors($texts, $authors) {
         if (!sizeof($authors)) {
             return $texts;
@@ -168,7 +180,7 @@ class Text extends Model
                     ->whereIn('author_id',$authors);
                 });
     }
-    
+*/    
     public static function searchByInformant($texts, $informant) {
         if (!$informant) {
             return $texts;
@@ -1571,7 +1583,7 @@ print "</pre>";*/
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
                     'search_birth_place' => $request->input('search_birth_place'),
-                    'search_author'  => (array)$request->input('search_author'),
+                    'search_author'   => $request->input('search_author'),
                     'search_corpus'   => (array)$request->input('search_corpus'),
                     'search_dialect'  => (array)$request->input('search_dialect'),
                     'search_genre'    => (array)$request->input('search_genre'),
