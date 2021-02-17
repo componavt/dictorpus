@@ -60,6 +60,10 @@ li.dropdown {
     z-index: 1100;
 }
 
+.dropdown-menu > li {
+    width: 100%;
+}
+
 .dropdown-menu > li > a {
     font-size: 13px;
     line-height: 15px;

@@ -107,6 +107,7 @@ class Text extends Model
         $texts = self::searchByWid($texts, $url_args['search_wid']);
         $texts = self::searchByWord($texts, $url_args['search_word']);
         $texts = self::searchByText($texts, $url_args['search_text']);
+        $texts = self::searchByGenres($texts, $url_args['search_genre']);
         
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
@@ -143,6 +144,17 @@ class Text extends Model
                     $query->select('text_id')
                     ->from("dialect_text")
                     ->whereIn('dialect_id',$dialects);
+                });
+    }
+    
+    public static function searchByGenres($texts, $genres) {
+        if (!sizeof($genres)) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($genres){
+                    $query->select('text_id')
+                    ->from("genre_text")
+                    ->whereIn('genre_id',$genres);
                 });
     }
     
@@ -1562,6 +1574,7 @@ print "</pre>";*/
                     'search_author'  => (array)$request->input('search_author'),
                     'search_corpus'   => (array)$request->input('search_corpus'),
                     'search_dialect'  => (array)$request->input('search_dialect'),
+                    'search_genre'    => (array)$request->input('search_genre'),
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
                     'search_place'    => $request->input('search_place'),

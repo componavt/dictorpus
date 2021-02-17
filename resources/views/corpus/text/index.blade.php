@@ -114,14 +114,16 @@
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/search.js')!!}
 @stop
 
 @section('jqueryFunc')
-
     toggleSpecial();
+    toggleSearchForm();
     recDelete('{{ trans('messages.confirm_delete') }}');
     $(".multiple-select-lang").select2();
     $(".multiple-select-corpus").select2();
+    $(".multiple-select-genre").select2();
     
     $(".multiple-select-dialect").select2({
         width: '100%',

@@ -371,6 +371,7 @@ class Word extends Model
      * @return Collection
      */
     public static function getMeaningsByWord($word, $lang_id) {
+//        $word = str_replace("'", '’', $word);
         $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word')";
         $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
         $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$lang_id

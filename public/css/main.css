@@ -417,9 +417,16 @@ h2 {
     color: #666;
 }
 
-.search-form div {
-    min-height: 49px;  
+.search-form {
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 0 10px;
 }
+
+/*.search-form div {
+    min-height: 49px;  
+}*/
 
 .select2-container .select2-search--inline .select2-search__field {
     margin-left: 5px;
@@ -470,6 +477,27 @@ h2 {
 .form-flex .form-group {
     width: 100%;
     margin-right: 20px;
+}
+
+.show-search-form, .hide-search-form {
+    color: #8f877d;
+    cursor: pointer;
+    font-style: italic;
+    padding-right: 20px;
+    position: relative;
+    text-align: right;
+}
+
+.hide-search-form, .ext-form {
+    display: none;
+}
+
+.search-button-b {
+    padding-top: 25px;
+}
+
+.select2-selection__choice {
+    font-size: 12px;
 }
 
 @media screen and (min-width: 768px) {   

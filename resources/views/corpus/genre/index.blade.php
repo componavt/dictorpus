@@ -58,9 +58,9 @@
                 <td data-th="{{ trans('messages.in_english') }}">{{$genre->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$genre->name_ru}}</td>
                 <td data-th="{{ trans('navigation.texts') }}">
-                    @if($genre->texts)
-                        {{ $genre->texts()->count() }}
-                    @endif
+                @if($genre->texts)
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/?search_genre[]='.$genre->id) }}">{{ $genre->texts()->count() }}</a>
+                @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
