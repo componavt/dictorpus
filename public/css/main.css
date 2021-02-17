@@ -424,9 +424,9 @@ h2 {
     padding: 0 10px;
 }
 
-/*.search-form div {
+.search-form div {
     min-height: 49px;  
-}*/
+}
 
 .select2-container .select2-search--inline .select2-search__field {
     margin-left: 5px;
