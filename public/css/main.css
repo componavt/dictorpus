@@ -413,7 +413,7 @@ h2 {
     white-space: pre-line;
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__choice {
+.form-group .select2-container--default .select2-selection--multiple .select2-selection__choice {
     margin-top: 4px;
 }
 
