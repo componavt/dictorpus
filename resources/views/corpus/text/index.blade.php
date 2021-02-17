@@ -123,7 +123,9 @@
     recDelete('{{ trans('messages.confirm_delete') }}');
     $(".multiple-select-lang").select2();
     $(".multiple-select-corpus").select2();
-    $(".multiple-select-genre").select2();
+    $(".multiple-select-genre").select2({
+        width: '100%',
+    });
     
     $(".multiple-select-dialect").select2({
         width: '100%',
