@@ -4,7 +4,7 @@ function newListLoad(url, div, limit) {
         data: {limit: limit},
         type: 'GET',
         success: function(result){
-            $("#"+div).append(result);
+            $("#"+div).html(result);
         }
     }); 
 }

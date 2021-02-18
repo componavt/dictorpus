@@ -36,10 +36,12 @@
                                         'texts' => $texts_choice,
                                         'total_texts'=>$total_texts])!!}
                             </div>
-                            <div id="last-updated-lemmas" class="block-list">
+                            <div id="last-added-lemmas" class="block-list">
+                <img class="img-loading" src="{{ asset('images/loading.gif') }}">
                             </div>
 
-                            <div id="last-updated-texts" class="block-list">
+                            <div id="last-added-texts" class="block-list">
+                <img class="img-loading" src="{{ asset('images/loading.gif') }}">
                             </div>
                         </div>
                     </div>
@@ -52,6 +54,6 @@
 @stop
 
 @section('jqueryFunc')
-    newListLoad('/dict/lemma/limited_updated_list/', 'last-updated-lemmas',{{$limit}});
-    newListLoad('/corpus/text/limited_updated_list/', 'last-updated-texts',{{$limit}});
+    newListLoad('/dict/lemma/limited_new_list/', 'last-added-lemmas',{{$limit}});
+    newListLoad('/corpus/text/limited_new_list/', 'last-added-texts',{{$limit}});
 @stop
