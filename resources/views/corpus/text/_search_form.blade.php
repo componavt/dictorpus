@@ -2,7 +2,7 @@
                              'method' => 'get']) 
         !!}
 <div class="show-search-form">Расширенный поиск &#8595;</div>
-<div class="search-form">        
+<div class="search-form search-text">        
 <div class="row">
     <div class="col-md-4">
         @include('widgets.form.formitem._select2', 

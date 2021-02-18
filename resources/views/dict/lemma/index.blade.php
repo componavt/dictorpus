@@ -128,12 +128,14 @@
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/search.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
+    toggleSearchForm();
     recDelete('{{ trans('messages.confirm_delete') }}');
-    selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.select_dialect') }}');
+    selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.dialect') }}');
     selectConcept('search_concept_category', 'search_pos', '{{ trans('dict.select_concept') }}', true);
 @stop
 
