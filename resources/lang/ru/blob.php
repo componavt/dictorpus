@@ -42,7 +42,7 @@ return [
                          </div>
                          <div class="in_numbers-b">
                             <span class="in_numbers-n"><a href="/ru/stats">:total_texts</a></span>
-                            <span>на <a href="/ru/dict/dialect">:total_dialects</a> диалектах</span>
+                            <span>:texts на <a href="/ru/dict/dialect">:total_dialects</a> диалектах</span>
                          </div>',
     'license' => 'Вы можете свободно использовать материалы нашего сайта и делиться ими, главное — указать авторство и ссылку
                   на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/">Побробнее о лицензии CC BY 4.0</a>',
