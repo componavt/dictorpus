@@ -1579,6 +1579,9 @@ dd($wordforms);
         if (!$pos) { return false; }
         
         $pos_code = $pos->unimorph;
+        if ($pos_code == 'V' && $this->features && $this->features->reflexive) {
+            $pos_code .= ';REFL';
+        }
 //dd($this->wordforms);              
         $wordforms = $this->wordforms()->wherePivot('dialect_id',$dialect_id)->get();//wordformsWithGramsets();
 //dd($dialect_id, $wordforms);

@@ -67,19 +67,21 @@ class ExportController extends Controller
     public function exportLemmasToUniMorph(Request $request) {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        $dir_name = "export/unimorph/2019-11/";
+        
         $date = Carbon::now();
         $date_now = $date->toDateString();
-        
+        $dir_name = "export/unimorph/".$date_now."/";        
+        Storage::disk('public')->makeDirectory($dir_name);
+
         $lang_id = (int)$request->input('search_lang');
         
         if ($lang_id) {
-            Export::lemmasToUnimorph($lang_id, $dir_name, $date_now);
+            Export::lemmasToUnimorph($lang_id, $dir_name);
             return;
         }
 
         foreach (Lang::projectLangIDs() as $lang_id) {
-            Export::lemmasToUnimorph($lang_id, $dir_name, $date_now);
+            Export::lemmasToUnimorph($lang_id, $dir_name);
         }      
     }
 

@@ -15,11 +15,11 @@ use App\Models\Dict\Wordform;
 
 class Export
 {
-    public static function lemmasToUnimorph($lang_id, $dir_name, $date_now) {
+    public static function lemmasToUnimorph($lang_id, $dir_name) {
         $lang = Lang::find($lang_id);
         $dialects = Dialect::where('lang_id',$lang_id)->get();
         foreach ($dialects as $dialect) {
-            $filename = $dir_name.'vepkar-'.$date_now.'-'.$dialect->code.'.txt';
+            $filename = $dir_name.$lang->code.'-'.strtolower(preg_replace("/\s+/", "-",$dialect->name_en)).'.txt';
             $lemmas = Lemma::where('lang_id',$lang_id)
 //                    ->where('id',1416)
 //                    ->take(100)
