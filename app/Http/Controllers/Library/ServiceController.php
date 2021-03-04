@@ -735,8 +735,8 @@ print "</ol>";
     
     public function tmpFillGenres() {
         $lang_id=1;
-        $corpus_id=5;
-        $genre_id=12;
+        $corpus_id=6;
+        $genre_id=11;
         $texts = Text::whereLangId($lang_id)->whereCorpusId($corpus_id)
                      ->whereNotIn('id', function ($query) {
                          $query->select('text_id')->from('genre_text');
