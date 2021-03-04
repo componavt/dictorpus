@@ -240,6 +240,7 @@ Route::group(
         Route::get('service/wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
         Route::get('service/check_parallel_texts', 'Library\ServiceController@checkParallelTexts');
         Route::get('service/tmp_fill_wordform_for_search', 'Library\ServiceController@tmpFillWordformForSearch');
+        Route::get('service/tmp_fill_genres', 'Library\ServiceController@tmpFillGenres');
         
         
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');

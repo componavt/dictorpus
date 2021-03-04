@@ -733,6 +733,21 @@ print "</ol>";
         }
     }
     
+    public function tmpFillGenres() {
+        $lang_id=6;
+        $corpus_id=1;
+        $genre_id=11;
+        $texts = Text::whereLangId($lang_id)->whereCorpusId($corpus_id)
+                     ->whereNotIn('id', function ($query) {
+                         $query->select('text_id')->from('genre_text');
+                     })->get();
+//dd($texts);    
+        foreach ($texts as $text) {
+            $text->genres()->attach($genre_id);
+        }            
+        print 'done.';
+    }
+    
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences
