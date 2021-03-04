@@ -50,7 +50,7 @@
     <p><a href="service/create_initial_wordforms">Создать минимальный набор словоформ</a>. Если у изменяемой леммы нет основ, создаем основу 0 и генерируем леммы.</p>
     <p><a href="service/check_parallel_texts">Проверить параллельные тексты</a>. Вывести ссылки на тексты с параллельным русским, если не совпадает количество предложений.</p>
     <p><a href="service/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
-    <p><a href="service/tmp_fill_genres">Добавить жанры для людиковских диалектных текстов</a>.</p>
+    <p><a href="service/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>
     @endif
     
 @endsection
