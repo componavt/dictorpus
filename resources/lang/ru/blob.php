@@ -123,7 +123,18 @@ return [
                     <i>Крижановский А.А., Крижановская Н.Б., Родионова А.П.</i> Электронная письменность народов Российской Федерации: опыт, проблемы и перспективы. Материалы межд. науч. конференции (Уфа, 27-29 ноября 2019 г.). 2019. C. 19-23.</p>
                     
                     <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18961">New written Tver Karelian dialects wordform generator</a><br>
-                    <i>Крижановская Н.Б., Новак И.П.</i> Свидетельство о гос. регистрации программы для ЭВМ Федеральной службы по интеллектуальной собственности № 2019665163 от 20 ноября 2019 г. Официальный бюллетень «Программы для ЭВМ. Базы данных. Топологии интегральных микросхем». № 11, 2019.</p>',
+                    <i>Крижановская Н.Б., Новак И.П.</i> Свидетельство о гос. регистрации программы для ЭВМ Федеральной службы по интеллектуальной собственности № 2019665163 от 20 ноября 2019 г. Официальный бюллетень «Программы для ЭВМ. Базы данных. Топологии интегральных микросхем». № 11, 2019.</p>
+
+                    <p><a class="publ-title" href="">Разработка правил генерации именных словоформ для новописьменных вариантов карельского языка</a><br>
+                    <i>Новак И.П., Крижановская Н.Б., Бойко Т.П., Пеллинен Н.А.</i> Вестник угроведения. Т. 10. No 4. 2020. C. 679–691. DOI: 10.30624/2220-4156-2020-10-4-679-691.</p>
+
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=19787&plang=r">От корпуса ВепКар к лингвистической платформе</a><br>
+                    <i>Крижановская Н.Б., Крижановский А.А. Материалы Всероссийской научной конференции с международным участием «Бубриховские чтения: задокументированное народное слово» (Петрозаводск, 27–28 октября 2020 г.) [Электронный ресурс]. 2020. C. 157-159.</i> </p>
+
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=19646&plang=r">Part of speech and gramset tagging algorithms for unknown words based on morphological dictionaries of the Veps and Karelian languages</a><br>
+                    <i>Krizhanovsky A., Krizhanovskaya N., Novak I.</i> Data Analytics and Management in Data Intensive Domains, 13-16 October 2020, Voronezh State University. 2020.</p>
+                    
+    ',
     'publications_about' => '<p><a class="publ-title" href="http://fadn.gov.ru/news/2017/10/03/3406-na-forume-yazykovaya-politika-organizovannom-fadn-rossii-nagradili-laureatov-vserossiyskoy-premii-klyuchevoe-slovo">Всероссийская премия «Ключевое слово»</a><br>     
                     Федеральное агентство по делам национальностей, 3&nbsp;октября&nbsp;2017&nbsp;г.</p>
 

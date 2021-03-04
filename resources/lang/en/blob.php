@@ -46,7 +46,11 @@ return [
                     Computational Linguistics and Intellectual Technologies: papers from the Annual conference “Dialogue” (Moscow, May 29— June 1, 2019) Issue 18 (25). 2019</p>
                     
                     <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18516&plang=e">Semi-automatic methods for adding words to the dictionary of VepKar corpus based on inflectional rules extracted from Wiktionary</a><br>
-                    <i>N.B. Krizhanovskaya, A.A. Krizhanovsky</i>. Proceedings of the international conference "Corpus linguistics ‒ 2019". Saint Petersburg. 2019. Pp. 211-217</p>',
+                    <i>N.B. Krizhanovskaya, A.A. Krizhanovsky</i>. Proceedings of the international conference "Corpus linguistics ‒ 2019". Saint Petersburg. 2019. Pp. 211-217</p>
+                    
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=19646&plang=r">Part of speech and gramset tagging algorithms for unknown words based on morphological dictionaries of the Veps and Karelian languages</a><br>
+                    <i>Krizhanovsky A., Krizhanovskaya N., Novak I.</i> Data Analytics and Management in Data Intensive Domains, 13-16 October 2020, Voronezh State University. 2020.</p>
+                    ',
     'participants' => '<dl>'
                     . '<dt><a href="http://mathem.krc.karelia.ru/member.php?id=804&plang=e">Andrey Krizhanovsky</a></dt>'
                     . '<dd>PhD, Leading Research Associate in the Laboratory for Information Computer Technologies, Institute of Applied Mathematical Research, KarRC, RAS</dd><br>'
