@@ -109,6 +109,7 @@ class Text extends Model
         $texts = self::searchByWord($texts, $url_args['search_word']);
         $texts = self::searchByText($texts, $url_args['search_text']);
         $texts = self::searchByGenres($texts, $url_args['search_genre']);
+        $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
         
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
@@ -272,6 +273,26 @@ class Text extends Model
                        //->whereOr('transtexts.title','like', $text_title);
     }
 
+    public static function searchByYear($texts, $year_from, $year_to) {
+        if (!$year_from || !$year_to) {
+            return $texts;
+        }
+        $year_from = $year_from ? $year_from : 1;
+        $year_to = $year_to ? $year_to : 1000;
+        
+        return $texts->where(function ($q) use ($year_from, $year_to) {
+                $q->whereIn('event_id',function($query) use ($year_from, $year_to){
+                    $query->select('id')->from('events')
+                    ->where('date', '>=', $year_from)
+                    ->where('date', '<=', $year_to);
+                   })->orWhereIn('source_id',function($query) use ($year_from, $year_to){
+                    $query->select('id')->from('sources')
+                    ->where('year', '>=', $year_from)
+                    ->where('year', '<=', $year_to);
+                   });
+        });
+    }
+    
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
         
@@ -1596,6 +1617,9 @@ print "</pre>";*/
                     'search_wid'     => $request->input('search_wid'),
                     'search_word'     => $request->input('search_word'),
                     'search_text'     => $request->input('search_text'),
+//                    'search_year'     => (int)$request->input('search_year'),
+                    'search_year_from'=> (int)$request->input('search_year_from'),
+                    'search_year_to'  => (int)$request->input('search_year_to'),
                 ];
         
         return $url_args;

@@ -72,6 +72,20 @@
                  'title' => trans('corpus.author'),
         ])                 
     </div>
+    <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._text', 
+                ['name' => 'search_year_from', 
+                 'value' => $url_args['search_year_from'] ? $url_args['search_year_from'] : '',
+                 'title' => trans('messages.year_from')
+                ])                               
+    </div>
+    <div class="col-md-2{{$url_args['search_year_to'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._text', 
+                ['name' => 'search_year_to', 
+                 'value' => $url_args['search_year_to'] ? $url_args['search_year_to'] : '',
+                 'title' => trans('messages.year_to')
+                ])                               
+    </div>
     <div class="col-md-4{{$url_args['search_word'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_word', 

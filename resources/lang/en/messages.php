@@ -61,5 +61,8 @@ return [
     'type' => 'Type',
     'updated_success' => 'Successfully updated',
     'view' => 'view',
+    'year' => 'year',
+    'year_from' => 'year (from)',
+    'year_to' => 'year (to)',
     'waiting' => 'Please wait, data is loading...',    
 ];
