@@ -274,7 +274,7 @@ class Text extends Model
     }
 
     public static function searchByYear($texts, $year_from, $year_to) {
-        if (!$year_from || !$year_to) {
+        if (!$year_from && !$year_to) {
             return $texts;
         }
         $year_from = $year_from ? $year_from : 1;
