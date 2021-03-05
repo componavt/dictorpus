@@ -39,4 +39,12 @@ class HomeController extends Controller
                     compact('lemmas_choice', 'limit', 'texts_choice', 'total_dialects', 
                             'total_lemmas', 'total_texts', 'video'));
     }   
+
+    public function page($page) {
+        return view('page.'.$page);        
+    }
+    
+    public function help($section, $page) {
+        return view('help.'.$section.'.'.$page);        
+    }
 }

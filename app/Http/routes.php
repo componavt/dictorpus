@@ -48,6 +48,10 @@ Route::group(
         Route::get('wait', 'AuthController@wait');
 
 
+        Route::get('/experiments', function () {
+            return view('experiments.index');
+        });
+/*
         Route::get('/about_veps', function () {
             return view('page.about_veps');
         });
@@ -60,17 +64,17 @@ Route::group(
         Route::get('/dict/selections', function () {
             return view('page.dict_selections');
         });
-        Route::get('/experiments', function () {
-            return view('experiments.index');
-        });
         Route::get('/grants', function () {
             return view('page.grants');
         });
-        Route::get('/help/lemma/form', function () {
+         Route::get('/help/lemma/form', function () {
             return view('help.lemma.form');
         });
         Route::get('/help/text/form', function () {
             return view('help.text.form');
+        });
+        Route::get('/help/text/search', function () {
+            return view('help.text.search');
         });
         Route::get('/help/text/show', function () {
             return view('help.text.show');
@@ -87,8 +91,11 @@ Route::group(
         Route::get('/sources', function () {
             return view('page.sources');
         });
-        
+*/        
+        Route::get('/help/{section}/{page}', 'HomeController@help');
         Route::get('/home', 'HomeController@index');
+        Route::get('/page/{page}', 'HomeController@page');
+        
         Route::get('/dumps','DumpDownloadController@index');
         
         Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');

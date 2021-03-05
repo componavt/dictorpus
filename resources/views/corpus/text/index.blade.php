@@ -23,6 +23,7 @@
         @if (User::checkAccess('corpus.edit'))
             </a>
         @endif
+            | <a href="{{ LaravelLocalization::localizeURL('/help/text/search') }}">? {{ trans('navigation.help') }}</a>
         </p>
     </div>
     <div class="col-sm-6 col-md-7 col-lg-8">

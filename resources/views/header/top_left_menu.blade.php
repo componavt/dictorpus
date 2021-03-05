@@ -6,15 +6,15 @@
                         
                         <ul class="dropdown-menu" role="menu" id='menu1-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.home') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/participants') }}">{{ trans('navigation.participants') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/sources') }}">{{ trans('navigation.sources') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/publ') }}">{{ trans('navigation.publications') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/participants') }}">{{ trans('navigation.participants') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/sources') }}">{{ trans('navigation.sources') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/publ') }}">{{ trans('navigation.publications') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/stats') }}">{{ trans('navigation.stats') }}</a></li>
                             <li><a href="http://dictorpus.krc.karelia.ru/{{$locale}}/dumps">{{ trans('navigation.dumps') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/permission') }}">{{ trans('navigation.permission') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/grants') }}">{{ trans('navigation.grants') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/permission') }}">{{ trans('navigation.permission') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/grants') }}">{{ trans('navigation.grants') }}</a></li>
                         </ul>
                     </li>
                     
@@ -30,7 +30,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/phrases') }}">{{ trans('navigation.phrases') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_new_list/') }}">{{ trans('dict.new_lemmas') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/lemma/full_updated_list/') }}">{{ trans('dict.last_updated_lemmas') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/selections') }}">{{ trans('navigation.dict_selections') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/dict_selections') }}">{{ trans('navigation.dict_selections') }}</a></li>
                         </ul>
                     </li>
                     
@@ -69,7 +69,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/recorder') }}">{{ trans('navigation.recorders') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/') }}">{{ trans('corpus.new_texts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/') }}">{{ trans('corpus.last_updated_texts') }}</a></li>
-                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/frequency') }}">{{ trans('navigation.corpus_freq') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/page/corpus_frequency') }}">{{ trans('navigation.corpus_freq') }}</a></li>
                         </ul>
                     </li>
                 </ul>
