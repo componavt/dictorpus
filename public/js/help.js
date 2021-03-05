@@ -25,3 +25,8 @@ function callHelp(id) {
     $("#"+id).show();
     $("#modalHelp").modal('show');    
 }
+
+function callHelpYear() {
+    callHelp('help-year');    
+}
+

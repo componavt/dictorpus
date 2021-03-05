@@ -9,6 +9,7 @@
     {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/text.css')!!}
     {!!Html::style('css/table.css')!!}
+    {!!Html::style('css/buttons.css')!!}
 @stop
 
 @section('body')
@@ -29,6 +30,10 @@
     </div>
 </div>
         
+        @include('widgets.modal',['name'=>'modalHelp',
+                                  'title'=>trans('navigation.help'),
+                                  'modal_view'=>'help.text._search'])
+                                  
         @include('corpus.text._search_form',['url' => '/corpus/text/']) 
 
         <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
@@ -115,6 +120,7 @@
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/search.js')!!}
+    {!!Html::script('js/help.js')!!}
 @stop
 
 @section('jqueryFunc')
