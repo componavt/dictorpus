@@ -4,7 +4,7 @@ namespace App\Charts;
 
 use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
-class SubcorpusNumByLang extends Chart
+class DistributionChart extends Chart
 {
     /**
      * Initializes the chart.
@@ -14,5 +14,10 @@ class SubcorpusNumByLang extends Chart
     public function __construct()
     {
         parent::__construct();
+    }
+    
+    public function colors()
+    {
+        return ['663399', '00BFFF', 'FF9900', '66CDAA'];
     }
 }

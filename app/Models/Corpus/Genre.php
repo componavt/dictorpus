@@ -5,6 +5,8 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Models\Dict\Lang;
+
 class Genre extends Model
 {
     public $timestamps = false;
@@ -57,4 +59,29 @@ class Genre extends Model
         return $list;         
     }
     
+    /**
+     * count the number of texts of genres and group by language
+     * 
+     * @return array [<genre_name> => [<lang_name> => <number_of_texts>, ... ], ... ]
+     *              i.e. ['сказки'=>['вепсский'=>467, 'карельский: собственно карельское наречие'=>2, ...], ...]
+     */
+    public static function countTextsByIDGroupByLang() {
+        $out = [];
+
+        $genres = self::all();
+                
+        foreach ($genres as $genre) {   
+            $genre_id=$genre->id;
+            foreach (Lang::projectLangs() as $lang) {
+                $num_texts = Text::whereLangId($lang->id)
+                        ->whereIn('id', function ($query) use ($genre_id) {
+                            $query->select('text_id')->from('genre_text')
+                                  ->whereGenreId($genre_id);
+                        })
+                        ->count();
+                $out[$lang->name][$genre->name] = number_format($num_texts, 0, ',', ' ');
+            }
+        }
+        return $out;
+    }
 }

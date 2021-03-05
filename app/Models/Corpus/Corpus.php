@@ -112,19 +112,7 @@ class Corpus extends Model
     public static function countTextsByIDGroupByLang() {
         $out = [];
 
-/*        $locale = LaravelLocalization::getCurrentLocale();        
-        $corpuses = Corpus::select(DB::raw('corpuses.name_'.$locale.' as corpus_name'), DB::raw('langs.name_'.$locale.' as lang_name'), DB::raw('count(*) as count'))
-                          ->join('texts', 'texts.corpus_id', '=', 'corpuses.id')
-                          ->join('langs', 'texts.lang_id', '=', 'langs.id')
-                          ->groupBy(DB::raw('corpuses.name_'.$locale), DB::raw('langs.name_'.$locale))
-                          ->orderBy(DB::raw('corpuses.name_'.$locale))
-                          ->orderBy(DB::raw('langs.name_'.$locale))
-                          ->get();
-        foreach ($corpuses as $corpus) {        
-                $out[$corpus->corpus_name][$corpus->lang_name] = number_format($corpus->count, 0, ',', ' ');
-        }        
- */
-        $corpuses = Corpus::all();
+        $corpuses = self::all();
                 
         foreach ($corpuses as $corpus) {        
             foreach (Lang::projectLangs() as $lang) {

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
 
-use App\Charts\SubcorpusNumByLang;
+use App\Charts\DistributionChart;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Dict\Lang;
@@ -61,7 +61,7 @@ class CorpusController extends Controller
         $lang_corpuses = Corpus::countTextsByIDGroupByLang();     
 //dd($lang_corpuses);        
         
-        $chart = new SubcorpusNumByLang;
+        $chart = new DistributionChart;
         $colors = ['663399', '00BFFF', 'FF9900', '66CDAA'];
         $count = 0;
         foreach ($lang_corpuses as $lang_name=>$corpuse_num) {

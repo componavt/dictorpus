@@ -16,6 +16,7 @@ return [
 
     'checked_words_to_marked' => 'The ratio of verified words to the total number of marked words',
     'checked_examples_to_all' => 'Ratio of verified examples to total number of examples',
+    'distribution_by_genres' => 'Test distribution by genres',
     'marked_words_to_all' => 'The ratio of marked words to the total number of words',
     
     'meanings' => 'Meanings of words',
@@ -32,6 +33,7 @@ return [
     'of_translations' => 'translations',
     'of_wordforms' => 'wordforms',
 
+    'stats_by_genre' => 'Stats by genres',
     'stats_by_users' => 'Stats by Editors',
     'stats_by_corp' => 'Statistics by corpuses',
     'stats_by_dict' => 'Statistics by dictionary',

@@ -10,7 +10,8 @@
 @stop
 
 @section('body')
-        <p style="text-align:right">
+        <p>
+            <a href="/stats/by_genre">{{ trans('stats.stats_by_genre') }}</a> |
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/genre/create') }}">
         @endif

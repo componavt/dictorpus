@@ -9,7 +9,7 @@
 @stop
 
 @section('body')
-    <table class="table-bordered stats-table">
+    <table class="table-bordered stats-table" style="margin-bottom: 20px;">
         <tr>
             <td>{{trans('navigation.texts')}}</td><td><a href="/corpus/text">{{$total_texts}}</a></td>
         </tr>
@@ -70,4 +70,6 @@
             <td>{{trans('stats.checked_examples_to_all')}}</td><td>{{$checked_examples_to_all}} %</td>
         </tr>
     </table>
+
+<p><a href="/stats/by_genre">{{trans('stats.distribution_by_genres')}}</a></p>
 @stop

@@ -7,9 +7,10 @@ namespace App\Http\Controllers\Library;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Charts\LemmaNumByLang;
+use App\Charts\DistributionChart;
 
 use App\Models\User;
+use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Recorder;
@@ -18,7 +19,6 @@ use App\Models\Corpus\Word;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
-use App\Models\Dict\Wordform;
 use App\Models\Dict\LemmaWordform;
 
 class StatsController extends Controller
@@ -113,5 +113,31 @@ class StatsController extends Controller
                         'total_words' => number_format($total_words, 0, ',', ' '),
                         'total_marked_words' => number_format($total_marked_words, 0, ',', ' '),
                        ]);
+    }    
+    
+    public function byGenre() {
+        $lang_genres = Genre::countTextsByIDGroupByLang();     
+//dd($lang_genres);        
+        $chart = new DistributionChart;
+        $colors = $chart->colors();
+        $count = 0;
+        $genre_langs=[];
+        foreach ($lang_genres as $lang_name=>$genre_num) {
+//var_dump($lang_name,$corpuses);            
+//print "<br>";
+            if ($count==0) {
+                $chart->labels(array_keys($genre_num));                
+            }
+//            $chart->dataset($lang_name, 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$corpuse_num)))
+            $chart->dataset($lang_name, 'horizontalBar', array_values($genre_num))
+                  ->color('#'.$colors[$count])
+                  ->backgroundColor('#'.$colors[$count++]);
+            foreach ($genre_num as $genre_name=>$num) {
+                $genre_langs[$genre_name][$lang_name] = $num;
+            }
+        }
+//dd($genre_langs);
+        return view('stats.by_genre',
+                    compact('chart', 'lang_genres', 'genre_langs'));
     }    
 }
