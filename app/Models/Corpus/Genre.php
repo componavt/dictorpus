@@ -67,8 +67,9 @@ class Genre extends Model
      */
     public static function countTextsByIDGroupByLang() {
         $out = [];
+        $locale = LaravelLocalization::getCurrentLocale();
 
-        $genres = self::all();
+        $genres = self::orderBy('name_'.$locale)->get();
                 
         foreach ($genres as $genre) {   
             $genre_id=$genre->id;
