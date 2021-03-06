@@ -32,10 +32,8 @@
     </div>
     
     
-    @if(LaravelLocalization::getCurrentLocale() == 'ru')
     <h2>{{ trans('navigation.publications_about')}}</h2>
 {!! trans('blob.publications_about') !!}
-    @endif
 
     <div class="row">
         <div class="col-sm-4">

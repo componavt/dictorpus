@@ -15,6 +15,7 @@ use App\Models\Corpus\Corpus;
 use App\Models\Corpus\District;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
+use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
@@ -249,7 +250,7 @@ class TextController extends Controller
     public function editExample($id, $example_id)
     {
         list($sentence, $meanings, $meaning_texts) = 
-                Text::preparationForExampleEdit($id.'_'.$example_id);
+            MeaningTextRel::preparationForExampleEdit($id.'_'.$example_id);
         
         if ($sentence == NULL) {
             return Redirect::to('/corpus/text/'.$id.($this->args_by_get))
@@ -312,7 +313,7 @@ class TextController extends Controller
      */
     public function updateExamples(Request $request, $id)
     {
-        Text::updateExamples($request['relevance']);
+        MeaningTextRel::updateExamples($request['relevance']);
         return Redirect::to($request['back_to_url'].($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }
@@ -587,7 +588,7 @@ class TextController extends Controller
      */
     public function addExample($example_id)
     {
-        Text::updateExamples([$example_id=>5]);
+        MeaningTextRel::updateExamples([$example_id=>5]);
 //        $str = '';
         if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
             return Word::createWordBlock($regs[2],$regs[4]);

@@ -25,15 +25,7 @@ class LemmaWordform extends Model
     {
         parent::boot();
     }
-/*    
-    public function wordforms(){
-        $builder = $this->belongsToMany('App\Models\Dict\Wordform','lemma_wordform',);
-//        $builder->getQuery()->getQuery()->distinct = TRUE;
-        return $builder;//->get();
-    }
     
- * 
- */
     public static function selectWhereLang(int $lang_id) {
         return DB::table('lemma_wordform')
                      ->whereIn('lemma_id',function($q) use ($lang_id){

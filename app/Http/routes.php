@@ -51,47 +51,7 @@ Route::group(
         Route::get('/experiments', function () {
             return view('experiments.index');
         });
-/*
-        Route::get('/about_veps', function () {
-            return view('page.about_veps');
-        });
-        Route::get('/about_karelians', function () {
-            return view('page.about_karelians');
-        });
-        Route::get('/corpus/frequency', function () {
-            return view('page.corpus_freq');
-        });
-        Route::get('/dict/selections', function () {
-            return view('page.dict_selections');
-        });
-        Route::get('/grants', function () {
-            return view('page.grants');
-        });
-         Route::get('/help/lemma/form', function () {
-            return view('help.lemma.form');
-        });
-        Route::get('/help/text/form', function () {
-            return view('help.text.form');
-        });
-        Route::get('/help/text/search', function () {
-            return view('help.text.search');
-        });
-        Route::get('/help/text/show', function () {
-            return view('help.text.show');
-        });
-        Route::get('/participants', function () {
-            return view('page.participants');
-        });
-        Route::get('/permission', function () {
-            return view('page.permission');
-        });
-        Route::get('/publ', function () {
-            return view('page.publ');
-        });
-        Route::get('/sources', function () {
-            return view('page.sources');
-        });
-*/        
+        
         Route::get('/help/{section}/{page}', 'HomeController@help');
         Route::get('/home', 'HomeController@index');
         Route::get('/page/{page}', 'HomeController@page');

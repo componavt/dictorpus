@@ -142,7 +142,8 @@ function addWordGramset(el) {
         url: '/corpus/word/add_gramset/'+id, 
         type: 'GET',
         success: function(result){
-            $("#gramsets_"+ w_id).html(result).removeClass('word-gramset-not-checked');
+            $("#links_"+ w_id).html(result);
+            $("#gramsets_"+ w_id).removeClass('word-gramset-not-checked');
             $("w#"+w_id).removeClass('gramset-not-checked').addClass('gramset-checked');
         }
     }); 

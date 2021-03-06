@@ -202,7 +202,8 @@ class WordController extends Controller
         $wordform = Wordform::find($regs[3]);
 //dd($wordform->id);    
         $wordform->updateTextWordformLinks($regs[1],$regs[2],$regs[4]);
-        return Word::createGramsetBlock($regs[1],$regs[2]);
+        return Word::createWordBlock($regs[1],$regs[2]);
+//        return Word::createGramsetBlock($regs[1],$regs[2]);
     }
     
     

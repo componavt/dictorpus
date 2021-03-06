@@ -5,6 +5,7 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
@@ -157,14 +158,14 @@ class Wordform extends Model
         DB::statement('UPDATE text_wordform SET relevance=0'. // всем связям проставим отрицательные
                       ' WHERE text_id='.$text_id.
                       ' AND w_id='.$w_id);
-//        $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->update(['relevance'=>0]);
         $wordform_link = $this->texts()->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->wherePivot('gramset_id',$gramset_id);
         if ($wordform_link->count()) {
             $wordform_link->update(['relevance'=>2]);
         } else {
             $wordform_link = $this->texts()->attach($text_id, ['w_id'=>$w_id, 'gramset_id'=>$gramset_id, 'relevance'=>2]);
         }
-    }
+        MeaningTextRel::updateMeaningLinksAfterCheckExample($text_id, $w_id, $gramset_id);
+}
     
     /**
      * Search in texts words matched with this wordform

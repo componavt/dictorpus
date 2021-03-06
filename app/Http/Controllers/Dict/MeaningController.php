@@ -14,7 +14,7 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
 
-use App\Models\Corpus\Text;
+use App\Models\Corpus\MeaningTextRel;
 
 class MeaningController extends Controller
 {
@@ -142,7 +142,7 @@ class MeaningController extends Controller
      */
     public function addExample($example_id)
     {
-        Text::updateExamples([$example_id=>5]);
+        MeaningTextRel::updateExamples([$example_id=>5]);
         return '<span class="glyphicon glyphicon-star relevance-5"></span>';
     }
 

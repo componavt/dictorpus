@@ -48,7 +48,7 @@ return [
     'places' => 'Населенные пункты',
     'pos_common_wordforms' => 'Совпадения словоформ по частям речи',
     'publications' => 'Публикации',
-    'publications_about' => 'Публикации о нас',
+    'publications_about' => 'СМИ о проекте',
     'our_publications' => 'Наши публикации',
     'recorders' => 'Собиратели',
     'regions' => 'Регионы',

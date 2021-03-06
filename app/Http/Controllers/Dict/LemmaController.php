@@ -14,6 +14,7 @@ use App\Library\Str;
 
 use App\Models\User;
 
+use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Text;
 
@@ -396,7 +397,7 @@ class LemmaController extends Controller
         }
         
         list($sentence, $meanings, $meaning_texts) = 
-                Text::preparationForExampleEdit($example_id);
+                MeaningTextRel::preparationForExampleEdit($example_id);
         
         if ($sentence == NULL) {
             return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
@@ -483,7 +484,7 @@ class LemmaController extends Controller
      */
     public function updateExamples(Request $request, $id)
     {
-        Text::updateExamples($request['relevance']);
+        MeaningTextRel::updateExamples($request['relevance']);
         return Redirect::to($request['back_to_url'].($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
     }

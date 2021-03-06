@@ -49,7 +49,7 @@ return [
     'places' => 'Settlements',
     'pos_common_wordforms' => 'Matching word forms in parts of speech',
     'publications' => 'Publications',
-    'publications_about' => 'Publications about us',
+    'publications_about' => 'Media about the project ',
     'recorders' => 'Recorders',
     'regions' => 'Regions',
     'relations' => 'Relations',

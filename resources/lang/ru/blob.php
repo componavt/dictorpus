@@ -146,6 +146,9 @@ return [
                     
                     <p><a class="publ-title" href="https://vk.com/@karrc-aleksandr-pavlovich-barancev-nash-znamenityi-zemlyak">Александр Павлович Баранцев – наш знаменитый земляк</a><br>
                     Вконтакте, 8 июня 2020 г.</p>
+                    
+                    <p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
+                    Natalie Pellinen. Oma mua №01 (1541), 2021</p>
                     ',
     'sources' => '<p>Зайцева Н. Г., Муллонен И. И. <a href="http://elibrary.krc.karelia.ru/469/1/%D0%9D%D0%BE%D0%B2%D1%8B%D0%B9%20%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%BE-%D0%B2%D0%B5%D0%BF%D1%81%D1%81%D0%BA%D0%B8%D0%B9%20%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D1%8C.pdf">Новый русско-вепсский словарь. Uz’venä-vepsläine vajehnik</a>. – 2007.</p>
                   <p>Бойко Т. П., Маркианова Л. <a href="http://elibrary.krc.karelia.ru/401/1/russko-karelskij_slovar.pdf">Большой русско-карельский словарь (ливвиковское наречие). Suuri ven’a-karjalaine sanakniigu (livvin murreh)</a>. – 2011.</p>
