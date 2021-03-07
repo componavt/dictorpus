@@ -277,12 +277,6 @@ class Lemma extends Model
         $lang_id = $this->lang_id;
         $word_count =  $wordform->texts()->whereLangId($lang_id)
                         ->wherePivot('gramset_id', $wordform->pivot->gramset_id)->wherePivot('relevance','>',0)->count();
-/*        $word_count = Word::where('word', 'like',$wordform->wordform_for_search)
-                    ->whereIn('text_id', function ($query) use ($lang_id) {
-                        $query->select('id')->from('texts')
-                              ->where('lang_id', $lang_id);
-                    })
-                    ->count();*/
         if (!$word_count) {
             return $w;
         }
@@ -1143,27 +1137,6 @@ dd($wordforms);
             'affix' => $affix]);         
     }
     
-    public function addWordformGramsetDialect($wordform_id, $gramset_id, $dialect_id, $affix) {
-        $query = "DELETE FROM lemma_wordform WHERE lemma_id=".$this->id
-            . " and wordform_id=".$wordform_id." and gramset_id";
-//print "<p>$query";            
-        if (!$gramset_id) {
-            $gramset_id=NULL;
-            $query .= " is NULL";
-        } else {
-            $query .= "=".(int)$gramset_id;
-        }
-        $query .= " and dialect_id";
-        if (!$dialect_id) {
-            $query .= " is NULL";
-        } else {
-            $query .= "=".(int)$dialect_id;
-        }
-        DB::statement($query);
-        $this-> wordforms()->attach($wordform_id, 
-                ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix' => $affix]);                                            
-    }
-
     /**
      * 
      * @param String $wordform
@@ -1214,11 +1187,13 @@ dd($wordforms);
         $wordform = Wordform::findOrCreate($word);
         $wordform->updateTextWordformLinks($text_id, $w_id, $gramset_id);
         
+        $affix = $gramset_id ? $this->affixForWordform($wordform->wordform) : NULL;
+        
         if (!sizeof($dialects)) {
             $dialects[0] = NULL;
         }
         foreach ($dialects as $dialect_id) {
-            $this->addWordformGramsetDialect($wordform->id, $gramset_id, $dialect_id,  $this->affixForWordform($wordform->wordform));
+            $this->addWordformGramsetDialect($wordform, $gramset_id, $dialect_id,  $affix);
         }
         $wordform->updateMeaningTextLinks($this);
     }
@@ -1243,15 +1218,17 @@ dd($wordforms);
     public function addWordform($word, $gramset_id, $dialect_id) {       
         $trim_word = Grammatic::toRightForm($word);
         if (!$trim_word) { return;}
-/*if ($trim_word == 'fateroidme')   {
-    dd($trim_word);
-} */    
+        
         $wordform_obj = Wordform::findOrCreate($trim_word);
         $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
-//        $wordform_obj->wordform_for_search = Grammatic::changeLetters($trim_word, $this->lang_id);
         $wordform_obj->save();
 
-//        $this->wordforms()->detach($wordform_obj->id, ['gramset_id'=>NULL, 'dialect_id'=>NULL]);    
+        $affix = $gramset_id ? $this->affixForWordform($wordform_obj->wordform) : NULL;
+
+        $this->addWordformGramsetDialect($wordform_obj, $gramset_id, $dialect_id, $affix);
+    }
+    
+    public function addWordformGramsetDialect($wordform_obj, $gramset_id, $dialect_id, $affix) {
         DB::connection('mysql')->table('lemma_wordform')->whereLemmaId($this->id)
                 ->whereWordformId($wordform_obj->id)->whereNull('dialect_id')
                 ->whereNull('gramset_id')->delete();
@@ -1259,16 +1236,31 @@ dd($wordforms);
         if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
             return;
         }
-        if ($gramset_id) {
-            $affix = $this->affixForWordform($wordform_obj->wordform);
-        } else {
-            $affix = NULL;
-        }
         $this->wordforms()->attach($wordform_obj->id, 
-                                   ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix'=>$affix]);    
-//print "<p>". $wordform_obj->wordform ." | $gramset_id | $dialect_id</p>";
+                            ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix'=>$affix, 
+                             'wordform_for_search'=>Grammatic::changeLetters($wordform_obj->wordform, $this->lang_id)]);    
+/*
+        $query = "DELETE FROM lemma_wordform WHERE lemma_id=".$this->id
+            . " and wordform_id=".$wordform_id." and gramset_id";
+//print "<p>$query";            
+        if (!$gramset_id) {
+            $gramset_id=NULL;
+            $query .= " is NULL";
+        } else {
+            $query .= "=".(int)$gramset_id;
+        }
+        $query .= " and dialect_id";
+        if (!$dialect_id) {
+            $query .= " is NULL";
+        } else {
+            $query .= "=".(int)$dialect_id;
+        }
+        DB::statement($query);
+        $this-> wordforms()->attach($wordform_id, 
+                ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix' => $affix, 
+                             'wordform_for_search'=>Grammatic::changeLetters($trim_word, $this->lang_id)]);   */                                         
     }
-    
+
     public function deleteWordforms($gramset_id, $dialect_id) {
         $this-> wordforms()
               ->wherePivot('gramset_id',$gramset_id)

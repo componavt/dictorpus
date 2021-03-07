@@ -714,6 +714,9 @@ print "</ol>";
         }
     }
     
+    /**
+     * select count(*) from lemma_wordform where wordform_for_search='';
+     */
     public function tmpFillWordformForSearch() {
         $is_all_checked = false;
         while (!$is_all_checked) {

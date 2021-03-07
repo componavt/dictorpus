@@ -51,7 +51,7 @@ class LemmaWordformController extends Controller
      *             2)wordform with gramset and dialects
      * 
      * @param Request $request
-     * @return Null
+     * @return NULL or Int
      */
     public function store(Request $request)
     {
