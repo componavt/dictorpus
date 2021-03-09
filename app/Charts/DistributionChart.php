@@ -14,17 +14,10 @@ class DistributionChart extends Chart
     public function __construct()
     {
         parent::__construct();
-/*        $this->options(
-                ['scales'=> [
-                    'xAxes'=> [
-                        'stacked'=> true
-                    ],
-                    'yAxes'=> [
-                        'stacked'=> true
-                ]],
-                'tooltips'=> [
-                    'enabled'=> false
-        ]]);*/
+/*        $this->options(['scales'=> [
+                    'xAxes'=> ['stacked'=> true],
+                    'yAxes'=> ['stacked'=> true]]
+        ]);*/
     }
     
     public function colors()
