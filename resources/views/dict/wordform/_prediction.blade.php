@@ -1,4 +1,4 @@
-<h3>Возможно это один из следующих вариантов?</h3>
+<h3>Возможно, это один из следующих вариантов?</h3>
 @foreach ($exist_lemmas as $id=>$lemma) 
 <p>
     <b><a href="/dict/lemma/{{$id}}">{{$lemma['lemma']}}</a></b>, {{$lemma['pos']}}, {{$lemma['gramset']}} ({{$lemma['proc']}})
