@@ -18,7 +18,7 @@ return [
     'concept_categories' => 'Категории понятий',
     'concepts' => 'Понятия',
     'copy_lemmas' => 'Копирование лемм',
-    'corpus' => 'Подкорпус',
+    'corpus' => 'Корпус',
     'corpus_freq' => 'Частотные словари',
     'corpuses' => 'Подкорпусы',
     'dialects' => 'Диалекты',
