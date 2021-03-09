@@ -73,4 +73,5 @@
 
 <p><a href="/stats/by_corpus">{{trans('stats.distribution_by_corpuses')}}</a></p>
 <p><a href="/stats/by_genre">{{trans('stats.distribution_by_genres')}}</a></p>
+<p><a href="/stats/by_year">{{trans('stats.distribution_by_years')}}</a></p>
 @stop

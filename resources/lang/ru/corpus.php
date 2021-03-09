@@ -30,6 +30,7 @@ return [
     'corpus_has_text' => 'Подкорпус ":name" не может быть удален, в нем есть тексты',
     'corpus_list' => 'Список подкорпусов',
     'corpus_removed' => 'Подкорпус ":name" удален.',
+    'creation_date' => 'год добавления в корпус',
     
     'district' => 'Район',
     'district_list' => 'Список районов',
@@ -73,6 +74,7 @@ return [
     
     'record_place' => 'место записи',
     'record_year' => 'г. записи',
+    'recording_year' => 'год записи',
     'recorded' => 'записали',
     
     'region' => 'Область, республика',
@@ -91,7 +93,7 @@ return [
     'source_author' => 'Автор источника',
     'source_pages' => 'страницы',
     'source_title' => 'Название источника',
-    'source_year' => 'Год публикации',
+    'source_year' => 'год публикации',
     'symbol' => 'символ',
     
     'text' => 'текст',

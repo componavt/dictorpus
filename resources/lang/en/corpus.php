@@ -30,6 +30,7 @@ return [
     'corpus_has_text' => 'Corpus ":name" can not be removed, there are texts in this corpus',
     'corpus_list' => 'Corpus list',
     'corpus_removed' => 'Corpus ":name" is removed successfully.',
+    'creation_date' => 'year of additing into VepKar',
     
     'district' => 'District',
     'district_list' => 'District list',
@@ -73,6 +74,7 @@ return [
     
     'record_place' => 'recording place',
     'record_year' => 'year of recording',
+    'recording_year' => 'year of recording',
     'recorded' => 'recorded',
     
     'recorder' => 'Recorder',

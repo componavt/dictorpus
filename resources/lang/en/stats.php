@@ -18,6 +18,7 @@ return [
     'checked_examples_to_all' => 'Ratio of verified examples to total number of examples',
     'distribution_by_corpuses' => 'Teхt distribution by corpuses',
     'distribution_by_genres' => 'Teхt distribution by genres',
+    'distribution_by_years' => 'Teхt distribution by years',
     'marked_words_to_all' => 'The ratio of marked words to the total number of words',
     
     'meanings' => 'Meanings of words',
@@ -41,6 +42,7 @@ return [
     'stats_by_dict' => 'Statistics by dictionary',
     'stats_by_words' => 'Statistics by words in the text',
     'stats_by_examples' => 'Statistics by examples (words in sentences automatically tied to a lemma)',
+    'stats_by_year' => 'Statistics by years',
 
     'total_active_editors' => 'Active editors (participants who have activity in the last 30 days)',
     'total_examples' => 'The total number of examples (the number of words in sentences automatically tied to a lemma)',

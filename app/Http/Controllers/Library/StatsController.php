@@ -162,4 +162,26 @@ class StatsController extends Controller
         return view('stats.by_corpus',
                     compact('chart', 'lang_corpuses', 'corpus_langs'));
     }    
+    
+    public function byYear() {
+        $label_years = Text::countTextsByYears();
+        $chart = new DistributionChart;
+        $colors = $chart->colors();
+        $count = 0;
+        $text_years=[];
+        foreach ($label_years as $year_label=>$year_num) {
+            if ($count==0) {
+                $chart->labels(array_keys($year_num));                
+            }
+            $chart->dataset($year_label, 'bar', array_values($year_num))
+                  ->color('#'.$colors[$count])
+                  ->backgroundColor('#'.$colors[$count++]);
+            foreach ($year_num as $year=>$num) {
+                $text_years[$year][$year_label] = $num;
+            }
+        }
+//dd($genre_langs);
+        return view('stats.by_year',
+                    compact('chart', 'text_years', 'label_years'));
+    }    
 }

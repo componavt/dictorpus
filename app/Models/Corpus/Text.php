@@ -17,9 +17,9 @@ use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
-use App\Models\Dict\Lang;
+//use App\Models\Dict\Lang;
 use App\Models\Dict\Meaning;
-use App\Models\Dict\MeaningText;
+//use App\Models\Dict\MeaningText;
 use App\Models\Dict\Wordform;
 
 class Text extends Model
@@ -1522,5 +1522,57 @@ print "</pre>";*/
                 ];
         
         return $url_args;
+    }
+    
+    /**
+     * count the number of texts by year of recording, publication and creation to VepKar
+     * 
+     * select date, count(*) from texts, events where texts.event_id=events.id group by date order by date;
+     * select year, count(*) from texts, sources where texts.source_id=sources.id group by year order by year;
+     * select year(created_at) as year, count(*) from texts group by year order by year; 
+     * 
+     * @return array ['year of recording' => [<year> => <number_of_texts>, ... ], ... ]
+     */
+    public static function countTextsByYears() {
+        $out = [];
+
+        $by_record = self::selectRaw("date, count(*) as count")
+                         ->join('events', 'texts.event_id', '=', 'events.id')
+                         ->groupBy('date')
+                         ->orderBy('date')
+                         ->get();
+        foreach ($by_record as $rec) {
+            $out['recording_year'][$rec->date] = number_format($rec->count, 0, ',', ' ');
+        }        
+        
+        $by_publ = self::selectRaw("year, count(*) as count")
+                         ->join('sources', 'texts.source_id', '=', 'sources.id')
+                         ->groupBy('year')
+                         ->orderBy('year')
+                         ->get();
+        foreach ($by_publ as $rec) {
+            $out['source_year'][$rec->year] = number_format($rec->count, 0, ',', ' ');
+        }        
+
+        $by_creation = self::selectRaw("year(created_at) as year, count(*) as count")
+                         ->groupBy('year')
+                         ->orderBy('year')
+                         ->get();
+        foreach ($by_creation as $rec) {
+            $out['creation_date'][$rec->year] = number_format($rec->count, 0, ',', ' ');
+        }    
+        
+        $years = array_unique(array_merge(array_keys($out['recording_year']), array_keys($out['source_year']),array_keys($out['creation_date'])));
+        sort($years);
+        $text_years=[];
+        foreach ($years as $year) {
+            foreach (array_keys($out) as $label) {
+//                foreach ($label_year as $old_year => $num) {
+                    $text_years[\Lang::trans('corpus.'.$label)][$year ? $year : 'unknown'] = $out[$label][$year] ?? 0;
+//                }
+            }
+        }
+//dd($text_years);        
+        return $text_years;
     }
 }
