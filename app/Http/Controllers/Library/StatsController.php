@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Charts\DistributionChart;
 
 use App\Models\User;
+use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
@@ -117,18 +118,15 @@ class StatsController extends Controller
     
     public function byGenre() {
         $lang_genres = Genre::countTextsByIDGroupByLang();     
-//dd($lang_genres);        
+
         $chart = new DistributionChart;
         $colors = $chart->colors();
         $count = 0;
         $genre_langs=[];
         foreach ($lang_genres as $lang_name=>$genre_num) {
-//var_dump($lang_name,$corpuses);            
-//print "<br>";
             if ($count==0) {
                 $chart->labels(array_keys($genre_num));                
             }
-//            $chart->dataset($lang_name, 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$corpuse_num)))
             $chart->dataset($lang_name, 'horizontalBar', array_values($genre_num))
                   ->color('#'.$colors[$count])
                   ->backgroundColor('#'.$colors[$count++]);
@@ -139,5 +137,29 @@ class StatsController extends Controller
 //dd($genre_langs);
         return view('stats.by_genre',
                     compact('chart', 'lang_genres', 'genre_langs'));
+    }    
+    
+    public function byCorpus() {
+        $lang_corpuses = Corpus::countTextsByIDGroupByLang();     
+        
+        $chart = new DistributionChart;
+        $colors = $chart->colors();
+        $count = 0;
+        $corpus_langs=[];
+        foreach ($lang_corpuses as $lang_name=>$corpus_num) {
+            if ($count==0) {
+                $chart->labels(array_keys($corpus_num));                
+            }
+//            $chart->dataset($lang_name, 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$corpuse_num)))
+            $chart->dataset($lang_name, 'horizontalBar', array_values($corpus_num))
+                  ->color('#'.$colors[$count])
+                  ->backgroundColor('#'.$colors[$count++]);
+            foreach ($corpus_num as $corpus_name=>$num) {
+                $corpus_langs[$corpus_name][$lang_name] = $num;
+            }
+        }
+//dd($genre_langs);
+        return view('stats.by_corpus',
+                    compact('chart', 'lang_corpuses', 'corpus_langs'));
     }    
 }

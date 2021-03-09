@@ -10,7 +10,8 @@
 @stop
 
 @section('body')        
-        <p style="text-align:right">
+        <p>
+            <a href="/stats/by_corpus">{{ trans('stats.stats_by_corpus') }}</a> |
         @if (User::checkAccess('ref.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/corpus/create') }}">
         @endif
@@ -82,14 +83,9 @@
         </tbody>
         </table>
     </div>
-    <div id="LemmaNumByLangChart" style="margin-top: 20px;">
-        {!! $chart->container() !!}
-    </div>
-    {!! $chart->script() !!}
 @stop
 
 @section('footScriptExtra')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" charset="utf-8"></script>
     {!!Html::script('js/rec-delete-link.js')!!}
 @stop
 

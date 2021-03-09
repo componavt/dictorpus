@@ -58,26 +58,8 @@ class CorpusController extends Controller
         $numAll = $corpuses->count();
         $corpuses = $corpuses->get();
         
-        $lang_corpuses = Corpus::countTextsByIDGroupByLang();     
-//dd($lang_corpuses);        
-        
-        $chart = new DistributionChart;
-        $colors = ['663399', '00BFFF', 'FF9900', '66CDAA'];
-        $count = 0;
-        foreach ($lang_corpuses as $lang_name=>$corpuse_num) {
-//var_dump($lang_name,$corpuses);            
-//print "<br>";
-            if ($count==0) {
-                $chart->labels(array_keys($corpuse_num));                
-            }
-//            $chart->dataset($lang_name, 'horizontalBar', array_values(array_map(function($v){return preg_replace('/\s/','',$v)/1000;},$corpuse_num)))
-            $chart->dataset($lang_name, 'horizontalBar', array_values($corpuse_num))
-                  ->color('#'.$colors[$count])
-                  ->backgroundColor('#'.$colors[$count++]);
-        }
-
         return view('corpus.corpus.index',
-                    compact('chart', 'corpuses', 'corpus_name', 'search_id', 'numAll'));
+                    compact('corpuses', 'corpus_name', 'search_id', 'numAll'));
     }
 
     /**
