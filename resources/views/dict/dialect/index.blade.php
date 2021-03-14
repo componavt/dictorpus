@@ -24,8 +24,9 @@
 
         @include('dict.dialect._search_form',['url' => '/dict/dialect/']) 
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
-
+        @include('widgets.founded_records', ['numAll'=>$numAll])
+        
+        @if ($numAll)                
     <table class="table-bordered table-wide rwd-table wide-lg">
         <thead>
             <tr>
@@ -81,6 +82,7 @@
         </table>
         {!! $dialects->appends(['limit_num' => $limit_num,
                                            'lang_id'=>$lang_id])->render() !!}    
+        @endif
 @stop
 
 @section('footScriptExtra')

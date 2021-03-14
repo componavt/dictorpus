@@ -74,7 +74,7 @@
             @endforeach
             <br>
         @endif
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>$numAll])
 
         @if ($numAll)
         <table class="table-bordered table-wide table-striped rwd-table wide-md">

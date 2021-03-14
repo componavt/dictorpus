@@ -31,7 +31,7 @@
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
         
-        <p>{{ trans('messages.founded_records', ['count'=>count($wordforms)]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>count($wordforms)])
 
         @if ($wordforms)
         <table class="table-bordered table-wide table-striped rwd-table wide-lg">

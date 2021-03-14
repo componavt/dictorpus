@@ -12,7 +12,7 @@
 @section('body')
         @include('dict.lemma.search._omonyms_form',['url' => '/dict/lemma/omonyms']) 
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>$numAll])
 
         @if ($lemmas)
         <table class="table-bordered table-wide table-striped rwd-table wide-md">

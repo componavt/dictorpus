@@ -22,7 +22,7 @@
         
         @include('dict.wordform._search_form') 
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>$numAll])
 
         @if ($wordforms)
         <br>

@@ -12,7 +12,7 @@
 @section('body')
         @include('dict.lemma.search._relation_form',['url' => '/dict/lemma/relation']) 
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>$numAll])
 
         @if ($lemmas)
         <table class="table-bordered table-wide table-striped rwd-table wide-lg">

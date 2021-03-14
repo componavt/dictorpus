@@ -50,8 +50,9 @@
                                'placeholder' => trans('messages.limit_num')]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>$numAll])
         
+        @if ($numAll)                
         <table class="table rwd-table wide-md">
         <thead>
             <tr>
@@ -97,8 +98,7 @@
         {!! $districts->appends(['limit_num' => $limit_num,
                              'district_name' => $district_name,
                              'region_id'=>$region_id])->render() !!}
-
-    </div>
+        @endif
 @stop
 
 @section('footScriptExtra')

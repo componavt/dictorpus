@@ -38,8 +38,9 @@
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
         {!! Form::close() !!}
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>$numAll])
         
+        @if ($numAll)                
         <table class="table table-striped rwd-table wide-md">
         <thead>
             <tr>
@@ -82,7 +83,7 @@
             @endforeach
         </tbody>
         </table>
-    </div>
+        @endif
 @stop
 
 @section('footScriptExtra')

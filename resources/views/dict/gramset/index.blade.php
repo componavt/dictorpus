@@ -19,10 +19,8 @@
         @endif
         </p>
         
-        @include('dict.gramset._search_form',['url' => '/dict/gramset/']) 
+        @include('widgets.founded_records', ['numAll'=>$numAll])
         
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
-
         @if ($gramsets && $numAll)
             {!! $gramsets->appends($url_args)->render() !!}
         <table class="table-bordered table-wide rwd-table wide-lg">

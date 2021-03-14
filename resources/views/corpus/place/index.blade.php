@@ -24,8 +24,9 @@
         
         @include('corpus.place._search_form',['url' => '/corpus/place/']) 
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
+        @include('widgets.founded_records', ['numAll'=>$numAll])
         
+        @if ($numAll)                
         <table class="table-bordered table-wide rwd-table wide-md">
         <thead>
             <tr>
@@ -110,7 +111,7 @@
         </tbody>
         </table>
         {!! $places->appends($url_args)->render() !!}
-    </div>
+        @endif
 @stop
 
 @section('footScriptExtra')

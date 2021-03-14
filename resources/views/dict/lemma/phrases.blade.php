@@ -24,8 +24,8 @@
 
         @include('dict.lemma.search._phrases_form',['url' => '/dict/lemma/phrases']) 
 
-        <p>{{ trans('messages.founded_records', ['count'=>$numAll]) }}</p>
-
+        @include('widgets.founded_records', ['numAll'=>$numAll])
+        
         @if ($numAll)
         <table class="table-bordered table-wide table-striped rwd-table wide-md">
         <thead>
@@ -81,10 +81,8 @@
             </tr>
             @endforeach
         </table>
-            {!! $lemmas->appends($url_args)->render() !!}
-            
+            {!! $lemmas->appends($url_args)->render() !!}            
         @endif
-
 @stop
 
 @section('footScriptExtra')
