@@ -55,6 +55,7 @@ class Text extends Model
     use \App\Traits\Relations\BelongsToMany\Genres;
 //    use \App\Traits\Relations\BelongsToMany\Meanings;
     
+    use \App\Traits\Relations\HasMany\Sentences;
     use \App\Traits\Relations\HasMany\Words;
 
     // Text __belongsToMany__ Wordforms
@@ -532,6 +533,7 @@ class Text extends Model
         $this->meanings()->detach();
         $this->wordforms()->detach();
 
+        $this->sentences()->delete();
         $this->words()->delete();
         $this->video()->delete();
 
@@ -1128,7 +1130,7 @@ class Text extends Model
      * 
      * [<sentence_id> => ['w_id'=>[<w_id1>, <w_id2>], 's' => <sentence_xml>] ]
      */
-    public function sentences($word=''){
+    public function sentencesFromText($word=''){
         $sentences = [];
         
         list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);

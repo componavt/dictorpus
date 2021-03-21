@@ -755,6 +755,9 @@ print "</ol>";
      * update texts set checked=0;
      */
     public function tmpSplitTextsIntoSentences() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        
         $is_all_checked = false;
         while (!$is_all_checked) {
             $text = Text::orderBy('id')->whereChecked(0)->first();
