@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Caxy\HtmlDiff\HtmlDiff;
 use Caxy\HtmlDiff\HtmlDiffConfig;
@@ -23,7 +23,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
-use App\Models\Dict\LemmaWordform;
+//use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -751,6 +751,26 @@ print "</ol>";
         print 'done.';
     }
     
+    /**
+     * update texts set checked=0;
+     */
+    public function tmpSplitTextsIntoSentences() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $text = Text::orderBy('id')->whereChecked(0)->first();
+            if ($text) {
+                $text->splitXMLToSentencesAndWrite();
+//exit(0);               
+                $text->checked=1;
+                $text->save();
+            } else {
+                $is_all_checked = true;
+            }
+        }
+print 'done';        
+    }
+
+
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences

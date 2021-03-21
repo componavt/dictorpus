@@ -281,7 +281,8 @@ class Lemma extends Model
             return $w;
         }
         return '<a href="'.LaravelLocalization::localizeURL('/corpus/text/?search_lang='.$lang_id
-               . '&search_word='.$wordform->wordform_for_search). '" title="'.$word_count.'">'.$w.'</a>';        
+               . '&search_word='.Grammatic::changeLetters($wordform->wordform, $lang_id))
+               . '" title="'.$word_count.'">'.$w.'</a>';        
     }
     
     public function getWordformsByWord($word) {
@@ -908,12 +909,19 @@ dd($wordforms);
     {        
         $lang_id = $this->lang_id;
         $strs = ["word like '".$this->lemma_for_search."'"];
-        
+/*        
         foreach ($this->wordforms as $wordform_obj) {
             $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
             //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
             $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
         }
+*/        
+        $wordforms = LemmaWordform::select('wordform_for_search')
+                     ->whereLemmaId($this->id)->get();
+        foreach ($wordforms as $lw) {
+            $strs[] = "word like '".$lw->wordform_for_search."'";
+        }
+        
         if (!sizeof($strs)) {
             return null;
         }
@@ -1220,6 +1228,7 @@ dd($wordforms);
         if (!$trim_word) { return;}
         
         $wordform_obj = Wordform::findOrCreate($trim_word);
+//TODO: лишнее поле, удалить        
         $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
         $wordform_obj->save();
 
@@ -1278,7 +1287,7 @@ dd($wordforms);
         $lemmas = self::orderBy('lemma');
 //        if ($url_args['search_wordform'] || $url_args['search_gramset']) {
   //          $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id');
-            $lemmas = self::searchByWordform($lemmas, $url_args['search_wordform']);
+            $lemmas = self::searchByWordform($lemmas, $url_args['search_wordform'], $url_args['search_lang']);
             $lemmas = self::searchByGramset($lemmas, $url_args['search_gramset']);
     //    }    
         $lemmas = self::searchByLemma($lemmas, $url_args['search_lemma']);
@@ -1300,7 +1309,7 @@ dd($wordforms);
         return $lemmas;
     }
     
-    public static function searchByWordform($lemmas, $wordform) {
+    public static function searchByWordform($lemmas, $wordform, $lang_id) {
         if (!$wordform) {
             return $lemmas;
         }
@@ -1309,14 +1318,14 @@ dd($wordforms);
                             ->from('wordforms')
                             ->where('wordform_for_search','like', Grammatic::toSearchForm($wordform));
                         });*/
-        $wordform_for_search = Grammatic::toSearchForm($wordform);
+        $wordform_for_search = Grammatic::changeLetters($wordform, $lang_id);
         return $lemmas->whereIn('id',function($q) use ($wordform_for_search){
                             $q->select('lemma_id')->from('lemma_wordform')
-                              ->whereIn('wordform_id',function($query) use ($wordform_for_search){
-                                    $query->select('id')
-                                    ->from('wordforms')
+//                              ->whereIn('wordform_id',function($query) use ($wordform_for_search){
+  //                                  $query->select('id')
+    //                                ->from('wordforms')
                                     ->where('wordform_for_search','like', $wordform_for_search);
-                                });
+//                                });
                             });
     }
     

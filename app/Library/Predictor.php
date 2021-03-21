@@ -84,11 +84,10 @@ class Predictor
                        ->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                        ->whereNotNull('gramset_id')
                        ->where('gramset_id', '<>', 0)
-                       ->whereIn('wordform_id', function ($query) use ($uword) {
-                           $query->select('id')->from('wordforms')
-                                 ->where('wordform_for_search', 'like', $uword);
-                       })
-//                       ->selectRaw('pos_id, gramset_id, count(*) as count')
+//                       ->whereIn('wordform_id', function ($query) use ($uword) {
+//                           $query->select('id')->from('wordforms')
+                                 ->where('wordform_for_search', 'like', $uword)//;
+//                       })
                        ->groupBy('pos_id', 'gramset_id')->get();
         foreach ($lemmas as $lemma) {
             list ($total, $out) = self::fillByPosGramset($uword, $lemma->pos_id, $lemma->gramset_id, 1, $out, $maybe_proper_noun);
@@ -185,7 +184,7 @@ class Predictor
                        ->where('gramset_id', '<>', 0)
                        ->where('reverse_lemmas.affix', 'not like', '#')
                        ->where('lemma_wordform.affix', 'not like', '#')
-                       ->where('wordforms.wordform_for_search', 'like', '%'.$uright)
+                       ->where('lemma_wordform.wordform_for_search', 'like', '%'.$uright)
                        ->selectRaw('pos_id, gramset_id, reverse_lemmas.affix as l_affix, lemma_wordform.affix as w_affix, count(*) as count')
                        ->groupBy('pos_id', 'gramset_id', 'reverse_lemmas.affix', 'lemma_wordform.affix')->get();
         foreach ($lemmas as $lemma) {

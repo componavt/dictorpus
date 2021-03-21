@@ -51,6 +51,7 @@
     <p><a href="service/check_parallel_texts">Проверить параллельные тексты</a>. Вывести ссылки на тексты с параллельным русским, если не совпадает количество предложений.</p>
     <p><a href="service/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
     <p><a href="service/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>
+    <p><a href="service/tmp_split_into_sentences">Разбить тексты на предложения</a>.</p>
     @endif
     
 @endsection

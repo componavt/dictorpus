@@ -1,12 +1,11 @@
 <?php
 
+//use Illuminate\Foundation\Testing\WithoutMiddleware;
+//use Illuminate\Foundation\Testing\DatabaseMigrations;
+//use Illuminate\Foundation\Testing\DatabaseTransactions;
+use TestCase;
+
 use App\Models\Corpus\Text;
-
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-// use TestCase;
-
 
 // php artisan make:test Models\Corpus\TextTest
 // ./vendor/bin/phpunit tests/Models/Corpus/TextTest
@@ -218,17 +217,4 @@ festival’-konkurs.";
         $this->assertEquals( $expected_xml, $result_xml);
     }
     
-    public function testWordAddToSentenceWithAloneApostroph()
-    {
-        $word   = "’";
-        $is_word = true;
-        $str = '';
-        $word_count = 1;
-        $expected_xml  = [false, '’', 1];
-        
-        $text = new Text();
-        $result_xml = $text->wordAddToSentence($is_word, $word, $str, $word_count);
-
-        $this->assertEquals( $expected_xml, $result_xml);
-    }
 }

@@ -8,7 +8,7 @@ use DB;
 use LaravelLocalization;
 use User;
 
-use \App\Library\Grammatic;
+//use \App\Library\Grammatic;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
@@ -283,9 +283,10 @@ class Word extends Model
             return $lemmas->count();
         }
        
-        $wordforms = Wordform::whereRaw("(wordform_for_search like '$word_t' or wordform_for_search like '$word_t_l')")
-                   ->whereIn('id',function($query) use ($lang_id) {
+        $wordforms = Wordform:://whereRaw("(wordform_for_search like '$word_t' or wordform_for_search like '$word_t_l')")->
+                    whereIn('id',function($query) use ($lang_id, $word_t, $word_t_l) {
                        $query ->select('wordform_id')->from('lemma_wordform')
+                              ->whereRaw("(wordform_for_search like '$word_t' or wordform_for_search like '$word_t_l')")
                               ->whereIn('lemma_id',function($q) use ($lang_id) {
                                     $q ->select('id')->from('lemmas')
                                            ->where('lang_id',$lang_id);
@@ -371,9 +372,9 @@ class Word extends Model
      * @return Collection
      */
     public static function getMeaningsByWord($word, $lang_id) {
-//        $word = str_replace("'", '’', $word);
-        $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word')";
-        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
+//        $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word')";
+//        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
+        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_for_search like '$word')";
         $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=".$lang_id
                             ." and (lemma_for_search like '$word' or id in $lemma_q))")
                   ->get();    
@@ -513,4 +514,92 @@ class Word extends Model
         }
         return $relevances;
     }    
+    
+    public static function nextWId($text_id) {
+        $last_word = self::whereTextId($text_id)
+                               ->orderBy('w_id', 'DESC')->first();
+/*        if (!$last_word) {
+            return null;
+        } */
+        return 1+ $last_word->w_id ?? 0;
+        
+    }
+    
+    public static function tagOutWord($token, $i, $str) {
+        $j = mb_strpos($token,'>',$i+1);
+        $str .= mb_substr($token,$i,$j-$i+1); // other chars of the tag are transferred to str
+        return [$j, $str];
+    }
+
+    public static function endWord($is_word, $str, $word, $words, $word_count) {
+        if ($is_word) {
+            $str .= $word.'</w>';
+            $is_word = false;
+            $words[$word_count-1] = $word;
+            $word = '';
+        }
+        return [$is_word, $str, $word, $words];
+    }
+
+    public static function wordAddToSentence($is_word, $word, $str, $word_count) {
+        if ($is_word) { // the previous char is part of a word, the word ends
+            if (!preg_match("/([a-zA-ZА-Яа-яЁё])/u",$word, $regs)) {
+                $str .= $word;
+            } else {
+//dd($regs);
+                $str .= '<w id="'.$word_count++.'">'.$word.'</w>';
+            }
+            $is_word = false;
+        }
+        return [$is_word, $str, $word_count]; 
+    }
+
+    /**
+     * Divides string on words
+     * Suppose that the first and the last symbols of the string are the word chars, they are not special
+     *
+     * @param string $token  text without mark up
+     * @param integer $word_count  initial word count
+     *
+     * @return array text with markup (split to words) and next word count
+     */
+    public static function splitWord($token, $word_count): array
+    {        
+        $str = '';
+        $i = 0;
+        $is_word = TRUE; // the first char enters in a word
+        $words = [];
+        $word = '';
+        while ($i<mb_strlen($token)) {
+            $char = mb_substr($token,$i,1);
+            if ($char == '<') { // begin of a tag 
+                list ($is_word, $str, $word, $words) = self::endWord($is_word, $str, $word, $words, $word_count);
+                list ($i, $str) = self::tagOutWord($token, $i, $str);
+                
+                // the char is a delimeter or white space
+            } elseif (mb_strpos(Sentence::word_delimeters(), $char)!==false || preg_match("/\s/",$char)
+                       // if word is ending with a dash, the dash is putting out of the word
+                      || $is_word && Sentence::dashIsOutOfWord($char, $token, $i) ) { 
+                list ($is_word, $str, $word, $words) = self::endWord($is_word, $str, $word, $words, $word_count);
+                $str .= $char;
+            } else {                
+                // if word is not started AND (the char is not dash or the next char is not special) THEN the new word started
+                if (!$is_word && !Sentence::dashIsOutOfWord($char, $token, $i)) { 
+                    $is_word = true;
+                    $str .= '<w id="'.$word_count++.'">';
+                }
+                if ($is_word) {
+                    $word .= $char;
+                } else {
+                    $str .= $char;            
+                }
+            }
+//print "$i: $char| word: $word| is_word: $is_word| str: $str\n";            
+            $i++;
+        }
+        $str .= $word;
+        $words[$word_count-1] = $word;
+//print "$i: $char| word: $word| str: $str\n";            
+        return [$str, $words]; 
+    }
 }

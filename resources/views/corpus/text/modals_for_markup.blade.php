@@ -9,4 +9,9 @@
                                   'submit_id' => 'save-lemma',
                                   'submit_title' => trans('messages.save'),
                                   'modal_view'=>'dict.lemma.form._create_simple'])
+            @include('widgets.modal',['name'=>'modalEditWord',
+                                  'title'=>trans('corpus.edit_word'),
+                                  'submit_id' => 'save-word',
+                                  'submit_title' => trans('messages.save'),
+                                  'modal_view'=>'corpus.word._form_edit'])
         @endif         

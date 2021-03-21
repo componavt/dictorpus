@@ -36,6 +36,8 @@ return [
     'district_list' => 'District list',
     'district_removed' => 'District ":name" is removed successfully.',
     
+    'edit_word' => 'correct the word in the text',
+    
     'genre' => 'Genre',
     'genre_has_text' => 'Genre ":name" can not be removed, there are texts with this genre',
     'genre_list' => 'Genre list',

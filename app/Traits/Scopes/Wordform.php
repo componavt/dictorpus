@@ -3,6 +3,7 @@
 use App\Library\Grammatic;
 
 trait Wordform
+// TODO: лишняя функция, если будет использоваться, исправить wordform_for_search
 {    public function scopeWordform($builder, $wordform) {
         if (!$wordform) {
             return $builder;

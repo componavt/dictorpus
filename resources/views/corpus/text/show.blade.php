@@ -79,15 +79,7 @@
         @endif      
         
         @if ($text->text)
-        <?php   if ($text->text_xml) :
-                    $markup_text = $text->setLemmaLink($text->text_xml, 
-                            $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
-                            true, $url_args['search_wid'] ?? null);
-                else :
-                    $markup_text = nl2br($text->text);
-                endif; 
-        ?>
-                    <div id="text">{!! $markup_text !!}</div>
+                    <div id="text">{!! $text->textForPage($url_args); !!}</div>
         @endif      
         @if ($text->transtext)
             </div>

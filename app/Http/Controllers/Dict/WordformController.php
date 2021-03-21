@@ -178,6 +178,7 @@ class WordformController extends Controller
         // Wordform UPDATING
         $trim_word = Grammatic::toRightForm($request->wordform);        
         $wordform->wordform = trim($trim_word);
+//TODO: лишнее поле, удалить        
         $wordform->wordform_for_search = Grammatic::toSearchForm($trim_word);
         $wordform->save();
         

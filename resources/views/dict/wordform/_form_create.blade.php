@@ -1,4 +1,8 @@
     <p id="addWordformSentence"></p>
+    <a id="call-edit-word" class="btn btn-success">
+        {{trans('corpus.edit_word')}}
+    </a>
+    
     @include('widgets.form.formitem._text', 
             ['name' => 'choose-wordform',
              'special_symbol' => true,

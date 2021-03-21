@@ -17,8 +17,8 @@ class Wordform extends Model
      * The attributes that are mass assignable.
      *
      * @var array
-     */
-    protected $fillable = ['wordform', 'wordform_for_search'];
+     */                                 // TODO: лишнее поле удалить
+    protected $fillable = ['wordform', 'wordform_for_search']; 
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -181,7 +181,7 @@ class Wordform extends Model
         $this->trimWord(); // remove extra spaces at the beginning and end of the wordform 
         $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
                . " text_id in (select id from texts where lang_id = ".$lang_id
-               . ") and word like '".$this->wordform_for_search."'"; 
+               . ") and word like '".Grammatic::changeLetters($this->wordform,$lang_id)."'"; 
         $words = DB::select($query); 
         return $words;
     }
@@ -287,7 +287,7 @@ dd($relevance);
     public function updateMeaningTextLinks($lemma)
     {        
         $lang_id = $lemma->lang_id;
-        $word = addcslashes($this->wordform_for_search,"'");
+        $word = addcslashes(Grammatic::changeLetters($this->wordform,$lang_id),"'");
         $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
            . " text_id in (select id from texts where lang_id = ".$lang_id
                             . ") and word like '".$word."'";
@@ -394,7 +394,7 @@ dd($relevance);
             return $wordforms;
         }
         return 
-            $wordforms->where('wordforms.wordform_for_search','like', $wordform);
+            $wordforms->where('lemma_wordform.wordform_for_search','like', $wordform);
     }
     
     public static function searchByAffix($wordforms, $affix) {
@@ -448,6 +448,7 @@ dd($relevance);
     
     public static function findOrCreate($word) {
         $wordform = self::firstOrCreate(['wordform'=>$word]);
+//TODO: лишнее поле, удалить        
         $wordform_for_search = Grammatic::toSearchForm($word);
         if ($wordform->wordform_for_search != $wordform_for_search) {
             $wordform->wordform_for_search = $wordform_for_search;

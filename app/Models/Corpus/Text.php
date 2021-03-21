@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
+//use DOMDocument;
 
 use App\Library\Grammatic;
 use App\Library\Str;
@@ -13,6 +14,7 @@ use App\Library\Str;
 use App\Models\User;
 
 use App\Models\Corpus\Event;
+use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
@@ -24,7 +26,8 @@ use App\Models\Dict\Wordform;
 
 class Text extends Model
 {
-    protected $fillable = ['corpus_id','lang_id','source_id','event_id','title','text','text_xml'];
+    protected $fillable = ['corpus_id', 'lang_id', 'source_id', 'event_id', 
+                        'title', 'text', 'text_xml', 'text_structure'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -583,28 +586,32 @@ class Text extends Model
         return $text;
     }
 
-    /**
-     * Gets a markup text with sentences
-     *
-     * @param $text String text without mark up
-     * @return String text with markup (split to sentences and words)
-     */
-    public static function markupText($text): String
-    {
-        $out = '';
-        $sen_count = 1;
-        $word_count = 1;
-
+    
+    public static function preProcessText($text) {
         $end1 = ['.','?','!','…','|'];
         $end2 = ['.»','?»','!»','."','?"','!"','.”','?”','!”','.“'];
-        $text = trim($text);
         $pseudo_end = false;
         if (!in_array(mb_substr($text,-1,1),$end1) && !in_array(mb_substr($text,-1,2),$end2)) {
             $text .= '.';
             $pseudo_end = true;
         }
+        return [nl2br($text), $pseudo_end];
+    }
 
-        $text = nl2br($text);
+    /**
+     * Gets a markup text with sentences
+     *
+     * @param string $text  text without mark up
+     * @return string text with markup (split to sentences and words)
+     */
+    public static function markupText($text, $by_sentences=false)
+    {
+        list($text, $pseudo_end) = self::preProcessText(trim($text));
+        
+        $text_xml = '';
+        $sen_count = $word_count = 1;
+        $sentences = [];
+
         if (preg_match_all("/(.+?)(\||\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…{1,})(\s|(<br(| \/)>\s*){1,}|$)/is", // :|
                            $text, $desc_out)) {
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
@@ -612,119 +619,42 @@ class Text extends Model
 
                 // <br> in in the beginning of the string is moved before the sentence
                 if (preg_match("/^(<br(| \/)>)(.+)$/is",$sentence,$regs)) {
-                    $out .= $regs[1]."\n";
+                    $text_xml .= $regs[1]."\n";
                     $sentence = trim($regs[3]);
                 }
                 if ($k == sizeof($desc_out[1])-1 && $pseudo_end || $desc_out[2][$k] == '|') {
                     $desc_out[2][$k] = '';
                 }
 
-//                $sentence = str_replace('|','',$sentence);
                 // division on words
-                list($str,$word_count) = self::markupSentence($sentence,$word_count);
-                $str = str_replace('¦', '', $str);
-
-                $out .= "<s id=\"".$sen_count++.'">'.$str.$desc_out[2][$k]."</s>\n";
+                list($str,$word_count) = Sentence::markup($sentence,$word_count);
+//                $str = str_replace('¦', '', $str);
+                $sentences[$sen_count] = "<s id=\"".$sen_count.'">'.$str.$desc_out[2][$k]."</s>\n";
+                $text_xml .= $by_sentences ? "<s id=\"".$sen_count++.'"/>'
+                                                 : $sentences[$sen_count];
                 $div = trim($desc_out[3][$k]);
-                if ($div) {
-                    $out .= trim($div)."\n";
-                }
+                $text_xml .= $div ? $div."\n" : '';
             }
         }
 
-        return trim($out);
+        return $by_sentences ? [trim($text_xml), $sentences] : trim($text_xml);
     }
     
-    public static function wordAddToSentence($is_word, $word, $str, $word_count) {
-        if ($is_word) { // the previous char is part of a word, the word ends
-            if (!preg_match("/([a-zA-ZА-Яа-яЁё])/u",$word, $regs)) {
-                $str .= $word;
-            } else {
-//dd($regs);
-                $str .= '<w id="'.$word_count++.'">'.$word.'</w>';
-            }
-            $is_word = false;
-        }
-        return [$is_word, $str, $word_count]; 
-    }
-
-    /**
-     * Divides sentence on words
-     *
-     * @param $sentence String text without mark up
-     * @param $word_count Integer initial word count
-     * ./vendor/bin/phpunit tests/Models/Corpus/TextTest
-     *
-     * @return Array text with markup (split to words) and next word count
-     */
-    public static function markupSentence($sentence,$word_count): Array
-    {
-        $delimeters = ',;.!?"[](){}«»=„”“”:%‒–—―¦/'; // - and ' - part of word
-        // different types of dashes and hyphens: '-', '‒', '–', '—', '―' 
-        // if dash '-' inside words, then they are part of words,
-        // if dash surrounded by spaces, then dashes are not parts of words.
-        $dashes = '-'; //digit dash
-        
-        $str = '';
-        $i = 0;
-        $is_word = false; // word tag <w> is not opened
-        $token = $sentence;
-        $word='';
-        while ($i<mb_strlen($token)) {
-            $char = mb_substr($token,$i,1);
-            if ($char == '<') { // begin of a tag 
-                list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
-                $j = mb_strpos($token,'>',$i+1);
-                $str .= mb_substr($token,$i,$j-$i+1); // other chars of the tag are transferred to str
-                $i = $j;
-            } elseif (mb_strpos($delimeters, $char)!==false || preg_match("/\s/",$char)) { // the char is a delimeter or white space
-                list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
-                $str .= $char;
-//if ($i>15) {exit(0);}
-//dd("$i: $char");                
-            } else {
-                $next_char = ($i+1 < mb_strlen($token)) ? mb_substr($token,$i+1,1) : '';
-                
-                // if the next_char is and of the sentence OR a delimeter OR a white space OR a dash THEN the next char is special
-                $next_char_is_special = (!$next_char || mb_strpos($delimeters, $next_char)!==false || preg_match("/\s/",$next_char) || mb_strpos($dashes,$next_char)!==false || $next_char == '<');
-                $char_is_dash_AND_next_char_is_special = mb_strpos($dashes,$char)!==false && $next_char_is_special;
-                
-                if ($is_word && $char_is_dash_AND_next_char_is_special) {
-                    list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
-                    $str .= $char;
-                } else {
-                // if word is not started AND NOT (the char is dash AND the next char is special) THEN the new word started
-                if (!$is_word && !$char_is_dash_AND_next_char_is_special) { 
-//                if (!$is_word && mb_strpos($dashes,$char)===false) { 
-                    $is_word = true;
-                    $word='';
-                }
-                if ($is_word) {
-                    $word .= $char;
-                } else {
-                    $str .= $char;            
-                }
-                }
-            }
-//print "$i: $char| word: $word| is_word: $is_word| str: $str\n";            
-            $i++;
-        }
-        list ($is_word, $str, $word_count) = Text::wordAddToSentence($is_word, $word, $str, $word_count);
-//print "$i: $char| word: $word| str: $str\n";            
-        return [$str,$word_count]; 
-    }
-
     /**
      * Sets text_xml as a markup text with sentences
      */
     public function markup(){
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        $this->text_xml = self::markupText($this->text);
-        $error_message = $this->updateMeaningAndWordformText();
-        if ($error_message) {
-            return $error_message;
+        list($this->text_structure, $sentences) = self::markupText($this->text, true);
+        foreach ($sentences as $s_id => $text_xml) {
+            Sentence::store($this->id, $s_id, $text_xml);
+            $error_message = $this->updateMeaningAndWordformText($s_id, $text_xml);
+            if ($error_message) {
+                print $error_message;
+            }
         }
+        DB::statement("DELETE FROM sentences WHERE s_id>$s_id and text_id=".(int)$this->id);
     }
 
     public function getMeaningsByWid($w_id) {
@@ -739,25 +669,20 @@ class Text extends Model
     /**
      * Sets links meaning - text - sentence AND text-wordform
      */
-    public function updateMeaningAndWordformText(){
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+    public function updateMeaningAndWordformText($s_id, $text_xml){
+        list($sxe,$error_message) = self::toXML($text_xml, $s_id);
         if ($error_message) { return $error_message; }
-
-//        list($checked_meaning_words, $checked_wordform_words) 
-        $checked_words = $this->checkedWords($this->text_xml);
+//dd($text_xml);
+        $checked_words = $this->checkedWords($text_xml);
 //dd($checked_words);
-        DB::statement("DELETE FROM words WHERE text_id=".(int)$this->id);
-        DB::statement("DELETE FROM meaning_text WHERE text_id=".(int)$this->id);
-        DB::statement("DELETE FROM text_wordform WHERE text_id=".(int)$this->id);
+        $where_text = "text_id=".(int)$this->id;
+        DB::statement("DELETE FROM words WHERE sentence_id=$s_id and $where_text");
+        DB::statement("DELETE FROM meaning_text WHERE sentence_id=$s_id and $where_text");
+        DB::statement("DELETE FROM text_wordform WHERE w_id in (select w_id from words where sentence_id=$s_id and $where_text) and $where_text");            
 
-        foreach ($sxe->children()->s as $sentence) {
-            $s_id = (int)$sentence->attributes()->id;
-/*print "<pre>";
-        var_dump($s_id, $sentence->children()->w, isset($checked_words[$s_id]) ? $checked_words[$s_id] : NULL, '____________________<br>');
-print "</pre>";*/
-            $this->updateMeaningAndWordformSentence($s_id, $sentence->children()->w, 
-                    $checked_words[$s_id] ?? NULL);
-        }
+//        $this->updateMeaningAndWordformSentence($s_id, $sxe->children()->w, 
+        $this->updateMeaningAndWordformSentence($s_id, $sxe->xpath('//w'), 
+                $checked_words ?? NULL);
     }
     
     /**
@@ -780,6 +705,7 @@ print "</pre>";*/
     public function updateMeaningAndWordformSentence($s_id, $sent_words, $checked_sent_words, $set_meanings=true, $set_wordforms=true) {
         $word_count = 0;
         foreach ($sent_words as $word) {
+//dd((string)$word);            
             $w_id = (int)$word->attributes()->id;
             $word_for_search = Grammatic::changeLetters((string)$word,$this->lang_id);
             
@@ -817,23 +743,27 @@ print "</pre>";*/
         list($sxe_old,$error_message) = self::toXML($old_xml,$this->id);
         if (!$sxe_old || $error_message) { return $checked_words; } 
 
-        foreach ($sxe_old->children()->s as $sentence) {
-            $s_id = (int)$sentence->attributes()->id;
+//        foreach ($sxe_old->children()->s as $sentence) {
+//            $s_id = (int)$sentence->attributes()->id;
             $word_count = 0;
-            foreach ($sentence->children()->w as $word) {
+//dd($sxe_old->children()->w);            
+            foreach ($sxe_old->xpath("//w") as $word) {
                 $w_id = (int)$word->attributes()->id;
                 $word_for_search = Grammatic::changeLetters((string)$word,$this->lang_id);
-                $checked_words[$s_id][$word_count]['w'] = $word_for_search;
+//                $checked_words[$s_id][$word_count]['w'] = $word_for_search;
+                $checked_words[$word_count]['w'] = $word_for_search;
                 if ($for_meanings) {
-                    $checked_words[$s_id][$word_count]['meanings']
+//                    $checked_words[$s_id][$word_count]['meanings']
+                    $checked_words[$word_count]['meanings']
                             =$this->checkedMeaningRelevances($w_id, $word_for_search);
                 }
                 if ($for_wordforms) {
-                    $checked_words[$s_id][$word_count]['wordforms']
+//                    $checked_words[$s_id][$word_count]['wordforms']
+                    $checked_words[$word_count]['wordforms']
                             =$this->checkedWordformRelevances($w_id, $word_for_search);                
                 }
                 $word_count++;
-            }
+//            }
         }        
         return $checked_words;
     }
@@ -891,7 +821,7 @@ print "</pre>";*/
     public function getWordformsByWord($word) {
         $lang_id = $this->lang_id;
 // TODO BEFORE COMLETION        
-        $wordforms = Wordform::where('wordforms.wordform_for_search', 'like', $word)
+        $wordforms = Wordform::where('lemma_wordform.wordform_for_search', 'like', $word)
                    ->join('lemma_wordform','lemma_wordform.wordform_id', '=', 'wordforms.id')
                    ->whereNotNull('gramset_id')
                    ->whereIn('lemma_id', function ($query) use ($lang_id) {
@@ -1189,6 +1119,15 @@ print "</pre>";*/
             return $str;
     }
     
+    /**
+     * choose all sentences and all words
+     * if a word is given then choose only sentences, containing the word, and only given words
+     * 
+     * @param string $word
+     * @return array
+     * 
+     * [<sentence_id> => ['w_id'=>[<w_id1>, <w_id2>], 's' => <sentence_xml>] ]
+     */
     public function sentences($word=''){
         $sentences = [];
         
@@ -1397,6 +1336,7 @@ print "</pre>";*/
                                    && $item['key'] != 'transtext_id'
                                    && $item['key'] != 'event_id'
                                    && $item['key'] != 'checked'
+                                   && $item['key'] != 'text_structure'
                                    && $item['key'] != 'source_id';
                                  //&& !($item['key'] == 'reflexive' && $item['old_value'] == null && $item['new_value'] == 0);
                         });
@@ -1574,5 +1514,54 @@ print "</pre>";*/
         }
 //dd($text_years);        
         return $text_years;
+    }
+    
+    public function splitXMLToSentencesAndWrite() {       
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        if ($error_message) {
+            dd($error_message);
+        }
+        
+        foreach ($sxe->xpath('//s') as $s) {
+            $s_obj = Sentence::firstOrCreate([
+                'text_id'=> $this->id,
+                's_id' => $s->attributes()->id]);
+            $s_obj->text_xml = $s->asXML();
+            $s_obj->save();
+            $s[0]='';
+        }
+        $this->text_structure = $sxe->asXML();
+//dd($this->text_structure);        
+        $this->save();
+        /*
+print "<pre>";        
+        $sxe = new DOMDocument('1.0', 'utf-8');
+        libxml_use_internal_errors(true);
+        $sxe->LoadHTML($this->text_xml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+//        $sxe->LoadXML($this->text_xml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        foreach ($sxe->getElementsByTagName('s') as $s) {
+dd($s->saveXML());            
+        }
+        */
+    }
+    
+    public function textForPage($url_args) {       
+        if ($this->text_structure) :
+            $this->text_xml = $this->text_structure;
+            $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
+            foreach ($sentences as $s) {
+                $s->text_xml = preg_replace('/¦/', '', $s->text_xml);
+                $this->text_xml = preg_replace("/\<s id=\"".$s->s_id."\"\/\>/", 
+//                        '<sup>'.$s->id.'</sup>'.
+                        $s->text_xml, $this->text_xml);                
+            }
+        endif; 
+        if ($this->text_xml) :
+            return $this->setLemmaLink($this->text_xml, 
+                    $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
+                    true, $url_args['search_wid'] ?? null);
+        else :
+            return nl2br($this->text);
+        endif; 
     }
 }
