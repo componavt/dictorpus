@@ -185,7 +185,7 @@ function loadPrediction(wordform, lang_id) {
         },
         error: function() {
             $("#prediction-block .waiting").hide();
-            alert('Ошибка загрузки предсказания');
+/*            alert('Ошибка загрузки предсказания'); */
         }
     }); 
 }
