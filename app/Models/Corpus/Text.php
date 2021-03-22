@@ -1175,28 +1175,16 @@ class Text extends Model
                             'relevance' => <relevance>]
      */
     public static function extractSentence($text_id, $sentence_id, $w_id, $relevance='') {
-            $text = self::find($text_id);
-            if (!$text) {
-//print "<p>text error</p>";
-                return NULL;
-            }
-            list($sxe,$error_message) = self::toXML($text->text_xml,$text->id);
-            if ($error_message) {
-//print "<p>$error_message</p>";                
-                return NULL;
-            }
-            $s = $sxe->xpath('//s[@id="'.$sentence_id.'"]');
-            if (isset($s[0])) {
-                $sentence = ['s' => $s[0]->asXML(), 
-                                's_id' => $sentence_id,
-                                'text' => $text, 
-                                'trans_s' => $text->getTransSentence($sentence_id),
-                                'w_id' => $w_id, 
-                                'relevance' => $relevance]; 
-                return $sentence;
-            } else {
-                dd('!text_id='.$text_id.' and sentence_id='.$sentence_id.' and w_id='.$w_id);                    
-            }
+        $text = self::find($text_id);
+        $sent_obj = Sentence::getBySid($text_id, $sentence_id);
+        if (!$text || !$sent_obj) { return NULL; }
+        
+        return ['s' => str_replace('¦', '', $sent_obj->text_xml), 
+                's_id' => $sentence_id,
+                'text' => $text, 
+                'trans_s' => $text->getTransSentence($sentence_id),
+                'w_id' => $w_id, 
+                'relevance' => $relevance]; 
     }
     
     public function getTransSentence($sentence_id) {

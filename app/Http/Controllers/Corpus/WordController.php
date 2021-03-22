@@ -135,8 +135,7 @@ class WordController extends Controller
      * @return string
      */
     public function loadWordBlock($text_id, $w_id)
-    {
-        
+    {        
         if (User::checkAccess('dict.edit')) {
             $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
 // 2020-10-24 пока отключим, чтобы быстрее работало...            

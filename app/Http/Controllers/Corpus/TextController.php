@@ -19,6 +19,7 @@ use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
+use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
@@ -184,14 +185,42 @@ class TextController extends Controller
         $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
         $pos_id = PartOfSpeech::getIDByCode('Noun');
         $dialect_values = Dialect::getList($text->lang_id);
-//        $text_dialects = $text->dialects;
-//        $dialect_value = $text_dialects[0]->id ?? 0;    
         $dialect_value = $text->dialectValue();
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.show',
                   compact('dialect_value', 'dialect_values', 'labels', 'text', 'args_by_get', 'url_args',
-                          'pos_values', 'pos_id', 'langs_for_meaning', 'dialect_value'));
+                          'pos_values', 'pos_id', 'langs_for_meaning'));
+    }
+    
+    public function editSentences($id) {
+        $text = Text::findOrFail($id);
+        $sentences = Sentence::whereTextId($id)->orderBy('s_id')->get();
+
+        $dialect_value = $text->dialectValue();
+        $dialect_values = Dialect::getList($text->lang_id);
+        $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
+        $pos_id = PartOfSpeech::getIDByCode('Noun');
+        $pos_values = PartOfSpeech::getGroupedList();   
+        
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $trans_sentences = [];
+        if ($text->transtext && $text->transtext->text_xml) {
+//            $markup_text = str_replace("<s id=\"","<s class=\"trans_sentence\" id=\"transtext_s", $text->transtext->text_xml); 
+            list($sxe,$error_message) = Text::toXML($text->transtext->text_xml,$text->transtext_id);
+            if (!$error_message) {
+                foreach ($sxe->xpath('//s') as $s) {
+                    $trans_sentences[(int)$s->attributes()->id] = $s->asXML();
+                }
+            }
+        }
+
+        return view('corpus.text.sentences',
+                compact('dialect_value', 'dialect_values', 'langs_for_meaning', 
+                        'pos_id', 'pos_values', 'sentences', 'text', 
+                        'trans_sentences', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -647,5 +676,4 @@ class TextController extends Controller
         return view('corpus.text.frequency.symbols',
                 compact('lang_values', 'symbols', 'args_by_get', 'url_args'));
     } 
-    
 }

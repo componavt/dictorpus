@@ -177,3 +177,7 @@ ol {
     display: none;
 }
 
+.sentence-edit {
+    color: #972d1a;
+    cursor: pointer;
+}

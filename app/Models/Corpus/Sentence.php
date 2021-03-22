@@ -21,6 +21,13 @@ class Sentence extends Model
         parent::boot();
     }
     
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Text;
+    
+    public static function getBySid($text_id, $s_id) {
+        return self::whereTextId($text_id)->whereSId($s_id)->first();
+    }
+
     // different types of dashes and hyphens: '-', '‒', '–', '—', '―' 
     // if dash '-' inside words, then they are part of words,
     // if dash surrounded by spaces, then dashes are not parts of words.

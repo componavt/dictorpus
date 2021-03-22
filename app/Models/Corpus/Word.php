@@ -21,14 +21,8 @@ class Word extends Model
     
     protected $fillable = ['text_id', 'sentence_id', 'w_id', 'word'];
     
-    /** Word belongs_to Text
-     * 
-     * @return Relationship, Query Builder
-     */
-    public function text()
-    {
-        return $this->belongsTo(Text::class);
-    } 
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Text;
     
     // Word __has_many__ Meanings
     public function meanings(){

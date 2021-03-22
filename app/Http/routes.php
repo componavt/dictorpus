@@ -63,9 +63,11 @@ Route::group(
         Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
         Route::get('corpus/place/store', 'Corpus\PlaceController@simpleStore');
         Route::get('corpus/recorder/store', 'Corpus\RecorderController@simpleStore');
+        Route::get('corpus/sentence/{id/edit}', 'Corpus\SentenceController@edit');
 
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
+        Route::get('corpus/text/{id}/sentences', 'Corpus\TextController@editSentences');
         Route::get('corpus/text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
         Route::post('corpus/text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
@@ -341,6 +343,11 @@ Route::group(
                        ['names' => ['update' => 'region.update',
                                     'store' => 'region.store',
                                     'destroy' => 'region.destroy']]);
+        
+        Route::resource('corpus/sentence', 'Corpus\SentenceController',
+                       ['names' => ['update' => 'sentence.update',
+                                    'store' => 'sentence.store',
+                                    'destroy' => 'sentence.destroy']]);
         
         Route::resource('corpus/source', 'Corpus\SourceController',
                        ['names' => ['update' => 'source.update',

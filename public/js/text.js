@@ -22,7 +22,8 @@ function highlightSentences() {
  *  show/hide a block with meanings and gramsets by click on a word
  */
 function showLemmaLinked(text_id) {
-   $(".lemma-linked").click(function(event) {
+   $("body").on("click", ".lemma-linked", function(event) {
+//console.log('click');       
         event.preventDefault(); // reload event after AJAX reload
         var w_id = $(this).attr('id');
 //console.log('w_id: '+w_id);        
@@ -152,6 +153,7 @@ function saveWord(text_id, w_id, word) {
 
 
 function loadDataToWordformModal(text_id, w_id, wordform, lang_id) {
+console.log('loadDataToWordformModal: w_id='+w_id);    
     $.ajax({
         url: '/corpus/text/sentence', 
         data: {text_id: text_id, w_id: w_id },
@@ -240,8 +242,9 @@ function changeLemmaList(lang_id) {
 }
 
 function changeWordBlock(text_id, w_id) {
+console.log('changeWordBlock:'+ text_id+', '+w_id);    
     $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked');
-    $("w[id="+w_id+"]").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
+    $("w[id="+w_id+"].lemma_linked").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
     loadWordBlock(text_id, w_id, '/corpus/word/load_word_block/');
 }
 
@@ -300,13 +303,15 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
  * @returns NULL
  */    
 function addWordform(text_id, lang_id) {
+//console.log('loading');    
     changeLemmaList(lang_id);
-    $(".call-add-wordform").click(function() {
+    $("body").on("click", ".call-add-wordform", function() {
         if (!$(this).hasClass('call-add-wordform')) {
             return;
         }
         var w_id = $(this).attr('id');
         var wordform = $(this).html();        
+//console.log('addWordform. w_id: '+w_id);    
 
         $("#modalAddWordform").modal('show');
         
@@ -355,4 +360,44 @@ function addWordform(text_id, lang_id) {
 
 function fillInterpretation(str) {
     $( "#interpretation" ).val(str);
+}
+
+function loadSentenceForm(sid) {
+    $("#sentence-edit-"+sid).hide();                
+    $("#sentence-"+sid).empty();
+    $("#loading-sentence-"+sid).show();
+    $.ajax({
+        url: '/corpus/sentence/' + sid + '/edit', 
+        type: 'GET',
+        success: function(result){
+            $("#sentence-"+sid).html(result);
+            $("#loading-sentence-"+sid).hide();                
+        },
+        error: function() {
+            $("#sentence-"+sid).html('ERROR'); 
+/*        error: function(jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+                       'text status: ('+textStatus+'), error thrown: ('+errorThrown+')'; 
+            $("#anketa-ques-"+qid).html(text);*/
+            $("#loading-sentence-"+sid).hide();                
+        }
+    }); 
+}
+    
+function saveSentence(sid) {
+    var form = $('#change-sentence-'+sid);
+    $(form).submit(function(event) {
+        event.preventDefault();
+        var formData = $(form).serialize();
+
+        $.ajax({
+            type: 'PUT',
+            url: $(form).attr('action'),
+            data: formData})
+         .done(function(response) {
+                $("#sentence-"+sid).html(response);
+                $("#loading-sentence-"+sid).hide();                
+                $("#sentence-edit-"+sid).show();                
+        });
+    });
 }
