@@ -83,12 +83,25 @@ class SentenceController extends Controller
             $sentence->save();
             $error_message = $text->updateMeaningAndWordformText($sentence->s_id, $text_xml);
             if ($error_message) {
-                print $error_message;
+                return $error_message;
             }
         }
         return view('corpus.sentence.show', compact('sentence', 'text'));
     }
 
+    public function markup($id)
+    {
+        $sentence = Sentence::findOrfail($id);        
+        $text = $sentence->text;
+        
+        $text_xml = $sentence->text_xml;
+        $error_message = $text->updateMeaningAndWordformText($sentence->s_id, $text_xml);
+        if ($error_message) {
+            return $error_message;
+        }
+        return view('corpus.sentence.show', compact('sentence', 'text'));
+    }
+    
     /**
      * Remove the specified resource from storage.
      *

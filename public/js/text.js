@@ -65,7 +65,7 @@ function loadWordBlock(text_id, w_id, url) {
             $("#links_"+w_id+".links-to-lemmas").data('downloaded', 1)
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.status);
+            alert('loadWordBlock: '+xhr.status);
             alert(thrownError);
         }
     }); 
@@ -86,7 +86,7 @@ function saveLemma(text_id, data) {
             $("#new_meanings_0__meaning_text__2_" ).val(null);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.status);
+            alert('saveLemma '+xhr.status);
             alert(thrownError);
         }
     }); 
@@ -145,7 +145,7 @@ function saveWord(text_id, w_id, word) {
             location.reload();
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.status);
+            alert('saveWord: '+xhr.status);
             alert(thrownError);
         }
     }); 
@@ -171,6 +171,10 @@ console.log('loadDataToWordformModal: w_id='+w_id);
                 })
                 .change();    
             loadPrediction(wordform, lang_id);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('loadDataToWordformModal: '+xhr.status);
+            alert(thrownError);
         }
     });        
 }
@@ -201,7 +205,7 @@ function loadLemmaData(lemma_id, text_id) {
             $("#addWordformFields").html(result);               
         },
         error: function() {
-            alert('ERROR');
+            alert('loadLemmaData: ERROR');
         }
     }); 
 }
@@ -286,7 +290,7 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
             clearWordformModal();            
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+            var text = 'saveWordform Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
                	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route + test_url;
             alert(text);
         }
@@ -374,7 +378,7 @@ function loadSentenceForm(sid) {
             $("#loading-sentence-"+sid).hide();                
         },
         error: function() {
-            $("#sentence-"+sid).html('ERROR'); 
+            $("#sentence-"+sid).html('loadSentenceForm: ERROR'); 
 /*        error: function(jqXHR, textStatus, errorThrown) {
             var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
                        'text status: ('+textStatus+'), error thrown: ('+errorThrown+')'; 
@@ -386,18 +390,36 @@ function loadSentenceForm(sid) {
     
 function saveSentence(sid) {
     var form = $('#change-sentence-'+sid);
+    var formData = $(form).serialize();
+    var url = $(form).attr('action');
+    
+/*    $("#sentence-"+sid).empty(); */
+    $("#loading-sentence-"+sid).show();
+    
     $(form).submit(function(event) {
         event.preventDefault();
-        var formData = $(form).serialize();
-
         $.ajax({
             type: 'PUT',
-            url: $(form).attr('action'),
+            url: url,
             data: formData})
          .done(function(response) {
                 $("#sentence-"+sid).html(response);
                 $("#loading-sentence-"+sid).hide();                
                 $("#sentence-edit-"+sid).show();                
         });
+    });
+}
+
+function markupSentence(sid) {
+    $("#markup-sentence-"+sid).hide();                
+    $("#sentence-"+sid).empty();
+    $("#loading-sentence-"+sid).show();
+    $.ajax({
+        type: 'GET',
+        url: '/corpus/sentence/'+sid+'/markup'})
+     .done(function(response) {
+            $("#sentence-"+sid).html(response);
+            $("#loading-sentence-"+sid).hide();                
+            $("#sentence-edit-"+sid).show();                
     });
 }

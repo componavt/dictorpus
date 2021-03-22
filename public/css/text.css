@@ -177,7 +177,8 @@ ol {
     display: none;
 }
 
-.sentence-edit {
+.sentence-edit,
+.markup-sentence {
     color: #972d1a;
     cursor: pointer;
 }

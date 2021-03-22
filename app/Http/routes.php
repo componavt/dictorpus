@@ -63,7 +63,9 @@ Route::group(
         Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
         Route::get('corpus/place/store', 'Corpus\PlaceController@simpleStore');
         Route::get('corpus/recorder/store', 'Corpus\RecorderController@simpleStore');
-        Route::get('corpus/sentence/{id/edit}', 'Corpus\SentenceController@edit');
+        
+        Route::get('corpus/sentence/{id}/edit', 'Corpus\SentenceController@edit');
+        Route::get('corpus/sentence/{id}/markup', 'Corpus\SentenceController@markup');
 
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');

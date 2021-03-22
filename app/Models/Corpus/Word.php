@@ -426,7 +426,7 @@ class Word extends Model
 
         $str .= Word::createGramsetBlock($text_id, $w_id);
 
-        if (User::checkAccess('corpus.edit')) { // icon 'pensil'
+        if (User::checkAccess('corpus.edit')) { // icons 'pensil' and 'sync'
             $str.='<p class="text-example-edit">'
                  .'<i class="fa fa-sync-alt fa-lg update-word-block" title="'.'" onclick="updateWordBlock('.$text_id.','.$w_id.')"></i>'
                  .'<a href="'.LaravelLocalization::localizeURL($url)
