@@ -671,11 +671,11 @@ class Text extends Model
     /**
      * Sets links meaning - text - sentence AND text-wordform
      */
-    public function updateMeaningAndWordformText($s_id, $text_xml){
+    public function updateMeaningAndWordformText($s_id, $text_xml, $without_check=false){
         list($sxe,$error_message) = self::toXML($text_xml, $s_id);
         if ($error_message) { return $error_message; }
 //dd($text_xml);
-        $checked_words = $this->checkedWords($text_xml);
+        $checked_words = $without_check ? [] : $this->checkedWords($text_xml);
 //dd($checked_words);
         $where_text = "text_id=".(int)$this->id;
         DB::statement("DELETE FROM words WHERE sentence_id=$s_id and $where_text");

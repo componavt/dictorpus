@@ -116,44 +116,8 @@ function addLemma(text_id, lang_id) {
     
 }
 
-function editWord(text_id, w_id, old_wordform) {
-    $("#call-edit-word").click(function() {
-        $("#editWordSentence").html( $("#addWordformSentence").html() );
-        $("#modalEditWord").modal('show'); 
-        var wordform = $( "#choose-wordform" ).val();
-        $( "#word" ).val(wordform);
-    });
-    
-    $("#save-word").click(function(){
-        var word = $( "#word" ).val();
-        if (word !== old_wordform) {
-            saveWord(text_id, w_id, word);
-        } else {
-            $("#modalEditWord").modal('hide');
-            $("#choose-wordform").focus();
-        }
-    });
-        
-}
-
-function saveWord(text_id, w_id, word) {
-    $.ajax({
-        url: '/corpus/word/edit/' + text_id + '_' + w_id + '/', 
-        data: {word: word},
-        type: 'GET',
-        success: function(){
-            location.reload();
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            alert('saveWord: '+xhr.status);
-            alert(thrownError);
-        }
-    }); 
-}
-
-
 function loadDataToWordformModal(text_id, w_id, wordform, lang_id) {
-console.log('loadDataToWordformModal: w_id='+w_id);    
+//console.log('loadDataToWordformModal: w_id='+w_id);    
     $.ajax({
         url: '/corpus/text/sentence', 
         data: {text_id: text_id, w_id: w_id },
@@ -246,7 +210,7 @@ function changeLemmaList(lang_id) {
 }
 
 function changeWordBlock(text_id, w_id) {
-console.log('changeWordBlock:'+ text_id+', '+w_id);    
+//console.log('changeWordBlock:'+ text_id+', '+w_id);    
     $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked');
     $("w[id="+w_id+"].lemma_linked").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
     loadWordBlock(text_id, w_id, '/corpus/word/load_word_block/');
@@ -319,9 +283,7 @@ function addWordform(text_id, lang_id) {
 
         $("#modalAddWordform").modal('show');
         
-        loadDataToWordformModal(text_id, w_id, wordform, lang_id);
-        
-        editWord(text_id, w_id, wordform);    
+        loadDataToWordformModal(text_id, w_id, wordform, lang_id);        
     });
     
     $("#modalAddWordform .close, #modalAddWordform .cancel").on('click', function() {
@@ -360,6 +322,7 @@ function addWordform(text_id, lang_id) {
     });
     
     addLemma(text_id, lang_id);    
+    editWord(text_id);    
 }
 
 function fillInterpretation(str) {
@@ -423,3 +386,46 @@ function markupSentence(sid) {
             $("#sentence-edit-"+sid).show();                
     });
 }
+
+function editWord(text_id) {
+    $("#call-edit-word").click(function() {
+        $("#editWordSentence").html( $("#addWordformSentence").html() );
+        $("#modalEditWord").modal('show'); 
+        var wordform = $( "#choose-wordform" ).val();
+        $( "#word" ).val(wordform);
+//alert('editWord#call-edit-word: '+ wordform);    
+    });
+    
+    $("#save-word").click(function(){
+        var word = $( "#word" ).val();
+        var old_wordform = $("#editWord .word-marked").html();
+        var w_id = $("#modalEditWord .word-marked").attr('id');
+        if (word !== old_wordform) {
+//alert('editWord#save-word: '+w_id+', '+ old_wordform+', '+ word);    
+            saveWord(text_id, w_id, word);
+        } else {
+            $("#modalEditWord").modal('hide');
+            $("#choose-wordform").focus();
+        }
+    });
+        
+}
+
+function saveWord(text_id, w_id, word) { 
+//alert('saveWord: '+w_id+', '+ word);    
+    $.ajax({
+        url: '/corpus/word/edit/' + text_id + '_' + w_id + '/', 
+        data: {word: word},
+        type: 'GET',
+        success: function(){
+            location.reload();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('saveWord: '+xhr.status);
+            alert(thrownError);
+        }
+    })/*.done(function(response) {
+            location.reload();
+    })*/; 
+}
+

@@ -35,7 +35,7 @@
             </td>
             <td>
                 <i id="sentence-edit-{{$sentence->id}}" class="sentence-edit fa fa-pencil-alt fa-lg" data-sid="{{$sentence->id}}"></i>                
-                <i class="fa fa-sync-alt fa-lg markup-sentence" title="переразметить предложение" onclick="markupSentence({{$sentence->id}})"></i>
+                <i class="fa fa-sync-alt fa-lg markup-sentence" title="сбросить все связи и разметить заново" onclick="markupSentence({{$sentence->id}})"></i>
             </td>
             <td>
                 {!! $trans_sentences[$sentence->s_id] ?? '' !!}
