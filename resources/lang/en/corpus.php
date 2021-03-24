@@ -68,6 +68,7 @@ return [
     'of_text' => 'of text',
     
     'p' => 'p.',
+    'parent' => 'parent section',
     
     'place_list' => 'Settlement list',
     'place_removed' => 'Settlement ":name" is removed successfully.',

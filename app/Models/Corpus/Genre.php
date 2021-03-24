@@ -5,13 +5,15 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Dict\Lang;
 
 class Genre extends Model
 {
     public $timestamps = false;
     
-    protected $fillable = ['name_en','name_ru'];
+    protected $fillable = ['name_en','name_ru', 'corpus_id', 'parent_id'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -25,6 +27,14 @@ class Genre extends Model
         parent::boot();
     }
 
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Corpus;
+    
+    public function parent()
+    {
+        return $this->belongsTo(Genre::class, 'parent_id');
+    }
+    
     /** Gets name of this genre, takes into account locale.
      * 
      * @return String
@@ -84,5 +94,36 @@ class Genre extends Model
             }
         }
         return $out;
+    }
+    
+    public static function search(Array $url_args) {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $genres = self::orderBy('name_'.$locale);
+        $genres = self::searchByName($genres, $url_args['search_name']);
+        
+        if ($url_args['search_id']) {
+            $genres = $genres->where('id',$url_args['search_id']);
+        }
+
+        return $genres;
+    }
+    
+    public static function searchByName($genres, $name) {
+        if (!$name) {
+            return $genres;
+        }
+        return $genres->where(function($q) use ($name){
+                            $q->where('name_en','like', $name)
+                              ->orWhere('name_ru','like', $name);
+                });
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_name' => $request->input('search_name'),
+                    'search_id'  => $request->input('search_id'),
+                ];
+        
+        return $url_args;
     }
 }

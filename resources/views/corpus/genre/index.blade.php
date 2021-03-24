@@ -27,12 +27,12 @@
         !!}
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_id', 
-                'value' => $search_id,
+                'value' => $url_args['search_id'],
                 'attributes'=>['size' => 3,
                                'placeholder' => 'ID']])
          @include('widgets.form.formitem._text', 
-                ['name' => 'genre_name', 
-                'value' => $genre_name,
+                ['name' => 'search_name', 
+                'value' => $url_args['search_name'],
                 'attributes'=>['size' => 15,
                                'placeholder' => trans('corpus.name')]])
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
@@ -45,6 +45,8 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>{{ trans('corpus.corpus') }}</th>
+                <th>{{ trans('corpus.parent') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
@@ -57,6 +59,8 @@
             @foreach($genres as $genre)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
+                <td data-th="{{ trans('corpus.corpus') }}">{{$genre->corpus->name ?? ''}}</td>
+                <td data-th="{{ trans('corpus.parent') }}">{{$genre->parent->name ?? ''}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$genre->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$genre->name_ru}}</td>
                 <td data-th="{{ trans('navigation.texts') }}">
