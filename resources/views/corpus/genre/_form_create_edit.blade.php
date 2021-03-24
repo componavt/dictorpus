@@ -9,6 +9,9 @@
                 ['name' => 'parent_id', 
                  'values' =>$genre_values,
                  'title' => trans('corpus.parent')])                  
+        @include('widgets.form.formitem._text', 
+                ['name' => 'sequence_number', 
+                 'title'=>trans('messages.sequence_number')])                 
     </div>
     <div class="col-sm-6">
         @include('widgets.form.formitem._text', 

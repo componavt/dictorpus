@@ -13,7 +13,7 @@ class Genre extends Model
 {
     public $timestamps = false;
     
-    protected $fillable = ['name_en','name_ru', 'corpus_id', 'parent_id'];
+    protected $fillable = ['name_en','name_ru', 'corpus_id', 'parent_id', 'sequence_number'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -98,7 +98,7 @@ class Genre extends Model
     
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
-        $genres = self::orderBy('name_'.$locale);
+        $genres = self::orderBy('sequence_number')->orderBy('name_'.$locale);
         $genres = self::searchByName($genres, $url_args['search_name']);
         
         if ($url_args['search_id']) {
