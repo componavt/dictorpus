@@ -100,17 +100,22 @@ input[type="radio"]:checked+span:before{
 }
 
 .search-button-b span {
-    margin-top: 5px;
+    margin: 5px 10px 0;
 }
 
+.search-button-b span:first-of-type {
+    margin-left: 0;
+}
+
+/*
 .search-button-b input[type=text]{
-    margin: 0 10px;
-    width: 60px;
+    margin: 0;
+    width: 50px;
 }
 
 .search-button-b input[type=submit]{
-    margin-left: 20px;
-}
+    margin-left: 5px; 
+}*/
 
 .search-linked-field label {
     display: block;

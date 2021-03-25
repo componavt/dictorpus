@@ -34,6 +34,14 @@
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lang_id']])
                  
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'authors', 
+                 'values' =>$author_values,
+                 'value' => $author_value ?? null,
+                 'call_add_onClick' => "addAuthor('authors')",
+                 'call_add_title' => trans('messages.create_new_m'),
+                 'title' => trans('corpus.author')]) 
+                 
         @include('widgets.form.formitem._text', 
                 ['name' => 'title', 
                  'title'=>trans('corpus.title')])
@@ -62,15 +70,49 @@
                      'special_symbol' => true,
                      'title'=>trans('corpus.text_xml')])
         @endif
-        
-        @include('widgets.form.formitem._select2', 
-                ['name' => 'authors', 
-                 'values' =>$author_values,
-                 'value' => $author_value ?? null,
-                 'call_add_onClick' => 'addAuthor()',
-                 'call_add_title' => trans('messages.create_new_m'),
-                 'title' => trans('corpus.author')]) 
+    </div>
+    <div class="col-sm-6">
+        <?php $transtext_lang_id_value = ($action=='edit' && $text->transtext) ? ($text->transtext->lang_id) : NULL; ?>
+        @include('widgets.form.formitem._select', 
+                ['name' => 'transtext.lang_id', 
+                 'values' =>$lang_values,
+                 'value' => $transtext_lang_id_value,
+                 'title' => trans('corpus.transtext_lang') ])
                  
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'trans_authors', 
+                 'values' =>$author_values,
+                 'value' => $trans_author_value ?? null,
+                 'call_add_onClick' => "addAuthor('trans_authors')",
+                 'call_add_title' => trans('messages.create_new_m'),
+                 'title' => trans('corpus.trans_author')]) 
+                 
+        <?php $transtext_title_value = ($action=='edit' && $text->transtext) ? ($text->transtext->title) : NULL; ?>
+        @include('widgets.form.formitem._text', 
+                ['name' => 'transtext.title', 
+                 'special_symbol' => true,
+                 'value' => $transtext_title_value,
+                 'title'=>trans('corpus.transtext_title')])
+                 
+        <?php $transtext_text_value = ($action=='edit' && $text->transtext) ? ($text->transtext->text) : NULL; ?>
+        @include('widgets.form.formitem._textarea', 
+                ['name' => 'transtext.text', 
+                 'help_text' =>trans('corpus.text_help'),
+                 'special_symbol' => true,
+                 'value' => $transtext_text_value,
+                 'title'=>trans('corpus.transtext_text')])
+                 
+        @if ($action=='edit')
+            <?php $transtext_text_xml_value = ($text->transtext) ? ($text->transtext->text_xml) : NULL; ?>
+            @include('widgets.form.formitem._textarea', 
+                    ['name' => 'transtext.text_xml', 
+                     'value' => $transtext_text_xml_value,
+                     'title'=>trans('corpus.text_xml')])
+        @endif        
+    </div>
+</div>                 
+<div class="row">
+    <div class="col-sm-6">
         {{-- EVENT --}}
         <?php if ($action=='create') { $informant_value = NULL; } ?>        
         @include('widgets.form.formitem._select2', 
@@ -104,37 +146,14 @@
                  'title' => trans('corpus.recorded'),
                  'class'=>'multiple-select form-control'
             ])
+        @include('widgets.form.formitem._text', 
+                ['name' => 'youtube_id', 
+                 'value' => ($action=='edit' && $text->video) ? ($text->video->youtube_id) : NULL,
+                 'title'=>trans('corpus.youtube_id')])
                 
 @include('widgets.form.formitem._submit', ['title' => $submit_title])
     </div>
-    <div class="col-sm-6">
-        <?php $transtext_lang_id_value = ($action=='edit' && $text->transtext) ? ($text->transtext->lang_id) : NULL; ?>
-        @include('widgets.form.formitem._select', 
-                ['name' => 'transtext.lang_id', 
-                 'values' =>$lang_values,
-                 'value' => $transtext_lang_id_value,
-                 'title' => trans('corpus.transtext_lang')]) 
-        <?php $transtext_title_value = ($action=='edit' && $text->transtext) ? ($text->transtext->title) : NULL; ?>
-        @include('widgets.form.formitem._text', 
-                ['name' => 'transtext.title', 
-                 'special_symbol' => true,
-                 'value' => $transtext_title_value,
-                 'title'=>trans('corpus.transtext_title')])
-        <?php $transtext_text_value = ($action=='edit' && $text->transtext) ? ($text->transtext->text) : NULL; ?>
-        @include('widgets.form.formitem._textarea', 
-                ['name' => 'transtext.text', 
-                 'help_text' =>trans('corpus.text_help'),
-                 'special_symbol' => true,
-                 'value' => $transtext_text_value,
-                 'title'=>trans('corpus.transtext_text')])
-        @if ($action=='edit')
-            <?php $transtext_text_xml_value = ($text->transtext) ? ($text->transtext->text_xml) : NULL; ?>
-            @include('widgets.form.formitem._textarea', 
-                    ['name' => 'transtext.text_xml', 
-                     'value' => $transtext_text_xml_value,
-                     'title'=>trans('corpus.text_xml')])
-        @endif
-                 
+    <div class="col-sm-6">            
         {{-- SOURCE --}}
         <?php $source_author_value = ($action=='edit' && $text->source) ? ($text->source->author) : NULL; ?>
         @include('widgets.form.formitem._text', 
@@ -185,10 +204,6 @@
                  'value' => $ieeh_archive_number2_value])
             </div>
         </div>
-        @include('widgets.form.formitem._text', 
-                ['name' => 'youtube_id', 
-                 'value' => ($action=='edit' && $text->video) ? ($text->video->youtube_id) : NULL,
-                 'title'=>trans('corpus.youtube_id')])
         <?php $source_comment_value = ($action=='edit' && $text->source) ? ($text->source->comment) : NULL; ?>
         @include('widgets.form.formitem._textarea', 
                 ['name' => 'source.comment', 

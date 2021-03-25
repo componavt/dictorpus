@@ -24,6 +24,9 @@ class Transtext extends Model
         parent::boot();
     }
 
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Authors;
+    
     // Transtext __belongs_to__ Lang
     public function lang()
     {
@@ -56,4 +59,14 @@ class Transtext extends Model
             Transtext::find($transtext_id)->delete();
         }        
     }
+    
+    public function authorsToString() {
+        $authors = [];
+        foreach ($this->authors as $author) {
+            $name = $author->getNameByLang($this->lang_id);
+            $authors[] = $name ? $name : $author->name;
+        }
+        return join(', ', $authors);
+    }
+
 }

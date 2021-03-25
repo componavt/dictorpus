@@ -82,6 +82,7 @@
                 @if (!$url_args['search_word'])
                 <td data-th="{{ trans('messages.translation') }}">
                     @if ($text->transtext)
+                    {{ $text->transtext->authorsToString() ? $text->transtext->authorsToString().'.' : '' }}
                     {{$text->transtext->title}}
                     @endif
                 </td>

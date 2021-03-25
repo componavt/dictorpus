@@ -93,10 +93,10 @@ return [
     'sentences' => 'Sentences',
     
     'source' => 'Source',
-    'source_author' => 'source author',
+    'source_author' => 'publication author',
     'source_pages' => 'pages',
-    'source_title' => 'source title',
-    'source_year' => 'Source year',
+    'source_title' => 'publication title',
+    'source_year' => 'publication year',
     'symbol' => 'symbol',
     
     'text' => 'text',
@@ -110,6 +110,7 @@ return [
     
     'title' => 'Title',
     
+    'trans_author' => 'Author of translation',
     'transtext_lang' => 'language of translation',
     'transtext_text' => 'text of translation',
     'transtext_title' => 'title of translation',

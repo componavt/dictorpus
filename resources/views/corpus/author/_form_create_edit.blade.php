@@ -1,3 +1,4 @@
+<input type="hidden" id="author_field" value="">
 <div class="row">
     <div class="col-sm-6">
         @include('widgets.form.formitem._text', 

@@ -65,47 +65,17 @@
         </div>
         @endif
 
-        @if ($text->transtext)
         <div class="row corpus-text">
-            <div class="col-sm-6">
-        @endif
-        @if ($text->title)
-                <h4>
-                @if ($text->authors)
-                    {{$text->authorsToString()}}<br>
-                @endif
-                {{ $text->title }}
-                @if (User::checkAccess('corpus.edit'))
-                    @include('widgets.form.button._edit', 
-                             ['route' => '/corpus/text/'.$text->id.'/sentences',
-                              'title' => 'редактировать предложения',
-                              'without_text' => 1])
-                @endif            
-                <br>
-                ({{ $text->lang->name }})
-                </h4>
-        @endif      
-        
-        @if ($text->text)
-                    <div id="text">{!! $text->textForPage($url_args); !!}</div>
-        @endif      
+            <div class="col-sm-{{$text->transtext ? '6' : '12'}}">
+            @include('corpus.text.show.text')
         @if ($text->transtext)
             </div>
                 
             <div class="col-sm-6">
-            @if ($text->transtext->title)
-                    <h4>{{ $text->transtext->title }}<br>
-                    ({{ $text->transtext->lang->name }})</h4>
-            @endif      
-            @if ($text->transtext->text)
-            <?php $markup_text = $text->transtext->text_xml 
-                            ? str_replace("<s id=\"","<s class=\"trans_sentence\" id=\"transtext_s",$text->transtext->text_xml) 
-                            : nl2br($text->transtext->text); ?>
-                    <div id="transtext">{!! $markup_text !!}</div>
-            @endif      
+            @include('corpus.text.show.transtext')
+        @endif      
             </div>
         </div>
-        @endif      
         
 @stop
 

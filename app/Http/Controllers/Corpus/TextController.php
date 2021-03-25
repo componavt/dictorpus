@@ -235,7 +235,6 @@ class TextController extends Controller
         
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
-//        $informant_values = [NULL => ''] + Informant::getList();
         $place_values = [NULL => ''] + Place::getList();
 
         $informant_values = Informant::getList();
@@ -246,7 +245,6 @@ class TextController extends Controller
 
         $dialect_values = Dialect::getList();
         $dialect_value = $text->dialectValue();
-//dd($dialect_value);        
 
         $genre_values = Genre::getList();        
         $genre_value = $text->genreValue();
@@ -256,6 +254,7 @@ class TextController extends Controller
 
         $author_values = Author::getList();
         $author_value = $text->authorValue();
+        $trans_author_value = $text->transtext ? $text->transtext->authorValue() : null;
         $project_langs=Lang::projectLangs(); 
         
         $args_by_get = $this->args_by_get;
@@ -265,7 +264,7 @@ class TextController extends Controller
                         'genre_value', 'genre_values', 'informant_value',
                         'informant_values','lang_values', 'place_values','text',
                         'recorder_value', 'recorder_values', 'args_by_get', 'url_args',
-                        'region_values', 'district_values', 
+                        'region_values', 'district_values', 'trans_author_value',
                         'author_value', 'author_values', 'project_langs'));
     }
 

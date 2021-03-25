@@ -168,10 +168,16 @@ class Text extends Model
         if (!$author) {
             return $texts;
         }
-        return $texts->whereIn('id',function($query) use ($author){
-                    $query->select('text_id')
-                    ->from("author_text")
-                    ->where('author_id',$author);
+        return $texts->where(function ($q) use ($author) {
+                    $q->whereIn('id',function($query) use ($author){
+                            $query->select('text_id')
+                            ->from("author_text")
+                            ->where('author_id',$author);
+                    })->orWhereIn('transtext_id',function($q2) use ($author){
+                            $q2->select('transtext_id')
+                            ->from("author_transtext")
+                            ->where('author_id',$author);
+                    });
                 });
     }
 /*    
@@ -320,7 +326,7 @@ class Text extends Model
         $request['event_date'] = (int)$request['event_date'];
         
         $this->storeVideo($request->youtube_id);
-        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml'));
+        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml', 'trans_authors'));
         $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
         $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
         
@@ -386,8 +392,7 @@ class Text extends Model
             foreach (['lang_id','title','text'] as $column) {
                 $data_to_fill[$column] = ($request_data['transtext_'.$column]) ? $request_data['transtext_'.$column] : NULL;
             }
-            if ($transtext_id) {
-               
+            if ($transtext_id) {               
                 $transtext = Transtext::find($transtext_id);
                 $old_text = $transtext->text;
                 $transtext->fill($data_to_fill);
@@ -406,6 +411,9 @@ class Text extends Model
                 $this->transtext_id = $transtext->id;
                 $this->save();
             }
+            
+            $transtext->authors()->detach();
+            $transtext->authors()->attach($request_data['trans_authors']);
             return $transtext->id;
             
         } elseif ($transtext_id) {

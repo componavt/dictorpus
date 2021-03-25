@@ -58,8 +58,7 @@
         <tbody>
             @foreach($genres as $genre)
             <tr>
-                <!--td data-th="No">{{ $list_count++ }}</td-->
-                <td data-th="No">{{ $genre->sequence_number }}</td>
+                <td data-th="No">{{ User::checkAccess('corpus.edit') ? $genre->sequence_number : $list_count++ }}</td>
                 <td data-th="{{ trans('corpus.corpus') }}">{{$genre->corpus->name ?? ''}}</td>
                 <td data-th="{{ trans('corpus.parent') }}">{{$genre->parent->name ?? ''}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$genre->name_en}}</td>

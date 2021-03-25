@@ -93,9 +93,9 @@ return [
     'sentences' => 'Предложения',
     
     'source' => 'Источник',
-    'source_author' => 'Автор источника',
+    'source_author' => 'Автор публикации',
     'source_pages' => 'страницы',
-    'source_title' => 'Название источника',
+    'source_title' => 'Название публикации',
     'source_year' => 'год публикации',
     'symbol' => 'символ',
     
@@ -110,6 +110,7 @@ return [
     
     'title' => 'Заголовок',
     
+    'trans_author' => 'Автор перевода',
     'transtext_lang' => 'язык перевода',
     'transtext_text' => 'текст перевода',
     'transtext_title' => 'заголовок перевода',

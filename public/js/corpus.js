@@ -115,7 +115,8 @@ function saveInformant() {
     }); 
 }
 
-function addAuthor() {
+function addAuthor(author_field) {
+    $("#author_field").val(author_field);
     $("#modalAddAuthor").modal('show');
 }
 
@@ -128,18 +129,32 @@ function saveAuthor() {
         success: function(author){       
             $("#modalAddAuthor").modal('hide');
             if (author) {
-                var newOption = new Option(author[1], author[0], false, false);
-                $('#authors').append(newOption).trigger('change');
-                newOption.setAttribute('selected','selected')
+                modifyAuthorFierds(author);
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-console.log($( "#modalAddAuthor input" ).serializeArray());    
+//console.log($( "#modalAddAuthor input" ).serializeArray());    
             var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
                	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+')';
             alert(text);
         }
     }); 
+}
+
+function modifyAuthorFierds(author) {
+    var other_author_field = 'authors';
+    var author_field = $("#author_field").val();
+
+    var newOption = new Option(author[1], author[0], false, false);
+    $('#'+author_field).append(newOption).trigger('change');
+    newOption.setAttribute('selected','selected');
+
+    if (author_field === 'authors') {
+        other_author_field = 'trans_authors';
+    }
+    
+    var newOption = new Option(author[1], author[0], false, false);
+    $('#'+other_author_field).append(newOption).trigger('change');
 }
 
 function addRecorder() {
