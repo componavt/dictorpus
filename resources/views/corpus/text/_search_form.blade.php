@@ -69,7 +69,7 @@
                 ['name' => 'search_author', 
                  'values' => $author_values,
                  'value' => $url_args['search_author'],
-                 'title' => trans('corpus.author'),
+                 'title' => trans('corpus.author_or_trans'),
         ])                 
     </div>
     <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">

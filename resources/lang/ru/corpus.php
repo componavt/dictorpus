@@ -20,6 +20,7 @@ return [
     'add-wordform' => 'Добавить словоформу',
     'archive_krc' => 'ф/архив ИЯЛИ КарНЦ РАН',
     'author' => 'Автор текста',
+    'author_or_trans' => 'Автор текста или перевода',
     'author_removed' => 'Автор ":name" удален.',
     'birth_place' => 'место рождения',
     'birth_year' => 'г.р.',
