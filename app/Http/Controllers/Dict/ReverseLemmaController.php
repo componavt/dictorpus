@@ -97,8 +97,13 @@ class ReverseLemmaController extends Controller
 
         $groups = $gramset_heads = [];
         if ($url_args['search_lang'] && $url_args['search_pos'] && $url_args['search_dialect']) {
-            $groups = ReverseLemma::inflexionGroups($url_args['search_lang'], $url_args['search_pos'], $url_args['search_dialect']);
+            $gramsets = Gramset::dictionaryGramsets($url_args['search_pos'], NULL, $url_args['search_lang']);
+            array_unshift($gramsets, array_pop($gramsets));
+
+            $groups = ReverseLemma::inflexionGroups($url_args['search_lang'], $url_args['search_pos'], $url_args['search_dialect'], $gramsets);
+            
             $gramset_heads = Gramset::dictionaryGramsetNames($url_args['search_lang'], $url_args['search_pos']);
+            array_unshift($gramset_heads, array_pop($gramset_heads));
         }
 //dd($groups, $gramset_heads);        
         $lang_values = Lang::getListWithQuantity('reverseLemmas');

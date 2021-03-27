@@ -47,39 +47,51 @@ class ReverseLemma extends Model
         });
     }
     
-    public static function inflexionGroups($lang_id, $pos_id, $dialect_id) {
+    public static function inflexionGroups($lang_id, $pos_id, $dialect_id, $gramsets) {
         $groups = [];
         if (!$lang_id || !$dialect_id || ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs()))) {
             return $groups;
         }
-        $gramsets = Gramset::dictionaryGramsets($pos_id, NULL, $lang_id);
-        $last = array_pop($gramsets);   
-        array_unshift($gramsets,$last); 
+//        $gramsets = Gramset::dictionaryGramsets($pos_id, NULL, $lang_id);
+//        $last = array_pop($gramsets);   // drop initial gramset
+//        array_unshift($gramsets,$last); 
         
         $lemmas = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)->orderBy('lemma')->get();
         foreach ($lemmas as $lemma) {
             $affixes = [];
-            list($stem, $lemma_affix) = $lemma->getStemAffix();
-            for ($i=0; $i<sizeof($gramsets)-1; $i++) {
+//            list($stem, $lemma_affix) = $lemma->getStemAffix();
+            for ($i=0; $i<sizeof($gramsets); $i++) {
+                $wordforms = $lemma->wordforms()->wherePivot('gramset_id',$gramsets[$i])->wherePivot('dialect_id', $dialect_id)->get();
+//dd($wordforms);                
+                if (!$wordforms) {
+                    continue;
+                }
+                $aff = [];
+                foreach ($wordforms as $wordform) {
+                    if (!preg_match("/#/", $wordform->pivot->affix)) {
+                        $aff[]=$wordform->pivot->affix;
+                    }
+                }                
+/*                
                 $wordform = $lemma->wordform($gramsets[$i], $dialect_id);
                 if (!$wordform) {
                     continue;
                 }
-//if (preg_match("/,/",$wordform)) {dd($wordform); }               
-                $wordforms = preg_split("/,\s*/", $wordform);
-//if (preg_match("/,/",$wordform)) {dd($wordforms); }               
+                $wordforms = preg_split("/,\s*"."/", $wordform);
                 $aff = [];
                 foreach ($wordforms as $word) {
                     if (preg_match("/^".$stem."(.*)$/u", $word, $regs)) {
                         $aff[] = $regs[1] ?? '';
                     }
                 }
-//if (preg_match("/,/",$wordform)) {dd($aff); }                               
-                $affixes[$i] = join(", ", $aff);
+*/                
+                if (sizeof($aff)) {
+                    $affixes[$i] = join(", ", $aff);
+                }
             }
-            $affixes[3] = $lemma_affix;
-//dd($affixes);            
-            if (sizeof($affixes) == 4) {
+//            $affixes[3] = $lemma_affix;
+//dd($lemma->id, $affixes);            
+            if (sizeof($affixes) == sizeof($gramsets)) {
                 $groups[join('_',$affixes)][$lemma->id] = $lemma->lemma;
             }
         }
