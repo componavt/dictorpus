@@ -247,6 +247,27 @@ class PartOfSpeech extends Model
         return $out;
     }
     
+    public static function getChangeableListWithQuantity($method_name) {
+        $out = [];
+       
+        foreach (self::all() as $pos) {
+            if ($pos->isChangeable()) {
+                $count=0;
+                $pos_name = $pos->name;
+                if ($pos->$method_name()) {
+                    $count=$pos->$method_name()->count();
+                }
+                if ($count) {
+                    $pos_name .= " ($count)";
+                }
+                $out[$pos->id] = $pos_name;
+            }
+        } 
+//dd($out);
+        asort($out);
+        return $out;
+    }
+    
     public static function changeablePOSIdList() {
         $out = [];
         foreach (self::all() as $pos) {

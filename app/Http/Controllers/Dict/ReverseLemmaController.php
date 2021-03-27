@@ -106,8 +106,8 @@ class ReverseLemmaController extends Controller
             array_unshift($gramset_heads, array_pop($gramset_heads));
         }
 //dd($groups, $gramset_heads);        
-        $lang_values = Lang::getListWithQuantity('reverseLemmas');
-        $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        $lang_values = Lang::getListWithQuantity('reverseLemmas', true);
+        $pos_values = PartOfSpeech::getChangeableListWithQuantity('lemmas');
         $dialect_values = $url_args['search_lang'] ? ['NULL'=>''] + Dialect::getList($url_args['search_lang']) : ['NULL'=>''] + Dialect::getList();
 
         return view('dict.reverse_lemma.inflexion_groups',
