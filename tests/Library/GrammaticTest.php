@@ -312,7 +312,7 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
-    public function testverbWordformByStemsAndazin() {
+    public function testVerbWordformByStemsAndazin() {
         $lang_id = 4;
         $stems = [0=>'andua', 1=>'anna', 2=>'anda', 3=>'annoi', 4=>'ando', 5=>'anda', 6=>'anneta', 7=>'annett', 10=>true];
         $gramset_id = 44; //71. кондиционал, имперфект, 1 л., ед. ч., пол.

@@ -427,7 +427,8 @@ class VepsVerb
             case 89: // 28. индикатив, перфект, 1 л., мн.ч., +
             case 90: // 29. индикатив, перфект, 2 л., мн.ч., +
             case 91: // 30. индикатив, перфект, 3 л., мн.ч., +
-                return Grammatic::interLists($aux_verb, self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists($aux_verb, $dialect_id == 1 ? self::partic2passive($stems[0], $stems[6]) 
+                                                                         : self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
             case 92: // 31. индикатив, перфект, 1 л., ед.ч., -
             case 93: // 32. индикатив, перфект, 2 л., ед.ч., -
             case 94: // 33. индикатив, перфект, 3 л., ед.ч., -
@@ -435,7 +436,8 @@ class VepsVerb
             case 95: // 34. индикатив, перфект, 1 л., мн.ч., -
             case 96: // 35. индикатив, перфект, 2 л., мн.ч., -
             case 97: // 36. индикатив, перфект, 3 л., мн.ч., -
-                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb),  self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), $dialect_id == 1 ? self::partic2passive($stems[0], $stems[6]) 
+                                                                         : self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
         }
     }
     
@@ -451,7 +453,8 @@ class VepsVerb
             case 101: // 40. индикатив, плюсквамперфект, 1 л., мн.ч., +
             case 102: // 41. индикатив, плюсквамперфект, 2 л., мн.ч., +
             case 103: // 42. индикатив, плюсквамперфект, 3 л., мн.ч., +
-                return Grammatic::interLists($aux_verb, self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists($aux_verb, $dialect_id == 1 ? self::partic2passive($stems[0], $stems[6]) 
+                                                                         : self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
 
             case 104: // 43. индикатив, плюсквамперфект, 1 л., ед.ч., -
             case 105: // 44. индикатив, плюсквамперфект, 2 л., ед.ч., -
@@ -460,7 +463,8 @@ class VepsVerb
             case 108: // 46. индикатив, плюсквамперфект, 1 л., мн.ч., -
             case 106: // 47. индикатив, плюсквамперфект, 2 л., мн.ч., -
             case 109: // 48. индикатив, плюсквамперфект, 3 л., мн.ч., -
-                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
+                return Grammatic::interLists(Grammatic::interLists($neg_verb, $aux_verb), $dialect_id == 1 ? self::partic2passive($stems[0], $stems[6]) 
+                                                                         : self::partic2activePl($stems[0], $stems[1], $stems[5], $stems[6], $dialect_id));
         }
     }
     

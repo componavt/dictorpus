@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use App\Library\Grammatic;
 use App\Library\Grammatic\VepsVerb;
 
 // php artisan make:test Library/Grammatic/VepsVerbTest
@@ -138,4 +139,24 @@ class VepsVerbTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
 
+    
+    public function testWordformByStemsAbutada() {
+        $lang_id = 1;
+        $pos_id = 11;
+        $name_num = '';
+        $gramsets = [89, 96, 103, 108];
+        $dialect_id=1;
+        $is_reflexive = false;
+        $template = 'abut|ada (-ab, -i, -agha)';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive);
+        $result = [];
+        foreach ($gramsets as $gramset_id) {
+            $result[] = VepsVerb::wordformByStems($stems, $gramset_id, $dialect_id);
+        }
+        $expected = ['olem abutadud', 
+                     'ed olgii abutadud',
+                     'ol’d’he abutadud',
+                     'em oldud abutadud'];
+        $this->assertEquals( $expected, $result);        
+    }
 }
