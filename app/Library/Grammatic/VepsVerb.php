@@ -1293,6 +1293,8 @@ class VepsVerb
                 return $stem4. 'ižid';
             case 3: // южновепсский 
                 return self::condForSouth($stem4, 'ižid’');
+            case 5: // средневепсский западный 
+                return $stem4. 'ižid, '. $stem4. 'ižid’';
             default:
                 return $stem4. 'ižid’';
         }        

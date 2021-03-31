@@ -112,7 +112,7 @@ class Text extends Model
         $texts = self::searchByWid($texts, $url_args['search_wid']);
         $texts = self::searchByWord($texts, $url_args['search_word']);
         $texts = self::searchByText($texts, $url_args['search_text']);
-        $texts = self::searchByGenres($texts, $url_args['search_genre']);
+        $texts = self::searchByGenres($texts, $url_args['search_genre'], $url_args['search_without_genres']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
         
         if ($url_args['search_corpus']) {
@@ -153,10 +153,18 @@ class Text extends Model
                 });
     }
     
-    public static function searchByGenres($texts, $genres) {
+    public static function searchByGenres($texts, $genres, $without_genres=false) {
+        if ($without_genres) {
+        return $texts->whereNotIn('id',function($query){
+                    $query->select('text_id')
+                    ->from("genre_text");
+                });
+            
+        }
         if (!sizeof($genres)) {
             return $texts;
         }
+        
         return $texts->whereIn('id',function($query) use ($genres){
                     $query->select('text_id')
                     ->from("genre_text")
@@ -1452,12 +1460,17 @@ class Text extends Model
                     'search_sentence' => (int)$request->input('search_sentence'),
                     'search_title'    => $request->input('search_title'),
                     'search_wid'     => $request->input('search_wid'),
+                    'search_without_genres' => (boolean)$request->input('search_without_genres'),
                     'search_word'     => $request->input('search_word'),
                     'search_text'     => $request->input('search_text'),
 //                    'search_year'     => (int)$request->input('search_year'),
                     'search_year_from'=> (int)$request->input('search_year_from'),
                     'search_year_to'  => (int)$request->input('search_year_to'),
                 ];
+        
+        if ($url_args['search_without_genres']) {
+            $url_args['search_genre'] = [];
+        }
         
         return $url_args;
     }
