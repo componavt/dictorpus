@@ -48,9 +48,11 @@ class GenreController extends Controller
         $numAll = $genres->count();
 
         $genres = $genres->get();
+        $corpus_values = [NULL => ''] + Corpus::getListWithQuantity('genres');
         
         return view('corpus.genre.index', 
-                    compact('genres', 'numAll', 'args_by_get', 'url_args'));
+                    compact('corpus_values', 'genres', 'numAll', 
+                            'args_by_get', 'url_args'));
     }
 
     /**

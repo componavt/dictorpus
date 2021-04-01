@@ -105,6 +105,10 @@ class Genre extends Model
             $genres = $genres->where('id',$url_args['search_id']);
         }
 
+        if ($url_args['search_corpus']) {
+            $genres = $genres->where('corpus_id',$url_args['search_corpus']);
+        }
+
         return $genres;
     }
     
@@ -120,8 +124,9 @@ class Genre extends Model
     
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
+                    'search_corpus'   => (int)$request->input('search_corpus'),
+                    'search_id'  => (int)$request->input('search_id'),
                     'search_name' => $request->input('search_name'),
-                    'search_id'  => $request->input('search_id'),
                 ];
         
         return $url_args;

@@ -641,7 +641,11 @@ class VepsVerb
                     return 'ii';
                 }
             case 3: // южновепсский 
-                return 'ii';
+                if ($gramset_id == 112 || $gramset_id == 118) { // Cond Prs
+                    return 'ei';
+                } else {
+                    return 'ii';
+                }
             case 4: // средневепсский восточный 
                 if ($gramset_id ==94 || $gramset_id ==107) { // Perf, Plus
                     return '';

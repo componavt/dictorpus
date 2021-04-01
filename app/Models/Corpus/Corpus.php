@@ -42,22 +42,9 @@ class Corpus extends Model
         return $this->{$column};
     }
     
-    /** Gets lang, takes into account locale.
-     * 
-     * Corpus belongs_to Lang
-     * 
-     * @return Relationship, Query Builder
-     */
-    public function lang()
-    {
-        return $this->belongsTo(Lang::class);
-    }    
-    
-    // Corpus __has_many__ Texts
-    public function texts()
-    {
-        return $this->hasMany(Text::class);
-    }
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\Genres;
+    use \App\Traits\Relations\HasMany\Texts;
 
         
     /** Gets list of languages
