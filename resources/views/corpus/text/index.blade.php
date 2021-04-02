@@ -35,7 +35,7 @@
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.text._search'])
                                   
-        @include('corpus.text._search_form',['url' => '/corpus/text/']) 
+        @include('corpus.text._search_form') 
 
         @include('widgets.founded_records', ['numAll'=>$numAll])
         

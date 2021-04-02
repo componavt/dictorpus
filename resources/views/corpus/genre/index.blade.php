@@ -1,4 +1,4 @@
-<?php $list_count = 1;?>
+<?php $list_count=0; ?>
 @extends('layouts.page')
 
 @section('page_title')
@@ -21,36 +21,7 @@
         @endif
         </p>
         
-        {!! Form::open(['url' => '/corpus/genre/', 
-                             'method' => 'get']) 
-        !!}
-<div class="search-form row">
-    <div class="col-md-1">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_id', 
-                'value' => $url_args['search_id'],
-                'title'  => 'ID',
-                'attributes'=>['size' => 3]])
-    </div>
-    <div class="col-md-5">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_corpus', 
-                 'values' => $corpus_values,
-                 'value' => $url_args['search_corpus'],
-                 'title' => trans('corpus.corpus'),
-            ])
-    </div>
-    <div class="col-md-4">
-         @include('widgets.form.formitem._text', 
-                ['name' => 'search_name', 
-                'value' => $url_args['search_name'],
-                'title'  => trans('corpus.name')])
-    </div>
-    <div class="col-md-2"><br>
-        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
-    </div>
-</div>
-        {!! Form::close() !!}
+        @include('corpus.genre._search_form') 
 
         @include('widgets.founded_records', ['numAll'=>$numAll])
         
@@ -58,11 +29,15 @@
         <table class="table table-striped table-wide wide-md">
         <thead>
             <tr>
+                @if (User::checkAccess('corpus.edit'))
                 <th>No</th>
+                @endif
+                @if (!$url_args['search_corpus'])
                 <th>{{ trans('corpus.corpus') }}</th>
-                <th>{{ trans('corpus.parent') }}</th>
-                <th>{{ trans('messages.in_english') }}</th>
+                @endif
+                <!--th>{{ trans('corpus.parent') }}</th-->
                 <th>{{ trans('messages.in_russian') }}</th>
+                <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th>{{ trans('messages.actions') }}</th>
@@ -70,32 +45,18 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($genres as $genre)
-            <tr>
-                <td data-th="No">{{ User::checkAccess('corpus.edit') ? $genre->sequence_number : $list_count++ }}</td>
-                <td data-th="{{ trans('corpus.corpus') }}">{{$genre->corpus->name ?? ''}}</td>
-                <td data-th="{{ trans('corpus.parent') }}">{{$genre->parent->name ?? ''}}</td>
-                <td data-th="{{ trans('messages.in_english') }}">{{$genre->name_en}}</td>
-                <td data-th="{{ trans('messages.in_russian') }}">{{$genre->name_ru}}</td>
-                <td data-th="{{ trans('navigation.texts') }}">
-                @if($genre->texts)
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/?search_genre[]='.$genre->id) }}">{{ $genre->texts()->count() }}</a>
-                @endif
-                </td>
-                @if (User::checkAccess('corpus.edit'))
-                <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', 
-                            ['is_button'=>true, 
-                             'without_text' => 1,
-                             'route' => '/corpus/genre/'.$genre->id.'/edit'])
-                    @include('widgets.form.button._delete', 
-                            ['is_button'=>true, 
-                             'without_text' => 1,
-                             'route' => 'genre.destroy', 
-                             'args'=>['id' => $genre->id]])
-                </td>
-                @endif
-            </tr>
+            @foreach($genre_by_corpus as $corpus_name => $corpus_genres)
+                @for($i=1; $i<=sizeof($corpus_genres[0]); $i++)
+                  @if (isset($corpus_genres[0][$i-1]))
+                    <?php $genre=$corpus_genres[0][$i-1];?>
+                    @include('corpus.genre._row', ['count'=>$i, 'genre'=>$genre, 'with_div'=>0]) 
+                    @if (isset($corpus_genres[$genre->id]))
+                        @for($j=1; $j<=sizeof($corpus_genres[$genre->id]); $j++)
+                            @include('corpus.genre._row', ['count'=>"$i.$j", 'genre'=>$corpus_genres[$genre->id][$j-1], 'with_div'=>1]) 
+                        @endfor                    
+                    @endif
+                  @endif
+                @endfor
             @endforeach
         </tbody>
         </table>
