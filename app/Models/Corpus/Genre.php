@@ -53,10 +53,12 @@ class Genre extends Model
     
     public function numberInList() {
         $count = self::whereParentId($this->parent_id)
+            ->whereCorpusId($this->corpus_id)
             ->where('sequence_number', '<', $this->sequence_number)
             ->count();
         return ($this->parent_id ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->parent->numberInList().'.' : '').($count+1);
     }
+    
     /** Gets list of genres
      * 
      * @return Array [1=>'Bridal laments',..]
