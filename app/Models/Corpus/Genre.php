@@ -35,6 +35,11 @@ class Genre extends Model
         return $this->belongsTo(Genre::class, 'parent_id');
     }
     
+    public function children()
+    {
+        return $this->hasMany(Genre::class, 'id', 'parent_id');
+    }
+    
     /** Gets name of this genre, takes into account locale.
      * 
      * @return String
@@ -56,7 +61,7 @@ class Genre extends Model
             ->whereCorpusId($this->corpus_id)
             ->where('sequence_number', '<', $this->sequence_number)
             ->count();
-        return ($this->parent_id ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->parent->numberInList().'.' : '').($count+1);
+        return ($this->parent_id ? $this->parent->numberInList().'.' : '').($count+1);
     }
     
     /** Gets list of genres

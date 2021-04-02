@@ -47,6 +47,7 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.dialect') }}</th>
                 <th>{{ trans('corpus.corpus') }}</th>
+                <th>{{ trans('corpus.genre') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
                 @if (!$url_args['search_word'])
                 <th>{{ trans('messages.translation') }}</th>
@@ -72,6 +73,7 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
+                <td data-th="{{ trans('corpus.genre') }}">{{$text->genresToString()}}</td>
                 <td data-th="{{ trans('corpus.title') }}">
                     {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a>
@@ -134,6 +136,23 @@
     $(".multiple-select-corpus").select2();
     $(".multiple-select-genre").select2({
         width: '100%',
+        ajax: {
+          url: "/corpus/genre/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              corpus_id: selectedValuesToURL("#search_corpus")
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
     });
     
     $(".multiple-select-dialect").select2({

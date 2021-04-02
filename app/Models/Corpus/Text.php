@@ -164,7 +164,10 @@ class Text extends Model
         if (!sizeof($genres)) {
             return $texts;
         }
-        
+
+        foreach (Genre::whereIn('parent_id', $genres)->get() as $g) {
+            $genres[] = $g->id;
+        }
         return $texts->whereIn('id',function($query) use ($genres){
                     $query->select('text_id')
                     ->from("genre_text")
@@ -1574,5 +1577,15 @@ dd($s->saveXML());
         else :
             return nl2br($this->text);
         endif; 
+    }
+    
+    public function genresToString() {
+        $out = [];
+        foreach ($this->genres as $genre) {
+            $out[] = $genre->parent 
+                        ? $genre->parent->name . ' ('.$genre->name.')'
+                        : $genre->name;
+        }
+        return join(', ', $out);
     }
 }

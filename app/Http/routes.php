@@ -60,6 +60,7 @@ Route::group(
         
         Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
+        Route::get('corpus/genre/list', 'Corpus\GenreController@genreList');
         Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
         Route::get('corpus/place/store', 'Corpus\PlaceController@simpleStore');
         Route::get('corpus/recorder/store', 'Corpus\RecorderController@simpleStore');

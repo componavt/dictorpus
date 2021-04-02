@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
+use Response;
 //use DB;
 //use LaravelLocalization;
 
@@ -193,5 +194,37 @@ class GenreController extends Controller
             return Redirect::to('/corpus/genre/'.($this->args_by_get))
                   ->withSuccess($result['message']);
         }
+    }
+    
+    /**
+     * Gets list of places for drop down list in JSON format
+     * Test url: /corpus/genre/list?lang_id[]=1
+     * 
+     * @return JSON response
+     */
+    public function genreList(Request $request)
+    {
+        $genre_name = '%'.$request->input('q').'%';
+        $corpus_ids = (array)$request->input('corpus_id');
+
+        $list = [];
+        $genres = Genre::where(function($q) use ($genre_name){
+                            $q->where('name_en','like', $genre_name)
+                              ->orWhere('name_ru','like', $genre_name);
+                         });
+        if (sizeof($corpus_ids)) {                 
+            $genres = $genres -> whereIn('corpus_id',$corpus_ids);
+        }
+        
+        $genres = $genres->orderBy('sequence_number')->get();
+                         
+        foreach ($genres as $genre) {
+            $list[]=['id'  => $genre->id, 
+                     'text'=> $genre->numberInList(). '. '. $genre->name];
+        }  
+//dd($list);        
+//dd(sizeof($places));
+        return Response::json($list);
+
     }
 }
