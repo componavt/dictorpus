@@ -45,18 +45,8 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($genre_by_corpus as $corpus_name => $corpus_genres)
-                @for($i=1; $i<=sizeof($corpus_genres[0]); $i++)
-                  @if (isset($corpus_genres[0][$i-1]))
-                    <?php $genre=$corpus_genres[0][$i-1];?>
-                    @include('corpus.genre._row', ['count'=>$i, 'genre'=>$genre, 'with_div'=>0]) 
-                    @if (isset($corpus_genres[$genre->id]))
-                        @for($j=1; $j<=sizeof($corpus_genres[$genre->id]); $j++)
-                            @include('corpus.genre._row', ['count'=>"$i.$j", 'genre'=>$corpus_genres[$genre->id][$j-1], 'with_div'=>1]) 
-                        @endfor                    
-                    @endif
-                  @endif
-                @endfor
+            @foreach($genres as $genre)
+                @include('corpus.genre._row') 
             @endforeach
         </tbody>
         </table>

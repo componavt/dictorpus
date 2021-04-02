@@ -3,10 +3,10 @@
                 <td data-th="н/п">{{ $genre->sequence_number }}</td>
                 @endif
                 @if (!$url_args['search_corpus'])
-                <td data-th="{{ trans('corpus.corpus') }}">{{$corpus_name}}</td>
+                <td data-th="{{ trans('corpus.corpus') }}">{{$genre->corpus->name}}</td>
                 @endif
                 <!--td data-th="{{ trans('corpus.parent') }}">{{$genre->parent->name ?? ''}}</td-->
-                <td data-th="{{ trans('messages.in_russian') }}"{!!$with_div ? ' style="padding-left: 20px;"' : ''!!}>{{$count}}. {{$genre->name_ru}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$genre->numberInList()}}. {{$genre->name_ru}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$genre->name_en}}</td>
                 <td data-th="{{ trans('navigation.texts') }}">
                 @if($genre->texts)
