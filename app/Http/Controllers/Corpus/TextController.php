@@ -172,15 +172,12 @@ class TextController extends Controller
         }
         
         $labels = [];
-        
         foreach ($text->dialects as $dialect) {
             $labels[] = $dialect->name;
         }
-
-        foreach ($text->genres as $genre) {
-            $labels[] = $genre->name;
-        }
+        $labels[] = $text->genresToString();
         $labels = join(', ',$labels);
+        
         $pos_values = PartOfSpeech::getGroupedList();   
         $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
         $pos_id = PartOfSpeech::getIDByCode('Noun');
