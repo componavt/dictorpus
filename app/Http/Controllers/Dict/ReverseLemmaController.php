@@ -33,23 +33,7 @@ class ReverseLemmaController extends Controller
         $this->middleware('auth:dict.edit,/dict/reverse_lemma/', 
                           ['only' => ['tmpCreateAllReverse']]);
         
-        $this->url_args = [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
-                    'search_dialect'  => (int)$request->input('search_dialect'),
-                    'search_lang'     => (int)$request->input('search_lang'),
-                    'search_pos'      => (int)$request->input('search_pos'),
-                ];
-        
-        if (!$this->url_args['page']) {
-            $this->url_args['page'] = 1;
-        }
-        
-        if ($this->url_args['limit_num']<=0) {
-            $this->url_args['limit_num'] = 50;
-        } elseif ($this->url_args['limit_num']>1000) {
-            $this->url_args['limit_num'] = 1000;
-        }   
+        $this->url_args = ReverseLemma::urlArgs($request);  
         
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
@@ -100,7 +84,7 @@ class ReverseLemmaController extends Controller
             $gramsets = Gramset::dictionaryGramsets($url_args['search_pos'], NULL, $url_args['search_lang']);
             array_unshift($gramsets, array_pop($gramsets));
 
-            $groups = ReverseLemma::inflexionGroups($url_args['search_lang'], $url_args['search_pos'], $url_args['search_dialect'], $gramsets);
+            $groups = ReverseLemma::inflexionGroups($url_args['search_lang'], $url_args['search_pos'], $url_args['search_dialect'], $gramsets, $url_args['join_harmony']);
             
             $gramset_heads = Gramset::dictionaryGramsetNames($url_args['search_lang'], $url_args['search_pos']);
             array_unshift($gramset_heads, array_pop($gramset_heads));

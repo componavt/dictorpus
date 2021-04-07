@@ -135,6 +135,7 @@ return [
     'in_pos'=>'в :count частях речи',
     'infinitive' => 'инфинитив',
     'interpretation' => 'толкование',
+    'join_harmony' => 'объединить различающиеся только гармонией',
     'lang' => 'язык',
     'lang_code' => 'Код языка',
     'lang_from' => 'из языка',

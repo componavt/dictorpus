@@ -21,6 +21,32 @@ class KarNameTest extends TestCase
         $this->assertEquals( $expected, $result);     
     }
     
+    public function testStemsFromTemplateAika() {
+        $template = 'ai|ka [ja] ';
+        $name_num = '';
+        $pos_id=5;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [['aika', 'aija', 'aika', 'aikua', 'aijoi', 'aikoi', 'aika', 10=>TRUE], null, 'ai', 'ka'];
+        $this->assertEquals( $expected, $result);     
+    }
+
+    public function testWordformByStemsGenPlAika()
+    {
+        $template = 'ai|ka [ja] ';
+        $dialect_id=46; // северно-карельский
+        $lang_id=4;
+        $pos_id=5;
+        $gramset_id = 24; // ген. мн.ч.
+        $name_num = '';
+        list($stems, $name_num, $stem, $affix) = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+        $result = KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
+        
+        $expected = 'aikojen';
+        $this->assertEquals( $expected, $result);        
+    }
+    
     // plural noun, nom sg
     public function testWordformByStems_pl_nom_sg()
     {

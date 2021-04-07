@@ -17,6 +17,6 @@ class PatternSearch
                 $i++;
             }
         }
-        return '-'.mb_substr($str1, $i).'+'.mb_substr($str2, $i);
+        return [mb_substr($str1, $i), mb_substr($str2, $i)];
     }
 }

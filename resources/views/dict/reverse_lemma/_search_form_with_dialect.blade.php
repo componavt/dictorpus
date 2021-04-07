@@ -2,7 +2,7 @@
                         'method' => 'get'])
         !!}
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         @include('widgets.form.formitem._select',
                 ['name' => 'search_lang',
                  'values' =>$lang_values,
@@ -10,7 +10,7 @@
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]])
     </div>
         
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         @include('widgets.form.formitem._select2',
                 ['name' => 'search_dialect', 
                  'values' =>$dialect_values,
@@ -21,7 +21,7 @@
             ])
     </div>
         
-    <div class="col-sm-3">
+    <div class="col-sm-4">
             @include('widgets.form.formitem._select',
                     ['name' => 'search_pos',
                      'values' =>$pos_values,
@@ -29,7 +29,11 @@
                      'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
     </div>
     
-    <div class="col-sm-3 search-button-b">       
+    <div class="col-sm-8">
+        @include('widgets.form.formitem._checkbox', ['name' => 'join_harmony', 'title' => trans('dict.join_harmony')] )
+    </div>
+    
+    <div class="col-sm-4 search-button-b">       
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>                 

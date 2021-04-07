@@ -12,6 +12,8 @@ use App\Library\Experiments\PatternSearch;
 use App\Library\Str;
 use App\Library\Grammatic\KarGram;
 
+use App\Models\Dict\Dialect;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -25,10 +27,20 @@ class PatternSearchController extends Controller
     }
 */
     public function index() {
-        $pos_id = PartOfSpeech::getIDByCode('VERB');//NOUN
-        $lang_id = Lang::getIDByCode('vep');//krl
-        $dialect_id = 43;//46; //47
-        $gramset_id = 26;//3;
+        $pos_code = 'NOUN';
+        $pos_id = PartOfSpeech::getIDByCode($pos_code);
+        $pos = PartOfSpeech::getNameById($pos_id);
+        
+        $lang_code = 'krl';
+        $lang_id = Lang::getIDByCode($lang_code);
+        $lang = Lang::getNameByCode($lang_code);
+                
+        $dialect_code = 'krl-new';
+        $dialect_id = Dialect::getIDByCode($dialect_code);
+        $dialect = Dialect::getNameByID($dialect_id);
+        
+        $gramset_id = 3; //генетив
+        $gramset = Gramset::getStringByID($gramset_id);
         $lemmas = Lemma::whereLangId($lang_id)
                        ->wherePosId($pos_id)->orderBy('lemma')->get();
         $types=[];
@@ -39,14 +51,17 @@ print "<ol>";
                 continue;
             }
 //print "<li>".$lemma->lemma. ' - '. $wordform;            
-            $diff = PatternSearch::diff($lemma->lemma, $wordform);
+            list($m, $p) = PatternSearch::diff($lemma->lemma, $wordform);
 //dd($diff);            
-            $types[$diff] = isset($types[$diff]) ? 1+$types[$diff] : 1;
+            $types[$m]['all_count'] = isset($types[$m]['all_count']) ? 1+$types[$m]['all_count'] : 1;
+            $types[$m]['-'][$p]['count'] = isset($types[$m]['-'][$p]['count']) ? 1+$types[$m]['-'][$p]['count'] : 1;
+            $types[$m]['-'][$p]['lemmas'][] = $lemma->lemma;
+            $types[$m]['-'][$p]['wordforms'][] = $wordform;
         }
-        arsort($types);
-dd($types);        
+        $types=collect($types)->sortByDesc('all_count');
+//dd($types);        
 //dd($pos_id, $lang_id);        
-//        return view('experiments/pattern_search/index', compact());
+        return view('experiments/pattern_search/index', compact('gramset', 'types', 'pos', 'lang', 'dialect'));
     }
     
     /**

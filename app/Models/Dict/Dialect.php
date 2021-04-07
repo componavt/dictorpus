@@ -47,6 +47,17 @@ class Dialect extends Model
         return $this->{$column};
     }
 
+    /** Gets ID of this dialect by code.
+     * 
+     * @return int
+     */
+    public static function getIDByCode($code) : Int
+    {
+        $dialect = self::where('code',$code)->first();
+        if ($dialect) {
+            return $dialect->id;
+        }
+    }
     /** Gets name of dialects  by ID,
      * 
      * @param $id - dialect ID

@@ -123,6 +123,7 @@ return [
     'impersonal' => 'impersonal',
     'infinitive' => 'infinitive',
     'interpretation' => 'interpretation',
+    'join_harmony' => 'unite different only in harmony ',
     'lang' => 'language',
     'lang_code' => 'Language code',
     'lang_from' => 'from the language',

@@ -2,7 +2,9 @@
 
 namespace App\Models\Dict;
 
-use DB;
+//use DB;
+
+use App\Library\Str;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -47,7 +49,7 @@ class ReverseLemma extends Model
         });
     }
     
-    public static function inflexionGroups($lang_id, $pos_id, $dialect_id, $gramsets) {
+    public static function inflexionGroups($lang_id, $pos_id, $dialect_id, $gramsets, $join_harmony) {
         $groups = [];
         if (!$lang_id || !$dialect_id || ($pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs()))) {
             return $groups;
@@ -68,8 +70,10 @@ class ReverseLemma extends Model
                 }
                 $aff = [];
                 foreach ($wordforms as $wordform) {
-                    if (!preg_match("/#/", $wordform->pivot->affix)) {
-                        $aff[]=$wordform->pivot->affix;
+                    $affix = $wordform->pivot->affix;
+                    if (!preg_match("/#/", $affix)) {
+                        $aff[]=!$join_harmony ? $affix
+                                : preg_replace(['/a/','/ä/','/o/','/ö/','/u/','/y/'], ['A','A','O','O','U','U'], $affix);
                     }
                 }                
 /*                
@@ -109,5 +113,18 @@ class ReverseLemma extends Model
         }
         $this->save();
         return $this->stem. $this->affix;
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_dialect'  => (int)$request->input('search_dialect'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_pos'      => (int)$request->input('search_pos'),
+                    'join_harmony'    => (boolean)$request->input('join_harmony'),
+                ];
+        
+        return $url_args;
     }
 }
