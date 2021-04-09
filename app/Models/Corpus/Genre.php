@@ -58,7 +58,7 @@ class Genre extends Model
     
     public function numberInList() {
         $count = self::whereParentId($this->parent_id)
-            ->whereCorpusId($this->corpus_id)
+//            ->whereCorpusId($this->corpus_id)
             ->where('sequence_number', '<', $this->sequence_number)
             ->count();
         return ($this->parent_id ? $this->parent->numberInList().'.' : '').($count+1);
