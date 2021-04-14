@@ -3,7 +3,6 @@
 //use Illuminate\Foundation\Testing\WithoutMiddleware;
 //use Illuminate\Foundation\Testing\DatabaseMigrations;
 //use Illuminate\Foundation\Testing\DatabaseTransactions;
-use TestCase;
 
 use App\Models\Corpus\Text;
 

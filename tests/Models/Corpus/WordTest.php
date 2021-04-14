@@ -3,7 +3,7 @@
 //use Illuminate\Foundation\Testing\WithoutMiddleware;
 //use Illuminate\Foundation\Testing\DatabaseMigrations;
 //use Illuminate\Foundation\Testing\DatabaseTransactions;
-use TestCase;
+//use TestCase;
 
 use App\Models\Corpus\Word;
 // ./vendor/bin/phpunit tests/Models/Dict/WordTest.php

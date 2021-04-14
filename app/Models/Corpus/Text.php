@@ -651,8 +651,9 @@ class Text extends Model
                 list($str,$word_count) = Sentence::markup($sentence,$word_count);
 //                $str = str_replace('¦', '', $str);
                 $sentences[$sen_count] = "<s id=\"".$sen_count.'">'.$str.$desc_out[2][$k]."</s>\n";
-                $text_xml .= $by_sentences ? "<s id=\"".$sen_count++.'"/>'
+                $text_xml .= $by_sentences ? "<s id=\"".$sen_count.'"/>'
                                                  : $sentences[$sen_count];
+                $sen_count++;
                 $div = trim($desc_out[3][$k]);
                 $text_xml .= $div ? $div."\n" : '';
             }

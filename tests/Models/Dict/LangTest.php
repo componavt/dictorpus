@@ -19,7 +19,7 @@ class LangTest extends TestCase
     public function testProjectLangIDs()
     {
         $result = Lang::projectLangIDs();
-        $expected = [1, 4, 5, 6];
+        $expected = [1, 5, 6, 4];
         $this->assertEquals( $expected, $result);        
     }
 }
