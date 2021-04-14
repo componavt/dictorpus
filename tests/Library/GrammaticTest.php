@@ -1345,7 +1345,7 @@ class GrammaticTest extends TestCase
             277=>'pezovienny',  5=>'pezoviekse', 6=>'pezoviettäh', 8=>'pezovies',  
             9=>'pezovies, pezoviespäi', 10=>'pezovedeh',  11=>'pezoviel', 
             12=>'pezoviel, pezovielpäi', 13=>'pezoviele', 14=>'pezovienke', 
-            15=>'pezovieči', 17=>'pezovielluo', 16=>'pezoviessäh',
+            15=>'pezovieči', 17=>'pezoviellyö', 16=>'pezoviessäh',
             
             2=>'pezoviet', 57=>'pezoviet', 24=>'pezovezien, pezovezilöin', 22=>'pezovezii, pezovezilöi', 
             279=>'pezovezinny, pezovezilöinny', 59=>'pezovezikse, pezovezilöikse', 
@@ -1354,7 +1354,7 @@ class GrammaticTest extends TestCase
             25=>'pezovezil, pezovezilöil', 62=>'pezovezil, pezovezilpäi, pezovezilöil, pezovezilöilpäi', 
             63=>'pezovezile, pezovezilöile', 65=>'pezovezienke, pezovezinneh, pezovezilöinke, pezovezilöinneh', 
             66=>'pezoveziči, pezovezilöiči', 281=>'pezovezin, pezovezilöin', 
-            18=>'pezovezilluo, pezovezilöilluo', 67=>'pezovezissäh, pezovezilöissäh'];
+            18=>'pezovezillyö, pezovezilöillyö', 67=>'pezovezissäh, pezovezilöissäh'];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1556,12 +1556,12 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'lyhyt', 56=>'lyhyt, lyhyön', 3=>'lyhyön',  4=>'lyhytty', 277=>'lyhyönny',  
                      5=>'lyhyökse', 6=>'lyhyöttäh', 8=>'lyhyös',  9=>'lyhyös, lyhyöspäi', 10=>'lyhyöh',  
-                     11=>'lyhyöl', 12=>'lyhyöl, lyhyölpäi', 13=>'lyhyöle', 14=>'lyhyönke', 15=>'lyhyöči', 17=>'lyhyölluo', 16=>'lyhyössäh',
+                     11=>'lyhyöl', 12=>'lyhyöl, lyhyölpäi', 13=>'lyhyöle', 14=>'lyhyönke', 15=>'lyhyöči', 17=>'lyhyöllyö', 16=>'lyhyössäh',
  
             2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyzien', 22=>'lyhyzii', 279=>'lyhyzinny', 
             59=>'lyhyzikse', 64=>'lyhyzittäh', 23=>'lyhyzis', 60=>'lyhyzis, lyhyzispäi', 61=>'lyhyzih',  
             25=>'lyhyzil', 62=>'lyhyzil, lyhyzilpäi', 63=>'lyhyzile', 
-            65=>'lyhyzienke, lyhyzinneh', 66=>'lyhyziči', 281=>'lyhyzin', 18=>'lyhyzilluo', 67=>'lyhyzissäh'];
+            65=>'lyhyzienke, lyhyzinneh', 66=>'lyhyziči', 281=>'lyhyzin', 18=>'lyhyzillyö', 67=>'lyhyzissäh'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1593,12 +1593,12 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'vezi',  56=>'vezi, vien', 3=>'vien',  4=>'vetty', 277=>'vienny',  
                      5=>'viekse', 6=>'viettäh', 8=>'vies',  9=>'vies, viespäi', 10=>'vedeh',  
-                     11=>'viel', 12=>'viel, vielpäi', 13=>'viele', 14=>'vienke', 15=>'vieči', 17=>'vielluo', 16=>'viessäh',
+                     11=>'viel', 12=>'viel, vielpäi', 13=>'viele', 14=>'vienke', 15=>'vieči', 17=>'viellyö', 16=>'viessäh',
  
             2=>'viet', 57=>'viet', 24=>'vezien', 22=>'vezii', 279=>'vezinny', 
             59=>'vezikse', 64=>'vezittäh', 23=>'vezis', 60=>'vezis, vezispäi', 61=>'vezih',  
             25=>'vezil', 62=>'vezil, vezilpäi', 63=>'vezile', 
-            65=>'vezienke, vezinneh', 66=>'veziči', 281=>'vezin', 18=>'vezilluo', 67=>'vezissäh'];
+            65=>'vezienke, vezinneh', 66=>'veziči', 281=>'vezin', 18=>'vezillyö', 67=>'vezissäh'];
         $this->assertEquals( $expected, $result);        
     }
     

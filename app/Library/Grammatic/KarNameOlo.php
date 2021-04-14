@@ -41,8 +41,6 @@ class KarNameOlo
                 return $stems[1] ? $stems[1].'nke' : '';
             case 15: // пролатив, ед.ч. 
                 return $stems[1] ? $stems[1].'či' : '';
-            case 17: //аппроксиматив, ед.ч. 
-                return $stems[1] ? $stems[1].'lluo' : '';
         }
         
         if (!isset($stems[10])) { return ''; }
@@ -51,6 +49,8 @@ class KarNameOlo
                 return $stems[1] ? $stems[1].'nn'. KarGram::garmVowel($stems[10],'u') : '';
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1].'tt'. KarGram::garmVowel($stems[10],'a'). 'h' : '';
+            case 17: //аппроксиматив, ед.ч. 
+                return $stems[1] ? $stems[1].'ll'. KarGram::garmVowel($stems[10],'uo') : '';
             case 16: //терминатив, ед.ч. 
                 return $stems[1] ? $stems[1].'ss'. KarGram::garmVowel($stems[10],'a'). 'h' : '';
         }
@@ -82,8 +82,6 @@ class KarNameOlo
                 return self::addEndToMultiBase($stems[4], 'či');
             case 281: // инструктив, мн.ч. 
                 return self::addEndToMultiBase($stems[4], 'n');                       
-            case 18: //аппроксиматив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'lluo');
         }
         
         if (!isset($stems[10])) { return ''; }
@@ -92,6 +90,8 @@ class KarNameOlo
                 return self::addEndToMultiBase($stems[4], 'nn'. KarGram::garmVowel($stems[10],'u'));
             case 64: // абессив, мн.ч. 
                 return self::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[10],'a'). 'h');        
+            case 18: //аппроксиматив, мн.ч. 
+                return self::addEndToMultiBase($stems[4], 'll'. KarGram::garmVowel($stems[10],'uo'));
             case 67: //терминатив, мн.ч. 
                 return self::addEndToMultiBase($stems[4], 'ss'. KarGram::garmVowel($stems[10],'a'). 'h');        
         }

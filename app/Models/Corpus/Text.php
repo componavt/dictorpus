@@ -635,7 +635,7 @@ class Text extends Model
         $sen_count = $word_count = 1;
         $sentences = [];
 
-        if (preg_match_all("/(.+?)(\||\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…{1,})(\s|(<br(| \/)>\s*){1,}|$)[^\^]/is", // :|
+        if (preg_match_all("/(.+?)(\||\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…{1,})(\s|(<br(| \/)>\s*)+?|$)/is", // :| //
                            $text, $desc_out)) {
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
                 $sentence = trim($desc_out[1][$k]);
@@ -660,7 +660,7 @@ class Text extends Model
                 $text_xml .= $div ? $div."\n" : '';
             }
         }
-
+//dd($text_xml);
         return $by_sentences ? [trim($text_xml), $sentences] : trim($text_xml);
     }
     
@@ -1201,7 +1201,7 @@ class Text extends Model
         $sent_obj = Sentence::getBySid($text_id, $sentence_id);
         if (!$text || !$sent_obj) { return NULL; }
         
-        return ['s' => preg_replace('/[¦\^]/', '', $sent_obj->text_xml), 
+        return ['s' => preg_replace('/[¦^]/', '', $sent_obj->text_xml), 
                 's_id' => $sentence_id,
                 'text' => $text, 
                 'trans_s' => $text->getTransSentence($sentence_id),
@@ -1567,7 +1567,7 @@ dd($s->saveXML());
             $this->text_xml = $this->text_structure;
             $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
             foreach ($sentences as $s) {
-                $s->text_xml = preg_replace('/[¦\^]/', '', $s->text_xml);
+                $s->text_xml = preg_replace('/[¦^]/', '', $s->text_xml);
                 $this->text_xml = preg_replace("/\<s id=\"".$s->s_id."\"\/\>/", 
 //                        '<sup>'.$s->id.'</sup>'.
                         $s->text_xml, $this->text_xml);                
