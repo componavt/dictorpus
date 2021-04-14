@@ -64,12 +64,12 @@
                  'help_text' =>trans('corpus.text_help'),
                  'attributes' => $attr,
                 ])
-        @if ($action == 'edit')
+{{--        @if ($action == 'edit')
             @include('widgets.form.formitem._textarea', 
                     ['name' => 'text_xml', 
                      'special_symbol' => true,
                      'title'=>trans('corpus.text_xml')])
-        @endif
+        @endif --}}
     </div>
     <div class="col-sm-6">
         <?php $transtext_lang_id_value = ($action=='edit' && $text->transtext) ? ($text->transtext->lang_id) : NULL; ?>
@@ -102,13 +102,13 @@
                  'value' => $transtext_text_value,
                  'title'=>trans('corpus.transtext_text')])
                  
-        @if ($action=='edit')
+<?php /*       @if ($action=='edit')
             <?php $transtext_text_xml_value = ($text->transtext) ? ($text->transtext->text_xml) : NULL; ?>
             @include('widgets.form.formitem._textarea', 
                     ['name' => 'transtext.text_xml', 
                      'value' => $transtext_text_xml_value,
                      'title'=>trans('corpus.text_xml')])
-        @endif        
+        @endif        */ ?>
     </div>
 </div>                 
 <div class="row">
