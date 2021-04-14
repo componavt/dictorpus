@@ -616,7 +616,8 @@ class Text extends Model
             $text .= '.';
             $pseudo_end = true;
         }
-        return [nl2br($text), $pseudo_end];
+        $text = str_replace("\r\n", "\n", nl2br($text));
+        return [$text, $pseudo_end];
     }
 
     /**
@@ -634,21 +635,30 @@ class Text extends Model
         $text_xml = '';
         $sen_count = $word_count = 1;
         $sentences = [];
+        $prev='';
 
-        if (preg_match_all("/(.+?)(\||\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…{1,})(\s|(<br(| \/)>\s*)+?|$)/is", // :| //
+        if (preg_match_all("/(.+?)(\||\.|\?|!|\.»|\?»|!»|\.\"|\?\"|!\"|\.”|\?”|!”|…{1,})(\s|(\<br \/\>\n)+?|$)/is", // :| //
                            $text, $desc_out)) {
             for ($k=0; $k<sizeof($desc_out[1]); $k++) {
-                $sentence = trim($desc_out[1][$k]);
+                $sentence = $prev.trim($desc_out[1][$k]);
+                
+                if ($k == sizeof($desc_out[1])-1 && $pseudo_end || $desc_out[2][$k] == '|') {
+                    $desc_out[2][$k] = '';
+                }
+
+                
+                if ($k<sizeof($desc_out[1])-1 && preg_match("/^\s*\^/", $desc_out[1][$k+1])) {
+                    $prev = $sentence.$desc_out[2][$k];
+                    continue;
+                }
+                
+                $prev = '';
 
                 // <br> in in the beginning of the string is moved before the sentence
                 if (preg_match("/^(<br(| \/)>)(.+)$/is",$sentence,$regs)) {
                     $text_xml .= $regs[1]."\n";
                     $sentence = trim($regs[3]);
                 }
-                if ($k == sizeof($desc_out[1])-1 && $pseudo_end || $desc_out[2][$k] == '|') {
-                    $desc_out[2][$k] = '';
-                }
-
                 // division on words
                 list($str,$word_count) = Sentence::markup($sentence,$word_count);
 //                $str = str_replace('¦', '', $str);

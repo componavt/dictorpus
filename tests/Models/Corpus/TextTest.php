@@ -109,6 +109,45 @@ class TextTest extends TestCase
         $this->assertEquals( $expected_xml, $result_xml);
     }
     
+    public function testMarkupTextWithBR()
+    {
+        $source_text   = "Nu a sid d’o tännä lähted lidnad lähembä ka Suoluz mägi tuli. 
+
+Suoluz mägeh tulet siid d’o lidne.";
+//dd($source_text);        
+/*        list($text, $pseudo_end) = Text::preProcessText(trim($source_text));
+dd($text);        */
+        $expected_xml  = '<s id="1"><w id="1">Nu</w> <w id="2">a</w> <w id="3">sid</w> <w id="4">d’o</w> <w id="5">tännä</w> <w id="6">lähted</w> <w id="7">lidnad</w> '
+                       . '<w id="8">lähembä</w> <w id="9">ka</w> <w id="10">Suoluz</w> <w id="11">mägi</w> <w id="12">tuli</w>.</s>'."\n".'<br />'."\n"
+                       . '<s id="2"><br />'."\n"
+                       . '<w id="13">Suoluz</w> <w id="14">mägeh</w> <w id="15">tulet</w> <w id="16">siid</w> <w id="17">d’o</w> <w id="18">lidne</w>.</s>';
+        
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+//dd($result_xml);        
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
+    public function testMarkupTextWithJoinSentences()
+    {
+        $source_text   = "Nu a sid d’o tännä lähted lidnad lähembä ka Suoluz mägi tuli. ^
+
+Suoluz mägeh tulet siid d’o lidne.";
+//dd($source_text);        
+/*        list($text, $pseudo_end) = Text::preProcessText(trim($source_text));
+dd($text);        */
+        $expected_xml  = '<s id="1"><w id="1">Nu</w> <w id="2">a</w> <w id="3">sid</w> <w id="4">d’o</w> <w id="5">tännä</w> <w id="6">lähted</w> <w id="7">lidnad</w> '
+                       . '<w id="8">lähembä</w> <w id="9">ka</w> <w id="10">Suoluz</w> <w id="11">mägi</w> <w id="12">tuli</w>.^'."<br />\n<br />\n"
+                       . '<w id="13">Suoluz</w> <w id="14">mägeh</w> <w id="15">tulet</w> <w id="16">siid</w> <w id="17">d’o</w> <w id="18">lidne</w>.</s>';
+        
+        $text = new Text();
+        $result_xml = $text->markupText($source_text);
+//dd($result_xml);        
+
+        $this->assertEquals( $expected_xml, $result_xml);
+    }
+    
     public function testMarkupSentenceWithComma()
     {
         $source_text   = "kelel, literaturas, Kodima-lehteses.";
@@ -147,8 +186,8 @@ class TextTest extends TestCase
     {
         $source_text   = "Sid’ susedas Kalag’-posadas jo koumanden kerdan mäni ”Vepsän sarn”-
 festival’-konkurs.";
-        $expected_xml  = '<s id="1"><w id="1">Sid’</w> <w id="2">susedas</w> <w id="3">Kalag’-posadas</w> <w id="4">jo</w> <w id="5">koumanden</w> <w id="6">kerdan</w> <w id="7">mäni</w> ”<w id="8">Vepsän</w> <w id="9">sarn</w>”-<br />
-<w id="10">festival’-konkurs</w>.</s>';
+        $expected_xml  = '<s id="1"><w id="1">Sid’</w> <w id="2">susedas</w> <w id="3">Kalag’-posadas</w> <w id="4">jo</w> <w id="5">koumanden</w> <w id="6">kerdan</w> <w id="7">mäni</w> ”<w id="8">Vepsän</w> <w id="9">sarn</w>”-<br />'
+                       . "\n".'<w id="10">festival’-konkurs</w>.</s>';
         $text = new Text();
         $result_xml = $text->markupText($source_text);
 
