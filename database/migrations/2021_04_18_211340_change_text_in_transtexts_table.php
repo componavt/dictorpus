@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTextStructureInTexts extends Migration
+class ChangeTextInTranstextsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class AddTextStructureInTexts extends Migration
      */
     public function up()
     {
-        Schema::table('texts', function (Blueprint $table) {
-            $table->text('text_structure')->nullable();
+        Schema::table('transtexts', function (Blueprint $table) {
+            $table->text('text')->nullable()->change();
         });
     }
 
@@ -24,8 +24,8 @@ class AddTextStructureInTexts extends Migration
      */
     public function down()
     {
-        Schema::table('texts', function (Blueprint $table) {
-            $table->dropColumn('text_structure');
+        Schema::table('transtexts', function (Blueprint $table) {
+            $table->text('text')->change();
         });
     }
 }

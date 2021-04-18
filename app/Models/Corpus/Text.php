@@ -1002,6 +1002,7 @@ class Text extends Model
             $markup_text = $this->text_xml;
         }
         list($sxe,$error_message) = self::toXML($markup_text,'');
+//dd($markup_text);        
         if ($error_message) {
             return $markup_text;
         }
@@ -1588,9 +1589,8 @@ dd($s->saveXML());
             return $this->setLemmaLink($this->text_xml, 
                     $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
                     true, $url_args['search_wid'] ?? null);
-        else :
-            return nl2br($this->text);
         endif; 
+        return nl2br($this->text);
     }
     
     public function genresToString() {
