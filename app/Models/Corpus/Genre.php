@@ -68,11 +68,17 @@ class Genre extends Model
      * 
      * @return Array [1=>'Bridal laments',..]
      */
-    public static function getList()
+    public static function getList($corpus_id=NULL)
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $genres = self::orderBy('name_'.$locale)->get();
+        $genres = self::orderBy('name_'.$locale);
+        
+        if ($corpus_id) {        
+            $genres = $genres->whereCorpusId($corpus_id);
+        }
+        
+        $genres = $genres->get();
         
         $list = array();
         foreach ($genres as $row) {

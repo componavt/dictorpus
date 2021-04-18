@@ -22,7 +22,7 @@
                  'values' =>$genre_values,
                  'value' => $genre_value,
                  'title' => trans('navigation.genres'),
-                 'class'=>'multiple-select form-control'
+                 'class'=>'multiple-select-genre form-control'
             ])
     </div>
 </div>                 

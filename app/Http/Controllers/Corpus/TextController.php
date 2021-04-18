@@ -243,7 +243,7 @@ class TextController extends Controller
         $dialect_values = Dialect::getList();
         $dialect_value = $text->dialectValue();
 
-        $genre_values = Genre::getList();        
+        $genre_values = Genre::getList($text->corpus_id);        
         $genre_value = $text->genreValue();
 
         $region_values = Region::getList();

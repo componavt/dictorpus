@@ -350,7 +350,7 @@ class Text extends Model
         $this->genres()->detach();
         $this->genres()->attach($request->genres);
         
-        if ($request->text && ($old_text != $request->text || !$this->text_xml)) {
+        if ($request->text && ($old_text != $request->text || !$this->text_structure)) {
             $error_message = $this->markup();
         }
 
@@ -389,7 +389,8 @@ class Text extends Model
      */
     public function storeTranstext($request_data){
         $is_empty_data = true;
-        if ($request_data['transtext_title'] && $request_data['transtext_text']) {
+//        if ($request_data['transtext_title'] && $request_data['transtext_text']) {
+        if ($request_data['transtext_title']) {
             $is_empty_data = false;
         }
 //dd($is_empty_data);
