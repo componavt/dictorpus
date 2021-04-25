@@ -15,10 +15,14 @@ if (isset($with_links) && $with_links) {
     $sentence['s'] = $sentence['text']->setLemmaLink($sentence['s'], null, null, true, $sentence['w_id']); 
 } else {
     list($sxe,$error_message) = \App\Models\Corpus\Text::toXML($sentence['s'],$count);
-    $w = $sxe->xpath('//w[@id="'.$sentence['w_id'].'"]');
-    if (isset($w[0])) {
-        $w[0]->addAttribute('class','word-marked');
-        $sentence['s'] = $sxe->asXML();
+    if (!$sxe) {
+        print $error_message;
+    } else {
+        $w = $sxe->xpath('//w[@id="'.$sentence['w_id'].'"]');
+        if (isset($w[0])) {
+            $w[0]->addAttribute('class','word-marked');
+            $sentence['s'] = $sxe->asXML();
+        }
     }
 }
 ?>
