@@ -53,6 +53,11 @@
         <tr>
             <td>{{trans('stats.total_checked_words')}}</td><td>{{$total_checked_words}}</td>
         </tr>
+        @foreach($lang_marked['checked'] as $lang_name => $lang_num) 
+        <tr>
+            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}}</td>
+        </tr>
+        @endforeach
         <tr>
             <td>{{trans('stats.checked_words_to_marked')}}</td><td>{{$checked_words_to_marked}} %</td>
         </tr>
