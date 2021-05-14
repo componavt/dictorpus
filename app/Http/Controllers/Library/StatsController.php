@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Library;
 use App\Http\Controllers\Controller;
 
 use App\Charts\DistributionChart;
+use App\Charts\LemmaNumByLang;
 
 use App\Models\User;
 use App\Models\Corpus\Corpus;
