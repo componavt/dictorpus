@@ -13,7 +13,7 @@ class AddFieldInReverseLemmaTable extends Migration
     public function up()
     {
         Schema::table('reverse_lemmas', function (Blueprint $table) {
-            $table->string('inflexion', 10)->nullable()->collate('utf8_bin');
+            $table->string('inflexion', 10)->nullable()->collation('utf8_bin');
         });
     }
 

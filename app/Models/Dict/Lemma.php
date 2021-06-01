@@ -130,6 +130,14 @@ class Lemma extends Model
         return $obj->lemma;
     }
     
+    public static function getPOSidById($id) {
+        $obj = self::find($id);
+        if (!$obj) {
+            return FALSE;
+        }
+        return $obj->pos_id;
+    }
+    
     /**
      * @return Array of bases
      */

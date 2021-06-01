@@ -20,7 +20,7 @@ class CreateSentencesTable extends Migration
 
             $table->integer('s_id')->unsigned();
             
-            $table->binary('text_xml')->collate('utf8_bin');
+            $table->binary('text_xml')->collation('utf8_bin');
             
             //$table->timestamps();
             $table->timestamp('updated_at')->useCurrent();

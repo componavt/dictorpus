@@ -14,7 +14,7 @@ class CreateReverseLemmasTable extends Migration
     {
         Schema::create('reverse_lemmas', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('reverse_lemma', 100)->collate('utf8_bin');
+            $table->string('reverse_lemma', 100)->collation('utf8_bin');
             
             // lemma
 //            $table->integer('lemma_id')->unsigned();
@@ -24,7 +24,7 @@ class CreateReverseLemmasTable extends Migration
             $table->smallInteger('lang_id')->unsigned();
             $table->     foreign('lang_id')->references('id')->on('langs');
             
-            $table->string('stem', 100)->collate('utf8_bin');
+            $table->string('stem', 100)->collation('utf8_bin');
 
             //$table->timestamps();
         });

@@ -13,7 +13,7 @@ class AddWordformForSearchInLemmaWordform extends Migration
     public function up()
     {
         Schema::table('lemma_wordform', function (Blueprint $table) {
-            $table->string('wordform_for_search', 100)->collate('utf8_unicode_ci');
+            $table->string('wordform_for_search', 100)->collation('utf8_unicode_ci');
         });
     }
 

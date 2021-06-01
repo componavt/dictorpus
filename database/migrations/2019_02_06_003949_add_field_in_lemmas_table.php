@@ -13,7 +13,7 @@ class AddFieldInLemmasTable extends Migration
     public function up()
     {
         Schema::table('lemmas', function (Blueprint $table) {
-            $table->string('lemma_for_search', 100)->collate('utf8_unicode_ci');
+            $table->string('lemma_for_search', 100)->collation('utf8_unicode_ci');
         });
     }
 

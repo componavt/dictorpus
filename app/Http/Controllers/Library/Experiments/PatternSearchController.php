@@ -17,15 +17,17 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+//use App\Models\Dict\LemmaWordform;
+//use App\Models\Dict\Wordform;
 
 class PatternSearchController extends Controller
 {
-/* нет редактирования, можно открыть
- *     public function __construct()
+      public function __construct()
     {
-        $this->middleware('auth:dict.edit,/'); 
+        $this->middleware('auth:dict.edit,/experiments/', 
+                          ['only' => ['inWordforms']]);
     }
-*/
+
     public function index() {
         $pos_code = 'NOUN';
         $pos_id = PartOfSpeech::getIDByCode($pos_code);
@@ -197,4 +199,68 @@ print "<ol>";
         return view('experiments/vowel_gradation/verb_imp_3sg', compact('lemmas'));
     }
     
+    public function inWordforms() {
+/*        $pos_code = 'NOUN';
+        $pos_id = PartOfSpeech::getIDByCode($pos_code);
+        $pos = PartOfSpeech::getNameById($pos_id);*/
+        
+        $lang_code = 'krl';
+        $lang_id = Lang::getIDByCode($lang_code);
+                
+        $dialect_code = 'krl-new-tvr';
+        $dialect_id = Dialect::getIDByCode($dialect_code);
+        
+        $dubles = [1=>56, 2=>57, 52=>55, 74=>77, 282=>297, 24=>281, 181=>298, 51=>295];
+/*        $wordforms = LemmaWordform::whereDialectId($dialect_id)
+                                  ->groupBy('lemma_id', 'wordform_id')
+                                  ->havingRaw('count(*)>1')                                  
+                                  ->whereNotIn('gramset_id', array_values($dubles))
+                                  ->get();
+        $gramsets = [];
+        foreach ($wordforms as $wordform) {
+            $wordgramsets = LemmaWordform::whereDialectId($dialect_id)
+                                ->whereWordformId($wordform->wordform_id)
+                                ->whereLemmaId($wordform->lemma_id)
+                                ->whereNotIn('gramset_id', array_values($dubles))
+                                ->orderBy('gramset_id')->get();
+            $tmp=[];
+            foreach ($wordgramsets as $gramset) {
+                $tmp[$gramset->gramset_id] = Gramset::getStringByID($gramset->gramset_id);
+            }
+            $g = join('_', array_keys($tmp)).'='.join('_', array_values($tmp));
+            $gramsets[$g] = isset($gramsets[$g]) ? 1+ $gramsets[$g] : 1;
+        }
+        arsort($gramsets);
+dd($gramsets);     */   
+        PatternSearch::letterGroups($lang_id, $dialect_id, '', 5, $dubles);
+print "done.";        
+//dd($let_groups);       
+    }
+    
+    public function inWordformsResults() {
+        $lang_code = 'krl';
+        $lang_id = Lang::getIDByCode($lang_code);
+        $lang = Lang::getNameByCode($lang_code);
+                
+        $dialect_code = 'krl-new-tvr';
+        $dialect_id = Dialect::getIDByCode($dialect_code);
+        $dialect = Dialect::getNameByID($dialect_id);
+        
+        $dubles = [1=>56, 2=>57, 52=>55, 74=>77, 282=>297, 24=>281, 181=>298, 51=>295];
+        $patterns_coll = DB::table('pattern_search')//->select('ending', 'pos_id', 'gramset_id', 'count')
+                      ->whereDialectId($dialect_id)
+//                      ->groupBy('ending')
+                      ->orderBy('end_reverse')->get();
+        $patterns = [];
+        foreach ($patterns_coll as $pattern) {
+            $patterns[$pattern->ending][]
+                    =['pos_id'=>$pattern->pos_id,
+                      'gramset_id'=> $pattern->gramset_id,
+                      'count'=> $pattern->count];
+        }
+        return view('experiments/pattern_search/in_wordforms', 
+                compact('patterns', 'lang', 'dialect', 'dubles', 'lang_id', 'dialect_id'));
+    }
+    
+        
 }

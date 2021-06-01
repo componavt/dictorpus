@@ -10,4 +10,7 @@
 <p><a href="/experiments/vowel_gradation/verb_imp_3sg">Поиск закономерностей в чередовании гласных глаголов</a></p>
 <p><a href="/experiments/prediction_by_analog">Предсказание леммы и грамсета по аналогии</a></p>
 <p><a href="/experiments/pattern_search">Поиск закономерностей в формировании словоформ</a></p>
+<p>Поиск закономерностей в анализе словоформ для тверского словаря</p>
+<li><a href="/experiments/pattern_search_in_wordforms">сформировать множество</a></li>
+<li><a href="/experiments/pattern_search_in_wordforms_results">посмотреть результаты</a></li>
 @endsection

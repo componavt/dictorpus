@@ -20,7 +20,7 @@ class CreateWordsTable extends Migration
 
             $table->integer('sentence_id')->unsigned();
             $table->integer('w_id')->unsigned();
-            $table->string('word', 255)->collate('utf8_bin');
+            $table->string('word', 255)->collation('utf8_bin');
             
             //$table->timestamps();
         });

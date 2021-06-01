@@ -19,7 +19,7 @@ class CreateWordformsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             
             // Index -------------------
-            $table->index('wordform')->collate('utf8_bin');
+            $table->index('wordform')->collation('utf8_bin');
         });
     }
 
