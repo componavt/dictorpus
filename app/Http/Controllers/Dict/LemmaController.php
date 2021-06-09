@@ -903,7 +903,7 @@ class LemmaController extends Controller
         foreach ($lemmas_for_lang as $lemma) {
             $lang_values[$lemma->lang_id] = $lemma->lang->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
         }
-
+//dd($lemmas_for_lang);
         $lemmas_for_pos = Lemma::selectFromMeaningText()
                                ->select('pos_id', DB::raw('count(*) as frequency'))
                                ->whereNotNull('pos_id')

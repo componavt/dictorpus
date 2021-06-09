@@ -19,7 +19,7 @@ $attributes['id'] = $name;
     @endif
     {!! Form::checkbox($name, $value, $checked, $attributes) !!}
     @if($tail)
-	<label for="{{$name}}">{{ $tail }}</label>
+	<label for="{{$name}}" style='font-weight: normal'>{{ $tail }}</label>
     @endif
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

@@ -1307,6 +1307,7 @@ dd($wordforms);
         $lemmas = self::searchByConcept($lemmas, $url_args['search_concept']);
         $lemmas = self::searchByConceptCategory($lemmas, $url_args['search_concept_category']);
         $lemmas = self::searchByDialects($lemmas, $url_args['search_dialects']);
+        $lemmas = self::searchWithExamples($lemmas, $url_args['with_examples']);
 
         $lemmas = $lemmas
                 //->groupBy('lemmas.id') // отключено, неправильно показывает общее число записей
@@ -1395,10 +1396,24 @@ dd($wordforms);
         return $lemmas->whereIn('id',function($query) use ($meaning){
                     $query->select('lemma_id')
                         ->from('meanings')
-                        ->whereIn('id',function($query) use ($meaning){
-                            $query->select('meaning_id')
+                        ->whereIn('id',function($q) use ($meaning){
+                            $q->select('meaning_id')
                             ->from('meaning_texts')
                             ->where('meaning_text','like', $meaning);
+                        });
+                    });
+    }
+    
+    public static function searchWithExamples($lemmas, $with_meanings) {
+        if (!$with_meanings) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($q){
+                            $q->select('meaning_id')->from('meaning_text')
+                              ->where('relevance', '>', 0);
                         });
                     });
     }
@@ -1797,6 +1812,7 @@ dd($wordforms);
                     'search_pos'      => (int)$request->input('search_pos'),
                     'search_relation' => (int)$request->input('search_relation'),
                     'search_wordform' => $request->input('search_wordform'),
+                    'with_examples' => (int)$request->input('with_examples')
                 ];
         
         if (!$url_args['search_id']) {

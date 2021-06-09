@@ -75,6 +75,14 @@
                  'value' => $url_args['search_concept'],
                  'class'=>'select-concept form-control']) 
     </div>
+    <div class="col-sm-4{{$url_args['with_examples'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'with_examples',
+                'value' => 1,
+                'checked' => $url_args['with_examples']==1,
+                'tail'=>trans('dict.with_examples')]) 
+                <br>        
+    </div>
         
     <div class="col-sm-4 search-button-b">       
         <span>{{trans('messages.show_by')}}</span>
