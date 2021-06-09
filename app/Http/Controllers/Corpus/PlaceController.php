@@ -269,7 +269,7 @@ class PlaceController extends Controller
 
         $place_name = '%'.$request->input('q').'%';
         $lang_ids = (array)$request->input('lang_id');
-//        $lemma_id = (int)$request->input('lemma_id');
+        $with_meanings = (boolean)$request->input('with_meanings');
 
         $list = [];
         $places = Place::where(function($q) use ($place_name){
@@ -286,7 +286,21 @@ class PlaceController extends Controller
                         });
         }
         
-        $places = $places->orderBy('name_'.$locale)->get();
+        if ($with_meanings) {
+            $places = $places->whereIn('id',function ($query) use ($lang_ids) {
+                $query->select('place_id')->from('meaning_place')
+                      ->whereIn('meaning_id', function($q1) use ($lang_ids) {
+                        $q1->select('id')->from('meanings')
+                           ->whereIn('lemma_id', function($q2) use ($lang_ids) {
+                            $q2->select('id')->from('lemmas')
+                               ->whereIn('lang_id',$lang_ids);
+                          });
+                      });
+            });            
+        }
+        
+        $places = $places->orderBy('name_'.$locale)->get();//->pluck('name_'.$locale, 'id')->toArray();
+//        return Response::json($places);
                          
         foreach ($places as $place) {
             $list[]=['id'  => $place->id, 

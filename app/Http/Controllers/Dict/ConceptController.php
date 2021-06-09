@@ -235,18 +235,32 @@ class ConceptController extends Controller
     public function SOSD(Request $request)
     {
         $locale = LaravelLocalization::getCurrentLocale();
-        $search_lang='6';
+        $search_lang=$request->input('search_lang') ?? 6;
         $search_lang_name = Lang::getNameById($search_lang);
         
-        $places = Place::whereIn('id',function ($query) use ($search_lang) {
-            $query->select('place_id')->from('dialect_place')
-                  ->whereIn('dialect_id',function ($q1) use ($search_lang) {
-                    $q1->select('id')->from('dialects')
-                       ->where('lang_id',$search_lang);
-                  });
-        })->pluck('name_'.$locale, 'id')->toArray();
-//dd($places);        
-        
+        $place_values = Place::whereIn('id',function ($query) use ($search_lang) {
+                $query->select('place_id')->from('dialect_place')
+                      ->whereIn('dialect_id',function ($q1) use ($search_lang) {
+                        $q1->select('id')->from('dialects')
+                           ->where('lang_id',$search_lang);
+                      });
+            })->whereIn('id',function ($query) use ($search_lang) {
+                $query->select('place_id')->from('meaning_place')
+                      ->whereIn('meaning_id', function($q1) use ($search_lang) {
+                        $q1->select('id')->from('meanings')
+                           ->whereIn('lemma_id', function($q2) use ($search_lang) {
+                            $q2->select('id')->from('lemmas')
+                               ->where('lang_id',$search_lang);
+                          });
+                      });
+            })->pluck('name_'.$locale, 'id')->toArray();
+            
+        $search_places=(array)$request->input('search_places');
+        $search_places=array_intersect($search_places, array_keys($place_values));
+        if (!sizeof($search_places)) {
+            $search_places = array_keys($place_values);
+        }
+//dd($search_places, $place_values);        
         $concepts = Concept::orderBy('text_'.$locale)->pluck('text_'.$locale, 'id')->toArray();
         $concept_lemmas = [];
 //dd($concepts);        
@@ -254,8 +268,8 @@ class ConceptController extends Controller
         foreach($concepts as $concept_id => $concept_text) {  
 //dd($concept_id);            
             $count = 0;
-            foreach ($places as $place_id => $place_name) {
-                $concept_lemmas[$concept_text][$place_name] = [];
+            foreach ($search_places as $place_id) {
+                $concept_lemmas[$concept_text][$place_values[$place_id]] = [];
                 $lemma_coll = Lemma::whereLangId($search_lang)
                     ->whereIn('id', function ($query) use ($concept_id, $place_id) {
                         $query->select('lemma_id')->from('meanings')
@@ -277,7 +291,7 @@ class ConceptController extends Controller
                     }
                     $lemmas[$lemma->id] = $phonetic;
                 }
-                $concept_lemmas[$concept_text][$place_name]=$lemmas;
+                $concept_lemmas[$concept_text][$place_values[$place_id]]=$lemmas;
                 $count += sizeof($lemmas);
             }
             if (!$count) {
@@ -285,8 +299,12 @@ class ConceptController extends Controller
             }
         } 
 //dd($concept_lemmas);  
-        $place_names = array_values($places);
+        $place_names = array_values($search_places);
+//        $place_values = Place::getList(); //[NULL => ''] + 
+        $lang_values = Lang::getProjectList();
+        
         return view('dict.concept.sosd', 
-                compact('concept_lemmas', 'search_lang_name', 'place_names'));
+                compact('concept_lemmas', 'search_lang_name', 
+                        'search_lang', 'search_places', 'lang_values', 'place_values'));
     }
 }

@@ -51,6 +51,7 @@
         </tbody>
         </table>
         @endif
+<p><a href="/stats/by_genre">{{trans('stats.distribution_by_genres')}}</a></p>
 @stop
 
 @section('footScriptExtra')

@@ -112,6 +112,16 @@ class Lang extends Model
         return $list;         
     }
         
+    public static function getProjectList()
+    {     
+        $list = array();
+        foreach (self::projectLangs() as $row) {
+            $list[$row->id] = $row->name;
+        }
+        
+        return $list;         
+    }
+    
     /** Gets list of languages in the certain order: $first_lang, Russian, English, the others in alfabetic order
      * 
      * @return Array [1=>'Vepsian',..]
