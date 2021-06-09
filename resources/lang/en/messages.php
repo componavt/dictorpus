@@ -43,6 +43,7 @@ return [
     'including' => 'including',
     'invalid_id' => 'Invalid identifier',
     'limit_num' => 'number of records',
+    'name' => 'Name',
     'of' => 'of',
     'photo' => 'image',
     'records' => 'records',
