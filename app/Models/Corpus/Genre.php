@@ -98,18 +98,31 @@ class Genre extends Model
         $out = [];
         $locale = LaravelLocalization::getCurrentLocale();
 
-        $genres = self::orderBy('name_'.$locale)->get();
-                
+        $genres = self::whereParentId(0)
+                      ->orderBy('name_'.$locale)->get();
+        $genre_groups = [];        
         foreach ($genres as $genre) {   
-            $genre_id=$genre->id;
+            $genre_groups[$genre->name] = array_merge([$genre->id],
+                        self::whereParentId($genre->id)
+                          ->get()->pluck('id')->toArray());
+            
+        }
+
+        foreach ($genre_groups as $genre_name=>$genres) {   
+            $for_all=Text::whereIn('id', function ($query) use ($genres) {
+                            $query->select('text_id')->from('genre_text')
+                                  ->whereIn('genre_id', $genres);
+                        })->count();
+            if (!$for_all) {
+                continue;
+            }            
             foreach (Lang::projectLangs() as $lang) {
                 $num_texts = Text::whereLangId($lang->id)
-                        ->whereIn('id', function ($query) use ($genre_id) {
+                        ->whereIn('id', function ($query) use ($genres) {
                             $query->select('text_id')->from('genre_text')
-                                  ->whereGenreId($genre_id);
-                        })
-                        ->count();
-                $out[$lang->name][$genre->name] = number_format($num_texts, 0, ',', ' ');
+                                  ->whereIn('genre_id', $genres);
+                        })->count();
+                $out[$lang->name][$genre_name] = number_format($num_texts, 0, ',', ' ');
             }
         }
         return $out;

@@ -27,10 +27,20 @@ class StatsController extends Controller
 {
     public function index()
     {
+        return view('stats.index');
+    }
+    
+    public function byUser()
+    {
         $total_users = User::count(); 
+        $total_editors = User::whereIn('id', function ($q) {
+                            $q->select('user_id')->from('role_users')
+                              ->whereIn('role_id', [1,4]);
+                        })->count(); 
         $total_active_editors = User::countActiveEditors(); 
-        return view('stats.index')
+        return view('stats.by_user')
                 ->with(['total_users' => number_format($total_users, 0, ',', ' '),
+                        'total_editors' => number_format($total_editors, 0, ',', ' '),
                         'total_active_editors' => number_format($total_active_editors, 0, ',', ' ')]);
     }
     
@@ -87,6 +97,17 @@ class StatsController extends Controller
         $total_places = Place::count();
         $total_recorders = Recorder::count();
         
+        return view('stats.by_corp')
+                ->with([
+                        'total_informants' => number_format($total_informants, 0, ',', ' '),
+                        'total_places' => number_format($total_places, 0, ',', ' '),
+                        'total_recorders' => number_format($total_recorders, 0, ',', ' '),
+                        'total_texts' => number_format($total_texts, 0, ',', ' '),
+                       ]);
+    }    
+    
+    public function byCorpMarkup()
+    {
         $total_words = Word::count(); 
         $total_marked_words = Word::countMarked();
         $marked_words_to_all = 100*$total_marked_words/$total_words;
@@ -99,7 +120,7 @@ class StatsController extends Controller
         $total_examples = Text::countExamples();
         $checked_examples_to_all = 100*$total_checked_examples/$total_examples;
                 
-        return view('stats.by_corp')
+        return view('stats.by_corp_markup')
                 ->with([
                         'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
                         'checked_words_to_marked' => number_format($checked_words_to_marked, 2,',', ' '),
@@ -108,10 +129,6 @@ class StatsController extends Controller
                         'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
                         'total_checked_words' => number_format($total_checked_words, 0, ',', ' '),
                         'total_examples' => number_format($total_examples, 0, ',', ' '),
-                        'total_informants' => number_format($total_informants, 0, ',', ' '),
-                        'total_places' => number_format($total_places, 0, ',', ' '),
-                        'total_recorders' => number_format($total_recorders, 0, ',', ' '),
-                        'total_texts' => number_format($total_texts, 0, ',', ' '),
                         'total_words' => number_format($total_words, 0, ',', ' '),
                         'total_marked_words' => number_format($total_marked_words, 0, ',', ' '),
                        ]);
