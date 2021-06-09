@@ -75,7 +75,6 @@
     <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_year_from', 
-                 'help_func' => 'callHelpYear()',
                  'value' => $url_args['search_year_from'] ? $url_args['search_year_from'] : '',
                  'title' => trans('messages.year_from')
                 ])                               
@@ -83,6 +82,7 @@
     <div class="col-md-2{{$url_args['search_year_to'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_year_to', 
+                 'help_func' => 'callHelpYear()',
                  'value' => $url_args['search_year_to'] ? $url_args['search_year_to'] : '',
                  'title' => trans('messages.year_to')
                 ])                               
