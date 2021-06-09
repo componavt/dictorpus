@@ -1,7 +1,7 @@
         {!! Form::open(['url' => '/corpus/text/', 
                              'method' => 'get']) 
         !!}
-<div class="show-search-form">Расширенный поиск &#8595;</div>
+<div class="show-search-form">{{trans('messages.advanced_search')}} &#8595;</div>
 <div class="search-form search-text">        
 <div class="row">
     <div class="col-md-4">
@@ -120,5 +120,5 @@
     </div>
 </div>                 
 </div>
-<div class="hide-search-form">Простой поиск &#8593;</div>
+<div class="hide-search-form">{{trans('messages.simple_search')}} &#8593;</div>
         {!! Form::close() !!}

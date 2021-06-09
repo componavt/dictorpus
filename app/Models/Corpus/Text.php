@@ -299,18 +299,24 @@ class Text extends Model
             return $texts;
         }
         $year_from = $year_from ? $year_from : 1;
-        $year_to = $year_to ? $year_to : 1000;
-        
-        return $texts->where(function ($q) use ($year_from, $year_to) {
-                $q->whereIn('event_id',function($query) use ($year_from, $year_to){
+        $year_to = $year_to ? $year_to : 3000;
+
+        return $texts->where(function ($query1) use ($year_from, $year_to) {
+            $query1->where(function ($q) use ($year_from, $year_to) {
+                $q->whereNotNull('event_id')
+                  ->whereIn('event_id',function($query) use ($year_from, $year_to){
                     $query->select('id')->from('events')
                     ->where('date', '>=', $year_from)
                     ->where('date', '<=', $year_to);
-                   })->orWhereIn('source_id',function($query) use ($year_from, $year_to){
-                    $query->select('id')->from('sources')
-                    ->where('year', '>=', $year_from)
-                    ->where('year', '<=', $year_to);
                    });
+                })->orWhere(function ($q) use ($year_from, $year_to) {
+                    $q->whereNull('event_id')
+                      ->WhereIn('source_id',function($query) use ($year_from, $year_to){
+                        $query->select('id')->from('sources')
+                        ->where('year', '>=', $year_from)
+                        ->where('year', '<=', $year_to);
+                        });                                       
+                   });                   
         });
     }
     

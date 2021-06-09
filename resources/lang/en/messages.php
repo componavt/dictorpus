@@ -11,6 +11,7 @@ return [
     */
     
     'actions' => 'Actions',
+    'advanced_search'=> 'Advanced Search',
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
     'bin_answer_0' => 'no',
@@ -55,6 +56,7 @@ return [
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',
     'show_by' => 'by',
+    'simple_search'=> 'Simple Search',
     'special_symbols' => 'special symbols',
     'text_exists' => 'There is a text associated with this entry',
     'informant_exists' => 'There is an informant associated with this entry',

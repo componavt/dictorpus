@@ -11,6 +11,7 @@ return [
     */
 
     'actions' => 'Действия',
+    'advanced_search'=> 'Расширенный поиск',
     'back_to_list' => 'Вернуться к списку',
     'back_to_show' => 'Вернуться к просмотру',
     'bin_answer_0' => 'нет',
@@ -59,6 +60,7 @@ return [
     'seq_num' => 'п/н',
     'sequence_number' => 'No в списке',
     'show_by' => 'по',
+    'simple_search'=> 'Простой поиск',
     'special_symbols' => 'специальные символы',
     'text_exists' => 'Существует текст, связанный с этой записью',
     'to' => 'на',

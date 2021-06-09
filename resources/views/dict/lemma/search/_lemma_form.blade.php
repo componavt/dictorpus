@@ -1,7 +1,7 @@
         {!! Form::open(['url' => $url,
                         'method' => 'get'])
         !!}
-<div class="show-search-form">Расширенный поиск &#8595;</div>
+<div class="show-search-form">{{trans('messages.advanced_search')}} &#8595;</div>
 <div class="row search-form">
     <div class="col-sm-1">
             @include('widgets.form.formitem._text',
@@ -86,7 +86,7 @@
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>      
-<div class="hide-search-form">Простой поиск &#8593;</div>
+<div class="hide-search-form">{{trans('messages.simple_search')}} &#8593;</div>
         {!! Form::hidden('search_label', $url_args['search_label']) !!}        
         {!! Form::close() !!}
 
