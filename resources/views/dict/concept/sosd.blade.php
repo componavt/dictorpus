@@ -74,7 +74,6 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
-    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
