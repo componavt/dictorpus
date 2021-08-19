@@ -15,6 +15,7 @@ use App\Library\Grammatic\VepsName;
 use App\Library\Service;
 use App\Library\Str;
 
+use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
@@ -773,6 +774,27 @@ print "</ol>";
 print 'done';        
     }
 
+    /**
+     * update texts set checked=0;
+     */
+    public function tmpSequenceNumbersForWords() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $sentence = Sentence::orderBy('id')->whereChecked(0)->first();
+            if ($sentence) {
+                $sentence->numerateWords();
+exit(0);               
+                $sentence->checked=1;
+                $sentence->save();
+            } else {
+                $is_all_checked = true;
+            }
+        }
+print 'done';        
+    }
 
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms

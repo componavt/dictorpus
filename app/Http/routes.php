@@ -218,7 +218,7 @@ Route::group(
         Route::get('service/tmp_fill_wordform_for_search', 'Library\ServiceController@tmpFillWordformForSearch');
         Route::get('service/tmp_fill_genres', 'Library\ServiceController@tmpFillGenres');
         Route::get('service/tmp_split_into_sentences', 'Library\ServiceController@tmpSplitTextsIntoSentences');
-        
+        Route::get('service/tmp_sequence_numbers_for_words', 'Library\ServiceController@tmpSequenceNumbersForWords');
         
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');

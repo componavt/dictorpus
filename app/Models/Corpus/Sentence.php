@@ -131,4 +131,18 @@ class Sentence extends Model
         $sentence->save();
     }
 
+    public function numerateWords() {
+        $count=1;
+dd($this->text_xml);        
+        list($sxe,$error_message) = Text::toXML($this->text_xml, $this->s_id);
+        if ($error_message) { dd($error_message); }
+//dd($sxe->children()->s->w);        
+        foreach ($sxe->children()->s->w as $w) {
+            $w_id = (int)$w->attributes()->id;
+            $word = Word::getByTextWid($this->text_id, $w_id); 
+//dd($word);            
+            $word->sequence_number = $count++;
+            $word->save();
+        }       
+    }
 }
