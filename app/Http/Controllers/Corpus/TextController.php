@@ -211,7 +211,7 @@ class TextController extends Controller
                 foreach ($sxe->xpath('//s') as $s) {
                     $trans_sentences[(int)$s->attributes()->id] = $s->asXML();
                 }
-            }
+            } 
         }
 
         return view('corpus.text.sentences',

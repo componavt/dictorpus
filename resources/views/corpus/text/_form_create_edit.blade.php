@@ -64,6 +64,12 @@
                  'help_text' =>trans('corpus.text_help'),
                  'attributes' => $attr,
                 ])
+        @if ($action == 'edit')
+            @include('widgets.form.formitem._textarea', 
+                    ['name' => 'text_structure', 
+                     'special_symbol' => true,
+                     'title'=>trans('corpus.text_xml')])
+        @endif                
 {{--        @if ($action == 'edit')
             @include('widgets.form.formitem._textarea', 
                     ['name' => 'text_xml', 

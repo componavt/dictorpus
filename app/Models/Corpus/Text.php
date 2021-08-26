@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
-//use DOMDocument;
 
 use App\Library\Grammatic;
 use App\Library\Str;
@@ -19,9 +18,7 @@ use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
-//use App\Models\Dict\Lang;
 use App\Models\Dict\Meaning;
-//use App\Models\Dict\MeaningText;
 use App\Models\Dict\Wordform;
 
 class Text extends Model
@@ -327,7 +324,7 @@ class Text extends Model
         $old_text = $text->text;
 //dd($request->text);
 
-        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml'));
+        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml','text_structure'));
 //        $text->fill($request->only('corpus_id','lang_id','title','text_xml'));
 //        $text->text = $text->processTextBeforeSaving($request->text);
 //dd($text->text);
@@ -999,16 +996,20 @@ class Text extends Model
     /**
      * Gets markup text with links from words to related lemmas
 
-     * @param string $markup_text 
-     * @param string $search_word 
-     * @return string markup text
+     * @param string $markup_text     - text with markup tags
+     * @param string $search_word     - string of searching word
+     * @param string $search_sentence - ID of searching sentence object
+     * @param boolean $with_edit      - 1 if it is the edit mode
+     * @param int $search_w           - ID of searching word object
+     * 
+     * @return string                 - transformed text with markup tags
      **/
     public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=null){
         if (!$markup_text) {
             $markup_text = $this->text_xml;
         }
         list($sxe,$error_message) = self::toXML($markup_text,'');
-//dd($markup_text);        
+//dd($error_message, $markup_text);        
         if ($error_message) {
             return $markup_text;
         }
@@ -1587,17 +1588,29 @@ dd($s->saveXML());
         */
     }
     
-    public function textForPage($url_args) {       
+    /**
+     * Преобразует текст перед выводом на отдельной странице (Text show).
+     * Собирает предложения и расставляет блоки со ссылками на леммы 
+     * и вызов функций редактирования.
+     * 
+     * @param array $url_args
+     * @return string
+     */
+    public function textForPage($url_args) { 
+//mb_internal_encoding("UTF-8");
+//mb_regex_encoding("UTF-8");        
         if ($this->text_structure) :
             $this->text_xml = $this->text_structure;
             $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
             foreach ($sentences as $s) {
-                $s->text_xml = preg_replace('/[¦^]/', '', $s->text_xml);
-                $this->text_xml = preg_replace("/\<s id=\"".$s->s_id."\"\/\>/", 
+                $s->text_xml = mb_ereg_replace('[¦^]', '', $s->text_xml);
+//dd($s->text_xml);                
+                $this->text_xml = mb_ereg_replace("\<s id=\"".$s->s_id."\"\/\>", 
 //                        '<sup>'.$s->id.'</sup>'.
                         $s->text_xml, $this->text_xml);                
             }
         endif; 
+//dd($this->text_xml);        
         if ($this->text_xml) :
             return $this->setLemmaLink($this->text_xml, 
                     $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
