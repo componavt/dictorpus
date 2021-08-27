@@ -756,7 +756,9 @@ class Text extends Model
 //                $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();                
 //            }
             
-            DB::statement("DELETE FROM words WHERE w_id=$w_id and sentence_id<>$s_id and text_id=".(int)$this->id);
+            $cond = "w_id=$w_id and sentence_id<>$s_id and text_id=".(int)$this->id;
+            DB::statement("DELETE FROM words WHERE $cond");
+            DB::statement("DELETE FROM meaning_text WHERE $cond");
             
             $the_same_word = isset($checked_sent_words[$word_count]['w']) && $word_for_search==$checked_sent_words[$word_count]['w'];
 //            if ($set_meanings) {
