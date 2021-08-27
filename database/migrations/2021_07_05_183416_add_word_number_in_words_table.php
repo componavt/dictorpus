@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSequenceNumberInWordsTable extends Migration
+class AddWordNumberInWordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddSequenceNumberInWordsTable extends Migration
     public function up()
     {
         Schema::table('words', function (Blueprint $table) {
-            $table->tinyInteger('sequence_number')->unsigned();
+            $table->tinyInteger('word_number')->unsigned();
         });
     }
 
@@ -25,7 +25,7 @@ class AddSequenceNumberInWordsTable extends Migration
     public function down()
     {
         Schema::table('words', function (Blueprint $table) {
-            $table->dropColumn('sequence_number');
+            $table->dropColumn('word_number');
         });
     }
 }

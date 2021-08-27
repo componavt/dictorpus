@@ -52,7 +52,7 @@
     <p><a href="service/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
     <p><a href="service/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>
     <p><a href="service/tmp_split_into_sentences">Разбить тексты на предложения</a>.</p>
-    <p><a href="service/tmp_sequence_numbers_for_words">Пронумеровать слова в предложениях</a>.</p>
+    <p><a href="service/tmp_word_numbers_for_words">Пронумеровать слова в предложениях</a>.</p>
     @endif
     
 @endsection

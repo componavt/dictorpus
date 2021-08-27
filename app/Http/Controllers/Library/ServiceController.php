@@ -775,9 +775,9 @@ print 'done';
     }
 
     /**
-     * update texts set checked=0;
+     * update sentences set checked=0;
      */
-    public function tmpSequenceNumbersForWords() {
+    public function tmpWordNumbersForWords() {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         
@@ -786,9 +786,9 @@ print 'done';
             $sentence = Sentence::orderBy('id')->whereChecked(0)->first();
             if ($sentence) {
                 $sentence->numerateWords();
-exit(0);               
                 $sentence->checked=1;
                 $sentence->save();
+//dd($sentence->id);
             } else {
                 $is_all_checked = true;
             }

@@ -19,7 +19,7 @@ class Word extends Model
 {
     public $timestamps = false;
     
-    protected $fillable = ['text_id', 'sentence_id', 'w_id', 'word', 'sequence_number'];
+    protected $fillable = ['text_id', 'sentence_id', 'w_id', 'word', 'word_number'];
     
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Text;
