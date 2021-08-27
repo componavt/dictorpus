@@ -752,6 +752,10 @@ class Text extends Model
             } else {
                 $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();
             }
+            
+            $word_obj->word_number = $word_count;
+            $word_obj->save();
+            
             $the_same_word = isset($checked_sent_words[$word_count]['w']) && $word_for_search==$checked_sent_words[$word_count]['w'];
             if ($set_meanings) {
                 $word_obj->setMeanings($the_same_word ? $checked_sent_words[$word_count]['meanings'] : [], $this->lang_id);
