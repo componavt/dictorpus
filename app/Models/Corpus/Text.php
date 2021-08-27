@@ -718,7 +718,6 @@ class Text extends Model
         DB::statement("DELETE FROM meaning_text WHERE sentence_id=$s_id and $where_text");
         DB::statement("DELETE FROM text_wordform WHERE w_id in (select w_id from words where sentence_id=$s_id and $where_text) and $where_text");            
 
-//        $this->updateMeaningAndWordformSentence($s_id, $sxe->children()->w, 
         $this->updateMeaningAndWordformSentence($s_id, $sxe->xpath('//w'), 
                 $checked_words ?? NULL);
     }
@@ -740,29 +739,32 @@ class Text extends Model
         }
     }
     
-    public function updateMeaningAndWordformSentence($s_id, $sent_words, $checked_sent_words, $set_meanings=true, $set_wordforms=true) {
+    public function updateMeaningAndWordformSentence($s_id, $sent_words, $checked_sent_words/*, $set_meanings=true, $set_wordforms=true*/) {
         $word_count = 0;
         foreach ($sent_words as $word) {
 //dd((string)$word);            
             $w_id = (int)$word->attributes()->id;
             $word_for_search = Grammatic::changeLetters((string)$word,$this->lang_id);
             
-            if ($set_meanings) {
-                $word_obj = Word::create(['text_id' => $this->id, 'sentence_id' => $s_id, 'w_id' => $w_id, 'word' => $word_for_search]);
-            } else {
-                $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();
-            }
+//            if ($set_meanings) {
+                $word_obj = Word::create(['text_id' => $this->id, 
+                                          'sentence_id' => $s_id, 
+                                          'w_id' => $w_id, 
+                                          'word' => $word_for_search, 
+                                          'word_number' => $word_count]);
+//            } else {
+//                $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();                
+//            }
             
-            $word_obj->word_number = $word_count;
-            $word_obj->save();
+            DB::statement("DELETE FROM words WHERE w_id=$w_id and sentence_id<>$s_id and text_id=".(int)$this->id);
             
             $the_same_word = isset($checked_sent_words[$word_count]['w']) && $word_for_search==$checked_sent_words[$word_count]['w'];
-            if ($set_meanings) {
+//            if ($set_meanings) {
                 $word_obj->setMeanings($the_same_word ? $checked_sent_words[$word_count]['meanings'] : [], $this->lang_id);
-            }
-            if ($set_wordforms) {
+//            }
+//            if ($set_wordforms) {
                 $this->setWordforms($the_same_word ? $checked_sent_words[$word_count]['wordforms'] : [], $word_obj);
-            }
+//            }
             $word_count++;
         }
     }
