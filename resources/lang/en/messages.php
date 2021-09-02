@@ -36,6 +36,7 @@ return [
     'founded_1record' => ':count record was founded.',
     'founded_records' => ':count records were founded.',
     'not_founded_records' => 'There are no records.',
+    'founded_count' => '{0} There are no records.|{1} :count record was founded.|[2,Inf] :count records were founded.',
     'frequency' => 'frequency',
     'from' => 'from',
     'history' => 'history',

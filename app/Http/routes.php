@@ -59,6 +59,9 @@ Route::group(
         Route::get('/dumps','DumpDownloadController@index');
         
         Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');
+        
+        Route::get('corpus/gram_search', 'Corpus\GramSearchController@index');
+        
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
         Route::get('corpus/genre/list', 'Corpus\GenreController@genreList');
         Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
@@ -67,6 +70,7 @@ Route::group(
         
         Route::get('corpus/sentence/{id}/edit', 'Corpus\SentenceController@edit');
         Route::get('corpus/sentence/{id}/markup', 'Corpus\SentenceController@markup');
+        Route::get('corpus/sentence/results', 'Corpus\SentenceController@results');
 
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
@@ -219,6 +223,7 @@ Route::group(
         Route::get('service/tmp_fill_genres', 'Library\ServiceController@tmpFillGenres');
         Route::get('service/tmp_split_into_sentences', 'Library\ServiceController@tmpSplitTextsIntoSentences');
         Route::get('service/tmp_word_numbers_for_words', 'Library\ServiceController@tmpWordNumbersForWords');
+        Route::get('service/tmp_move_br_from_sentences', 'Library\ServiceController@tmpMoveBrFromSentences');
         
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');
@@ -248,6 +253,61 @@ Route::group(
         Route::get('stats/by_corpus','Library\StatsController@byCorpus');
         Route::get('stats/by_year','Library\StatsController@byYear');
         Route::get('stats/by_user','Library\StatsController@byUser');
+        
+        Route::resource('corpus/author', 'Corpus\AuthorController',
+                       ['names' => ['update' => 'author.update',
+                                    'store' => 'author.store',
+                                    'destroy' => 'author.destroy']]);
+        
+        Route::resource('corpus/corpus', 'Corpus\CorpusController',
+                       ['names' => ['update' => 'corpus.update',
+                                    'store' => 'corpus.store',
+                                    'destroy' => 'corpus.destroy']]);
+        
+        Route::resource('corpus/genre', 'Corpus\GenreController',
+                       ['names' => ['update' => 'genre.update',
+                                    'store' => 'genre.store',
+                                    'destroy' => 'genre.destroy']]);
+        
+        Route::resource('corpus/text', 'Corpus\TextController',
+                       ['names' => ['update' => 'text.update',
+                                    'store' => 'text.store',
+                                    'destroy' => 'text.destroy']]);
+        
+        Route::resource('corpus/district', 'Corpus\DistrictController',
+                       ['names' => ['update' => 'district.update',
+                                    'store' => 'district.store',
+                                    'destroy' => 'district.destroy']]);
+
+        Route::resource('corpus/informant', 'Corpus\InformantController',
+                       ['names' => ['update' => 'informant.update',
+                                    'store' => 'informant.store',
+                                    'destroy' => 'informant.destroy']]);
+        
+        Route::resource('corpus/place', 'Corpus\PlaceController',
+                       ['names' => ['update' => 'place.update',
+                                    'store' => 'place.store',
+                                    'destroy' => 'place.destroy']]);
+        
+        Route::resource('corpus/recorder', 'Corpus\RecorderController',
+                       ['names' => ['update' => 'recorder.update',
+                                    'store' => 'recorder.store',
+                                    'destroy' => 'recorder.destroy']]);
+        
+        Route::resource('corpus/region', 'Corpus\RegionController',
+                       ['names' => ['update' => 'region.update',
+                                    'store' => 'region.store',
+                                    'destroy' => 'region.destroy']]);
+        
+        Route::resource('corpus/sentence', 'Corpus\SentenceController',
+                       ['names' => ['update' => 'sentence.update',
+                                    'store' => 'sentence.store',
+                                    'destroy' => 'sentence.destroy']]);
+        
+        Route::resource('corpus/source', 'Corpus\SourceController',
+                       ['names' => ['update' => 'source.update',
+                                    'store' => 'source.store',
+                                    'destroy' => 'source.destroy']]);
         
         Route::resource('dict/concept', 'Dict\ConceptController',
                        ['names' => ['update' => 'concept.update',
@@ -307,61 +367,6 @@ Route::group(
         Route::resource('dict/wordform', 'Dict\WordformController',
                        ['names' => ['update' => 'wordform.update']]);
 
-        Route::resource('corpus/author', 'Corpus\AuthorController',
-                       ['names' => ['update' => 'author.update',
-                                    'store' => 'author.store',
-                                    'destroy' => 'author.destroy']]);
-        
-        Route::resource('corpus/corpus', 'Corpus\CorpusController',
-                       ['names' => ['update' => 'corpus.update',
-                                    'store' => 'corpus.store',
-                                    'destroy' => 'corpus.destroy']]);
-        
-        Route::resource('corpus/genre', 'Corpus\GenreController',
-                       ['names' => ['update' => 'genre.update',
-                                    'store' => 'genre.store',
-                                    'destroy' => 'genre.destroy']]);
-        
-        Route::resource('corpus/text', 'Corpus\TextController',
-                       ['names' => ['update' => 'text.update',
-                                    'store' => 'text.store',
-                                    'destroy' => 'text.destroy']]);
-        
-        Route::resource('corpus/district', 'Corpus\DistrictController',
-                       ['names' => ['update' => 'district.update',
-                                    'store' => 'district.store',
-                                    'destroy' => 'district.destroy']]);
-
-        Route::resource('corpus/informant', 'Corpus\InformantController',
-                       ['names' => ['update' => 'informant.update',
-                                    'store' => 'informant.store',
-                                    'destroy' => 'informant.destroy']]);
-        
-        Route::resource('corpus/place', 'Corpus\PlaceController',
-                       ['names' => ['update' => 'place.update',
-                                    'store' => 'place.store',
-                                    'destroy' => 'place.destroy']]);
-        
-        Route::resource('corpus/recorder', 'Corpus\RecorderController',
-                       ['names' => ['update' => 'recorder.update',
-                                    'store' => 'recorder.store',
-                                    'destroy' => 'recorder.destroy']]);
-        
-        Route::resource('corpus/region', 'Corpus\RegionController',
-                       ['names' => ['update' => 'region.update',
-                                    'store' => 'region.store',
-                                    'destroy' => 'region.destroy']]);
-        
-        Route::resource('corpus/sentence', 'Corpus\SentenceController',
-                       ['names' => ['update' => 'sentence.update',
-                                    'store' => 'sentence.store',
-                                    'destroy' => 'sentence.destroy']]);
-        
-        Route::resource('corpus/source', 'Corpus\SourceController',
-                       ['names' => ['update' => 'source.update',
-                                    'store' => 'source.store',
-                                    'destroy' => 'source.destroy']]);
-        
         Route::resource('role', 'RoleController',
                        ['names' => ['update' => 'role.update',
                                     'store' => 'role.store',

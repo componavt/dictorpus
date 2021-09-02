@@ -24,6 +24,26 @@ class Source extends Model
     
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Texts;
+    
+    public function bookToString() {
+        $book = [];
+        
+        if ($this->author) {
+            $book[] = $this->author;
+        }
+        if ($this->title) {
+            $book[] = $this->title;
+        }
+        if ($this->year) {
+//            $book[] = '('.$this->year.')';
+            $book[] = $this->year;
+        }
+        if ($this->pages) {
+            $book[] = \Lang::get('corpus.p').' '.$this->pages;
+        }
+        
+        return join(', ', $book);
+    }
 
     /**
      * if Source doesn't exist, 

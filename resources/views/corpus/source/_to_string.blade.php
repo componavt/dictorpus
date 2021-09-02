@@ -1,25 +1,8 @@
 <?php
+
     $source_info = [];
-    $book = [];
-    
-    if ($source->author) {
-        $book[] = $source->author;
-    }
-    
-    if ($source->title) {
-        $book[] = $source->title;
-    }
-    
-    if ($source->year) {
-        $book[] = '('.$source->year.')';
-    }
-    
-    if ($source->pages) {
-        $book[] = \Lang::get('corpus.p').' '.$source->pages;
-    }
-    
-    if (sizeof($book)) {
-        $source_info[] = join(', ', $book);
+    if ($source->bookToString()) {
+        $source_info[] = $source->bookToString();
     }
     
     if ($source->ieeh_archive_number1) {
@@ -39,5 +22,8 @@
     $source_str = join('<br>',$source_info);
 ?>
 @if ($source_str)
-    <i>{{ trans('corpus.source') }}:</i> {!! $source_str !!}
+    @if(!isset($without_tag))
+    <i>{{ trans('corpus.source') }}:</i> 
+    @endif
+    {!! $source_str !!}
 @endif

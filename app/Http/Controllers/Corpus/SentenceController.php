@@ -7,28 +7,71 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Library\Str;
+
+use App\Models\Corpus\Corpus;
+use App\Models\Corpus\Genre;
 use App\Models\Corpus\Sentence;
+
+use App\Models\Dict\Dialect;
+use App\Models\Dict\Lang;
 
 class SentenceController extends Controller
 {
+    public $url_args=[];
+    public $args_by_get='';
+    
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(Request $request)
+    {
+        // permission= corpus.edit, redirect failed users to /corpus/sentence/, authorized actions list:
+        $this->middleware('auth:corpus.edit,/corpus/sentence/', 
+                         ['only' => ['create','store','edit','update','destroy','markup']]);
+        $this->url_args = Sentence::urlArgs($request);  
+        
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index() {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        $corpus_values = Corpus::getListWithQuantity('texts');
+        $lang_values = Lang::getListWithQuantity('texts');        
+        $dialect_values = Dialect::getList();
+        $genre_values = Genre::getList();
+        
+        return view('corpus.sentence.index',
+                compact('corpus_values', 'dialect_values', 'genre_values', 
+                        'lang_values', 'args_by_get', 'url_args'));
     }
 
     /**
-     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function results()
     {
-        //
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        $texts = Sentence::search($url_args);
+
+        $numAll = $texts->count();
+
+        $texts = $texts->paginate($this->url_args['limit_num']);
+        
+        return view('corpus.sentence.results',
+                compact('texts', 'numAll', 'args_by_get', 'url_args'));
     }
 
     /**

@@ -38,6 +38,7 @@ return [
     'founded_2record' => 'Найдено :count записи.',
     'founded_records' => 'Найдено :count записей.',
     'not_founded_records' => 'Не найдено записей.',
+    'founded_count' => '{0} Не найдено записей.|{1} Найдена :count запись.|[2,4] Найдено :count записи.|[2,Inf] Найдено :count записей.',
     'frequency' => 'частота',
     'from' => 'с',
     'history' => 'История изменений',

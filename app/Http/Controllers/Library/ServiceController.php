@@ -796,6 +796,33 @@ print 'done';
 print 'done';        
     }
 
+    /**
+     * move beginning tags <br> from sentences to text structure
+     * 
+     * update sentences set checked=0;
+     */
+    public function tmpMoveBrFromSentences() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $sentence = Sentence::orderBy('id')/*->whereChecked(0)*/
+                        ->where('text_xml', 'like', '<s id="_"><br/>%')
+                        ->orWhere('text_xml', 'like', '<s id="__"><br/>%')
+                        ->orWhere('text_xml', 'like', '<s id="___"><br/>%')->first();
+            if ($sentence) {
+                    $sentence->moveBrFromSentences();
+/*                $sentence->checked=1;
+                $sentence->save();*/
+            } else {
+                $is_all_checked = true;
+            }
+//                    dd($sentence->id);
+        }
+print 'done';        
+    }
+
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences

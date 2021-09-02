@@ -4,6 +4,9 @@ namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Library\Grammatic;
+use App\Library\Str;
+
 class Sentence extends Model
 {
     protected $fillable = ['text_id', 's_id','text_xml'];
@@ -145,4 +148,81 @@ class Sentence extends Model
             $word->save();
         }       
     }
+    
+    public function moveBrFromSentences() {
+        $text=$this->text;
+        $new_sentence = mb_ereg_replace("<s id=\"".$this->s_id."\"><br/>\r?\n?", "<s id=\"".$this->s_id."\">", $this->text_xml);
+        $new_structure = mb_ereg_replace("<s id=\"".$this->s_id."\"", "<br/>\n<s id=\"".$this->s_id."\"", $text->text_structure);
+        if ($this->text_xml != $new_sentence && $text->text_structure != $new_structure) {
+            $this->text_xml = $new_sentence;
+            $text->text_structure = $new_structure;
+        } else {
+dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure != $new_structure);        
+            
+        }
+//exit();        
+//dd($this->text_xml, $text->text_structure);        
+        $text->save();
+        $this->save();
+    }
+    
+    public static function search(Array $url_args) {
+        $texts = Text::orderBy('title');        
+        if ($url_args['search_corpus']) {
+            $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
+        } 
+        $texts = Text::searchByDialects($texts, $url_args['search_dialect']);
+        $texts = Text::searchByGenres($texts, $url_args['search_genre']);
+        $texts = Text::searchByLang($texts, $url_args['search_lang']);
+        $texts = Text::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
+        
+        $texts = self::searchByWords($texts, $url_args['search_word1'], $url_args['search_word2'], $url_args['search_distance_from'], $url_args['search_distance_to']);
+        return $texts;
+    }
+    
+    public static function searchByWords($texts, $word1, $word2, $distance_from, $distance_to) {
+        if (!$word1) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($word1){
+                        $query->select('text_id')
+                        ->from('text_wordform')
+                        ->where('relevance', '>', 0)
+                        ->whereIn('wordform_id',function($query1) use ($word1){
+                            $query1->select('wordform_id')
+                            ->from('lemma_wordform')
+                            ->whereIn('lemma_id',function($query2) use ($word1){
+                                $query2->select('id')
+                                ->from('lemmas')
+                                ->where('lemma_for_search', 'like', Grammatic::toSearchForm($word1));
+                            });
+                        });
+                    });
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_corpus'   => (array)$request->input('search_corpus'),
+                    'search_dialect'  => (array)$request->input('search_dialect'),
+                    'search_genre'    => (array)$request->input('search_genre'),
+                    'search_lang'     => (array)$request->input('search_lang'),
+                    'search_year_from'=> (int)$request->input('search_year_from'),
+                    'search_year_to'  => (int)$request->input('search_year_to'),
+            
+                    'search_distance_from'  => (int)$request->input('search_distance_from'),
+                    'search_distance_to'  => (int)$request->input('search_distance_to'),
+                    'search_word1' => $request->input('search_word1'),
+                    'search_word2' => $request->input('search_word1'),
+//                    'search_lang'  => (array)$request->input('search_lang'),
+                ];
+        
+        if (!$url_args['search_distance_from']) {
+            $url_args['search_distance_from'] = 1;
+        }
+        if (!$url_args['search_distance_to']) {
+            $url_args['search_distance_to'] = 1;
+        }
+        
+        return $url_args;
+    }    
 }

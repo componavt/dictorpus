@@ -1,4 +1,7 @@
-        <p><?php
+        <p>
+            {{trans_choice('messages.founded_count', $numAll>20 ? $numAll%10 : $numAll, ['count'=>$numAll])}}
+
+            <?php       /*
            if (!$numAll):
                 print trans('messages.not_founded_records');
            elseif (LaravelLocalization::getCurrentLocale() == 'en'): 
@@ -10,7 +13,7 @@
                     print trans('messages.founded_records', ['count'=>$numAll]);
              endswitch;
            else:
-             switch($numAll%20):
+             switch($numAll>20 ? $numAll%10 : $numAll):
                 case 1:
                     print trans('messages.founded_1record', ['count'=>$numAll]);
                     break;
@@ -22,5 +25,5 @@
                 default:
                     print trans('messages.founded_records', ['count'=>$numAll]);
              endswitch;
-           endif; ?>
+           endif; */ ?>
         </p>

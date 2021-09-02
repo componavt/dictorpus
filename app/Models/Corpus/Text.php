@@ -317,6 +317,42 @@ class Text extends Model
         });
     }
     
+    /**
+     * select * from `words` where `text_id` = 1548 and `w_id` in (select `w_id` from `text_wordform` where `text_id` = 1548 and `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'paha'))) order by `sentence_id` asc, `w_id` asc
+     * 
+     * @param type $word1
+     * @param type $word2
+     * @param type $distance_from
+     * @param type $distance_to
+     * @return collection
+     */
+    public function getWords($word1, $word2, $distance_from, $distance_to) {
+//dd($word1);                    
+        if (!$word1) {
+            return null;
+        }
+        $text_id = $this->id;
+        $words = Word::whereTextId($text_id)->orderBy('sentence_id')->orderBy('w_id');   
+        
+        $words = $words->whereIn('w_id',function($query) use ($word1, $text_id){
+                        $query->select('w_id')
+                        ->from('text_wordform')
+                        ->where('relevance', '>', 0)
+                        ->whereTextId($text_id)
+                        ->whereIn('wordform_id',function($query1) use ($word1){
+                            $query1->select('wordform_id')
+                            ->from('lemma_wordform')
+                            ->whereIn('lemma_id',function($query2) use ($word1){
+                                $query2->select('id')
+                                ->from('lemmas')
+                                ->where('lemma_for_search', 'like', Grammatic::toSearchForm($word1));
+                            });
+                        });
+                    });
+//dd($words->toSql());                    
+        return $words->get();
+    }
+    
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
         
@@ -659,7 +695,7 @@ class Text extends Model
                 $prev = '';
 
                 // <br> in in the beginning of the string is moved before the sentence
-                if (preg_match("/^(<br(| \/)>)(.+)$/is",$sentence,$regs)) {
+                while (preg_match("/^(<br(| \/)>)(.+)$/is",$sentence,$regs)) {
                     $text_xml .= $regs[1]."\n";
                     $sentence = trim($regs[3]);
                 }

@@ -57,7 +57,7 @@ class Str
     }
     
     
-    public static function urlArgs($request) {
+    public static function urlArgs($request, $limit_min=10) {
         $url_args = [
                     'limit_num' => (int)$request->input('limit_num'),
                     'page'      => (int)$request->input('page'),
@@ -67,7 +67,7 @@ class Str
         }
         
         if ($url_args['limit_num']<=0) {
-            $url_args['limit_num'] = 10;
+            $url_args['limit_num'] = $limit_min;
         } elseif ($url_args['limit_num']>1000) {
             $url_args['limit_num'] = 1000;
         }   
