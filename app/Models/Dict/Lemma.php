@@ -258,6 +258,9 @@ class Lemma extends Model
      * @return String or NULL
      */
     public function wordformsForSearch($gramsets, $dialects, $wordforms){
+        if (!$wordforms[1] && !$gramsets[1]) {
+            return null;
+        }
         $out = [];
         
         foreach ($wordforms as $i => $wordform_str) {
@@ -1900,7 +1903,11 @@ dd($wordforms);
         }
         
         if (!isset($url_args['search_wordforms'][1])) {
-            $url_args['search_wordforms'][1] = '';
+            $url_args['search_wordforms'][1] = null;
+        }
+        
+        if (!isset($url_args['search_gramsets'][1])) {
+            $url_args['search_gramsets'][1] = null;
         }
         
         asort($url_args['search_wordforms']);
