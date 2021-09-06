@@ -273,7 +273,7 @@ class Lemma extends Model
             if ($gramsets[$i]) {
                 $wordform_coll->where('gramset_id', $gramsets[$i]);
             }
-            if ($dialects[0]) {
+            if (isset($dialects[0]) && $dialects[0]) {
                 $wordform_coll->whereIn('dialect_id', $dialects);
             }
             $wordform_coll = $wordform_coll->get();
