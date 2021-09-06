@@ -106,10 +106,12 @@ Route::group(
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
+        Route::get('dict/lemma/{id}/reload_stem_affix_by_wordforms', 'Dict\LemmaController@reloadStemAffixByWordforms');
         Route::get('dict/lemma/{id}/wordform_total', 'Dict\LemmaController@getWordformTotal'); 
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');
         
+        Route::get('dict/lemma/by_wordforms', 'Dict\LemmaController@byWordforms');
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
@@ -123,7 +125,7 @@ Route::group(
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('dict/lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
-        Route::get('dict/lemma/{id}/reload_stem_affix_by_wordforms', 'Dict\LemmaController@reloadStemAffixByWordforms');
+        Route::get('dict/lemma/wordform_gram_form', 'Dict\LemmaController@wordformGramForm');
         
         Route::put('dict/lemma_wordform/{id}', 'Dict\LemmaWordformController@update')
                         ->name('lemma_wordform.update');

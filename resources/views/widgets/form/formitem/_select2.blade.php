@@ -58,5 +58,9 @@ $id_name = preg_replace("/[\.\]\[]/","_",$name);
     @endif
     </select>
     
+    @if (isset($help_func) && $help_func) 
+    <i class='help-icon far fa-question-circle fa-lg' onClick='{{$help_func}}'></i>
+    @endif
+    
     <p class="help-block">{!! $errors->first($name) !!}</p>
 </div>

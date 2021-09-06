@@ -100,7 +100,9 @@ return [
                   2 => 'comparative',
                   3 => 'superlative'],
     'check_delete_wordforms' =>'to delete word forms for this dialect',
+    
     'dialect' => 'Dialect',
+    'dialect_usage' => 'Dialect of usage',
     'dialect_can_not_be_removed' => 'The dialect can not be removed, there is the related wordforms or texts',
     'dialect_in_lemma_form' => 'Dialect for word form autocompletion',
     'dialect_list' => 'Dialect list',
@@ -229,6 +231,10 @@ return [
     'reverse_relation' => 'reverse relation',
     'right_sort' => 'by final letters',
     
+    'search_lemmas_by_wordforms' => 'Lemma search by wordforms',
+    'search_pos' => 'Search of a part of speech by endings',
+    'search_gramset' => 'Gramset search',
+            
     'select_category' => 'Select a category',
     'select_concept' => 'Select a concept',
     'select_concept_category' => 'Select a concept category',
@@ -238,9 +244,6 @@ return [
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
 
-    'search_pos' => 'Part of speech search by endings',
-    'search_gramset' => 'Gramset search',
-        
     'tense' => 'Tense',
     'transitive' => 'transitive',
     'translation' => 'translation',

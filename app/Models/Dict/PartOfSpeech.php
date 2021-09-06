@@ -255,7 +255,7 @@ class PartOfSpeech extends Model
                 $count=0;
                 $pos_name = $pos->name;
                 if ($pos->$method_name()) {
-                    $count=$pos->$method_name()->count();
+                    $count=number_format($pos->$method_name()->count(), 0, ',', ' ');
                 }
                 if ($count) {
                     $pos_name .= " ($count)";

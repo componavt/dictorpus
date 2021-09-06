@@ -14,21 +14,8 @@
                 ['name' => 'search_lemma',
                 'value' => $url_args['search_lemma'],
                 'special_symbol' => true,
+                'help_func' => "callHelp('help-text-fields')",
                 'attributes'=>['placeholder'=>trans('dict.lemma')]])                               
-    </div>
-    <div class="col-sm-4{{$url_args['search_wordform'] ? '' : ' ext-form'}}">
-            @include('widgets.form.formitem._text',
-                    ['name' => 'search_wordform',
-                    'value' => $url_args['search_wordform'],
-                    'special_symbol' => true,
-                    'attributes'=>['placeholder'=>trans('dict.wordform')]])
-    </div>
-    <div class="col-sm-4{{$url_args['search_meaning'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text',
-                ['name' => 'search_meaning',
-                'value' => $url_args['search_meaning'],
-                'special_symbol' => true,
-                'attributes'=>['placeholder'=>trans('dict.interpretation')]])
     </div>
     <div class="col-sm-4">
         @include('widgets.form.formitem._select',
@@ -36,6 +23,14 @@
                  'values' =>$lang_values,
                  'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]])
+    </div>
+    <div class="col-sm-4{{sizeof($url_args['search_dialects']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2',
+                ['name' => 'search_dialects',
+                 'values' =>$dialect_values,
+                 'value' =>$url_args['search_dialects'],
+                 'help_func' => "callHelp('help-dialect-usage')",
+                 'class'=>'select-dialects form-control']) 
     </div>
     <div class="col-sm-4{{$url_args['search_pos'] ? '' : ' ext-form'}}">
             @include('widgets.form.formitem._select',
@@ -53,12 +48,30 @@
                          'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
     </div>
     @endif
-    <div class="col-sm-4{{sizeof($url_args['search_dialects']) ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select2',
-                ['name' => 'search_dialects',
-                 'values' =>$dialect_values,
-                 'value' =>$url_args['search_dialects'],
-                 'class'=>'select-dialects form-control']) 
+{{--
+    <div class="col-sm-4{{$url_args['search_wordform'] ? '' : ' ext-form'}}">
+            @include('widgets.form.formitem._text',
+                    ['name' => 'search_wordform',
+                    'value' => $url_args['search_wordform'],
+                    'special_symbol' => true,
+                    'attributes'=>['placeholder'=>trans('dict.wordform')]])
+    </div>
+--}}
+    <div class="col-sm-4{{$url_args['search_meaning'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._text',
+                ['name' => 'search_meaning',
+                'value' => $url_args['search_meaning'],
+                'special_symbol' => true,
+                'help_func' => "callHelp('help-text-fields')",
+                'attributes'=>['placeholder'=>trans('dict.interpretation')]])
+    </div>
+    <div class="col-sm-4{{$url_args['with_examples'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'with_examples',
+                'value' => 1,
+                'checked' => $url_args['with_examples']==1,
+                'tail'=>trans('dict.with_examples')]) 
+                <br>        
     </div>
     <div class="col-sm-4{{$url_args['search_concept_category'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select',
@@ -74,14 +87,6 @@
                  'values' => $concept_values,
                  'value' => $url_args['search_concept'],
                  'class'=>'select-concept form-control']) 
-    </div>
-    <div class="col-sm-4{{$url_args['with_examples'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._checkbox',
-                ['name' => 'with_examples',
-                'value' => 1,
-                'checked' => $url_args['with_examples']==1,
-                'tail'=>trans('dict.with_examples')]) 
-                <br>        
     </div>
         
     <div class="col-sm-4 search-button-b">       

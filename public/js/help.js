@@ -29,4 +29,3 @@ function callHelp(id) {
 function callHelpYear() {
     callHelp('help-year');    
 }
-

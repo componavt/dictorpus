@@ -92,6 +92,46 @@ class LemmaController extends Controller
     }
 
     /**
+     * Search lemmas by wordforms with grammatical attributes
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function byWordforms()
+    {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+//dd($url_args);
+        $lemmas = Lemma::searchByWordformGrams($url_args);
+//dd($lemmas->toSql());        
+        $numAll = $lemmas->count();
+
+        $lemmas = $lemmas->paginate($url_args['limit_num']);         
+//dd($lemmas);        
+        $pos_values = PartOfSpeech::getChangeableListWithQuantity('lemmas');
+        
+        //$lang_values = Lang::getList();
+        $lang_values = Lang::getListWithQuantity('lemmas');
+        
+        $gramset_values = $url_args['search_pos'] ? [NULL=>'']+Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true): [];
+        $dialect_values = $url_args['search_lang'] ? [NULL=>'']+Dialect::getList($url_args['search_lang']): [];
+                
+        return view('dict.lemma.by_wordforms',
+                compact('dialect_values', 'gramset_values', 'lang_values', 
+                        'lemmas', 'pos_values', 'numAll', 'args_by_get', 'url_args'));
+    }
+
+    public function wordformGramForm(Request $request)
+    {
+        $count = (int)$request->input('count');
+        $lang_id = (int)$request->input('lang_id');
+        $pos_id = (int)$request->input('pos_id');
+        $gramset_values = $pos_id ? [NULL=>'']+Gramset::getList($pos_id,$lang_id,true): [];
+                                
+        return view('dict.lemma.search._wordform_gram_form',
+                 compact('count', 'gramset_values'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

@@ -2,7 +2,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.lemmas') }}
+{{ trans('dict.search_lemmas_by_wordforms') }}
 @stop
 
 @section('headExtra')
@@ -12,15 +12,13 @@
 @stop
 
 @section('body')   
-<div class="row">
         @include('widgets.modal',['name'=>'modalHelp',
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.lemma._search'])
                                   
+<div class="row">
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/by_wordforms') }}">{{ trans('dict.search_lemmas_by_wordforms') }}</a> 
-            |
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/sorted_by_length') }}">{{ trans('dict.list_long_lemmas') }}</a> 
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.advanced_search') }}</a> 
             |
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">
@@ -31,7 +29,8 @@
         @endif
 
         </p>
-        @include('dict.lemma.search._lemma_form',['url' => '/dict/lemma/']) 
+
+        @include('dict.lemma.search._by_wordforms_form',['url' => '/dict/lemma/']) 
 
         @include('widgets.founded_records', ['numAll'=>$numAll])
 
@@ -41,8 +40,15 @@
             <tr>
                 <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
+                
+                @if(!$url_args['search_lang'])
                 <th>{{ trans('dict.lang') }}</th>
+                @endif
+                
+                @if(!$url_args['search_pos'])
                 <th>{{ trans('dict.pos') }}</th>
+                @endif
+                
                 <th>{{ trans('dict.interpretation') }}</th>
                 <th>{{ trans('dict.wordforms') }}&nbsp;*</th>
                 <th>{{ trans('messages.examples') }}&nbsp;**</th>
@@ -54,18 +60,27 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
-                <td data-th="{{ trans('dict.lemma') }}"><a href="lemma/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a></td>
+                <td data-th="{{ trans('dict.lemma') }}">
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}/{{$lemma->id}}{{$args_by_get}}">{{$lemma->lemma}}</a>
+                </td>
+                
+                @if(!$url_args['search_lang'])
                 <td data-th="{{ trans('dict.lang') }}">
                     @if($lemma->lang)
                         {{$lemma->lang->name}}
                     @endif
                 </td>
+                @endif
+                
+                @if(!$url_args['search_pos'])
                 <td data-th="{{ trans('dict.pos') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
                         @include('dict.lemma.show.features')
                     @endif
                 </td>
+                @endif
+                
                 <td data-th="{{ trans('dict.interpretation') }}">
                     @foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) 
                         {{$meaning_string}}<br>
@@ -77,8 +92,14 @@
                         @if ($lemma->wordforms()->whereNull('gramset_id')->count())
                         + <span class="unchecked-count">{{$lemma->wordforms()->whereNull('gramset_id')->count()}}</span>
                         @endif
-                    @elseif (in_array($lemma->pos_id, $not_changeable_pos_list))
-                    —
+                        <?php $wordforms = $lemma->wordformsForSearch( 
+                                $url_args['search_gramsets'], 
+                                $url_args['search_dialects'], 
+                                $url_args['search_wordforms']);?>
+                        @if ($wordforms) 
+                        (<i>{{ $wordforms }}</i>)
+                        @endif
+                        
                     @else
                     0
                     @endif
@@ -130,14 +151,16 @@
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/search.js')!!}
     {!!Html::script('js/help.js')!!}
+    {!!Html::script('js/lemma.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
     toggleSearchForm();
     recDelete('{{ trans('messages.confirm_delete') }}');
+    
     selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.dialect') }}');
-    selectConcept('search_concept_category', 'search_pos', '{{ trans('dict.select_concept') }}', true);
+    selectGramset('search_lang', 'search_pos', '{{ trans('dict.gramset_for_wordform') }}', true);
 @stop
 
 
