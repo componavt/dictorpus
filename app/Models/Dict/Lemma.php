@@ -1910,7 +1910,7 @@ dd($wordforms);
             $url_args['search_gramsets'][1] = null;
         }
         
-        asort($url_args['search_wordforms']);
+        ksort($url_args['search_wordforms']);
         
         return $url_args;
     }
