@@ -39,7 +39,8 @@
                      'value' =>$url_args['search_pos'],
                      'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
     </div>
-    @if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
+{{--
+@if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
     <div class="col-sm-4{{$url_args['search_gramset'] ? '' : ' ext-form'}}">
                 @include('widgets.form.formitem._select', 
                         ['name' => 'search_gramset', 
@@ -48,7 +49,7 @@
                          'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
     </div>
     @endif
-{{--
+
     <div class="col-sm-4{{$url_args['search_wordform'] ? '' : ' ext-form'}}">
             @include('widgets.form.formitem._text',
                     ['name' => 'search_wordform',

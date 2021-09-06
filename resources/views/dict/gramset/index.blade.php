@@ -55,7 +55,7 @@
                 <td data-th="{{ trans('dict.lemmas') }}">
                   <?php $count=sizeof($gramset->lemmas($url_args['search_pos'],$url_args['search_lang'])->groupBy('lemma_id')->get()); ?>
                   @if ($count)
-                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get_for_out}}&search_gramset={{$gramset->id}}">
+                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/by_wordforms') }}{{$args_by_get_for_out}}&search_gramsets[1]={{$gramset->id}}">
                         {{ $count }}
                     </a>
                   @else

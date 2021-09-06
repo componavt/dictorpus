@@ -10,7 +10,7 @@
         @include('widgets.form.formitem._select2',
                 ['name' => 'search_gramsets['.$count.']', 
                  'values' =>$gramset_values,
-                 'value' =>[$url_args['search_gramsets'][$count] ?? NULL],
+                 'value' =>$url_args['search_gramsets'][$count] ?? NULL,
                  'is_multiple' => false,
                  'class'=>'select-gramset form-control'])
     </div>

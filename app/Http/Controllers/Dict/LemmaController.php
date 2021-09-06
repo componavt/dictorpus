@@ -112,7 +112,7 @@ class LemmaController extends Controller
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('lemmas');
         
-        $gramset_values = $url_args['search_pos'] ? [NULL=>'']+Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true): [];
+        $gramset_values = [NULL=>'']+Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
         $dialect_values = $url_args['search_lang'] ? [NULL=>'']+Dialect::getList($url_args['search_lang']): [];
                 
         return view('dict.lemma.by_wordforms',
@@ -597,7 +597,8 @@ class LemmaController extends Controller
      */
     public function sortedByLength()
     {
-        $builder = Lemma::select(DB::raw('*, char_length(lemma) as char_length'));
+        $builder = Lemma::select(DB::raw('*, char_length(lemma) as char_length'))
+                ->whereRaw('char_length(lemma) >10');
         
         $numAll = $builder->count();
         

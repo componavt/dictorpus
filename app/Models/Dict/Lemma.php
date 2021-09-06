@@ -281,7 +281,7 @@ class Lemma extends Model
                 $out[]=$wordform->wordform;
             }
         }        
-        return join(', ',$out);
+        return join(', ',array_unique($out));
     }
     
     /**
