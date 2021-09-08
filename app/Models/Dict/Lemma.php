@@ -58,6 +58,9 @@ class Lemma extends Model
         parent::boot();
     }
     
+    // Belongs To Methods
+    use \App\Traits\Methods\toSqlFull;
+    
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
     use \App\Traits\Relations\BelongsTo\ReverseLemma;
@@ -264,11 +267,14 @@ class Lemma extends Model
         $out = [];
         
         foreach ($wordforms as $i => $wordform_str) {
-            $wordform_for_search = Grammatic::changeLetters($wordform_str, $this->lang_id);
+            if (!$wordform_str && !$gramsets[$i]) {
+                continue;
+            }
+            $wordform_for_search = Grammatic::toSearchByPattern($wordform_str, $this->lang_id);
             
             $wordform_coll = $this->wordforms()->orderBy('wordform');
             if ($wordform_for_search) {
-                $wordform_coll->where('lemma_wordform.wordform_for_search','like', $wordform_for_search);
+                $wordform_coll->where('lemma_wordform.wordform_for_search','rlike', $wordform_for_search);
             }
             if ($gramsets[$i]) {
                 $wordform_coll->where('gramset_id', $gramsets[$i]);
@@ -276,6 +282,9 @@ class Lemma extends Model
             if (isset($dialects[0]) && $dialects[0]) {
                 $wordform_coll->whereIn('dialect_id', $dialects);
             }
+//            $query = str_replace(array('?'), array('\'%s\''), $wordform_coll->toSql());
+//            $query = vsprintf($query, $wordform_coll->getBindings());     
+//dd($query);            
             $wordform_coll = $wordform_coll->get();
             foreach($wordform_coll as $wordform) {
                 $out[]=$wordform->wordform;
@@ -1363,12 +1372,17 @@ dd($wordforms);
         $lemmas = self::searchByLang($lemmas, $url_args['search_lang']);
         $lemmas = self::searchByPOS($lemmas, $url_args['search_pos']);
 
-        $lemmas = self::searchByWordforms($lemmas, $url_args['search_wordforms'], $url_args['search_gramsets'], $url_args['search_lang'], $url_args['search_dialects']);
+        $lemmas = self::searchByWordforms($lemmas, $url_args['search_wordforms'], 
+                $url_args['search_gramsets'], 
+                $url_args['search_lang'], 
+                $url_args['search_dialects']);
 
         $lemmas = $lemmas->with(['meanings'=> function ($query) {
                                     $query->orderBy('meaning_n');
                                 }]);
-//dd($lemmas->toSql());                                
+//        $query = str_replace(array('?'), array('\'%s\''), $lemmas->toSql());
+//        $query = vsprintf($query, $lemmas->getBindings());     
+//dd($query);                                
         return $lemmas;
     }
     
@@ -1378,13 +1392,13 @@ dd($wordforms);
         }
 
         foreach ($wordforms as $i => $wordform) {
-            $wordform_for_search = Grammatic::changeLetters($wordform, $lang_id);
+            $wordform_for_search = Grammatic::toSearchByPattern($wordform, $lang_id);
             $gramset_id = $gramsets[$i] ?? null;
             if ($wordform_for_search || $gramset_id) {
             $lemmas = $lemmas->whereIn('id',function($q) use ($wordform_for_search, $gramset_id, $dialects){
                             $q->select('lemma_id')->from('lemma_wordform');
                             if ($wordform_for_search) {
-                                $q->where('wordform_for_search','like', $wordform_for_search);
+                                $q->where('wordform_for_search','rlike', $wordform_for_search);
                             }
                             if ($gramset_id) {
                                 $q->where('gramset_id', $gramset_id);
@@ -1910,6 +1924,12 @@ dd($wordforms);
             $url_args['search_gramsets'][1] = null;
         }
         
+        foreach ($url_args['search_wordforms'] as $i => $wordform) {
+            if (!$wordform && !$url_args['search_gramsets'][$i]) {
+                unset($url_args['search_wordforms'][$i]);
+                unset($url_args['search_gramsets'][$i]);
+            }
+        }
         ksort($url_args['search_wordforms']);
         
         return $url_args;

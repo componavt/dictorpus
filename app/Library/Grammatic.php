@@ -27,6 +27,14 @@ class Grammatic
         return [1,4,5,6];
     }
 
+    public static function consSet() {
+        return "bcčdfghjklmnprsšzžtv";
+    }
+    
+    public static function vowelSet() {
+        return "aeiouyäö";
+    }
+    
     /**
      * ku|uzi#kymmen (-vven#en, -uttu#dy; -uzii#ii)
      * @param Array $data = ['lemma'=>'lemma_string', 'lang_id'=>lang_int, 'pos_id'=>pos_int, 'wordform_dialect_id'=>dialect_int];
@@ -250,6 +258,13 @@ class Grammatic
         return $word;
     }
 
+    public static function toSearchByPattern($word,$lang_id=null) {
+        return self::changeLetters(
+                    str_replace("C", "[". self::consSet()."]", 
+                        str_replace("V", "[". self::vowelSet()."]", 
+                           $word, $lang_id)));
+    }
+    
     public static function toSearchForm($word) {
         $word = str_replace('’','',$word);
         if (preg_match("/^\-(.+)$/u", $word, $regs)) {

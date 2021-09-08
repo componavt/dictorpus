@@ -1,7 +1,7 @@
     <div class="col-sm-4">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_wordforms['.$count.']', 
-                 'help_func' => "callHelp('help-text-fields')",
+                 'help_func' => "callHelp('help-wordform-for-lemma')",
                  'special_symbol' => true,
                  'value' => $url_args['search_wordforms'][$count] ?? NULL,
                  'attributes'=>['placeholder'=>trans('dict.wordform').' '.$count]])

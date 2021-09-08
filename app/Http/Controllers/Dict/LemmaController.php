@@ -100,17 +100,16 @@ class LemmaController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-//dd($url_args);
+
         $lemmas = Lemma::searchByWordformGrams($url_args);
-//dd($lemmas->toSql());        
+
         $numAll = $lemmas->count();
 
         $lemmas = $lemmas->paginate($url_args['limit_num']);         
-//dd($lemmas);        
+
         $pos_values = PartOfSpeech::getChangeableListWithQuantity('lemmas');
         
-        //$lang_values = Lang::getList();
-        $lang_values = Lang::getListWithQuantity('lemmas');
+        $lang_values = Lang::getListWithQuantity('lemmas',true);
         
         $gramset_values = [NULL=>'']+Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
         $dialect_values = $url_args['search_lang'] ? [NULL=>'']+Dialect::getList($url_args['search_lang']): [];

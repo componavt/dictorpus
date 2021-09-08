@@ -257,12 +257,13 @@ h2 {
 }
 */
 .special-symbol-b {
-/*    background-color: #f0ad4e;
-    border-color: #f0ad4e;*/
+    background-color: #facec6;
+/*    border: 1px solid #fcaa9c;*/
+    border-color: #fcaa9c; 
     font-size: 14px;
 /*    font-weight: bold;*/
     line-height: 14px;
-    padding: 0;
+    padding: 0 1 1;
 }
 
 .block-list {
@@ -506,6 +507,22 @@ h2 {
 
 .select2-selection__choice {
     font-size: 12px;
+}
+
+.help-list {
+    margin: 10px 0;
+}
+
+.help-list td {
+    vertical-align: top;
+}
+
+.help-list th {
+    color: #972d1a;
+    font-weight: bold;
+    padding-right: 20px;
+    text-align: left;
+    vertical-align: top;
 }
 
 @media screen and (min-width: 768px) {   
