@@ -11,14 +11,11 @@
 @stop
 
 @section('body')
-<div class="row">
-    <div class="col-sm-6 col-lg-5">
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/wordform/with_multiple_lemmas') }}">{{ trans('dict.wordforms_linked_many_lemmas') }}</a></p>
-    </div>
-    <div class="col-sm-6 col-lg-7">
-        <p class="comment" style="text-align: right">{!!trans('messages.search_comment')!!}</p>
-    </div>
-</div>
+        @include('widgets.modal',['name'=>'modalHelp',
+                                  'title'=>trans('navigation.help'),
+                                  'modal_view'=>'help.lemma._search'])
+                                  
+{{--        <p><a href="{{ LaravelLocalization::localizeURL('/dict/wordform/with_multiple_lemmas') }}">{{ trans('dict.wordforms_linked_many_lemmas') }}</a></p> --}}
         
         @include('dict.wordform._search_form') 
 
@@ -102,6 +99,7 @@
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/help.js')!!}
 @stop
 
 @section('jqueryFunc')

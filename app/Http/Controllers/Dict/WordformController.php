@@ -199,25 +199,27 @@ class WordformController extends Controller
     
     
     /** Lists wordforms associated with more than one lemma.
+     * слишком тяжелый запрос, пришлось отключить
+     * select count(*) from wordforms where id in (select wordform_id from lemma_wordform group by wordform_id, lemma_id having count(*)>1); 
      * 
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function withMultipleLemmas()
     {
-//select wordforms.wordform as wordform, count(*) as count from lemma_wordform, wordforms where 
-//wordforms.id=lemma_wordform.wordform_id and lemma_id in (select id from lemmas where lang_id=1) 
-//group by wordform having count>1 order by count;
-        $builder = DB::table('wordforms')->
-                     join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
-                     ->select(DB::raw('wordform_id, count(*) as count'))
-                     ->groupBy('wordform_id')
-                     ->having('count', '>', 1);
+        exit(0);
         
+        $builder = DB::table('wordforms')->
+                     whereIn('id', function ($query) {
+                        $query->select('wordform_id')
+                        ->from('lemma_wordform')
+                        ->groupBy('wordform_id', 'lemma_id')
+                        ->havingRaw('count(*)>1');
+                     });
         if ($this->url_args['search_wordform']) {
             $builder = $builder->where('wordform','like', $this->url_args['search_wordform']);
         } 
-
+//dd($builder->toSql());
         $search_lang = $this->url_args['search_lang'];
         if ($search_lang) {
             $builder = $builder->whereIn('lemma_id',function($query) use ($search_lang){
@@ -227,17 +229,13 @@ class WordformController extends Controller
                     });
         } 
          
-        $builder = $builder->orderBy('count', 'DESC')
-                           ->orderBy('wordform');
-//                ->with('lemmas');
-  /*      $builder = $builder->with(['wordforms'=> function ($query) {
-                                    $query->orderBy('wordform');
-                                }]);*/
+/*        $builder = $builder->orderBy(DB::raw('count(*)'), 'DESC')
+                           ->orderBy('wordform');*/
 
         $wordforms = [];
 
         foreach ($builder->get() as $wordform) {
-            $wordform_obj = Wordform::find($wordform->wordform_id);            
+            $wordform_obj = Wordform::find($wordform->id);            
 //dd($wordform_obj->lemmas);
             $lemmas = [];
             foreach ($wordform_obj->lemmas as $lemma) {

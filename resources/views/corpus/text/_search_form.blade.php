@@ -60,6 +60,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_title', 
                  'special_symbol' => true,
+                 'help_func' => "callHelp('help-text-fields')",
                  'value' => $url_args['search_title'],
                  'title' => trans('corpus.title')
                 ])                               
@@ -91,6 +92,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_word', 
                  'special_symbol' => true,
+                 'help_func' => "callHelp('help-text-fields')",
                  'value' => $url_args['search_word'],
                  'title'=> trans('corpus.word')
                 ])
@@ -100,6 +102,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_text', 
                  'special_symbol' => true,
+                 'help_func' => "callHelp('help-text-fields')",
                  'value' => $url_args['search_text'],
                  'title' => trans('corpus.text_fragment')
                 ])

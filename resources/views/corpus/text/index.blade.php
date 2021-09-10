@@ -13,9 +13,6 @@
 @stop
 
 @section('body')
-<div class="row">
-    <div class="col-sm-6 col-md-5 col-lg-4">
-        <p>
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
         @endif
@@ -25,11 +22,6 @@
         @endif
             | <a href="{{ LaravelLocalization::localizeURL('/help/text/search') }}">? {{ trans('navigation.help') }}</a>
         </p>
-    </div>
-    <div class="col-sm-6 col-md-7 col-lg-8">
-        <p class="comment" style="text-align: right">{!!trans('messages.search_comment')!!}</p>
-    </div>
-</div>
         
         @include('widgets.modal',['name'=>'modalHelp',
                                   'title'=>trans('navigation.help'),

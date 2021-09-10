@@ -1,3 +1,8 @@
+<div id='help-text-fields' class='help-section'>
+    <h2>Поиск по текстовым полям</h2>
+    {!!trans('messages.search_comment')!!}   
+</div>
+
 <div id='help-year' class='help-section'>
     <h2>Поиск по годам</h2>
     <p>В этих полях можно задать временной период для поиска текстов. Поиск идет по году записи, если было событие записи. 

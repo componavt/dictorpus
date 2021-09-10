@@ -7,8 +7,9 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_wordform', 
                  'special_symbol' => true,
-                'value' => $url_args['search_wordform'],
-                'attributes'=>['placeholder'=>trans('dict.wordform')]])
+                 'help_func' => "callHelp('help-text-fields')",
+                 'value' => $url_args['search_wordform'],
+                 'attributes'=>['placeholder'=>trans('dict.wordform')]])
     </div>
     <div class="col-sm-4">
         @include('widgets.form.formitem._select', 

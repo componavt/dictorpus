@@ -12,8 +12,6 @@
 @stop
 
 @section('body')
-        <p>{!!trans('messages.search_comment')!!}</p>
-        
         @include('widgets.modal',['name'=>'modalHelp',
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.text._search'])
@@ -97,6 +95,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_word1', 
                  'special_symbol' => true,
+                 'help_func' => "callHelp('help-text-fields')",
                  'value' => $url_args['search_word1'],
                  'title'=> trans('corpus.word')
                 ])
