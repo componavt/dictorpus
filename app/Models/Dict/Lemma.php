@@ -1916,6 +1916,12 @@ dd($wordforms);
             $url_args['search_id'] = NULL;
         }
         
+        foreach ($url_args['search_wordforms'] as $i => $wordform) {
+            if (!$wordform && !$url_args['search_gramsets'][$i]) {
+                unset($url_args['search_wordforms'][$i]);
+                unset($url_args['search_gramsets'][$i]);
+            }
+        }
         if (!isset($url_args['search_wordforms'][1])) {
             $url_args['search_wordforms'][1] = null;
         }
@@ -1924,14 +1930,8 @@ dd($wordforms);
             $url_args['search_gramsets'][1] = null;
         }
         
-        foreach ($url_args['search_wordforms'] as $i => $wordform) {
-            if (!$wordform && !$url_args['search_gramsets'][$i]) {
-                unset($url_args['search_wordforms'][$i]);
-                unset($url_args['search_gramsets'][$i]);
-            }
-        }
         ksort($url_args['search_wordforms']);
-        
+
         return $url_args;
     }
     
