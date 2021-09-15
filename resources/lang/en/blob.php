@@ -84,8 +84,7 @@ return [
                         containing dictionaries and corpora of the Baltic-Finnish languages of Karelia peoples.</p>
 
                         <p>The VepKar project is a continuation of the work 
-                        on <a href="http://vepsian.krc.karelia.ru">the Veps 
-                        Language corpus</a>. 
+                        on <a href="http://vepsian.krc.karelia.ru">the Veps language corpus</a>. 
                         Employees of the Karelian Research Centre 
                         of the Russian Academy of Sciences fill in the dictionary and add texts 
                         to the corpus of Veps and Karelian languages. 
