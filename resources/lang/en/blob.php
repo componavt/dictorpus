@@ -23,8 +23,7 @@ return [
     'choice_texts' => 'text|texts|texts',
     'corpus_means_title' => 'What is "the language corpus"',
     'corpus_means_text' => 'The corpus is an information and reference system based on the collection of texts in electronic form.
-                       Using the electronic dictionary, included in the corpus, you can quickly search and process texts.
-                       It is these corpora and dictionaries that we develop in the framework of the VepKar project.',
+                       This linguistic corpus includes texts and dictionaries stored in a database, and a computer program (corpus manager) for searching and processing data.',
     'developers' => 'The site was created by the&nbsp;staff of the <a href="http://www.krc.karelia.ru">Karelian Research Center of the&nbsp;Russian Academy of&nbsp;Sciences</a>',
     'in_numbers_title' => 'VepKar in numbers',
     'in_numbers_text' => 'The Open corpus of Veps and Karelian languages was opened on July 24, 2016. At the moment in the corpus:

@@ -12,6 +12,7 @@ return [
 
     'about_karelians' => 'О карелах',
     'about_project' => 'О проекте',
+    'about_project_vepkat' => 'О проекте ВепКар',
     'about_veps' => 'О вепсах',
     'affix_freq' => 'Частота встречаемости аффиксов в словаре',
     'authors' => 'Авторы',

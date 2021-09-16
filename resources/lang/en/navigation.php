@@ -12,6 +12,7 @@ return [
 
     'about_karelians' => 'Karelians',
     'about_project' => 'About',
+    'about_project_vepkar' => 'About VepKar',
     'about_veps' => 'Veps',
     'affix_freq' => 'Affix frequency',
     'authors' => 'Authors',

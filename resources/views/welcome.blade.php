@@ -1,3 +1,4 @@
+
 @extends('layouts.master')
 
 @section('title')
@@ -10,7 +11,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-7">
-                            <h1>{{ trans('navigation.about_project') }} VepKar</h1>
+                            <h1>{{ trans('navigation.about_project_vepkar') }}</h1>
                             @if ($video)
                                 @include('widgets.youtube',
                                         ['width' => '100%',
@@ -31,10 +32,10 @@
                                 <h2>{{trans('blob.in_numbers_title')}}</h2>
                                 {!!trans('blob.in_numbers_text',[
                                         'total_dialects'=>$total_dialects,
-                                        'total_lemmas'=>$total_lemmas,
+                                        'total_lemmas'=>number_format($total_lemmas, 0, ',', ' '),
                                         'lemmas' => $lemmas_choice,
                                         'texts' => $texts_choice,
-                                        'total_texts'=>$total_texts])!!}
+                                        'total_texts'=>number_format($total_texts, 0, ',', ' ')])!!}
                             </div>
                             <div id="last-added-lemmas" class="block-list">
                 <img class="img-loading" src="{{ asset('images/loading.gif') }}">
