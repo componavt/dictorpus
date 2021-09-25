@@ -27,7 +27,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $limit = 3;
+        $limit = 7;
         $locale = LaravelLocalization::getCurrentLocale();
         $total_lemmas = Lemma::count();
         $total_texts = Text::count();

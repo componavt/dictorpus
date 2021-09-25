@@ -3,8 +3,11 @@
 
 @section('title')
 {{ trans('main.site_title') }}
-
 @endsection
+
+@section('headExtra')
+    {!!Html::style('css/fancybox.css')!!}
+@stop
 
 @section('content')
             <div class="panel panel-default">
@@ -23,6 +26,9 @@
                             <div class="text-page">        
                             {!! trans('blob.welcome_text') !!}
                             </div>
+                            <a data-fancybox="gallery" href="/images/participants/big/2021-09.jpg" data-caption="{{trans('navigation.participants')}}">
+                                <img class="img-fluid img-responsive" src="/images/participants/2021-09.jpg" alt="">
+                            </a>
                         </div>
                         <div class="col-sm-5">
                             <h2>{{trans('blob.corpus_means_title')}}</h2>
@@ -52,6 +58,7 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/new_list_load.js')!!}
+    {!!Html::script('js/fancybox.umd.js')!!}
 @stop
 
 @section('jqueryFunc')
