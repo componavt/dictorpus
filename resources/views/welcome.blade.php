@@ -29,6 +29,9 @@
                             <a data-fancybox="gallery" href="/images/participants/big/2021-09.jpg" data-caption="{{trans('navigation.participants')}}">
                                 <img class="img-fluid img-responsive" src="/images/participants/2021-09.jpg" alt="">
                             </a>
+                            <div style="text-align: center">
+                                <a href="page/participants">{{trans('navigation.participants')}}</a>
+                            </div>
                         </div>
                         <div class="col-sm-5">
                             <h2>{{trans('blob.corpus_means_title')}}</h2>
