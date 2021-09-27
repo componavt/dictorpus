@@ -354,6 +354,26 @@ class Text extends Model
         return $builder->get();
     }
     
+    /**
+     * select * from `words` where `text_id` = 1548 and `w_id` in (select `w_id` from `text_wordform` where `text_id` = 1548 and `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'paha'))) order by `sentence_id` asc, `w_id` asc
+     * 
+     * @param array $words
+     * @return collection
+     */
+/*    
+    public function getSentences($words) {
+        $text_id = $this->id;
+        $builder = Sentence::whereTextId($text_id)->orderBy('sentence_id')->orderBy('w_id')   
+                    ->whereIn('w_id',function($query) use ($words, $text_id){
+                        $query->select('w_id')
+                        ->from('text_wordform')
+                        ->whereTextId($text_id);
+                        $query=Sentence::searchWords($query, $words);
+                    });
+//dd($builder->toSql());                    
+        return $builder->get();
+    }
+*/    
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
         

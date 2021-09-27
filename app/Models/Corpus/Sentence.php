@@ -226,7 +226,7 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
                         $query2->select('id')
                         ->from('lemmas');
                         if (isset($words[1]['w']) && $words[1]['w']) {
-                            $query2->where('lemma_for_search', 'like', $words[1]['w']);
+                            $query2->where('lemma_for_search', 'rlike', $words[1]['w']);
                         }
                         if (isset($words[1]['p']) && $words[1]['p'] && sizeof($words[1]['p'])) {
                             $query2->whereIn('pos_id', $words[1]['p']);
@@ -265,7 +265,8 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
             if (!$word['w'] && !$word['p'] && !$word['g']) {
                 break;
             }
-            $out[$i]['w'] = Grammatic::toSearchForm($word['w']);
+//            $out[$i]['w'] = Grammatic::toSearchForm($word['w']);
+            $out[$i]['w'] = Grammatic::toSearchByPattern($word['w']);
             $out[$i]['p'] = [];
             foreach (preg_split('/\|/', $word['p']) as $p_code) {
                 $p_id = PartOfSpeech::getIDByCode(trim($p_code));

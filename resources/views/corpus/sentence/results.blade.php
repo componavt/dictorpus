@@ -16,7 +16,7 @@
             {{trans('search.refine_search')}}
         @else 
             {{trans_choice('search.founded_texts', 
-                $numAll>20 ? $numAll%10 : $numAll, ['count'=>number_format($numAll, 0, ',', ' ')])}}{{trans_choice('search.founded_entries', 
+                $numAll>20 ? ($numAll%10 == 0 ? 5 : $numAll%10) : $numAll, ['count'=>number_format($numAll, 0, ',', ' ')])}}{{trans_choice('search.founded_entries', 
                     $entry_number>20 ? ($entry_number%10 == 0 ? 5 : $entry_number%10) : $entry_number, ['count'=>number_format($entry_number, 0, ',', ' ')])}}.
             @if ($numAll)     
             <ol start='{{$list_count}}'>
