@@ -1,5 +1,4 @@
 <?php $words = $text->getWords($url_args['words']); 
-dd($words);
 $wid_for_link = http_build_query(['search_wid'=>$words->pluck('w_id')->toArray()]);?>
 
 @include('corpus.sentence._text_link')
