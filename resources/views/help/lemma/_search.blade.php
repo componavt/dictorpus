@@ -1,6 +1,6 @@
 <div id='help-text-fields' class='help-section'>
     <h2>Поиск по текстовым полям</h2>
-    {!!trans('messages.search_comment')!!}   
+    {!!trans('search.for_text_fields')!!}   
 </div>
 
 <div id='help-dialect' class='help-section'>

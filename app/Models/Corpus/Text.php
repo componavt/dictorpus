@@ -85,9 +85,9 @@ class Text extends Model
         return join(', ', $authors);
     }
 
-    public function addMeaning($meaning_id, $sentence_id, $word_id, $w_id, $relevance) {
+    public function addMeaning($meaning_id, $s_id, $word_id, $w_id, $relevance) {
                         $this->meanings()->attach($meaning_id,
-                                ['sentence_id'=>$sentence_id,
+                                ['sentence_id'=>$s_id,
                                  'word_id'=>$word_id,
                                  'w_id'=>$w_id,
                                  'relevance'=>$relevance]);        
@@ -124,6 +124,21 @@ class Text extends Model
         return $texts;
     }
 
+    public static function searchWithSentences(Array $url_args) {
+        $texts = self::orderBy('title');        
+        if ($url_args['search_corpus']) {
+            $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
+        } 
+        $texts = self::searchByDialects($texts, $url_args['search_dialect']);
+        $texts = self::searchByGenres($texts, $url_args['search_genre']);
+        $texts = self::searchByLang($texts, $url_args['search_lang']);
+        $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
+        
+        $texts = Sentence::searchByWords($texts, 'id', $url_args['words']);
+        return $texts;
+    }
+    
+    
     public static function searchByBirthPlace($texts, $place) {
         if (!$place) {
             return $texts;
@@ -266,14 +281,14 @@ class Text extends Model
                             });
     }
 
-    public static function searchByWid($texts, $w_id) {
-        if (!$w_id) {
+    public static function searchByWid($texts, Array $wids) {
+        if (!sizeof($wids)) {
             return $texts;
         }
-        return $texts->whereIn('id',function($query) use ($w_id){
+        return $texts->whereIn('id',function($query) use ($wids){
                                 $query->select('text_id')
                                 ->from('words')
-                                ->where('w_id', $w_id);
+                                ->whereIn('w_id', $wids);
                             });
     }
 
@@ -320,37 +335,23 @@ class Text extends Model
     /**
      * select * from `words` where `text_id` = 1548 and `w_id` in (select `w_id` from `text_wordform` where `text_id` = 1548 and `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'paha'))) order by `sentence_id` asc, `w_id` asc
      * 
-     * @param type $word1
-     * @param type $word2
-     * @param type $distance_from
-     * @param type $distance_to
+     * @param array $words
      * @return collection
      */
-    public function getWords($word1, $word2, $distance_from, $distance_to) {
-//dd($word1);                    
-        if (!$word1) {
-            return null;
-        }
+    public function getWords($words) {
+/*        if (!isset($words[1]['w']) || !$words[1]['w']) {
+            return [];
+        }*/
         $text_id = $this->id;
-        $words = Word::whereTextId($text_id)->orderBy('sentence_id')->orderBy('w_id');   
-        
-        $words = $words->whereIn('w_id',function($query) use ($word1, $text_id){
+        $builder = Word::whereTextId($text_id)->orderBy('sentence_id')->orderBy('w_id')   
+                    ->whereIn('w_id',function($query) use ($words, $text_id){
                         $query->select('w_id')
                         ->from('text_wordform')
-                        ->where('relevance', '>', 0)
-                        ->whereTextId($text_id)
-                        ->whereIn('wordform_id',function($query1) use ($word1){
-                            $query1->select('wordform_id')
-                            ->from('lemma_wordform')
-                            ->whereIn('lemma_id',function($query2) use ($word1){
-                                $query2->select('id')
-                                ->from('lemmas')
-                                ->where('lemma_for_search', 'like', Grammatic::toSearchForm($word1));
-                            });
-                        });
+                        ->whereTextId($text_id);
+                        $query=Sentence::searchWords($query, $words);
                     });
-//dd($words->toSql());                    
-        return $words->get();
+//dd($builder->toSql());                    
+        return $builder->get();
     }
     
     public static function updateByID($request, $id) {
@@ -912,7 +913,7 @@ class Text extends Model
         return $wordforms;
     }
     
-    public function addWordform($wordform_id, $gramset_id, $sentence_id, $w_id, $relevance) {
+    public function addWordform($wordform_id, $gramset_id, $s_id, $w_id, $relevance) {
         if ($this->wordforms()->wherePivot('wordform_id',$wordform_id)
                  ->wherePivot('w_id',$w_id)
                  ->wherePivot('gramset_id',$gramset_id)->count()) {
@@ -1016,7 +1017,7 @@ class Text extends Model
 //dd($text_xml);       
         $error_text = '';
         if (!$sxe) {
-            $error_text = "XML loading error". '('.$id.")\n";
+            $error_text = "XML loading error". ' ('.$id.": $text_xml)\n";
             foreach(libxml_get_errors() as $error) {
                 $error_text .= "\t". $error->message;
             }
@@ -1044,11 +1045,11 @@ class Text extends Model
      * @param string $search_word     - string of searching word
      * @param string $search_sentence - ID of searching sentence object
      * @param boolean $with_edit      - 1 if it is the edit mode
-     * @param int $search_w           - ID of searching word object
+     * @param array $search_w         - array ID of searching word object
      * 
      * @return string                 - transformed text with markup tags
      **/
-    public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=null){
+    public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=[]){
         if (!$markup_text) {
             $markup_text = $this->text_xml;
         }
@@ -1059,23 +1060,23 @@ class Text extends Model
         }
         $sentences = $sxe->xpath('//s');
         foreach ($sentences as $sentence) {
-                $sentence_id = (int)$sentence->attributes()->id;
+                $s_id = (int)$sentence->attributes()->id;
 //dd($sentence);     
             foreach ($sentence->children() as $word) {
-                $word = $this->editWordBlock($word, $sentence_id, $search_word, $search_sentence, $with_edit, $search_w);
+                $word = $this->editWordBlock($word, $s_id, $search_word, $search_sentence, $with_edit, $search_w);
             }
             $sentence_class = "sentence";
-            if ($search_sentence && $search_sentence==$sentence_id) {
+            if ($search_sentence && $search_sentence==$s_id) {
                 $sentence_class .= " word-marked";
             }
             $sentence->addAttribute('class',$sentence_class);
-            $sentence->attributes()->id = 'text_s'.$sentence_id;
+            $sentence->attributes()->id = 'text_s'.$s_id;
         }
         
         return $sxe->asXML();
     }
 
-    public function editWordBlock($word, $sentence_id, $search_word=null, $search_sentence=null, $with_edit=null, $search_w=null) {
+    public function editWordBlock($word, $s_id, $search_word=null, $search_sentence=null, $with_edit=null, $search_w=[]) {
         $word_id = (int)$word->attributes()->id;
         if (!$word_id) { return $word; }
         
@@ -1085,7 +1086,7 @@ class Text extends Model
                           ->wherePivot('relevance', 1)->count();
         $word_class = '';
         if ($meanings_checked || $meanings_unchecked) {
-            list ($word, $word_class) = $this->addMeaningsBlock($word, $sentence_id, 
+            list ($word, $word_class) = $this->addMeaningsBlock($word, $s_id, 
                     $word_id, $meanings_checked, $meanings_unchecked, $with_edit);
             
         } elseif (User::checkAccess('corpus.edit')) {
@@ -1094,7 +1095,7 @@ class Text extends Model
 
 //        if ($search_word && Grammatic::toSearchForm((string)$word) == $search_word 
         if ($search_word && Grammatic::changeLetters((string)$word, $this->lang_id) == $search_word 
-                || $search_w && $word_id==$search_w) {
+                || sizeof($search_w) && in_array($word_id,$search_w)) {
             $word_class .= ' word-marked';
         }
 
@@ -1104,7 +1105,7 @@ class Text extends Model
         return $word;
     }
 
-    public function addMeaningsBlock($word, $sentence_id, $word_id, $meanings_checked, $meanings_unchecked, $with_edit=null) {
+    public function addMeaningsBlock($word, $s_id, $word_id, $meanings_checked, $meanings_unchecked, $with_edit=null) {
         $word_class = 'lemma-linked';
         $link_block = $word->addChild('div');
         $link_block->addAttribute('id','links_'.$word_id);
@@ -1133,7 +1134,7 @@ class Text extends Model
             $word_class .= ' gramset-not-checked';
         }
         if (User::checkAccess('corpus.edit') && $with_edit) { // icon 'pensil'
-            $link_block = self::addEditExampleButton($link_block, $this->id, $sentence_id, $word_id);
+            $link_block = self::addEditExampleButton($link_block, $this->id, $s_id, $word_id);
         }
         
         return [$word, $word_class];        
@@ -1173,26 +1174,27 @@ class Text extends Model
     }
 
     // icon 'pensil'
-    public static function addEditExampleButton($link_block, $text_id, $sentence_id, $word_id) {
+    public static function addEditExampleButton($link_block, $text_id, $s_id, $word_id) {
         if (!User::checkAccess('corpus.edit')) {
             return;
         }
         $button_edit_p = $link_block->addChild('p');
         $button_edit_p->addAttribute('class','text-example-edit'); 
         $button_edit = $button_edit_p->addChild('a',' ');//,'&#9999;'
-        $button_edit->addAttribute('href',LaravelLocalization::localizeURL('/corpus/text/'.$text_id.'/edit/example/'.
-                                                                            $sentence_id.'_'.$word_id)); 
+        $button_edit->addAttribute('href',
+                LaravelLocalization::localizeURL('/corpus/text/'.$text_id.
+                        '/edit/example/'.$s_id.'_'.$word_id)); 
         $button_edit->addAttribute('class','glyphicon glyphicon-pencil');  
         return $link_block;
     }
     
-    public static function createWordCheckedBlock($meaning_id, $text_id, $sentence_id, $w_id) {
+    public static function createWordCheckedBlock($meaning_id, $text_id, $s_id, $w_id) {
             $meaning = Meaning::find($meaning_id);
             if (!$meaning) {
                 return;
             }
             $locale = LaravelLocalization::getCurrentLocale();
-            $url = '/corpus/text/'.$text_id.'/edit/example/'.$sentence_id.'_'.$w_id;
+            $url = '/corpus/text/'.$text_id.'/edit/example/'.$s_id.'_'.$w_id;
             $str = '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
                  .'">'.$meaning->lemma->lemma.'<span> ('
                  .$meaning->getMultilangMeaningTextsString($locale)
@@ -1235,10 +1237,10 @@ class Text extends Model
             $sentences[$sentence->sentence_id]['w_id'][]=$sentence->w_id;
         }
         
-        foreach ($sentences as $sentence_id => $sentence) {
-            $s = $sxe->xpath('//s[@id="'.$sentence_id.'"]');
+        foreach ($sentences as $s_id => $sentence) {
+            $s = $sxe->xpath('//s[@id="'.$s_id.'"]');
             if (isset($s[0])) {
-                $sentences[$sentence_id]['s']= $s[0]->asXML();
+                $sentences[$s_id]['s']= $s[0]->asXML();
             }
         }
         
@@ -1259,26 +1261,26 @@ class Text extends Model
                            'w_id' => <number of word in the text>, 
                             'relevance' => <relevance>]
      */
-    public static function extractSentence($text_id, $sentence_id, $w_id, $relevance='') {
+    public static function extractSentence($text_id, $s_id, $w_id, $relevance='') {
         $text = self::find($text_id);
-        $sent_obj = Sentence::getBySid($text_id, $sentence_id);
+        $sent_obj = Sentence::getBySid($text_id, $s_id);
         if (!$text || !$sent_obj) { return NULL; }
         
         return ['s' => preg_replace('/[¦^]/', '', $sent_obj->text_xml), 
-                's_id' => $sentence_id,
+                's_id' => $s_id,
                 'text' => $text, 
-                'trans_s' => $text->getTransSentence($sentence_id),
+                'trans_s' => $text->getTransSentence($s_id),
                 'w_id' => $w_id, 
                 'relevance' => $relevance]; 
     }
     
-    public function getTransSentence($sentence_id) {
+    public function getTransSentence($s_id) {
         $transtext = Transtext::find($this->transtext_id);
         $trans_s = '';
         if ($transtext) {
             list($trans_sxe,$trans_error) = self::toXML($transtext->text_xml,'trans: '.$transtext->id);
             if (!$trans_error) {
-                $trans_sent = $trans_sxe->xpath('//s[@id="'.$sentence_id.'"]');
+                $trans_sent = $trans_sxe->xpath('//s[@id="'.$s_id.'"]');
                 if (isset($trans_sent[0])) {
                     $trans_s = $trans_sent[0]->asXML();
                 }
@@ -1535,7 +1537,7 @@ class Text extends Model
                     'search_recorder' => $request->input('search_recorder'),
                     'search_sentence' => (int)$request->input('search_sentence'),
                     'search_title'    => $request->input('search_title'),
-                    'search_wid'     => $request->input('search_wid'),
+                    'search_wid'     => (array)$request->input('search_wid'),
                     'search_without_genres' => (boolean)$request->input('search_without_genres'),
                     'search_word'     => $request->input('search_word'),
                     'search_text'     => $request->input('search_text'),
@@ -1658,7 +1660,7 @@ dd($s->saveXML());
         if ($this->text_xml) :
             return $this->setLemmaLink($this->text_xml, 
                     $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
-                    true, $url_args['search_wid'] ?? null);
+                    true, $url_args['search_wid'] ?? []);
         endif; 
         return nl2br($this->text);
     }

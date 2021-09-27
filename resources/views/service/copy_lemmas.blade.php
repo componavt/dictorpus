@@ -56,7 +56,7 @@
     </div>
     
     <div class="col-sm-4 search-button-b">       
-        <span>{{trans('messages.show_by')}}</span>
+        <span>{{trans('search.show_by')}}</span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
@@ -102,7 +102,7 @@
                 <td data-th="{{ trans('dict.pos') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
-                        @include('dict.lemma.show.features')
+                        {{$lemma->featsToString()}}
                     @endif
                 </td>
                 <td data-th="{{ trans('dict.interpretation') }}">

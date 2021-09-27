@@ -37,7 +37,7 @@
     <div class="col-sm-4 search-button-b">       
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
         <span>
-        {{trans('messages.show_by')}}
+        {{trans('search.show_by')}}
         </span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 

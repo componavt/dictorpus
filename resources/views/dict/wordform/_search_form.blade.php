@@ -45,7 +45,7 @@
     </div>
     <div class="col-sm-4 search-button-b">       
         <span>
-        {{trans('messages.show_by')}}
+        {{trans('search.show_by')}}
         </span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 

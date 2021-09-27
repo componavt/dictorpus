@@ -3,9 +3,15 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 use App\Library\Grammatic;
 use App\Library\Str;
+
+use App\Models\Dict\Dialect;
+use App\Models\Dict\Gram;
+use App\Models\Dict\Lang;
+use App\Models\Dict\PartOfSpeech;
 
 class Sentence extends Model
 {
@@ -166,8 +172,80 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
         $this->save();
     }
     
-    public static function search(Array $url_args) {
-        $texts = Text::orderBy('title');        
+/*    public static function search(Array $url_args) {
+        $sentences = self::orderBy('id')
+            ->whereIn('text_id', function ($q) use ($url_args) {
+                $q ->select('id')->from('texts');
+                if ($url_args['search_corpus']) {
+                    $q = $q->whereIn('corpus_id',$url_args['search_corpus']);
+                } 
+                $q = Text::searchByDialects($q, $url_args['search_dialect']);
+                $q = Text::searchByGenres($q, $url_args['search_genre']);
+                $q = Text::searchByLang($q, $url_args['search_lang']);
+                $q = Text::searchByYear($q, $url_args['search_year_from'], $url_args['search_year_to']);
+            });
+        
+        $sentences = self::searchByWords($sentences, 'text_id', $url_args['search_word1'], $url_args['search_word2'], $url_args['search_distance_from'], $url_args['search_distance_to']);
+        return $sentences;
+    }
+*/    
+    /**
+     * 
+     * @param type $builder
+     * @param type $field = 'id' if it is called from texts; 'text_id'
+     * @param type $word1
+     * @param type $word2
+     * @param type $distance_from
+     * @param type $distance_to
+     * @return type
+     */
+    public static function searchByWords($builder, $field, $words) {
+/*        if (!isset($words[1]['w']) || !$words[1]['w']) {
+            return $builder;
+        }*/
+        return $builder->whereIn($field,function($query) use ($words){
+                        $query->select('text_id')
+                        ->from('text_wordform');
+                        $query=self::searchWords($query, $words);
+                    });
+    }
+    
+    /**
+     * 
+     * @param array $words
+     * @return builder
+     */
+    public static function searchWords($builder, $words) {
+//dd($words[1]['p']);        
+            $builder=$builder->where('relevance', '>', 0);
+//            foreach ($words as $count => $word)
+            $builder=$builder->whereIn('wordform_id',function($query1) use ($words){
+                    $query1->select('wordform_id')
+                    ->from('lemma_wordform')
+                    ->whereIn('lemma_id',function($query2) use ($words){
+                        $query2->select('id')
+                        ->from('lemmas');
+                        if (isset($words[1]['w']) && $words[1]['w']) {
+                            $query2->where('lemma_for_search', 'like', $words[1]['w']);
+                        }
+                        if (isset($words[1]['p']) && $words[1]['p'] && sizeof($words[1]['p'])) {
+                            $query2->whereIn('pos_id', $words[1]['p']);
+                        }
+                    });
+                    if (isset($words[1]['g']) && sizeof($words[1]['g'])) {
+                        $query1->whereIn('gramset_id',function($query2) use ($words){
+                            $query2->select('id')->from('gramsets');
+                            foreach ($words[1]['g'] as $field => $group) {
+                                $query2->whereIn($field, $group);
+                            }
+                        });
+                    }
+            });
+        return $builder;
+    }
+    
+    public static function searchTexts(Array $url_args) {
+        $texts = Text::select('id');        
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
         } 
@@ -175,29 +253,59 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
         $texts = Text::searchByGenres($texts, $url_args['search_genre']);
         $texts = Text::searchByLang($texts, $url_args['search_lang']);
         $texts = Text::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
-        
-        $texts = self::searchByWords($texts, $url_args['search_word1'], $url_args['search_word2'], $url_args['search_distance_from'], $url_args['search_distance_to']);
-        return $texts;
+        return $texts->get();
     }
-    
-    public static function searchByWords($texts, $word1, $word2, $distance_from, $distance_to) {
-        if (!$word1) {
-            return $texts;
+    /*
+     * select * from gramsets where gram_id_mood in (27) and gram_id_tense in (24) and gram_id_number in (1,2) and gram_id_person in (21, 22);
+     */
+    public static function preparedWordsForSearch($words) {
+        $out = [];
+//dd($words);        
+        foreach ($words as $i=>$word) {
+            if (!$word['w'] && !$word['p'] && !$word['g']) {
+                break;
+            }
+            $out[$i]['w'] = Grammatic::toSearchForm($word['w']);
+            $out[$i]['p'] = [];
+            foreach (preg_split('/\|/', $word['p']) as $p_code) {
+                $p_id = PartOfSpeech::getIDByCode(trim($p_code));
+                if ($p_id) {
+                    $out[$i]['p'][] = $p_id;
+                }
+            }
+            $out[$i]['g'] = [];
+            if ($word['g']) {
+                foreach (preg_split('/,/', $word['g']) as $orGroup) {
+                    foreach (preg_split('/\|/', $orGroup) as $g_code) {
+                        $gram = Gram::getByUnimorph(trim($g_code));
+                        $out[$i]['g']['gram_id_'.$gram->gramCategory->name_en][] = $gram->id; 
+                    }
+                }
+            }
+            if ($i>1) {
+                $out[$i]['d_f'] = $word['d_f'] ?? 1; 
+                $out[$i]['d_t'] = $word['d_t'] ?? 1; 
+            }
         }
-        return $texts->whereIn('id',function($query) use ($word1){
-                        $query->select('text_id')
-                        ->from('text_wordform')
-                        ->where('relevance', '>', 0)
-                        ->whereIn('wordform_id',function($query1) use ($word1){
-                            $query1->select('wordform_id')
-                            ->from('lemma_wordform')
-                            ->whereIn('lemma_id',function($query2) use ($word1){
-                                $query2->select('id')
-                                ->from('lemmas')
-                                ->where('lemma_for_search', 'like', Grammatic::toSearchForm($word1));
-                            });
-                        });
-                    });
+        return $out;
+    }
+
+    /**
+     * select count(*) from `text_wordform` where `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'kačahtuakseh'))
+     * 
+     * @param type $word1
+     * @param type $word2
+     * @param type $distance_from
+     * @param type $distance_to
+     * @return collection
+     */
+    public static function entryNumber($args) {
+        
+        $builder = DB::table('text_wordform')->selectRaw('DISTINCT text_id, w_id');
+        $builder = self::searchWords($builder, $args['words'])
+                ->whereIn('text_id', Sentence::searchTexts($args));
+//dd(vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings()));            
+        return sizeof($builder->get());
     }
     
     public static function urlArgs($request) {
@@ -209,20 +317,136 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
                     'search_year_from'=> (int)$request->input('search_year_from'),
                     'search_year_to'  => (int)$request->input('search_year_to'),
             
-                    'search_distance_from'  => (int)$request->input('search_distance_from'),
-                    'search_distance_to'  => (int)$request->input('search_distance_to'),
-                    'search_word1' => $request->input('search_word1'),
-                    'search_word2' => $request->input('search_word1'),
-//                    'search_lang'  => (array)$request->input('search_lang'),
+                    'search_words' => (array)$request->input('search_words'),
                 ];
         
-        if (!$url_args['search_distance_from']) {
-            $url_args['search_distance_from'] = 1;
+        if (!isset($url_args['search_words'][1])) {
+            $url_args['search_words'][1]['w'] = '';
         }
-        if (!$url_args['search_distance_to']) {
-            $url_args['search_distance_to'] = 1;
-        }
-        
         return $url_args;
     }    
+    
+    public static function searchQueryToString($args) {
+        $out = [];
+        if (sizeof($args['search_lang'])) {
+            $out[] = '(<b>'.trans('dict.lang'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ', 
+                    array_map(function ($id) {return Lang::getNameByID($id); }, 
+                            $args['search_lang'])).')';
+        }
+        if (sizeof($args['search_dialect'])) {
+            $out[] = '(<b>'.trans('dict.dialect'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
+                    array_map(function ($id) {return Dialect::getNameByID($id); }, 
+                            $args['search_dialect'])).')';
+        }
+        if (sizeof($args['search_corpus'])) {
+            $out[] = '(<b>'.trans('corpus.corpus'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
+                    array_map(function ($id) {return Corpus::getNameByID($id); }, 
+                            $args['search_corpus'])).')';
+        }
+        if (sizeof($args['search_genre'])) {
+            $out[] = '(<b>'.trans('corpus.genre'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
+                    array_map(function ($id) {return Genre::getNameByID($id); }, 
+                            $args['search_genre'])).')';
+        }
+        if ($args['search_year_from']) {
+            $out[] = '<b>'.trans('search.year_from'). '</b>: '. 
+                            $args['search_year_from'].'';
+        }
+        if ($args['search_year_to']) {
+            $out[] = '<b>'.trans('search.year_to'). '</b>: '. 
+                            $args['search_year_to'].'';
+        }
+        
+        foreach ($args['search_words'] as $i => $word) {
+            $tmp=[];
+            if ($word['w']) {
+                $tmp[] = '<i>'.$word['w'].'</i>';
+            }
+            if ($word['p']) {
+                $tmp[] = '('.join(' <span class="warning">'.trans('search.or').'</span> ',
+                            array_map(function ($code) {return PartOfSpeech::getNameByCode(trim($code)); },
+                                    preg_split('/\|/',$word['p']))).')';
+            }
+            if ($word['g']) {
+                $groups = [];
+                foreach (preg_split('/\,/',$word['g']) as $gr) {
+                    $groups[] = '('.join(' <span class="warning">'.trans('search.or').'</span> ',
+                            array_map(function ($code) {return Gram::getNameByCode(trim($code)); },
+                                    preg_split('/\|/',$gr))).')';
+                    
+                }
+                $tmp[] = '('.join(' <span class="warning">'.trans('search.and').'</span> ', $groups).')';
+            }
+            $out[] = '<br>(<b>'.trans('corpus.word'). " $i</b>: ". 
+                            join(' <span class="warning">'.trans('search.and').'</span> ',$tmp).')';
+        } 
+        return join(' <span class="warning">'.trans('search.and').'</span> ', $out);
+    }
+    
+    /**
+     * Устанавить разметку с блоками слов
+
+     * @param array $search_w         - array ID of searching word object
+     * 
+     * @return string                 - transformed text with markup tags
+     **/
+    public function addWordBlocks($search_w=[]){
+        $markup_text = $this->text_xml;
+        list($sxe,$error_message) = Text::toXML($markup_text,'');
+//dd($error_message, $markup_text);        
+        if ($error_message) {
+            return $markup_text;
+        }
+//        $s_id = (int)$sentence->attributes()->id;
+//dd($sentence);         
+        $words = $sxe->xpath('//w');
+        foreach ($words as $word) {
+            $word = $this->addWordBlock($word, $search_w);
+        }
+        return $sxe->asXML();
+    }
+    
+    public function addWordBlock($word, $search_w=[]) {
+        $w_id = (int)$word->attributes()->id;
+        if (!$w_id) { return $word; }
+        $word['id'] = $this->text_id.'_'.$w_id;
+        
+        $meanings_checked = $this->text->meanings()->wherePivot('w_id',$w_id)
+                          ->wherePivot('relevance', '>', 1)->count();
+        $meanings_unchecked = $this->text->meanings()->wherePivot('w_id',$w_id)
+                          ->wherePivot('relevance', 1)->count();
+        $word_class = '';
+        if ($meanings_checked || $meanings_unchecked) {
+            $wordform_checked = $this->text->wordforms()->wherePivot('w_id',$w_id)
+                              ->wherePivot('relevance', '>', 1)->count();
+            $wordform_unchecked = $this->text->wordforms()->wherePivot('w_id',$w_id)
+                              ->wherePivot('relevance', 1)->count();
+            $word_class = 'word-linked';
+            $word = $this->addLemmasBlock($word, $w_id, 
+                    $meanings_checked && $wordform_checked ? 'word-checked' : 'word-unchecked');            
+        }
+
+        if (sizeof($search_w) && in_array($w_id,$search_w)) {
+            $word_class .= ' word-marked';
+        }
+
+        if ($word_class) {
+            $word->addAttribute('class',$word_class);
+        }
+        return $word;
+    }
+
+    public function addLemmasBlock($word, $w_id, $block_class) {
+//        $word_obj = Word::getByTextWid($this->text_id, $w_id);
+        $link_block = $word->addChild('div');
+        $link_block->addAttribute('id','links_'.$this->text_id.'_'.$w_id);
+        $link_block->addAttribute('class','links-to-lemmas '.$block_class);
+        $link_block->addAttribute('data-downloaded',0);
+        
+        $load_img = $link_block->addChild('img');
+        $load_img->addAttribute('class','img-loading');
+        $load_img->addAttribute('src','/images/waiting_small.gif');
+                
+        return $word;        
+    }
 }

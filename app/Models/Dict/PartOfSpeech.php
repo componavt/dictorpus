@@ -107,6 +107,14 @@ class PartOfSpeech extends Model
         }
     }
         
+    public static function getNameByCode($code)
+    {
+        $pos = self::getByCode($code);
+        if ($pos && isset($pos->name)) {
+            return $pos->name;
+        }
+    }
+        
     public static function getByCode($code)
     {
         $pos = self::where('code', $code)->first();
@@ -198,6 +206,28 @@ class PartOfSpeech extends Model
         }
         
         return $pos_grouped;         
+    }
+    
+    /**
+     * Get list of parts of speech for words in texts
+     * 
+     * @return Array ['NOUN' => 'существительное', ...]
+     */
+    public static function getListForCorpus() {
+        $parts_of_speech = [];
+        
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $pos_collec = self::where('name_'.$locale, '<>', '')
+                          ->orderBy('name_'.$locale)->get();
+        
+        foreach ($pos_collec as $pos) {
+            if ($pos->isChangeable()) {
+                $parts_of_speech[$pos->code] = $pos->name;
+            }
+        }
+        
+        return $parts_of_speech;         
     }
         
     /** Gets list of parts of speech group by category with quantity of records of $model_name

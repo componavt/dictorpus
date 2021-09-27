@@ -28,18 +28,18 @@ class MeaningTextRel extends Model
         }
     }
     
-    public static function updateExample($relevance, $meaning_id, $text_id, /*$sentence_id,*/ $w_id) {
+    public static function updateExample($relevance, $meaning_id, $text_id, /*$s_id,*/ $w_id) {
         if ($relevance == 1) { // не выставлена оценка
-            if (self::existsPositiveRelevance($text_id, /*$sentence_id,*/ $w_id, $meaning_id)) { // этот пример привязан к другому значению
+            if (self::existsPositiveRelevance($text_id, /*$s_id,*/ $w_id, $meaning_id)) { // этот пример привязан к другому значению
                 $relevance = 0;
             }
         } elseif ($relevance != 0) { // положительная оценка
-            self::setNegativeToUndefOthers($text_id, /*$sentence_id,*/ $w_id, $meaning_id); // всем значениям с неопределенными оценками проставим отрицательные
+            self::setNegativeToUndefOthers($text_id, /*$s_id,*/ $w_id, $meaning_id); // всем значениям с неопределенными оценками проставим отрицательные
         }
         DB::statement('UPDATE meaning_text SET relevance='.$relevance // запишем оценку этому значению
                      .' WHERE meaning_id='.$meaning_id
                      .' AND text_id='.$text_id
-//                     .' AND sentence_id='.$sentence_id
+//                     .' AND sentence_id='.$s_id
                      .' AND w_id='.$w_id);
         if ($relevance>1) {
             TextWordform::updateWordformLinksAfterCheckExample($text_id, $w_id, $meaning_id);
@@ -47,36 +47,36 @@ class MeaningTextRel extends Model
     }
 
     // ищем другие значения лемм с положительной оценкой
-    public static function existsPositiveRelevance($text_id, /*$sentence_id,*/ $w_id, $meaning_id) {
+    public static function existsPositiveRelevance($text_id, /*$s_id,*/ $w_id, $meaning_id) {
         return DB::table('meaning_text') 
                 -> where('text_id',$text_id)
-//                -> where('sentence_id',$sentence_id)
+//                -> where('sentence_id',$s_id)
                 -> where('w_id',$w_id)
                 -> where('meaning_id', '<>', $meaning_id)
                 -> where ('relevance','>',1)->count();
     }
 
     // всем значениям с неопределенными оценками проставим отрицательные
-    public static function setNegativeToUndefOthers($text_id, /*$sentence_id,*/ $w_id, $meaning_id) {
+    public static function setNegativeToUndefOthers($text_id, /*$s_id,*/ $w_id, $meaning_id) {
         DB::statement('UPDATE meaning_text SET relevance=0'. 
                       ' WHERE meaning_id <> '.$meaning_id.
                       ' AND relevance=1'.
                       ' AND text_id='.$text_id.
-//                      ' AND sentence_id='.$sentence_id.
+//                      ' AND sentence_id='.$s_id.
                       ' AND w_id='.$w_id);
     }
     
     public static function preparationForExampleEdit($example_id){
         if (preg_match("/^(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
             $text_id = (int)$regs[1];
-            $sentence_id = (int)$regs[2];
+            $s_id = (int)$regs[2];
             $w_id = (int)$regs[3];
         
-            $sentence = Text::extractSentence($text_id, $sentence_id, $w_id);            
+            $sentence = Text::extractSentence($text_id, $s_id, $w_id);            
 
             $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
                                -> where('text_id',$text_id)
-                               -> where('sentence_id',$sentence_id)
+                               -> where('sentence_id',$s_id)
                                -> where('w_id',$w_id)
                                -> get();
             $meaning_texts = [];

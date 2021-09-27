@@ -15,94 +15,17 @@
         @include('widgets.modal',['name'=>'modalHelp',
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.text._search'])
-                                  
-        {!! Form::open(['url' => '/corpus/sentence/results', 
-                             'method' => 'get', 'target' => '_blank']) 
-        !!}
-<div class="show-search-form">{{trans('messages.advanced_search')}} &#8595;</div>
-<div class="search-form search-text">        
-<div class="row">
-    <div class="col-md-4">
-        @include('widgets.form.formitem._select2', 
-                ['name' => 'search_lang', 
-                 'values' => $lang_values,
-                 'value' => $url_args['search_lang'],
-                 'title' => trans('dict.lang'),
-                 'class'=>'multiple-select-lang form-control',
-        ])                 
-    </div>
-    <div class="col-md-4">
-        @include('widgets.form.formitem._select2', 
-                ['name' => 'search_corpus', 
-                 'values' => $corpus_values,
-                 'value' => $url_args['search_corpus'],
-                 'title' => trans('corpus.corpus'),
-                 'class'=>'multiple-select-corpus form-control'
-            ])
-    </div>
-    <div class="col-md-4{{sizeof($url_args['search_dialect']) ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select2',
-                ['name' => 'search_dialect', 
-                 'values' =>$dialect_values,
-                 'value' => $url_args['search_dialect'],
-                 'title' => trans('dict.dialect'),
-                 'class'=>'multiple-select-dialect form-control'
-            ])
-    </div>
-    <div class="col-md-4{{sizeof($url_args['search_genre']) ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select2', 
-                ['name' => 'search_genre', 
-                 'values' => $genre_values,
-                 'value' => $url_args['search_genre'],
-                 'title' => trans('corpus.genre'),
-                 'class'=>'multiple-select-genre form-control'
-        ])                 
-    </div>
-    <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_year_from', 
-                 'value' => $url_args['search_year_from'] ? $url_args['search_year_from'] : '',
-                 'title' => trans('messages.year_from')
-                ])                               
-    </div>
-    <div class="col-md-2{{$url_args['search_year_to'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_year_to', 
-                 'help_func' => 'callHelpYear()',
-                 'value' => $url_args['search_year_to'] ? $url_args['search_year_to'] : '',
-                 'title' => trans('messages.year_to')
-                ])                               
-    </div>
-    <div class="col-md-4 search-button-b">       
-        <span>
-        {{trans('messages.show_by')}}
-        </span>
-        @include('widgets.form.formitem._text', 
-                ['name' => 'limit_num', 
-                'value' => $url_args['limit_num'], 
-                'attributes'=>['placeholder' => trans('messages.limit_num') ]]) 
-        <span>
-                {{ trans('messages.records') }}
-        </span>
-        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
-    </div>
-</div>                 
-</div>
-<div class="hide-search-form">{{trans('messages.simple_search')}} &#8593;</div>
-
-<div class="row">
-    <div class="col-md-4">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_word1', 
-                 'special_symbol' => true,
-                 'help_func' => "callHelp('help-text-fields')",
-                 'value' => $url_args['search_word1'],
-                 'title'=> trans('corpus.word')
-                ])
-                               
-    </div>
-</div>
-{!! Form::close() !!}
+        @include('widgets.modal',['name'=>'modalChoosePOS',
+                              'title'=>trans('search.choose_pos'),
+                              'submit_id' => 'choose-pos',
+                              'submit_title' => trans('messages.choose'),
+                              'modal_view'=>'corpus.sentence._form_choose_pos'])
+        @include('widgets.modal',['name'=>'modalChooseGram',
+                              'title'=>trans('search.choose_gram'),
+                              'submit_id' => 'choose-gram',
+                              'submit_title' => trans('messages.choose'),
+                              'modal_view'=>'corpus.sentence._form_choose_gram'])
+        @include('corpus.sentence._search_form', ['url'=>LaravelLocalization::localizeURL('/corpus/sentence/results')])                                  
 @stop
 
 @section('footScriptExtra')
@@ -118,47 +41,38 @@
     toggleSearchForm();
     $(".multiple-select-lang").select2();
     $(".multiple-select-corpus").select2();
-    $(".multiple-select-genre").select2({
-        width: '100%',
-        ajax: {
-          url: "/corpus/genre/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              corpus_id: selectedValuesToURL("#search_corpus")
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
+    selectGenre();
+    selectWithLang('.multiple-select-dialect', "/dict/dialect/list", 'search_lang', '', true);
+    
+    $("#choose-pos").click(function(){
+        var poses = [];
+        $('.choose-pos input:checked').each(function( i ) {
+            poses.push($(this).val());
+        });        
+        var posCaller = $('#insertPosTo').val();
+        $('#'+posCaller).val(poses.join('|'));
+//console.log(posCaller);                
+        $("#modalChoosePOS").modal('hide');    
+
     });
     
-    $(".multiple-select-dialect").select2({
-        width: '100%',
-        ajax: {
-          url: "/dict/dialect/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              lang_id: selectedValuesToURL("#search_lang")
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
+    $("#choose-gram").click(function(){
+        var cgrams = [];
+        var grams = [];
+        $('.gram-category').each(function(i, c) {
+//console.log($(c).attr('id'));        
+            grams = [];
+console.log('#'+$(c).attr('id')+' input:checked');            
+            $('#'+$(c).attr('id')+' input:checked').each(function( i ) {
+                grams.push($(this).val());
+            });  
+            if (grams.length > 0) {
+                cgrams.push(grams.join('|'));
+            }
+        });        
+        var gramCaller = $('#insertGramTo').val();
+        $('#'+gramCaller).val(cgrams.join(','));
+        $("#modalChooseGram").modal('hide');    
+
     });
-        
-        
 @stop

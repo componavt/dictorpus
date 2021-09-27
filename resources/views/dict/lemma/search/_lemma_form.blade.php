@@ -1,7 +1,7 @@
         {!! Form::open(['url' => $url,
                         'method' => 'get'])
         !!}
-<div class="show-search-form">{{trans('messages.advanced_search')}} &#8595;</div>
+<div class="show-search-form">{{trans('search.advanced_search')}} &#8595;</div>
 <div class="row search-form">
     <div class="col-sm-1">
             @include('widgets.form.formitem._text',
@@ -91,7 +91,7 @@
     </div>
         
     <div class="col-sm-4 search-button-b">       
-        <span>{{trans('messages.show_by')}}</span>
+        <span>{{trans('search.show_by')}}</span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
@@ -100,7 +100,7 @@
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>      
-<div class="hide-search-form">{{trans('messages.simple_search')}} &#8593;</div>
+<div class="hide-search-form">{{trans('search.simple_search')}} &#8593;</div>
         {!! Form::hidden('search_label', $url_args['search_label']) !!}        
         {!! Form::close() !!}
 

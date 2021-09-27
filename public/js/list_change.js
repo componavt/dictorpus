@@ -88,7 +88,7 @@ function selectWithLang(el, url, lang_var, placeholder='', allow_clear=false){
           data: function (params) {
             return {
               q: params.term, // search term
-              lang_id: $( "#"+lang_var+" option:selected" ).val()
+              lang_id: selectedValuesToURL("#search_lang")
             };
           },
           processResults: function (data) {
@@ -127,6 +127,31 @@ function selectGramset(lang_var, pos_var, placeholder='', allow_clear=false){
               q: params.term, // search term
               lang_id: $( "#"+lang_var+" option:selected" ).val(),
               pos_id: $( "#"+pos_var+" option:selected" ).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
+function selectGenre(corpus_var='search_corpus', placeholder='', allow_clear=false){
+    $(".multiple-select-genre").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/genre/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              corpus_id: selectedValuesToURL("#" + corpus_var)
             };
           },
           processResults: function (data) {

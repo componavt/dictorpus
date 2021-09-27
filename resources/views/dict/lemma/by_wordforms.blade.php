@@ -18,7 +18,7 @@
                                   
 <div class="row">
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('messages.advanced_search') }}</a> 
+            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}">{{ trans('search.advanced_search') }}</a> 
             |
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">
@@ -76,7 +76,7 @@
                 <td data-th="{{ trans('dict.pos') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
-                        @include('dict.lemma.show.features')
+                        {{$lemma->featsToString()}}
                     @endif
                 </td>
                 @endif

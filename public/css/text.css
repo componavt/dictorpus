@@ -60,7 +60,8 @@ s {
 }
 
 .meaning-checked.no-gramsets .links-to-lemmas,
-.meaning-checked.gramset-checked .links-to-lemmas {
+.meaning-checked.gramset-checked .links-to-lemmas,
+.word-checked {
     background: #a6f4bc;
 }
 /*
@@ -80,6 +81,32 @@ s {
 .links-to-lemmas a span {
     color: black;
 }
+
+.links-to-lemmas h3 {
+    font-size: 14px;
+    margin: 0;
+    text-align: right;
+}
+
+.links-to-lemmas .lemma_b {
+    border-bottom: 1px #040404 dashed;
+    margin-bottom: 10px;
+}
+
+.links-to-lemmas .lemma_b:last-of-type {
+    border-bottom: 0;
+}
+
+.links-to-lemmas .meanings_b {
+    color: #5173d8;
+    padding-left: 10px;    
+}
+
+.links-to-lemmas .meanings_b p,
+.links-to-lemmas .gramsets_b p {
+    margin-bottom: 0;
+}
+
 
 w, .text-has-checked-meaning {
     position: relative;
@@ -181,4 +208,13 @@ ol {
 .markup-sentence {
     color: #972d1a;
     cursor: pointer;
+}
+
+.word-linked {
+    cursor: pointer;
+}
+
+.word-linked:hover {
+/*    text-decoration: underline;*/
+    border-bottom: 1px #972d1a dashed;
 }

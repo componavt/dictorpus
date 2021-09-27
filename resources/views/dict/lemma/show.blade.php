@@ -54,7 +54,7 @@
         @if ($lemma->pos)
         <p>
             <b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}  
-            @include('dict.lemma.show.features')
+            {{$lemma->featsToString()}}
         </p>
         @endif
 

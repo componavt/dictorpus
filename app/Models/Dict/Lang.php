@@ -88,8 +88,7 @@ class Lang extends Model
             return $lang->name;
         }
     }
-           
-     
+                
     /** Gets list of languages
      * 
      * @return Array [1=>'Vepsian',..]

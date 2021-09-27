@@ -238,6 +238,17 @@ h2 {
     top: 0;
     /*width: 300px;*/
 }
+
+.add-more {
+    color: #c9302c;
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    position: absolute;
+    right: 15px;
+/*    text-align:right;*/
+    top: 6px;
+}
 /*
 .form-inline .special-symbols-link {
     top: 0;

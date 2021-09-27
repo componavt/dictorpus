@@ -71,6 +71,7 @@ Route::group(
         Route::get('corpus/sentence/{id}/edit', 'Corpus\SentenceController@edit');
         Route::get('corpus/sentence/{id}/markup', 'Corpus\SentenceController@markup');
         Route::get('corpus/sentence/results', 'Corpus\SentenceController@results');
+        Route::get('corpus/sentence/word_gram_form', 'Corpus\SentenceController@wordGramForm');
 
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
@@ -92,6 +93,7 @@ Route::group(
         Route::get('corpus/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');        
         Route::get('corpus/word/edit/{text_id}_{w_id}', 'Corpus\WordController@edit');       
         Route::get('corpus/word/freq_dict', 'Corpus\WordController@frequencyDict');
+        Route::get('corpus/word/load_lemma_block/{text_id}_{w_id}', 'Corpus\WordController@loadLemmaBlock');       
         Route::get('corpus/word/load_word_block/{text_id}_{w_id}', 'Corpus\WordController@loadWordBlock');       
         Route::get('corpus/word/prediction', 'Corpus\WordController@lemmaGramsetPrediction');
         Route::get('corpus/word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');

@@ -20,7 +20,7 @@
         
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}
-            @include('dict.lemma.show.features')
+              {{$lemma->featsToString()}}
         </p>
         
     @if ($dialect_id && is_array($base_list))

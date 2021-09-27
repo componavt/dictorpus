@@ -404,7 +404,8 @@ class Gramset extends Model
 //print "<P>$name";   
 //if ($this->$name) {            dd($this->$name); }
             if ($this->$name) {
-                if ($this->$name->unimorph) {
+                // исключаем коннегатив, его нет в unimorph
+                if ($this->$name->unimorph && $this->$name->unimorph!='CON') {
                     if (preg_match("/^V\./",$this->$name->unimorph) && $feats[0] == 'V') {
                         unset($feats[0]);
                     }

@@ -63,7 +63,7 @@
                 <td data-th="{{ trans('dict.pos') }}">
                     @if($lemma->pos)
                         {{$lemma->pos->name}}
-                        @include('dict.lemma.show.features')
+                        {{$lemma->featsToString()}}
                     @endif
                 </td>
                 <td data-th="{{ trans('dict.interpretation') }}">

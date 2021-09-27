@@ -64,6 +64,18 @@ class Genre extends Model
         return ($this->parent_id ? $this->parent->numberInList().'.' : '').($count+1);
     }
     
+    /** Gets name of this genre by code, takes into account locale.
+     * 
+     * @return String
+     */
+    public static function getNameByID($id) : String
+    {
+        $item = self::where('id',$id)->first();
+        if ($item) {
+            return $item->name;
+        }
+    }
+        
     /** Gets list of genres
      * 
      * @return Array [1=>'Bridal laments',..]

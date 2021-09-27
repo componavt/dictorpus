@@ -65,19 +65,3 @@ function reloadStemAffixByWordforms() {
     }); 
 }   
 
-function addWordformGramFields(el) {
-//    $(".add-wordform-gram").click(function(){
-        var count = el.getAttribute('data-count');
-        var lang_id = $("#search_lang option:selected" ).val();
-        var pos_id = $("#search_pos option:selected" ).val();
-        $.ajax({
-            url: '/dict/lemma/wordform_gram_form/', 
-            data: {count: count, lang_id: lang_id, pos_id: pos_id},
-            type: 'GET',
-            success: function(result){
-                $("#search-wordforms").append(result);
-            }
-        }); 
-        el.style.display='none';
-//    });    
-}

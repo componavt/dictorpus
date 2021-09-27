@@ -24,7 +24,7 @@
             </div>
             <div class="col-md-3 search-button-b"><br>
                 <span>
-                {{trans('messages.show_by')}}
+                {{trans('search.show_by')}}
                 </span>
                 @include('widgets.form.formitem._text', 
                         ['name' => 'limit_num', 

@@ -1,5 +1,5 @@
-        {!! Form::open(['url' => '/corpus/text/', 
-                             'method' => 'get']) 
+        {!! Form::open(['url' => $url, 
+                             'method' => 'get', 'target' => '_blank']) 
         !!}
 <div class="show-search-form">{{trans('search.advanced_search')}} &#8595;</div>
 <div class="search-form search-text">        
@@ -22,14 +22,6 @@
                  'class'=>'multiple-select-corpus form-control'
             ])
     </div>
-    <div class="col-md-4{{$url_args['search_informant'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_informant', 
-                 'values' => $informant_values,
-                 'value' => $url_args['search_informant'],
-                 'title' => trans('corpus.informant'),
-        ])                 
-    </div>
     <div class="col-md-4{{sizeof($url_args['search_dialect']) ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2',
                 ['name' => 'search_dialect', 
@@ -48,31 +40,6 @@
                  'class'=>'multiple-select-genre form-control'
         ])                 
     </div>
-    <div class="col-md-4{{$url_args['search_recorder'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_recorder', 
-                 'values' => $recorder_values,
-                 'value' => $url_args['search_recorder'],
-                 'title' => trans('corpus.recorder'),
-        ])                 
-    </div>
-    <div class="col-md-4{{$url_args['search_title'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_title', 
-                 'special_symbol' => true,
-                 'help_func' => "callHelp('help-text-fields')",
-                 'value' => $url_args['search_title'],
-                 'title' => trans('corpus.title')
-                ])                               
-    </div>
-    <div class="col-md-4{{$url_args['search_author'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_author', 
-                 'values' => $author_values,
-                 'value' => $url_args['search_author'],
-                 'title' => trans('corpus.author_or_trans'),
-        ])                 
-    </div>
     <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_year_from', 
@@ -88,26 +55,6 @@
                  'title' => trans('messages.year_to')
                 ])                               
     </div>
-    <div class="col-md-4{{$url_args['search_word'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_word', 
-                 'special_symbol' => true,
-                 'help_func' => "callHelp('help-text-fields')",
-                 'value' => $url_args['search_word'],
-                 'title'=> trans('corpus.word')
-                ])
-                               
-    </div>
-    <div class="col-md-4{{$url_args['search_text'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_text', 
-                 'special_symbol' => true,
-                 'help_func' => "callHelp('help-text-fields')",
-                 'value' => $url_args['search_text'],
-                 'title' => trans('corpus.text_fragment')
-                ])
-                               
-    </div>
     <div class="col-md-4 search-button-b">       
         <span>
         {{trans('search.show_by')}}
@@ -119,9 +66,15 @@
         <span>
                 {{ trans('messages.records') }}
         </span>
-        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.search')])
     </div>
 </div>                 
 </div>
 <div class="hide-search-form">{{trans('search.simple_search')}} &#8593;</div>
-        {!! Form::close() !!}
+
+<div id="search-words">
+@foreach ($url_args['search_words'] as $count =>$w)
+    @include('corpus.sentence._search_word_form')
+@endforeach
+</div>
+{!! Form::close() !!}

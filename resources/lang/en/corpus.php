@@ -27,7 +27,7 @@ return [
     'comment' => 'comments',
     'choose-gramset' => 'Choose a gramset',
     
-    'corpus' => 'Corpus',
+    'corpus' => 'corpus',
     'corpus_has_text' => 'Corpus ":name" can not be removed, there are texts in this corpus',
     'corpus_list' => 'Corpus list',
     'corpus_removed' => 'Corpus ":name" is removed successfully.',
@@ -39,12 +39,11 @@ return [
     
     'edit_word' => 'correct the word in the text',
     
-    'genre' => 'Genre',
+    'genre' => 'genre',
     'genre_has_text' => 'Genre ":name" can not be removed, there are texts with this genre',
     'genre_list' => 'Genre list',
     'genre_removed' => 'Genre ":name" is removed successfully.',
     'gram_search' => 'Lexico-grammatical search',
-    'founded_texts' => '{0} There are no texts.|{1} :count text was founded.|[2,Inf] :count texts were founded.',
     'has_link_with_lemma' => 'linked with lemma',
     
     'informant' => 'Informant',

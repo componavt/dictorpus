@@ -12,9 +12,12 @@ use App\Library\Str;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Sentence;
+use App\Models\Corpus\Text;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Gram;
 use App\Models\Dict\Lang;
+use App\Models\Dict\PartOfSpeech;
 
 class SentenceController extends Controller
 {
@@ -49,10 +52,12 @@ class SentenceController extends Controller
         $lang_values = Lang::getListWithQuantity('texts');        
         $dialect_values = Dialect::getList();
         $genre_values = Genre::getList();
-        
+        $pos_values = PartOfSpeech::getListForCorpus();
+        $gram_values = Gram::getListForCorpus();
+//dd($gram_values);        
         return view('corpus.sentence.index',
-                compact('corpus_values', 'dialect_values', 'genre_values', 
-                        'lang_values', 'args_by_get', 'url_args'));
+                compact('corpus_values', 'dialect_values', 'genre_values', 'gram_values',
+                        'lang_values', 'pos_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -64,16 +69,37 @@ class SentenceController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
 
-        $texts = Sentence::search($url_args);
-
-        $numAll = $texts->count();
-
-        $texts = $texts->paginate($this->url_args['limit_num']);
+        $url_args['words'] = Sentence::preparedWordsForSearch($url_args['search_words']);
+//dd($url_args['words']);        
+        $search_query=Sentence::searchQueryToString($url_args);
+//dd($search_query);        
+        $entry_number = $numAll = 0;
+        $texts = null;
         
+        if (!sizeof($url_args['words'])) {
+            $refine = true;
+        } else {
+            $refine = false;
+            $entry_number = Sentence::entryNumber($url_args);
+            if ($entry_number>0) {
+                $texts = Text::searchWithSentences($url_args);
+                $numAll = $texts->count();
+                $texts = $texts->paginate($this->url_args['limit_num']);
+            }
+        }        
         return view('corpus.sentence.results',
-                compact('texts', 'numAll', 'args_by_get', 'url_args'));
+                compact('texts', 'numAll', 'entry_number', 'refine',
+                        'search_query', 'args_by_get', 'url_args'));
     }
 
+    public function wordGramForm(Request $request)
+    {
+        $count = (int)$request->input('count');
+                                
+        return view('corpus.sentence._search_word_form',
+                 compact('count'));
+    }
+    
     /**
      * Store a newly created resource in storage.
      *

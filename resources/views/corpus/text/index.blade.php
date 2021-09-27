@@ -13,6 +13,7 @@
 @stop
 
 @section('body')
+        <a href="{{ LaravelLocalization::localizeURL('/corpus/sentence') }}">{{ trans('corpus.gram_search') }}</a> |
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
         @endif
@@ -126,47 +127,6 @@
     recDelete('{{ trans('messages.confirm_delete') }}');
     $(".multiple-select-lang").select2();
     $(".multiple-select-corpus").select2();
-    $(".multiple-select-genre").select2({
-        width: '100%',
-        ajax: {
-          url: "/corpus/genre/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              corpus_id: selectedValuesToURL("#search_corpus")
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });
-    
-    $(".multiple-select-dialect").select2({
-        width: '100%',
-        ajax: {
-          url: "/dict/dialect/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              lang_id: selectedValuesToURL("#search_lang")
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });
-        
-        
+    selectGenre();
+    selectWithLang('.multiple-select-dialect', "/dict/dialect/list", 'search_lang', '', true);
 @stop

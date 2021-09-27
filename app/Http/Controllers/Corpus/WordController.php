@@ -150,6 +150,17 @@ class WordController extends Controller
     }
     
     /**
+     * Calls by AJAX from lexical grammatic search, 
+     * @return string
+     */
+    public function loadLemmaBlock($text_id, $w_id)
+    {        
+        $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
+        $text = Text::find($text_id);
+        return Word::createLemmaBlock((int)$text_id, (int)$w_id);
+    }
+    
+    /**
      * Calls by AJAX, 
      * adds 
      * /corpus/word/add_example/<text_id>_<w_id>_<wordform_id>_<gramset_id>

@@ -23,6 +23,9 @@ class Gram extends Model
         parent::boot();
     }
 
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\GramCategory;
+    
     /** Gets name of this grammatical attribute, takes into account locale.
      * 
      * @return String
@@ -32,6 +35,17 @@ class Gram extends Model
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_" . $locale;
         return $this->{$column};
+    }
+
+    public function getCodeAttribute() : String
+    {
+        $v = $this->unimorph;
+        if (!$v && $this->name_en=='infinitive II') {
+          return "2NFIN";  
+        } elseif (!$v && $this->name_en=='infinitive III') {
+          return "3NFIN";  
+        }
+        return $v;
     }
 
     /** Gets short name of this grammatical attribute, takes into account locale.
@@ -78,6 +92,20 @@ class Gram extends Model
          
     }
     
+    public static function getByUnimorph($code)
+    {
+        return self::whereUnimorph($code)->first();
+         
+    }
+    
+    public static function getNameByCode($code)
+    {
+        $item = self::getByUnimorph($code);
+        if ($item && isset($item->name)) {
+//dd($pos->id);
+            return $item->name;
+        }
+    }
     /** Gets ordered list of grams for the grammatical category
      * 
      * @param int $category_id
@@ -97,5 +125,29 @@ class Gram extends Model
         }
         
         return $list;         
+    }
+    
+    /**
+     * Get list of grams for words in texts
+     * 
+     * @return Array ['падеж'=>['NOM' => 'номинатив', ...], ...]
+     */
+    public static function getListForCorpus() {
+        $grams = [];        
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        $gram_categories = GramCategory::all()->sortBy('sequence_number');
+        $grams = array();
+        
+        foreach ($gram_categories as $gc) {         //   id is gram_category_id
+            $grams[$gc->id][0] = $gc->name;
+            foreach (self::getByCategory($gc->id) as $g) {
+                $grams[$gc->id][1][$g->code] = $g->name;
+            }
+        }
+        //case to beginning
+        $cases = $grams[1];
+        unset($grams[1]);
+        return [1=>$cases]+$grams;         
     }
 }

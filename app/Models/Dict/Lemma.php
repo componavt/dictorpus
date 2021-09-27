@@ -406,6 +406,30 @@ class Lemma extends Model
         return join('#',$features);
     }
     
+    public function featsToString() {
+        $features = [];
+        if ($this->features) {
+            foreach (array_values($this->features->filledFeatures()) as $field) {
+               if (is_array($field)) {
+                   $values = trans('dict.'.$field['title'].'s');
+                   if (isset($values[$field['value']])) {
+                       $value = $values[$field['value']];
+                       if ($field['title'] == 'degree') {
+                           $value .= ' '. trans('dict.'.$field['title']);
+                       }
+                       $features[] = $value;
+                   }
+               } else {
+                   $features[] = trans('dict.'.$field);
+               }
+            }
+        }  
+        if (!sizeof($features)) {
+            return null;
+        }
+        return '('.join(', ', $features).')';
+    }
+
     public function phraseListWithLink(){
         if (!$this->phrases()) {
             return NULL;

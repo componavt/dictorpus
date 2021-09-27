@@ -1,5 +1,5 @@
 {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
-<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a>
+<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}?{{--{{$args_by_get}}&--}}{{$wid_for_link}}">{{$text->title}}</a>
 @if ($text->transtext)
     / {{$text->transtext->title}}
 @endif

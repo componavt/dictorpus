@@ -34,7 +34,9 @@ class Str
      */
     public static function searchValuesByURL(Array $url_args=NULL) : String
     {
-        $url = '';
+        $out = http_build_query($url_args);
+        return $out ? '?'.$out : '';
+/*        $url = '';
         if (isset($url_args) && sizeof($url_args)) {
             $tmp=[];
             foreach ($url_args as $a=>$v) {
@@ -53,7 +55,7 @@ class Str
             }
         }
         
-        return $url;
+        return $url;*/
     }
     
     

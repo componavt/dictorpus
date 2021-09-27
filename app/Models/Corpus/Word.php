@@ -375,13 +375,13 @@ class Word extends Model
         return $meanings;
     }
     
-    public function addMeaning($meaning_id, $text_id, $sentence_id, $w_id, $relevance) {
-        if ($this->meanings()->wherePivot('sentence_id',$sentence_id)->wherePivot('meaning_id',$meaning_id)
+    public function addMeaning($meaning_id, $text_id, $s_id, $w_id, $relevance) {
+        if ($this->meanings()->wherePivot('sentence_id',$s_id)->wherePivot('meaning_id',$meaning_id)
                  ->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->count()) {
             return;
         }
         $this->meanings()->attach($meaning_id,
-                ['sentence_id'=>$sentence_id,
+                ['sentence_id'=>$s_id,
                  'text_id'=>$text_id,
                  'w_id'=>$w_id,
                  'relevance'=>$relevance]);        
@@ -397,11 +397,11 @@ class Word extends Model
         $meaning_unchecked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
         if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
         
-        $sentence_id = Word::whereTextId($text_id)->whereWId($w_id)->first()->sentence_id;
-        if (!$sentence_id) {return null;} 
+        $s_id = Word::whereTextId($text_id)->whereWId($w_id)->first()->sentence_id;
+        if (!$s_id) {return null;} 
         
         $locale = LaravelLocalization::getCurrentLocale();
-        $url = '/corpus/text/'.$text_id.'/edit/example/'.$sentence_id.'_'.$w_id;
+        $url = '/corpus/text/'.$text_id.'/edit/example/'.$s_id.'_'.$w_id;
         
         $str = '<div>';
         if ($meaning_checked) {
@@ -417,7 +417,7 @@ class Word extends Model
                      .')</span></a>';
                 if (User::checkAccess('corpus.edit')) {                
                     $str .= '<span class="fa fa-plus choose-meaning" data-add="'
-                         .$meaning->id.'_'.$text_id.'_'.$sentence_id.'_'.$w_id.'" title="'
+                         .$meaning->id.'_'.$text_id.'_'.$s_id.'_'.$w_id.'" title="'
                          .\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordMeaning(this)"></span></p>';
                 }
             }
@@ -432,6 +432,77 @@ class Word extends Model
                  .'<a href="'.LaravelLocalization::localizeURL($url)
                  .'" class="glyphicon glyphicon-pencil"></a></p>';
         }
+        return $str;
+    }
+    
+    public static function createLemmaBlock($text_id, $w_id) {
+        if (!$text_id || !$w_id) { return null; }
+        
+        $text = Text::find($text_id);
+        if (!$text) { return null; }
+        
+        $meaning_checked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1)->first();
+        $meaning_unchecked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
+        if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
+        
+        $word_obj = Word::whereTextId($text_id)->whereWId($w_id)->first();
+        if (!$word_obj) {return null;} 
+        $s_id = $word_obj->sentence_id;
+        if (!$s_id) {return null;} 
+        
+        $lemma_b = Lemma::whereIn('id', function ($q) use ($text_id, $w_id) {
+            $q->select('lemma_id')->from('meanings')
+              ->whereIn('id', function ($q2) use ($text_id, $w_id) {
+                  $q2->select('meaning_id')->from('meaning_text')
+                     ->whereTextId($text_id)->whereWId($w_id)
+                     ->where('relevance','>',0);
+                });                    
+            })->orderBy('lemma');
+        if (!$lemma_b->count()) {return null;} 
+        $lemmas = $lemma_b->get();
+        
+        $locale = LaravelLocalization::getCurrentLocale();        
+        $str = '<div><h3>'.$word_obj->word.'</h3>';
+        
+        for ($i=0; $i<sizeof($lemmas); $i++) {
+            $lemma_id = $lemmas[$i]->id;
+            $str .= '<div class="lemma_b">'.(sizeof($lemmas)>1 ? ($i+1).'. ' : '')
+                  . '<a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$lemma_id)
+                  . '">'.$lemmas[$i]->lemma.'</a><br>'
+                  . '<span> '.$lemmas[$i]->pos->name.'</span> <i>'
+                  . $lemmas[$i]->featsToString().'</i>';
+            
+            $meanings = Meaning::whereLemmaId($lemma_id)
+                    ->whereIn('id', function ($q) use ($text_id, $w_id) {
+                      $q->select('meaning_id')->from('meaning_text')
+                         ->whereTextId($text_id)->whereWId($w_id)
+                         ->where('relevance','>',0);
+                })->orderBy('meaning_n')->get();
+            $str .= '<div class="meanings_b">';
+            foreach ($meanings as $meaning) {
+                $str .= '<p>'.$meaning->getMultilangMeaningTextsString($locale).'</p>';
+            }
+            $str .= '</div>';
+            
+            $gramsets = Gramset::whereIn('id', function ($q) use ($text_id, $w_id, $lemma_id) {
+                    $q->select('gramset_id')->from('text_wordform')
+                      ->whereTextId($text_id)->whereWId($w_id)
+                      ->where('relevance','>',0)
+                      ->whereIn('wordform_id', function ($q2) use ($lemma_id) {
+                          $q2->select('wordform_id')->from('lemma_wordform')
+                             ->whereLemmaId($lemma_id);
+                      });
+                })->get();
+            if ($gramsets) {
+                $str .= '<div class="gramsets_b">';                
+                foreach ($gramsets as $gramset) {
+                    $str .= '<p>- '.$gramset->gramsetString().'</p>';
+                }
+                $str .= '</div>';                
+            }
+            $str .= '</div>';
+        }
+        $str .= '</div>';
         return $str;
     }
     

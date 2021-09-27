@@ -59,6 +59,7 @@
 
                         <ul class="dropdown-menu" role="menu" id='menu4-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}">{{ trans('navigation.texts') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/sentence') }}">{{ trans('corpus.gram_search') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/video') }}">{{ trans('navigation.video') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/informant') }}">{{ trans('navigation.informants') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/author') }}">{{ trans('navigation.authors') }}</a></li>

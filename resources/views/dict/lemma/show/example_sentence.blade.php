@@ -10,21 +10,6 @@ if($sentence['text']->event && $sentence['text']->event->place) {
 } else { 
     $place_title =''; 
 }
-
-if (isset($with_links) && $with_links) {
-    $sentence['s'] = $sentence['text']->setLemmaLink($sentence['s'], null, null, true, $sentence['w_id']); 
-} else {
-    list($sxe,$error_message) = \App\Models\Corpus\Text::toXML($sentence['s'],$count);
-    if (!$sxe) {
-        print $error_message;
-    } else {
-        $w = $sxe->xpath('//w[@id="'.$sentence['w_id'].'"]');
-        if (isset($w[0])) {
-            $w[0]->addAttribute('class','word-marked');
-            $sentence['s'] = $sxe->asXML();
-        }
-    }
-}
 ?>
 @if (isset($meaning))
     <span id="sentence-relevance_<?=$m_t_s_w;?>">
@@ -34,7 +19,10 @@ if (isset($with_links) && $with_links) {
     </span>
 @endif
 
-{!! $sentence['s'] !!}
+@include('corpus.sentence.view', ['sentence_xml' => $sentence['s'], 
+                                  'text'=>$sentence['text'], 
+                                  'marked_words'=>[$sentence['w_id']]])
+
 @if ($sentence['trans_s']) 
     <br><i>{!! $sentence['trans_s'] !!}</i>
 @endif

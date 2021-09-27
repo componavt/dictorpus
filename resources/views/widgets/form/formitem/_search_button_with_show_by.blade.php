@@ -1,5 +1,5 @@
         <span>
-        {{trans('messages.show_by')}}
+        {{trans('search.show_by')}}
         </span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 

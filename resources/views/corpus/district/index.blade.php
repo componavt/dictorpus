@@ -42,7 +42,7 @@
         <br>         
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
         
-        {{trans('messages.show_by')}}
+        {{trans('search.show_by')}}
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $limit_num, 

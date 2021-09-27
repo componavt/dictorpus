@@ -46,6 +46,17 @@ class Corpus extends Model
     use \App\Traits\Relations\HasMany\Genres;
     use \App\Traits\Relations\HasMany\Texts;
 
+    /** Gets name of this corpus by code, takes into account locale.
+     * 
+     * @return String
+     */
+    public static function getNameByID($id) : String
+    {
+        $item = self::where('id',$id)->first();
+        if ($item) {
+            return $item->name;
+        }
+    }
         
     /** Gets list of languages
      * 

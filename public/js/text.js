@@ -34,7 +34,36 @@ function showLemmaLinked(text_id) {
         var downloaded = w_block.data('downloaded');
         if (downloaded === 0) {
 //console.log("showLemmaLinked: text_id, w_id: " + text_id + ','+ w_id );
-            loadWordBlock(text_id, w_id, '/corpus/word/load_word_block/');
+            loadWordBlock(w_id, '/corpus/word/load_word_block/' + text_id + '_' + w_id);
+        }
+    });
+        
+    $(document).mouseup(function (e){
+        var div = $(".links-to-lemmas");
+        if (!div.is(e.target)
+            && div.has(e.target).length === 0) {
+                div.hide(); // скрываем его
+        }
+    });    
+}
+
+/**
+ *  show/hide a block with lemmas by click on a word
+ */
+function showWordBlock() {
+   $("body").on("click", ".word-linked", function(event) {
+//console.log('click');       
+        event.preventDefault(); // reload event after AJAX reload
+        var t_w_id = $(this).attr('id');
+//console.log('w_id: '+w_id);        
+        $(".links-to-lemmas").hide(); // hide all open blocks
+        var w_block = $("#links_"+t_w_id);
+//console.log(w_block);        
+        w_block.show();
+        var downloaded = w_block.data('downloaded');
+        if (downloaded === 0) {
+//console.log("showLemmaLinked: text_id, w_id: " + text_id + ','+ w_id );
+            loadWordBlock(t_w_id, '/corpus/word/load_lemma_block/' + t_w_id);
         }
     });
         
@@ -48,16 +77,16 @@ function showLemmaLinked(text_id) {
 }
 
 function updateWordBlock(text_id, w_id) {
-    loadWordBlock(text_id, w_id, '/corpus/word/update_word_block/');
+    loadWordBlock(w_id, '/corpus/word/update_word_block/' + text_id + '_' + w_id);
     $("w[id="+w_id+"]").removeClass('meaning-checked').removeClass('gramset-checked').addClass('meaning-not-checked gramset--not-checked');
     
 }
 
-function loadWordBlock(text_id, w_id, url) {
+function loadWordBlock(w_id, url) {
     $("#links_"+w_id+".links-to-lemmas .img-loading").show();
-//console.log("loadWordBlock: " + url + text_id + '_' + w_id);
+//console.log("loadWordBlock: " + url);
     $.ajax({
-        url: url + text_id + '_' + w_id, 
+        url: url, 
 //        data: data,
         type: 'GET',
         success: function(result){
@@ -220,7 +249,7 @@ function changeWordBlock(text_id, w_id) {
 //console.log('changeWordBlock:'+ text_id+', '+w_id);    
     $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked');
     $("w[id="+w_id+"].lemma_linked").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
-    loadWordBlock(text_id, w_id, '/corpus/word/load_word_block/');
+    loadWordBlock(w_id, '/corpus/word/load_word_block/' + text_id + '_' + w_id);
 }
 
 /**
@@ -439,4 +468,3 @@ function saveWord(text_id, w_id, word) {
             location.reload();
     })*/; 
 }
-

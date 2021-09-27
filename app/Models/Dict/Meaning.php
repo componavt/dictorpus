@@ -492,10 +492,10 @@ dd($relevance);
         return $old_relevance;
     }
 
-    public function addTextLink($text_id, $sentence_id, $word_id, $w_id, $old_relevance) {
+    public function addTextLink($text_id, $s_id, $word_id, $w_id, $old_relevance) {
         $relevance = $this->checkRelevance($text_id, $w_id, $old_relevance);
         $this->texts()->attach($text_id,
-                                ['sentence_id'=>$sentence_id, 
+                                ['sentence_id'=>$s_id, 
                                  'word_id'=>$word_id, 
                                  'w_id'=>$w_id, 
                                  'relevance'=>$relevance]);        
