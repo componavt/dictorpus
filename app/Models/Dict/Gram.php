@@ -44,8 +44,8 @@ class Gram extends Model
           return "2NFIN";  
         } elseif (!$v && $this->name_en=='infinitive III') {
           return "3NFIN";  
-        }
-        return $v;
+        }        
+        return str_replace(';','_',$v);
     }
 
     /** Gets short name of this grammatical attribute, takes into account locale.
@@ -92,15 +92,21 @@ class Gram extends Model
          
     }
     
-    public static function getByUnimorph($code)
+    public static function getByCode($code)
     {
+        if ($code == "2NFIN") {
+            return self::whereNameEn($code, 'infinitive II')->first();
+        } elseif ($code == "3NFIN") {
+            return self::whereNameEn($code, 'infinitive III')->first();
+        }        
+        $code = str_replace('_', ';', $code);
         return self::whereUnimorph($code)->first();
          
     }
     
     public static function getNameByCode($code)
     {
-        $item = self::getByUnimorph($code);
+        $item = self::getByCode($code);
         if ($item && isset($item->name)) {
 //dd($pos->id);
             return $item->name;

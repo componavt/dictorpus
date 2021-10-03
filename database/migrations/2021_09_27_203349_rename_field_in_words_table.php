@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddWordNumberInWordsTable extends Migration
+class RenameFieldInWordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,8 @@ class AddWordNumberInWordsTable extends Migration
     public function up()
     {
         Schema::table('words', function (Blueprint $table) {
-            $table->integer('word_number');
+            $table->renameColumn('sentence_id', 's_id');
+/*            $table->integer('sentence_id')->unsigned();*/
         });
     }
 
@@ -25,7 +26,8 @@ class AddWordNumberInWordsTable extends Migration
     public function down()
     {
         Schema::table('words', function (Blueprint $table) {
-            $table->dropColumn('word_number');
+/*            $table->dropColumn('sentence_id'); */
+            $table->renameColumn('s_id', 'sentence_id');
         });
     }
 }

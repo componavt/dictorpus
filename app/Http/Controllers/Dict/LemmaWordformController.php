@@ -67,7 +67,7 @@ class LemmaWordformController extends Controller
         $text = Text::find($text_id);
         $word = Word::getByTextWid($text_id, $w_id);
         
-        if (!$text || !$word || !$word->sentence_id) { return; }
+        if (!$text || !$word || !$word->s_id) { return; }
 
         $wordform = $request->input('wordform'); 
             if (!$wordform) {

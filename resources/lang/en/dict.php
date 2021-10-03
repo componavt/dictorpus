@@ -174,6 +174,7 @@ return [
 
     'omonyms' => 'omonyms',
     'participle' => 'participle',
+    'part_of_speech' => 'part of speech',
     'parts_of_speech' => 'parts of speech',
     'person' => 'person',
     'phonetics' => 'pronunciation',

@@ -424,7 +424,7 @@ class LemmaController extends Controller
      * Shows the form for editing of text example for all lemma meanings connected with this sentence.
      *
      * @param  int  $id - ID of lemma
-     * @param  int  $sentence_id - ID of example
+     * @param  int  $example_id - ID of example
      * @return \Illuminate\Http\Response
      */
     public function editExample(Request $request, $id, $example_id)
@@ -507,7 +507,7 @@ class LemmaController extends Controller
             DB::statement('UPDATE meaning_text SET relevance=0'. 
                           ' WHERE meaning_id='.(int)$regs[1].
                           ' AND text_id='.(int)$regs[2].
-                          ' AND sentence_id='.(int)$regs[3].
+                          ' AND s_id='.(int)$regs[3].
                           ' AND w_id='.(int)$regs[4]);            
             return 1;
         }

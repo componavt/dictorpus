@@ -87,7 +87,7 @@ class Text extends Model
 
     public function addMeaning($meaning_id, $s_id, $word_id, $w_id, $relevance) {
                         $this->meanings()->attach($meaning_id,
-                                ['sentence_id'=>$s_id,
+                                ['s_id'=>$s_id,
                                  'word_id'=>$word_id,
                                  'w_id'=>$w_id,
                                  'relevance'=>$relevance]);        
@@ -134,7 +134,9 @@ class Text extends Model
         $texts = self::searchByLang($texts, $url_args['search_lang']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
         
-        $texts = Sentence::searchByWords($texts, 'id', $url_args['words']);
+        $texts = $texts->whereIn('id',Sentence::searchWords($url_args['words'])->pluck('t1.text_id'));
+//Sentence::searchByWords($texts, 'id', $url_args['words']);
+//dd(vsprintf(str_replace(array('?'), array('\'%s\''), $texts->toSql()), $texts->getBindings()));            
         return $texts;
     }
     
@@ -333,47 +335,42 @@ class Text extends Model
     }
     
     /**
-     * select * from `words` where `text_id` = 1548 and `w_id` in (select `w_id` from `text_wordform` where `text_id` = 1548 and `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'paha'))) order by `sentence_id` asc, `w_id` asc
+     * select * from `words` where `text_id` = 1548 and `w_id` in (select `w_id` from `text_wordform` where `text_id` = 1548 and `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'paha'))) order by `s_id` asc, `w_id` asc
      * 
      * @param array $words
      * @return collection
      */
     public function getWords($words) {
-/*        if (!isset($words[1]['w']) || !$words[1]['w']) {
-            return [];
-        }*/
-        $text_id = $this->id;
-        $builder = Word::whereTextId($text_id)->orderBy('sentence_id')->orderBy('w_id')   
-                    ->whereIn('w_id',function($query) use ($words, $text_id){
-                        $query->select('w_id')
-                        ->from('text_wordform')
-                        ->whereTextId($text_id);
-                        $query=Sentence::searchWords($query, $words);
-                    });
-//dd($builder->toSql());                    
-        return $builder->get();
+        $search_words=[];
+        foreach (array_keys($words) as $i) {
+            $pairs = Sentence::searchWords($words)
+                    ->where('t1.text_id', $this->id)
+                    ->select('t'.$i.'.w_id')
+                    ->get();
+//dd($pairs);        
+            foreach ($pairs as $pair) {
+                $search_words[]=$pair->w_id;
+            }
+        }
+//dd($search_words);        
+        return $search_words;
     }
     
     /**
-     * select * from `words` where `text_id` = 1548 and `w_id` in (select `w_id` from `text_wordform` where `text_id` = 1548 and `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'paha'))) order by `sentence_id` asc, `w_id` asc
+     * select id from sentences where `text_id` = 1548 and id in (select sentence_id from `words` where `text_id` = 1548 and `w_id` in (select `w_id` from `text_wordform` where `text_id` = 1548 and `relevance` > 0 and `wordform_id` in (select `wordform_id` from `lemma_wordform` where `lemma_id` in (select `id` from `lemmas` where `lemma_for_search` like 'paha'))) order by `s_id` asc, `w_id` asc);
      * 
      * @param array $words
      * @return collection
      */
-/*    
-    public function getSentences($words) {
+    
+    public function getSentencesByGram($words) {
         $text_id = $this->id;
-        $builder = Sentence::whereTextId($text_id)->orderBy('sentence_id')->orderBy('w_id')   
-                    ->whereIn('w_id',function($query) use ($words, $text_id){
-                        $query->select('w_id')
-                        ->from('text_wordform')
-                        ->whereTextId($text_id);
-                        $query=Sentence::searchWords($query, $words);
-                    });
+        $builder = Sentence::whereTextId($text_id)->orderBy('s_id')   
+                    ->whereIn('id', Sentence::searchWords($words)->pluck('t1.sentence_id'));
 //dd($builder->toSql());                    
         return $builder->get();
     }
-*/    
+    
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
         
@@ -743,8 +740,8 @@ class Text extends Model
         ini_set('memory_limit', '512M');
         list($this->text_structure, $sentences) = self::markupText($this->text, true);
         foreach ($sentences as $s_id => $text_xml) {
-            Sentence::store($this->id, $s_id, $text_xml);
-            $error_message = $this->updateMeaningAndWordformText($s_id, $text_xml);
+            $sentence = Sentence::store($this->id, $s_id, $text_xml);
+            $error_message = $this->updateMeaningAndWordformText($sentence, $text_xml);
             if ($error_message) {
                 print $error_message;
             }
@@ -764,18 +761,19 @@ class Text extends Model
     /**
      * Sets links meaning - text - sentence AND text-wordform
      */
-    public function updateMeaningAndWordformText($s_id, $text_xml, $without_check=false){
+    public function updateMeaningAndWordformText($sentence, $text_xml, $without_check=false){
+        $s_id = $sentence->s_id;
         list($sxe,$error_message) = self::toXML($text_xml, $s_id);
         if ($error_message) { return $error_message; }
 //dd($text_xml);
         $checked_words = $without_check ? [] : $this->checkedWords($text_xml);
 //dd($checked_words);
         $where_text = "text_id=".(int)$this->id;
-        DB::statement("DELETE FROM words WHERE sentence_id=$s_id and $where_text");
-        DB::statement("DELETE FROM meaning_text WHERE sentence_id=$s_id and $where_text");
-        DB::statement("DELETE FROM text_wordform WHERE w_id in (select w_id from words where sentence_id=$s_id and $where_text) and $where_text");            
+        DB::statement("DELETE FROM words WHERE s_id=$s_id and $where_text");
+        DB::statement("DELETE FROM meaning_text WHERE s_id=$s_id and $where_text");
+        DB::statement("DELETE FROM text_wordform WHERE w_id in (select w_id from words where s_id=$s_id and $where_text) and $where_text");            
 
-        $this->updateMeaningAndWordformSentence($s_id, $sxe->xpath('//w'), 
+        $this->updateMeaningAndWordformSentence($sentence, $sxe->xpath('//w'), 
                 $checked_words ?? NULL);
     }
     
@@ -796,7 +794,8 @@ class Text extends Model
         }
     }
     
-    public function updateMeaningAndWordformSentence($s_id, $sent_words, $checked_sent_words/*, $set_meanings=true, $set_wordforms=true*/) {
+    public function updateMeaningAndWordformSentence($sentence, $sent_words, $checked_sent_words/*, $set_meanings=true, $set_wordforms=true*/) {
+        $s_id = $sentence->s_id;
         $word_count = 0;
         foreach ($sent_words as $word) {
 //dd((string)$word);            
@@ -805,7 +804,8 @@ class Text extends Model
             
 //            if ($set_meanings) {
                 $word_obj = Word::create(['text_id' => $this->id, 
-                                          'sentence_id' => $s_id, 
+                                          'sentence_id' => $sentence->id, 
+                                          's_id' => $s_id, 
                                           'w_id' => $w_id, 
                                           'word' => $word_for_search, 
                                           'word_number' => $word_count]);
@@ -813,7 +813,7 @@ class Text extends Model
 //                $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();                
 //            }
             
-            $cond = "w_id=$w_id and sentence_id<>$s_id and text_id=".(int)$this->id;
+            $cond = "w_id=$w_id and s_id<>$s_id and text_id=".(int)$this->id;
             DB::statement("DELETE FROM words WHERE $cond");
             DB::statement("DELETE FROM meaning_text WHERE $cond");
             
@@ -911,7 +911,7 @@ class Text extends Model
         foreach ($this->getWordformsByWord($word_obj->word) as $wordform) {
             $wg_id = $wordform->id. '_'. $wordform->gramset_id;
             $relevance = $checked_relevances[$wg_id] ?? ($has_checked ? 0 : 1);
-            $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->sentence_id, $word_obj->w_id, $relevance);
+            $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->s_id, $word_obj->w_id, $relevance);
         }
     }
 
@@ -1008,7 +1008,7 @@ class Text extends Model
                 $relevance = 0;
             }
             $this->meanings()->attach($meaning->id,
-                    ['sentence_id'=>$word->sentence_id,
+                    ['s_id'=>$word->s_id,
                      'word_id'=>$word->id, 'w_id'=>$w_id,
                      'relevance'=>$relevance]);            
         }
@@ -1052,10 +1052,10 @@ class Text extends Model
      * @return Int identifier of the sentence
      **/
     public function getSentenceID($w_id){
-        $sentence = Word::select('sentence_id')
+        $sentence = Word::select('s_id')
                         ->where('text_id',$this->id)
                         ->where('w_id',$w_id)->first();
-        return $sentence->sentence_id;
+        return $sentence->s_id;
     }
 
     /**
@@ -1235,7 +1235,7 @@ class Text extends Model
      * @param string $word
      * @return array
      * 
-     * [<sentence_id> => ['w_id'=>[<w_id1>, <w_id2>], 's' => <sentence_xml>] ]
+     * [<s_id> => ['w_id'=>[<w_id1>, <w_id2>], 's' => <sentence_xml>] ]
      */
     public function sentencesFromText($word=''){
         $sentences = [];
@@ -1245,16 +1245,16 @@ class Text extends Model
             return $sentences;
         }
 
-        $sentence_builder = Word::select('sentence_id','w_id')
+        $sentence_builder = Word::select('s_id','w_id')
                               ->where('text_id',$this->id)
-                              ->orderBy('sentence_id');
+                              ->orderBy('s_id');
         if ($word) {
 //            $sentence_builder = $sentence_builder->where('word','like',Grammatic::toSearchForm($word));
             $sentence_builder = $sentence_builder->where('word','like',Grammatic::changeLetters($word, $this->lang_id));
         }                                
 //dd($sentence_builder->get());        
         foreach ($sentence_builder->get() as $sentence) {
-            $sentences[$sentence->sentence_id]['w_id'][]=$sentence->w_id;
+            $sentences[$sentence->s_id]['w_id'][]=$sentence->w_id;
         }
         
         foreach ($sentences as $s_id => $sentence) {
@@ -1271,7 +1271,7 @@ class Text extends Model
      * find sentence in text, parse xml
      * 
      * @param int $text_id
-     * @param int $sentence_id - number of sentence in the text
+     * @param int $s_id - number of sentence in the text
      * @param int $w_id - number of word in the text
      * @param INT OR Array $relevance - if function is called for one meaning, type is INT, else ARRAY
      * @return array f.e. ['s' => <sentence in xml format>, 

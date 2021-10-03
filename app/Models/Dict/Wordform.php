@@ -179,7 +179,7 @@ class Wordform extends Model
             return null;
         }
         $this->trimWord(); // remove extra spaces at the beginning and end of the wordform 
-        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+        $query = "select text_id, s_id, w_id, words.id as word_id from words where"
                . " text_id in (select id from texts where lang_id = ".$lang_id
                . ") and word like '".Grammatic::changeLetters($this->wordform,$lang_id)."'"; 
         $words = DB::select($query); 
@@ -288,7 +288,7 @@ dd($relevance);
     {        
         $lang_id = $lemma->lang_id;
         $word = addcslashes(Grammatic::changeLetters($this->wordform,$lang_id),"'");
-        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+        $query = "select text_id, s_id, w_id, words.id as word_id from words where"
            . " text_id in (select id from texts where lang_id = ".$lang_id
                             . ") and word like '".$word."'";
 //dd($query);        
@@ -361,7 +361,7 @@ dd($relevance);
             if (!$words_founded) { continue; }
             
             print $text_output ? "<br><span style='color:red'>FOUNDED: </span>".
-                  $last_word->text_id.' | '.$last_word->sentence_id.' | '.join(',',array_keys($words_founded)) : '';
+                  $last_word->text_id.' | '.$last_word->s_id.' | '.join(',',array_keys($words_founded)) : '';
             $error_message = $last_word->mergeWords($words_founded);
             if ($error_message) {
                 dd($error_message);

@@ -106,7 +106,7 @@ class Meaning extends Model
                               ->where('meaning_id',$this->id)
                               ->orderBy('relevance','desc')
                               ->orderBy('text_id')
-                              ->orderBy('sentence_id')
+                              ->orderBy('s_id')
                               ->orderBy('word_id');
         if (!$for_edit) {
             $sentence_builder = $sentence_builder->where('relevance','>',0);
@@ -119,7 +119,7 @@ class Meaning extends Model
         
         foreach ($sentence_builder->get() as $sentence) {
             $sentence = Text::extractSentence($sentence->text_id, 
-                                              $sentence->sentence_id, 
+                                              $sentence->s_id, 
                                               $sentence->w_id, 
                                               $sentence->relevance);
             if ($sentence) {
@@ -495,7 +495,7 @@ dd($relevance);
     public function addTextLink($text_id, $s_id, $word_id, $w_id, $old_relevance) {
         $relevance = $this->checkRelevance($text_id, $w_id, $old_relevance);
         $this->texts()->attach($text_id,
-                                ['sentence_id'=>$s_id, 
+                                ['s_id'=>$s_id, 
                                  'word_id'=>$word_id, 
                                  'w_id'=>$w_id, 
                                  'relevance'=>$relevance]);        
@@ -509,7 +509,7 @@ dd($relevance);
      */
     public function addTextLinks($words) {
         foreach ($words as $word) {
-            $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, 1);        
+            $this->addTextLink($word->text_id, $word->s_id, $word->word_id, $word->w_id, 1);        
         }
     }
     
@@ -525,7 +525,7 @@ dd($relevance);
         $this->texts()->detach();
         
         foreach ($words as $word) {
-            $this->addTextLink($word->text_id, $word->sentence_id, $word->word_id, $word->w_id, 
+            $this->addTextLink($word->text_id, $word->s_id, $word->word_id, $word->w_id, 
                     $this->checkRelevance($word->text_id, $word->w_id, $old_relevances[$word->text_id][$word->w_id] ?? 1));
         }
     }
@@ -556,7 +556,7 @@ dd($relevance);
         foreach ($words as $word) {
             $link = $this->texts()->wherePivot('text_id', $word->text_id)->wherePivot('w_id', $word->w_id);
             if (!$link) {
-                $this->addTextLink($word->text_id, $word->sentence_id, 
+                $this->addTextLink($word->text_id, $word->s_id, 
                         $word->word_id, $word->w_id, 
                         self::getDefaultRelevance($word->text_id, $word->w_id));
             }

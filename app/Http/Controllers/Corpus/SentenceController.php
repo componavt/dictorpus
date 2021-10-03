@@ -77,12 +77,12 @@ class SentenceController extends Controller
         $texts = null;
         
         if (!sizeof($url_args['words'])) {
-            $refine = true;
+            $refine = true; // отправляем уточнить запрос, без слов искать не будем
         } else {
             $refine = false;
-            $entry_number = Sentence::entryNumber($url_args);
+            $entry_number = Sentence::entryNumber($url_args); // считаем количество вхождений
             if ($entry_number>0) {
-                $texts = Text::searchWithSentences($url_args);
+                $texts = Text::searchWithSentences($url_args); // выбираем тексты
                 $numAll = $texts->count();
                 $texts = $texts->paginate($this->url_args['limit_num']);
             }
@@ -150,7 +150,7 @@ class SentenceController extends Controller
         if ($text_xml && $sentence->text_xml != $text_xml) {
             $sentence->text_xml = $text_xml;
             $sentence->save();
-            $error_message = $text->updateMeaningAndWordformText($sentence->s_id, $text_xml);
+            $error_message = $text->updateMeaningAndWordformText($sentence, $text_xml);
             if ($error_message) {
                 return $error_message;
             }
@@ -164,7 +164,7 @@ class SentenceController extends Controller
         $text = $sentence->text;
         
         $text_xml = $sentence->text_xml;
-        $error_message = $text->updateMeaningAndWordformText($sentence->s_id, $text_xml, true);
+        $error_message = $text->updateMeaningAndWordformText($sentence, $text_xml, true);
         if ($error_message) {
             return $error_message;
         }

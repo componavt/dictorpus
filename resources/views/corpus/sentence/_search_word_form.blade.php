@@ -26,7 +26,7 @@
                 ])                               
         <i class='add-more add-pos-codes fas fa-plus-circle fa-lg' onClick='callChooseGram(this)' data-for='search_words_{{$count}}__g_'></i>
     </div>
-{{--    <div class="col-sm-2">
+    <div class="col-sm-2">
         <div id="distance{{$count+1}}"  class="form-group"  style="display:none">
             <label for="search_words[1][g]">Расстояние&nbsp;</label>
             <i class="help-icon far fa-question-circle fa-lg" onclick="callHelp('help-distance')"></i>
@@ -40,4 +40,4 @@
         <a title="добавить в поиск еще слово" style='cursor: pointer; padding-top: 28px; display: block' onClick='addSentenceWordsFields(this)' data-count='{{ $count+1 }}'>
             <i class="far fa-plus-square fa-2x"></i>
         </a>
-</div>--}}
+</div>

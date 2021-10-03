@@ -642,11 +642,11 @@ class TextController extends Controller
         
         $word = Word::getByTextWid($text_id, $w_id);
        
-        if (!$word || !$word->sentence_id) {
+        if (!$word || !$word->s_id) {
             return;
         }
         
-        $sentence = Text::extractSentence($text_id, $word->sentence_id, $w_id);            
+        $sentence = Text::extractSentence($text_id, $word->s_id, $w_id);            
                                 
         return view('dict.lemma.show.example_sentence')
                 ->with(['sentence'=>$sentence,'relevance'=>'', 'count'=>'']);

@@ -14,6 +14,7 @@ function highlightSentences() {
         },
         function(){ // out
             $(".sentence").css('background','none');
+            $(".word-marked").css('background','yellow');
         }
     );    
 }

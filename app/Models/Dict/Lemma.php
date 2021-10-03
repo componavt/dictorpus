@@ -976,8 +976,8 @@ dd($wordforms);
     /**
      * Search in texts a lemma and all wordforms of the lemma for creating meaning-text links
      * 
-     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words, texts where words.text_id = texts.id and texts.lang_id = 5 and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
-     * SQL: select text_id, sentence_id, w_id, words.id as word_id from words where text_id in (select id from texts where lang_id = 5) and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
+     * SQL: select text_id, s_id, w_id, words.id as word_id from words, texts where words.text_id = texts.id and texts.lang_id = 5 and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
+     * SQL: select text_id, s_id, w_id, words.id as word_id from words where text_id in (select id from texts where lang_id = 5) and (word like 'olla' OR word like 'olen' OR word like 'on' OR word like 'ollah' OR word like 'olla' OR word like 'en ole') LIMIT 1;
      * 
      * @return Collection
      */
@@ -1003,7 +1003,7 @@ dd($wordforms);
         }
         $cond = join(' OR ',array_unique($strs));
 
-        $query = "select text_id, sentence_id, w_id, words.id as word_id from words where"
+        $query = "select text_id, s_id, w_id, words.id as word_id from words where"
                . " text_id in (select id from texts where lang_id = ".$lang_id
                . ") and (".$cond.")"; 
         $words = DB::select($query); 
@@ -1025,10 +1025,10 @@ dd($wordforms);
                                        ->where('lemma_id',$lemma_id);
                               })
                               ->groupBy('text_id')
-                              ->groupBy('sentence_id')
+                              ->groupBy('s_id')
                               ->groupBy('w_id')
                               ->orderBy('text_id')
-                              ->orderBy('sentence_id')
+                              ->orderBy('s_id')
                               ->orderBy('w_id');
 //dd($sentence_builder->count());                              
 //print "<pre>";                              
@@ -1036,7 +1036,7 @@ dd($wordforms);
 //print_r($s);            
             $sentence_builder2 = DB::table('meaning_text')
                               ->where('text_id',$s->text_id)
-                              ->where('sentence_id',$s->sentence_id)
+                              ->where('s_id',$s->s_id)
                               ->where('w_id',$s->w_id)
                               ->whereIn('meaning_id',function($q) use($lemma_id){
                                     $q->select('id')->from('meanings')
@@ -1047,7 +1047,7 @@ dd($wordforms);
                 $relevance[$s2->meaning_id] = $s2->relevance;
             }
             $sentence = Text::extractSentence($s->text_id, 
-                                              $s->sentence_id, 
+                                              $s->s_id, 
                                               $s->w_id, 
                                               $relevance);
             if ($sentence) {

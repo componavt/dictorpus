@@ -19,7 +19,7 @@ class Word extends Model
 {
     public $timestamps = false;
     
-    protected $fillable = ['text_id', 'sentence_id', 'w_id', 'word', 'word_number'];
+    protected $fillable = ['text_id', 'sentence_id', 's_id', 'w_id', 'word', 'word_number'];
     
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Text;
@@ -73,12 +73,12 @@ class Word extends Model
     public function leftNeighbor() {
         if ($this->w_id == 1) { return; }
         $word = self::where('text_id',$this->text_id)
-                ->where('sentence_id',$this->sentence_id)
+                ->where('s_id',$this->s_id)
                 ->where('w_id','<',$this->w_id)
                 ->orderBy('w_id','desc')
                 //->toSql();
                 ->first();
-//dd($word.'|'.$this->text_id.'|'.$this->sentence_id.'|'.$this->w_id);        
+//dd($word.'|'.$this->text_id.'|'.$this->s_id.'|'.$this->w_id);        
         return $word;
     }
     
@@ -133,11 +133,11 @@ class Word extends Model
     public function searchForWordform($words) {
         $word_founded=[$this->w_id => $this->word];
         $curr_word = $this;
-        $sent_id = $this->sentence_id;
+        $sent_id = $this->s_id;
         $i=sizeof($words)-2;
         while ($i>=0) {
             $curr_word = $curr_word->leftNeighbor();
-            if (!$curr_word || $curr_word->sentence_id != $sent_id) { 
+            if (!$curr_word || $curr_word->s_id != $sent_id) { 
                 return;                            
             }
             $word_founded[$curr_word->w_id] = $curr_word->word;
@@ -354,7 +354,7 @@ class Word extends Model
         foreach (self::getMeaningsByWord($this->word, $lang_id) as $meaning) {
             $meaning_id = $meaning->id;
             $relevance = $checked_relevances[$meaning_id] ?? ($has_checked ? 0 : 1);
-            $this->addMeaning($meaning_id, $this->text_id, $this->sentence_id, $this->w_id, $relevance);
+            $this->addMeaning($meaning_id, $this->text_id, $this->s_id, $this->w_id, $relevance);
         }
     }
 
@@ -376,12 +376,12 @@ class Word extends Model
     }
     
     public function addMeaning($meaning_id, $text_id, $s_id, $w_id, $relevance) {
-        if ($this->meanings()->wherePivot('sentence_id',$s_id)->wherePivot('meaning_id',$meaning_id)
+        if ($this->meanings()->wherePivot('s_id',$s_id)->wherePivot('meaning_id',$meaning_id)
                  ->wherePivot('text_id',$text_id)->wherePivot('w_id',$w_id)->count()) {
             return;
         }
         $this->meanings()->attach($meaning_id,
-                ['sentence_id'=>$s_id,
+                ['s_id'=>$s_id,
                  'text_id'=>$text_id,
                  'w_id'=>$w_id,
                  'relevance'=>$relevance]);        
@@ -397,7 +397,7 @@ class Word extends Model
         $meaning_unchecked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
         if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
         
-        $s_id = Word::whereTextId($text_id)->whereWId($w_id)->first()->sentence_id;
+        $s_id = Word::whereTextId($text_id)->whereWId($w_id)->first()->s_id;
         if (!$s_id) {return null;} 
         
         $locale = LaravelLocalization::getCurrentLocale();
@@ -447,7 +447,7 @@ class Word extends Model
         
         $word_obj = Word::whereTextId($text_id)->whereWId($w_id)->first();
         if (!$word_obj) {return null;} 
-        $s_id = $word_obj->sentence_id;
+        $s_id = $word_obj->s_id;
         if (!$s_id) {return null;} 
         
         $lemma_b = Lemma::whereIn('id', function ($q) use ($text_id, $w_id) {

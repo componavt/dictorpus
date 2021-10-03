@@ -223,6 +223,9 @@ Route::group(
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('service/wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
         Route::get('service/check_parallel_texts', 'Library\ServiceController@checkParallelTexts');
+        Route::get('service/tmp_fill_sentence_id_in_text_wordform', 'Library\ServiceController@tmpFillSentenceIdInTextWordform');
+        Route::get('service/tmp_fill_sentence_id_in_words', 'Library\ServiceController@tmpFillSentenceIdInWords');
+        Route::get('service/tmp_fill_word_id_in_text_wordform', 'Library\ServiceController@tmpFillWordIdInTextWordform');
         Route::get('service/tmp_fill_wordform_for_search', 'Library\ServiceController@tmpFillWordformForSearch');
         Route::get('service/tmp_fill_genres', 'Library\ServiceController@tmpFillGenres');
         Route::get('service/tmp_split_into_sentences', 'Library\ServiceController@tmpSplitTextsIntoSentences');

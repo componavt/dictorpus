@@ -88,7 +88,7 @@ function selectWithLang(el, url, lang_var, placeholder='', allow_clear=false){
           data: function (params) {
             return {
               q: params.term, // search term
-              lang_id: selectedValuesToURL("#search_lang")
+              lang_id: selectedValuesToURL("#"+lang_var)
             };
           },
           processResults: function (data) {

@@ -180,7 +180,7 @@ class WordController extends Controller
     
     /**
      * /corpus/word/edit/1_179?word=gor’o-¦gor’kija
-     * sentence_id=20
+     * s_id=20
      * 
      * @param int $text_id
      * @param int $w_id
@@ -196,7 +196,7 @@ class WordController extends Controller
         if (!$word_obj) { return; }
         
         $sent_obj = Sentence::whereTextId($text_id)
-                        ->whereSId($word_obj->sentence_id)->first();
+                        ->whereSId($word_obj->s_id)->first();
         if (!$sent_obj) { return; }
         
         $sentence = $sent_obj->text_xml;
@@ -220,7 +220,7 @@ dd($sxe->asXML());        */
         foreach ($words as $k=>$w) {
             $word_for_search = Grammatic::changeLetters($words[$k],$lang_id);
             if ($k>=$next_word_count) {
-                $word_obj = Word::create(['text_id' => $text_id, 'sentence_id' => $sent_obj->s_id, 'w_id' => $k, 'word' => $word_for_search]);
+                $word_obj = Word::create(['text_id' => $text_id, 'sentence_id' => $sent_obj->id, 's_id' => $sent_obj->s_id, 'w_id' => $k, 'word' => $word_for_search]);
             } else {
                 $word_obj->word = $word_for_search;
                 $word_obj->save();
@@ -243,10 +243,10 @@ dd($sxe->asXML());        */
         $w_id = (int)$request->input('w_id'); 
         $word = Word::where('text_id',$text_id)
                     ->where('w_id',$w_id)->first();
-        if (!$word || !$word->sentence_id) {
+        if (!$word || !$word->s_id) {
             return;
         }
-        return Text::createWordCheckedBlock($meaning_id, $text_id, $word->sentence_id, $w_id);
+        return Text::createWordCheckedBlock($meaning_id, $text_id, $word->s_id, $w_id);
     }
 
     /**

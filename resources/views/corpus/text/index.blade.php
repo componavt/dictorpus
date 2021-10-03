@@ -83,9 +83,9 @@
                 </td>
                 @else
                 <td data-th="{{ trans('corpus.sentences') }}">                    
-                    @foreach ($text->sentencesFromText($url_args['search_word']) as $sentence_id => $sentence)
-                    <ol start="{{$sentence_id}}">
-                        <li>@include('corpus.text.show_sentence',['count'=>$sentence_id])</li>
+                    @foreach ($text->sentencesFromText($url_args['search_word']) as $s_id => $sentence)
+                    <ol start="{{$s_id}}">
+                        <li>@include('corpus.text.show_sentence',['count'=>$s_id])</li>
                     </ol>
                     @endforeach
                 </td>

@@ -138,12 +138,13 @@ class Sentence extends Model
         $sentence = self::firstOrCreate(['text_id' => $text_id, 's_id' => $s_id]);
         $sentence->text_xml = $text_xml;
         $sentence->save();
+        return $sentence;
     }
 
     public function numerateWords() {
         $count=1;
 //dd($this->text_xml);        
-        list($sxe,$error_message) = Text::toXML($this->text_xml, $this->s_id);
+        list($sxe,$error_message) = Text::toXML($this->text_xml, 'sentence.id='.$this->id);
         if ($error_message) { dd($error_message); }
 //dd($sxe->children()->s->w);        
         foreach ($sxe->children()->s->w as $w) {
@@ -189,33 +190,120 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
         return $sentences;
     }
 */    
-    /**
-     * 
-     * @param type $builder
-     * @param type $field = 'id' if it is called from texts; 'text_id'
-     * @param type $word1
-     * @param type $word2
-     * @param type $distance_from
-     * @param type $distance_to
-     * @return type
-     */
-    public static function searchByWords($builder, $field, $words) {
-/*        if (!isset($words[1]['w']) || !$words[1]['w']) {
-            return $builder;
-        }*/
-        return $builder->whereIn($field,function($query) use ($words){
-                        $query->select('text_id')
-                        ->from('text_wordform');
-                        $query=self::searchWords($query, $words);
-                    });
-    }
     
     /**
      * 
      * @param array $words
      * @return builder
      */
-    public static function searchWords($builder, $words) {
+    public static function searchWords($words) {
+//dd($words[1]['p']);
+/*        
+$words = [
+    1 =>  [
+        "w" => "vuozi",
+        "p" => [ 0 => 1, 1 => 5 ], 
+        "g" => [
+            "gram_id_case" => [0 => 12], 
+            "gram_id_number" => [0 => 1] 
+        ] 
+    ] 
+    2 => [
+        "w" => "^sin", 
+        "p" => [0 => 10 ],
+        "g" => [],
+        "d_f" => "1",
+        "d_t" => "1" 
+    ] 
+]
+select t1.sentence_id from words as t1, words as t2
+where t1.sentence_id=t2.sentence_id
+AND t1.id in (
+    SELECT word_id FROM text_wordform
+    WHERE relevance > 0
+    AND wordform_id in (
+        select `wordform_id` from `lemma_wordform` 
+        where `lemma_id` in (
+            select `id` from `lemmas` 
+            where `lemma_for_search` rlike 'vuozi' 
+            and `pos_id` in ('1', '5')
+        ) 
+    )
+    AND `gramset_id` in (
+        select `id` from `gramsets` 
+        where `gram_id_case` in ('12') 
+        and `gram_id_number` in ('1') 
+    )
+) 
+AND t2.word_number>t1.word_number 
+AND t2.word_number-t1.word_number>=1 
+AND t2.word_number-t1.word_number<=1
+AND t2.id in (
+    SELECT word_id FROM text_wordform
+    WHERE relevance > 0
+    AND wordform_id in (
+        select `wordform_id` from `lemma_wordform` 
+        where `lemma_id` in (
+            select `id` from `lemmas` 
+            where `lemma_for_search` rlike '^sin'
+            and `pos_id` in ('10')
+        )
+    )
+);
+*/      $from = [];
+        foreach (array_keys($words) as $i) {
+            $from[] = 'words as t'.$i;
+        }
+        $builder = DB::table(DB::raw(join(', ', $from)));
+        
+        if (sizeof($words)>1) {
+            $where = [];
+            for ($i=1; $i<sizeof($words); $i++) {
+                $where[] = "t".$i.".sentence_id=t".(int)($i+1).".sentence_id";
+            }
+            $builder -> whereRaw(join(' AND ', $where));
+        }
+        foreach ($words as $i => $word) {
+            if ($i>1) {
+                $builder->where('t1.word_number', '>', 0)
+                        ->where('t'.$i.'.word_number', '>', 't'.($i-1).'.word_number')
+                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '>=', $word['d_f'])
+                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '<=', $word['d_t']);
+            }
+            $builder->whereIn('t'.$i.'.id', function ($q) use ($word) {
+                $q->select('word_id')->from('text_wordform')
+                  ->where('relevance', '>', 0);
+                $search_by_lemma = isset($word['w']) && $word['w'];
+                $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
+                if ($search_by_lemma || $search_by_pos) {
+                    $q->whereIn('wordform_id',function($query1) use ($word, $search_by_lemma, $search_by_pos){
+                        $query1->select('wordform_id')
+                        ->from('lemma_wordform')
+                        ->whereIn('lemma_id',function($query2) use ($word, $search_by_lemma, $search_by_pos){
+                            $query2->select('id')->from('lemmas');
+                            if ($search_by_lemma) {
+                                $query2->where('lemma_for_search', 'rlike', $word['w']);
+                            }
+                            if ($search_by_pos) {
+                                $query2->whereIn('pos_id', $word['p']);
+                            }
+                        });
+                    });
+                }
+                if (isset($word['g']) && sizeof($word['g'])) {
+                    $q->whereIn('gramset_id',function($query2) use ($word){
+                        $query2->select('id')->from('gramsets');
+                        foreach ($word['g'] as $field => $group) {
+                            $query2->whereIn($field, $group);
+                        }
+                    });
+                }                    
+            });
+        }
+//dd(vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings()));                    
+        return $builder;
+    }
+    /*public static function searchWords($builder, $words) {
 //dd($words[1]['p']);        
             $builder=$builder->where('relevance', '>', 0);
 //            foreach ($words as $count => $word)
@@ -243,7 +331,7 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
             });
         return $builder;
     }
-    
+*/    
     public static function searchTexts(Array $url_args) {
         $texts = Text::select('id');        
         if ($url_args['search_corpus']) {
@@ -262,7 +350,7 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
         $out = [];
 //dd($words);        
         foreach ($words as $i=>$word) {
-            if (!$word['w'] && !$word['p'] && !$word['g']) {
+            if ((!isset($word['w']) || !$word['w']) && (!isset($word['p']) || !$word['p']) && (!isset($word['g']) || !$word['g'])) {
                 break;
             }
 //            $out[$i]['w'] = Grammatic::toSearchForm($word['w']);
@@ -278,7 +366,7 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
             if ($word['g']) {
                 foreach (preg_split('/,/', $word['g']) as $orGroup) {
                     foreach (preg_split('/\|/', $orGroup) as $g_code) {
-                        $gram = Gram::getByUnimorph(trim($g_code));
+                        $gram = Gram::getByCode(trim($g_code));
                         $out[$i]['g']['gram_id_'.$gram->gramCategory->name_en][] = $gram->id; 
                     }
                 }
@@ -288,6 +376,7 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
                 $out[$i]['d_t'] = $word['d_t'] ?? 1; 
             }
         }
+//dd($out);        
         return $out;
     }
 
@@ -302,9 +391,9 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
      */
     public static function entryNumber($args) {
         
-        $builder = DB::table('text_wordform')->selectRaw('DISTINCT text_id, w_id');
-        $builder = self::searchWords($builder, $args['words'])
-                ->whereIn('text_id', Sentence::searchTexts($args));
+//        $builder = DB::table('text_wordform')->selectRaw('DISTINCT text_id, w_id');
+        $builder = self::searchWords($args['words'])
+                ->whereIn('t1.text_id', Sentence::searchTexts($args));
 //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings()));            
         return sizeof($builder->get());
     }
@@ -359,6 +448,9 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
         }
         
         foreach ($args['search_words'] as $i => $word) {
+            if (!isset($word['w']) && !isset($word['p']) && !isset($word['w'])) {
+                continue;
+            }
             $tmp=[];
             if ($word['w']) {
                 $tmp[] = '<i>'.$word['w'].'</i>';

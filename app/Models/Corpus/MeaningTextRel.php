@@ -39,7 +39,7 @@ class MeaningTextRel extends Model
         DB::statement('UPDATE meaning_text SET relevance='.$relevance // запишем оценку этому значению
                      .' WHERE meaning_id='.$meaning_id
                      .' AND text_id='.$text_id
-//                     .' AND sentence_id='.$s_id
+//                     .' AND s_id='.$s_id
                      .' AND w_id='.$w_id);
         if ($relevance>1) {
             TextWordform::updateWordformLinksAfterCheckExample($text_id, $w_id, $meaning_id);
@@ -50,7 +50,7 @@ class MeaningTextRel extends Model
     public static function existsPositiveRelevance($text_id, /*$s_id,*/ $w_id, $meaning_id) {
         return DB::table('meaning_text') 
                 -> where('text_id',$text_id)
-//                -> where('sentence_id',$s_id)
+//                -> where('s_id',$s_id)
                 -> where('w_id',$w_id)
                 -> where('meaning_id', '<>', $meaning_id)
                 -> where ('relevance','>',1)->count();
@@ -62,7 +62,7 @@ class MeaningTextRel extends Model
                       ' WHERE meaning_id <> '.$meaning_id.
                       ' AND relevance=1'.
                       ' AND text_id='.$text_id.
-//                      ' AND sentence_id='.$s_id.
+//                      ' AND s_id='.$s_id.
                       ' AND w_id='.$w_id);
     }
     
@@ -76,7 +76,7 @@ class MeaningTextRel extends Model
 
             $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
                                -> where('text_id',$text_id)
-                               -> where('sentence_id',$s_id)
+                               -> where('s_id',$s_id)
                                -> where('w_id',$w_id)
                                -> get();
             $meaning_texts = [];

@@ -17,6 +17,7 @@ use App\Library\Str;
 
 use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\TextWordform;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
@@ -299,7 +300,7 @@ print "</p>";
             foreach ($words as $word) {
                 $num_links = $word->setMeanings([], $lang_id);
                 if ($num_links) {
-    print "<p>text=".$word->text_id.", sentence_id=".$word->sentence_id.", w_id=".$word->w_id.", word=".$word->word. ', meaning links = <span style="color: red">'. $num_links. '</span>';            
+    print "<p>text=".$word->text_id.", s_id=".$word->s_id.", w_id=".$word->w_id.", word=".$word->word. ', meaning links = <span style="color: red">'. $num_links. '</span>';            
                 }
                 $word->checked=1;
                 $word->save();
@@ -783,15 +784,19 @@ print 'done';
         
         $is_all_checked = false;
         while (!$is_all_checked) {
-            $sentence = Sentence::orderBy('id')->whereChecked(0)->first();
-            if ($sentence) {
-                $sentence->numerateWords();
-                $sentence->checked=1;
-                $sentence->save();
-//dd($sentence->id);
-            } else {
+            $word = Word::whereWordNumber(0)->first();
+            if (!$word) {
                 $is_all_checked = true;
+                continue;
             }
+            $sentence = Sentence::whereTextId($word->text_id)->whereSId($word->s_id)->first();
+            if (!$sentence) {
+                dd("Нет предложения ".$word->text_id. '-'. $word->s_id);
+            }
+            $sentence->numerateWords();
+            $sentence->checked=1;
+            $sentence->save();
+    //dd($sentence->id);
         }
 print 'done';        
     }
@@ -823,6 +828,83 @@ print 'done';
 print 'done';        
     }
 
+    /**
+     * select count(*) from words where sentence_id=0;
+     */
+    public function tmpFillSentenceIdInWords() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $word = Word::whereSentenceId(0)->first();
+            if ($word) {
+                $sentence = Sentence::whereTextId($word->text_id)
+                                    ->whereSId($word->s_id)->first();
+                if (!$sentence) {
+                    dd("Нет предложения ". $word->text_id. '-'.$word->s_id);
+                }
+                DB::statement("UPDATE words SET sentence_id='".$sentence->id.
+                              "' WHERE text_id=".$word->text_id. ' and s_id='.$word->s_id);
+//exit(1);                
+            } else {
+                $is_all_checked = true;
+            }
+//exit(0);            
+        }
+    }
+    
+    /**
+     * select count(*) from text_wordform where sentence_id=0;
+     */
+    public function tmpFillSentenceIdInTextWordform() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+//            $text_wordform = TextWordform::whereIsNull('sentence_id')->first();
+            $text_wordform = TextWordform::whereSentenceId(0)->first();
+            if ($text_wordform) {
+                $text_id = $text_wordform->text_id;
+                $w_id = $text_wordform->w_id;
+                $sentence = Sentence::whereIn('id', function($q) use ($text_id, $w_id) {
+                    $q -> select('sentence_id')->from('words')
+                       -> whereTextId($text_id)
+                       ->whereWId($w_id);
+                })->first();
+                if (!$sentence) {
+                    dd("Нет предложения ". $text_id. '-'.$w_id);
+                }
+                DB::statement("UPDATE text_wordform SET sentence_id='".$sentence->id.
+                              "' WHERE text_id=".$text_id. ' and w_id='.$w_id);
+//exit(1);                
+            } else {
+                $is_all_checked = true;
+            }
+//exit(0);            
+        }
+    }
+    
+    /**
+     * select count(*) from text_wordform where word_id=0;
+     */
+    public function tmpFillWordIdInTextWordform() {
+        $is_all_checked = false;
+        while (!$is_all_checked) {
+            $text_wordform = TextWordform::whereWordId(0)->first();
+            if ($text_wordform) {
+                $text_id = $text_wordform->text_id;
+                $w_id = $text_wordform->w_id;
+                $word = Word::whereTextId($text_id)
+                       ->whereWId($w_id)->first();
+                if (!$word) {
+                    dd("Нет слова ". $text_id. '-'.$w_id);
+                }
+                DB::statement("UPDATE text_wordform SET word_id='".$word->id.
+                              "' WHERE text_id=".$text_id. ' and w_id='.$w_id);
+//exit(1);                
+            } else {
+                $is_all_checked = true;
+            }
+//exit(0);            
+        }
+    }
+    
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences
@@ -1090,7 +1172,7 @@ print "<p>".$word->word;
 //dd($meanings);    
                 foreach ($meanings as $meaning) {
                     $meaning->texts()->attach($word->text_id,
-                            ['sentence_id'=>$word->sentence_id,
+                            ['s_id'=>$word->s_id,
                              'word_id'=>$word->id,
                              'w_id'=>$word->w_id,
                              'relevance'=>1]);
