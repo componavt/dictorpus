@@ -250,7 +250,8 @@ AND t2.id in (
         )
     )
 );
-*/      $from = [];
+*/      
+        $from = [];
         foreach (array_keys($words) as $i) {
             $from[] = 'words as t'.$i;
         }
@@ -263,13 +264,8 @@ AND t2.id in (
             }
             $builder -> whereRaw(join(' AND ', $where));
         }
+        $builder = self::searchWordsByNumbers($builder, $words);
         foreach ($words as $i => $word) {
-            if ($i>1) {
-                $builder->where('t1.word_number', '>', 0)
-                        ->where('t'.$i.'.word_number', '>', 't'.($i-1).'.word_number')
-                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '>=', $word['d_f'])
-                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '<=', $word['d_t']);
-            }
             $builder->whereIn('t'.$i.'.id', function ($q) use ($word) {
                 $q->select('word_id')->from('text_wordform')
                   ->where('relevance', '>', 0);
@@ -332,6 +328,62 @@ AND t2.id in (
         return $builder;
     }
 */    
+    
+    public static function searchWordsByNumbers($builder, $words) {
+        foreach ($words as $i => $word) {
+            if ($i==1) {
+                continue;
+            }
+            $A = $word['d_f'];
+            $B = $word['d_t'];
+/*
+0<=A<=B: from 1 to 3
+t2.word_number>t1.word_number 
+AND t2.word_number-t1.word_number>=A 
+AND t2.word_number-t1.word_number<=B;
+*/            
+            if ($A>=0 && $B>=0) {
+                if ($A > $B) { // from 3 to 1
+                    list($A,$B)=[$B,$A];
+                }
+                $builder->where('t'.$i.'.word_number', '>', 't'.($i-1).'.word_number')
+                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '>=', $A)
+                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '<=', $B);
+/*
+A<0<B: from -3 to 3
+(t1.word_number>t2.word_number 
+AND t1.word_number-t2.word_number<=|A|
+OR t2.word_number>t1.word_number 
+AND t2.word_number-t1.word_number<=B);
+*/
+            } elseif ($A<0 && $B>0 || $B<0 && $A>0) {
+                if ($A > $B) { // from 3 to -3
+                    list($A,$B)=[$B,$A];
+                }
+                $builder->where(function($q) use ($i, $A, $B) {
+                        $q->where('t'.($i-1).'.word_number', '>', 't'.$i.'.word_number')
+                          ->where(DB::raw('t'.($i-1).'.word_number-t'.$i.'.word_number'), '<=', abs($A))
+                          ->orWhere('t'.$i.'.word_number', '>', 't'.($i-1).'.word_number')
+                          ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '<=', $B);
+                    });
+/*                    
+B<=A<=0: from -3 to -5
+t1.word_number>t2.word_number 
+AND t1.word_number-t2.word_number>=|A|
+AND t1.word_number-t2.word_number<=|B|;
+*/                    
+            } elseif ($A<=0 && $B<=0) {
+                if ($A < $B) { // from -5 to -3
+                    list($A,$B)=[$B,$A];
+                }
+                $builder->where('t'.($i-1).'.word_number', '>', 't'.$i.'.word_number')
+                        ->where(DB::raw('t'.($i-1).'.word_number-t'.$i.'.word_number'), '>=', abs($A))
+                        ->where(DB::raw('t'.($i-1).'.word_number-t'.$i.'.word_number'), '<=', abs($B));
+            }
+        }
+        return $builder;
+    }
+    
     public static function searchTexts(Array $url_args) {
         $texts = Text::select('id');        
         if ($url_args['search_corpus']) {
@@ -448,9 +500,10 @@ AND t2.id in (
         }
         
         foreach ($args['search_words'] as $i => $word) {
-            if (!isset($word['w']) && !isset($word['p']) && !isset($word['w'])) {
+            if (!isset($word['w']) && !isset($word['p']) && !isset($word['g'])) {
                 continue;
             }
+            
             $tmp=[];
             if ($word['w']) {
                 $tmp[] = '<i>'.$word['w'].'</i>';
@@ -470,8 +523,10 @@ AND t2.id in (
                 }
                 $tmp[] = '('.join(' <span class="warning">'.trans('search.and').'</span> ', $groups).')';
             }
-            $out[] = '<br>(<b>'.trans('corpus.word'). " $i</b>: ". 
-                            join(' <span class="warning">'.trans('search.and').'</span> ',$tmp).')';
+            
+            $out[] = '<br>'.(isset($word['d_f']) && isset($word['d_t']) 
+                    ? trans('search.in_distance', ['from'=>$word['d_f'], 'to'=>$word['d_t']]) : '')
+                    .' <b>'.trans('corpus.word'). " $i</b>: ".join(' <span class="warning">'.trans('search.and').'</span> ',$tmp);
         } 
         return join(' <span class="warning">'.trans('search.and').'</span> ', $out);
     }

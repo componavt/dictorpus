@@ -911,7 +911,7 @@ class Text extends Model
         foreach ($this->getWordformsByWord($word_obj->word) as $wordform) {
             $wg_id = $wordform->id. '_'. $wordform->gramset_id;
             $relevance = $checked_relevances[$wg_id] ?? ($has_checked ? 0 : 1);
-            $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->s_id, $word_obj->w_id, $relevance);
+            $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->id, $word_obj->w_id, $relevance);
         }
     }
 
@@ -933,7 +933,7 @@ class Text extends Model
         return $wordforms;
     }
     
-    public function addWordform($wordform_id, $gramset_id, $s_id, $w_id, $relevance) {
+    public function addWordform($wordform_id, $gramset_id, $word_id, $w_id, $relevance) {
         if ($this->wordforms()->wherePivot('wordform_id',$wordform_id)
                  ->wherePivot('w_id',$w_id)
                  ->wherePivot('gramset_id',$gramset_id)->count()) {
@@ -941,6 +941,7 @@ class Text extends Model
         }
         $this->wordforms()->attach($wordform_id,
                 ['w_id'=>$w_id,
+                 'word_id' => $word_id,
                  'gramset_id' => $gramset_id,
                  'relevance'=>$relevance]);        
     }

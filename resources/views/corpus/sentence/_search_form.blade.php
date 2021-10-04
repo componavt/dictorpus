@@ -52,7 +52,7 @@
                 ['name' => 'search_year_to', 
                  'help_func' => 'callHelpYear()',
                  'value' => $url_args['search_year_to'] ? $url_args['search_year_to'] : '',
-                 'title' => trans('messages.year_to')
+                 'title' => trans('search.year_to')
                 ])                               
     </div>
     <div class="col-md-4 search-button-b">       
