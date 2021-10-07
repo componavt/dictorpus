@@ -134,7 +134,7 @@ class Text extends Model
         $texts = self::searchByLang($texts, $url_args['search_lang']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
         
-        $texts = $texts->whereIn('id',Sentence::searchWords($url_args['words'])->pluck('t1.text_id'));
+        $texts = $texts->whereIn('id',array_unique(Sentence::searchWords($url_args['words'])->pluck('t1.text_id')));
 //Sentence::searchByWords($texts, 'id', $url_args['words']);
 //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $texts->toSql()), $texts->getBindings()));            
         return $texts;
@@ -366,7 +366,7 @@ class Text extends Model
     public function getSentencesByGram($words) {
         $text_id = $this->id;
         $builder = Sentence::whereTextId($text_id)->orderBy('s_id')   
-                    ->whereIn('id', Sentence::searchWords($words)->pluck('t1.sentence_id'));
+                    ->whereIn('id', Sentence::searchWords($words, $text_id)->pluck('t1.sentence_id'));
 //dd($builder->toSql());                    
         return $builder->get();
     }
@@ -808,7 +808,7 @@ class Text extends Model
                                           's_id' => $s_id, 
                                           'w_id' => $w_id, 
                                           'word' => $word_for_search, 
-                                          'word_number' => $word_count]);
+                                          'word_number' => $word_count+1]);
 //            } else {
 //                $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();                
 //            }

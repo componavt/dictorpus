@@ -10,10 +10,14 @@ return [
     |
     */
     
+    'add_word' => 'add another word to the search',
     'advanced_search'=> 'Advanced Search',
     'and' => 'AND',
     'choose_gram' => 'Choose grammatical attributes',
     'choose_pos' => 'Choose a part of speech',
+    'd_f' => 'from',
+    'd_t' => 'to',
+    'distance' => 'Distance',
     'founded_count' => '{0} There are no records.|{1} :count record was founded.|[2,Inf] :count records were founded.',
     'for_regex_search' => 'Templates (Regex and custom) are allowed in the field. You can use the following notation:
     <table class="help-list">

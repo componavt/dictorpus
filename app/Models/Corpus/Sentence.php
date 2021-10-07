@@ -196,12 +196,12 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
      * @param array $words
      * @return builder
      */
-    public static function searchWords($words) {
-//dd($words[1]['p']);
+    public static function searchWords($words, $text_id=null) {
 /*        
 $words = [
     1 =>  [
-        "w" => "vuozi",
+        "w" => "",
+        "l" => "vuozi",
         "p" => [ 0 => 1, 1 => 5 ], 
         "g" => [
             "gram_id_case" => [0 => 12], 
@@ -209,53 +209,23 @@ $words = [
         ] 
     ] 
     2 => [
-        "w" => "^sin", 
+        "w" => "", 
+        "l" => "^sin", 
         "p" => [0 => 10 ],
         "g" => [],
         "d_f" => "1",
         "d_t" => "1" 
     ] 
-]
-select t1.sentence_id from words as t1, words as t2
-where t1.sentence_id=t2.sentence_id
-AND t1.id in (
-    SELECT word_id FROM text_wordform
-    WHERE relevance > 0
-    AND wordform_id in (
-        select `wordform_id` from `lemma_wordform` 
-        where `lemma_id` in (
-            select `id` from `lemmas` 
-            where `lemma_for_search` rlike 'vuozi' 
-            and `pos_id` in ('1', '5')
-        ) 
-    )
-    AND `gramset_id` in (
-        select `id` from `gramsets` 
-        where `gram_id_case` in ('12') 
-        and `gram_id_number` in ('1') 
-    )
-) 
-AND t2.word_number>t1.word_number 
-AND t2.word_number-t1.word_number>=1 
-AND t2.word_number-t1.word_number<=1
-AND t2.id in (
-    SELECT word_id FROM text_wordform
-    WHERE relevance > 0
-    AND wordform_id in (
-        select `wordform_id` from `lemma_wordform` 
-        where `lemma_id` in (
-            select `id` from `lemmas` 
-            where `lemma_for_search` rlike '^sin'
-            and `pos_id` in ('10')
-        )
-    )
-);
-*/      
+]*/
         $from = [];
         foreach (array_keys($words) as $i) {
             $from[] = 'words as t'.$i;
         }
         $builder = DB::table(DB::raw(join(', ', $from)));
+        
+        if ($text_id) {
+            $builder -> where('t1.text_id', $text_id);
+        }
         
         if (sizeof($words)>1) {
             $where = [];
@@ -266,68 +236,11 @@ AND t2.id in (
         }
         $builder = self::searchWordsByNumbers($builder, $words);
         foreach ($words as $i => $word) {
-            $builder->whereIn('t'.$i.'.id', function ($q) use ($word) {
-                $q->select('word_id')->from('text_wordform')
-                  ->where('relevance', '>', 0);
-                $search_by_lemma = isset($word['w']) && $word['w'];
-                $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
-                if ($search_by_lemma || $search_by_pos) {
-                    $q->whereIn('wordform_id',function($query1) use ($word, $search_by_lemma, $search_by_pos){
-                        $query1->select('wordform_id')
-                        ->from('lemma_wordform')
-                        ->whereIn('lemma_id',function($query2) use ($word, $search_by_lemma, $search_by_pos){
-                            $query2->select('id')->from('lemmas');
-                            if ($search_by_lemma) {
-                                $query2->where('lemma_for_search', 'rlike', $word['w']);
-                            }
-                            if ($search_by_pos) {
-                                $query2->whereIn('pos_id', $word['p']);
-                            }
-                        });
-                    });
-                }
-                if (isset($word['g']) && sizeof($word['g'])) {
-                    $q->whereIn('gramset_id',function($query2) use ($word){
-                        $query2->select('id')->from('gramsets');
-                        foreach ($word['g'] as $field => $group) {
-                            $query2->whereIn($field, $group);
-                        }
-                    });
-                }                    
-            });
+            $builder = self::searchWordsByWord($builder, $i, $word);
         }
 //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings()));                    
         return $builder;
     }
-    /*public static function searchWords($builder, $words) {
-//dd($words[1]['p']);        
-            $builder=$builder->where('relevance', '>', 0);
-//            foreach ($words as $count => $word)
-            $builder=$builder->whereIn('wordform_id',function($query1) use ($words){
-                    $query1->select('wordform_id')
-                    ->from('lemma_wordform')
-                    ->whereIn('lemma_id',function($query2) use ($words){
-                        $query2->select('id')
-                        ->from('lemmas');
-                        if (isset($words[1]['w']) && $words[1]['w']) {
-                            $query2->where('lemma_for_search', 'rlike', $words[1]['w']);
-                        }
-                        if (isset($words[1]['p']) && $words[1]['p'] && sizeof($words[1]['p'])) {
-                            $query2->whereIn('pos_id', $words[1]['p']);
-                        }
-                    });
-                    if (isset($words[1]['g']) && sizeof($words[1]['g'])) {
-                        $query1->whereIn('gramset_id',function($query2) use ($words){
-                            $query2->select('id')->from('gramsets');
-                            foreach ($words[1]['g'] as $field => $group) {
-                                $query2->whereIn($field, $group);
-                            }
-                        });
-                    }
-            });
-        return $builder;
-    }
-*/    
     
     public static function searchWordsByNumbers($builder, $words) {
         foreach ($words as $i => $word) {
@@ -384,6 +297,46 @@ AND t1.word_number-t2.word_number<=|B|;
         return $builder;
     }
     
+    public static function searchWordsByWord($builder, $i, $word) {
+        if (isset($word['w']) && $word['w']) {
+            $builder=$builder->where('word', 'rlike', $word['w']);
+        }
+        $search_by_lemma = isset($word['l']) && $word['l'];
+        $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
+        $search_by_gramset = isset($word['g']) && sizeof($word['g']);
+
+        if ($search_by_lemma || $search_by_pos || $search_by_gramset) {
+            $builder=$builder->whereIn('t'.$i.'.id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_gramset) {
+                $q->select('word_id')->from('text_wordform')
+                  ->where('relevance', '>', 0);
+                if ($search_by_lemma || $search_by_pos) {
+                    $q->whereIn('wordform_id',function($query1) use ($word, $search_by_lemma, $search_by_pos){
+                        $query1->select('wordform_id')
+                        ->from('lemma_wordform')
+                        ->whereIn('lemma_id',function($query2) use ($word, $search_by_lemma, $search_by_pos){
+                            $query2->select('id')->from('lemmas');
+                            if ($search_by_lemma) {
+                                $query2->where('lemma_for_search', 'rlike', $word['l']);
+                            }
+                            if ($search_by_pos) {
+                                $query2->whereIn('pos_id', $word['p']);
+                            }
+                        });
+                    });
+                }
+                if ($search_by_gramset) {
+                    $q->whereIn('gramset_id',function($query2) use ($word){
+                        $query2->select('id')->from('gramsets');
+                        foreach ($word['g'] as $field => $group) {
+                            $query2->whereIn($field, $group);
+                        }
+                    });
+                }                    
+            });
+        }
+        return $builder;
+    }
+    
     public static function searchTexts(Array $url_args) {
         $texts = Text::select('id');        
         if ($url_args['search_corpus']) {
@@ -406,15 +359,21 @@ AND t1.word_number-t2.word_number<=|B|;
                 break;
             }
 //            $out[$i]['w'] = Grammatic::toSearchForm($word['w']);
-            $out[$i]['w'] = Grammatic::toSearchByPattern($word['w']);
-            $out[$i]['p'] = [];
+            $out[$i]['w'] = $out[$i]['l'] = $out[$i]['p'] = $out[$i]['g'] = [];
+            
+            if (preg_match("/^\"(.+)\"$/", trim($word['w']), $regs)) {
+                $out[$i]['w'] = Grammatic::toSearchByPattern($regs[1]);
+            } else {
+                $out[$i]['l'] = Grammatic::toSearchByPattern($word['w']);                
+            }
+            
             foreach (preg_split('/\|/', $word['p']) as $p_code) {
                 $p_id = PartOfSpeech::getIDByCode(trim($p_code));
                 if ($p_id) {
                     $out[$i]['p'][] = $p_id;
                 }
             }
-            $out[$i]['g'] = [];
+
             if ($word['g']) {
                 foreach (preg_split('/,/', $word['g']) as $orGroup) {
                     foreach (preg_split('/\|/', $orGroup) as $g_code) {
