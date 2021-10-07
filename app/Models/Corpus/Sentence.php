@@ -299,7 +299,7 @@ AND t1.word_number-t2.word_number<=|B|;
     
     public static function searchWordsByWord($builder, $i, $word) {
         if (isset($word['w']) && $word['w']) {
-            $builder=$builder->where('word', 'rlike', $word['w']);
+            $builder=$builder->where('t'.$i.'word', 'rlike', $word['w']);
         }
         $search_by_lemma = isset($word['l']) && $word['l'];
         $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
