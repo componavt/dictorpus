@@ -94,6 +94,7 @@ return [
     'in_distance' => 'на расстоянии от :from до :to',
     'or' => 'ИЛИ',
     'refine_search' => 'Уточните поиск, пожалуйста.',
+    'search_results' => 'Результаты поиска',
     'show_by' => 'по',
     'simple_search'=> 'Простой поиск',
     'year_from' => 'год (с)',

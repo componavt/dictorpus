@@ -10,7 +10,7 @@
 @stop
 
 @section('body')
-        <h3>Результаты поиска</h3>
+        <h3>{{trans('search_results')}}</h3>
         <p>{!!$search_query!!}</p>
         @if ($refine)
             {{trans('search.refine_search')}}
