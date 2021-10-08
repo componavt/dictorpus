@@ -53,6 +53,14 @@
                             <div id="last-added-texts" class="block-list">
                 <img class="img-loading" src="{{ asset('images/loading.gif') }}">
                             </div>
+                            
+                            <?php $locale = LaravelLocalization::getCurrentLocale();?>
+                            @if ($locale == 'ru') 
+                            <div class='mobile-b'>
+                                <a href="https://play.google.com/store/apps/details?id=vepkar.test"><img src="/images/google_play.png"></a>
+                                <div>{!!trans('blob.mobile-b')!!}</div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
