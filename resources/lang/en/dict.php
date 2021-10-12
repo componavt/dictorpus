@@ -141,6 +141,7 @@ return [
     'list_lemmas' => 'List of lemmas',
     'list_long_lemmas' => 'List of longest lemmas',
     'meaning' => 'meaning',
+    'meaning_place' => 'locality of word usage',
     'mood' => 'mood',
     'more_examples' => 'more examples &gt;&gt;',
     'name' => 'name',
