@@ -51,7 +51,7 @@ function showLemmaLinked(text_id) {
 /**
  *  show/hide a block with lemmas by click on a word
  */
-function showWordBlock() {
+function showWordBlock(locale) {
    $("body").on("click", ".word-linked", function(event) {
 //console.log('click');       
         event.preventDefault(); // reload event after AJAX reload
@@ -64,7 +64,7 @@ function showWordBlock() {
         var downloaded = w_block.data('downloaded');
         if (downloaded === 0) {
 //console.log("showLemmaLinked: text_id, w_id: " + text_id + ','+ w_id );
-            loadWordBlock(t_w_id, '/corpus/word/load_lemma_block/' + t_w_id);
+            loadWordBlock(t_w_id, '/'+locale+ '/corpus/word/load_lemma_block/' + t_w_id);
         }
     });
         

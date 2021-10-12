@@ -37,5 +37,5 @@
 
 @section('jqueryFunc')
 {{-- show/hide a block with lemmas --}}
-    showWordBlock(); 
+    showWordBlock('{{LaravelLocalization::getCurrentLocale()}}'); 
 @stop

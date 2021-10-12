@@ -20,7 +20,6 @@ return [
     'add-wordform' => 'Add a wordform',
     'archive_krc' => 'audio archive of ILLH, KarRC RAS',
     'author' => 'Author',
-    'author_or_trans' => 'Author',
     'author_removed' => 'Author ":name" is removed successfully.',
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',

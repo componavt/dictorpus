@@ -13,6 +13,7 @@ return [
     'add_word' => 'add another word to the search',
     'advanced_search'=> 'Advanced Search',
     'and' => 'AND',
+    'author_or_trans' => 'Author',
     'choose_gram' => 'Choose grammatical attributes',
     'choose_pos' => 'Choose a part of speech',
     'd_f' => 'from',
@@ -95,6 +96,7 @@ return [
     'search_results' => 'Search results',
     'show_by' => 'by',
     'simple_search'=> 'Simple Search',
+//    'title_or_trans' => 'Title',
     'year_from' => 'year (from)',
     'year_to' => 'year (to)',
 ];
