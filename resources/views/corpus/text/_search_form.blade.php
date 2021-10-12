@@ -88,13 +88,23 @@
                  'title' => trans('search.year_to')
                 ])                               
     </div>
-    <div class="col-md-4{{$url_args['search_word'] ? '' : ' ext-form'}}">
+{{--    <div class="col-md-4{{$url_args['search_word'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_word', 
                  'special_symbol' => true,
                  'help_func' => "callHelp('help-text-fields')",
                  'value' => $url_args['search_word'],
                  'title'=> trans('corpus.word')
+                ])
+                               
+    </div>--}}
+    <div class="col-md-4{{$url_args['search_source'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._text', 
+                ['name' => 'search_source', 
+                 'special_symbol' => true,
+                 'help_func' => "callHelp('help-source')",
+                 'value' => $url_args['search_source'],
+                 'title'=> trans('corpus.source')
                 ])
                                
     </div>

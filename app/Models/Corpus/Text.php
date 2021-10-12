@@ -111,6 +111,7 @@ class Text extends Model
         $texts = self::searchByText($texts, $url_args['search_text']);
         $texts = self::searchByGenres($texts, $url_args['search_genre'], $url_args['search_without_genres']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
+        $texts = self::searchBySource($texts, $url_args['search_source']);
         
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
@@ -139,7 +140,19 @@ class Text extends Model
 //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $texts->toSql()), $texts->getBindings()));            
         return $texts;
     }
-    
+        
+    public static function searchBySource($texts, $source) {
+        if (!$source) {
+            return $texts;
+        }
+        return $texts->whereIn('source_id',function($query) use ($source){
+                    $query->select('id')
+                    ->from('sources')
+                    ->where('title', 'rlike', $source)
+                    ->orWhere('author', 'rlike', $source)
+                    ->orWhere('comment', 'rlike', $source);
+                });
+    }
     
     public static function searchByBirthPlace($texts, $place) {
         if (!$place) {
@@ -1557,6 +1570,7 @@ class Text extends Model
                     'search_place'    => $request->input('search_place'),
                     'search_recorder' => $request->input('search_recorder'),
                     'search_sentence' => (int)$request->input('search_sentence'),
+                    'search_source'    => $request->input('search_source'),
                     'search_title'    => $request->input('search_title'),
                     'search_wid'     => (array)$request->input('search_wid'),
                     'search_without_genres' => (boolean)$request->input('search_without_genres'),

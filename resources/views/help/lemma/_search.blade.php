@@ -19,5 +19,5 @@
 
 <div id='help-wordform-for-lemma' class='help-section'>
     <h2>Поле словоформы</h2>
-    {!!trans('search.for_regex_search')!!}   
+    @include('help.search_regex', ['with_custom'=>true]) 
 </div>
