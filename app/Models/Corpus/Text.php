@@ -1301,6 +1301,7 @@ class Text extends Model
         if (!$text || !$sent_obj) { return NULL; }
         
         return ['s' => preg_replace('/[¦^]/', '', $sent_obj->text_xml), 
+                'sent_obj' => $sent_obj,
                 's_id' => $s_id,
                 'text' => $text, 
                 'trans_s' => $text->getTransSentence($s_id),

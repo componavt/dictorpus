@@ -38,14 +38,14 @@ class AuthorController extends Controller
         $authors = Author::orderBy('name_'.$locale);
         
         if ($search_name) {
-            $authors = $authors->whereIn('id', function ($q) use ($search_name) {
-                $q->where('name_en','like', $search_name)
-                  ->orWhere('name_ru','like', $search_name);
-            })->whereIn('id', function ($q2) use ($search_name) {
-                $q2->select('author_id')->from('author_text')
-                  ->where('name', 'like', $search_name);
-            });
+            $authors ->where('name_en','like', $search_name)
+                  ->orWhere('name_ru','like', $search_name)
+                  ->orwhereIn('id', function ($q2) use ($search_name) {
+                    $q2->select('author_id')->from('author_names')
+                      ->where('name', 'like', $search_name);
+                  });
         }
+//dd(vsprintf(str_replace(array('?'), array('\'%s\''), $authors->toSql()), $authors->getBindings()));            
         $numAll = $authors->count();
         $authors = $authors->get();
         

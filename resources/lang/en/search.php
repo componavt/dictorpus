@@ -10,6 +10,8 @@ return [
     |
     */
     
+    'add_left_context' => 'add left context',
+    'add_right_context' => 'add right context',
     'add_word' => 'add another word to the search',
     'advanced_search'=> 'Advanced Search',
     'and' => 'AND',

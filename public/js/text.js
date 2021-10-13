@@ -469,3 +469,14 @@ function saveWord(text_id, w_id, word) {
             location.reload();
     })*/; 
 }
+
+function callContextSentence(sentence_id, direction) {
+    $.ajax({
+        url: '/corpus/sentence/'+sentence_id+'?with_'+direction+'_context=1', 
+        type: 'GET',
+        success: function(result){
+            $("#context_"+sentence_id).html(result);
+        }
+    }); 
+}
+

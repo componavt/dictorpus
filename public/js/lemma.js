@@ -47,12 +47,13 @@ function checkLemmaForm() {
     });
 }
 
-function reloadStemAffixByWordforms() {
-    var id = $(".reload-stem-affix-by-wordforms").data('reload');
+function reloadStemAffixByWordforms(el, locale) {
+    var id = $(el).data('reload');
+    
     $("#lemmaStemAffix").empty();
     $("#img-loading_stem-affix").show();
     $.ajax({
-        url: '/dict/lemma/'+ id + '/reload_stem_affix_by_wordforms', 
+        url: '/' + locale + '/dict/lemma/'+ id + '/reload_stem_affix_by_wordforms', 
         type: 'GET',
         success: function(result){
             $("#lemmaStemAffix").html(result);

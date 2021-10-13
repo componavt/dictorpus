@@ -30,7 +30,7 @@
             <td>
                 <img class="img-loading" id="loading-sentence-{{$sentence->id}}" src="{{ asset('images/loading.gif') }}">
                 <div id="sentence-{{$sentence->id}}">
-                @include('corpus.sentence.show')
+                @include('corpus.sentence.show', ['with_edit' => true])
                 </div>
             </td>
             <td>

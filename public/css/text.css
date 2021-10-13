@@ -218,3 +218,8 @@ ol {
 /*    text-decoration: underline;*/
     border-bottom: 1px #972d1a dashed;
 }
+
+.load-context {
+    color: #972d1a;
+    cursor: pointer;
+}

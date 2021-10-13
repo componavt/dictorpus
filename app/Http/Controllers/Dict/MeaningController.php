@@ -152,23 +152,44 @@ class MeaningController extends Controller
      * @param INT $id
      * @return \Illuminate\Http\Response
      */
-    public function loadExamples ($id) {
+    public function loadExamples (int $id, Request $request) {
+        $limit = 5;
+        $start = (int)$request->input('start');
+        $update_examples = (int)$request->input('update_examples');
         $meaning = Meaning::find($id);
         if (!$meaning) {
             return NULL;
         }
         
-        if (User::checkAccess('dict.edit') && !$meaning->texts()->count()) {
-            $words = $meaning->lemma->getWordsForMeanings();
-            if ($words) {
-                ini_set('max_execution_time', 7200);
-                ini_set('memory_limit', '512M');
-                $meaning->addTextLinks($words);
-            }
+        if (User::checkAccess('dict.edit') && ($update_examples || !$meaning->texts()->count())) {
+            $meaning->reloadExamples();
         }
-        return view('dict.lemma.show.examples')
-                  ->with(['meaning' => $meaning,
-                         ]); 
+        
+        $sentence_count = $meaning->countSentences(false);
+        $sentence_total = $meaning->countSentences(true);
+        $sentences = $meaning->sentences(false, $limit, $start);
+        $count=1+$start;   
+        
+        return view('dict.lemma.show.examples', 
+                compact('meaning', 'limit', 'start', 'count',
+                        'sentence_count', 'sentence_total', 'sentences')); 
+    }
+
+    public function loadMoreExamples (int $id, Request $request) {
+        $limit = 5;
+        $start = (int)$request->input('start');
+        $meaning = Meaning::find($id);
+        if (!$meaning) {
+            return NULL;
+        }
+        
+        $sentence_count = $meaning->countSentences(false);
+        $sentences = $meaning->sentences(false, $limit, $start);
+        $count=1+$start;   
+        
+        return view('dict.lemma.show.examples_limit', 
+                compact('meaning', 'limit', 'start', 'count',
+                        'sentence_count', 'sentences')); 
     }
 
     /**
@@ -177,34 +198,19 @@ class MeaningController extends Controller
      * @param INT $id
      * @return \Illuminate\Http\Response
      */
-    public function reloadExamples ($id) {
+/*    public function reloadExamples (int $id, Request $request) {
+        $limit = 5;
+        $start = (int)$request->input('start');
         $meaning = Meaning::find($id);
         if (!$meaning) {
             return NULL;
         }
         
         if (User::checkAccess('dict.edit')) {
-            ini_set('max_execution_time', 0);
-            ini_set('memory_limit', '1024M');
-            
-//dd($meaning->texts()->count());            
-            $words = $meaning->lemma->getWordsForMeanings();
-//dd($words);            
-            if ($words) {
-                if (!$meaning->texts()->count()) {
-                    $meaning->addTextLinks($words);
-                } else {
-    //dd($meaning);                
-                    $meaning->updateTextLinks($words);
-                }
-            } else {
-                $meaning->texts()->detach();
-            }
+            $meaning->reloadExamples();
         }
-        return view('dict.lemma.show.examples')
-                  ->with(['meaning' => $meaning,
-                         ]); 
-    }
+        return view('dict.lemma.show.examples', compact('meaning', 'limit', 'start')); 
+    }*/
 
 
     /** 

@@ -146,8 +146,9 @@ Route::group(
         
         Route::get('dict/meaning/create', 'Dict\MeaningController@create');
         Route::get('dict/meaning/example/add/{example_id}', 'Dict\MeaningController@addExample');
-        Route::get('dict/meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
+//        Route::get('dict/meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
         Route::get('dict/meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
+        Route::get('dict/meaning/examples/load_more/{id}', 'Dict\MeaningController@loadMoreExamples');
         
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
 

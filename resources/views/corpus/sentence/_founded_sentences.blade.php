@@ -5,14 +5,13 @@
 ?>
 @include('corpus.sentence._text_link')
 <ul> 
-    @foreach ($sentences as $sentence)
-    <li>
+    @foreach ($sentences as $sentence)        
+    <div style='padding: 10px 0'>
         @include('corpus.sentence.view',[
-            'sentence_obj' => $sentence,
-            'sentence_xml' => $sentence->text_xml, 
             'marked_words' => $words, 
-            'count' => $sentence->id,
-            'for_view' => true])
-    </li>
+            'with_left_context' => true,
+            'with_right_context' => true,
+            'count' => $sentence->id])            
     @endforeach
+    </div>
 </ul>

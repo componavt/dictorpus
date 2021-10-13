@@ -42,11 +42,17 @@
     margin-top: 25px;
 }
 
-.show-more-examples,
-.hide-more-examples {
+.show-more-examples {
     display: block;
     cursor: pointer;
     text-align: right;
+    text-decoration: none;
+}
+
+.hide-more-examples {
+    display: block;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .more-examples {
@@ -171,6 +177,10 @@ h4 .fa {
 
 .help-lemma-pos h4 {
     margin-left: -20px;
+}
+
+.lemma-example-edit-right {
+    width: 200px;
 }
 
 @media screen and (min-width: 767px) {

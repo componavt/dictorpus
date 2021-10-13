@@ -44,11 +44,12 @@ function removeExample(i) {
     });    
 }    
 
-function reloadExamplesForId(id) {
+function reloadExamplesForId(id, locale) {
     $("#meaning-examples_"+ id).empty();
     $("#img-loading_"+ id).show();
     $.ajax({
-        url: '/dict/meaning/examples/reload/'+ id, 
+        url: '/' + locale + '/dict/meaning/examples/load/'+ id, 
+        data: {update_examples: 1},
         type: 'GET',
         success: function(result){
             $("#meaning-examples_"+ id).html(result);
@@ -71,11 +72,12 @@ function reloadExamples(i) {
 }   
 
 
-function loadExamples(route, id) {
+function loadExamples(route, id, start) {
 //alert(route+'/'+id);    
     $("#img-loading_"+ id).show();    
     $.ajax({
         url: route+'/'+id, 
+        data: {start: start},
         type: 'GET',
         success: function(result){
             $("#meaning-examples_"+ id).html(result);
@@ -93,18 +95,45 @@ function loadExamples(route, id) {
     }); 
 }
 
-function showExamples(i) {    
-    var meaning_n = $(i).attr('data-for');
-    var id='more-'+meaning_n;
+function showMoreExamples(i, start, locale) {    
+    var id = $(i).attr('data-for');
+    $("#img-loading-more_"+ id).show();
+    
     $(i).hide();
-    $('#'+id).show();
+    $.ajax({
+        url: '/' + locale + '/dict/meaning/examples/load_more/'+ id, 
+        data: {start: start},
+        type: 'GET',
+        success: function(result){
+            $("#more-"+ id).append(result);
+            $("#more-"+ id).show();
+            $("#img-loading-more_"+ id).hide();
+            $("#hide-more-"+ id).show();
+        },
+        error: function() {
+            $("#more-"+ id).append('ERROR');
+/*        error: function(jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: '+route+'/'+id;
+//alert(text);
+            $("#meaning-examples_"+ id).html(text);*/
+            $("#img-loading-more_"+ id).hide();
+        }
+    }); 
 }
 
-function hideExamples(meaning_n) {    
-    var text='more-'+meaning_n;
-    var link='show-more-'+meaning_n;
-    $('#'+text).hide();
-    $('#'+link).show();
+function hideExamples(meaning_id) {    
+    $('#more-'+meaning_id).hide();
+    $('#hide-more-'+meaning_id).hide();
+    
+    $('#show-more-'+meaning_id).show();
+}
+
+function showExamples(meaning_id) {    
+    $('#more-'+meaning_id).show();
+    $('#hide-more-'+meaning_id).show();
+    
+    $('#show-more-'+meaning_id).hide();
 }
 
 /*

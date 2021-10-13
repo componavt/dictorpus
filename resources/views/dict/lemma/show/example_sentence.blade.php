@@ -21,6 +21,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
 
 @include('corpus.sentence.view', ['sentence_xml' => $sentence['s'], 
                                   'text'=>$sentence['text'], 
+                                  'sentence' => $sentence['sent_obj'],
                                   'marked_words'=>[$sentence['w_id']]])
 
 @if ($sentence['trans_s']) 

@@ -100,7 +100,7 @@ class Meaning extends Model
      *                           false - for view, output all positive examples (relevance>0)
      * @return array
      */
-    public function sentences($for_edit=false, $limit=''){
+    public function sentences($for_edit=false, $limit='', $start=0){
         $sentences = [];
         $sentence_builder = DB::table('meaning_text')
                               ->where('meaning_id',$this->id)
@@ -113,6 +113,9 @@ class Meaning extends Model
         }
         
         if ($limit) {
+            if ($start) {
+                $sentence_builder = $sentence_builder->skip($start);
+            }
             $sentence_builder = $sentence_builder->take($limit);
         }
 //print "<p>". $sentence_builder->count()."</p>";       
@@ -520,7 +523,7 @@ dd($relevance);
      *
      * @return NULL
      */
-     public function updateTextLinks($words) {
+    public function updateTextLinks($words) {
         $old_relevances = $this->getRelevances();
         $this->texts()->detach();
         
@@ -529,6 +532,22 @@ dd($relevance);
                     $this->checkRelevance($word->text_id, $word->w_id, $old_relevances[$word->text_id][$word->w_id] ?? 1));
         }
     }
+    
+    public function reloadExamples() {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '1024M');
+
+        $words = $this->lemma->getWordsForMeanings();
+        if ($words) {
+            if (!$this->texts()->count()) {
+                $this->addTextLinks($words);
+            } else {
+                $this->updateTextLinks($words);
+            }
+        } else {
+            $this->texts()->detach();
+        }
+    }        
 
     /**
      * Saves relevances <> 1 into array 

@@ -117,9 +117,14 @@ class SentenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        //
+        $sentence = Sentence::findOrfail($id);
+        $with_left_context = (int)$request->input('with_left_context');
+        $with_right_context = (int)$request->input('with_right_context');
+        $for_view = true;
+        return view('corpus.sentence.show', 
+                compact('sentence', 'for_view', 'with_left_context', 'with_right_context'));
     }
 
     /**
@@ -155,7 +160,8 @@ class SentenceController extends Controller
                 return $error_message;
             }
         }
-        return view('corpus.sentence.show', compact('sentence', 'text'));
+        $with_edit = true;
+        return view('corpus.sentence.show', compact('text', 'sentence', 'with_edit'));
     }
 
     public function markup($id)
@@ -168,7 +174,9 @@ class SentenceController extends Controller
         if ($error_message) {
             return $error_message;
         }
-        return view('corpus.sentence.show', compact('sentence', 'text'));
+        $sentence_xml = $sentence->text_xml; 
+        $with_edit = true;
+        return view('corpus.sentence.show', compact('text', 'sentence', 'with_edit'));
     }
     
     /**

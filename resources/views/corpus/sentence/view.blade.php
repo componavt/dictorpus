@@ -1,23 +1,25 @@
+    @if (isset($with_left_context) && $with_left_context) 
 <?php
-if (isset($with_edit) && $with_edit) {
-    $sentence_xml = $text->setLemmaLink($sentence_xml, null, null, true, $marked_words); 
-} elseif (isset($for_view) && $for_view) {
-    $sentence_xml = $sentence_obj->addWordBlocks($marked_words); 
-} else {
-    list($sxe,$error_message) = \App\Models\Corpus\Text::toXML($sentence_xml,$count);
-    if (!$sxe) {
-        print $error_message;
-    } else {
-        foreach ($marked_words as $marked_word) {
-            $w = $sxe->xpath('//w[@id="'.$marked_word.'"]');
-            if (isset($w[0])) {
-                $w[0]->addAttribute('class','word-marked');
-                $sentence_xml = $sxe->asXML();
-            }
-        }
-    }
-}
-$sentence_xml = mb_ereg_replace('[¦^]', '', $sentence_xml);
+        $left_context = \App\Models\Corpus\Sentence::whereTextId($sentence->text_id)
+                                ->whereSId(($sentence->s_id) - 1)->first();
 ?>
-{!! $sentence_xml !!}
+        @if ($left_context)
+        <span id='context_{{$left_context->id}}'>
+            <i class="load-context fa fa-arrow-left" onClick="callContextSentence({{$left_context->id}}, 'left')" title="{{trans('search.add_left_context')}}"></i>
+        </span>
+        @endif
+    @endif
+    
+    {!! $sentence->addWordBlocks($marked_words ?? []); !!}
 
+    @if (isset($with_right_context) && $with_right_context) 
+<?php
+        $right_context = \App\Models\Corpus\Sentence::whereTextId($sentence->text_id)
+                                ->whereSId(($sentence->s_id) + 1)->first();
+?>
+        @if ($right_context)
+        <span id='context_{{$right_context->id}}'>
+            <i class="load-context fa fa-arrow-right" onClick="callContextSentence({{$right_context->id}}, 'right')" title="{{trans('search.add_right_context')}}"></i>
+        </span>
+        @endif
+    @endif

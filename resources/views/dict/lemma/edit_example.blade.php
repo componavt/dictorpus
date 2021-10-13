@@ -43,7 +43,7 @@
                         @endforeach
                     @endif
                 </td>
-                <td>
+                <td class="lemma-example-edit-right">
                     @include('widgets.form.formitem._select',
                             ['name' => 'relevance['.$meaning->id.'_'.$sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'].']',
                              'values' => trans('dict.relevance_scope'),

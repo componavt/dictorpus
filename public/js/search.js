@@ -75,3 +75,4 @@ function callChooseGram(el) {
     });
     $("#modalChooseGram").modal('show');    
 }
+

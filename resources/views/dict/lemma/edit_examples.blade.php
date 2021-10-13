@@ -42,7 +42,7 @@
                 <th>{{trans('corpus.sentences')}}</th>
                 
                 @foreach ($meanings as $meaning)
-                <td>
+                <td class="lemma-example-edit-right">
                     {{$meaning->meaning_n}} {{trans('dict.meaning')}}
                     @if (isset($meaning_texts[$meaning->id]))
                         @foreach ($meaning_texts[$meaning->id] as $lang_name => $meaning_text)
