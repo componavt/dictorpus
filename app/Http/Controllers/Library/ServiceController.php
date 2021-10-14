@@ -907,6 +907,7 @@ print 'done';
     
     public function checkAuthors() {
         $texts = Text::whereNotNull('source_id')
+                     ->whereCorpusId(3)
                      ->whereNotIn('id', function ($query) {
                          $query->select('text_id')->from('author_text');
                      })

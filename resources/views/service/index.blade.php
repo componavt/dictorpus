@@ -33,7 +33,7 @@
             <a href="service/check_wordforms_by_rules?search_lang={{$l_id}}">{{$l_name}}</a></li>
     @endforeach
     </ul>
-    <p><a href="service/check_author">Авторы текстов в источнике, а не в справочнике</a>.</p>
+    <p><a href="service/check_author">Авторы публицистических текстов в источнике, а не в справочнике</a>.</p>
     
     <h3>Исправить данные</h3>
     @if (User::checkAccess('dict.edit'))
