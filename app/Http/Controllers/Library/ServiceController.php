@@ -39,8 +39,8 @@ class ServiceController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:admin,/', ['except'=>['index', 'copyLemmas']]);
-        $this->middleware('auth:dict.edit,/', ['only'=>['index', 'copyLemmas']]);
+        $this->middleware('auth:admin,/', ['except'=>['index', 'copyLemmas', 'checkAuthors']]);
+        $this->middleware('auth:dict.edit,/', ['only'=>['index', 'copyLemmas', 'checkAuthors']]);
     }
     
     public function index() {
@@ -904,6 +904,19 @@ print 'done';
 //exit(0);            
         }
     }
+    
+    public function checkAuthors() {
+        $texts = Text::whereNotNull('source_id')
+                     ->whereNotIn('id', function ($query) {
+                         $query->select('text_id')->from('author_text');
+                     })
+                     ->whereIn('source_id', function ($q) {
+                         $q->select('id')->from('sources')
+                           ->where('author', '<>', '')
+                           ->orWhere('comment', '<>', '');
+                     })->orderBy('id', 'desc')->get();
+        return view('service.authors', compact('texts'));        
+    }    
     
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms

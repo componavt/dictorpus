@@ -223,6 +223,7 @@ Route::group(
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('service/wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
+        Route::get('service/check_author', 'Library\ServiceController@checkAuthors');
         Route::get('service/check_parallel_texts', 'Library\ServiceController@checkParallelTexts');
         Route::get('service/tmp_fill_sentence_id_in_text_wordform', 'Library\ServiceController@tmpFillSentenceIdInTextWordform');
         Route::get('service/tmp_fill_sentence_id_in_words', 'Library\ServiceController@tmpFillSentenceIdInWords');

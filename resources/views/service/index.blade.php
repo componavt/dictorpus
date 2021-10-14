@@ -23,7 +23,8 @@
     <p><a href="export/compounds_for_unimorph">Экспорт фразеологизмов в Unimorph</a></p>
     <p><a href="export/bible">Экспорт вепсской Библии</a></p>
     <p><a href="export/for_mobile">Экспорт данных для мобильной версии</a></p>
-    
+    @endif
+        
     <h3>Проверить</h3>
     <p>окончания у словоформ по флективным правилам</p>
     <ul>
@@ -32,7 +33,7 @@
             <a href="service/check_wordforms_by_rules?search_lang={{$l_id}}">{{$l_name}}</a></li>
     @endforeach
     </ul>
-    @endif
+    <p><a href="service/check_author">Авторы текстов в источнике, а не в справочнике</a>.</p>
     
     <h3>Исправить данные</h3>
     @if (User::checkAccess('dict.edit'))
