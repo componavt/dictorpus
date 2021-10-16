@@ -5,6 +5,7 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Library\Str;
 use App\Models\Corpus\AuthorName;
 
 class Author extends Model
@@ -93,4 +94,27 @@ class Author extends Model
         }
         return null;
     }
+    
+    public static function searchByName($builder, $search_name) {
+        if (!$search_name) {
+            return $builder;
+        }
+        return $builder ->where('name_en','like', $search_name)
+                        ->orWhere('name_ru','like', $search_name)
+                        ->orwhereIn('id', function ($q2) use ($search_name) {
+                            $q2->select('author_id')->from('author_names')
+                               ->where('name', 'like', $search_name);
+                    });
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'limit_num'       => (int)$request->input('limit_num'),
+                    'page'            => (int)$request->input('page'),
+                    'search_name'     => $request->input('search_name'),
+                ];
+              
+        return $url_args;
+    }
+    
 }

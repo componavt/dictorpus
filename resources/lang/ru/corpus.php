@@ -45,6 +45,7 @@ return [
     'gram_search' => 'Лексико-грамматический поиск',
     'has_link_with_lemma' => 'есть в словаре',
     
+    'in_native' => 'in native',
     'informant' => 'Информант',
     'informants' => 'Информант(ы)',
     'informant_list' => 'Список информантов',

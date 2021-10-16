@@ -10,12 +10,17 @@ use LaravelLocalization;
 use Redirect;
 use Response;
 
+use App\Library\Str;
+
 use App\Models\Dict\Lang;
 
 use App\Models\Corpus\Author;
 
 class AuthorController extends Controller
 {
+    public $url_args=[];
+    public $args_by_get='';
+    
      /**
      * Instantiate a new new controller instance.
      *
@@ -23,7 +28,12 @@ class AuthorController extends Controller
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:corpus.edit,/corpus/author/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:corpus.edit,/corpus/author/', ['only' => 
+            ['create','store','edit','update','destroy']]);
+        
+        $this->url_args = Author::urlArgs($request);  
+        
+        $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
     
     /**
@@ -33,24 +43,19 @@ class AuthorController extends Controller
      */
     public function index(Request $request)
     {
-        $search_name = $request->input('search_name');
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
         $locale = LaravelLocalization::getCurrentLocale();
         $authors = Author::orderBy('name_'.$locale);
-        
-        if ($search_name) {
-            $authors ->where('name_en','like', $search_name)
-                  ->orWhere('name_ru','like', $search_name)
-                  ->orwhereIn('id', function ($q2) use ($search_name) {
-                    $q2->select('author_id')->from('author_names')
-                      ->where('name', 'like', $search_name);
-                  });
-        }
+        $authors = Author::searchByName($authors, $url_args['search_name']);
 //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $authors->toSql()), $authors->getBindings()));            
+        
         $numAll = $authors->count();
-        $authors = $authors->get();
+        $authors = $authors->paginate($url_args['limit_num']);
         
         return view('corpus.author.index',
-                    compact('authors', 'search_name', 'numAll'));
+                    compact('authors', 'numAll', 'args_by_get', 'url_args'));
     }
 
     /**

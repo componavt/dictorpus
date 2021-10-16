@@ -100,7 +100,7 @@ input[type="radio"]:checked+span:before{
 }
 
 .search-button-b span {
-    margin: 5px 10px 0;
+    margin: 5px 5px 0;
 }
 
 .search-button-b span:first-of-type {
@@ -119,6 +119,10 @@ input[type="radio"]:checked+span:before{
 
 .search-linked-field label {
     display: block;
+}
+
+.btn {
+    padding: 6px 10px;
 }
 
 @media screen and (max-width: 320px) {    

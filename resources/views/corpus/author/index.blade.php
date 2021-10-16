@@ -1,4 +1,4 @@
-<?php $list_count = 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.page')
 
 @section('page_title')
@@ -23,12 +23,14 @@
         {!! Form::open(['url' => '/corpus/author/', 
                              'method' => 'get']) 
         !!}
-        <div class="form-flex">
+        <div class="row">
+            <div class="col-sm-8">
             @include('widgets.form.formitem._text', 
                 ['name' => 'search_name', 
-                'value' => $search_name,
-                'attributes'=>['placeholder' => trans('corpus.name')]])
-            <input class="btn btn-primary btn-default" type="submit" value="{{trans('messages.view')}}">       
+                'value' => $url_args['search_name'],
+                'attributes'=>['placeholder' => trans('messages.name')]])
+            </div>
+            @include('widgets.form._search_div', ['cols'=>4])
         </div>
         {!! Form::close() !!}
 
@@ -39,7 +41,9 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>{{ trans('messages.name') }}</th>
+                <th>{{ trans('messages.in_english') }}</th>
+                <th>{{ trans('messages.in_russian') }}</th>
+                <th>{{ trans('corpus.in_native') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th>{{ trans('messages.actions') }}</th>
@@ -50,9 +54,14 @@
             @foreach($authors as $author)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
-                <td data-th="{{ trans('messages.name') }}">
-                    {{$author->name}}
-                    {{$author->namesToString() ? '('.$author->namesToString().')' : ''}}
+                <td data-th="{{ trans('messages.in_english') }}">
+                    {{$author->name_en}}
+                </td>
+                <td data-th="{{ trans('messages.in_russian') }}">
+                    {{$author->name_ru}}
+                </td>
+                <td data-th="{{ trans('corpus.in_native') }}">
+                    {{$author->namesToString()}}
                 </td>
                 <td data-th="{{ trans('navigation.texts') }}" style="text-align: center">
                     @if($author->texts()->count())
@@ -78,6 +87,7 @@
             @endforeach
         </tbody>
         </table>
+        {!! $authors->appends($url_args)->render() !!}
         @endif
 @stop
 

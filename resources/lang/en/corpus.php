@@ -45,6 +45,7 @@ return [
     'gram_search' => 'Lexico-grammatical search',
     'has_link_with_lemma' => 'linked with lemma',
     
+    'in_native' => 'in native',
     'informant' => 'Informant',
     'informants' => 'Informant(s)',
     'informant_list' => 'Informant list',

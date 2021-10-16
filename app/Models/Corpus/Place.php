@@ -5,6 +5,8 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Corpus\District;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\PlaceName;
@@ -196,7 +198,7 @@ class Place extends Model
     }    
     
     public static function urlArgs($request) {
-        $url_args = [
+        $url_args = Str::urlArgs($request) + [
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
                     'search_district'  => (int)$request->input('search_district'),
@@ -205,20 +207,10 @@ class Place extends Model
                     'search_region'     => (int)$request->input('search_region'),
                 ];
         
-        if (!$url_args['page']) {
-            $url_args['page'] = 1;
-        }
-        
         if (!$url_args['search_id']) {
             $url_args['search_id'] = NULL;
         }
         
-        if ($url_args['limit_num']<=0) {
-            $url_args['limit_num'] = 10;
-        } elseif ($url_args['limit_num']>1000) {
-            $url_args['limit_num'] = 1000;
-        }   
-              
         return $url_args;
     }
     
