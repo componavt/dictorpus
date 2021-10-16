@@ -121,10 +121,11 @@ class AuthorController extends Controller
      */
     public function edit($id)
     {
+        $url_args = $this->url_args;
         $author = Author::find($id); 
         $project_langs=Lang::projectLangs(); 
         
-        return view('corpus.author.edit', compact('author', 'project_langs'));
+        return view('corpus.author.edit', compact('author', 'project_langs', 'url_args'));
     }
 
     /**
@@ -142,7 +143,7 @@ class AuthorController extends Controller
         $author->updateNames((array)$request->names);
         
 //        return Redirect::to('/corpus/author/?search_id='.$author->id)
-        return Redirect::to('/corpus/author/')
+        return Redirect::to('/corpus/author/'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
