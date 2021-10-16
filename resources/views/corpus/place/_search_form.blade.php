@@ -36,7 +36,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
-                'attributes'=>['size' => 5,
+                'attributes'=>['size' => 2,
                                'placeholder' => trans('messages.limit_num') ]]) 
         <span>
                 {{ trans('messages.records') }}

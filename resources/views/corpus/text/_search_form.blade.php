@@ -118,19 +118,7 @@
                 ])
                                
     </div>
-    <div class="col-md-4 search-button-b">       
-        <span>
-        {{trans('search.show_by')}}
-        </span>
-        @include('widgets.form.formitem._text', 
-                ['name' => 'limit_num', 
-                'value' => $url_args['limit_num'], 
-                'attributes'=>['placeholder' => trans('messages.limit_num') ]]) 
-        <span>
-                {{ trans('messages.records') }}
-        </span>
-        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
-    </div>
+    @include('widgets.form._search_div')
 </div>                 
 </div>
 <div class="hide-search-form">{{trans('search.simple_search')}} &#8593;</div>

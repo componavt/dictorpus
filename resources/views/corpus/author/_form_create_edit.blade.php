@@ -1,3 +1,4 @@
+@include('widgets.form._url_args_by_post',['url_args'=>$url_args])
 <input type="hidden" id="author_field" value="">
 <div class="row">
     <div class="col-sm-6">
