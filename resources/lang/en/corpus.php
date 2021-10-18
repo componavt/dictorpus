@@ -112,10 +112,10 @@ return [
     
     'title' => 'Title',
     
-    'trans_author' => 'Author of translation',
-    'transtext_lang' => 'language of translation',
-    'transtext_text' => 'text of translation',
-    'transtext_title' => 'title of translation',
+    'trans_author' => 'Author of translation/original work',
+    'transtext_lang' => 'language of translation/original work',
+    'transtext_text' => 'text of translation/original work',
+    'transtext_title' => 'title of translation/original work',
     
     'year_of_birth' => 'year of birth',
     'youtube_id' => 'YouTube Identifier',

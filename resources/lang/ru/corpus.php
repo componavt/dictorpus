@@ -112,10 +112,10 @@ return [
     
     'title' => 'Заголовок',
     
-    'trans_author' => 'Автор перевода',
-    'transtext_lang' => 'язык перевода',
-    'transtext_text' => 'текст перевода',
-    'transtext_title' => 'заголовок перевода',
+    'trans_author' => 'Автор перевода/оригинала',
+    'transtext_lang' => 'язык перевода/оригинала',
+    'transtext_text' => 'текст перевода/оригинала',
+    'transtext_title' => 'заголовок перевода/оригинала',
     
     'year_of_birth' => 'год рождения',
     'youtube_id' => 'Код видео на YouTube',
