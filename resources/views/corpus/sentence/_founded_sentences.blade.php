@@ -6,12 +6,12 @@
 @include('corpus.sentence._text_link')
 <ul> 
     @foreach ($sentences as $sentence)        
-    <div style='padding: 10px 0'>
+    <div style='padding: 5px 0'>
         @include('corpus.sentence.view',[
             'marked_words' => $words, 
             'with_left_context' => true,
             'with_right_context' => true,
             'count' => $sentence->id])            
-    @endforeach
     </div>
+    @endforeach
 </ul>
