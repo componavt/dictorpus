@@ -247,7 +247,7 @@ function changeLemmaList(lang_id) {
 }
 
 function changeWordBlock(text_id, w_id) {
-//console.log('changeWordBlock:'+ text_id+', '+w_id);    
+//console.log('changeWordBlock = text_id:'+text_id + ', w_id:' + w_id)    
     $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked');
     $("w[id="+w_id+"].lemma_linked").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
     loadWordBlock(w_id, '/corpus/word/load_word_block/' + text_id + '_' + w_id);
@@ -268,6 +268,7 @@ function changeWordBlock(text_id, w_id) {
  * @returns {undefined}
  */
 function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects, prediction, interpretation) {
+//console.log('saveWordform = text_id:'+text_id + ', w_id:' + w_id)    
     $("#save-wordform").attr("disabled", true);    
     var route = '/dict/lemma_wordform/store';
     var test_url = '?text_id='+text_id+'&lemma_id='+lemma_id+'&meaning_id='+meaning_id+'&gramset_id='+gramset_id+'&wordform='+ wordform +'&w_id='+w_id+'&dialects[]='+dialects+'&prediction='+prediction+'&interpretation='+interpretation;
@@ -309,13 +310,13 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
  * @returns NULL
  */    
 function addWordform(text_id, lang_id) {
-//console.log('loading');    
     changeLemmaList(lang_id);
     $("body").on("click", ".call-add-wordform", function() {
         if (!$(this).hasClass('call-add-wordform')) {
             return;
         }
         var w_id = $(this).attr('id');
+        $('#addWordformSentence').attr('w_id', w_id);
         var wordform = $(this).html();        
 //console.log('addWordform. w_id: '+w_id);    
 
@@ -342,7 +343,7 @@ function addWordform(text_id, lang_id) {
         var lemma_id = $( "#choose-lemma option:selected" ).val();
         var meaning_id = $( "#choose-meaning option:selected" ).val();
         var gramset_id = $( "#choose-gramset option:selected" ).val();
-        var w_id = $("#addWordformSentence .word-marked").attr('id');
+        var w_id = $('#addWordformSentence').attr('w_id');
         var dialects_obj = $("input[name=choose-dialect]:checked");
         var dialects = [];
         var dialect;
@@ -356,6 +357,7 @@ function addWordform(text_id, lang_id) {
             alert('Вы забыли указать значение для предсказанной леммы!');
             $( "#interpretation" ).focus();
         } else {
+console.log('addWordform = text_id:'+text_id + ', w_id:' + w_id)    
             saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects, prediction, interpretation);
         }
     });
