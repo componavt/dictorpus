@@ -22,6 +22,7 @@ class Word extends Model
     protected $fillable = ['text_id', 'sentence_id', 's_id', 'w_id', 'word', 'word_number'];
     
     // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Sentence;
     use \App\Traits\Relations\BelongsTo\Text;
     
     // Word __has_many__ Meanings

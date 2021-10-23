@@ -1254,28 +1254,16 @@ class Text extends Model
     public function sentencesFromText($word=''){
         $sentences = [];
         
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
-        if ($error_message) {
-            return $sentences;
-        }
-
-        $sentence_builder = Word::select('s_id','w_id')
-                              ->where('text_id',$this->id)
+        $word_builder = Word::where('text_id',$this->id)
                               ->orderBy('s_id');
         if ($word) {
 //            $sentence_builder = $sentence_builder->where('word','like',Grammatic::toSearchForm($word));
-            $sentence_builder = $sentence_builder->where('word','like',Grammatic::changeLetters($word, $this->lang_id));
+            $word_builder = $word_builder->where('word','like',Grammatic::changeLetters($word, $this->lang_id));
         }                                
-//dd($sentence_builder->get());        
-        foreach ($sentence_builder->get() as $sentence) {
-            $sentences[$sentence->s_id]['w_id'][]=$sentence->w_id;
-        }
-        
-        foreach ($sentences as $s_id => $sentence) {
-            $s = $sxe->xpath('//s[@id="'.$s_id.'"]');
-            if (isset($s[0])) {
-                $sentences[$s_id]['s']= $s[0]->asXML();
-            }
+//dd($word_builder->first()->sentence);        
+        foreach ($word_builder->get() as $word) {
+            $sentences[$word->s_id]['s']=$word->sentence->text_xml ?? '';
+            $sentences[$word->s_id]['w_id'][]=$word->w_id;
         }
         
         return $sentences;
