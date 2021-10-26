@@ -10,6 +10,7 @@ use App\Library\Str;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gram;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 
@@ -303,10 +304,11 @@ AND t1.word_number-t2.word_number<=|B|;
         }
         $search_by_lemma = isset($word['l']) && $word['l'];
         $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
-        $search_by_gramset = isset($word['g']) && sizeof($word['g']);
+        $search_by_grams = isset($word['g']) && sizeof($word['g']);
+        $search_by_gramset = isset($word['gs']) && $word['gs'];
 
-        if ($search_by_lemma || $search_by_pos || $search_by_gramset) {
-            $builder=$builder->whereIn('t'.$i.'.id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_gramset) {
+        if ($search_by_lemma || $search_by_pos || $search_by_grams || $search_by_gramset) {
+            $builder=$builder->whereIn('t'.$i.'.id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_grams, $search_by_gramset) {
                 $q->select('word_id')->from('text_wordform')
                   ->where('relevance', '>', 0);
                 if ($search_by_lemma || $search_by_pos) {
@@ -325,6 +327,9 @@ AND t1.word_number-t2.word_number<=|B|;
                     });
                 }
                 if ($search_by_gramset) {
+                    $q->whereGramsetId($word['gs']);
+                }
+                if ($search_by_grams) {
                     $q->whereIn('gramset_id',function($query2) use ($word){
                         $query2->select('id')->from('gramsets');
                         foreach ($word['g'] as $field => $group) {
@@ -355,16 +360,18 @@ AND t1.word_number-t2.word_number<=|B|;
         $out = [];
 //dd($words);        
         foreach ($words as $i=>$word) {
-            if ((!isset($word['w']) || !$word['w']) && (!isset($word['p']) || !$word['p']) && (!isset($word['g']) || !$word['g'])) {
+            if ((!isset($word['w']) || !$word['w']) && (!isset($word['p']) || !$word['p']) && (!isset($word['g']) || !$word['g']) && (!isset($word['gs']) || !$word['gs'])) {
                 break;
             }
 //            $out[$i]['w'] = Grammatic::toSearchForm($word['w']);
-            $out[$i]['w'] = $out[$i]['l'] = $out[$i]['p'] = $out[$i]['g'] = [];
+            $out[$i]['w'] = $out[$i]['l'] = $out[$i]['p'] = $out[$i]['g']  = $out[$i]['gs'] = [];
             
-            if (preg_match("/^\"(.+)\"$/", trim($word['w']), $regs)) {
-                $out[$i]['w'] = Grammatic::toSearchByPattern($regs[1]);
-            } else {
-                $out[$i]['l'] = Grammatic::toSearchByPattern($word['w']);                
+            if (isset($word['w']) && $word['w']) {
+                if (preg_match("/^\"(.+)\"$/", trim($word['w']), $regs)) {
+                    $out[$i]['w'] = Grammatic::toSearchByPattern($regs[1]);
+                } else {
+                    $out[$i]['l'] = Grammatic::toSearchByPattern($word['w']);                
+                }
             }
             
             foreach (preg_split('/\|/', $word['p']) as $p_code) {
@@ -374,13 +381,17 @@ AND t1.word_number-t2.word_number<=|B|;
                 }
             }
 
-            if ($word['g']) {
+            if (isset($word['g']) && $word['g']) {
                 foreach (preg_split('/,/', $word['g']) as $orGroup) {
                     foreach (preg_split('/\|/', $orGroup) as $g_code) {
                         $gram = Gram::getByCode(trim($g_code));
                         $out[$i]['g']['gram_id_'.$gram->gramCategory->name_en][] = $gram->id; 
                     }
                 }
+            }
+
+            if (isset($word['gs']) && $word['gs']) {
+                $out[$i]['gs'] = (int)$word['gs'];
             }
             if ($i>1) {
                 $out[$i]['d_f'] = $word['d_f'] ?? 1; 
@@ -464,7 +475,7 @@ AND t1.word_number-t2.word_number<=|B|;
             }
             
             $tmp=[];
-            if ($word['w']) {
+            if (isset($word['w']) && $word['w']) {
                 $tmp[] = '<i>'.$word['w'].'</i>';
             }
             if ($word['p']) {
@@ -472,7 +483,7 @@ AND t1.word_number-t2.word_number<=|B|;
                             array_map(function ($code) {return PartOfSpeech::getNameByCode(trim($code)); },
                                     preg_split('/\|/',$word['p']))).')';
             }
-            if ($word['g']) {
+            if (isset($word['g']) && $word['g']) {
                 $groups = [];
                 foreach (preg_split('/\,/',$word['g']) as $gr) {
                     $groups[] = '('.join(' <span class="warning">'.trans('search.or').'</span> ',
@@ -481,6 +492,9 @@ AND t1.word_number-t2.word_number<=|B|;
                     
                 }
                 $tmp[] = '('.join(' <span class="warning">'.trans('search.and').'</span> ', $groups).')';
+            }
+            if (isset($word['gs']) && $word['gs']) {
+                $tmp[] = Gramset::getStringByID($word['gs']);
             }
             
             $out[] = '<br>'.(isset($word['d_f']) && isset($word['d_t']) 

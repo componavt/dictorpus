@@ -5,6 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
 
+use App\Models\Corpus\Sentence;
+use App\Models\Corpus\Text;
+
 //use App\Library\Grammatic;
 use App\Models\Dict\PartOfSpeech;
 
@@ -376,6 +379,30 @@ class Gramset extends Model
         return $gramsets->where('gramset_category_id',$category);
     }
     
+    public function countTexts($lang_id=null, $pos_id=null){
+        $search_words[1]['p'] = $pos_id ? [$pos_id] : [];
+        $search_words[1]['gs'] = $this->id;
+        $texts = Text::whereIn('id',array_unique(Sentence::searchWords($search_words)
+                   ->pluck('t1.text_id')));
+        if ($lang_id) {
+            $texts = $texts->whereLangId($lang_id);
+        }
+        return $texts->count();
+    }
+
+    public function countWords($lang_id=null, $pos_id=null){
+        $search_words[1]['p'] = $pos_id ? [$pos_id] : [];
+        $search_words[1]['gs'] = $this->id;
+        $words = Sentence::searchWords($search_words)
+                ->when($lang_id, function ($q) use ($lang_id) {
+                    return $q->whereIn('text_id', function ($q2) use ($lang_id) {
+                                $q2->select('id')->from('texts')
+                                   ->whereLangId($lang_id);
+                    });
+                });
+        return $words->count();
+    }
+
     /**
      * checks gramset data and 
      * remove empty columns for the index page

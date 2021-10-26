@@ -98,6 +98,14 @@ class PartOfSpeech extends Model
         }
     }
         
+    public static function getCodeByID($id)
+    {
+        $pos = self::find($id);
+        if ($pos && isset($pos->code)) {
+            return $pos->code;
+        }
+    }
+        
     public static function getNameById($id)
     {
         $pos = self::find($id);

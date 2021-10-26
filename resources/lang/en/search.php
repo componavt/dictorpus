@@ -24,6 +24,7 @@ return [
     'founded_count' => '{0} There are no records.|{1} :count record was founded.|[2,Inf] :count records were founded.',
     'for_text_fields' => 'For inexact search in the text fields use a <span class="warning">percent %</span> to replace any number of characters, a <span class="warning"> underscore _</span>  to replace one character.',
     'founded_entries' => '{0}|{1}, :count entry|[2,Inf], :count entries',
+    'founded_sentences' => '{0}|{1}, :count sentence|[2,Inf], :count sentences',
     'founded_texts' => '{0} There are no texts|{1} :count text was founded|[2,Inf] :count texts were founded',
     'in_distance' => 'in the distance from :from to :to',
     'or' => 'OR',

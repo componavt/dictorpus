@@ -1,3 +1,5 @@
+<?php $search_pos_code = \App\Models\Dict\PartOfSpeech::getCodeById($url_args['search_pos']); ?>
+
 @extends('layouts.page')
 
 @section('page_title')
@@ -34,6 +36,7 @@
                                 
                 <th>{{ trans('dict.lemmas') }}</th>
                 <th>{{ trans('dict.wordforms') }}</th>
+                <th>{{ trans('corpus.texts') }} / {{ trans('corpus.words') }}</th>
                 @if (User::checkAccess('ref.edit'))
                 <th>{{ trans('dict.gramset_category') }}</th>
                 <th>{{ trans('messages.actions') }}</th>
@@ -56,7 +59,7 @@
                   <?php $count=sizeof($gramset->lemmas($url_args['search_pos'],$url_args['search_lang'])->groupBy('lemma_id')->get()); ?>
                   @if ($count)
                     <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/by_wordforms') }}{{$args_by_get_for_out}}&search_gramsets[1]={{$gramset->id}}">
-                        {{ $count }}
+                        {{ number_format($count, 0, ',', ' ') }}
                     </a>
                   @else
                     {{ $count }}
@@ -65,8 +68,19 @@
 
                 <td data-th="{{ trans('dict.wordforms') }}">
                     <a href="{{ LaravelLocalization::localizeURL('/dict/wordform/') }}{{$args_by_get_for_out}}&search_gramset={{$gramset->id}}">
-                        {{ $gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count() }}
+                        {{ number_format($gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count(), 0, ',', ' ') }}
                     </a>
+                </td>
+
+                <td data-th="{{ trans('corpus.texts') }} / {{ trans('corpus.words') }}">
+                  <?php $count_text = $gramset->countTexts($url_args['search_lang'], $url_args['search_pos']); ?>
+                  @if ($count_text)
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/sentence/results') }}?search_lang[]={{$url_args['search_lang']}}&search_words[1][p]={{$search_pos_code}}&search_words[1][gs]={{$gramset->id}}">
+                        {{ number_format($count_text, 0, ',', ' ') }}</a>
+                        / {{ number_format($gramset->countWords($url_args['search_lang'], $url_args['search_pos']), 0, ',', ' ') }}
+                  @else
+                    0
+                  @endif
                 </td>
                 
                 @if (User::checkAccess('ref.edit'))

@@ -109,6 +109,7 @@ return [
     'text_not_found' => 'The text with ID=:id do not found',
     'text_removed' => 'Text ":name" is removed successfully.',
     'text_xml' => 'markup text',
+    'texts' => 'texts',
     
     'title' => 'Title',
     
@@ -120,6 +121,7 @@ return [
     'year_of_birth' => 'year of birth',
     'youtube_id' => 'YouTube Identifier',
     'word' => 'Word',
+    'words' => 'words',
     'unlock' => 'unlock',
     'wait_while_search' => 'Please wait while searching for possible options ...',
 ];
