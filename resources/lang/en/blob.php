@@ -77,6 +77,9 @@ return [
     'permission' => '',
     'publications_about' => '<p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
                     Natalie Pellinen. Oma mua №01 (1541), 2021</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2021-10-20_12.pdf">Kielten mallit säilyvät korpuksessa</a><br>
+                    Marine Tolstyh. Karjalan Sanomat, №40 (16506), 2021</p>
                     ',
     'sources' => '<p><a href="http://resources.krc.karelia.ru/krc/doc/publ2008/onomasiolog_slovar.pdf">Comparative onomasiological dictionary of the Karelian, Veps, and Saami languages</a>. Ju. S. Eliseev, N. G. Zaiceva (eds). 2007. Petrozavodsk: Karelian Research Centre of the Russian Academy of Sciences. Institute of History, Linguistics and Literature. (In Russian)</p>',
     'welcome_text' =>  '<p>Welcome to VepKar — the Open corpus of Veps and Karelian languages 

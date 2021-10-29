@@ -149,7 +149,10 @@ return [
                     Вконтакте, 8 июня 2020 г.</p>
                     
                     <p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
-                    Natalie Pellinen. Oma mua №01 (1541), 2021</p>
+                    Natalie Pellinen. Oma mua, №01 (1541), 2021</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2021-10-20_12.pdf">Kielten mallit säilyvät korpuksessa</a><br>
+                    Marine Tolstyh. Karjalan Sanomat, №40 (16506), 2021</p>
                     ',
     'mobile-b' => 'Вы можете установить на свой телефон или планшет <a href="https://play.google.com/store/apps/details?id=vepkar.test">'
                  .'словарь вепсского и карельского языков Sanahelmi</a>, построенный на основе данных ВепКар, 
