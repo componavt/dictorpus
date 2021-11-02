@@ -242,18 +242,19 @@ class Lang extends Model
         return $ids;       
     }
     
-    public static function countMarked() {
+    public static function countWords() {
         $out = [];
         foreach (self::projectLangs() as $lang) {
             $total = Word::countByLang($lang->id);
             $marked = Word::countMarked($lang->id);
+            $marked_proc = $total ? 100*$marked/$total : 0;
             $checked = Text::countCheckedWords($lang->id);
-            $proc = $total ? 100*$marked/$total : 0;
+            $checked_proc = $total ? 100*$checked/$marked : 0;
             $out['total'][$lang->name] = number_format($total, 0,',', ' ');
             $out['marked'][$lang->name] = number_format($marked, 0,',', ' ');
+            $out['marked%'][$lang->name] = number_format($marked_proc, 1, ',', ' ');
             $out['checked'][$lang->name] = number_format($checked, 0,',', ' ');
-            $out['ratio'][$lang->name] = number_format($proc, 1, ',', ' ');
-//            $out[$lang->id] = [0=>$lang->name, 1=>number_format($proc, 0, ',', ' ')];
+            $out['checked%'][$lang->name] = number_format($checked_proc, 1, ',', ' ');
         }
         return $out;
     }

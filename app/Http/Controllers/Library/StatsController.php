@@ -111,7 +111,7 @@ class StatsController extends Controller
         $total_words = Word::count(); 
         $total_marked_words = Word::countMarked();
         $marked_words_to_all = 100*$total_marked_words/$total_words;
-        $lang_marked = Lang::countMarked();
+        $lang_marked = Lang::countWords();
         
         $total_checked_examples = Text::countCheckedExamples();
         $total_checked_words = Text::countCheckedWords(); 

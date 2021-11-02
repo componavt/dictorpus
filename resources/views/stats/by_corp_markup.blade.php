@@ -32,7 +32,7 @@
         <tr>
             <td>{{trans('stats.marked_words_to_all')}}</td><td>{{$marked_words_to_all}} %</td>
         </tr>
-        @foreach($lang_marked['ratio'] as $lang_name => $lang_num) 
+        @foreach($lang_marked['marked%'] as $lang_name => $lang_num) 
         <tr>
             <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}} %</td>
         </tr>
@@ -49,6 +49,11 @@
         <tr>
             <td>{{trans('stats.checked_words_to_marked')}}</td><td>{{$checked_words_to_marked}} %</td>
         </tr>
+        @foreach($lang_marked['checked%'] as $lang_name => $lang_num) 
+        <tr>
+            <td style="text-align: right">{{$lang_name}}</td><td>{{$lang_num}} %</td>
+        </tr>
+        @endforeach
 
         <tr>
             <th colspan='2'>{{trans('stats.stats_by_examples')}}</th>
