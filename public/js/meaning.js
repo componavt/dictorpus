@@ -72,12 +72,13 @@ function reloadExamples(i) {
 }   
 
 
-function loadExamples(route, id, start) {
+function loadExamples(route, id, start, update_examples) {
 //alert(route+'/'+id);    
     $("#img-loading_"+ id).show();    
     $.ajax({
         url: route+'/'+id, 
-        data: {start: start},
+        data: {start: start,
+               update_examples: update_examples},
         type: 'GET',
         success: function(result){
             $("#meaning-examples_"+ id).html(result);

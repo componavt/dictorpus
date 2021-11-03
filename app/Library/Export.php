@@ -86,14 +86,16 @@ class Export
                 'lemma'=>$lemma->lemma,
                 'lang_id'=>$lemma->lang_id,
                 'pos_id'=>$lemma->pos_id,
-                'meaning_ru'=>$meaning];
+                'meaning_ru'=>$meaning,
+                'stem',
+                'affix'];
         }
         return $data;
     }
     
     public static function wordformsForMobile(string $filename) {
-        $start=23626;
-        $count=1190536;
+        $start=1;
+        $count=1;
         $filename .= '_from_'.$start; 
         Storage::disk('public')->put($filename, '');
         

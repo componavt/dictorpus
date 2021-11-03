@@ -132,7 +132,6 @@
         @endif
             
         @include('dict.lemma._modal_delete')
-<?php $route_for_load = '/dict/meaning/examples/'. ($update_text_links ? 'reload' : 'load'); ?>
 @stop
 
 @section('footScriptExtra')
@@ -146,17 +145,13 @@
 @section('jqueryFunc')
     loadWordforms({{$lemma->id}});
     @foreach ($lemma->meanings as $meaning)
-        loadExamples('{{LaravelLocalization::localizeURL($route_for_load)}}', {{$meaning->id}}, 0);
+        loadExamples('{{LaravelLocalization::localizeURL('/dict/meaning/examples/load')}}', {{$meaning->id}}, 0, {{$update_text_links}});
     @endforeach
     
     chooseDialectForGenerate({{$lemma->id}});
     recDelete('{{ trans('messages.confirm_delete') }}');
     showLemmaLinked();    
     
-/*    toggleExamples();
-    addExample('{{LaravelLocalization::localizeURL('/dict/meaning/example/add')}}'); 
-    removeExample('{{LaravelLocalization::localizeURL('/dict/lemma/remove/example')}}');
-    reloadExamples('{{LaravelLocalization::localizeURL('/dict/meaning/examples/reload')}}'); */
 {{-- show/hide a block with lemmas --}}
     showWordBlock('{{LaravelLocalization::getCurrentLocale()}}'); 
 @stop
