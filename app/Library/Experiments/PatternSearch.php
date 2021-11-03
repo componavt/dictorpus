@@ -66,6 +66,6 @@ class PatternSearch
         return DB::table('pattern_search')
                       ->whereDialectId($dialect_id)
                       ->where('ending', 'like', $ending)
-                      ->orderBy('count', 'DESC')->get();
+                      ->latest('count')->get();
     }
 }

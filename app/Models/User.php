@@ -281,10 +281,9 @@ class User extends EloquentUser
      public static function countActiveEditors(){
         $now = date_create();
         $date = date_format(date_modify($now,'-30 day'), 'Y-m-d');
-//dd(DB::table('revisions')->select('user_id')
-//                 ->where('created_at','>',$date)->distinct()->toSQL());        
-        $users = DB::table('revisions')->select('user_id')
-                 ->where('created_at','>',$date)->groupBy('user_id')->get();
+        $users = DB::table('revisions')
+                   ->where('created_at','>',$date)
+                   ->groupBy('user_id')->get(['user_id']);
 //dd($users);        
         return sizeof($users);
     }

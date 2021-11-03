@@ -29,7 +29,7 @@ class PartOfSpeechController extends Controller
      */
     public function index()
     {   
-        $categories = PartOfSpeech::select('category')->groupBy('category')->orderBy('category')->get();
+        $categories = PartOfSpeech::groupBy('category')->orderBy('category')->get(['category']);
         
         $pos_by_categories = [];
         

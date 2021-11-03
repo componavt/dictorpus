@@ -118,13 +118,12 @@ print "<br><b>max:</b> ".$max;
         while ($i<mb_strlen($word) && !$match_wordforms) {
             $ending = mb_substr($word,$i);
             $match_wordforms = DB::table('search_'.$property)
-                     ->select($property_id, DB::raw('count(*) as count'))
                      ->whereLangId($lang_id)
                      ->where('wordform', 'not like', $word)
                      ->where('wordform', 'like', '%'.$ending)
                      ->groupBy($property_id)
-                     ->orderBy(DB::raw('count(*)'), 'DESC')
-                     ->get();
+                     ->latest(DB::raw('count(*)'))
+                     ->get([$property_id, DB::raw('count(*) as count')]);
             $i++;
         }
         if (!$match_wordforms) {
@@ -153,13 +152,12 @@ print "<p><b>".$wordform->wordform."</b>";
         while ($i<mb_strlen($word)) {
             $ending = mb_substr($word,$i);
             $match_wordforms = DB::table('search_'.$property)
-                     ->select($property_id, DB::raw('count(*) as count'))
                      ->whereLangId($lang_id)
                      ->where('wordform', 'not like', $word)
                      ->where('wordform', 'like', '%'.$ending)
                      ->groupBy($property_id)
-                     ->orderBy(DB::raw('count(*)'), 'DESC')
-                     ->get();
+                     ->latest(DB::raw('count(*)'))
+                     ->get([$property_id, DB::raw('count(*) as count')]);
             foreach ($match_wordforms as $m_wordform) {
                 $count = self::getEvalCount($m_wordform->count, $ending);
                 $list[$m_wordform->{$property_id}] =  !isset($list[$m_wordform->{$property_id}]) 
@@ -207,13 +205,12 @@ print "<p><b>".$wordform->wordform."</b>";
             return [];
         }
         $match_wordforms = DB::table($table_name)
-                ->select($field, DB::raw('count(*) as count'))
                 ->whereLangId($lang_id)
                 ->where('wordform', 'not like', $word)
                 ->where('wordform', 'like', '%'.$ending)
                 ->groupBy($field)
-                ->orderBy(DB::raw('count(*)'), 'DESC')
-                ->get();
+                ->latest(DB::raw('count(*)'))
+                ->get([$field, DB::raw('count(*) as count')]);
         $list = [];
         foreach ($match_wordforms as $m_wordform) {
             $list[$m_wordform->{$field}] = $m_wordform->count;
@@ -303,7 +300,7 @@ print "<br><b>max:</b> ".$max;
                      ->where('wordform', 'not like', $word)
                      ->select('gramset_id', DB::raw('count(*) as count'))
                      ->groupBy('gramset_id')
-                     ->orderBy(DB::raw('count(*)'), 'DESC');
+                     ->latest(DB::raw('count(*)'));
                      //->get();
             $i++;
         }
@@ -365,7 +362,7 @@ print "<br><b>max:</b> ".$max;
                  ->where('wordform', 'not like', $wordform->wordform)
                  ->select('gramset_id', DB::raw('count(*) as count'))
                  ->groupBy('gramset_id')
-                 ->orderBy(DB::raw('count(*)'), 'DESC');
+                 ->latest(DB::raw('count(*)'));
                  //->get();
         if ($match_wordforms->count()==0) {
             return [];
@@ -395,10 +392,9 @@ print "<br><b>max:</b> ".$max;
                      ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                      ->where('wordform', 'not like', '% %') // without analytic forms
                      ->where('wordform', 'not like', $word)
-                     ->select('gramset_id', DB::raw('count(*) as count'))
                      ->groupBy('gramset_id')
-                     ->orderBy(DB::raw('count(*)'), 'DESC')
-                     ->get();
+                     ->latest(DB::raw('count(*)'))
+                     ->get(['gramset_id', DB::raw('count(*) as count')]);
             foreach ($match_wordforms as $m_wordform) {
                 $count = self::getEvalCount($m_wordform->count, $affix);
                 $list[$m_wordform->gramset_id] = !isset($list[$m_wordform->gramset_id])  
@@ -430,10 +426,9 @@ print "<br><b>max:</b> ".$max;
                      ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                      ->where('wordform', 'not like', '% %') // without analytic forms
                      ->where('wordform', 'not like', $word)
-                     ->select('gramset_id', DB::raw('count(*) as count'))
                      ->groupBy('gramset_id')
-                     ->orderBy(DB::raw('count(*)'), 'DESC')
-                     ->get();
+                     ->latest(DB::raw('count(*)'))
+                     ->get(['gramset_id', DB::raw('count(*) as count')]);
             foreach ($match_wordforms as $m_wordform) {
                 $count = self::getEvalCount($m_wordform->count, $affix);
 //print "<br><span style='color:red'>".$affix."</span>: $count<br>";                
@@ -526,13 +521,12 @@ print "<br><b>max:</b> ".$max;
                        ->whereNotNull($field)->count();
         $default_evals = ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '1'];
 /*        $pos_coll = DB::table($table_name)
-                ->select('pos_id', DB::raw('count(*)'))
                 ->whereLangId($lang_id)
                 ->whereNotNull('ending')
                 ->groupBy('pos_id')
-                ->orderBy(DB::raw('count(*)'), 'DESC')
+                ->latest(DB::raw('count(*)'))
                 //->take($limit)
-                ->get();*/
+                ->get(['pos_id', DB::raw('count(*)')]);*/
         $pos_coll = [11, 5, 1, 10, 6, 2];
         
         $chart = new ExperimentValuation;
@@ -578,7 +572,6 @@ print "<br><b>max:</b> ".$max;
 */    
     public static function calculateEvalLists($lang_id, $table_name, $field, $default_evals=[], $attr_name=NULL, $attr_id=NULL) {
         $coll = DB::table($table_name)
-                ->select(DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count"))
                 ->whereLangId($lang_id)
                 ->whereNotNull($field);
         if ($attr_name && $attr_id) { 
@@ -586,7 +579,7 @@ print "<br><b>max:</b> ".$max;
         }
         $coll = $coll->groupBy('eval')
                 ->orderBy('eval')
-                ->get();
+                ->get([DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count")]);
         
         $list = $list_proc = [];
         foreach($default_evals as $v) {
@@ -605,12 +598,11 @@ print "<br><b>max:</b> ".$max;
 /*    
     public static function calculateEvalLists($lang_id, $table_name, $field) {
         $coll = DB::table($table_name)
-                ->select(DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count"))
                 ->whereLangId($lang_id)
                 ->whereNotNull($field)
                 ->groupBy('eval')
                 ->orderBy('eval')
-                ->get();
+                ->get([DB::raw("ROUND(".$field.",1) as eval"), DB::raw("count(*) as count")]);
         
         $list = [];
         $list_proc = ['0'=>0, '0.1-0.5'=>0, '1'=>0];
@@ -700,24 +692,22 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
      */
     public static function lenEndDistribution($lang_id, $table_name, $field, $names, $limit) {
         $name_coll = DB::table($table_name)
-                ->select($field, DB::raw('count(*) as count'))
                 ->whereLangId($lang_id)
                 ->whereNotNull('ending')
                 ->groupBy($field)
-                ->orderBy('count', 'DESC')
+                ->latest('count')
                 ->take($limit)
-                ->get();
+                ->get([$field, DB::raw('count(*) as count')]);
         $list = $ids = [];
         foreach ($name_coll as $name) {
             $ids[] = $name->{$field};
             $len_coll = DB::table($table_name)
-                    ->select(DB::raw('length(ending) as len'), DB::raw('count(*) as count'))
                     ->whereLangId($lang_id)
                     ->whereNotNull('ending')
                     ->where($field, $name->{$field})
                     ->groupBy('len')
                     ->orderBy('len')
-                    ->get();
+                    ->get([DB::raw('length(ending) as len'), DB::raw('count(*) as count')]);
             foreach ($len_coll as $l) {                
                 $list[isset($names[$name->{$field}]) ? $names[$name->{$field}] : NULL][$l->len] = $l->count;
             }
@@ -768,18 +758,16 @@ print "<br><b>$property:</b> $first_key, <b>valuation:</b> $valuation";
     public static function createShiftErrors($lang_id, $table_name, $field, $all=false) {
         $shift_list = [];
         $name_coll = self::selectErrors($lang_id, $table_name, $all)
-                   ->select($field)
                    ->groupBy($field)
-                   ->orderBy(DB::raw('count(*)'), 'DESC')
-                   ->get();
+                   ->latest(DB::raw('count(*)'))
+                   ->get([$field]);
 //dd($name_coll);    
         foreach ($name_coll as $p) {
             $w_coll = self::selectErrors($lang_id, $table_name, $all)
-                    ->select('win_end', DB::raw('count(*) as count'))
                     ->where($field, $p->{$field})
                     ->groupBy('win_end')
-                    ->orderBy('count', 'DESC')
-                    ->get();
+                    ->latest('count')
+                    ->get(['win_end', DB::raw('count(*) as count')]);
             foreach ($w_coll as $w) {  
                 $out = $p->{$field} ? $p->{$field} : 'NULL';
                 $in = $w->win_end ? $w->win_end : 'NULL';

@@ -247,22 +247,21 @@ class Gramset extends Model
     {
         // select id from gramsets,gramset_pos where gramset_pos.gramset_id=gramsets.id and gramset_pos.pos_id=5 group by id order by sequence_number;
 
-        $gramsets = DB::table('gramsets')
-                      ->join('gramset_pos', 'gramsets.id', '=', 'gramset_pos.gramset_id')
-                      ->select('gramsets.id');
+        $gramsets = self::orderBy('sequence_number');
         if ($pos_id) {
-            $gramsets = $gramsets->where('gramset_pos.pos_id',$pos_id);
+            $gramsets->whereHas('parts_of_speech', function ($query) use ($pos_id) {
+                                    $query->whereId($pos_id);
+                                });
         }
         if ($lang_id) {
-            $gramsets = $gramsets->where('lang_id',$lang_id);
+            $gramsets->whereHas('lang', function ($query) use ($lang_id) {
+                                    $query->whereId($lang_id);
+                                });
         }
          
-        $gramsets = $gramsets->groupBy('gramsets.id')
-                             ->orderBy('sequence_number')
-                             ->get();
         
         $list = array();
-        foreach ($gramsets as $row) {
+        foreach ($gramsets->get() as $row) {
             $gramset = self::find($row->id);
             $list[$row->id] = $gramset->gramsetString();
             if ($with_number) {

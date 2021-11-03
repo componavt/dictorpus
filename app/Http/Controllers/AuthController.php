@@ -72,10 +72,10 @@ class AuthController extends Controller
             $remember = (bool) $request->remember;
             if (Sentinel::authenticate($request->all(), $remember))
             {
-                return Redirect::back();//intended('/');
+                return back();//intended('/');
             }
             $errors = \Lang::get('error.incorrect_login_pass');
-            return Redirect::back()
+            return back()
                 ->withInput()
                 ->withErrors($errors);
         }
@@ -104,7 +104,7 @@ class AuthController extends Controller
             $errors = \Lang::get('error.account_throttle', array('delay'=>$delay));
 //            "Ваш аккаунт блокирован на {$delay} секунд.";
         }
-        return Redirect::back()//->getTargetUrl()
+        return back()//->getTargetUrl()
             ->withInput()
             ->withErrors($errors);
     }
@@ -218,7 +218,7 @@ class AuthController extends Controller
 //dd($sentuser);
         if ( ! $sentuser)
         {
-            return Redirect::back()
+            return back()
                 ->withInput()
                 ->withErrors(\Lang::get('error.no_user_with_email'));
         }
@@ -269,7 +269,7 @@ class AuthController extends Controller
         $user = Sentinel::findById($id);
         if ( ! $user)
         {
-            return Redirect::back()
+            return back()
                 ->withInput()
                 ->withErrors(\Lang::get('error.no_user'));
         }

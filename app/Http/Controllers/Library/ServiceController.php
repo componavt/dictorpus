@@ -282,14 +282,14 @@ print "</p>";
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         
-        $word_groups = Word::select('word')->whereChecked(0)
+        $word_groups = Word::whereChecked(0)
                         ->whereIn('text_id', function ($q) use ($lang_id) {
                             $q->select('id')->from('texts')->where('lang_id',$lang_id);
                        })->whereNotIn('id', function ($query) {
                             $query->select('word_id')->from('meaning_text');
-        })->groupBy('word')
-        //->take(10)
-        ->get();  
+                })->groupBy('word')
+                //->take(10)
+                ->get(['word']);  
         foreach ($word_groups as $group) {
             $words = Word::where('word', 'like', $group->word)
                             ->whereIn('text_id', function ($q) use ($lang_id) {
@@ -672,7 +672,6 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                                ->orWhere('wordform', 'like', '%ö%nun')
                                ->orWhere('wordform', 'like', '%y%nun');
                        })
-//                       ->select('')
 //                       ->groupBy('lemma_id','lemma','wordform')
                        ->orderBy('lemma_id')->get();*/
 print "<ol>";                        
@@ -915,7 +914,7 @@ print 'done';
                          $q->select('id')->from('sources')
                            ->where('author', '<>', '')
                            ->orWhere('comment', '<>', '');
-                     })->orderBy('id', 'desc')->get();
+                     })->latest('id')->get();
         return view('service.authors', compact('texts'));        
     }    
     

@@ -104,14 +104,11 @@ class MeaningTextController extends Controller
 /*    public function tempJoinMeaningText()
     {
         $meanings = DB::table('meaning_texts')
-                            ->select(DB::raw('meaning_id, lang_id, count(*) as count'))
                             ->groupBy('meaning_id','lang_id')
                             ->having('count', '>', 1)
                             ->orderBy('meaning_id')
                             //->take(1)
-                            ->get();
-                //DB::select('select meaning_id, lang_id, count(*) as count '
-                //  . 'from meaning_texts group by meaning_id,lang_id having count>1 LIMIT 1');
+                            ->get([DB::raw('meaning_id, lang_id, count(*) as count')]);
         
         foreach ($meanings as $meaning) {
             print "<p>----------meaning_id=".$meaning->meaning_id;

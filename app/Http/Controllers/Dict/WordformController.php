@@ -229,9 +229,6 @@ class WordformController extends Controller
                     });
         } 
          
-/*        $builder = $builder->orderBy(DB::raw('count(*)'), 'DESC')
-                           ->orderBy('wordform');*/
-
         $wordforms = [];
 
         foreach ($builder->get() as $wordform) {

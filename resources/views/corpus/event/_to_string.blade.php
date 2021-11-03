@@ -1,7 +1,6 @@
 <?php
     $event_informants = \DB::table('event_informant')
-                          ->select('informant_id')
-                          ->where('event_id', $event->id)->get();
+                          ->where('event_id', $event->id)->get(['informant_id']);
     $informants_arr = [];
     foreach ($event_informants as $event_informant) {
         $informant = \App\Models\Corpus\Informant::find($event_informant->informant_id);
@@ -12,8 +11,7 @@
     $informant_list = join("<br>\n",$informants_arr);
 
     $event_recorders = \DB::table('event_recorder')
-                          ->select('recorder_id')
-                          ->where('event_id', $event->id)->get();
+                          ->where('event_id', $event->id)->get(['recorder_id']);
     $recorders_arr = [];
     foreach ($event_recorders as $event_recorder) {
             $recorders_arr[] = \App\Models\Corpus\Recorder::find($event_recorder->recorder_id)->name;

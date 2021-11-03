@@ -201,7 +201,7 @@ class PartOfSpeech extends Model
      */
     public static function getGroupedList()
     {
-        $categories = self::select('category')->groupBy('category')->orderBy('category')->get();
+        $categories = self::groupBy('category')->orderBy('category')->get(['category']);
         
         $pos_grouped = array();
         
@@ -244,7 +244,7 @@ class PartOfSpeech extends Model
      */
     public static function getGroupedListWithQuantity($method_name)
     {
-        $categories = self::select('category')->groupBy('category')->orderBy('category')->get();
+        $categories = self::groupBy('category')->orderBy('category')->get('category');
         
         $pos_grouped = array();
         

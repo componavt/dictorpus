@@ -32,7 +32,7 @@ class VideoController extends Controller
     public function index(Request $request)
     {
         $locale = LaravelLocalization::getCurrentLocale();
-        $videos = Video::with('text')->orderBy('id', 'desc');
+        $videos = Video::with('text')->latest('id');
 
         $numAll = $videos->count();
 

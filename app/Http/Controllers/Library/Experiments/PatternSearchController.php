@@ -137,8 +137,7 @@ print "<ol>";
                         });
             $template .= "[".$u.$a."]";            
         }                
-        $lemmas = $lemmas->select(DB::raw("lemmas.id as id, wordform"))
-                        ->get();
+        $lemmas = $lemmas->get([DB::raw("lemmas.id as id, wordform")]);
         foreach ($lemmas as $lemma) {
             $nom = $lemma->wordform;
             if (!preg_match("/".$template."$/u", $nom)) {
@@ -192,9 +191,8 @@ print "<ol>";
                         ->where('dialect_id', $dialect_id)
                         ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                         ->where('wordform', 'like', '%oi')
-                        ->select(DB::raw("lemmas.id as id, lemma, wordform"))
                         ->orderBy('reverse_lemma')
-                        ->get();
+                        ->get([DB::raw("lemmas.id as id, lemma, wordform")]);
 //dd($lemmas);        
         return view('experiments/vowel_gradation/verb_imp_3sg', compact('lemmas'));
     }
@@ -247,7 +245,7 @@ print "done.";
         $dialect = Dialect::getNameByID($dialect_id);
         
         $dubles = [1=>56, 2=>57, 52=>55, 74=>77, 282=>297, 24=>281, 181=>298, 51=>295];
-        $patterns_coll = DB::table('pattern_search')//->select('ending', 'pos_id', 'gramset_id', 'count')
+        $patterns_coll = DB::table('pattern_search')
                       ->whereDialectId($dialect_id)
 //                      ->groupBy('ending')
                       ->orderBy('end_reverse')->get();

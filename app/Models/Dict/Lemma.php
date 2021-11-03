@@ -567,10 +567,9 @@ class Lemma extends Model
     {
         $dialect_ids = DB::table('lemma_wordform')
                       ->leftJoin('dialects','dialects.id','=','lemma_wordform.dialect_id')
-                      ->select('dialect_id')
                       ->where('lemma_id',$this->id)
                       ->orderBy('sequence_number')
-                      ->groupBy('dialect_id')->get();
+                      ->groupBy('dialect_id')->get(['dialect_id']);
         $dialects = [];
         
         foreach ($dialect_ids as $dialect) {
@@ -596,10 +595,6 @@ class Lemma extends Model
         if ($this->wordforms()->wherePivot('gramset_id',NULL)->count()) {
             $gramsets[NULL] ='';
         }
-/*        $gramset_ids = DB::table('lemma_wordform')
-                      ->select('gramset_id')
-                      ->where('lemma_id',$this->id)
-                      ->groupBy('gramset_id')->get();*/
         $gramset_coll=$this->gramsets()
                            ->groupBy('id')
                            ->get();
@@ -992,8 +987,8 @@ dd($wordforms);
             $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
         }
 */        
-        $wordforms = LemmaWordform::select('wordform_for_search')
-                     ->whereLemmaId($this->id)->get();
+        $wordforms = LemmaWordform::whereLemmaId($this->id)
+                                  ->get(['wordform_for_search']);
         foreach ($wordforms as $lw) {
             $strs[] = "word like '".$lw->wordform_for_search."'";
         }

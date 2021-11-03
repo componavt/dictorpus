@@ -601,7 +601,7 @@ class LemmaController extends Controller
         
         $numAll = $builder->count();
         
-        $lemmas = $builder->orderBy('char_length', 'desc')
+        $lemmas = $builder->latest('char_length')
                           ->paginate($this->url_args['limit_num']);
                 
         return view('dict.lemma.sorted_by_length')
@@ -671,10 +671,9 @@ class LemmaController extends Controller
          
         $ids = [];
         foreach($lemmas->get() as $lemma) {
-            $omonyms = Lemma::select('id')
-                            ->where('lemma','like',$lemma->lemma)
+            $omonyms = Lemma::where('lemma','like',$lemma->lemma)
                             ->where('lang_id',$lemma->lang_id)
-                            ->where('pos_id',$lemma->pos_id)->get();
+                            ->where('pos_id',$lemma->pos_id)->get(['id']);
             foreach ($omonyms as $omonym) {
                 $ids[] = $omonym->id;
             }
@@ -935,21 +934,19 @@ class LemmaController extends Controller
         $locale = LaravelLocalization::getCurrentLocale();
         
         $lemmas_for_lang = Lemma::selectFromMeaningText()
-                                ->select('lang_id', DB::raw('count(*) as frequency'))
                                 ->groupBy('lang_id')
-                                ->orderBy('frequency', 'DESC')
-                                ->get();
+                                ->latest('frequency')
+                                ->get(['lang_id', DB::raw('count(*) as frequency')]);
         $lang_values = [];
         foreach ($lemmas_for_lang as $lemma) {
             $lang_values[$lemma->lang_id] = $lemma->lang->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
         }
 //dd($lemmas_for_lang);
         $lemmas_for_pos = Lemma::selectFromMeaningText()
-                               ->select('pos_id', DB::raw('count(*) as frequency'))
                                ->whereNotNull('pos_id')
                                ->groupBy('pos_id')
-                               ->orderBy('frequency', 'DESC')
-                               ->get();
+                               ->latest('frequency')
+                               ->get(['pos_id', DB::raw('count(*) as frequency')]);
         $pos_values = [NULL=>''];
         foreach ($lemmas_for_pos as $lemma) {
             $pos_values[$lemma->pos_id] = $lemma->pos->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
@@ -959,16 +956,15 @@ class LemmaController extends Controller
         if ($url_args['search_lang']) {
             $lemmas = Lemma::selectFromMeaningText()
                            ->join('parts_of_speech','parts_of_speech.id','=','lemmas.pos_id')
-                           ->select('lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', DB::raw('count(*) as frequency'))
                            ->whereLangId($url_args['search_lang'])
                            ->groupBy('lemma_id')
-                           ->orderBy(DB::raw('count(*)'), 'DESC');
+                           ->latest(DB::raw('count(*)'));
                         
             if ($url_args['search_pos']) {
                 $lemmas = $lemmas->wherePosId($url_args['search_pos']);
             } 
 //dd($lemmas->toSql());
-            $lemmas = $lemmas->get();
+            $lemmas = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', DB::raw('count(*) as frequency')]);
         } else {
             $lemmas = NULL;
         }

@@ -114,8 +114,7 @@ class Export
                 $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                                 ->whereLemmaId($lemma->id)
                                 ->groupBy('wordform_id', 'gramset_id')
-                                ->select('wordform', 'gramset_id')
-                                ->get();
+                                ->get(['wordform', 'gramset_id']);
                 foreach ($wordforms as $wordform) {
                     Storage::disk('public')->append($filename, $count.",".$lemma->id.",\"".$wordform->wordform."\",".$wordform->gramset_id);
 /*                    $data[$count++] = [

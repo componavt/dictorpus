@@ -196,7 +196,6 @@ print "$count records are created.";
         $table_name = 'search_'.$property;
         while (!$is_all_checked) {
             $wordforms = DB::table($table_name)
-//                           ->select('wordform', 'ending')
                            ->whereLangId($search_lang);
             if ($is_all) {
                 $wordforms = $wordforms->whereNull('eval_ends')
@@ -262,7 +261,6 @@ print "$count records are created.";
         $table_name = 'search_'.$property;
         while (!$is_all_checked) {
             $wordforms = DB::table($table_name)
-                           //->select('wordform')
                            ->whereLangId($search_lang)
                            ->whereNotNull('eval_'.$type)
                            ->whereNull('win_'.$type)
@@ -451,8 +449,7 @@ print 'done.';
                    ->orderBy($property_id)
                    ->orderBy('win_'.$type)
                    ->orderBy('wordform')
-                   ->select('wordform', DB::raw($property_id.' as prop'), DB::raw($tale.' as tale'), DB::raw('win_'.$type.' as winner'))
-                   ->get();
+                   ->get(['wordform', DB::raw($property_id.' as prop'), DB::raw($tale.' as tale'), DB::raw('win_'.$type.' as winner')]);
 
         return view('experiments.search_by_analog.error_list',
                     compact('search_lang', 'search_lang_name', 'property', 'type', 'wordforms'));

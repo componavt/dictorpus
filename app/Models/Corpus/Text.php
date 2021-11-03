@@ -358,8 +358,7 @@ class Text extends Model
         foreach (array_keys($words) as $i) {
             $pairs = Sentence::searchWords($words)
                     ->where('t1.text_id', $this->id)
-                    ->select('t'.$i.'.w_id')
-                    ->get();
+                    ->get(['t'.$i.'.w_id']);
 //dd($pairs);        
             foreach ($pairs as $pair) {
                 $search_words[]=$pair->w_id;
@@ -1494,7 +1493,7 @@ class Text extends Model
     }*/
           
     public static function countExamples(){
-//        $examples = DB::table('meaning_text')->select('text_id', 'w_id')->groupBy('text_id', 'w_id')->get();
+//        $examples = DB::table('meaning_text')->groupBy('text_id', 'w_id')->get(['text_id', 'w_id']);
 //        return sizeof($examples);
         return DB::table('meaning_text')->count();
     }
@@ -1531,7 +1530,7 @@ class Text extends Model
     
     public static function countFrequencySymbols($lang_id) {
         $symbols = [];
-        $texts = Text::select('text')->where('lang_id', $lang_id)->get();
+        $texts = Text::where('lang_id', $lang_id)->get(['text']);
         foreach ($texts as $text) {
             $text_symbols = preg_split("//u", $text->text);
 //dd($text_symbols);    

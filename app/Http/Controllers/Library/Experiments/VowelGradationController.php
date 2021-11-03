@@ -109,8 +109,7 @@ class VowelGradationController extends Controller
                         });
             $template .= "[".$u.$a."]";            
         }                
-        $lemmas = $lemmas->select(DB::raw("lemmas.id as id, wordform"))
-                        ->get();
+        $lemmas = $lemmas->get([DB::raw("lemmas.id as id, wordform")]);
         foreach ($lemmas as $lemma) {
             $nom = $lemma->wordform;
             if (!preg_match("/".$template."$/u", $nom)) {
@@ -164,9 +163,8 @@ class VowelGradationController extends Controller
                         ->where('dialect_id', $dialect_id)
                         ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                         ->where('wordform', 'like', '%oi')
-                        ->select(DB::raw("lemmas.id as id, lemma, wordform"))
                         ->orderBy('reverse_lemma')
-                        ->get();
+                        ->get([DB::raw("lemmas.id as id, lemma, wordform")]);
 //dd($lemmas);        
         return view('experiments/vowel_gradation/verb_imp_3sg', compact('lemmas'));
     }

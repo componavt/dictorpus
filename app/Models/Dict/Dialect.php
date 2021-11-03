@@ -109,7 +109,7 @@ class Dialect extends Model
      */
     public static function getGroupedList()
     {
-        $langs = self::select('lang_id')->groupBy('lang_id')->orderBy('lang_id')->get();
+        $langs = self::groupBy('lang_id')->orderBy('lang_id')->get('lang_id');
         
         $list = [];
         foreach ($langs as $row) {

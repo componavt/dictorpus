@@ -86,9 +86,8 @@ print "</p>";
         $gramsets = LemmaWordform::join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                          ->whereLangId($lang_id)
                          ->whereNotNull('gramset_id')
-                         ->select('gramset_id')
                          ->groupBy('gramset_id')
-                         ->get();
+                         ->get(['gramset_id']);
         
         foreach ($gramsets as $gramset) {
             $affixes = Grammatic::getAffixesForGramset($gramset->gramset_id, $lang_id);

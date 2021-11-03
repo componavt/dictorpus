@@ -73,14 +73,12 @@ class WordController extends Controller
 
         if ($url_args['search_lang']) {
             $lang_id = $url_args['search_lang'];
-//            $words = Word::select(DB::raw('lower(word) as l_word'),DB::raw('count(word) as frequency'))
-            $words = Word::select('word',DB::raw('count(word) as frequency'))
-                   ->whereIn('text_id', function($query) use ($lang_id){
+            $words = Word::whereIn('text_id', function($query) use ($lang_id){
                                 $query->select('id')->from('texts')
                                       ->where('lang_id',$lang_id);
                         })
                   ->groupBy('word')
-                  ->orderBy(DB::raw('count(word)'), 'DESC');
+                  ->latest(DB::raw('count(word)'));
                         
             if ($url_args['search_word']) {
                 $words = $words->where('word','like',$url_args['search_word']);
@@ -90,7 +88,7 @@ class WordController extends Controller
             $words = $words 
 //                    ->take($this->url_args['limit_num'])
                     ->take(1000)
-                    ->get();
+                    ->get(['word',DB::raw('count(word) as frequency')]);
         } else {
             $words = NULL;
         }

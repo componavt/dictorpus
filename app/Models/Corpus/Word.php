@@ -76,7 +76,7 @@ class Word extends Model
         $word = self::where('text_id',$this->text_id)
                 ->where('s_id',$this->s_id)
                 ->where('w_id','<',$this->w_id)
-                ->orderBy('w_id','desc')
+                ->latest('w_id')
                 //->toSql();
                 ->first();
 //dd($word.'|'.$this->text_id.'|'.$this->s_id.'|'.$this->w_id);        
@@ -99,8 +99,8 @@ class Word extends Model
         if (!$lang_id) {
             return $words;
         }
-        return $words->whereIn('text_id', function() use ($lang_id){
-                                $query = select('id')->from('texts')
+        return $words->whereIn('text_id', function($query) use ($lang_id){
+                                $query -> select('id')->from('texts')
                                        -> where('lang_id',$lang_id);
                         });
                 
@@ -583,10 +583,7 @@ class Word extends Model
     
     public static function nextWId($text_id) {
         $last_word = self::whereTextId($text_id)
-                               ->orderBy('w_id', 'DESC')->first();
-/*        if (!$last_word) {
-            return null;
-        } */
+                               ->latest('w_id')->first();
         return 1+ $last_word->w_id ?? 0;
         
     }

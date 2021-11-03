@@ -84,10 +84,7 @@ class Predictor
                        ->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                        ->whereNotNull('gramset_id')
                        ->where('gramset_id', '<>', 0)
-//                       ->whereIn('wordform_id', function ($query) use ($uword) {
-//                           $query->select('id')->from('wordforms')
-                                 ->where('wordform_for_search', 'like', $uword)//;
-//                       })
+                       ->where('wordform_for_search', 'like', $uword)
                        ->groupBy('pos_id', 'gramset_id')->get();
         foreach ($lemmas as $lemma) {
             list ($total, $out) = self::fillByPosGramset($uword, $lemma->pos_id, $lemma->gramset_id, 1, $out, $maybe_proper_noun);
