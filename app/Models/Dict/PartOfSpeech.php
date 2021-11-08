@@ -244,7 +244,7 @@ class PartOfSpeech extends Model
      */
     public static function getGroupedListWithQuantity($method_name)
     {
-        $categories = self::groupBy('category')->orderBy('category')->get('category');
+        $categories = self::groupBy('category')->orderBy('category')->get(['category']);
         
         $pos_grouped = array();
         
@@ -258,7 +258,7 @@ class PartOfSpeech extends Model
                     $count=$pos->$method_name()->count();
                 }
                 if ($count) {
-                    $pos_name .= " ($count)";
+                    $pos_name .= " (". number_with_space($count).")";
                 }
                 $pos_grouped[\Lang::get('dict.pos_category_'.$row->category)][$pos->id] = $pos_name;
             }

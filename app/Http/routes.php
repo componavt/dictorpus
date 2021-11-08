@@ -60,7 +60,7 @@ Route::group(
         
         Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');
         
-        Route::get('corpus/gram_search', 'Corpus\GramSearchController@index');
+//        Route::get('corpus/gram_search', 'Corpus\GramSearchController@index');
         
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
         Route::get('corpus/genre/list', 'Corpus\GenreController@genreList');
@@ -113,7 +113,7 @@ Route::group(
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');
         
-        Route::get('dict/lemma/by_wordforms', 'Dict\LemmaController@byWordforms');
+        Route::get('dict/lemma/by_wordforms', 'Dict\LemmaController@byWordforms')->name('lemma.by_wordforms');
         Route::get('dict/lemma/store_simple', 'Dict\LemmaController@storeSimple');
         Route::get('dict/lemma/list', 'Dict\LemmaController@lemmaLangList');
         Route::get('dict/lemma/meanings_list', 'Dict\LemmaController@meaningsList');
@@ -122,7 +122,7 @@ Route::group(
         Route::get('dict/lemma/remove/example/{example_id}', 'Dict\LemmaController@removeExample');
         Route::get('dict/lemma/omonyms', 'Dict\LemmaController@omonyms');
         Route::get('dict/lemma/phrases', 'Dict\LemmaController@phrases');
-        Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength');
+        Route::get('dict/lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength')->name('lemma.sorted_by_length');
         Route::get('dict/lemma/full_new_list', 'Dict\LemmaController@fullNewList');
         Route::get('dict/lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('dict/lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
@@ -356,6 +356,8 @@ Route::group(
         Route::resource('dict/lemma', 'Dict\LemmaController',
                        ['names' => ['update' => 'lemma.update',
                                     'store' => 'lemma.store',
+                                    'show' => 'lemma.show',
+                                    'create' => 'lemma.create',
                                     'destroy' => 'lemma.destroy']]);
 
 /*        Route::resource('dict/lemma_wordform', 'Dict\LemmaWordformController',

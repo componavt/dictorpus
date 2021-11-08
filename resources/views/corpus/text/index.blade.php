@@ -37,10 +37,18 @@
         <thead>
             <tr>
                 <th>No</th>
+            @if (!$url_args['search_lang'])
                 <th>{{ trans('dict.lang') }}</th>
+            @endif
+            @if (!$url_args['search_dialect'])
                 <th>{{ trans('dict.dialect') }}</th>
+            @endif
+            @if (!$url_args['search_corpus'])
                 <th>{{ trans('corpus.corpus') }}</th>
+            @endif
+            @if (!$url_args['search_genre'])
                 <th>{{ trans('corpus.genre') }}</th>
+            @endif
                 <th>{{ trans('corpus.title') }}</th>
                 @if (!$url_args['search_word'])
                 <th>{{ trans('messages.translation') }}</th>
@@ -56,7 +64,10 @@
             @foreach($texts as $text)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
+            @if (!$url_args['search_lang'])
                 <td data-th="{{ trans('dict.lang') }}">{{$text->lang->name}}</td>
+            @endif
+            @if (!$url_args['search_dialect'])
                 <td data-th="{{ trans('dict.dialect') }}">
                     @if($text->dialects)
                         @foreach ($text->dialects as $dialect)
@@ -65,8 +76,13 @@
                         
                     @endif
                 </td>
+            @endif
+            @if (!$url_args['search_corpus'])
                 <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
+            @endif
+            @if (!$url_args['search_genre'])
                 <td data-th="{{ trans('corpus.genre') }}">{{$text->genresToString()}}</td>
+            @endif
                 <td data-th="{{ trans('corpus.title') }}">
                     {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a>
