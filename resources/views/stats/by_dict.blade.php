@@ -35,6 +35,19 @@
         <tr>
             <td>{{trans('stats.relations')}}</td><td><a href="/dict/lemma/relation">{{$total_relations}}</a></td>
         </tr>
+        
+        <tr>
+            <th colspan='2'>{{trans('stats.stats_by_examples')}}</th>
+        </tr>
+        <tr>
+            <td>{{trans('stats.total_examples')}}</td><td>{{$total_examples}}</td>
+        </tr>
+        <tr>
+            <td>{{trans('stats.total_checked_examples')}}</td><td>{{$total_checked_examples}}</td>
+        </tr>
+        <tr>
+            <td>{{trans('stats.checked_examples_to_all')}}</td><td>{{$checked_examples_to_all}} %</td>
+        </tr>
     </table>
 
     <div id="LemmaNumByLangChart" style="margin-top: 20px;">

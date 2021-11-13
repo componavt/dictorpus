@@ -56,6 +56,10 @@ class StatsController extends Controller
         $total_relations = Meaning::countRelations();
         $total_translations = Meaning::countTranslations();
         
+        $total_examples = Text::countExamples();
+        $total_checked_examples = Text::countCheckedExamples();
+        $checked_examples_to_all = 100*$total_checked_examples/$total_examples;
+                
         $chart = new LemmaNumByLang;
         $chart->labels(array_keys($lang_lemmas))
 //                ->yAxisTitle('ggggggg')
@@ -87,6 +91,9 @@ class StatsController extends Controller
                         'total_relations' => number_format($total_relations, 0, ',', ' '),
                         'total_translations' => number_format($total_translations, 0, ',', ' '),
                         'total_wordforms' => number_format($total_wordforms, 0, ',', ' '),
+                        'total_examples' => number_format($total_examples, 0, ',', ' '),
+                        'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
+                        'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
                        ]);
     }    
     
@@ -113,22 +120,15 @@ class StatsController extends Controller
         $marked_words_to_all = 100*$total_marked_words/$total_words;
         $lang_marked = Lang::countWords();
         
-        $total_checked_examples = Text::countCheckedExamples();
         $total_checked_words = Text::countCheckedWords(); 
         $checked_words_to_marked = 100*$total_checked_words/$total_marked_words;
         
-        $total_examples = Text::countExamples();
-        $checked_examples_to_all = 100*$total_checked_examples/$total_examples;
-                
         return view('stats.by_corp_markup')
                 ->with([
-                        'checked_examples_to_all' => number_format($checked_examples_to_all, 2,',', ' '),
                         'checked_words_to_marked' => number_format($checked_words_to_marked, 2,',', ' '),
                         'lang_marked' => $lang_marked,
                         'marked_words_to_all' => number_format($marked_words_to_all, 1,',', ' '),
-                        'total_checked_examples' => number_format($total_checked_examples, 0, ',', ' '),
                         'total_checked_words' => number_format($total_checked_words, 0, ',', ' '),
-                        'total_examples' => number_format($total_examples, 0, ',', ' '),
                         'total_words' => number_format($total_words, 0, ',', ' '),
                         'total_marked_words' => number_format($total_marked_words, 0, ',', ' '),
                        ]);
