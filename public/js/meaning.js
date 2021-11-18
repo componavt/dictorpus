@@ -66,9 +66,9 @@ function reloadExamplesForId(id, locale) {
     }); 
 }    
 
-function reloadExamples(i) {
+function reloadExamples(i,locale) {
     var id = $(i).data('reload');
-    reloadExamplesForId(id);
+    reloadExamplesForId(id,locale);
 }   
 
 
