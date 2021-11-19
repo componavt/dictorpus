@@ -439,11 +439,11 @@ function editWord(text_id) {
     
     $("#save-word").click(function(){
         var word = $( "#word" ).val();
-        var old_wordform = $("#editWord .word-marked").html();
-        var w_id = $("#modalEditWord .word-marked").attr('id');
+        var old_wordform = $("#modalEditWord .word-marked").html();
+        var text_w_id = $("#modalEditWord .word-marked").attr('id');
         if (word !== old_wordform) {
 //alert('editWord#save-word: '+w_id+', '+ old_wordform+', '+ word);    
-            saveWord(text_id, w_id, word);
+            saveWord(text_w_id, word);
         } else {
             $("#modalEditWord").modal('hide');
             $("#choose-wordform").focus();
@@ -452,11 +452,11 @@ function editWord(text_id) {
         
 }
 
-function saveWord(text_id, w_id, word) { 
+function saveWord(text_w_id, word) { 
 //alert('saveWord: '+w_id+', '+ word);    
     $("#save-word").attr("disabled", true);
     $.ajax({
-        url: '/corpus/word/edit/' + text_id + '_' + w_id + '/', 
+        url: '/corpus/word/edit/' + text_w_id + '/', 
         data: {word: word},
         type: 'GET',
         success: function(){
