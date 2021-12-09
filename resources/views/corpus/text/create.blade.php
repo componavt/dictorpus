@@ -25,8 +25,9 @@
         @include('corpus.text.modals_for_edition')
         
         {!! Form::open(array('method'=>'POST', 'route' => array('text.store'))) !!}
-        @include('corpus.text._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
+        @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.create_new_m'),
                                       'action' => 'create',
+                                      'readonly' => false,
                                       'recorder_value' => [], 
                                       'genre_value' => [], 
                                       'dialect_value'  => [] ])

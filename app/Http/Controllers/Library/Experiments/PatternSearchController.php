@@ -22,8 +22,7 @@ use App\Models\Dict\Lemma;
 
 class PatternSearchController extends Controller
 {
-      public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth:dict.edit,/experiments/', 
                           ['only' => ['inWordforms']]);
     }

@@ -385,22 +385,20 @@ class Text extends Model
     
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
+        $to_makeup = (int)$request['to_makeup'];
         
         $text = self::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
-//dd($request->text);
 
         $text->fill($request->only('corpus_id','lang_id','title','text','text_xml','text_structure'));
-//        $text->fill($request->only('corpus_id','lang_id','title','text_xml'));
-//        $text->text = $text->processTextBeforeSaving($request->text);
-//dd($text->text);
+
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();
         
-        return $text -> storeAdditionInfo($request, $old_text);
+        return $text -> storeAdditionInfo($request, $old_text, $to_makeup);
     }
     
-    public function storeAdditionInfo($request, $old_text=NULL){
+    public function storeAdditionInfo($request, $old_text=NULL, $to_makeup=true){
         $error_message = '';
         $request['transtext_text'] = Text::process($request['transtext_text']);
         $request['event_date'] = (int)$request['event_date'];
@@ -419,7 +417,7 @@ class Text extends Model
         $this->genres()->detach();
         $this->genres()->attach($request->genres);
         
-        if ($request->text && ($old_text != $request->text || !$this->text_structure)) {
+        if ($to_makeup && $request->text && ($old_text != $request->text || !$this->text_structure)) {
             $error_message = $this->markup();
         }
 
@@ -696,9 +694,12 @@ class Text extends Model
      * ^ - to ignore end of sentence
      *
      * @param string $text  text without mark up
-     * @return string text with markup (split to sentences and words)
+     * @param boolean $with_words  if it is true, sentences divided into words
+     * @param boolean $by_sentences  if it is true, return only text structure and the array of sentences
+     * @return string text with markup (split to sentences and words) if $by_sentences=false
+     *      OR [<markup text>, <sentences>] if $by_sentences=true
      */
-    public static function markupText($text, $by_sentences=false)
+    public static function markupText($text, $with_words=true, $by_sentences=false)
     {
         list($text, $pseudo_end) = self::preProcessText(trim($text));
         
@@ -750,7 +751,7 @@ class Text extends Model
     public function markup(){
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        list($this->text_structure, $sentences) = self::markupText($this->text, true);
+        list($this->text_structure, $sentences) = self::markupText($this->text, true, true);
         foreach ($sentences as $s_id => $text_xml) {
             $sentence = Sentence::store($this->id, $s_id, $text_xml);
             $error_message = $this->updateMeaningAndWordformText($sentence, $text_xml);

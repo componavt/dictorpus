@@ -254,12 +254,14 @@ class TextController extends Controller
         $trans_author_value = $text->transtext ? $text->transtext->authorValue() : null;
         $project_langs=Lang::projectLangs(); 
         
+        $readonly = ($text->meanings()->wherePivot('relevance','<>',1)->count()) ? true : false;
+        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.edit',
                 compact('corpus_values', 'dialect_value', 'dialect_values',
                         'genre_value', 'genre_values', 'informant_value',
-                        'informant_values','lang_values', 'place_values','text',
+                        'informant_values','lang_values', 'place_values','text', 'readonly',
                         'recorder_value', 'recorder_values', 'args_by_get', 'url_args',
                         'region_values', 'district_values', 'trans_author_value',
                         'author_value', 'author_values', 'project_langs'));

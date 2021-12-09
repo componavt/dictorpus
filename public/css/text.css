@@ -223,3 +223,14 @@ ol {
     color: #972d1a;
     cursor: pointer;
 }
+
+.to-markup {
+    color:#972d1a;
+    text-align: right; 
+}
+
+.to-markup-readonly {
+    color: black; 
+    font-weight:normal;
+    text-decoration: line-through; 
+}

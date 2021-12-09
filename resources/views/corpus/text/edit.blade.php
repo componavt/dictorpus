@@ -26,7 +26,7 @@
         @include('corpus.text.modals_for_edition')
         
         {!! Form::model($text, array('method'=>'PUT', 'route' => array('text.update', $text->id))) !!}
-        @include('corpus.text._form_create_edit', ['submit_title' => trans('messages.save'),
+        @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit'])
         {!! Form::close() !!}
 @stop
@@ -67,5 +67,9 @@
     $('.text-unlock').click(function() {
         $(this).hide();
         $('#text').prop('readonly',false);
+        $('#to_makeup').prop('disabled',false);
+        $('#to_makeup_label').css('text-decoration','none')
+                             .css('color','#972d1a')
+                             .css('font-weight','bold');
     });
 @stop

@@ -28,7 +28,7 @@
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.text._search'])
                                   
-        @include('corpus.text._search_form') 
+        @include('corpus.text.form._search') 
 
         @include('widgets.founded_records', ['numAll'=>$numAll])
         
