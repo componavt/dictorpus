@@ -44,7 +44,7 @@ function removeExample(i) {
     });    
 }    
 
-function reloadExamplesForId(id, locale) {
+function reloadExamplesForId(id, locale='ru') {
     $("#meaning-examples_"+ id).empty();
     $("#img-loading_"+ id).show();
     $.ajax({

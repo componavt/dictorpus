@@ -1863,7 +1863,7 @@ dd($wordforms);
         if ($this->pos->isVerb()) {
             return ($this->features && $this->features->impersonal) ? 1 : null; 
         } else {
-            $name_num = ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
+            return ($this->features && $this->features->number) ? Grammatic::nameNumFromNumberField($this->features->number) : null; 
         }
     }
     
