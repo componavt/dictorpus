@@ -27,9 +27,6 @@
         </thead>
         <tbody>
             @foreach($lemmas as $lemma)
-            <?php
-                $link_to_texts = '/corpus/text?search_lang%5B%5D='.$url_args['search_lang'].'&search_lemma='.$lemma->lemma;
-            ?>
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="{{ trans('dict.lemma') }}">
@@ -46,7 +43,9 @@
                     @endforeach
                 </td-->
                 <td data-th="{{ trans('messages.frequency') }}">
-                    <a href="{{ LaravelLocalization::localizeURL($link_to_texts) }}">
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text?frequency='
+                       .$lemma->frequency.'search_lang%5B%5D='.$url_args['search_lang']
+                       .'&search_lemma='.$lemma->lemma) }}">
                       {{$lemma->frequency}}
                     </a>
                 </td>
@@ -59,8 +58,10 @@
 @stop
 
 @section('footScriptExtra')
-    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
+    <script src="//cdn.datatables.net/1.11.3/js/dataTables.numericCommaSort.js"></script>
+    <script src="//cdn.datatables.net/1.11.3/js/dataTables.numericCommaTypeDetect.js"></script>
 @stop
 
 @section('jqueryFunc')
@@ -68,7 +69,8 @@
         $('#lemmasTable').DataTable( {
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json'
-            }
+            },
+            "order": [[ 3, "desc" ]]
         } );
     } );
 @stop
