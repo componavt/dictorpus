@@ -65,7 +65,11 @@
 
 @section('jqueryFunc')
     $(document).ready( function () {
-        $('#lemmasTable').DataTable();
+        $('#lemmasTable').DataTable( {
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json'
+            }
+        } );
     } );
 @stop
 
