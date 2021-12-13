@@ -60,6 +60,7 @@ class Lemma extends Model
     
     // Belongs To Methods
     use \App\Traits\Methods\toSqlFull;
+    use \App\Traits\Methods\search\lemmasByDialects;
     
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
@@ -1361,7 +1362,7 @@ dd($wordforms);
 //            $lemmas = self::searchByWordform($lemmas, $url_args['search_wordform'], $url_args['search_lang']);
             $lemmas = self::searchByGramset($lemmas, $url_args['search_gramset']);
     //    }    
-        $lemmas = self::searchByLemma($lemmas, $url_args['search_lemma']);
+        $lemmas = self::searchByLemma($lemmas, $url_args['search_lemma']); // in trait
         $lemmas = self::searchByLang($lemmas, $url_args['search_lang']);
         $lemmas = self::searchByPOS($lemmas, $url_args['search_pos']);
         $lemmas = self::searchByID($lemmas, $url_args['search_id']);
@@ -1380,6 +1381,26 @@ dd($wordforms);
 //dd($lemmas->toSql());                                
         return $lemmas;
     }
+    
+    public static function searchByLemma($lemmas, $lemma) {
+        if (!$lemma) {
+            return $lemmas;
+        }
+        
+        return $lemmas->where(function ($query) use ($lemma) {
+                        self::searchLemmas($query, $lemma);
+                       });
+    }    
+
+    public static function searchLemmas($query, $lemma) {
+        $lemma = preg_replace("/\|/", '', $lemma);
+        return $query -> where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma))
+                       -> orWhere('lemma_for_search', 'like', $lemma)
+                       -> orWhereIn('id', function ($q) use ($lemma) {
+                            $q->select('lemma_id')->from('phonetics')
+                              ->where('phonetic', 'like', $lemma);
+                        });
+    }        
     
     /**
      * 
@@ -1460,25 +1481,6 @@ dd($wordforms);
                             $q->select('lemma_id')->from('lemma_wordform')
                               ->where('gramset_id',$gramset);
                             });
-    }
-    
-    public static function searchByLemma($lemmas, $lemma) {
-        if (!$lemma) {
-            return $lemmas;
-        }
-        
-        $lemma = preg_replace("/\|/", '', $lemma);
-//        return $lemmas->where('lemma','like',$lemma);
-//var_dump (Grammatic::toSearchForm($lemma), $lemma);
-        return $lemmas->where(function ($query) use ($lemma) {
-                            $query -> where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma))
-                                   -> orWhere('lemma_for_search', 'like', $lemma)
-                                   -> orWhereIn('id', function ($q) use ($lemma) {
-                                       $q->select('lemma_id')->from('phonetics')
-                                         ->where('phonetic', 'like', $lemma);
-                                   });
-//                                   -> where('lemma_for_search', '');
-                });
     }
     
     public static function searchByLang($lemmas, $lang) {
@@ -1574,17 +1576,7 @@ dd($wordforms);
                                   ->where('label_id', $label_id);
         });
     }
-    
-    public static function searchByDialects($lemmas, $dialects) {
-        if (!$dialects || !sizeof($dialects)) {
-            return $lemmas;
-        }
-        return $lemmas->whereIn('id', function ($query) use ($dialects){
-                            $query->select('lemma_id')->from('dialect_lemma')
-                                  ->whereIn('dialect_id', $dialects);
-        });
-    }
-    
+       
     /**
      * Stores relations with array of wordform (with gramsets) and create Wordform if is not exists
      * 

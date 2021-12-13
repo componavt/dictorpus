@@ -8,6 +8,7 @@
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
     {!!Html::style('css/table.css')!!}
+    {!!Html::style('css/select2.min.css')!!}
 @stop
 
 @section('body')        
@@ -50,10 +51,13 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/select2.min.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
+    selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.select_dialects') }}');
 @stop
 
 

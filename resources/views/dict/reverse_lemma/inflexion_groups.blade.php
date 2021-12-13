@@ -60,6 +60,8 @@
     toggleSpecial();
     
     $(".select-dialect").select2({
+        allowClear: true,
+        placeholder: 'Выберите диалект',
         width: '100%',
         ajax: {
           url: "/dict/dialect/list",

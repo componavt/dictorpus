@@ -62,9 +62,10 @@ class ReverseLemmaController extends Controller
         //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('reverseLemmas');
         $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        $dialect_values = $url_args['search_lang'] ? ['NULL'=>''] + Dialect::getList($url_args['search_lang']) : ['NULL'=>''] + Dialect::getList();
 
         return view('dict.reverse_lemma.index',
-                compact('lang_values', 'reverse_lemmas', 'numAll',
+                compact('dialect_values', 'lang_values', 'reverse_lemmas', 'numAll',
                         'pos_values', 'args_by_get', 'url_args'));
     }
 

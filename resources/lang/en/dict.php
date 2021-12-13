@@ -242,6 +242,7 @@ return [
     'select_concept' => 'Select a concept',
     'select_concept_category' => 'Select a concept category',
     'select_dialect' => 'Select a dialect',
+    'select_dialects' => 'Select dialects',
     'select_gramset' => 'Select a set of grammatical attributes',
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',

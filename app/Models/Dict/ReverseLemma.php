@@ -13,6 +13,9 @@ class ReverseLemma extends Model
     public $timestamps = false;
     protected $fillable = ['reverse_lemma','id','lang_id','affix','stem'];//lemma_
     
+    // Belongs To Methods
+    use \App\Traits\Methods\search\lemmasByDialects;
+    
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
 
@@ -28,6 +31,8 @@ class ReverseLemma extends Model
         }
         $lemmas = self::searchByLang($lemmas, $url_args['search_lang']);
         $lemmas = self::searchByPOS($lemmas, $url_args['search_pos']);
+        $lemmas = self::searchByLemma($lemmas, $url_args['search_lemma']); // in trait
+        $lemmas = self::searchByDialects($lemmas, $url_args['search_dialects']);
 
         return $lemmas;
     }
@@ -48,6 +53,17 @@ class ReverseLemma extends Model
                    -> where ('pos_id', $pos);
         });
     }
+
+    public static function searchByLemma($lemmas, $lemma) {
+        if (!$lemma) {
+            return $lemmas;
+        }
+        
+        return $lemmas->whereIn('id', function ($query) use ($lemma) {
+                    $query->select('id')->from('lemmas');
+                    $query=Lemma::searchByLemma($query, $lemma);
+                });
+    }    
     
     public static function inflexionGroups($lang_id, $pos_id, $dialect_id, $gramsets, $join_harmony) {
         $groups = [];
@@ -120,7 +136,9 @@ class ReverseLemma extends Model
                     'limit_num'       => (int)$request->input('limit_num'),
                     'page'            => (int)$request->input('page'),
                     'search_dialect'  => (int)$request->input('search_dialect'),
+                    'search_dialects'  => (array)$request->input('search_dialects'),
                     'search_lang'     => (int)$request->input('search_lang'),
+                    'search_lemma'     => $request->input('search_lemma'),
                     'search_pos'      => (int)$request->input('search_pos'),
                     'join_harmony'    => (boolean)$request->input('join_harmony'),
                 ];

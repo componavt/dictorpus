@@ -252,6 +252,7 @@ return [
     'select_concept' => 'Выберите понятие',
     'select_concept_category' => 'Выберите категорию понятий',
     'select_dialect' => 'Выберите диалект',
+    'select_dialects' => 'Выберите диалекты',
     'select_gramset' => 'Выберите набор грамматических признаков',
     'select_lang' => 'Выберите язык',
     'select_lemma' => 'Выберите лемму',
