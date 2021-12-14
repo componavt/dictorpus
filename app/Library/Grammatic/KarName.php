@@ -361,9 +361,10 @@ class KarName
         
     /**
      * А. Если o.5 заканч. на С[oö]i и о.6 на C[aä] и кол-во слогов в о.5 и о.6 одинаковое, то o.5 > о.1 → если о.1 заканч. на
-     * 1) Сa, Cä, то a > oi, ä > öi;
+     * 1) С[aä], то a > oi, ä > öi;
      * 2) ua, то ua > avoi
      * 3) iä, то iä > ävöi.
+     * 4) С[oö], то о.1+i.
      * 
      * Б. Если o.5 заканч. на l[oö]i и кол-во слогов в o.5 больше чем в о.6, то =o.5.
      * 
@@ -393,6 +394,8 @@ class KarName
                 return $regs[1].'avoi';
             } elseif (preg_match("/^(.+)iä$/u", $stem1, $regs)) { // А.3
                 return $regs[1].'ävöi';
+            } elseif (preg_match("/^".$C."[oö]$/u", $stem1)) { // А.3
+                return $stem1.'i';
             }
         } elseif (preg_match("/l[oö]i$/u", $stem5) && KarGram::countSyllable($stem5)>KarGram::countSyllable($stem6) // Б
                 || preg_match("/".$V."i$/u", $stem5) && preg_match("/".$V.$V."$/u", $stem1)) { // В
