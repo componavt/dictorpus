@@ -515,6 +515,207 @@ class KarNameTest extends TestCase
         $this->assertEquals( $expected, $result);                
     }
     
+    public function testStemsFromMiniTemplateKeitinleipa() {
+        $template = 'keitinlei|pä [vä]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'keitinleipä', 1=>'keitinleivä', 2=>'keitinleipä', 3=>'keitinleipyä', 4=>'keitinleivi', 5=>'keitinleipi', 6=>'keitinleipä', 10=>FALSE], '', 'keitinlei', 'pä'];
+        $this->assertEquals( $expected, $result);                
+    }
+ 
+    public function testStemsFromMiniTemplateHenatukku() {
+        $template = 'henätuk|ku [u]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'henätukku', 
+                      1=>'henätuku', 
+                      2=>'henätukku', 
+                      3=>'henätukkuo', 
+                      4=>'henätukkuloi', 
+                      5=>'henätukkuloi', 
+                      6=>'henätukku', 
+                     10=>TRUE], 
+                    null, 'henätuk', 'ku'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplateKate() {
+        $template = 'kat|e [tie, et]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'kate', 
+                      1=>'kattie', 
+                      2=>'kattie', 
+                      3=>'katetta', 
+                      4=>'kattei', 
+                      5=>'kattei', 
+                      6=>'katet', 
+                     10=>TRUE], 
+                    null, 'kat', 'e'];
+        $this->assertEquals( $expected, $result);                
+    }
+
+    public function testStemsFromMiniTemplateElama() {
+        $template = 'elämä[]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'elämä', 
+                      1=>'elämä', 
+                      2=>'elämä', 
+                      3=>'elämyä', 
+                      4=>'elämi', 
+                      5=>'elämi', 
+                      6=>'elämä', 
+                     10=>FALSE], 
+                    null, 'elämä', ''];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplateAhkivo() {
+        $template = 'ahkiv|o [o]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'ahkivo', 
+                      1=>'ahkivo', 
+                      2=>'ahkivo', 
+                      3=>'ahkivuo', 
+                      4=>'ahkivoi', 
+                      5=>'ahkivoi', 
+                      6=>'ahkivo', 
+                     10=>TRUE], 
+                    null, 'ahkiv', 'o'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplateAnoppi() {
+        $template = 'anop|pi [i/pi]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'anoppi', 
+                      1=>'anopi', 
+                      2=>'anoppi', 
+                      3=>'anoppie', 
+                      4=>'anoppiloi', 
+                      5=>'anoppiloi', 
+                      6=>'anoppi', 
+                     10=>TRUE], 
+                    null, 'anop', 'pi'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplateKirja() {
+        $template = 'kirj|a [a]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'kirja', 
+                      1=>'kirja', 
+                      2=>'kirja', 
+                      3=>'kirjua', 
+                      4=>'kirjoi', 
+                      5=>'kirjoi', 
+                      6=>'kirja', 
+                     10=>TRUE], 
+                    null, 'kirj', 'a'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplateAhanta() {
+        $template = 'ahan|ta [na/ta]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'ahanta', 
+                      1=>'ahanna', 
+                      2=>'ahanta', 
+                      3=>'ahantua', 
+                      4=>'ahannoi', 
+                      5=>'ahantoi', 
+                      6=>'ahanta', 
+                     10=>TRUE], 
+                    null, 'ahan', 'ta'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplateTai() {
+        $template = 'täi []';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'täi', 
+                      1=>'täi', 
+                      2=>'täi', 
+                      3=>'täitä', 
+                      4=>'täilöi', 
+                      5=>'täilöi', 
+                      6=>'täi', 
+                     10=>FALSE], 
+                    null, 'täi', ''];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplatePata() {
+        $template = 'p|ata [ua/ata]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'pata', 
+                      1=>'pua', 
+                      2=>'pata', 
+                      3=>'patua', 
+                      4=>'pavoi', 
+                      5=>'patoi', 
+                      6=>'pata', 
+                     10=>TRUE], 
+                    null, 'p', 'ata'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
+    public function testStemsFromMiniTemplateHikilehti() {
+        $template = 'hikileh|ti [e/te]';
+        $name_num = '';
+        $pos_id=1;
+        $lang_id=4;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [[0=>'hikilehti', 
+                      1=>'hikilehe', 
+                      2=>'hikilehte', 
+                      3=>'hikilehtie', 
+                      4=>'hikilehi', 
+                      5=>'hikilehti', 
+                      6=>'hikilehte', 
+                     10=>FALSE], 
+                    null, 'hikileh', 'ti'];
+        $this->assertEquals( $expected, $result);                
+    }
+    
     public function testParseGenPl() {
         $base = 'kodihuol';
         $gen_pl_suf = '-ien/-iloin';

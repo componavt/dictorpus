@@ -360,21 +360,26 @@ class KarName
     }
         
     /**
-     * А. Если o.5 заканч. на С[oö]i и о.6 на C[aä] и кол-во слогов в о.5 и о.6 одинаковое, то o.5 > о.1 → если о.1 заканч. на
+     * А. Если o.5 заканч. на С[oö]i и о.6 на C[aä] и кол-во слогов в о.5 и о.6 одинаковое, 
+     *    то o.5 > о.1 → если о.1 заканч. на
      * 1) С[aä], то a > oi, ä > öi;
      * 2) ua, то ua > avoi
      * 3) iä, то iä > ävöi.
-     * 4) С[oö], то о.1+i.
      * 
-     * Б. Если o.5 заканч. на l[oö]i и кол-во слогов в o.5 больше чем в о.6, то =o.5.
+     * Б. Если o.5 заканч. на С[oöuy]i  и о.6 на С[oöuy]  и кол-во слогов в o.5 и о.6 одинаковое, 
+     *    то о.1+i.
      * 
-     * В. Если o.5 заканч. на Vi и о.6 заканч. на VV, то =o.5.
+     * В. Если o.5 заканч. на l[oö]i и кол-во слогов в o.5 больше чем в о.6, 
+     *    то =o.5.
      * 
-     * Г. Если o.5 заканч. на Ci 
-     * 1) и перед конечным i есть čč, šš, ss, k, t, p, g, d, b, то o.5 > о.1 → если о.1 заканч. на
-     *   1.1) СV, то V> i; 
-     *   1.2) ie>ei, ua>ai, iä>äi
-     * 2) иначе =o.5
+     * Г. Если o.5 заканч. на Vi и о.6 заканч. на VV, 
+     *    то =o.5.
+     * 
+     * Д. Если o.5 заканч. на Ci и перед конечным i есть čč, šš, ss, k, t, p, g, d, b, то o.5 > о.1 → если о.1 заканч. на
+     * 1) СV, то V> i; 
+     * 2) ie>ei, ua>ai, iä>äi
+     * 
+     * Е. если o.5 заканч. на Ci, то =o.5
      * 
      * @param string $stem1
      * @param string $stem5
@@ -385,36 +390,39 @@ class KarName
     public static function stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
-//dd($stem6, preg_match("/".$V.$V."$/u", $stem6));        
+        $syl_count5 = KarGram::countSyllable($stem5);
+        $syl_count6 = KarGram::countSyllable($stem6);
+        
+//dd($stem1, $stem5, $stem6);        
         if (preg_match("/".$C."[oö]i$/u", $stem5) && preg_match("/".$C."[aä]$/u", $stem6)
-                && KarGram::countSyllable($stem5)==KarGram::countSyllable($stem6)) { // А
+                && $syl_count5==$syl_count6) {                      // А
             if (preg_match("/^(.+".$C.")[aä]$/u", $stem1, $regs)) { // А.1
                 return $regs[1].KarGram::garmVowel($harmony,'oi');
-            } elseif (preg_match("/^(.+)ua$/u", $stem1, $regs)) { // А.2
+            } elseif (preg_match("/^(.+)ua$/u", $stem1, $regs)) {   // А.2
                 return $regs[1].'avoi';
-            } elseif (preg_match("/^(.+)iä$/u", $stem1, $regs)) { // А.3
+            } elseif (preg_match("/^(.+)iä$/u", $stem1, $regs)) {   // А.3
                 return $regs[1].'ävöi';
-            } elseif (preg_match("/^".$C."[oö]$/u", $stem1)) { // А.3
-                return $stem1.'i';
             }
-        } elseif (preg_match("/l[oö]i$/u", $stem5) && KarGram::countSyllable($stem5)>KarGram::countSyllable($stem6) // Б
-                || preg_match("/".$V."i$/u", $stem5) && preg_match("/".$V.$V."$/u", $stem1)) { // В
-//dd($stem1, $stem5, $stem6);        
+        } elseif (preg_match("/".$C."[oöuy]i$/u", $stem5) && preg_match("/".$C."[oöuy]$/u", $stem6) 
+                && $syl_count5==$syl_count6) {                                                     // Б
+            return $stem1.'i';
+            
+        } elseif (preg_match("/l[oö]i$/u", $stem5) && $syl_count5>$syl_count6                      // В
+                || preg_match("/".$V."i$/u", $stem5) && preg_match("/".$V.$V."$/u", $stem1)) {     // Г
             return $stem5;
+            
         } elseif (preg_match("/".$C."i$/u", $stem5)) { // Г
-            if (preg_match("/čči$|šši$|ssi$|[ktpgdb]i$/u", $stem5)) { // Г.1
-                if (preg_match("/^(.+".$C.")".$V."$/u", $stem1, $regs)) {
+            if (preg_match("/čči$|šši$|ssi$|[ktpgdb]i$/u", $stem5)) {     // Д
+                if (preg_match("/^(.+".$C.")".$V."$/u", $stem1, $regs)) { // Д.1
                     return $regs[1].'i';
-                } elseif (preg_match("/^(.+)ie$/u", $stem1, $regs)) {
-                    return $regs[1].'ei';
+                } elseif (preg_match("/^(.+)i([eä])$/u", $stem1, $regs)) {
+                    return $regs[1].$regs[2].'i';
                 } elseif (preg_match("/^(.+)ua$/u", $stem1, $regs)) {
                     return $regs[1].'ai';
-                } elseif (preg_match("/^(.+)iä$/u", $stem1, $regs)) {
-                    return $regs[1].'äi';
                 } else {
                     return $stem1;
                 }
-            } else {
+            } else {                                                      // E
                 return $stem5;
             }
         }

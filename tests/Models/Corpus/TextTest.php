@@ -118,8 +118,8 @@ Suoluz mägeh tulet siid d’o lidne.";
 /*        list($text, $pseudo_end) = Text::preProcessText(trim($source_text));
 dd($text);        */
         $expected_xml  = '<s id="1"><w id="1">Nu</w> <w id="2">a</w> <w id="3">sid</w> <w id="4">d’o</w> <w id="5">tännä</w> <w id="6">lähted</w> <w id="7">lidnad</w> '
-                       . '<w id="8">lähembä</w> <w id="9">ka</w> <w id="10">Suoluz</w> <w id="11">mägi</w> <w id="12">tuli</w>.</s>'."\n".'<br />'."\n"
-                       . '<s id="2"><br />'."\n"
+                       . '<w id="8">lähembä</w> <w id="9">ka</w> <w id="10">Suoluz</w> <w id="11">mägi</w> <w id="12">tuli</w>.</s>'."\n".'<br />'."\n<br />"."\n"
+                       . '<s id="2">'
                        . '<w id="13">Suoluz</w> <w id="14">mägeh</w> <w id="15">tulet</w> <w id="16">siid</w> <w id="17">d’o</w> <w id="18">lidne</w>.</s>';
         
         $text = new Text();
