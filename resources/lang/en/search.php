@@ -45,7 +45,7 @@ return [
     'regex_or' => 'p1 or p2. For example, <b>ab|cd</b> matches the strings <i>ab</i>, <i>cd</i>',
     'regex_vowel' => 'any vowel.',
     'regex_consonant' => 'any consonant letter.',
-    'refine_search' => 'Refine your search, please.',
+    'refine_search' => 'Refine your request',
     'search_results' => 'Search results',
     'show_by' => 'by',
     'simple_search'=> 'Simple Search',

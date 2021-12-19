@@ -439,35 +439,7 @@ AND t1.word_number-t2.word_number<=|B|;
     }    
     
     public static function searchQueryToString($args) {
-        $out = [];
-        if (sizeof($args['search_lang'])) {
-            $out[] = '(<b>'.trans('dict.lang'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ', 
-                    array_map(function ($id) {return Lang::getNameByID($id); }, 
-                            $args['search_lang'])).')';
-        }
-        if (sizeof($args['search_dialect'])) {
-            $out[] = '(<b>'.trans('dict.dialect'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
-                    array_map(function ($id) {return Dialect::getNameByID($id); }, 
-                            $args['search_dialect'])).')';
-        }
-        if (sizeof($args['search_corpus'])) {
-            $out[] = '(<b>'.trans('corpus.corpus'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
-                    array_map(function ($id) {return Corpus::getNameByID($id); }, 
-                            $args['search_corpus'])).')';
-        }
-        if (sizeof($args['search_genre'])) {
-            $out[] = '(<b>'.trans('corpus.genre'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
-                    array_map(function ($id) {return Genre::getNameByID($id); }, 
-                            $args['search_genre'])).')';
-        }
-        if ($args['search_year_from']) {
-            $out[] = '<b>'.trans('search.year_from'). '</b>: '. 
-                            $args['search_year_from'].'';
-        }
-        if ($args['search_year_to']) {
-            $out[] = '<b>'.trans('search.year_to'). '</b>: '. 
-                            $args['search_year_to'].'';
-        }
+        $out = self::searchQueryToStringMeta($args);
         
         foreach ($args['search_words'] as $i => $word) {
             if (!isset($word['w']) && !isset($word['p']) && !isset($word['g'])) {
@@ -497,12 +469,47 @@ AND t1.word_number-t2.word_number<=|B|;
                 $tmp[] = Gramset::getStringByID($word['gs']);
             }
             
-            $out[] = '<br>'.(isset($word['d_f']) && isset($word['d_t']) 
+            $out[] = //'<br>'.
+                    (isset($word['d_f']) && isset($word['d_t']) 
                     ? trans('search.in_distance', ['from'=>$word['d_f'], 'to'=>$word['d_t']]) : '')
                     .' <b>'.trans('corpus.word'). " $i</b>: ".join(' <span class="warning">'.trans('search.and').'</span> ',$tmp);
         } 
-        return join(' <span class="warning">'.trans('search.and').'</span> ', $out);
+        return join(' <span class="warning">'.trans('search.and').'</span><br>', $out);
     }
+    
+    public static function searchQueryToStringMeta($args) {
+        $meta = [];
+        if (sizeof($args['search_lang'])) {
+            $meta[] = '(<b>'.trans('dict.lang'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ', 
+                    array_map(function ($id) {return Lang::getNameByID($id); }, 
+                            $args['search_lang'])).')';
+        }
+        if (sizeof($args['search_dialect'])) {
+            $meta[] = '(<b>'.trans('dict.dialect'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
+                    array_map(function ($id) {return Dialect::getNameByID($id); }, 
+                            $args['search_dialect'])).')';
+        }
+        if (sizeof($args['search_corpus'])) {
+            $meta[] = '(<b>'.trans('corpus.corpus'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
+                    array_map(function ($id) {return Corpus::getNameByID($id); }, 
+                            $args['search_corpus'])).')';
+        }
+        if (sizeof($args['search_genre'])) {
+            $meta[] = '(<b>'.trans('corpus.genre'). '</b>: '. join(' <span class="warning">'.trans('search.or').'</span> ',
+                    array_map(function ($id) {return Genre::getNameByID($id); }, 
+                            $args['search_genre'])).')';
+        }
+        if ($args['search_year_from']) {
+            $meta[] = '<b>'.trans('search.year_from'). '</b>: '. 
+                            $args['search_year_from'].'';
+        }
+        if ($args['search_year_to']) {
+            $meta[] = '<b>'.trans('search.year_to'). '</b>: '. 
+                            $args['search_year_to'].'';
+        }
+    
+        return sizeof($meta) ? [join(' <span class="warning">'.trans('search.and').'</span> ', $meta)] : [];
+    }    
     
     /**
      * Устанавить разметку с блоками слов

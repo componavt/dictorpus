@@ -75,7 +75,6 @@ class SentenceController extends Controller
 //dd($search_query);        
         $entry_number = $numAll = 0;
         $texts = null;
-        
         if (!sizeof($url_args['words'])) {
             $refine = true; // отправляем уточнить запрос, без слов искать не будем
         } else {
@@ -86,7 +85,7 @@ class SentenceController extends Controller
                 $numAll = $texts->count();
                 $texts = $texts->paginate($this->url_args['limit_num']);
             }
-        }        
+        }      
         return view('corpus.sentence.results',
                 compact('texts', 'numAll', 'entry_number', 'refine',
                         'search_query', 'args_by_get', 'url_args'));

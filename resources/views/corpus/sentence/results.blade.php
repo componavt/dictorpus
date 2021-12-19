@@ -12,12 +12,11 @@
 @section('body')
         <h3>{{trans('search.search_results')}}</h3>
         <p>{!!$search_query!!}</p>
-        @if ($refine)
-            {{trans('search.refine_search')}}
-        @else 
-            {{trans_choice('search.founded_texts', 
-                $numAll>20 ? ($numAll%10 == 0 ? 5 : $numAll%10) : $numAll, ['count'=>number_format($numAll, 0, ',', ' ')])}}{{trans_choice('search.founded_entries', 
-                    $entry_number>20 ? ($entry_number%10 == 0 ? 5 : $entry_number%10) : $entry_number, ['count'=>number_format($entry_number, 0, ',', ' ')])}}.
+        <p>{{trans_choice('search.founded_texts', 
+            $numAll>20 ? ($numAll%10 == 0 ? 5 : $numAll%10) : $numAll, ['count'=>number_format($numAll, 0, ',', ' ')])}}{{trans_choice('search.founded_entries', 
+            $entry_number>20 ? ($entry_number%10 == 0 ? 5 : $entry_number%10) : $entry_number, ['count'=>number_format($entry_number, 0, ',', ' ')])}}.</p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/sentence') }}{{$args_by_get}}">{{trans('search.refine_search')}}</a></p>
+        @if (!$refine)
             @if ($numAll)     
             <ol start='{{$list_count}}'>
                 @foreach($texts as $text)

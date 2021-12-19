@@ -47,7 +47,7 @@ return [
     'regex_or' => 'p1 или p2. Например, <b>ab|cd</b> соответствуют строки <i>ab</i>, <i>cd</i>',
     'regex_vowel' => 'любая гласная буква.',
     'regex_consonant' => 'любая согласная буква',
-    'refine_search' => 'Уточните поиск, пожалуйста.',
+    'refine_search' => 'Уточнить запрос',
     'search_results' => 'Результаты поиска',
     'show_by' => 'по',
     'simple_search'=> 'Простой поиск',
