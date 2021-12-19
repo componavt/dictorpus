@@ -27,7 +27,7 @@
         <i class='add-more add-pos-codes fas fa-plus-circle fa-lg' onClick='callChooseGram(this)' data-for='search_words_{{$count}}__g_'></i>
     </div>
     <div class="col-sm-2">
-        <div id="distance{{$count+1}}"  class="form-group"  style="display:none">
+        <div id="distance{{$count+1}}"  class="form-group"{!! !isset($url_args['search_words'][$count+1]['d_f']) ?  ' style="display:none"' : '' !!}>
             <label for="search_words[1][g]">{{trans('search.distance')}}&nbsp;</label>
             <i class="help-icon far fa-question-circle fa-lg" onclick="callHelp('help-distance')"></i>
             <div style="display: flex">
@@ -37,7 +37,8 @@
                 <input class="form-control" name="search_words[{{$count+1}}][d_t]" type="text" value="{{$url_args['search_words'][$count+1]['d_t'] ?? 1}}" disabled>
             </div>            
         </div>    
-        <a title="{{trans('search.add_word')}}" style='cursor: pointer; padding-top: 28px; display: block' onClick='addSentenceWordsFields(this)' data-count='{{ $count+1 }}'>
+        <a title="{{trans('search.add_word')}}" style='cursor: pointer; padding-top: 28px; display: {!! isset($url_args['search_words'][$count+1]['d_f']) ?  'none' : 'block' !!}' onClick='addSentenceWordsFields(this)' data-count='{{ $count+1 }}'>
             <i class="far fa-plus-square fa-2x"></i>
         </a>
+    </div>
 </div>
