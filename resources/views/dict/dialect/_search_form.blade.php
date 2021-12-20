@@ -2,7 +2,7 @@
                              'method' => 'get', 
                              'class' => 'form-inline']) 
         !!}
-<div class="row">
+<div class="search-form row">
     <div class="col-sm-8">
         @include('widgets.form.formitem._select', 
                 ['name' => 'lang_id', 

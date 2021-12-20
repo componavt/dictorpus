@@ -1,6 +1,6 @@
         {!! Form::open(['url' => $url, 'method' => 'get']) !!}
-        <div class="row">
-            <div class="col-md-3">
+        <div class="search-form row">
+            <div class="col-md-4">
                 @include('widgets.form.formitem._select', 
                         ['name' => 'search_lang', 
                          'values' => $lang_values,
@@ -22,7 +22,7 @@
                          'value' => $url_args['search_linked'],
                          'title'=>trans('corpus.has_link_with_lemma').'?&nbsp;&nbsp;'])
             </div>
-            <div class="col-md-3 search-button-b"><br>
+            <div class="col-md-4 search-button-b" style='padding-top:25px'>
                 <span>
                 {{trans('search.show_by')}}
                 </span>
@@ -33,8 +33,6 @@
                 <span>
                         {{ trans('messages.records') }}
                 </span>
-            </div>
-            <div class="col-md-2 submit-button-b">       
                 @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
             </div>
         </div>

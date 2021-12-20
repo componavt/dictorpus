@@ -2,7 +2,7 @@
                              'method' => 'get']) 
         !!}
         
-<div class="row">
+<div class="search-form row">
     <div class="col-sm-3">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_wordform', 
@@ -26,8 +26,6 @@
                  'is_multiple' => false,
                  'class'=>'select-dialect form-control'])
     </div>
-</div>    
-<div class="row">
     <div class="col-sm-3">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_pos', 
@@ -57,5 +55,4 @@
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>    
-
         {!! Form::close() !!}

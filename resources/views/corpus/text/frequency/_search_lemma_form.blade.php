@@ -1,5 +1,5 @@
         {!! Form::open(['url' => $url, 'method' => 'get']) !!}
-        <div class="row">
+        <div class="search-form row">
             <div class="col-md-6">
                 @include('widgets.form.formitem._select', 
                         ['name' => 'search_lang', 

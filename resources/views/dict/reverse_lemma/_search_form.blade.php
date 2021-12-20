@@ -1,7 +1,7 @@
         {!! Form::open(['url' => $url,
                         'method' => 'get'])
         !!}
-<div class="row">
+<div class="search-form row">
     <div class="col-sm-4">
         @include('widgets.form.formitem._select',
                 ['name' => 'search_lang',
@@ -34,6 +34,9 @@
                 'special_symbol' => true,
                 'help_func' => "callHelp('help-text-fields')",
                 'attributes'=>['placeholder'=>trans('dict.lemma')]])                               
+    </div>
+    
+    <div class="col-sm-4">
     </div>
     
     <div class="col-sm-4 search-button-b">       

@@ -23,7 +23,7 @@
         {!! Form::open(['url' => '/corpus/author/', 
                              'method' => 'get']) 
         !!}
-        <div class="row">
+        <div class="search-form row">
             <div class="col-sm-8">
             @include('widgets.form.formitem._text', 
                 ['name' => 'search_name', 

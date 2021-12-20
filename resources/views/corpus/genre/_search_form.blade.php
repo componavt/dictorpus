@@ -5,25 +5,24 @@
     <div class="col-md-1">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_id', 
-                'value' => $url_args['search_id'],
-                'title'  => 'ID',
-                'attributes'=>['size' => 3]])
+                'value' => $url_args['search_id'] ? $url_args['search_id'] : '',
+                'attributes'=>['placeholder' => 'ID']])
     </div>
     <div class="col-md-5">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_corpus', 
                  'values' => $corpus_values,
                  'value' => $url_args['search_corpus'],
-                 'title' => trans('corpus.corpus'),
+                 'attributes'=>['placeholder' => trans('corpus.corpus')]
             ])
     </div>
     <div class="col-md-4">
          @include('widgets.form.formitem._text', 
                 ['name' => 'search_name', 
                 'value' => $url_args['search_name'],
-                'title'  => trans('corpus.name')])
+                'attributes'=>['placeholder' => trans('corpus.name')]])
     </div>
-    <div class="col-md-2"><br>
+    <div class="col-md-2" style="text-align: right">
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>

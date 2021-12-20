@@ -1,7 +1,7 @@
         {!! Form::open(['url' => '/corpus/place/', 
                              'method' => 'get']) 
         !!}
-<div class="row">
+<div class="search-form row">
     <div class="col-sm-1">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_id', 

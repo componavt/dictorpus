@@ -1,7 +1,7 @@
 <?php $list_count = $limit_num * ($page-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('dict.dialect_list') }}
 @stop
 
@@ -9,9 +9,7 @@
     {!!Html::style('css/table.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('dict.dialect_list') }}</h1>
-            
+@section('body')
         <p style="text-align: right">
         @if (User::checkAccess('ref.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/dialect/create') }}{{$args_by_get}}">

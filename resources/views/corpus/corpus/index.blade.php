@@ -22,20 +22,25 @@
         </p>
         
         {!! Form::open(['url' => '/corpus/corpus/', 
-                             'method' => 'get', 
-                             'class' => 'form-inline']) 
+                             'method' => 'get']) 
         !!}
+<div class="search-form row">
+    <div class="col-sm-1">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_id', 
                 'value' => $search_id,
-                'attributes'=>['size' => 3,
-                               'placeholder' => 'ID']])
+                'attributes'=>['placeholder' => 'ID']])
+    </div>
+    <div class="col-sm-9">
          @include('widgets.form.formitem._text', 
                 ['name' => 'corpus_name', 
                 'value' => $corpus_name,
-                'attributes'=>['size' => 15,
-                               'placeholder' => trans('corpus.name')]])
+                'attributes'=>['placeholder' => trans('corpus.name')]])
+    </div>
+    <div class="col-sm-2" style="text-align: right">       
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
+    </div>
+</div>    
         {!! Form::close() !!}
 
         @include('widgets.founded_records', ['numAll'=>$numAll])

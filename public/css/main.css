@@ -441,6 +441,11 @@ h2 {
     padding: 20px 10px 0;
 }
 
+/*.search-form.row {
+    margin-right: -4%;
+    margin-left: -4%;
+}*/
+
 .search-text  {
     padding-top: 10px;
 }

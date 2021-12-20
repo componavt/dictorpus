@@ -1,7 +1,7 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('corpus.place_list') }}
 @stop
 
@@ -9,9 +9,7 @@
     {!!Html::style('css/table.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('corpus.place_list') }}</h1>
-            
+@section('body')
         <p>
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/place/create') }}">
