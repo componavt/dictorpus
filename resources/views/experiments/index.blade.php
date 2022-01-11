@@ -13,4 +13,5 @@
 <p>Поиск закономерностей в анализе словоформ для тверского словаря</p>
 <li><a href="/experiments/pattern_search_in_wordforms">сформировать множество</a></li>
 <li><a href="/experiments/pattern_search_in_wordforms_results">посмотреть результаты</a></li>
+<p><a href="/experiments/bible_lang">Анализ языковых конструкций библейских текстов</a></p>
 @endsection

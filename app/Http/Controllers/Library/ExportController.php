@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Storage;
 use Carbon\Carbon;
@@ -68,7 +68,7 @@ class ExportController extends Controller
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         
-        $date = now();
+        $date = Carbon::now();
         $date_now = $date->toDateString();
         $dir_name = "export/unimorph/".$date_now."/";        
         Storage::disk('public')->makeDirectory($dir_name);
@@ -91,9 +91,10 @@ class ExportController extends Controller
     public function exportCompoundsToUniMorph() {
 //        ini_set('max_execution_time', 7200);
 //        ini_set('memory_limit', '512M');
-        $dir_name = "export/unimorph/2019-11/";
-        $date = now();
+        $date = Carbon::now();
         $date_now = $date->toDateString();
+        $dir_name = "export/unimorph/".$date_now."/";        
+        Storage::disk('public')->makeDirectory($dir_name);
         
         foreach ([4, 5, 6, 1] as $lang_id) {
 //            $lang_id = 1;
@@ -128,7 +129,7 @@ class ExportController extends Controller
      * vepkar-20190129-vep
      */
     public function exportLemmasWithPOS() {
-        $date = now();
+        $date = Carbon::now();
         $date_now = $date->toDateString();
         
         $lang_id = 1;
@@ -159,7 +160,7 @@ class ExportController extends Controller
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
 //dd(ini_get('memory_limit'));
-        $date = now();
+        $date = Carbon::now();
         $date_now = $date->toDateString();
         foreach ([4, 5, 6, 1] as $lang_id) {
 //            $lang_id = 6;
@@ -187,7 +188,7 @@ class ExportController extends Controller
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
 //dd(ini_get('memory_limit'));
-        $date = now();
+        $date = Carbon::now();
         $date_now = $date->toDateString();
         $lang_id = 1;
         $lang = Lang::find($lang_id);
@@ -206,7 +207,7 @@ class ExportController extends Controller
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
 //dd(ini_get('memory_limit'));
-        $date = now();
+        $date = Carbon::now();
         $date_now = $date->toDateString();
 //        foreach ([4, 5, 6, 1] as $lang_id) {
             $lang_id = 1;
