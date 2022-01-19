@@ -8,6 +8,7 @@ use DB;
 use LaravelLocalization;
 use User;
 
+use App\Library\Str;
 //use \App\Library\Grammatic;
 
 use App\Models\Dict\Gramset;
@@ -265,12 +266,20 @@ class Word extends Model
         return join('|',$lemma_words);
     }
     
-    public function isLinkedWithLemmaByLang($lang_id) {
-        $word = $this->word;
-/*        return Word::where('word', 'like', $word)
+    public function isLinkedWithLemma() {
+//        return $this->meanings()->count();
+        return Word::where('word', 'like', $this->word)
+                   ->whereIn('id', function ($q) {
+                       $q->select('word_id')->from('meaning_text');
+                   })->count();
+/*        return Word::where('word', 'like', $this->word)
                    ->join('meaning_text', 'meaning_text.word_id', '=', 'words.id')
-                   ->count();
-*/        $word_t = addcslashes($word,"'%");
+                   ->count();*/
+    }
+    
+    public function isLinkedWithLemmaByLang($lang_id, $dialect_id=null) {
+        $word = $this->word;
+        $word_t = addcslashes($word,"'%");
         $word_t_l = mb_strtolower($word_t);
         $lemmas = Lemma::where('lang_id',$lang_id)
                 ->whereRaw("lemma_for_search like '$word_t' or lemma_for_search like '$word_t_l'");
@@ -664,5 +673,16 @@ class Word extends Model
         $words[$word_count-1] = $word;
 //print "$i: $char| word: $word| str: $str\n";            
         return [$str, $words]; 
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request/*, 100*/) + [
+                    'search_dialect'  => (int)$request->input('search_dialect'),
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_word'     => $request->input('search_word'),
+                    'search_linked'   => (int)$request->input('search_linked'),
+                ];
+        
+        return $url_args;
     }
 }

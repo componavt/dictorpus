@@ -72,9 +72,17 @@ if (! function_exists('plural_from_model')) {
     }
 }
 
-if (! function_exists('user_can_edit')) {
-    function user_can_edit()
+if (! function_exists('user_dict_edit')) {
+    function user_dict_edit()
     {
         return User::checkAccess('dict.edit');
+    }
+}
+
+if (! function_exists('to_sql')) {
+    function to_sql($query)
+    {
+        return vsprintf(str_replace(array('?'), array('\'%s\''), $query->toSql()), $query->getBindings());            
+
     }
 }

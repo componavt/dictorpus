@@ -22,11 +22,11 @@
             |
             <a href="{{ route('lemma.sorted_by_length') }}">{{ trans('dict.list_long_lemmas') }}</a> 
             |
-        @if (user_can_edit())
+        @if (user_dict_edit())
             <a href="{{route('lemma.create')}}{{$args_by_get}}">
         @endif
             {{ trans('messages.create_new_f') }}
-        @if (user_can_edit())
+        @if (user_dict_edit())
             </a>
         @endif
 

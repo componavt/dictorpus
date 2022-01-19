@@ -16,6 +16,7 @@ use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -40,24 +41,8 @@ class WordController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
                                      'updateMeaningLinks', 'updateWordBlock']]);
-        $this->url_args = [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
-                    'search_lang'     => (int)$request->input('search_lang'),
-                    'search_word'     => $request->input('search_word'),
-                    'search_linked'   => $request->input('search_linked'),
-                ];
+        $this->url_args = Word::urlArgs($request);  
         
-        if (!$this->url_args['page']) {
-            $this->url_args['page'] = 1;
-        }
-        
-        if ($this->url_args['limit_num']<=0) {
-            $this->url_args['limit_num'] = 100;
-        } elseif ($this->url_args['limit_num']>1000) {
-            $this->url_args['limit_num'] = 1000;
-        }   
-       
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
     
@@ -68,6 +53,7 @@ class WordController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function frequencyDict(Request $request) {
+//        $start = microtime(true);
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
 
@@ -84,18 +70,37 @@ class WordController extends Controller
                 $words = $words->where('word','like',$url_args['search_word']);
             } 
 
-//var_dump($words->toSql());        
-            $words = $words 
-//                    ->take($this->url_args['limit_num'])
-                    ->take(1000)
-                    ->get(['word',DB::raw('count(word) as frequency')]);
+            if ($url_args['search_dialect']) {
+                $words = $words->whereIn('text_id', function ($q) use ($url_args) {
+                    $q->select('text_id')->from('dialect_text')
+                      ->whereDialectId($url_args['search_dialect']); 
+                });
+            } 
+
+            if ($url_args['search_linked']=="1") {
+                $words = $words->whereIn('id', function ($q) {
+                    $q->select('word_id')->from('meaning_text');
+                });
+            } elseif ($url_args['search_linked']=="2") {
+                $words = $words->whereNotIn('id', function ($q) {
+                    $q->select('word_id')->from('meaning_text');
+                });
+            } 
+//dd(to_sql($words));        
+            $words = $words
+//                    ->take($url_args['limit_num'])
+                    ->select('word',DB::raw('count(word) as frequency'))
+                    ->paginate($url_args['limit_num']);
+//                    ->get(['word',DB::raw('count(word) as frequency')]);
         } else {
             $words = NULL;
         }
         $lang_values = Lang::getList();
-        
+        $dialect_values = Dialect::getList();
+//dd($words);        
         return view('corpus.word.freq_dict',
-                compact('lang_values', 'words', 'args_by_get', 'url_args'));
+                compact('dialect_values', 'lang_values', 'words',/* 'start',*/
+                        'args_by_get', 'url_args'));
     }
     
     public function updateMeaningLinks() {

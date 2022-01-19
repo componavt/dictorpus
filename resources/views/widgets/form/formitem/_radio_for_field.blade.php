@@ -11,5 +11,5 @@
                 ['name' => $name, 
                  'values' => $radio_value,
                  'checked' => $obj->$name ?? NULL,
-                 'title'=>$title])
+                 'title'=>$title ?? ''])
         </div>
