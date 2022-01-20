@@ -211,7 +211,9 @@ Route::group(
         Route::get('service/add_wordform_affixes', 'Library\ServiceController@addWordformAffixes');
         Route::get('service/addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
         Route::get('service/calculate_lemma_wordforms', 'Library\ServiceController@calculateLemmaWordforms');
+        Route::get('service/check_author', 'Library\ServiceController@checkAuthors');
         Route::get('service/check_meaning_text', 'Library\ServiceController@checkMeaningText');
+        Route::get('service/check_parallel_texts', 'Library\ServiceController@checkParallelTexts');
         Route::get('service/check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('service/copy_lemmas', 'Library\ServiceController@copyLemmas');
         Route::get('service/create_initial_wordforms', 'Library\ServiceController@createInitialWordforms');
@@ -221,18 +223,17 @@ Route::group(
         Route::get('service/regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');
         Route::get('service/regenerate_livvic_ill_pl', 'Library\ServiceController@reGenerateLivvicIllPl');
         Route::get('service/reload_stem_affixes', 'Library\ServiceController@reloadStemAffixes');
+        Route::get('service/select_lemmas_for_multidict', 'Library\ServiceController@selectLemmasForMultidict');
         Route::get('service/wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('service/wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
-        Route::get('service/check_author', 'Library\ServiceController@checkAuthors');
-        Route::get('service/check_parallel_texts', 'Library\ServiceController@checkParallelTexts');
-        Route::get('service/tmp_fill_sentence_id_in_text_wordform', 'Library\ServiceController@tmpFillSentenceIdInTextWordform');
+/*        Route::get('service/tmp_fill_sentence_id_in_text_wordform', 'Library\ServiceController@tmpFillSentenceIdInTextWordform');
         Route::get('service/tmp_fill_sentence_id_in_words', 'Library\ServiceController@tmpFillSentenceIdInWords');
         Route::get('service/tmp_fill_word_id_in_text_wordform', 'Library\ServiceController@tmpFillWordIdInTextWordform');
         Route::get('service/tmp_fill_wordform_for_search', 'Library\ServiceController@tmpFillWordformForSearch');
         Route::get('service/tmp_fill_genres', 'Library\ServiceController@tmpFillGenres');
         Route::get('service/tmp_split_into_sentences', 'Library\ServiceController@tmpSplitTextsIntoSentences');
         Route::get('service/tmp_word_numbers_for_words', 'Library\ServiceController@tmpWordNumbersForWords');
-        Route::get('service/tmp_move_br_from_sentences', 'Library\ServiceController@tmpMoveBrFromSentences');
+        Route::get('service/tmp_move_br_from_sentences', 'Library\ServiceController@tmpMoveBrFromSentences');*/
         
 //        Route::get('dict/lemma/tmpUpdateStemAffix', 'Dict\LemmaController@tmpUpdateStemAffix');
 //        Route::get('dict/lemma/tmpSplitWordforms', 'Dict\LemmaController@tmpSplitWordforms');

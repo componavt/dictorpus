@@ -7,6 +7,7 @@
 
 @section('headExtra')
     <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/dataTables.bootstrap.min.css">
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/table.css')!!}
 @stop
 
@@ -62,16 +63,18 @@
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.numericCommaSort.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.numericCommaTypeDetect.js"></script>
+    {!!Html::script('js/select2.min.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
-    $(document).ready( function () {
-        $('#lemmasTable').DataTable( {
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json'
-            },
-            "order": [[ 3, "desc" ]]
-        } );
+    selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);
+    
+    $('#lemmasTable').DataTable( {
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json'
+        },
+        "order": [[ 3, "desc" ]]
     } );
 @stop
 

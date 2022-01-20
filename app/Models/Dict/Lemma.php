@@ -1908,6 +1908,7 @@ dd($wordforms);
                     'search_concept_category'  => $request->input('search_concept_category'),
                     'search_concept'  => (int)$request->input('search_concept'),
 //                    'search_dialect'  => (array)$request->input('search_dialect'),
+                    'search_dialect'  => (int)$request->input('search_dialect'),
                     'search_dialects' => (array)$request->input('search_dialects'),
                     'search_gramset'  => (int)$request->input('search_gramset'),
                     'search_gramsets' => (array)$request->input('search_gramsets'),
@@ -1946,11 +1947,18 @@ dd($wordforms);
         return $url_args;
     }
     
-    public static function selectFromMeaningText() {
-        return Lemma::join('meanings','lemmas.id','=','meanings.lemma_id')
+    public static function selectFromMeaningText($search_dialect=null) {
+        $builder = Lemma::join('meanings','lemmas.id','=','meanings.lemma_id')
                     ->join('meaning_text','meanings.id','=','meaning_text.meaning_id')
                     //->whereNotNull('pos_id')        
                     ->where('relevance', '>', 0);
+        if ($search_dialect) {
+            $builder->whereIn('text_id', function ($q) use ($search_dialect) {
+                $q->select('text_id')->from('dialect_text')
+                  ->whereDialectId($search_dialect);
+            });
+        }
+        return $builder;
     }
     
     /**

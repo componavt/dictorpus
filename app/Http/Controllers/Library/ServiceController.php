@@ -918,6 +918,14 @@ print 'done';
         return view('service.authors', compact('texts'));        
     }    
     
+    public function selectLemmasForMultidict() {
+        $lang_id=5; // livvic
+        $dialect_id=44; // New written Livvic
+        
+        
+    }
+
+
     /*
      * split wordforms such as pieksäh/pieksähes on two wordforms
      * and link meanings of lemma with sentences

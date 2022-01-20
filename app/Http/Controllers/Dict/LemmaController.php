@@ -952,9 +952,8 @@ class LemmaController extends Controller
             $pos_values[$lemma->pos_id] = $lemma->pos->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
         }
 
-
         if ($url_args['search_lang']) {
-            $lemmas = Lemma::selectFromMeaningText()
+            $lemmas = Lemma::selectFromMeaningText($url_args['search_dialect'])
                            ->join('parts_of_speech','parts_of_speech.id','=','lemmas.pos_id')
                            ->whereLangId($url_args['search_lang'])
                            ->groupBy('lemma_id')
@@ -963,14 +962,17 @@ class LemmaController extends Controller
             if ($url_args['search_pos']) {
                 $lemmas = $lemmas->wherePosId($url_args['search_pos']);
             } 
+            
 //dd($lemmas->toSql());
             $lemmas = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', DB::raw('count(*) as frequency')]);
         } else {
             $lemmas = NULL;
         }
+        $dialect_values = Dialect::getList();
                 
         return view('corpus.text.frequency.lemmas',
-                compact('lang_values', 'lemmas', 'pos_values', 'args_by_get', 'url_args'));
+                compact('dialect_values', 'lang_values', 'lemmas', 'pos_values', 
+                        'args_by_get', 'url_args'));
     }
     
     public function getWordformTotal($id) {

@@ -1,6 +1,6 @@
         {!! Form::open(['url' => $url, 'method' => 'get']) !!}
         <div class="search-form row">
-            <div class="col-md-6">
+            <div class="col-md-3">
                 @include('widgets.form.formitem._select', 
                         ['name' => 'search_lang', 
                          'values' => $lang_values,
@@ -9,6 +9,16 @@
                 ])                 
             </div>
             <div class="col-md-4">
+                @include('widgets.form.formitem._select2',
+                    ['name' => 'search_dialect', 
+                     'values' =>$dialect_values,
+                     'value' => $url_args['search_dialect'],
+                     'title' => trans('dict.dialect'),
+                     'is_multiple' => false,
+                     'class'=>'select-dialect form-control'
+                ])                
+            </div>
+            <div class="col-md-3">
                 @include('widgets.form.formitem._select', 
                         ['name' => 'search_pos', 
                          'values' => $pos_values,
