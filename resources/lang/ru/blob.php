@@ -156,6 +156,9 @@ return [
                     
                     <p><a class="publ-title" href="/docs/oma_mua_2021_21_6.pdf">Lyydin korpus kielen tiedustajile da opastujile abuh</a><br>
                     Paušin Šan’uu. Oma mua, № 21 (1561), 2021, c. 6.
+                    
+                    <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
+                    Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
                     ',
     'mobile-b' => 'Вы можете установить на свой телефон или планшет <a href="https://play.google.com/store/apps/details?id=vepkar.test">'
                  .'словарь вепсского и карельского языков Sanahelmi</a>, построенный на основе данных ВепКар, 
