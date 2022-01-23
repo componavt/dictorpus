@@ -623,6 +623,7 @@ class Text extends Model
         $this->sentences()->delete();
         $this->words()->delete();
         $this->video()->delete();
+        $this->authors()->delete();
 
         $this->delete();
     }    
