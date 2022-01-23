@@ -619,11 +619,11 @@ class Text extends Model
         $this->genres()->detach();
         $this->meanings()->detach();
         $this->wordforms()->detach();
+        $this->authors()->detach();
 
         $this->sentences()->delete();
         $this->words()->delete();
         $this->video()->delete();
-        $this->authors()->delete();
 
         $this->delete();
     }    
