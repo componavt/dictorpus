@@ -23,6 +23,7 @@
         <p><a href="export/compounds_for_unimorph">Экспорт фразеологизмов в Unimorph</a></p>
         <p><a href="export/bible">Экспорт вепсской Библии</a></p>
         <p><a href="export/for_mobile">Экспорт данных для мобильной версии</a></p>
+        <p><a href="export/for_speech">Экспорт данных для распознавания речи</a></p>
     @endif
         
     <h3>Проверка</h3>

@@ -180,6 +180,7 @@ Route::group(
         Route::get('export/lemma_with_pos', 'Library\ExportController@exportLemmasWithPOS');
         Route::get('export/sentences', 'Library\ExportController@exportSentencesToLines');                
         Route::get('export/unimorph', 'Library\ExportController@exportLemmasToUniMorph'); 
+        Route::get('export/for_speech', 'Library\ExportController@forSpeech');        
 
         Route::get('import/concept_parser', 'Library\ImportController@conceptParser');
         Route::get('import/concept_parser_check', 'Library\ImportController@conceptParserCheck');

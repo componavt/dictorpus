@@ -17,6 +17,7 @@ use App\Models\Dict\GramCategory;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
+use App\Models\Dict\Wordform;
 
 class ExportController extends Controller
 {
@@ -267,4 +268,48 @@ class ExportController extends Controller
         print "done.";
     }
     
+    public function forSpeech() {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '2000M');
+        
+        $lang_id = 5; // livvic
+        $dirname = 'export/for_speech/';
+        
+        $texts = Text::whereLangId($lang_id)
+                ->orderBy('id')->get();
+        
+        foreach ($texts as $text) {
+            Storage::disk('public')->put($dirname.'text_'.$text->id.'.txt', $text->text);
+        }
+        
+        $words = [];
+        $lemmas = Lemma::whereLangId($lang_id)
+                ->get();
+        foreach ($lemmas as $lemma) {
+            $words[] = $lemma->lemma;
+        }
+        
+        $wordforms = Wordform::whereIn('id', function ($q1) use ($lang_id) {
+                    $q1->select('wordform_id')->from('lemma_wordform')
+                       ->whereIn('lemma_id', function ($q2) use ($lang_id) {
+                            $q2->select('id')->from('lemmas')
+                               ->whereLangId($lang_id);
+                       });
+                    })->get();
+        
+        foreach ($wordforms as $wordform) {
+            $words[] = $wordform->wordform;
+        }
+        
+        $words = array_unique($words);
+        sort($words);
+        
+        $filename = $dirname.'dictionary.txt';
+        Storage::disk('public')->put($filename, '');
+        foreach ($words as $word) {
+            Storage::disk('public')->append($filename, $word);
+        }
+ 
+        print "done.";
+    }
 }

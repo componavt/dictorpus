@@ -48,7 +48,7 @@
                       {{$lemma->frequency}}
                 </td>
                 <td data-th="{{ trans('dict.status') }}">
-                    <a id="status-{{$lemma->lemma_id}}" class="set-status status{{$lemma->status}}" 
+                    <a class="set-status status{{$lemma->status}}" id="status-{{$lemma->lemma_id}}" 
                        onClick="setStatus({{$lemma->lemma_id}})"
                        data-old="{{$lemma->status}}" 
                        data-new="{{$lemma->status ? 0 : 1}}"></a>
