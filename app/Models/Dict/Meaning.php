@@ -9,6 +9,8 @@ use LaravelLocalization;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Text;
 //use App\Models\Corpus\Transtext;
+use App\Models\Corpus\SentenceFragment;
+use App\Models\Corpus\SentenceTranslation;
 
 use App\Models\Dict\Lang;
 use App\Models\Dict\Relation;
@@ -126,6 +128,14 @@ class Meaning extends Model
                                               $sentence->w_id, 
                                               $sentence->relevance);
             if ($sentence) {
+                $fragment = SentenceFragment::find($sentence['sent_obj']->id);
+                if ($fragment) {
+                    $sentence['s'] = $fragment->text_xml;
+                }
+                $translation_text = SentenceTranslation::getTextForLocale($sentence['sent_obj']->id);
+                if ($translation_text) {
+                    $sentence['trans_s'] = $translation_text;
+                }
                 $sentences[] = $sentence;
             }
         }

@@ -27,6 +27,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
 @if ($sentence['trans_s']) 
     <br><i>{!! $sentence['trans_s'] !!}</i>
 @endif
+
 @if ($sentence['text'])
 (<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id. '?search_sentence='.$sentence['s_id']) }}" 
     title="{{$place_title}}">{{$sentence['text']->title}}</a>)
@@ -42,7 +43,17 @@ if($sentence['text']->event && $sentence['text']->event->place) {
             @include('widgets.form.button._add', 
                     ['data_add' => $m_t_s_w,
                      'class' => 'add-example',
+                     'relevance' => 5,
                      'title' => trans('dict.add-example-5')])
+        @endif
+    @endif
+    @if (!isset($relevance) || $relevance!=10)
+        @if (isset($is_edit) && User::checkAccess('dict.edit'))
+            @include('widgets.form.button._add', 
+                    ['data_add' => $m_t_s_w,
+                     'class' => 'add-great-example',
+                     'relevance' => 10,
+                     'title' => trans('dict.add-example-10')])
         @endif
     @endif
     @if (isset($is_edit) && User::checkAccess('dict.edit'))

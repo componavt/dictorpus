@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
+use LaravelLocalization;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -918,11 +919,68 @@ print 'done';
         return view('service.authors', compact('texts'));        
     }    
     
-    public function selectLemmasForMultidict() {
+    // проверка на "чужие леммы"
+    // select count(*) from label_lemma where lemma_id in (select id from lemmas where lang_id not in (5)) and label_id=3;
+    public function multidictSelect() {
         $lang_id=5; // livvic
         $dialect_id=44; // New written Livvic
+        $label_id = 3; // for multimedia dictionary
         
+        $lemmas = Lemma::/*selectFromMeaningText($dialect_id)
+                       ->*/whereLangId($lang_id)
+                       ->whereNotIn('id', function ($q) use ($label_id) {
+                           $q->select('lemma_id')->from('label_lemma')
+                             ->whereLabelId($label_id);
+                       })
+                       ->whereIn('id', function ($q) use ($dialect_id) {
+                           $q->select('lemma_id')->from('meanings')
+                             ->whereIn('id', function ($q2) use ($dialect_id) {
+                               $q2->select('meaning_id')->from('meaning_text')
+                                  ->whereIn('text_id', function ($q3) use ($dialect_id) {
+                                      $q3->select('text_id')->from('dialect_text')
+                                         ->whereDialectId($dialect_id);
+                                  });
+                             });
+                       })->get();
+        foreach ($lemmas as $lemma) {
+//print "<p>".$lemma->id."</p>";            
+            $lemma->labels()->attach([$label_id]);
+        }               
+        print "done";
+    }
+    
+    public function multidictView(Request $request) {
+        $lang_id=5; // livvic
+        $label_id = 3; // for multimedia dictionary
+        $locale = LaravelLocalization::getCurrentLocale();
+        $url_args = //Str::urlArgs($request) + 
+            ['search_pos'      => (int)$request->input('search_pos'),
+//                'search_lemma'    => $request->input('search_lemma'),
+            ];
+        $args_by_get = Str::searchValuesByURL($url_args);
+
+        $lemmas = Lemma::selectFromMeaningText()
+            ->join('parts_of_speech','parts_of_speech.id','=','lemmas.pos_id')
+            ->whereLangId($lang_id)
+            ->whereIn('lemmas.id', function ($q) use ($label_id) {
+                $q->select('lemma_id')->from('label_lemma')
+                  ->whereLabelId($label_id);
+            })
+            ->groupBy('lemma_id')
+            ->latest(DB::raw('count(*)'));
+
+        if ($url_args['search_pos']) {
+            $lemmas = $lemmas->wherePosId($url_args['search_pos']);
+        } 
+
+//dd(to_sql($lemmas));
+        $lemmas = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', DB::raw('count(*) as frequency'), 'status']);
         
+        $pos_values = [NULL=>'']+PartOfSpeech::getList();
+        
+        return view('service.multidict.index',
+                compact('lemmas', 'pos_values', 
+                        'args_by_get', 'url_args'));
     }
 
 

@@ -15,11 +15,11 @@ function addMeaning() {
     });    
 }
 
-function addExample(i) {
+function addExample(i, relevance) {
     var id = $(i).data('add');
     var button = $(i);
     $.ajax({
-        url: '/dict/meaning/example/add/'+id, 
+        url: '/dict/meaning/example/add/' + id + '/' + relevance, 
         type: 'GET',
         success: function(result){
             $("#sentence-relevance_"+ id).html(result);

@@ -12,8 +12,11 @@ return [
     
     'abbr' => 'abbreviation',
     'add-example-5' => 'add a good example',
+    'add-example-10' => 'add the best example',
     'add_new_meaning' => 'add a new meaning',
     'add_new_relation' => 'add a new relation',
+    'add_fragment' => 'cut a fragment of the sentence',
+    'add_translation' => 'add a translation',
     'advtype' => 'adverb type',
     'advtypes' => [NULL=> '',
                     1 => 'manner',
@@ -248,6 +251,9 @@ return [
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
 
+    'status' => 'status',
+    'status0' => 'is not checked',
+    'status1' => 'is checked',
     'tense' => 'Tense',
     'transitive' => 'transitive',
     'translation' => 'translation',

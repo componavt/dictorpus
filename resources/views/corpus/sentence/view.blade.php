@@ -10,7 +10,7 @@
         @endif
     @endif
     
-    {!! $sentence->addWordBlocks($marked_words ?? []); !!}
+    {!! $sentence->addWordBlocks($marked_words ?? [], $sentence_xml ?? null); !!}
 
     @if (isset($with_right_context) && $with_right_context) 
 <?php

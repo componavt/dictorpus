@@ -140,10 +140,13 @@ class MeaningController extends Controller
      * @param type $example_id
      * @return string
      */
-    public function addExample($example_id)
+    public function addExample($example_id, $relevance)
     {
-        MeaningTextRel::updateExamples([$example_id=>5]);
-        return '<span class="glyphicon glyphicon-star relevance-5"></span>';
+        if ($relevance != 10) {
+            $relevance = 5;
+        }
+        MeaningTextRel::updateExamples([$example_id=>$relevance]);
+        return '<span class="glyphicon glyphicon-star relevance-'.$relevance.'"></span>';
     }
 
     /**
@@ -169,8 +172,8 @@ class MeaningController extends Controller
         $sentence_total = $meaning->countSentences(true);
         $sentences = $meaning->sentences(false, $limit, $start);
         $count=1+$start;   
-        
-        return view('dict.lemma.show.examples', 
+//dd($sentences);        
+        return view('dict.lemma.example.all', 
                 compact('meaning', 'limit', 'start', 'count',
                         'sentence_count', 'sentence_total', 'sentences')); 
     }
@@ -187,31 +190,10 @@ class MeaningController extends Controller
         $sentences = $meaning->sentences(false, $limit, $start);
         $count=1+$start;   
         
-        return view('dict.lemma.show.examples_limit', 
+        return view('dict.lemma.example._limit', 
                 compact('meaning', 'limit', 'start', 'count',
                         'sentence_count', 'sentences')); 
     }
-
-    /**
-     * test: /dict/meaning/examples/reload/23813
-     * 
-     * @param INT $id
-     * @return \Illuminate\Http\Response
-     */
-/*    public function reloadExamples (int $id, Request $request) {
-        $limit = 5;
-        $start = (int)$request->input('start');
-        $meaning = Meaning::find($id);
-        if (!$meaning) {
-            return NULL;
-        }
-        
-        if (User::checkAccess('dict.edit')) {
-            $meaning->reloadExamples();
-        }
-        return view('dict.lemma.show.examples', compact('meaning', 'limit', 'start')); 
-    }*/
-
 
     /** 
      * (1) Copy vepsian.{meaning} to vepkar.meanings (without meaning_text)

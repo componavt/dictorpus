@@ -73,6 +73,14 @@ Route::group(
         Route::get('corpus/sentence/results', 'Corpus\SentenceController@results');
         Route::get('corpus/sentence/word_gram_form', 'Corpus\SentenceController@wordGramForm');
 
+        Route::get('corpus/sentence/fragment/{id}/edit', 'Corpus\SentenceFragmentController@edit');
+        Route::get('corpus/sentence/fragment/{id}/update', 'Corpus\SentenceFragmentController@update');
+        
+        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/create', 'Corpus\SentenceTranslationController@create');
+        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/store', 'Corpus\SentenceTranslationController@store');
+        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/edit', 'Corpus\SentenceTranslationController@edit');
+        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/update', 'Corpus\SentenceTranslationController@update');
+        
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');
         Route::get('corpus/text/{id}/sentences', 'Corpus\TextController@editSentences');
@@ -109,6 +117,7 @@ Route::group(
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::get('dict/lemma/{id}/reload_stem_affix_by_wordforms', 'Dict\LemmaController@reloadStemAffixByWordforms');
+        Route::get('dict/lemma/{id}/set_status/{status}', 'Dict\LemmaController@setStatus');
         Route::get('dict/lemma/{id}/wordform_total', 'Dict\LemmaController@getWordformTotal'); 
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');
@@ -145,7 +154,7 @@ Route::group(
         Route::get('dict/lemma_wordform/pos_common_wordforms', 'Dict\LemmaWordformController@posCommonWordforms');
         
         Route::get('dict/meaning/create', 'Dict\MeaningController@create');
-        Route::get('dict/meaning/example/add/{example_id}', 'Dict\MeaningController@addExample');
+        Route::get('dict/meaning/example/add/{example_id}/{relevance}', 'Dict\MeaningController@addExample');
 //        Route::get('dict/meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
         Route::get('dict/meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
         Route::get('dict/meaning/examples/load_more/{id}', 'Dict\MeaningController@loadMoreExamples');
@@ -219,6 +228,8 @@ Route::group(
         Route::get('service/create_initial_wordforms', 'Library\ServiceController@createInitialWordforms');
         Route::get('service/generate_wordforms', 'Library\ServiceController@generateWordforms');
         Route::get('service/illative_table', 'Library\ServiceController@illativeTable');       
+        Route::get('service/multidict', 'Library\ServiceController@multidictView');       
+        Route::get('service/multidict/select', 'Library\ServiceController@multidictSelect');       
         Route::get('service/reGenerateTverPartic2active', 'Library\ServiceController@reGenerateTverPartic2active');
         Route::get('service/regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');
         Route::get('service/regenerate_livvic_ill_pl', 'Library\ServiceController@reGenerateLivvicIllPl');

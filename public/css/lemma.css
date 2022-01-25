@@ -105,6 +105,12 @@
     margin-left: 10px;
 }
 
+.add-great-example {
+    color: green;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
 .remove-example {
     color: #666;
     cursor: pointer;
@@ -183,6 +189,17 @@ h4 .fa {
     width: 200px;
 }
 
+.set-status {
+    cursor: pointer;
+}
+
+.status0::before {
+    content:url('/images/status0.gif');
+}
+
+.status1::before {
+    content:url('/images/status1.gif');
+}
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

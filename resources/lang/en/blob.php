@@ -83,6 +83,9 @@ return [
                     
                     <p><a class="publ-title" href="/docs/oma_mua_2021_21_6.pdf">Lyydin korpus kielen tiedustajile da opastujile abuh</a><br>
                     Paušin Šan’uu. Oma mua, № 21 (1561), 2021, p. 6.
+                    
+                    <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
+                    Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
                     ',
     'sources' => '<p><a href="http://resources.krc.karelia.ru/krc/doc/publ2008/onomasiolog_slovar.pdf">Comparative onomasiological dictionary of the Karelian, Veps, and Saami languages</a>. Ju. S. Eliseev, N. G. Zaiceva (eds). 2007. Petrozavodsk: Karelian Research Centre of the Russian Academy of Sciences. Institute of History, Linguistics and Literature. (In Russian)</p>',
     'welcome_text' =>  '<p>Welcome to VepKar — the Open corpus of Veps and Karelian languages 

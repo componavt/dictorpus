@@ -1278,6 +1278,7 @@ class Text extends Model
      * @param int $w_id - number of word in the text
      * @param INT OR Array $relevance - if function is called for one meaning, type is INT, else ARRAY
      * @return array f.e. ['s' => <sentence in xml format>, 
+                           'sent_obj' => <sentence object>,
                            's_id' => <number of sentence in the text>,
                            'text' => <text object>, 
                            'trans_s' => <transtext sentence in xml format>,

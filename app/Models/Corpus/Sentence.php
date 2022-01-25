@@ -518,8 +518,10 @@ AND t1.word_number-t2.word_number<=|B|;
      * 
      * @return string                 - transformed text with markup tags
      **/
-    public function addWordBlocks($search_w=[]){
-        $markup_text = $this->text_xml;
+    public function addWordBlocks($search_w=[], $markup_text=null){
+        if (!$markup_text) {
+            $markup_text = $this->text_xml;
+        }
         list($sxe,$error_message) = Text::toXML($markup_text,'');
 //dd($error_message, $markup_text);        
         if ($error_message) {

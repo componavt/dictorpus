@@ -37,6 +37,7 @@ return [
     'district_removed' => 'District ":name" is removed successfully.',
     
     'edit_word' => 'correct the word in the text',
+    'fragment' => 'fragment',
     
     'genre' => 'genre',
     'genre_has_text' => 'Genre ":name" can not be removed, there are texts with this genre',
@@ -115,6 +116,7 @@ return [
     'title' => 'Title',
     
     'trans_author' => 'Author of translation/original work',
+    'translation_in' => 'translation in',
     'transtext_lang' => 'language of translation/original work',
     'transtext_text' => 'text of translation/original work',
     'transtext_title' => 'title of translation/original work',

@@ -37,7 +37,7 @@
                 <input class="form-control" name="search_words[{{$count+1}}][d_t]" type="text" value="{{$url_args['search_words'][$count+1]['d_t'] ?? 1}}" disabled>
             </div>            
         </div>    
-        <a title="{{trans('search.add_word')}}" style='cursor: pointer; padding-top: 28px; display: {!! isset($url_args['search_words'][$count+1]['d_f']) ?  'none' : 'block' !!}' onClick='addSentenceWordsFields(this)' data-count='{{ $count+1 }}'>
+        <a title="{{trans('search.add_word')}}" style="cursor: pointer; padding-top: 28px; display: {{ (isset($url_args['search_words'][$count+1]['d_f']) ?  'none' : 'block') }}" onClick='addSentenceWordsFields(this)' data-count='{{ $count+1 }}'>
             <i class="far fa-plus-square fa-2x"></i>
         </a>
     </div>

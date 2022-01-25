@@ -295,7 +295,7 @@ class TextController extends Controller
             $route = ['text.update.examples', $id];
             $args_by_get = $this->args_by_get;
             $url_args = $this->url_args;
-            return view('dict.lemma.edit_example',
+            return view('dict.lemma.example.edit',
                       compact('back_to_url', 'dialect_value', 'dialect_values', 'langs_for_meaning', 'meanings', 'meaning_texts',
                               'pos_id', 'pos_values', 'route', 'sentence', 'text', 'args_by_get', 'url_args')
                             );            
@@ -650,7 +650,7 @@ class TextController extends Controller
         
         $sentence = Text::extractSentence($text_id, $word->s_id, $w_id);            
                                 
-        return view('dict.lemma.show.example_sentence')
+        return view('dict.lemma.example.sentence')
                 ->with(['sentence'=>$sentence,'relevance'=>'', 'count'=>'']);
     }
     

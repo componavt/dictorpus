@@ -84,9 +84,10 @@ class Lang extends Model
     public static function getNameByID($id) : String
     {
         $lang = self::where('id',$id)->first();
-        if ($lang) {
-            return $lang->name;
+        if (!$lang) {
+            return '';
         }
+        return $lang->name;
     }
                 
     /** Gets list of languages

@@ -49,6 +49,10 @@ function loadWordforms(id, url='load', meanings=[]) {
 
 function reloadWordformTotal() {
     var block_name = "#wordform-total";
+    if ($(block_name).length === 0) {
+        return;
+    }
+    
     var lemma_id = $(block_name).data("id");
     $(block_name).empty();
 //    $("#img-loading_").show();

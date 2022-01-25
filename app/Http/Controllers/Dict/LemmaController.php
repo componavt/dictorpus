@@ -16,6 +16,8 @@ use App\Models\User;
 
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
+use App\Models\Corpus\SentenceFragment;
+use App\Models\Corpus\SentenceTranslation;
 //use App\Models\Corpus\Text;
 
 use App\Models\Dict\Concept;
@@ -441,21 +443,26 @@ class LemmaController extends Controller
         if ($sentence == NULL) {
             return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
                        ->withError(\Lang::get('messages.invalid_id'));            
-        } else {
-//            $pos_values = PartOfSpeech::getGroupedList();   
-  //          $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
-    //        $dialect_values = Dialect::getList($lemma->lang_id);
+        } 
             
-            $back_to_url = '/dict/lemma/'.$lemma->id;
-            $route = array('lemma.update.examples', $id);
-            $args_by_get = $this->args_by_get;
-            $url_args = $this->url_args;
-            return view('dict.lemma.edit_example',
-                      compact('back_to_url', 'id', 'meanings', 'meaning_texts',
-                              'route', 'sentence', 'lemma',
-//                              'dialect_values', 'pos_values', 'langs_for_meaning',
-                              'args_by_get', 'url_args'));            
+        $translations = SentenceTranslation::whereSentenceId($sentence['sent_obj']->id)->get();
+        $fragment = SentenceFragment::find($sentence['sent_obj']->id);
+        
+        $back_to_url = '/dict/lemma/'.$lemma->id;
+        $route = array('lemma.update.examples', $id);
+        
+        $lang_values = Lang::getListForMeaning();
+        foreach ($translations as $translation) {
+            unset($lang_values[$translation->lang_id]);
         }
+        
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        return view('dict.lemma.example.edit',
+                  compact('back_to_url', 'fragment', 'id', 'lang_values', 'lemma',
+                          'meaning_texts', 'meanings', 'route', 'sentence', 
+                          'translations', 'args_by_get', 'url_args'));            
     }
 
     /**
@@ -968,7 +975,7 @@ class LemmaController extends Controller
         } else {
             $lemmas = NULL;
         }
-        $dialect_values = Dialect::getList();
+        $dialect_values = [NULL=>'']+Dialect::getList();
                 
         return view('corpus.text.frequency.lemmas',
                 compact('dialect_values', 'lang_values', 'lemmas', 'pos_values', 
@@ -979,5 +986,12 @@ class LemmaController extends Controller
         $lemma= Lemma::findOrFail((int)$id);
         $lemma->updateWordformTotal();
         return "(".$lemma->wordform_total.")";
+    }
+    
+    public function setStatus($id, $status) {
+        $lemma= Lemma::findOrFail((int)$id);
+        $lemma->status = (int)$status;
+        $lemma->save();
+        return $lemma->status;
     }
 }

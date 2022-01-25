@@ -19,10 +19,21 @@
 @stop
 
 @section('body')
-{{--        @include('corpus.text.modals_for_markup', ['pos_id'=>$lemma->pos_id]) --}}
+{{--        @if (User::checkAccess('corpus.edit'))
+            @include('widgets.modal',['name'=>'modalAddTranslation',
+                                  'title'=>trans('dict.add_translation'),
+                                  'translation_lang_name' => '',
+                                  'submit_id' => 'save-translation',
+                                  'submit_title' => trans('messages.save'),
+                                  'modal_view'=>'corpus.sentence.translation._form_create_edit'])
+        @endif    --}}     
 
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
-        <p>@include('dict.lemma.show.example_sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])</p>
+        <div style="margin-bottom: 10px;">@include('dict.lemma.example.sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])</div>
+        <div id="fragment">
+            @include('dict.lemma.example._fragment', ['id'=>$sentence['sent_obj']->id])
+        </div>
+        @include('dict.lemma.example._translations')
 
         <p><a href="{{ LaravelLocalization::localizeURL($back_to_url) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
         
@@ -64,15 +75,20 @@
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/text.js')!!}
+    {!!Html::script('js/sentence.js')!!}
 @stop
 
 @section('jqueryFunc')
 {{-- show/hide a block with meanings and gramsets --}}
     showLemmaLinked({{$sentence['text']->id}});    
+{{-- show/hide a block with lemmas --}}
+    showWordBlock('{{LaravelLocalization::getCurrentLocale()}}'); 
     
     addWordform('{{$sentence['text']->id}}','{{$sentence['text']->lang_id}}');
     posSelect(false);
     checkLemmaForm();
     toggleSpecial();
+    
+    addTranslation({{ $sentence['sent_obj']->id }});
 @stop
 
