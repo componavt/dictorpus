@@ -40,8 +40,8 @@
         <p><a href="service/copy_lemmas">Скопировать леммы из одного языка (наречия) в другой</a></p>
         <p>Отбор лемм для ливвиковского мультимедийного словаря</p>
         <ul>
-        <li><a href="service/multidict_view">Просмотреть отобранные леммы</a></li>
-        <li><a href="service/multidict_select">Выбрать леммы</a></li>
+        <li><a href="service/multidict">Просмотреть отобранные леммы</a></li>
+        <li><a href="service/multidict/select">Выбрать леммы</a></li>
         </ul>
     @endif
     
