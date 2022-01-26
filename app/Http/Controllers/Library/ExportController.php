@@ -274,17 +274,16 @@ class ExportController extends Controller
         
         $lang_id = 5; // livvic
         $dirname = 'export/for_speech/';
-        
+/*        
         $texts = Text::whereLangId($lang_id)
                 ->orderBy('id')->get();
         
         foreach ($texts as $text) {
             Storage::disk('public')->put($dirname.'text_'.$text->id.'.txt', $text->text);
         }
-        
+*/        
         $words = [];
-        $lemmas = Lemma::whereLangId($lang_id)
-                ->get();
+        $lemmas = Lemma::whereLangId($lang_id)->get();
         foreach ($lemmas as $lemma) {
             $words[] = $lemma->lemma;
         }
@@ -305,10 +304,10 @@ class ExportController extends Controller
         sort($words);
         
         $filename = $dirname.'dictionary.txt';
-        Storage::disk('public')->put($filename, '');
-        foreach ($words as $word) {
+        Storage::disk('public')->put($filename, join("\n", $words));
+/*        foreach ($words as $word) {
             Storage::disk('public')->append($filename, $word);
-        }
+        }*/
  
         print "done.";
     }
