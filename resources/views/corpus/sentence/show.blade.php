@@ -7,7 +7,7 @@ $sentence_xml = mb_ereg_replace('[¦^]', '', $sentence_xml);
 ?>
 
 @if (isset($with_edit) && $with_edit) 
-    {!! $text->setLemmaLink($sentence_xml, null, null, true, $marked_words ?? []) !!}
+    {!! $text->setLemmaLink($sentence_xml, null, $url_args['search_sentence'] ?? null, true, $marked_words ?? []) !!}
     
 @elseif (isset($for_view) && $for_view) 
     @include('corpus.sentence.view')
