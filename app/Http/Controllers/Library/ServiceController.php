@@ -40,7 +40,7 @@ class ServiceController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:admin,/', ['except'=>['index', 'copyLemmas', 'checkAuthors']]);
+//        $this->middleware('auth:admin,/', ['except'=>['index', 'copyLemmas', 'checkAuthors']]);
         $this->middleware('auth:dict.edit,/', ['only'=>['index', 'copyLemmas', 'checkAuthors']]);
     }
     
