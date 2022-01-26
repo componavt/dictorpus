@@ -92,32 +92,32 @@ class Sentence extends Model
      *
      * ./vendor/bin/phpunit tests/Models/Corpus/TextTest
      * 
-     * @param string $token  text without mark up
+     * @param string $text  text without mark up
      * @param integer $word_count  initial word count
      *
      * @return array text with markup (split to words) and next word count
      */
-    public static function markup($token, $word_count): array
+    public static function markup($text, $word_count): array
     {        
         $str = '';
         $i = 0;
         $is_word = false; // word tag <w> is not opened
         $word='';
-        while ($i<mb_strlen($token)) {
-            $char = mb_substr($token,$i,1);
+        while ($i<mb_strlen($text)) {
+            $char = mb_substr($text,$i,1);
             if ($char == '<') { // begin of a tag 
                 list ($is_word, $str, $word_count) = self::wordAddToSentence($is_word, $word, $str, $word_count);
-                list ($i, $str) = Word::tagOutWord($token, $i, $str);
+                list ($i, $str) = Word::tagOutWord($text, $i, $str);
                 
                 // the char is a delimeter or white space
             } elseif (mb_strpos(self::word_delimeters(), $char)!==false || preg_match("/\s/",$char)
                        // if word is ending with a dash, the dash is putting out of the word
-                      || $is_word && self::dashIsOutOfWord($char, $token, $i) ) { 
+                      || $is_word && self::dashIsOutOfWord($char, $text, $i) ) { 
                 list ($is_word, $str, $word_count) = self::wordAddToSentence($is_word, $word, $str, $word_count);
                 $str .= $char;
             } else {                
                 // if word is not started AND (the char is not dash or the next char is not special) THEN the new word started
-                if (!$is_word && !self::dashIsOutOfWord($char, $token, $i)) { 
+                if (!$is_word && !self::dashIsOutOfWord($char, $text, $i)) { 
                     $is_word = true;
                     $word='';
                 }
@@ -132,7 +132,7 @@ class Sentence extends Model
         }
         list ($is_word, $str, $word_count) = self::wordAddToSentence($is_word, $word, $str, $word_count);
 //print "$i: $char| word: $word| str: $str\n";            
-        return [$str,$word_count]; 
+        return [$str, $word_count]; 
     }
     
     public static function store($text_id, $s_id, $text_xml) {

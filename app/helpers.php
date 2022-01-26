@@ -79,6 +79,13 @@ if (! function_exists('user_dict_edit')) {
     }
 }
 
+if (! function_exists('user_corpus_edit')) {
+    function user_corpus_edit()
+    {
+        return User::checkAccess('corpus.edit');
+    }
+}
+
 if (! function_exists('to_sql')) {
     function to_sql($query)
     {

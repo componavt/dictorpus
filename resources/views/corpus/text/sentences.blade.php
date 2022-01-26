@@ -16,6 +16,11 @@
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}">{{ trans('messages.back_to_show') }}</a>            
+        @if (user_corpus_edit())
+            | @include('widgets.form.button._edit', ['route' => '/corpus/text/'.$text->id.'/edit'])
+        @else
+            | {{ trans('messages.edit') }}
+        @endif 
         </p>
         
         <h2>
