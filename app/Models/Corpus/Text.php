@@ -1311,7 +1311,7 @@ class Text extends Model
                 }
             }                    
         }
-        return $trans_s;
+        return mb_ereg_replace('[¦^]', '', $trans_s);
     }
 
     public static function lastCreated($limit='') {
