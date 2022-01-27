@@ -697,7 +697,7 @@ print "<p>sentence_id=".$this->sentence_id.", word_id=".$this->id."<br>\n".$new_
             $this->sentence->save();
             
             $this->word = $w_parts[1];
-            $this->word->save();
+            $this->save();
 exit(0);            
         }
     }
