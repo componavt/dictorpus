@@ -703,6 +703,7 @@ class Text extends Model
     public static function markupText($text, $with_words=true, $by_sentences=false)
     {
         list($text, $pseudo_end) = self::preProcessText(trim($text));
+        $text = convert_quotes($text);
         
         $text_xml = '';
         $sen_count = $word_count = 1;

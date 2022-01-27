@@ -25,6 +25,16 @@ class ExportController extends Controller
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:admin,/');
     }
+    
+    public function index() {
+        $langs = [];
+        foreach (Lang::projectLangIDs() as $l_id) {
+            $langs[$l_id]=Lang::getNameById($l_id);
+        }
+        
+        return view('service.export', compact('langs'));        
+    }
+    
     /*
      * annotation for CONLL
      */

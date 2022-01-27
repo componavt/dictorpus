@@ -198,25 +198,4 @@ class RecorderController extends Controller
                   ->withSuccess($result['message']);
         }
     }
-
-/*    
-    public function tempInsertVepsianRecorder()
-    {
-        $veps_recorders = DB::connection('vepsian')
-                            ->table('recorder')
-                            ->orderBy('id')
-                            //->take(1)
-                            ->get();
- 
-        DB::connection('mysql')->table('recorders')->delete();
-       
-        foreach ($veps_recorders as $veps_recorder):
-            $recorder = new Recorder;
-            $recorder->id = $veps_recorder->id;
-            $recorder->name_ru = $veps_recorder->name;
-            $recorder->save();            
-        endforeach;
-     }
- * 
- */
 }

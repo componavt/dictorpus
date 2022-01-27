@@ -261,26 +261,4 @@ class InformantController extends Controller
                   ->withSuccess($result['message']);
         }
     }
-/*    
-    public function tempInsertVepsianInformant()
-    {
-        $veps_informants = DB::connection('vepsian')
-                            ->table('informant')
-                            ->orderBy('id')
-                            //->take(1)
-                            ->get();
- 
-        DB::connection('mysql')->table('informants')->delete();
-       
-        foreach ($veps_informants as $veps_informant):
-            $informant = new Informant;
-            $informant->id = $veps_informant->id;
-            $informant->birth_place_id = $veps_informant->birth_place_id;
-            $informant->birth_date = $veps_informant->birth_date;
-            $informant->name_ru = $veps_informant->name;
-            $informant->save();            
-        endforeach;
-     }
- * 
- */
 }

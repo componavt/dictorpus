@@ -1,0 +1,9 @@
+<?php
+        Route::get('stats','Library\StatsController@index');
+        Route::get('stats/by_dict','Library\StatsController@byDict');
+        Route::get('stats/by_corp','Library\StatsController@byCorp');
+        Route::get('stats/by_corp_markup','Library\StatsController@byCorpMarkup');
+        Route::get('stats/by_genre','Library\StatsController@byGenre');
+        Route::get('stats/by_corpus','Library\StatsController@byCorpus');
+        Route::get('stats/by_year','Library\StatsController@byYear');
+        Route::get('stats/by_user','Library\StatsController@byUser');
