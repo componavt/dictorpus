@@ -209,7 +209,7 @@ class TextController extends Controller
             list($sxe,$error_message) = Text::toXML($text->transtext->text_xml,$text->transtext_id);
             if (!$error_message) {
                 foreach ($sxe->xpath('//s') as $s) {
-                    $trans_sentences[(int)$s->attributes()->id] = $s->asXML();
+                    $trans_sentences[(int)$s->attributes()->id] = mb_ereg_replace('[¦^]', '', $s->asXML());
                 }
             } 
         }

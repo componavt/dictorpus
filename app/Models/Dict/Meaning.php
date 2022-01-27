@@ -134,7 +134,7 @@ class Meaning extends Model
                 }
                 $translation_text = SentenceTranslation::getTextForLocale($sentence['sent_obj']->id);
                 if ($translation_text) {
-                    $sentence['trans_s'] = $translation_text;
+                    $sentence['trans_s'] = mb_ereg_replace('[¦^]', '', $translation_text);
                 }
                 $sentences[] = $sentence;
             }
