@@ -437,7 +437,7 @@ class LemmaController extends Controller
                            ->withErrors('error.no_lemma');
         }
         
-        list($sentence, $meanings, $meaning_texts) = 
+        list($sentence, $meanings, $meaning_texts, $w_id) = 
                 MeaningTextRel::preparationForExampleEdit($example_id);
         
         if ($sentence == NULL) {
@@ -445,8 +445,9 @@ class LemmaController extends Controller
                        ->withError(\Lang::get('messages.invalid_id'));            
         } 
             
-        $translations = SentenceTranslation::whereSentenceId($sentence['sent_obj']->id)->get();
-        $fragment = SentenceFragment::find($sentence['sent_obj']->id);
+        $translations = SentenceTranslation::whereSentenceId($sentence['sent_obj']->id)
+                        ->whereWId($sentence['w_id'])->get();
+        $fragment = SentenceFragment::getBySW($sentence['sent_obj']->id, $w_id);
         
         $back_to_url = '/dict/lemma/'.$lemma->id;
         $route = array('lemma.update.examples', $id);

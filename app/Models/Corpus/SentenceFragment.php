@@ -9,7 +9,7 @@ use App\Models\Corpus\Sentence;
 class SentenceFragment extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['id','text_xml'];
+    protected $fillable = ['sentence_id','w_id','text_xml'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -26,9 +26,10 @@ class SentenceFragment extends Model
     
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
+    use \App\Traits\Relations\BelongsTo\Sentence;
 
-    public function sentence()
-    {
-        return $this->belongsTo(Sentence::class,'id');
-    }    
+    public static function getBySW($sentence_id, $w_id) {
+        return self::whereSentenceId($sentence_id)
+                   ->whereWId($w_id)->first();
+    }
 }

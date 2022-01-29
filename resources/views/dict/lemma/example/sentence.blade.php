@@ -1,4 +1,7 @@
 <?php 
+/**
+ * Вывод отдельного предложения-примера вместе с иконками "добавить пример", "удалить пример"
+ */
 //dd($sentence);
 $t_s_w = $sentence['text']->id.'_'.$sentence['s_id'].'_'.$sentence['w_id'];
 if (isset($meaning)) {

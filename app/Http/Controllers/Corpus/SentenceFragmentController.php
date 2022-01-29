@@ -25,75 +25,21 @@ class SentenceFragmentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-/*    public function create(int $id, Request $request)
-    {
-        $lang_id = (int)$request->input('lang_id');
-        $lang_name = Lang::getNameByID($lang_id);
-        if (!$lang_name) {
-            return;
-        }
-        
-        $sentence = Sentence::find($id);
-        if (!$sentence) {
-            return;
-        }
-        
-        if (SentenceFragment::whereId($id)->whereLangId($lang_id)->count()>0) {
-            return;
-        }
-        
-        $action = 'create';
-        
-        return view('corpus.sentence.fragment._form_create_edit', 
-                compact('action', 'id', 'lang_id', 'lang_name'));
-    }*/
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-/*    public function store(int $id, Request $request)
-    {
-        $text = $request->input('text');
-        if (!$text) { return; }
-        
-        $lang_id = (int)$request->input('lang_id');
-        $lang_name = Lang::getNameByID($lang_id);
-        if (!$lang_name) { return; }
-        
-        $sentence = Sentence::find($id);
-        if (!$sentence) { return; }
-        
-        $fragment = SentenceFragment::whereId($id)->whereLangId($lang_id)->first();
-        if (!$fragment) {
-            $fragment = SentenceFragment::create(['id'=>$id, 'lang_id'=>$lang_id, 'text'=>$request->input('text')]);
-        }
-        return view('corpus.sentence.fragment.view', 
-                compact('fragment', 'lang_name'));
-    }*/
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(int $id)
+    public function edit(int $sentence_id, int $w_id)
     {
-        $sentence = Sentence::find($id);
+        $sentence = Sentence::find($sentence_id);
         if (!$sentence) { return; }
         
-        $fragment = SentenceFragment::find($id);
+        $fragment = SentenceFragment::getBySW($sentence_id, $w_id);
         $fragment_text = $fragment ? $fragment->text_xml : $sentence->text_xml;
         
         return view('corpus.sentence.fragment._form_create_edit', 
-                compact('id', 'fragment_text'));
+                compact('sentence_id', 'w_id', 'fragment_text'));
     }
     
     /**
@@ -103,11 +49,11 @@ class SentenceFragmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $sentence_id, int $w_id)
     {
         $text_xml = $request->input('text_xml');
         
-        $fragment = SentenceFragment::find($id);
+        $fragment = SentenceFragment::getBySW($sentence_id, $w_id);
         if ($fragment) {
             if (!$text_xml) {        
                 $fragment->delete();
@@ -119,21 +65,10 @@ class SentenceFragmentController extends Controller
         } elseif (!$text_xml) {
             return;
         } else {    
-            $fragment = SentenceFragment::create(['id'=>$id, 'text_xml' => $text_xml]);
-        }
-        
+            $fragment = SentenceFragment::create(['sentence_id'=>$sentence_id, 
+                                    'w_id'=>$w_id, 'text_xml' => $text_xml]);
+        }        
         return view('dict.lemma.example._fragment', 
-                compact('fragment', 'id'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+                compact('fragment', 'sentence_id', 'w_id'));
     }
 }

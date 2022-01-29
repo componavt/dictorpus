@@ -122,17 +122,19 @@ class Meaning extends Model
         }
 //print "<p>". $sentence_builder->count()."</p>";       
         
-        foreach ($sentence_builder->get() as $sentence) {
-            $sentence = Text::extractSentence($sentence->text_id, 
-                                              $sentence->s_id, 
-                                              $sentence->w_id, 
-                                              $sentence->relevance);
+        foreach ($sentence_builder->get() as $meaning_text) {
+            $sentence = Text::extractSentence($meaning_text->text_id, 
+                                              $meaning_text->s_id, 
+                                              $meaning_text->w_id, 
+                                              $meaning_text->relevance);
             if ($sentence) {
-                $fragment = SentenceFragment::find($sentence['sent_obj']->id);
+                $fragment = SentenceFragment::getBySW($sentence['sent_obj']->id,
+                                                      $meaning_text->w_id);
                 if ($fragment) {
                     $sentence['s'] = $fragment->text_xml;
                 }
-                $translation_text = SentenceTranslation::getTextForLocale($sentence['sent_obj']->id);
+                $translation_text = SentenceTranslation::getTextForLocale($sentence['sent_obj']->id,
+                                                                          $meaning_text->w_id);
                 if ($translation_text) {
                     $sentence['trans_s'] = $translation_text;
                 }

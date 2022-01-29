@@ -6,5 +6,6 @@
              'attributes' => ['rows'=>2] ])
     </div>
     <div class="col-sm-2"><br><br>  
-        <input class="btn btn-primary btn-default" type="submit" value="{{trans('messages.save')}}" onClick="saveTranslation({{$sentence_id}}, {{$lang_id}}, '{{$action}}')">        
+        <input class="btn btn-primary btn-default" type="submit" value="{{trans('messages.save')}}" 
+               onClick="saveTranslation({{$sentence_id}}, {{$w_id}}, {{$lang_id}}, '{{$action}}')">        
     </div>

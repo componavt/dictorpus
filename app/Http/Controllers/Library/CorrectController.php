@@ -322,7 +322,7 @@ print '<p>'.$text->id.'</p>';
     }  
     
     public function moveCharOutWord() {
-        $chars = ['…'];
+        $chars = ['…', '„'];
         foreach ($chars as $char) {
             Correct::moveCharOutWord($char);
         }

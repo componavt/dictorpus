@@ -34,6 +34,10 @@ class Sentence extends Model
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Text;
     
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\SentenceFragments;    // fragments()
+    use \App\Traits\Relations\HasMany\SentenceTranslations; // translations()
+    
     public static function getBySid($text_id, $s_id) {
         return self::whereTextId($text_id)->whereSId($s_id)->first();
     }

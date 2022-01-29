@@ -13,7 +13,7 @@ use App\Models\Dict\Lang;
 class SentenceTranslation extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['sentence_id','lang_id','text'];
+    protected $fillable = ['sentence_id','w_id','lang_id','text'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -32,10 +32,10 @@ class SentenceTranslation extends Model
     use \App\Traits\Relations\BelongsTo\Lang;
     use \App\Traits\Relations\BelongsTo\Sentence;
 
-    public static function getTextForLocale($sentence_id) {
+    public static function getTextForLocale($sentence_id, $w_id) {
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $translation = self::getByLangCode($sentence_id, $locale);
+        $translation = self::getByLangCode($sentence_id, $w_id, $locale);
         if ($translation) {
             return $translation->text;
         }
@@ -44,18 +44,21 @@ class SentenceTranslation extends Model
             return;
         }
                 
-        $translation = self::getByLangCode($sentence_id, 'ru');
+        $translation = self::getByLangCode($sentence_id, $w_id, 'ru');
         if ($translation) {
             return $translation->text;
         }        
     }
     
-    public static function getByLangCode($sentence_id, $lang_code) {
+    public static function getByLangCode($sentence_id, $w_id, $lang_code) {
         $lang_id = Lang::getIDByCode($lang_code);
-        return self::getByLangId($sentence_id, $lang_id);
+        return self::getByLangId($sentence_id, $w_id, $lang_id);
     }
     
-    public static function getByLangId($sentence_id, $lang_id) {
-        return self::whereSentenceId($sentence_id)->whereLangId($lang_id)->first();
+    public static function getByLangId($sentence_id, $w_id, $lang_id) {
+        return self::whereSentenceId($sentence_id)
+                   ->whereWId($w_id)
+                   ->whereLangId($lang_id)
+                   ->first();
     }
 }

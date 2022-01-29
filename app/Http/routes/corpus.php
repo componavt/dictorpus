@@ -14,13 +14,13 @@
         Route::get('corpus/sentence/results', 'Corpus\SentenceController@results');
         Route::get('corpus/sentence/word_gram_form', 'Corpus\SentenceController@wordGramForm');
 
-        Route::get('corpus/sentence/fragment/{id}/edit', 'Corpus\SentenceFragmentController@edit');
-        Route::get('corpus/sentence/fragment/{id}/update', 'Corpus\SentenceFragmentController@update');
+        Route::get('corpus/sentence/{sentence_id}/fragment/{w_id}/edit', 'Corpus\SentenceFragmentController@edit');
+        Route::get('corpus/sentence/{sentence_id}/fragment/{w_id}/update', 'Corpus\SentenceFragmentController@update');
         
-        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/create', 'Corpus\SentenceTranslationController@create');
-        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/store', 'Corpus\SentenceTranslationController@store');
-        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/edit', 'Corpus\SentenceTranslationController@edit');
-        Route::get('corpus/sentence/{sentence_id}/translation/{lang_id}/update', 'Corpus\SentenceTranslationController@update');
+        Route::get('corpus/sentence/{sentence_id}/translation/{w_id}_{lang_id}/create', 'Corpus\SentenceTranslationController@create');
+        Route::get('corpus/sentence/{sentence_id}/translation/{w_id}_{lang_id}/store', 'Corpus\SentenceTranslationController@store');
+        Route::get('corpus/sentence/{sentence_id}/translation/{w_id}_{lang_id}/edit', 'Corpus\SentenceTranslationController@edit');
+        Route::get('corpus/sentence/{sentence_id}/translation/{w_id}_{lang_id}/update', 'Corpus\SentenceTranslationController@update');
         
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');

@@ -1,9 +1,9 @@
-function addTranslation(sentence_id) {
+function addTranslation(sentence_id, w_id) {
     $(".add-translation").click(function(){
         var selected_lang = $( "#lang_id_for_new option:selected" );
         var lang_id = selected_lang.val();
         $.ajax({
-            url: '/corpus/sentence/' + sentence_id + '/translation/' + lang_id + '/create', 
+            url: '/corpus/sentence/' + sentence_id + '/translation/' + w_id + '_' + lang_id + '/create', 
             type: 'GET',
             success: function(result){
                 $("#translations").append(result);
@@ -18,9 +18,9 @@ function addTranslation(sentence_id) {
     });
 }
 
-function saveTranslation(sentence_id, lang_id, action) {
+function saveTranslation(sentence_id, w_id, lang_id, action) {
     $.ajax({
-        url: '/corpus/sentence/' + sentence_id + '/translation/' + lang_id + '/' + action, 
+        url: '/corpus/sentence/' + sentence_id + '/translation/' + w_id + '_' + lang_id + '/' + action, 
         type: 'GET',
         data: {
           'text': $("#translations_for_" + lang_id).val()
@@ -37,9 +37,9 @@ function saveTranslation(sentence_id, lang_id, action) {
     });     
 }
 
-function editTranslation(sentence_id, lang_id) {
+function editTranslation(sentence_id, w_id, lang_id) {
     $.ajax({
-        url: '/corpus/sentence/' + sentence_id + '/translation/' + lang_id + '/edit', 
+        url: '/corpus/sentence/' + sentence_id + '/translation/' + w_id + '_' + lang_id + '/edit', 
         type: 'GET',
         success: function(result){
             $("#translation_" + lang_id).html(result);
@@ -50,9 +50,9 @@ function editTranslation(sentence_id, lang_id) {
     });     
 }
 
-function editFragment(sentence_id) {
+function editFragment(sentence_id, w_id) {
     $.ajax({
-        url: '/corpus/sentence/fragment/' + sentence_id + '/edit', 
+        url: '/corpus/sentence/' + sentence_id + '/fragment/' + w_id + '/edit', 
         type: 'GET',
         success: function(result){
             $("#fragment").html(result);
@@ -63,9 +63,9 @@ function editFragment(sentence_id) {
     });     
 }
 
-function saveFragment(sentence_id) {
+function saveFragment(sentence_id, w_id) {
     $.ajax({
-        url: '/corpus/sentence/fragment/' + sentence_id + '/update', 
+        url: '/corpus/sentence/' + sentence_id + '/fragment/' + w_id + '/update', 
         type: 'GET',
         data: {
           'text_xml': $("#fragment_text").val()

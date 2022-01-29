@@ -15,12 +15,14 @@ use App\Library\Grammatic\VepsName;
 use App\Library\Service;
 use App\Library\Str;
 
+use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -464,12 +466,11 @@ print "</ol>";
     // проверка на "чужие леммы"
     // select count(*) from label_lemma where lemma_id in (select id from lemmas where lang_id not in (5)) and label_id=3;
     public function multidictSelect() {
-        $lang_id=5; // livvic
+/*        $lang_id=5; // livvic
         $dialect_id=44; // New written Livvic
         $label_id = 3; // for multimedia dictionary
         
-        $lemmas = Lemma::/*selectFromMeaningText($dialect_id)
-                       ->*/whereLangId($lang_id)
+        $lemmas = Lemma::whereLangId($lang_id)
                        ->whereNotIn('id', function ($q) use ($label_id) {
                            $q->select('lemma_id')->from('label_lemma')
                              ->whereLabelId($label_id);
@@ -487,7 +488,23 @@ print "</ol>";
         foreach ($lemmas as $lemma) {
 //print "<p>".$lemma->id."</p>";            
             $lemma->labels()->attach([$label_id]);
-        }               
+        }               */
+        $examples = DB::table('meaning_text')->whereRelevance(10)->get();
+//dd($examples);        
+        foreach ($examples as $example) {
+            $sentence = Sentence::whereTextId($example->text_id)
+                                ->whereSId($example->s_id)->first();
+            $fragment = $sentence->fragments()->first();
+            if ($fragment) {
+                $fragment->w_id = $example->w_id;
+                $fragment->save();
+            }
+            $translation = $sentence->translations()->first();
+            if ($translation) {
+                $translation->w_id = $example->w_id;
+                $translation->save();
+            }
+        }
         print "done";
     }
     

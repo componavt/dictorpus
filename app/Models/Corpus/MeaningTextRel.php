@@ -67,34 +67,33 @@ class MeaningTextRel extends Model
     }
     
     public static function preparationForExampleEdit($example_id){
-        if (preg_match("/^(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
-            $text_id = (int)$regs[1];
-            $s_id = (int)$regs[2];
-            $w_id = (int)$regs[3];
-        
-            $sentence = Text::extractSentence($text_id, $s_id, $w_id);            
-
-            $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
-                               -> where('text_id',$text_id)
-                               -> where('s_id',$s_id)
-                               -> where('w_id',$w_id)
-                               -> get();
-            $meaning_texts = [];
-
-            foreach ($meanings as $meaning) {
-                $langs_for_meaning = Lang::getListWithPriority($meaning->lemma->lang_id);
-                foreach ($langs_for_meaning as $lang_id => $lang_text) {
-                    $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
-                    if ($meaning_text_obj) {
-                        $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
-                    }
-                }
-            }   
-            
-            return [$sentence, $meanings, $meaning_texts];
-        } else {
-            return [NULL, NULL, NULL];
+        if (!preg_match("/^(\d+)_(\d+)_(\d+)$/",$example_id,$regs)) {
+            return [NULL, NULL, NULL, NULL];
         }
+        $text_id = (int)$regs[1];
+        $s_id = (int)$regs[2];
+        $w_id = (int)$regs[3];
+
+        $sentence = Text::extractSentence($text_id, $s_id, $w_id);            
+
+        $meanings = Meaning::join('meaning_text','meanings.id','=','meaning_text.meaning_id')
+                           -> where('text_id',$text_id)
+                           -> where('s_id',$s_id)
+                           -> where('w_id',$w_id)
+                           -> get();
+        $meaning_texts = [];
+
+        foreach ($meanings as $meaning) {
+            $langs_for_meaning = Lang::getListWithPriority($meaning->lemma->lang_id);
+            foreach ($langs_for_meaning as $lang_id => $lang_text) {
+                $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
+                if ($meaning_text_obj) {
+                    $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
+                }
+            }
+        }   
+
+        return [$sentence, $meanings, $meaning_texts, $w_id];
     }
     
     /**

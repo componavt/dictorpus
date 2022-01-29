@@ -31,7 +31,7 @@ class SentenceTranslationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(int $sentence_id, int $lang_id)
+    public function create(int $sentence_id, int $w_id, int $lang_id)
     {
         $lang_name = Lang::getNameByID($lang_id);
         if (!$lang_name) {
@@ -43,12 +43,12 @@ class SentenceTranslationController extends Controller
             return;
         }
         
-        if (SentenceTranslation::getByLangId($sentence_id, $lang_id)) {
+        if (SentenceTranslation::getByLangId($sentence_id, $w_id, $lang_id)) {
             return;
         }
                 
         return view('corpus.sentence.translation._create', 
-                compact('sentence_id', 'lang_id', 'lang_name'));
+                compact('sentence_id', 'w_id', 'lang_id', 'lang_name'));
     }
 
     /**
@@ -57,7 +57,7 @@ class SentenceTranslationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(int $sentence_id, int $lang_id, Request $request)
+    public function store(int $sentence_id, int $w_id, int $lang_id, Request $request)
     {
         $text = $request->input('text');
         if (!$text) { return; }
@@ -68,10 +68,11 @@ class SentenceTranslationController extends Controller
         $sentence = Sentence::find($sentence_id);
         if (!$sentence) { return; }
         
-        $translation = SentenceTranslation::getByLangId($sentence_id, $lang_id);
+        $translation = SentenceTranslation::getByLangId($sentence_id, $w_id, $lang_id);
 //var_dump($sentence_id);        
         if (!$translation) {
-            $translation = SentenceTranslation::create(['sentence_id'=>$sentence_id, 'lang_id'=>$lang_id, 'text'=>$request->input('text')]);
+            $translation = SentenceTranslation::create(['sentence_id'=>$sentence_id, 
+                'w_id'=>$w_id, 'lang_id'=>$lang_id, 'text'=>$request->input('text')]);
         }
 //var_dump($sentence_id);        
 //dd($translation->sentence_id);        
@@ -95,9 +96,9 @@ class SentenceTranslationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(int $sentence_id, int $lang_id, Request $request)
+    public function edit(int $sentence_id, int $w_id, int $lang_id, Request $request)
     {
-        $translation = SentenceTranslation::getByLangId($sentence_id, $lang_id);
+        $translation = SentenceTranslation::getByLangId($sentence_id, $w_id, $lang_id);
         if (!$translation) { return; }
         $translation_text = $translation->text;
         
@@ -107,7 +108,7 @@ class SentenceTranslationController extends Controller
         $action = 'update';
         
         return view('corpus.sentence.translation._form_create_edit', 
-                compact('action', 'sentence_id', 'lang_id', 'lang_name', 'translation_text'));
+                compact('action', 'sentence_id', 'w_id', 'lang_id', 'lang_name', 'translation_text'));
     }
     
     /**
@@ -117,14 +118,14 @@ class SentenceTranslationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(int $sentence_id, int $lang_id, Request $request)
+    public function update(int $sentence_id, int $w_id, int $lang_id, Request $request)
     {
         $text = $request->input('text');
         
         $lang_name = Lang::getNameByID($lang_id);
         if (!$lang_name) { return; }
         
-        $translation = SentenceTranslation::getByLangId($sentence_id, $lang_id);
+        $translation = SentenceTranslation::getByLangId($sentence_id, $w_id, $lang_id);
         if (!$translation) { return; }
         
         if (!$text) {
@@ -136,16 +137,5 @@ class SentenceTranslationController extends Controller
         
         return view('corpus.sentence.translation.view', 
                 compact('translation', 'lang_name'));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

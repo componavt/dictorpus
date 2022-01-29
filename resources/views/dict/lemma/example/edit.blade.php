@@ -19,19 +19,11 @@
 @stop
 
 @section('body')
-{{--        @if (User::checkAccess('corpus.edit'))
-            @include('widgets.modal',['name'=>'modalAddTranslation',
-                                  'title'=>trans('dict.add_translation'),
-                                  'translation_lang_name' => '',
-                                  'submit_id' => 'save-translation',
-                                  'submit_title' => trans('messages.save'),
-                                  'modal_view'=>'corpus.sentence.translation._form_create_edit'])
-        @endif    --}}     
-
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
         <div style="margin-bottom: 10px;">@include('dict.lemma.example.sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])</div>
         <div id="fragment">
-            @include('dict.lemma.example._fragment', ['id'=>$sentence['sent_obj']->id])
+            @include('dict.lemma.example._fragment', 
+                ['sentence_id'=>$sentence['sent_obj']->id, 'w_id'=>$sentence['w_id']])
         </div>
         @include('dict.lemma.example._translations')
 
@@ -86,9 +78,9 @@
     
     addWordform('{{$sentence['text']->id}}','{{$sentence['text']->lang_id}}');
     posSelect(false);
-    checkLemmaForm();
+{{--    checkLemmaForm(); --}}
     toggleSpecial();
     
-    addTranslation({{ $sentence['sent_obj']->id }});
+    addTranslation({{ $sentence['sent_obj']->id }}, {{$sentence['w_id']}});
 @stop
 

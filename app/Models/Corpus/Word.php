@@ -687,7 +687,8 @@ class Word extends Model
     }
     
     public function moveCharOut($char) {
-        $text_xml = $this->sentence->text_xml;
+        $text_xml = preg_replace("/\n/", "", $this->sentence->text_xml);
+        
         if (preg_match("/^".$char."(.+)$/", $this->word, $w_parts) &&
             preg_match("/^(.+)(\<w id=\"".$this->w_id."\">)".$char."(.+)$/u", $text_xml, $s_parts)) {
             $new_text = $s_parts[1].$char.$s_parts[2].$s_parts[3];
@@ -698,7 +699,9 @@ print "<p>sentence_id=".$this->sentence_id.", word_id=".$this->id."<br>\n".$new_
             
             $this->word = $w_parts[1];
             $this->save();
-exit(0);            
+            
+            $this->sentence->numerateWords();            
+//exit(0);            
         }
     }
 }
