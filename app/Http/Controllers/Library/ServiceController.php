@@ -489,7 +489,8 @@ print "</ol>";
 //print "<p>".$lemma->id."</p>";            
             $lemma->labels()->attach([$label_id]);
         }               */
-        $examples = DB::table('meaning_text')->whereRelevance(10)->get();
+        
+/*        $examples = DB::table('meaning_text')->whereRelevance(10)->get();
 //dd($examples);        
         foreach ($examples as $example) {
             $sentence = Sentence::whereTextId($example->text_id)
@@ -505,7 +506,7 @@ print "</ol>";
                 $translation->save();
             }
         }
-        print "done";
+        print "done";*/
     }
     
     public function multidictView(Request $request) {
