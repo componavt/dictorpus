@@ -58,5 +58,8 @@
     
 {{-- show/hide a block with lemmas --}}
     showWordBlock('{{LaravelLocalization::getCurrentLocale()}}'); 
+    $("#toggle-phrases").click(function() {
+        $("#lemma-phrases").toggle();
+    });
 @stop
 

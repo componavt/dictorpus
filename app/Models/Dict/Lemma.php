@@ -2033,6 +2033,70 @@ dd($wordforms);
 // проверить значение            
         }
     }
+    
+    public function getMeaningTexts() {
+        $meaning_texts = [];
+        $meanings = $this->meanings;
+        $langs_for_meaning = Lang::getListWithPriority($this->lang_id);
+        
+        foreach ($meanings as $meaning) {
+            foreach ($langs_for_meaning as $lang_id => $lang_text) {
+                $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$meaning->id)->first();
+                if ($meaning_text_obj) {
+                    $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
+                }
+            }
+        }
+        return $meaning_texts;
+    }
+
+    public function getMeaningRelations() {
+        $meaning_relations = [];
+        $meanings = $this->meanings;
+        $relations = Relation::getList();
+        
+        foreach ($meanings as $meaning) {
+            $relation_meanings = $meaning->meaningRelations;
+            if ($relation_meanings) {
+                foreach ($relation_meanings as $relation_meaning) {
+                    $meaning2_id = $relation_meaning->pivot->meaning2_id;
+                    $relation_id = $relation_meaning->pivot->relation_id;
+                    $relation_text = $relations[$relation_id];
+                    $relation_meaning_obj = Meaning::find($meaning2_id);
+                    $relation_lemma_obj = $relation_meaning_obj->lemma;
+                    $relation_lemma = $relation_lemma_obj->lemma;
+                    $meaning_relations[$meaning->id][$relation_text][$relation_lemma_obj->id]  
+                            = ['lemma' => $relation_lemma,
+                               'meaning' => $relation_meaning_obj->getMultilangMeaningTextsString()];
+                }
+            }
+        }
+        return $meaning_relations;
+    }
+
+    public function getMeaningTranslations() {
+        $translation_values = [];
+        $meanings = $this->meanings;
+        $langs_for_meaning = Lang::getListWithPriority($this->lang_id);
+        
+        foreach ($meanings as $meaning) {
+            foreach ($langs_for_meaning as $l_id => $lang_text) {
+                $meaning_translations = $meaning->translations()->wherePivot('lang_id',$l_id)->get();
+                if ($meaning_translations) {
+                    foreach ($meaning_translations as $meaning_translation) {
+                        $meaning2_id = $meaning_translation->pivot->meaning2_id; 
+                        $meaning2_obj = Meaning::find($meaning2_id);
+                        $translation_lemma_obj = $meaning2_obj->lemma;
+                        $translation_lemma = $translation_lemma_obj->lemma;
+                        $translation_values[$meaning->id][$lang_text][$translation_lemma_obj->id] 
+                            = ['lemma' => $translation_lemma,
+                               'meaning' => $meaning2_obj->getMultilangMeaningTextsString()];
+                    }
+                }
+            }
+        }   
+        return $translation_values;
+    }
 
     /*    
     public static function totalCount(){

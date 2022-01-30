@@ -200,6 +200,11 @@ h4 .fa {
 .status1::before {
     content:url('/images/status1.gif');
 }
+
+#toggle-phrases {
+    cursor: pointer;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

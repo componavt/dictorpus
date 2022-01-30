@@ -53,6 +53,7 @@ return [
     'sequence_number' => 'sequence number',
     'special_symbols' => 'special symbols',
     'text_exists' => 'There is a text associated with this entry',
+    'toggle_list' => 'toggle list',
     'informant_exists' => 'There is an informant associated with this entry',
     'to' => 'to',
     'total' => 'total',
