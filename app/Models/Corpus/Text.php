@@ -84,7 +84,7 @@ class Text extends Model
         }
         return join(', ', $authors);
     }
-
+   
     public function addMeaning($meaning_id, $s_id, $word_id, $w_id, $relevance) {
                         $this->meanings()->attach($meaning_id,
                                 ['s_id'=>$s_id,

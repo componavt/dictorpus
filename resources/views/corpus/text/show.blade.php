@@ -39,8 +39,11 @@
         @endif
         
         <h3>{{ trans('corpus.corpus') }}: {{ $text->corpus->name }}</h3>
-        <p><i>{{ $labels }}</i></p>
-
+        
+        @if ($text->genresToString())
+        <p><i>{{ $text->genresToString() }}</i></p>
+        @endif
+        
         @if ($text->event)
         <p> 
             @include('corpus.event._to_string',['event'=>$text->event, 'lang_id' => $text->lang_id])

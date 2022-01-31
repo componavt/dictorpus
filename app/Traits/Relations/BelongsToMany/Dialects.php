@@ -35,4 +35,13 @@ trait Dialects
         }
         return join(', ',$out);
     }
+    
+    public function dialectsToString() {
+        $out = [];
+        foreach ($this->dialects as $dialect) {
+            $out[] = $dialect->name;
+        }
+        return join(", ", $out);
+    }
+
 }

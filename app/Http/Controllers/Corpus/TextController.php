@@ -171,23 +171,19 @@ class TextController extends Controller
                            ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
         }
         
-        $labels = [];
-        foreach ($text->dialects as $dialect) {
-            $labels[] = $dialect->name;
-        }
-        $labels[] = $text->genresToString();
-        $labels = join(', ',$labels);
-        
         $pos_values = PartOfSpeech::getGroupedList();   
         $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
         $pos_id = PartOfSpeech::getIDByCode('Noun');
         $dialect_values = Dialect::getList($text->lang_id);
         $dialect_value = $text->dialectValue();
+        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        
         return view('corpus.text.show',
-                  compact('dialect_value', 'dialect_values', 'labels', 'text', 'args_by_get', 'url_args',
-                          'pos_values', 'pos_id', 'langs_for_meaning'));
+                  compact('dialect_value', 'dialect_values',  
+                          'langs_for_meaning', 'pos_id', 'pos_values', 'text',
+                          'args_by_get', 'url_args'));
     }
     
     public function editSentences($id) {

@@ -1,11 +1,12 @@
 @if ($text->transtext->title)
-    <h4>
+    <h3>
     @if ($text->transtext->authors)
         {{$text->transtext->authorsToString()}}<br>
     @endif
-        {{ $text->transtext->title }}<br>
+        {{ $text->transtext->title }}</h3>
+    <h5>
         ({{ $text->transtext->lang->name }})
-    </h4>
+    </h5>
 @endif      
 @if ($text->transtext->text)
 <?php

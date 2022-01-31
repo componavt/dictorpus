@@ -1,5 +1,5 @@
 @if ($text->title)
-        <h4>
+        <h3>
         @if ($text->authors)
             {{$text->authorsToString()}}<br>
         @endif
@@ -10,9 +10,10 @@
                       'title' => 'редактировать предложения',
                       'without_text' => 1])
         @endif            
-        <br>
-        ({{ $text->lang->name }})
-        </h4>
+        </h3>
+        <h5>
+        ({{ $text->lang->name }}@if ($text->dialectsToString()), {{$text->dialectsToString()}}@endif)
+        </h5>
 @endif      
 
 @if ($text->text)
