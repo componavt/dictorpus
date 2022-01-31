@@ -16,7 +16,7 @@
         
         {!! Form::model($informant, array('method'=>'PUT', 'route' => array('informant.update', $informant->id))) !!}
         @include('corpus.informant._form_create_edit', ['action' => 'edit'])
-        @include('widgets.form.formitem._submit', ['title' => 'submit_title' => trans('messages.save')])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop
 
