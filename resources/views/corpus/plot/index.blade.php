@@ -14,7 +14,7 @@
         <p>
 {{--            <a href="/stats/by_plot">{{ trans('stats.stats_by_plot') }}</a> | --}}
         @if (User::checkAccess('corpus.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/plot/create') }}">
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/plot/create') }}{{$args_by_get}}">
         @endif
             {{ trans('messages.create_new_m') }}
         @if (User::checkAccess('corpus.edit'))
