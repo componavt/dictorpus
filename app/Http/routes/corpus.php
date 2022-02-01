@@ -85,6 +85,11 @@
                                     'store' => 'place.store',
                                     'destroy' => 'place.destroy']]);
         
+        Route::resource('corpus/plot', 'Corpus\PlotController',
+                       ['names' => ['update' => 'plot.update',
+                                    'store' => 'plot.store',
+                                    'destroy' => 'plot.destroy']]);
+        
         Route::resource('corpus/recorder', 'Corpus\RecorderController',
                        ['names' => ['update' => 'recorder.update',
                                     'store' => 'recorder.store',

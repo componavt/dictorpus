@@ -4,19 +4,17 @@ namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
-//use DB;
-//use LaravelLocalization;
 
 use App\Library\Str;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
+use App\Models\Corpus\Plot;
 
-class GenreController extends Controller
+class PlotController extends Controller
 {
     public $url_args=[];
     public $args_by_get='';
@@ -29,8 +27,8 @@ class GenreController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/genre/', ['only' => ['create','store','edit','update','destroy']]);
-        $this->url_args = Genre::urlArgs($request);  
+        $this->middleware('auth:corpus.edit,/corpus/plot/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->url_args = Plot::urlArgs($request);  
         
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
@@ -45,14 +43,15 @@ class GenreController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $genres = Genre::search($url_args);
-        $numAll = $genres->count();
+        $plots = Plot::search($url_args);
+        $numAll = $plots->count();
 
-        $genres = $genres->get();
-        $corpus_values = [NULL => ''] + Corpus::getListWithQuantity('genres');
-//dd($genre_by_corpus);        
-        return view('corpus.genre.index', 
-                    compact('corpus_values', 'genres', 'numAll', 
+        $plots = $plots->get();
+        $corpus_values = Corpus::getList();
+        $genre_values = Genre::getList();
+
+        return view('corpus.plot.index', 
+                    compact('corpus_values', 'genre_values', 'plots', 'numAll', 
                             'args_by_get', 'url_args'));
     }
 
@@ -66,10 +65,10 @@ class GenreController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $corpus_values = Corpus::getList();
-        $genre_values = [NULL => ''] + Genre::getNumeredList();        
-        return view('corpus.genre.create', 
-                compact('corpus_values', 'genre_values', 'args_by_get', 'url_args'));
+        $genre_values = Genre::getNumeredList();
+        $plot_values = [NULL => ''] + Plot::getList();        
+        return view('corpus.plot.create', 
+                compact('genre_values', 'plot_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -88,9 +87,9 @@ class GenreController extends Controller
             'name_ru'  => 'required|max:150',
         ]);
         
-        $genre = Genre::create($request->all());
+        $plot = Plot::create($request->all());
         
-        return Redirect::to('/corpus/genre/'.($this->args_by_get))
+        return Redirect::to('/corpus/plot/'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
@@ -102,7 +101,7 @@ class GenreController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/corpus/genre/'.($this->args_by_get));
+        return Redirect::to('/corpus/plot/'.($this->args_by_get));
     }
 
     /**
@@ -116,12 +115,12 @@ class GenreController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $genre = Genre::find($id); 
-        $corpus_values = Corpus::getList();
-        $genre_values = [NULL => ''] + Genre::getNumeredList();        
+        $plot = Plot::find($id); 
+        $genre_values = Genre::getNumeredList();
+        $plot_values = [NULL => ''] + Plot::getList();        
         
-        return view('corpus.genre.edit', 
-                compact('corpus_values', 'genre', 'genre_values', 
+        return view('corpus.plot.edit', 
+                compact('genre_values', 'plot', 'plot_values', 
                         'args_by_get', 'url_args'));
     }
 
@@ -139,11 +138,11 @@ class GenreController extends Controller
             'name_ru'  => 'required|max:150',
         ]);
         
-        $genre = Genre::find($id);
-        $genre->fill($request->all())->save();
+        $plot = Plot::find($id);
+        $plot->fill($request->all())->save();
         
-//        return Redirect::to('/corpus/genre/?search_id='.$genre->id)
-        return Redirect::to('/corpus/genre/'.($this->args_by_get))
+//        return Redirect::to('/corpus/plot/?search_id='.$plot->id)
+        return Redirect::to('/corpus/plot/'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
@@ -160,15 +159,15 @@ class GenreController extends Controller
         $result =[];
         if($id != "" && $id > 0) {
             try{
-                $genre = Genre::find($id);
-                if($genre){
-                    $genre_name = $genre->name;
-                    if ($genre->texts()->count()>0) {
+                $plot = Plot::find($id);
+                if($plot){
+                    $plot_name = $plot->name;
+                    if ($plot->texts()->count()>0) {
                         $error = true;
-                        $result['error_message'] = \Lang::get('corpus.genre_has_text', ['name'=>$genre_name]);                        
+                        $result['error_message'] = \Lang::get('corpus.plot_has_text', ['name'=>$plot_name]);                        
                     } else {
-                        $genre->delete();
-                        $result['message'] = \Lang::get('corpus.genre_removed', ['name'=>$genre_name]);
+                        $plot->delete();
+                        $result['message'] = \Lang::get('corpus.plot_removed', ['name'=>$plot_name]);
                     }
                 }
                 else{
@@ -188,39 +187,39 @@ class GenreController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/corpus/genre/'.($this->args_by_get))
+                return Redirect::to('/corpus/plot/'.($this->args_by_get))
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/corpus/genre/'.($this->args_by_get))
+            return Redirect::to('/corpus/plot/'.($this->args_by_get))
                   ->withSuccess($result['message']);
         }
     }
     
     /**
      * Gets list of places for drop down list in JSON format
-     * Test url: /corpus/genre/list?lang_id[]=1
+     * Test url: /corpus/plot/list?lang_id[]=1
      * 
      * @return JSON response
      */
-    public function genreList(Request $request)
+    public function plotList(Request $request)
     {
-        $genre_name = '%'.$request->input('q').'%';
-        $corpus_ids = (array)$request->input('corpus_id');
+        $plot_name = '%'.$request->input('q').'%';
+        $genre_ids = (array)$request->input('genre_id');
 
         $list = [];
-        $genres = Genre::where(function($q) use ($genre_name){
-                            $q->where('name_en','like', $genre_name)
-                              ->orWhere('name_ru','like', $genre_name);
+        $plots = Plot::where(function($q) use ($plot_name){
+                            $q->where('name_en','like', $plot_name)
+                              ->orWhere('name_ru','like', $plot_name);
                          });
-        if (sizeof($corpus_ids)) {                 
-            $genres = $genres -> whereIn('corpus_id',$corpus_ids);
+        if (sizeof($genre_ids)) {                 
+            $plots = $plots -> whereIn('genre_id',$genre_ids);
         }
         
-        $genres = $genres->orderBy('sequence_number')->get();
+        $plots = $plots->orderBy('sequence_number')->get();
                          
-        foreach ($genres as $genre) {
-            $list[]=['id'  => $genre->id, 
-                     'text'=> $genre->numberInList(). '. '. $genre->name];
+        foreach ($plots as $plot) {
+            $list[]=['id'  => $plot->id, 
+                     'text'=> $plot->numberInList(). '. '. $plot->name];
         }  
 //dd($list);        
 //dd(sizeof($places));

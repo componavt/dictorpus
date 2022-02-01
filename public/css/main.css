@@ -554,6 +554,13 @@ h2 {
     padding-right: 10px;
 }
 
+.search-form input {
+    padding: 5px 10px;
+}
+
+.search-form .select2-container .select2-selection--multiple {
+    min-height: 34px;
+}
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;

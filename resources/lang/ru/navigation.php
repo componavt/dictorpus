@@ -48,6 +48,7 @@ return [
     'permission' => 'Разрешения',
     'phrases' => 'Фразеологизмы',
     'places' => 'Населенные пункты',
+    'plots' => 'Сюжеты',
     'pos_common_wordforms' => 'Совпадения словоформ по частям речи',
     'publications' => 'Публикации',
     'publications_about' => 'СМИ о проекте',

@@ -61,21 +61,27 @@ return [
     'nee' => 'nee',
     'new_texts'=>'New texts',
     
-    'of_author' => 'of author',
-    'of_corpus' => 'of corpus',
-    'of_district' => 'of district',
-    'of_genre' => 'of genre',
-    'of_informant' => 'of informant',
-    'of_place' => 'of place',
-    'of_recorder' => 'of recorder',
-    'of_region' => 'of region',
-    'of_text' => 'of text',
+    'of_author' => 'of the author',
+    'of_corpus' => 'of the corpus',
+    'of_district' => 'of the district',
+    'of_genre' => 'of the genre',
+    'of_informant' => 'of the informant',
+    'of_place' => 'of the place',
+    'of_plot' => 'of the plot',
+    'of_recorder' => 'of the recorder',
+    'of_region' => 'of the region',
+    'of_text' => 'of the text',
     
     'p' => 'p.',
     'parent' => 'parent section',
     
     'place_list' => 'Settlement list',
     'place_removed' => 'Settlement ":name" is removed successfully.',
+
+    'plot' => 'plot',
+    'plot_has_text' => 'Plot ":name" can not be removed, there are texts with this plot',
+    'plot_list' => 'Plot list',
+    'plot_removed' => 'Plot ":name" is removed successfully.',
     
     're-markup' => 're-markup text to XML',
     

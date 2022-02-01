@@ -30,6 +30,9 @@ class Genre extends Model
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Corpus;
     
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\Plots;
+    
     public function parent()
     {
         return $this->belongsTo(Genre::class, 'parent_id');
@@ -80,8 +83,7 @@ class Genre extends Model
      * 
      * @return Array [1=>'Bridal laments',..]
      */
-    public static function getList($corpus_id=NULL)
-    {     
+    public static function getList($corpus_id=NULL) {     
         $locale = LaravelLocalization::getCurrentLocale();
         
         $genres = self::orderBy('name_'.$locale);
@@ -100,6 +102,25 @@ class Genre extends Model
         return $list;         
     }
     
+    public static function getNumeredList($corpus_id=NULL) {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $genres = self::orderBy('sequence_number');
+        
+        if ($corpus_id) {        
+            $genres = $genres->whereCorpusId($corpus_id);
+        }
+        
+        $genres = $genres->get();
+        
+        $list = array();
+        foreach ($genres as $row) {
+            $list[$row->id] = $row->numberInList(). '. '. $row->name;
+        }
+        
+        return $list;         
+    }
+        
     /**
      * count the number of texts of genres and group by language
      * 

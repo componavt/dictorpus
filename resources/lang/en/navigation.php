@@ -49,6 +49,7 @@ return [
     'permission' => 'Permission',
     'phrases' => 'Phrases',
     'places' => 'Settlements',
+    'plots' => 'Plots',
     'pos_common_wordforms' => 'Matching word forms in parts of speech',
     'publications' => 'Publications',
     'publications_about' => 'Media about the project ',
