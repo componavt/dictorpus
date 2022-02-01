@@ -51,6 +51,7 @@
             @endforeach
         </tbody>
         </table>
+        {!! $plots->appends($url_args)->render() !!}
         @endif
 {{--<p><a href="/stats/by_plot">{{trans('stats.distribution_by_plots')}}</a></p>--}}
 @stop

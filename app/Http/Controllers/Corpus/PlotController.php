@@ -46,7 +46,7 @@ class PlotController extends Controller
         $plots = Plot::search($url_args);
         $numAll = $plots->count();
 
-        $plots = $plots->get();
+        $plots = $plots->paginate($this->url_args['limit_num']);
         $corpus_values = Corpus::getList();
         $genre_values = Genre::getList();
 
