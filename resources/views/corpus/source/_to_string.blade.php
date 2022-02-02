@@ -23,7 +23,7 @@
 ?>
 @if ($source_str)
     @if(!isset($without_tag))
-    <span class="metadata-title">{{ trans('corpus.source') }}:</span> 
+    <div class="metadata-title">{{ trans('corpus.source') }}:</div> 
     @endif
     <i>{!! $source_str !!}</i>
 @endif

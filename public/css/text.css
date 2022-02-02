@@ -275,5 +275,6 @@ h5:first-letter {
 }
 
 .metadata-title {
+    display: inline-block;
     font-weight: bold;
 }
