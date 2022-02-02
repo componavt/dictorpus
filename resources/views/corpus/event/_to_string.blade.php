@@ -19,7 +19,7 @@
     $recoders_list = join(', ',$recorders_arr);
 ?>
 @if ($informants_arr)
-        <b>{{ trans('corpus.informants')}}:</b> 
+        <span class="metadata-title">{{ trans('corpus.informants')}}:</span> 
         <i>
         @foreach ($informants_arr as $informant) 
             {{$informant}}<br>

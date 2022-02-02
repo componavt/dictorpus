@@ -269,6 +269,11 @@ h5:first-letter {
     
 }
 
-.topic-list-title:first-letter {
+.topic-list-title:first-letter,
+.metadata-title:first-letter {
     text-transform: lowercase;
+}
+
+.metadata-title {
+    font-weight: bold;
 }
