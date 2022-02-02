@@ -26,4 +26,3 @@
                  'title'=>trans('corpus.name').' '.trans('messages.in_english')])                 
     </div>
 </div>                 
-@include('widgets.form.formitem._submit', ['title' => $submit_title])

@@ -13,8 +13,8 @@
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/topic/'.$topic->id) }}">{{ trans('messages.back_to_show') }}</a></p>
         
         {!! Form::model($topic, array('method'=>'PUT', 'route' => array('topic.update', $topic->id))) !!}
-        @include('corpus.topic._form_create_edit', ['submit_title' => trans('messages.save'),
-                                      'action' => 'edit'])
+        @include('corpus.topic._form_create_edit', ['action' => 'edit'])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop
 

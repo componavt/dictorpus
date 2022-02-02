@@ -12,8 +12,8 @@
         <p><a href="{{ LaravelLocalization::localizeURL('/corpus/topic/') }}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('topic.store'))) !!}
-        @include('corpus.topic._form_create_edit', ['submit_title' => trans('messages.create_new_m'),
-                                      'action' => 'create'])
+        @include('corpus.topic._form_create_edit', ['action' => 'create'])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.create_new_m')])
         {!! Form::close() !!}
 @stop
 

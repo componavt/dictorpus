@@ -98,7 +98,7 @@ class TopicController extends Controller
         $this->validateRequest($request);
         
         $topic = Topic::create($request->all());
-        $topic->plots()->attach($request->plot_id);
+        $topic->saveAddition($request->plot_id);
         
         return Redirect::to('/corpus/topic/'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -108,7 +108,7 @@ class TopicController extends Controller
     {
         $this->validateRequest($request);        
         $topic = Topic::create($request->all());
-        $topic->plots()->attach($request->plot_id);
+        $topic->saveAddition($request->plot_id);
         return $topic->id;        
     }
     
@@ -161,8 +161,7 @@ class TopicController extends Controller
 //dd($request->all());        
         $topic = Topic::find($id);
         $topic->fill($request->all())->save();
-        $topic->plots()->detach();
-        $topic->plots()->attach($request->plot_id);
+        $topic->saveAddition($request->plot_id);
         
 //        return Redirect::to('/corpus/topic/?search_id='.$topic->id)
         return Redirect::to('/corpus/topic/'.($this->args_by_get))

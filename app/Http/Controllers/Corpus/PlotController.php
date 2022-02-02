@@ -202,7 +202,11 @@ class PlotController extends Controller
     public function plotList(Request $request)
     {
         $plot_name = '%'.$request->input('q').'%';
+        
         $genre_ids = (array)$request->input('genre_id');
+        foreach (Genre::whereIn('parent_id', $genre_ids)->get() as $g) {
+            $genre_ids[] = $g->id;
+        }
 
         $list = [];
         $plots = Plot::where(function($q) use ($plot_name){

@@ -51,6 +51,7 @@ class Topic extends Model
         if ($plot) {
             return $plot->genre_id;
         }
+        return '';
     }
     
     /** Gets name by code, takes into account locale.
@@ -152,5 +153,25 @@ class Topic extends Model
             $out[] = $plot->name;
         }
         return join(', ', $out);
+    }
+    
+    public static function nextSequenceNumber($plot_ids=[]) {
+        $last_topic = self::latest('sequence_number');
+        if (sizeof($plot_ids)) {
+            $last_topic->whereIn('id', function ($q) use ($plot_ids) {
+                $q->select('topic_id')->from('plot_topic')
+                  ->whereIn('plot_id', $plot_ids);
+            });
+        }
+        $last_topic = $last_topic->first();
+        return 1+ $last_topic->sequence_number ?? 0;        
+    }
+    
+    public function saveAddition($plot_ids) {
+        if (!$this->sequence_number) {
+            $this->sequence_number = self::nextSequenceNumber($plot_ids);
+            $this->save();
+        }
+        $this->plots()->attach($plot_ids);        
     }
 }
