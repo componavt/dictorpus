@@ -38,23 +38,7 @@
             <div class="col-sm-6">
         @endif
         
-        <h3>{{ trans('corpus.corpus') }}: {{ $text->corpus->name }}</h3>
-        
-        @if ($text->genresToString())
-        <p><i>{{ $text->genresToString() }}</i></p>
-        @endif
-        
-        @if ($text->event)
-        <p> 
-            @include('corpus.event._to_string',['event'=>$text->event, 'lang_id' => $text->lang_id])
-        </p>
-        @endif
-        
-        @if ($text->source)
-        <p> 
-            @include('corpus.source._to_string',['source'=>$text->source])
-        </p>
-        @endif
+        @include('corpus.text.show.metadata')
         
         @if ($text->video && $text->video->youtube_id)
             </div>

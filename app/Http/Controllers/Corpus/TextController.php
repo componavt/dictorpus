@@ -17,10 +17,12 @@ use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
+use App\Models\Corpus\Plot;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
 use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Topic;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
@@ -105,7 +107,9 @@ class TextController extends Controller
         $recorder_values = Recorder::getList();
         $dialect_values = Dialect::getList();
         $genre_values = Genre::getList();        
-//dd($dialect_values);      
+        $plot_values = Plot::getList();
+        $topic_values = Topic::getList();
+
         $region_values = Region::getList();
         $district_values = District::getList();
         
@@ -115,11 +119,11 @@ class TextController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.create',
-                  compact('corpus_values', 'dialect_values', 'genre_values',
-                          'informant_values', 'lang_values', 'place_values',
-                          'recorder_values', 'region_values', 'district_values',
-                          'args_by_get', 'url_args', 
-                          'author_values', 'project_langs'));
+                  compact('author_values', 'corpus_values', 'dialect_values', 
+                          'district_values', 'genre_values', 'informant_values', 
+                          'lang_values', 'place_values', 'plot_values', 
+                          'project_langs', 'recorder_values', 'region_values', 
+                          'topic_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -241,6 +245,12 @@ class TextController extends Controller
 
         $genre_values = Genre::getList($text->corpus_id);        
         $genre_value = $text->genreValue();
+        
+        $plot_values = Plot::getList();
+        $plot_value = $text->plotValue();
+        
+        $topic_values = Topic::getList();
+        $topic_value = $text->topicValue();
 
         $region_values = Region::getList();
         $district_values = District::getList();
@@ -255,12 +265,14 @@ class TextController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.edit',
-                compact('corpus_values', 'dialect_value', 'dialect_values',
+                compact('author_value', 'author_values', 'corpus_values', 
+                        'dialect_value', 'dialect_values', 'district_values', 
                         'genre_value', 'genre_values', 'informant_value',
-                        'informant_values','lang_values', 'place_values','text', 'readonly',
-                        'recorder_value', 'recorder_values', 'args_by_get', 'url_args',
-                        'region_values', 'district_values', 'trans_author_value',
-                        'author_value', 'author_values', 'project_langs'));
+                        'informant_values','lang_values', 'place_values', 
+                        'plot_value', 'plot_values', 'project_langs', 'readonly', 
+                        'recorder_value', 'recorder_values', 'region_values', 
+                        'text', 'topic_value', 'topic_values', 'trans_author_value', 
+                        'args_by_get', 'url_args'));
     }
 
     /**

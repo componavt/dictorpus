@@ -40,29 +40,14 @@
 
 @section('jqueryFunc')
     toggleSpecial();
-    $(".multiple-select-genre").select2({
-        width: '100%',
-        ajax: {
-          url: "/corpus/genre/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              corpus_id: selectedValuesToURL("#corpus_id")
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });
     $(".multiple-select").select2();
     
     selectDialect('lang_id');
+    selectGenre('corpus_id');
+    selectPlot('.multiple-select-plot', 'genres');
+    selectTopic('plots');
+    
+    selectPlot('.select-plot', 'genre_id'); /* from modal */
     
     $('.text-unlock').click(function() {
         $(this).hide();

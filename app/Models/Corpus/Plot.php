@@ -7,8 +7,6 @@ use LaravelLocalization;
 
 use App\Library\Str;
 
-use App\Models\Dict\Lang;
-
 class Plot extends Model
 {
     public $timestamps = false;
@@ -79,46 +77,6 @@ class Plot extends Model
         
         return $list;         
     }
-    
-    /**
-     * count the number of texts of plots and group by language
-     * 
-     * @return array [<plot_name> => [<lang_name> => <number_of_texts>, ... ], ... ]
-     *              i.e. ['сказки'=>['вепсский'=>467, 'карельский: собственно карельское наречие'=>2, ...], ...]
-     */
-/*    public static function countTextsByIDGroupByLang() {
-        $out = [];
-        $locale = LaravelLocalization::getCurrentLocale();
-
-        $plots = self::whereParentId(0)
-                      ->orderBy('name_'.$locale)->get();
-        $plot_groups = [];        
-        foreach ($plots as $plot) {   
-            $plot_groups[$plot->name] = array_merge([$plot->id],
-                        self::whereParentId($plot->id)
-                          ->get()->pluck('id')->toArray());
-            
-        }
-
-        foreach ($plot_groups as $plot_name=>$plots) {   
-            $for_all=Text::whereIn('id', function ($query) use ($plots) {
-                            $query->select('text_id')->from('plot_text')
-                                  ->whereIn('plot_id', $plots);
-                        })->count();
-            if (!$for_all) {
-                continue;
-            }            
-            foreach (Lang::projectLangs() as $lang) {
-                $num_texts = Text::whereLangId($lang->id)
-                        ->whereIn('id', function ($query) use ($plots) {
-                            $query->select('text_id')->from('plot_text')
-                                  ->whereIn('plot_id', $plots);
-                        })->count();
-                $out[$lang->name][$plot_name] = number_format($num_texts, 0, ',', ' ');
-            }
-        }
-        return $out;
-    }*/
     
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();

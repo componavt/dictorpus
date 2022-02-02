@@ -248,3 +248,27 @@ ol {
 h5 {
     color: #999
 }
+
+h5:first-letter {
+    text-transform: uppercase;    
+}
+
+.corpus-text h3 {
+    margin-top: 10px;
+}
+
+.topic-list {
+    margin: 0 0 20px 20px;
+    font-style: italic;
+}
+
+.topic-list-title {
+    font-style: normal;
+    font-weight: bold;
+    margin: 10px 0 0 -20px;
+    
+}
+
+.topic-list-title:first-letter {
+    text-transform: lowercase;
+}

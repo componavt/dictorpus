@@ -7,6 +7,7 @@
         Route::get('corpus/genre/list', 'Corpus\GenreController@genreList');
         Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
         Route::get('corpus/place/store', 'Corpus\PlaceController@simpleStore');
+        Route::get('corpus/plot/list', 'Corpus\PlotController@plotList');
         Route::get('corpus/recorder/store', 'Corpus\RecorderController@simpleStore');
         
         Route::get('corpus/sentence/{id}/edit', 'Corpus\SentenceController@edit');
@@ -37,6 +38,9 @@
         Route::get('corpus/text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
         Route::get('corpus/text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
         Route::get('corpus/text/sentence', 'Corpus\TextController@showWordInSentence');
+
+        Route::get('corpus/topic/list', 'Corpus\TopicController@topicList');
+        Route::get('corpus/topic/store', 'Corpus\TopicController@simpleStore');
         
         Route::get('corpus/word/add_gramset/{id}', 'Corpus\WordController@addGramset');        
         Route::get('corpus/word/create_checked_block', 'Corpus\WordController@getWordCheckedBlock');        
@@ -109,4 +113,10 @@
                        ['names' => ['update' => 'source.update',
                                     'store' => 'source.store',
                                     'destroy' => 'source.destroy']]);
+
+        Route::resource('corpus/topic', 'Corpus\TopicController',
+                       ['names' => ['update' => 'topic.update',
+                                    'store' => 'topic.store',
+                                    'destroy' => 'topic.destroy']]);
+        
         

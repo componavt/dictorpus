@@ -37,7 +37,7 @@
                  'help_text' =>trans('corpus.text_help'),
                  'attributes' => ['id'=>'text', 'readonly'=>$readonly],
                 ])
-        @if ($action=='edit')
+        @if ($action=='edit' && !$text->hasImportantExamples())
         <div class='to-markup'>
                 <input id="to_makeup" name="to_makeup" type="checkbox" value='1'{{$readonly ? ' disabled' : ''}}>
                 <label id="to_makeup_label" for="to_makeup" 

@@ -66,6 +66,7 @@ return [
     'stats' => 'Statistics',
     'text_frequency' => 'Frequency of symbols in texts',
     'texts' => 'Texts',
+    'topics' => 'Topics',
     'video' => 'Video',
     'word_frequency' => 'Frequency dictionary of tokens',
     'wordforms' => 'Wordforms',

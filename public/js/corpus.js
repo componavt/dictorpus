@@ -173,11 +173,51 @@ function saveRecorder() {
               },
         type: 'GET',
         success: function(recorder_id){     
-console.log(recorder_id);            
+//console.log(recorder_id);            
             $("#modalAddRecorder").modal('hide');
             if (recorder_id) {
                 var opt = new Option(name_ru, recorder_id);
                 $("#event_recorders").append(opt).trigger('change');
+                opt.setAttribute('selected','selected')
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route + test_url;
+            alert(text);
+        }
+    }); 
+}
+
+function addTopic() {
+    $("#genres option:selected").each(function( index, element ){
+        $('#genre_id option[value="'+ $(this).val() +'"]').prop('selected', true);
+    });
+    $("#plots option:selected").each(function( index, element ){
+        $('#plot_id').val($(this).val()); // option[value="'+ $(this).val() +'"]').prop('selected', true);
+        $('#plot_id').trigger('change');
+    });
+    $("#modalAddTopic").modal('show');
+}
+
+function saveTopic() {
+    var name_ru = $( "#modalAddTopic #name_ru" ).val();
+    var name_en = $( "#modalAddTopic #name_en" ).val();
+    var route = '/corpus/topic/store';
+    var test_url = '?name_ru='+name_ru+'&name_en='+name_en;
+    $.ajax({
+        url: route, 
+        data: {name_ru: name_ru, 
+               name_en: name_en,
+               plot_id: selectedValuesToURL("#genre_id")
+              },
+        type: 'GET',
+        success: function(recorder_id){     
+//console.log(recorder_id);            
+            $("#modalAddTopic").modal('hide');
+            if (recorder_id) {
+                var opt = new Option(name_ru, recorder_id);
+                $("#topics").append(opt).trigger('change');
                 opt.setAttribute('selected','selected')
             }
         },

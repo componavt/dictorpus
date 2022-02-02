@@ -28,4 +28,10 @@
                               'submit_onClick' => 'saveRecorder()',
                               'submit_title' => trans('messages.save'),
                               'modal_view'=>'corpus.recorder._form_create_edit'])
-        
+
+        @include('widgets.modal',['name'=>'modalAddTopic',
+                              'title'=>trans('corpus.add_topic'),
+                              'submit_onClick' => 'saveTopic()',
+                              'submit_title' => trans('messages.save'),
+                              'modal_view'=>'corpus.topic._form_create_edit'])
+                              

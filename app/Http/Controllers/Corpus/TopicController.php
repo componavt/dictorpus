@@ -13,8 +13,9 @@ use App\Library\Str;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Plot;
+use App\Models\Corpus\Topic;
 
-class PlotController extends Controller
+class TopicController extends Controller
 {
     public $url_args=[];
     public $args_by_get='';
@@ -27,8 +28,8 @@ class PlotController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/plot/', ['except' => ['index','plotList']]);
-        $this->url_args = Plot::urlArgs($request);  
+        $this->middleware('auth:corpus.edit,/corpus/topic/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->url_args = Topic::urlArgs($request);  
         
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
@@ -43,16 +44,17 @@ class PlotController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $plots = Plot::search($url_args);
-        $numAll = $plots->count();
+        $topics = Topic::search($url_args);
+        $numAll = $topics->count();
 
-        $plots = $plots->paginate($this->url_args['limit_num']);
+        $topics = $topics->paginate($this->url_args['limit_num']);
         $corpus_values = Corpus::getList();
         $genre_values = Genre::getList();
+        $plot_values = Plot::getList();
 
-        return view('corpus.plot.index', 
-                    compact('corpus_values', 'genre_values', 'plots', 'numAll', 
-                            'args_by_get', 'url_args'));
+        return view('corpus.topic.index', 
+                    compact('corpus_values', 'genre_values', 'numAll', 
+                            'plot_values', 'topics', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -66,8 +68,20 @@ class PlotController extends Controller
         $url_args = $this->url_args;
         
         $genre_values = Genre::getNumeredList();
-        return view('corpus.plot.create', 
-                compact('genre_values', 'args_by_get', 'url_args'));
+        $plot_values = [NULL => ''] + Plot::getList();  
+        $genre_id = 66; // руны
+        
+        return view('corpus.topic.create', 
+                compact('genre_id', 'genre_values', 'plot_values',  
+                        'args_by_get', 'url_args'));
+    }
+
+    public function validateRequest(Request $request) {
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+            'plot_id' => 'required|array'
+        ]);
     }
 
     /**
@@ -81,17 +95,23 @@ class PlotController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
-        ]);
+        $this->validateRequest($request);
         
-        $plot = Plot::create($request->all());
+        $topic = Topic::create($request->all());
+        $topic->plots()->attach($request->plot_id);
         
-        return Redirect::to('/corpus/plot/'.($this->args_by_get))
+        return Redirect::to('/corpus/topic/'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
+    public function simpleStore(Request $request)
+    {
+        $this->validateRequest($request);        
+        $topic = Topic::create($request->all());
+        $topic->plots()->attach($request->plot_id);
+        return $topic->id;        
+    }
+    
     /**
      * Display the specified resource.
      *
@@ -100,7 +120,7 @@ class PlotController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/corpus/plot/'.($this->args_by_get));
+        return Redirect::to('/corpus/topic/'.($this->args_by_get));
     }
 
     /**
@@ -114,12 +134,15 @@ class PlotController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $plot = Plot::find($id); 
+        $topic = Topic::find($id); 
         $genre_values = Genre::getNumeredList();
-        
-        return view('corpus.plot.edit', 
-                compact('genre_values', 'plot',
-                        'args_by_get', 'url_args'));
+        $genre_id = $topic->genre_id;
+        $plot_values = [NULL => ''] + Plot::getList();  
+        $plot_value = $topic->plotValue();
+//dd($plot_value);        
+        return view('corpus.topic.edit', 
+                compact('genre_id', 'genre_values', 'plot_value', 
+                        'plot_values', 'topic', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -135,12 +158,14 @@ class PlotController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
+//dd($request->all());        
+        $topic = Topic::find($id);
+        $topic->fill($request->all())->save();
+        $topic->plots()->detach();
+        $topic->plots()->attach($request->plot_id);
         
-        $plot = Plot::find($id);
-        $plot->fill($request->all())->save();
-        
-//        return Redirect::to('/corpus/plot/?search_id='.$plot->id)
-        return Redirect::to('/corpus/plot/'.($this->args_by_get))
+//        return Redirect::to('/corpus/topic/?search_id='.$topic->id)
+        return Redirect::to('/corpus/topic/'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
@@ -157,15 +182,16 @@ class PlotController extends Controller
         $result =[];
         if($id != "" && $id > 0) {
             try{
-                $plot = Plot::find($id);
-                if($plot){
-                    $plot_name = $plot->name;
-                    if ($plot->texts()->count()>0) {
+                $topic = Topic::find($id);
+                if($topic){
+                    $topic_name = $topic->name;
+                    if ($topic->texts()->count()>0) {
                         $error = true;
-                        $result['error_message'] = \Lang::get('corpus.plot_has_text', ['name'=>$plot_name]);                        
+                        $result['error_message'] = \Lang::get('corpus.topic_has_text', ['name'=>$topic_name]);                        
                     } else {
-                        $plot->delete();
-                        $result['message'] = \Lang::get('corpus.plot_removed', ['name'=>$plot_name]);
+                        $topic->plots()->detach();
+                        $topic->delete();
+                        $result['message'] = \Lang::get('corpus.topic_removed', ['name'=>$topic_name]);
                     }
                 }
                 else{
@@ -185,39 +211,42 @@ class PlotController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/corpus/plot/'.($this->args_by_get))
+                return Redirect::to('/corpus/topic/'.($this->args_by_get))
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/corpus/plot/'.($this->args_by_get))
+            return Redirect::to('/corpus/topic/'.($this->args_by_get))
                   ->withSuccess($result['message']);
         }
     }
     
     /**
      * Gets list of places for drop down list in JSON format
-     * Test url: /corpus/plot/list?lang_id[]=1
+     * Test url: /corpus/topic/list?lang_id[]=1
      * 
      * @return JSON response
      */
-    public function plotList(Request $request)
+    public function topicList(Request $request)
     {
-        $plot_name = '%'.$request->input('q').'%';
-        $genre_ids = (array)$request->input('genre_id');
+        $topic_name = '%'.$request->input('q').'%';
+        $plot_ids = (array)$request->input('plot_id');
 
         $list = [];
-        $plots = Plot::where(function($q) use ($plot_name){
-                            $q->where('name_en','like', $plot_name)
-                              ->orWhere('name_ru','like', $plot_name);
+        $topics = Topic::where(function($q) use ($topic_name){
+                            $q->where('name_en','like', $topic_name)
+                              ->orWhere('name_ru','like', $topic_name);
                          });
-        if (sizeof($genre_ids)) {                 
-            $plots = $plots -> whereIn('genre_id',$genre_ids);
+        if (sizeof($plot_ids)) {                 
+            $topics = $topics->whereIn('id', function ($q) use ($plot_ids) {
+                $q->select('topic_id')->from('plot_topic')
+                  ->whereIn('plot_id', $plot_ids);
+            });
         }
         
-        $plots = $plots->orderBy('sequence_number')->get();
+        $topics = $topics->orderBy('sequence_number')->get();
                          
-        foreach ($plots as $plot) {
-            $list[]=['id'  => $plot->id, 
-                     'text'=> $plot->name];
+        foreach ($topics as $topic) {
+            $list[]=['id'  => $topic->id, 
+                     'text'=> $topic->name];
         }  
 //dd($list);        
 //dd(sizeof($places));

@@ -2,7 +2,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('corpus.plot_list') }}
+{{ trans('corpus.topic_list') }}
 @stop
 
 @section('headExtra')
@@ -12,17 +12,16 @@
 
 @section('body')
         <p>
-{{--            <a href="/stats/by_plot">{{ trans('stats.stats_by_plot') }}</a> | --}}
-        @if (User::checkAccess('corpus.edit'))
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/plot/create') }}{{$args_by_get}}">
+        @if (user_corpus_edit())
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/topic/create') }}{{$args_by_get}}">
         @endif
             {{ trans('messages.create_new_m') }}
-        @if (User::checkAccess('corpus.edit'))
+        @if (user_corpus_edit())
             </a>
         @endif
         </p>
         
-        @include('corpus.plot._search_form') 
+        @include('corpus.topic._search_form') 
 
         @include('widgets.founded_records', ['numAll'=>$numAll])
         
@@ -33,8 +32,8 @@
                 @if (User::checkAccess('corpus.edit'))
                 <th>No</th>
                 @endif
-                @if (!$url_args['search_genre'])
-                <th>{{ trans('corpus.genre') }}</th>
+                @if (!$url_args['search_plot'])
+                <th>{{ trans('corpus.plot') }}</th>
                 @endif
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
@@ -45,14 +44,13 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($plots as $plot)
-                @include('corpus.plot._row') 
+            @foreach($topics as $topic)
+                @include('corpus.topic._row') 
             @endforeach
         </tbody>
         </table>
-        {!! $plots->appends($url_args)->render() !!}
+        {!! $topics->appends($url_args)->render() !!}
         @endif
-{{--<p><a href="/stats/by_plot">{{trans('stats.distribution_by_plots')}}</a></p>--}}
 @stop
 
 @section('footScriptExtra')
@@ -65,6 +63,7 @@
     recDelete('{{ trans('messages.confirm_delete') }}');
     $(".multiple-select-corpus").select2();
     selectGenre();
+    selectPlot();
 @stop
 
 

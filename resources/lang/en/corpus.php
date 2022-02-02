@@ -71,6 +71,7 @@ return [
     'of_recorder' => 'of the recorder',
     'of_region' => 'of the region',
     'of_text' => 'of the text',
+    'of_topic' => 'of the topic',
     
     'p' => 'p.',
     'parent' => 'parent section',
@@ -120,6 +121,11 @@ return [
     'texts' => 'texts',
     
     'title' => 'Title',
+    
+    'topic' => 'topic',
+    'topic_has_text' => 'Topic ":name" can not be removed, there are texts with this topic',
+    'topic_list' => 'Topic list',
+    'topic_removed' => 'Topic ":name" is removed successfully.',
     
     'trans_author' => 'Author of translation/original work',
     'translation_in' => 'translation in',

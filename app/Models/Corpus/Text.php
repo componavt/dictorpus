@@ -50,6 +50,8 @@ class Text extends Model
     use \App\Traits\Relations\BelongsToMany\Authors;
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Genres;
+    use \App\Traits\Relations\BelongsToMany\Plots;
+    use \App\Traits\Relations\BelongsToMany\Topics;
 //    use \App\Traits\Relations\BelongsToMany\Meanings;
     
     use \App\Traits\Relations\HasMany\Sentences;
@@ -417,6 +419,12 @@ class Text extends Model
         $this->genres()->detach();
         $this->genres()->attach($request->genres);
         
+        $this->plots()->detach();
+        $this->plots()->attach($request->plots);
+        
+        $this->topics()->detach();
+        $this->topics()->attach($request->topics);
+        
         if ($to_makeup && $request->text && ($old_text != $request->text || !$this->text_structure)) {
             $error_message = $this->markup();
         }
@@ -617,6 +625,7 @@ class Text extends Model
     public function remove() {
         $this->dialects()->detach();
         $this->genres()->detach();
+        $this->plots()->detach();
         $this->meanings()->detach();
         $this->wordforms()->detach();
         $this->authors()->detach();
@@ -910,6 +919,30 @@ class Text extends Model
         return $relevances;
     }
     
+    public function hasImportantExamples() {
+        if ($this->meanings()->whereRelevance(10)->count()>0) {
+            return true;
+        }
+        $text_id = $this->id;
+        
+        $fragments_count = SentenceFragment::whereIn('sentence_id', function ($q) use ($text_id) {
+                $q ->select('id')->from('sentences')
+                   ->whereTextId($text_id);
+            })->count();
+        if ($fragments_count) {
+            return true;
+        }
+        
+        $translations_count = SentenceTranslation::whereIn('sentence_id', function ($q) use ($text_id) {
+                $q ->select('id')->from('sentences')
+                   ->whereTextId($text_id);
+            })->count();
+        if ($translations_count) {
+            return true;
+        }
+    }
+
+
     /**
      * set links between a word (of some text) and a wordform-gramset in the dictionary
      * 
@@ -1700,5 +1733,21 @@ dd($s->saveXML());
                         : $genre->name;
         }
         return join(', ', $out);
+    }
+    
+    public function plotsToString() {
+        $out = [];
+        foreach ($this->plots as $plot) {
+            $out[] = $plot->name;
+        }
+        return join(', ', $out);
+    }
+    
+    public function topicsToArray() {
+        $out = [];
+        foreach ($this->topics as $topic) {
+            $out[] = $topic->name;
+        }
+        return $out;
     }
 }
