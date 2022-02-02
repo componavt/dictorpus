@@ -36,3 +36,21 @@ function insertTextAtCursor(el, text, offset) {
         range.select();
     }
 }
+
+function addTag(el, open, close) {
+	var control = $(el)[0];
+	var start = control.selectionStart;
+	var end = control.selectionEnd;
+	if (start != end) {
+		var text = $(control).val();
+		$(control).val(text.substring(0, start) + open + text.substring(start, end) + close + text.substring(end));
+		$(control).focus();
+		var sel = end + (open + close).length;
+		control.setSelectionRange(sel, sel);
+	}
+	return false;
+}
+
+function toSup(fieldId) {
+    addTag('#'+fieldId, '<sup>', '</sup>');
+}

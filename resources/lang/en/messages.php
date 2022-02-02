@@ -52,6 +52,7 @@ return [
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',
     'special_symbols' => 'special symbols',
+    'supper_text' => 'to superscript',
     'text_exists' => 'There is a text associated with this entry',
     'toggle_list' => 'toggle list',
     'informant_exists' => 'There is an informant associated with this entry',

@@ -23,7 +23,9 @@
         <?php $transtext_text_value = ($action=='edit' && $text->transtext) ? ($text->transtext->text) : NULL; ?>
         @include('widgets.form.formitem._textarea', 
                 ['name' => 'transtext.text', 
-                 'help_text' =>trans('corpus.text_help'),
+                 'help_text' =>trans('corpus.text_help')
+                    ."<div class=\"buttons-div\"><input class=\"special-symbol-b special-symbol-sup\" title=\""
+                    .trans('messages.supper_text')."\" type=\"button\" value=\"5\" onclick=\"toSup('transtext_text')\"></div>",
                  'special_symbol' => true,
                  'value' => $transtext_text_value,
                  'title'=>trans('corpus.transtext_text'),

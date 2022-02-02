@@ -34,7 +34,9 @@
                 ['name' => 'text', 
                  'special_symbol' => true,
                  'title'=>trans('corpus.text'),
-                 'help_text' =>trans('corpus.text_help'),
+                 'help_text' =>trans('corpus.text_help')
+                    ."<div class=\"buttons-div\"><input class=\"special-symbol-b special-symbol-sup\" title=\""
+                    .trans('messages.supper_text')."\" type=\"button\" value=\"5\" onclick=\"toSup('text')\"></div>",
                  'attributes' => ['id'=>'text', 'readonly'=>$readonly],
                 ])
         @if ($action=='edit' && !$text->hasImportantExamples())
