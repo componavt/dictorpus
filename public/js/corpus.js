@@ -209,7 +209,7 @@ function saveTopic() {
         url: route, 
         data: {name_ru: name_ru, 
                name_en: name_en,
-               plot_id: selectedValuesToURL("#genre_id")
+               plot_id: selectedValuesToURL("#plot_id")
               },
         type: 'GET',
         success: function(recorder_id){     
