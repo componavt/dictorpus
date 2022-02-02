@@ -19,22 +19,27 @@
     $recoders_list = join(', ',$recorders_arr);
 ?>
 @if ($informants_arr)
-        <i>{{ trans('corpus.informants')}}:</i> 
+        <b>{{ trans('corpus.informants')}}:</b> 
+        <i>
         @foreach ($informants_arr as $informant) 
             {{$informant}}<br>
         @endforeach
+        </i>
 @endif
 
 @if ($event->place)
-    <i>{{ trans('corpus.record_place')}}:</i> @include('corpus.place._to_string',
-                                                       ['place' => $event->place, 'lang_id' => $lang_id])@if($event->date 
+    <b>{{ trans('corpus.record_place')}}:</b> 
+    <i>
+    @include('corpus.place._to_string',
+            ['place' => $event->place, 'lang_id' => $lang_id])@if($event->date 
         || $event->recorders),@endif
+    </i>
 @endif
 
 @if ($event->date)
-<i>{{ trans('corpus.record_year')}}:</i> {{ $event->date }}@if($recoders_list)<br>@endif
+<b>{{ trans('corpus.record_year')}}:</b> <i>{{ $event->date }}@if($recoders_list)<br>@endif</i>
 @endif
 
 @if ($recoders_list)
-    <i>{{ trans('corpus.recorded')}}:</i> {{ $recoders_list }}
+<b>{{ trans('corpus.recorded')}}:</b> <i>{{ $recoders_list }}</i>
 @endif
