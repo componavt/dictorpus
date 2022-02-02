@@ -9,6 +9,6 @@
         
         {!! Form::open(array('method'=>'POST', 'route' => array('district.store'))) !!}
         @include('corpus.district._form_create_edit', ['action' => 'create'])
-        @include('widgets.form.formitem._submit', ['title' => trans('messages.create_new_m'])
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.create_new_m')])
         {!! Form::close() !!}
 @stop

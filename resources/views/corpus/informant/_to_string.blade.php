@@ -2,19 +2,20 @@
         $info = [];
         
         if ($informant->name) {
-            $info[] = $informant->name;
+            $info[] = '<i>'. $informant->name. '</i>';
         }
         
         if ($informant->birth_date) {
-            $info[] = '<i>'.\Lang::get('corpus.birth_year'). '</i> '. $informant->birth_date;
+            $info[] = '<b>'.\Lang::get('corpus.birth_year'). '</b> <i>'. $informant->birth_date.'</i>';
         }
 
         $informant_info = join(', ', $info);
 ?>
 @if ($informant_info)
-<i>{{ trans('corpus.informant')}}:</i> 
-    {!! $informant_info !!},
+<b>{{ trans('corpus.informant')}}:</b> 
+{!! $informant_info !!},
 
     @if ($informant->birth_place)
-    <i>{{ trans('corpus.nee')}}</i> @include('corpus.place._to_string',['place' => $informant->birth_place, 'lang_id' => $lang_id])@endif
+    <b>{{ trans('corpus.nee')}}</b> 
+    <i>@include('corpus.place._to_string',['place' => $informant->birth_place, 'lang_id' => $lang_id])@endif</i>    
 @endif
