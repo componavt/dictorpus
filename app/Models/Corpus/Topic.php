@@ -164,6 +164,9 @@ class Topic extends Model
             });
         }
         $last_topic = $last_topic->first();
+        if (!$last_topic) {
+            return 1;
+        }
         return 1+ $last_topic->sequence_number ?? 0;        
     }
     

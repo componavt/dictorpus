@@ -184,12 +184,12 @@ class Text extends Model
     
     public static function searchByGenres($texts, $genres, $without_genres=false) {
         if ($without_genres) {
-        return $texts->whereNotIn('id',function($query){
-                    $query->select('text_id')
-                    ->from("genre_text");
-                });
-            
+            return $texts->whereNotIn('id',function($query){
+                        $query->select('text_id')
+                        ->from("genre_text");
+                    });            
         }
+        
         if (!sizeof($genres)) {
             return $texts;
         }
