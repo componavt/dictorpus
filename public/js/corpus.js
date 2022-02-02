@@ -220,6 +220,8 @@ function saveTopic() {
                 $("#topics").append(opt).trigger('change');
                 opt.setAttribute('selected','selected')
             }
+            $( "#modalAddTopic #name_ru" ).val('');
+            $( "#modalAddTopic #name_en" ).val('');
         },
         error: function (jqXHR, textStatus, errorThrown) {
             var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
