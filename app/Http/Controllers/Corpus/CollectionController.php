@@ -22,7 +22,8 @@ class CollectionController extends Controller
         $langs = [1=>[1], 2=>[4,5,6]];
         
         if (in_array($id, [1, 2])) {
-            $genres = Genre::where('parent_id',$collect_genres[$id])->get();
+            $genres = Genre::where('parent_id',$collect_genres[$id])
+                           ->orderBy('sequence_number')->get();
             $lang_id = $langs[$id];
             $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
             return view('corpus.collection.'.$id.'.index',
