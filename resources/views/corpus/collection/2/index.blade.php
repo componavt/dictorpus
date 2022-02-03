@@ -20,8 +20,8 @@
             @foreach ($plot->texts()->whereIn('lang_id', $lang_id)->get() as $text)
             @include('corpus.collection._text')
             @endforeach
-        @endforeach
     </div>
+        @endforeach
     @endforeach
 
 @stop
