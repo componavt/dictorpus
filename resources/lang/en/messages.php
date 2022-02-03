@@ -37,6 +37,7 @@ return [
     'from' => 'from',
     'history' => 'history',
     'in_english' => 'in English',
+    'in_pl' => 'in plural',
     'in_russian' => 'in Russian',
     'including' => 'including',
     'invalid_id' => 'Invalid identifier',

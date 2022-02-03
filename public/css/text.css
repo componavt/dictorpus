@@ -278,3 +278,11 @@ h5:first-letter {
     display: inline-block;
     font-weight: bold;
 }
+
+.subdiv {
+    margin: 0 0 20px 20px;
+}
+
+.subdiv-title {
+    font-size: 14px;
+}

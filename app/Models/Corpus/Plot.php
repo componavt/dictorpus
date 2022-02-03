@@ -55,6 +55,12 @@ class Plot extends Model
         }
     }
         
+    public static function getByGenreID($genre_id)
+    {
+        return self::whereIn('genre_id',(array)$genre_id)
+                   ->orderBy('sequence_number')->get();
+    }
+        
     /** Gets list of plots
      * 
      * @return Array [1=>'Bridal laments',..]

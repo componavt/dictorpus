@@ -1,6 +1,8 @@
 <?php
         Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');
         
+        Route::get('corpus/collection', 'Corpus\CollectionController@index');
+        Route::get('corpus/collection/{id}', 'Corpus\CollectionController@show');
 //        Route::get('corpus/gram_search', 'Corpus\GramSearchController@index');
         
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');

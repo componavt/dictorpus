@@ -16,6 +16,7 @@ return [
     'about_veps' => 'Veps',
     'affix_freq' => 'Affix frequency',
     'authors' => 'Authors',
+    'collections' => 'Collections',
     'concept_categories' => 'Concept categories',
     'concepts' => 'Сoncepts',
     'copy_lemmas' => 'Copying lemmas',

@@ -26,6 +26,7 @@
                         <ul class="dropdown-menu" role="menu" id='menu2-sub'>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}">{{ trans('navigation.texts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/sentence') }}">{{ trans('corpus.gram_search') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/collection') }}">{{ trans('navigation.collections') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/video') }}">{{ trans('navigation.video') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/') }}">{{ trans('corpus.new_texts') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/') }}">{{ trans('corpus.last_updated_texts') }}</a></li>

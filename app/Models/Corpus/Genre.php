@@ -13,7 +13,7 @@ class Genre extends Model
 {
     public $timestamps = false;
     
-    protected $fillable = ['name_en','name_ru', 'corpus_id', 'parent_id', 'sequence_number'];
+    protected $fillable = ['name_en','name_ru', 'name_pl_en', 'name_pl_ru', 'corpus_id', 'parent_id', 'sequence_number'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -50,6 +50,18 @@ class Genre extends Model
     public function getNameAttribute() : String
     {
         $locale = LaravelLocalization::getCurrentLocale();
+        $column = "name_" . $locale;
+        return $this->{$column};
+    }
+    
+    public function getNamePlAttribute() : String
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $column = "name_pl_" . $locale;
+        if ($this->{$column}) {
+            return $this->{$column};
+        }
+        
         $column = "name_" . $locale;
         return $this->{$column};
     }

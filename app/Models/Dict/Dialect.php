@@ -129,8 +129,10 @@ class Dialect extends Model
         return $dialect->lang_id;
     }
         
-    /*
-    public static function totalCount(){
-        return self::count();
-    } */    
+    public function textsByGenre($genre_id){
+        return $this->texts()->whereIn('text_id', function ($q) use ($genre_id) {
+            $q->select('text_id')->from('genre_text')
+              ->whereGenreId($genre_id);
+        })->get();
+    } 
 }
