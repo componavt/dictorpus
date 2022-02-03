@@ -15,12 +15,14 @@
     <h3>{{$genre->name_pl}}</h3>
     
         @foreach ($genre->plots as $plot)
+            @if ($plot->texts->count())
     <div class="subdiv">
-    <h4>{{$plot->name}} ({{$plot->texts->count(0)}})</h4>
-            @foreach ($plot->texts()->whereIn('lang_id', $lang_id)->get() as $text)
-            @include('corpus.collection._text')
-            @endforeach
+        <h4>{{$plot->name}} ({{$plot->texts->count()}})</h4>
+                @foreach ($plot->texts()->whereIn('lang_id', $lang_id)->get() as $text)
+                @include('corpus.collection._text')
+                @endforeach
     </div>
+            @endif
         @endforeach
     @endforeach
 
