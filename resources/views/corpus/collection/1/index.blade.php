@@ -17,7 +17,8 @@
     <div class="subdiv">
     <h4>{{$dialect->name}} {{trans('dict.dialect')}} ({{sizeof($dialect->textsByGenre($genre->id))}})</h4>
                 @foreach ($dialect->textsByGenre($genre->id) as $text)
-    @include('corpus.collection._text')
+    @include('corpus.collection._text', 
+            ['event' => $text->event, 'source' => $text->source])
                 @endforeach
     </div>
             @endif

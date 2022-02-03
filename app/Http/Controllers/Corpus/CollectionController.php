@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
+use App\Models\Corpus\Collection;
 use App\Models\Corpus\Genre;
 
 use App\Models\Dict\Dialect;
@@ -18,13 +19,10 @@ class CollectionController extends Controller
     }
     
     public function show($id) {
-        $collect_genres = [1=>19, 2=>66];
-        $langs = [1=>[1], 2=>[4,5,6]];
-        
-        if (in_array($id, [1, 2])) {
-            $genres = Genre::where('parent_id',$collect_genres[$id])
+        if (Collection::isCollectionId($id)) {
+            $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
                            ->orderBy('sequence_number')->get();
-            $lang_id = $langs[$id];
+            $lang_id = Collection::getCollectionLangs($id);
             $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
             return view('corpus.collection.'.$id.'.index',
                     compact('dialects', 'genres', 'id', 'lang_id'));

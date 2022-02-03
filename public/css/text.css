@@ -258,7 +258,7 @@ h5:first-letter {
 }
 
 .topic-list {
-    margin: 0 0 20px 20px;
+    margin: 0 0 10px 20px;
     font-style: italic;
 }
 
@@ -284,5 +284,13 @@ h5:first-letter {
 }
 
 .subdiv-title {
-    font-size: 14px;
+    font-size: 16px;
+}
+
+.text-metadata a {
+    text-decoration: none;
+}
+
+.text-metadata a:hover {
+    text-decoration: underline;
 }

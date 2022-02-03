@@ -409,6 +409,11 @@ class Text extends Model
         return $builder->get();
     }
     
+    public function getCollectionId() {
+        $genre_ids = $this->genres()->pluck('genre_id')->toArray();
+        return Collection::getCollectionId($this->lang_id, $genre_ids);
+    }
+
     public static function updateByID($request, $id) {
         $request['text'] = self::process($request['text']);
         $to_makeup = (int)$request['to_makeup'];
@@ -1751,28 +1756,40 @@ dd($s->saveXML());
         return nl2br($this->text);
     }
     
-    public function genresToString() {
+    public function genresToString($link=null) {
         $out = [];
         foreach ($this->genres as $genre) {
-            $out[] = $genre->parent 
+            $name = $genre->parent 
                         ? $genre->parent->name . ' ('.$genre->name.')'
                         : $genre->name;
+            if ($link) {
+                $name = to_link($name, $link.$genre->id);
+            }
+            $out[] = $name;
         }
         return join(', ', $out);
     }
     
-    public function plotsToString() {
+    public function plotsToString($link=null) {
         $out = [];
         foreach ($this->plots as $plot) {
-            $out[] = $plot->name;
+            $name = $plot->name;
+            if ($link) {
+                $name = to_link($name, $link.$plot->id);
+            }
+            $out[] = $name;
         }
         return join(', ', $out);
     }
     
-    public function topicsToArray() {
+    public function topicsToArray($link=null) {
         $out = [];
         foreach ($this->topics as $topic) {
-            $out[] = $topic->name;
+            $name = $topic->name;
+            if ($link) {
+                $name = to_link($name, $link.$topic->id);
+            }
+            $out[] = $name;
         }
         return $out;
     }

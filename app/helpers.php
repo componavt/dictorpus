@@ -127,3 +127,11 @@ if (! function_exists('convert_quotes')) {
         return str_replace($chr, $rpl, html_entity_decode($str, ENT_QUOTES, "UTF-8"));
     }
 }
+
+if (! function_exists('to_link')) {
+    function to_link($str, $link)
+    {
+        return '<a href="'.LaravelLocalization::localizeURL($link).'">'.$str.'</a>';            
+
+    }
+}

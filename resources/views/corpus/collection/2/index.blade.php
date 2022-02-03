@@ -19,7 +19,8 @@
     <div class="subdiv">
         <h4>{{$plot->name}} ({{$plot->texts->count()}})</h4>
                 @foreach ($plot->texts()->whereIn('lang_id', $lang_id)->get() as $text)
-                @include('corpus.collection._text')
+    @include('corpus.collection._text', 
+            ['event' => $text->event, 'source' => $text->source])
                 @endforeach
     </div>
             @endif
