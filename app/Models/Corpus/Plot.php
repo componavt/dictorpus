@@ -28,6 +28,10 @@ class Plot extends Model
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Genre;
     
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Texts;
+    use \App\Traits\Relations\BelongsToMany\Topics;
+    
     /** Gets name of this plot, takes into account locale.
      * 
      * @return String
@@ -37,11 +41,6 @@ class Plot extends Model
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_" . $locale;
         return $this->{$column};
-    }
-    
-    // Genre __has_many__ Texts
-    public function texts(){
-        return $this->belongsToMany(Text::class,'plot_text');
     }
     
     /** Gets name by code, takes into account locale.
@@ -82,14 +81,11 @@ class Plot extends Model
         $locale = LaravelLocalization::getCurrentLocale();
         $plots = self::orderBy('sequence_number')->orderBy('name_'.$locale);
         $plots = self::searchByName($plots, $url_args['search_name']);
+        $plots = self::searchByGenre($plots, $url_args['search_genre']);
         $plots = self::searchByCorpus($plots, $url_args['search_corpus']);
         
         if ($url_args['search_id']) {
             $plots = $plots->where('id',$url_args['search_id']);
-        }
-
-        if ($url_args['search_genre']) {
-            $plots = $plots->whereIn('genre_id',$url_args['search_genre']);
         }
 
         return $plots;
@@ -114,6 +110,19 @@ class Plot extends Model
                               ->whereIn('corpus_id',$corpus_id);
                 });
     }
+    
+    public static function searchByGenre($plots, $genres) {
+        if (!sizeof($genres)) {
+            return $plots;
+        }
+
+        foreach (Genre::whereIn('parent_id', $genres)->get() as $g) {
+            $genres[] = $g->id;
+        }
+        
+        return $plots->whereIn('genre_id',$genres);
+    }
+    
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
                     'search_corpus'   => (array)$request->input('search_corpus'),

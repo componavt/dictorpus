@@ -1,4 +1,4 @@
-        {!! Form::open(['url' => '/corpus/plot/', 
+        {!! Form::open(['url' => '/corpus/topic/', 
                              'method' => 'get']) 
         !!}
 <div class="search-form row">

@@ -147,12 +147,12 @@ class Topic extends Model
         return $url_args;
     }
     
-    public function plotsToString() {
+    public function plotsToString($div=', ') {
         $out = [];
         foreach ($this->plots as $plot) {
             $out[] = $plot->name;
         }
-        return join(', ', $out);
+        return join($div, $out);
     }
     
     public static function nextSequenceNumber($plot_ids=[]) {
@@ -175,6 +175,7 @@ class Topic extends Model
             $this->sequence_number = self::nextSequenceNumber($plot_ids);
             $this->save();
         }
+        $this->plots()->detach();
         $this->plots()->attach($plot_ids);        
     }
 }

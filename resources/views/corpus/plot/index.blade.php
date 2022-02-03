@@ -39,6 +39,7 @@
                 <th>{{ trans('messages.in_russian') }}</th>
                 <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
+                <th>{{ trans('navigation.topics') }}</th>
                 @if (user_corpus_edit())
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
