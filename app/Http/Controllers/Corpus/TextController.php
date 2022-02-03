@@ -86,11 +86,14 @@ class TextController extends Controller
         $recorder_values = [NULL => ''] + Recorder::getList();
         $author_values = [NULL => ''] + Author::getList();
         $genre_values = Genre::getList();
+        $plot_values = Plot::getList();
+        $topic_values = Topic::getList();
 
         return view('corpus.text.index',
-                compact('corpus_values', 'dialect_values', 'informant_values', 
-                        'lang_values', 'recorder_values', 'texts', 'numAll', 
-                        'author_values', 'genre_values', 'args_by_get', 'url_args'));
+                compact('author_values', 'corpus_values', 'dialect_values', 
+                        'genre_values', 'informant_values', 'lang_values', 
+                        'recorder_values', 'plot_values', 'texts', 'topic_values', 
+                        'numAll', 'args_by_get', 'url_args'));
     }
 
     /**

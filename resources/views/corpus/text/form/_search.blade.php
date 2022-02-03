@@ -48,6 +48,24 @@
                  'class'=>'multiple-select-genre form-control'
         ])                 
     </div>
+    <div class="col-md-4{{sizeof($url_args['search_plot']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_plot', 
+                 'values' => $plot_values,
+                 'value' => $url_args['search_plot'],
+                 'title' => trans('corpus.plot'),
+                 'class'=>'multiple-select-plot form-control'
+        ])                 
+    </div>
+    <div class="col-md-4{{sizeof($url_args['search_topic']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_topic', 
+                 'values' => $topic_values,
+                 'value' => $url_args['search_topic'],
+                 'title' => trans('corpus.topic'),
+                 'class'=>'select-topic form-control'
+        ])                 
+    </div>
     <div class="col-md-4{{$url_args['search_recorder'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_recorder', 

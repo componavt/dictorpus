@@ -145,4 +145,6 @@
     $(".multiple-select-corpus").select2();
     selectGenre();
     selectWithLang('.multiple-select-dialect', "/dict/dialect/list", 'search_lang', '', true);
+    selectPlot('.multiple-select-plot', 'search_genre');
+    selectTopic('search_plot');
 @stop

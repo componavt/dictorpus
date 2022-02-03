@@ -112,6 +112,8 @@ class Text extends Model
         $texts = self::searchByWord($texts, $url_args['search_word']);
         $texts = self::searchByText($texts, $url_args['search_text']);
         $texts = self::searchByGenres($texts, $url_args['search_genre'], $url_args['search_without_genres']);
+        $texts = self::searchByPlots($texts, $url_args['search_plot']);
+        $texts = self::searchByTopics($texts, $url_args['search_topic']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
         $texts = self::searchBySource($texts, $url_args['search_source']);
         
@@ -201,6 +203,28 @@ class Text extends Model
                     $query->select('text_id')
                     ->from("genre_text")
                     ->whereIn('genre_id',$genres);
+                });
+    }
+    
+    public static function searchByPlots($texts, $plots) {
+        if (!sizeof($plots)) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($plots){
+                    $query->select('text_id')
+                    ->from("plot_text")
+                    ->whereIn('plot_id',$plots);
+                });
+    }
+    
+    public static function searchByTopics($texts, $topics) {
+        if (!sizeof($topics)) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($topics){
+                    $query->select('text_id')
+                    ->from("text_topic")
+                    ->whereIn('topic_id',$topics);
                 });
     }
     
@@ -1593,10 +1617,12 @@ class Text extends Model
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
                     'search_place'    => $request->input('search_place'),
+                    'search_plot'    => (array)$request->input('search_plot'),
                     'search_recorder' => $request->input('search_recorder'),
                     'search_sentence' => (int)$request->input('search_sentence'),
                     'search_source'    => $request->input('search_source'),
                     'search_title'    => $request->input('search_title'),
+                    'search_topic'    => (array)$request->input('search_topic'),
                     'search_wid'     => (array)$request->input('search_wid'),
                     'search_without_genres' => (boolean)$request->input('search_without_genres'),
                     'search_word'     => $request->input('search_word'),
