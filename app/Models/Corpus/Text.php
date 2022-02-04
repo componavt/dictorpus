@@ -1759,9 +1759,10 @@ dd($s->saveXML());
     public function genresToString($link=null) {
         $out = [];
         foreach ($this->genres as $genre) {
-            $name = $genre->parent 
+/*            $name = $genre->parent 
                         ? $genre->parent->name . ' ('.$genre->name.')'
-                        : $genre->name;
+                        : $genre->name;*/
+            $name = $genre->name;
             if ($link) {
                 $name = to_link($name, $link.$genre->id);
             }
