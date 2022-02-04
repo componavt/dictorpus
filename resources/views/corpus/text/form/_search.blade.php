@@ -13,23 +13,6 @@
                  'class'=>'multiple-select-lang form-control',
         ])                 
     </div>
-    <div class="col-md-4">
-        @include('widgets.form.formitem._select2', 
-                ['name' => 'search_corpus', 
-                 'values' => $corpus_values,
-                 'value' => $url_args['search_corpus'],
-                 'title' => trans('corpus.corpus'),
-                 'class'=>'multiple-select-corpus form-control'
-            ])
-    </div>
-    <div class="col-md-4{{$url_args['search_informant'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_informant', 
-                 'values' => $informant_values,
-                 'value' => $url_args['search_informant'],
-                 'title' => trans('corpus.informant'),
-        ])                 
-    </div>
     <div class="col-md-4{{sizeof($url_args['search_dialect']) ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2',
                 ['name' => 'search_dialect', 
@@ -39,6 +22,16 @@
                  'class'=>'multiple-select-dialect form-control'
             ])
     </div>
+    <div class="col-md-4">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_corpus', 
+                 'values' => $corpus_values,
+                 'value' => $url_args['search_corpus'],
+                 'title' => trans('corpus.corpus'),
+                 'class'=>'multiple-select-corpus form-control'
+            ])
+    </div>
+    
     <div class="col-md-4{{sizeof($url_args['search_genre']) ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2', 
                 ['name' => 'search_genre', 
@@ -66,6 +59,67 @@
                  'class'=>'select-topic form-control'
         ])                 
     </div>
+
+    <div class="col-md-4{{$url_args['search_region'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_region', 
+                 'values' => $region_values,
+                 'value' => $url_args['search_region'],
+                 'title' => trans('corpus.region'). ' '. trans('corpus.of_recording')]) 
+    </div>
+    <div class="col-md-4{{sizeof($url_args['search_district']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_district', 
+                 'values' => $district_values,
+                 'value' => $url_args['search_district'],
+                 'title' => trans('corpus.district'). ' '. trans('corpus.of_recording'),
+                 'class'=>'select-district form-control'
+        ]) 
+    </div>    
+    <div class="col-md-4{{sizeof($url_args['search_place']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_place', 
+                 'values' => $place_values,
+                 'value' => $url_args['search_place'],
+                 'title' => trans('corpus.place'). ' '. trans('corpus.of_recording'),
+                 'class'=>'select-place form-control'
+        ]) 
+    </div>    
+    
+    <div class="col-md-4{{$url_args['search_birth_region'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_birth_region', 
+                 'values' => $region_values,
+                 'value' => $url_args['search_birth_region'],
+                 'title' => trans('corpus.region'). ' '. trans('corpus.of_informant_birth')]) 
+    </div>
+    <div class="col-md-4{{sizeof($url_args['search_birth_district']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_birth_district', 
+                 'values' => $district_values,
+                 'value' => $url_args['search_birth_district'],
+                 'title' => trans('corpus.district'). ' '. trans('corpus.of_informant_birth'),
+                 'class'=>'select-birth-district form-control'
+        ]) 
+    </div>    
+    <div class="col-md-4{{sizeof($url_args['search_birth_place']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_birth_place', 
+                 'values' => $place_values,
+                 'value' => $url_args['search_birth_place'],
+                 'title' => trans('corpus.place'). ' '. trans('corpus.of_informant_birth'),
+                 'class'=>'select-birth-place form-control'
+        ]) 
+    </div>    
+    
+    <div class="col-md-4{{$url_args['search_informant'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_informant', 
+                 'values' => $informant_values,
+                 'value' => $url_args['search_informant'],
+                 'title' => trans('corpus.informant'),
+        ])                 
+    </div>
     <div class="col-md-4{{$url_args['search_recorder'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_recorder', 
@@ -74,6 +128,15 @@
                  'title' => trans('corpus.recorder'),
         ])                 
     </div>
+    <div class="col-md-4{{$url_args['search_author'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_author', 
+                 'values' => $author_values,
+                 'value' => $url_args['search_author'],
+                 'title' => trans('search.author_or_trans'),
+        ])                 
+    </div>
+    
     <div class="col-md-4{{$url_args['search_title'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_title', 
@@ -82,14 +145,6 @@
                  'value' => $url_args['search_title'],
                  'title' => trans('corpus.title')
                 ])                               
-    </div>
-    <div class="col-md-4{{$url_args['search_author'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'search_author', 
-                 'values' => $author_values,
-                 'value' => $url_args['search_author'],
-                 'title' => trans('search.author_or_trans'),
-        ])                 
     </div>
     <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
@@ -106,16 +161,6 @@
                  'title' => trans('search.year_to')
                 ])                               
     </div>
-{{--    <div class="col-md-4{{$url_args['search_word'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_word', 
-                 'special_symbol' => true,
-                 'help_func' => "callHelp('help-text-fields')",
-                 'value' => $url_args['search_word'],
-                 'title'=> trans('corpus.word')
-                ])
-                               
-    </div>--}}
     <div class="col-md-4{{$url_args['search_source'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_source', 

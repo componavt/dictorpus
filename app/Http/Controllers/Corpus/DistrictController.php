@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use DB;
 use LaravelLocalization;
+use Response;
 
 use App\Models\Corpus\District;
 use App\Models\Corpus\Region;
@@ -213,4 +214,72 @@ class DistrictController extends Controller
                   ->withSuccess($result['message']);
         }
     }
+    
+    /**
+     * Gets list of districts for drop down list in JSON format
+     * Test url: /corpus/district/list?region_id=1
+     * 
+     * @return JSON response
+     */
+    public function districtList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $district_name = '%'.$request->input('q').'%';
+        $region_id = $request->input('region_id');
+
+        $list = [];
+        $districts = District::where(function($q) use ($district_name){
+                            $q->where('name_en','like', $district_name)
+                              ->orWhere('name_ru','like', $district_name);
+                         });
+        if ($region_id) {                 
+            $districts = $districts -> where('region_id',$region_id);
+        }
+        
+        $districts = $districts->orderBy('name_'.$locale)->get();
+                         
+        foreach ($districts as $district) {
+            $list[]=['id'  => $district->id, 
+                     'text'=> $district->name];
+        }  
+//dd($list);        
+//dd(sizeof($places));
+        return Response::json($list);
+
+    }
+    
+    /**
+     * Gets list of districts for drop down list in JSON format
+     * Test url: /corpus/district/list?search_region=3
+     * 
+     * @return JSON response
+     */
+    public function birthDistrictList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $district_name = '%'.$request->input('q').'%';
+        $region_id = $request->input('region_id');
+
+        $list = [];
+        $districts = District::where(function($q) use ($district_name){
+                            $q->where('name_en','like', $district_name)
+                              ->orWhere('name_ru','like', $district_name);
+                         })->whereIn('id', function ($q) {
+                            $q->select('district_id')->from('places')
+                              ->whereIn('id', function ($q2) {
+                                $q2->select('birth_place_id')->from('informants');
+                              });
+                         });
+                         
+        if ($region_id) { 
+            $districts = $districts -> where('region_id',$region_id);
+        }
+        $districts = $districts->orderBy('name_'.$locale)->get();
+                         
+        foreach ($districts as $district) {
+            $list[]=['id'  => $district->id, 
+                     'text'=> $district->name];
+        }  
+        return Response::json($list);
+    }    
 }

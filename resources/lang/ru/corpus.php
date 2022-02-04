@@ -63,6 +63,7 @@ return [
     'new_texts'=>'Новые тексты',
     
     'of_author' => 'автора',
+    'of_informant_birth' => 'рожд. информанта',
     'of_corpus' => 'корпуса',
     'of_district' => 'района',
     'of_genre' => 'жанра',
@@ -70,6 +71,7 @@ return [
     'of_place' => 'населенного пункта',
     'of_plot' => 'сюжета',
     'of_recorder' => 'собирателя',
+    'of_recording' => 'записи',
     'of_region' => 'региона',
     'of_text' => 'текста',
     'of_topic' => 'темы',
@@ -77,6 +79,7 @@ return [
     'p' => 'с.',
     'parent' => 'родительский раздел',
     
+    'place' => 'населенный пункт',
     'place_list' => 'Список населенных пунктов',
     'place_removed' => 'Населенный пункт ":name" удален.',
 

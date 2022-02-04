@@ -271,11 +271,25 @@ class PlaceController extends Controller
         $lang_ids = (array)$request->input('lang_id');
         $with_meanings = (boolean)$request->input('with_meanings');
 
+        $region_id = $request->input('region_id');
+        $district_ids = (array)$request->input('district_id');
+        
         $list = [];
         $places = Place::where(function($q) use ($place_name){
                             $q->where('name_en','like', $place_name)
                               ->orWhere('name_ru','like', $place_name);
                          });
+        if (sizeof($district_ids)) {                 
+            $places = $places -> whereIn('district_id',$district_ids);
+        }
+                         
+        if ($region_id) {                 
+            $places = $places -> whereIn('district_id', function ($q) use ($region_id) {
+                $q->select('id')->from('districts')
+                  ->whereRegionId($region_id);
+            });
+        }
+                         
         if (sizeof($lang_ids)) {                 
             $places = $places -> whereIn('id', function ($q) use ($lang_ids) {
                             $q->select('place_id')->from('dialect_place')
@@ -299,6 +313,58 @@ class PlaceController extends Controller
             });            
         }
         
+        $places = $places->orderBy('name_'.$locale)->get();//->pluck('name_'.$locale, 'id')->toArray();
+//        return Response::json($places);
+                         
+        foreach ($places as $place) {
+            $list[]=['id'  => $place->id, 
+                     'text'=> $place->name];
+        }  
+//dd($list);        
+//dd(sizeof($places));
+        return Response::json($list);
+
+    }    
+    
+    /**
+     * Gets list of places for drop down list in JSON format
+     * Test url: /corpus/place/list?search_region=3&search_district[]=13
+     * 
+     * @return JSON response
+     */
+    public function birthPlaceList(Request $request)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        $place_name = '%'.$request->input('q').'%';
+
+        $region_id = $request->input('region_id');
+        $district_ids = (array)$request->input('district_id');
+        
+        $list = [];
+        $places = Place::where(function($q) use ($place_name){
+                            $q->where('name_en','like', $place_name)
+                              ->orWhere('name_ru','like', $place_name);
+                         });
+                         
+        if ($region_id || sizeof($district_ids)) { 
+            $places->whereIn('id', function ($q) use ($region_id, $district_ids) {
+                $q->select('birth_place_id')->from('informants')
+                  ->whereIn('birth_place_id', function ($q2) use ($region_id, $district_ids) {
+                    $q2->select('id')->from('places');
+                    if (sizeof($district_ids)) {                 
+                        $q2 -> whereIn('district_id',$district_ids);
+                    }
+                    if ($region_id) {                 
+                        $q2 -> whereIn('district_id', function ($q3) use ($region_id) {
+                            $q3->select('id')->from('districts')
+                              ->whereRegionId($region_id);
+                        });
+                    }                      
+                  });
+            });
+        }                
+                         
         $places = $places->orderBy('name_'.$locale)->get();//->pluck('name_'.$locale, 'id')->toArray();
 //        return Response::json($places);
                          

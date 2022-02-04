@@ -88,11 +88,15 @@ class TextController extends Controller
         $genre_values = Genre::getList();
         $plot_values = Plot::getList();
         $topic_values = Topic::getList();
+        $region_values = [NULL => ''] + Region::getList();
+        $district_values = District::getList();
+        $place_values = Place::getList(false);
 
         return view('corpus.text.index',
                 compact('author_values', 'corpus_values', 'dialect_values', 
-                        'genre_values', 'informant_values', 'lang_values', 
-                        'recorder_values', 'plot_values', 'texts', 'topic_values', 
+                        'district_values', 'genre_values', 'informant_values', 
+                        'lang_values', 'recorder_values', 'region_values', 
+                        'place_values', 'plot_values', 'texts', 'topic_values', 
                         'numAll', 'args_by_get', 'url_args'));
     }
 

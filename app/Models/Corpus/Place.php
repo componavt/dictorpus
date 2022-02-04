@@ -116,7 +116,7 @@ class Place extends Model
      * 
      * @return Array [1=>'Пондала (Pondal), Бабаевский р-н, Вологодская обл.',..]
      */
-    public static function getList()
+    public static function getList($full=true)
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
@@ -124,7 +124,7 @@ class Place extends Model
         
         $list = array();
         foreach ($places as $row) {
-            $list[$row->id] = $row->placeString();
+            $list[$row->id] = $full ? $row->placeString(): $row->name;
         }
         
         return $list;         

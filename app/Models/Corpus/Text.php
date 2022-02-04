@@ -101,11 +101,11 @@ class Text extends Model
         $texts = self::orderBy('title');        
         $texts = self::searchByAuthor($texts, $url_args['search_author']);
 //        $texts = self::searchByAuthors($texts, $url_args['search_author']);
-        $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place']);
+        $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place'], $url_args['search_birth_district'], $url_args['search_birth_region']);
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
         $texts = self::searchByInformant($texts, $url_args['search_informant']);
         $texts = self::searchByLang($texts, $url_args['search_lang']);
-        $texts = self::searchByPlace($texts, $url_args['search_place']);
+        $texts = self::searchByPlace($texts, $url_args['search_place'], $url_args['search_district'], $url_args['search_region']);
         $texts = self::searchByRecorder($texts, $url_args['search_recorder']);
         $texts = self::searchByTitle($texts, $url_args['search_title']);
         $texts = self::searchByWid($texts, $url_args['search_wid']);
@@ -158,17 +158,31 @@ class Text extends Model
                 });
     }
     
-    public static function searchByBirthPlace($texts, $place) {
-        if (!$place) {
+    public static function searchByBirthPlace($texts, $place_ids, $district_ids, $region_id) {
+        if (!sizeof($place_ids) && !sizeof($district_ids) && !$region_id) {
             return $texts;
         }
-        return $texts->whereIn('event_id',function($query) use ($place){
-                    $query->select('event_id')
-                    ->from('event_informant')
-                    ->whereIn('informant_id',function($query) use ($place){
-                        $query->select('id')
-                        ->from('informants')
-                        ->where('birth_place_id',$place);
+        return $texts->whereIn('event_id', function($query) use ($place_ids, $district_ids, $region_id){
+                    $query->select('event_id')->from('event_informant')
+                    ->whereIn('informant_id', function($q) use ($place_ids, $district_ids, $region_id){
+                        $q->select('id')->from('informants');
+                        if (sizeof($place_ids)) {
+                            $q->whereIn('birth_place_id',$place_ids);
+                        }
+                        if (sizeof($district_ids) || $region_id) {
+                            $q->whereIn('birth_place_id',function($q2) use ($district_ids, $region_id){
+                                $q2->select('id')->from('places');
+                                if (sizeof($district_ids)) {
+                                    $q2->whereIn('district_id',$district_ids);
+                                }
+                                if ($region_id) {
+                                    $q2->whereIn('district_id', function($q3) use ($region_id){
+                                        $q3->select('id')->from('districts')
+                                           ->whereRegionId($region_id);                                        
+                                    });
+                                }
+                            });                            
+                        }
                     });
                 });
     }
@@ -274,14 +288,29 @@ class Text extends Model
         return $texts->whereIn('lang_id',$langs);
     }
     
-    public static function searchByPlace($texts, $place) {
-        if (!$place) {
+    public static function searchByPlace($texts, $places, $districts, $region) {
+        if (!sizeof($places) && !sizeof($districts) && !$region) {
             return $texts;
         }
-        return $texts->whereIn('event_id',function($query) use ($place){
-                    $query->select('id')
-                    ->from('events')
-                    ->where('place_id',$place);
+        return $texts->whereIn('event_id',function($query) use ($places, $districts, $region){
+                    $query->select('id')->from('events');
+                    if (sizeof($places)) {
+                        $query->whereIn('place_id',$places);
+                    }
+                    if (sizeof($districts) || $region) {
+                        $query->whereIn('place_id', function ($q2) use ($districts, $region){
+                            $q2->select('id')->from('places');
+                            if (sizeof($districts)) {
+                                $q2->whereIn('district_id',$districts);
+                            }
+                            if ($region) {
+                                $q2->whereIn('district_id', function ($q3) use ($region){
+                                    $q3->select('id')->from('districts')
+                                       ->whereRegionId($region);                                    
+                                });
+                            }
+                        });
+                    }
                 });
     }
     
@@ -1614,16 +1643,20 @@ class Text extends Model
     
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
-                    'search_birth_place' => $request->input('search_birth_place'),
                     'search_author'   => $request->input('search_author'),
+                    'search_birth_district'  => (array)$request->input('search_birth_district'),
+                    'search_birth_place' => (array)$request->input('search_birth_place'),
+                    'search_birth_region' => $request->input('search_birth_region'),
                     'search_corpus'   => (array)$request->input('search_corpus'),
                     'search_dialect'  => (array)$request->input('search_dialect'),
+                    'search_district'  => (array)$request->input('search_district'),
                     'search_genre'    => (array)$request->input('search_genre'),
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
-                    'search_place'    => $request->input('search_place'),
+                    'search_place'    => (array)$request->input('search_place'),
                     'search_plot'    => (array)$request->input('search_plot'),
                     'search_recorder' => $request->input('search_recorder'),
+                    'search_region' => $request->input('search_region'),
                     'search_sentence' => (int)$request->input('search_sentence'),
                     'search_source'    => $request->input('search_source'),
                     'search_title'    => $request->input('search_title'),

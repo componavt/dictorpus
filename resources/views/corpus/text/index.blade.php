@@ -147,4 +147,9 @@
     selectWithLang('.multiple-select-dialect', "/dict/dialect/list", 'search_lang', '', true);
     selectPlot('.multiple-select-plot', 'search_genre');
     selectTopic('search_plot');
+    selectGenre();
+    selectDistrict();
+    selectPlace();
+    selectBirthDistrict();
+    selectBirthPlace();
 @stop

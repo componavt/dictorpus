@@ -62,6 +62,7 @@ return [
     'new_texts'=>'New texts',
     
     'of_author' => 'of the author',
+    'of_informant_birth' => 'of informant birth',
     'of_corpus' => 'of the corpus',
     'of_district' => 'of the district',
     'of_genre' => 'of the genre',
@@ -69,6 +70,7 @@ return [
     'of_place' => 'of the place',
     'of_plot' => 'of the plot',
     'of_recorder' => 'of the recorder',
+    'of_recording' => 'of recording',
     'of_region' => 'of the region',
     'of_text' => 'of the text',
     'of_topic' => 'of the topic',
@@ -76,6 +78,7 @@ return [
     'p' => 'p.',
     'parent' => 'parent section',
     
+    'place' => 'Settlement',
     'place_list' => 'Settlement list',
     'place_removed' => 'Settlement ":name" is removed successfully.',
 

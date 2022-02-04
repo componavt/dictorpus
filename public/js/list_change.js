@@ -214,6 +214,108 @@ function selectTopic(plot_var='search_plot', placeholder='', allow_clear=false){
     });   
 }
 
+function selectDistrict(region_var='search_region', placeholder='', allow_clear=false){
+    $(".select-district").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/district/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              region_id: $("#" + region_var).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
+function selectPlace(district_var='search_district', region_var='search_region', placeholder='', allow_clear=false){
+    $(".select-place").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/place/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              region_id: $("#" + region_var).val(),
+              district_id: selectedValuesToURL("#" + district_var)
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
+function selectBirthDistrict(region_var='search_birth_region', placeholder='', allow_clear=false){
+    $(".select-birth-district").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/district/birth_list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              region_id: $("#" + region_var).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
+function selectBirthPlace(district_var='search_birth_district', region_var='search_region_birth', placeholder='', allow_clear=false){
+    $(".select-birth-place").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/place/birth_list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              region_id: $("#" + region_var).val(),
+              district_id: selectedValuesToURL("#" + district_var)
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
 function selectConcept(category_var, pos_var, placeholder='', allow_clear=false){
     $(".select-concept").select2({
         allowClear: allow_clear,
