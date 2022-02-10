@@ -177,6 +177,7 @@ return [
     'of_wordform' => 'of wordform',
 
     'omonyms' => 'omonyms',
+    'only_checked' => 'Only checked?',
     'participle' => 'participle',
     'part_of_speech' => 'part of speech',
     'parts_of_speech' => 'parts of speech',

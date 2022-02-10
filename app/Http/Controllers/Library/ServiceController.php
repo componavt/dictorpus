@@ -515,6 +515,7 @@ print "</ol>";
         $locale = LaravelLocalization::getCurrentLocale();
         $url_args = //Str::urlArgs($request) + 
             ['search_pos'      => (int)$request->input('search_pos'),
+             'search_status'   => (int)$request->input('search_status'),
 //                'search_lemma'    => $request->input('search_lemma'),
             ];
         $args_by_get = Str::searchValuesByURL($url_args);
@@ -530,8 +531,13 @@ print "</ol>";
             ->latest(DB::raw('count(*)'));
 
         if ($url_args['search_pos']) {
-            $lemmas = $lemmas->wherePosId($url_args['search_pos']);
+            $lemmas->wherePosId($url_args['search_pos']);
         } 
+        
+        if ($url_args['search_status']) {
+            $lemmas->whereStatus($url_args['search_status']==1 ? 1 : 0);
+        } 
+        
 
 //dd(to_sql($lemmas));
         $lemmas = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', DB::raw('count(*) as frequency'), 'status']);

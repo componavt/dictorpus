@@ -44,6 +44,7 @@ return [
     'limit_num' => 'number of records',
     'name' => 'Name',
     'of' => 'of',
+    'output' => 'Output',
     'photo' => 'image',
     'records' => 'records',
     'record_not_exists' => 'Record does not exists.',
