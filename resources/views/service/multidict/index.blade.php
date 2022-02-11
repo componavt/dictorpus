@@ -28,30 +28,26 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($lemmas as $lemma)
+            @foreach($lemmas as $lemma_id=>$lemma)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="{{ trans('dict.lemma') }}">
-                    <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma->lemma_id) }}">
-                        {{$lemma->lemma}}
+                    <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma_id) }}">
+                        {{$lemma['lemma']}}
                     </a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">
-                        {{$lemma->pos_name}}
+                        {{$lemma['pos_name']}}
                 </td>
-                <!--td data-th="{{ trans('dict.interpretation') }}">
-                    @foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) 
-                        {{$meaning_string}}<br>
-                    @endforeach
                 </td-->
                 <td data-th="{{ trans('messages.frequency') }}">
-                      {{$lemma->frequency}}
+                      {{$lemma['frequency']}}
                 </td>
                 <td data-th="{{ trans('dict.status') }}">
-                    <a class="set-status status{{$lemma->status}}" id="status-{{$lemma->lemma_id}}" 
-                       onClick="setStatus({{$lemma->lemma_id}})"
-                       data-old="{{$lemma->status}}" 
-                       data-new="{{$lemma->status ? 0 : 1}}"></a>
+                    <a class="set-status status{{$lemma['status']}}" id="status-{{$lemma_id}}" 
+                       onClick="setStatus({{$lemma_id}})"
+                       data-old="{{$lemma['status']}}" 
+                       data-new="{{$lemma['status'] ? 0 : 1}}"></a>
                 </td>
             </tr>
             @endforeach
