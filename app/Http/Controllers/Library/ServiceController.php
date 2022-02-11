@@ -510,6 +510,8 @@ print "</ol>";
     }
     
     public function multidictView(Request $request) {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
         $lang_id=5; // livvic
         $label_id = 3; // for multimedia dictionary
         $locale = LaravelLocalization::getCurrentLocale();
