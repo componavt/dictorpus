@@ -52,6 +52,41 @@ class Word extends Model
         return $lemmas -> get();
     }
 
+    /**
+     * remove <s>
+     * @param boolean $highlight - if true, highlight the word
+     * @return string
+     */
+    public function getClearSentence($highlight=false) {
+        $sentence_id = $this->sentence->s_id;
+        $sentence = str_replace("\n", '', $this->sentence->text_xml);
+        if (!preg_match("/^\<s id=\"".$sentence_id."\"\>(.+)\<\/s\>\s*$/im", $sentence, $regs)) {
+            return $sentence;
+        }
+        if ($highlight) {
+            $regs[1] = str_replace("<w id=\"".$this->w_id."\"", "<w id=\"".$this->w_id."\" style=\"background: #fefea6;\"", $regs[1]);
+        }
+        return $regs[1];
+    }
+    
+    /**
+     * предшествующий знак препинания
+     */
+    public function getPrevSign() {
+        $sentence = str_replace("\n", '', $this->sentence->text_xml);
+        if (preg_match("/<\/w>\s*(\S+)\s*<w id=\"".$this->w_id."\"/", $sentence, $regs)) {
+            return $regs[1];
+        }
+    }
+
+    public function getPrevWord() {
+        $prev_word = self::whereSentenceId($this->sentence_id)
+                         ->whereWordNumber($this->word_number - 1)->first();
+        if ($prev_word) {
+            return $prev_word->word;
+        }
+    }
+
     public function remove() {
         $this->meanings()->detach();
         $this->delete();            

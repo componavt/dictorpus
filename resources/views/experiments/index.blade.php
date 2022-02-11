@@ -11,7 +11,9 @@
 <p><a href="/experiments/prediction_by_analog">Предсказание леммы и грамсета по аналогии</a></p>
 <p><a href="/experiments/pattern_search">Поиск закономерностей в формировании словоформ</a></p>
 <p>Поиск закономерностей в анализе словоформ для тверского словаря</p>
+<ul>
 <li><a href="/experiments/pattern_search_in_wordforms">сформировать множество</a></li>
 <li><a href="/experiments/pattern_search_in_wordforms_results">посмотреть результаты</a></li>
-<p><a href="/experiments/bible_lang">Анализ языковых конструкций библейских текстов</a></p>
+</ul>
+<p><a href="/experiments/bible_language">Анализ языковых конструкций библейских текстов</a></p>
 @endsection
