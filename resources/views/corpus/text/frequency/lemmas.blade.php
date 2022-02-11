@@ -22,32 +22,26 @@
                 <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
-                <!--th>{{ trans('dict.interpretation') }}</th-->
                 <th>{{ trans('messages.frequency') }}</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($lemmas as $lemma)
+            @foreach($lemmas as $lemma_id => $lemma)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="{{ trans('dict.lemma') }}">
-                    <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma->lemma_id) }}">
-                        {{$lemma->lemma}}
+                    <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma_id) }}">
+                        {{$lemma['lemma']}}
                     </a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">
-                        {{$lemma->pos_name}}
+                        {{$lemma['pos_name']}}
                 </td>
-                <!--td data-th="{{ trans('dict.interpretation') }}">
-                    @foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) 
-                        {{$meaning_string}}<br>
-                    @endforeach
-                </td-->
                 <td data-th="{{ trans('messages.frequency') }}">
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text?frequency='
-                       .$lemma->frequency.'search_lang%5B%5D='.$url_args['search_lang']
-                       .'&search_lemma='.$lemma->lemma) }}">
-                      {{$lemma->frequency}}
+                       .$lemma['frequency'].'search_lang%5B%5D='.$url_args['search_lang']
+                       .'&search_lemma='.$lemma['lemma']) }}">
+                      {{$lemma['frequency']}}
                     </a>
                 </td>
             </tr>

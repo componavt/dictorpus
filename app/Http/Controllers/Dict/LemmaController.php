@@ -921,15 +921,26 @@ class LemmaController extends Controller
             $lemmas = Lemma::selectFromMeaningText($url_args['search_dialect'])
                            ->join('parts_of_speech','parts_of_speech.id','=','lemmas.pos_id')
                            ->whereLangId($url_args['search_lang'])
-                           ->groupBy('lemma_id')
-                           ->latest(DB::raw('count(*)'));
+                           ->groupBy('lemma_id', 'word_id')
+                           ->latest('lemma');
                         
             if ($url_args['search_pos']) {
                 $lemmas = $lemmas->wherePosId($url_args['search_pos']);
             } 
             
 //dd($lemmas->toSql());
-            $lemmas = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', DB::raw('count(*) as frequency')]);
+            $lemma_coll = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name']);
+            $lemmas = [];
+            foreach ($lemma_coll as $lemma) {
+                if (isset($lemmas[$lemma->lemma_id])) {
+                    $lemmas[$lemma->lemma_id]['frequency'] = 1+$lemmas[$lemma->lemma_id]['frequency'];
+                    continue;
+                }
+                $lemmas[$lemma->lemma_id] = [
+                    'lemma'=>$lemma->lemma, 
+                    'pos_name'=>$lemma->pos_name, 
+                    'frequency'=>1];
+            }
         } else {
             $lemmas = NULL;
         }
