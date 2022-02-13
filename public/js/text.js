@@ -140,8 +140,8 @@ function addLemma(text_id, lang_id) {
                     meaning: $( "#new_meanings_0__meaning_text__2_" ).val(),
                     wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
                     number: $( "#number option:selected" ).val(),
-                    reflexive: $( "#reflexive" ).val(),
-                    impersonal: $( "#impersonal" ).val()};
+                    reflexive: $( "#reflexive" ).prop('checked'),
+                    impersonal: $( "#impersonal" ).prop('checked')};
         saveLemma(text_id, data);
     });
     
@@ -248,8 +248,8 @@ function changeLemmaList(lang_id) {
 
 function changeWordBlock(text_id, w_id) {
 //console.log('changeWordBlock = text_id:'+text_id + ', w_id:' + w_id)    
-    $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked');
-    $("w[id="+w_id+"].lemma_linked").append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
+    $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked')
+            .append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
     loadWordBlock(w_id, '/corpus/word/load_word_block/' + text_id + '_' + w_id);
 }
 
@@ -287,7 +287,8 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
                interpretation: interpretation
               },
         type: 'GET',
-        success: function(result){       
+        success: function(result){  
+//console.log(result);            
             $("#modalAddWordform").modal('hide');
             changeWordBlock(text_id, w_id);
             clearWordformModal();            
@@ -357,7 +358,7 @@ function addWordform(text_id, lang_id) {
             alert('Вы забыли указать значение для предсказанной леммы!');
             $( "#interpretation" ).focus();
         } else {
-console.log('addWordform = text_id:'+text_id + ', w_id:' + w_id)    
+//console.log('addWordform = text_id:'+text_id + ', w_id:' + w_id)    
             saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects, prediction, interpretation);
         }
     });
