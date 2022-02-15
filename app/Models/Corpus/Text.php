@@ -98,7 +98,8 @@ class Text extends Model
     public static function search(Array $url_args) {
         // select * from `texts` where (`transtext_id` in (select `id` from `transtexts` where `title` = '%nitid_') or `title` like '%nitid_') and `lang_id` = '1' order by `title` asc limit 10 offset 0
         // select texts by title from texts and translation texts
-        $texts = self::orderBy('title');        
+//        $texts = self::orderBy('title');        
+        $texts = self::orderBy('id', 'DESC');        
         $texts = self::searchByAuthor($texts, $url_args['search_author']);
 //        $texts = self::searchByAuthors($texts, $url_args['search_author']);
         $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place'], $url_args['search_birth_district'], $url_args['search_birth_region']);
