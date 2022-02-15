@@ -144,8 +144,8 @@
     toggleSpecial();
     toggleSearchForm();
     recDelete('{{ trans('messages.confirm_delete') }}');
-    selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.dialect') }}');
-    selectConcept('search_concept_category', 'search_pos', '{{ trans('dict.select_concept') }}', true);
+    selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '');
+    selectConcept('search_concept_category', 'search_pos', '', true);
 @stop
 
 

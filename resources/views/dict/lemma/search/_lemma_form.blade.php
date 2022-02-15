@@ -7,7 +7,7 @@
             @include('widgets.form.formitem._text',
                     ['name' => 'search_id',
                     'value' => $url_args['search_id'],
-                    'attributes'=>['placeholder' => 'ID']])
+                    'title'=> 'ID'])
     </div>
     <div class="col-sm-3">
         @include('widgets.form.formitem._text',
@@ -15,14 +15,14 @@
                 'value' => $url_args['search_lemma'],
                 'special_symbol' => true,
                 'help_func' => "callHelp('help-text-fields')",
-                'attributes'=>['placeholder'=>trans('dict.lemma')]])                               
+                'title'=> trans('dict.lemma')])                               
     </div>
     <div class="col-sm-4">
         @include('widgets.form.formitem._select',
                 ['name' => 'search_lang',
                  'values' =>$lang_values,
                  'value' =>$url_args['search_lang'],
-                 'attributes'=>['placeholder' => trans('dict.select_lang') ]])
+                 'title'=> trans('dict.lang') ])
     </div>
     <div class="col-sm-4{{sizeof($url_args['search_dialects']) ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2',
@@ -30,6 +30,7 @@
                  'values' =>$dialect_values,
                  'value' =>$url_args['search_dialects'],
                  'help_func' => "callHelp('help-dialect-usage')",
+                 'title' => trans('dict.dialect'),
                  'class'=>'select-dialects form-control']) 
     </div>
     <div class="col-sm-4{{$url_args['search_pos'] ? '' : ' ext-form'}}">
@@ -37,7 +38,7 @@
                     ['name' => 'search_pos',
                      'values' =>$pos_values,
                      'value' =>$url_args['search_pos'],
-                     'attributes'=>['placeholder' => trans('dict.select_pos') ]]) 
+                     'title' => trans('dict.pos') ]) 
     </div>
 {{--
 @if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
@@ -46,7 +47,7 @@
                         ['name' => 'search_gramset', 
                          'values' =>$gramset_values,
                          'value' =>$url_args['search_gramset'],
-                         'attributes'=>['placeholder' => trans('dict.select_gramset') ]]) 
+                         'title' => trans('dict.gramset') ]) 
     </div>
     @endif
 
@@ -55,31 +56,15 @@
                     ['name' => 'search_wordform',
                     'value' => $url_args['search_wordform'],
                     'special_symbol' => true,
-                    'attributes'=>['placeholder'=>trans('dict.wordform')]])
+                    'title'=> trans('dict.wordform')])
     </div>
 --}}
-    <div class="col-sm-4{{$url_args['search_meaning'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._text',
-                ['name' => 'search_meaning',
-                'value' => $url_args['search_meaning'],
-                'special_symbol' => true,
-                'help_func' => "callHelp('help-text-fields')",
-                'attributes'=>['placeholder'=>trans('dict.interpretation')]])
-    </div>
-    <div class="col-sm-4{{$url_args['with_examples'] ? '' : ' ext-form'}}">
-        @include('widgets.form.formitem._checkbox',
-                ['name' => 'with_examples',
-                'value' => 1,
-                'checked' => $url_args['with_examples']==1,
-                'tail'=>trans('dict.with_examples')]) 
-                <br>        
-    </div>
     <div class="col-sm-4{{$url_args['search_concept_category'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select',
                 ['name' => 'search_concept_category',
                  'values' => $concept_category_values,
                  'value' =>$url_args['search_concept_category'],
-                 'attributes'=>['placeholder' => trans('dict.select_concept_category') ]]) 
+                 'title'=> trans('dict.concept_category') ]) 
     </div>
     <div class="col-sm-4{{$url_args['search_concept'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2',
@@ -87,10 +72,25 @@
                  'is_multiple' => false,
                  'values' => $concept_values,
                  'value' => $url_args['search_concept'],
+                 'title' => trans('dict.concept'),
                  'class'=>'select-concept form-control']) 
     </div>
-        
-    <div class="col-sm-4 search-button-b">       
+    <div class="col-sm-4{{$url_args['search_meaning'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._text',
+                ['name' => 'search_meaning',
+                'value' => $url_args['search_meaning'],
+                'special_symbol' => true,
+                'help_func' => "callHelp('help-text-fields')",
+                'title'=>trans('dict.interpretation')])
+    </div>
+    <div class="col-sm-4{{$url_args['with_examples'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'with_examples',
+                'value' => 1,
+                'checked' => $url_args['with_examples']==1,
+                'tail'=>trans('dict.with_examples')]) 
+    </div>        
+    <div class="col-sm-4 search-button-b" style='padding-top: 25px'>       
         <span>{{trans('search.show_by')}}</span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 

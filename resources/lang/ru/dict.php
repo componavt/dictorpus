@@ -94,6 +94,7 @@ return [
     'code' => 'Код',
     'common_wordforms_total' => 'Общее количество повторяющихся словоформ', 
     'concept' => 'понятие',
+    'concept_category' => 'категория понятия',
     'concept_removed' => 'Понятие ":name" удалено.',
     'concept_section_A' => 'ВСЕЛЕННАЯ',
     'concept_section_B' => 'ЧЕЛОВЕК',

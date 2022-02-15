@@ -83,7 +83,7 @@ class LemmaController extends Controller
         $lang_values = Lang::getListWithQuantity('lemmas', !user_dict_edit());
         $gramset_values = Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
         $dialect_values = Dialect::getList($url_args['search_lang']);
-        $concept_category_values = ConceptCategory::getList();
+        $concept_category_values = [NULL=>'']+ConceptCategory::getList();
         $concept_values = [NULL=>'']+Concept::getList($url_args['search_concept_category'], $url_args['search_pos']);
         $not_changeable_pos_list = PartOfSpeech::notChangeablePOSIdList();
 //dd($url_args['search_concept'], $concept_values);

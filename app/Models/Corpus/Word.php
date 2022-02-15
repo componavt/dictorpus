@@ -86,7 +86,7 @@ class Word extends Model
             return $prev_word->word;
         }
     }
-
+    
     public function remove() {
         $this->meanings()->detach();
         $this->delete();            
