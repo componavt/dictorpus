@@ -164,7 +164,7 @@ class BibleLanguage
     }    
     
     public static function getWordsForLemma($text_ids, $lemma_id) {
-        return self::when(sizeof($text_ids), function($q) use ($text_ids) { 
+        return Word::when(sizeof($text_ids), function($q) use ($text_ids) { 
                         return $q->whereIn('text_id', $text_ids);
                     })->whereIn('id', function ($q) use ($lemma_id){
                         $q->select('word_id')->from('meaning_text')
