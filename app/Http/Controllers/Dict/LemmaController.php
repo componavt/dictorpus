@@ -77,10 +77,10 @@ class LemmaController extends Controller
 
         $lemmas = $lemmas->paginate($url_args['limit_num']);         
 //dd($lemmas);        
-        $pos_values = PartOfSpeech::getGroupedListWithQuantity('lemmas');
+        $pos_values = [NULL=>'']+PartOfSpeech::getGroupedListWithQuantity('lemmas');
         
         //$lang_values = Lang::getList();
-        $lang_values = Lang::getListWithQuantity('lemmas', !user_dict_edit());
+        $lang_values = [NULL=>'']+Lang::getListWithQuantity('lemmas', !user_dict_edit());
         $gramset_values = Gramset::getList($url_args['search_pos'],$url_args['search_lang'],true);
         $dialect_values = Dialect::getList($url_args['search_lang']);
         $concept_category_values = [NULL=>'']+ConceptCategory::getList();
