@@ -6,7 +6,7 @@
 
 @section('body')
     <h2>Анализ языковых конструкций библейских текстов</h2>
-    <h3>Исследуемые тексты (библейские)</h3>
+    <h3>Исследуемые тексты ({{$corpus_title}})</h3>
     <ol>
     @foreach ($texts as $text)
     <li><a href="/ru/corpus/text/{{$text->id}}">{{$text->title}}</a></li>

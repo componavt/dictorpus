@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Library\Experiments\BibleLanguage;
 
+use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Text;
 
 class BibleLanguageController extends Controller
@@ -103,6 +104,7 @@ class BibleLanguageController extends Controller
         if (!$text_ids) {
                 return;
         }
+        $corpus_title = Corpus::find($corpus_id)->name;
         $texts = Text::whereIn('id', $text_ids)->get();
         
         list($grams, $words) = BibleLanguage::researchFormsforTexts($text_ids);
@@ -111,7 +113,7 @@ class BibleLanguageController extends Controller
                 = BibleLanguage::researchServiceWordsforTexts($text_ids);
                 
         return view('experiments.bible_language.for_selection', 
-                compact('a_words', 'grams', 'ni_words', 'no_words', 'tap_words', 
+                compact('a_words', 'corpus_title', 'grams', 'ni_words', 'no_words', 'tap_words', 
                         'ta_positions', 'texts', 'voi_words', 'words'));
     }
     
