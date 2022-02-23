@@ -11,6 +11,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(RoleSeeder::class);
+//        $this->call(RoleSeeder::class);
+        $this->call(DmarkerSeeder::class);
+        $this->command->info('Dmarker table seeded!');
+        $this->call(MvariantSeeder::class);
+        $this->command->info('Mvariant table seeded!');
     }
 }

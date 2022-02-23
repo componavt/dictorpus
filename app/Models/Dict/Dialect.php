@@ -5,7 +5,7 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
-use App\Models\Corpus\Text;
+use App\Models\Corpus\Word;
 
 class Dialect extends Model
 {
@@ -135,4 +135,16 @@ class Dialect extends Model
               ->whereGenreId($genre_id);
         })->get();
     } 
+    
+    public function totalTexts() {
+        return sizeof($this->texts);
+    }
+    
+    public function totalWords() {
+        $dialect_id = $this->id;
+        return Word::whereIn('text_id', function ($q) use ($dialect_id) {
+            $q -> select('text_id')->from('dialect_text')
+               -> whereDialectId($dialect_id);
+        })->count();
+    }
 }

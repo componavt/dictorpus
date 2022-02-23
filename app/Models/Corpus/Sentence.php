@@ -439,6 +439,9 @@ AND t1.word_number-t2.word_number<=|B|;
         if (!isset($url_args['search_words'][1])) {
             $url_args['search_words'][1]['w'] = '';
         }
+        if (!isset($url_args['search_words'][1]['p'])) {
+            $url_args['search_words'][1]['p'] = '';
+        }
         return $url_args;
     }    
     
