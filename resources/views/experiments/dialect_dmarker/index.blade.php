@@ -6,6 +6,17 @@
 
 @section('body')
     <h2>Определение диалектной принадлежности</h2>
+    
+    <p>Частоты считаются как отношение количества слов, удовлетворяющих критерию, к общему числу слов.</p>
+    <p>Красным выделены результаты, не совпавшие с экспертной оценкой. 
+       Если красная частота больше нуля, значит, предполагалось, что в этом диалекте не должно быть таких слов. 
+       Возможно у текста неправильно определен диалект или в этой деревне пограничный диалект.
+       Если красная частота нулевая, значит предполагалось, что такие слова должны быть.
+       Выборка очень маленькая, результат мало о чем говорит.
+    </p>
+    <p>Есть смысл проверить экспертам ненулевые красные частоты. 
+       Чтобы проверить результат, щелкните на частоту, откроется лексико-грамматический поиск.</p>
+    <p>Маркеры с вариантами отсутствия не обсчитывались, так как особого смысла не имеют.</p>
 
     <table class="table-bordered table-wide table-striped rwd-table wide-md">
         <tr>
@@ -49,14 +60,9 @@
             <td><b>{{ $variant->name }}</b></td>
                 @foreach (array_keys($dialects) as $dialect_id)
             <td style="text-align: right">
-                <a href='/ru/corpus/sentence/results?search_dialect[]={{$dialect_id}}&search_words[1][w]="{{$variant->template}}"'>
-                @unless ($variant->rightFrequency($dialect_id))
-                <span style="color: red">
-                @endunless
+                <a href='/ru/corpus/sentence/results?search_dialect[]={{$dialect_id}}&search_words[1][w]="{{$variant->template}}"'
+                   style="text-decoration: none; color: {{$variant->rightFrequency($dialect_id) ? 'black' : 'red'}}">
                 {{ $variant->frequency($dialect_id) }}
-                @unless ($variant->rightFrequency($dialect_id))
-                </span>
-                @endunless
                 </a>
             </td>
                 @endforeach
