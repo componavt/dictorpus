@@ -22,6 +22,7 @@
     <p>Определение диалектной принадлежности</p>
     <ul>
         <li><a href="/experiments/dialect_dmarker">таблица с частотами</a></li>
+        <li><a href="/experiments/dialect_dmarker/fractions">таблица с долями</a></li>
         <li><a href="/experiments/dialect_dmarker/words">посмотреть слова</a></li>
     @if (User::checkAccess('admin'))
         <li><a href="/experiments/dialect_dmarker/calculate">записать частоты</a></li>

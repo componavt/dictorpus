@@ -5,6 +5,7 @@
 
         Route::get('experiments/dialect_dmarker/', 'Library\Experiments\DialectDmarkerController@index');
         Route::get('experiments/dialect_dmarker/calculate', 'Library\Experiments\DialectDmarkerController@calculate');
+        Route::get('experiments/dialect_dmarker/fractions', 'Library\Experiments\DialectDmarkerController@fractions');
         Route::get('experiments/dialect_dmarker/words', 'Library\Experiments\DialectDmarkerController@words');
         
         Route::get('experiments/pattern_search/', 'Library\Experiments\PatternSearchController@index');

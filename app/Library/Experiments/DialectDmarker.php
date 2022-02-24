@@ -4,6 +4,8 @@ namespace App\Library\Experiments;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Dict\Dialect;
+
 class DialectDmarker extends Model
 {
     protected $table_name='dialect_dmarker';
@@ -100,5 +102,22 @@ class DialectDmarker extends Model
                  74=>[30, 31, 32, 33, 34, 35, 36, 37],
                  75=>[38, 39, 42, 41]
         ];        
+    }
+    
+    public static function init() {
+        $gr_dialects = $dialects = [];
+        foreach (DialectDmarker::dialectListByGroups() as $gr_name => $dialect_grs) {
+            $gr_dialects[$gr_name] = sizeof($dialect_grs);
+            foreach ($dialect_grs as $dialect_id) {
+                $dialect = Dialect::find($dialect_id);
+                $dialects[$dialect_id] = [
+                    'name' => $dialect->name,
+                    'text_total' => sizeof($dialect->texts),
+                    'word_total' => $dialect->totalWords()
+                ];
+            }
+        }                    
+        $dmarkers = Dmarker::orderBy('id')->get();
+        return [$dialects, $dmarkers, $gr_dialects];
     }
 }

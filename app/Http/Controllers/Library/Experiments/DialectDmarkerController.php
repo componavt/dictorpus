@@ -26,37 +26,27 @@ class DialectDmarkerController extends Controller
      * 
      */
     public function index() {
-        $gr_dialects = $dialects = [];
-        foreach (DialectDmarker::dialectListByGroups() as $gr_name => $dialect_grs) {
-            $gr_dialects[$gr_name] = sizeof($dialect_grs);
-            foreach ($dialect_grs as $dialect_id) {
-                $dialect = Dialect::find($dialect_id);
-                $dialects[$dialect_id] = [
-                    'name' => $dialect->name,
-                    'text_total' => sizeof($dialect->texts),
-                    'word_total' => $dialect->totalWords()
-                ];
-            }
-        }                    
-        $dmarkers = Dmarker::orderBy('id')->get();
+        $output = 'frequency';
+        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init();
         
         return view('experiments.dialect_dmarker.index', 
-                compact('dialects', 'dmarkers', 'gr_dialects'));
+                compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
+    }
+    
+    public function fractions() {
+        $output = 'fraction';
+        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init();
+        
+        return view('experiments.dialect_dmarker.index', 
+                compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
     }
     
     public function words() {
-        $gr_dialects = $dialects = [];
-        foreach (DialectDmarker::dialectListByGroups() as $gr_name => $dialect_grs) {
-            $gr_dialects[$gr_name] = sizeof($dialect_grs);
-            foreach ($dialect_grs as $dialect_id) {
-                $dialects[$dialect_id] = Dialect::getNameByID($dialect_id);
-            }
-        }                    
-        $dmarkers = Dmarker::where('id', '<', 3)
-                           ->orderBy('id')->get();
+        $output = 'words';
+        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init();
         
-        return view('experiments.dialect_dmarker.words', 
-                compact('dialects', 'dmarkers', 'gr_dialects'));
+        return view('experiments.dialect_dmarker.index', 
+                compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
     }
     
     public function calculate() {
@@ -78,7 +68,7 @@ class DialectDmarkerController extends Controller
         foreach ($mvariants as $mvariant) {
 print "<p>". $mvariant->dmarker_id. ". ". $mvariant->name. "</p>";          
             foreach ($dialects as $dialect) {
-                $mvariant->calculateFrequency($dialect);
+                $mvariant->calculateFrequencyAndFraction($dialect);
 //exit(0);                
             }
         }

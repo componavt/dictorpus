@@ -19,7 +19,8 @@ class CreateDialectDmarkerTable extends Migration
             
             $table->smallInteger('dmarker_id')->unsigned();
             $table->smallInteger('mvariant_id')->unsigned();
-            $table->double('frequency', 7, 5)->nullable();
+            $table->integer('frequency')->unsigned()->nullable();
+            $table->double('fraction', 7, 5)->nullable();
 //            $table->timestamps();
         });
     }

@@ -24,7 +24,7 @@ class Mvariant extends Model
     
     public function dialects(){
         return $this->belongsToMany(Dialect::class, 'dialect_dmarker')
-                ->withPivot('dmarker_id', 'frequency');
+                ->withPivot('dmarker_id', 'frequency', 'fraction');
     }
     
     public function rightFrequency($dialect_id): bool {
@@ -37,35 +37,37 @@ class Mvariant extends Model
         return false;
     }
     
+    public function fraction($dialect_id){
+        $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
+//dd($dialect->pivot->fraction);        
+        return $dialect ? round($dialect->pivot->fraction, 4) : '';
+    }
+    
     public function frequency($dialect_id){
 //dd($this->dialects);        
         $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
-        return $dialect ? round($dialect->pivot->frequency, 4) : '';
+        return $dialect ? $dialect->pivot->frequency : '';
     }
     
-    public function calculateFrequency($dialect) {
+    public function calculateFrequencyAndFraction($dialect) {
         if (!$this->template) {
             if (DB::table('dialect_dmarker')->whereMvariantId($this->id)->count()) {
                 DB::statement('DELETE FROM dialect_dmarker where mvariant_id='. $this->id);
             }
             return;
         }
-//        DB::statement('UPDATE dialect_dmarker SET frequency=NULL where mvariant='. $this->id. ' and dialect_id='.$dialect_id);
-/*        if ($dialect->absence) {
-            $count = $this->countTexts($dialect->id);
-            $frequency = $count === false ? NULL : $count / $dialect->totalTexts();
-        } else {*/
-            $count = $this->countWords($dialect->id);
-            $frequency = $count === false ? NULL : $count / $dialect->totalWords();            
-//        }
+            $frequency = $this->countWords($dialect->id);
+            $fraction = $frequency === false ? NULL : $frequency / $dialect->totalWords();            
         if (DB::table('dialect_dmarker')->whereMvariantId($this->id)->whereDialectId($dialect->id)->count()) {
-            DB::statement('UPDATE dialect_dmarker SET frequency='.$frequency.' where mvariant_id='. $this->id. ' and dialect_id='.$dialect->id);
+            DB::statement('UPDATE dialect_dmarker SET frequency='.$frequency.', fraction='.$fraction
+                    . ' where mvariant_id='. $this->id. ' and dialect_id='.$dialect->id);
         } else {
             DB::table('dialect_dmarker')->insert([
                 'dialect_id' => $dialect->id, 
                 'dmarker_id' => $this->dmarker_id, 
                 'mvariant_id' => $this->id, 
-                'frequency' => $frequency]);
+                'frequency' => $frequency,
+                'fraction' => $fraction]);
         }
     }
     
