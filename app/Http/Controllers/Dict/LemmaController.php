@@ -409,7 +409,7 @@ class LemmaController extends Controller
         $back_to_url = '/dict/lemma/'.$lemma->id;
         $route = array('lemma.update.examples', $id);
         
-        $lang_values = Lang::getListForMeaning();
+        $langs_for_meaning = Lang::getListForMeaning();
         foreach ($translations as $translation) {
             unset($lang_values[$translation->lang_id]);
         }
@@ -418,7 +418,7 @@ class LemmaController extends Controller
         $url_args = $this->url_args;
         
         return view('dict.lemma.example.edit',
-                  compact('back_to_url', 'fragment', 'id', 'lang_values', 'lemma',
+                  compact('back_to_url', 'fragment', 'id', 'langs_for_meaning', 'lemma',
                           'meaning_texts', 'meanings', 'route', 'sentence', 
                           'translations', 'args_by_get', 'url_args'));            
     }

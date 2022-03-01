@@ -1001,7 +1001,6 @@ class Text extends Model
         }
     }
 
-
     /**
      * set links between a word (of some text) and a wordform-gramset in the dictionary
      * 

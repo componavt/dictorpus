@@ -1,4 +1,4 @@
-    @if ($fragment)
+    @if (isset($fragment) && $fragment)
         @include('corpus.sentence.fragment.view', 
             ['sentence_id' => $fragment->sentence_id, 
              'w_id'=>$fragment->w_id, 

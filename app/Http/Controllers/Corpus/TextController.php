@@ -21,6 +21,8 @@ use App\Models\Corpus\Plot;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
 use App\Models\Corpus\Sentence;
+use App\Models\Corpus\SentenceFragment;
+use App\Models\Corpus\SentenceTranslation;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Topic;
 use App\Models\Corpus\Transtext;
@@ -293,28 +295,34 @@ class TextController extends Controller
     {
         list($sentence, $meanings, $meaning_texts) = 
             MeaningTextRel::preparationForExampleEdit($id.'_'.$example_id);
-        
+//dd($sentence);        
         if ($sentence == NULL) {
             return Redirect::to('/corpus/text/'.$id.($this->args_by_get))
                        ->withError(\Lang::get('messages.invalid_id'));            
-        } else {
-            $text = Text::find($id);
-            $pos_values = PartOfSpeech::getGroupedList();   
-            $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
-            $pos_id = PartOfSpeech::getIDByCode('Noun');
-            $text_dialects = $text->dialects;
-            $dialect_value = $text_dialects[0]->id ?? 0;
-            $dialect_values = Dialect::getList($text->lang_id);
+        } 
+        $text = Text::find($id);
+        $pos_values = PartOfSpeech::getGroupedList();   
+        $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
+        $pos_id = PartOfSpeech::getIDByCode('Noun');
+        $text_dialects = $text->dialects;
+        $dialect_value = $text_dialects[0]->id ?? 0;
+        $dialect_values = Dialect::getList($text->lang_id);
+
+        $back_to_url = '/corpus/text/'.$id;
+        $route = ['text.update.examples', $id];
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
             
-            $back_to_url = '/corpus/text/'.$id;
-            $route = ['text.update.examples', $id];
-            $args_by_get = $this->args_by_get;
-            $url_args = $this->url_args;
-            return view('dict.lemma.example.edit',
-                      compact('back_to_url', 'dialect_value', 'dialect_values', 'langs_for_meaning', 'meanings', 'meaning_texts',
-                              'pos_id', 'pos_values', 'route', 'sentence', 'text', 'args_by_get', 'url_args')
-                            );            
-        }
+        $translations = SentenceTranslation::whereSentenceId($sentence['sent_obj']->id)
+                        ->whereWId($sentence['w_id'])->get();
+        $fragment = SentenceFragment::getBySW($sentence['sent_obj']->id, $sentence['w_id']);
+        
+        return view('dict.lemma.example.edit',
+                  compact('back_to_url', 'dialect_value', 'dialect_values', 
+                          'fragment', 'langs_for_meaning', 'meanings', 
+                          'meaning_texts', 'pos_id', 'pos_values', 'route', 
+                          'sentence', 'text', 'translations', 'args_by_get', 'url_args')
+                        );            
     }
 
     /**

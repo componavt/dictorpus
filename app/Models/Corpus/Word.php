@@ -336,6 +336,25 @@ class Word extends Model
         }
     }
     
+    public function hasImportantExamples() {
+        if ($this->meanings()->whereRelevance(10)->count()>0) {
+            return true;
+        }
+        $text_id = $this->id;
+        
+        $fragments_count = SentenceFragment::where('sentence_id', $this->sentence_id)
+                                ->count();
+        if ($fragments_count) {
+            return true;
+        }
+        
+        $translations_count = SentenceTranslation::where('sentence_id', $this->sentence_id)
+                                ->count();
+        if ($translations_count) {
+            return true;
+        }
+    }
+    
     /**
      * The number of words in texts with lang_id
      */
@@ -442,7 +461,8 @@ class Word extends Model
         $meaning_unchecked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
         if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
         
-        $s_id = Word::whereTextId($text_id)->whereWId($w_id)->first()->s_id;
+        $word_obj = Word::whereTextId($text_id)->whereWId($w_id)->first();
+        $s_id = $word_obj->s_id;
         if (!$s_id) {return null;} 
         
         $locale = LaravelLocalization::getCurrentLocale();
@@ -472,9 +492,11 @@ class Word extends Model
         $str .= Word::createGramsetBlock($text_id, $w_id);
 
         if (User::checkAccess('corpus.edit')) { // icons 'pensil' and 'sync'
-            $str.='<p class="text-example-edit">'
-                 .'<i class="fa fa-sync-alt fa-lg update-word-block" title="'.'" onclick="updateWordBlock('.$text_id.','.$w_id.')"></i>'
-                 .'<a href="'.LaravelLocalization::localizeURL($url)
+            $str.='<p class="text-example-edit">';
+            if (!$word_obj->hasImportantExamples()) {
+                $str.='<i class="fa fa-sync-alt fa-lg update-word-block" title="'.'" onclick="updateWordBlock('.$text_id.','.$w_id.')"></i>';
+            }
+            $str.='<a href="'.LaravelLocalization::localizeURL($url)
                  .'" class="glyphicon glyphicon-pencil"></a></p>';
         }
         return $str;
