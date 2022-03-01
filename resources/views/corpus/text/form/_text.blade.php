@@ -37,7 +37,8 @@
                  'help_text' =>trans('corpus.text_help')
                     ."<div class=\"buttons-div\"><input class=\"special-symbol-b special-symbol-sup\" title=\""
                     .trans('messages.supper_text')."\" type=\"button\" value=\"5\" onclick=\"toSup('text')\"></div>",
-                 'attributes' => ['id'=>'text', 'readonly'=>$readonly],
+                 'attributes' => ['id'=>'text', 'readonly'=>$readonly, 
+                                  'rows'=> $readonly && $text->hasImportantExamples() ? 21 : 10],
                 ])
         @if ($action=='edit' && !$text->hasImportantExamples())
         <div class='to-markup'>
@@ -45,7 +46,6 @@
                 <label id="to_makeup_label" for="to_makeup" 
                 {!!$to_makeup_style!!}>ПЕРЕРАЗМЕТИТЬ</label>
         </div>
-        @endif
         
         @if ($action == 'edit')
             @include('widgets.form.formitem._textarea', 
@@ -60,3 +60,4 @@
                      'special_symbol' => true,
                      'title'=>trans('corpus.text_xml')])
         @endif --}}
+        @endif
