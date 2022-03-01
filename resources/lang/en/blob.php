@@ -37,7 +37,8 @@ return [
                          </div>',        
     'grants' => '<p>The project was supported by grants:</p>
                  <p>the Russian Foundation for the Humanities, grant No. 15-04-12006, "Veps thesaurus constructing based on word sense disambiguation in multilingual dictionary", 2015-2016.</p>
-                 <p>the Russian Foundation for Basic Research, grant No. 18-012-00117, "Problems of construction of text corpus of minor peoples of Russia in the case of Open corpus of Veps and Karelian languages", 2018-2020.</p>',
+                 <p>the Russian Foundation for Basic Research, grant No. 18-012-00117, "Problems of construction of text corpus of minor peoples of Russia in the case of Open corpus of Veps and Karelian languages", 2018-2020.</p>
+                 <p>the Russian Science Foundation, grant No 22-28-20215, "<a href="https://rscf.ru/en/project/22-28-20215/">Creation of the speech corpus of the Baltic-Finnic languages of Karelia</a>".</p>',
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
                   <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
     'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548&plang=e">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
