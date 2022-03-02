@@ -56,7 +56,7 @@
             <tr>
                 <td>
                     {{ $count++ }}.
-                    @include('dict.lemma.show.example_sentence')
+                    @include('dict.lemma.example.sentence')
                 </td>
                 @foreach ($meanings as $meaning)
                 <td>
