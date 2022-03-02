@@ -411,7 +411,7 @@ class LemmaController extends Controller
         
         $langs_for_meaning = Lang::getListForMeaning();
         foreach ($translations as $translation) {
-            unset($lang_values[$translation->lang_id]);
+            unset($langs_for_meaning[$translation->lang_id]);
         }
         
         $args_by_get = $this->args_by_get;
