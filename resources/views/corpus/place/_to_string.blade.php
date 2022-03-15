@@ -1,4 +1,5 @@
 <?php
+    if ($place) {
         $info=[];
         if ($place->name) {
             $info[0] = $place->name;
@@ -19,4 +20,4 @@
         }
         
         print join(', ', $info);
-
+    }
