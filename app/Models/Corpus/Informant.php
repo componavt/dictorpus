@@ -5,6 +5,8 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Text;
@@ -117,5 +119,78 @@ class Informant extends Model
         }
         
         return join(', ', $info);
-    }    
+    }   
+    
+    public static function search(Array $url_args) {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $informants = self::orderBy('name_'.$locale);  
+        
+        $informants = self::searchByName($informants, $url_args['search_name']);
+        $informants = self::searchByName($informants, $url_args['search_name']);
+        $informants = self::searchByRegion($informants, $url_args['search_birth_region']);
+        $informants = self::searchByDistrict($informants, $url_args['search_birth_district']);
+
+        if ($url_args['search_birth_place']) {
+            $informants = $informants->where('birth_place_id',$url_args['search_birth_place']);
+        } 
+
+        if ($url_args['search_birth']) {
+            $informants = $informants->where('birth_date',$url_args['search_birth']);
+        } 
+
+        if ($url_args['search_id']) {
+            $informants = $informants->where('id',$url_args['search_id']);
+        } 
+        return $informants;
+    }
+    
+    public static function searchByName($informants, $name) {
+        if (!$name) {
+            return $informants;
+        }
+        return $informants->where(function($q) use ($name){
+                        $q->where('name_en','like', $name)
+                          ->orWhere('name_ru','like', $name);
+                });
+    }
+
+    public static function searchByRegion($informants, $region_id) {
+        if (!$region_id) {
+            return $informants;
+        }
+        return $informants->whereIn('birth_place_id',function($q) use ( $region_id){
+                    $q->select('id')->from('places')
+                       ->whereIn('district_id', function($q1) use ($region_id){
+                            $q1->select('id')->from('districts')
+                               ->whereRegionId($region_id);                                        
+                        });
+                });                            
+    }
+    
+    public static function searchByDistrict($informants, $district_ids) {
+        if (!sizeof($district_ids)) {
+            return $informants;
+        }
+        return $informants->whereIn('birth_place_id',function($q) use ($district_ids){
+                        $q->select('id')->from('places')
+                           ->whereIn('district_id',$district_ids);
+                    });                            
+    } 
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_birth'   => (int)$request->input('search_corpus'),
+                    'search_birth_district'  => (array)$request->input('search_birth_district'),
+                    'search_birth_place' => (array)$request->input('search_birth_place'),
+                    'search_birth_region' => $request->input('search_birth_region'),
+                    'search_id'  => (int)$request->input('search_dialect'),
+                    'search_name'   => $request->input('search_name'),
+                ];
+        
+        $url_args['search_birth'] = $url_args['search_birth'] ? $url_args['search_birth'] : NULL;
+        
+        $url_args['search_id'] = $url_args['search_id'] ? $url_args['search_id'] : NULL;
+        
+        return $url_args;
+    }
 }

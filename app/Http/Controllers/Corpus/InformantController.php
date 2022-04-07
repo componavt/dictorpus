@@ -29,27 +29,8 @@ class InformantController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:corpus.edit,/corpus/informant/', ['only' => ['create','store','edit','update','destroy']]);
-        $this->url_args = [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
-                    'search_birth'   => (int)$request->input('search_birth'),
-                    'search_birth_place'  => $request->input('search_birth_place'),
-                    'search_id'     => (int)$request->input('search_id'),
-                    'search_name'    => $request->input('search_name'),
-                ];
         
-        $this->url_args['page'] = $this->url_args['page'] ? $this->url_args['page'] : 1;
-        
-        if ($this->url_args['limit_num']<=0) {
-            $this->url_args['limit_num'] = 10;
-        } elseif ($this->url_args['limit_num']>1000) {
-            $this->url_args['limit_num'] = 1000;
-        }   
-       
-        $this->url_args['search_birth'] = $this->url_args['search_birth'] ? $this->url_args['search_birth'] : NULL;
-        
-        $this->url_args['search_id'] = $this->url_args['search_id'] ? $this->url_args['search_id'] : NULL;
-        
+        $this->url_args = Informant::urlArgs($request);          
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
@@ -60,40 +41,22 @@ class InformantController extends Controller
      */
     public function index()
     {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $informants = Informant::orderBy('name_'.$locale);
-
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $informant_name = $url_args['search_name'];
-        if ($informant_name) {
-            $informants = $informants->where(function($q) use ($informant_name){
-                            $q->where('name_en','like', $informant_name)
-                              ->orWhere('name_ru','like', $informant_name);
-                    });
-        } 
-
-        if ($url_args['search_birth_place']) {
-            $informants = $informants->where('birth_place_id',$url_args['search_birth_place']);
-        } 
-
-        if ($url_args['search_birth']) {
-            $informants = $informants->where('birth_date',$url_args['search_birth']);
-        } 
-
-        if ($url_args['search_id']) {
-            $informants = $informants->where('id',$url_args['search_id']);
-        } 
+        $informants = Informant::search($url_args);
 
         $numAll = $informants->count();
 
         $informants = $informants->paginate($url_args['limit_num']);
         
-        $place_values = Place::getListWithQuantity('informants');
+        $region_values = [NULL => ''] + Region::getList();
+        $district_values = District::getList();
+        $place_values = Place::getList(false);
         
         return view('corpus.informant.index',
-                    compact('informants','numAll','place_values',
+                    compact('district_values', 'informants','numAll',
+                            'place_values', 'region_values',
                             'args_by_get', 'url_args'));
     }
 

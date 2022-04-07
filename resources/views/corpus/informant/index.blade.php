@@ -6,6 +6,7 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/table.css')!!}
 @stop
 
@@ -82,11 +83,15 @@
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/list_change.js')!!}
 @stop
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}');
+    selectBirthDistrict();
+    selectBirthPlace();
 @stop
 
 
