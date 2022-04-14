@@ -162,13 +162,13 @@ class Word extends Model
     
     /**
      * move to the left word in the sentence and compare with the given words
-     * if all words are founded in the text return array of words, else return NULL
+     * if all words are found in the text return array of words, else return NULL
      * 
      * @param Array $words - array of strings
      * @return Array [word_id => word_string]
      */
     public function searchForWordform($words) {
-        $word_founded=[$this->w_id => $this->word];
+        $word_found=[$this->w_id => $this->word];
         $curr_word = $this;
         $sent_id = $this->s_id;
         $i=sizeof($words)-2;
@@ -177,14 +177,14 @@ class Word extends Model
             if (!$curr_word || $curr_word->s_id != $sent_id) { 
                 return;                            
             }
-            $word_founded[$curr_word->w_id] = $curr_word->word;
+            $word_found[$curr_word->w_id] = $curr_word->word;
             if ($curr_word->word != $words[$i]) {
                 return;
             }
             $i--;
         }
-        ksort($word_founded);
-        return $word_founded;
+        ksort($word_found);
+        return $word_found;
     }
     
     /*

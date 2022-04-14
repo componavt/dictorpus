@@ -19,7 +19,7 @@
         
     @include('dict.wordform._search_form') 
 
-    @include('widgets.founded_records', ['numAll'=>$numAll])
+    @include('widgets.found_records', ['numAll'=>$numAll])
 
     @if ($wordforms)
         <br>

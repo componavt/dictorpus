@@ -21,7 +21,7 @@
 
         @include('dict.concept._search_form',['url' => '/dict/concept/']) 
 
-        @include('widgets.founded_records', ['numAll'=>$numAll])
+        @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($numAll)                
         <table class="table table-striped rwd-table wide-lg">

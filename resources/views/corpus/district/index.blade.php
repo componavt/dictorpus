@@ -50,7 +50,7 @@
                                'placeholder' => trans('messages.limit_num')]]) {{ trans('messages.records') }}
         {!! Form::close() !!}
 
-        @include('widgets.founded_records', ['numAll'=>$numAll])
+        @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($numAll)                
         <table class="table rwd-table wide-md">

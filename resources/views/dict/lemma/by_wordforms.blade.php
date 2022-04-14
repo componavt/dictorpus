@@ -32,7 +32,7 @@
 
         @include('dict.lemma.search._by_wordforms_form',['url' => '/dict/lemma/']) 
 
-        @include('widgets.founded_records', ['numAll'=>$numAll])
+        @include('widgets.found_records', ['numAll'=>$numAll])
 
         @if ($numAll)
         <table class="table-bordered table-wide table-striped rwd-table wide-md">

@@ -24,7 +24,7 @@
         
         @include('corpus.plot._search_form') 
 
-        @include('widgets.founded_records', ['numAll'=>$numAll])
+        @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($numAll)                
         <table class="table table-striped table-wide wide-md">

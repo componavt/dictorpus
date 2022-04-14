@@ -357,12 +357,12 @@ dd($relevance);
         
         print $text_output ? "<br><span style='color:red'>BINGO!</span>: ".sizeof($word_coll) : '';
         foreach ($word_coll as $last_word) {
-            $words_founded = $last_word->searchForWordform($words);
-            if (!$words_founded) { continue; }
+            $words_found = $last_word->searchForWordform($words);
+            if (!$words_found) { continue; }
             
-            print $text_output ? "<br><span style='color:red'>FOUNDED: </span>".
-                  $last_word->text_id.' | '.$last_word->s_id.' | '.join(',',array_keys($words_founded)) : '';
-            $error_message = $last_word->mergeWords($words_founded);
+            print $text_output ? "<br><span style='color:red'>FOUND: </span>".
+                  $last_word->text_id.' | '.$last_word->s_id.' | '.join(',',array_keys($words_found)) : '';
+            $error_message = $last_word->mergeWords($words_found);
             if ($error_message) {
                 dd($error_message);
             }

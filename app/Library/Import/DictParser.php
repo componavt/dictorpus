@@ -192,7 +192,7 @@ class DictParser
     }
     
     /**
-     * search lemmas with the same meanings and gets founded lemma
+     * search lemmas with the same meanings and gets found lemma
      */
     public static function findLemma($stem0, $entry, $lang_id, $label_id/*, $time_checking*/) {       
         $lemmas=Lemma::where('lemma', 'like', $stem0)

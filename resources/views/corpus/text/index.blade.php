@@ -30,7 +30,7 @@
                                   
         @include('corpus.text.form._search') 
 
-        @include('widgets.founded_records', ['numAll'=>$numAll])
+        @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($numAll)                
         <table class="table-bordered table-striped table-wide rwd-table wide-md">

@@ -22,7 +22,7 @@
         </p>
         
         @include('dict.gramset._search_form')
-        @include('widgets.founded_records', ['numAll'=>$numAll])
+        @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($gramsets && $numAll)
             {!! $gramsets->appends($url_args)->render() !!}
