@@ -48,7 +48,7 @@
                 @include('widgets.form.formitem._text', 
                         ['name' => 'other_names['.$lang_id.']', 
                          'special_symbol' => true,
-                         'value' => $other_names[$lang_id] ?? NULL,
+                         'value' => $other_names[$lang_id] ?? '',
                          'title'=>trans('corpus.name').' ('.$lang_n.')'])    
             @endif
         @endforeach
