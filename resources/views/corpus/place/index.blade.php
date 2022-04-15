@@ -31,6 +31,8 @@
                 <th>{{ trans('corpus.region') }}</th>
                 <th>{{ trans('corpus.district') }}</th>
                 <th>{{ trans('corpus.name') }}</th>
+                <th>{{ trans('corpus.latitude') }}</th>
+                <th>{{ trans('corpus.longitude') }}</th>
                 <th>{{ trans('navigation.dialects') }}</th>
                 <th>{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})</th>
                 <th>{{ trans('navigation.texts') }} ({{ trans('corpus.birth_place') }})</th>
@@ -51,16 +53,24 @@
                 </td>
                 <td data-th="{{ trans('corpus.title') }}">
                     @if ($place->name_en)
-                    <b>{{ \App\Models\Dict\Lang::getNameByCode('en') }}:</b> {{ $place->name_en }}<br>
+                    {{ $place->name_en }} (<i>en</i>) <br>
                     @endif
                     @if ($place->name_ru)
-                    <b>{{ \App\Models\Dict\Lang::getNameByCode('ru') }}:</b> {{ $place->name_ru }}<br>
+                    {{ $place->name_ru }} (<i>ru</i>) <br>
                     @endif
                     
                     @foreach($place->other_names as $other_name)
-                    <b>{{ \App\Models\Dict\Lang::find($other_name->lang_id)->name }}:</b> {{ $other_name->name }}<br>
+                    {{ $other_name->name }} (<i>{{ \App\Models\Dict\Lang::find($other_name->lang_id)->code }}</i>)<br>
                     @endforeach
                 </td>
+                
+                <td data-th="{{ trans('corpus.latitude') }}">
+                    {{ $place->latitude ? sprintf("%.05f\n", $place->latitude) : '' }}
+                </td>
+                <td data-th="{{ trans('corpus.longitude') }}">
+                    {{ $place->longitude ? sprintf("%.05f\n", $place->longitude) : '' }}
+                </td>
+                
                 <td data-th="{{ trans('navigation.dialects') }}">
                     {{$place->dialectListToString()}}
                 </td>

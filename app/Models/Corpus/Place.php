@@ -16,7 +16,7 @@ use App\Models\Corpus\Text;
 class Place extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['district_id','region_id','name_en','name_ru'];
+    protected $fillable = ['district_id','region_id','name_en','name_ru', 'latitude', 'longitude'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 

@@ -56,6 +56,9 @@ return [
     'informant_removed' => 'Informant ":name" is removed successfully.',
     
     'last_updated_texts' => 'Last updated texts',
+    'latitude'=>'latitude',
+    'longitude'=>'longitude',
+    
     'mark_right_gramset' => 'choose right gramset',
     'mark_right_meaning' => 'choose right meaning',
     'name' => 'name',

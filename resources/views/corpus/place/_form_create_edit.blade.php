@@ -1,3 +1,4 @@
+@include('widgets.form._url_args_by_post',['url_args'=>$url_args])
 <div class="row">
     <div class="col-sm-6">
         @include('widgets.form.formitem._text', 
@@ -27,6 +28,15 @@
                  'value' => $dialect_value,
                  'title' => trans('navigation.dialects'),
                  'class'=>'select-dialect form-control'])
+                 
+        <div class='flex-hor-group'>
+        @include('widgets.form.formitem._text', 
+                ['name' => 'latitude', 
+                 'title'=>trans('corpus.latitude')])
+        @include('widgets.form.formitem._text', 
+                ['name' => 'longitude', 
+                 'title'=>trans('corpus.longitude')])
+        </div>        
     </div>
     <div class="col-sm-6">
         @include('widgets.form.formitem._text', 

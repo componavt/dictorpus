@@ -57,6 +57,9 @@ return [
     'informant_removed' => 'Информант ":name" удален.',
     
     'last_updated_texts' => 'Последние измененные тексты',
+    'latitude'=>'широта',
+    'longitude'=>'долгота',
+    
     'mark_right_meaning' => 'отметить правильное значение',
     'mark_right_gramset' => 'отметить правильный грамсет',
     'name' => 'название',

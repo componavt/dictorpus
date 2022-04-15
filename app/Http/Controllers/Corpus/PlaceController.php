@@ -73,10 +73,12 @@ class PlaceController extends Controller
         $lang_values = [NULL => ''] + Lang::getList([Lang::getIDByCode('en'), 
                                       Lang::getIDByCode('ru')]);
         $dialect_values = Dialect::getList(); 
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
         
         return view('corpus.place.create',
-                  compact(['dialect_values', 'district_values',
-                          'lang_values', 'region_values']));
+                  compact(['dialect_values', 'district_values', 'lang_values', 
+                           'region_values', 'args_by_get', 'url_args']));
     }
 
     public function validateRequest(Request $request) {
@@ -97,7 +99,7 @@ class PlaceController extends Controller
     public function store(Request $request)
     {
         $this->validateRequest($request);
-        $place = Place::create($request->only('district_id','region_id','name_en','name_ru'));
+        $place = Place::create($request->only('district_id','region_id','name_en','name_ru', 'latitude', 'longitude'));
 
         foreach ($request->other_names as $lang => $other_name) {
             if ($other_name) {
@@ -153,10 +155,13 @@ class PlaceController extends Controller
 
         $dialect_values = Dialect::getList(); 
         $dialect_value = $place->dialectValue();
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
         
         return view('corpus.place.edit',
                   compact(['dialect_value', 'dialect_values', 'district_values',
-                          'lang_values', 'other_names', 'place', 'region_values']));
+                          'lang_values', 'other_names', 'place', 'region_values',
+                          'args_by_get', 'url_args']));
     }
 
     /**
@@ -174,9 +179,8 @@ class PlaceController extends Controller
             'district_id' => 'required|numeric',
             'region_id' => 'required|numeric',
         ]);
-        
         $place = Place::find($id);
-        $place->fill($request->only('district_id','region_id','name_en','name_ru'))->save();
+        $place->fill($request->only('district_id','region_id','name_en','name_ru', 'latitude', 'longitude'))->save();
         
         foreach ($place->other_names as $other_name) {
             $other_name->delete();
@@ -193,7 +197,7 @@ class PlaceController extends Controller
         $place->dialects()->detach();
         $place->dialects()->attach($request->dialects);
         
-        return Redirect::to('/corpus/place/?search_id='.$place->id.($this->args_by_get))
+        return Redirect::to('/corpus/place/'.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
