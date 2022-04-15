@@ -1,4 +1,8 @@
 <?php
+        Route::get('corpus/audiotext/{id}', 'Corpus\AudiotextController@show')->name('audiotext.show');
+        Route::get('corpus/audiotext/add_files/{text_id}', 'Corpus\AudiotextController@addFiles');
+        Route::get('corpus/audiotext/choose_files/{text_id}', 'Corpus\AudiotextController@chooseFiles');
+        
         Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');
 
         Route::get('corpus/district/birth_list', 'Corpus\DistrictController@birthDistrictList');

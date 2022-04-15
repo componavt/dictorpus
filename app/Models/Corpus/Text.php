@@ -54,6 +54,7 @@ class Text extends Model
     use \App\Traits\Relations\BelongsToMany\Topics;
 //    use \App\Traits\Relations\BelongsToMany\Meanings;
     
+    use \App\Traits\Relations\HasMany\Audiotexts;
     use \App\Traits\Relations\HasMany\Sentences;
     use \App\Traits\Relations\HasMany\Words;
 

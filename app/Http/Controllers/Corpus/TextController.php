@@ -268,7 +268,7 @@ class TextController extends Controller
         $author_value = $text->authorValue();
         $trans_author_value = $text->transtext ? $text->transtext->authorValue() : null;
         $project_langs=Lang::projectLangs(); 
-        
+                
         $readonly = ($text->meanings()->wherePivot('relevance','<>',1)->count()) ? true : false;
         
         $args_by_get = $this->args_by_get;
@@ -646,7 +646,7 @@ class TextController extends Controller
         }
 //        return $str;
     }
-
+    
     /**
      * Shows the sentence with a highlighted word.
      * Receives text ID and word ID (local number in the text),

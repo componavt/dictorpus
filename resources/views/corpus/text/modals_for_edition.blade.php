@@ -34,4 +34,11 @@
                               'submit_onClick' => 'saveTopic()',
                               'submit_title' => trans('messages.save'),
                               'modal_view'=>'corpus.topic._form_create_edit'])
-                              
+                          
+@if ($action=='edit')         
+        @include('widgets.modal',['name'=>'modalAddAudio',
+                              'title'=>trans('corpus.add_audio'),
+                              'submit_onClick' => 'saveAudio()',
+                              'author' => null,
+                              'submit_title' => trans('messages.save')])
+@endif                              

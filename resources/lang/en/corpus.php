@@ -10,6 +10,7 @@ return [
     |
     */
 
+    'add_audio' => 'Add an audio-file',
     'add_district' => 'Add a district',
     'add-gramset' => 'Add grammmatic attributes',
     'add_informant' => 'Add an informant',

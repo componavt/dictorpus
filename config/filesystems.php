@@ -54,6 +54,12 @@ return [
             'visibility' => 'public',
         ],
         
+        'audiotexts' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/audio/texts'),
+            'visibility' => 'public',
+        ],
+        
         's3' => [
             'driver' => 's3',
             'key' => 'your-key',

@@ -23,7 +23,7 @@
             | <a href="{{ LaravelLocalization::localizeURL('/help/text/form') }}">? {{ trans('navigation.help') }}</a>
         </p>
 
-        @include('corpus.text.modals_for_edition')
+        @include('corpus.text.modals_for_edition', ['action' => 'edit'])
         
         {!! Form::model($text, array('method'=>'PUT', 'route' => array('text.update', $text->id))) !!}
         @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.save'),

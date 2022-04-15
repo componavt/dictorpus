@@ -41,6 +41,7 @@
         @endif
         
         @include('corpus.text.show.metadata')
+            @include('corpus.audiotext._show_files',['audiotexts'=>$text->audiotexts])
         
         @if ($text->video && $text->video->youtube_id)
             </div>

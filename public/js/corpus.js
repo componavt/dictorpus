@@ -228,6 +228,47 @@ function saveTopic() {
                	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route + test_url;
             alert(text);
         }
-    }); 
+    });     
 }
+
+function addAudio(text_id) {    
+    var route = '/corpus/audiotext/choose_files/'+text_id;
+    $.ajax({
+        url: route, 
+        type: 'GET',
+        success: function(data){     
+            $( "#modalAddAudio .modal-body" ).html(data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route;
+            alert(text);
+        }
+    });     
+    
+    $("#modalAddAudio").modal('show');
+}
+
+function saveAudio() {
+    var text_id = $( "#text_id" ).val();
+    var filenames = $( "#modalAddAudio input:checked" ).serialize();
+console.log(filenames);    
+    var route = '/corpus/audiotext/add_files/'+text_id+'?'+filenames;
+    $.ajax({
+        url: route, 
+        type: 'GET',
+//        data: {filenames},
+        success: function(data){     
+            $( "#choosed_files" ).html(data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route;
+            alert(text);
+        }
+    });     
+    
+    $("#modalAddAudio").modal('hide');
+}
+
 
