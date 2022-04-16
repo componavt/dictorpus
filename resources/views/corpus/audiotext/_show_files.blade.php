@@ -1,5 +1,5 @@
 @foreach ($audiotexts as $audiotext)
     <div class=''>
-        @include('widgets.audio', ['route'=>route('audiotext.show', ['id'=>$audiotext->id])])
+        @include('widgets.audio', ['route'=>$audiotext->url()])
     </div>
 @endforeach
