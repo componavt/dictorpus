@@ -118,6 +118,7 @@ class Text extends Model
         $texts = self::searchByTopics($texts, $url_args['search_topic']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
         $texts = self::searchBySource($texts, $url_args['search_source']);
+        $texts = self::searchWithAudio($texts, $url_args['with_audio']);
         
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
@@ -145,6 +146,16 @@ class Text extends Model
 //Sentence::searchByWords($texts, 'id', $url_args['words']);
 //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $texts->toSql()), $texts->getBindings()));            
         return $texts;
+    }
+        
+    public static function searchWithAudio($texts, $with_audio) {
+        if (!$with_audio) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query){
+                    $query->select('text_id')
+                    ->from('audiotexts');
+                });
     }
         
     public static function searchBySource($texts, $source) {
@@ -1669,6 +1680,7 @@ class Text extends Model
 //                    'search_year'     => (int)$request->input('search_year'),
                     'search_year_from'=> (int)$request->input('search_year_from'),
                     'search_year_to'  => (int)$request->input('search_year_to'),
+                    'with_audio' => (boolean)$request->input('with_audio'),
                 ];
         
         if ($url_args['search_without_genres']) {

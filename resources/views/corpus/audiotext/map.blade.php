@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.dialect_map') }}
+{{ trans('navigation.audio_map') }}
 @stop
 
 @section('headExtra')

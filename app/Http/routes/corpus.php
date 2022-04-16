@@ -33,6 +33,8 @@
         Route::get('corpus/sentence/{sentence_id}/translation/{w_id}_{lang_id}/store', 'Corpus\SentenceTranslationController@store');
         Route::get('corpus/sentence/{sentence_id}/translation/{w_id}_{lang_id}/edit', 'Corpus\SentenceTranslationController@edit');
         Route::get('corpus/sentence/{sentence_id}/translation/{w_id}_{lang_id}/update', 'Corpus\SentenceTranslationController@update');
+
+        Route::get('corpus/speech_corpus', 'Corpus\TextController@speechCorpus');
         
         Route::get('corpus/text/{id}/history', 'Corpus\TextController@history');
         Route::get('corpus/text/{id}/markup', 'Corpus\TextController@markupText');

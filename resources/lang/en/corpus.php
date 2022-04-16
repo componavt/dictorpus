@@ -57,6 +57,7 @@ return [
     
     'last_updated_texts' => 'Last updated texts',
     'latitude'=>'latitude',
+    'listen' => 'Listen',
     'longitude'=>'longitude',
     
     'mark_right_gramset' => 'choose right gramset',
@@ -146,4 +147,5 @@ return [
     'words' => 'words',
     'unlock' => 'unlock',
     'wait_while_search' => 'Please wait while searching for possible options ...',
+    'with_audio' => 'with audio files'
 ];

@@ -1,4 +1,4 @@
-        {!! Form::open(['url' => '/corpus/text/', 
+        {!! Form::open(['url' => $form_url, 
                              'method' => 'get']) 
         !!}
 <div class="show-search-form">{{trans('search.advanced_search')}} &#8595;</div>
@@ -22,6 +22,17 @@
                  'class'=>'multiple-select-dialect form-control'
             ])
     </div>
+@if (!$full)    
+    <div class="col-md-4{{$url_args['search_title'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._text', 
+                ['name' => 'search_title', 
+                 'special_symbol' => true,
+                 'help_func' => "callHelp('help-text-fields')",
+                 'value' => $url_args['search_title'],
+                 'title' => trans('corpus.title')
+                ])                               
+    </div>
+@else
     <div class="col-md-4">
         @include('widgets.form.formitem._select2', 
                 ['name' => 'search_corpus', 
@@ -59,7 +70,7 @@
                  'class'=>'select-topic form-control'
         ])                 
     </div>
-
+@endif
     <div class="col-md-4{{$url_args['search_region'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_region', 
@@ -128,6 +139,7 @@
                  'title' => trans('corpus.recorder'),
         ])                 
     </div>
+@if ($full)    
     <div class="col-md-4{{$url_args['search_author'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_author', 
@@ -136,7 +148,6 @@
                  'title' => trans('search.author_or_trans'),
         ])                 
     </div>
-    
     <div class="col-md-4{{$url_args['search_title'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_title', 
@@ -146,6 +157,7 @@
                  'title' => trans('corpus.title')
                 ])                               
     </div>
+@endif    
     <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_year_from', 
@@ -171,6 +183,7 @@
                 ])
                                
     </div>
+@if ($full)    
     <div class="col-md-4{{$url_args['search_text'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_text', 
@@ -181,6 +194,14 @@
                 ])
                                
     </div>
+    <div class="col-sm-4{{$url_args['with_audio'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'with_audio',
+                'value' => 1,
+                'checked' => $url_args['with_audio']==1,
+                'tail'=>trans('corpus.with_audio')]) 
+    </div>    
+@endif
     @include('widgets.form._search_div')
 </div>                 
 </div>

@@ -697,4 +697,47 @@ class TextController extends Controller
         return view('corpus.text.frequency.symbols',
                 compact('lang_values', 'symbols', 'args_by_get', 'url_args'));
     } 
+    
+    public function speechCorpus()
+    {        
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        $url_args['with_audio'] = true;
+        
+        if (isset($url_args['search_dialect'][0]) && !$url_args['search_lang']) {
+            $dialect = Dialect::find($url_args['search_dialect'][0]);
+            if ($dialect) {
+                $url_args['search_lang'] = [$dialect->lang_id];
+            }
+        }
+        
+        $texts = Text::search($url_args);
+
+        $numAll = $texts->count();
+
+        $texts = $texts->paginate($this->url_args['limit_num']);
+        
+        $corpus_values = Corpus::getListWithQuantity('texts');
+
+        //$lang_values = Lang::getList();
+        $lang_values = Lang::getListWithQuantity('texts');
+        
+        $dialect_values = Dialect::getList();
+        $informant_values = [NULL => ''] + Informant::getList();
+        $recorder_values = [NULL => ''] + Recorder::getList();
+        $author_values = [NULL => ''] + Author::getList();
+        $genre_values = Genre::getList();
+        $plot_values = Plot::getList();
+        $topic_values = Topic::getList();
+        $region_values = [NULL => ''] + Region::getList();
+        $district_values = District::getList();
+        $place_values = Place::getList(false);
+
+        return view('corpus.text.speech_corpus',
+                compact('author_values', 'corpus_values', 'dialect_values', 
+                        'district_values', 'genre_values', 'informant_values', 
+                        'lang_values', 'recorder_values', 'region_values', 
+                        'place_values', 'plot_values', 'texts', 'topic_values', 
+                        'numAll', 'args_by_get', 'url_args'));
+    }
 }

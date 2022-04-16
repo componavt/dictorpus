@@ -2,7 +2,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('corpus.text_list') }}
+{{ trans('navigation.speech_corpus') }}
 @stop
 
 @section('headExtra')
@@ -13,7 +13,7 @@
 @stop
 
 @section('body')
-        <a href="{{ LaravelLocalization::localizeURL('/corpus/sentence') }}">{{ trans('corpus.gram_search') }}</a> |
+        <a href="{{ LaravelLocalization::localizeURL('/corpus/audiotext/map') }}">{{ trans('navigation.audio_map') }}</a> |
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
         @endif
@@ -28,7 +28,7 @@
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.text._search'])
                                   
-        @include('corpus.text.form._search', ['form_url'=> '/corpus/text/', 'full'=>true]) 
+        @include('corpus.text.form._search', ['form_url'=> '/corpus/speech_corpus/', 'full'=>false]) 
 
         @include('widgets.found_records', ['numAll'=>$numAll])
         
@@ -37,24 +37,16 @@
         <thead>
             <tr>
                 <th>No</th>
-            @if (!$url_args['search_lang'])
+{{--            @if (!$url_args['search_lang'])
                 <th>{{ trans('dict.lang') }}</th>
-            @endif
+            @endif --}}
             @if (!$url_args['search_dialect'])
                 <th>{{ trans('dict.dialect') }}</th>
             @endif
-            @if (!$url_args['search_corpus'])
-                <th>{{ trans('corpus.corpus') }}</th>
-            @endif
-            @if (!$url_args['search_genre'])
-                <th>{{ trans('corpus.genre') }}</th>
-            @endif
                 <th>{{ trans('corpus.title') }}</th>
-                @if (!$url_args['search_word'])
                 <th>{{ trans('messages.translation') }}</th>
-                @else
-                <th style='text-align: center'>{{ trans('corpus.sentences') }}</th>
-                @endif
+                <th>{{ trans('corpus.listen') }}</th>
+                
                 @if (User::checkAccess('corpus.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -64,9 +56,9 @@
             @foreach($texts as $text)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
-            @if (!$url_args['search_lang'])
+{{--            @if (!$url_args['search_lang'])
                 <td data-th="{{ trans('dict.lang') }}">{{$text->lang->name}}</td>
-            @endif
+            @endif --}}
             @if (!$url_args['search_dialect'])
                 <td data-th="{{ trans('dict.dialect') }}">
                     @if($text->dialects)
@@ -77,12 +69,6 @@
                     @endif
                 </td>
             @endif
-            @if (!$url_args['search_corpus'])
-                <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
-            @endif
-            @if (!$url_args['search_genre'])
-                <td data-th="{{ trans('corpus.genre') }}">{{$text->genresToString()}}</td>
-            @endif
                 <td data-th="{{ trans('corpus.title') }}">
                     {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a>
@@ -90,22 +76,15 @@
                     <br>({{$text->transtext->title}})
                 @endif
                 </td>
-                @if (!$url_args['search_word'])
                 <td data-th="{{ trans('messages.translation') }}">
                     @if ($text->transtext)
                     {{ $text->transtext->authorsToString() ? $text->transtext->authorsToString().'.' : '' }}
                     {{$text->transtext->title}}
                     @endif
                 </td>
-                @else
-                <td data-th="{{ trans('corpus.sentences') }}">                    
-                    @foreach ($text->sentencesFromText($url_args['search_word']) as $s_id => $sentence)
-                    <ol start="{{$s_id}}">
-                        <li>@include('corpus.text.show_sentence',['count'=>$s_id])</li>
-                    </ol>
-                    @endforeach
+                <td data-th="{{ trans('corpus.listen') }}">
+                    @include('corpus.audiotext._show_files',['audiotexts'=>$text->audiotexts])
                 </td>
-                @endif
                 
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
