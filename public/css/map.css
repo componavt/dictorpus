@@ -1,0 +1,30 @@
+.marker-icon {
+    box-sizing: content-box;
+    display: inline-block;
+/*    margin-left: -13px;
+    margin-top: -13px;*/
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 12px;
+    padding: 5px;
+}
+
+.marker-blue {
+    color: #fff;
+    background: #4285f4;
+}
+.marker-green {
+    background: #34a853;
+}
+.marker-red {
+    color: #fff;
+    background: #ea4335;
+}
+.marker-yellow {
+    background: #fbbc04;
+}
+.marker-legend {
+    margin-right: 20px;
+}

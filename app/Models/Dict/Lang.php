@@ -12,6 +12,12 @@ use App\Models\Dict\Lemma;
 
 class Lang extends Model
 {
+    const MAP_COLORS = [
+            1 => 'blue',
+            4 => 'red',
+            5 => 'yellow',
+            6 => 'green',
+        ];
     public $timestamps = false;
     protected $fillable = ['name_en', 'name_ru', 'code', 'sequence_number'];
     
@@ -292,4 +298,11 @@ class Lang extends Model
         return NULL;
     }
     
+    public static function legendForMap() {
+        $out = [];
+        foreach (self::MAP_COLORS as $lang_id => $color) {
+            $out[$color] = self::getNameByID($lang_id);
+        }
+        return $out;
+    }
 }

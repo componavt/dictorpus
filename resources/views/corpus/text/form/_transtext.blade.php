@@ -31,10 +31,3 @@
                  'title'=>trans('corpus.transtext_text'),
                  'attributes' => ['rows'=>$action=='edit' ? 25 : 10]])
                  
-<?php /*       @if ($action=='edit')
-            <?php $transtext_text_xml_value = ($text->transtext) ? ($text->transtext->text_xml) : NULL; ?>
-            @include('widgets.form.formitem._textarea', 
-                    ['name' => 'transtext.text_xml', 
-                     'value' => $transtext_text_xml_value,
-                     'title'=>trans('corpus.text_xml')])
-        @endif        */ ?>

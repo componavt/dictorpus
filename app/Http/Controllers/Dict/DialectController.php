@@ -271,5 +271,4 @@ class DialectController extends Controller
 
         return Response::json($all_dialects);*/
     }
-
 }

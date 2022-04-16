@@ -15,6 +15,7 @@ return [
     'about_project_vepkar' => 'About VepKar',
     'about_veps' => 'Veps',
     'affix_freq' => 'Affix frequency',
+    'audio_map' => 'Audio map',
     'authors' => 'Authors',
     'collections' => 'Collections',
     'concept_categories' => 'Concept categories',

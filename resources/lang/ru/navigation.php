@@ -15,6 +15,7 @@ return [
     'about_project_vepkar' => 'О проекте ВепКар',
     'about_veps' => 'О вепсах',
     'affix_freq' => 'Частота встречаемости аффиксов в словаре',
+    'audio_map' => 'Аудио-карта',
     'authors' => 'Авторы',
     'collections' => 'Коллекции',
     'concept_categories' => 'Категории понятий',

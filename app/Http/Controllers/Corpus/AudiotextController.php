@@ -6,8 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Storage;
 use Response;
+use LaravelLocalization;
+
+use App\Library\Map;
 
 use App\Models\Corpus\Audiotext;
+use App\Models\Corpus\Place;
+
+use App\Models\Dict\Lang;
 
 class AudiotextController extends Controller
 {
@@ -49,5 +55,39 @@ class AudiotextController extends Controller
         $response->header("Content-Type", $type);
 
         return $response;
-    }    
+    }  
+    
+    public function onMap(Request $request) {
+        $legend = Lang::legendForMap();
+        $colors = Lang::MAP_COLORS;
+        
+        $place_coll = Place::whereNotNull('latitude')
+                       ->whereNotNull('longitude')
+                       ->whereIn('id', function ($query1) {
+                            $query1->select('place_id')->from('events')
+                                   ->whereIn('id', function ($query2) {
+                                    $query2->select('event_id')->from('texts')
+                                       ->whereIn('id', function ($query3) {
+                                           $query3->select('text_id')->from('audiotexts');
+                                       });
+                                   });
+                       })->get();
+        $places = [];
+        foreach ($place_coll as $place) {
+            $texts = $place->texts;
+            $popup = '<b>'.$place->name.'</b>';
+            foreach ($texts as $text) {
+                $popup .= '<br><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$text->id)
+                        . '">'.$text->title.'</a>';
+            }
+            $places[]=[
+                'latitude'=>$place->latitude,
+                'longitude'=>$place->longitude,
+                'color'=>$colors[$text->lang_id],
+                'popup'=>$popup
+            ];
+        }
+        return view('corpus.audiotext.map', 
+                compact('legend', 'places')); 
+    }
 }
