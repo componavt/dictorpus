@@ -20,8 +20,8 @@ class AudiotextController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/text/'/*, 
-                         ['only' => ['chooseFiles']]*/);
+        $this->middleware('auth:corpus.edit,/corpus/text/', 
+                         ['except' => ['onMap']]);
     }
     
     public function chooseFiles(int $text_id)
