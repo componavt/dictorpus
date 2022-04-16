@@ -88,6 +88,13 @@ class Place extends Model
         return $this->hasManyThrough(Text::class, Event::class);
     }
 
+    public function texts_with_audio()
+    {
+        return $this->texts()->whereIn('texts.id', function ($q) {
+            $q -> select('text_id')->from('audiotexts');
+        });
+    }
+
     /** Gets list of places
      * 
      * @return Array [1=>'Пондала (Pondal), Бабаевский р-н, Вологодская обл.',..]
