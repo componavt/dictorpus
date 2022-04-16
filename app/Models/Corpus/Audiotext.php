@@ -38,4 +38,10 @@ class Audiotext extends Model
         }
         return $files;
     }
+    
+    public function url() {
+//        return route('audiotext.show', ['id'=>$this->id]);
+//        return Storage::disk('audiotexts')->url($this->filename);
+        return Storage::url('audio/texts/'.$this->filename);
+    }
 }

@@ -76,11 +76,11 @@ class AudiotextController extends Controller
         foreach ($place_coll as $place) {
             $texts = $place->texts_with_audio()->get();//$place->texts;
             foreach ($texts as $text) {
-                $auduo_url = route('audiotext.show', ['id'=>$text->audiotexts[0]->id]);
+                $audiotext = $text->audiotexts[0];
                 $popup = '<b>'.$place->name.'</b>';
                 $popup .= '<br><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$text->id)
                         . '">'.$text->title.'</a> ('.$text->dialectsToString().')<br>'
-                        . '<audio controls><source src="'.$auduo_url.'" type="audio/mpeg"></audio>';
+                        . '<audio controls><source src="'.$audiotext->url().'" type="audio/mpeg"></audio>';
             }
             $places[]=[
                 'latitude'=>$place->latitude,
