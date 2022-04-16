@@ -1,4 +1,4 @@
-        <?php $transtext_lang_id_value = ($action=='edit' && $text->transtext) ? ($text->transtext->lang_id) : NULL; ?>
+        <?php $transtext_lang_id_value = ($action=='edit' && $text->transtext) ? ($text->transtext->lang_id) : 2; ?>
         @include('widgets.form.formitem._select', 
                 ['name' => 'transtext.lang_id', 
                  'values' =>$lang_values,
