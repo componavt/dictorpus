@@ -1,5 +1,4 @@
 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
-<input type='hidden' id='text_id' value='{{$text->id}}'>
 
 @include('corpus.text.form._corpus_dialects_genres')
 
@@ -15,6 +14,7 @@
          'title'=>trans('corpus.youtube_id')])
 
 @if ($action=='edit')         
+<input type='hidden' id='text_id' value='{{$text->id}}'>
         <p> <b>Аудиофайлы</b>         
             <i onclick="addAudio({{$text->id}})" class="call-add fa fa-plus fa-lg" title="Добавить новый"></i>
         </p>
