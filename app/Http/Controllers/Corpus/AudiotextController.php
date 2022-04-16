@@ -78,7 +78,7 @@ class AudiotextController extends Controller
             $popup = '<b>'.$place->name.'</b>';
             foreach ($texts as $text) {
                 $popup .= '<br><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$text->id)
-                        . '">'.$text->title.'</a>';
+                        . '">'.$text->title.'</a> ('.$text->dialectsToString().')';
             }
             $places[]=[
                 'latitude'=>$place->latitude,
