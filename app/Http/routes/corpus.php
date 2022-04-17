@@ -1,7 +1,10 @@
 <?php
         Route::get('corpus/audiotext/map', 'Corpus\AudiotextController@onMap');
         Route::get('corpus/audiotext/add_files/{text_id}', 'Corpus\AudiotextController@addFiles');
+        Route::get('corpus/audiotext/remove_file/{text_id}_{audiotext_id}', 'Corpus\AudiotextController@removeFile');
         Route::get('corpus/audiotext/choose_files/{text_id}', 'Corpus\AudiotextController@chooseFiles');
+        Route::get('corpus/audiotext/show_files/{text_id}', 'Corpus\AudiotextController@showFiles');
+//        Route::post('corpus/audiotext/upload', 'Corpus\AudiotextController@upload')->name('audiotext.upload');
         Route::get('corpus/audiotext/{id}', 'Corpus\AudiotextController@show')->name('audiotext.show');
         
         Route::get('corpus/author/store', 'Corpus\AuthorController@simpleStore');

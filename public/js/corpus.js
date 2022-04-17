@@ -39,8 +39,8 @@ function saveDistrict() {
 function addPlace(parent_field) {
     $("#modalAddPlace").modal('show');
     $("#modalAddPlace #parent_place").val(parent_field);
-console.log('parent_field: '+parent_field);    
-console.log('parent_field: '+ $("#modalAddPlace #parent_place").val());    
+//console.log('parent_field: '+parent_field);    
+//console.log('parent_field: '+ $("#modalAddPlace #parent_place").val());    
 }
 
 function savePlace() {
@@ -232,6 +232,11 @@ function saveTopic() {
 }
 
 function addAudio(text_id) {    
+    callAudioList(text_id);
+    $("#modalAddAudio").modal('show');
+}
+
+function callAudioList(text_id) {    
     var route = '/corpus/audiotext/choose_files/'+text_id;
     $.ajax({
         url: route, 
@@ -245,14 +250,12 @@ function addAudio(text_id) {
             alert(text);
         }
     });     
-    
-    $("#modalAddAudio").modal('show');
 }
 
 function saveAudio() {
     var text_id = $( "#text_id" ).val();
     var filenames = $( "#modalAddAudio input:checked" ).serialize();
-console.log(filenames);    
+//console.log(filenames);    
     var route = '/corpus/audiotext/add_files/'+text_id+'?'+filenames;
     $.ajax({
         url: route, 
@@ -271,4 +274,131 @@ console.log(filenames);
     $("#modalAddAudio").modal('hide');
 }
 
+function showAudio(text_id) {
+//    var text_id = $( "#text_id" ).val();
+    var route = '/corpus/audiotext/show_files/'+text_id;
+    $.ajax({
+        url: route, 
+        type: 'GET',
+        success: function(data){     
+            $( "#choosed_files" ).html(data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert('ERROR');
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route;
+            console.log(text);
+        }
+    });     
+    
+    $("#modalAddAudio").modal('hide');
+}
 
+function removeAudio(text_id, audiotext) {    
+    var route = '/corpus/audiotext/remove_file/'+text_id+'_'+audiotext;
+    $.ajax({
+        url: route, 
+        type: 'GET',
+        success: function(data){     
+            $( "#choosed_files" ).html(data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert('ERROR');
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+'), route: ' + route;
+            console.log(text);
+        }
+    });     
+}
+
+function uploadAudio(text_id, route_upload) {
+/*    $('#file').change(function () {
+        e.preventDefault();
+        var file = $(this)[0].files[0];
+        var fd = new FormData(this); // XXX: Neex AJAX2
+        formData.append('file', file);
+
+        // You could show a loading image for example...
+
+        $.ajax({
+          url: route_upload,
+          xhr: function() { // custom xhr (is the best)
+
+               var xhr = new XMLHttpRequest();
+               var total = 0;
+
+               // Get the total size of files
+               $.each(document.getElementById('files').files, function(i, file) {
+                      total += file.size;
+               });
+
+               // Called when upload progress changes. xhr2
+               xhr.upload.addEventListener("progress", function(evt) {
+                      // show progress like example
+                      var loaded = (evt.loaded / total).toFixed(2)*100; // percent
+
+                      $('#progress').text('Uploading... ' + loaded + '%' );
+               }, false);
+
+               return xhr;
+          },
+          type: 'post',
+          processData: false,
+          contentType: false,
+          data: fd,
+          success: function(data) {
+               // do something...
+               alert('uploaded');
+          }
+        });
+    });*/
+    
+/*    $.ajaxSetup({
+        headers: {'X-CSRF-Token': '{{csrf_token()}}'}
+    });
+//console.log(1);
+    $('#file').change(function () {
+//console.log(2);
+        var file = $(this)[0].files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+//console.log(formData);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        console.log(percentComplete);
+                        $('.progress-bar').css('width', percentComplete + '%');
+                        if (percentComplete === 100) {
+                            console.log('completed 100%');
+                            showAudio(text_id);
+                            setTimeout(function () {
+                                $('.progress-bar').css('width', '0%');
+                            }, 2000)
+                        }
+                    }
+                }, false);
+                return xhr;
+            },
+            url: route_upload,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+console.log(res);                
+                if(!res.success){alert(res.error)}
+//                callAudioList(text_id);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            alert('ERROR');
+            var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: ('+jqXHR.status + ', ' + jqXHR.statusText+'), ' + 
+               	       'text status: ('+textStatus+'), error thrown: ('+errorThrown+')';
+            console.log(text);
+            }
+        })
+    });*/
+}

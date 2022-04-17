@@ -22,7 +22,7 @@ class CreateAudiotextsTable extends Migration
             
             $table->timestamps();
             
-            $table->unique('text_id', 'filename');
+            $table->unique(['text_id', 'filename']);
         });
     }
 

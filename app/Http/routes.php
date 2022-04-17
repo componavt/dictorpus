@@ -20,6 +20,8 @@ Route::group(
     ],
     function()
     {
+//Route::get('user/profile', 'UserController@getProfile')->name('profile');
+//Route::post('user/profile', 'UserController@postProfileUpdate')->name('updateProfile');
         include_once 'routes/pages.php';
         include_once 'routes/auth.php';
         include_once 'routes/correct.php';
@@ -30,5 +32,6 @@ Route::group(
         include_once 'routes/experiments.php';        
         include_once 'routes/service.php';
         include_once 'routes/stats.php';
+        
     }
 );

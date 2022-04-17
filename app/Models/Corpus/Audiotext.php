@@ -9,6 +9,7 @@ use Storage;
 class Audiotext extends Model
 {
     const DISK = 'audiotexts';
+    const DIR = 'audio/texts/';
     protected $fillable = ['text_id', 'filename'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -42,6 +43,6 @@ class Audiotext extends Model
     public function url() {
 //        return route('audiotext.show', ['id'=>$this->id]);
 //        return Storage::disk('audiotexts')->url($this->filename);
-        return Storage::url('audio/texts/'.$this->filename);
+        return Storage::url(self::DIR . $this->filename);
     }
 }

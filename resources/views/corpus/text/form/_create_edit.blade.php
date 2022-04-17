@@ -21,6 +21,15 @@
         <div id='choosed_files'>
             @include('corpus.audiotext._show_files',['audiotexts'=>$text->audiotexts])
         </div>
+<!--input id="file" type="file">
+<br>
+<div class="progress">
+    <div class="progress-bar" 
+         role="progressbar" aria-valuemin="0"
+         aria-valuemax="100">
+
+    </div>
+</div-->
 @endif
 
 @include('widgets.form.formitem._submit', ['title' => $submit_title])

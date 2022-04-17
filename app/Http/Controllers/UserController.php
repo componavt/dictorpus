@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -201,4 +202,36 @@ class UserController extends Controller
                   ->withSuccess($result['message']);
         }
     }
-}
+
+    public function getProfile()
+    {
+        $user = User::find(24);
+        return view('user.profile', compact('user'));
+    }
+
+    public function postProfileUpdate(Request $request)
+    {
+    	$validator = Validator::make($request->all(), [
+                		'photo' => 'required|image|mimes:png,jpg,jpeg|max:500',
+            		]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false,'error' =>  $validator->errors()->first()]);
+        }
+
+        $user = User::find($request->input('id'));
+
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+
+            $fileName = $user->id . "." . $photo->getClientOriginalExtension();
+            $request->file('photo')->move(public_path('user-photos'), $fileName);
+            $user->update(['photo' => $fileName]);
+        } else {
+            return response()->json(['success' => false,'error' =>  $validator->errors()->first()]);            
+        }
+
+        return ['success'=>true,'message'=>'Successfully updated', 'filename'=>public_path('user-photos').'/'.$fileName];
+    }
+}    
+        

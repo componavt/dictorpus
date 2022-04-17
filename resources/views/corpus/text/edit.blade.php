@@ -25,7 +25,7 @@
 
         @include('corpus.text.modals_for_edition', ['action' => 'edit'])
         
-        {!! Form::model($text, array('method'=>'PUT', 'route' => array('text.update', $text->id))) !!}
+        {!! Form::model($text, ['method'=>'PUT', 'route'=>['text.update', $text->id]]) !!} <?php //, 'files'=>true?>
         @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit'])
         {!! Form::close() !!}
@@ -39,6 +39,7 @@
 @stop
 
 @section('jqueryFunc')
+{{--    uploadAudio({{$text->id}}, '{{route('audiotext.upload')}}'); --}}
     toggleSpecial();
     $(".multiple-select").select2();
     
@@ -48,6 +49,7 @@
     selectTopic('plots');
     
     selectPlot('.select-plot', 'genre_id'); /* from modal */
+    
     
     $('.text-unlock').click(function() {
         $(this).hide();
