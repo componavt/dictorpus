@@ -24,6 +24,7 @@ return [
     'author_removed' => 'Author ":name" is removed successfully.',
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',
+    'by_sentences' => 'by sentences',
     'comment' => 'comments',
     'choose-gramset' => 'Choose a gramset',
     
@@ -37,6 +38,7 @@ return [
     'district_list' => 'District list',
     'district_removed' => 'District ":name" is removed successfully.',
     
+    'edit_sentences' => 'edit sentences',
     'edit_word' => 'correct the word in the text',
     'fragment' => 'fragment',
     

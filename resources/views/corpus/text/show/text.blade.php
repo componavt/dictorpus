@@ -5,12 +5,6 @@
         @endif
         <h3>
         {{ $text->title }}
-        @if (User::checkAccess('corpus.edit'))
-            @include('widgets.form.button._edit', 
-                     ['route' => '/corpus/text/'.$text->id.'/sentences',
-                      'title' => 'редактировать предложения',
-                      'without_text' => 1])
-        @endif            
         </h3>
         <h5>
         {{ $text->lang->name }}

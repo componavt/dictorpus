@@ -25,6 +25,7 @@ return [
     'author_removed' => 'Автор ":name" удален.',
     'birth_place' => 'место рождения',
     'birth_year' => 'г.р.',
+    'by_sentences' => 'по предложениям',
     'comment' => 'комментарий',
     'choose-gramset' => 'Выберите набор грамматических признаков',
     
@@ -38,6 +39,7 @@ return [
     'district_list' => 'Список районов',
     'district_removed' => 'Район ":name" удален.',
         
+    'edit_sentences' => 'редактировать предложения',
     'edit_word' => 'исправить слово в тексте',    
     'fragment' => 'фрагмент',
     

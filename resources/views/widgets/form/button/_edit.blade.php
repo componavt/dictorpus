@@ -14,7 +14,7 @@
         }
         if (isset($without_text) && $without_text) {
             $link_text = '';
-        } else {
+        } elseif(!isset($link_text) || !$link_text) {
             $link_text = ' '.\Lang::get('messages.edit');
         }
         $link = LaravelLocalization::localizeURL($route);
