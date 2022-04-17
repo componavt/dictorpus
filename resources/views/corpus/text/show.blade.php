@@ -21,7 +21,7 @@
 {{--            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/markup') }}{{$args_by_get}}">{{ trans('corpus.re-markup') }}</a>        --}}    
             | @include('widgets.form.button._edit', 
                      ['route' => '/corpus/text/'.$text->id.'/sentences',
-                      'link_text' => trans('corpus.edit_sentences')])
+                      'link_text' => ' '.trans('corpus.edit_sentences')])
             @if (!$text->hasImportantExamples())
             | @include('widgets.form.button._delete', ['route' => 'text.destroy', 'args'=>['id' => $text->id]]) 
             @endif
