@@ -41,9 +41,10 @@ class AudiotextController extends Controller
     }
     
     public function showFiles(int $text_id, Request $request) {        
-        $audiotexts = Audiotext::whereTextId($text_id)->get();        
+        $audiotexts = Audiotext::whereTextId($text_id)->get();
+        $action = 'edit';
         return view('corpus.audiotext._show_files',
-                compact('audiotexts'));
+                compact('action', 'audiotexts'));
     }
     
     public function removeFile(int $text_id, int $audiotext_id) {
