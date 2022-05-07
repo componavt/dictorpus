@@ -126,7 +126,6 @@ class Informant extends Model
         $informants = self::orderBy('name_'.$locale);  
         
         $informants = self::searchByName($informants, $url_args['search_name']);
-        $informants = self::searchByName($informants, $url_args['search_name']);
         $informants = self::searchByRegion($informants, $url_args['search_birth_region']);
         $informants = self::searchByDistrict($informants, $url_args['search_birth_district']);
 
@@ -183,7 +182,7 @@ class Informant extends Model
                     'search_birth_district'  => (array)$request->input('search_birth_district'),
                     'search_birth_place' => (array)$request->input('search_birth_place'),
                     'search_birth_region' => $request->input('search_birth_region'),
-                    'search_id'  => (int)$request->input('search_dialect'),
+                    'search_id'  => (int)$request->input('search_id'),
                     'search_name'   => $request->input('search_name'),
                 ];
         

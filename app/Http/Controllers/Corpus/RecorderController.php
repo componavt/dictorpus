@@ -41,22 +41,7 @@ class RecorderController extends Controller
         $url_args = $this->url_args;
         
         $locale = LaravelLocalization::getCurrentLocale();
-        $recorders = Recorder::orderBy('name_'.$locale);
-
-        if ($url_args['search_id']) {
-            $recorders = $recorders->where('id', $url_args['search_id']);
-        } 
-        $recorder_name = $url_args['search_name'];
-        if ($recorder_name) {
-            $recorders = $recorders->where(function($q) use ($recorder_name){
-                            $q->where('name_en','like', $recorder_name)
-                              ->orWhere('name_ru','like', $recorder_name);
-                    });
-        } 
-
-        if ($url_args['search_id']) {
-            $recorders = $recorders->where('id',$url_args['search_id']);
-        } 
+        $recorders = Recorder::search($url_args);
 
         $numAll = $recorders->count();
         $recorders = $recorders->paginate($url_args['limit_num']);

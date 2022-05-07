@@ -71,14 +71,36 @@ class Recorder extends Model
         return $list;         
     }
     
+    public static function search(Array $url_args) {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $recorders = self::orderBy('name_'.$locale);  
+        
+        $recorders = self::searchByName($recorders, $url_args['search_name']);
+
+        if ($url_args['search_id']) {
+            $recorders = $recorders->where('id',$url_args['search_id']);
+        } 
+        return $recorders;
+    }
+    
+    public static function searchByName($recorders, $name) {
+        if (!$name) {
+            return $recorders;
+        }
+        return $recorders->where(function($q) use ($name){
+                        $q->where('name_en','like', $name)
+                          ->orWhere('name_ru','like', $name);
+                });
+    }
+
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
-                    'search_id'  => (int)$request->input('search_dialect'),
+                    'search_id'  => (int)$request->input('search_id'),
                     'search_name'   => $request->input('search_name'),
                 ];
         
         $url_args['search_id'] = $url_args['search_id'] ? $url_args['search_id'] : NULL;
         
         return $url_args;
-    }
+    }    
 }
