@@ -20,22 +20,7 @@
         @endif
         </p>
         
-        {!! Form::open(['url' => '/corpus/recorder/', 
-                             'method' => 'get', 
-                             'class' => 'form-inline']) 
-        !!}
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_id', 
-                'value' => $url_args['search_id'],
-                'attributes'=>['size' => 3,
-                               'placeholder' => 'ID']])
-         @include('widgets.form.formitem._text', 
-                ['name' => 'search_name', 
-                'value' => $url_args['search_name'],
-                'attributes'=>['size' => 15,
-                               'placeholder' => trans('corpus.name')]])
-        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
-        {!! Form::close() !!}
+        @include('corpus.recorder._search_form',['url' => '/corpus/recorder/']) 
 
         @include('widgets.found_records', ['numAll'=>$numAll])
         
@@ -82,6 +67,7 @@
             @endforeach
         </tbody>
         </table>
+        {!! $recorders->appends($url_args)->render() !!}
         @endif
 @stop
 

@@ -25,13 +25,8 @@ class RecorderController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth:corpus.edit,/corpus/recorder/', ['only' => ['create','store','edit','update','destroy']]);
-        $this->url_args = [
-                    'search_id'     => (int)$request->input('search_id'),
-                    'search_name'    => $request->input('search_name'),
-                ];
         
-        $this->url_args['search_id'] = $this->url_args['search_id'] ? $this->url_args['search_id'] : NULL;
-        
+        $this->url_args = Recorder::urlArgs($request);                   
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
     }
 
@@ -64,8 +59,7 @@ class RecorderController extends Controller
         } 
 
         $numAll = $recorders->count();
-
-        $recorders = $recorders->get();
+        $recorders = $recorders->paginate($url_args['limit_num']);
         
         return view('corpus.recorder.index',
                     compact('recorders', 'numAll','args_by_get', 'url_args'));

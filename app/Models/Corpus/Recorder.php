@@ -5,6 +5,8 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 class Recorder extends Model
 {
     public $timestamps = false;
@@ -69,4 +71,14 @@ class Recorder extends Model
         return $list;         
     }
     
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_id'  => (int)$request->input('search_dialect'),
+                    'search_name'   => $request->input('search_name'),
+                ];
+        
+        $url_args['search_id'] = $url_args['search_id'] ? $url_args['search_id'] : NULL;
+        
+        return $url_args;
+    }
 }
