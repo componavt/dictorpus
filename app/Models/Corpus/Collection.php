@@ -5,7 +5,7 @@ use App\Models\Corpus\Genre;
 
 class Collection {
     public static function getCollectionGenres($collection_id=null) {
-        $genres = [1=>19, 2=>66];
+        $genres = [1=>19, 2=>66, 3=>60];
         if (!$collection_id) {
             return $genres;
         }
