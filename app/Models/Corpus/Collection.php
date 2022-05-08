@@ -15,7 +15,7 @@ class Collection {
     }
 
     public static function getCollectionLangs($collection_id=null) : array {
-        $langs = [1=>[1], 2=>[4,5,6]];
+        $langs = [1=>[1], 2=>[4,5,6], 3=>[4,5,6]];
         if (!$collection_id) {
             return $langs;
         }
