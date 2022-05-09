@@ -5,6 +5,10 @@
         <p><b>{{trans('corpus.genre')}}:</b> <i>{!! $text->genresToString('/corpus/text?search_genre=') !!}</i></p>
         @endif
         
+        @if ($text->cyclesToString())
+        <b>{{trans('corpus.cycle')}}:</b> <i>{!! $text->cyclesToString() !!}</i></p>
+        @endif
+        
         @if ($text->plotsToString())
         <b>{{trans('corpus.plot')}}:</b> <i>{!! $text->plotsToString('/corpus/text?search_plot=') !!}</i></p>
         @endif

@@ -7,7 +7,7 @@ use LaravelLocalization;
 
 use App\Library\Str;
 
-class Plot extends Model
+class Cycle extends Model
 {
     public $timestamps = false;
     

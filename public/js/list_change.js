@@ -189,6 +189,31 @@ function selectPlot(plot_var='.select-plot', genre_var='search_genre', placehold
     });   
 }
 
+function selectCycle(plot_var='.select-cycle', genre_var='search_genre', placeholder='', allow_clear=false){
+    $(plot_var).select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/cycle/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              genre_id: selectedValuesToURL("#" + genre_var)
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
 function selectTopic(plot_var='search_plot', placeholder='', allow_clear=false){
     $(".select-topic").select2({
         allowClear: allow_clear,

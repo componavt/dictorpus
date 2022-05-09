@@ -11,20 +11,16 @@
 @section('body')
     <h2>{{trans('collection.name_list')[$id]}}</h2>
 
-    @foreach ($genres as $genre)
-    <h3>{{$genre->name_pl}}</h3>
-    
-        @foreach ($genre->plots as $plot)
-            @if ($plot->texts->count())
+        @foreach ($genres[0]->cycles as $cycle)
+            @if ($cycle->texts->count())
     <div class="subdiv">
-        <h4>{{$plot->name}} ({{$plot->texts->count()}})</h4>
-                @foreach ($plot->texts()->whereIn('lang_id', $lang_id)->get() as $text)
+        <h4>{{$cycle->name}} ({{$cycle->texts->count()}})</h4>
+                @foreach ($cycle->texts()->whereIn('lang_id', $lang_id)->get() as $text)
     @include('corpus.collection._text', 
-            ['event' => $text->event, 'source' => $text->source])
+            ['event' => $text->event, 'source' => null])
                 @endforeach
     </div>
             @endif
         @endforeach
-    @endforeach
 
 @stop

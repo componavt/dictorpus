@@ -62,6 +62,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/dialect') }}">{{ trans('navigation.dialects') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/corpus') }}">{{ trans('navigation.corpuses') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/genre') }}">{{ trans('navigation.genres') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/corpus/cycle') }}">{{ trans('navigation.cycles') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/plot') }}">{{ trans('navigation.plots') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/topic') }}">{{ trans('navigation.topics') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/corpus/place') }}">{{ trans('navigation.places') }}</a></li>

@@ -24,6 +24,7 @@ return [
     'corpus' => 'Корпус',
     'corpus_freq' => 'Частотные словари',
     'corpuses' => 'Подкорпусы',
+    'cycles' => 'Циклы',
     'dialects' => 'Диалекты',
     'dict_selections' => 'Выборки',
     'dictionary' => 'Словарь',

@@ -20,8 +20,12 @@ class CollectionController extends Controller
     
     public function show($id) {
         if (Collection::isCollectionId($id)) {
-            $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
+            if ($id == 3) {
+                $genres = [Genre::find(Collection::getCollectionGenres($id))];
+            } else {
+                $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
                            ->orderBy('sequence_number')->get();
+            }
             $lang_id = Collection::getCollectionLangs($id);
             $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
             return view('corpus.collection.'.$id.'.index',

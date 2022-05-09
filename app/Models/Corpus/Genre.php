@@ -11,6 +11,7 @@ use App\Models\Dict\Lang;
 
 class Genre extends Model
 {
+    const LEGEND_ID = 60;
     public $timestamps = false;
     
     protected $fillable = ['name_en','name_ru', 'name_pl_en', 'name_pl_ru', 'corpus_id', 'parent_id', 'sequence_number'];
@@ -32,6 +33,7 @@ class Genre extends Model
     
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Plots;
+    use \App\Traits\Relations\HasMany\Cycles;
     
     public function parent()
     {

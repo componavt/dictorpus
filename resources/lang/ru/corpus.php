@@ -34,6 +34,7 @@ return [
     'corpus_list' => 'Список подкорпусов',
     'corpus_removed' => 'Подкорпус ":name" удален.',
     'creation_date' => 'год добавления в корпус',
+    'cycle' => 'цикл',
     
     'district' => 'Район',
     'district_list' => 'Список районов',

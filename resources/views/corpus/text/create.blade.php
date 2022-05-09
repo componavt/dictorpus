@@ -47,6 +47,7 @@
     selectDialect('lang_id');
     selectGenre('corpus_id');
     selectPlot('.multiple-select-plot', 'genres');
+    selectCycle('.multiple-select-cycle', 'genres');
     selectTopic('plots');
     
     selectPlot('.select-plot', 'genre_id'); /* from modal */

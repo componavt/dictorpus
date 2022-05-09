@@ -33,6 +33,7 @@ return [
     'corpus_list' => 'Corpus list',
     'corpus_removed' => 'Corpus ":name" is removed successfully.',
     'creation_date' => 'year of additing into VepKar',
+    'cycle' => 'cycle',
     
     'district' => 'District',
     'district_list' => 'District list',

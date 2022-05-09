@@ -14,6 +14,7 @@
         
         Route::get('corpus/collection', 'Corpus\CollectionController@index');
         Route::get('corpus/collection/{id}', 'Corpus\CollectionController@show');
+        Route::get('corpus/cycle/list', 'Corpus\CycleController@cycleList');
 //        Route::get('corpus/gram_search', 'Corpus\GramSearchController@index');
         
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
@@ -79,6 +80,11 @@
                        ['names' => ['update' => 'corpus.update',
                                     'store' => 'corpus.store',
                                     'destroy' => 'corpus.destroy']]);
+        
+        Route::resource('corpus/cycle', 'Corpus\CycleController',
+                       ['names' => ['update' => 'cycle.update',
+                                    'store' => 'cycle.store',
+                                    'destroy' => 'cycle.destroy']]);
         
         Route::resource('corpus/genre', 'Corpus\GenreController',
                        ['names' => ['update' => 'genre.update',

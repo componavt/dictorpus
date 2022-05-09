@@ -48,6 +48,7 @@ class Text extends Model
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Authors;
+    use \App\Traits\Relations\BelongsToMany\Cycles;
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Genres;
     use \App\Traits\Relations\BelongsToMany\Plots;
@@ -489,6 +490,9 @@ class Text extends Model
 
         $this->genres()->detach();
         $this->genres()->attach($request->genres);
+        
+        $this->cycles()->detach();
+        $this->cycles()->attach($request->cycles);
         
         $this->plots()->detach();
         $this->plots()->attach($request->plots);
@@ -1823,6 +1827,18 @@ dd($s->saveXML());
             $name = $plot->name;
             if ($link) {
                 $name = to_link($name, $link.$plot->id);
+            }
+            $out[] = $name;
+        }
+        return join(', ', $out);
+    }
+    
+    public function cyclesToString($link=null) {
+        $out = [];
+        foreach ($this->cycles as $cycle) {
+            $name = $cycle->name;
+            if ($link) {
+                $name = to_link($name, $link.$cycle->id);
             }
             $out[] = $name;
         }

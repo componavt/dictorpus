@@ -24,6 +24,7 @@ return [
     'corpus' => 'Corpus',
     'corpus_freq' => 'Frequency vocabularies',
     'corpuses' => 'Corpuses',
+    'cycles' => 'Cycles',
     'dialects' => 'Dialects',
     'dict_selections' => 'Selections',
     'dictionary' => 'Dictionary',

@@ -12,6 +12,7 @@ use App\Library\Str;
 
 use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
+use App\Models\Corpus\Cycle;
 use App\Models\Corpus\District;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
@@ -111,6 +112,8 @@ class TextController extends Controller
     {
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
+        $cycle_genre_id = Genre::LEGEND_ID;
+        $cycle_values = Cycle::getList();
         $informant_values = [NULL => ''] + Informant::getList();
         $place_values = [NULL => ''] + Place::getList();
         $recorder_values = Recorder::getList();
@@ -128,7 +131,8 @@ class TextController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view('corpus.text.create',
-                  compact('author_values', 'corpus_values', 'dialect_values', 
+                  compact('author_values', 'corpus_values', 'cycle_genre_id', 
+                          'cycle_values', 'dialect_values', 
                           'district_values', 'genre_values', 'informant_values', 
                           'lang_values', 'place_values', 'plot_values', 
                           'project_langs', 'recorder_values', 'region_values', 
@@ -241,6 +245,11 @@ class TextController extends Controller
         
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
+        
+        $cycle_values = Cycle::getList();
+        $cycle_value = $text->cycleValue();
+        $cycle_genre_id = Genre::LEGEND_ID;
+        
         $place_values = [NULL => ''] + Place::getList();
 
         $informant_values = Informant::getList();
@@ -275,6 +284,7 @@ class TextController extends Controller
         $url_args = $this->url_args;
         return view('corpus.text.edit',
                 compact('author_value', 'author_values', 'corpus_values', 
+                        'cycle_genre_id', 'cycle_value', 'cycle_values', 
                         'dialect_value', 'dialect_values', 'district_values', 
                         'genre_value', 'genre_values', 'informant_value',
                         'informant_values','lang_values', 'place_values', 
