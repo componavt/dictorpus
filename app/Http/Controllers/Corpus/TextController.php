@@ -204,7 +204,11 @@ class TextController extends Controller
     }
     
     public function editSentences($id) {
-        $text = Text::findOrFail($id);
+        $text = Text::find($id);       
+        if (!$text) {
+            return Redirect::to('/corpus/text/')
+                           ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
+        }
         $sentences = Sentence::whereTextId($id)->orderBy('s_id')->get();
 
         $dialect_value = $text->dialectValue();

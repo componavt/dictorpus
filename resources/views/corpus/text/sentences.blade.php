@@ -38,10 +38,14 @@
                 @include('corpus.sentence.show', ['with_edit' => true]) 
                 </div>
             </td>
+            
+            @if (user_corpus_edit())
             <td>
                 <i id="sentence-edit-{{$sentence->id}}" class="sentence-edit fa fa-pencil-alt fa-lg" data-sid="{{$sentence->id}}"></i>                
                 <i class="fa fa-sync-alt fa-lg markup-sentence" title="сбросить все связи и разметить заново" onclick="markupSentence({{$sentence->id}})"></i>
             </td>
+            @endif 
+            
             <td>
                 {!! $trans_sentences[$sentence->s_id] ?? '' !!}
             </td>
