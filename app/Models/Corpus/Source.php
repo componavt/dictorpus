@@ -38,11 +38,15 @@ class Source extends Model
 //            $book[] = '('.$this->year.')';
             $book[] = $this->year;
         }
-        if ($this->pages) {
+        if ($this->pages && (int)$this->pages > 0) {
             $book[] = \Lang::get('corpus.p').' '.$this->pages;
         }
         
-        return join(', ', $book);
+        $book = join(', ', $book);
+        if ($this->pages && !(int)$this->pages) {
+            $book .= '. '.$this->pages;
+        }
+        return $book;
     }
 
     /**
