@@ -37,7 +37,7 @@
                     ."<div class=\"buttons-div\"><input class=\"special-symbol-b special-symbol-sup\" title=\""
                     .trans('messages.supper_text')."\" type=\"button\" value=\"5\" onclick=\"toSup('text')\"></div>",
                  'attributes' => ['id'=>'text', 'readonly'=>$readonly, 
-                                  'rows'=> $readonly && $text->hasImportantExamples() ? 21 : 10],
+                                  'rows'=> 10],
                 ])
         @if ($action=='edit')
             @php 
@@ -54,7 +54,7 @@
                          'special_symbol' => true,
                          'title'=>trans('corpus.text_xml'),
                      'attributes' => ['readonly'=>$readonly,
-                                      'rows'=> $readonly ? 6 : 10]])
+                                      'rows'=> $readonly ? 5 : 10]])
     {{--
                 @include('widgets.form.formitem._textarea', 
                         ['name' => 'text_xml', 
