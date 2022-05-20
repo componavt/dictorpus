@@ -500,7 +500,7 @@ class Text extends Model
         $this->topics()->detach();
         $this->topics()->attach($request->topics);
         
-        if ($to_makeup && $request->text && !$text->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {
+        if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {
             $error_message = $this->markup();
         }
 
