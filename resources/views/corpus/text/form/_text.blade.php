@@ -16,17 +16,16 @@
                 ['name' => 'title', 
                  'title'=>trans('corpus.title')])
         
-        <?php $attr = ['id'=>'text']; 
-              $to_makeup_style = $readonly ? ' style="color: black; font-weight:normal; text-decoration: line-through;"' : '';
-        ?>
         @if ($readonly)
-            <?php $attr[] = 'readonly'; ?>
             <p class="warning text-has-checked-meaning">
+                @if (!$text->hasImportantExamples())
                 {{trans('corpus.text_has_checked_meaning')}}
-                <button type="button" class="btn btn-info text-unlock">
-                    {{trans('corpus.unlock')}}
-                </button>
-
+                    <button type="button" class="btn btn-info text-unlock">
+                        {{trans('corpus.unlock')}}
+                    </button>
+                @else
+                {{trans('corpus.text_has_best_checked_meaning')}}                
+                @endif
             </p>
         @endif
         
@@ -40,24 +39,26 @@
                  'attributes' => ['id'=>'text', 'readonly'=>$readonly, 
                                   'rows'=> $readonly && $text->hasImportantExamples() ? 21 : 10],
                 ])
-        @if ($action=='edit' && !$text->hasImportantExamples())
-        <div class='to-markup'>
-                <input id="to_makeup" name="to_makeup" type="checkbox" value='1'{{$readonly ? ' disabled' : ''}}>
-                <label id="to_makeup_label" for="to_makeup" 
-                {!!$to_makeup_style!!}>ПЕРЕРАЗМЕТИТЬ</label>
-        </div>
-        
-        @if ($action == 'edit')
-            @include('widgets.form.formitem._textarea', 
-                    ['name' => 'text_structure', 
-                     'special_symbol' => true,
-                     'title'=>trans('corpus.text_xml'),
-                 'attributes' => ['rows'=> $readonly ? 6 : 10]])
-        @endif                
-{{--        @if ($action == 'edit')
-            @include('widgets.form.formitem._textarea', 
-                    ['name' => 'text_xml', 
-                     'special_symbol' => true,
-                     'title'=>trans('corpus.text_xml')])
-        @endif --}}
+        @if ($action=='edit')
+            @php 
+                  $to_makeup_style = $readonly ? ' style="color: black; font-weight:normal; text-decoration: line-through;"' : '';
+            @endphp
+            <div class='to-markup'>
+                    <input id="to_makeup" name="to_makeup" type="checkbox" value='1'{{$readonly ? ' disabled' : ''}}>
+                    <label id="to_makeup_label" for="to_makeup" 
+                    {!!$to_makeup_style!!}>ПЕРЕРАЗМЕТИТЬ</label>
+            </div>
+
+                @include('widgets.form.formitem._textarea', 
+                        ['name' => 'text_structure', 
+                         'special_symbol' => true,
+                         'title'=>trans('corpus.text_xml'),
+                     'attributes' => ['readonly'=>$readonly,
+                                      'rows'=> $readonly ? 6 : 10]])
+    {{--
+                @include('widgets.form.formitem._textarea', 
+                        ['name' => 'text_xml', 
+                         'special_symbol' => true,
+                         'title'=>trans('corpus.text_xml')])
+            --}}
         @endif

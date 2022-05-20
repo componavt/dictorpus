@@ -464,7 +464,7 @@ class Text extends Model
         $text = self::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
 
-        $text->fill($request->only('corpus_id','lang_id','title','text','text_xml','text_structure'));
+        $text->fill($request->only('corpus_id','lang_id','title','text','text_structure'));//,'text_xml'
 
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();
@@ -500,7 +500,7 @@ class Text extends Model
         $this->topics()->detach();
         $this->topics()->attach($request->topics);
         
-        if ($to_makeup && $request->text && ($old_text != $request->text || !$this->text_structure)) {
+        if ($to_makeup && $request->text && !$text->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {
             $error_message = $this->markup();
         }
 
