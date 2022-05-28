@@ -336,13 +336,25 @@ class ExportController extends Controller
                   ->whereLabelId($label_id);
             })
             ->groupBy('lemma_id', 'word_id')
-            ->latest(DB::raw('count(*)'))
-            ->get(['lemma', 'lemma_id']);        
-            
+            ->latest(DB::raw('count(*)'));        
+        $lemma_coll = $lemmas->get(['lemma', 'lemma_id']);
+        $lemmas = [];
+        foreach ($lemma_coll as $lemma) {
+            if (isset($lemmas[$lemma->lemma_id])) {
+                $lemmas[$lemma->lemma_id]['frequency'] = 1+$lemmas[$lemma->lemma_id]['frequency'];
+                continue;
+            }
+            $lemmas[$lemma->lemma_id] = [
+                'lemma_id'=>$lemma->lemma_id, 
+                'lemma'=>$lemma->lemma, 
+                'frequency'=>1];
+        }
+        $lemmas=collect($lemmas)->sortByDesc('frequency');
+
         $filename = 'export/multidict.csv';
         Storage::disk('public')->put($filename, "");
         foreach ($lemmas as $lemma) {
-            Storage::disk('public')->append($filename, $lemma->lemma_id."\t".$lemma->lemma);
+            Storage::disk('public')->append($filename, $lemma['lemma_id']."\t".$lemma['lemma']);
         }
         print "done.";
     }
