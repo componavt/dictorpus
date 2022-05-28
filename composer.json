@@ -14,9 +14,10 @@
         "venturecraft/revisionable": "1.*",
         "vi-kon/laravel-diff": "^1.0",
         "caxy/php-htmldiff": "^0.1.7",
-        "anhskohbo/no-captcha": "^3.0",
+        "anhskohbo/no-captcha": "^3.4",
         "doctrine/dbal": "v2.4.2",
-        "consoletvs/charts": "6.*"
+        "consoletvs/charts": "6.*",
+        "biscolab/laravel-recaptcha": "^5.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

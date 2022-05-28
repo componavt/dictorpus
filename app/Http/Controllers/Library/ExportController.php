@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Storage;
 use Carbon\Carbon;
+use DB;
 
 use App\Library\Export;
 
@@ -319,6 +320,30 @@ class ExportController extends Controller
             Storage::disk('public')->append($filename, $word);
         }*/
  
+        print "done.";
+    }
+    
+    public function multidict() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        $lang_id=5; // livvic
+        $label_id = 3; // for multimedia dictionary
+        $lemmas = Lemma::selectFromMeaningText()
+            ->join('parts_of_speech','parts_of_speech.id','=','lemmas.pos_id')
+            ->whereLangId($lang_id)
+            ->whereIn('lemmas.id', function ($q) use ($label_id) {
+                $q->select('lemma_id')->from('label_lemma')
+                  ->whereLabelId($label_id);
+            })
+            ->groupBy('lemma_id', 'word_id')
+            ->latest(DB::raw('count(*)'))
+            ->get(['lemma', 'lemma_id']);        
+            
+        $filename = 'export/multidict.csv';
+        Storage::disk('public')->put($filename, "");
+        foreach ($lemmas as $lemma) {
+            Storage::disk('public')->append($filename, $lemma->lemma_id."\t".$lemma->lemma);
+        }
         print "done.";
     }
 }

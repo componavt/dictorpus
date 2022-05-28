@@ -16,4 +16,5 @@
         <p><a href="export/bible">Экспорт вепсской Библии</a></p>
         <p><a href="export/for_mobile">Экспорт данных для мобильной версии</a></p>
         <p><a href="export/for_speech">Экспорт данных для распознавания речи</a></p>
+        <p><a href="export/multidict">Экспорт лемм мультисловаря</a></p>
 @endsection

@@ -540,8 +540,6 @@ print "</ol>";
             $lemmas->whereStatus($url_args['search_status']==1 ? 1 : 0);
         } 
         
-
-//dd(to_sql($lemmas));
         $lemma_coll = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', 'status']);
         $lemmas = [];
         foreach ($lemma_coll as $lemma) {
