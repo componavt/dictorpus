@@ -349,10 +349,10 @@ class ExportController extends Controller
                 'lemma'=>$lemma->lemma, 
                 'frequency'=>1];
         }
-        $lemmas=collect($lemmas)->sortByDesc('frequency');
-
+        $lemmas=collect($lemmas)->sortByDesc('frequency')->unique('lemma');
+//dd($lemmas);
         $filename = 'export/multidict.csv';
-        Storage::disk('public')->put($filename, "");
+        Storage::disk('public')->put($filename, "ID\tлемма");
         foreach ($lemmas as $lemma) {
             Storage::disk('public')->append($filename, $lemma['lemma_id']."\t".$lemma['lemma']);
         }
