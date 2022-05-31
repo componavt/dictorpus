@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Library;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
+use Storage;
 
 use App\Library\Correct;
 
@@ -12,6 +13,7 @@ use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
+use App\Models\Dict\Audio;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
@@ -221,6 +223,30 @@ print '<p>'.$text->id.'</p>';
                 $request->input('search_pos'), (int)$request->input('w_count'));
     }
 
+    public function addAudiofilesToDb() {
+        $files = Storage::disk(Audio::DISK)->files();
+        foreach ($files as $filename) {
+            if (!preg_match("/^(\d+)\_/", $filename, $regs) || !$regs[1]) {
+                continue;
+            }
+            $audio=Audio::firstOrCreate(['filename'=>$filename]);
+            $lemma= Lemma::find($regs[1]);
+            if (!$lemma) {
+                continue;
+            }
+            // выбираем все леммы с таким же написанием в этом языке
+            $lemmas = Lemma::whereLangId($lemma->lang_id)
+                           ->where('lemma', 'like', $lemma->lemma)
+                           ->get();
+            foreach ($lemmas as $lemma) {
+                if (!$lemma->audios()->count()) {
+                    $lemma->audios()->attach($audio);
+                }
+            }
+        }
+print 'done.';        
+    }
+    
     /**
      * Создать минимальный набор словоформ. 
      * Если у изменяемой леммы нет основ, создаем основу 0 и генерируем леммы.

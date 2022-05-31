@@ -16,6 +16,7 @@
         <p><a href="/service/correct/create_initial_wordforms">Создать минимальный набор словоформ</a>. Если у изменяемой леммы нет основ, создаем основу 0 и генерируем леммы.</p>
         <p><a href="/service/correct/check_parallel_texts">Проверить параллельные тексты</a>. Вывести ссылки на тексты с параллельным русским, если не совпадает количество предложений.</p>
         <p><a href="/service/correct/move_char_out_word">Перенос несловарного символа за пределы слова</a> (найти предложения, в которых есть слова, начинающиеся на несловарные символы и вынести эти символы влево за разметку слова)</p>
+        <p><a href="/service/correct/add_audiofiles_to_db">Добавить аудио-файлы в БД</a>
         
 {{--        <p><a href="/service/correct/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
         <p><a href="/service/correct/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>

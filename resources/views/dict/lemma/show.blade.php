@@ -25,6 +25,7 @@
             | <a href="/dict/lemma/{{ $lemma->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
         </p>
 
+        @include('dict.audio.record')
         @include('dict.lemma.show._title')
         
         @include('dict.lemma.show._props')

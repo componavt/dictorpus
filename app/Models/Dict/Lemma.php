@@ -15,9 +15,10 @@ use App\Library\Str;
 
 use App\Models\User;
 use App\Models\Corpus\Text;
-use App\Models\Corpus\Word;
+//use App\Models\Corpus\Word;
 
-use App\Models\Dict\Label;
+use App\Models\Dict\Audio;
+//use App\Models\Dict\Label;
 use App\Models\Dict\PartOfSpeech;
 
 
@@ -112,6 +113,10 @@ class Lemma extends Model
         return $builder;
     }
 
+    public function audios(){
+        return $this->belongsToMany(Audio::class);
+    }    
+    
     public function dialectIds(){
         $ids=[];
         $lemma_id= $this->id;

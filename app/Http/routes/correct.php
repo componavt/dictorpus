@@ -5,8 +5,9 @@ Route::group(
     {
         Route::get('/', 'Library\CorrectController@index');
         Route::get('add_accusatives', 'Library\CorrectController@addAccusatives');
-        Route::get('add_wordform_affixes', 'Library\CorrectController@addWordformAffixes');
+        Route::get('add_audiofiles_to_db', 'Library\CorrectController@addAudiofilesToDb');
         Route::get('add_meaning_text_links', 'Library\CorrectController@addMeaningTextLinks');
+        Route::get('add_wordform_affixes', 'Library\CorrectController@addWordformAffixes');
         Route::get('add_text_wordform_links', 'Library\CorrectController@addTextWordformLinks');
         Route::get('calculate_lemma_wordforms', 'Library\CorrectController@calculateLemmaWordforms');
         Route::get('check_meaning_text', 'Library\CorrectController@checkMeaningText');

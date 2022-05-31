@@ -54,6 +54,12 @@ return [
             'visibility' => 'public',
         ],
         
+        'audios' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/audio/lemmas'),
+            'visibility' => 'public',
+        ],
+        
         'audiotexts' => [
             'driver' => 'local',
             'root' => storage_path('app/public/audio/texts'),
