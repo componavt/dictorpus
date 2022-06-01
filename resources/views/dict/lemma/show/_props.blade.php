@@ -32,7 +32,7 @@
         </p>
         @endif
     </div>
-    <div style="text-align: right; font-style: italic">
+    <div style="text-align: right;">
         @include('dict.audio.record')
     </div>
 </div>

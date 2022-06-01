@@ -59,6 +59,8 @@
     recDelete('{{ trans('messages.confirm_delete') }}');
     showLemmaLinked();    
     
+    showAudioInfo();
+    
 {{-- show/hide a block with lemmas --}}
     showWordBlock('{{LaravelLocalization::getCurrentLocale()}}'); 
     $("#toggle-phrases").click(function() {

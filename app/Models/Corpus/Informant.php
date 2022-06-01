@@ -86,7 +86,7 @@ class Informant extends Model
         
         $list = array();
         foreach ($informants as $row) {
-            $list[$row->id] = $row->informantString();
+            $list[$row->id] = $row->informantString('',false);
         }
         
         return $list;         
@@ -101,7 +101,7 @@ class Informant extends Model
      * 
      * @return String
      */
-    public function informantString($lang_id='')
+    public function informantString($lang_id='', $all_place_names=true)
     {
         $info = [];
         
@@ -114,13 +114,21 @@ class Informant extends Model
         }
         
         if ($this->birth_place) {
-            $birth_place = Place::find($this->birth_place_id);
-            $info[] = $birth_place->placeString();
+            $info[] = $this->birthPlaceString($lang_id, $all_place_names);
         }
         
         return join(', ', $info);
     }   
-    
+
+    public function birthPlaceString($lang_id='', $all_place_names=true)
+    {
+        if (!$this->birth_place) {
+            return '';
+        }
+        $birth_place = Place::find($this->birth_place_id);
+        return $birth_place->placeString($lang_id, $all_place_names);
+        
+    }    
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
         $informants = self::orderBy('name_'.$locale);  

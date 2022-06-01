@@ -49,7 +49,7 @@ class Place extends Model
 
     public function identifiableName()
     {
-        return $this->placeString();//name;
+        return $this->placeString('', false);//name;
     }    
 
     // Belongs To Many Relations
@@ -131,7 +131,7 @@ class Place extends Model
         
         $list = array();
         foreach ($places as $row) {
-            $list[$row->id] = $full ? $row->placeString(): $row->name;
+            $list[$row->id] = $full ? $row->placeString('', false): $row->name;
         }
         
         return $list;         
@@ -150,7 +150,7 @@ class Place extends Model
         $list = array();
         foreach ($places as $row) {
             $count=$row->$method_name()->count();
-            $name = $row->placeString();
+            $name = $row->placeString('', false);
             if ($count) {
                 $name .= " ($count)";
             }
@@ -170,13 +170,13 @@ class Place extends Model
      * @return String
      */
     
-    public function placeString($lang_id='')
+    public function placeString($lang_id='', $all_place_names=true)
     {
         $info = [];
         
         if ($this->name) {
             $info[0] = $this->name;
-            if ($this->other_names()->count()) {
+            if ($all_place_names && $this->other_names()->count()) {
                 $other_names = $this->other_names();
                 if ($lang_id) {
                     $other_names = $other_names -> where('lang_id',$lang_id);

@@ -85,3 +85,21 @@ function setStatus(id) {
     }); 
 }   
 
+function showAudioInfo() {
+   $("body").on("click", ".audio-info-caller", function(event) {
+//console.log('click');       
+        event.preventDefault(); // reload event after AJAX reload
+        var audio_id = $(this).attr('id');
+console.log('info-'+audio_id);        
+        $(".audio-info").hide(); // hide all open blocks
+        $("#info-"+audio_id).show('slow');
+    });
+        
+    $(document).mouseup(function (e){
+        var div = $(".audio-info");
+        if (!div.is(e.target)
+            && div.has(e.target).length === 0) {
+                div.hide(); // скрываем его
+        }
+    });    
+}

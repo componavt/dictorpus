@@ -205,6 +205,25 @@ h4 .fa {
     cursor: pointer;
 }
 
+.audio-info {
+    background: #f9e7e4;
+    color: black;
+    display: none;
+    left: -150px;
+    margin-top: -2px;
+    padding: 10px;
+    position: absolute;
+    text-align: left;
+    top: 3px;
+    width: 200px;
+    z-index: 100;    
+}
+
+.audio-info-caller {
+    cursor: pointer;
+    position: relative;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;
