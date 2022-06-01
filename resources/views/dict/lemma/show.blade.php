@@ -5,6 +5,8 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/essential_audio.css')!!}
+    {!!Html::style('css/essential_audio_circle.css')!!}
     {!!Html::style('css/lemma.css')!!}
     {!!Html::style('css/text.css')!!}
 @stop
@@ -25,7 +27,6 @@
             | <a href="/dict/lemma/{{ $lemma->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
         </p>
 
-        @include('dict.audio.record')
         @include('dict.lemma.show._title')
         
         @include('dict.lemma.show._props')
@@ -40,6 +41,7 @@
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/essential_audio.js')!!}
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/lemma.js')!!}
     {!!Html::script('js/meaning.js')!!}

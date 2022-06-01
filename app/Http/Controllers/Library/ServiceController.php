@@ -15,14 +15,15 @@ use App\Library\Grammatic\VepsName;
 use App\Library\Service;
 use App\Library\Str;
 
-use App\Models\Corpus\Sentence;
+//use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 
+use App\Models\Dict\Audio;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
-use App\Models\Dict\MeaningText;
+//use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -551,6 +552,7 @@ print "</ol>";
                 'lemma'=>$lemma->lemma, 
                 'pos_name'=>$lemma->pos_name, 
                 'frequency'=>1, 
+                'audios'=>Audio::getUrlsByLemmaId($lemma->lemma_id), 
                 'status'=>$lemma->status];
         }
 //        $lemmas=$lemmas->sortByDesc('frequency');

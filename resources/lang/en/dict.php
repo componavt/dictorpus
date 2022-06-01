@@ -28,6 +28,7 @@ return [
     'animacy' => 'animate',
     'affix' => 'affix',
     'affixes' => 'affixes',
+    'audio' => 'audio',
     'inanimacy' => 'inanimate',
     'bases' => 'Bases',
     'base_list_1_name' => [
@@ -143,6 +144,7 @@ return [
     'list_languages' => 'Languages',
     'list_lemmas' => 'List of lemmas',
     'list_long_lemmas' => 'List of longest lemmas',
+    'listen' => 'listen',
     'meaning' => 'meaning',
     'meaning_place' => 'locality of word usage',
     'mood' => 'mood',
@@ -251,7 +253,8 @@ return [
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
-
+    
+    'speaker' => 'Speaker',
     'status' => 'status',
     'status0' => 'is not checked',
     'status1' => 'is checked',

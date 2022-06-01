@@ -3,6 +3,7 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
+use Storage;
 
 use App\Models\Dict\Lemma;
 
@@ -34,4 +35,22 @@ class Audio extends Model
         return $this->belongsToMany(Lemma::class);
     }   
     
+    public function url() {
+        return Storage::url(self::DIR . $this->filename);
+    }   
+    
+    public static function getUrlsByLemmaId($lemma_id) {
+        $audios = self::whereIn('id', function ($q) use ($lemma_id) {
+            $q->select('audio_id')->from('audio_lemma')
+              ->whereLemmaId($lemma_id);
+        });
+        if (!$audios->count()) {
+            return [];
+        }
+        $urls = [];
+        foreach ($audios->get() as $audio) {
+            $urls[] = $audio->url();
+        }
+        return $urls;
+    }
 }

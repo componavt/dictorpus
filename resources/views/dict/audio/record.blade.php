@@ -1,3 +1,8 @@
+@foreach ($lemma->audios as $audio)
+        @include('widgets.audio_simple', ['route'=>$audio->url()])
+        {{trans('dict.speaker')}}: {{$audio->informant->name}}
+@endforeach
+<br>
 <!--a id="download">Download</a>
 <button id="stop">Stop</button>
 <script>

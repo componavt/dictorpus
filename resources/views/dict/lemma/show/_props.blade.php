@@ -1,4 +1,6 @@
-        <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
+<div style="display:flex; justify-content: space-between">
+    <div>
+<p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         
         @if ($lemma->pos)
         <p>
@@ -29,3 +31,9 @@
             <b{!! User::checkAccess('dict.edit')?' class="warning"':'' !!}>{{trans('dict.omonyms')}}:</b> {!!$lemma->omonymsListWithLink()!!}
         </p>
         @endif
+    </div>
+    <div style="text-align: right; font-style: italic">
+        @include('dict.audio.record')
+    </div>
+</div>
+

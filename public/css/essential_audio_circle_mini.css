@@ -1,0 +1,10 @@
+div.essential_audio.circle > div:nth-child(1) div::after {
+  top: 0;
+  left: 0%;
+  width: 40%;
+  height: 40%;
+}
+div.essential_audio.circle {
+    width: 20px;
+    height: 20px;
+}
