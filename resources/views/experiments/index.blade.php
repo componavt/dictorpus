@@ -11,10 +11,16 @@
     <p><a href="/experiments/prediction_by_analog">Предсказание леммы и грамсета по аналогии</a></p>
     <p><a href="/experiments/pattern_search">Поиск закономерностей в формировании словоформ</a></p>
 
-    <p>Поиск закономерностей в анализе словоформ для тверского словаря</p>
+    <h4>Поиск закономерностей в анализе словоформ</h4>
+    <p>для тверского словаря</p>
     <ul>    
-        <li><a href="/experiments/pattern_search_in_wordforms">сформировать множество</a></li>
-        <li><a href="/experiments/pattern_search_in_wordforms_results">посмотреть результаты</a></li>
+        <li><a href="/experiments/pattern_search_in_wordforms?dialect_code=krl-new-tvr">сформировать множество</a></li>
+        <li><a href="/experiments/pattern_search_in_wordforms_results?dialect_code=krl-new-tvr">посмотреть результаты</a></li>
+    </ul>
+    <p>для ливвиковского словаря</p>
+    <ul>    
+        <li><a href="/experiments/pattern_search_in_wordforms?dialect_code=olo-new">сформировать множество</a></li>
+        <li><a href="/experiments/pattern_search_in_wordforms_results?dialect_code=olo-new">посмотреть результаты</a></li>
     </ul>
 
     <p><a href="/experiments/bible_language">Анализ языковых конструкций библейских текстов</a></p>

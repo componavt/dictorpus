@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Library\Experiments;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use DB;
 
@@ -196,50 +196,26 @@ print "<ol>";
         return view('experiments/vowel_gradation/verb_imp_3sg', compact('lemmas'));
     }
     
-    public function inWordforms() {
-/*        $pos_code = 'NOUN';
-        $pos_id = PartOfSpeech::getIDByCode($pos_code);
-        $pos = PartOfSpeech::getNameById($pos_id);*/
-        
-        $lang_code = 'krl';
-        $lang_id = Lang::getIDByCode($lang_code);
+    public function inWordforms(Request $request) {
+/*        $lang_code = $request->input('lang_code');
+        $lang_id = Lang::getIDByCode($lang_code);*/
                 
-        $dialect_code = 'krl-new-tvr';
+        $dialect_code = $request->input('dialect_code');
         $dialect_id = Dialect::getIDByCode($dialect_code);
         
         $dubles = [1=>56, 2=>57, 52=>55, 74=>77, 282=>297, 24=>281, 181=>298, 51=>295];
-/*        $wordforms = LemmaWordform::whereDialectId($dialect_id)
-                                  ->groupBy('lemma_id', 'wordform_id')
-                                  ->havingRaw('count(*)>1')                                  
-                                  ->whereNotIn('gramset_id', array_values($dubles))
-                                  ->get();
-        $gramsets = [];
-        foreach ($wordforms as $wordform) {
-            $wordgramsets = LemmaWordform::whereDialectId($dialect_id)
-                                ->whereWordformId($wordform->wordform_id)
-                                ->whereLemmaId($wordform->lemma_id)
-                                ->whereNotIn('gramset_id', array_values($dubles))
-                                ->orderBy('gramset_id')->get();
-            $tmp=[];
-            foreach ($wordgramsets as $gramset) {
-                $tmp[$gramset->gramset_id] = Gramset::getStringByID($gramset->gramset_id);
-            }
-            $g = join('_', array_keys($tmp)).'='.join('_', array_values($tmp));
-            $gramsets[$g] = isset($gramsets[$g]) ? 1+ $gramsets[$g] : 1;
-        }
-        arsort($gramsets);
-dd($gramsets);     */   
-        PatternSearch::letterGroups($lang_id, $dialect_id, '', 5, $dubles);
+        DB::statement("DELETE FROM pattern_search where dialect_id='$dialect_id'");
+        PatternSearch::letterGroups(/*$lang_id, */$dialect_id, '', 5, $dubles);
 print "done.";        
 //dd($let_groups);       
     }
     
-    public function inWordformsResults() {
-        $lang_code = 'krl';
+    public function inWordformsResults(Request $request) {
+/*        $lang_code = $request->input('lang_code');
         $lang_id = Lang::getIDByCode($lang_code);
-        $lang = Lang::getNameByCode($lang_code);
-                
-        $dialect_code = 'krl-new-tvr';
+        $lang = Lang::getNameByCode($lang_code);*/
+                                
+        $dialect_code = $request->input('dialect_code');
         $dialect_id = Dialect::getIDByCode($dialect_code);
         $dialect = Dialect::getNameByID($dialect_id);
         

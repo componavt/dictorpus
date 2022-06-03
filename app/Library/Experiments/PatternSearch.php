@@ -23,7 +23,7 @@ class PatternSearch
         return [mb_substr($str1, $i), mb_substr($str2, $i)];
     }
     
-    public static function letterGroups($lang_id, $dialect_id, $str, $deep, $dubles) {
+    public static function letterGroups(/*$lang_id, */$dialect_id, $str, $deep, $dubles) {
 /*        if ($deep<1) {
             return false;
         }*/
@@ -38,15 +38,15 @@ class PatternSearch
                          ->join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                          ->join('lemmas', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
                          ->whereDialectId($dialect_id)
-                         ->whereIn('lemma_id', function ($q2) use ($lang_id) {
+/*                         ->whereIn('lemma_id', function ($q2) use ($lang_id) {
                             $q2->select('id')->from('lemmas')
                                ->whereLangId($lang_id);
-                         })->selectRaw("gramset_id, pos_id, count(*) as count")
+                         })*/->selectRaw("gramset_id, pos_id, count(*) as count")
                          ->groupBy('gramset_id', 'pos_id')->get();
             if (sizeof($groups)==0)  {
                 continue;
             } elseif (sizeof($groups) > 1 && $deep>1) {
-                $sub_count=self::letterGroups($lang_id, $dialect_id, $ending, $deep-1, $dubles);
+                $sub_count=self::letterGroups(/*$lang_id, */$dialect_id, $ending, $deep-1, $dubles);
                 $gen_count += $sub_count;
                 if ($sub_count>0) {
                    continue;
