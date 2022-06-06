@@ -3,7 +3,7 @@
     <p>Сформировать множество словоформ для поиска грамсета</p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/fill_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a> 
+        <li><a href="/experiments/fill_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a> 
         ({{$totals[$lang_id]['total_in_gramset']}})</li>
     @endforeach
     </ul>
@@ -13,28 +13,28 @@
         <p>по самым длинным конечным буквосочетаниям</p>
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
-            <li><a href="experiments/evaluate_search_table?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+            <li><a href="/experiments/evaluate_search_table?property=gramset&search_lang={{$lang_id}}">{{$lang_name}}</a> 
             ({{$totals[$lang_id]['eval_gramset_compl_proc']}}%)</li>
         @endforeach
         </ul><br>
         <p>по всем конечным буквосочетаниям</p>
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
-            <li><a href="experiments/evaluate_search_table?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a> 
+            <li><a href="/experiments/evaluate_search_table?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a> 
             ({{$totals[$lang_id]['evals_gramset_compl_proc']}}%)</li>
         @endforeach
         </ul><br>
         <p>по самым длинным псевдоокончаниям</p>
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
-            <li><a href="experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a>
+            <li><a href="/experiments/evaluate_search_gramset_by_affix?search_lang={{$lang_id}}">{{$lang_name}}</a>
             ({{$totals[$lang_id]['eval_gramset_aff_compl_proc']}}%)</li>
         @endforeach
         </ul><br>
         <p>по всем псевдоокончаниям</p>
         <ul>
         @foreach ($langs as $lang_id => $lang_name)
-            <li><a href="experiments/evaluate_search_gramset_by_affix?all=1&search_lang={{$lang_id}}">{{$lang_name}}</a>
+            <li><a href="/experiments/evaluate_search_gramset_by_affix?all=1&search_lang={{$lang_id}}">{{$lang_name}}</a>
             ({{$totals[$lang_id]['eval_gramset_affs_compl_proc']}}%)</li>
         @endforeach
         </ul>
@@ -65,14 +65,14 @@
             <p>в TXT-файл</p>
             <ul>
             @foreach ($langs as $lang_id => $lang_name)
-                <li><a href="experiments/export_error_shift?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+                <li><a href="/experiments/export_error_shift?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
             @endforeach
             </ul><br>
 
             <p>в DOT-файл</p>
             <ul>
             @foreach ($langs as $lang_id => $lang_name)
-                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+                <li><a href="/experiments/export_error_shift_to_dot?property=gramset&all=0&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
             @endforeach
             </ul>
         </ul><br>
@@ -82,37 +82,37 @@
             <p>в TXT-файл</p>
             <ul>
             @foreach ($langs as $lang_id => $lang_name)
-                <li><a href="experiments/export_error_shift?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+                <li><a href="/experiments/export_error_shift?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
             @endforeach
             </ul><br>
 
             <p>в DOT-файл</p>
             <ul>
             @foreach ($langs as $lang_id => $lang_name)
-                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+                <li><a href="/experiments/export_error_shift_to_dot?property=gramset&all=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
             @endforeach
             </ul><br>
 
             <p>в DOT-файл (кроме единичных случаев, total>1)</p>
             <ul>
             @foreach ($langs as $lang_id => $lang_name)
-                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&total_limit=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+                <li><a href="/experiments/export_error_shift_to_dot?property=gramset&all=1&total_limit=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
             @endforeach
             </ul><br>
 
             <p>в DOT-файл c кластерами</p>
             <ul>
             @foreach ($langs as $lang_id => $lang_name)
-                <li><a href="experiments/export_error_shift_to_dot?property=gramset&all=1&with_claster=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+                <li><a href="/experiments/export_error_shift_to_dot?property=gramset&all=1&with_claster=1&search_lang={{$lang_id}}">{{$lang_name}}</a></li>
             @endforeach
             </ul>
         </ul>
     </ul>
 @endif    
-    <p><a href="experiments/results_search?property=gramset">Вывод результатов</a></p>
+    <p><a href="/experiments/results_search?property=gramset">Вывод результатов</a></p>
     <ul>
     @foreach ($langs as $lang_id => $lang_name)
-        <li><a href="experiments/results_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
+        <li><a href="/experiments/results_search_gramset?search_lang={{$lang_id}}">{{$lang_name}}</a></li>
     @endforeach
     </ul>
     

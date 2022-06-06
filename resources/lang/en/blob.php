@@ -26,7 +26,7 @@ return [
                        This linguistic corpus includes texts and dictionaries stored in a database, and a computer program (corpus manager) for searching and processing data.',
     'developers' => 'The site was created by the&nbsp;staff of the <a href="http://www.krc.karelia.ru">Karelian Research Center of the&nbsp;Russian Academy of&nbsp;Sciences</a>',
     'in_numbers_title' => 'VepKar in numbers',
-    'in_numbers_text' => 'The Open corpus of Veps and Karelian languages was opened on July 24, 2016. At the moment in the corpus:
+    'in_numbers_text' => 'The Open corpus of Veps and Karelian languages was opened on July 24, 2016. At&nbsp;the moment in the corpus:
                          <div class="in_numbers-b">
                             <span class="in_numbers-n"><a href="/en/stats">:total_lemmas</a></span>
                             <span>:lemmas<br>about words</span>
