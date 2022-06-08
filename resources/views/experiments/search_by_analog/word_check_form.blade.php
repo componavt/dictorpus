@@ -1,4 +1,4 @@
-        {!! Form::open(['url' => '/experiments/check_word', 
+        {!! Form::open(['url' => '/experiments/search_by_analog/check_word', 
                              'method' => 'get', 
                              'class' => 'form-inline']) 
         !!}

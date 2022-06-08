@@ -1,7 +1,7 @@
 <?php $first=\Arrays::array_key_first($results['eval_proc']); ?>
 
-<div class="row">    
-    <div class="col-md-5">
+<!--div class="row">    
+    <div class="col-md-5"-->
         <p><b>Total number of word forms:</b> {{$results['total_num']}}</p> 
 
         <table class="table-bordered">
@@ -20,10 +20,12 @@
             </tr>
             @endforeach
         </table>
-    </div>
+    <!--/div>
     
-    <div class="col-md-7">
+    <div class="col-md-7"-->
+    <div style="height:300px">
         {!! $results['chart']->container() !!}
         {!! $results['chart']->script() !!}
     </div>
-</div>
+    <!--/div>
+</div-->
