@@ -1,10 +1,25 @@
-        <h3>{{ trans('dict.wordforms') }} 
-            <span data-id="{{$lemma->id}}" id="wordform-total">
-            @if ($lemma->wordform_total)
-            ({{$lemma->wordform_total}})
-            @endif
-            </span>
-        </h3>
+        <div class="lemma-b">
+            <h3>{{ trans('dict.wordforms') }} 
+                <span data-id="{{$lemma->id}}" id="wordform-total">
+                @if ($lemma->wordform_total)
+                ({{$lemma->wordform_total}})
+                @endif
+                </span>
+            </h3>
+            <div class="dict-form">   
+                <p>
+                @if (User::checkAccess('dict.edit'))
+                    <img class="img-loading" id="img-loading_stem-affix" src="{{ asset('images/loading.gif') }}">
+                    @include('widgets.form.button._reload', 
+                             ['data_reload' => $lemma->id,
+                              'class' => 'reload-stem-affix-by-wordforms',
+                              'func' => 'reloadStemAffixByWordforms',
+                              'title' => trans('dict.reload-stem-affix-by-wordforms')])
+                @endif
+                    <span id="lemmaStemAffix">{{$lemma->dictForm()}}</span>
+                </p>
+            </div>
+        </div>
             @if (User::checkAccess('dict.edit'))
                 {!! Form::open(['url' => '/dict/lemma_wordform/'.$lemma->id.'/edit',
                                 'method' => 'get'])
