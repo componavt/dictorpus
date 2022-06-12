@@ -146,7 +146,7 @@ return [
                     
     ',
     'publications_about' => '
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2022-06-08_08.pdf">Puhemalleja on esillä teksteissä ja äänitteissä</a><br>
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-06-08_08.pdf">Puhemalleja on esillä teksteissä ja äänitteissä</a><br>
                     Marina Tolstyh. Karjalan Sanomat, №21 (16537), 2022, c. 8</p>
                     
                     <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
