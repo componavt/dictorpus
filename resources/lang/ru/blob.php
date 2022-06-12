@@ -105,14 +105,23 @@ return [
                   . '"Ihanko tosieh?" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/vorobey.jpg">от Н.П. Воробей</a> на использование текста произведения '
                   . '"Olipa kerran koira (ukrainalaini starina)" в проекте ВепКар.</p>',
-    'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=15914">Открытый корпус вепсского и карельского языков (ВепКар): предварительный отбор материалов и словарная часть системы</a><br>
-                    <i>Зайцева Н.Г., Крижановский А.А., Крижановская Н.Б., Пеллинен Н.А., Родионова А.П.</i>                    
-                    Труды международной конференции «Корпусная лингвистика ‒ 2017». ‒ СПб., 2017. С. 172-177.</p>
-                    
-                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18086">Корпусная лингвистика в прибалтийско-финском исследовательском пространстве (на материале Корпуса вепсского языка и Открытого корпуса вепсского и карельского языков)</a><br>
-                    <i>Зайцева Н.Г., Крижановская Н.Б.</i> Альманах североевропейских и балтийских исследований. Выпуск 3. 2018. C. 264-273. DOI: 10.15393/j103.art.2018.1062</p>
-                    
-                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
+    'our_publications' => '
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=20667">The Open corpus of the Veps and Karelian languages: overview and applications</a><br>
+                    <i>Tatyana Boyko, Nina Zaitseva, Natalia Krizhanovskaya, Andrew Krizhanovsky, Irina Novak, Nataliya Pellinen, and Aleksandra Rodionova.</i> KnE Social Sciences. 7 (3). 2022. P. 29–40 DOI: 10.18502/kss.v7i3.10419</p>
+
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=20351">Лингвистический корпус ВепКар – «заповедник» прибалтийско-финских языков Карелии</a><br>
+                    <i>Т.П. Бойко, Н.Г. Зайцева, Н.Б. Крижановская, А.А. Крижановский, И.П. Новак, Н.А. Пеллинен, А.П. Родионова, Е.Д. Трубина.</i> Труды КарНЦ РАН. No 7. Комплексные научные исследования КарНЦ РАН. 2021. C. 100-115 DOI: 10.17076/them1415</p>
+
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=19646">Part of speech and gramset tagging algorithms for unknown words based on morphological dictionaries of the Veps and Karelian languages</a><br>
+                    <i>Krizhanovsky A., Krizhanovskaya N., Novak I.</i> Management in Data Intensive Domains. DAMDID/RCDL 2020. Communications in Computer and Information Science, vol 1427. Springer, Cham, 2021. Pp. 163-177 DOI: 10.1007/978-3-030-81200-3_12</p>
+
+                    <p><a class="publ-title" href="http://bit.ly/39l5EHX">Разработка правил генерации именных словоформ для новописьменных вариантов карельского языка</a><br>
+                    <i>Новак И.П., Крижановская Н.Б., Бойко Т.П., Пеллинен Н.А.</i> Вестник угроведения. Т. 10. No 4. 2020. C. 679–691. DOI: 10.30624/2220-4156-2020-10-4-679-691.</p>
+
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=19787&plang=r">От корпуса ВепКар к лингвистической платформе</a><br>
+                    <i>Крижановская Н.Б., Крижановский А.А.</i> Материалы Всероссийской научной конференции с международным участием «Бубриховские чтения: задокументированное народное слово» (Петрозаводск, 27–28 октября 2020 г.) [Электронный ресурс]. 2020. C. 157-159. </p>
+
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=18548">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
                     <i>Klyachko E.L., Sorokin A.A., Krizhanovskaya N.B., Krizhanovsky A.A., Ryazanskaya G.M.</i>
                     Computational Linguistics and Intellectual Technologies: papers from the Annual conference “Dialogue” (Moscow, May 29— June 1, 2019) Issue 18 (25). 2019</p>
                     
@@ -128,27 +137,20 @@ return [
                     <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18961">New written Tver Karelian dialects wordform generator</a><br>
                     <i>Крижановская Н.Б., Новак И.П.</i> Свидетельство о гос. регистрации программы для ЭВМ Федеральной службы по интеллектуальной собственности № 2019665163 от 20 ноября 2019 г. Официальный бюллетень «Программы для ЭВМ. Базы данных. Топологии интегральных микросхем». № 11, 2019.</p>
 
-                    <p><a class="publ-title" href="">Разработка правил генерации именных словоформ для новописьменных вариантов карельского языка</a><br>
-                    <i>Новак И.П., Крижановская Н.Б., Бойко Т.П., Пеллинен Н.А.</i> Вестник угроведения. Т. 10. No 4. 2020. C. 679–691. DOI: 10.30624/2220-4156-2020-10-4-679-691.</p>
-
-                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=19787&plang=r">От корпуса ВепКар к лингвистической платформе</a><br>
-                    <i>Крижановская Н.Б., Крижановский А.А. Материалы Всероссийской научной конференции с международным участием «Бубриховские чтения: задокументированное народное слово» (Петрозаводск, 27–28 октября 2020 г.) [Электронный ресурс]. 2020. C. 157-159.</i> </p>
-
-                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=19646&plang=r">Part of speech and gramset tagging algorithms for unknown words based on morphological dictionaries of the Veps and Karelian languages</a><br>
-                    <i>Krizhanovsky A., Krizhanovskaya N., Novak I.</i> Data Analytics and Management in Data Intensive Domains, 13-16 October 2020, Voronezh State University. 2020.</p>
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18086">Корпусная лингвистика в прибалтийско-финском исследовательском пространстве (на материале Корпуса вепсского языка и Открытого корпуса вепсского и карельского языков)</a><br>
+                    <i>Зайцева Н.Г., Крижановская Н.Б.</i> Альманах североевропейских и балтийских исследований. Выпуск 3. 2018. C. 264-273. DOI: 10.15393/j103.art.2018.1062</p>
+                    
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=15914">Открытый корпус вепсского и карельского языков (ВепКар): предварительный отбор материалов и словарная часть системы</a><br>
+                    <i>Зайцева Н.Г., Крижановский А.А., Крижановская Н.Б., Пеллинен Н.А., Родионова А.П.</i>                    
+                    Труды международной конференции «Корпусная лингвистика ‒ 2017». ‒ СПб., 2017. С. 172-177.</p>
                     
     ',
-    'publications_about' => '<p><a class="publ-title" href="http://fadn.gov.ru/news/2017/10/03/3406-na-forume-yazykovaya-politika-organizovannom-fadn-rossii-nagradili-laureatov-vserossiyskoy-premii-klyuchevoe-slovo">Всероссийская премия «Ключевое слово»</a><br>     
-                    Федеральное агентство по делам национальностей, 3&nbsp;октября&nbsp;2017&nbsp;г.</p>
-
-                    <p><a class="publ-title" href="https://scientificrussia.ru/articles/proekt-vepkar">Проект ВепКар</a><br>
-                    Научная Россия, 28 мая 2019 г.</p>
+    'publications_about' => '
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2022-06-08_08.pdf">Puhemalleja on esillä teksteissä ja äänitteissä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat, №21 (16537), 2022, c. 8</p>
                     
-                    <p><a class="publ-title" href="https://vk.com/@karrc-ludikovskoe-narechie-s-severa-na-ug-materialy-sopostavitelno">Людиковское наречие с севера на юг: материалы «Сопоставительно-ономасиологического словаря диалектов» в Открытом корпусе вепсского и карельского языков (ВепКар)</a><br>
-                    Вконтакте, 27 апреля 2020 г.</p>
-                    
-                    <p><a class="publ-title" href="https://vk.com/@karrc-aleksandr-pavlovich-barancev-nash-znamenityi-zemlyak">Александр Павлович Баранцев – наш знаменитый земляк</a><br>
-                    Вконтакте, 8 июня 2020 г.</p>
+                    <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
+                    Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
                     
                     <p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
                     Natalie Pellinen. Oma mua, №01 (1541), 2021</p>
@@ -159,8 +161,18 @@ return [
                     <p><a class="publ-title" href="/docs/oma_mua_2021_21_6.pdf">Lyydin korpus kielen tiedustajile da opastujile abuh</a><br>
                     Paušin Šan’uu. Oma mua, № 21 (1561), 2021, c. 6.
                     
-                    <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
-                    Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
+                    <p><a class="publ-title" href="https://vk.com/@karrc-ludikovskoe-narechie-s-severa-na-ug-materialy-sopostavitelno">Людиковское наречие с севера на юг: материалы «Сопоставительно-ономасиологического словаря диалектов» в Открытом корпусе вепсского и карельского языков (ВепКар)</a><br>
+                    Вконтакте, 27 апреля 2020 г.</p>
+                    
+                    <p><a class="publ-title" href="https://vk.com/@karrc-aleksandr-pavlovich-barancev-nash-znamenityi-zemlyak">Александр Павлович Баранцев – наш знаменитый земляк</a><br>
+                    Вконтакте, 8 июня 2020 г.</p>
+                    
+                    <p><a class="publ-title" href="https://scientificrussia.ru/articles/proekt-vepkar">Проект ВепКар</a><br>
+                    Научная Россия, 28 мая 2019 г.</p>
+                    
+                    <p><a class="publ-title" href="http://fadn.gov.ru/news/2017/10/03/3406-na-forume-yazykovaya-politika-organizovannom-fadn-rossii-nagradili-laureatov-vserossiyskoy-premii-klyuchevoe-slovo">Всероссийская премия «Ключевое слово»</a><br>     
+                    Федеральное агентство по делам национальностей, 3&nbsp;октября&nbsp;2017&nbsp;г.</p>
+
                     ',
     'mobile-b' => 'Вы можете установить на свой телефон или планшет <a href="https://play.google.com/store/apps/details?id=vepkar.test">'
                  .'словарь вепсского и карельского языков Sanahelmi</a>, построенный на основе данных ВепКар, 

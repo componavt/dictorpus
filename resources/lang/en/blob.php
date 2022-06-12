@@ -41,7 +41,14 @@ return [
                  <p>the Russian Science Foundation, grant No 22-28-20215 ("<a href="https://rscf.ru/en/project/22-28-20215/">Creation of the speech corpus of the Baltic-Finnic languages of Karelia</a>") in collaboration with Republic of Karelia authorities with funding from the Republic of Karelia Venture Capital Fund.</p>',
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
                   <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
-    'our_publications' => '<p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548&plang=e">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
+    'our_publications' => '
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=20667">The Open corpus of the Veps and Karelian languages: overview and applications</a><br>
+                    <i>Tatyana Boyko, Nina Zaitseva, Natalia Krizhanovskaya, Andrew Krizhanovsky, Irina Novak, Nataliya Pellinen, and Aleksandra Rodionova.</i> KnE Social Sciences. 7 (3). 2022. P. 29–40 DOI: 10.18502/kss.v7i3.10419</p>
+                    
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=19646">Part of speech and gramset tagging algorithms for unknown words based on morphological dictionaries of the Veps and Karelian languages</a><br>
+                    <i>Krizhanovsky A., Krizhanovskaya N., Novak I.</i> Management in Data Intensive Domains. DAMDID/RCDL 2020. Communications in Computer and Information Science, vol 1427. Springer, Cham, 2021. Pp. 163-177 DOI: 10.1007/978-3-030-81200-3_12</p>
+
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=18548&plang=e">LowResourceEval-2019: a shared task on morphological analysis for low-resource languages</a><br>
                     <i>Klyachko E.L., Sorokin A.A., Krizhanovskaya N.B., Krizhanovsky A.A., Ryazanskaya G.M.</i>
                     Computational Linguistics and Intellectual Technologies: papers from the Annual conference “Dialogue” (Moscow, May 29— June 1, 2019) Issue 18 (25). 2019</p>
                     
@@ -76,17 +83,21 @@ return [
                     . '<dd>PhD, Junior Research Associate in the Linguistics Section, Institute of Linguistics, Literature and History, KarRC, RAS</dd><br>'
                     . '</dl>',
     'permission' => '',
-    'publications_about' => '<p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
-                    Natalie Pellinen. Oma mua №01 (1541), 2021</p>
-                    
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2021-10-20_12.pdf">Kielten mallit säilyvät korpuksessa</a><br>
-                    Marina Tolstyh. Karjalan Sanomat, №40 (16506), 2021, p. 12</p>
-                    
-                    <p><a class="publ-title" href="/docs/oma_mua_2021_21_6.pdf">Lyydin korpus kielen tiedustajile da opastujile abuh</a><br>
-                    Paušin Šan’uu. Oma mua, № 21 (1561), 2021, p. 6.
+    'publications_about' => '
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2022-06-08_08.pdf">Puhemalleja on esillä teksteissä ja äänitteissä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat, №21 (16537), 2022, c. 8</p>
                     
                     <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
                     Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
+                    
+                    <p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
+                    Natalie Pellinen. Oma mua, №01 (1541), 2021</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2021-10-20_12.pdf">Kielten mallit säilyvät korpuksessa</a><br>
+                    Marina Tolstyh. Karjalan Sanomat, №40 (16506), 2021, c. 12</p>
+                    
+                    <p><a class="publ-title" href="/docs/oma_mua_2021_21_6.pdf">Lyydin korpus kielen tiedustajile da opastujile abuh</a><br>
+                    Paušin Šan’uu. Oma mua, № 21 (1561), 2021, c. 6.
                     ',
     'sources' => '<p><a href="http://resources.krc.karelia.ru/krc/doc/publ2008/onomasiolog_slovar.pdf">Comparative onomasiological dictionary of the Karelian, Veps, and Saami languages</a>. Ju. S. Eliseev, N. G. Zaiceva (eds). 2007. Petrozavodsk: Karelian Research Centre of the Russian Academy of Sciences. Institute of History, Linguistics and Literature. (In Russian)</p>',
     'welcome_text' =>  '<p>Welcome to VepKar — the Open corpus of Veps and Karelian languages 
