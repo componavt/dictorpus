@@ -452,6 +452,14 @@ class Text extends Model
         return $builder->get();
     }
     
+    public function getSentencesByIds($sentences_id) {
+        $text_id = $this->id;
+        $builder = Sentence::whereTextId($text_id)->orderBy('s_id')   
+                    ->whereIn('s_id', $sentences_id);
+//dd($builder->toSql());                    
+        return $builder->get();
+    }
+    
     public function getCollectionId() {
         $genre_ids = $this->genres()->pluck('genre_id')->toArray();
         return Collection::getCollectionId($this->lang_id, $genre_ids);

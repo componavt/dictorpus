@@ -74,7 +74,7 @@
 
 <div id="search-words">
 @foreach ($url_args['search_words'] as $count =>$w)
-    @include('corpus.sentence._search_word_form')
+    @include('corpus.sentence._search_word_form', ['word'=> $w, 'search_words'=>$url_args['search_words']])
 @endforeach
 </div>
 {!! Form::close() !!}

@@ -91,7 +91,7 @@
 {{-- show/hide a block with meanings and gramsets --}}
     showLemmaLinked({{$text->id}}); 
     
-    addWordform('{{$text->id}}','{{$text->lang_id}}');
+    addWordform('{{$text->id}}','{{$text->lang_id}}', '{{LaravelLocalization::getCurrentLocale()}}');
     posSelect(false);
     checkLemmaForm();
     toggleSpecial();    

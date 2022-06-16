@@ -151,7 +151,7 @@ function addLemma(text_id, lang_id) {
     
 }
 
-function loadDataToWordformModal(text_id, w_id, wordform, lang_id) {
+function loadDataToWordformModal(text_id, w_id, wordform, lang_id, lang_code='ru') {
 //console.log('loadDataToWordformModal: w_id='+w_id);    
     $.ajax({
         url: '/corpus/text/sentence', 
@@ -169,7 +169,7 @@ function loadDataToWordformModal(text_id, w_id, wordform, lang_id) {
                     }
                 })
                 .change();    
-            loadPrediction(wordform, lang_id);
+            loadPrediction(wordform, lang_id, lang_code);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert('loadDataToWordformModal: '+xhr.status);
@@ -178,10 +178,10 @@ function loadDataToWordformModal(text_id, w_id, wordform, lang_id) {
     });        
 }
 
-function loadPrediction(wordform, lang_id) {
+function loadPrediction(wordform, lang_id, lang_code='ru') {
     $("#prediction-block .waiting").show();
     $.ajax({
-        url: '/corpus/word/prediction', 
+        url: '/'+lang_code+'/corpus/word/prediction', 
         data: {uword: wordform, lang_id: lang_id},
         type: 'GET',
         success: function(result){
@@ -310,7 +310,7 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
  * @param Integer lang_id
  * @returns NULL
  */    
-function addWordform(text_id, lang_id) {
+function addWordform(text_id, lang_id, lang_code='ru') {
     changeLemmaList(lang_id);
     $("body").on("click", ".call-add-wordform", function() {
         if (!$(this).hasClass('call-add-wordform')) {
@@ -323,7 +323,7 @@ function addWordform(text_id, lang_id) {
 
         $("#modalAddWordform").modal('show');    
         $(this).css('overflow', 'hidden');
-        loadDataToWordformModal(text_id, w_id, wordform, lang_id);        
+        loadDataToWordformModal(text_id, w_id, wordform, lang_id, lang_code);        
         $("#modalAddWordform").modal('handleUpdate');
     });
     

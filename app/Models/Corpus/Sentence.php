@@ -243,7 +243,7 @@ $words = [
         foreach ($words as $i => $word) {
             $builder = self::searchWordsByWord($builder, $i, $word);
         }
-//dd(vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings()));                    
+//dd(to_sql($builder));                    
         return $builder;
     }
     
@@ -420,8 +420,9 @@ AND t1.word_number-t2.word_number<=|B|;
 //        $builder = DB::table('text_wordform')->selectRaw('DISTINCT text_id, w_id');
         $builder = self::searchWords($args['words'])
                 ->whereIn('t1.text_id', Sentence::searchTexts($args));
-//dd(vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings()));            
-        return sizeof($builder->get());
+//dd($builder->get());            
+//        return sizeof($builder->get());
+        return [sizeof($builder->get()), $builder];
     }
     
     public static function urlArgs($request) {

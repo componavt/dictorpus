@@ -79,16 +79,22 @@ class SentenceController extends Controller
             $refine = true; // отправляем уточнить запрос, без слов искать не будем
         } else {
             $refine = false;
-            $entry_number = Sentence::entryNumber($url_args); // считаем количество вхождений
+            list($entry_number, $sentence_builder) = Sentence::entryNumber($url_args); // считаем количество вхождений
+//dd($sentence_builder->get());            
             if ($entry_number>0) {
-                $texts = Text::searchWithSentences($url_args); // выбираем тексты
+//                $texts = Text::searchWithSentences($url_args); // выбираем тексты
+                $texts = Text::whereIn('id', $sentence_builder->pluck('t1.text_id'));
                 $numAll = $texts->count();
                 $texts = $texts->paginate($this->url_args['limit_num']);
+                $text_sentences =[];
+                foreach ($sentence_builder->get() as $sentence) {
+                    $text_sentences[$sentence->text_id][] = $sentence->s_id;
+                }
             }
         }      
         return view('corpus.sentence.results',
                 compact('texts', 'numAll', 'entry_number', 'refine',
-                        'search_query', 'args_by_get', 'url_args'));
+                        'search_query', 'text_sentences', 'args_by_get', 'url_args'));
     }
 
     public function wordGramForm(Request $request)

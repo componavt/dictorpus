@@ -76,7 +76,7 @@
 {{-- show/hide a block with lemmas --}}
     showWordBlock('{{LaravelLocalization::getCurrentLocale()}}'); 
     
-    addWordform('{{$sentence['text']->id}}','{{$sentence['text']->lang_id}}');
+    addWordform('{{$sentence['text']->id}}','{{$sentence['text']->lang_id}}', '{{LaravelLocalization::getCurrentLocale()}}');
     posSelect(false);
 {{--    checkLemmaForm(); --}}
     toggleSpecial();

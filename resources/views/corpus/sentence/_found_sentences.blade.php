@@ -1,7 +1,7 @@
 <?php $words = $text->getWords($url_args['words']); 
       $wid_for_link = http_build_query(['search_wid'=>$words]);
 
-      $sentences = $text->getSentencesByGram($url_args['words']);
+      $sentences = $text->getSentencesByIds($text_sentences[$text->id]);
 ?>
 @include('corpus.sentence._text_link')
 <ul> 
