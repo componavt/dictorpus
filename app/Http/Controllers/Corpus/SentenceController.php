@@ -74,6 +74,7 @@ class SentenceController extends Controller
         $search_query=Sentence::searchQueryToString($url_args);
 //dd($search_query);        
         $entry_number = $numAll = 0;
+        $text_sentences =[];
         $texts = null;
         if (!sizeof($url_args['words'])) {
             $refine = true; // отправляем уточнить запрос, без слов искать не будем
@@ -86,7 +87,6 @@ class SentenceController extends Controller
                 $texts = Text::whereIn('id', $sentence_builder->pluck('t1.text_id'));
                 $numAll = $texts->count();
                 $texts = $texts->paginate($this->url_args['limit_num']);
-                $text_sentences =[];
                 foreach ($sentence_builder->get() as $sentence) {
                     $text_sentences[$sentence->text_id][] = $sentence->s_id;
                 }
