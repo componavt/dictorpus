@@ -90,8 +90,10 @@ class AudiotextController extends Controller
                 $audiotext = $text->audiotexts[0];
                 $popup = '<b>'.$place->name.'</b>';
                 $popup .= '<br><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$text->id)
-                        . '">'.$text->title.'</a> ('.$text->dialectsToString().')<br>'
-                        . '<audio controls><source src="'.$audiotext->url().'" type="audio/mpeg"></audio>';
+                        . '">'.$text->title.'</a> ('.$text->dialectsToString()
+                        . ($text->event && $text->event->date ? ', '.$text->event->date : '') 
+                        .')<br><audio controls><source src="'.$audiotext->url()
+                        .'" type="audio/mpeg"></audio>';
             }
             $places[]=[
                 'latitude'=>$place->latitude,
