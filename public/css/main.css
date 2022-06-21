@@ -28,6 +28,10 @@ a:hover {
     text-decoration: underline;
 }
 
+.link-color {
+    color: #972d1a;    
+}
+
 .btn {
     text-decoration: none;
 }
@@ -581,6 +585,10 @@ h2 {
 
 .flex-hor-group .form-group {
     margin-bottom: 5px;
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 @media screen and (min-width: 768px) {   

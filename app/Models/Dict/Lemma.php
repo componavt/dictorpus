@@ -4,7 +4,6 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use URL;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
 use Arrays;
@@ -15,7 +14,7 @@ use App\Library\Str;
 
 use App\Models\User;
 use App\Models\Corpus\Text;
-//use App\Models\Corpus\Word;
+use App\Models\Corpus\Word;
 
 use App\Models\Dict\Audio;
 //use App\Models\Dict\Label;
@@ -129,6 +128,10 @@ class Lemma extends Model
             $ids[]=$dialect->dialect_id;
         }
         return $ids;
+    }
+
+    public function labelStatus($label_id) {
+        return $this->labels()->wherePivot('label_id', $label_id)->first()->pivot->status;
     }
 
     public static function getLemmaById($id) {
@@ -1665,6 +1668,13 @@ dd($wordforms);
         }
     }
     
+    public function meaningsWithLabel($label_id) {
+        return $this->meanings()->whereIn('id', function ($q) use ($label_id) {
+            $q->select('meaning_id')->from('label_meaning')
+              ->whereLabelId($label_id);
+        })->get();
+    }
+    
     public function getMultilangMeaningTexts() {
         $meanings = [];
         foreach ($this->meanings as $meaning_obj) {
@@ -1681,6 +1691,18 @@ dd($wordforms);
         return $meanings;
     }
     
+    public function getFrequencyInCorpus() {
+        $lemma_id = $this->id;
+        return Word::whereIn('id', function ($q) use ($lemma_id) {
+                        $q->select('word_id')->from('meaning_text')
+                          ->where('relevance', '>', 0)
+                          ->whereIn('meaning_id', function ($q2) use ($lemma_id) {
+                              $q2->select('id')->from('meanings')
+                                 ->whereLemmaId($lemma_id);
+                          });
+                    })->count();
+    }
+
     public function getWordformsForTest($dialect_id) {
         $wordforms = [];
         $lang_id = $this->lang_id;
@@ -1955,7 +1977,6 @@ dd($wordforms);
     public static function selectFromMeaningText($search_dialect=null) {
         $builder = Lemma::join('meanings','lemmas.id','=','meanings.lemma_id')
                     ->join('meaning_text','meanings.id','=','meaning_text.meaning_id')
-                    //->whereNotNull('pos_id')        
                     ->where('relevance', '>', 0);
         if ($search_dialect) {
             $builder->whereIn('text_id', function ($q) use ($search_dialect) {

@@ -17,7 +17,8 @@
         "anhskohbo/no-captcha": "^3.4",
         "doctrine/dbal": "v2.4.2",
         "consoletvs/charts": "6.*",
-        "biscolab/laravel-recaptcha": "^5.4"
+        "biscolab/laravel-recaptcha": "^5.4",
+        "phpoffice/phpword": "^0.18.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

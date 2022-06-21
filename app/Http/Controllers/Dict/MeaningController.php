@@ -27,8 +27,6 @@ class MeaningController extends Controller
     {
         $this->middleware('auth:dict.edit,/dict/meaning/', 
                 ['except' => ['index', 'loadExamples', 'reloadExamples']]);
-//                ['only' => ['create','store','edit','update','destroy',
-  //                          'createRelation', 'addExample']]);
     }
 
     /**
@@ -193,6 +191,15 @@ class MeaningController extends Controller
         return view('dict.lemma.example._limit', 
                 compact('meaning', 'limit', 'start', 'count',
                         'sentence_count', 'sentences')); 
+    }
+    
+    public function removeLabel(int $meaning_id, int $label_id) {
+        $meaning = Meaning::find($meaning_id);
+        if ($meaning) {
+            $meaning->labels()->detach($label_id);
+            return 1;
+        }
+        return 0;
     }
 
     /** 

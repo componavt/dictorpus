@@ -957,10 +957,9 @@ class LemmaController extends Controller
         return "(".$lemma->wordform_total.")";
     }
     
-    public function setStatus($id, $status) {
-        $lemma= Lemma::findOrFail((int)$id);
-        $lemma->status = (int)$status;
-        $lemma->save();
-        return $lemma->status;
+    public function setStatus(int $id, int $label_id, int $status) {
+        DB::statement("UPDATE label_lemma set status='$status' where"
+                    . " lemma_id='$id' and label_id='$label_id'");
+        return Lemma::findOrFail($id)->labelStatus($label_id);
     }
 }

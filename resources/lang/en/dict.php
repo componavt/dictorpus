@@ -146,6 +146,7 @@ return [
     'list_long_lemmas' => 'List of longest lemmas',
     'listen' => 'listen',
     'meaning' => 'meaning',
+    'meanings' => 'meanings',
     'meaning_place' => 'locality of word usage',
     'mood' => 'mood',
     'more_examples' => 'more examples &gt;&gt;',
@@ -180,6 +181,10 @@ return [
 
     'omonyms' => 'omonyms',
     'only_checked' => 'Only checked?',
+    'output_checked_or_not' => [
+        0=>'everything',
+        1=>'only checked',
+        2=>'only unchecked'],
     'participle' => 'participle',
     'part_of_speech' => 'part of speech',
     'parts_of_speech' => 'parts of speech',

@@ -10,6 +10,16 @@ class PartOfSpeech extends Model
     protected $table = 'parts_of_speech';
     protected $fillable = ['name_en', 'name_ru', 'code', 'category', 'name_short_ru', 'without_gram'];
     
+    const DICT_CODES = [
+        'CCONJ' => 'conj',
+        'NOUN' => 's',
+        'ADJ' => 'a',
+        'PROPN' => 's',
+        'VERB' => 'v',
+        'ADV' => 'adv',
+//        '' => '',
+    ];
+    
     public $timestamps = false;
     
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -76,6 +86,12 @@ class PartOfSpeech extends Model
             $code = "V";
         }
         return $code;
+    }
+        
+    public function getDictCodeAttribute()
+    {
+        $dict_codes = self::DICT_CODES;
+        return isset($dict_codes[$this->code]) ? $dict_codes[$this->code].'.' : $this->code;
     }
         
     // PartOfSpeech has many Wordforms through Lemma

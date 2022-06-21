@@ -16,7 +16,7 @@
 @stop
 
 @section('body')        
-        @include('service.multidict._search_form',['url' => '/service/multidict']) 
+        @include('service.dict.multi._search_form',['url' => '/service/dict/multi']) 
 
         @if ($lemmas)
         <table id="lemmasTable" class="table table-striped rwd-table wide-md">
@@ -54,7 +54,7 @@
                 </td>
                 <td data-th="{{ trans('dict.status') }}">
                     <a class="set-status status{{$lemma['status']}}" id="status-{{$lemma_id}}" 
-                       onClick="setStatus({{$lemma_id}})"
+                       onClick="setStatus({{$lemma_id}}, {{$label_id}})"
                        data-old="{{$lemma['status']}}" 
                        data-new="{{$lemma['status'] ? 0 : 1}}"></a>
                 </td>

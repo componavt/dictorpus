@@ -11,8 +11,6 @@ Route::group(
         Route::get('check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('copy_lemmas', 'Library\ServiceController@copyLemmas');
         Route::get('illative_table', 'Library\ServiceController@illativeTable');       
-        Route::get('multidict', 'Library\ServiceController@multidictView');       
-        Route::get('multidict/select', 'Library\ServiceController@multidictSelect');       
         Route::get('reGenerateTverPartic2active', 'Library\ServiceController@reGenerateTverPartic2active');
         Route::get('regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');
         Route::get('regenerate_livvic_ill_pl', 'Library\ServiceController@reGenerateLivvicIllPl');
@@ -20,4 +18,9 @@ Route::group(
         Route::get('select_lemmas_for_multidict', 'Library\ServiceController@selectLemmasForMultidict');
         Route::get('wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
+        
+        Route::get('dict/multi', 'Library\DictController@multiView');       
+        Route::get('dict/multi/select', 'Library\DictController@multiSelect');       
+        Route::get('dict/school', 'Library\DictController@schoolView');       
+        Route::get('dict/school/select', 'Library\DictController@schoolSelect');       
     });

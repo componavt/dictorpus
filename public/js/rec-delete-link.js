@@ -9,14 +9,14 @@ function recDelete(confirm_message, ev_text='[data-delete]') {
             // Get the token
             var token = $(this).data('delete');
             // Create a form element
-            var $form = $('<form/>', {action: url, method: 'post'});
+            var form = $('<form/>', {action: url, method: 'post'});
             // Add the DELETE hidden input method
-            var $inputMethod = $('<input/>', {type: 'hidden', name: '_method', value: 'delete'});
+            var inputMethod = $('<input/>', {type: 'hidden', name: '_method', value: 'delete'});
             // Add the token hidden input
-            var $inputToken = $('<input/>', {type: 'hidden', name: '_token', value: token});
+            var inputToken = $('<input/>', {type: 'hidden', name: '_token', value: token});
             
             // Append the inputs to the form, hide the form, append the form to the <body>, SUBMIT !
-            $form.append($inputMethod, $inputToken).hide().appendTo('body').submit();
+            form.append(inputMethod, inputToken).hide().appendTo('body').submit();
         }
     });
 }

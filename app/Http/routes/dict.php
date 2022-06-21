@@ -1,13 +1,17 @@
 <?php
         Route::get('dict/concept/list', 'Dict\ConceptController@conceptList');
         Route::get('dict/dialect/list', 'Dict\DialectController@dialectList');
+        Route::get('dict/example/create/{meaning_id}', 'Dict\ExampleController@create');        
+        Route::get('dict/example/store/{meaning_id}', 'Dict\ExampleController@store');        
+        Route::get('dict/example/{example_id}/edit', 'Dict\ExampleController@edit');        
+        Route::get('dict/example/{example_id}/update', 'Dict\ExampleController@update');        
         Route::get('dict/gramset/list', 'Dict\GramsetController@gramsetList');
 
         Route::get('dict/lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('dict/lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('dict/lemma/{id}/history', 'Dict\LemmaController@history');
         Route::get('dict/lemma/{id}/reload_stem_affix_by_wordforms', 'Dict\LemmaController@reloadStemAffixByWordforms');
-        Route::get('dict/lemma/{id}/set_status/{status}', 'Dict\LemmaController@setStatus');
+        Route::get('dict/lemma/{id}/{label_id}/set_status/{status}', 'Dict\LemmaController@setStatus');
         Route::get('dict/lemma/{id}/wordform_total', 'Dict\LemmaController@getWordformTotal'); 
         Route::post('dict/lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');
@@ -48,6 +52,7 @@
 //        Route::get('dict/meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
         Route::get('dict/meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
         Route::get('dict/meaning/examples/load_more/{id}', 'Dict\MeaningController@loadMoreExamples');
+        Route::get('dict/meaning/{meaning_id}/remove_label/{label_id}', 'Dict\MeaningController@removeLabel');
         
         Route::get('dict/pos', 'Dict\PartOfSpeechController@index');
 

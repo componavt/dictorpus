@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddStatusInLemmasTable extends Migration
+class AddStatusInLabelLemmaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class AddStatusInLemmasTable extends Migration
      */
     public function up()
     {
-        Schema::table('lemmas', function (Blueprint $table) {
+        Schema::table('label_lemma', function (Blueprint $table) {
             $table->tinyInteger('status')->unsigned()->default(0);
         });
     }
@@ -24,7 +24,7 @@ class AddStatusInLemmasTable extends Migration
      */
     public function down()
     {
-        Schema::table('lemmas', function (Blueprint $table) {
+        Schema::table('label_lemma', function (Blueprint $table) {
             $table->dropColumn('status'); 
         });
     }

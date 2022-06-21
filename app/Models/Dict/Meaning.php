@@ -51,6 +51,7 @@ class Meaning extends Model
     }
     
     // Has Many Relations
+    use \App\Traits\Relations\HasMany\Examples;
     use \App\Traits\Relations\HasMany\MeaningTexts;
 
 
@@ -214,9 +215,22 @@ class Meaning extends Model
         }
         return $out;
     }
+    
+    /**
+     * Значения с примерами для школьного словаря
+     * <meaning_n>. <meaning_on_ru>; <example1> <example1_ru>; <example2> <example2_ru>;
+     * OR
+     *              <meaning_on_ru>; <example1> <example1_ru>; <example2> <example2_ru>;
+     */
+    public function getMeaningWithExamples() {
+        $out = $this->getMultilangMeaningTextsString('ru');
+        foreach ($this->examples as $example) {
+            $out .= '; '.$example->example. ' '.$example->example_ru;
+        }
+        return $out;
+    }
 
-    public function getMultilangMeaningTextsStringLocale() :String
-    {
+    public function getMultilangMeaningTextsStringLocale() :String {
         return $this->getMultilangMeaningTextsString(LaravelLocalization::getCurrentLocale());
     }
     

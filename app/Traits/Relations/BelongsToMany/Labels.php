@@ -9,6 +9,7 @@ trait Labels
      */
     public function labels()
     {
-        return $this->belongsToMany(Label::class);
+        return $this->belongsToMany(Label::class)
+                ->withPivot('status');
     }
 }

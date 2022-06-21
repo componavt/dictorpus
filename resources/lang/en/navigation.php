@@ -63,6 +63,7 @@ return [
     'reverse_dictionary' => 'Lemma reverse dictionary',
     'reverse_dictionary_wordform' => 'Wordform reverse dictionary',
     'roles' => 'Roles',
+    'schooldict' => 'School dictionary',
     'service' => 'Service',
     'sosd' => 'Comparative-onomasiological dictionary of dialects',
     'speech_corpus' => 'Speech corpus',

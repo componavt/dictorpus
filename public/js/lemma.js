@@ -66,12 +66,12 @@ function reloadStemAffixByWordforms(el, locale) {
     }); 
 }
 
-function setStatus(id) {
+function setStatus(id, label_id) {
     var new_status = $("#status-"+id).attr("data-new");
     var old_status = $("#status-"+id).attr("data-old");
 //console.log(new_status, old_status);    
     $.ajax({
-        url: '/dict/lemma/'+ id + '/set_status/' + new_status, 
+        url: '/dict/lemma/'+ id + '/' + label_id + '/set_status/' + new_status, 
         type: 'GET',
         success: function(status){
             $("#status-"+id).removeClass('status'+old_status);

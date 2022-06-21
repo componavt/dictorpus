@@ -160,6 +160,7 @@ return [
     'list_lemmas' => 'Список лемм',
     'list_long_lemmas' => 'Список длинных лемм',
     'meaning' => 'значение',
+    'meanings' => 'значения',
     'meaning_place' => 'населенный пункт словоупотребления',
     'mood' => 'наклонение',
     'more_examples' => 'еще примеры &gt;&gt;',
