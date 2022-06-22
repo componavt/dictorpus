@@ -145,6 +145,7 @@ class DictController extends Controller
     }
     
     public function schoolSelect() {
+        /*
         $lang_id=5; // livvic
         $dialect_id=44; // New written Livvic
         $label_id = 4; // for school dictionary
@@ -162,7 +163,7 @@ class DictController extends Controller
             foreach ($lemma->meanings as $meaning) {
                 $meaning->labels()->attach([$label_id]);
             }
-        }                       
+        } */                      
     }
     
     public function schoolView(Request $request) {
