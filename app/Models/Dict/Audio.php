@@ -12,7 +12,7 @@ class Audio extends Model
     protected $table = 'audios';
     protected $fillable = ['filename', 'informant_id'];
     const DISK = 'audios';
-    const DIR = 'audio/lemmas/';
+    const DIR = 'storage/audio/lemmas/';
     
     public $timestamps = false;
     
@@ -52,5 +52,22 @@ class Audio extends Model
             $urls[] = $audio->url();
         }
         return $urls;
+    }
+    
+    public static function addAudioFileToLemmas($filename, $lemma_id) {
+        $audio=Audio::firstOrCreate(['filename'=>$filename]);
+        $lemma= Lemma::find($lemma_id);
+        if (!$lemma) {
+            return;
+        }
+        // выбираем все леммы с таким же написанием в этом языке
+        $lemmas = Lemma::whereLangId($lemma->lang_id)
+                       ->where('lemma', 'like', $lemma->lemma)
+                       ->get();
+        foreach ($lemmas as $lemma) {
+            if (!$lemma->audios()->count()) {
+                $lemma->audios()->attach($audio);
+            }
+        }        
     }
 }

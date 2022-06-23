@@ -229,20 +229,7 @@ print '<p>'.$text->id.'</p>';
             if (!preg_match("/^(\d+)\_/", $filename, $regs) || !$regs[1]) {
                 continue;
             }
-            $audio=Audio::firstOrCreate(['filename'=>$filename]);
-            $lemma= Lemma::find($regs[1]);
-            if (!$lemma) {
-                continue;
-            }
-            // выбираем все леммы с таким же написанием в этом языке
-            $lemmas = Lemma::whereLangId($lemma->lang_id)
-                           ->where('lemma', 'like', $lemma->lemma)
-                           ->get();
-            foreach ($lemmas as $lemma) {
-                if (!$lemma->audios()->count()) {
-                    $lemma->audios()->attach($audio);
-                }
-            }
+            Audio::addAudioFileToLemmas($filename, $regs[1]);
         }
 print 'done.';        
     }

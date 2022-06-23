@@ -13,7 +13,7 @@
             <a href="service/check_wordforms_by_rules?search_lang={{$l_id}}">{{$l_name}}</a></li>
     @endforeach
     </ul>
-    <p><a href="service/check_author">Авторы публицистических текстов в источнике, а не в справочнике</a>.</p>
+    <p><a href="service/check_author">Авторы публицистических текстов в источнике, а не в справочнике</a></p>
     
     @if (User::checkAccess('dict.edit'))
         <h3>Дополнение данных</h3>
@@ -29,6 +29,8 @@
         <li><a href="service/dict/school">Просмотреть отобранные леммы</a></li>
         <li><a href="service/dict/school/select">Выбрать леммы</a></li>
         </ul>
+        
+        <p><a href="service/audio">Записать аудио для группы ливвиковских слов</a></p>
     @endif
     
     @if (User::checkAccess('admin'))
