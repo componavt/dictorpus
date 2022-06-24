@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-use Validator;
 use App\Http\Controllers\Controller;
 use Storage;
+
+use App\Models\User;
 
 use App\Models\Dict\Audio;
 use App\Models\Dict\Lemma;
@@ -13,6 +14,8 @@ use App\Models\Dict\Lemma;
 class AudioController extends Controller
 {
     public function recordGroup() {
+        $user = User::currentUser();
+        $informant_id = $user ? $user->informant_id : NULL;
         $lang_id=5; // livvic
         $label_id = 3; // for multimedia dictionary
         $lemmas = Lemma::whereLangId($lang_id)
@@ -25,22 +28,24 @@ class AudioController extends Controller
             ->orderByRaw('lower(lemma)')
             ->take(100)->get();
         return view('dict.audio.record_group',
-                compact('lemmas'));        
+                compact('lemmas', 'informant_id'));        
     }
     
     public function upload(Request $request) {
-/*    	$validator = Validator::make($request->all(), [
-                		'audio' => 'required|mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav',
-            		]);
+/*    	$this->validate($request, [
+                    'audio' => 'required|mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav',
+               ]);
 
-        if (!$validator->fails() 
-                && $request->hasFile('audio')) {*/
+        if ($request->hasFile('audio')) {*/
             $lemma_id = (int)$request->input('id');
 
-            $fileName = $lemma_id.'_1.wav';
-            $request->file('audio')->move(Storage::disk('audios')->getAdapter()->getPathPrefix(), $fileName);
-            
-            Audio::addAudioFileToLemmas($fileName, $lemma_id);
+            if ($lemma_id) {
+                $informant_id = $request->input('informant_id');// ? (int)$request->input('informant_id') : NULL;
+                $fileName = $lemma_id.'_'.$informant_id.'.wav';
+                $request->file('audio')->move(Storage::disk('audios')->getAdapter()->getPathPrefix(), $fileName);
+
+                Audio::addAudioFileToLemmas($fileName, $lemma_id, $informant_id);
+            }
 //        }
     }
 }

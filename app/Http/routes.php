@@ -33,8 +33,5 @@ Route::group(
         include_once 'routes/service.php';
         include_once 'routes/stats.php';
         
-/*        Route::get('/dict/audio', function () {
-            return view('dict.audio');
-        });*/
     }
 );

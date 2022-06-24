@@ -8,13 +8,16 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use LaravelLocalization;
 use DB;
 
-use App\Models\Role;
+use App\Models\Corpus\Informant;
+
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
+use App\Models\Role;
+
 class User extends EloquentUser
 {
-    protected $fillable = ['email','first_name','last_name','permissions', 'country', 'city', 'affilation'];
+    protected $fillable = ['email','first_name','last_name','permissions', 'country', 'city', 'affilation', 'informant_id'];
     protected $perm_list = ['admin','dict.edit','corpus.edit','ref.edit','user.edit'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -29,6 +32,11 @@ class User extends EloquentUser
         parent::boot();
     }
 
+    public function informant()
+    {
+        return $this->belongsTo(Informant::class);
+    }
+    
     /** Gets name of this user
      * 
      * @return String
@@ -53,6 +61,11 @@ class User extends EloquentUser
         return $this->belongsToMany(Dialect::class, 'dialect_user');
     }
     
+    public static function currentUser(){
+        $user=Sentinel::check();
+        return User::find($user->id);
+    }
+
     public static function registration($input) {
         $sentuser = Sentinel::register($input);
         

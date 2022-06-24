@@ -20,8 +20,6 @@
 			<li>D - Сохранить запись</li>
 		</ul>
 	</div>
-<script>
-</script>
 @stop
 
 @section('jqueryFunc')
@@ -183,7 +181,8 @@ function saveRecord()
 			oReq.open("POST", url, true);
 			let fd = new FormData();
 			fd.append('id', wordsArray[currentWord].id);
-			fd.append('text', wordsArray[currentWord].text);
+/*			fd.append('text', wordsArray[currentWord].text);*/
+			fd.append('informant_id', {{$informant_id}});
 			fd.append('_token', '{{ csrf_token() }}');
 			fd.append('audio', voiceBlob);
 			oReq.send(fd);

@@ -40,6 +40,12 @@
                  'class'=>'multiple-select form-control'
             ])
                  
+         @include('widgets.form.formitem._select', 
+                ['name' => 'informant_id', 
+                 'values' =>$informant_values,
+                 'title' => trans('corpus.informant'),
+            ])
+            
         @include('widgets.form.formitem._select2',
                 ['name' => 'langs', 
                  'values' =>$lang_values,

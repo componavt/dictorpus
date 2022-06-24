@@ -184,7 +184,8 @@ return [
     'output_checked_or_not' => [
         0=>'everything',
         1=>'only checked',
-        2=>'only unchecked'],
+        2=>'only unchecked',
+        3=>'only with audio'],
     'participle' => 'participle',
     'part_of_speech' => 'part of speech',
     'parts_of_speech' => 'parts of speech',

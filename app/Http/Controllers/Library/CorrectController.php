@@ -226,10 +226,10 @@ print '<p>'.$text->id.'</p>';
     public function addAudiofilesToDb() {
         $files = Storage::disk(Audio::DISK)->files();
         foreach ($files as $filename) {
-            if (!preg_match("/^(\d+)\_/", $filename, $regs) || !$regs[1]) {
+            if (!preg_match("/^(\d+)\_(\d+)\./", $filename, $regs) || !$regs[1]) {
                 continue;
             }
-            Audio::addAudioFileToLemmas($filename, $regs[1]);
+            Audio::addAudioFileToLemmas($filename, $regs[1], $regs[2]);
         }
 print 'done.';        
     }

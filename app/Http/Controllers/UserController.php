@@ -13,6 +13,9 @@ use LaravelLocalization;
 
 use App\Models\User;
 use App\Models\Role;
+
+use App\Models\Corpus\Informant;
+
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
@@ -113,9 +116,12 @@ class UserController extends Controller
         $dialect_values = Dialect::getGroupedList();
         $dialect_value = $user->dialectValue();
         
+        $informant_values = [NULL=>'']+Informant::getList();
+        
         return view('user.edit',
-                  compact('dialect_value', 'dialect_values', 'lang_value', 'lang_values', 
-                          'perm_value', 'perm_values', 'role_value', 'role_values', 'user'));
+                  compact('dialect_value', 'dialect_values', 'informant_values', 
+                          'lang_value', 'lang_values', 'perm_value', 'perm_values', 
+                          'role_value', 'role_values', 'user'));
     }
 
     /**
@@ -134,7 +140,7 @@ class UserController extends Controller
         ]);
         
         $user = User::find($id);
-        $user->fill($request->only('email','first_name','last_name','country','city','affilation'));
+        $user->fill($request->only('email','first_name','last_name','country','city','affilation', 'informant_id'));
         $user_perms = [];
         if ($request->permissions) {
             foreach ($request->permissions as $p) {

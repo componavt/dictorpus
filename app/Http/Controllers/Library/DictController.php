@@ -102,7 +102,7 @@ class DictController extends Controller
                 ->whereIn('lemmas.id', function ($q) use ($label_id, $url_args) {
                     $q->select('lemma_id')->from('label_lemma')
                       ->whereLabelId($label_id);
-                    if ($url_args['search_status']) {
+                    if (in_array($url_args['search_status'], [1,2])) {
                         $q->whereStatus($url_args['search_status']==1 ? 1 : 0);
                     } 
                 });
@@ -124,6 +124,12 @@ class DictController extends Controller
             $lemmas->wherePosId($url_args['search_pos']);
         } 
                
+        if ($url_args['search_status'] == 3) {
+            $lemmas->whereIn('id', function ($q) {
+                $q->select('lemma_id')->from('audio_lemma');
+            });            
+        }
+        
         $lemma_coll = $lemmas->get();//['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', 'status']);
         $lemmas = [];
         foreach ($lemma_coll as $lemma) {
@@ -178,7 +184,7 @@ class DictController extends Controller
             ->whereIn('id', function ($q) use ($label_id, $url_args) {
                 $q->select('lemma_id')->from('label_lemma')
                   ->whereLabelId($label_id);
-                if ($url_args['search_status']) {
+                if (in_array($url_args['search_status'], [1,2])) {
                     $q->whereStatus($url_args['search_status']==1 ? 1 : 0);
                 } 
             })
@@ -188,6 +194,12 @@ class DictController extends Controller
         if ($url_args['search_pos']) {
             $lemmas->wherePosId($url_args['search_pos']);
         } 
+        
+        if ($url_args['search_status'] == 3) {
+            $lemmas->whereIn('id', function ($q) {
+                $q->select('lemma_id')->from('audio_lemma');
+            });            
+        }
         
         $numAll = $lemmas->count();
         $lemmas = $lemmas->paginate($url_args['limit_num']);
