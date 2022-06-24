@@ -1379,6 +1379,7 @@ dd($wordforms);
         $lemmas = self::searchByConcept($lemmas, $url_args['search_concept']);
         $lemmas = self::searchByConceptCategory($lemmas, $url_args['search_concept_category']);
         $lemmas = self::searchByDialects($lemmas, $url_args['search_dialects']);
+        $lemmas = self::searchWithAudios($lemmas, $url_args['with_audios']);
         $lemmas = self::searchWithExamples($lemmas, $url_args['with_examples']);
 
         $lemmas = $lemmas
@@ -1524,6 +1525,16 @@ dd($wordforms);
                             ->from('meaning_texts')
                             ->where('meaning_text','like', $meaning);
                         });
+                    });
+    }
+    
+    public static function searchWithAudios($lemmas, $with_audios) {
+        if (!$with_audios) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query){
+                    $query->select('lemma_id')
+                        ->from('audio_lemma');
                     });
     }
     
@@ -1948,7 +1959,8 @@ dd($wordforms);
                     'search_relation' => (int)$request->input('search_relation'),
                     'search_wordform' => $request->input('search_wordform'),
                     'search_wordforms'=> (array)$request->input('search_wordforms'),
-                    'with_examples' => (int)$request->input('with_examples')
+                    'with_audios'     => (int)$request->input('with_audios'),
+                    'with_examples'   => (int)$request->input('with_examples')
                 ];
         
         if (!$url_args['search_id']) {

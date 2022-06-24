@@ -17,7 +17,7 @@ class AudioController extends Controller
         $user = User::currentUser();
         $informant_id = $user ? $user->informant_id : NULL;
         $lang_id=5; // livvic
-        $label_id = 3; // for multimedia dictionary
+        $label_id = 4; // for school dictionary
         $lemmas = Lemma::whereLangId($lang_id)
             ->whereIn('id', function ($q) use ($label_id) {
                 $q->select('lemma_id')->from('label_lemma')
@@ -25,6 +25,7 @@ class AudioController extends Controller
             })->whereNotIn('id', function ($q) {
                 $q->select('lemma_id')->from('audio_lemma');
             })
+            ->groupBy('lemma')
             ->orderByRaw('lower(lemma)')
             ->take(100)->get();
         return view('dict.audio.record_group',

@@ -272,6 +272,7 @@ return [
     'verb' => 'verb',
     'voice' => 'voice',
     'wiki_photo' => 'Image from Wikimedia Commons',
+    'with_audios' => 'with audio',
     'with_examples' => 'with examples',
     'without_gram' => 'unchangeable',
     'wordform' => 'wordform',

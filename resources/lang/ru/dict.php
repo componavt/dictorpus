@@ -287,6 +287,7 @@ return [
     'verb' => 'глагол',
     'voice' => 'залог',
     'wiki_photo' => 'Иллюстрация на Викискладе',
+    'with_audios' => 'с аудио',
     'with_examples' => 'с примерами',
     'without_gram' => 'неизменяемое',
     'wordform' => 'словоформа',

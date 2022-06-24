@@ -10,6 +10,10 @@
 
 @section('body')
 	<div id="record">
+            <div class='hor_flex'>
+		<div id="prev"></div>
+		<div id="next"></div>                
+            </div>
 		<div id="recordTimer">Идет запись!</div>
 		<div id="player"></div>
 		<div id="audio"></div>
@@ -18,6 +22,7 @@
 			<li>A - Удалить запись</li>
 			<li>S - Прослушать запись</li>
 			<li>D - Сохранить запись</li>
+			<li>N - Следующее слово</li>
 		</ul>
 	</div>
 @stop
@@ -25,52 +30,55 @@
 @section('jqueryFunc')
     let isRecordingInProgress = false,
 	isRecordingComplete   = false,
+	duration = 0,
+	currentWord = 0,
+	url = "/ru/dict/audio/upload",
 	recordWindow = document.querySelector("[id='record']"),
 	playerWindow = document.querySelector("[id='player']"),
-	duration = 0,
+	prevWindow = document.querySelector("[id='prev']"),
+	nextWindow = document.querySelector("[id='next']"),
+	audioBlock = document.querySelector("#audio");
 	wordsArray = [	
         @foreach ($lemmas as $lemma)
             {"id": {{$lemma->id}}, "text": "{{$lemma->lemma}}"},
         @endforeach
         ];
-	currentWord = 0,
-	url = "/ru/dict/audio/upload",
-	audioBlock = document.querySelector("#audio");
 
 	displayWord();
+        displayNext();
         
 document.addEventListener ("keydown", function (kEvent) {
 	switch (kEvent.key)
 	{
 		case "w":
-			startRecord();
-			break;
-		case "a":
-			deleteRecord();
-			break;
-		case "s":
-			playRecord();
-			break;
-		case "d":
-			saveRecord();
-			break;
 		case "ц":
 			startRecord();
 			break;
+		case "a":
 		case "ф":
 			deleteRecord();
 			break;
+		case "s":
 		case "ы":
 			playRecord();
 			break;
+		case "d":
 		case "в":
 			saveRecord();
+			break;
+		case "n":
+		case "т":
+			nextWord();
 			break;
 	}
 });
 
 function displayWord() {
 	playerWindow.innerHTML = wordsArray[currentWord].text;
+}
+
+function displayNext() {
+        nextWindow.innerHTML = wordsArray[1+currentWord].text;
 }
 
 function startRecord()
@@ -191,14 +199,24 @@ function saveRecord()
 			/**
 			 * Вот это по идее должно быть в блоке выше
 			 */
-                         audioBlock.innerHTML = '<a href="/dict/lemma/'+wordsArray[currentWord].id+'">'+wordsArray[currentWord].text + "</a> записано.";
+                        prevWindow.innerHTML = '<a href="/dict/lemma/'+wordsArray[currentWord].id+'">'+wordsArray[currentWord].text + "</a> записано.";
 			isRecordingComplete = false;
 			currentWord++;
 			displayWord();
+                        displayNext();
 		} else {
 			console.log("Записи еще нет");
 		}
 
 	}
 }
+
+function nextWord() {
+    currentWord++;
+    isRecordingInProgress = false;
+    isRecordingComplete = false;
+    displayWord();
+    displayNext();
+}
+
 @stop

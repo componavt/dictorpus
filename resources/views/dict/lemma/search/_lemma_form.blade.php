@@ -83,12 +83,19 @@
                 'help_func' => "callHelp('help-text-fields')",
                 'title'=>trans('dict.interpretation')])
     </div>
-    <div class="col-sm-4{{$url_args['with_examples'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
+    <div class="col-sm-2{{$url_args['with_examples'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
         @include('widgets.form.formitem._checkbox',
                 ['name' => 'with_examples',
                 'value' => 1,
                 'checked' => $url_args['with_examples']==1,
                 'tail'=>trans('dict.with_examples')]) 
+    </div>        
+    <div class="col-sm-2{{$url_args['with_audios'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'with_audios',
+                'value' => 1,
+                'checked' => $url_args['with_audios']==1,
+                'tail'=>trans('dict.with_audios')]) 
     </div>        
     <div class="col-sm-4 search-button-b" style='padding-top: 25px'>       
         <span>{{trans('search.show_by')}}</span>
