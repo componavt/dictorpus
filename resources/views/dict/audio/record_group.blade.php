@@ -12,6 +12,7 @@
 	<div id="record">
 		<div id="recordTimer">Идет запись!</div>
 		<div id="player"></div>
+		<div id="audio"></div>
 		<ul id="legend">
 			<li>W - Начать/остановить запись</li>
 			<li>A - Удалить запись</li>
@@ -36,7 +37,7 @@
         ];
 	currentWord = 0,
 	url = "/ru/dict/audio/upload",
-	audioBlock = document.querySelector("#player");
+	audioBlock = document.querySelector("#audio");
 
 	displayWord();
         
@@ -71,13 +72,13 @@ document.addEventListener ("keydown", function (kEvent) {
 });
 
 function displayWord() {
-	audioBlock.innerHTML = wordsArray[currentWord].text;
+	playerWindow.innerHTML = wordsArray[currentWord].text;
 }
 
 function startRecord()
 {
 	if (isRecordingInProgress) {
-		console.log("Останавливаем запись");
+		console.log("Останавливаем запись...");
 		isRecordingInProgress = false;
 		recordWindow.classList.toggle("inRecord");
 
@@ -187,11 +188,11 @@ function saveRecord()
 			fd.append('audio', voiceBlob);
 			oReq.send(fd);
 			oReq.onload = function (oEvent) {
-
 			};
 			/**
 			 * Вот это по идее должно быть в блоке выше
 			 */
+                         audioBlock.innerHTML = '<a href="/dict/lemma/'+wordsArray[currentWord].id+'">'+wordsArray[currentWord].text + "</a> записано.";
 			isRecordingComplete = false;
 			currentWord++;
 			displayWord();

@@ -12,7 +12,7 @@ class Audio extends Model
     protected $table = 'audios';
     protected $fillable = ['filename', 'informant_id'];
     const DISK = 'audios';
-    const DIR = 'storage/audio/lemmas/';
+    const DIR = 'audio/lemmas/';
     
     public $timestamps = false;
     

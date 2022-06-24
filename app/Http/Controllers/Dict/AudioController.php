@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Validator;
 use App\Http\Controllers\Controller;
+use Storage;
 
 use App\Models\Dict\Audio;
 use App\Models\Dict\Lemma;
@@ -37,7 +38,7 @@ class AudioController extends Controller
             $lemma_id = (int)$request->input('id');
 
             $fileName = $lemma_id.'_1.wav';
-            $request->file('audio')->move(public_path(Audio::DIR), $fileName);
+            $request->file('audio')->move(Storage::disk('audios')->getAdapter()->getPathPrefix(), $fileName);
             
             Audio::addAudioFileToLemmas($fileName, $lemma_id);
 //        }
