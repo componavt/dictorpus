@@ -32,8 +32,16 @@
         </p>
         @endif
     </div>
-    <div style="text-align: right;">
-        @include('dict.audio.record')
+    <div style='display: flex; align-content: flex-end; flex-direction: row'>
+        <div id="audios">
+        @include('dict.audio.view_audios')
+        </div>
+        @if (User::checkAccess('dict.edit'))
+        <div style="text-align: right">
+            <i class="fa fa-microphone record-audio record-stop"></i>
+            <div id="new-audio"></div>
+        </div>
+        @endif
     </div>
 </div>
 

@@ -209,7 +209,7 @@ h4 .fa {
     background: #f9e7e4;
     color: black;
     display: none;
-    left: -150px;
+    left: 0;
     margin-top: -2px;
     padding: 10px;
     position: absolute;

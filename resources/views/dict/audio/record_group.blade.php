@@ -145,9 +145,6 @@ function startRecord()
 
 				mediaRecorder.start();
 			});
-
-
-
 	}
 }
 function playRecord()
@@ -193,6 +190,8 @@ function saveRecord()
 			fd.append('informant_id', {{$informant_id}});
 			fd.append('_token', '{{ csrf_token() }}');
 			fd.append('audio', voiceBlob);
+alert(voiceBlob);
+                        
 			oReq.send(fd);
 			oReq.onload = function (oEvent) {
 			};

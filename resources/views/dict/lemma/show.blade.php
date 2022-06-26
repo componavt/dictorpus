@@ -9,6 +9,7 @@
     {!!Html::style('css/essential_audio_circle.css')!!}
     {!!Html::style('css/lemma.css')!!}
     {!!Html::style('css/text.css')!!}
+    {!!Html::style('css/mic.css')!!}
 @stop
 
 @section('body')
@@ -47,6 +48,7 @@
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/text.js')!!}
     {!!Html::script('js/wordform.js')!!}
+    {!!Html::script('js/mic.js')!!}
 @stop
 
 @section('jqueryFunc')
@@ -66,5 +68,7 @@
     $("#toggle-phrases").click(function() {
         $("#lemma-phrases").toggle();
     });
+    
+    recordAudio({{$lemma->id}}, {{$informant_id}}, '{{ csrf_token() }}');
 @stop
 

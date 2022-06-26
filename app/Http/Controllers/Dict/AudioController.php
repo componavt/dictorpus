@@ -39,8 +39,8 @@ class AudioController extends Controller
 
         if ($request->hasFile('audio')) {*/
             $lemma_id = (int)$request->input('id');
-
-            if ($lemma_id) {
+            $lemma = Lemma::find($lemma_id);
+            if ($lemma) {
                 $informant_id = $request->input('informant_id');// ? (int)$request->input('informant_id') : NULL;
                 $fileName = $lemma_id.'_'.$informant_id.'.wav';
                 $request->file('audio')->move(Storage::disk('audios')->getAdapter()->getPathPrefix(), $fileName);
@@ -48,5 +48,7 @@ class AudioController extends Controller
                 Audio::addAudioFileToLemmas($fileName, $lemma_id, $informant_id);
             }
 //        }
+        return view('dict.audio.view_audios',
+                compact('lemma'));        
     }
 }

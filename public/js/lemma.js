@@ -90,7 +90,7 @@ function showAudioInfo() {
 //console.log('click');       
         event.preventDefault(); // reload event after AJAX reload
         var audio_id = $(this).attr('id');
-console.log('info-'+audio_id);        
+//console.log('info-'+audio_id);        
         $(".audio-info").hide(); // hide all open blocks
         $("#info-"+audio_id).show('slow');
     });

@@ -48,3 +48,19 @@
 #next {
     text-align: right;
 }
+
+.record-audio {
+    font-size:48px;
+    cursor: pointer;
+}
+
+.record-in-process {
+    color:red;
+}
+
+#audios {
+    padding-right: 20px;
+}
+#new-audio audio {
+    width: 150px;
+}

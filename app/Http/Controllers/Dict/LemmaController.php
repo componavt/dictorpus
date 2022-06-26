@@ -252,8 +252,11 @@ class LemmaController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
+        $user = User::currentUser();
+        $informant_id = $user ? $user->informant_id : NULL;
+        
         return view('dict.lemma.show',
-                  compact('dialect_values', 'lemma', 'meaning_texts',
+                  compact('dialect_values', 'informant_id', 'lemma', 'meaning_texts',
                           'meaning_relations', 'phrases', 'translation_values',
                           'update_text_links', 'args_by_get', 'url_args'));
     }
