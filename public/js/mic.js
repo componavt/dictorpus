@@ -5,7 +5,7 @@ let isRecordingInProgress = false,
         mediaRecorder,
         voiceBlob;
 function recordAudio(lemma_id, informant_id, token) {
-    $(".record-audio").click(function(){
+    $(".record-audio").on("click touchend", function(){
         startRecord(lemma_id, informant_id, url, token);
     });
 }
