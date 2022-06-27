@@ -30,6 +30,7 @@ return [
     'affixes' => 'аффиксы',
     'animacy' => 'одушевленное',
     'audio' => 'аудио',
+    'audio_removed' => 'Аудиозапись :name удалена',
     'bases' => 'Основы',
     'base_list_1_name' => [
                     0 => 'начальная форма',

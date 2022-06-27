@@ -16,6 +16,7 @@ return [
     'about_veps' => 'О вепсах',
     'affix_freq' => 'Частота встречаемости аффиксов в словаре',
     'audio_map' => 'Аудио-карта',
+    'audios' => 'Аудиозаписи лемм',
     'authors' => 'Авторы',
     'collections' => 'Коллекции',
     'concept_categories' => 'Категории понятий',

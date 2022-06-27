@@ -28,6 +28,7 @@ return [
     'create_new_m' => 'Создать новый',
     'create_new_g' => 'Создать новое',
     'created' => 'создал(а)',
+    'created_at' => 'дата создания',
     'created_success' => 'Создание успешно завершено',
     'delete' => 'удалить',
     'delete_confirmation' => 'Подтверждение удаления',

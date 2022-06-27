@@ -224,6 +224,12 @@ h4 .fa {
     position: relative;
 }
 
+.audio-button {
+    display: inline-block;
+    position: relative;
+    top: 5px;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

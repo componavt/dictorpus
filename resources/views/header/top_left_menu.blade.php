@@ -77,6 +77,7 @@
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/relation') }}">{{ trans('navigation.relations') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/concept_category') }}">{{ trans('navigation.concept_categories') }}</a></li>
                             <li><a href="{{ LaravelLocalization::localizeURL('/dict/concept') }}">{{ trans('navigation.concepts') }}</a></li>
+                            <li><a href="{{ LaravelLocalization::localizeURL('/dict/audio') }}">{{ trans('navigation.audios') }}</a></li>
                         </ul>
                     </li>
                 </ul>

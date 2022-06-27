@@ -29,6 +29,7 @@ return [
     'affix' => 'affix',
     'affixes' => 'affixes',
     'audio' => 'audio',
+    'audio_removed' => 'Audio recording :name is removed',
     'inanimacy' => 'inanimate',
     'bases' => 'Bases',
     'base_list_1_name' => [

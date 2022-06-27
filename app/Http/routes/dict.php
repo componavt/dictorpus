@@ -72,6 +72,11 @@ Route::group(
         Route::get('wordform/create', 'Dict\WordformController@create'); 
         Route::get('wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
         
+        Route::resource('audio', 'Dict\AudioController',
+                       ['names' => [/*'update' => 'audio.update',
+                                    'store' => 'audio.store',*/
+                                    'destroy' => 'audio.destroy']]);
+        
         Route::resource('concept', 'Dict\ConceptController',
                        ['names' => ['update' => 'concept.update',
                                     'store' => 'concept.store',

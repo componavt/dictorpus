@@ -27,6 +27,7 @@ return [
     'create_new_m' => 'Create a new',
     'create_new_g' => 'Create a new',
     'created' => 'created',
+    'created_at' => 'created at',
     'created_success' => 'Successfully created',
     'delete' => 'delete',
     'delete_confirmation' => 'Delete confirmation',
