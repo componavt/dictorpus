@@ -54,7 +54,8 @@ class AudioController extends Controller
         $user = User::currentUser();
         $informant_id = $user ? $user->informant_id : NULL;
         $lang_id=5; // livvic
-        $label_id = 4; // for school dictionary
+//        $label_id = 4; // for school dictionary
+        $label_id = 3; // for multimedia dictionary
         $lemmas = Lemma::whereLangId($lang_id)
             ->whereIn('id', function ($q) use ($label_id) {
                 $q->select('lemma_id')->from('label_lemma')
