@@ -188,7 +188,7 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_text', 
                  'special_symbol' => true,
-                 'help_func' => "callHelp('help-text-fields')",
+                 'help_func' => "callHelp('help-text_fragment')",
                  'value' => $url_args['search_text'],
                  'title' => trans('corpus.text_fragment')
                 ])
