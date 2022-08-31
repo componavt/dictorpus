@@ -4,14 +4,28 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+//use Illuminate\Foundation\Testing\RefreshDatabase; 
+
 use App\Models\Dict\Lemma;
-use App\Models\Dict\Wordform;
+//use App\Models\Dict\Wordform;
 
 // php artisan make:test Models\Dict\LemmaTest
 // ./vendor/bin/phpunit tests/Models/Dict/LemmaTest
 
 class LemmaTest extends TestCase
 {    
+//    use RefreshDatabase;
+    
+    public function can_get_all_lemmas()
+    {
+        // Create Property so that the response returns it.
+//        $property = Lemma::factory()->create();
+
+        $response = $this->getJson(route('lemma.index'));
+        // We will only assert that the response returns a 200 status for now.
+        $response->assertOk(); 
+    }
+        
     public function testExtractStemVepsVerbManyWordforms()
     {
         $lemma_id = 828;

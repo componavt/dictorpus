@@ -85,7 +85,7 @@ class TextTest extends TestCase
     public function testMarkupText1sentenceWithIndirectSpeechWithQuotes()
     {
         $source_text   = "”Коса!” – sanutaze venäks.";
-        $expected_xml  = '<s id="1">”<w id="1">Коса</w>!”</s>'."\n"
+        $expected_xml  = '<s id="1">"<w id="1">Коса</w>!"</s>'."\n"
                        . '<s id="2">– <w id="2">sanutaze</w> <w id="3">venäks</w>.</s>';
         
         $text = new Text();
@@ -162,7 +162,7 @@ dd($text);        */
     public function testMarkupSentenceWithNumbers()
     {
         $source_text   = "Voittajakši tuli Sport-joukko: 6:0.”";
-        $expected_xml  = '<s id="1"><w id="1">Voittajakši</w> <w id="2">tuli</w> <w id="3">Sport-joukko</w>: 6:0.”</s>';
+        $expected_xml  = '<s id="1"><w id="1">Voittajakši</w> <w id="2">tuli</w> <w id="3">Sport-joukko</w>: 6:0."</s>';
         
         $text = new Text();
         $result_xml = $text->markupText($source_text);
@@ -174,7 +174,7 @@ dd($text);        */
     {
         $source_text   = "Niiden keskes om Šoutjärven rahvahan hor, ”Noid”-, ”Vepsän hel’m”-, ”Randaine”-, ”Linduižed”-, ”Armas”- ansamblid da äi toižid.";
 //        $expected_xml  = '<s id="1"><w id="1">Niiden</w> <w id="2">keskes</w> <w id="3">om</w> <w id="4">Šoutjärven</w> <w id="5">rahvahan</w> <w id="6">hor</w>, ”<w id="7">Noid</w>”<w id="8">-</w>, ”<w id="9">Vepsän</w> <w id="10">hel’m</w>”<w id="11">-</w>, ”<w id="12">Randaine</w>”<w id="13">-</w>, ”<w id="14">Linduižed</w>”<w id="15">-</w>, ”<w id="16">Armas</w>”- <w id="17">ansamblid</w> <w id="18">da</w> <w id="19">äi</w> <w id="20">toižid</w>.</s>';
-        $expected_xml  = '<s id="1"><w id="1">Niiden</w> <w id="2">keskes</w> <w id="3">om</w> <w id="4">Šoutjärven</w> <w id="5">rahvahan</w> <w id="6">hor</w>, ”<w id="7">Noid</w>”-, ”<w id="8">Vepsän</w> <w id="9">hel’m</w>”-, ”<w id="10">Randaine</w>”-, ”<w id="11">Linduižed</w>”-, ”<w id="12">Armas</w>”- <w id="13">ansamblid</w> <w id="14">da</w> <w id="15">äi</w> <w id="16">toižid</w>.</s>';
+        $expected_xml  = '<s id="1"><w id="1">Niiden</w> <w id="2">keskes</w> <w id="3">om</w> <w id="4">Šoutjärven</w> <w id="5">rahvahan</w> <w id="6">hor</w>, "<w id="7">Noid</w>"-, "<w id="8">Vepsän</w> <w id="9">hel’m</w>"-, "<w id="10">Randaine</w>"-, "<w id="11">Linduižed</w>"-, "<w id="12">Armas</w>"- <w id="13">ansamblid</w> <w id="14">da</w> <w id="15">äi</w> <w id="16">toižid</w>.</s>';
         
         $text = new Text();
         $result_xml = $text->markupText($source_text);
@@ -186,7 +186,7 @@ dd($text);        */
     {
         $source_text   = "Sid’ susedas Kalag’-posadas jo koumanden kerdan mäni ”Vepsän sarn”-
 festival’-konkurs.";
-        $expected_xml  = '<s id="1"><w id="1">Sid’</w> <w id="2">susedas</w> <w id="3">Kalag’-posadas</w> <w id="4">jo</w> <w id="5">koumanden</w> <w id="6">kerdan</w> <w id="7">mäni</w> ”<w id="8">Vepsän</w> <w id="9">sarn</w>”-<br />'
+        $expected_xml  = '<s id="1"><w id="1">Sid’</w> <w id="2">susedas</w> <w id="3">Kalag’-posadas</w> <w id="4">jo</w> <w id="5">koumanden</w> <w id="6">kerdan</w> <w id="7">mäni</w> "<w id="8">Vepsän</w> <w id="9">sarn</w>"-<br />'
                        . "\n".'<w id="10">festival’-konkurs</w>.</s>';
         $text = new Text();
         $result_xml = $text->markupText($source_text);
@@ -207,7 +207,7 @@ festival’-konkurs.";
     public function testMarkupSentenceDashAfterQuote()
     {
         $source_text   = "”Keradam da kaičem”- ansambl’an";
-        $expected_xml  = '<s id="1">”<w id="1">Keradam</w> <w id="2">da</w> <w id="3">kaičem</w>”- <w id="4">ansambl’an</w></s>';
+        $expected_xml  = '<s id="1">"<w id="1">Keradam</w> <w id="2">da</w> <w id="3">kaičem</w>"- <w id="4">ansambl’an</w></s>';
         $text = new Text();
         $result_xml = $text->markupText($source_text);
 
@@ -217,7 +217,7 @@ festival’-konkurs.";
     public function testMarkupSentenceDashAfterQuoteBeforeWord()
     {
         $source_text   = "”Keradam da kaičem”-ansambl’an";
-        $expected_xml  = '<s id="1">”<w id="1">Keradam</w> <w id="2">da</w> <w id="3">kaičem</w>”<w id="4">-ansambl’an</w></s>';
+        $expected_xml  = '<s id="1">"<w id="1">Keradam</w> <w id="2">da</w> <w id="3">kaičem</w>"<w id="4">-ansambl’an</w></s>';
         $text = new Text();
         $result_xml = $text->markupText($source_text);
 
@@ -237,7 +237,7 @@ festival’-konkurs.";
     public function testMarkupSentenceWithProcent()
     {
         $source_text   = "Tegihe sel’ktaks, miše küzutud ristituiden keskes 40% - aktivižid, 35% - ”kacujid”";
-        $expected_xml  = '<s id="1"><w id="1">Tegihe</w> <w id="2">sel’ktaks</w>, <w id="3">miše</w> <w id="4">küzutud</w> <w id="5">ristituiden</w> <w id="6">keskes</w> 40% - <w id="7">aktivižid</w>, 35% - ”<w id="8">kacujid</w>”</s>';
+        $expected_xml  = '<s id="1"><w id="1">Tegihe</w> <w id="2">sel’ktaks</w>, <w id="3">miše</w> <w id="4">küzutud</w> <w id="5">ristituiden</w> <w id="6">keskes</w> 40% - <w id="7">aktivižid</w>, 35% - "<w id="8">kacujid</w>"</s>';
         $text = new Text();
         $result_xml = $text->markupText($source_text);
 
