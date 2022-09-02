@@ -5,6 +5,9 @@ namespace App\Models\Corpus;
 //use \Venturecraft\Revisionable\Revision;
 use Illuminate\Database\Eloquent\Model;
 use Storage;
+use LaravelLocalization;
+
+use App\Models\Dict\Lang;
 
 class Audiotext extends Model
 {
@@ -44,5 +47,41 @@ class Audiotext extends Model
 //        return route('audiotext.show', ['id'=>$this->id]);
 //        return Storage::disk('audiotexts')->url($this->filename);
         return Storage::url(self::DIR . $this->filename);
+    }
+    
+    public static function onMap() {
+        $places = [];
+        $colors = Lang::MAP_COLORS;
+        
+        $place_coll = Place::whereNotNull('latitude')
+                       ->whereNotNull('longitude')
+                       ->whereIn('id', function ($query1) {
+                            $query1->select('place_id')->from('events')
+                                   ->whereIn('id', function ($query2) {
+                                    $query2->select('event_id')->from('texts')
+                                       ->whereIn('id', function ($query3) {
+                                           $query3->select('text_id')->from('audiotexts');
+                                       });
+                                   });
+                       })->get();
+        foreach ($place_coll as $place) {
+            $texts = $place->texts_with_audio()->get();//$place->texts;
+            $popup = '<b>'.$place->name.'</b>';
+            foreach ($texts as $text) {
+                $audiotext = $text->audiotexts[0];
+                $popup .= '<br><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$text->id)
+                        . '">'.$text->title.'</a> ('.$text->dialectsToString()
+                        . ($text->event && $text->event->date ? ', '.$text->event->date : '') 
+                        .')<br><audio controls><source src="'.$audiotext->url()
+                        .'" type="audio/mpeg"></audio>';
+            }
+            $places[]=[
+                'latitude'=>$place->latitude,
+                'longitude'=>$place->longitude,
+                'color'=>$colors[$text->lang_id],
+                'popup'=>$popup
+            ];
+        }
+        return $places;
     }
 }
