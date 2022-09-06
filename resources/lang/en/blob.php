@@ -126,5 +126,5 @@ return [
                         At the moment, the program supports and 
                         takes into account the features of Veps and Karelian languages.</p>
                         
-                        <p>See <a href="/publ/">the publication list</a>.</p>',
+                        <p>See <a href="/page/publ/">the publication list</a>.</p>',
 ];
