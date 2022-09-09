@@ -26,7 +26,7 @@ class MeaningController extends Controller
     public function __construct()
     {
         $this->middleware('auth:dict.edit,/dict/meaning/', 
-                ['except' => ['index', 'loadExamples', 'reloadExamples']]);
+                ['except' => ['index', 'loadExamples', 'reloadExamples', 'loadMoreExamples']]);
     }
 
     /**
