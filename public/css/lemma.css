@@ -242,6 +242,7 @@ h4 .fa {
     .lemma-b {
         display: flex;    
         justify-content: space-between;
+        align-items: flex-end;
     }
     
     .dict-form {
