@@ -76,7 +76,7 @@
                 </td>
                 <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})">
                     @if($place->texts()->count())
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_place={{$place->id}}">
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}?search_place={{$place->id}}">
                         {{ $place->texts()->count() }}
                     </a>
                     @else 
@@ -85,7 +85,7 @@
                 </td>
                 <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.birth_place') }})">
                     @if($place->countTextBirthPlace())
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_birth_place={{$place->id}}">
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}?search_birth_place={{$place->id}}">
                         {{ $place->countTextBirthPlace() }}
                     </a>
                     @else 
@@ -94,7 +94,7 @@
                 </td>
                 <td class="number-cell" data-th="{{ trans('navigation.informants') }}">
                     @if($place->informants()->count())
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/informant/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_birth_place={{$place->id}}">
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/informant') }}?search_birth_place={{$place->id}}">
                         {{ $place->informants()->count() }}
                     </a>
                     @else 
