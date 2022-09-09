@@ -63,7 +63,7 @@ class User extends EloquentUser
     
     public static function currentUser(){
         $user=Sentinel::check();
-        return User::find($user->id);
+        return $user ? User::find($user->id) : null;
     }
 
     public static function registration($input) {
