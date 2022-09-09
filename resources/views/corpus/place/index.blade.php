@@ -84,7 +84,7 @@
                     @endif
                 </td>
                 <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.birth_place') }})">
-                    @if($place->texts()->count())
+                    @if($place->countTextBirthPlace())
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get ? $args_by_get.'&' : '?'}}search_birth_place={{$place->id}}">
                         {{ $place->countTextBirthPlace() }}
                     </a>
