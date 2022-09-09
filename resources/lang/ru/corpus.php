@@ -120,6 +120,7 @@ return [
     'source_pages' => 'страницы',
     'source_title' => 'Название публикации',
     'source_year' => 'год публикации',
+    'speech' => 'Говор',
     'symbol' => 'символ',
     
     'text' => 'текст',

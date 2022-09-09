@@ -55,14 +55,17 @@ class Audiotext extends Model
         
         $place_coll = Place::whereNotNull('latitude')
                        ->whereNotNull('longitude')
-                       ->whereIn('id', function ($query1) {
-                            $query1->select('place_id')->from('events')
-                                   ->whereIn('id', function ($query2) {
-                                    $query2->select('event_id')->from('texts')
-                                       ->whereIn('id', function ($query3) {
-                                           $query3->select('text_id')->from('audiotexts');
-                                       });
-                                   });
+                       ->whereIn('id', function ($q1) {
+                            $q1->select('birth_place_id')->from('informants')
+                               ->whereIn('id', function ($q2) {
+                                    $q2->select('informant_id')->from('event_informant')
+                                    ->whereIn('event_id', function ($q3) {
+                                        $q3->select('event_id')->from('texts')
+                                           ->whereIn('id', function ($query3) {
+                                               $query3->select('text_id')->from('audiotexts');
+                                           });
+                                    });
+                               });
                        })->get();
         foreach ($place_coll as $place) {
             $texts = $place->texts_with_audio()->get();//$place->texts;

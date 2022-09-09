@@ -119,6 +119,7 @@ return [
     'source_pages' => 'pages',
     'source_title' => 'publication title',
     'source_year' => 'publication year',
+    'speech' => 'Speech',
     'symbol' => 'symbol',
     
     'text' => 'text',

@@ -80,6 +80,17 @@ class Text extends Model
         return $this->hasOne(Video::class);
     }
    
+    public function getSpeechAttribute()
+    {
+        if (!$this->event) { return null; }
+        
+        $informant = $this->event->informants()->first();
+
+        if (!$informant) { return null; }
+
+        return $informant->birth_place;
+    }
+    
     public function authorsToString() {
         $authors = [];
         foreach ($this->authors as $author) {

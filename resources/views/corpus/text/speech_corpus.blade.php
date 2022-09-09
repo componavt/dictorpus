@@ -43,6 +43,7 @@
             @if (!$url_args['search_dialect'])
                 <th>{{ trans('dict.dialect') }}</th>
             @endif
+                <th>{{ trans('corpus.speech') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
                 <th>{{ trans('messages.translation') }}</th>
                 <th>{{ trans('corpus.listen') }}</th>
@@ -69,6 +70,13 @@
                     @endif
                 </td>
             @endif
+
+                <td data-th="{{ trans('corpus.speech') }}">
+                    @if ($text->speech)
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/place/'.$text->speech->id) }}">{{ $text->speech->name }}</a>
+                    @endif
+                </td>
+            
                 <td data-th="{{ trans('corpus.title') }}">
                     {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{{$text->title}}</a>
