@@ -73,7 +73,7 @@
 
                 <td data-th="{{ trans('corpus.speech') }}">
                     @if ($text->speech)
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/place/'.$text->speech->id) }}">{{ $text->speech->name }}</a>
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/place?search_id='.$text->speech->id) }}">{{ $text->speech->name }}</a>
                     @endif
                 </td>
             
