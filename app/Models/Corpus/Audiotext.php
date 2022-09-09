@@ -55,6 +55,8 @@ class Audiotext extends Model
         
         $place_coll = Place::whereNotNull('latitude')
                        ->whereNotNull('longitude')
+                       ->where('latitude', '>', 0)
+                       ->where('longitude', '>', 0)
                        ->whereIn('id', function ($q1) {
                             $q1->select('birth_place_id')->from('informants')
                                ->whereIn('id', function ($q2) {
@@ -67,8 +69,19 @@ class Audiotext extends Model
                                     });
                                });
                        })->get();
+//dd($place_coll);                       
         foreach ($place_coll as $place) {
-            $texts = $place->texts_with_audio()->get();//$place->texts;
+            $place_id = $place->id;
+            $texts = Text::whereIn('event_id', function ($q1) use ($place_id) {
+                $q1->select('event_id')->from('event_informant')
+                   ->whereIn('informant_id', function ($q2) use ($place_id) {
+                    $q2->select('id')->from('informants')
+                       ->whereBirthPlaceId($place_id);                       
+                   });
+                })->whereIn('id', function ($q1) {
+                    $q1 -> select('text_id')->from('audiotexts');
+                })->get();                                       
+                    //$place->texts_with_audio()->get();//$place->texts;
             $popup = '<b>'.$place->name.'</b>';
             foreach ($texts as $text) {
                 $audiotext = $text->audiotexts[0];
