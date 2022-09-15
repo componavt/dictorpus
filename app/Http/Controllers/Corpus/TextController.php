@@ -355,6 +355,7 @@ class TextController extends Controller
             'lang_id' => 'required|numeric',
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',
+//            'new_file' => 'mimetypes:audio/mp3',
 //            'event_date' => 'numeric',
         ]);
 

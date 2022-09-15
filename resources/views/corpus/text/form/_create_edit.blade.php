@@ -21,6 +21,10 @@
         <div id='choosed_files'>
             @include('corpus.audiotext._show_files',['audiotexts'=>$text->audiotexts])
         </div>
+        <div class="audiotext-upload">
+            <input type="text" name="new_file_name" value="{{$text->newAudiotextName()}}">
+            <input type="file" name="new_file">
+        </div>
 <!--input id="file" type="file">
 <br>
 <div class="progress">

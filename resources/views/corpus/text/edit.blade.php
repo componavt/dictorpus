@@ -25,7 +25,7 @@
 
         @include('corpus.text.modals_for_edition', ['action' => 'edit'])
         
-        {!! Form::model($text, ['method'=>'PUT', 'route'=>['text.update', $text->id]]) !!} <?php //, 'files'=>true?>
+        {!! Form::model($text, ['method'=>'PUT', 'route'=>['text.update', $text->id], 'files'=>true] ) !!} <?php //, 'enctype'=>"multipart/form-data"?>
         @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit'])
         {!! Form::close() !!}

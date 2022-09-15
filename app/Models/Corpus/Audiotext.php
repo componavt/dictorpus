@@ -34,10 +34,14 @@ class Audiotext extends Model
      * 
      * @return array with all file names in the disk directory 
      */
-    public static function getAllFiles($without_text=null) {
+    public static function getAllFiles($without_text=null, $only_free=false) {
         $files = Storage::disk(self::DISK)->files();
-        if ($without_text) {
-            $audiotexts = self::whereTextId($without_text)->pluck('filename')->toArray();
+        if ($only_free) {
+            $audiotexts = self::pluck('filename')->toArray();
+            $files = array_diff($files, $audiotexts);
+        } elseif ($without_text) {
+            $audiotexts = self::whereTextId($without_text)
+                              ->pluck('filename')->toArray();
             $files = array_diff($files, $audiotexts);
         }
         return $files;

@@ -27,7 +27,7 @@ class AudiotextController extends Controller
     
     public function chooseFiles(int $text_id)
     {
-        $audio_values = Audiotext::getAllFiles($text_id);
+        $audio_values = Audiotext::getAllFiles($text_id,true);
         return view('corpus.audiotext._choose_files',
                 compact('audio_values'));
     }

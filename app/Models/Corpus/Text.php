@@ -4,6 +4,7 @@ namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Storage;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
 
@@ -98,6 +99,14 @@ class Text extends Model
             $authors[] = $name ? $name : $author->name;
         }
         return join(', ', $authors);
+    }
+    
+    public function newAudiotextName() {
+        $count = 1;
+        while ($this->audiotexts()->whereFilename($this->id.'_'.$count.'.mp3')->count()) {
+            $count++;
+        }
+        return $this->id.'_'.$count.'.mp3';
     }
    
     public function addMeaning($meaning_id, $s_id, $word_id, $w_id, $relevance) {
@@ -523,11 +532,30 @@ class Text extends Model
             $error_message = $this->markup();
         }
 
+        $this->uploadAudioFile($request);
+        
         $this->push();        
         
         return $error_message;
     }
     
+    public function uploadAudioFile($request)
+    {
+        // загрузка файла
+        if ($request->file('new_file')) { // $request->isMethod('post') && 
+            $file = $request->file('new_file');
+            $upload_folder = 'storage/'.Audiotext::DIR;
+            $filename = $request->new_file_name 
+                    ? $request->new_file_name : $file->getClientOriginalName(); 
+            if ($this->audiotexts()->whereFilename($filename)->count()) {
+                $newfilename = $this->newAudiotextName();
+            }
+
+            $file->move($upload_folder, $filename);    
+            
+            Audiotext::create(['filename'=>$filename, 'text_id'=>$this->id]);            
+        }
+    }
     public function storeVideo($youtube_id) {
 //dd($youtube_id);        
         if (!$youtube_id) {
