@@ -14,9 +14,9 @@ class Lang extends Model
 {
     const MAP_COLORS = [
             1 => 'blue',
-            4 => 'red',
+            4 => 'green',
             5 => 'yellow',
-            6 => 'green',
+            6 => 'red',
         ];
     public $timestamps = false;
     protected $fillable = ['name_en', 'name_ru', 'code', 'sequence_number'];
