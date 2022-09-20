@@ -5,6 +5,7 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Models\Corpus\Audiotext;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
@@ -59,6 +60,11 @@ class Lang extends Model
         return $this->{$column};
     }
 
+    public function audiotexts()
+    {
+        return $this->hasManyThrough(Audiotext::class, Text::class);
+    }
+  
     /** Gets ID of this lang by code, takes into account locale.
      * 
      * @return int
