@@ -52,13 +52,12 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('corpus.title') }}">
+                    @if ($place->name_ru)
+                    {{ $place->name_ru }} (<i>ru</i>) <br>
+                    @endif                    
                     @if ($place->name_en)
                     {{ $place->name_en }} (<i>en</i>) <br>
                     @endif
-                    @if ($place->name_ru)
-                    {{ $place->name_ru }} (<i>ru</i>) <br>
-                    @endif
-                    
                     @foreach($place->other_names as $other_name)
                     {{ $other_name->name }} (<i>{{ \App\Models\Dict\Lang::find($other_name->lang_id)->code }}</i>)<br>
                     @endforeach

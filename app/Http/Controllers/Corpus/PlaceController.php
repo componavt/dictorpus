@@ -119,6 +119,7 @@ class PlaceController extends Controller
     {
         $this->validateRequest($request);
         $place = Place::create($request->all());
+        $place->dialects()->attach($request->dialects);
         $lang_id=Lang::getIDByCode(LaravelLocalization::getCurrentLocale());
         return Response::json([$place->id, $place->placeString($lang_id)]);
     }
