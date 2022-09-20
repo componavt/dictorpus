@@ -86,7 +86,7 @@ class Audiotext extends Model
                     $q1 -> select('text_id')->from('audiotexts');
                 })->get();                                       
                     //$place->texts_with_audio()->get();//$place->texts;
-            $popup = '<b>'.$place->name.'</b>';
+            $popup = '<b>'.preg_replace("/['']/", "&#39;", $place->name).'</b>';
             foreach ($texts as $text) {
                 $audiotext = $text->audiotexts[0];
                 $popup .= '<br><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$text->id)
