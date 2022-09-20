@@ -90,7 +90,7 @@ class Audiotext extends Model
             foreach ($texts as $text) {
                 $audiotext = $text->audiotexts[0];
                 $popup .= '<br><a href="'.LaravelLocalization::localizeURL('/corpus/text/'.$text->id)
-                        . '">'.preg_replace("/['']/", "\'", $text->title).'</a> ('.$text->dialectsToString()
+                        . '">'.preg_replace("/['']/", "&#39;", $text->title).'</a> ('.$text->dialectsToString()
                         . ($text->event && $text->event->date ? ', '.$text->event->date : '') 
                         .')<br><audio controls><source src="'.$audiotext->url()
                         .'" type="audio/mpeg"></audio>';
