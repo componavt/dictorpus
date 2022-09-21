@@ -30,7 +30,12 @@
         <li><a href="service/dict/school/select">Выбрать леммы</a></li>
         </ul>
         
-        <p><a href="service/audio">Записать аудио для группы ливвиковских слов</a></p>
+        <p>Записать аудио</p>
+        <ul>
+            @foreach($lists as $l =>$n)
+        <li><a href="service/audio/{{$l}}">{{$n}}</a></li>
+            @endforeach
+        </ul>
     @endif
     
     @if (User::checkAccess('admin'))

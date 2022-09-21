@@ -17,6 +17,7 @@ use App\Library\Str;
 //use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 
+use App\Models\Dict\Audio;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
@@ -43,8 +44,9 @@ class ServiceController extends Controller
         foreach (Lang::projectLangIDs() as $l_id) {
             $langs[$l_id]=Lang::getNameById($l_id);
         }
-                
-        return view('service.index', compact('langs'));        
+        $lists = Audio::recordGroups;
+        
+        return view('service.index', compact('langs', 'lists'));        
     }
     
     function addWordformAffixes(Request $request) {

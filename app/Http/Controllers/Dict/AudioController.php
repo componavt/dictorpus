@@ -50,24 +50,39 @@ class AudioController extends Controller
                         'args_by_get', 'url_args'));
     }
     
-    public function recordGroup() {
+    public function recordGroup(string $list) {
         $user = User::currentUser();
         $informant_id = $user ? $user->informant_id : NULL;
-        $lang_id=5; // livvic
-//        $label_id = 4; // for school dictionary
-        $label_id = 3; // for multimedia dictionary
-        $lemmas = Lemma::whereLangId($lang_id)
-            ->whereIn('id', function ($q) use ($label_id) {
-                $q->select('lemma_id')->from('label_lemma')
-                  ->whereLabelId($label_id);
-            })->whereNotIn('id', function ($q) {
-                $q->select('lemma_id')->from('audio_lemma');
-            })
-            ->groupBy('lemma')
-            ->orderByRaw('lower(lemma)')
-            ->take(100)->get();
+        if (in_array($list, ['multidict-check', 'multidict-all', 'schooldict'])) {
+            $lang_id=5; // livvic
+            $label_id = $list == 'schooldict' ? 4 : 3; 
+            $lemmas = Lemma::whereIn('id', function ($q) use ($label_id, $list) {
+                                $q->select('lemma_id')->from('label_lemma')
+                                  ->whereLabelId($label_id);
+                                if ($list == 'multidict-check') {
+                                    $q->whereStatus(1);
+                                }
+                           });
+        } elseif ($list == 'lud-mikh') {
+            $lang_id=6; // ludian
+            $place_id=248; // Михайловское
+            $lemmas = Lemma::whereIn('id', function ($q) use ($place_id) {
+                                $q->select('lemma_id')->from('lemma_place')
+                                  ->wherePlaceId($place_id);
+                           });
+        } else {
+            return;
+        }
+        $lemmas = $lemmas->whereLangId($lang_id)
+                         ->whereNotIn('id', function ($q) {
+                            $q->select('lemma_id')->from('audio_lemma');
+                         })
+                         ->groupBy('lemma')
+                         ->orderByRaw('lower(lemma)')
+                         ->take(100)->get();
+        $list_title = Audio::recordGroups[$list];
         return view('dict.audio.record_group',
-                compact('lemmas', 'informant_id'));        
+                compact('lemmas', 'list_title', 'informant_id'));        
     }
     
     public function upload(Request $request) {

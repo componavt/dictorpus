@@ -24,5 +24,5 @@ Route::group(
         Route::get('dict/school', 'Library\DictController@schoolView');       
         Route::get('dict/school/select', 'Library\DictController@schoolSelect');       
         
-        Route::get('audio', 'Dict\AudioController@recordGroup');
+        Route::get('audio/{list}', 'Dict\AudioController@recordGroup');
     });

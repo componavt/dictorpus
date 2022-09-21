@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-Запись аудио для группы слов
+Запись аудио {{$list_title}}
 @stop
 
 @section('headExtra')

@@ -13,6 +13,11 @@ class Audio extends Model
     protected $fillable = ['filename', 'informant_id'];
     const DISK = 'audios';
     const DIR = 'audio/lemmas/';
+    const recordGroups = [
+        'multidict-check' => 'ПРОВЕРЕННЫХ ливвиковских слов для Мультимедийного словаря',
+        'multidict-all'   => 'ВСЕХ ливвиковских слов для Мультимедийного словаря',
+        'lud-mikh'        => 'людиковских слов Михайловского говора'
+    ];
     
     public $timestamps = false;
     
