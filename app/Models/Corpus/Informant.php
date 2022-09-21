@@ -74,6 +74,18 @@ class Informant extends Model
         return $texts;
     }
     
+    public static function getNameById($id)
+    {     
+        if (!$id) {
+            return;
+        }
+        $informant = self::find($id);
+        if (!$informant) {
+            return;
+        }
+        return $informant->name;
+    }
+    
     /** Gets list of informant
      * 
      * @return Array [1=>'Vepsian',..]

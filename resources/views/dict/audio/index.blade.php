@@ -41,7 +41,7 @@
                     @endforeach
                 </td>
                 <td data-th="{{ trans('corpus.informant') }}">
-                    {{$audio->informant->name}}
+                    {{$audio->informant ? $audio->informant->name : ''}}
                 </td>
                 <td data-th="{{ trans('messages.created_at') }}">
                     {{$audio->created_at}}

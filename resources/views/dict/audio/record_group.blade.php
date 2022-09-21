@@ -9,6 +9,15 @@
 @stop
 
 @section('body')
+<div class="row">
+    <div class="col-sm-1">{{trans('corpus.record_by')}}</div>
+    <div class="col-sm-11">
+    @include('widgets.form.formitem._select', 
+                ['name' => 'informant_id', 
+                 'values' =>$informant_values,
+                 'value' => $informant_id]) 
+    </div>
+</div>
 	<div id="record">
             <div class='hor_flex'>
 		<div id="prev"></div>
@@ -187,17 +196,15 @@ function saveRecord()
 			let fd = new FormData();
 			fd.append('id', wordsArray[currentWord].id);
 /*			fd.append('text', wordsArray[currentWord].text);*/
-			fd.append('informant_id', {{$informant_id}});
+			fd.append('informant_id', $("#informant_id").val());
 			fd.append('_token', '{{ csrf_token() }}');
 			fd.append('audio', voiceBlob);
-alert(voiceBlob);
+/*alert($("#informant_id").val());*/
                         
 			oReq.send(fd);
 			oReq.onload = function (oEvent) {
 			};
-			/**
-			 * Вот это по идее должно быть в блоке выше
-			 */
+
                         prevWindow.innerHTML = '<a href="/dict/lemma/'+wordsArray[currentWord].id+'">'+wordsArray[currentWord].text + "</a> записано.";
 			isRecordingComplete = false;
 			currentWord++;

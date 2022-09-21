@@ -12,6 +12,8 @@ use App\Library\Str;
 
 use App\Models\User;
 
+use App\Models\Corpus\Informant;
+
 use App\Models\Dict\Audio;
 use App\Models\Dict\Lemma;
 
@@ -53,6 +55,8 @@ class AudioController extends Controller
     public function recordGroup(string $list) {
         $user = User::currentUser();
         $informant_id = $user ? $user->informant_id : NULL;
+        $informant_values = Informant::getList();
+        
         if (in_array($list, ['multidict-check', 'multidict-all', 'schooldict'])) {
             $lang_id=5; // livvic
             $label_id = $list == 'schooldict' ? 4 : 3; 
@@ -82,7 +86,7 @@ class AudioController extends Controller
                          ->take(100)->get();
         $list_title = Audio::recordGroups[$list];
         return view('dict.audio.record_group',
-                compact('lemmas', 'list_title', 'informant_id'));        
+                compact('lemmas', 'list_title', 'informant_id', 'informant_values'));        
     }
     
     public function upload(Request $request) {

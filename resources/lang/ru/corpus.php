@@ -107,6 +107,7 @@ return [
     'region_list' => 'Список регионов',
     'region_removed' => 'Регион ":name" удален.',
     
+    'record_by' => 'Записывает',
     'recorder' => 'Собиратель',
     'recorder_list' => 'Список собирателей',
     'recorder_name' => 'Имя собирателя',

@@ -102,6 +102,7 @@ return [
     'recording_year' => 'year of recording',
     'recorded' => 'recorded',
     
+    'record_by' => 'Recorded by',
     'recorder' => 'Recorder',
     'recorder_list' => 'Recorders list',
     'recorder_name' => 'Recorder name',
