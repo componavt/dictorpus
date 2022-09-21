@@ -10,9 +10,9 @@
 
 @section('body')
 <div class="row">
-    <div class="col-sm-1">{{trans('corpus.record_by')}}</div>
-    <div class="col-sm-11">
-    @include('widgets.form.formitem._select', 
+    <div class="col-sm-2" style="text-align: right">{{trans('corpus.record_by')}}</div>
+    <div class="col-sm-10">
+        @include('widgets.form.formitem._select', 
                 ['name' => 'informant_id', 
                  'values' =>$informant_values,
                  'value' => $informant_id]) 
