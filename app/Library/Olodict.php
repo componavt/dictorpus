@@ -28,7 +28,7 @@ class Olodict
     
     public static function gramLinks($first_letter) {
         if (!$first_letter) {
-            return null;
+            return collect();
         }
         return Lemma::where('lemma_for_search', 'like', $first_letter.'%')
                          ->whereIn('id', Label::checkedOloLemmas())
