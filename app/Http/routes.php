@@ -31,6 +31,7 @@ Route::group(
         include_once 'routes/import.php';
         include_once 'routes/experiments.php';        
         include_once 'routes/service.php';
+        include_once 'routes/olodict.php';
         include_once 'routes/stats.php';
         
     }

@@ -135,3 +135,35 @@ if (! function_exists('to_link')) {
 
     }
 }
+
+// extracts some parameters from object Request into array $url_args
+if (! function_exists('url_args')) {
+    function url_args($request, $limit_min=10) {
+        $url_args = [
+            'portion' => (int)$request->input('portion'), // number of records per page
+            'page'      => (int)$request->input('page'),      // number of page
+        ];
+        if (!$url_args['page']) {
+            $url_args['page'] = 1;
+        }
+        
+        if ($url_args['portion']<=0) {
+            $url_args['portion'] = $limit_min;
+        } elseif ($url_args['portion']>1000) {
+            $url_args['portion'] = 1000;
+        }   
+        return $url_args;
+    }
+}
+
+// Converts the array $url_args (name->value) to String
+// Usage: 
+// $this->args_by_get = search_values_by_URL($this->url_args);
+if (! function_exists('search_values_by_URL')) {
+    function search_values_by_URL(array $url_args=NULL)
+    {
+        $out = http_build_query($url_args);
+        return $out ? '?'.$out : '';
+    }
+}
+
