@@ -3,7 +3,6 @@
 @section('headExtra')
     {!!Html::style('css/essential_audio.css')!!}
     {!!Html::style('css/essential_audio_circle.css')!!}
-    {!!Html::style('css/mic.css')!!}
 @stop
 
 @section('left-column')

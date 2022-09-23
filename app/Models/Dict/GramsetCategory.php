@@ -27,6 +27,13 @@ class GramsetCategory extends Model
         return $this->{$column};
     }
 
+    public static function getNameById($id) {
+        $category = self::find($id);
+        if ($category) {
+            return $category->name;
+        }
+    }
+
     /** Gets list of languages
      * 
      * @return Array [1=>'Vepsian',..]

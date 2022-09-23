@@ -167,3 +167,10 @@ if (! function_exists('search_values_by_URL')) {
     }
 }
 
+if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
+    function mb_ucfirst($string) {
+        $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
+        return $string;
+    }
+}
+

@@ -54,6 +54,16 @@ class Meaning extends Model
     use \App\Traits\Relations\HasMany\Examples;
     use \App\Traits\Relations\HasMany\MeaningTexts;
 
+    public function textByLangCode($lang_code, $default_code='') {
+        $lang_id = Lang::getIDByCode($lang_code);
+        $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$this->id)->first();
+        if ($meaning_text_obj) {
+            return $meaning_text_obj->meaning_text;
+        }
+        if ($default_code && $lang_code != $default_code) {
+            return $this->textByLangCode($default_code);
+        }
+    }
 
     /** Gets list of meanings for lemma $lemma_id,
      * if $lang_id is empty, gets null
@@ -103,11 +113,16 @@ class Meaning extends Model
      *                           false - for view, output all positive examples (relevance>0)
      * @return array
      */
-    public function sentences($for_edit=false, $limit='', $start=0){
+    public function sentences($for_edit=false, $limit='', $start=0, $relevance=''){
         $sentences = [];
         $sentence_builder = DB::table('meaning_text')
-                              ->where('meaning_id',$this->id)
-                              ->orderBy('relevance','desc')
+                              ->where('meaning_id',$this->id);
+        
+        if ($relevance !== '') {
+             $sentence_builder = $sentence_builder->whereRelevance($relevance);
+        }
+        
+        $sentence_builder = $sentence_builder->orderBy('relevance','desc')
                               ->orderBy('text_id')
                               ->orderBy('s_id')
                               ->orderBy('word_id');
@@ -134,8 +149,12 @@ class Meaning extends Model
                 if ($fragment) {
                     $sentence['s'] = $fragment->text_xml;
                 }
-                $translation_text = SentenceTranslation::getTextForLocale($sentence['sent_obj']->id,
-                                                                          $meaning_text->w_id);
+                $translation_text = preg_replace("/\r?\n/", "",
+                        SentenceTranslation::getTextForLocale($sentence['sent_obj']->id,
+                                                              $meaning_text->w_id));
+/*                if (preg_match("/^(\<s id=\"\d+\"\>)\<br\>(.+)$/", $translation_text, $regs)) {
+                    $translation_text = $regs[1].$regs[2];
+                }*/
                 if ($translation_text) {
                     $sentence['trans_s'] = $translation_text;
                 }

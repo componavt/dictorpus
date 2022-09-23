@@ -260,6 +260,78 @@ class Lemma extends Model
                     ->wherePivot('dialect_id',$dialect_id)
                     ->get();
     }
+    
+    /**
+     * Wordforms array for one dialect.
+     * Output in a table:
+     * 
+     * |           | единственное | множественное |
+     * | номинатив |              |               |
+     * 
+     * or
+     * 
+     * |               | положительные | отрицательные |
+     * | Индикатив, презенс
+     * | 1 л., ед. ч.  |               |               |
+     * 
+     * @param int $dialect_id -- ID of dialect
+     */
+    public function wordformsForTable(int $dialect_id) {
+        $lang_id = Dialect::getLangIDByID($dialect_id);
+        $numbers = Gram::getByCategory(2);
+        $wordforms = [];
+        if ($this->pos->isName()) {
+            $cases = Gram::getByCategory(1);
+            foreach ($cases as $case) {
+                foreach ($numbers as $number) {
+                    $gramset = Gramset::gramsetsLangPOS($lang_id, $this->pos_id)
+                                      ->whereGramIdCase($case->id)
+                                      ->whereGramIdNumber($number->id)
+                                      ->first();
+                    if (!$gramset) { 
+                        continue;                         
+                    }
+                    $wordforms[$case->name][$number->id]
+                            =$this->wordform($gramset->id, $dialect_id);
+                }
+            }
+        } elseif ($this->pos->isVerb()) {
+  //          $gramsets = Gramset::getGroupedList($this->pos_id, $lang_id);
+//dd($gramsets);            
+            $negations = Gram::getByCategory(6);
+            foreach (Gram::getByCategory(5) as $mood) {
+                foreach (Gram::getByCategory(3) as $tense) {
+                    foreach ($numbers as $number) {
+                        foreach (Gram::getByCategory(4) as $person) {
+                            foreach ($negations as $negation) {
+                                $gramset = Gramset::gramsetsLangPOS($lang_id, $this->pos_id)
+                                                  ->whereGramIdMood($mood->id)
+                                                  ->whereGramIdTense($tense->id)
+                                                  ->whereGramIdPerson($person->id)
+                                                  ->whereGramIdNumber($number->id)
+                                                  ->whereGramIdNegation($negation->id)
+                                                  ->first();
+                                if (!$gramset) { 
+                                    continue;                         
+                                }
+                                $wordforms[$mood->name. ', ' .$tense->name][$person->short_name. ', '. $number->short_name][$negation->id]
+                                        =$this->wordform($gramset->id, $dialect_id);
+                            }
+                        }
+                    }                
+                }
+            }
+            $infinite_category_id = 26;
+            $gramsets = Gramset::gramsetsLangPOS($lang_id, $this->pos_id)
+                    ->where('gramset_category_id', $infinite_category_id)->get();
+            foreach ($gramsets as $gramset) {
+                $wordforms[GramsetCategory::getNameById($infinite_category_id)][$gramset->inCategoryString()] 
+                        = $this->wordform($gramset->id, $dialect_id);
+            }
+        }
+//dd($wordforms);        
+        return $wordforms;
+    }
 
     /**
      *  Gets wordforms for given gramset, dialects and search string (wordform or pattern, e.g. '%čin')

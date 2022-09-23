@@ -30,7 +30,7 @@ class Label extends Model
     
     public static function checkedOloLemmas() {
         return DB::table('label_lemma')->whereLabelId(self::OlodictLabel)
-//                 ->whereStatus(1)
+                 ->whereStatus(1)
                  ->select('lemma_id');
     }
 }

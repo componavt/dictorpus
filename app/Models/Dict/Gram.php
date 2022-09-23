@@ -37,6 +37,13 @@ class Gram extends Model
         return $this->{$column};
     }
 
+    public function getShortNameAttribute() : String
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $column = "name_short_" . $locale;
+        return $this->{$column};
+    }
+
     public function getCodeAttribute() : String
     {
         $v = $this->unimorph;

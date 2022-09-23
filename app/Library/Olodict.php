@@ -11,6 +11,8 @@ use App\Models\Dict\Lemma;
 
 class Olodict
 {
+    const Dialect = 44;
+    
     public static function lemmaList($url_args) {
         $lemmas = Lemma::whereIn('id', Label::checkedOloLemmas());
         

@@ -1,5 +1,10 @@
 @foreach ($lemmas as $lemma)
 <div class='lemma-b'>
-    @include('olodict._lemma', ['phrases' => $lemma->phrases->sortBy('lemma')])
+    <div>
+    @include('olodict._lemma', ['phrases' => $lemma->phrases->sortBy('lemma'), 'meaning_texts' => $lemma->getMeaningTexts()])
+    </div>
+    <div class='wordforms-b'>
+    @include('olodict._wordforms',['wordforms'=>$lemma->wordformsForTable($dialect_id)])    
+    </div>
 </div>    
 @endforeach

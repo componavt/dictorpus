@@ -8,6 +8,14 @@ body {
     font-size: 14px;
 }
 
+a,
+a:active,
+a:focus,
+a:hover {
+    color: #972d1a;
+    text-decoration: underline;
+}
+
 .logo {
     display: flex;
     align-items: center;
@@ -84,7 +92,7 @@ body {
 
 .right-column {
     border: 1px #ccc solid;
-    padding-left: 20px;
+    padding: 20px;
 }
 
 .arrow {
@@ -120,39 +128,87 @@ body {
     text-decoration: none; 
 }
 
-.audio-info {
-    background: #f9e7e4;
-    color: black;
-    display: none;
-    left: 0;
-    margin-top: -2px;
-    padding: 10px;
-    position: absolute;
-    text-align: left;
-    top: 3px;
-    width: 200px;
-    z-index: 100;    
-}
-
-.audio-info-caller {
-    cursor: pointer;
-    position: relative;
-}
-
 .audio-button {
     display: inline-block;
     position: relative;
     top: 5px;
 }
 
-a,
-a:active,
-a:focus,
-a:hover {
-    color: #972d1a;
-    text-decoration: underline;
+.lemma-b div.essential_audio.circle {
+	border-radius: 2px;
+	overflow: hidden;
+	width: 30px;
+	height: 30px;
+	border-radius: 15px;
+        margin: 0 0 5px 10px;
 }
 
+.lemma-b div.essential_audio.circle > div:nth-child(1) div {
+	width: 30px;
+	height: 30px;
+	border-radius: 0px!important;
+	background-color: transparent!important;
+}
+
+.lemma-b div.essential_audio.circle > div:nth-child(1) div:after {
+	top: 2px;
+	left: 5px;
+	width: 68%;
+	height: 68%;
+}
+
+.lemma-b h2 {
+    display: flex;
+    margin-bottom: 10px;
+    padding: 15px 5px 0 0;
+}
+
+s {
+    text-decoration: none;
+}
+
+.word-marked {
+    background: #fefea6;
+}
+
+.lemma-b {
+    display: flex;
+    align-items: flex-start;
+}
+
+.lemma-b h3 {
+    font-size: 20px;
+}
+
+.lemma-meaning-b {
+    padding-left: 20px;
+}
+
+.meaning-sentence {
+    margin-bottom: 10px;
+}
+
+.meaning-sentence-trans {
+    font-style: italic;
+    padding-left: 15px;
+}
+
+.lemma-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.wordform-link {
+    font-size: 20px;
+/*    text-decoration: none;*/
+}
+
+.wordforms-b {
+    padding: 20px 0 0 20px;
+}
+
+/*****************************/
 .link-color {
     color: #972d1a;    
 }
@@ -206,9 +262,6 @@ h2 {
     margin: 0 0 20px;
 }
 
-.right-col {
-    padding-left: 5%;
-}
 .corpus_means_text {
     color: #5b5b5b;
     font-size: 16px;

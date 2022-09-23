@@ -544,6 +544,34 @@ AND t1.word_number-t2.word_number<=|B|;
         return $sxe->asXML();
     }
     
+    /**
+     * Устанавить разметку с блоками слов
+
+     * @param array $search_w         - array ID of searching word object
+     * 
+     * @return string                 - transformed text with markup tags
+     **/
+    public function markSearchWords($search_w=[], $markup_text=null){
+        if (!$markup_text) {
+            $markup_text = $this->text_xml;
+        }
+        list($sxe,$error_message) = Text::toXML($markup_text,'');
+        if ($error_message || !sizeof($search_w)) {
+            return $markup_text;
+        }
+
+        $words = $sxe->xpath('//w');
+        foreach ($words as $word) {
+//            $word = $this->addWordBlock($word, $search_w);
+            $w_id = (int)$word->attributes()->id;
+            if (!$w_id) { continue; }
+            if (in_array($w_id,$search_w)) {
+                $word->addAttribute('class', 'word-marked');
+            }
+        }
+        return $sxe->asXML();
+    }
+    
     public function addWordBlock($word, $search_w=[]) {
         $w_id = (int)$word->attributes()->id;
         if (!$w_id) { return $word; }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use LaravelLocalization;
 
 use App\Library\Olodict;
 
@@ -49,6 +50,7 @@ class OlodictController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        $locale = LaravelLocalization::getCurrentLocale();
 
         $alphabet = Lemma::whereIn('id', Label::checkedOloLemmas())
                          ->selectRaw('substr(lemma_for_search,1,1) as letter')
@@ -63,9 +65,11 @@ class OlodictController extends Controller
         $lemma_list = Olodict::lemmaList($url_args);
         $gram_list = Olodict::gramLinks($url_args['search_letter']);
         $lemmas = Olodict::search($url_args);
+        $dialect_id = Olodict::Dialect;
         
         return view('olodict.index',
-                compact('alphabet', 'gram_list', 'lemma_list', 'lemmas', 'args_by_get', 'url_args'));
+                compact('alphabet', 'dialect_id', 'gram_list', 'lemma_list', 
+                        'lemmas', 'locale', 'args_by_get', 'url_args'));
     }
     
     public function lemmaList()
