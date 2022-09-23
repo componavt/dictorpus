@@ -37,9 +37,9 @@ class OlodictController extends Controller
             if (!$url_args['search_letter']) {
                 $url_args['search_letter'] = mb_substr($url_args['search_lemma'], 0, 1);
             }
-            if (!$url_args['search_gram']) {
+/*            if (!$url_args['search_gram']) {
                 $url_args['search_gram'] = mb_substr($url_args['search_lemma'], 0, 3);
-            }
+            }*/
         }
         
         $this->url_args = $url_args;
@@ -57,28 +57,30 @@ class OlodictController extends Controller
                          ->groupBy('letter')
                          ->orderBy('letter')
                          ->get();
-//dd($alphabet);                        
-//        $first_letter = $alphabet[0]->letter;
-        
-                        
-//        $first_trigram = $trigrams[0]->gram;
+
         $lemma_list = Olodict::lemmaList($url_args);
+        $lemmas_total = sizeof($lemma_list->get());
+        $lemma_list = $lemma_list->paginate($url_args['limit_num']);
+        
         $gram_list = Olodict::gramLinks($url_args['search_letter']);
         $lemmas = Olodict::search($url_args);
         $dialect_id = Olodict::Dialect;
         
         return view('olodict.index',
                 compact('alphabet', 'dialect_id', 'gram_list', 'lemma_list', 
-                        'lemmas', 'locale', 'args_by_get', 'url_args'));
+                        'lemmas_total', 'lemmas', 'locale', 
+                        'args_by_get', 'url_args'));
     }
     
     public function lemmaList()
     {
         $url_args = $this->url_args;
         $lemma_list = Olodict::lemmaList($url_args);
-                        
+        $lemmas_total = sizeof($lemma_list->get());
+        $lemma_list = $lemma_list->paginate($url_args['limit_num']);
+        
         return view('olodict._lemma_list',
-                compact('lemma_list', 'url_args'));
+                compact('lemma_list', 'lemmas_total', 'url_args'));
     }
     
     public function gramLinks(string $letter)

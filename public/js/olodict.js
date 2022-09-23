@@ -24,7 +24,7 @@ function viewLemma(lemma_obj) {
     loadLemma(lemma_obj.getAttribute('data-id'));
 }
 
-function loadLemmas() {
+function loadLemmas(page=1) {
     var first_letter = $(".letter-active").html();
     var gram = $(".gram-active").html();
     
@@ -32,7 +32,8 @@ function loadLemmas() {
         url: '/olodict/lemma_list', 
         data: {
             search_letter: first_letter,
-            search_gram: gram
+            search_gram: gram,
+            page: page
               },
         type: 'GET',
         success: function(lemma_list){       

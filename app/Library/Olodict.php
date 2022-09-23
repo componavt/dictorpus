@@ -24,8 +24,7 @@ class Olodict
         }
         
         return $lemmas ->orderBy('lemma_for_search')
-                ->groupBy('lemma')
-                ->paginate($url_args['limit_num']);
+                ->groupBy('lemma');
     }
     
     public static function gramLinks($first_letter) {

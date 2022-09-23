@@ -174,3 +174,23 @@ if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
     }
 }
 
+if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
+    function mb_ucfirst($string) {
+        $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
+        return $string;
+    }
+}
+
+if (!function_exists('prev_args')) {
+    function prev_args($url_args) {
+        $url_args['page'] = $url_args['page'] > 1 ? $url_args['page']-1 : 1;
+        return search_values_by_URL($url_args);
+    }
+}
+
+if (!function_exists('next_args')) {
+    function next_args($url_args) {
+        $url_args['page'] = $url_args['page']+1;
+        return search_values_by_URL($url_args);
+    }
+}
