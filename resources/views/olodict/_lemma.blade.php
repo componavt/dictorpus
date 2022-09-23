@@ -6,7 +6,7 @@
     @endif
 </h2>
     
-    <a class='wordform-link' onClick=''>{{trans('navigation.wordforms')}}</a>    
+    <a class='wordform-link' onClick='$(".wordforms-b").toggle(400)'>{{trans('navigation.wordforms')}}</a>    
 </div>
 
 @if ($lemma->pos)

@@ -190,7 +190,7 @@ s {
 
 .meaning-sentence-trans {
     font-style: italic;
-    padding-left: 15px;
+    padding: 5px 0 0 15px;
 }
 
 .lemma-title {
@@ -200,11 +200,13 @@ s {
 }
 
 .wordform-link {
+    cursor: pointer;
     font-size: 20px;
 /*    text-decoration: none;*/
 }
 
 .wordforms-b {
+    display: none;
     padding: 20px 0 0 20px;
 }
 
