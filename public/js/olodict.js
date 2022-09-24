@@ -39,6 +39,7 @@ function clearSearchForm() {
     $('#search_concept').val(null);
     $('#search_concept_category').val(null);
     $('#with_audio').prop( "checked", false );
+    $('#with_template').prop( "checked", false );
 }
 
 function searchLemmas(locale) {
@@ -50,7 +51,12 @@ function searchLemmas(locale) {
     if ($("#with_audios").is(':checked')) {
         with_audios = 1;
     }
-console.log($("#search_concept").val());
+
+    var with_template='';
+    if ($("#with_template").is(':checked')) {
+        with_template = 1;
+    }
+    
     $.ajax({
         url: '/'+locale+'/olodict/lemma_list', 
         data: {
@@ -59,7 +65,8 @@ console.log($("#search_concept").val());
             search_pos: $("#search_pos").val(),
             search_concept: $("#search_concept").val(),
             search_concept_category: $("#search_concept_category").val(),
-            with_audios: with_audios
+            with_audios: with_audios,
+            with_template: with_template
               },
         type: 'GET',
         success: function(lemma_list){       

@@ -15,10 +15,11 @@
              'attributes' => ['onChange' => "searchLemmas('$locale')",
                               'placeholder' => trans('dict.pos')]]) 
 
-    <div class="form-group ">
-        <input id="search_meaning" type='text' onKeyUp="searchLemmas('{{$locale}}')" placeholder="{{trans('dict.interpretation')}}" 
-               value="{{isset($url_args['search_meaning']) ? $url_args['search_meaning'] : ''}}">
-    </div>
+    @include('widgets.form.formitem._text',
+            ['name' => 'search_meaning',
+            'value' => isset($url_args['search_meaning']) ? $url_args['search_meaning'] : '',
+            'attributes' => ['onKeyUp' => "searchLemmas('$locale')",
+                             'placeholder' => trans('dict.interpretation') ]]) 
 
     @include('widgets.form.formitem._select',
             ['name' => 'search_concept_category',
@@ -41,6 +42,13 @@
             'checked' => $url_args['with_audios']==1,
             'attributes' => ['onClick' => "searchLemmas('$locale')"],
             'tail'=>trans('dict.with_audios')]) 
+
+    @include('widgets.form.formitem._checkbox',
+            ['name' => 'with_template',
+            'value' => 1,
+            'checked' => $url_args['with_template']==1,
+            'attributes' => ['onClick' => "searchLemmas('$locale')"],
+            'tail'=>trans('olodict.with_template')]) 
 
     <div class="form-group ">
         <input type='button' value="{{trans('messages.reset')}}" class='btn btn-primary btn-default' onClick="resetSearchForm()">

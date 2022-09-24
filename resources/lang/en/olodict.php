@@ -23,5 +23,6 @@ return [
     'prev_words' => 'Previous words',
     'topic' => 'topic',
     'welcome_block' => "",
+    'with_template' => 'with template',
     'word' => 'word',
 ];

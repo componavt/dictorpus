@@ -27,9 +27,9 @@ class Olodict
                 $lemmas -> where('pos_id', $url_args['search_pos']);
             }
 
-            $lemmas = self::searchByWord($lemmas, $url_args['search_word']);
+            $lemmas = self::searchByWord($lemmas, $url_args['search_word'], $url_args['with_template']);
+            $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning'], $url_args['with_template']);
             $lemmas = self::searchByAudios($lemmas, $url_args['with_audios']);
-            $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning']);
             $lemmas = self::searchByConcept($lemmas, $url_args['search_concept']);
             $lemmas = self::searchByConceptCategory($lemmas, $url_args['search_concept_category']);
         }
@@ -48,32 +48,44 @@ class Olodict
                         });
     }
     
-    public static function searchByWord($lemmas, $word) {
+    public static function searchByWord($lemmas, $word, $with_template) {
         if (!$word) {
             return $lemmas;
         }
         $word_for_search = Grammatic::changeLetters($word, 5);
+        if ($with_template) {
+            $operator = 'rlike';
+        } else {
+            $operator = 'like';
+            $word_for_search = '%'.$word_for_search.'%';
+        }
 
-        return $lemmas->where(function ($q) use ($word_for_search) {
-                    $q->where('lemma_for_search', 'like', '%'.$word_for_search.'%')
-                      ->orWhereIn('id',function($q2) use ($word_for_search){
+        return $lemmas->where(function ($q) use ($operator, $word_for_search) {
+                    $q->where('lemma_for_search', $operator, $word_for_search)
+                      ->orWhereIn('id',function($q2) use ($operator, $word_for_search){
                             $q2->select('lemma_id')->from('lemma_wordform')
-                               ->where('wordform_for_search','like', $word_for_search);
+                               ->where('wordform_for_search', $operator, $word_for_search);
                             });
                 });
     }
     
-    public static function searchByMeaning($lemmas, $meaning) {
+    public static function searchByMeaning($lemmas, $meaning, $with_template) {
         if (!$meaning) {
             return $lemmas;
         }
-        return $lemmas->whereIn('id',function($query) use ($meaning){
+        if ($with_template) {
+            $operator = 'rlike';
+        } else {
+            $operator = 'like';
+            $meaning = '%'.$meaning.'%';
+        }
+        return $lemmas->whereIn('id',function($query) use ($operator, $meaning){
                     $query->select('lemma_id')
                         ->from('meanings')
-                        ->whereIn('id',function($q) use ($meaning){
+                        ->whereIn('id',function($q) use ($operator, $meaning){
                             $q->select('meaning_id')
                             ->from('meaning_texts')
-                            ->where('meaning_text','like', '%'.$meaning.'%');
+                            ->where('meaning_text', $operator, $meaning);
                         });
                     });
     }
