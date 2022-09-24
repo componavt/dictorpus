@@ -23,35 +23,94 @@ class Olodict
             $lemmas -> where('lemma_for_search', 'like', $url_args['search_letter'].'%');
             
         } else {
-            if ($url_args['search_template']) {
-                $lemmas -> where('lemma_for_search', 'like', '%'.$url_args['search_template'].'%');
-            }
             if ($url_args['search_pos']) {
                 $lemmas -> where('pos_id', $url_args['search_pos']);
             }
-            if ($url_args['search_meaning']) {
-                $lemmas->whereIn('id',function($query) use ($url_args){
-                    $query->select('lemma_id')
-                        ->from('meanings')
-                        ->whereIn('id',function($q) use ($url_args){
-                            $q->select('meaning_id')
-                            ->from('meaning_texts')
-                            ->where('meaning_text','like', '%'.$url_args['search_meaning'].'%');
-                        });
-                    });
-            }
-            if ($url_args['with_audios']) {            
-                $lemmas->whereIn('id',function($query){
-                        $query->select('lemma_id')
-                            ->from('audio_lemma');
-                        });
-            }
+
+            $lemmas = self::searchByWord($lemmas, $url_args['search_word']);
+            $lemmas = self::searchByAudios($lemmas, $url_args['with_audios']);
+            $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning']);
+            $lemmas = self::searchByConcept($lemmas, $url_args['search_concept']);
+            $lemmas = self::searchByConceptCategory($lemmas, $url_args['search_concept_category']);
         }
 //dd(to_sql($lemmas));        
         return $lemmas ->orderBy('lemma_for_search')
                 ->groupBy('lemma');
     }
     
+    public static function searchByAudios($lemmas, $with_audios) {
+        if (!$with_audios) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query){
+                        $query->select('lemma_id')
+                            ->from('audio_lemma');
+                        });
+    }
+    
+    public static function searchByWord($lemmas, $word) {
+        if (!$word) {
+            return $lemmas;
+        }
+        $word_for_search = Grammatic::changeLetters($word, 5);
+
+        return $lemmas->where(function ($q) use ($word_for_search) {
+                    $q->where('lemma_for_search', 'like', '%'.$word_for_search.'%')
+                      ->orWhereIn('id',function($q2) use ($word_for_search){
+                            $q2->select('lemma_id')->from('lemma_wordform')
+                               ->where('wordform_for_search','like', $word_for_search);
+                            });
+                });
+    }
+    
+    public static function searchByMeaning($lemmas, $meaning) {
+        if (!$meaning) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query) use ($meaning){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($q) use ($meaning){
+                            $q->select('meaning_id')
+                            ->from('meaning_texts')
+                            ->where('meaning_text','like', '%'.$meaning.'%');
+                        });
+                    });
+    }
+    
+    public static function searchByConcept($lemmas, $concept_id) {
+        if (!$concept_id) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query) use ($concept_id){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($query) use ($concept_id){
+                            $query->select('meaning_id')
+                            ->from('concept_meaning')
+                            ->where('concept_id', $concept_id);
+                        });
+                    });
+    }
+    
+    public static function searchByConceptCategory($lemmas, $concept_category_id) {
+        if (!$concept_category_id) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($query) use ($concept_category_id){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($q1) use ($concept_category_id){
+                            $q1->select('meaning_id')
+                            ->from('concept_meaning')
+                            ->whereIn('concept_id', function($q2) use ($concept_category_id) {
+                                $q2->select('id')
+                                ->from('concepts')
+                                ->where('concept_category_id', $concept_category_id);
+                            });
+                        });
+                    });
+    }
     public static function gramLinks($first_letter) {
         if (!$first_letter) {
             return collect();

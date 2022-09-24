@@ -1,6 +1,7 @@
 @extends('layouts.olodict')
 
 @section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/essential_audio.css')!!}
     {!!Html::style('css/essential_audio_circle.css')!!}
 @stop
@@ -24,11 +25,24 @@
     </div>
 
     <div id="lemmas-b">
+    @if ($url_args['search_lemma'])
         @include('olodict._lemmas')    
+    @else
+        <p>{!! trans('olodict.welcome_block') !!}</p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/olodict/help')}}">{{trans('olodict.help_title')}}</a></p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/olodict/abbr')}}">{{trans('olodict.abbr_title')}}</a></p>
+
+    @endif
     </div>
 @stop
 
 @section('footScriptExtra')
+    {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/essential_audio.js')!!}
+    {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/olodict.js')!!}
+@stop
+
+@section('jqueryFunc')
+    selectConcept('search_concept_category', 'search_pos', '{{trans('dict.concept')}}', true);
 @stop

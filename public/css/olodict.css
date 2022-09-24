@@ -224,6 +224,7 @@ s {
 
 #search-form {
     margin: 10px;
+    text-align: left;
 }
 
 #search-form input[type=text] {
@@ -335,6 +336,34 @@ label {
   font-weight: 700;
 }
 
+h1 {
+    color: #ef3928;
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0 0 20px;
+    padding-left: 43px;
+    position: relative;
+}
+
+h1:before {
+    background-image: url(../images/icons.png);
+    background-repeat: no-repeat;
+    content: '';
+    height: 28px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 28px;
+}
+
+.menu li {
+    margin-left: 10px;
+}
+
+.menu a {
+    text-decoration: none;
+}
+
 /*****************************/
 .link-color {
     color: #972d1a;    
@@ -352,26 +381,6 @@ label {
     font-size: 14px;
     padding: 36px 4% 37px;
     line-height: 150%;
-}
-
-h1 {
-    color: #ef3928;
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0 0 20px;
-    padding-left: 43px;
-    position: relative;
-}
-
-h1:before {
-    background-image: url(../images/icons.png);
-    background-repeat: no-repeat;
-    content: '';
-    height: 28px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 28px;
 }
 
 h2 {

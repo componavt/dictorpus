@@ -8,7 +8,7 @@
                 </a>
             </div>
             <div class="menu">
-                <li>{{trans('olodict.help')}}</li>
+                <li><a href="{{ LaravelLocalization::localizeURL('/olodict/help')}}">{{trans('olodict.help')}}</a></li>
                 @include('header.lang_switch', ['with_text'=>false])
             </div>
         </header>

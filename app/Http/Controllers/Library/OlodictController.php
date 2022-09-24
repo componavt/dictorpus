@@ -8,9 +8,12 @@ use LaravelLocalization;
 
 use App\Library\Olodict;
 
+use App\Models\Dict\Concept;
+use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
+
 
 class OlodictController extends Controller
 {
@@ -25,12 +28,14 @@ class OlodictController extends Controller
         
         $this->url_args = url_args($request) + 
             [
+                'search_concept_category'  => $request->input('search_concept_category'),
+                'search_concept'  => (int)$request->input('search_concept'),
                 'search_gram'    => $request->input('search_gram'),
                 'search_lemma'    => $request->input('search_lemma'),
                 'search_letter'    => $request->input('search_letter'),
                 'search_meaning'    => $request->input('search_meaning'),
                 'search_pos'    => (int)$request->input('search_pos'),
-                'search_template'    => $request->input('search_template'),
+                'search_word'    => $request->input('search_word'),
                 'with_audios'    => (int)$request->input('with_audios'),
                 'with_template'    => (int)$request->input('with_template'),
                 'limit_num' => 10
@@ -67,9 +72,12 @@ class OlodictController extends Controller
         $lemmas = Olodict::search($url_args);
         $dialect_id = Olodict::Dialect;
         $pos_values = PartOfSpeech::getListForOlodict();
+        $concept_category_values = ConceptCategory::getList();
+        $concept_values = [NULL=>'']+Concept::getList($url_args['search_concept_category'], $url_args['search_pos']);
 
         return view('olodict.index',
-                compact('alphabet', 'dialect_id', 'gram_list', 'lemma_list', 
+                compact('alphabet', 'concept_category_values', 'concept_values', 
+                        'dialect_id', 'gram_list', 'lemma_list', 
                         'lemmas_total', 'lemmas', 'locale', 'pos_values',
                         'args_by_get', 'url_args'));
     }
@@ -104,5 +112,13 @@ class OlodictController extends Controller
         $lemmas = Olodict::search($url_args);
         return view('olodict._lemmas',
                 compact('lemmas', 'url_args'));
+    }
+    
+    public function help() {
+        return view('olodict.help');
+    }
+    
+    public function abbr() {
+        return view('olodict.abbr');
     }
 }

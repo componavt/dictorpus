@@ -41,7 +41,7 @@ $id_name = preg_replace("/[\.\]\[]/","_",$name);
     </label>
     @endif
     
-    <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}{{$multiple ? '[]': ''}}" id="{{ $id_name }}" placeholder="choooose">
+    <select{{ $multiple }} class="{{ $class }}" name="{{ $name }}{{$multiple ? '[]': ''}}" id="{{ $id_name }}" placeholder="choooose" {{$event ?? null}}>
         <!--option></option-->
     @if ($grouped)
         @foreach ($values as $group_name=>$group_values)
