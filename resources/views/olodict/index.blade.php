@@ -9,12 +9,13 @@
     <div id="lemma-list">
         @include('olodict._lemma_list')
     </div>
+    @include('olodict._search_form')
 @stop
 
 @section('body')
     <div id="letter-links">
         @foreach ($alphabet as $letter)
-        <a class="{{$url_args['search_letter'] == $letter->letter ? 'letter-active' : '' }}" onClick="viewLetter(this, '{{$letter->letter}}')">{{$letter->letter}}</a>
+        <a class="{{$url_args['search_letter'] == $letter->letter ? 'letter-active' : '' }}" onClick="viewLetter('{{$locale}}', this)">{{$letter->letter}}</a>
         @endforeach
     </div>
 

@@ -50,6 +50,7 @@ return [
     'records' => 'records',
     'record_not_exists' => 'Record does not exists.',
     'reload' => 'reload',
+    'reset' => 'reset',
     'save' => 'save',
     'search' => 'search',
     'seq_num' => 's/n',

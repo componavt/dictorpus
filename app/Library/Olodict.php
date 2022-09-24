@@ -21,8 +21,33 @@ class Olodict
             
         } elseif ($url_args['search_letter']) {
             $lemmas -> where('lemma_for_search', 'like', $url_args['search_letter'].'%');
+            
+        } else {
+            if ($url_args['search_template']) {
+                $lemmas -> where('lemma_for_search', 'like', '%'.$url_args['search_template'].'%');
+            }
+            if ($url_args['search_pos']) {
+                $lemmas -> where('pos_id', $url_args['search_pos']);
+            }
+            if ($url_args['search_meaning']) {
+                $lemmas->whereIn('id',function($query) use ($url_args){
+                    $query->select('lemma_id')
+                        ->from('meanings')
+                        ->whereIn('id',function($q) use ($url_args){
+                            $q->select('meaning_id')
+                            ->from('meaning_texts')
+                            ->where('meaning_text','like', '%'.$url_args['search_meaning'].'%');
+                        });
+                    });
+            }
+            if ($url_args['with_audios']) {            
+                $lemmas->whereIn('id',function($query){
+                        $query->select('lemma_id')
+                            ->from('audio_lemma');
+                        });
+            }
         }
-        
+//dd(to_sql($lemmas));        
         return $lemmas ->orderBy('lemma_for_search')
                 ->groupBy('lemma');
     }

@@ -194,3 +194,10 @@ if (!function_exists('next_args')) {
         return search_values_by_URL($url_args);
     }
 }
+
+if (!function_exists('args_replace')) {
+    function args_replace($url_args, $key, $value) {
+        $url_args[$key] = $value;
+        return search_values_by_URL($url_args);
+    }
+}

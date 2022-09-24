@@ -23,7 +23,7 @@ a:hover {
 
 .logo img {
     height: auto;
-    padding: 20px 20px 20px 0;
+    padding: 20px 20px 0 0;
     width: 100px; 
 }
 
@@ -210,6 +210,131 @@ s {
     padding: 20px 0 0 20px;
 }
 
+.menu {
+    text-align: right;
+}
+
+.main-panel.row {
+    margin: 0;
+}
+
+.menu li {
+    display: inline-block;    
+}
+
+#search-form {
+    margin: 10px;
+}
+
+#search-form input[type=text] {
+    padding: 0 15px;
+/*    text-align: center;*/
+    width: 100%;
+}
+
+.footer {
+    background-color: #373737;
+    color: #fff;
+    margin-top: 35px;
+    padding: 35px 0 100px;
+}
+
+.footer-right-col {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding-left: 12%;
+}
+
+.developers {
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 20px;
+    max-width: 350px;
+    min-height: 150px;
+    padding: 0 0 20px 113px;
+    position: relative;
+}
+
+.developers:before {
+    background: #fefefe url(../images/krc-logo.png) 50% 32px no-repeat;
+    border-top: 2px solid #dbd8d8;
+    content: '';
+    height: 136px;
+    left: 0;
+    position: absolute;
+    top: -35px;
+    width: 98px;
+}
+
+.developers a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.license {
+    color: #d4d4d4;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 22px;
+    max-width: 350px;
+}
+
+.license a {
+    color: #6d6d6d;
+    text-decoration: underline;
+}
+
+.copyright {
+    border-top: 2px solid #515151;
+    margin-top: 40px;
+    padding-top: 50px;
+}
+
+.copyright-b {
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0 auto;
+    max-width: 320px;
+    padding: 10px 0 0 100px;
+    position: relative;
+}
+
+.copyright-b:before {
+    background: url(../images/logo-grey.png) 0 0 no-repeat;
+    content: '';
+    height: 77px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 75px;
+}
+
+.copyright-b a {
+    color: #fff;    
+}
+
+.copy-left {
+    display: inline-block;
+    text-align: right;
+    margin: 0px;
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: “FlipH”;
+}
+
+label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
 /*****************************/
 .link-color {
     color: #972d1a;    
@@ -307,97 +432,6 @@ h2 {
     padding: 5px 10px;
 }
 
-.footer {
-    background-color: #373737;
-    color: #fff;
-    margin-top: 35px;
-    padding: 35px 0 100px;
-}
-
-.footer-right-col {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    padding-left: 12%;
-}
-
-.developers {
-    font-size: 15px;
-    font-weight: bold;
-    line-height: 20px;
-    max-width: 350px;
-    min-height: 150px;
-    padding: 0 0 20px 113px;
-    position: relative;
-}
-
-.developers:before {
-    background: #fefefe url(../images/krc-logo.png) 50% 32px no-repeat;
-    border-top: 2px solid #dbd8d8;
-    content: '';
-    height: 136px;
-    left: 0;
-    position: absolute;
-    top: -35px;
-    width: 98px;
-}
-
-.developers a {
-    color: #fff;
-    text-decoration: none;
-}
-
-.license {
-    color: #d4d4d4;
-    font-size: 15px;
-    font-style: italic;
-    line-height: 22px;
-    max-width: 350px;
-}
-
-.license a {
-    color: #6d6d6d;
-    text-decoration: underline;
-}
-
-.copyright {
-    border-top: 2px solid #515151;
-    margin-top: 40px;
-    padding-top: 50px;
-}
-
-.copyright-b {
-    font-size: 15px;
-    line-height: 20px;
-    margin: 0 auto;
-    max-width: 320px;
-    padding: 10px 0 0 100px;
-    position: relative;
-}
-
-.copyright-b:before {
-    background: url(../images/logo-grey.png) 0 0 no-repeat;
-    content: '';
-    height: 77px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 75px;
-}
-
-.copy-left {
-    display: inline-block;
-    text-align: right;
-    margin: 0px;
-    -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: “FlipH”;
-}
 
 .corpus-text td:first-child{
     padding-right: 20px;
@@ -628,27 +662,6 @@ h2 {
     color: #666;
 }
 
-.search-form {
-    background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 10px;
-    padding: 20px 10px 0;
-}
-
-/*.search-form.row {
-    margin-right: -4%;
-    margin-left: -4%;
-}*/
-
-.search-text  {
-    padding-top: 10px;
-}
-
-.search-form div {
-    min-height: 49px;  
-}
-
 .select2-container .select2-search--inline .select2-search__field {
     margin-left: 5px;
 }
@@ -700,23 +713,6 @@ h2 {
     margin-right: 20px;
 }
 
-.show-search-form, .hide-search-form {
-    color: #8f877d;
-    cursor: pointer;
-    font-style: italic;
-    padding-right: 5px;
-    position: relative;
-    text-align: right;
-}
-
-.hide-search-form, .ext-form {
-    display: none;
-}
-
-.search-text .search-button-b {
-    padding-top: 25px;
-}
-
 .select2-selection__choice {
     font-size: 12px;
 }
@@ -749,14 +745,6 @@ h2 {
     padding-right: 10px;
 }
 
-.search-form input {
-    padding: 5px 10px;
-}
-
-.search-form .select2-container .select2-selection--multiple {
-    min-height: 34px;
-}
-
 .flex-hor-group {
     display: flex;
     flex-wrap: wrap;
@@ -778,7 +766,7 @@ h2 {
 }
 @media screen and (min-width: 576px) {   
 .logo img {
-    padding: 25px 25px 25px 0;
+    padding: 25px 25px 0 0;
     width: 130px; 
 }
 .logo a {
@@ -790,7 +778,7 @@ h2 {
 }
 @media screen and (min-width: 768px) {   
 .logo img {
-    padding: 30px 30px 30px 0;
+    padding: 30px 30px 0 0;
     width: 160px; 
 }
 .logo a {

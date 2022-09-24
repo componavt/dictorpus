@@ -211,6 +211,26 @@ class PartOfSpeech extends Model
         return $parts_of_speech;         
     }
         
+    public static function getListForOlodict()
+    {
+        $parts_of_speech = [];
+        
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $pos_collec = self::where('name_'.$locale, '<>', '')->orderBy('category')
+                          ->whereIn('id', function ($q1) {
+                              $q1->select('pos_id')->from('lemmas')
+                                 ->whereIn('id', Label::checkedOloLemmas());
+                          })
+                          ->orderBy('name_'.$locale)->get();
+        
+        foreach ($pos_collec as $pos) {
+            $parts_of_speech[$pos->id] = $pos->name;
+        }
+        
+        return $parts_of_speech;         
+    }
+        
     /** Gets list of parts of speech group by category
      * 
      * @return Array ['Open class words' => [1=>'Adjective',..], ...]

@@ -13,7 +13,7 @@
                 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
-                    @include('header.lang_switch')                    
+                    @include('header.lang_switch', ['with_text'=>true])                    
                 </ul>
             </div>
         </nav>

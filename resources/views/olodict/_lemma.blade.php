@@ -19,7 +19,7 @@
 @foreach ($lemma->meanings as $meaning)
     <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
     <div class='lemma-meaning-b'>
-        <p>{{$meaning->textByLangCode($locale)}}</p>
+        <p>{{$meaning->textByLangCode($locale, 'ru')}}</p>
         @include('olodict._meaning_sentences', ['count'=>1, 'sentences'=>$meaning->sentences(false, '', 0, 10)])
     </div>
 @endforeach

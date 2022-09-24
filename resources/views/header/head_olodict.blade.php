@@ -10,6 +10,7 @@
 
     <!-- Styles -->
     {!!Html::style('css/bootstrap.min.css')!!}    
+    {!!Html::style('css/languages.min.css')!!}    
     {!!Html::style('css/olodict.css')!!}
     
     @yield('headExtra')
