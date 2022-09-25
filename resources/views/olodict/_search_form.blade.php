@@ -1,8 +1,10 @@
 <form id="search-form">
     @include('widgets.form.formitem._text',
             ['name' => 'search_word',
-            'value' => isset($url_args['search_word']) ? $url_args['search_word'] : '',
-            'attributes' => ['onKeyUp' => "searchLemmas('$locale')",
+             'special_symbol' => true,
+             'full_special_list' => false,
+             'value' => isset($url_args['search_word']) ? $url_args['search_word'] : '',
+             'attributes' => ['onKeyUp' => "searchLemmas('$locale')",
                              'placeholder' => trans('olodict.word') ]]) 
     <!--div class="form-group ">
         <input id="search_word" type='text' onKeyUp="searchLemmas('{{$locale}}')" placeholder="{{trans('olodict.word')}}"

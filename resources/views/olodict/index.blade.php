@@ -39,10 +39,12 @@
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/essential_audio.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/olodict.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     selectConcept('search_concept_category', 'search_pos', '{{trans('dict.concept')}}', true);
 @stop
