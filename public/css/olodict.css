@@ -135,26 +135,42 @@ a:hover {
 }
 
 .lemma-b div.essential_audio.circle {
-	border-radius: 2px;
-	overflow: hidden;
-	width: 30px;
-	height: 30px;
-	border-radius: 15px;
-        margin: 0 0 5px 10px;
-}
-
-.lemma-b div.essential_audio.circle > div:nth-child(1) div {
-	width: 30px;
-	height: 30px;
-	border-radius: 0px!important;
-	background-color: transparent!important;
+    overflow: hidden;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    margin: 0 0 5px 10px;
 }
 
 .lemma-b div.essential_audio.circle > div:nth-child(1) div:after {
-	top: 2px;
-	left: 5px;
-	width: 68%;
-	height: 68%;
+    top: 2px;
+    left: 5px;
+    width: 68%;
+    height: 68%;
+}
+
+.lemma-phrase {
+    overflow: hidden;
+}
+
+#lemma-phrases .essential_audio {
+    float: left;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin: 0 5px 0 0;
+}
+
+#lemma-phrases div.essential_audio.circle > div:nth-child(1) div {
+    width: 20px;
+    height: 20px;
+}
+
+#lemma-phrases div.essential_audio.circle > div:nth-child(1) div:after {
+    top: 0;
+    left: 1px;
+    width: 80%;
+    height: 80%;
 }
 
 .lemma-b h2 {

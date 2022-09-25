@@ -53,18 +53,15 @@ class Olodict
             return $lemmas;
         }
         $word_for_search = Grammatic::changeLetters($word, 5);
-        if ($with_template) {
-            $operator = 'rlike';
-        } else {
-            $operator = 'like';
+        if (!$with_template) {
             $word_for_search = '%'.$word_for_search.'%';
         }
 
-        return $lemmas->where(function ($q) use ($operator, $word_for_search) {
-                    $q->where('lemma_for_search', $operator, $word_for_search)
-                      ->orWhereIn('id',function($q2) use ($operator, $word_for_search){
+        return $lemmas->where(function ($q) use ($word_for_search) {
+                    $q->where('lemma_for_search', 'like', $word_for_search)
+                      ->orWhereIn('id',function($q2) use ($word_for_search){
                             $q2->select('lemma_id')->from('lemma_wordform')
-                               ->where('wordform_for_search', $operator, $word_for_search);
+                               ->where('wordform_for_search', 'like', $word_for_search);
                             });
                 });
     }
@@ -73,19 +70,16 @@ class Olodict
         if (!$meaning) {
             return $lemmas;
         }
-        if ($with_template) {
-            $operator = 'rlike';
-        } else {
-            $operator = 'like';
+        if (!$with_template) {
             $meaning = '%'.$meaning.'%';
         }
-        return $lemmas->whereIn('id',function($query) use ($operator, $meaning){
+        return $lemmas->whereIn('id',function($query) use ($meaning){
                     $query->select('lemma_id')
                         ->from('meanings')
-                        ->whereIn('id',function($q) use ($operator, $meaning){
+                        ->whereIn('id',function($q) use ($meaning){
                             $q->select('meaning_id')
                             ->from('meaning_texts')
-                            ->where('meaning_text', $operator, $meaning);
+                            ->where('meaning_text', 'like', $meaning);
                         });
                     });
     }

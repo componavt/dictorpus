@@ -64,7 +64,7 @@ class Meaning extends Model
             return $this->textByLangCode($default_code);
         }
     }
-
+    
     /** Gets list of meanings for lemma $lemma_id,
      * if $lang_id is empty, gets null
      * 

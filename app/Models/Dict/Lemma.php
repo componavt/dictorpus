@@ -134,6 +134,13 @@ class Lemma extends Model
         return $this->labels()->wherePivot('label_id', $label_id)->first()->pivot->status;
     }
 
+    public function meaningsWithBestExamples() {
+        return $this->meanings()->whereIn('id', function ($q) {
+                    $q->select('meaning_id')->from('meaning_text')
+                      ->whereRelevance(10);
+                })->get();
+    }
+
     public static function getLemmaById($id) {
         $obj = self::find($id);
         if (!$obj) {

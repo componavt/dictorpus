@@ -16,10 +16,14 @@
 </p>
 @endif
 
-@foreach ($lemma->meanings as $meaning)
-    <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
+<?php $meaning_n = 1; ?>
+@foreach ($lemma->meaningsWithBestExamples() as $meaning)
+    <p>
+        @if (sizeof($lemma->meaningsWithBestExamples()) >1)
+        {{$meaning_n++}})
+        @endif
+        {{$meaning->textByLangCode($locale, 'ru')}}</p>
     <div class='lemma-meaning-b'>
-        <p>{{$meaning->textByLangCode($locale, 'ru')}}</p>
         @include('olodict._meaning_sentences', ['count'=>1, 'sentences'=>$meaning->sentences(false, '', 0, 10)])
     </div>
 @endforeach
@@ -31,7 +35,7 @@
 
     <div id="lemma-phrases">
         @foreach ($phrases as $ph_lemma) 
-        <div>
+        <div class="lemma-phrase">
             @if ($ph_lemma->audios()->count())
                 @include('widgets.audio_simple', ['route'=>$ph_lemma->audios()->first()->url()])
             @endif
