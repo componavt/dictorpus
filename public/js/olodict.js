@@ -18,7 +18,7 @@ function viewGram(locale, gram_obj) {
     setClass(gram_obj, 'gram-active');
     clearSearchForm();
     
-    loadLemmas();
+    loadLemmas(locale);
 }
 
 function viewLemma(lemma_obj) {
