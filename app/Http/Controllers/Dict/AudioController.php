@@ -15,7 +15,9 @@ use App\Models\User;
 use App\Models\Corpus\Informant;
 
 use App\Models\Dict\Audio;
+use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\PartOfSpeech;
 
 class AudioController extends Controller
 {
@@ -57,9 +59,16 @@ class AudioController extends Controller
         $informant_id = $user ? $user->informant_id : NULL;
         $informant_values = Informant::getList();
         
-        if (in_array($list, ['multidict-check', 'multidict-all', 'schooldict'])) {
+        if (in_array($list, ['multidict-check', 'multidict-phrase', 'multidict-all', 'schooldict'])) {
             $lang_id=5; // livvic
             $label_id = $list == 'schooldict' ? 4 : 3; 
+            if ($list == 'multidict-phrase') {
+                $lemmas = Lemma::wherePosId(PartOfSpeech::getPhraseID())
+                            ->whereIn('id', function ($q1) {
+                                $q1->select('phrase_id')->from('lemma_phrase')
+                                   ->whereIn('lemma_id', Label::checkedOloLemmas());
+                            });
+            } else {
             $lemmas = Lemma::whereIn('id', function ($q) use ($label_id, $list) {
                                 $q->select('lemma_id')->from('label_lemma')
                                   ->whereLabelId($label_id);
@@ -67,6 +76,7 @@ class AudioController extends Controller
                                     $q->whereStatus(1);
                                 }
                            });
+            }
         } elseif ($list == 'lud-mikh') {
             $lang_id=6; // ludian
             $place_id=248; // Михайловское
@@ -83,7 +93,9 @@ class AudioController extends Controller
                          })
                          ->groupBy('lemma')
                          ->orderByRaw('lower(lemma)')
-                         ->take(100)->get();
+                         ->take(100)
+                         ->get();
+//dd($lemmas);                         
         $list_title = Audio::recordGroups[$list];
         return view('dict.audio.record_group',
                 compact('lemmas', 'list_title', 'informant_id', 'informant_values'));        
