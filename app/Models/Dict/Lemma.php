@@ -116,6 +116,16 @@ class Lemma extends Model
         return $this->belongsToMany(Audio::class);
     }    
     
+    public function conceptNames() {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $concepts=[];
+        foreach ($this->meanings as $meaning) {
+//dd($meaning->concepts()->pluck('text_'.$locale)->toArray());            
+            $concepts = array_merge($concepts, $meaning->concepts()->pluck('text_'.$locale)->toArray());
+        }
+        return join('; ',$concepts);
+    }
+    
     public function dialectIds(){
         $ids=[];
         $lemma_id= $this->id;

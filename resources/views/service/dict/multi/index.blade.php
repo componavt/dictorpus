@@ -25,7 +25,7 @@
                 <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
-                <!--th>{{ trans('dict.interpretation') }}</th-->
+                <th>{{ trans('navigation.concepts') }}</th>
                 <th>{{ trans('messages.frequency') }}</th>
                 <th>{{ trans('dict.listen') }}</th>
                 <th>{{ trans('dict.status') }}</th>
@@ -41,9 +41,11 @@
                     </a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">
-                        {{$lemma['pos_name']}}
+                    {{$lemma['pos_name']}}
                 </td>
-                </td-->
+                <td data-th="{{ trans('navigation.concepts') }}">
+                    {{$lemma['concepts']}}
+                </td>
                 <td data-th="{{ trans('messages.frequency') }}">
                       {{$lemma['frequency']}}
                 </td>
