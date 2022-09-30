@@ -120,7 +120,7 @@ class Topic extends Model
                     }
                     if (sizeof($genre_id) || sizeof($corpus_id)) {
                         $q1->whereIn('plot_id', function ($q2) use ($genre_id, $corpus_id) {
-                            $q2->select('plot_id')->from('genre_plot');
+                            $q2->select('id')->from('plots');
                             if (sizeof($genre_id)) {
                                 $q2->whereIn('genre_id',$genre_id);
                             }

@@ -1,5 +1,6 @@
 <?php namespace App\Traits\Methods\search;
 
+use App\Models\Corpus\Genre;
 trait byGenre
 {
     public static function searchByGenre($objs, $genres) {
