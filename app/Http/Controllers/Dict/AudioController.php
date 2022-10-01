@@ -32,7 +32,7 @@ class AudioController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:dict.edit,/audio', 
+        $this->middleware('auth:dict.edit,/dict/audio', 
                           ['except'=>['index']]);
         
         $this->url_args = Str::urlArgs($request) + 
