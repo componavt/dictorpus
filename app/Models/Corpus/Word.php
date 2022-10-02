@@ -343,13 +343,13 @@ class Word extends Model
         $text_id = $this->id;
         
         $fragments_count = SentenceFragment::where('sentence_id', $this->sentence_id)
-                                ->count();
+                                ->where('w_id', $this->w_id)->count();
         if ($fragments_count) {
             return true;
         }
         
         $translations_count = SentenceTranslation::where('sentence_id', $this->sentence_id)
-                                ->count();
+                                ->where('w_id', $this->w_id)->count();
         if ($translations_count) {
             return true;
         }
