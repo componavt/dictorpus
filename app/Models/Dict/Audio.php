@@ -4,6 +4,11 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 use Storage;
+use LaravelLocalization;
+
+use App\Library\Grammatic;
+
+use App\Models\Corpus\Informant;
 
 use App\Models\Dict\Lemma;
 
@@ -79,5 +84,66 @@ class Audio extends Model
                 $lemma->audios()->attach($audio);
             }
         }        
+    }
+    
+    public static function getSpeakerList()
+    {     
+        $locale = LaravelLocalization::getCurrentLocale();
+        
+        $informants = Informant::whereIn('id', function ($q) {
+                            $q->select('informant_id')->from('audios');
+                        })->orderBy('name_'.$locale)->get();
+        
+        $list = array();
+        foreach ($informants as $row) {
+            $list[$row->id] = $row->informantString('',false);
+        }
+        
+        return $list;         
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = url_args($request) + [
+                    'search_informant'=> $request->input('search_informant'),
+                    'search_lang'     => (array)$request->input('search_lang'),
+                    'search_lemma'   => $request->input('search_lemma'),
+                ];
+        
+        return $url_args;
+    }
+    
+    public static function search(Array $url_args) {
+        $recs = self::orderBy('created_at', 'DESC');        
+        $recs = self::searchByInformant($recs, $url_args['search_informant']);
+        $recs = self::searchByLangOrLemma($recs, $url_args['search_lang'], $url_args['search_lemma']);
+//dd($texts->toSql());                                
+
+        return $recs;
+    }
+    
+    public static function searchByInformant($recs, $informant) {
+        if (!$informant) {
+            return $recs;
+        }
+        return $recs->where('informant_id',$informant);
+    }
+    
+    public static function searchByLangOrLemma($recs, $langs, $lemma) {
+        if (!sizeof($langs) && !$lemma) {
+            return $recs;
+        }
+        $lemma = preg_replace("/\|/", '', $lemma);
+        return $recs->whereIn('id', function ($q1) use ($langs, $lemma) {
+                    $q1->select('audio_id')->from('audio_lemma')
+                            ->whereIn('lemma_id', function ($q) use ($langs, $lemma) {
+                            $q->select('id')->from('lemmas');
+                            if (sizeof($langs)) {
+                                $q->whereIn('lang_id',$langs);
+                            }
+                            if ($lemma) {
+                                $q->where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma));
+                            }
+                        });
+                });
     }
 }

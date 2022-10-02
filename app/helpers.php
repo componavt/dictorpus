@@ -140,17 +140,17 @@ if (! function_exists('to_link')) {
 if (! function_exists('url_args')) {
     function url_args($request, $limit_min=10) {
         $url_args = [
-            'portion' => (int)$request->input('portion'), // number of records per page
+            'limit_num' => (int)$request->input('limit_num'), // number of records per page
             'page'      => (int)$request->input('page'),      // number of page
         ];
         if (!$url_args['page']) {
             $url_args['page'] = 1;
         }
         
-        if ($url_args['portion']<=0) {
-            $url_args['portion'] = $limit_min;
-        } elseif ($url_args['portion']>1000) {
-            $url_args['portion'] = 1000;
+        if ($url_args['limit_num']<=0) {
+            $url_args['limit_num'] = $limit_min;
+        } elseif ($url_args['limit_num']>1000) {
+            $url_args['limit_num'] = 1000;
         }   
         return $url_args;
     }

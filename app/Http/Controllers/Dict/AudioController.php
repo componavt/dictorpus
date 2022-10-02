@@ -16,6 +16,7 @@ use App\Models\Corpus\Informant;
 
 use App\Models\Dict\Audio;
 use App\Models\Dict\Label;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
@@ -35,22 +36,23 @@ class AudioController extends Controller
         $this->middleware('auth:dict.edit,/dict/audio', 
                           ['except'=>['index']]);
         
-        $this->url_args = Str::urlArgs($request) + 
-            [
-//                'search_pos'      => (int)$request->input('search_pos'),
-//             'search_status'   => (int)$request->input('search_status'),
-//                'search_lemma'    => $request->input('search_lemma'),
-            ];
-        
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->url_args = Audio::urlArgs($request);        
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
     
     public function index() {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        $audios = Audio::orderBy('created_at', 'desc')->get();
+        
+        $audios = Audio::search($url_args);
+        $numAll = $audios->count();
+        $audios = $audios->paginate($url_args['limit_num']);         
+        
+        $informant_values = [NULL => ''] + Audio::getSpeakerList();
+        $lang_values = Lang::getList();        
+        
         return view('dict.audio.index',
-                compact('audios', 
+                compact('audios', 'informant_values', 'lang_values', 'numAll', 
                         'args_by_get', 'url_args'));
     }
     

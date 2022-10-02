@@ -82,8 +82,7 @@ class TextController extends Controller
         $corpus_values = Corpus::getListWithQuantity('texts');
 
         //$lang_values = Lang::getList();
-        $lang_values = Lang::getListWithQuantity('texts');
-        
+        $lang_values = Lang::getListWithQuantity('texts');        
         $dialect_values = Dialect::getList();
         $informant_values = [NULL => ''] + Informant::getList();
         $recorder_values = [NULL => ''] + Recorder::getList();
