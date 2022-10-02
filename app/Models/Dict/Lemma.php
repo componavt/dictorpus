@@ -2178,27 +2178,16 @@ dd($wordforms);
     }
 
     public function getMeaningRelations() {
-        $meaning_relations = [];
-        $meanings = $this->meanings;
-        $relations = Relation::getList();
+        $meanings_relations = [];
         
-        foreach ($meanings as $meaning) {
-            $relation_meanings = $meaning->meaningRelations;
-            if ($relation_meanings) {
-                foreach ($relation_meanings as $relation_meaning) {
-                    $meaning2_id = $relation_meaning->pivot->meaning2_id;
-                    $relation_id = $relation_meaning->pivot->relation_id;
-                    $relation_text = $relations[$relation_id];
-                    $relation_meaning_obj = Meaning::find($meaning2_id);
-                    $relation_lemma_obj = $relation_meaning_obj->lemma;
-                    $relation_lemma = $relation_lemma_obj->lemma;
-                    $meaning_relations[$meaning->id][$relation_text][$relation_lemma_obj->id]  
-                            = ['lemma' => $relation_lemma,
-                               'meaning' => $relation_meaning_obj->getMultilangMeaningTextsString()];
-                }
+        foreach ($this->meanings as $meaning) {
+            $meaning_relations = $meaning->getLemmaRelations();
+
+            if ($meaning_relations !== null) {
+                $meanings_relations[$meaning->id] = $meaning_relations;
             }
         }
-        return $meaning_relations;
+        return $meanings_relations;
     }
 
     public function getMeaningTranslations() {

@@ -9,7 +9,9 @@ class Relation extends Model
 {
     public $timestamps = false;
     protected $fillable = ['name_en', 'name_ru', 'reverse_relation_id', 'sequence_number'];
-    
+    const SynonymID = 7;
+
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;

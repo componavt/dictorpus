@@ -7,7 +7,11 @@
 
                 @include('dict.lemma.show.meaning.texts')
 
-                @include('dict.lemma.show.meaning.relations')
+            @if (isset($meaning_relations[$meaning->id]))
+            <ul>
+                @include('dict.lemma.show.meaning.relations', ['meaning_relations' => $meaning_relations[$meaning->id]])
+            </ul>
+            @endif
 
                 @include('dict.lemma.show.meaning.translations')
 

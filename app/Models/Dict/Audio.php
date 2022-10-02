@@ -89,7 +89,7 @@ class Audio extends Model
     public static function getSpeakerList()
     {     
         $locale = LaravelLocalization::getCurrentLocale();
-        
+               
         $informants = Informant::whereIn('id', function ($q) {
                             $q->select('informant_id')->from('audios');
                         })->orderBy('name_'.$locale)->get();

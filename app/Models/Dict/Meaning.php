@@ -235,6 +235,27 @@ class Meaning extends Model
         return $out;
     }
     
+    public function getLemmaRelations() {
+        $relations = Relation::getList();
+        $relation_meanings = $this->meaningRelations;
+        if (!$relation_meanings) {
+            return null;
+        }
+        $meaning_relations=[];
+        foreach ($relation_meanings as $relation_meaning) {
+            $meaning2_id = $relation_meaning->pivot->meaning2_id;
+            $relation_id = $relation_meaning->pivot->relation_id;
+            $relation_text = $relations[$relation_id];
+            $relation_meaning_obj = self::find($meaning2_id);
+            $relation_lemma_obj = $relation_meaning_obj->lemma;
+            $relation_lemma = $relation_lemma_obj->lemma;
+            $meaning_relations[$relation_text][$relation_lemma_obj->id]  
+                    = /*['lemma' =>*/ $relation_lemma/*,
+                       'meaning' => $relation_meaning_obj->getMultilangMeaningTextsString()]*/;
+        }
+        return $meaning_relations;
+    }
+    
     /**
      * Значения с примерами для школьного словаря
      * <meaning_n>. <meaning_on_ru>; <example1> <example1_ru>; <example2> <example2_ru>;
@@ -428,22 +449,25 @@ class Meaning extends Model
         }
         foreach ($relations as $relation_id=>$rel_means) {
             foreach ($rel_means as $rel_mean_id) {
-                $this->meaningRelations()
-                     ->attach($relation_id,['meaning2_id'=>$rel_mean_id]);
-                
-                // reverse relation
                 $mean2_obj = self::find($rel_mean_id);
-                $relation_obj = Relation::find($relation_id);
-                $mean2_rels = $mean2_obj->meaningRelations();
-//                if (!$mean2_rels->wherePivot('relation_id',$relation_obj->reverse_relation_id)
-  //                              ->wherePivot('meaning2_id',$this->id)->count()) {
-                 $mean2_rels->attach($relation_obj->reverse_relation_id,
-                                        ['meaning2_id'=>$this->id]);
-    //            }
+                $this->addMeaningRelation($rel_mean_id, $relation_id);
             }
         }
     }
     
+    public function addMeaningRelation($mean2_id, $relation_id, $reverse_relation_id=null) {
+        $this->meaningRelations()
+             ->attach($relation_id,['meaning2_id'=>$mean2_id]);
+
+        // reverse relation
+        if (!$reverse_relation_id) {
+            $relation_obj = Relation::find($relation_id);
+            $reverse_relation_id = $relation_obj->reverse_relation_id;
+        }
+        self::find($mean2_id)->meaningRelations()
+                  ->attach($reverse_relation_id, ['meaning2_id'=>$this->id]);
+//            }        
+    }
     /**
      * Updates array of meaning relations 
      *
@@ -482,12 +506,23 @@ class Meaning extends Model
     public function updateConcepts($concepts)
     {
         // removes all concepts from this meaning
-        $this->concepts()->detach();
+        $this->concepts()->sync($concepts);
+/*        $this->concepts()->detach();
         if (!is_array($concepts) || !sizeof($concepts)) {
             return;
         }
 //dd($concepts);        
-        $this->concepts()->attach($concepts);
+        $this->concepts()->attach($concepts);*/
+/*        
+        foreach ($this->concepts as $concept) {
+            $other_meanings = $concept->meanings()->where('meaning_id', '<>', $this->id)->get();
+            foreach ($other_meanings as $meaning) {
+                if ($this->meaningRelations()->wherePivot('relation_id',Relation::SynonymId)
+                         ->wherePivot('meaning2_id', $meaning->id)->count() == 0) {
+                    $this->addMeaningRelation($meaning, Relation::SynonymId, Relation::SynonymId);
+                }
+            }
+        } */
     }
     
     /**

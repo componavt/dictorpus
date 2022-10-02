@@ -380,6 +380,10 @@ h1:before {
     text-decoration: none;
 }
 
+.relations-b {
+    padding-left: 20px;
+}
+
 /*****************************/
 .link-color {
     color: #972d1a;    

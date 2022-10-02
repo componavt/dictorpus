@@ -34,7 +34,7 @@ class Olodict
             $lemmas = self::searchByConceptCategory($lemmas, $url_args['search_concept_category']);
         }
 //dd(to_sql($lemmas));        
-        return $lemmas ->orderBy('lemma')
+        return $lemmas ->orderBy('lemma_for_search')
                 ->groupBy('lemma');
     }
     
