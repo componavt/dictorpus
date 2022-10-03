@@ -9,7 +9,7 @@ trait Topics
      */
     public function topics(){
         return $this->belongsToMany(Topic::class)
-                    ->orderBy('genre_id')->orderBy('sequence_number');
+                    ->orderBy('sequence_number');
     }
     
     /**
