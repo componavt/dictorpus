@@ -9,6 +9,7 @@ trait Plots
      */
     public function plots()
     {
-        return $this->hasMany(Plot::class);
+        return $this->hasMany(Plot::class)
+                    ->orderBy('sequence_number');
     }
 }
