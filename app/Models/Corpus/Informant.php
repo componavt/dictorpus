@@ -113,12 +113,15 @@ class Informant extends Model
      * 
      * @return String
      */
-    public function informantString($lang_id='', $all_place_names=true)
+    public function informantString($lang_id='', $all_place_names=true, $link='')
     {
         $info = [];
         
         if ($this->name) {
             $info[0] = $this->name;
+        }
+        if ($link) {
+            $info[0] = to_link($info[0], $link.$this->id);
         }
         
         if ($this->birth_date) {

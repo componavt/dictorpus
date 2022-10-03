@@ -31,7 +31,7 @@
 
 @if ($event->place)
     <b>{{ trans('corpus.record_place')}}:</b> 
-    <i>{!! $event->placeWithLink('/corpus/text?search_place='); !!}@if($event->date 
+    <i>{!! $event->place->placeString('', true, '/corpus/text?search_place='); !!}@if($event->date 
         || $event->recorders),@endif
     </i>
 @endif

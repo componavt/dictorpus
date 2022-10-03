@@ -68,11 +68,7 @@ class Event extends Model
     public function informantsWithLink($link=null) {
         $out = [];
         foreach ($this->informants as $informant) {
-            $name = $informant->informantString();
-            if ($link) {
-                $name = to_link($name, $link.$informant->id);
-            }
-            $out[] = $name;
+            $out[] = $informant->informantString('', true, $link);
         }
         return $out;
     }
@@ -87,14 +83,6 @@ class Event extends Model
             $out[] = $name;
         }
         return $out;
-    }
-    
-    public function placeWithLink($link=null) {
-        $name = $this->place->placeString();
-        if ($link) {
-            $name = to_link($name, $link.$this->place->id);
-        }
-        return $name;
     }
     
     public function updateInformantsAndRecorders($request_data) {
