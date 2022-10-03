@@ -33,4 +33,13 @@ class CollectionController extends Controller
         }
         return Redirect::to('/corpus/collection');
     }
+    
+    public function karelianRunes() {
+        return Redirect::to('/corpus/collection/2');
+    }
+    
+    public function karelianLegends() {
+        return Redirect::to('/corpus/collection/3');
+    }
+    
 }

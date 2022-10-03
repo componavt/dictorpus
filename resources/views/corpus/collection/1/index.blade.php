@@ -10,6 +10,8 @@
 
 @section('body')
     <h2>{{trans('collection.name_list')[$id]}}</h2>
+    <p>{!!trans('collection.about')[$id]!!}</p>
+    
     @foreach ($genres as $genre)
     <h3>{{$genre->name_pl}}</h3>
         @foreach ($dialects as $dialect)

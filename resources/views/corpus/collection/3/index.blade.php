@@ -10,6 +10,7 @@
 
 @section('body')
     <h2>{{trans('collection.name_list')[$id]}}</h2>
+    <p>{!!trans('collection.about')[$id]!!}</p>
 
         @foreach ($genres[0]->cycles as $cycle)
             @if ($cycle->texts->count())

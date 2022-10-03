@@ -1,4 +1,7 @@
 <?php
+        Route::get('karelian_runes', 'Corpus\CollectionController@karelianRunes');
+        Route::get('karelian_legends', 'Corpus\CollectionController@karelianLegends');
+        
         Route::get('corpus/audiotext/map', 'Corpus\AudiotextController@onMap');
         Route::get('corpus/audiotext/add_files/{text_id}', 'Corpus\AudiotextController@addFiles');
         Route::get('corpus/audiotext/remove_file/{text_id}_{audiotext_id}', 'Corpus\AudiotextController@removeFile');

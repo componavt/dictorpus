@@ -16,7 +16,7 @@
     }
  
     if ($source->comment) {
-        $source_info[] = '<i>'.$source->comment. '</i>';
+        $source_info[] = '<i>'.str_replace("\n", "<br>", $source->comment). '</i>';
     }
     
     $source_str = join('<br>',$source_info);
