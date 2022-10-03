@@ -8,7 +8,9 @@ trait Plots
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function plots(){
-        return $this->belongsToMany(Plot::class);
+        return $this->belongsToMany(Plot::class)
+                    ->orderBy('genre_id')->orderBy('sequence_number');
+
     }
     
     /**

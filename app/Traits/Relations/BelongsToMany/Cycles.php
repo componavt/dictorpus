@@ -8,8 +8,7 @@ trait Cycles
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function cycles(){
-        return $this->belongsToMany(Cycle::class)
-                ->orderBy('genre_id')->orderBy('sequence_number');
+        return $this->belongsToMany(Cycle::class);
     }
     
     /**
