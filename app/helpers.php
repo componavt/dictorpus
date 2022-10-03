@@ -201,3 +201,10 @@ if (!function_exists('args_replace')) {
         return search_values_by_URL($url_args);
     }
 }
+
+if (!function_exists('process_text')) {
+    function process_text($text) {
+        $text = str_replace("\n", "<br>", $text);
+        return $text;
+    }
+}

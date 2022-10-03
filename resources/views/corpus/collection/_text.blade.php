@@ -23,6 +23,10 @@
         
         $source_info[] = $archive;
     }
+    
+    if ($source->comment) {
+        $source_info[] = process_text($source->comment);
+    }
 ?>
     @if (sizeof($source_info)) 
 <br>{{join('; ', $source_info)}}
