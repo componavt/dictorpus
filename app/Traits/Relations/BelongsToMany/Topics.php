@@ -8,7 +8,8 @@ trait Topics
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function topics(){
-        return $this->belongsToMany(Topic::class);
+        return $this->belongsToMany(Topic::class)
+                    ->orderBy('genre_id')->orderBy('sequence_number');
     }
     
     /**
