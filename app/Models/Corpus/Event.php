@@ -65,6 +65,38 @@ class Event extends Model
         return $this->hasMany(Text::class);
     }
     
+    public function informantsWithLink($link=null) {
+        $out = [];
+        foreach ($this->informants as $informant) {
+            $name = $informant->informantString();
+            if ($link) {
+                $name = to_link($name, $link.$informant->id);
+            }
+            $out[] = $name;
+        }
+        return $out;
+    }
+    
+    public function recordersWithLink($link=null) {
+        $out = [];
+        foreach ($this->recorders as $recorder) {
+            $name = $recorder->name;
+            if ($link) {
+                $name = to_link($name, $link.$recorder->id);
+            }
+            $out[] = $name;
+        }
+        return $out;
+    }
+    
+    public function placeWithLink($link=null) {
+        $name = $this->place->placeString();
+        if ($link) {
+            $name = to_link($name, $link.$this->place->id);
+        }
+        return $name;
+    }
+    
     public function updateInformantsAndRecorders($request_data) {
 //dd($this);        
 //dd($request_data);        
