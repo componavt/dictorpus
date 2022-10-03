@@ -29,7 +29,7 @@
     }
 ?>
     @if (sizeof($source_info)) 
-<br>{{join('; ', $source_info)}}
+    <br>{!!join('<br>', $source_info)!!}
     @endif
 @endif
 </p>
