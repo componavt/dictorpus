@@ -2,6 +2,8 @@
 
 namespace App\Library;
 
+use App\Models\Dict\Concept;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
@@ -117,6 +119,38 @@ print "<p>".$lemma->lemma."</p>";
         foreach ($words as $word) {
 //dd($word);            
             $word->moveCharOut($char);
+        }
+    }
+    
+    public static function addSynonyms() {
+        $concepts = Concept::all();
+        foreach ($concepts as $concept) {
+print $concept->text.'<ul>';            
+            foreach (Lang::projectLangs() as $lang) {
+print $lang->code.'<ul>';                
+                $meanings = $concept->meanings()->whereIn('lemma_id', function ($q) use ($lang) {
+                    $q->select('id')->from('lemmas')->whereLangId($lang->id);
+                })->get();
+                $lemmas = [];
+                foreach ($meanings as $meaning) {
+print '<li><a href="/ru/dict/lemma/'.$meaning->lemma_id.'">'.$meaning->lemma->lemma.'</a></li>';     
+                    $lemmas[$meaning->id] = $meaning->lemma;
+                }
+                foreach ($lemmas as $meaning1 => $lemma1) {
+                    foreach ($lemmas as $meaning2 => $lemma2) {
+                        if ($lemma1->id == $lemma2->id) {
+                            continue;
+                        }
+                        if ($lemma1->variants()->whereLemma2Id($lemma2->id)->count()) {
+                            continue;
+                        }
+print '<p><a href="/ru/dict/lemma/'.$lemma1->id.'">'.$lemma1->lemma.'</a> - СИНОНИМ - <a href="/ru/dict/lemma/'.$lemma2->id.'">'.$lemma2->lemma.'</a>';                        
+                    }
+                }
+print "</ul>";                
+            }
+print "</ul>";            
+//exit(0);            
         }
     }
 }

@@ -340,4 +340,8 @@ print 'done.';
             Correct::moveCharOutWord($char);
         }
     }
+    
+    public function addSynonyms() {
+        Correct::addSynonyms();
+    }
 }
