@@ -52,7 +52,7 @@ class SentenceFragmentController extends Controller
     public function update(Request $request, int $sentence_id, int $w_id)
     {
         $text_xml = $request->input('text_xml');
-        
+        $sentence_obj = Sentence::find($sentence_id);
         $fragment = SentenceFragment::getBySW($sentence_id, $w_id);
         if ($fragment) {
             if (!$text_xml) {        
@@ -69,6 +69,6 @@ class SentenceFragmentController extends Controller
                                     'w_id'=>$w_id, 'text_xml' => $text_xml]);
         }        
         return view('dict.lemma.example._fragment', 
-                compact('fragment', 'sentence_id', 'w_id'));
+                compact('fragment', 'sentence_obj', 'w_id'));
     }
 }

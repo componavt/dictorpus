@@ -23,7 +23,7 @@
         <div style="margin-bottom: 10px;">@include('dict.lemma.example.sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])</div>
         <div id="fragment">
             @include('dict.lemma.example._fragment', 
-                ['sentence_id'=>$sentence['sent_obj']->id, 'w_id'=>$sentence['w_id']])
+                ['sentence_obj'=>$sentence['sent_obj'], 'w_id'=>$sentence['w_id']])
         </div>
         @include('dict.lemma.example._translations')
 
