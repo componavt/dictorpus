@@ -201,6 +201,12 @@ h4 .fa {
     content:url('/images/status1.gif');
 }
 
+.add-to-list,
+.remove-label {
+    color: #972d1a;
+    cursor: pointer;
+}
+
 #toggle-phrases {
     cursor: pointer;
 }

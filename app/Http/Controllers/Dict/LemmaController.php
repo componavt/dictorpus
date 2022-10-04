@@ -965,4 +965,16 @@ class LemmaController extends Controller
                     . " lemma_id='$id' and label_id='$label_id'");
         return Lemma::findOrFail($id)->labelStatus($label_id);
     }
+    
+    public function removeLabel(int $id, int $label_id) {
+        DB::statement("DELETE from label_lemma where"
+                    . " lemma_id='$id' and label_id='$label_id'");
+        return;
+    }
+    
+    public function addLabel(int $id, int $label_id) {
+        DB::statement("INSERT INTO label_lemma (lemma_id, label_id, status)"
+                    . " VALUES ('$id', '$label_id', 0)");
+        return;
+    }
 }

@@ -2,7 +2,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.multidict') }}
+Отбор лемм для мультимедийного словаря
 @stop
 
 @section('headExtra')
@@ -16,7 +16,7 @@
 @stop
 
 @section('body')        
-        @include('service.dict.multi._search_form',['url' => '/service/dict/multi']) 
+        @include('service.dict.multi._search_form',['url' => '/service/dict/multi/select']) 
 
         @if ($lemmas)
         <table id="lemmasTable" class="table table-striped rwd-table wide-md">
@@ -25,10 +25,8 @@
                 <th>No</th>
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
-                <th>{{ trans('navigation.concepts') }}</th>
                 <th>{{ trans('messages.frequency') }}</th>
-                <th>{{ trans('dict.listen') }}</th>
-                <th>{{ trans('messages.actions') }}</th>
+                <th>Выбрать</th>
             </tr>
         </thead>
         <tbody>
@@ -43,23 +41,11 @@
                 <td data-th="{{ trans('dict.pos') }}">
                     {{$lemma['pos_name']}}
                 </td>
-                <td data-th="{{ trans('navigation.concepts') }}">
-                    {{$lemma['concepts']}}
-                </td>
                 <td data-th="{{ trans('messages.frequency') }}">
                       {{$lemma['frequency']}}
                 </td>
-                <td data-th="{{ trans('dict.listen') }}">
-@foreach ($lemma['audios'] as $audio_url)
-        @include('widgets.audio_simple', ['route'=>$audio_url])
-@endforeach
-                </td>
-                <td data-th="{{ trans('messages.actions') }}" style="text-align:center">
-                    <a class="set-status status{{$lemma['status']}}" id="status-{{$lemma_id}}" 
-                       onClick="setStatus({{$lemma_id}}, {{$label_id}})"
-                       data-old="{{$lemma['status']}}" 
-                       data-new="{{$lemma['status'] ? 0 : 1}}"></a>
-                    <i class="fa fa-trash fa-lg remove-label" onClick="removeLabel({{$lemma_id}}, {{$label_id}})" title="Удалить из списка"></i>
+                <td data-th="Выбрать">
+                    <i class="fa fa-check add-to-list" onClick="addLabel({{$lemma_id}}, {{$label_id}})" title="Добавить в список"></i>
                 </td>
             </tr>
             @endforeach

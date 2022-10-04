@@ -85,6 +85,26 @@ function setStatus(id, label_id) {
     }); 
 }   
 
+function removeLabel(lemma_id, label_id) {
+    $.ajax({
+        url: '/dict/lemma/'+ lemma_id + '/' + label_id + '/remove_label', 
+        type: 'GET',
+        success: function(){
+            $("#row-"+lemma_id).hide();
+        },
+    }); 
+}
+
+function addLabel(lemma_id, label_id) {
+    $.ajax({
+        url: '/dict/lemma/'+ lemma_id + '/' + label_id + '/add_label', 
+        type: 'GET',
+        success: function(){
+            $("#row-"+lemma_id).hide();
+        },
+    }); 
+}
+
 function showAudioInfo() {
    $("body").on("click", ".audio-info-caller", function(event) {
 //console.log('click');       
