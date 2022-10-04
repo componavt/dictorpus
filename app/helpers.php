@@ -204,7 +204,7 @@ if (!function_exists('args_replace')) {
 
 if (!function_exists('process_text')) {
     function process_text($text) {
-        $text = str_replace("\n", "<br>", $text);
+        $text = str_replace("\n", "<br>", trim($text));
         return $text;
     }
 }
