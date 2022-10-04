@@ -149,7 +149,8 @@ class Meaning extends Model
                 if ($fragment) {
                     $sentence['s'] = $fragment->text_xml;
                 }
-                $translation_text = preg_replace("/\r?\n/", "",
+                $translation_text = //preg_replace("/\r?\n/", "",
+                        process_text(
                         SentenceTranslation::getTextForLocale($sentence['sent_obj']->id,
                                                               $meaning_text->w_id));
 /*                if (preg_match("/^(\<s id=\"\d+\"\>)\<br\>(.+)$/", $translation_text, $regs)) {

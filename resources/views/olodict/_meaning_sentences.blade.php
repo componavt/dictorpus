@@ -9,7 +9,7 @@
         {!! $sentence['sent_obj']->markSearchWords([$sentence['w_id']] ?? [], $sentence['s'] ?? null); !!}
 
 @if ($sentence['trans_s']) 
-    <div class='meaning-sentence-trans'>{!! process_text($sentence['trans_s']) !!}</div>
+    <div class='meaning-sentence-trans'>{!! $sentence['trans_s'] !!}</div>
 @endif
     </div>
 @endforeach                    
