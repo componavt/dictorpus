@@ -29,7 +29,7 @@ class CorrectController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:admin,/');
+        $this->middleware('auth:admin,/', ['except'=>['addSynonyms']]);
     }
     
     public function index() {
