@@ -8,7 +8,7 @@
             $informants_arr[] = $informant->informantString();
         }
     }*/
-    $informants_arr = $event->informantsWithLink('/corpus/text?search_informant=');
+    $informants_arr = $event->informantsWithLink('/corpus/text?search_');
 /*
     $event_recorders = \DB::table('event_recorder')
                           ->where('event_id', $event->id)->get(['recorder_id']);
@@ -37,7 +37,8 @@
 @endif
 
 @if ($event->date)
-<b>{{ trans('corpus.record_year')}}:</b> <i>{{ $event->date }}@if($recoders_list)<br>@endif</i>
+<b>{{ trans('corpus.record_year')}}:</b> 
+<i>{!! to_link($event->date, '/corpus/text?search_year_from='.$event->date.'&search_year_to='.$event->date) !!}@if($recoders_list)<br>@endif</i>
 @endif
 
 @if ($recoders_list)

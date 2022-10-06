@@ -121,7 +121,7 @@ class Informant extends Model
             $info[0] = $this->name;
         }
         if ($link) {
-            $info[0] = to_link($info[0], $link.$this->id);
+            $info[0] = to_link($info[0], $link.'informant='.$this->id);
         }
         
         if ($this->birth_date) {
@@ -129,20 +129,19 @@ class Informant extends Model
         }
         
         if ($this->birth_place) {
-            $info[] = $this->birthPlaceString($lang_id, $all_place_names);
+            $info[] = $this->birthPlaceString($lang_id, $all_place_names, $link ? $link.'birth_place=': '');
         }
         
         return join(', ', $info);
     }   
 
-    public function birthPlaceString($lang_id='', $all_place_names=true)
+    public function birthPlaceString($lang_id='', $all_place_names=true, $link='')
     {
         if (!$this->birth_place) {
             return '';
         }
-        $birth_place = Place::find($this->birth_place_id);
-        return $birth_place->placeString($lang_id, $all_place_names);
-        
+        return Place::find($this->birth_place_id)
+                            ->placeString($lang_id, $all_place_names, $link);
     }    
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
