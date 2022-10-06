@@ -46,5 +46,5 @@
 
 @section('jqueryFunc')
     toggleSpecial();
-    selectConcept('search_concept_category', 'search_pos', '{{trans('dict.concept')}}', true);
+    selectConcept('search_concept_category', 'search_pos', '{{trans('dict.concept')}}', true, '{{$label_id}}');
 @stop

@@ -8,12 +8,12 @@ use LaravelLocalization;
 
 use App\Library\Olodict;
 
-use App\Models\Dict\Concept;
-use App\Models\Dict\ConceptCategory;
+//use App\Models\Dict\Concept;
+//use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
-
+use App\Models\Dict\Relation;
 
 class OlodictController extends Controller
 {
@@ -57,6 +57,7 @@ class OlodictController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         $locale = LaravelLocalization::getCurrentLocale();
+        $label_id = Label::OlodictLabel;
 
         $alphabet = Lemma::whereIn('id', Label::checkedOloLemmas())
                          ->selectRaw('substr(lemma_for_search,1,1) as letter')
@@ -72,14 +73,15 @@ class OlodictController extends Controller
         $lemmas = Olodict::search($url_args);
         $dialect_id = Olodict::Dialect;
         $pos_values = PartOfSpeech::getListForOlodict();
-        $concept_category_values = ConceptCategory::getList();
-        $concept_values = [NULL=>'']+Concept::getList($url_args['search_concept_category'], $url_args['search_pos']);
+        $concept_category_values = Olodict::conceptCategoryList();
+        $concept_values = [NULL=>'']+Olodict::conceptList($url_args['search_concept_category'], $url_args['search_pos']);
+        $relations = Relation::getList();//orderBy('sequence_number')->get();
 
         return view('olodict.index',
                 compact('alphabet', 'concept_category_values', 'concept_values', 
-                        'dialect_id', 'gram_list', 'lemma_list', 
+                        'dialect_id', 'gram_list', 'label_id', 'lemma_list', 
                         'lemmas_total', 'lemmas', 'locale', 'pos_values',
-                        'args_by_get', 'url_args'));
+                        'relations', 'args_by_get', 'url_args'));
     }
     
     public function lemmaList()

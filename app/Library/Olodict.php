@@ -2,16 +2,72 @@
 
 namespace App\Library;
 
+use App\Models\Dict\Concept;
+use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
 //use App\Models\Dict\LemmaWordform;
 //use App\Models\Dict\PartOfSpeech;
+use App\Models\Dict\Relation;
 
 //use App\Models\Corpus\Word;
 
 class Olodict
 {
     const Dialect = 44;
+    
+    public static function conceptCategoryList() {
+        $objs = ConceptCategory::whereIn('id', function ($q1) {
+            $q1->select('concept_category_id')->from('concepts')
+               ->whereIn('id', function ($q2) {
+                  $q2->select('concept_id')->from('concept_meaning')
+                     ->whereIn('meaning_id', function ($q3) {
+                         $q3->select('id')->from('meanings')
+                            ->whereIn('lemma_id', Label::checkedOloLemmas());
+                     });
+               });
+        })->orderBy('id')->get();
+        
+        $list = array();
+        foreach ($objs as $row) {
+            $list[$row->id] = $row->id .'. '. $row->name;
+        }
+        
+        return $list;         
+        
+    }
+
+    /** Gets list for dropdown field
+     * 
+     * @return Array [<key> => <value>,..]
+     */
+    public static function conceptList($category_id=NULL, $pos_id=NULL)
+    {     
+        $objs = Concept::whereIn('id', function ($q1) {
+             $q1->select('concept_id')->from('concept_meaning')
+                ->whereIn('meaning_id', function ($q3) {
+                    $q3->select('id')->from('meanings')
+                       ->whereIn('lemma_id', Label::checkedOloLemmas());
+                });
+        })->orderBy('id');
+        
+        if ($category_id) {                 
+            $objs = $objs ->where('concept_category_id',$category_id);
+        }
+        
+        if ($pos_id) {                 
+            $objs = $objs ->where('pos_id',$pos_id);
+        }
+        
+        $objs = $objs->get();
+        $list = array();
+        foreach ($objs as $row) {
+            $list[$row->id] = $row->text;
+        }
+        
+        return $list;         
+    }
+    
     
     public static function lemmaList($url_args) {
         $lemmas = Lemma::whereIn('id', Label::checkedOloLemmas());
@@ -30,8 +86,7 @@ class Olodict
             $lemmas = self::searchByWord($lemmas, $url_args['search_word'], $url_args['with_template']);
             $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning'], $url_args['with_template']);
             $lemmas = self::searchByAudios($lemmas, $url_args['with_audios']);
-            $lemmas = self::searchByConcept($lemmas, $url_args['search_concept']);
-            $lemmas = self::searchByConceptCategory($lemmas, $url_args['search_concept_category']);
+            $lemmas = self::searchByConcept($lemmas, $url_args['search_concept'], $url_args['search_concept_category']);
         }
 //dd(to_sql($lemmas));        
         return $lemmas ->orderBy('lemma_for_search')
@@ -84,36 +139,23 @@ class Olodict
                     });
     }
     
-    public static function searchByConcept($lemmas, $concept_id) {
-        if (!$concept_id) {
+    public static function searchByConcept($lemmas, $concept_id, $concept_category_id) {
+        if (!$concept_id && !$concept_category_id) {
             return $lemmas;
         }
-        return $lemmas->whereIn('id',function($query) use ($concept_id){
-                    $query->select('lemma_id')
-                        ->from('meanings')
-                        ->whereIn('id',function($query) use ($concept_id){
-                            $query->select('meaning_id')
-                            ->from('concept_meaning')
-                            ->where('concept_id', $concept_id);
-                        });
-                    });
-    }
-    
-    public static function searchByConceptCategory($lemmas, $concept_category_id) {
-        if (!$concept_category_id) {
-            return $lemmas;
-        }
-        return $lemmas->whereIn('id',function($query) use ($concept_category_id){
-                    $query->select('lemma_id')
-                        ->from('meanings')
-                        ->whereIn('id',function($q1) use ($concept_category_id){
-                            $q1->select('meaning_id')
-                            ->from('concept_meaning')
-                            ->whereIn('concept_id', function($q2) use ($concept_category_id) {
-                                $q2->select('id')
-                                ->from('concepts')
-                                ->where('concept_category_id', $concept_category_id);
-                            });
+        return $lemmas->whereIn('id',function($query) use ($concept_id, $concept_category_id){
+                    $query->select('lemma_id')->from('meanings')
+                          ->whereIn('id',function($q1) use ($concept_id, $concept_category_id){
+                              $q1->select('meaning_id')->from('concept_meaning');
+                              if ($concept_id) {
+                                  $q1->whereConceptId($concept_id);
+                              }
+                              if ($concept_category_id) {
+                                  $q1->whereIn('concept_id', function($q2) use ($concept_category_id) {
+                                    $q2->select('id')->from('concepts')
+                                       ->where('concept_category_id', $concept_category_id);
+                                  });
+                              }
                         });
                     });
     }

@@ -207,6 +207,8 @@ class ConceptController extends Controller
         $concept_text = '%'.$request->input('q').'%';
         $category_id = $request->input('category_id');
         $pos_id = (int)$request->input('pos_id');
+        $label_id = (int)$request->input('label_id');
+        $status_in_label = $request->input('status_in_label');
 
         $list = [];
         $concepts = Concept::where(function($q) use ($concept_text){
@@ -214,13 +216,29 @@ class ConceptController extends Controller
                               ->orWhere('text_ru','like', $concept_text);
                          });
         if ($category_id) {                 
-            $concepts = $concepts ->where('concept_category_id',$category_id);
+            $concepts ->where('concept_category_id',$category_id);
         }
         
         if ($pos_id && $pos_id !=PartOfSpeech::getIDByCode('PHRASE')) {                 
-            $concepts = $concepts ->where('pos_id',$pos_id);
+            $concepts ->where('pos_id',$pos_id);
         }
         
+        if ($label_id) {
+            $concepts->whereIn('id', function ($q) use ($label_id, $status_in_label) {
+                $q->select('concept_id')->from('concept_meaning')
+                  ->whereIn('meaning_id', function ($q2) use ($label_id, $status_in_label) {
+                      $q2->select('id')->from('meanings')
+                         ->whereIn('lemma_id', function ($q3) use ($label_id, $status_in_label) {
+                             $q3->select('lemma_id')->from('label_lemma')
+                                ->whereLabelId($label_id);
+                             if ($status_in_label !== '') {
+                                $q3->whereStatus($status_in_label);
+                             }
+                         });
+                  });
+            });
+        }
+//dd(to_sql($concepts));        
         $concepts = $concepts->orderBy('text_'.$locale)->get();
                          
         foreach ($concepts as $concept) {

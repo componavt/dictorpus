@@ -341,7 +341,7 @@ function selectBirthPlace(district_var='search_birth_district', region_var='sear
     });   
 }
 
-function selectConcept(category_var, pos_var, placeholder='', allow_clear=false){
+function selectConcept(category_var, pos_var, placeholder='', allow_clear=false, label_id=null, status_in_label=1){
     $(".select-concept").select2({
         allowClear: allow_clear,
         placeholder: placeholder,
@@ -354,7 +354,9 @@ function selectConcept(category_var, pos_var, placeholder='', allow_clear=false)
             return {
               q: params.term, // search term
               category_id: $( "#"+category_var+" option:selected" ).val(),
-              pos_id: $( "#"+pos_var+" option:selected" ).val()
+              pos_id: $( "#"+pos_var+" option:selected" ).val(),
+              label_id: label_id,
+              status_in_label: status_in_label
             };
           },
           processResults: function (data) {

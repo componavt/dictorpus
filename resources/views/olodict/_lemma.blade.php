@@ -27,7 +27,7 @@
         @include('olodict._meaning_sentences', ['count'=>1, 'sentences'=>$meaning->sentences(false, '', 0, 10)])
     </div>
     <div class='relations-b'>
-        @include('olodict._relations', ['meaning_relations' => $meaning->getLemmaRelations()])        
+        @include('olodict._relations')        
     </div>
 @endforeach
 

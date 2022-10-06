@@ -236,9 +236,49 @@ class Meaning extends Model
         return $out;
     }
     
-    public function getLemmaRelations() {
+    public function getLemmaRelation($relation_id, $label_id=null, $label_status=1) {
+        $relation_meanings = $this->meaningRelations()->wherePivot('relation_id', $relation_id);
+        if ($label_id) {
+            $relation_meanings->wherePivotIn('meaning2_id', function ($q) use ($label_id, $label_status) {
+                $q->select('id')->from('meanings')
+                  ->whereIn('lemma_id', function ($q2 )use ($label_id, $label_status) {
+                      $q2->select('lemma_id')->from('label_lemma')
+                         ->whereLabelId($label_id)
+                         ->whereStatus($label_status);
+                  });
+            });
+        }
+        $relation_meanings = $relation_meanings->get();
+        if (!$relation_meanings) {
+            return null;
+        }
+        $meaning_relations=[];
+        foreach ($relation_meanings as $relation_meaning) {
+            $meaning2_id = $relation_meaning->pivot->meaning2_id;
+            $relation_id = $relation_meaning->pivot->relation_id;
+            $relation_meaning_obj = self::find($meaning2_id);
+            $relation_lemma_obj = $relation_meaning_obj->lemma;
+            $relation_lemma = $relation_lemma_obj->lemma;
+            $meaning_relations[$relation_lemma_obj->id]  
+                    = $relation_lemma;
+        }
+        return $meaning_relations;
+    }
+    
+    public function getLemmaRelations($label_id=null, $label_status=1) {
         $relations = Relation::getList();
-        $relation_meanings = $this->meaningRelations;
+        $relation_meanings = $this->meaningRelations();
+        if ($label_id) {
+            $relation_meanings->wherePivotIn('meaning2_id', function ($q) use ($label_id, $label_status) {
+                $q->select('id')->from('meanings')
+                  ->whereIn('lemma_id', function ($q2 )use ($label_id, $label_status) {
+                      $q2->select('lemma_id')->from('label_lemma')
+                         ->whereLabelId($label_id)
+                         ->whereStatus($label_status);
+                  });
+            });
+        }
+        $relation_meanings = $relation_meanings->get();
         if (!$relation_meanings) {
             return null;
         }
