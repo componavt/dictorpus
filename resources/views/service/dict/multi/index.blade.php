@@ -26,7 +26,7 @@
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('navigation.concepts') }}</th>
-                <th>{{ trans('messages.frequency') }}</th>
+                <!--th>{{ trans('messages.frequency') }}</th-->
                 <th>{{ trans('dict.listen') }}</th>
                 <th>{{ trans('messages.actions') }}</th>
             </tr>
@@ -46,9 +46,9 @@
                 <td data-th="{{ trans('navigation.concepts') }}">
                     {{$lemma['concepts']}}
                 </td>
-                <td data-th="{{ trans('messages.frequency') }}">
+                <!--td data-th="{{ trans('messages.frequency') }}">
                       {{$lemma['frequency']}}
-                </td>
+                </td-->
                 <td data-th="{{ trans('dict.listen') }}">
 @foreach ($lemma['audios'] as $audio_url)
         @include('widgets.audio_simple', ['route'=>$audio_url])

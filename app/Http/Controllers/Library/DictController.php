@@ -181,7 +181,7 @@ class DictController extends Controller
                 'lemma'=>$lemma->lemma, 
                 'pos_name'=>$lemma->pos->name, 
                 'concepts' => $lemma->conceptNames(),
-                'frequency'=>$lemma->getFrequencyInCorpus(), 
+//                'frequency'=>$lemma->getFrequencyInCorpus(), 
                 'audios'=>Audio::getUrlsByLemmaId($lemma->id), 
                 'status'=>$lemma->labelStatus($label_id)];
         }
