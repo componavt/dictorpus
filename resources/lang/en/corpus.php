@@ -19,6 +19,7 @@ return [
     'add_place' => 'Add a place',
     'add_recorder' => 'Add a recorder',
     'add-wordform' => 'Add a wordform',
+    'annot' => 'Short description',
     'archive_krc' => 'audio archive of ILLH, KarRC RAS',
     'author' => 'Author',
     'author_removed' => 'Author ":name" is removed successfully.',

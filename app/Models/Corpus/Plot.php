@@ -11,7 +11,7 @@ class Plot extends Model
 {
     public $timestamps = false;
     
-    protected $fillable = ['name_en','name_ru', 'genre_id', 'sequence_number'];
+    protected $fillable = ['name_en','name_ru', 'genre_id', 'sequence_number', 'annot_ru', 'annot_en'];
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
