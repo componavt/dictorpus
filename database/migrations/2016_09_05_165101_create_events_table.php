@@ -40,3 +40,4 @@ class CreateEventsTable extends Migration
         Schema::drop('events');
     }
 }
+//alter table sources change `comment` `comment` varchar(1024) default null;
