@@ -87,7 +87,7 @@ class Topic extends Model
     
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
-        $builder = self::orderBy('sequence_number')->orderBy('name_'.$locale);
+        $builder = self::orderBy('name_'.$locale);//orderBy('sequence_number')->
         $builder = self::searchByName($builder, $url_args['search_name']);
         $builder = self::searchByPlotGenreCorpus($builder, $url_args['search_plot'], 
                 $url_args['search_genre'], $url_args['search_corpus']);

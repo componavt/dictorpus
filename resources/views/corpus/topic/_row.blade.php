@@ -1,12 +1,10 @@
             <tr>
-                @if (User::checkAccess('corpus.edit'))
-                <td data-th="н/п">{{ $topic->sequence_number }}</td>
-                @endif
+                <td data-th="No">{{ $list_count }}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$topic->name_ru}}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$topic->name_en}}</td>
                 @if (!$url_args['search_plot'])
                 <td data-th="{{ trans('corpus.plot') }}">{!!$topic->plotsToString(';<br>')!!}</td>
                 @endif
-                <td data-th="{{ trans('messages.in_russian') }}">{{$topic->name_ru}}</td>
-                <td data-th="{{ trans('messages.in_english') }}">{{$topic->name_en}}</td>
                 <td data-th="{{ trans('navigation.texts') }}">
                 @if($topic->texts)
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/?search_topic[]='.$topic->id) }}">{{ $topic->texts()->count() }}</a>

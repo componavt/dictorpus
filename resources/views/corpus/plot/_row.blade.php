@@ -1,12 +1,10 @@
             <tr>
-                @if (User::checkAccess('corpus.edit'))
-                <td data-th="н/п">{{ $plot->sequence_number }}</td>
-                @endif
+                <td data-th="No">{{ $list_count }}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">{{$plot->name_ru}}</td>
+                <td data-th="{{ trans('messages.in_english') }}">{{$plot->name_en}}</td>
                 @if (!$url_args['search_genre'])
                 <td data-th="{{ trans('corpus.genre') }}">{{$plot->genre->numberInList()}}. {{$plot->genre->name}}</td>
                 @endif
-                <td data-th="{{ trans('messages.in_russian') }}">{{$plot->name_ru}}</td>
-                <td data-th="{{ trans('messages.in_english') }}">{{$plot->name_en}}</td>
                 <td data-th="{{ trans('navigation.texts') }}">
                 @if($plot->texts()->count())
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/?search_plot[]='.$plot->id) }}">{{ $plot->texts()->count() }}</a>

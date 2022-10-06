@@ -50,7 +50,7 @@ class Plot extends Model
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $objs = self::orderBy('sequence_number')->orderBy('name_'.$locale);
+        $objs = self::orderBy('name_'.$locale);//orderBy('sequence_number')->
         $objs = self::searchById($objs, $url_args['search_id']);
         $objs = self::searchByName($objs, $url_args['search_name']);
         $objs = self::searchByGenre($objs, $url_args['search_genre']);

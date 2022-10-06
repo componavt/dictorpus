@@ -1,4 +1,4 @@
-<?php $list_count=0; ?>
+<?php $list_count=1+($url_args['page']-1)*$url_args['limit_num']; ?>
 @extends('layouts.page')
 
 @section('page_title')
@@ -29,14 +29,12 @@
         <table class="table table-striped table-wide wide-md">
         <thead>
             <tr>
-                @if (User::checkAccess('corpus.edit'))
                 <th>No</th>
-                @endif
+                <th>{{ trans('messages.in_russian') }}</th>
+                <th>{{ trans('messages.in_english') }}</th>
                 @if (!$url_args['search_plot'])
                 <th>{{ trans('corpus.plot') }}</th>
                 @endif
-                <th>{{ trans('messages.in_russian') }}</th>
-                <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
                 @if (user_corpus_edit())
                 <th>{{ trans('messages.actions') }}</th>
@@ -45,7 +43,7 @@
         </thead>
         <tbody>
             @foreach($topics as $topic)
-                @include('corpus.topic._row') 
+                @include('corpus.topic._row', ['list_count' => $list_count++]) 
             @endforeach
         </tbody>
         </table>
