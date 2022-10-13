@@ -8,7 +8,7 @@
             $informants_arr[] = $informant->informantString();
         }
     }*/
-    $informants_arr = $event->informantsWithLink('/corpus/text?search_');
+    $informants_arr = $event->informantsWithLink('/corpus/text?'.($text->getCollectionId() ? 'search_collection_id='.$text->getCollectionId().'&' : '').'search_');
 /*
     $event_recorders = \DB::table('event_recorder')
                           ->where('event_id', $event->id)->get(['recorder_id']);

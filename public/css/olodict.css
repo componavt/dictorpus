@@ -384,6 +384,27 @@ h1:before {
     padding-left: 20px;
 }
 
+.romb {
+    align-items: center;
+    background: 
+        linear-gradient(to top right, transparent calc(49.5% - 3px), #972d1a calc(49.5% - 2px), #972d1a 49.5%, transparent 50%) top right, 
+        linear-gradient(to top left, transparent calc(49.5% - 3px), #972d1a calc(49.5% - 2px), #972d1a 49.5%, transparent 50%) top left, 
+        linear-gradient(to bottom right, transparent calc(49.5% - 3px), #972d1a calc(49.5% - 2px), #972d1a 49.5%, transparent 50%) bottom right, 
+        linear-gradient(to bottom left, transparent calc(49.5% - 3px), #972d1a calc(49.5% - 2px), #972d1a 49.5%, transparent 50%) bottom left;
+    background-repeat: no-repeat;
+    background-size: 50% 50%;
+    display: inline-block;
+    height: 21px;
+    justify-content: center;
+    margin-right: 5px;
+    width: 11px;
+}
+
+.romb:before {
+    content: "";
+    display: inline-block;
+    padding-top: 57.73%;
+}
 /*****************************/
 .link-color {
     color: #972d1a;    

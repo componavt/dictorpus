@@ -34,8 +34,9 @@
 
 @if (sizeof($phrases))
 <div>
-    <b>{{mb_ucfirst(trans('dict.phrases'))}}</b> 
-
+    <b>{{--mb_ucfirst(trans('dict.phrases'))--}}</b> 
+    <span class="romb"></span><span class="romb"></span><span class="romb"></span>
+    
     <div id="lemma-phrases">
         @foreach ($phrases as $ph_lemma) 
         <div class="lemma-phrase">
