@@ -1,5 +1,5 @@
     @if ($url_args['page']>1)
-    <div><a class="arrow up" onClick="loadLemmas('{{$locale}}', {{$url_args['page']-1}})" title="{{trans('olodict.prev_words')}}"></a></div>
+    <div><a class="arrow up" onClick="loadLemmas('{{$locale}}', {{$url_args['page']-1}}, '{{$url_args['by_alpha']}}')" title="{{trans('olodict.prev_words')}}"></a></div>
     @endif
     
     @foreach ($lemma_list as $lemma)
