@@ -18,7 +18,9 @@ use App\Models\Role;
 class User extends EloquentUser
 {
     protected $fillable = ['email','first_name','last_name','permissions', 'country', 'city', 'affilation', 'informant_id'];
-    protected $perm_list = ['admin','dict.edit','corpus.edit','ref.edit','user.edit'];
+    protected $perm_list = ['admin','dict.edit','corpus.edit','ref.edit','user.edit','photo.edit'];
+// insert into roles (slug, name, created_at, updated_at) values ('assistant', 'Помощник редактора', now(), now());
+// update roles set permissions = '{"dict.edit":true, "corpus.edit":true, "photo.edit":true}' where slug='editor';    
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 

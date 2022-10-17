@@ -86,6 +86,13 @@ if (! function_exists('user_corpus_edit')) {
     }
 }
 
+if (! function_exists('user_photo_edit')) {
+    function user_photo_edit()
+    {
+        return User::checkAccess('photo.edit');
+    }
+}
+
 if (! function_exists('to_sql')) {
     function to_sql($query)
     {

@@ -127,7 +127,8 @@ class ConceptController extends Controller
         $pos_values = Concept::getPOSList();
 
         return view('dict.concept.edit', 
-                compact('concept', 'concept_category_values', 'pos_values', 'args_by_get', 'url_args'));
+                compact('concept', 'concept_category_values', 'pos_values', 
+                        'args_by_get', 'url_args'));
     }
 
     /**

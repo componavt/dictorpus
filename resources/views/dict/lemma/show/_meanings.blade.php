@@ -3,9 +3,21 @@
             <div class="lemma-meaning-left">
                 <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
 
-                @include('dict.lemma.show.meaning.concepts')
+                @if ($meaning->hasPhoto())
+                <div class="meaning-b-photo">
+                    <div>
+                @endif    
+                    @include('dict.lemma.show.meaning.concepts')
 
-                @include('dict.lemma.show.meaning.texts')
+                    @include('dict.lemma.show.meaning.texts')
+
+                @if ($meaning->hasPhoto())
+                    </div>
+                    <div class="meaning-photo">
+                        @include('dict.meaning._photo')
+                    </div>
+                </div>
+                @endif    
 
             @if (isset($meaning_relations[$meaning->id]))
             <ul>

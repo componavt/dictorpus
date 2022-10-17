@@ -103,12 +103,58 @@ class Concept extends Model
         })->count();
     }
     
+    public function photoInfo() {
+        if (!$this->wiki_photo) {
+            return;
+        }
+        $url = 'https://en.wikipedia.org/w/api.php';
+
+        $query_array = array (
+            'action' => 'query',
+            'titles' => 'Image:'.$this->wiki_photo,
+            'prop' => 'imageinfo',
+            'format' => 'json',
+            'iiprop' => 'url'
+        );
+        $query = http_build_query($query_array);
+        $result = file_get_contents($url . '?' . $query);        
+        $result = json_decode($result,true);
+        $pages = $result['query']['pages'];
+        $photo = $pages[array_keys($pages)[0]]['imageinfo'][0];        
+        return ['url' => $photo['descriptionurl'],
+                'source' => $photo['url']];        
+    }
+    
+    public function photoPreview() {
+        if (!$this->wiki_photo) {
+            return;
+        }
+        $url = 'https://en.wikipedia.org/w/api.php';
+
+        $query_array = array (
+            'action' => 'query',
+            'titles' => 'File:'.$this->wiki_photo,
+            'prop' => 'pageimages',
+            'format' => 'json'
+        );
+
+        $query = http_build_query($query_array);
+        $result = file_get_contents($url . '?' . $query);        
+        $result = json_decode($result,true);
+        $pages = $result['query']['pages'];
+        $photo = $pages[array_keys($pages)[0]]['thumbnail'];
+        return ['url' => $this->photoInfo()['descriptionurl'],
+                'source' => $photo['source']];        
+    }
+
+
     public static function urlArgs($request) {
 //dd($request->all());        
         $url_args = Str::urlArgs($request) + [
                     'search_id'       => (int)$request->input('search_id'),
                     'search_category' => $request->input('search_category'),
                     'search_text'     => $request->input('search_text'),
+                    'with_photos'     => (int)$request->input('with_photos'),
                 ];
         
         if (!$url_args['search_id']) {
@@ -124,6 +170,7 @@ class Concept extends Model
         $recs = self::searchByID($recs, $url_args['search_id']);
         $recs = self::searchByCategory($recs, $url_args['search_category']);
         $recs = self::searchByText($recs, $url_args['search_text']);
+        $recs = self::searchWithPhotos($recs, $url_args['with_photos']);
 //dd($places->toSql());                                
         return $recs;
     }
@@ -150,6 +197,13 @@ class Concept extends Model
                             $q->where('text_en','like', $text)
                               ->orWhere('text_ru','like', $text);            
                 });
+    }
+    
+    public static function searchWithPhotos($recs, $with_photos) {
+        if (!$with_photos) {
+            return $recs;
+        }
+        return $recs->where('wiki_photo', '<>', '')->whereNotNull('wiki_photo');
     }
     
 }

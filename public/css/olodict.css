@@ -204,6 +204,21 @@ s {
     padding-left: 20px;
 }
 
+.meaning-b {
+    display: flex;
+    justify-content: space-between;    
+}
+
+.meaning-photo { 
+    padding-left: 10px;
+    text-align: right;
+}
+
+.meaning-photo img { 
+    max-width: 200px;
+    height: auto;
+}
+
 .meaning-sentence {
     margin-bottom: 10px;
 }

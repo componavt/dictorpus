@@ -275,6 +275,7 @@ return [
     'wiki_photo' => 'Image from Wikimedia Commons',
     'with_audios' => 'with audio',
     'with_examples' => 'with examples',
+    'with_photos' => 'with photos',
     'without_gram' => 'unchangeable',
     'wordform' => 'wordform',
     'wordform_comment' => 'Number of wordforms with grammatical attributes [+ Number of wordforms without grammatical attributes]',

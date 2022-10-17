@@ -236,6 +236,19 @@ h4 .fa {
     top: 5px;
 }
 
+.meaning-b-photo {    
+    display:flex;
+}
+
+.meaning-photo  { 
+    padding-left: 10px;
+}
+
+.meaning-photo img { 
+    max-width: 200px;
+    height: auto;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

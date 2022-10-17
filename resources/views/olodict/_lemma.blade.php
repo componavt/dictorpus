@@ -18,13 +18,23 @@
 
 <?php $meaning_n = 1; ?>
 @foreach ($lemma->meaningsWithBestExamples() as $meaning)
-    <p>
-        @if (sizeof($lemma->meaningsWithBestExamples()) >1)
-        {{$meaning_n++}})
-        @endif
-        {{$meaning->textByLangCode($locale, 'ru')}}</p>
-    <div class='lemma-meaning-b'>
-        @include('olodict._meaning_sentences', ['count'=>1, 'sentences'=>$meaning->sentences(false, '', 0, 10)])
+    <div class='meaning-b'>
+        <div>
+            <p>@if (sizeof($lemma->meaningsWithBestExamples()) >1)
+            {{$meaning_n++}})
+            @endif
+            {{$meaning->textByLangCode($locale, 'ru')}}</p>
+            <div class='lemma-meaning-b'>
+                <div>
+                @include('olodict._meaning_sentences', ['count'=>1, 'sentences'=>$meaning->sentences(false, '', 0, 10)])
+                </div>
+            </div>
+        </div>
+        @if ($meaning->hasPhoto())
+            <div class="meaning-photo">
+                @include('dict.meaning._photo')
+            </div>
+        @endif    
     </div>
     <div class='relations-b'>
         @include('olodict._relations')        

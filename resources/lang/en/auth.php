@@ -36,6 +36,7 @@ return [
     'perm.admin' => 'Super rights',
     'perm.corpus.edit'=> 'Corpus editing',
     'perm.dict.edit'=> 'Dictionary editing',
+    'perm.photo.edit'=> 'Photo editing',
     'perm.ref.edit'=> 'References editing',
     'perm.user.edit'=> 'Users editing',
     'permissions' => 'Permissions',

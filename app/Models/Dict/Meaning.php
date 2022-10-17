@@ -89,7 +89,13 @@ class Meaning extends Model
         return $list;         
     }
     
-    /**
+    public function hasPhoto() {
+        if (isset($this->concepts[0]) && $this->concepts[0]->wiki_photo) {
+            return true;
+        }
+    }
+
+        /**
      * Gets total number of sentences for examples in Lemma show page
      *
      * @param $for_edit Boolean: true - for edition, output all sentences, 

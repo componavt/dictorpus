@@ -54,7 +54,9 @@
                     0
                     @endif
                 </td>
-                <td data-th="{{ trans('messages.photo') }}">{{$concept->wiki_photo ? '+' : ''}}</td>
+                <td data-th="{{ trans('messages.photo') }}">
+                    @include('dict.concept._photo_preview')
+                </td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit', [
