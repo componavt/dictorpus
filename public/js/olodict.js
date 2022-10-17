@@ -42,14 +42,15 @@ function clearSearchForm() {
     $('#with_template').prop( "checked", false );
 }
 
-function searchLemmas(locale) {
-    $(".letter-active").removeClass('letter-active');
-    $(".gram-active").removeClass('gram-active');
-    $(".lemma-active").removeClass('lemma-active');
-    
+function dataForSearch() {
     var with_audios='';
     if ($("#with_audios").is(':checked')) {
         with_audios = 1;
+    }
+
+    var with_photos='';
+    if ($("#with_photos").is(':checked')) {
+        with_photos = 1;
     }
 
     var with_template='';
@@ -57,17 +58,36 @@ function searchLemmas(locale) {
         with_template = 1;
     }
     
-    $.ajax({
-        url: '/'+locale+'/olodict/lemma_list', 
-        data: {
+    return {
             search_word: $("#search_word").val(),
             search_meaning: $("#search_meaning").val(),
             search_pos: $("#search_pos").val(),
             search_concept: $("#search_concept").val(),
             search_concept_category: $("#search_concept_category").val(),
             with_audios: with_audios,
+            with_photos: with_photos,
             with_template: with_template
-              },
+              };
+}
+
+function dataForAlpha() {
+    return {
+            search_letter: $(".letter-active").html(),
+            search_gram: $(".gram-active").html()
+           };
+}
+
+function searchLemmas(locale) {
+    $(".letter-active").removeClass('letter-active');
+    $(".gram-active").removeClass('gram-active');
+    $(".lemma-active").removeClass('lemma-active');
+    
+    var data = dataForSearch();
+    data['by_alpha'] = false;
+    
+    $.ajax({
+        url: '/'+locale+'/olodict/lemma_list', 
+        data: data,
         type: 'GET',
         success: function(lemma_list){       
 /*console.log('qid: ' +qid);    */
@@ -81,14 +101,19 @@ function searchLemmas(locale) {
     }); 
 }
 
-function loadLemmas(locale, page=1) {
+function loadLemmas(locale, page=1, by_alpha=true) {
+    var data;
+    if (by_alpha) {
+        data = dataForAlpha();
+    } else {
+        data = dataForSearch();
+    }
+    data['page'] = page;
+    data['by_alpha'] = true;
+    
     $.ajax({
         url: '/'+locale+'/olodict/lemma_list', 
-        data: {
-            search_letter: $(".letter-active").html(),
-            search_gram: $(".gram-active").html(),
-            page: page
-              },
+        data: data,
         type: 'GET',
         success: function(lemma_list){       
 /*console.log('qid: ' +qid);    */

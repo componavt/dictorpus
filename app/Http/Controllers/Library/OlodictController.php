@@ -28,6 +28,7 @@ class OlodictController extends Controller
         
         $this->url_args = url_args($request) + 
             [
+                'by_alpha'  => (boolean)$request->input('by_alpha'),
                 'search_concept_category'  => $request->input('search_concept_category'),
                 'search_concept'  => (int)$request->input('search_concept'),
                 'search_gram'    => $request->input('search_gram'),
@@ -37,6 +38,7 @@ class OlodictController extends Controller
                 'search_pos'    => (int)$request->input('search_pos'),
                 'search_word'    => $request->input('search_word'),
                 'with_audios'    => (int)$request->input('with_audios'),
+                'with_photos'    => (int)$request->input('with_photos'),
                 'with_template'    => (int)$request->input('with_template'),
                 'limit_num' => 10
             ];

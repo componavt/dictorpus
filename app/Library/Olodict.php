@@ -87,6 +87,7 @@ class Olodict
             $lemmas = self::searchByMeaning($lemmas, $url_args['search_meaning'], $url_args['with_template']);
             $lemmas = self::searchByAudios($lemmas, $url_args['with_audios']);
             $lemmas = self::searchByConcept($lemmas, $url_args['search_concept'], $url_args['search_concept_category']);
+            $lemmas = self::searchByPhotos($lemmas, $url_args['with_photos']);
         }
 //dd(to_sql($lemmas));        
         return $lemmas ->orderBy('lemma_for_search')
@@ -100,6 +101,23 @@ class Olodict
         return $lemmas->whereIn('id',function($query){
                         $query->select('lemma_id')
                             ->from('audio_lemma');
+                        });
+    }
+    
+    public static function searchByPhotos($lemmas, $with_photos) {
+        if (!$with_photos) {
+            return $lemmas;
+        }
+        return $lemmas->whereIn('id',function($q1){
+                        $q1->select('lemma_id')->from('meanings')
+                           ->whereIn('id', function($q2) {
+                            $q2->select('meaning_id')->from('concept_meaning')
+                               ->whereIn('concept_id', function($q3) {
+                                  $q3->select('id')->from('concepts')
+                                     ->where('wiki_photo', '<>', '')
+                                     ->whereNotNull('wiki_photo');
+                               });
+                           });
                         });
     }
     

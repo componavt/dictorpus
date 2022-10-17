@@ -46,6 +46,13 @@
             'tail'=>trans('dict.with_audios')]) 
 
     @include('widgets.form.formitem._checkbox',
+            ['name' => 'with_photos',
+            'value' => 1,
+            'checked' => $url_args['with_photos']==1,
+            'attributes' => ['onClick' => "searchLemmas('$locale')"],
+            'tail'=>trans('dict.with_photos')]) 
+
+    @include('widgets.form.formitem._checkbox',
             ['name' => 'with_template',
             'value' => 1,
             'checked' => $url_args['with_template']==1,

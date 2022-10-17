@@ -7,5 +7,5 @@
     @endforeach
 
     @if ($lemmas_total > $url_args['page']*$url_args['limit_num'])    
-    <div><a class="arrow down" onClick="loadLemmas('{{$locale}}', {{$url_args['page']+1}})" title="{{trans('olodict.next_words')}}"></a></div>
+    <div><a class="arrow down" onClick="loadLemmas('{{$locale}}', {{$url_args['page']+1}}, '{{$url_args['by_alpha']}}')" title="{{trans('olodict.next_words')}}"></a></div>
     @endif
