@@ -120,6 +120,9 @@ class Concept extends Model
         $result = file_get_contents($url . '?' . $query);        
         $result = json_decode($result,true);
         $pages = $result['query']['pages'];
+        if (!isset($pages[array_keys($pages)[0]]['imageinfo'][0])) {
+            return;
+        }
         $photo = $pages[array_keys($pages)[0]]['imageinfo'][0]; 
         if (!isset($photo['descriptionurl']) || !isset($photo['url'])) {
             return;
