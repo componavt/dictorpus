@@ -153,7 +153,7 @@ class Concept extends Model
             return;
         }*/
         return ['url' => $this->photoInfo()['descriptionurl'] ?? null,
-                'source' => $photo['thumbnail']['source']] ?? null;        
+                'source' => isset($photo['thumbnail']) && isset($photo['thumbnail']['source']) ? $photo['thumbnail']['source'] : null];        
     }
 
 
