@@ -28,7 +28,7 @@ class OlodictController extends Controller
         
         $this->url_args = url_args($request) + 
             [
-                'by_alpha'  => (boolean)$request->input('by_alpha'),
+                'by_alpha'  => (int)$request->input('by_alpha'),
                 'search_concept_category'  => $request->input('search_concept_category'),
                 'search_concept'  => (int)$request->input('search_concept'),
                 'search_gram'    => $request->input('search_gram'),
@@ -90,6 +90,7 @@ class OlodictController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+//dd($url_args['by_alpha']);
         $locale = LaravelLocalization::getCurrentLocale();
         
         $lemma_list = Olodict::lemmaList($url_args);
