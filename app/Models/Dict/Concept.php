@@ -145,12 +145,12 @@ class Concept extends Model
         $result = file_get_contents($url . '?' . $query);        
         $result = json_decode($result,true);
         $pages = $result['query']['pages'];
-        $photo = $pages[array_keys($pages)[0]]['thumbnail'];
+        $photo = $pages[array_keys($pages)[0]];
 /*        if (!isset($photo['descriptionurl']) || !isset($photo['source'])) {
             return;
         }*/
         return ['url' => $this->photoInfo()['descriptionurl'] ?? null,
-                'source' => $photo['source']] ?? null;        
+                'source' => $photo['thumbnail']['source']] ?? null;        
     }
 
 
