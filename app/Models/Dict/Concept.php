@@ -120,7 +120,10 @@ class Concept extends Model
         $result = file_get_contents($url . '?' . $query);        
         $result = json_decode($result,true);
         $pages = $result['query']['pages'];
-        $photo = $pages[array_keys($pages)[0]]['imageinfo'][0];        
+        $photo = $pages[array_keys($pages)[0]]['imageinfo'][0]; 
+        if (!isset($photo['descriptionurl']) || !isset($photo['url'])) {
+            return;
+        }
         return ['url' => $photo['descriptionurl'],
                 'source' => $photo['url']];        
     }
@@ -143,8 +146,11 @@ class Concept extends Model
         $result = json_decode($result,true);
         $pages = $result['query']['pages'];
         $photo = $pages[array_keys($pages)[0]]['thumbnail'];
-        return ['url' => $this->photoInfo()['descriptionurl'],
-                'source' => $photo['source']];        
+/*        if (!isset($photo['descriptionurl']) || !isset($photo['source'])) {
+            return;
+        }*/
+        return ['url' => $this->photoInfo()['descriptionurl'] ?? null,
+                'source' => $photo['source']] ?? null;        
     }
 
 
