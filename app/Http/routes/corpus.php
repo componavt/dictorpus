@@ -109,6 +109,11 @@
                                     'store' => 'informant.store',
                                     'destroy' => 'informant.destroy']]);
         
+        Route::resource('corpus/motive', 'Corpus\MotiveController',
+                       ['names' => ['update' => 'motive.update',
+                                    'store' => 'motive.store',
+                                    'destroy' => 'motive.destroy']]);
+        
         Route::resource('corpus/place', 'Corpus\PlaceController',
                        ['names' => ['update' => 'place.update',
                                     'store' => 'place.store',
