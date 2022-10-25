@@ -42,8 +42,17 @@
 }
 [id="player"] {
 	font-size: 5rem;
+	margin: 20px;
+	text-align: center;
+}
+[id="player"][class='inRecord'] {
+       color: #ef3928;
+}
+[id="meanings"] {
+	font-size: 2rem;
 	margin: auto;
 	text-align: center;
+	margin-bottom: 20px;
 }
 #next {
     text-align: right;

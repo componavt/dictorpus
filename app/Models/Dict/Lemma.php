@@ -1783,6 +1783,24 @@ dd($wordforms);
         return $meanings;
     }
     
+    /**
+     * get all interpretation for lemma ID and current language
+     * 
+     * @param int $lemma_id
+     * @return array
+     */
+    public static function meaningTextsForId($lemma_id) {
+        $lemma = self::find($lemma_id);
+        if (!$lemma) {
+            return;
+        }
+        $meanings = [];
+        foreach ($lemma->meanings as $meaning_obj) {
+             $meanings[] = $meaning_obj->getMultilangMeaningTextsStringLocale();
+        }
+        return $meanings;
+    }
+    
     public function getLangMeaningTexts($lang_code) {
         $meanings = [];
         foreach ($this->meanings as $meaning_obj) {

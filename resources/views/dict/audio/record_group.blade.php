@@ -25,6 +25,7 @@
             </div>
 		<div id="recordTimer">Идет запись!</div>
 		<div id="player"></div>
+		<div id="meanings"></div>
 		<div id="audio"></div>
 		<ul id="legend">
 			<li>W - Начать/остановить запись</li>
@@ -44,12 +45,15 @@
 	url = "/ru/dict/audio/upload",
 	recordWindow = document.querySelector("[id='record']"),
 	playerWindow = document.querySelector("[id='player']"),
+	meaningsWindow = document.querySelector("[id='meanings']"),
 	prevWindow = document.querySelector("[id='prev']"),
 	nextWindow = document.querySelector("[id='next']"),
 	audioBlock = document.querySelector("#audio");
 	wordsArray = [	
         @foreach ($lemmas as $lemma)
-            {"id": {{$lemma->id}}, "text": "{{$lemma->lemma}}"},
+        {"id": {{$lemma->id}}, 
+         "text": "{{$lemma->lemma}}", 
+         "meanings": "{!!join('<br>', \App\Models\Dict\Lemma::meaningTextsForId($lemma->id))!!}"},
         @endforeach
         ];
 
@@ -84,6 +88,7 @@ document.addEventListener ("keydown", function (kEvent) {
 
 function displayWord() {
 	playerWindow.innerHTML = wordsArray[currentWord].text;
+	meaningsWindow.innerHTML = wordsArray[currentWord].meanings;
 }
 
 function displayNext() {
@@ -103,6 +108,7 @@ function startRecord()
 		console.log("Начинаем записывать");
 		isRecordingInProgress = true;
 		recordWindow.classList.toggle("inRecord");
+		playerWindow.classList.toggle("inRecord");
 
 
 		if (audioBlock !== undefined) {
@@ -177,7 +183,7 @@ function deleteRecord()
 	} else {
 		if (isRecordingComplete) {
 			console.log("Удаляем запись");
-			location.reload();
+//			location.reload();
 		} else {
 			console.log("Записи еще нет");
 		}
