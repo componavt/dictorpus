@@ -32,6 +32,9 @@ a:hover {
     font-size: 18px;
     text-decoration: none;
 }
+.logo .site-title-add {
+    font-size: 24px;    
+}
 
 .logo a:hover {
     color: #ff3723;
@@ -861,25 +864,31 @@ h2 {
     justify-content: space-between;
 }
 @media screen and (min-width: 576px) {   
-.logo img {
-    padding: 25px 25px 0 0;
-    width: 130px; 
-}
-.logo a {
-    font-size: 24px;
-}
+    .logo img {
+        padding: 25px 25px 0 0;
+        width: 130px; 
+    }
+    .logo a {
+        font-size: 24px;
+    }
+    .logo .site-title-add {
+        font-size: 30px;
+    }
     .comment {
         margin-top: -50px;
     }
 }
 @media screen and (min-width: 768px) {   
-.logo img {
-    padding: 30px 30px 0 0;
-    width: 160px; 
-}
-.logo a {
-    font-size: 36px;
-}
+    .logo img {
+        padding: 30px 30px 0 0;
+        width: 160px; 
+    }
+    .logo a {
+        font-size: 36px;
+    }
+    .logo .site-title-add {
+        font-size: 42px;
+    }
     .comment {
         margin-top: -50px;
     }
