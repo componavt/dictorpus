@@ -66,6 +66,9 @@ return [
     
     'mark_right_gramset' => 'choose right gramset',
     'mark_right_meaning' => 'choose right meaning',
+    'motive' => 'Motive',
+    'motype' => 'Motive type',
+        
     'name' => 'name',
     'nee' => 'nee',
     'new_texts'=>'New texts',
@@ -76,6 +79,8 @@ return [
     'of_district' => 'of the district',
     'of_genre' => 'of the genre',
     'of_informant' => 'of the informant',
+    'of_motive' => 'of the motive',
+    'of_motype' => 'of the motive type',
     'of_place' => 'of the place',
     'of_plot' => 'of the plot',
     'of_recorder' => 'of the recorder',

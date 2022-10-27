@@ -30,16 +30,8 @@ class Topic extends Model
     use \App\Traits\Relations\BelongsToMany\Plots;
     use \App\Traits\Relations\BelongsToMany\Texts;
     
-    /** Gets name of this plot, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
-    }
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
     
     /** Gets name of this plot, takes into account locale.
      * 

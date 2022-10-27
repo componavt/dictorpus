@@ -45,6 +45,8 @@ return [
     'lemma_frequency' => 'Frequency dictionary of lemmas marked up in the text',
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',
+    'motives' => 'Motives',
+    'motypes' => 'Motive types',
     'multidict' => 'Multimedia dictionary',
     'omonyms' => 'Omonyms',
     'our_publications' => 'Our publications',

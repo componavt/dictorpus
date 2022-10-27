@@ -52,16 +52,8 @@ class PartOfSpeech extends Model
         return $this->name;
     }    
 
-    /** Gets localised name of this part of speech (current $locale used).
-     * 
-     * @return String
-     */
-    public function getNameAttribute()
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
-    }
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
         
     // muttator
     public function getCodeAttribute($code)

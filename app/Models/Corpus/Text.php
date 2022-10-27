@@ -52,6 +52,7 @@ class Text extends Model
     use \App\Traits\Relations\BelongsToMany\Cycles;
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Genres;
+    use \App\Traits\Relations\BelongsToMany\Motives;
     use \App\Traits\Relations\BelongsToMany\Plots;
     use \App\Traits\Relations\BelongsToMany\Topics;
 //    use \App\Traits\Relations\BelongsToMany\Meanings;
@@ -141,6 +142,8 @@ class Text extends Model
         $texts = self::searchBySource($texts, $url_args['search_source']);
         $texts = self::searchWithAudio($texts, $url_args['with_audio']);
         
+        $texts = self::searchByPivot($texts, 'text', 'motive', $url_args['search_motive']);
+        
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
         } 
@@ -152,6 +155,8 @@ class Text extends Model
 
         return $texts;
     }
+
+    use \App\Traits\Methods\search\byPivot;
 
     public static function searchWithSentences(Array $url_args) {
         $texts = self::orderBy('title');        
@@ -254,6 +259,7 @@ class Text extends Model
                 });
     }
     
+   
     public static function searchByPlots($texts, $plots) {
         if (!sizeof($plots)) {
             return $texts;
@@ -527,6 +533,8 @@ class Text extends Model
         
         $this->topics()->detach();
         $this->topics()->attach($request->topics);
+        
+        $this->motives()->sync($request->motives);
         
         if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {
             $error_message = $this->markup();
@@ -1716,6 +1724,7 @@ class Text extends Model
                     'search_genre'    => (array)$request->input('search_genre'),
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
+                    'search_motive'     => (array)$request->input('search_motive'),
                     'search_place'    => (array)$request->input('search_place'),
                     'search_plot'    => (array)$request->input('search_plot'),
                     'search_recorder' => $request->input('search_recorder'),
@@ -1854,22 +1863,21 @@ dd($s->saveXML());
     }
     
     public function genresToString($link=null) {
-        $out = [];
+        return $this->relationsToString('genres', $link);
+/*        $out = [];
         foreach ($this->genres as $genre) {
-/*            $name = $genre->parent 
-                        ? $genre->parent->name . ' ('.$genre->name.')'
-                        : $genre->name;*/
             $name = $genre->name;
             if ($link) {
                 $name = to_link($name, $link.$genre->id);
             }
             $out[] = $name;
         }
-        return join(', ', $out);
+        return join(', ', $out);*/
     }
     
     public function plotsToString($link=null) {
-        $out = [];
+        return $this->relationsToString('plots', $link);
+/*        $out = [];
         foreach ($this->plots as $plot) {
             $name = $plot->name;
             if ($link) {
@@ -1877,11 +1885,32 @@ dd($s->saveXML());
             }
             $out[] = $name;
         }
-        return join(', ', $out);
+        return join(', ', $out);*/
+    }
+    
+    public function motivesToString($link=null, $div='<br>') {
+        return $this->relationsToString('motives', $link, 'full_name', $div);
+    }
+    
+    public function relationsToArr($relation_name, $link=null, $name_field='name') {
+        $out = [];
+        foreach ($this->{$relation_name} as $relation) {
+            $name = $relation->{$name_field};
+            if ($link) {
+                $name = to_link($name, $link.$relation->id);
+            }
+            $out[] = $name;
+        }
+        return $out;
+    }
+    
+    public function relationsToString($relation_name, $link=null, $name_field='name', $div=', ') {
+        return join($div, $this->relationsToArr($relation_name, $link, $name_field));
     }
     
     public function cyclesToString($link=null) {
-        $out = [];
+        return $this->relationsToString('cycles', $link);
+/*        $out = [];
         foreach ($this->cycles as $cycle) {
             $name = $cycle->name;
             if ($link) {
@@ -1889,7 +1918,7 @@ dd($s->saveXML());
             }
             $out[] = $name;
         }
-        return join(', ', $out);
+        return join(', ', $out);*/
     }
     
     public function topicsToArray($link=null) {

@@ -27,7 +27,8 @@
         
         {!! Form::model($text, ['method'=>'PUT', 'route'=>['text.update', $text->id], 'files'=>true] ) !!} <?php //, 'enctype'=>"multipart/form-data"?>
         @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.save'),
-                                      'action' => 'edit'])
+                                      'action' => 'edit',
+                                      'motive_value'=> $text->motiveValue()])
         {!! Form::close() !!}
 @stop
 
@@ -47,6 +48,7 @@
     selectGenre('corpus_id');
     selectPlot('.multiple-select-plot', 'genres');
     selectCycle('.multiple-select-cycle', 'genres');
+    selectMotives('.multiple-select-motive', 'genres');
     selectTopic('plots');
     
     selectPlot('.select-plot', 'genre_id'); /* from modal */

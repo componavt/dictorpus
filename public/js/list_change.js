@@ -394,3 +394,72 @@ function selectConceptWithoutCategory(pos_var, placeholder='', allow_clear=false
     });   
 }
 
+function selectMotive(motype_var='search_motype', parent_id='', placeholder='', allow_clear=false){
+    var data = function (params) {
+            return {
+              q: params.term, // search term
+              motype_id: selectedValuesToURL("#" + motype_var),
+              parent_id: parent_id
+            };
+          };
+    selectAjax("/corpus/motive/list", data, placeholder, allow_clear, ".select-motive");
+}
+
+
+function selectMotives(selector=".select-motive", genre_var='search_genre', placeholder='', allow_clear=false){
+    var data = function (params) {
+            return {
+              q: params.term, // search term
+              genre_id: selectedValuesToURL("#" + genre_var),
+            };
+          };
+    selectAjax("/corpus/motive/list", data, placeholder, allow_clear, selector);
+}
+/*
+function selectMotive(motype_var='search_motype', parent_id='', placeholder='', allow_clear=false){
+    $(".select-motive").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/motive/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              motype_id: selectedValuesToURL("#" + motype_var),
+              parent_id: parent_id
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+ */
+function selectAjax(route, data, placeholder, allow_clear, selector){
+    $(selector).select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: route,
+          dataType: 'json',
+          delay: 250,
+          data: data,
+          processResults: function (result) {
+            return {
+              results: result
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
+

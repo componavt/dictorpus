@@ -28,10 +28,17 @@ class Genre extends Model
         parent::boot();
     }
 
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
+    
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Corpus;
     
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Texts;
+    
     // Has Many Relations
+    use \App\Traits\Relations\HasMany\Motypes;
     use \App\Traits\Relations\HasMany\Plots;
     use \App\Traits\Relations\HasMany\Cycles;
     
@@ -45,17 +52,6 @@ class Genre extends Model
         return $this->hasMany(Genre::class, 'id', 'parent_id');
     }
     
-    /** Gets name of this genre, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
-    }
-    
     public function getNamePlAttribute() : String
     {
         $locale = LaravelLocalization::getCurrentLocale();
@@ -67,12 +63,12 @@ class Genre extends Model
         $column = "name_" . $locale;
         return $this->{$column};
     }
-    
+/*    
     // Genre __has_many__ Texts
     public function texts(){
         return $this->belongsToMany(Text::class,'genre_text');
     }
-    
+*/    
     public function numberInList() {
         $count = self::whereParentId($this->parent_id)
 //            ->whereCorpusId($this->corpus_id)

@@ -31,16 +31,8 @@ class Corpus extends Model
         return $this->name;
     }    
 
-    /** Gets name of this corpus, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
-    }
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
     
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Genres;

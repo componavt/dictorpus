@@ -24,6 +24,9 @@ class Dialect extends Model
         parent::boot();
     }
     
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
+    
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
 
@@ -34,17 +37,6 @@ class Dialect extends Model
         $builder = $this->belongsToMany(Wordform::class,'lemma_wordform')
                 ->distinct('wordform_id');
         return $builder;
-    }
-
-    /** Gets name of this dialect, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
     }
 
     /** Gets ID of this dialect by code.

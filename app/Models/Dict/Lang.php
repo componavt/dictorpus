@@ -49,16 +49,8 @@ class Lang extends Model
         return $this->name;
     }    
 
-    /** Gets name of this lang, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
-    }
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
 
     public function audiotexts()
     {

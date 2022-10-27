@@ -1,9 +1,9 @@
 <?php namespace App\Traits\Methods\search;
 
 use App\Models\Corpus\Genre;
-trait byGenre
+trait byGenres
 {
-    public static function searchByGenre($objs, $genres) {
+    public static function searchByGenres($objs, $genres) {
         if (!sizeof($genres)) {
             return $objs;
         }

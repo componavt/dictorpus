@@ -53,13 +53,13 @@ class Cycle extends Model
         $objs = self::orderBy('sequence_number')->orderBy('name_'.$locale);
         $objs = self::searchById($objs, $url_args['search_id']);
         $objs = self::searchByName($objs, $url_args['search_name']);
-        $objs = self::searchByGenre($objs, $url_args['search_genre']);
+        $objs = self::searchByGenres($objs, $url_args['search_genre']);
         $objs = self::searchByCorpus($objs, $url_args['search_corpus']);
 
         return $objs;
     }
 
-    use \App\Traits\Methods\search\byGenre;
+    use \App\Traits\Methods\search\byGenres;
     use \App\Traits\Methods\search\byID;
     use \App\Traits\Methods\search\byName;
     

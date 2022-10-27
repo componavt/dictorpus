@@ -22,16 +22,8 @@ class GramCategory extends Model
         parent::boot();
     }
     
-    /** Gets name of this grammatical category, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
-    }
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
     
     /** Gets list of categories
      * 

@@ -26,16 +26,8 @@ class Gram extends Model
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\GramCategory;
     
-    /** Gets name of this grammatical attribute, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        return $this->{$column};
-    }
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
 
     public function getShortNameAttribute() : String
     {

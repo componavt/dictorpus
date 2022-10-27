@@ -9,6 +9,13 @@
         <b>{{trans('corpus.cycle')}}:</b> <i>{!! $text->cyclesToString() !!}</i></p>
         @endif
         
+        @if ($text->motivesToString())
+        <div class="topic-list">
+            <p class="topic-list-title">{{trans('navigation.motives')}}:</p>
+            {!! $text->motivesToString('/corpus/text?search_motive=') !!}
+        </div>
+        @endif
+        
         @if ($text->plotsToString())
         <b>{{trans('corpus.plot')}}:</b> <i>{!! $text->plotsToString('/corpus/text?search_plot=') !!}</i></p>
         @endif

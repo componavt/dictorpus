@@ -24,22 +24,8 @@ class District extends Model
         parent::boot();
     }
 
-    /** Gets name of this corpus, takes into account locale.
-     * 
-     * @return String
-     */
-    public function getNameAttribute() : String
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $column = "name_" . $locale;
-        $name = $this->{$column};
-        
-        if (!$name && $locale!='ru') {
-            $name = $this->name_ru;
-        }
-        
-        return $name;
-    }
+    // Methods
+    use \App\Traits\Methods\getNameAttribute;
     
     /** Gets Region
      * 

@@ -18,6 +18,6 @@ trait getNameAttribute
             $name = $this->name_ru;
         }
         
-        return $name;
+        return $name ? $name: '';
     }
 }

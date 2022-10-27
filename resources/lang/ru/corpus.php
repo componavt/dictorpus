@@ -67,6 +67,9 @@ return [
     
     'mark_right_meaning' => 'отметить правильное значение',
     'mark_right_gramset' => 'отметить правильный грамсет',
+    'motive' => 'Мотив',
+    'motype' => 'Тип мотива',
+    
     'name' => 'название',
     'nee' => 'урожд.',
     'new_texts'=>'Новые тексты',
@@ -77,6 +80,8 @@ return [
     'of_district' => 'района',
     'of_genre' => 'жанра',
     'of_informant' => 'информанта',
+    'of_motive' => 'мотива',
+    'of_motype' => 'типа мотива',
     'of_place' => 'населенного пункта',
     'of_plot' => 'сюжета',
     'of_recorder' => 'собирателя',

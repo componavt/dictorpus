@@ -28,9 +28,7 @@
         @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.create_new_m'),
                                       'action' => 'create',
                                       'readonly' => false,
-                                      'recorder_value' => [], 
-                                      'genre_value' => [], 
-                                      'dialect_value'  => [] ])
+                                      'text'=> null])
         {!! Form::close() !!}
 @stop
 
@@ -46,6 +44,7 @@
     $(".multiple-select").select2();
     selectDialect('lang_id');
     selectGenre('corpus_id');
+    selectMotives('.multiple-select-motive', 'genres');
     selectPlot('.multiple-select-plot', 'genres');
     selectCycle('.multiple-select-cycle', 'genres');
     selectTopic('plots');

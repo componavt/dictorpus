@@ -22,6 +22,7 @@
         
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
         Route::get('corpus/genre/list', 'Corpus\GenreController@genreList');
+        Route::get('corpus/motive/list', 'Corpus\MotiveController@motiveList');
         Route::get('corpus/place/birth_list', 'Corpus\PlaceController@birthPlaceList');
         Route::get('corpus/place/list', 'Corpus\PlaceController@placeList');
         Route::get('corpus/place/store', 'Corpus\PlaceController@simpleStore');
@@ -113,6 +114,11 @@
                        ['names' => ['update' => 'motive.update',
                                     'store' => 'motive.store',
                                     'destroy' => 'motive.destroy']]);
+        
+        Route::resource('corpus/motype', 'Corpus\MotypeController',
+                       ['names' => ['update' => 'motype.update',
+                                    'store' => 'motype.store',
+                                    'destroy' => 'motype.destroy']]);
         
         Route::resource('corpus/place', 'Corpus\PlaceController',
                        ['names' => ['update' => 'place.update',
