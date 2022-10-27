@@ -17,6 +17,7 @@ use App\Models\Corpus\District;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\MeaningTextRel;
+use App\Models\Corpus\Motive;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Plot;
 use App\Models\Corpus\Recorder;
@@ -113,6 +114,7 @@ class TextController extends Controller
         $corpus_values = Corpus::getList();
         $cycle_genre_id = Genre::LEGEND_ID;
         $cycle_values = Cycle::getList();
+        $motive_values = Motive::getList();
         $informant_values = [NULL => ''] + Informant::getList();
         $place_values = [NULL => ''] + Place::getList();
         $recorder_values = Recorder::getList();
@@ -133,7 +135,7 @@ class TextController extends Controller
                   compact('author_values', 'corpus_values', 'cycle_genre_id', 
                           'cycle_values', 'dialect_values', 
                           'district_values', 'genre_values', 'informant_values', 
-                          'lang_values', 'place_values', 'plot_values', 
+                          'lang_values', 'motive_values', 'place_values', 'plot_values', 
                           'project_langs', 'recorder_values', 'region_values', 
                           'topic_values', 'args_by_get', 'url_args'));
     }
@@ -252,6 +254,7 @@ class TextController extends Controller
         $cycle_values = Cycle::getList();
         $cycle_value = $text->cycleValue();
         $cycle_genre_id = Genre::LEGEND_ID;
+        $motive_values = Motive::getList();
         
         $place_values = [NULL => ''] + Place::getList();
 
@@ -259,13 +262,10 @@ class TextController extends Controller
         $informant_value = $text->informantValue();
 
         $recorder_values = Recorder::getList();
-        $recorder_value = $text->recorderValue();
 
         $dialect_values = Dialect::getList();
-        $dialect_value = $text->dialectValue();
 
         $genre_values = Genre::getList($text->corpus_id);        
-        $genre_value = $text->genreValue();
         
         $plot_values = Plot::getList();
         $plot_value = $text->plotValue();
@@ -288,11 +288,11 @@ class TextController extends Controller
         return view('corpus.text.edit',
                 compact('author_value', 'author_values', 'corpus_values', 
                         'cycle_genre_id', 'cycle_value', 'cycle_values', 
-                        'dialect_value', 'dialect_values', 'district_values', 
-                        'genre_value', 'genre_values', 'informant_value',
-                        'informant_values','lang_values', 'place_values', 
+                        'dialect_values', 'district_values', 
+                        'genre_values', 'informant_value',
+                        'informant_values','lang_values', 'motive_values', 'place_values', 
                         'plot_value', 'plot_values', 'project_langs', 'readonly', 
-                        'recorder_value', 'recorder_values', 'region_values', 
+                        'recorder_values', 'region_values', 
                         'text', 'topic_value', 'topic_values', 'trans_author_value', 
                         'args_by_get', 'url_args'));
     }

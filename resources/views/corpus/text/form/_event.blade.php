@@ -25,7 +25,7 @@
         @include('widgets.form.formitem._select2',
                 ['name' => 'event.recorders', 
                  'values' =>$recorder_values,
-                 'value' => $recorder_value,
+                 'value' => $text? $text->recorderValue() : [],
                  'call_add_onClick' => 'addRecorder()',
                  'call_add_title' => trans('messages.create_new_m'),
                  'title' => trans('corpus.recorded'),
