@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMotivesTable extends Migration
+class CreateMotypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,13 @@ class CreateMotivesTable extends Migration
      */
     public function up()
     {
-        Schema::create('motives', function (Blueprint $table) {
+        Schema::create('motypes', function (Blueprint $table) {
             //$table->increments('id');
             $table->unsignedSmallInteger('id')->autoIncrement(); // MySQL smallint(6)
             $table->string('code', 2);
             
-            $table->unsignedSmallInteger('motype_id');
-            $table->foreign('motype_id')->references('id')->on('motypes');
-            
-            $table->unsignedSmallInteger('parent_id')->nullable();
+            $table->unsignedSmallInteger('genre_id');
+            $table->foreign('genre_id')->references('id')->on('genres');
             
             $table->string('name_en', 150);
             $table->string('name_ru', 150);
@@ -36,6 +34,6 @@ class CreateMotivesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('motives');
+        Schema::drop('motypes');
     }
 }
