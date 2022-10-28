@@ -51,7 +51,7 @@ return [
                             <span>:texts на <a href="/ru/dict/dialect">:total_dialects</a> диалектах</span>
                          </div>',
     'license' => 'Вы можете свободно использовать материалы нашего сайта и делиться ими, главное — указать авторство и ссылку
-                  на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/">Побробнее о лицензии CC BY 4.0</a>',
+                  на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/">Подробнее о лицензии CC BY 4.0</a>',
     'participants' => '<dl>'
                     . '<dt><a href="http://mathem.krc.karelia.ru/member.php?id=804&plang=r">Крижановский Андрей Анатольевич</a></dt>'
                     . '<dd>к.т.н., ведущий научный сотрудник, руководитель лаб. информационных компьютерных технологий ИПМИ КарНЦ РАН</dd><br>'

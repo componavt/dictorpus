@@ -43,6 +43,7 @@ class Transtext extends Model
     public static function removeByID($id) {
         $obj = self::find($id);
         if (!$obj) { return;}
+        $obj->authors()->detach();
         $obj->delete();
     }    
 
