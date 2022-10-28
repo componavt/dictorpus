@@ -534,7 +534,7 @@ class Text extends Model
         $this->topics()->detach();
         $this->topics()->attach($request->topics);
         
-        $this->motives()->sync($request->motives);
+        $this->motives()->sync((array)$request->motives);
         
         if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {
             $error_message = $this->markup();
