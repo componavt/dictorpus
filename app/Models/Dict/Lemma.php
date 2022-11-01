@@ -234,7 +234,12 @@ class Lemma extends Model
         return null;
     }
     
-/*     // Lemma has many MeaningTexts through Meanings
+    public function getAudioUrls() {
+        return Audio::getUrlsByLemmaId($this->id);
+    }
+
+
+    /*     // Lemma has many MeaningTexts through Meanings
     public function meaningTexts()
     {
         return $this->hasManyThrough(MeaningText::class, Meaning::class, 'lemma_id', 'meaning_id');

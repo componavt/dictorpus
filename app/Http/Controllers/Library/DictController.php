@@ -173,7 +173,7 @@ class DictController extends Controller
             });            
         }
         
-        $lemma_coll = $lemmas->get();//['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', 'status']);
+/*        $lemma_coll = $lemmas->get();//['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name', 'status']);
         $lemmas = [];
         foreach ($lemma_coll as $lemma) {
 //dd($lemma);            
@@ -184,13 +184,15 @@ class DictController extends Controller
 //                'frequency'=>$lemma->getFrequencyInCorpus(), 
                 'audios'=>Audio::getUrlsByLemmaId($lemma->id), 
                 'status'=>$lemma->labelStatus($label_id)];
-        }
+        }*/
 //        $lemmas=$lemmas->sortByDesc('frequency');
 //dd($lemmas[10603]);        
+        $numAll = $lemmas->count();
+        $lemmas = $lemmas->paginate($url_args['limit_num']);
         $pos_values = [NULL=>'']+PartOfSpeech::getList();
         
         return view('service.dict.multi.index',
-                compact('label_id', 'lemmas', 'pos_values', 
+                compact('label_id', 'lemmas', 'numAll', 'pos_values',
                         'args_by_get', 'url_args'));
     }
     
