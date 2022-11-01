@@ -118,6 +118,21 @@ return [
                     <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=19646">Part of speech and gramset tagging algorithms for unknown words based on morphological dictionaries of the Veps and Karelian languages</a><br>
                     <i>Krizhanovsky A., Krizhanovskaya N., Novak I.</i> Management in Data Intensive Domains. DAMDID/RCDL 2020. Communications in Computer and Information Science, vol 1427. Springer, Cham, 2021. Pp. 163-177 DOI: 10.1007/978-3-030-81200-3_12</p>
 
+                    <p><a class="publ-title" href="http://dx.doi.org/10.6084/m9.figshare.14343140.v2">Правила генерации глагольных словоформ для вепсского языка</a><br>
+                    <i>Зайцева Н.Г., Крижановская Н.Б. Figshare.</i> Preprint. 2021. DOI: 10.6084/m9.figshare.14343140.v2.</p>
+                    
+                    <p><a class="publ-title" href="http://dx.doi.org/10.6084/m9.figshare.14237843.v7">Правила генерации глагольных словоформ по минимизированному шаблону для новописьменного севернокарельского варианта собственно карельского языка</a><br>
+                    <i>Н.Б. Крижановская, И.П. Новак, Н.А. Пеллинен.</i> Figshare. Preprint. 2021. DOI: 10.6084/m9.figshare.14237843.v7.</p>
+
+                    <p><a class="publ-title" href="http://dx.doi.org/10.6084/m9.figshare.14330291.v1">Правила генерации именных словоформ для вепсского языка</a><br>
+                    <i>Зайцева Н.Г., Крижановская Н.Б. Figshare.</i> Preprint. 2021. DOI: 10.6084/m9.figshare.14330291.v1.</p>
+
+                    <p><a class="publ-title" href="http://dx.doi.org/10.6084/m9.figshare.14241833">Правила генерации именных словоформ по минимизированному шаблону для новописьменных вариантов собственно карельского и ливвиковского наречий</a><br>
+                    <i>Н.Б. Крижановская, И.П. Новак, Н.А. Пеллинен, Т.П. Бойко.</i> Figshare. Preprint. 2021. DOI: 10.6084/m9.figshare.14241833.</p>
+
+                    <p><a class="publ-title" href="http://dx.doi.org/10.6084/m9.figshare.19165859">Правила генерации глагольных словоформ для новописьменного варианта ливвиковского наречия</a><br>
+                    <i>Т.П. Бойко, Н.Б. Крижановская, И.П. Новак.</i> Figshare. Preprint. 2020. DOI: 10.6084/m9.figshare.19165859.</p>
+
                     <p><a class="publ-title" href="http://bit.ly/39l5EHX">Разработка правил генерации именных словоформ для новописьменных вариантов карельского языка</a><br>
                     <i>Новак И.П., Крижановская Н.Б., Бойко Т.П., Пеллинен Н.А.</i> Вестник угроведения. Т. 10. No 4. 2020. C. 679–691. DOI: 10.30624/2220-4156-2020-10-4-679-691.</p>
 
