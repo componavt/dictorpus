@@ -25,7 +25,7 @@ use App\Models\Dict\Wordform;
 class Text extends Model
 {
     protected $fillable = ['corpus_id', 'lang_id', 'source_id', 'event_id', 
-                        'title', 'text', 'text_xml', 'text_structure'];
+                        'title', 'text', 'text_xml', 'text_structure', 'comment'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -498,7 +498,7 @@ class Text extends Model
         $text = self::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
 
-        $text->fill($request->only('corpus_id','lang_id','title','text','text_structure'));//,'text_xml'
+        $text->fill($request->only('corpus_id','lang_id','title','text','text_structure', 'comment'));//,'text_xml'
 
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();

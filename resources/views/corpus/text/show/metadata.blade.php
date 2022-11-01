@@ -44,4 +44,8 @@
             @include('corpus.source._to_string',['source'=>$text->source])
         </p>
         @endif
+        
+        @if ($text->comment)
+        <p>{{$text->comment}}</p>
+        @endif
 </div>      

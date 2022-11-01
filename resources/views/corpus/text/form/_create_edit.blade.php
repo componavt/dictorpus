@@ -35,7 +35,7 @@
     </div>
 </div-->
 @endif
-
+<br>
 @include('widgets.form.formitem._submit', ['title' => $submit_title])
     </div>
     
@@ -49,7 +49,13 @@
 @include('widgets.form.formitem._textarea', 
         ['name' => 'source.comment', 
          'value' => ($action=='edit' && $text->source) ? ($text->source->comment) : NULL,
-         'title'=>trans('corpus.comment'),
+         'title'=>trans('corpus.comment_source'),
+         'attributes' => ['rows'=>3],
+        ])
+@include('widgets.form.formitem._textarea', 
+        ['name' => 'comment', 
+         'value' => ($action=='edit') ? ($text->comment) : NULL,
+         'title'=>trans('corpus.comment_text'),
          'attributes' => ['rows'=>3],
         ])
     </div>

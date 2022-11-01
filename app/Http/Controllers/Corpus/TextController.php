@@ -160,7 +160,7 @@ class TextController extends Controller
         $request['text'] = Text::process($request['text']);
         $request['transtext_text'] = Text::process($request['transtext_text']);
 
-        $text = Text::create($request->only('corpus_id','lang_id','title')); //,'source_id','event_id',
+        $text = Text::create($request->only('corpus_id','lang_id','title', 'comment')); //,'source_id','event_id',
         $text->text = $text->processTextBeforeSaving($request->text);
 
         $error_message = $text -> storeAdditionInfo($request);
