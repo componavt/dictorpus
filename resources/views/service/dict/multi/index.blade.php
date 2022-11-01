@@ -66,6 +66,7 @@
             @endforeach
         </tbody>
         </table>
+            {!! $lemmas->appends($url_args)->render() !!}
         @endif
     </div>
 @stop
@@ -82,13 +83,6 @@
 @stop
 
 @section('jqueryFunc')
-    selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);
-    
-    $('#lemmasTable').DataTable( {
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.11.4/i18n/ru.json'
-        },
-        "order": [[ 3, "desc" ]]
-    } );
+    selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);    
 @stop
 
