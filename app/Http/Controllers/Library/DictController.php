@@ -188,7 +188,7 @@ class DictController extends Controller
 //        $lemmas=$lemmas->sortByDesc('frequency');
 //dd($lemmas[10603]);        
         $numAll = $lemmas->count();
-        $lemmas = $lemmas->paginate($url_args['limit_num']);
+        $lemmas = $lemmas->orderBy('lemma')->paginate($url_args['limit_num']);
         $pos_values = [NULL=>'']+PartOfSpeech::getList();
         
         return view('service.dict.multi.index',
