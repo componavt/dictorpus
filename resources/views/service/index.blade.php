@@ -18,16 +18,10 @@
     @if (User::checkAccess('dict.edit'))
         <h3>Дополнение данных</h3>
         <p><a href="service/copy_lemmas">Скопировать леммы из одного языка (наречия) в другой</a></p>
-        <p>Отбор лемм для ливвиковского мультимедийного словаря</p>
+        <p>Отбор лемм для ливвиковского мультимедийного словаря LiPas</p>
         <ul>
         <li><a href="service/dict/multi">Просмотреть отобранные леммы</a></li>
         <li><a href="service/dict/multi/select">Выбрать леммы</a></li>
-        </ul>
-        
-        <p>Отбор лемм для ливвиковского школьного словаря</p>
-        <ul>
-        <li><a href="service/dict/school">Просмотреть отобранные леммы</a></li>
-        <li><a href="service/dict/school/select">Выбрать леммы</a></li>
         </ul>
         
         <p>Записать аудио</p>
@@ -36,6 +30,12 @@
         <li><a href="service/audio/{{$l}}">{{$n}}</a></li>
             @endforeach
         </ul>
+        
+        <p>Отбор лемм для ливвиковского ШКОЛЬНОГО словаря</p>
+        <ul>
+        <li><a href="service/dict/school">Просмотреть отобранные леммы</a></li>
+        <li><a href="service/dict/school/select">Выбрать леммы</a></li>
+        </ul>        
     @endif
     
     @if (User::checkAccess('admin'))
