@@ -42,6 +42,9 @@ return [
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
                   <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
     'our_publications' => '
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=21082">Morphological inflectional rules for Karelian Proper verbs</a><br>
+                    <i>Krizhanovskaya, N., Novak, I., Krizhanovsky, A., & Pellinen, N.</i> Eesti Ja Soome-Ugri Keeleteaduse Ajakiri. Journal of Estonian and Finno-Ugric Linguistics, 13(2). 2022. P. 47–78 DOI: 10.12697/jeful.2022.13.2.02</p>
+                    
                     <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=20667">The Open corpus of the Veps and Karelian languages: overview and applications</a><br>
                     <i>Tatyana Boyko, Nina Zaitseva, Natalia Krizhanovskaya, Andrew Krizhanovsky, Irina Novak, Nataliya Pellinen, and Aleksandra Rodionova.</i> KnE Social Sciences. 7 (3). 2022. P. 29–40 DOI: 10.18502/kss.v7i3.10419</p>
                     
@@ -84,6 +87,9 @@ return [
                     . '</dl>',
     'permission' => '',
     'publications_about' => '
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-11-02_09.pdf">VepKar vaalii vähemmistökieliä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 42 (16558), 2022, с. 9.</p>
+                    
                     <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-06-08_08.pdf">Puhemalleja on esillä teksteissä ja äänitteissä</a><br>
                     Marina Tolstyh. Karjalan Sanomat, №21 (16537), 2022, c. 8</p>
                     
