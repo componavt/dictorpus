@@ -1,0 +1,10 @@
+<li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ trans('navigation.home') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/participants') }}">{{ trans('navigation.participants') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/sources') }}">{{ trans('navigation.sources') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/publ') }}">{{ trans('navigation.publications') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/stats') }}">{{ trans('navigation.stats') }}</a></li>
+<li><a href="http://dictorpus.krc.karelia.ru/{{$locale}}/dumps">{{ trans('navigation.dumps') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/permission') }}">{{ trans('navigation.permission') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/grants') }}">{{ trans('navigation.grants') }}</a></li>

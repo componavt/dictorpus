@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Models\Corpus\Collection;
+use App\Models\Corpus\Cycle;
 use App\Models\Corpus\Genre;
 
 use App\Models\Dict\Dialect;
@@ -32,6 +33,15 @@ class CollectionController extends Controller
                     compact('dialects', 'genres', 'id', 'lang_id'));
         }
         return Redirect::to('/corpus/collection');
+    }
+    
+    public function predictionShow($cycle_id) {
+        $cycle = Cycle::find($cycle_id);
+        $lang_id = Collection::getCollectionLangs(3);
+        $texts = $cycle->texts()->whereIn('lang_id', $lang_id)->get();
+        return view('corpus.collection.3.by_cycle',
+                compact('cycle', 'texts'));
+        
     }
     
     public function karelianRunes() {

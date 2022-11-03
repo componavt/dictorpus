@@ -139,6 +139,10 @@ flex: 1 0 auto;
     width: 100%;
 }
 
+.bottom-menu li {
+    list-style: none;
+    margin: 0 0 10px;
+}
 @media screen and (min-width: 350px) {
     .bottom-menu > div {
         padding-right: 20px;

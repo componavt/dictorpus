@@ -15,8 +15,9 @@
         Route::get('corpus/district/birth_list', 'Corpus\DistrictController@birthDistrictList');
         Route::get('corpus/district/list', 'Corpus\DistrictController@districtList');
         
-        Route::get('corpus/collection', 'Corpus\CollectionController@index');
+        Route::get('corpus/collection/3/{cycle_id}', 'Corpus\CollectionController@predictionShow');
         Route::get('corpus/collection/{id}', 'Corpus\CollectionController@show');
+        Route::get('corpus/collection', 'Corpus\CollectionController@index');
         Route::get('corpus/cycle/list', 'Corpus\CycleController@cycleList');
 //        Route::get('corpus/gram_search', 'Corpus\GramSearchController@index');
         

@@ -11,17 +11,16 @@
 @section('body')
     <h2>{{trans('collection.name_list')[$id]}}</h2>
     <p>{!!trans('collection.about')[$id]!!}</p>
-
-        @foreach ($genres[0]->cycles as $cycle)
-            @if ($cycle->texts->count())
-    <div class="subdiv">
-        <h4>{{$cycle->name}} ({{$cycle->texts->count()}})</h4>
-                @foreach ($cycle->texts()->whereIn('lang_id', $lang_id)->get() as $text)
+    <h3>{{trans('collection.prediction_cycles')}}</h3>
+    <ol>
+    @foreach ($genres[0]->cycles as $cycle)
+{{--            @if ($cycle->texts->count()) --}}
+        <li><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/3/'.$cycle->id) }}">{{$cycle->name}}</a> ({{$cycle->texts->count()}})</li>
+{{--                @foreach ($cycle->texts()->whereIn('lang_id', $lang_id)->get() as $text)
     @include('corpus.collection._text', 
             ['event' => $text->event, 'source' => null])
                 @endforeach
-    </div>
-            @endif
+            @endif --}}
         @endforeach
-
+    </ol>
 @stop

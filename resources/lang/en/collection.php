@@ -28,5 +28,6 @@ return [
         2 => 'Karelian Runes',
         3 => 'Karelian Legends',
     ],
+    'prediction_cycles' => 'Prediction cycles',
 ];
 

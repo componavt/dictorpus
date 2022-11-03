@@ -10,6 +10,7 @@
 
 @section('body')        
         <p>
+            <a href="{{ LaravelLocalization::localizeURL('/dict/concept_category') }}">{{ trans('navigation.concept_categories') }}</a> |
         @if (User::checkAccess('dict.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/dict/concept/create') }}">
         @endif
