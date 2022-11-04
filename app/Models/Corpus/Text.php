@@ -1888,8 +1888,8 @@ dd($s->saveXML());
         return join(', ', $out);*/
     }
     
-    public function motivesToString($link=null, $div='<br>') {
-        return $this->relationsToString('motives', $link, 'full_name', $div);
+    public function motivesToString($link=null, $div='<br>', $with_code=false) {
+        return $this->relationsToString('motives', $link, $with_code ? 'full_name_with_code' : 'full_name', $div);
     }
     
     public function relationsToArr($relation_name, $link=null, $name_field='name') {
