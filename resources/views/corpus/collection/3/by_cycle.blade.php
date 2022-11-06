@@ -36,7 +36,7 @@
                 @endif
             </td>
             <td data-th="{{ trans('corpus.motive') }}">
-                {!! $text->motivesToString('/collection/3/'.$cycle->id.'/', '<br>', true) !!}
+                {!! $text->motivesToString('/corpus/motive?search_id=', '<br>', true) !!}
             </td>
             <td data-th="{{ trans('corpus.title') }}">
                 {{-- $text->authorsToString() ? $text->authorsToString().'.' : '' --}}
