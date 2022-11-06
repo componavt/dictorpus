@@ -39,12 +39,12 @@
                 {!! $text->motivesToString('/collection/3/'.$cycle->id.'/', '<br>', true) !!}
             </td>
             <td data-th="{{ trans('corpus.title') }}">
-                {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
+                {{-- $text->authorsToString() ? $text->authorsToString().'.' : '' --}}
                 <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'?search_collection=3&search_cycle='.$cycle->id) }}">{{$text->title}}</a>
             </td>
             <td data-th="{{ trans('messages.translation') }}">
                 @if ($text->transtext)
-                {{ $text->transtext->authorsToString() ? $text->transtext->authorsToString().'.' : '' }}
+                {{-- $text->transtext->authorsToString() ? $text->transtext->authorsToString().'.' : '' --}}
                 {{$text->transtext->title}}
                 @endif
             </td>
