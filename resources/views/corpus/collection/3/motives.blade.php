@@ -20,7 +20,7 @@
             @endif
             </p>
             <div style="margin-left: 20px;">
-            @foreach($motive->children as $element)
+            @foreach($motive->children()->orderBy('code')->get() as $element)
                 <p>{{$element->code}}) {{$element->name}}
                 @if ($element->texts()->count())
                 (<a href="{{ LaravelLocalization::localizeURL('/corpus/collection/3/motives/'.$element->id) }}">{{$element->texts()->count()}}</a>)
