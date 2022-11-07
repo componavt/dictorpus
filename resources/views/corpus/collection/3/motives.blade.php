@@ -9,6 +9,9 @@
 @stop
 
 @section('body')
+    <p>
+        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/3') }}">{{trans('collection.to_collection')}}</a>
+    </p>
     <h2>{{trans('collection.motive_index')}}</h2>
     @foreach ($motypes as $motype)
     <p><b>{{$motype->code}}. {{$motype->name}}</b></p>
