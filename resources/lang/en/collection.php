@@ -23,11 +23,14 @@ return [
                  <br><br>This collection of Karelian historical legends is the first attempt at a comprehensive presentation of historical prose texts written down from the Karelians in the Karelian language. The texts were found in the Scientific Archive of the Karelian Research Center of the Russian Academy of Sciences, the Phonogram Archive of the Institute of Linguistics, Literature and History Karelian Research Center of the Russian Academy of Sciences, as well as in published sources.
                  <br><br>The texts of historical legends are divided into cycles (plot-thematic groups). The presence of a toponymic motif is especially noted, which, combined with other motifs, can occupy a central or peripheral place in the historical legend.',
                ],
+    'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
     'name_list' => [
         1 => 'Veps lamentations',
         2 => 'Karelian Runes',
         3 => 'Karelian Legends',
     ],
     'prediction_cycles' => 'Prediction cycles',
+//    'to_motive_index' => 'to Motive index',
+    'to_collection' => 'To collection',
 ];
 

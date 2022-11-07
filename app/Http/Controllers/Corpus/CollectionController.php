@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Corpus\Collection;
 use App\Models\Corpus\Cycle;
 use App\Models\Corpus\Genre;
+use App\Models\Corpus\Motive;
+use App\Models\Corpus\Motype;
 
 use App\Models\Dict\Dialect;
 
@@ -35,12 +37,14 @@ class CollectionController extends Controller
         return Redirect::to('/corpus/collection');
     }
     
-    public function predictionShow($cycle_id) {
+    public function predictionTextsForCycle($cycle_id) {
         $cycle = Cycle::find($cycle_id);
         $lang_id = Collection::getCollectionLangs(3);
         $texts = $cycle->texts()->whereIn('lang_id', $lang_id)->get();
-        return view('corpus.collection.3.by_cycle',
-                compact('cycle', 'texts'));
+        $page_title = trans('corpus.cycle'). ': '. $cycle->name;
+        $url_args = '?search_collection=3&search_cycle='.$cycle->id;
+        return view('corpus.collection.3.texts',
+                compact('page_title', 'texts', 'url_args'));
         
     }
     
@@ -52,4 +56,24 @@ class CollectionController extends Controller
         return Redirect::to('/corpus/collection/3');
     }
     
+    public function predictionMotives() {
+        $genre_id = Collection::getCollectionGenres(3);
+        $lang_id = Collection::getCollectionLangs(3);
+        $motypes = Motype::whereGenreId($genre_id)->orderBy('code')->get();
+        return view('corpus.collection.3.motives',
+                compact('motypes'));
+        
+    }
+    
+    public function predictionTextsForMotive($motive_id) {
+        $motive = Motive::find($motive_id);
+        $lang_id = Collection::getCollectionLangs(3);
+        $texts = $motive->texts()->whereIn('lang_id', $lang_id)->get();
+        $page_title = trans('corpus.motive'). ': '. $motive->full_name;
+        $url_args = '?search_collection=3&search_motive='.$motive->id;
+        $back_link = ['/corpus/collection/3/motives', trans('collection.motive_index')];
+        return view('corpus.collection.3.texts',
+                compact('back_link', 'page_title', 'texts', 'url_args'));
+        
+    }
 }

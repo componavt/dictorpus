@@ -15,7 +15,9 @@
         Route::get('corpus/district/birth_list', 'Corpus\DistrictController@birthDistrictList');
         Route::get('corpus/district/list', 'Corpus\DistrictController@districtList');
         
-        Route::get('corpus/collection/3/{cycle_id}', 'Corpus\CollectionController@predictionShow');
+        Route::get('corpus/collection/3/motives/{motive_id}', 'Corpus\CollectionController@predictionTextsForMotive');
+        Route::get('corpus/collection/3/motives', 'Corpus\CollectionController@predictionMotives');
+        Route::get('corpus/collection/3/{cycle_id}', 'Corpus\CollectionController@predictionTextsForCycle');
         Route::get('corpus/collection/{id}', 'Corpus\CollectionController@show');
         Route::get('corpus/collection', 'Corpus\CollectionController@index');
         Route::get('corpus/cycle/list', 'Corpus\CycleController@cycleList');

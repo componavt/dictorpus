@@ -113,11 +113,10 @@ class MotypeController extends Controller
         $url_args = $this->url_args;
         
         $motype = Motype::find($id); 
-        $corpus_values = Corpus::getList();
-        $motype_values = [NULL => ''] + Motype::getNumeredList();        
+        $genre_values = Genre::getNumeredList();        
         
         return view('corpus.motype.edit', 
-                compact('corpus_values', 'motype', 'motype_values', 
+                compact('genre_values', 'motype', 
                         'args_by_get', 'url_args'));
     }
 

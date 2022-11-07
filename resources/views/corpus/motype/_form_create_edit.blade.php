@@ -4,7 +4,7 @@
         @include('widgets.form.formitem._select', 
                 ['name' => 'genre_id', 
                  'values' =>$genre_values,
-                 'value' => $default_genre,
+                 'value' => $motype->genre_id ?? $default_genre,
                  'title' => trans('corpus.genre')]) 
         @include('widgets.form.formitem._text', 
                 ['name' => 'code', 

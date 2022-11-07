@@ -23,4 +23,6 @@
             @endif --}}
         @endforeach
     </ol>
+    
+    <h4 style='margin-top: 20px;'><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/3/motives') }}">{{trans('collection.motive_index')}}</a></h4>
 @stop

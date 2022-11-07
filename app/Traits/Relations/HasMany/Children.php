@@ -6,6 +6,6 @@ trait Children
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function children(){
-        return $this->hasMany(self::class);
+        return $this->hasMany(self::class, 'parent_id');
     }
 }
