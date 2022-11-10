@@ -28,6 +28,8 @@
             {!! $texts->appends($url_args)->render() !!}
             @endif
         @endif
+        
+        <p>Скрипт был выполнен за {{(microtime(true) - $script_start)}} секунд.</p>
 @stop
 
 @section('footScriptExtra')

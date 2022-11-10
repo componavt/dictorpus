@@ -40,7 +40,7 @@ class SentenceController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Лексико-грамматический поиск
      *
      * @return \Illuminate\Http\Response
      */
@@ -61,6 +61,7 @@ class SentenceController extends Controller
     }
 
     /**
+     * Результат лексико-грамматического поиска
      *
      * @return \Illuminate\Http\Response
      */
@@ -68,6 +69,7 @@ class SentenceController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        $script_start = microtime(true);
 
         $url_args['words'] = Sentence::preparedWordsForSearch($url_args['search_words']);
 //dd($url_args['words']);        
@@ -93,7 +95,7 @@ class SentenceController extends Controller
             }
         }      
         return view('corpus.sentence.results',
-                compact('texts', 'numAll', 'entry_number', 'refine',
+                compact('texts', 'numAll', 'entry_number', 'refine', 'script_start',
                         'search_query', 'text_sentences', 'args_by_get', 'url_args'));
     }
 
