@@ -355,6 +355,7 @@ AND t1.word_number-t2.word_number<=|B|;
         $texts = Text::searchByGenres($texts, $url_args['search_genre']);
         $texts = Text::searchByLang($texts, $url_args['search_lang']);
         $texts = Text::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
+
         return $texts->get();
     }
     /*

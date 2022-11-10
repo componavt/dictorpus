@@ -83,10 +83,10 @@ class SentenceController extends Controller
         } else {
             $refine = false;
             list($entry_number, $sentence_builder) = Sentence::entryNumber($url_args); // считаем количество вхождений
-//dd($sentence_builder->get());            
+//dd(array_unique($sentence_builder->pluck('t1.text_id')));            
             if ($entry_number>0) {
 //                $texts = Text::searchWithSentences($url_args); // выбираем тексты
-                $texts = Text::whereIn('id', $sentence_builder->pluck('t1.text_id'));
+                $texts = Text::whereIn('id', array_unique($sentence_builder->pluck('t1.text_id')));
                 $numAll = $texts->count();
                 $texts = $texts->paginate($this->url_args['limit_num']);
                 foreach ($sentence_builder->get() as $sentence) {
