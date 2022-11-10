@@ -215,3 +215,19 @@ if (!function_exists('process_text')) {
         return $text;
     }
 }
+
+if (!function_exists('count_not_empty_elems')) {
+    function count_not_empty_elems($list) {
+        $count = 0;
+        foreach ($list as $key => $value) {
+            if (is_array($value) && sizeof($value)>0 && !empty($value[0])) {
+                $count++;
+//print "<p>$key=$value[0]</p>";                
+            } elseif(!empty($value)) {
+                $count++;
+//print "<p>$key=$value</p>";                
+            }
+        }
+        return $count;
+    }
+}

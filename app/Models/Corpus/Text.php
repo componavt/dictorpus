@@ -1748,7 +1748,6 @@ class Text extends Model
         if ($url_args['search_without_genres']) {
             $url_args['search_genre'] = [];
         }
-        
         return $url_args;
     }
     

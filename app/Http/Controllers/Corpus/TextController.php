@@ -731,8 +731,6 @@ class TextController extends Controller
 
         $texts = $texts->paginate($this->url_args['limit_num']);
         
-        $corpus_values = Corpus::getListWithQuantity('texts');
-
 //        $lang_values = Lang::getProjectList();
         $lang_values = Lang::getListWithQuantity('audiotexts', true);
         
@@ -748,7 +746,7 @@ class TextController extends Controller
         $place_values = Place::getList(false);
 
         return view('corpus.text.speech_corpus',
-                compact('author_values', 'corpus_values', 'dialect_values', 
+                compact('author_values', 'dialect_values', 
                         'district_values', 'genre_values', 'informant_values', 
                         'lang_values', 'recorder_values', 'region_values', 
                         'place_values', 'plot_values', 'texts', 'topic_values', 

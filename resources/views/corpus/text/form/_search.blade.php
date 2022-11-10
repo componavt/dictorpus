@@ -33,7 +33,7 @@
                 ])                               
     </div>
 @else
-    <div class="col-md-4">
+    <div class="col-md-4{{$url_args['search_corpus'] || count_not_empty_elems($url_args)<4 ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2', 
                 ['name' => 'search_corpus', 
                  'values' => $corpus_values,
