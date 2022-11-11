@@ -96,6 +96,7 @@ if (! function_exists('user_photo_edit')) {
 if (! function_exists('to_sql')) {
     function to_sql($query)
     {
+//dd($query->toSql(), $query->getBindings());        
         return vsprintf(str_replace(array('?'), array('\'%s\''), $query->toSql()), $query->getBindings());            
 
     }

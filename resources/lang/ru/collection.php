@@ -28,5 +28,6 @@ return [
     ],
     'prediction_cycles' => 'Циклы преданий',
     'to_collection' => 'К коллекции',
+    'total_count' => 'Общее количество текстов',
 ];
 

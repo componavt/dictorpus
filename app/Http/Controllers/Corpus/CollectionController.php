@@ -12,6 +12,7 @@ use App\Models\Corpus\Cycle;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Motive;
 use App\Models\Corpus\Motype;
+use App\Models\Corpus\Text;
 
 use App\Models\Dict\Dialect;
 
@@ -24,15 +25,22 @@ class CollectionController extends Controller
     public function show($id) {
         if (Collection::isCollectionId($id)) {
             if ($id == 3) {
-                $genres = [Genre::find(Collection::getCollectionGenres($id))];
+                $genre_arr = [Collection::getCollectionGenres($id)];
+                $genres = [Genre::find($genre_arr[0])];
             } else {
                 $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
                            ->orderBy('sequence_number')->get();
+                $genre_arr = $genres->pluck('id')->toArray();
             }
             $lang_id = Collection::getCollectionLangs($id);
             $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
+            $text_count = Text::whereIn('lang_id', $lang_id)
+                              ->whereIn('id', function ($q) use ($genre_arr) {
+                                $q->select('text_id')->from('genre_text')
+                                  ->whereIn('genre_id', $genre_arr);
+                            })->count();
             return view('corpus.collection.'.$id.'.index',
-                    compact('dialects', 'genres', 'id', 'lang_id'));
+                    compact('dialects', 'genres', 'id', 'lang_id', 'text_count'));
         }
         return Redirect::to('/corpus/collection');
     }

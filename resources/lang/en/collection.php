@@ -32,5 +32,6 @@ return [
     'prediction_cycles' => 'Prediction cycles',
 //    'to_motive_index' => 'to Motive index',
     'to_collection' => 'To collection',
+    'total_count' => 'Total number of texts',
 ];
 
