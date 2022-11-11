@@ -226,7 +226,7 @@ function selectTopic(plot_var='search_plot', placeholder='', allow_clear=false){
           data: function (params) {
             return {
               q: params.term, // search term
-              plot_id: selectedValuesToURL("#" + plot_var)
+/*              plot_id: selectedValuesToURL("#" + plot_var)*/
             };
           },
           processResults: function (data) {
