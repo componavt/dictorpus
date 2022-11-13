@@ -548,7 +548,9 @@ class Text extends Model
         $this->topics()->detach();
   //      $this->topics()->attach($request->topics);
         foreach ($request->topics as $topic) {
-            $this->topics()->attach([$topic['topic_id'] => ['sequence_number'=>$topic['sequence_number']]]);
+            if ($topic['topic_id']) {
+                $this->topics()->attach([$topic['topic_id'] => ['sequence_number'=>(int)$topic['sequence_number']]]);
+            }
         }
         
         $this->motives()->sync((array)$request->motives);
