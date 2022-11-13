@@ -45,6 +45,8 @@
         
         @include('corpus.text.show.metadata')
         
+        @include('corpus.text.show.photos')
+        
         @include('corpus.audiotext._show_files',['audiotexts'=>$text->audiotexts])
         
         @if ($text->video && $text->video->youtube_id)

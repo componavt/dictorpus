@@ -194,13 +194,14 @@ class TextController extends Controller
         $pos_id = PartOfSpeech::getIDByCode('Noun');
         $dialect_values = Dialect::getList($text->lang_id);
         $dialect_value = $text->dialectValue();
+        $photos = $text->getPhotoFiles();
         
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
         return view('corpus.text.show',
-                  compact('dialect_value', 'dialect_values',  
-                          'langs_for_meaning', 'pos_id', 'pos_values', 'text',
+                  compact('dialect_value', 'dialect_values', 'langs_for_meaning',  
+                          'photos', 'pos_id', 'pos_values', 'text',
                           'args_by_get', 'url_args'));
     }
     

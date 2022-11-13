@@ -24,6 +24,8 @@ use App\Models\Dict\Wordform;
 
 class Text extends Model
 {
+    const PhotoDisk = 'photos';
+    const PhotoDir = 'photo';
     protected $fillable = ['corpus_id', 'lang_id', 'source_id', 'event_id', 
                         'title', 'text', 'text_xml', 'text_structure', 'comment'];
 
@@ -96,6 +98,10 @@ class Text extends Model
         return $value;
     }
     
+    public function photoDir() {
+        return Storage::url(self::PhotoDir).'/';
+    }
+
     public function getSpeechAttribute()
     {
         if (!$this->event) { return null; }
@@ -1729,6 +1735,17 @@ class Text extends Model
         arsort($symbols);
 //dd($symbols);
         return $symbols;
+    }
+    
+    public function getPhotoFiles() {
+        $all_files = Storage::disk(self::PhotoDisk)->files();
+        $files = [];
+        foreach ($all_files as $filename) {
+            if (preg_match('/^'.$this->id.'_/', $filename)) {
+                $files[] = $filename;
+            }
+        }
+        return $files;
     }
     
     public static function urlArgs($request) {
