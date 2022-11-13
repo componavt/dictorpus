@@ -82,6 +82,20 @@ class Text extends Model
         return $this->hasOne(Video::class);
     }
    
+    public function topics(){
+        return $this->belongsToMany(Topic::class)->withPivot('sequence_number')
+                    ->orderBy('text_topic.sequence_number');
+    }
+    public function topicValueWithNumber():Array{
+        $value = [];
+        if ($this->topics) {
+            foreach ($this->topics as $topic) {
+                $value[$topic->id] = $topic->pivot->sequence_number;
+            }
+        }
+        return $value;
+    }
+    
     public function getSpeechAttribute()
     {
         if (!$this->event) { return null; }
@@ -532,7 +546,10 @@ class Text extends Model
         $this->plots()->attach($request->plots);
         
         $this->topics()->detach();
-        $this->topics()->attach($request->topics);
+  //      $this->topics()->attach($request->topics);
+        foreach ($request->topics as $topic) {
+            $this->topics()->attach([$topic['topic_id'] => ['sequence_number'=>$topic['sequence_number']]]);
+        }
         
         $this->motives()->sync((array)$request->motives);
         

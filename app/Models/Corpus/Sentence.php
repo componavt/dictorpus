@@ -421,7 +421,7 @@ AND t1.word_number-t2.word_number<=|B|;
 //        $builder = DB::table('text_wordform')->selectRaw('DISTINCT text_id, w_id');
         $builder = self::searchWords($args['words'])
                 ->whereIn('t1.text_id', Sentence::searchTexts($args));
-//dd($builder->get());            
+//dd(to_sql($builder));            
 //        return sizeof($builder->get());
         return [sizeof($builder->get()), $builder];
     }

@@ -121,7 +121,7 @@ class TextController extends Controller
         $dialect_values = Dialect::getList();
         $genre_values = Genre::getList();        
         $plot_values = Plot::getList();
-        $topic_values = Topic::getList();
+        $topic_values = [NULL => ''] + Topic::getList();
 
         $region_values = Region::getList();
         $district_values = District::getList();
@@ -270,9 +270,9 @@ class TextController extends Controller
         $plot_values = Plot::getList();
         $plot_value = $text->plotValue();
         
-        $topic_values = Topic::getList();
-        $topic_value = $text->topicValue();
-
+        $topic_values = [NULL => ''] + Topic::getList();
+        $topic_value = $text->topicValueWithNumber();//topicValue();
+//dd($topic_value);
         $region_values = Region::getList();
         $district_values = District::getList();
 
@@ -357,7 +357,7 @@ class TextController extends Controller
 //            'new_file' => 'mimetypes:audio/mp3',
 //            'event_date' => 'numeric',
         ]);
-
+//dd($request->topics);
         $error_message = Text::updateByID($request, $id);
         
         $redirect = Redirect::to('/corpus/text/'.$id.($this->args_by_get));

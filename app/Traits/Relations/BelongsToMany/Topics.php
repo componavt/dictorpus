@@ -8,8 +8,8 @@ trait Topics
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function topics(){
-        return $this->belongsToMany(Topic::class)
-                    ->orderBy('sequence_number');
+        return $this->belongsToMany(Topic::class)->withPivot('sequence_number')
+                    ->orderBy('topics.sequence_number');
     }
     
     /**
@@ -18,13 +18,14 @@ trait Topics
      * @return Array
      */
     public function topicValue():Array{
-        $value = [];
+        return $this->topics()->pluck('id')->toArray();
+/*        $value = [];
         if ($this->topics) {
             foreach ($this->topics as $topic) {
                 $value[] = $topic->id;
             }
         }
-        return $value;
+        return $value;*/
     }
     
 }
