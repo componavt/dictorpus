@@ -29,7 +29,7 @@
             @endif
         @endif
         
-        <p>Скрипт был выполнен за {{(microtime(true) - $script_start)}} секунд.</p>
+        <p>{{trans('messages.script_executed', ['n'=>(int)(microtime(true) - $script_start)])}}</p>
 @stop
 
 @section('footScriptExtra')
