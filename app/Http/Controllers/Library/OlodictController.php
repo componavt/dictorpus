@@ -75,7 +75,7 @@ class OlodictController extends Controller
         $lemmas = Olodict::search($url_args);
         $dialect_id = Olodict::Dialect;
         $pos_values = PartOfSpeech::getListForOlodict();
-        $concept_category_values = Olodict::conceptCategoryList();
+        $concept_category_values = Olodict::conceptCategoryList(false);
         $concept_values = [NULL=>'']+Olodict::conceptList($url_args['search_concept_category'], $url_args['search_pos']);
         $relations = Relation::getList();//orderBy('sequence_number')->get();
 

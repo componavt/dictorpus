@@ -16,7 +16,7 @@ class Olodict
 {
     const Dialect = 44;
     
-    public static function conceptCategoryList() {
+    public static function conceptCategoryList($with_code=true) {
         $objs = ConceptCategory::whereIn('id', function ($q1) {
             $q1->select('concept_category_id')->from('concepts')
                ->whereIn('id', function ($q2) {
@@ -30,7 +30,7 @@ class Olodict
         
         $list = array();
         foreach ($objs as $row) {
-            $list[$row->id] = $row->id .'. '. $row->name;
+            $list[$row->id] = ($with_code ? $row->id .'. ' : ''). $row->name;
         }
         
         return $list;         
