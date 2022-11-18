@@ -30,6 +30,7 @@ function viewLemma(lemma_obj) {
 function resetSearchForm() {
     clearSearchForm();
     $('#search_pos').trigger('change');    
+    $('#search_concept').trigger('change');    
 }
 
 function clearSearchForm() {

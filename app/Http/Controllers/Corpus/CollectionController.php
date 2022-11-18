@@ -12,6 +12,7 @@ use App\Models\Corpus\Cycle;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Motive;
 use App\Models\Corpus\Motype;
+use App\Models\Corpus\Plot;
 use App\Models\Corpus\Text;
 
 use App\Models\Dict\Dialect;
@@ -43,6 +44,17 @@ class CollectionController extends Controller
                     compact('dialects', 'genres', 'id', 'lang_id', 'text_count'));
         }
         return Redirect::to('/corpus/collection');
+    }
+    
+    public function runeTextsForPlot($plot_id) {
+        $plot = Plot::find($plot_id);
+        $lang_id = Collection::getCollectionLangs(2);
+        $texts = $plot->texts()->whereIn('lang_id', $lang_id)->get();
+        $page_title = trans('corpus.plot'). ': '. $plot->name;
+        $url_args = '?search_collection=2&search_plot='.$plot->id;
+        return view('corpus.collection.2.texts',
+                compact('page_title', 'texts', 'url_args'));
+        
     }
     
     public function predictionTextsForCycle($cycle_id) {

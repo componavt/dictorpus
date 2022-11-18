@@ -15,18 +15,17 @@
 
     @foreach ($genres as $genre)
     <h3>{{$genre->name_pl}}</h3>
-    
+    <ul>
         @foreach ($genre->plots as $plot)
             @if ($plot->texts->count())
-    <div class="subdiv">
-        <h4>{{$plot->name}} ({{$plot->texts->count()}})</h4>
-                @foreach ($plot->texts()->whereIn('lang_id', $lang_id)->get() as $text)
+        <li><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/'.$plot->id)}}">{{$plot->name}}</a> ({{$plot->texts->count()}})</li>
+{{--                @foreach ($plot->texts()->whereIn('lang_id', $lang_id)->get() as $text)
     @include('corpus.collection._text', 
             ['event' => $text->event, 'source' => $text->source])
-                @endforeach
-    </div>
+                @endforeach --}}
             @endif
         @endforeach
+    </ul>
     @endforeach
 
 @stop
