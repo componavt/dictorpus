@@ -49,7 +49,7 @@ class CollectionController extends Controller
     public function runeTextsForPlot($plot_id) {
         $plot = Plot::find($plot_id);
         $lang_id = Collection::getCollectionLangs(2);
-        $texts = $plot->texts()->whereIn('lang_id', $lang_id)->get();
+        $texts = $plot->texts()->whereIn('lang_id', $lang_id)->get()->sortBy('year');
         $page_title = trans('corpus.plot'). ': '. $plot->name;
         $url_args = '?search_collection=2&search_plot='.$plot->id;
         return view('corpus.collection.2.texts',

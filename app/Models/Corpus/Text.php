@@ -71,6 +71,13 @@ class Text extends Model
         return $builder;
     }
 
+    function getYearAttribute() {
+        if (!$this->event) {
+            return null;
+        }
+        return $this->event->date;
+    }
+    
     public function meanings(){
         $builder = $this->belongsToMany(Meaning::class)//;
                  -> withPivot('w_id')
