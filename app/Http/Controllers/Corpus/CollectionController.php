@@ -53,7 +53,7 @@ class CollectionController extends Controller
         $page_title = trans('corpus.plot'). ': '. $plot->name;
         $url_args = '?search_collection=2&search_plot='.$plot->id;
         return view('corpus.collection.2.texts',
-                compact('page_title', 'texts', 'url_args'));
+                compact('lang_id', 'page_title', 'texts', 'url_args'));
         
     }
     
