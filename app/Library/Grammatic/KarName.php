@@ -110,7 +110,7 @@ class KarName
         } elseif ($lang_id==6) {
             return KarNameLud::gramsetListSg();
         }
-        return [1,  56, 3,  4, 277,  5,    8,  9, 10, 278, 12,  6, 14, 15];
+        return [1,  56, 3,  4, 277,  5,    8,  9, 10, 278, 12,  6, 14, 15, 17];
     }
 
     public static function gramsetListPl($lang_id) {
@@ -119,7 +119,7 @@ class KarName
         } elseif ($lang_id==6) {
             return KarNameLud::gramsetListPl();
         }
-        return [2, 57, 24, 22, 279, 59,     23, 60, 61, 280, 62, 64, 65, 66, 281];
+        return [2, 57, 24, 22, 279, 59,     23, 60, 61, 280, 62, 64, 65, 66, 281, 18];
     }
 
     public static function getListForAutoComplete($lang_id) {
@@ -782,9 +782,11 @@ class KarName
                 return $stems[1] ? $stems[1]. 'l'. ($dialect_id==47 ? 'd': 't'). $a : '';
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1]. 'tt'. $a : '';
+            case 17: // апроксиматив, ед.ч. 
+                return $stems[1] ? $stems[1]. 'll'. KarGram::garmVowel($stems[10],'uo') : '';
         }
     }
-
+    
     public static function wordformByStemsPl($stems, $gramset_id, $dialect_id) {
         switch ($gramset_id) {
             case 24: // генитив, мн.ч. 
@@ -799,6 +801,8 @@ class KarName
                 return $dialect_id==47 && $stems[4] ? $stems[4].'čči' : '';
             case 281: // инструктив, мн.ч. 
                 return $stems[4] ? $stems[4].'n' : '';
+            case 17: // апроксиматив, мн.ч. 
+                return $stems[4] ? $stems[4]. 'll'. KarGram::garmVowel($stems[10],'uo') : '';
         }
         
         if (!isset($stems[10])) { return ''; }
