@@ -1749,7 +1749,7 @@ class Text extends Model
         $files = [];
         foreach ($all_files as $filename) {
             if (preg_match('/^'.$this->id.'_/', $filename)) {
-                $files[] = $filename;
+                $files[$filename] = Storage::disk(self::PhotoDisk)->exists('big/'.$filename) ? 'big/'.$filename : '';
             }
         }
         return $files;

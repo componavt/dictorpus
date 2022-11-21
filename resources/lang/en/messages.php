@@ -47,6 +47,7 @@ return [
     'of' => 'of',
     'output' => 'Output',
     'photo' => 'image',
+    'photos' => 'Images',
     'records' => 'records',
     'record_not_exists' => 'Record does not exists.',
     'reload' => 'reload',

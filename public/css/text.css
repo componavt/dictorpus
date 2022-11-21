@@ -306,4 +306,9 @@ h5:first-letter {
 .photos-b img{
     display: inline-block;
     margin: 0 10px 10px 0;
+    cursor: pointer;
+}
+
+.photo-in-modal img {
+    width: 100%;
 }

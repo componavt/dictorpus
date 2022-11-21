@@ -12,6 +12,8 @@
 
 @section('body')
         @include('corpus.text.modals_for_markup')
+        @include('widgets.modal',['name'=>'modalOpenBigPhoto',
+                              'title'=>trans('messages.photos')])
         
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
@@ -84,6 +86,7 @@
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/text.js')!!}
+    {!!Html::script('js/photo.js')!!}
 @stop
 
 @section('jqueryFunc')
@@ -96,6 +99,7 @@
     addWordform('{{$text->id}}','{{$text->lang_id}}', '{{LaravelLocalization::getCurrentLocale()}}');
     posSelect(false);
     checkLemmaForm();
-    toggleSpecial();    
+    toggleSpecial();  
+    openBigPhoto('.photo');
 @stop
 
