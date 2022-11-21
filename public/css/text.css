@@ -298,3 +298,12 @@ h5:first-letter {
 .audiotext-upload {
     display: flex;
 }
+
+.photos-b {
+    margin-bottom: 10px;
+}
+
+.photos-b img{
+    display: inline-block;
+    margin: 0 10px 10px 0;
+}

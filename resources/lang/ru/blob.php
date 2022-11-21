@@ -105,6 +105,8 @@ return [
                   . '"Ihanko tosieh?" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/vorobey.jpg">от Н.П. Воробей</a> на использование текста произведения '
                   . '"Olipa kerran koira (ukrainalaini starina)" в проекте ВепКар.</p>',
+//                  . '<p>Разрешение <a href="/images/permissions/balakirev.jpg">от Н.М. Балакирева</a> на использование текста произведений '
+//                  . ' в проекте ВепКар.</p>',
     'our_publications' => '
                     <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=21082">Morphological inflectional rules for Karelian Proper verbs</a><br>
                     <i>Krizhanovskaya, N., Novak, I., Krizhanovsky, A., & Pellinen, N.</i> Eesti Ja Soome-Ugri Keeleteaduse Ajakiri. Journal of Estonian and Finno-Ugric Linguistics, 13(2). 2022. P. 47–78 DOI: 10.12697/jeful.2022.13.2.02</p>
