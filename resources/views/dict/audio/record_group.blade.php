@@ -53,7 +53,7 @@
         @foreach ($lemmas as $lemma)
         {"id": {{$lemma->id}}, 
          "text": "{{$lemma->lemma}}", 
-         "meanings": "{!!join('<br>', \App\Models\Dict\Lemma::meaningTextsForId($lemma->id))!!}"},
+         "meanings": "{!!join('<br>', preg_replace('/"/', '\"', \App\Models\Dict\Lemma::meaningTextsForId($lemma->id)))!!}"},
         @endforeach
         ];
 
