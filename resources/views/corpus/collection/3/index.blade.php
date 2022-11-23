@@ -11,6 +11,8 @@
 @section('body')
     <h2>{{trans('collection.name_list')[$id]}}</h2>
     <p>{!!trans('collection.about')[$id]!!}</p>
+    <p><b>{{trans('collection.total_count')}}:</b> {{$text_count}}</p>
+    
     <h3>{{trans('collection.prediction_cycles')}}</h3>
     <ol>
     @foreach ($genres[0]->cycles as $cycle)
