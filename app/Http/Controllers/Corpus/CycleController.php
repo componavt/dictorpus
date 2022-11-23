@@ -121,7 +121,7 @@ class CycleController extends Controller
         $genre_values = Genre::getNumeredList();
         
         return view('corpus.cycle.edit', 
-                compact('default_genre', 'genre_values', 'cycle',
+                compact('genre_values', 'cycle',
                         'args_by_get', 'url_args'));
     }
 
