@@ -140,7 +140,11 @@ class UserController extends Controller
         ]);
         
         $user = User::find($id);
-        $user->fill($request->only('email','first_name','last_name','country','city','affilation', 'informant_id'));
+        $data = $request->only('email','first_name','last_name','country','city','affilation', 'informant_id');
+        if (!$data['informant_id']) {
+            $data['informant_id'] = NULL;
+        }
+        $user->fill($data);
         $user_perms = [];
         if ($request->permissions) {
             foreach ($request->permissions as $p) {

@@ -37,4 +37,19 @@
                         @include('header._menu_ref')
                         </ul>
                     </li>
-                </ul>
+                    <!--li id='menu5' class="for-wide-menu">
+                        <a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}" class="dropdown-toggle" role="button" aria-expanded="false">
+                            {{ trans('navigation.texts') }} 
+                        </a>
+                    </li>
+                    <li id='menu5' class="for-wide-menu">
+                        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection') }}" class="dropdown-toggle" role="button" aria-expanded="false">
+                            {{ trans('navigation.collections') }} 
+                        </a>
+                    </li>
+                    <li id='menu5' class="for-wide-menu">
+                        <a href="{{ LaravelLocalization::localizeURL('/corpus/audiotext/map') }}" class="dropdown-toggle" role="button" aria-expanded="false">
+                            {{ trans('navigation.audio_map') }} 
+                        </a>
+                    </li>
+                </ul-->
