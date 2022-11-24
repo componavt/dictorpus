@@ -788,6 +788,7 @@ class Text extends Model
         $this->dialects()->detach();
         $this->genres()->detach();
         $this->plots()->detach();
+        $this->cycles()->detach();
         $this->meanings()->detach();
         $this->wordforms()->detach();
         $this->authors()->detach();
