@@ -789,6 +789,7 @@ class Text extends Model
         $this->genres()->detach();
         $this->plots()->detach();
         $this->cycles()->detach();
+        $this->motives()->detach();
         $this->meanings()->detach();
         $this->wordforms()->detach();
         $this->authors()->detach();
