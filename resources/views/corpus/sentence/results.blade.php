@@ -21,7 +21,9 @@
             <ol start='{{$list_count}}'>
                 @foreach($texts as $text)
                 <li>
-                    @include('corpus.sentence._found_sentences')
+                    @include('corpus.sentence._found_sentences', 
+                    ['sentences' => $text->getSentencesByIds($text_sentences[$text->id]),
+                     '$words' => $text->getWords($url_args['words'])])
                 </li>
                 @endforeach
             </ol>

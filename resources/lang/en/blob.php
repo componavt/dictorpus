@@ -96,7 +96,7 @@ return [
                     <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
                     Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
                     
-                    <p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
+                    <p><a class="publ-title" href="/en/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
                     Natalie Pellinen. Oma mua, №01 (1541), 2021</p>
                     
                     <p><a class="publ-title" href="/docs/karjalan_sanomat_2021-10-20_12.pdf">Kielten mallit säilyvät korpuksessa</a><br>
@@ -111,15 +111,20 @@ return [
 
                         <p>The VepKar project is a continuation of the work 
                         on <a href="http://vepsian.krc.karelia.ru">the Veps language corpus</a>. 
-                        Employees of the Karelian Research Centre 
-                        of the Russian Academy of Sciences fill in the dictionary and add texts 
-                        to the corpus of Veps and Karelian languages. 
                         The corpus of the Karelian language includes the Karelian Proper, 
                         Livvi-Karelian and Ludic Karelian dialects, 
                         which have newly created writing tradition (“младописьменный”, mladopis\'mennyy type of languages).</p> 
 
-                        <p>
-                        The developed corpus manager is an open source 
+                        <p>The corpus website contains <a href="/en/corpus/text/">texts</a> in Karelian and Veps languages, 
+                        <a href="/en/dict/lemma/">dictionaries</a> and folklore <a href="/en/corpus/collection/">collections</a>. 
+                        <a href="/en/corpus/speech_corpus/">The speech corpus</a> contains texts with audio recordings. 
+                        The VepKar User Guide (in Russian) will help you work in the corpus and make full use of the corpus search engine. 
+                        The VepKar corpus data is the basis for growing resources such as the Baltic-Finnish 
+                        <a href="/en/corpus/audiotext/map/">Audio Map</a> of Karelia and 
+                        the Karelian <a href="/en/olodict/">Multimedia Dictionary</a> (LiPaS – Livvin paginan sanat).
+                        </p>
+                        
+                        <p>The developed corpus manager is an open source 
                         project <a href="https://github.com/componavt/dictorpus">Dictorpus</a>.
                         Also the database, including dictionaries and texts 
                         (see <a href="http://dictorpus.krc.karelia.ru/en/dumps">the list of database dumps</a>), 
