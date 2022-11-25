@@ -51,5 +51,5 @@
                         <a href="{{ LaravelLocalization::localizeURL('/corpus/audiotext/map') }}" class="dropdown-toggle" role="button" aria-expanded="false">
                             {{ trans('navigation.audio_map') }} 
                         </a>
-                    </li>
-                </ul-->
+                    </li-->
+                </ul>
