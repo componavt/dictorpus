@@ -38,12 +38,12 @@
              'event' => "onChange = searchLemmas('$locale')",
              'class'=>'select-concept form-control']) 
                               
-    @include('widgets.form.formitem._checkbox',
+{{--    @include('widgets.form.formitem._checkbox',
             ['name' => 'with_audios',
             'value' => 1,
             'checked' => $url_args['with_audios']==1,
             'attributes' => ['onClick' => "searchLemmas('$locale')"],
-            'tail'=>trans('dict.with_audios')]) 
+            'tail'=>trans('dict.with_audios')]) --}}
 
     @include('widgets.form.formitem._checkbox',
             ['name' => 'with_photos',
