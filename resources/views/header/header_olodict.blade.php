@@ -1,20 +1,22 @@
         <header id="header">
             <div class="logo">
                 <a href="/olodict">
-                    <img src="/images/logo.png">
+                    <img src="/images/logo-olodict.png">
                 </a>
                 <div>
-                <a href="/olodict" class='site-title'>
-                    {{trans('olodict.site_title')}}
-                </a>
-                <br>
-                <a href="/olodict" class='site-title-add'>
-                    {{trans('olodict.site_title_add')}}
-                </a>
+                    <a href="/olodict" class='site-title-1'>
+                        {{trans('olodict.site_title_1')}}
+                    </a>
+                    <a href="/olodict" class='site-title-2'>
+                        {{trans('olodict.site_title_2')}}
+                    </a>
+                    <a href="/olodict" class='site-title-2'>
+                        {{trans('olodict.site_title_3')}}
+                    </a>
                 </div>
             </div>
             <div class="menu">
-                <li><a href="{{ LaravelLocalization::localizeURL('/olodict/help')}}">{{trans('olodict.help')}}</a></li>
-                @include('header.lang_switch', ['with_text'=>false])
+                @include('header.lang_switch', ['with_text'=>true])
+                <li><a class='menu-help' href="{{ LaravelLocalization::localizeURL('/olodict/help')}}">{{trans('olodict.help')}}</a></li>
             </div>
         </header>

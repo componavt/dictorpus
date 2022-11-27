@@ -1,6 +1,8 @@
 .form-control,
 selection select2-selection__rendered,
-.form-group .select2-container--default .select2-selection--multiple {
+.form-group .select2-container--default .select2-selection--multiple,
+input[type="checkbox"],
+input[type="radio"]{
     border-radius: 0;
     box-shadow: 0 0 10px rgba(0,0,0,.075);
 }

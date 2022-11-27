@@ -15,10 +15,10 @@
         <section>
 @include('errors.errmsg')
             <div class="main-panel row">
-                <div class="left-column col-md-2">
+                <div class="left-column col-sm-3">
                     @yield('left-column')
                 </div>
-                <div class="right-column col-md-10">
+                <div class="right-column col-sm-9">
                     @yield('body')
                 </div>
             </div>

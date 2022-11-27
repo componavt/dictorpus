@@ -119,6 +119,7 @@ h2 {
 
 .in_numbers-n {
     font-size: 35px;
+    min-width: 120px;
     padding-right: 10px;
 }
 

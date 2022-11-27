@@ -9,7 +9,7 @@
     </tr>
     @foreach($wordforms as $case_name => $number_wordforms)
     <tr>
-        <th>{{$case_name}}</th>
+        <th>{{mb_ucfirst($case_name)}}</th>
         @if (!$lemma->features || $lemma->features->number != 1)   
         <td>{{isset($number_wordforms[1]) ? $number_wordforms[1] : '&mdash;'}}</td>
         @endif
