@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Library;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use LaravelLocalization;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Library\Olodict;
 
@@ -54,10 +55,14 @@ class OlodictController extends Controller
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
     
-    public function index(/*Request $request*/)
+    public function index(Request $request)
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        $page = $request->input('page');
+        if ($page != 'help') {
+            $page = 'welcome';
+        }
         $locale = LaravelLocalization::getCurrentLocale();
         $label_id = Label::OlodictLabel;
 
@@ -82,7 +87,7 @@ class OlodictController extends Controller
         return view('olodict.index',
                 compact('alphabet', 'concept_category_values', 'concept_values', 
                         'dialect_id', 'gram_list', 'label_id', 'lemma_list', 
-                        'lemmas_total', 'lemmas', 'locale', 'pos_values',
+                        'lemmas_total', 'lemmas', 'locale', 'page', 'pos_values',
                         'relations', 'args_by_get', 'url_args'));
     }
     
@@ -120,7 +125,8 @@ class OlodictController extends Controller
     }
     
     public function help() {
-        return view('olodict.help');
+        $locale = LaravelLocalization::getCurrentLocale();
+        return Redirect::to('/'.$locale.'/olodict?page=help');
     }
     
     public function abbr() {
