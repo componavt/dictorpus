@@ -29,8 +29,8 @@
     @if ($url_args['search_lemma'])
         @include('olodict._lemmas')    
     @else
-        <p>{!! trans('olodict.welcome_block') !!}</p>
-        <p><a href="{{ LaravelLocalization::localizeURL('/olodict/help')}}">{{trans('olodict.help_title')}}</a></p>
+        <div class="page-b">{!! trans('olodict.welcome_block') !!}</div>
+        <!--p><a href="{{ LaravelLocalization::localizeURL('/olodict/help')}}">{{trans('olodict.help_title')}}</a></p-->
 
     @endif
     </div>
