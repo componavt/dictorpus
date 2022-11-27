@@ -3,8 +3,6 @@
     <div class='meaning-sentence'>
         @if (sizeof($sentences)>1)
             {{ $count++ }}.
-        @else
-            &nbsp;&nbsp;&nbsp;
         @endif
         {!! $sentence['sent_obj']->markSearchWords([$sentence['w_id']] ?? [], $sentence['s'] ?? null); !!}
 
