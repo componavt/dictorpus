@@ -36,14 +36,14 @@ class OlodictController extends Controller
                 'search_lemma'    => $request->input('search_lemma'),
                 'search_letter'    => $request->input('search_letter'),
                 'search_meaning'    => $request->input('search_meaning'),
-                'search_pos'    => (int)$request->input('search_pos'),
+                'search_pos'    => $request->input('search_pos'),
                 'search_word'    => $request->input('search_word'),
                 'with_audios'    => (int)$request->input('with_audios'),
                 'with_photos'    => (int)$request->input('with_photos'),
                 'with_template'    => (int)$request->input('with_template'),
                 'limit_num' => 10
             ];
-        
+//dd($this->url_args['search_pos']);        
 /*        $url_args = $this->url_args;
         if ($url_args['search_lemma']) {
             if (!$url_args['search_letter']) {
@@ -75,7 +75,7 @@ class OlodictController extends Controller
         $lemma_list = Olodict::lemmaList($url_args);
         $lemmas_total = sizeof($lemma_list->get());
         $lemma_list = $lemma_list->paginate($url_args['limit_num']);
-        
+//dd($lemma_list);        
         $gram_list = Olodict::gramLinks($url_args['search_letter']);
         $lemmas = Olodict::search($url_args);
         $dialect_id = Olodict::Dialect;
@@ -100,6 +100,7 @@ class OlodictController extends Controller
         
         $lemma_list = Olodict::lemmaList($url_args);
         $lemmas_total = sizeof($lemma_list->get());
+//dd($lemmas_total);        
         $lemma_list = $lemma_list->paginate($url_args['limit_num']);
         
         return view('olodict._lemma_list',

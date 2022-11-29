@@ -171,6 +171,16 @@ a:hover {
     padding: 15px 5px 0 0;
 }
 
+.right-column .col {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.wordforms-b table {
+    margin-left: -4px;
+    margin-right: -4px;
+}
+
 s {
     text-decoration: none;
 }
@@ -1063,7 +1073,7 @@ h1:before {
 .wordform-title {
     color: #fff;
     background-color: #e31e24;
-    margin: 20px 4px 0;
+    margin: 20px 0 0;
     padding: 2px 10px 5px;
 }
 
@@ -1085,6 +1095,15 @@ h1:before {
 }
 
 @media screen and (min-width: 576px) {   
+.right-column .col {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.right-column .col.wordforms-b {
+    padding-right: 0;
+}
+
     .comment {
         margin-top: -50px;
     }
