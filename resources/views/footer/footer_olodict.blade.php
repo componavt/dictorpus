@@ -8,8 +8,8 @@
                 {!! trans('blob.license') !!}
             </div>
             <div class="copyright-b">
-                <img src="/images/logo-grey.png"><br>
-                <span class="copy-left">©</span> <a href="http://dictorpus.krc.karelia.ru">VepKar</a>. {{ trans('main.site_title') }}
+                <img src="/images/logo-grey.png">
+                <div><span class="copy-left">©</span> <a href="http://dictorpus.krc.karelia.ru">VepKar</a>. {{ trans('main.site_title') }}</div>
             </div>
         </div>
     </div>
