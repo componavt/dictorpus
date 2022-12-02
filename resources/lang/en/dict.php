@@ -214,7 +214,9 @@ return [
                     6 => 'demonstrative',
                     7 => 'interrogative',
                     8 => 'relative',
-                    9 => 'negative'],
+                    9 => 'negative',
+                    11=> 'attributive',
+        ],
     
 //    'reflexive' => 'reflexive',
     'reflexive' => 'reflexive',
