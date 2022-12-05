@@ -475,8 +475,14 @@ class Text extends Model
      * @param array $words
      * @return collection
      */
-    public function getWords($words) {
-        $search_words=[];
+    public function getWords($sentence_builder, $word_nums) {
+        $out = $sentence_builder->where('t2.text_id', $this->id)->pluck('w1_id');
+        for ($i=2; $i<=$word_nums; $i++) {
+            $out = array_merge($out, 
+                    $sentence_builder->where('t2.text_id', $this->id)->pluck('w2_id')); 
+        }
+        return $out;
+/*        $search_words=[];
         foreach (array_keys($words) as $i) {
             $pairs = Sentence::searchWords($words)
                     ->where('t1.text_id', $this->id)
@@ -487,7 +493,7 @@ class Text extends Model
             }
         }
 //dd($search_words);        
-        return $search_words;
+        return $search_words;*/
     }
     
     /**
@@ -500,7 +506,7 @@ class Text extends Model
     public function getSentencesByGram($words) {
         $text_id = $this->id;
         $builder = Sentence::whereTextId($text_id)->orderBy('s_id')   
-                    ->whereIn('id', Sentence::searchWords($words, $text_id)->pluck('t1.sentence_id'));
+                    ->whereIn('id', Sentence::searchWords($words, [$text_id])->pluck('t1.sentence_id'));
 //dd($builder->toSql());                    
         return $builder->get();
     }

@@ -4,6 +4,8 @@ namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 use App\Library\Grammatic;
 use App\Library\Str;
@@ -201,7 +203,7 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
      * @param array $words
      * @return builder
      */
-    public static function searchWords($words, $text_id=null) {
+    public static function searchWords($words, $text_ids=[], $lang_ids=[]) {
 /*        
 $words = [
     1 =>  [
@@ -239,14 +241,62 @@ $words = [
         "d_t" => "-1" 
     ] 
 ]*/
+        $table_names = [];
+        $word_total = sizeof($words);
+        for ($i=1; $i<$word_total; $i++) {
+            $table_names[$i] = 'tmp_words_'.$i;
+            Schema::create('tmp_words_'.$i, function (Blueprint $table) {
+//                $table->integer('text_id')->unsigned();
+                $table->integer('sentence_id')->unsigned();
+                $table->integer('word_number')->unsigned();
+                $table->smallInteger('w_id')->unsigned();
+                $table->index(['sentence_id','word_number']);
+                $table->temporary();
+            });   
+            
+            $query = 'INSERT INTO tmp_words_'.$i.' SELECT sentence_id, word_number, w_id from words where 1=1 ';
+            if (sizeof($text_ids) && $i==1) {
+                $query .= 'and text_id in ('.join(',',$text_ids).')';
+            }
+            $query .= self::searchWordsByWordRaw($words[$i], $lang_ids);
+//print "<p>$query";            
+            DB::statement($query);
+//dd($affected);            
+        }
+//        $table_names[sizeof($words)] = 'words';
+        $select = 't'.$word_total.'.text_id as text1_id, t'.$word_total.'.sentence_id as sentence1_id';
         $from = [];
+        if ($word_total>1) {
+            for ($i=1; $i<$word_total; $i++) {
+                $from[] = $table_names[$i].' as t'.$i; 
+                $select .= ', t'.$i.'.w_id as w'.$i.'_id';
+//                $w = 
+            }
+        }
+        $from[] = 'words as t'.$word_total; 
+        $select .= ', t'.$word_total.'.w_id as w'.$word_total.'_id';
+//dd(DB::table('tmp_words_1')->count());        
+        $builder = DB::table(DB::raw(join(', ', $from)))->select(DB::raw($select));
+//dd(to_sql($builder));            
+        if (sizeof($words)>1) {
+            $builder = $builder->whereRaw('t1.sentence_id=t2.sentence_id');
+//dd($builder->get());            
+            $builder = self::searchWordsByNumbers($builder, [2=>$words[sizeof($words)]]);
+//dd(to_sql($builder));            
+//dd($builder->get());            
+        }
+        $builder = self::searchWordsByWord($builder, 't'.$word_total, $words[$word_total], $lang_ids);
+//dd(to_sql($builder));            
+//dd($builder->get());            
+        
+/*        $from = [];
         foreach (array_keys($words) as $i) {
             $from[] = 'words as t'.$i;
         }
         $builder = DB::table(DB::raw(join(', ', $from)));
         
-        if ($text_id) {
-            $builder -> where('t1.text_id', $text_id);
+        if (sizeof($text_ids)) {
+            $builder -> whereIn('t1.text_id', $text_ids);
         }
         
         if (sizeof($words)>1) {
@@ -258,13 +308,14 @@ $words = [
         }
         $builder = self::searchWordsByNumbers($builder, $words);
         foreach ($words as $i => $word) {
-            $builder = self::searchWordsByWord($builder, $i, $word);
-        }
-//dd(to_sql($builder));                    
+            $builder = self::searchWordsByWord($builder, 't'.$i, $word, $lang_ids);
+        }*/
+//print "<p>".to_sql($builder);                    
         return $builder;
     }
     
     public static function searchWordsByNumbers($builder, $words) {
+//dd($words);            
         foreach ($words as $i => $word) {
             if ($i==1) {
                 continue;
@@ -281,9 +332,13 @@ AND t2.word_number-t1.word_number<=B;
                 if ($A > $B) { // from 3 to 1
                     list($A,$B)=[$B,$A];
                 }
-                $builder->where('t'.$i.'.word_number', '>', 't'.($i-1).'.word_number')
-                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '>=', $A)
-                        ->where(DB::raw('t'.$i.'.word_number-t'.($i-1).'.word_number'), '<=', $B);
+                $builder=$builder->whereRaw('t'.$i.'.word_number > t'.($i-1).'.word_number')
+                         ->whereRaw('t'.$i.'.word_number-t'.($i-1).'.word_number  >= '. $A)
+                         ->whereRaw('t'.$i.'.word_number-t'.($i-1).'.word_number <= '. $B);
+//print "<p>".to_sql($builder);            
+//dd($builder->take(10)->get());            
+/*                       
+dd($builder->take(10)->get());            
 /*
 A<0<B: from -3 to 3
 (t1.word_number>t2.word_number 
@@ -295,7 +350,7 @@ AND t2.word_number-t1.word_number<=B);
                 if ($A > $B) { // from 3 to -3
                     list($A,$B)=[$B,$A];
                 }
-                $builder->where(function($q) use ($i, $A, $B) {
+                $builder=$builder->where(function($q) use ($i, $A, $B) {
                         $q->where('t'.($i-1).'.word_number', '>', 't'.$i.'.word_number')
                           ->where(DB::raw('t'.($i-1).'.word_number-t'.$i.'.word_number'), '<=', abs($A))
                           ->orWhere('t'.$i.'.word_number', '>', 't'.($i-1).'.word_number')
@@ -311,7 +366,7 @@ AND t1.word_number-t2.word_number<=|B|;
                 if ($A < $B) { // from -5 to -3
                     list($A,$B)=[$B,$A];
                 }
-                $builder->where('t'.($i-1).'.word_number', '>', 't'.$i.'.word_number')
+                $builder=$builder->where('t'.($i-1).'.word_number', '>', 't'.$i.'.word_number')
                         ->where(DB::raw('t'.($i-1).'.word_number-t'.$i.'.word_number'), '>=', abs($A))
                         ->where(DB::raw('t'.($i-1).'.word_number-t'.$i.'.word_number'), '<=', abs($B));
             }
@@ -319,9 +374,55 @@ AND t1.word_number-t2.word_number<=|B|;
         return $builder;
     }
     
-    public static function searchWordsByWord($builder, $i, $word) {
+    public static function searchWordsByWordRaw($word, $lang_ids=[]) {
+        $out = '';
         if (isset($word['w']) && $word['w']) {
-            $builder=$builder->where('t'.$i.'.word', 'rlike', $word['w']);
+            $out .= ' and word rlike '.$word['w'];
+        }
+        $search_by_lemma = isset($word['l']) && $word['l'];
+        $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
+        $search_by_grams = isset($word['g']) && sizeof($word['g']);
+        $search_by_gramset = isset($word['gs']) && $word['gs'];
+
+        if (!$search_by_lemma && !$search_by_pos && !$search_by_grams && !$search_by_gramset) {
+            return $out;
+        }
+        $out .= ' and id in (select word_id from text_wordform where relevance>0';
+        
+        $lemma_conds = [];
+        if ($search_by_lemma) {
+            $lemma_conds[] = 'lemma_for_search rlike '. $word['l'];
+        }
+        if ($search_by_pos) {
+            $lemma_conds[] = 'pos_id in ('. join(', ', $word['p']). ')';
+        }
+        if (sizeof($lang_ids)) {
+            $lemma_conds[] = 'lang_id in ('. join(', ', $lang_ids). ')';                                
+        }
+        if (sizeof($lemma_conds)) {
+            $out .= ' and wordform_id in (select wordform_id from lemma_wordform'
+                 .  ' where lemma_id in (select id from lemmas where '
+                 . join(' and ', $lemma_conds). '))';
+        }
+        if ($search_by_gramset) {
+            $out .= ' and gramset_id = '.$word['gs'];
+        }
+        if ($search_by_grams) {
+            $gram_conds = [];
+            foreach ($word['g'] as $field => $group) {
+                $gram_conds[] = $field.' in ('.join(', ', $group). ')';
+            }
+            $out .= ' and gramset_id in (select id from gramsets where '.join(' and ',$gram_conds).')';
+        }                    
+        return $out.')';
+    }
+    
+    public static function searchWordsByWord($builder, $table_name, $word, $lang_ids=[]) {
+        if ($table_name) {
+            $table_name = $table_name.'.';
+        }
+        if (isset($word['w']) && $word['w']) {
+            $builder=$builder->where($table_name.'word', 'rlike', $word['w']);
         }
         $search_by_lemma = isset($word['l']) && $word['l'];
         $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
@@ -329,20 +430,23 @@ AND t1.word_number-t2.word_number<=|B|;
         $search_by_gramset = isset($word['gs']) && $word['gs'];
 
         if ($search_by_lemma || $search_by_pos || $search_by_grams || $search_by_gramset) {
-            $builder=$builder->whereIn('t'.$i.'.id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_grams, $search_by_gramset) {
+            $builder=$builder->whereIn($table_name.'id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_grams, $search_by_gramset, $lang_ids) {
                 $q->select('word_id')->from('text_wordform')
                   ->where('relevance', '>', 0);
                 if ($search_by_lemma || $search_by_pos) {
-                    $q->whereIn('wordform_id',function($query1) use ($word, $search_by_lemma, $search_by_pos){
+                    $q->whereIn('wordform_id',function($query1) use ($word, $search_by_lemma, $search_by_pos, $lang_ids){
                         $query1->select('wordform_id')
                         ->from('lemma_wordform')
-                        ->whereIn('lemma_id',function($query2) use ($word, $search_by_lemma, $search_by_pos){
+                        ->whereIn('lemma_id',function($query2) use ($word, $search_by_lemma, $search_by_pos, $lang_ids){
                             $query2->select('id')->from('lemmas');
                             if ($search_by_lemma) {
                                 $query2->where('lemma_for_search', 'rlike', $word['l']);
                             }
                             if ($search_by_pos) {
                                 $query2->whereIn('pos_id', $word['p']);
+                            }
+                            if (sizeof($lang_ids)) {
+                                $query2->whereIn('lang_id', $lang_ids);                                
                             }
                         });
                     });
@@ -362,7 +466,6 @@ AND t1.word_number-t2.word_number<=|B|;
         }
         return $builder;
     }
-    
     public static function searchTexts(Array $url_args) {
         $texts = Text::select('id');        
         if ($url_args['search_corpus']) {
@@ -372,8 +475,8 @@ AND t1.word_number-t2.word_number<=|B|;
         $texts = Text::searchByGenres($texts, $url_args['search_genre']);
         $texts = Text::searchByLang($texts, $url_args['search_lang']);
         $texts = Text::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
-
-        return $texts->get();
+//dd(to_sql($texts));
+        return $texts->get()->pluck('id')->toArray();
     }
     /*
      * select * from gramsets where gram_id_mood in (27) and gram_id_tense in (24) and gram_id_number in (1,2) and gram_id_person in (21, 22);
@@ -434,13 +537,14 @@ AND t1.word_number-t2.word_number<=|B|;
      * @return collection
      */
     public static function entryNumber($args) {
-        
-//        $builder = DB::table('text_wordform')->selectRaw('DISTINCT text_id, w_id');
-        $builder = self::searchWords($args['words'])
-                ->whereIn('t1.text_id', Sentence::searchTexts($args));
-//dd(to_sql($builder));            
+/*        $builder = self::searchWords($args['words'], [], $args['search_lang'])
+                ->whereIn('t1.text_id', Sentence::searchTexts($args));*/
+        $builder = self::searchWords($args['words'], Sentence::searchTexts($args), $args['search_lang']);
+//dd(to_sql($builder));        
+//dd($builder->get());            
 //        return sizeof($builder->get());
         return [sizeof($builder->get()), $builder];
+//        return [$builder->count(), $builder];
     }
     
     public static function urlArgs($request) {
@@ -460,6 +564,12 @@ AND t1.word_number-t2.word_number<=|B|;
         }
         if (!isset($url_args['search_words'][1]['p'])) {
             $url_args['search_words'][1]['p'] = '';
+        }
+        $last_word = $url_args['search_words'][sizeof($url_args['search_words'])];
+        if ((!isset($last_word['w']) || !$last_word['w'])
+            && (!isset($last_word['p']) || !$last_word['p'])
+            && (!isset($last_word['g']) || !$last_word['g'])) {
+            unset($url_args['search_words'][sizeof($url_args['search_words'])]);
         }
         return $url_args;
     }    

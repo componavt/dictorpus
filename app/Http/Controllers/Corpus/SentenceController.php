@@ -65,7 +65,7 @@ class SentenceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function results()
+    public function results(Request $request)
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
@@ -79,21 +79,35 @@ class SentenceController extends Controller
         $text_sentences =[];
         $texts = null;
         if (!sizeof($url_args['words'])) {
-            $refine = true; // отправляем уточнить запрос, без слов искать не будем
+            $refine = $sentence_builder = true; // отправляем уточнить запрос, без слов искать не будем
         } else {
             $refine = false;
             list($entry_number, $sentence_builder) = Sentence::entryNumber($url_args); // считаем количество вхождений
-//dd($entry_number, (int)(microtime(true) - $script_start));            
+//dd($entry_number);   
 //dd(array_unique($sentence_builder->pluck('t1.text_id')));            
             if ($entry_number>0) {
 //                $texts = Text::searchWithSentences($url_args); // выбираем тексты
-                $texts = Text::whereIn('id', array_unique($sentence_builder->pluck('t1.text_id')));
+                $texts = Text::whereIn('id', array_unique($sentence_builder->pluck('text1_id')));
                 $numAll = $texts->count();
                 $texts = $texts->paginate($this->url_args['limit_num']);
-                foreach ($sentence_builder->get() as $sentence) {
-                    $text_sentences[$sentence->text_id][] = $sentence->s_id;
+                $sentences = collect($sentence_builder->get());
+//dd($sentences);                
+                foreach($texts as $text) {                
+                    foreach ($sentences->where('text1_id', $text->id) as $sentence) {
+                        if (!isset($text_sentences[$text->id]['sentences'][$sentence->sentence1_id])) {
+                            $text_sentences[$text->id]['sentences'][$sentence->sentence1_id] 
+                                    = Sentence::find($sentence->sentence1_id);
+                        }
+                        for ($i=1; $i<=sizeof($url_args['words']); $i++) {
+                            $text_sentences[$text->id]['words'][] = $sentence->{'w'.$i.'_id'};
+                        }
+                    }
                 }
             }
+//dd($text_sentences);            
+//var_dump($sentence_builder->take(10)->pluck('text1_id'));         
+//dd($sentence_builder->take(10)->get());     
+//            exit(0);
         }      
         return view('corpus.sentence.results',
                 compact('texts', 'numAll', 'entry_number', 'refine', 'script_start',

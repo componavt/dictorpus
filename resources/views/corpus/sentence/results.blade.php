@@ -22,8 +22,8 @@
                 @foreach($texts as $text)
                 <li>
                     @include('corpus.sentence._found_sentences', 
-                    ['sentences' => $text->getSentencesByIds($text_sentences[$text->id]),
-                     'words' => $text->getWords($url_args['words'])])
+                    ['sentences' => $text_sentences[$text->id]['sentences'],
+                     'words' => $text_sentences[$text->id]['words']])
                 </li>
                 @endforeach
             </ol>
