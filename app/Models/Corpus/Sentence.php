@@ -566,7 +566,7 @@ AND t1.word_number-t2.word_number<=|B|;
             $url_args['search_words'][1]['p'] = '';
         }
         $last_word = $url_args['search_words'][sizeof($url_args['search_words'])];
-        if ((!isset($last_word['w']) || !$last_word['w'])
+        if (sizeof($url_args['search_words'])>1 && (!isset($last_word['w']) || !$last_word['w'])
             && (!isset($last_word['p']) || !$last_word['p'])
             && (!isset($last_word['g']) || !$last_word['g'])) {
             unset($url_args['search_words'][sizeof($url_args['search_words'])]);
