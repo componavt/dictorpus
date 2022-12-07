@@ -783,7 +783,7 @@ class KarName
             case 6: // абессив, ед.ч. 
                 return $stems[1] ? $stems[1]. 'tt'. $a : '';
             case 17: // апроксиматив, ед.ч. 
-                return $stems[1] ? $stems[1]. 'll'. KarGram::garmVowel($stems[10],'uo') : '';
+                return $dialect_id==47 && $stems[1] ? $stems[1]. 'll'. KarGram::garmVowel($stems[10],'uo') : '';
         }
     }
     
@@ -801,8 +801,8 @@ class KarName
                 return $dialect_id==47 && $stems[4] ? $stems[4].'čči' : '';
             case 281: // инструктив, мн.ч. 
                 return $stems[4] ? $stems[4].'n' : '';
-            case 17: // апроксиматив, мн.ч. 
-                return $stems[4] ? $stems[4]. 'll'. KarGram::garmVowel($stems[10],'uo') : '';
+            case 18: // апроксиматив, мн.ч. 
+                return $dialect_id==47 && $stems[4] ? $stems[4]. 'll'. KarGram::garmVowel($stems[10],'uo') : '';
         }
         
         if (!isset($stems[10])) { return ''; }
