@@ -391,7 +391,7 @@ AND t1.word_number-t2.word_number<=|B|;
         
         $lemma_conds = [];
         if ($search_by_lemma) {
-            $lemma_conds[] = 'lemma_for_search rlike '. $word['l'];
+            $lemma_conds[] = "lemma_for_search rlike '". $word['l']."'";
         }
         if ($search_by_pos) {
             $lemma_conds[] = 'pos_id in ('. join(', ', $word['p']). ')';
