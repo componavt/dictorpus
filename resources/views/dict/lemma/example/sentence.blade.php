@@ -8,7 +8,7 @@ if (isset($meaning)) {
     $m_t_s_w = $meaning->id.'_'.$t_s_w;
 } 
 
-$place_title = $sentence['text']->dialects[0]->name;
+$place_title = $sentence['text']->dialects ? $sentence['text']->dialects[0]->name : '';
 if($sentence['text']->event && $sentence['text']->event->place) {
         $place_title .= ', '. $sentence['text']->event->place->placeString();
 }
