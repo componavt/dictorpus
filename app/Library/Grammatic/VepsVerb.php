@@ -39,7 +39,7 @@ class VepsVerb
 
     public static function parseInf($inf, $is_reflexive) {
         if (!$is_reflexive && preg_match("/^(.*)([dt]’?)([aä])$/u", $inf, $regs)
-            || $is_reflexive && preg_match("/^(.*)([dt]’?)([aä])[s|kso|ze]$/u", $inf, $regs)) {
+            || $is_reflexive && preg_match("/^(.*)([dt]’?)([aä])(s|kso|ze)$/u", $inf, $regs)) {
             return $regs;
         }
         return null;
@@ -133,6 +133,7 @@ class VepsVerb
         $past_suff = $regs[4];
         
         $regs1 = self::parseInf($regs[2], $is_reflexive);
+//dd($regs, $regs1);        
         if (!$regs1) {
             return [$stems, null, $regs[0], null];
         }
@@ -163,7 +164,7 @@ class VepsVerb
         $stems[6] = $regs1[2]; // consonant
         $stems[7] = $regs1[3]; // harmony
         $stems[8] = isset($regs[5]) && $regs[5] ? $base. $regs[5] : '';
-        
+//dd($stems);        
         return [$stems, null, $regs[1], $regs[2]];
     }
     

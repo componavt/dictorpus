@@ -11,14 +11,22 @@
                  'value' => $url_args['search_wordform'],
                  'attributes'=>['placeholder'=>trans('dict.wordform')]])
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
+        @include('widgets.form.formitem._text', 
+                ['name' => 'search_lemma', 
+                 'special_symbol' => true,
+                 'help_func' => "callHelp('help-text-fields')",
+                 'value' => $url_args['search_lemma'],
+                 'attributes'=>['placeholder'=>trans('dict.lemma')]])
+    </div>
+    <div class="col-sm-3">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_lang', 
                  'values' =>$lang_values,
                  'value' =>$url_args['search_lang'],
                  'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
     </div>
-    <div class="col-sm-5">
+    <div class="col-sm-3">
         @include('widgets.form.formitem._select2',
                 ['name' => 'search_dialect', 
                  'values' =>$dialect_values,

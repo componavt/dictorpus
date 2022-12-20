@@ -80,6 +80,7 @@ class Wordform extends Model
                     'search_dialect'  => (int)$request->input('search_dialect'),
                     'search_gramset'  => (int)$request->input('search_gramset'),
                     'search_lang'     => (int)$request->input('search_lang'),
+                    'search_lemma'     => $request->input('search_lemma'),
                     'search_pos'      => (int)$request->input('search_pos'),
                     'search_wordform' => $request->input('search_wordform'),
                 ];
@@ -371,6 +372,7 @@ dd($relevance);
     
     public static function search(Array $url_args) {
         $wordforms = self::orderBy('wordform');
+        $wordforms = self::searchByLemma($wordforms, $url_args['search_lemma']);
         $wordforms = self::searchByWordform($wordforms, $url_args['search_wordform']);
         $wordforms = self::searchByAffix($wordforms, $url_args['search_affix']);
 
@@ -395,6 +397,19 @@ dd($relevance);
         }
         return 
             $wordforms->where('lemma_wordform.wordform_for_search','like', $wordform);
+    }
+    
+    public static function searchByLemma($wordforms, $lemma) {
+        $lemma = Grammatic::toSearchForm($lemma);
+        if (!$lemma) {
+            return $wordforms;
+        }
+        return 
+            $wordforms->whereIn('lemma_id', function ($q) use ($lemma) {
+                $q->select('id')->from('lemmas')
+                  ->where('lemma_for_search','like', $lemma);
+            });
+                
     }
     
     public static function searchByAffix($wordforms, $affix) {
