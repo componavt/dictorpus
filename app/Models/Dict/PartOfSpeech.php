@@ -54,7 +54,8 @@ class PartOfSpeech extends Model
 
     // Methods
     use \App\Traits\Methods\getNameAttribute;
-        
+    
+/* TODO: разобраться для какого проекта объединяли предлоги и послелоги?       
     // muttator
     public function getCodeAttribute($code)
     {
@@ -63,7 +64,7 @@ class PartOfSpeech extends Model
         }
         return $code;
     }
-        
+ */       
     // muttator
     public function getUnimorphAttribute()
     {
@@ -311,6 +312,18 @@ class PartOfSpeech extends Model
         return false;            
     }
     
+    public static function isExistNonChangableIDs($ids) {
+        foreach ($ids as $id) {
+            $pos = self::find($id);
+            if (!$pos) {
+                dd('Unknown part of speech');
+            }
+            if (!$pos->isChangeable()) {
+                return true;
+            }
+        }
+    }
+
     public static function changeablePOSList() {
         $out = [];
         foreach (self::all() as $pos) {

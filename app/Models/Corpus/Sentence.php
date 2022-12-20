@@ -285,7 +285,7 @@ $words = [
 //dd(to_sql($builder));            
 //dd($builder->get());            
         }
-        $builder = self::searchWordsByWord($builder, 't'.$word_total, $words[$word_total], $lang_ids);
+        $builder = self::searchWordsByWord($builder, 't'.$word_total.'.', $words[$word_total], $lang_ids);
 //dd(to_sql($builder));            
 //dd($builder->get());            
         
@@ -375,12 +375,16 @@ AND t1.word_number-t2.word_number<=|B|;
     }
     
     public static function searchWordsByWordRaw($word, $lang_ids=[]) {
+        $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
+        if ($search_by_pos && PartOfSpeech::isExistNonChangableIDs($word['p'])) {
+            return self::searchWordsByWordRawForNotChangablePOS($word, $lang_ids);
+        }
+        
         $out = '';
         if (isset($word['w']) && $word['w']) {
             $out .= ' and word rlike '.$word['w'];
         }
         $search_by_lemma = isset($word['l']) && $word['l'];
-        $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
         $search_by_grams = isset($word['g']) && sizeof($word['g']);
         $search_by_gramset = isset($word['gs']) && $word['gs'];
 
@@ -417,15 +421,37 @@ AND t1.word_number-t2.word_number<=|B|;
         return $out.')';
     }
     
-    public static function searchWordsByWord($builder, $table_name, $word, $lang_ids=[]) {
-        if ($table_name) {
-            $table_name = $table_name.'.';
+    public static function searchWordsByWordRawForNotChangablePOS($word, $lang_ids=[]) {
+        $out = '';
+        if (isset($word['w']) && $word['w']) {
+            $out .= ' and word rlike '.$word['w'];
         }
+
+        $lemma_conds = ['pos_id in ('. join(', ', $word['p']). ')'];
+        
+        if (isset($word['l']) && $word['l']) {
+            $lemma_conds[] = "lemma_for_search rlike '". $word['l']."'";
+        }
+        if (sizeof($lang_ids)) {
+            $lemma_conds[] = 'lang_id in ('. join(', ', $lang_ids). ')';                                
+        }
+        
+        return ' and id in (select word_id from meaning_text where relevance>0'
+                 . ' and meaning_id in (select id from meanings'
+                 . ' where lemma_id in (select id from lemmas where '
+                 . join(' and ', $lemma_conds). ')))';
+    }
+    
+    public static function searchWordsByWord($builder, $table_name, $word, $lang_ids=[]) {
+        $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
+        if ($search_by_pos && PartOfSpeech::isExistNonChangableIDs($word['p'])) {
+            return self::searchWordsByWordForNotChangablePOS($builder, $table_name, $word, $lang_ids);
+        }
+        
         if (isset($word['w']) && $word['w']) {
             $builder=$builder->where($table_name.'word', 'rlike', $word['w']);
         }
         $search_by_lemma = isset($word['l']) && $word['l'];
-        $search_by_pos = isset($word['p']) && $word['p'] && sizeof($word['p']);
         $search_by_grams = isset($word['g']) && sizeof($word['g']);
         $search_by_gramset = isset($word['gs']) && $word['gs'];
 
@@ -466,6 +492,32 @@ AND t1.word_number-t2.word_number<=|B|;
         }
         return $builder;
     }
+    
+    public static function searchWordsByWordForNotChangablePOS($builder, $table_name, $word, $lang_ids=[]) {
+        if (isset($word['w']) && $word['w']) {
+            $builder=$builder->where($table_name.'word', 'rlike', $word['w']);
+        }
+        $search_by_lemma = isset($word['l']) && $word['l'];
+
+        return $builder->whereIn($table_name.'id', function ($q) use ($word, $search_by_lemma, $lang_ids) {
+            $q->select('word_id')->from('meaning_text')
+              ->where('relevance', '>', 0)
+              ->whereIn('meaning_id',function($query1) use ($word, $search_by_lemma, $lang_ids){
+                $query1->select('id')->from('meanings')
+                ->whereIn('lemma_id',function($query2) use ($word, $search_by_lemma, $lang_ids){
+                    $query2->select('id')->from('lemmas')
+                           ->whereIn('pos_id', $word['p']);
+                    if ($search_by_lemma) {
+                        $query2->where('lemma_for_search', 'rlike', $word['l']);
+                    }
+                    if (sizeof($lang_ids)) {
+                        $query2->whereIn('lang_id', $lang_ids);                                
+                    }
+                });
+            });
+        });
+    }
+    
     public static function searchTexts(Array $url_args) {
         $texts = Text::select('id');        
         if ($url_args['search_corpus']) {
@@ -501,6 +553,7 @@ AND t1.word_number-t2.word_number<=|B|;
             
             foreach (preg_split('/\|/', $word['p']) as $p_code) {
                 $p_id = PartOfSpeech::getIDByCode(trim($p_code));
+//dd($p_id, $p_code);                
                 if ($p_id) {
                     $out[$i]['p'][] = $p_id;
                 }
