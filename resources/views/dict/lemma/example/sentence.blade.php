@@ -8,10 +8,9 @@ if (isset($meaning)) {
     $m_t_s_w = $meaning->id.'_'.$t_s_w;
 } 
 
+$place_title = $sentence['text']->dialects[0]->name;
 if($sentence['text']->event && $sentence['text']->event->place) {
-        $place_title = $sentence['text']->event->place->placeString();
-} else { 
-    $place_title =''; 
+        $place_title .= ', '. $sentence['text']->event->place->placeString();
 }
 ?>
 @if (isset($meaning))
@@ -33,7 +32,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
 
 @if ($sentence['text'])
 (<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id. '?search_sentence='.$sentence['s_id']) }}" 
-    title="{{$place_title}}">{{$sentence['text']->title}}</a>@if (user_dict_edit()), <small>{{$sentence['text']->dialects[0]->name}}</small>@endif)
+    title="{{$place_title}}">{{$sentence['text']->title}}</a>)
     @if (isset($is_edit) && User::checkAccess('dict.edit'))
         @include('widgets.form.button._edit', 
                  ['route' => '/dict/lemma/'.$meaning->lemma->id.'/edit/example/'.$t_s_w,
