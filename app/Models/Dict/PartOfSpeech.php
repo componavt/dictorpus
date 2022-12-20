@@ -77,6 +77,8 @@ class PartOfSpeech extends Model
             $code = "PRO";
         } elseif ($code == 'VERB') {
             $code = "V";
+        } elseif (in_array($code, ['POSTP', 'PREP'])) {
+            $code = "ADP";
         }
         return $code;
     }
