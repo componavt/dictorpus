@@ -246,6 +246,7 @@ class PartOfSpeech extends Model
     
     /**
      * Get list of parts of speech for words in texts
+     * select * from parts_of_speech where id in (select pos_id from lemmas where id in (select lemma_id from meanings where id in (select meaning_id from meaning_text where relevance>0)));
      * 
      * @return Array ['NOUN' => 'существительное', ...]
      */
@@ -255,12 +256,20 @@ class PartOfSpeech extends Model
         $locale = LaravelLocalization::getCurrentLocale();
         
         $pos_collec = self::where('name_'.$locale, '<>', '')
+                          ->whereIn('id', function ($q1) {
+                              $q1->select('pos_id')->from('lemmas')
+                                 ->whereIn('id', function ($q2) {
+                                    $q2->select('lemma_id')->from('meanings')
+                                       ->whereIn('id', function ($q3) {
+                                            $q3->select('meaning_id')->from('meaning_text')
+                                               ->where('relevance', '>', 0);                                     
+                                       });                                     
+                                 });
+                          })
                           ->orderBy('name_'.$locale)->get();
         
         foreach ($pos_collec as $pos) {
-            if ($pos->isChangeable()) {
-                $parts_of_speech[$pos->code] = $pos->name;
-            }
+            $parts_of_speech[$pos->code] = $pos->name;
         }
         
         return $parts_of_speech;         
