@@ -326,7 +326,7 @@ class GramsetController extends Controller
         foreach ($gramsets as $gramset_id =>$gramset_name) {
             if (preg_match("/".$search_gramset."/", $gramset_name)) {
                 $list[]=['id'  => $gramset_id, 
-                         'text'=> $gramset_name];
+                         'text'=> remove_hyphens($gramset_name)];
             }
         }  
 //dd($list);        

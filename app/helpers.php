@@ -232,3 +232,9 @@ if (!function_exists('count_not_empty_elems')) {
         return $count;
     }
 }
+
+if (!function_exists('remove_hyphens')) {
+    function remove_hyphens($str) {
+        return preg_replace('/&shy;/', '', $str);
+    }
+}
