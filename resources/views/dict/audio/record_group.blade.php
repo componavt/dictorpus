@@ -92,7 +92,11 @@ function displayWord() {
 }
 
 function displayNext() {
+    if (wordsArray.length > 1) {
         nextWindow.innerHTML = wordsArray[1+currentWord].text;
+    } else {
+        nextWindow.innerHTML = '';
+    }
 }
 
 function startRecord()
