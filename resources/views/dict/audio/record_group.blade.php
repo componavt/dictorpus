@@ -56,7 +56,7 @@
          "meanings": "{!!join('<br>', preg_replace('/"/', '\"', \App\Models\Dict\Lemma::meaningTextsForId($lemma->id)))!!}"},
         @endforeach
         ];
-
+/* console.log(wordsArray.length); */
 	displayWord();
         displayNext();
         

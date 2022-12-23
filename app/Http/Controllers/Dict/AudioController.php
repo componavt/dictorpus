@@ -66,9 +66,12 @@ class AudioController extends Controller
             $label_id = $list == 'schooldict' ? 4 : 3; 
             if ($list == 'multidict-phrase') {
                 $lemmas = Lemma::wherePosId(PartOfSpeech::getPhraseID())
-                            ->whereIn('id', function ($q1) {
+                            ->whereIn('id', function ($q1) use ($label_id) {
                                 $q1->select('phrase_id')->from('lemma_phrase')
-                                   ->whereIn('lemma_id', Label::checkedOloLemmas());
+                                   ->whereIn('lemma_id', function ($q) use ($label_id) {
+                                        $q->select('lemma_id')->from('label_lemma')
+                                          ->whereLabelId($label_id);
+                                   });
                             });
             } else {
             $lemmas = Lemma::whereIn('id', function ($q) use ($label_id, $list) {
