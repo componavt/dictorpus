@@ -98,7 +98,7 @@ class AudioController extends Controller
                          })
                          ->groupBy('lemma')
                          ->orderByRaw('lower(lemma)')
-                         ->take(100)
+//                         ->take(100)
                          ->get();
 //dd($lemmas);                         
         $list_title = Audio::recordGroups[$list];
