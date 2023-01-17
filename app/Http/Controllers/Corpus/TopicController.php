@@ -80,7 +80,7 @@ class TopicController extends Controller
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
-            'plot_id' => 'required|array'
+            'plot_id' => 'array' //required|
         ]);
     }
 
