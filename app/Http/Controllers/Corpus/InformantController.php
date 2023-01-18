@@ -159,23 +159,9 @@ class InformantController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
-            'birth_place_id' => 'numeric',
-            'birth_date' => 'numeric',
-        ]);
-//dd($request);        
-        if (!$request['birth_date']) {
-            $request['birth_date'] = NULL;
-        }
-
-        if (!$request['birth_place_id']) {
-            $request['birth_place_id'] = NULL;
-        }
-
+        $data=$this->validateRequest($request);       
         $informant = Informant::find($id);
-        $informant->fill($request->all())->save();
+        $informant->fill($data)->save();
         
         return Redirect::to('/corpus/informant/?search_id='.$informant->id)
             ->withSuccess(\Lang::get('messages.updated_success'));        
