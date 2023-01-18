@@ -84,7 +84,7 @@ class InformantController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
             'birth_place_id' => 'numeric',
-            'birth_date' => 'numeric',
+//            'birth_date' => 'numeric',
         ]);
         
         if (!$request->birth_date) {
