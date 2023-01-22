@@ -104,7 +104,11 @@ return [
                   . '<p>Разрешение <a href="/images/permissions/remshueva.jpg">от Р.П. Ремшуевой</a> на использование текста стихотворения '
                   . '"Ihanko tosieh?" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/vorobey.jpg">от Н.П. Воробей</a> на использование текста произведения '
-                  . '"Olipa kerran koira (ukrainalaini starina)" в проекте ВепКар.</p>',
+                  . '"Olipa kerran koira (ukrainalaini starina)" в проекте ВепКар.</p>'
+                  . '<p>Разрешение <a href="/images/permissions/kiro.jpg">от Карельского института развития образования</a> на использование текстов в учебниках'
+                  . ' в проекте ВепКар.</p>'
+                  . '<p>Разрешение <a href="/images/permissions/ruppieva.jpg">от Е.В. Руппиевой</a> на использование текстов в учебниках'
+                  . ' в проекте ВепКар.</p>',
 //                  . '<p>Разрешение <a href="/images/permissions/balakirev.jpg">от Н.М. Балакирева</a> на использование текста произведений '
 //                  . ' в проекте ВепКар.</p>',
     'our_publications' => '
