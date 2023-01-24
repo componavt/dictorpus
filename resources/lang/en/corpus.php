@@ -21,6 +21,7 @@ return [
     'add-wordform' => 'Add a wordform',
     'annot' => 'Short description',
     'archive_krc' => 'audio archive of ILLH, KarRC RAS',
+    'audio_map_info' => 'The Audio-map of the Baltic-Finnish languages of Karelia and adjacent regions presents fragments of dialectal Veps and Karelian speech.',
     'author' => 'Author',
     'author_removed' => 'Author ":name" is removed successfully.',
     'birth_place' => 'birth place',

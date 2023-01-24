@@ -13,6 +13,7 @@
 
 @section('body')
     @include('widgets.leaflet.map')
+    <p style='margin-top: 20px; font-size: 16px;'>{{ trans('corpus.audio_map_info') }}</p>
 @stop
 
 @section('footScriptExtra')
