@@ -88,7 +88,7 @@ return [
     'permission' => '',
     'publications_about' => '
                     <p><a class="publ-title" href="https://omamedia.ru/news/tutkimus_karjalaiset_tutkijat_ker_v_t_veps_n_ja_karjalan_kielen_puhen_ytteit/">Tutkimus: Karjalaiset tutkijat keräävät vepsän ja karjalan kielen puhenäytteitä</a><br>
-                    Oma mua, January 26, 2023</p>
+                    Omamedia, January 26, 2023</p>
                     
                     <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-11-02_09.pdf">VepKar vaalii vähemmistökieliä</a><br>
                     Marina Tolstyh. Karjalan Sanomat. № 42 (16558), 2022, с. 9.</p>

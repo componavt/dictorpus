@@ -171,7 +171,7 @@ return [
     ',
     'publications_about' => '
                     <p><a class="publ-title" href="https://omamedia.ru/news/tutkimus_karjalaiset_tutkijat_ker_v_t_veps_n_ja_karjalan_kielen_puhen_ytteit/">Tutkimus: Karjalaiset tutkijat keräävät vepsän ja karjalan kielen puhenäytteitä</a><br>
-                    Oma mua, 26 января 2023 г.</p>
+                    Omamedia, 26 января 2023 г.</p>
                     
                     <p><a class="publ-title" href="http://www.krc.karelia.ru/news.php?id=4853">Бубриховские чтения-2022</a><br>
                     КарНЦ РАН, 28 октября 2022 г.</p>
