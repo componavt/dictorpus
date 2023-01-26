@@ -21,6 +21,7 @@
         @include('page.video_1_from_3', ['video' => 'd6DnVDVFwGQ'])
         @include('page.video_1_from_3', ['video' => 'rDTEKEQd7YI'])
         @include('page.video_1_from_3', ['video' => '3DLsfO-c1Hc'])
+        @include('page.video_1_from_3', ['video' => 'tYH611xhZE0'])
     </div>
 </div>
 @endsection
