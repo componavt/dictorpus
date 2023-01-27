@@ -384,7 +384,7 @@ AND t1.word_number-t2.word_number<=|B|;
         
         $out = '';
         if (isset($word['w']) && $word['w']) {
-            $out .= ' and word rlike '.$word['w'];
+            $out .= " and word rlike '".$word['w']."'";
         }
         $search_by_lemma = isset($word['l']) && $word['l'];
         $search_by_grams = isset($word['g']) && sizeof($word['g']);
@@ -426,7 +426,7 @@ AND t1.word_number-t2.word_number<=|B|;
     public static function searchWordsByWordRawForNotChangablePOS($word, $lang_ids=[]) {
         $out = '';
         if (isset($word['w']) && $word['w']) {
-            $out .= ' and word rlike '.$word['w'];
+            $out .= " and word rlike '".$word['w']."'";
         }
 
         $lemma_conds = ['pos_id in ('. join(', ', $word['p']). ')'];
