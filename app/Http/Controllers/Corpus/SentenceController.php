@@ -84,7 +84,7 @@ class SentenceController extends Controller
             $refine = false;
             list($entry_number, $sentence_builder) = Sentence::entryNumber($url_args); // считаем количество вхождений
 //dd($entry_number);   
-//dd(array_unique($sentence_builder->pluck('t1.text_id')));            
+//dd(to_sql($sentence_builder));            
             if ($entry_number>0) {
 //                $texts = Text::searchWithSentences($url_args); // выбираем тексты
                 $texts = Text::whereIn('id', array_unique($sentence_builder->pluck('text1_id')));

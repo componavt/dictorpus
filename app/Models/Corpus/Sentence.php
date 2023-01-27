@@ -278,12 +278,14 @@ $words = [
 //dd(DB::table('tmp_words_1')->count());        
         $builder = DB::table(DB::raw(join(', ', $from)))->select(DB::raw($select));
 //dd(to_sql($builder));            
-        if (sizeof($words)>1) {
+        if ($word_total>1) {
             $builder = $builder->whereRaw('t1.sentence_id=t2.sentence_id');
 //dd($builder->get());            
             $builder = self::searchWordsByNumbers($builder, [2=>$words[sizeof($words)]]);
 //dd(to_sql($builder));            
 //dd($builder->get());            
+        } elseif ($word_total==1 && sizeof($text_ids)) {
+            $builder = $builder->whereIn('t1.text_id', $text_ids);
         }
         $builder = self::searchWordsByWord($builder, 't'.$word_total.'.', $words[$word_total], $lang_ids);
 //dd(to_sql($builder));            
@@ -590,8 +592,7 @@ AND t1.word_number-t2.word_number<=|B|;
      * @return collection
      */
     public static function entryNumber($args) {
-/*        $builder = self::searchWords($args['words'], [], $args['search_lang'])
-                ->whereIn('t1.text_id', Sentence::searchTexts($args));*/
+//dd(Sentence::searchTexts($args));
         $builder = self::searchWords($args['words'], Sentence::searchTexts($args), $args['search_lang']);
 //dd(to_sql($builder));        
 //dd($builder->get());            
