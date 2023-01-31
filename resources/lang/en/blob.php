@@ -87,6 +87,9 @@ return [
                     . '</dl>',
     'permission' => '',
     'publications_about' => '
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-02-01_9.pdf">Liity mukaan puheiden keräämiseen</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 4 (16570), 2023, c. 9.</p>
+                    
                     <p><a class="publ-title" href="https://omamedia.ru/news/tutkimus_karjalaiset_tutkijat_ker_v_t_veps_n_ja_karjalan_kielen_puhen_ytteit/">Tutkimus: Karjalaiset tutkijat keräävät vepsän ja karjalan kielen puhenäytteitä</a><br>
                     Omamedia, January 26, 2023</p>
                     
