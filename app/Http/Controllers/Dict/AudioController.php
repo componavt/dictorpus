@@ -169,4 +169,7 @@ class AudioController extends Controller
               ->withSuccess($result['message']);
     }
     
+    public function editRecordList($informant_id) {
+        
+    }
 }

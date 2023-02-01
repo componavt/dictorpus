@@ -1,7 +1,7 @@
 <?php
         if (isset($args_by_get)) {
             $route .= $args_by_get;
-        } elseif (isset($url_args) && sizeof($url_args)) {
+/*        } elseif (isset($url_args) && sizeof($url_args)) {
             $tmp=[];
             foreach ($url_args as $a=>$v) {
                 if ($v!='') {
@@ -10,7 +10,7 @@
             }
             if (sizeof ($tmp)) {
                 $route .= "?".implode('&',$tmp);
-            }
+            }*/
         }
         if (isset($without_text) && $without_text) {
             $link_text = '';

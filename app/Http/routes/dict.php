@@ -6,6 +6,7 @@ Route::group(
     function()
     {
         Route::post('audio/upload', 'Dict\AudioController@upload');
+        Route::get('audio/record_list/edit/{informant_id}', 'Dict\AudioController@editRecordList');
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
         Route::get('example/create/{meaning_id}', 'Dict\ExampleController@create');        

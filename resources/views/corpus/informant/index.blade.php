@@ -62,11 +62,13 @@
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
-                <td data-th="{{ trans('messages.actions') }}">
+                <td data-th="{{ trans('messages.actions') }}" style="min-width: 130px;">
                     @include('widgets.form.button._edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                              'route' => '/corpus/informant/'.$informant->id.'/edit'])
+                    <a class="btn btn-success btn-xs btn-detail" href="{{ LaravelLocalization::localizeURL('/dict/audio/record_list/edit/'.$informant->id) }}"><i class="fa fa-regular fa-list-ul"></i></a>
+                    
                     @include('widgets.form.button._delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,
