@@ -22,7 +22,6 @@
             </a>
         @endif
         </p>
-        
         @include('corpus.informant._search_form',['url' => '/corpus/informant/']) 
 
         @include('widgets.found_records', ['numAll'=>$numAll])
@@ -51,7 +50,7 @@
                 <td data-th="{{ trans('corpus.birth_year') }}">{{$informant->birth_date}}</td>
                 <td data-th="{{ trans('corpus.birth_place') }}">
                     @if ($informant->birth_place)
-                        {{$informant->birth_place->placeString()}}
+                        {{$informant->birth_place->placeString('',false)}}
                     @endif
                 </td>
                 <td data-th="{{ trans('navigation.texts') }}">
@@ -67,13 +66,17 @@
                             ['is_button'=>true, 
                              'without_text' => 1,
                              'route' => '/corpus/informant/'.$informant->id.'/edit'])
-                    <a class="btn btn-success btn-xs btn-detail" href="{{ LaravelLocalization::localizeURL('/dict/audio/record_list/edit/'.$informant->id) }}"><i class="fa fa-regular fa-list-ul"></i></a>
-                    
+                        
                     @include('widgets.form.button._delete', 
                             ['is_button'=>true, 
                              'without_text' => 1,
                              'route' => 'informant.destroy', 
                              'args'=>['id' => $informant->id]])
+
+                    @if ($informant->lang) 
+                    <a class="btn btn-success btn-xs btn-detail" href="{{ LaravelLocalization::localizeURL('/dict/audio/record_list/'.$informant->id).'/edit' }}">
+                        <i class="fa fa-music"></i></a>
+                    @endif
                 </td>
                 @endif
             </tr>

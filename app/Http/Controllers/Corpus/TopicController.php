@@ -44,10 +44,9 @@ class TopicController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $topics = Topic::search($url_args);
+        $topics = Topic::search($url_args)->get()->sortBy('number_in_genres');
         $numAll = $topics->count();
 
-        $topics = $topics->paginate($this->url_args['limit_num']);
         $corpus_values = Corpus::getList();
         $genre_values = Genre::getList();
         $plot_values = Plot::getList();

@@ -43,10 +43,9 @@ class PlotController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $plots = Plot::search($url_args);
+        $plots = Plot::search($url_args)->get()->sortBy('number_in_genres');        
         $numAll = $plots->count();
 
-        $plots = $plots->paginate($this->url_args['limit_num']);
         $corpus_values = Corpus::getList();
         $genre_values = Genre::getList();
 

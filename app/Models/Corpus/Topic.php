@@ -46,6 +46,13 @@ class Topic extends Model
         return '';
     }
     
+    public function getNumberInGenresAttribute()
+    {    
+        $plot = $this->plots()->first();
+        $genre_num = $plot->genre->numberInList();
+        return $genre_num.'.'.$plot->sequence_number.'.'.$this->sequence_number;
+    }
+    
     /** Gets name by code, takes into account locale.
      * 
      * @return String

@@ -69,6 +69,7 @@ class Audio extends Model
         $audio=Audio::firstOrCreate(['filename'=>$filename]);
         if ($informant_id) {
             $audio->informant_id = $informant_id;
+            $audio->updated_at = date('YYYY-MM-DD hh:mm:ss');
             $audio->save();
         }
         $lemma= Lemma::find($lemma_id);
@@ -80,7 +81,7 @@ class Audio extends Model
                        ->where('lemma', 'like', $lemma->lemma)
                        ->get();
         foreach ($lemmas as $lemma) {
-            if (!$lemma->audios()->count()) {
+            if (!$lemma->audios()->whereInformantId($informant_id)->count()) {
                 $lemma->audios()->attach($audio);
             }
         }        
@@ -106,7 +107,8 @@ class Audio extends Model
         $url_args = url_args($request) + [
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
-                    'search_lemma'   => $request->input('search_lemma'),
+                    'search_lemma'    => $request->input('search_lemma'),
+                    'search_dialect'  => (int)$request->input('search_dialect'),
                 ];
         
         return $url_args;

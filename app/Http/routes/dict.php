@@ -6,7 +6,8 @@ Route::group(
     function()
     {
         Route::post('audio/upload', 'Dict\AudioController@upload');
-        Route::get('audio/record_list/edit/{informant_id}', 'Dict\AudioController@editRecordList');
+        Route::get('audio/record_list/{informant_id}/edit', 'Dict\AudioController@editRecordList');
+        Route::post('audio/record_list/create', 'Dict\AudioController@createRecordList')->name('audio.list.create');
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
         Route::get('example/create/{meaning_id}', 'Dict\ExampleController@create');        
@@ -76,8 +77,8 @@ Route::group(
         Route::get('wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
         
         Route::resource('audio', 'Dict\AudioController',
-                       ['names' => [/*'update' => 'audio.update',
-                                    'store' => 'audio.store',*/
+                       ['names' => ['update' => 'audio.update',
+                                    'store' => 'audio.store',
                                     'destroy' => 'audio.destroy']]);
         
         Route::resource('concept', 'Dict\ConceptController',

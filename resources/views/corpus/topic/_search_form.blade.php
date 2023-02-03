@@ -11,6 +11,18 @@
                  'class'=>'multiple-select-corpus form-control'
             ])
     </div>
+    <div class="col-md-6">
+         @include('widgets.form.formitem._text', 
+                ['name' => 'search_name', 
+                 'title' => trans('corpus.name'),
+                 'value' => $url_args['search_name']])
+    </div>
+    <div class="col-md-2">
+        @include('widgets.form.formitem._text', 
+                ['name' => 'search_id', 
+                'value' => $url_args['search_id'] ? $url_args['search_id'] : '',
+                'title' => 'ID'])
+    </div>
     <div class="col-md-4">
         @include('widgets.form.formitem._select2', 
                 ['name' => 'search_genre', 
@@ -20,7 +32,7 @@
                  'class'=>'multiple-select-genre form-control'
         ])                 
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         @include('widgets.form.formitem._select2', 
                 ['name' => 'search_plot', 
                  'values' => $plot_values,
@@ -29,18 +41,8 @@
                  'class'=>'select-plot form-control'
         ])                 
     </div>
-    <div class="col-md-1">
-        @include('widgets.form.formitem._text', 
-                ['name' => 'search_id', 
-                'value' => $url_args['search_id'] ? $url_args['search_id'] : '',
-                'attributes' => ['placeholder'=>'ID']])
+    <div class="col-md-2" style='text-align:right; padding-top:27px'>
+        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
-    <div class="col-md-7">
-         @include('widgets.form.formitem._text', 
-                ['name' => 'search_name', 
-                'value' => $url_args['search_name'],
-                'attributes' => ['placeholder'=> trans('corpus.name')]])
-    </div>
-    @include('widgets.form._search_div')
 </div>
         {!! Form::close() !!}

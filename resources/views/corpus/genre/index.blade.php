@@ -19,6 +19,7 @@
         @if (User::checkAccess('corpus.edit'))
             </a>
         @endif
+        | <a href="{{ LaravelLocalization::localizeURL('/corpus/plot') }}">{{ trans('navigation.plots') }}</a>
         </p>
         
         @include('corpus.genre._search_form') 

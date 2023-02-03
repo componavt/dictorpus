@@ -56,6 +56,18 @@ class AudioController extends Controller
                         'args_by_get', 'url_args'));
     }
     
+    public function show() {
+        return Redirect::to('/dict/audio/'.($this->args_by_get));
+    }
+    
+    public function update() {
+        return Redirect::to('/dict/audio/'.($this->args_by_get));
+    }
+    
+    public function store() {
+        return Redirect::to('/dict/audio/'.($this->args_by_get));
+    }
+    
     public function recordGroup(string $list) {
         $user = User::currentUser();
         $informant_id = $user ? $user->informant_id : NULL;
@@ -113,6 +125,7 @@ class AudioController extends Controller
 
         if ($request->hasFile('audio')) {*/
             $lemma_id = (int)$request->input('id');
+            
             $lemma = Lemma::find($lemma_id);
             if ($lemma) {
                 $informant_id = $request->input('informant_id');// ? (int)$request->input('informant_id') : NULL;
@@ -170,6 +183,36 @@ class AudioController extends Controller
     }
     
     public function editRecordList($informant_id) {
+        $informant = Informant::find($informant_id);
+        $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();
+        $url_args = $this->url_args;
+        $audios = Audio::whereInformantId($informant_id)->get();
+
+        return view('dict.audio.list.index',
+                compact('audios', 'dialect_values', 'informant', 'url_args'));        
         
+    }
+    
+    public function createRecordList() {
+        $informant = Informant::find($this->url_args['search_informant']);
+        $dialect = $this->url_args['search_dialect'];
+        $lang_id = isset($this->url_args['search_lang'][0]) ? $this->url_args['search_lang'][0] : null;
+        if (!$lang_id) {
+            return null;
+        }
+        $lemmas = Lemma::whereLangId($lang_id);
+        
+        if ($dialect) {
+            $lemmas->whereIn('id', function ($q) use ($dialect) {
+                $q->select('lemma_id')->from('meanings')
+                  ->whereIn('id', function ($q2) use ($dialect) {
+                      $q2->select('meaning_id')->from('dialect_meaning')
+                         ->whereIn('dialect_id', (array)$dialect);
+                  });
+            });
+        }
+        
+        $lemmas = $lemmas->orderBy('lemma')->get();
+//dd($lemmas);        
     }
 }

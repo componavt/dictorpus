@@ -6,6 +6,7 @@
 @stop
 
 @section('headExtra')
+    <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.11.4/css/dataTables.bootstrap.min.css">
     {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/table.css')!!}
 @stop
@@ -19,6 +20,8 @@
         @if (user_corpus_edit())
             </a>
         @endif
+        | <a href="{{ LaravelLocalization::localizeURL('/corpus/plot') }}">{{ trans('navigation.plots') }}</a>
+        | <a href="{{ LaravelLocalization::localizeURL('/corpus/genre') }}">{{ trans('navigation.genres') }}</a></p>
         </p>
         
         @include('corpus.topic._search_form') 
@@ -26,7 +29,7 @@
         @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($numAll)                
-        <table class="table table-striped table-wide wide-md">
+        <table id='topicsTable' class="table table-striped table-wide wide-md">
         <thead>
             <tr>
                 <th>No</th>
@@ -47,11 +50,14 @@
             @endforeach
         </tbody>
         </table>
-        {!! $topics->appends($url_args)->render() !!}
         @endif
 @stop
 
 @section('footScriptExtra')
+    <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.11.4/js/dataTables.bootstrap.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.11.4/sorting/numeric-comma.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.11.4/type-detection/numeric-comma.js"></script>
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/rec-delete-link.js')!!}
     {!!Html::script('js/list_change.js')!!}
@@ -62,6 +68,13 @@
     $(".multiple-select-corpus").select2();
     selectGenre();
     selectPlot();
+    
+    $('#topicsTable').DataTable( {
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.4/i18n/ru.json'
+        },
+        "order": [[ 0, "asc" ]]
+    } );
 @stop
 
 

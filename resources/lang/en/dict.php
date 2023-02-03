@@ -100,6 +100,7 @@ return [
                   'N' => 'Noun group',
                   'V' => 'Verb group'],
     'copy_bases' => 'copy bases from another dialect',
+    'create_list' => 'create a list',
     'create_new_lemma' => 'Create a new lemma',
     'degree' => 'degree of comparison',
     'degrees' => [NULL=> '',
@@ -220,6 +221,7 @@ return [
                     11=> 'attributive',
         ],
     
+    'record_by_informant' => 'Recording by informant',
 //    'reflexive' => 'reflexive',
     'reflexive' => 'reflexive',
     'relation_list' => 'List of semantic relations',

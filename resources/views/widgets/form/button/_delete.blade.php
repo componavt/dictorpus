@@ -13,7 +13,7 @@
         $format .= ' class="btn btn-xs btn-danger"';
     }
 
-    $format .= '><i class="fa fa-trash fa-lg'. (isset($class) ? ' '.$class : ''). '"></i> %s</a>';
+    $format .= '><i class="fa fa-trash fa-lg'. (isset($class) ? ' '.$class : ''). '"></i>%s</a>';
 
     $link = URL::route($route, $args);
     $token = csrf_token();
@@ -24,4 +24,4 @@
         $title = \Lang::get('messages.delete');
     }
 
-    print sprintf($format, $link, $token, $title, $title);
+    print sprintf($format, $link, $token, $title, $title ? ' '.$title : '');

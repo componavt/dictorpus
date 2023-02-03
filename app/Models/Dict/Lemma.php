@@ -617,6 +617,7 @@ class Lemma extends Model
     }   
     
     public function remove() {
+        $this-> audios()->detach();
         $this-> wordforms()->detach();
         $this-> labels()->detach();
         $this-> phraseLemmas()->detach();

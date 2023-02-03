@@ -38,6 +38,11 @@ class Plot extends Model
     use \App\Traits\Methods\getNameAttribute;
     use \App\Traits\Methods\getNameByID;
     
+    public function getNumberInGenresAttribute()
+    {    
+        return $this->genre->numberInList().'.'.$this->sequence_number;
+    }
+    
     /** Gets list of objects
      * 
      * @return Array [1=>'Bridal laments',..]
@@ -50,7 +55,7 @@ class Plot extends Model
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
         
-        $objs = self::orderBy('name_'.$locale);//orderBy('sequence_number')->
+        $objs = self::orderBy('name_'.$locale);
         $objs = self::searchById($objs, $url_args['search_id']);
         $objs = self::searchByName($objs, $url_args['search_name']);
         $objs = self::searchByGenres($objs, $url_args['search_genre']);

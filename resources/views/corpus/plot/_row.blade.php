@@ -1,5 +1,5 @@
             <tr>
-                <td data-th="No">{{ $list_count }}</td>
+                <td data-th="No">{{ $plot->number_in_genres }}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$plot->name_ru}}</td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$plot->name_en}}</td>
                 @if (!$url_args['search_genre'])

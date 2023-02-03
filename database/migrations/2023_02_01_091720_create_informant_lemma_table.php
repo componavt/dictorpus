@@ -12,7 +12,15 @@ class CreateInformantLemmaTable extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('informant_lemma', function (Blueprint $table) {
+            $table->unsignedSmallInteger('informant_id');
+            $table->foreign('informant_id')->references('id')->on('informants');
+            
+            $table->unsignedInteger('lemma_id');
+            $table->foreign('lemma_id')->references('id')->on('lemmas');
+            
+            $table->primary(['informant_id', 'lemma_id']);
+        });
     }
 
     /**
@@ -22,6 +30,6 @@ class CreateInformantLemmaTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('informant_lemma');
     }
 }

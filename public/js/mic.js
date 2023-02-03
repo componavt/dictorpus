@@ -74,6 +74,7 @@ function startRecord(lemma_id, informant_id, url, token)
 
 function saveRecord(voiceBlob, lemma_id, informant_id, url, token) {
     console.log("Сохраняем запись");
+    console.log("lemma_id:"+lemma_id+", informant_id:"+informant_id);
     let fd = new FormData();
     fd.append('id', lemma_id);
     fd.append('informant_id', informant_id);

@@ -31,6 +31,25 @@ class Informant extends Model
     // Methods
     use \App\Traits\Methods\getNameAttribute;
     
+    public function getDialectsAttribute() {
+        $birth_place = $this->birth_place;
+        if (!$birth_place) {
+            return null;
+        }
+        
+        return $birth_place->dialects;        
+    }
+
+    public function getLangAttribute() {
+        $dialects = $this->dialects;
+        
+        if (!isset($dialects[0])) {
+            return null;
+        }
+        
+        return $dialects[0]->lang;        
+    }
+
     /** Gets place, takes into account locale.
      * 
      * Informant belongs_to Place
@@ -129,6 +148,7 @@ class Informant extends Model
         return Place::find($this->birth_place_id)
                             ->placeString($lang_id, $all_place_names, $link);
     }    
+    
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
         $informants = self::orderBy('name_'.$locale);  

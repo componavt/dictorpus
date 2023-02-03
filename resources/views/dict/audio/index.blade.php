@@ -65,15 +65,16 @@
         </table>
             {!! $audios->appends($url_args)->render() !!}
         @endif
-    </div>
 @stop
 
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/essential_audio.js')!!}
+    {!!Html::script('js/rec-delete-link.js')!!}
 @stop
 
 @section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}');
     $(".multiple-select-lang").select2();
 @stop
 
