@@ -66,6 +66,7 @@ return [
     'total' => 'total',
     'translation' => 'Translation',
     'type' => 'Type',
+    'updated_at' => 'updated',
     'updated_success' => 'Successfully updated',
     'view' => 'view',
     'year' => 'year',

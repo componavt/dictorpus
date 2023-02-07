@@ -184,6 +184,9 @@ class AudioController extends Controller
     
     public function editRecordList($informant_id) {
         $informant = Informant::find($informant_id);
+        if (!$informant || !sizeof($informant->dialects)) {
+            return Redirect::to('/corpus/informant/');            
+        }
         $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();
         $url_args = $this->url_args;
         $audios = Audio::whereInformantId($informant_id)->get();

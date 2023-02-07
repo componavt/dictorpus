@@ -60,6 +60,13 @@
                                 <a href="https://play.google.com/store/apps/details?id=vepkar.test"><img src="/images/google_play.png"></a>
                                 <div>{!!trans('blob.mobile-b')!!}</div>
                             </div>
+                            
+                            <div class="block-list" style="margin-top: 20px;">
+                            <p class="full-list">
+                                <a href="https://vk.com/speechvepkar
+                                   ">Марафон записей вепсской и карельской речи</a>
+                            </p>
+                            </div>
                             @endif
                         </div>
                     </div>

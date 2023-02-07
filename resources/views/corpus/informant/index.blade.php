@@ -73,10 +73,10 @@
                              'route' => 'informant.destroy', 
                              'args'=>['id' => $informant->id]])
 
-                    @if ($informant->lang) 
+{{--                    @if ($informant->lang) 
                     <a class="btn btn-success btn-xs btn-detail" href="{{ LaravelLocalization::localizeURL('/dict/audio/record_list/'.$informant->id).'/edit' }}">
                         <i class="fa fa-music"></i></a>
-                    @endif
+                    @endif --}}
                 </td>
                 @endif
             </tr>

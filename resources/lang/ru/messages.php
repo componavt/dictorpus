@@ -68,6 +68,7 @@ return [
     'total' => 'всего',
     'translation' => 'Перевод',
     'type' => 'Тип',
+    'updated_at' => 'изменено',
     'updated_success' => 'Обновление завершено',
     'view' => 'показать',
     'year' => 'год',

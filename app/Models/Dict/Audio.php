@@ -69,7 +69,7 @@ class Audio extends Model
         $audio=Audio::firstOrCreate(['filename'=>$filename]);
         if ($informant_id) {
             $audio->informant_id = $informant_id;
-            $audio->updated_at = date('YYYY-MM-DD hh:mm:ss');
+            $audio->updated_at = date('Y-m-d H:i:s');
             $audio->save();
         }
         $lemma= Lemma::find($lemma_id);
@@ -115,7 +115,7 @@ class Audio extends Model
     }
     
     public static function search(Array $url_args) {
-        $recs = self::orderBy('created_at', 'DESC');        
+        $recs = self::orderBy('updated_at', 'DESC');        
         $recs = self::searchByInformant($recs, $url_args['search_informant']);
         $recs = self::searchByLangOrLemma($recs, $url_args['search_lang'], $url_args['search_lemma']);
 //dd($texts->toSql());                                

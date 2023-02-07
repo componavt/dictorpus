@@ -26,7 +26,7 @@
                 <th>No</th>
                 <th>{{ trans('dict.lemmas') }}</th>
                 <th>{{ trans('dict.speaker') }}</th>
-                <th>{{ trans('messages.created_at') }}</th>
+                <th>{{ trans('messages.updated_at') }}</th>
                 <th>{{ trans('messages.actions') }}</th>
             </tr>
         </thead>
@@ -44,8 +44,8 @@
                 <td data-th="{{ trans('dict.speaker') }}">
                     {{$audio->informant ? $audio->informant->name : ''}}
                 </td>
-                <td data-th="{{ trans('messages.created_at') }}">
-                    {{$audio->created_at}}
+                <td data-th="{{ trans('messages.updated_at') }}">
+                    {{$audio->updated_at}}
                 </td>
                 <td data-th="{{ trans('messages.actions') }}">
                     <div class='audio-button'>
