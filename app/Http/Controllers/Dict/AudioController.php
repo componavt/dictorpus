@@ -194,7 +194,9 @@ class AudioController extends Controller
         }
         $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();
         $url_args = $this->url_args;
-        $audios = Audio::whereInformantId($informant_id)->take(1)->get();
+        $audios = Audio::whereInformantId($informant_id)
+                ->take(1)
+                ->get();
 
         return view('dict.audio.list.index',
                 compact('audios', 'dialect_values', 'informant', 'url_args'));        
