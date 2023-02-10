@@ -70,7 +70,11 @@ class Audio extends Model
         if (!$audio) {
             $audio=Audio::firstOrCreate(['filename'=>$filename]);
         }
-        $audio->filename = $filename; 
+        $oldname = $audio->filename;
+        if ($oldname != $filename) {
+            $audio->filename = $filename; 
+            Storage::disk('audios')->delete($oldname);
+        }
         if ($informant_id) {
             $audio->informant_id = $informant_id;
         }
