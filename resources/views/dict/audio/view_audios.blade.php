@@ -1,5 +1,5 @@
 @foreach ($lemma->audios as $audio)
-        @include('widgets.audio_simple', ['route'=>$audio->url()])
+        @include('widgets.audio_simple', ['route'=>$audio->url(), 'autoplay'=>$audio->informant_id == $informant_id])
         <div style="position: relative">
             <i id='audio-{{$audio->id}}' class="fa fa-info-circle fa-lg audio-info-caller" aria-hidden="true"></i>
             <div id='info-audio-{{$audio->id}}' class='audio-info'>

@@ -38,7 +38,7 @@
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td>
                 @foreach ($lemma->getAudioUrls() as $audio_url)
-                        @include('widgets.audio_simple', ['route'=>$audio_url])
+                        @include('widgets.audio_decor', ['route'=>$audio_url])
                 @endforeach
                 </td>
                 <td data-th="{{ trans('dict.lemma') }}">

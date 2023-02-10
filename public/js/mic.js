@@ -4,24 +4,26 @@ let isRecordingInProgress = false,
 	url = "/ru/dict/audio/upload",
         mediaRecorder,
         voiceBlob;
-function recordAudio(lemma_id, informant_id, token) {
-    $(".record-audio").on("click touchend", function(){
-        startRecord(lemma_id, informant_id, url, token);
+function recordAudio(informant_id, token) {
+    $(".record-audio").on("click touchend", function(e){
+        let lemma_id=$(this).data('id');
+        e.preventDefault();
+        startRecord(lemma_id, informant_id, token);
     });
 }
 
-function startRecord(lemma_id, informant_id, url, token)
+function startRecord(lemma_id, informant_id, token)
 {
     if (isRecordingInProgress) {
         console.log("Останавливаем запись...");
         isRecordingInProgress = false;
-        $(".record-audio").removeClass('record-in-process');
+        $("#record-audio-"+lemma_id).removeClass('record-in-process');
         mediaRecorder.stop();
         
     } else {
         console.log("Начинаем записывать");
         isRecordingInProgress = true;
-        $(".record-audio").addClass('record-in-process')
+        $("#record-audio-"+lemma_id).addClass('record-in-process')
 
         navigator.mediaDevices.getUserMedia({ audio: true})
                 .then(stream => {
@@ -33,7 +35,7 @@ function startRecord(lemma_id, informant_id, url, token)
                     type: 'audio/wav'
                 });
                 const audioUrl = URL.createObjectURL(voiceBlob);
-                recordedAudio = new Audio(audioUrl);
+                let recordedAudio = new Audio(audioUrl);
                 recordedAudio.name = "player";
                 recordedAudio.controls = false;
 
@@ -57,10 +59,10 @@ function startRecord(lemma_id, informant_id, url, token)
                         }
                     }
                 });
-                loadPlayer(voiceBlob);
-                if (confirm("Записать аудио?")) {
-                    saveRecord(voiceBlob, lemma_id, informant_id, url, token);
-                }
+//                loadPlayer(voiceBlob, lemma_id);
+//                if (confirm("Записать аудио?")) {
+                    saveRecord(voiceBlob, lemma_id, informant_id, token);
+//                }
             });
 
             mediaRecorder.addEventListener("dataavailable",function(event) {
@@ -72,14 +74,16 @@ function startRecord(lemma_id, informant_id, url, token)
     }
 }
 
-function saveRecord(voiceBlob, lemma_id, informant_id, url, token) {
+function saveRecord(voiceBlob, lemma_id, informant_id, token) {
+    let allAudios=$("#audios-"+lemma_id).data('all-audios');
     console.log("Сохраняем запись");
-    console.log("lemma_id:"+lemma_id+", informant_id:"+informant_id);
+    console.log("lemma_id:"+lemma_id+", informant_id:"+informant_id+", allAudios:"+allAudios);
     let fd = new FormData();
     fd.append('id', lemma_id);
     fd.append('informant_id', informant_id);
     fd.append('_token', token);
     fd.append('audio', voiceBlob);
+    fd.append('all_audios', allAudios);
     
     $.ajax({
         url: url, 
@@ -88,7 +92,10 @@ function saveRecord(voiceBlob, lemma_id, informant_id, url, token) {
         processData: false,
         contentType: false,
         success: function(result){
-//            $("#audios").append(result);
+            $("#audios-"+lemma_id).html(result);
+//            $("#audios-"+lemma_id).play();
+            $("#date-"+lemma_id).html($('#update-'+lemma_id).val());
+            $("#row-"+lemma_id).css('background','rgb(207, 243, 193)');
         }
     }); 
     
@@ -98,11 +105,14 @@ function saveRecord(voiceBlob, lemma_id, informant_id, url, token) {
     oReq.onload = function (oEvent) {
     };*/
 }
-function loadPlayer(audioBlob) {
+function loadPlayer(audioBlob, lemma_id) {
     const audioUrl = URL.createObjectURL(audioBlob);
     var audio = document.createElement('audio');
     audio.src = audioUrl;
     audio.controls = true;
     audio.autoplay = true;
-    $('#new-audio').html(audio);
+    var c = document.createAttribute("class");
+    c.value = "simple";
+    audio.setAttributeNode(c);
+    $('#new-audio-'+lemma_id).html(audio);
 }

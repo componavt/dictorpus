@@ -11,6 +11,7 @@
     {!!Html::style('css/essential_audio_circle.css')!!}
     {!!Html::style('css/essential_audio_circle_mini.css')!!}
     {!!Html::style('css/lemma.css')!!}
+    {!!Html::style('css/mic.css')!!}
 @stop
 
 @section('body')        
@@ -23,7 +24,7 @@
     @if ($informant->lang)
     <p><b>{{trans('dict.lang')}}</b>: {{$informant->lang->name}}</p>
     @endif
-    
+
     @include('dict.audio.list._create_list')
     @include('dict.audio.list._show_list')
     
@@ -39,11 +40,13 @@
 @stop
 
 @section('jqueryFunc')
+    recordAudio('{{$informant->id}}', '{{ csrf_token() }}');
+    
     $('#audiosTable').DataTable( {
         language: {
             url: '//cdn.datatables.net/plug-ins/1.11.4/i18n/ru.json'
         },
         "order": [[ 0, "asc" ]]
-    } );
+    } );    
 @stop
 

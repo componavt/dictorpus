@@ -49,7 +49,7 @@
                 </td>
                 <td data-th="{{ trans('messages.actions') }}">
                     <div class='audio-button'>
-                @include('widgets.audio_simple', ['route'=>$audio->url()])
+                @include('widgets.audio_decor', ['route'=>$audio->url()])
                     </div>
                 @if (User::checkAccess('dict.edit'))
                     @include('widgets.form.button._delete', 

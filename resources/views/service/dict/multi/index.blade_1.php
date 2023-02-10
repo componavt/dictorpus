@@ -53,7 +53,7 @@
                 </td> --}}
                 <td data-th="{{ trans('dict.listen') }}">
 @foreach ($lemma['audios'] as $audio_url)
-        @include('widgets.audio_simple', ['route'=>$audio_url])
+        @include('widgets.audio_decor', ['route'=>$audio_url])
 @endforeach
                 </td>
                 <td data-th="{{ trans('messages.actions') }}" style="text-align:center">

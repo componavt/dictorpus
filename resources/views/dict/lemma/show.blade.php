@@ -70,7 +70,7 @@
     });
     
     @if (User::checkAccess('dict.edit'))
-    recordAudio({{$lemma->id}}, {{$informant_id}}, '{{ csrf_token() }}');
+    recordAudio('{{$informant_id}}', '{{ csrf_token() }}');
     @endif
 @stop
 

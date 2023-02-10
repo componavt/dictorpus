@@ -124,19 +124,24 @@ class AudioController extends Controller
                ]);
 
         if ($request->hasFile('audio')) {*/
+        $all_audios = $request->input('all_audios');
             $lemma_id = (int)$request->input('id');
             
             $lemma = Lemma::find($lemma_id);
             if ($lemma) {
                 $informant_id = $request->input('informant_id');// ? (int)$request->input('informant_id') : NULL;
-                $fileName = $lemma_id.'_'.$informant_id.'.wav';
+                $fileName = $lemma_id.'_'.$informant_id.'_'.date('Y-m-d-H-i-s').'.wav';
                 $request->file('audio')->move(Storage::disk('audios')->getAdapter()->getPathPrefix(), $fileName);
 
                 Audio::addAudioFileToLemmas($fileName, $lemma_id, $informant_id);
+                if (!$all_audios) {
+                    $audio = $lemma->audios()->whereInformantId($informant_id)->first();
+                    return view('widgets.audio_simple', ['route' => $audio->url(), 'autoplay'=>true]).
+                           '<input type="hidden" id="update-'.$lemma_id.'" value="'.$audio->updated_at.'">';            
+                }
+                return view('dict.audio.view_audios', compact('informant_id', 'lemma'));        
             }
 //        }
-        return view('dict.audio.view_audios',
-                compact('lemma'));        
     }
     
     /**
@@ -189,7 +194,7 @@ class AudioController extends Controller
         }
         $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();
         $url_args = $this->url_args;
-        $audios = Audio::whereInformantId($informant_id)->get();
+        $audios = Audio::whereInformantId($informant_id)->take(1)->get();
 
         return view('dict.audio.list.index',
                 compact('audios', 'dialect_values', 'informant', 'url_args'));        

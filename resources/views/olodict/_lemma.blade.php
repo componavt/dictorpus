@@ -2,7 +2,7 @@
 <h2>
     {{ucfirst($lemma->lemma)}}
     @if ($lemma->audios->first())
-        @include('widgets.audio_simple', ['route'=>$lemma->audios->first()->url()])
+        @include('widgets.audio_decor', ['route'=>$lemma->audios->first()->url()])
     @endif
 </h2>
     
@@ -55,7 +55,7 @@
         @foreach ($phrases as $ph_lemma) 
         <div class="lemma-phrase">
             @if ($ph_lemma->audios()->count())
-                @include('widgets.audio_simple', ['route'=>$ph_lemma->audios()->first()->url()])
+                @include('widgets.audio_decor', ['route'=>$ph_lemma->audios()->first()->url()])
             @endif
             <span class='imp'>{{$ph_lemma->lemma}}</span> 
                 - {{$ph_lemma->phraseMeaning()}}

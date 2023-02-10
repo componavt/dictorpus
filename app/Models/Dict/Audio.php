@@ -65,13 +65,18 @@ class Audio extends Model
         return $urls;
     }
     
-    public static function addAudioFileToLemmas(string $filename, int $lemma_id, $informant_id=NULL) {        
-        $audio=Audio::firstOrCreate(['filename'=>$filename]);
+    public static function addAudioFileToLemmas(string $filename, int $lemma_id, $informant_id=NULL) {   
+        $audio = Audio::where('filename', 'rlike', '^'.$lemma_id.'\_'.$informant_id.'[_.]')->first();
+        if (!$audio) {
+            $audio=Audio::firstOrCreate(['filename'=>$filename]);
+        }
+        $audio->filename = $filename; 
         if ($informant_id) {
             $audio->informant_id = $informant_id;
-            $audio->updated_at = date('Y-m-d H:i:s');
-            $audio->save();
         }
+        $audio->updated_at = date('Y-m-d H:i:s');
+        $audio->save();
+        
         $lemma= Lemma::find($lemma_id);
         if (!$lemma) {
             return;

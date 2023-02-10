@@ -32,14 +32,14 @@
         </p>
         @endif
     </div>
-    <div style='display: flex; align-content: flex-end; flex-direction: row'>
-        <div id="audios">
+    <div class="lemma-audio-b">
+        <div id="audios-{{$lemma->id}}" data-all-audios='1'>
         @include('dict.audio.view_audios')
         </div>
         @if (User::checkAccess('dict.edit'))
-        <div style="text-align: right">
-            <i class="fa fa-microphone record-audio record-stop"></i>
-            <div id="new-audio"></div>
+        <div style="text-align: right; padding-left:20px;">
+            <i id="record-audio-{{$lemma->id}}" class="fa fa-microphone record-audio record-stop" data-id="{{$lemma->id}}"></i>
+            <div id="new-audio-{{$lemma->id}}" class='audio-player' style="margin-top:20px;"></div>
         </div>
         @endif
     </div>

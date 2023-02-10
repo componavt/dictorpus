@@ -63,13 +63,30 @@
     cursor: pointer;
 }
 
+.record-button {
+    display: inline-block;
+}
+
+.record-button .record-audio {
+    font-size:19px;
+}
+
 .record-in-process {
     color:red;
 }
 
-#audios {
-    padding-right: 20px;
+audio.simple {
+    width: 50px;
+    border-radius: 25px; 
+    height: 20px;
 }
-#new-audio audio {
-    width: 150px;
+
+.lemma-audio-b {
+    align-content: flex-end; 
+    display: flex; 
+    flex-direction: row;
+}
+
+.lemma-audio-b audio.simple {
+    height: 40px;
 }

@@ -4,13 +4,14 @@
             <tr>
                 <th>{{ trans('dict.lemmas') }}</th>
                 <th>{{ trans('dict.interpretation') }}</th>
+                <th>{{ trans('messages.updated_at') }}</th>
                 <th>{{ trans('messages.actions') }}</th>
             </tr>
         </thead>
         <tbody>
             @foreach($audios as $audio)
                 @foreach($audio->lemmas as $index=>$lemma)
-            <tr>
+            <tr id="row-{{$lemma->id}}">
                 <td data-th="{{ trans('dict.lemmas') }}">
                     <a href="{{ LaravelLocalization::localizeURL('dict/lemma/'.$lemma->id) }}">
                         {{$lemma->lemma}}<br>
@@ -21,9 +22,12 @@
                         {{$meaning_string}}<br>
                     @endforeach
                 </td>
+                <td data-th="{{ trans('messages.updated_at') }}" id="date-{{$lemma->id}}">
+                    {{$audio->updated_at}}
+                </td>
                 <td data-th="{{ trans('messages.actions') }}">
             @if ($index==0)
-                    <div class='audio-button'>
+                    <div id="audios-{{$lemma->id}}" class='audio-button' data-all-audios='0'>
                 @include('widgets.audio_simple', ['route'=>$audio->url()])
                     </div>
                 @include('widgets.form.button._delete', 
@@ -31,8 +35,12 @@
                           'without_text' => true,
                           'route' => 'audio.destroy', 
                           'args'=>['id' => $audio->id]])
-                <i class="fa fa-microphone record-audio record-stop fa-lg" 
-                   onClick="startRecord({{$lemma->id}}, {{$informant->id}}, '/ru/dict/audio/upload', '{{ csrf_token() }}')"></i>
+                    <div class='record-button'>                  
+                        <i id="record-audio-{{$lemma->id}}" 
+                           class="fa fa-microphone record-audio record-stop fa-lg" 
+                           data-id="{{$lemma->id}}"></i>
+                    </div>
+                    <div id="new-audio-{{$lemma->id}}" class="audio-player"></div>
             @endif
                 </td>
             </tr>
