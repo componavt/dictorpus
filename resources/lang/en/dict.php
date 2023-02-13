@@ -22,7 +22,7 @@ return [
                     4 => 'direction',
                     3 => 'location',
                     1 => 'manner',
-                    7 => 'measures and degrees',
+                    8 => 'measures and degrees',
                     6 => 'modal nature',
                     5 => 'quantity or degree',
                     2 => 'state',
