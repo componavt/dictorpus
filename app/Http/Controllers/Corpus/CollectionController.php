@@ -40,6 +40,7 @@ class CollectionController extends Controller
                                 $q->select('text_id')->from('genre_text')
                                   ->whereIn('genre_id', $genre_arr);
                             })->count();
+                            
             return view('corpus.collection.'.$id.'.index',
                     compact('dialects', 'genres', 'id', 'lang_id', 'text_count'));
         }

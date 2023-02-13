@@ -7,6 +7,7 @@ use LaravelLocalization;
 
 use App\Library\Str;
 
+use App\Models\Corpus\Collection;
 use App\Models\Dict\Lang;
 
 class Genre extends Model
@@ -130,7 +131,24 @@ class Genre extends Model
         
         return $list;         
     }
+    
+    /**
+     * 
+     * @param int $collection_id
+     * @return Builder
+     */
+    public function collectionTexts($collection_id) {
+        $lang_id = Collection::getCollectionLangs($collection_id);
+        $genre_id = $this->id;
+        return Text::whereIn('lang_id', $lang_id)
+                          ->whereIn('id', function ($q) use ($genre_id) {
+                            $q->select('text_id')->from('genre_text')
+                              ->whereGenreId($genre_id);
+                        });
         
+    }
+
+
     /**
      * count the number of texts of genres and group by language
      * 

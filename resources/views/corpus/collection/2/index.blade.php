@@ -1,3 +1,4 @@
+<?php $collection_id = 2; ?>
 @extends('layouts.page')
 
 @section('page_title')
@@ -14,7 +15,7 @@
     <p><b>{{trans('collection.total_count')}}:</b> {{$text_count}}</p>
 
     @foreach ($genres as $genre)
-    <h3>{{$genre->name_pl}}</h3>
+    <h3>{{$genre->name_pl}} ({{$genre->collectionTexts($collection_id)->count()}})</h3>
     <ul>
         @foreach ($genre->plots as $plot)
             @if ($plot->texts->count())
