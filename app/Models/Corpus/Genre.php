@@ -50,7 +50,7 @@ class Genre extends Model
     
     public function children()
     {
-        return $this->hasMany(Genre::class, 'id', 'parent_id');
+        return $this->hasMany(Genre::class, 'parent_id', 'id');
     }
     
     public function getNamePlAttribute() : String
