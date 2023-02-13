@@ -15,6 +15,7 @@ Route::group(
         Route::get('for_speech', 'Library\ExportController@forSpeech');        
         Route::get('lemma_with_pos', 'Library\ExportController@exportLemmasWithPOS');
         Route::get('multidict', 'Library\ExportController@multidict');                
+        Route::get('multidict_without_concepts', 'Library\ExportController@multidictWithoutConcepts');                
         Route::get('sentences', 'Library\ExportController@exportSentencesToLines');                
         Route::get('unimorph', 'Library\ExportController@exportLemmasToUniMorph'); 
     });

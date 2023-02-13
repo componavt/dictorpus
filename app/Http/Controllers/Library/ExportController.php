@@ -372,4 +372,27 @@ class ExportController extends Controller
         }
         print "done.";
     }
+    
+    public function multidictWithoutConcepts () {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        $lang_id=5; // livvic
+        $label_id = 3; // for multimedia dictionary
+        $lemmas = Lemma::whereLangId($lang_id)
+            ->whereIn('lemmas.id', function ($q) use ($label_id) {
+                $q->select('lemma_id')->from('label_lemma')
+                  ->whereLabelId($label_id);
+            })->get();        
+        $filename = 'export/multidict_without_concepts.csv';
+        Storage::disk('public')->put($filename, "ID\tлемма");
+        foreach ($lemmas as $lemma) {
+            $meanings = [];
+            foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) {
+                $meanings[] = $meaning_string;
+            }
+
+            Storage::disk('public')->append($filename, $lemma->id."\t".$lemma->lemma."\t\"".join("\n",$meanings).'"');
+        }
+        print "done.";
+    }
 }
