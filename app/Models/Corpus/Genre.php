@@ -50,7 +50,26 @@ class Genre extends Model
     
     public function children()
     {
-        return $this->hasMany(Genre::class, 'parent_id', 'id');
+        return $this->hasMany(Genre::class, 'parent_id', 'id')
+                ->orderBy('sequence_number');
+    }
+    
+    public function getSubGenres() {
+        $out = [];
+        foreach ($this->children as $genre) {
+            $out[] = $genre;
+            $out = array_merge($out, $genre->getSubGenres());
+        }
+        return $out;
+    }
+    
+    public function getSubGenreIds() {
+        $out = [];
+        foreach ($this->children as $genre) {
+            $out[] = $genre->id;
+            $out = array_merge($out, $genre->getSubGenreIds());
+        }
+        return $out;
     }
     
     public function getNamePlAttribute() : String
@@ -139,11 +158,11 @@ class Genre extends Model
      */
     public function collectionTexts($collection_id) {
         $lang_id = Collection::getCollectionLangs($collection_id);
-        $genre_id = $this->id;
+        $genre_ids = array_merge([$this->id],$this->getSubGenreIds());
         return Text::whereIn('lang_id', $lang_id)
-                          ->whereIn('id', function ($q) use ($genre_id) {
+                          ->whereIn('id', function ($q) use ($genre_ids) {
                             $q->select('text_id')->from('genre_text')
-                              ->whereGenreId($genre_id);
+                              ->whereIn('genre_id',$genre_ids);
                         });
         
     }

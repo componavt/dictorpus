@@ -31,7 +31,8 @@ class CollectionController extends Controller
             } else {
                 $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
                            ->orderBy('sequence_number')->get();
-                $genre_arr = $genres->pluck('id')->toArray();
+                $genre_arr = Genre::find(Collection::getCollectionGenres($id))
+                        ->getSubGenreIds();
             }
             $lang_id = Collection::getCollectionLangs($id);
             $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
@@ -40,7 +41,7 @@ class CollectionController extends Controller
                                 $q->select('text_id')->from('genre_text')
                                   ->whereIn('genre_id', $genre_arr);
                             })->count();
-                            
+
             return view('corpus.collection.'.$id.'.index',
                     compact('dialects', 'genres', 'id', 'lang_id', 'text_count'));
         }
