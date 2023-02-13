@@ -16,8 +16,13 @@
         </div>
         @endif
         
-        @if ($text->plotsToString())
+        @if (sizeof($text->plotsToArray())==1)
         <b>{{trans('corpus.plot')}}:</b> <i>{!! $text->plotsToString('/corpus/text?search_plot=') !!}</i></p>
+        @elseif (sizeof($text->plotsToArray())>1)
+        <div class="topic-list">
+            <p class="topic-list-title">{{trans('navigation.plots')}}:</p>
+            {!! join("<br>\n", $text->plotsToArray('/corpus/text?search_plot=')) !!}
+        </div>
         @endif
         
         @if (sizeof($text->topicsToArray()))

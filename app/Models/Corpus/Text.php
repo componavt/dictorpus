@@ -1927,17 +1927,12 @@ dd($s->saveXML());
         return join(', ', $out);*/
     }
     
+    public function plotsToArray($link=null) {
+        return $this->relationsToArr('plots', $link);
+    }
+    
     public function plotsToString($link=null) {
         return $this->relationsToString('plots', $link);
-/*        $out = [];
-        foreach ($this->plots as $plot) {
-            $name = $plot->name;
-            if ($link) {
-                $name = to_link($name, $link.$plot->id);
-            }
-            $out[] = $name;
-        }
-        return join(', ', $out);*/
     }
     
     public function motivesToString($link=null, $div='<br>', $with_code=false) {
@@ -1962,26 +1957,9 @@ dd($s->saveXML());
     
     public function cyclesToString($link=null) {
         return $this->relationsToString('cycles', $link);
-/*        $out = [];
-        foreach ($this->cycles as $cycle) {
-            $name = $cycle->name;
-            if ($link) {
-                $name = to_link($name, $link.$cycle->id);
-            }
-            $out[] = $name;
-        }
-        return join(', ', $out);*/
     }
     
     public function topicsToArray($link=null) {
-        $out = [];
-        foreach ($this->topics as $topic) {
-            $name = $topic->name;
-            if ($link) {
-                $name = to_link($name, $link.$topic->id);
-            }
-            $out[] = $name;
-        }
-        return $out;
+        return $this->relationsToArr('topics', $link);
     }
 }
