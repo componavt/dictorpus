@@ -12,12 +12,13 @@ use DB;
 
 use App\Library\Export;
 
-use App\Models\Dict\Concept;
 use App\Models\Corpus\Text;
+use App\Models\Dict\Concept;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -365,7 +366,7 @@ class ExportController extends Controller
         ini_set('memory_limit', '512M');
         $concepts = Concept::whereNull('wiki_photo')
                         ->orWhere('wiki_photo','')->get();
-        $filename = 'export/conceps_without_images.csv';
+        $filename = 'export/concepts_without_images.csv';
         Storage::disk('public')->put($filename, "ID\tпонятие");
         foreach ($concepts as $concept) {
             Storage::disk('public')->append($filename, $concept->id."\t".$concept->text_ru);
@@ -378,20 +379,29 @@ class ExportController extends Controller
         ini_set('memory_limit', '512M');
         $lang_id=5; // livvic
         $label_id = 3; // for multimedia dictionary
-        $lemmas = Lemma::whereLangId($lang_id)
-            ->whereIn('lemmas.id', function ($q) use ($label_id) {
-                $q->select('lemma_id')->from('label_lemma')
-                  ->whereLabelId($label_id);
-            })->get();        
-        $filename = 'export/multidict_without_concepts.csv';
-        Storage::disk('public')->put($filename, "ID\tлемма");
-        foreach ($lemmas as $lemma) {
-            $meanings = [];
-            foreach ($lemma->getMultilangMeaningTexts() as $meaning_string) {
-                $meanings[] = $meaning_string;
-            }
+        $meanings = Meaning::whereIn('lemma_id', function ($q) use ($lang_id) {
+                        $q->select('id')->from('lemmas')
+                          ->whereLangId($lang_id);
+                    })->whereIn('lemma_id', function ($q) use ($label_id) {
+                        $q->select('lemma_id')->from('label_lemma')
+                          ->whereLabelId($label_id);
+                    })->whereNotIn('id', function ($q) {
+                        $q->select('meaning_id')->from('concept_meaning');
+                    })->orderBy('lemma_id')
+                    ->orderBy('meaning_n')
+                    ->get();
 
-            Storage::disk('public')->append($filename, $lemma->id."\t".$lemma->lemma."\t\"".join("\n",$meanings).'"');
+        $filename = 'export/multidict_without_concepts.csv';
+        Storage::disk('public')->put($filename, "ID\tлемма\tN\tзначение");
+        $lang_ru = Lang::where('code','ru')->first()->id;
+        foreach ($meanings as $meaning) {
+            $meaning_text = $meaning->meaningTexts()->where('lang_id',$lang_ru)->first();
+            if (!$meaning_text) {
+                dd('Пустое '.$meaning->meaning_n.' значение '.$meaning->id.' у леммы '.$meaning->lemma_id);
+// select lemma_id, meaning_n from meanings where id not in (select meaning_id from meaning_texts where lang_id=2) and lemma_id in (select id from lemmas where lang_id=5);                                
+            }
+            Storage::disk('public')->append($filename, $meaning->lemma_id."\t".$meaning->lemma->lemma."\t".
+                    $meaning->meaning_n."\t".$meaning_text->meaning_text);
         }
         print "done.";
     }
