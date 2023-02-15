@@ -184,6 +184,8 @@ class UserController extends Controller
                 $user = User::find($id);
                 if($user){
                     $user_name = $user->email;
+                    $user->dialects()->detach();
+                    $user->langs()->detach();
                     $user->roles()->detach();
                     $user->delete();
                     $result['message'] = \Lang::get('auth.user_removed', ['name'=>$user_name]);
