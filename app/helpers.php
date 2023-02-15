@@ -79,6 +79,13 @@ if (! function_exists('user_dict_edit')) {
     }
 }
 
+if (! function_exists('user_dict_add')) {
+    function user_dict_add()
+    {
+        return User::checkAccess('dict.add');
+    }
+}
+
 if (! function_exists('user_corpus_edit')) {
     function user_corpus_edit()
     {

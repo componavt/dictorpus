@@ -18,7 +18,7 @@ use App\Models\Role;
 class User extends EloquentUser
 {
     protected $fillable = ['email','first_name','last_name','permissions', 'country', 'city', 'affilation', 'informant_id'];
-    protected $perm_list = ['admin','dict.edit','corpus.edit','ref.edit','user.edit','photo.edit'];
+    protected $perm_list = ['admin','dict.add','dict.edit','corpus.edit','ref.edit','photo.edit']; //,'user.edit'
 // insert into roles (slug, name, created_at, updated_at) values ('assistant', 'Помощник редактора', now(), now());
 // update roles set permissions = '{"dict.edit":true, "corpus.edit":true, "photo.edit":true}' where slug='editor';    
     
@@ -313,5 +313,5 @@ class User extends EloquentUser
     // edit-dict,       Edit dictionary
     // edit-corpus,     Edit corpus
     // 
-    
+    // insert into roles values (5, 'assistent', 'Помощник редактора',NULL,'2023-02-15 20:53:04','2023-02-15 20:53:04');
 }
