@@ -94,9 +94,9 @@ class Gram extends Model
     public static function getByCode($code)
     {
         if ($code == "2NFIN") {
-            return self::whereNameEn($code, 'infinitive II')->first();
+            return self::whereNameEn('infinitive II')->first();
         } elseif ($code == "3NFIN") {
-            return self::whereNameEn($code, 'infinitive III')->first();
+            return self::whereNameEn('infinitive III')->first();
         }        
         $code = str_replace('_', ';', $code);
         return self::whereUnimorph($code)->first();
