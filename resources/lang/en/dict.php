@@ -117,6 +117,7 @@ return [
     'dialect_removed' => 'Dialect ":name" is removed successfully.',
     'dialects' => 'Dialects',
     'dialects_usage' => 'dialects of usage',
+    'dict_sound' => 'Dictionary sounding',
     'example_comment' => 'Checked examples / Unchecked examples / Total number',
     'generate_wordforms' => 'generate wordforms',
     'gram_attr' => 'Gram. attributes',

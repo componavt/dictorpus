@@ -28,6 +28,11 @@ class Informant extends Model
         parent::boot();
     }
     
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\Audios;
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Lemmas;
+
     // Methods
     use \App\Traits\Methods\getNameAttribute;
     
@@ -48,6 +53,16 @@ class Informant extends Model
         }
         
         return $dialects[0]->lang;        
+    }
+
+    public function getDialectNameAttribute() {
+        $names = [];
+        
+        foreach ($this->dialects as $dialect) {
+            $names[] = $dialect->name;
+        }
+        
+        return join(', ', $names);        
     }
 
     /** Gets place, takes into account locale.

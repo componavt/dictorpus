@@ -5,9 +5,12 @@ Route::group(
     ],
     function()
     {
+//        Route::post('audio/list/create', 'Dict\AudioController@createRecordList')->name('audio.list.create');
+        Route::get('audio/list/{informant_id}/add', 'Dict\AudioController@addLemmasToList');
+        Route::get('audio/list/{informant_id}/edit', 'Dict\AudioController@editList');
+        Route::get('audio/list/{informant_id}/record', 'Dict\AudioController@recordList');
+        Route::get('audio/list/{informant_id}', 'Dict\AudioController@voicedList');
         Route::post('audio/upload', 'Dict\AudioController@upload');
-        Route::get('audio/record_list/{informant_id}/edit', 'Dict\AudioController@editRecordList');
-        Route::post('audio/record_list/create', 'Dict\AudioController@createRecordList')->name('audio.list.create');
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
         Route::get('example/create/{meaning_id}', 'Dict\ExampleController@create');        

@@ -74,7 +74,7 @@
                              'args'=>['id' => $informant->id]])
 
 {{----}}                    @if ($informant->lang) 
-                    <a class="btn btn-success btn-xs btn-detail" href="{{ LaravelLocalization::localizeURL('/dict/audio/record_list/'.$informant->id).'/edit' }}">
+                    <a class="btn btn-success btn-xs btn-detail" href="{{ LaravelLocalization::localizeURL('/corpus/informant/'.$informant->id).'/audio' }}">
                         <i class="fa fa-music"></i></a>
                     @endif {{----}}
                 </td>

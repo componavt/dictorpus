@@ -14,6 +14,7 @@ use Response;
 use App\Library\Str;
 
 use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
 use App\Models\Corpus\District;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
@@ -28,7 +29,7 @@ class InformantController extends Controller
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:corpus.edit,/corpus/informant/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:corpus.edit,/corpus/informant/', ['only' => ['create','store','edit','update','destroy', 'audio']]);
         
         $this->url_args = Informant::urlArgs($request);          
         $this->args_by_get = Str::searchValuesByURL($this->url_args);
@@ -209,5 +210,23 @@ class InformantController extends Controller
             return Redirect::to('/corpus/informant/')
                   ->withSuccess($result['message']);
         }
+    }
+    
+    public function audio($id)
+    {
+        $informant = Informant::find($id); 
+        if (!$informant || !sizeof($informant->dialects)) {
+            return Redirect::to('/corpus/informant/');            
+        }
+        
+        $unvoiced_lemmas_count = Lemma::whereLangId($informant->lang->id)
+                ->whereNotIn('id',function ($q) {
+                    $q->select('lemma_id')->from('audio_lemma');
+                })->count();
+        $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();        
+        $url_args = $this->url_args;
+
+        return view('corpus.informant.audio',
+                compact('dialect_values', 'informant', 'unvoiced_lemmas_count', 'url_args'));        
     }
 }

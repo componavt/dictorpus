@@ -13,7 +13,7 @@
 @section('body')        
     @include('corpus.informant._about')
 
-    @include('dict.audio.list._show_list')
+    @include('dict.audio.list._create_list')
     
 @stop
 
@@ -25,9 +25,7 @@
     {!!Html::script('js/mic.js')!!}
 @stop
 
-@section('jqueryFunc')
-    recordAudio('{{$informant->id}}', '{{ csrf_token() }}');
-    
+@section('jqueryFunc')    
     $('#audiosTable').DataTable( {
         language: {
             url: '//cdn.datatables.net/plug-ins/1.11.4/i18n/ru.json'

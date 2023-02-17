@@ -187,19 +187,45 @@ class AudioController extends Controller
               ->withSuccess($result['message']);
     }
     
-    public function editRecordList($informant_id) {
+    public function voicedList($informant_id) {
+        $informant = Informant::find($informant_id);
+        if (!$informant || !sizeof($informant->dialects)) {
+            return Redirect::to('/corpus/informant/');            
+        }
+        $audios = Audio::whereInformantId($informant_id)
+//                ->take(1)
+                ->get();
+        return view('dict.audio.list.index',
+                compact('audios', 'informant'));        
+        
+    }
+    
+    public function addLemmasToList($informant_id) {
         $informant = Informant::find($informant_id);
         if (!$informant || !sizeof($informant->dialects)) {
             return Redirect::to('/corpus/informant/');            
         }
         $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();
         $url_args = $this->url_args;
-        $audios = Audio::whereInformantId($informant_id)
-                ->take(1)
-                ->get();
+        $lemmas = Lemma::whereLang($informant->lang->id)
+                ->whereNotIn('id', function ($q) {
+                    $q->select('lemma_id')->from('audio_lemma');
+                });
+        
+        if ($url_args['search_dialect']) {
+            $lemmas -> whereIn('id', function ($q) {
+                $q->select('lemma_id')->from('meanings')
+                  ->whereIn('id', function ($q2) use ($url_args) {
+                      $q2->select('meaning_id')->from('dialect_meaning')
+                         ->whereDialectId($url_args['search_dialect']);
+                  });
+            });
+        }
+                
+        $lemmas = $lemmas->groupBy('lemma')->orderBy('lemma')->get();
 
-        return view('dict.audio.list.index',
-                compact('audios', 'dialect_values', 'informant', 'url_args'));        
+        return view('dict.audio.list.add',
+                compact('dialect_values', 'informant', 'lemmas', 'url_args'));        
         
     }
     
