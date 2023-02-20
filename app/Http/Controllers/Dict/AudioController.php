@@ -225,7 +225,9 @@ class AudioController extends Controller
             });
         }
                 
-        $lemmas = $lemmas->groupBy('lemma')->orderBy('lemma')->get();
+        $lemmas = $lemmas->groupBy('lemma')->orderBy('lemma')
+                         ->take(1000)
+                         ->get();
 
         return view('dict.audio.list.choose',
                 compact('dialect_values', 'informant', 'lemmas', 'url_args'));                
