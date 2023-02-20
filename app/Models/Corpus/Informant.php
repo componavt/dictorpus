@@ -10,6 +10,7 @@ use App\Library\Str;
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Text;
+use App\Models\Dict\Lemma;
 
 class Informant extends Model
 {
@@ -154,6 +155,13 @@ class Informant extends Model
         
         return join(', ', $info);
     }   
+
+    public function unvoicedLemmasCount() {
+        return Lemma::whereLangId($this->lang->id)
+                ->whereNotIn('id',function ($q) {
+                    $q->select('lemma_id')->from('audio_lemma');
+                })->count();        
+    }
 
     public function birthPlaceString($lang_id='', $all_place_names=true, $link='')
     {

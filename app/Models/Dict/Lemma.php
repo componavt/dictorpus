@@ -69,6 +69,7 @@ class Lemma extends Model
     
     // Belongs To Many Relations
 //    use \App\Traits\Relations\BelongsToMany\Dialects;
+    use \App\Traits\Relations\BelongsToMany\Informants;
     use \App\Traits\Relations\BelongsToMany\Labels;
     use \App\Traits\Relations\BelongsToMany\LemmaVariants;
 //    use \App\Traits\Relations\BelongsToMany\Places;

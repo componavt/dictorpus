@@ -93,6 +93,7 @@ class Audio extends Model
             if (!$lemma->audios()->whereInformantId($informant_id)->count()) {
                 $lemma->audios()->attach($audio);
             }
+            $lemma->informants()->detach($informant_id);
         }        
     }
     

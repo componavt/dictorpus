@@ -13,10 +13,10 @@
     @include('corpus.informant._about')
     
     <h3>{{trans('dict.dict_sound')}}</h3>
-    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) }}">Просмотреть озвученные слова</a> ({{$informant->audios()->count()}})</p>
-    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/edit'}}">Редактировать список для озвучивания</a> ({{$informant->lemmas()->count()}})</p>
-    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/add'}}">Добавить в список новые слова для озвучивания</a> ({{$unvoiced_lemmas_count}})</p>
-    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id. '/record') }}">Озвучить новые слова</a> ({{$informant->lemmas()->count()}})</p>
+    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id. '/record') }}">{{trans('dict.voice_new_lemmas')}}</a> ({{$informant->lemmas()->count()}})</p>
+    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/voiced' }}">{{trans('dict.voiced_lemmas')}}</a> ({{$informant->audios()->count()}})</p>
+    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) }}">{{trans('dict.list_for_voicing')}}</a> ({{$informant->lemmas()->count()}})</p>
+    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/choose'}}">{{trans('dict.add-lemmas-for-voicing')}}</a> ({{format_number($informant->unvoicedLemmasCount())}})</p>
 @stop
 
 

@@ -13,11 +13,13 @@
 @section('body')        
     @include('corpus.informant._about')
     <p><a href="{{ LaravelLocalization::localizeURL('corpus/informant/'.$informant->id).'/audio'}}">Вернуться к информанту</a>
-    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/voiced' }}">{{trans('dict.check_voiced_lemmas')}}</a> ({{$informant->audios()->count()}})</p>
-    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/choose'}}">{{trans('dict.add-lemmas-for-voicing')}}</a> ({{format_number($informant->unvoicedLemmasCount())}})</p>
-
-    <h3>{{trans('dict.list_for_voicing')}}</h3>
-    @include('dict.audio.list._index_list')
+    
+    <h3>{{trans('dict.add-lemmas-for-voicing')}}</h3>
+    <p>Слов в <a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) }}">списке для озвучивания</a>: {{$informant->lemmas()->count()}}</p>
+    
+    @include('dict.audio.list._choose_search')
+    
+    @include('dict.audio.list._choose_list')        
     
 @stop
 
@@ -30,8 +32,14 @@
     {!!Html::script('js/mic.js')!!}
 @stop
 
-@section('jqueryFunc')
-    recordAudio('{{$informant->id}}', '{{ csrf_token() }}');    
+@section('jqueryFunc')    
+{{--    $('#lemmasTable').DataTable( {
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.4/i18n/ru.json'
+        },
+        "order": [[ 2, "asc" ]]
+    } ); --}}
+    
     selectAllFields('select-all-lemmas', '.choose-lemma');
 @stop
 

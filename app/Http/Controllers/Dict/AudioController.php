@@ -195,25 +195,28 @@ class AudioController extends Controller
         $audios = Audio::whereInformantId($informant_id)
 //                ->take(1)
                 ->get();
-        return view('dict.audio.list.index',
-                compact('audios', 'informant'));        
-        
+        return view('dict.audio.list.voiced',
+                compact('audios', 'informant'));                
     }
     
-    public function addLemmasToList($informant_id) {
+    public function chooseLemmasForList($informant_id) {
         $informant = Informant::find($informant_id);
         if (!$informant || !sizeof($informant->dialects)) {
             return Redirect::to('/corpus/informant/');            
         }
-        $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();
+        
+        $dialect_values = $informant->dialects->pluck('name','id')->toArray(); //[NULL=>''] + 
         $url_args = $this->url_args;
-        $lemmas = Lemma::whereLang($informant->lang->id)
+        $lemmas = Lemma::whereLangId($informant->lang->id)
                 ->whereNotIn('id', function ($q) {
                     $q->select('lemma_id')->from('audio_lemma');
+                })
+                ->whereNotIn('id', function ($q) {
+                    $q->select('lemma_id')->from('informant_lemma');
                 });
         
         if ($url_args['search_dialect']) {
-            $lemmas -> whereIn('id', function ($q) {
+            $lemmas -> whereIn('id', function ($q) use ($url_args) {
                 $q->select('lemma_id')->from('meanings')
                   ->whereIn('id', function ($q2) use ($url_args) {
                       $q2->select('meaning_id')->from('dialect_meaning')
@@ -224,31 +227,57 @@ class AudioController extends Controller
                 
         $lemmas = $lemmas->groupBy('lemma')->orderBy('lemma')->get();
 
-        return view('dict.audio.list.add',
-                compact('dialect_values', 'informant', 'lemmas', 'url_args'));        
-        
+        return view('dict.audio.list.choose',
+                compact('dialect_values', 'informant', 'lemmas', 'url_args'));                
     }
     
-    public function createRecordList() {
-        $informant = Informant::find($this->url_args['search_informant']);
-        $dialect = $this->url_args['search_dialect'];
-        $lang_id = isset($this->url_args['search_lang'][0]) ? $this->url_args['search_lang'][0] : null;
-        if (!$lang_id) {
-            return null;
-        }
-        $lemmas = Lemma::whereLangId($lang_id);
-        
-        if ($dialect) {
-            $lemmas->whereIn('id', function ($q) use ($dialect) {
-                $q->select('lemma_id')->from('meanings')
-                  ->whereIn('id', function ($q2) use ($dialect) {
-                      $q2->select('meaning_id')->from('dialect_meaning')
-                         ->whereIn('dialect_id', (array)$dialect);
-                  });
-            });
+    public function addLemmasToList($informant_id, Request $request) {
+        $informant = Informant::find($informant_id);
+        if (!$informant || !sizeof($informant->dialects)) {
+            return Redirect::to('/corpus/informant/');            
         }
         
-        $lemmas = $lemmas->orderBy('lemma')->get();
-//dd($lemmas);        
+        $lemmas = $request->input('checked_lemmas');
+        $informant->lemmas()->attach($lemmas);
+
+        return Redirect::to('/dict/audio/list/'.$informant->id.'/choose?search_dialect='.$this->url_args['search_dialect']);
+    }
+    
+    public function indexList($informant_id) {
+        $informant = Informant::find($informant_id);
+        if (!$informant || !sizeof($informant->dialects)) {
+            return Redirect::to('/corpus/informant/');            
+        }
+        return view('dict.audio.list.index',
+                compact('informant'));        
+    }
+    
+    public function removeInList($informant_id, Request $request) {
+        $informant = Informant::find($informant_id);
+        if (!$informant || !sizeof($informant->dialects)) {
+            return Redirect::to('/corpus/informant/');            
+        }
+        $lemmas = $request->input('checked_lemmas');
+        $informant->lemmas()->detach($lemmas);
+        return Redirect::to('/dict/audio/list/'.$informant->id);
+    }
+    
+    public function deleteLemmaInList($informant_id, $lemma_id) {
+        $informant = Informant::find($informant_id);
+        $lemma = Lemma::find($lemma_id);
+        if (!$informant || !$lemma) {
+            return;            
+        }
+        $informant->lemmas()->detach($lemma->id);
+    }
+    
+    public function recordList($informant_id) {
+        $informant = Informant::find($informant_id);
+        if (!$informant || !sizeof($informant->dialects)) {
+            return Redirect::to('/corpus/informant/');            
+        }
+
+        return view('dict.audio.list.record',
+                compact('informant'));        
     }
 }

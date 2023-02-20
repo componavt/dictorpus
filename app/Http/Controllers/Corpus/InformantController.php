@@ -219,14 +219,10 @@ class InformantController extends Controller
             return Redirect::to('/corpus/informant/');            
         }
         
-        $unvoiced_lemmas_count = Lemma::whereLangId($informant->lang->id)
-                ->whereNotIn('id',function ($q) {
-                    $q->select('lemma_id')->from('audio_lemma');
-                })->count();
         $dialect_values = [NULL=>''] + $informant->dialects->pluck('name','id')->toArray();        
         $url_args = $this->url_args;
 
         return view('corpus.informant.audio',
-                compact('dialect_values', 'informant', 'unvoiced_lemmas_count', 'url_args'));        
+                compact('dialect_values', 'informant', 'url_args'));        
     }
 }

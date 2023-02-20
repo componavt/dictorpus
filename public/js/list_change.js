@@ -43,7 +43,7 @@ function posSelect(is_full_form=true) {
           })
         .change();    
 }
-
+/*
 function chooseList(list_name, div_name, url) {
     $("#"+list1_name)
         .change(function () {
@@ -52,7 +52,7 @@ function chooseList(list_name, div_name, url) {
         })
         .change();    
 }
-
+*/
 function selectedValuesToURL(varname) {
     var forURL = [];
     $( varname + " option:selected" ).each(function( index, element ){
@@ -462,4 +462,15 @@ function selectAjax(route, data, placeholder, allow_clear, selector){
     });   
 }
 
+function selectAllFields(button_id, select_fields) {
+    $('#'+button_id).on('change', function(){
+        if ($('#'+button_id).prop('checked')){
+//console.log($(select_fields));            
+            $(select_fields).prop('checked', true);
+        } else {
+//console.log($(select_fields));            
+            $(select_fields).prop('checked', false);
+        }
+    });
+}
 

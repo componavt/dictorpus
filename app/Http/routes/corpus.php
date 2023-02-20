@@ -25,6 +25,7 @@
 //        Route::get('corpus/gram_search', 'Corpus\GramSearchController@index');
         
         Route::get('corpus/informant/{id}/audio', 'Corpus\InformantController@audio');
+        
         Route::get('corpus/informant/store', 'Corpus\InformantController@simpleStore');
         Route::get('corpus/genre/list', 'Corpus\GenreController@genreList');
         Route::get('corpus/motive/list', 'Corpus\MotiveController@motiveList');

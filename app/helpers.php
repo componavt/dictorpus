@@ -245,3 +245,9 @@ if (!function_exists('remove_hyphens')) {
         return preg_replace('/&shy;/', '', $str);
     }
 }
+
+if (!function_exists('format_number')) {
+    function format_number($total) {
+        return number_format($total, 0, ',', ' ');
+    }
+}
