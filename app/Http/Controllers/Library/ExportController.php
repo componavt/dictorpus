@@ -361,7 +361,19 @@ class ExportController extends Controller
         print "done.";
     }
     
-    public function concepsWithoutImages () {
+    public function concepts () {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        $concepts = Concept::all();
+        $filename = 'export/concepts.csv';
+        Storage::disk('public')->put($filename, "ID\tпонятие");
+        foreach ($concepts as $concept) {
+            Storage::disk('public')->append($filename, $concept->id."\t".$concept->text_ru);
+        }
+        print "done.";
+    }
+    
+    public function conceptsWithoutImages () {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         $concepts = Concept::whereNull('wiki_photo')

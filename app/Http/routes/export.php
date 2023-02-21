@@ -8,7 +8,8 @@ Route::group(
     {
         Route::get('bible', 'Library\ExportController@exportBible');        
         Route::get('compounds_for_unimorph', 'Library\ExportController@exportCompoundsToUniMorph'); 
-        Route::get('conceps_without_images', 'Library\ExportController@concepsWithoutImages'); 
+        Route::get('concepts', 'Library\ExportController@concepts'); 
+        Route::get('concepts_without_images', 'Library\ExportController@conceptsWithoutImages'); 
         Route::get('conll', 'Library\ExportController@exportTextsToCONLL');        
         Route::get('conll/annotation', 'Library\ExportController@exportAnnotationConll'); 
         Route::get('for_mobile', 'Library\ExportController@forMobile');        

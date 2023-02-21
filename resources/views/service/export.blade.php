@@ -17,6 +17,7 @@
         <p><a href="export/for_mobile">Экспорт данных для мобильной версии</a></p>
         <p><a href="export/for_speech">Экспорт данных для распознавания речи</a></p>
         <p><a href="export/multidict">Экспорт лемм мультисловаря</a></p>
-        <p><a href="export/conceps_without_images">Экспорт понятий без картинок</a></p>
+        <p><a href="export/concepts">Экспорт всех понятий</a></p>
+        <p><a href="export/concepts_without_images">Экспорт понятий без картинок</a></p>
         <p><a href="export/multidict_without_concepts">Экспорт лемм мультисловаря без понятий</a></p>
 @endsection
