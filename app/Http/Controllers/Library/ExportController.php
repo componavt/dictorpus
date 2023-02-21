@@ -14,6 +14,7 @@ use App\Library\Export;
 
 use App\Models\Corpus\Text;
 use App\Models\Dict\Concept;
+use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
 use App\Models\Dict\Lang;
@@ -364,11 +365,14 @@ class ExportController extends Controller
     public function concepts () {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        $concepts = Concept::all();
+        $categories = ConceptCategory::all()->sortBy('id');
         $filename = 'export/concepts.csv';
-        Storage::disk('public')->put($filename, "ID\tпонятие");
-        foreach ($concepts as $concept) {
-            Storage::disk('public')->append($filename, $concept->id."\t".$concept->text_ru);
+        Storage::disk('public')->put($filename, "Категория\ID понятия\tПонятие");
+        foreach ($categories->sortBy('id') as $category) {
+            Storage::disk('public')->append($filename, "\n".$category->id."\t".$category->name_ru);
+            foreach ($category->concepts as $concept) {
+                Storage::disk('public')->append($filename, $category->id."\t".$concept->id."\t".$concept->text_ru);
+            }
         }
         print "done.";
     }

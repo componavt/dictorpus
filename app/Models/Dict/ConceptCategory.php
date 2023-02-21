@@ -24,6 +24,9 @@ class ConceptCategory extends Model
 
     use \App\Traits\Methods\getNameAttribute;
     
+    // Has Many Relations
+    use \App\Traits\Relations\HasMany\Concepts;
+    
     public function getSectionAttribute() : String
     {
         return trans("dict.concept_section_".substr($this->id, 0,1));
