@@ -87,6 +87,9 @@ return [
                     . '</dl>',
     'permission' => '',
     'publications_about' => '
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-03-01.pdf">VepKar-korpuksesta apua opiskeluun</a><br>
+                    Julia Veselova. Karjalan Sanomat, № 08 (16574). С. 13.</p>
+                    
                     <p><a class="publ-title" href="/docs/oma_mua_2023_4_3.pdf">Kuulen omua pakinua</a><br>
                     Uljana Tikkanen. Oma mua. № 4 (1644), 2023, c. 3.</p>
 
