@@ -20,7 +20,7 @@
 
 @section('body')
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
-        <div style="margin-bottom: 10px; position: relative">
+        <div class='lemma-example-view'>
             @include('dict.lemma.example.sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])
             @include('dict.special_symbols',['id_name'=>'fragment_text'])
         </div>

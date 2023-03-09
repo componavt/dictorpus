@@ -249,6 +249,16 @@ h4 .fa {
     height: auto;
 }
 
+.lemma-example-view {
+    margin-bottom: 10px; 
+    position: relative
+}
+
+.lemma-example-view .special-symbols-link {
+    right: 190px;
+    bottom: -18px;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;
