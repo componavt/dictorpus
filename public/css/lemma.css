@@ -255,8 +255,9 @@ h4 .fa {
 }
 
 .lemma-example-view .special-symbols-link {
-    right: 190px;
     bottom: -18px;
+    right: 190px;
+    top: auto;
 }
 
 @media screen and (min-width: 767px) {
