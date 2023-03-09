@@ -20,10 +20,14 @@
 
 @section('body')
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_example')}}</h2>
-        <div style="margin-bottom: 10px;">@include('dict.lemma.example.sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])</div>
+        <div style="margin-bottom: 10px; position: relative">
+            @include('dict.lemma.example.sentence', ['relevance'=>'', 'count'=>'', 'with_links' => false])
+            @include('dict.special_symbols',['id_name'=>'fragment_text'])
+        </div>
         <div id="fragment">
             @include('dict.lemma.example._fragment', 
                 ['sentence_obj'=>$sentence['sent_obj'], 'w_id'=>$sentence['w_id']])
+                
         </div>
         @include('dict.lemma.example._translations')
 
@@ -71,6 +75,8 @@
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
+    
 {{-- show/hide a block with meanings and gramsets --}}
     showLemmaLinked({{$sentence['text']->id}});    
 {{-- show/hide a block with lemmas --}}
@@ -79,7 +85,6 @@
     addWordform('{{$sentence['text']->id}}','{{$sentence['text']->lang_id}}', '{{LaravelLocalization::getCurrentLocale()}}');
     posSelect(false);
 {{--    checkLemmaForm(); --}}
-    toggleSpecial();
     
     addTranslation({{ $sentence['sent_obj']->id }}, {{$sentence['w_id']}});
 @stop
