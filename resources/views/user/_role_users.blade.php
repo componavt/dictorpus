@@ -2,6 +2,7 @@
     <table class="table-bordered table-wide table-striped rwd-table wide-lg">
         <thead>
             <tr>
+                <th></th>
                 <th>No</th>
                 <th>E-mail</th>
                 <th>{{ trans('auth.name') }}</th>
@@ -16,6 +17,7 @@
         <tbody>
             @foreach($users[$role_id] as $user)
             <tr>
+                <td><input type="checkbox" value="{{$user->id}}" name="to_remove[]"></td>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="E-mail">{{$user->email}}</td>
                 <td data-th="{{ trans('auth.name') }}">{{$user->first_name}} {{$user->last_name}}</td>
@@ -42,18 +44,9 @@
                 </td>
                 @if (User::checkAccess('user.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', 
-                             ['is_button'=>true, 
-                              'without_text' => true,
-                              'route' => '/user/'.$user->id.'/edit',
-                             ])
-                    @include('widgets.form.button._delete', 
-                             ['is_button'=>true, 
-                              'without_text' => true,
-                              'route' => 'user.destroy', 
-                              'class' => '',
-                              'args'=>['id' => $user->id]
-                             ])
+                    @include('widgets.form.button._edit_small_button', 
+                             ['route' => '/user/'.$user->id.'/edit'])
+                    @include('widgets.form.button._delete_small_button', ['obj_name' => 'user'])
                 </td>
                 @endif
             </tr> 
