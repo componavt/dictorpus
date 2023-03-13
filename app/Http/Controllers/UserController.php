@@ -215,6 +215,28 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Remove some checked users
+     * @param Request $request
+     */
+    public function remove(Request $request)
+    {
+        $users = $request->input('to_remove');
+        foreach ($users as $user_id) {
+            $user = User::find($user_id);
+            if($user){
+                $user_name = $user->email;
+                $user->dialects()->detach();
+                $user->langs()->detach();
+                $user->roles()->detach();
+                $user->delete();
+                $result['message'][] = \Lang::get('auth.user_removed', ['name'=>$user_name]);
+            }            
+        }
+        return Redirect::to('/user/')
+              ->withSuccess(join('; ',$result['message']));
+    }
+    
     public function getProfile()
     {
         $user = User::find(24);
@@ -245,5 +267,6 @@ class UserController extends Controller
 
         return ['success'=>true,'message'=>'Successfully updated', 'filename'=>public_path('user-photos').'/'.$fileName];
     }
+    
 }    
         

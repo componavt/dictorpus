@@ -23,6 +23,7 @@
         // Сервисная страничка, показываем после заполнения рег формы, формы сброса и т.
         // о том, что письмо отправлено и надо заглянуть в почтовый ящик.
         Route::get('wait', 'AuthController@wait');
+        Route::post('user/remove', 'UserController@remove');
 
         Route::resource('role', 'RoleController',
                        ['names' => ['update' => 'role.update',

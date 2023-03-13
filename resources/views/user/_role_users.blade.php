@@ -1,4 +1,5 @@
 <div id="role{{$role_id}}" class="{{$class}}">
+{!! Form::open(['method'=>'POST', 'url' => '/ru/user/remove']) !!}
     <table class="table-bordered table-wide table-striped rwd-table wide-lg">
         <thead>
             <tr>
@@ -53,4 +54,7 @@
             @endforeach
         </tbody>
     </table>
+@include('widgets.form.formitem._submit', ['title' => trans('messages.delete')])
+{!! Form::close() !!}
 </div>
+
