@@ -20,6 +20,7 @@ function insertSymbol (text, fieldName) {
     var elem = document.getElementById(fieldName)
     insertTextAtCursor(elem,text);
     elem.focus();
+    $('#'+fieldName).trigger('keyup');
 /*    
         var textEl = $("#"+fieldName);
         oldText = textEl.val();
