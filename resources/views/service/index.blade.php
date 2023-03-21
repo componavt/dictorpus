@@ -24,18 +24,18 @@
         <li><a href="service/dict/multi/select">Выбрать леммы</a></li>
         </ul>
         
-        <p>Записать аудио</p>
+        <!--p>Записать аудио</p>
         <ul>
             @foreach($lists as $l =>$n)
         <li><a href="service/audio/{{$l}}">{{$n}}</a></li>
             @endforeach
-        </ul>
+        </u-->
         
-        <p>Отбор лемм для ливвиковского ШКОЛЬНОГО словаря</p>
+        <!--p>Отбор лемм для ливвиковского ШКОЛЬНОГО словаря</p>
         <ul>
         <li><a href="service/dict/school">Просмотреть отобранные леммы</a></li>
         <li><a href="service/dict/school/select">Выбрать леммы</a></li>
-        </ul>        
+        </ul-->        
     @endif
     
     @if (User::checkAccess('admin'))

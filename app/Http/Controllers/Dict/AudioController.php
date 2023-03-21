@@ -226,7 +226,7 @@ class AudioController extends Controller
         }
                 
         $lemmas = $lemmas->groupBy('lemma')->orderBy('lemma')
-                         ->take(1000)
+                         ->take(250)
                          ->get();
 
         return view('dict.audio.list.choose',

@@ -1,9 +1,9 @@
 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
 
-        @include('widgets.form.formitem._text',
+{{--        @include('widgets.form.formitem._text',
                 ['name' => 'id',
                  'attributes'=>['size' => 4],
-                 'title' => 'ID'])         
+                 'title' => 'ID'])        --}} 
                  
         @include('widgets.form.formitem._select',
                 ['name' => 'concept_category_id',
