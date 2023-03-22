@@ -114,7 +114,8 @@ h2 {
     font-weight: bold;
     justify-content: flex-start;
     line-height: 18px;
-    margin-top: 20px;
+    min-height: 45px;
+    padding-top: 20px;
 }
 
 .in_numbers-n {

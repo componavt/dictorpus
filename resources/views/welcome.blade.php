@@ -41,6 +41,8 @@
                                 <h2>{{trans('blob.in_numbers_title')}}</h2>
                                 {!!trans('blob.in_numbers_text',[
                                         'total_dialects'=>$total_dialects,
+                                        'total_words'=>number_format($total_words, 0, ',', ' '),
+                                        'words' => $words_choice,
                                         'total_lemmas'=>number_format($total_lemmas, 0, ',', ' '),
                                         'lemmas' => $lemmas_choice,
                                         'texts' => $texts_choice,

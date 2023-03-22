@@ -30,6 +30,7 @@ return [
                     <p>Подробнее о вепсах можно прочесть в книге <a href="http://avtor.karelia.ru/elbibl/sborniki/narody_karelii/273/index.html">«Народы Карелии: историко-этнографические очерки»</a>',
     'choice_articles' => 'статья|статьи|статей',
     'choice_texts' => 'текст|текста|текстов',
+    'choice_words' => 'слово|слова|слов',
     'corpus_means_title' => 'Что такое «корпус языка»',
     'corpus_means_text' => 'Корпус — это информационно-справочная система, основанная на собрании текстов в электронной форме. 
                       Корпус включает в себя тексты и словари, хранящиеся в базе данных, и компьютерную программу, обеспечивающую поиск и обработку текстов.',
@@ -49,6 +50,10 @@ return [
                          <div class="in_numbers-b">
                             <span class="in_numbers-n"><a href="/ru/stats">:total_texts</a></span>
                             <span>:texts на <a href="/ru/dict/dialect">:total_dialects</a> диалектах</span>
+                         </div>
+                         <div class="in_numbers-b">
+                            <span class="in_numbers-n"><a href="/ru/stats">:total_words</a></span>
+                            <span>&nbsp;&nbsp;&nbsp;:words</span>
                          </div>',
     'license' => 'Вы можете свободно использовать материалы нашего сайта и делиться ими, главное — указать авторство и ссылку
                   на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/">Подробнее о лицензии CC BY 4.0</a>',
