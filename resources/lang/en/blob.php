@@ -21,6 +21,7 @@ return [
                   . '</ul>',
     'choice_articles' => 'article|articles|articles',
     'choice_texts' => 'text|texts|texts',
+    'choice_words' => 'word|words|words',
     'corpus_means_title' => 'What is "the language corpus"',
     'corpus_means_text' => 'The corpus is an information and reference system based on the collection of texts in electronic form.
                        This linguistic corpus includes texts and dictionaries stored in a database, and a computer program (corpus manager) for searching and processing data.',
@@ -34,6 +35,10 @@ return [
                          <div class="in_numbers-b">
                             <span class="in_numbers-n"><a href="/en/stats">:total_texts</a></span>
                             <span>:texts on <a href="/en/dict/dialect">:total_dialects</a> dialects</span>
+                         </div>
+                         <div class="in_numbers-b">
+                            <span class="in_numbers-n"><a href="/en/stats">:total_words</a></span>
+                            <span>&nbsp;&nbsp;&nbsp;:words</span>
                          </div>',        
     'grants' => '<p>The project was supported by grants:</p>
                  <p>the Russian Foundation for the Humanities, grant No. 15-04-12006, "Veps thesaurus constructing based on word sense disambiguation in multilingual dictionary", 2015-2016.</p>

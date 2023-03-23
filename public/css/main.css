@@ -114,11 +114,13 @@ h2 {
     font-weight: bold;
     justify-content: flex-start;
     line-height: 18px;
-    margin-top: 20px;
+    min-height: 45px;
+    padding-top: 20px;
 }
 
 .in_numbers-n {
-    font-size: 35px;
+    font-size: 25px;
+    line-height: 25px;
     min-width: 120px;
     padding-right: 10px;
 }
@@ -623,7 +625,7 @@ h2 {
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;
-    }
+    }    
 }
 @media screen and (min-width: 992px) {
     h1 {
@@ -634,6 +636,11 @@ h2 {
     }
     h2 {
         font-size: 24px;
+    }
+    
+    .in_numbers-n {
+        font-size: 35px;
+        line-height: 35px;
     }
 }
 @media screen and (min-width: 1200px) {
