@@ -5,7 +5,8 @@ Route::group(
     ],
     function()
     {
-        Route::get('audio/list/{informant_id}/add', 'Dict\AudioController@addLemmasToList');
+//        Route::post('audio/list/{informant_id}/add', 'Dict\AudioController@addLemmasToList')->name('dict.audio.addToList');
+        Route::get('audio/list/{informant_id}/add', 'Dict\AudioController@addLemmasToList')->name('dict.audio.addToList');
         Route::get('audio/list/{informant_id}/choose', 'Dict\AudioController@chooseLemmasForList');
         Route::get('audio/list/{informant_id}/delete/{lemma_id}', 'Dict\AudioController@deleteLemmaInList');
         Route::get('audio/list/{informant_id}/record', 'Dict\AudioController@recordList');

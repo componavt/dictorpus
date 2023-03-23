@@ -26,9 +26,12 @@
     <script src="//cdn.datatables.net/plug-ins/1.11.4/sorting/numeric-comma.js"></script>
     <script src="//cdn.datatables.net/plug-ins/1.11.4/type-detection/numeric-comma.js"></script>
     {!!Html::script('js/mic.js')!!}
+    {!!Html::script('js/rec-delete-link.js')!!}
 @stop
 
 @section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}');
+    
     recordAudio('{{$informant->id}}', '{{ csrf_token() }}');
     
     $('#audiosTable').DataTable( {
@@ -37,5 +40,7 @@
         },
         "order": [[ 0, "asc" ]]
     } );    
+    
 @stop
+
 

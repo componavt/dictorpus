@@ -1,7 +1,7 @@
 <?php $list_count=1;?>
 @if (sizeof($lemmas))
     {!! Form::open(['url' => 'dict/audio/list/'.$informant->id.'/add',
-                    'method' => 'get'])
+                    'method' => 'GET'])
     !!}
         <table id="lemmasTable" class="table table-striped rwd-table wide-md">
         <thead>
