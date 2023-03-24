@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Library\Str;
-
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Sentence;
@@ -36,7 +34,7 @@ class SentenceController extends Controller
                          ['only' => ['create','store','edit','update','destroy','markup']]);
         $this->url_args = Sentence::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**

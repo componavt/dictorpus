@@ -24,6 +24,8 @@
         // о том, что письмо отправлено и надо заглянуть в почтовый ящик.
         Route::get('wait', 'AuthController@wait');
         Route::post('user/remove', 'UserController@remove');
+//Route::get('user/profile', 'UserController@getProfile')->name('profile');
+//Route::post('user/profile', 'UserController@postProfileUpdate')->name('updateProfile');
 
         Route::resource('role', 'RoleController',
                        ['names' => ['update' => 'role.update',

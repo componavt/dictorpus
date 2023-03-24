@@ -177,8 +177,26 @@ if (! function_exists('url_args')) {
 if (! function_exists('search_values_by_URL')) {
     function search_values_by_URL(array $url_args=NULL)
     {
-        $out = http_build_query($url_args);
+        $out = http_build_query(remove_empty($url_args));
         return $out ? '?'.$out : '';
+    }
+}
+
+if (! function_exists('remove_empty')) {
+    function remove_empty(array $url_args=NULL)
+    {
+        if (isset($url_args['limit_num']) && $url_args['limit_num']==10) {
+            unset($url_args['limit_num']);
+        }
+        if (isset($url_args['page']) && $url_args['page']==1) {
+            unset($url_args['page']);
+        }
+        foreach ( $url_args as $k=>$v ) {
+            if (!$v || is_array($v) && (!sizeof($v) || sizeof($v)==1 && !$v[1])) {
+                unset($url_args[$k]);
+            } 
+        }
+        return $url_args;
     }
 }
 
@@ -249,5 +267,23 @@ if (!function_exists('remove_hyphens')) {
 if (!function_exists('format_number')) {
     function format_number($total) {
         return number_format($total, 0, ',', ' ');
+    }
+}
+
+if (!function_exists('found_rem')) {
+/**
+ * Высчитывается остаток от деления для последующего вычисления окончания фразы
+ */
+    function found_rem($total) {
+        return $total>20 ? ($total%10==0 ? $total : $total%10)  : $total;
+    }
+}
+
+if (!function_exists('highlight')) {
+    function highlight($str, $substr, $class) {
+        if (!$substr) {
+            return $str;
+        }
+        return mb_ereg_replace('('.$substr.')', '<span class="'.$class.'">\\1</span>', $str, 'i');
     }
 }

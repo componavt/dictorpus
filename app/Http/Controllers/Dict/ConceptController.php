@@ -9,8 +9,6 @@ use App\Http\Controllers\Controller;
 use LaravelLocalization;
 use Response;
 
-use App\Library\Str;
-
 use App\Models\Corpus\Place;
 
 use App\Models\Dict\Concept;
@@ -35,7 +33,7 @@ class ConceptController extends Controller
 //dd($this->url_args);        
 //var_dump($this->url_args); 
 //print '<br>';
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
 //var_dump($this->url_args);        
     }
     

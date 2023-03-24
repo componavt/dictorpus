@@ -200,6 +200,7 @@ return [
     'of_gramset' => 'грамсета',
     'of_lang' => 'языка',
     'of_lemma' => 'леммы',
+    'of_lemmas' => 'лемм',
     'of_meaning' => 'значения',
     'of_pos' => 'части речи',
     'of_relation' => 'отношения',

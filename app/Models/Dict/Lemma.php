@@ -2071,6 +2071,7 @@ dd($wordforms);
                     'search_meaning'  => $request->input('search_meaning'),
                     'search_pos'      => (int)$request->input('search_pos'),
                     'search_relation' => (int)$request->input('search_relation'),
+                    'search_w' => (string)$request->input('search_w'),
                     'search_wordform' => $request->input('search_wordform'),
                     'search_wordforms'=> (array)$request->input('search_wordforms'),
                     'with_audios'     => (int)$request->input('with_audios'),
@@ -2239,6 +2240,34 @@ dd($wordforms);
         return $translation_values;
     }
 
+    public function searchWord($search_w, $limit=null) {
+        $wordforms = $this->wordforms()
+                ->where('lemma_wordform.wordform_for_search', 'rlike', $search_w)
+                ->pluck('wordform')->toArray();
+        $size = sizeof($wordforms);
+        if ($limit) {
+            $wordforms = array_slice($wordforms, 0, $limit);
+        }
+        return join(', ',$wordforms). ($limit && $size>$limit ? ', ...' : '');        
+    }
+
+    public static function simpleSearch (string $word) {
+        $word = Grammatic::toSearchForm(preg_replace("/\|/", '', $word));
+        return 
+        self::whereIn('id', function ($q) use ($word) {
+                $q->select('lemma_id')->from('lemma_wordform')
+                  ->whereIn('wordform_id', function($q2) use ($word) {
+                      $q2->select('id')->from('wordforms')
+                         ->where('wordform_for_search', 'rlike', $word);
+                  });
+              })->orWhereIn('id', function ($q) use ($word) {
+                $q->select('lemma_id')->from('meanings')
+                  ->whereIn('id', function($q2) use ($word) {
+                      $q2->select('meaning_id')->from('meaning_texts')
+                         ->where('meaning_text', 'rlike', $word);
+                  });
+              });
+    }
     /*    
     public static function totalCount(){
         return self::count();

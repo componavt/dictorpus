@@ -43,7 +43,7 @@ class WordController extends Controller
                                      'updateMeaningLinks', 'updateWordBlock']]);
         $this->url_args = Word::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
     
     /**

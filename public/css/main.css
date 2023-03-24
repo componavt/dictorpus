@@ -491,7 +491,7 @@ h2 {
     padding-top: 10px;
 }
 
-.search-form div {
+.search-form>div {
     min-height: 49px;  
 }
 
@@ -622,6 +622,11 @@ h2 {
     flex-wrap: wrap;
     justify-content: space-between;
 }
+
+.search-word {
+    border-bottom: 2px #972d1a dotted;
+}
+
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;

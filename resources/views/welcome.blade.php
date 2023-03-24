@@ -39,15 +39,24 @@
                             
                             <div class="in_numbers">
                                 <h2>{{trans('blob.in_numbers_title')}}</h2>
-                                {!!trans('blob.in_numbers_text',[
-                                        'total_dialects'=>$total_dialects,
-                                        'total_words'=>number_format($total_words, 0, ',', ' '),
-                                        'words' => $words_choice,
-                                        'total_lemmas'=>number_format($total_lemmas, 0, ',', ' '),
-                                        'lemmas' => $lemmas_choice,
-                                        'texts' => $texts_choice,
-                                        'total_texts'=>number_format($total_texts, 0, ',', ' ')])!!}
+                                {{trans('blob.in_numbers_text')}}
+                                <div class="in_numbers-b">
+                                    <span class="in_numbers-n"><a href="{{ LaravelLocalization::localizeURL('/stats/by_dict')}}">{{format_number($total_lemmas)}}</a></span>
+                                    <span>{{trans_choice('blob.choice_articles',$total_lemmas, [], $locale)}}<br>{{trans('blob.about_words')}}</span>
+                                </div>
+                                <div class="in_numbers-b">
+                                   <span class="in_numbers-n"><a href="{{ LaravelLocalization::localizeURL('/stats/by_dict')}}">{{format_number($total_texts)}}</a></span>
+                                   <span>{{trans_choice('blob.choice_texts',$total_texts, [], $locale)}} 
+                                       {!!trans('blob.on_dialects', ['count'=>'<a href="'.LaravelLocalization::localizeURL('/dict/dialect').'">'.$total_dialects.'</a>'])!!}</span>
+                                </div>
+                                <div class="in_numbers-b">
+                                   <span class="in_numbers-n"><a href="/ru/stats">{{format_number($total_words)}}</a></span>
+                                   <span>&nbsp;&nbsp;&nbsp;{{trans_choice('blob.choice_words',$total_words, [], $locale)}}</span>
+                                </div>
                             </div>
+                            
+                @include('_form_simple_search', ['route'=>'simple_search'])
+                            
                             <div id="last-added-lemmas" class="block-list">
                 <img class="img-loading" src="{{ asset('images/loading.gif') }}">
                             </div>
@@ -56,7 +65,6 @@
                 <img class="img-loading" src="{{ asset('images/loading.gif') }}">
                             </div>
                             
-                            <?php $locale = LaravelLocalization::getCurrentLocale();?>
                             @if ($locale == 'ru') 
                             <div class='mobile-b'>
                                 <a href="https://play.google.com/store/apps/details?id=vepkar.test"><img src="/images/google_play.png"></a>
@@ -79,9 +87,13 @@
 @section('footScriptExtra')
     {!!Html::script('js/new_list_load.js')!!}
     {!!Html::script('js/fancybox.umd.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
+    {!!Html::script('js/help.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
+    
     newListLoad('/dict/lemma/limited_new_list/', 'last-added-lemmas',{{$limit}});
     newListLoad('/corpus/text/limited_new_list/', 'last-added-texts',{{$limit}});
 @stop

@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Storage;
 use Redirect;
-use File;
-
-use App\Library\Str;
+use Illuminate\Support\Facades\Route;
 
 use App\Models\User;
 
@@ -150,13 +148,16 @@ class AudioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $informant_id=null)
     {
+//        $url = Route::current()->getName() == "informant.audio.destroy" && 
+        $url = url()->previous();
         $error = false;
 //        $status_code = 200;
         $result =[];
         if($id != "" && $id > 0) {
             try{
+//dd($id);                
                 $audio = Audio::find($id);
                 if($audio){
                     $result['message'] = \Lang::get('dict.audio_removed', ['name'=>$audio->filename]);
@@ -180,10 +181,10 @@ class AudioController extends Controller
         }
         
         if ($error) {
-            return Redirect::to('/dict/audio/'.($this->args_by_get))
+            return Redirect::to($url.($this->args_by_get))
                            ->withErrors($result['error_message']);
         }
-        return Redirect::to('/dict/audio/'.($this->args_by_get))
+        return Redirect::to($url.($this->args_by_get))
               ->withSuccess($result['message']);
     }
     

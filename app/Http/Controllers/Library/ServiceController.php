@@ -345,7 +345,6 @@ print "</p>";
                     'search_lemma'    => $request->input('search_lemma'),
                     'search_pos'    => (int)$request->input('search_pos'),
                 ];        
-//        $args_by_get = Str::searchValuesByURL($url_args);
         $added_lemmas = [];
         $dialect_is_right = true; 
                 

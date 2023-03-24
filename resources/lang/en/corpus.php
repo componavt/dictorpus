@@ -88,6 +88,7 @@ return [
     'of_recording' => 'of recording',
     'of_region' => 'of the region',
     'of_text' => 'of the text',
+    'of_texts' => 'of texts',
     'of_topic' => 'of the topic',
     
     'p' => 'p.',

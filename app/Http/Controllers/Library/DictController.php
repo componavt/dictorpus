@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
-use LaravelLocalization;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
-//use DB;
 
 use App\Library\Str;
 
-use App\Models\Dict\Audio;
 use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
@@ -37,7 +34,7 @@ class DictController extends Controller
 //                'search_lemma'    => $request->input('search_lemma'),
             ];
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
     
     // отбираем из словаря ливвиковские леммы, у которых нет ещё метки "для мильтимедийного словаря"

@@ -1787,6 +1787,7 @@ class Text extends Model
                     'search_title'    => $request->input('search_title'),
                     'search_topic'    => (array)$request->input('search_topic'),
                     'search_text'     => $request->input('search_text'),
+                    'search_w'     => $request->input('search_w'),
                     'search_wid'     => (array)$request->input('search_wid'),
                     'search_without_genres' => (boolean)$request->input('search_without_genres'),
                     'search_word'     => $request->input('search_word'),
@@ -1962,4 +1963,20 @@ dd($s->saveXML());
     public function topicsToArray($link=null) {
         return $this->relationsToArr('topics', $link);
     }
+    
+    public static function simpleSearch (string $word) {
+        $word = Grammatic::toSearchForm(preg_replace("/\|/", '', $word));
+        return 
+        self::where('title', 'rlike', $word)
+            ->orWhere('text', 'rlike', $word)
+            ->orWhereIn('id', function ($q) use ($word) {
+                $q->select('text_id')->from('words')
+                  ->where('word', 'rlike', $word);
+            })->orWhereIn('transtext_id', function ($q) use ($word) {
+                $q->select('id')->from('transtexts')
+                  ->where('title', 'rlike', $word)
+                  ->orWhere('text', 'rlike', $word);
+            });
+    }
+    
 }

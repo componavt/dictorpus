@@ -127,6 +127,10 @@ input[type="radio"]:checked+span:before{
     padding: 6px 10px;
 }
 
+.btn.btn-small {
+    padding: 1px 5px;
+}
+
 @media screen and (max-width: 320px) {    
     .btn-primary {
         font-size: 14px;   

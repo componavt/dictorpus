@@ -185,6 +185,7 @@ return [
     'of_gramset' => 'of gramset',
     'of_lang' => 'of lang',
     'of_lemma' => 'of lemma',
+    'of_lemmas' => 'of lemmas',
     'of_pos' => 'of part of speech',
     'of_relation' => 'of relation',
     'of_wordform' => 'of wordform',

@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-use DB;
 use Illuminate\Support\Facades\Response;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-
-use App\Library\Str;
 
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
@@ -47,7 +44,7 @@ class GramsetController extends Controller
             $this->url_args['limit_num'] = 1000;
         }   
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
     
      /**
@@ -72,7 +69,7 @@ class GramsetController extends Controller
               
         $url_args_for_out = $url_args; // for links to lemmas and wordforms
         unset($url_args_for_out['page']);
-        $args_by_get_for_out = Str::searchValuesByURL($url_args_for_out);
+        $args_by_get_for_out = search_values_by_URL($url_args_for_out);
         
         
         return view('dict.gramset.index',

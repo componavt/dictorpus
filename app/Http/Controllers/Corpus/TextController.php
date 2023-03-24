@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
 
-use App\Library\Str;
-
 use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Cycle;
@@ -53,8 +51,8 @@ class TextController extends Controller
                                      'markupText',
                                      'markupAllEmptyTextXML','markupAllTexts']]);
         $this->url_args = Text::urlArgs($request);  
-        
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->url_args_w = remove_empty($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args_w);
     }
 
     /**
@@ -66,6 +64,7 @@ class TextController extends Controller
     {        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        $url_args_w = $this->url_args_w;
 
         if (isset($url_args['search_dialect'][0]) && !$url_args['search_lang']) {
             $dialect = Dialect::find($url_args['search_dialect'][0]);
@@ -100,9 +99,22 @@ class TextController extends Controller
                         'district_values', 'genre_values', 'informant_values', 
                         'lang_values', 'recorder_values', 'region_values', 
                         'place_values', 'plot_values', 'texts', 'topic_values', 
-                        'numAll', 'args_by_get', 'url_args'));
+                        'numAll', 'args_by_get', 'url_args', 'url_args_w'));
     }
 
+    public function simpleSearch() {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        $url_args_w = remove_empty($url_args);
+        
+        $texts = Text::simpleSearch($url_args['search_w']);
+        $numAll = $texts->count();
+        $texts = $texts->orderBy('id', 'desc')->paginate($url_args['limit_num']);         
+        
+        return view('corpus.text.search.simple', 
+                compact('texts', 'numAll', 'args_by_get', 'url_args', 'url_args_w'));        
+    }
+    
     /**
      * Show the form for creating a new resource.
      *

@@ -6,12 +6,11 @@ use Illuminate\Http\Request;
 use Response;
 use DB;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Library\Grammatic;
-use App\Library\Str;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
@@ -43,7 +42,7 @@ class LemmaWordformController extends Controller
         
         $this->url_args = Lemma::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**
@@ -198,9 +197,11 @@ class LemmaWordformController extends Controller
               ->withSuccess($result['message']);        
     }
 
-    public function load($id) {
-        $lemma = Lemma::findOrFail($id);        
-        return view('dict.lemma_wordform._wordform_table', compact('lemma'));         
+    public function load($id, Request $request) {
+        $lemma = Lemma::findOrFail($id);    
+        $search_w = $request->search_w;
+        return view('dict.lemma_wordform._wordform_table', 
+                compact('lemma', 'search_w'));         
     }
     /**
      * Get bases from table OR from wordforms

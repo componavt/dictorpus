@@ -28,6 +28,7 @@ return [
                     Республике Карелия: 3423 человека, в Ленинградской области 1380 человек,
                     в Вологодской области – 412 человек.</p>
                     <p>Подробнее о вепсах можно прочесть в книге <a href="http://avtor.karelia.ru/elbibl/sborniki/narody_karelii/273/index.html">«Народы Карелии: историко-этнографические очерки»</a>',
+    'about_words' => 'о словах',
     'choice_articles' => 'статья|статьи|статей',
     'choice_texts' => 'текст|текста|текстов',
     'choice_words' => 'слово|слова|слов',
@@ -42,21 +43,10 @@ return [
               . '<li>РНФ (проект № 22-28-20215 "<a href="https://rscf.ru/en/project/22-28-20215/">Создание речевого корпуса прибалтийско-финских языков Карелии</a>") совместно с органами власти Республики Карелия с финансированием из Фонда венчурных инвестиций Республики Карелия (ФВИ РК)</li></ul>'
               . '<p>В 2017 году авторский коллектив проекта «Корпус вепсского языка» получил премию <a href="http://illhportal.krc.karelia.ru/news.php?id=2555&plang=r">«Ключевое слово»</a> за лучший научный проект.</p>',
     'in_numbers_title' => 'ВепКар в цифрах',
-    'in_numbers_text' => 'Корпус вепсского и карельского языков был открыт 24 июля 2016. На данный момент в корпусе:
-                         <div class="in_numbers-b">
-                            <span class="in_numbers-n"><a href="/ru/stats">:total_lemmas</a></span>
-                            <span>:lemmas<br>о словах</span>
-                         </div>
-                         <div class="in_numbers-b">
-                            <span class="in_numbers-n"><a href="/ru/stats">:total_texts</a></span>
-                            <span>:texts на <a href="/ru/dict/dialect">:total_dialects</a> диалектах</span>
-                         </div>
-                         <div class="in_numbers-b">
-                            <span class="in_numbers-n"><a href="/ru/stats">:total_words</a></span>
-                            <span>&nbsp;&nbsp;&nbsp;:words</span>
-                         </div>',
+    'in_numbers_text' => 'Корпус вепсского и карельского языков был открыт 24 июля 2016. На данный момент в корпусе:',
     'license' => 'Вы можете свободно использовать материалы нашего сайта и делиться ими, главное — указать авторство и ссылку
                   на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/">Подробнее о лицензии CC BY 4.0</a>',
+    'on_dialects' => 'на :count диалектах',
     'participants' => '<dl>'
                     . '<dt><a href="http://mathem.krc.karelia.ru/member.php?id=804&plang=r">Крижановский Андрей Анатольевич</a></dt>'
                     . '<dd>к.т.н., ведущий научный сотрудник, руководитель лаб. информационных компьютерных технологий ИПМИ КарНЦ РАН</dd><br>'

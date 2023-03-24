@@ -7,14 +7,10 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-//use DB;
 use LaravelLocalization;
 use Response;
 
-use App\Library\Str;
-
 use App\Models\Dict\Lang;
-use App\Models\Dict\Lemma;
 use App\Models\Corpus\District;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
@@ -32,7 +28,7 @@ class InformantController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/informant/', ['only' => ['create','store','edit','update','destroy', 'audio']]);
         
         $this->url_args = Informant::urlArgs($request);          
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**

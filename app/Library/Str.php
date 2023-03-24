@@ -33,9 +33,8 @@ class Str
      * @return String f.e. 'pos_id=11&lang_id=1'
      */
     public static function searchValuesByURL(Array $url_args=NULL) : String
-    {
-        $out = http_build_query($url_args);
-        return $out ? '?'.$out : '';
+    {        
+        return search_values_by_URL($url_args);
 /*        $url = '';
         if (isset($url_args) && sizeof($url_args)) {
             $tmp=[];

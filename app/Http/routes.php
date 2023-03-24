@@ -20,8 +20,7 @@ Route::group(
     ],
     function()
     {
-//Route::get('user/profile', 'UserController@getProfile')->name('profile');
-//Route::post('user/profile', 'UserController@postProfileUpdate')->name('updateProfile');
+        Route::get('simple_search', 'HomeController@simpleSearch')->name('simple_search');   
         include_once 'routes/pages.php';
         include_once 'routes/auth.php';
         include_once 'routes/correct.php';

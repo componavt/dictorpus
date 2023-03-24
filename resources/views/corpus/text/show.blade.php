@@ -38,7 +38,7 @@
         
         <h2>
             {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
-            {{ $text->title }}
+            {!!highlight($text->title, $url_args['search_w'], 'search-word')!!}
         </h2>
         
         @if ($text->video && $text->video->youtube_id)

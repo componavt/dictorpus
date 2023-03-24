@@ -14,6 +14,8 @@ Route::group(
         Route::get('audio/list/{informant_id}/voiced', 'Dict\AudioController@voicedList');
         Route::get('audio/list/{informant_id}', 'Dict\AudioController@indexList');
         Route::post('audio/upload', 'Dict\AudioController@upload');
+//        Route::delete('audio/list/{informant_id}/{id}', 'Dict\AudioController@destroy')->name('informant.audio.destroy');
+        
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
         Route::get('example/create/{meaning_id}', 'Dict\ExampleController@create');        
@@ -44,9 +46,10 @@ Route::group(
         Route::get('lemma/phrases', 'Dict\LemmaController@phrases');
         Route::get('lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength')->name('lemma.sorted_by_length');
         Route::get('lemma/full_new_list', 'Dict\LemmaController@fullNewList');
-        Route::get('lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
+        Route::get('lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
         Route::get('lemma/limited_updated_list', 'Dict\LemmaController@limitedUpdatedList');
+        Route::get('lemma/simple_search', 'Dict\LemmaController@simpleSearch')->name('lemma.simple_search');
         Route::get('lemma/wordform_gram_form', 'Dict\LemmaController@wordformGramForm');
         
         Route::put('lemma_wordform/{id}', 'Dict\LemmaWordformController@update')

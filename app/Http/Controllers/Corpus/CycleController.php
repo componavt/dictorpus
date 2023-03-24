@@ -9,8 +9,6 @@ use App\Http\Controllers\Controller;
 use Redirect;
 use Response;
 
-use App\Library\Str;
-
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Cycle;
 use App\Models\Corpus\Genre;
@@ -31,7 +29,7 @@ class CycleController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/cycle/', ['except' => ['index','cycleList']]);
         $this->url_args = Cycle::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**

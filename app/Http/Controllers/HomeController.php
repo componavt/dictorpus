@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use LaravelLocalization;
+use Illuminate\Http\Request;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
@@ -27,8 +28,9 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search_w = $request->input('search_w');
         $limit = 7;
         $locale = LaravelLocalization::getCurrentLocale();
         $total_lemmas = Lemma::count();
@@ -39,10 +41,11 @@ class HomeController extends Controller
         $texts_choice = \Lang::choice('blob.choice_texts',$total_texts, [], $locale);        
         $words_choice = \Lang::choice('blob.choice_words',$total_words, [], $locale);        
         $video = Text::videoForStart();
+        $locale = LaravelLocalization::getCurrentLocale();
         return view('welcome',
-                    compact('lemmas_choice', 'limit', 'texts_choice', 'total_dialects', 
-                            'total_lemmas', 'total_texts', 'total_words', 
-                            'video', 'words_choice'));
+                    compact('lemmas_choice', 'limit', 'locale', 'search_w', 
+                            'texts_choice', 'total_dialects', 'total_lemmas', 
+                            'total_texts', 'total_words', 'video', 'words_choice'));
     }   
 
     public function page($page) {
@@ -52,4 +55,12 @@ class HomeController extends Controller
     public function help($section, $page) {
         return view('help.'.$section.'.'.$page);        
     }
+    
+    public function simpleSearch(Request $request) {
+        $search_w = $request->input('search_w');
+        $lemma_total = Lemma::simpleSearch($search_w)->count();
+        $text_total = Text::simpleSearch($search_w)->count();
+        return view('simple_search', compact('search_w', 'lemma_total', 'text_total'));        
+    }
+    
 }

@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use LaravelLocalization;
 use Redirect;
 use Response;
-
-use App\Library\Str;
 
 use App\Models\Dict\Lang;
 
@@ -33,7 +31,7 @@ class AuthorController extends Controller
         
         $this->url_args = Author::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
     
     /**

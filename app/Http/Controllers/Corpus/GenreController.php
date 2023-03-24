@@ -8,10 +8,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
-//use DB;
-//use LaravelLocalization;
-
-use App\Library\Str;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
@@ -32,7 +28,7 @@ class GenreController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/genre/', ['only' => ['create','store','edit','update','destroy']]);
         $this->url_args = Genre::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**

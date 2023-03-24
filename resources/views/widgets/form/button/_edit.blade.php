@@ -20,7 +20,7 @@
         $link = LaravelLocalization::localizeURL($route);
         $format = '<a  href="%s"';
         if (isset($is_button) && $is_button) {
-            $format .= ' class="btn btn-warning btn-xs btn-detail"';
+            $format .= ' class="btn btn-warning btn-xs btn-detail btn-small"';
         } elseif (isset($link_class)) {
             $format .= ' class="'.$link_class.'"';
         }

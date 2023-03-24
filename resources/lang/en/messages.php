@@ -45,6 +45,7 @@ return [
     'limit_num' => 'number of records',
     'name' => 'Name',
     'of' => 'of',
+    'on' => 'on',
     'output' => 'Output',
     'photo' => 'image',
     'photos' => 'Images',

@@ -7,12 +7,15 @@ function toggleSearchForm() {
 /*            $(".search-button-b").css('padding-top', 0);*/
             $(".ext-form").show("slow");
             /*css('display', 'table');*/
+            $(".margin-to-ext").css('padding-top','25px')
+                               .css('text-align','right');
             $(".hide-search-form").show();
         });
         $(".hide-search-form").click(function(){
             $(".hide-search-form").hide();
             $(".ext-form").hide("slow");
-/*            $(".search-button-b").css('padding-top', '25px');*/
+            $(".margin-to-ext").css('padding-top','0')
+                               .css('text-align','left');
             $(".show-search-form").show();
         });
 }

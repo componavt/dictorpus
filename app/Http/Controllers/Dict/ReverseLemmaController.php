@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-use DB;
-
-use App\Library\Str;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
@@ -14,7 +11,7 @@ use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\ReverseLemma;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 class ReverseLemmaController extends Controller
@@ -35,7 +32,7 @@ class ReverseLemmaController extends Controller
         
         $this->url_args = ReverseLemma::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**

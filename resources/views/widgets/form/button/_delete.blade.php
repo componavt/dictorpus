@@ -10,7 +10,7 @@
     $format = '<a href="%s" data-toggle="tooltip" data-delete="%s" title="%s"';
 
     if (isset($is_button) && $is_button) {
-        $format .= ' class="btn btn-xs btn-danger"';
+        $format .= ' class="btn btn-xs btn-danger btn-small"';
     }
 
     $format .= '><i class="fa fa-trash fa-lg'. (isset($class) ? ' '.$class : ''). '"></i>%s</a>';

@@ -10,15 +10,12 @@ use Illuminate\Support\Facades\Redirect;
 use Response;
 use LaravelLocalization;
 
-use App\Library\Str;
-
 use App\Models\User;
 
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\SentenceFragment;
 use App\Models\Corpus\SentenceTranslation;
-//use App\Models\Corpus\Text;
 
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
@@ -46,7 +43,8 @@ class LemmaController extends Controller
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.add,/dict/lemma/', 
-                          ['only' => ['create','store']]);
+
+                ['only' => ['create','store']]);
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                           ['only' => ['edit','update','destroy',
                                       'editExample', 'removeExample',
@@ -59,7 +57,7 @@ class LemmaController extends Controller
         
         $this->url_args = Lemma::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**
@@ -95,6 +93,18 @@ class LemmaController extends Controller
                         'not_changeable_pos_list', 'pos_values', 'args_by_get', 'url_args'));
     }
 
+    public function simpleSearch(Request $request) {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $lemmas = Lemma::simpleSearch($url_args['search_w']);
+        $numAll = $lemmas->count();
+        $lemmas = $lemmas->orderBy('lemma')->paginate($url_args['limit_num']);         
+        
+        return view('dict.lemma.search.simple', 
+                compact('lemmas', 'numAll', 'args_by_get', 'url_args'));        
+    }
+    
     /**
      * Search lemmas by wordforms with grammatical attributes
      * 
@@ -979,4 +989,5 @@ class LemmaController extends Controller
                     . " VALUES ('$id', '$label_id', 0)");
         return;
     }
+    
 }

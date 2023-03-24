@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
 
-use App\Library\Str;
-
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Plot;
@@ -30,7 +28,7 @@ class PlotController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/plot/', ['except' => ['index','plotList']]);
         $this->url_args = Plot::urlArgs($request);  
         
-        $this->args_by_get = Str::searchValuesByURL($this->url_args);
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**

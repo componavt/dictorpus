@@ -3,13 +3,7 @@
         !!}
 <div class="show-search-form">{{trans('search.advanced_search')}} &#8595;</div>
 <div class="row search-form">
-    <div class="col-sm-1">
-            @include('widgets.form.formitem._text',
-                    ['name' => 'search_id',
-                    'value' => $url_args['search_id'],
-                    'title'=> 'ID'])
-    </div>
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         @include('widgets.form.formitem._text',
                 ['name' => 'search_lemma',
                 'value' => $url_args['search_lemma'],
@@ -40,25 +34,6 @@
                      'value' =>$url_args['search_pos'],
                      'title' => trans('dict.pos') ]) 
     </div>
-{{--
-@if ($url_args['search_pos'] && $url_args['search_lang'] || $url_args['search_gramset'])         
-    <div class="col-sm-4{{$url_args['search_gramset'] ? '' : ' ext-form'}}">
-                @include('widgets.form.formitem._select', 
-                        ['name' => 'search_gramset', 
-                         'values' =>$gramset_values,
-                         'value' =>$url_args['search_gramset'],
-                         'title' => trans('dict.gramset') ]) 
-    </div>
-    @endif
-
-    <div class="col-sm-4{{$url_args['search_wordform'] ? '' : ' ext-form'}}">
-            @include('widgets.form.formitem._text',
-                    ['name' => 'search_wordform',
-                    'value' => $url_args['search_wordform'],
-                    'special_symbol' => true,
-                    'title'=> trans('dict.wordform')])
-    </div>
---}}
     <div class="col-sm-4{{$url_args['search_concept_category'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select',
                 ['name' => 'search_concept_category',
@@ -75,7 +50,7 @@
                  'title' => trans('dict.concept'),
                  'class'=>'select-concept form-control']) 
     </div>
-    <div class="col-sm-4{{$url_args['search_meaning'] ? '' : ' ext-form'}}">
+    <div class="col-sm-4">
         @include('widgets.form.formitem._text',
                 ['name' => 'search_meaning',
                 'value' => $url_args['search_meaning'],
@@ -83,27 +58,35 @@
                 'help_func' => "callHelp('help-text-fields')",
                 'title'=>trans('dict.interpretation')])
     </div>
-    <div class="col-sm-2{{$url_args['with_examples'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
+    <div class="col-sm-1{{$url_args['search_id'] ? '' : ' ext-form'}}">
+            @include('widgets.form.formitem._text',
+                    ['name' => 'search_id',
+                    'value' => $url_args['search_id'],
+                    'title'=> 'ID'])
+    </div>
+    <div class="col-sm-3{{$url_args['with_examples'] || $url_args['with_audios'] ? '' : ' ext-form'}}" style='padding-top: 10px'>
         @include('widgets.form.formitem._checkbox',
                 ['name' => 'with_examples',
                 'value' => 1,
                 'checked' => $url_args['with_examples']==1,
                 'tail'=>trans('dict.with_examples')]) 
-    </div>        
-    <div class="col-sm-2{{$url_args['with_audios'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
         @include('widgets.form.formitem._checkbox',
                 ['name' => 'with_audios',
                 'value' => 1,
                 'checked' => $url_args['with_audios']==1,
                 'tail'=>trans('dict.with_audios')]) 
     </div>        
-    <div class="col-sm-4 search-button-b" style='padding-top: 25px'>       
+    <div class="col-sm-2 ext-form" style='padding-top: 25px'>     
+        <div class='search-button-b'>
         <span>{{trans('search.show_by')}}</span>
         @include('widgets.form.formitem._text', 
                 ['name' => 'limit_num', 
                 'value' => $url_args['limit_num'], 
                 'attributes'=>[ 'placeholder' => trans('messages.limit_num') ]]) 
         <span>{{ trans('messages.records') }}</span>
+        </div>
+    </div>        
+    <div class="col-sm-2 margin-to-ext">       
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
 </div>      

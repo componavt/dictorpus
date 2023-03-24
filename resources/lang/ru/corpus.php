@@ -91,6 +91,7 @@ return [
     'of_recording' => 'записи',
     'of_region' => 'региона',
     'of_text' => 'текста',
+    'of_texts' => 'текстов',
     'of_topic' => 'темы',
     
     'p' => 'с.',

@@ -8,11 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Response;
-//use LaravelLocalization;
 
-use App\Library\Str;
-
-//use App\Models\Corpus\Text;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
@@ -67,7 +63,7 @@ class DialectController extends Controller
 
         $url_args = ['lang_id'=>$lang_id];
                 
-        $args_by_get = Str::searchValuesByURL($url_args);
+        $args_by_get = search_values_by_URL($url_args);
                 
         return view('dict.dialect.index')
             ->with(['dialects' => $dialects,
