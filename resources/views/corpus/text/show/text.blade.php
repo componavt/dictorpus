@@ -4,7 +4,7 @@
             {{$text->authorsToString()}}<h4>
         @endif
         <h3>
-        {{ $text->title }}
+        {!!highlight($text->title, $url_args['search_w'], 'search-word')!!}
         </h3>
         <h5>
         {{ $text->lang->name }}
