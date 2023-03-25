@@ -192,7 +192,7 @@ if (! function_exists('remove_empty')) {
             unset($url_args['page']);
         }
         foreach ( $url_args as $k=>$v ) {
-            if (!$v || is_array($v) && (!sizeof($v) || sizeof($v)==1 && !$v[1])) {
+            if (!$v || is_array($v) && (!sizeof($v) || sizeof($v)==1 && isset($v[1]) && !$v[1])) {
                 unset($url_args[$k]);
             } 
         }
