@@ -124,7 +124,7 @@ return [
 
                         <p>The corpus website contains <a href="/en/corpus/text/">texts</a> in Karelian and Veps languages, 
                         <a href="/en/dict/lemma/">dictionaries</a> and folklore <a href="/en/corpus/collection/">collections</a>. 
-                        <a href="/en/corpus/speech_corpus/">The speech corpus</a> contains texts with audio recordings. 
+                        <a href="/en/corpus/speech_corpus/">The Speech corpus</a> contains texts with audio recordings. 
                         The VepKar User Guide (in Russian) will help you work in the corpus and make full use of the corpus search engine. 
                         The VepKar corpus data is the basis for growing resources such as the Baltic-Finnish 
                         <a href="/en/corpus/audiotext/map/">Audio Map</a> of Karelia and 
