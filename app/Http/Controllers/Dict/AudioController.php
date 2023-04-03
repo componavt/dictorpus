@@ -181,10 +181,10 @@ class AudioController extends Controller
         }
         
         if ($error) {
-            return Redirect::to($url.($this->args_by_get))
+            return Redirect::to($url)
                            ->withErrors($result['error_message']);
         }
-        return Redirect::to($url.($this->args_by_get))
+        return Redirect::to($url)
               ->withSuccess($result['message']);
     }
     
