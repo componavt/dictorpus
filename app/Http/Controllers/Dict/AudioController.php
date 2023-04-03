@@ -215,7 +215,9 @@ class AudioController extends Controller
                 ->whereNotIn('id', function ($q) {
                     $q->select('lemma_id')->from('informant_lemma');
                 });
-        
+                
+        $lemmas = Lemma::searchByLemma($lemmas, $url_args['search_lemma']); 
+
         if ($url_args['search_dialect']) {
             $lemmas -> whereIn('id', function ($q) use ($url_args) {
                 $q->select('lemma_id')->from('meanings')
