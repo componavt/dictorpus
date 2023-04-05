@@ -34,6 +34,7 @@ return [
     'edit' => 'edit',
     'editing' => 'Editing',
     'examples' => 'Examples',
+    'filename' => 'Filename',
     'frequency' => 'frequency',
     'from' => 'from',
     'history' => 'history',

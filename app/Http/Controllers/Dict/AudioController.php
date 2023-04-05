@@ -58,12 +58,44 @@ class AudioController extends Controller
         return Redirect::to('/dict/audio/'.($this->args_by_get));
     }
     
-    public function update() {
+    public function store() {
         return Redirect::to('/dict/audio/'.($this->args_by_get));
     }
     
-    public function store() {
-        return Redirect::to('/dict/audio/'.($this->args_by_get));
+    public function edit($id)
+    {
+        $audio = Audio::find($id);
+        $informant_values = [NULL => ''] + Informant::getList();
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        return view('dict.audio.edit',
+                compact('audio', 'informant_values', 'args_by_get', 'url_args'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $audio = Audio::find($id);
+        $this->validate($request, [
+            'informant_id'  => 'required|integer',
+            'filename'  => 'max:100',
+        ]);
+        
+        $audio->informant_id = (int)$request->informant_id;
+        if ($audio->filename != $request->filename) {
+            Storage::disk('audios')->move($audio->filename, $request->filename);
+            $audio->filename = $request->filename;
+        }
+        $audio->save();
+        
+        return Redirect::to('/dict/audio/'.($this->args_by_get))
+                       ->withSuccess(\Lang::get('messages.updated_success'));
     }
     
     public function recordGroup(string $list) {

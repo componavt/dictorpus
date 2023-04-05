@@ -177,6 +177,7 @@ return [
                    3 => 'ordinal',
                    4 => 'fractional'],
     
+    'of_audio' => 'of audio',
     'of_category' => 'of category',
     'of_concept' => 'of concept',
     'of_dialect' => 'of dialect',

@@ -1,4 +1,4 @@
-<?php $list_count=1; ?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.page')
 
 @section('page_title')
@@ -52,11 +52,9 @@
                 @include('widgets.audio_decor', ['route'=>$audio->url()])
                     </div>
                 @if (User::checkAccess('dict.edit'))
-                    @include('widgets.form.button._delete', 
-                             ['is_button'=>false, 
-                              'without_text' => true,
-                              'route' => 'audio.destroy', 
-                              'args'=>['id' => $audio->id]])
+                    @include('widgets.form.button._edit_small_button', 
+                             ['route' => '/dict/audio/'.$audio->id.'/edit'])
+                    @include('widgets.form.button._delete_small_button', ['obj_name' => 'audio'])
                 @endif
                 </td>
             </tr>
