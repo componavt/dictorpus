@@ -37,7 +37,7 @@
                 </td>
                         @foreach (array_keys($lemma->existDialects()) as $dialect_id)
                 <td>
-                    {!!highlight($lemma->wordform($gramset_id, $dialect_id, 1),$search_w, 'search-word')!!}
+                    {!!highlight($lemma->wordform($gramset_id, $dialect_id, 1),$search_w ?? null, 'search-word')!!}
                 </td>
                         @endforeach
             </tr>
