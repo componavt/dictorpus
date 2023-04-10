@@ -5,7 +5,9 @@
 @stop
 
 @section('body')
-        @include('_form_simple_search', ['route'=>'lemma.simple_search', 'search_w'=>$url_args['search_w']])
+        @include('_form_simple_search', ['route'=>'lemma.simple_search', 
+                                         'search_w'=>$url_args['search_w']])
+        {!! Form::close() !!}
 
         @include('dict.lemma.search._simple_found_records', 
             ['lemma_total'=>$numAll,

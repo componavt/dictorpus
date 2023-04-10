@@ -150,6 +150,7 @@ return [
     'hide_examples' => '&lt; &lt; скрыть примеры',
 
     'impersonal' => 'безличный',
+    'in_dictionary' => 'в словаре',
     'in_pos'=>'в :count частях речи',
     'infinitive' => 'инфинитив',
     'interpretation' => 'толкование',

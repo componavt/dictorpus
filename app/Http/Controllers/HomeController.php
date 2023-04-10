@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use LaravelLocalization;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
@@ -58,9 +59,25 @@ class HomeController extends Controller
     
     public function simpleSearch(Request $request) {
         $search_w = $request->input('search_w');
+        $search_by_dict = (int)$request->input('search_by_dict');
+        $search_by_corpus = (int)$request->input('search_by_corpus');
+        
+        if ($search_w) {
+            if ($search_by_dict && !$search_by_corpus) {
+                return Redirect::to(route('lemma.simple_search',['search_w'=>$search_w]));
+            } elseif (!$search_by_dict && $search_by_corpus) {
+                return Redirect::to(route('text.simple_search',['search_w'=>$search_w]));
+            }
+        }
+        
+        if (!$search_by_dict && !$search_by_corpus) {
+            $search_by_dict=$search_by_corpus=1;
+        }
         $lemma_total = Lemma::simpleSearch($search_w)->count();
         $text_total = Text::simpleSearch($search_w)->count();
-        return view('simple_search', compact('search_w', 'lemma_total', 'text_total'));        
+        return view('simple_search', 
+                compact('search_w', 'search_by_dict', 'search_by_corpus', 
+                        'lemma_total', 'text_total'));        
     }
     
 }

@@ -5,7 +5,9 @@
 @stop
 
 @section('body')
-        @include('_form_simple_search', ['route'=>'text.simple_search', 'search_w'=>$url_args['search_w']])
+        @include('_form_simple_search', ['route'=>'text.simple_search', 
+                                         'search_w'=>$url_args['search_w']])
+        {!! Form::close() !!}
 
         @include('corpus.text.search._simple_found_records', 
             ['text_total'=>$numAll,

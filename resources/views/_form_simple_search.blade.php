@@ -5,7 +5,7 @@
         {!! Form::open(['url' => route($route),
                         'method' => 'get'])
         !!}
-        <div style="display: flex;">
+        <div class="simple-search-f">
             <div style='width: 100%'>
         @include('widgets.form.formitem._text',
                 ['name' => 'search_w',
@@ -14,6 +14,5 @@
                 'help_func' => "callHelp('help-simple')"])    
             </div>
         @include('widgets.form.formitem._submit', ['title' => trans('messages.search')])
-        </div>
-        {!! Form::close() !!}
+        </div>  
                             

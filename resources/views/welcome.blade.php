@@ -56,6 +56,17 @@
                             </div>
                             
                 @include('_form_simple_search', ['route'=>'simple_search'])
+                    <div class="simple-search-by">
+                        <div style='padding-right: 20px;'>
+                            <input name="search_by_dict" type="checkbox" value="1" checked>
+                            <label for="search_by_dict">{{trans('dict.in_dictionary')}}</label>
+                        </div>
+                        <div>
+                            <input name="search_by_corpus" type="checkbox" value="1" checked>
+                            <label for="search_by_corpus">{{trans('corpus.in_corpus')}}</label>
+                        </div>
+                    </div>   
+                {!! Form::close() !!}
                             
                             <div id="last-added-lemmas" class="block-list">
                 <img class="img-loading" src="{{ asset('images/loading.gif') }}">

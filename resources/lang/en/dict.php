@@ -136,6 +136,7 @@ return [
     'hide_examples' => '&lt; &lt; hide examples',
     
     'impersonal' => 'impersonal',
+    'in_dictionary' => 'in dictionary',
     'infinitive' => 'infinitive',
     'interpretation' => 'interpretation',
     'join_harmony' => 'unite different only in harmony ',

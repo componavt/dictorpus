@@ -627,6 +627,23 @@ h2 {
     border-bottom: 2px #972d1a dotted;
 }
 
+.simple-search-f {
+    display: flex;
+}
+
+.simple-search-f .form-group {
+    margin-bottom: 0;
+}
+
+.simple-search-by {
+    display: flex; 
+    justify-content: end;
+}
+
+.simple-search-by label {
+    font-weight: normal;
+}
+
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;
