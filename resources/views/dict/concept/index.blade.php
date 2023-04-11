@@ -55,8 +55,8 @@
                     0
                     @endif
                 </td>
-                <td data-th="{{ trans('messages.photo') }}">
-                    @include('dict.concept._photo_preview')
+                <td data-th="{{ trans('messages.photo') }}" id='concept-photo_{{$concept->id}}'>
+                    <img class="img-loading" id="img-photo-loading_{{$concept->id}}" src="{{ asset('images/loading.gif') }}">
                 </td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
@@ -81,10 +81,14 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/meaning.js')!!}
 @stop
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}');
+    @foreach($concepts as $concept)
+        loadPhoto('concept', {{$concept->id}}, '/dict/concept/{{$concept->id}}/photo_preview');
+    @endforeach
 @stop
 
 

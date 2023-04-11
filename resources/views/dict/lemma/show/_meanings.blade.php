@@ -13,8 +13,8 @@
 
                 @if ($meaning->hasPhoto())
                     </div>
-                    <div class="meaning-photo">
-                        @include('dict.meaning._photo')
+                    <div class="meaning-photo" id='meaning-photo_{{$meaning->id}}'>
+                    <img class="img-loading" id="img-photo-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
                     </div>
                 </div>
                 @endif    

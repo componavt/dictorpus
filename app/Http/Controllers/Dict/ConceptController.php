@@ -324,4 +324,10 @@ class ConceptController extends Controller
                 compact('concept_lemmas', 'search_lang_name', 
                         'search_lang', 'search_places', 'lang_values', 'place_values'));
     }
+    
+    public function photoPreview($id)
+    {
+        $concept = Concept::find($id); 
+        return view('dict.concept._photo_preview', compact('concept'));
+    }
 }

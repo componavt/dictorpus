@@ -55,6 +55,7 @@
     loadWordforms({{$lemma->id}}, 'load?search_w={{$url_args['search_w']}}');
     @foreach ($lemma->meanings as $meaning)
         loadExamples('{{LaravelLocalization::localizeURL('/dict/meaning/examples/load')}}', {{$meaning->id}}, 0, {{$update_text_links}});
+        loadPhoto('meaning', {{$meaning->id}}, '/dict/meaning/{{$meaning->id}}/photo');
     @endforeach
     
     chooseDialectForGenerate({{$lemma->id}});

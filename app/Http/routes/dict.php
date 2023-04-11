@@ -17,6 +17,7 @@ Route::group(
 //        Route::delete('audio/list/{informant_id}/{id}', 'Dict\AudioController@destroy')->name('informant.audio.destroy');
         
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
+        Route::get('concept/{id}/photo_preview', 'Dict\ConceptController@photoPreview');
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
         Route::get('example/create/{meaning_id}', 'Dict\ExampleController@create');        
         Route::get('example/store/{meaning_id}', 'Dict\ExampleController@store');        
@@ -73,6 +74,7 @@ Route::group(
         Route::get('meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
         Route::get('meaning/examples/load_more/{id}', 'Dict\MeaningController@loadMoreExamples');
         Route::get('meaning/{meaning_id}/remove_label/{label_id}', 'Dict\MeaningController@removeLabel');
+        Route::get('meaning/{meaning_id}/photo', 'Dict\MeaningController@photo');
         
         Route::get('pos', 'Dict\PartOfSpeechController@index');
 

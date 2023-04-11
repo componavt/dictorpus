@@ -203,6 +203,12 @@ class MeaningController extends Controller
         }
         return 0;
     }
+    
+    public function photo(int $meaning_id) {
+        $meaning = Meaning::find($meaning_id);
+        return view('dict.meaning._photo', compact('meaning'));
+    }
+    
 
     /** 
      * (1) Copy vepsian.{meaning} to vepkar.meanings (without meaning_text)

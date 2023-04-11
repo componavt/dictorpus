@@ -8,14 +8,7 @@
                  'value' =>$lang_id,
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lemma_lang_id']])
-                 
-{{--        @include('widgets.form.formitem._select2',
-                ['name' => 'dialects', 
-                 'values' =>$dialect_values,
-                 'value' => $dialects_value,
-                 'title' => trans('dict.dialects_usage'),
-                 'class'=>'select-dialects form-control']) --}}
-                 
+                                  
         @include('widgets.form.formitem._select2',
                 ['name' => 'wordform_dialect_id', 
                  'values' =>$dialect_values,
@@ -51,13 +44,7 @@
                  'help_func' => 'callHelpLemma()',
                  'value' => $lemma_value,
                  'title'=>trans('dict.lemma')])
-                 
-{{--        @include('widgets.form.formitem._text', 
-                ['name' => 'phonetics', 
-                 'special_symbol' => true,
-                 'value' => isset($obj->phonetics) ? $obj->phonetics : NULL,
-                 'title'=>trans('dict.phonetics')]) --}}
-                 
+                                  
         @include('widgets.form.formitem._select2',
                 ['name' => 'variants',
                  'title' => trans('dict.variants'),
@@ -67,6 +54,31 @@
             ])
     </div>
 </div>
+
+@if ($action == 'edit' && $lemma->phonetics()->count())
+    <div class="row">
+        <div class="col-sm-4 form-group"><label>{{trans('dict.phonetics')}}</label></div>
+        <div class="col-sm-8 form-group"><label>{{trans('navigation.places')}}</label></div>
+    </div>
+    @foreach ($lemma->phonetics as $phonetic)
+    <div class="row">
+        <div class="col-sm-4">
+            @include('widgets.form.formitem._text', 
+                    ['name' => 'phonetics['.$phonetic->id.'][phonetic]', 
+                     'special_symbol' => true,
+                     'value' => $phonetic->phonetic]) 
+        </div>
+        <div class="col-sm-8">
+            @include('widgets.form.formitem._select2',
+                    ['name' => 'phonetics['.$phonetic->id.'][places]', 
+                     'values' => $place_values,
+                     'value' => $phonetic->places->pluck('id')->toArray(),
+                     'class'=>'select-places form-control'])        
+        </div>
+    </div>
+    @endforeach
+@endif
+
 @if ($action == 'edit')
     @foreach ($lemma->meanings as $meaning)
         @include('dict.meaning.form._edit')

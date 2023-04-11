@@ -967,6 +967,7 @@ dd($wordforms);
         $this->storeReverseLemma($stem, $affix);
 
         $this->storeVariants($features['variants'] ?? []);
+        $this->storePhonetics($features['phonetics'] ?? []);
         
         $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
         $this->createDictionaryWordforms($wordforms, 
@@ -1281,6 +1282,24 @@ dd($wordforms);
             if (!$back_link) {
                 $lemma->variants()->attach($this->id);
             }
+        }
+    }
+    
+    public function storePhonetics($phonetics) {
+        foreach ($phonetics as $phonetic_id=>$phonetic_info) {
+            $phonetic = $this->phonetics()->whereId($phonetic_id)->first();
+            if (!$phonetic_info['phonetic']) {
+                $phonetic->remove();
+                continue;
+            }
+            $phonetic->phonetic = $phonetic_info['phonetic'];
+            $phonetic->places()->sync($phonetic_info['places']); 
+            $dialects = [];
+            foreach ($phonetic->places as $place) {
+                $dialects = array_merge($dialects, $place->dialects()->pluck('id')->toArray());
+            }
+            $phonetic->dialects()->sync(array_unique($dialects));
+            $phonetic->save();
         }
     }
     
