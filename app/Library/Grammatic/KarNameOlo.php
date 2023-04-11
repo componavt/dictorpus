@@ -52,7 +52,7 @@ class KarNameOlo
             case 17: //аппроксиматив, ед.ч. 
                 return $stems[1] ? $stems[1].'ll'. KarGram::garmVowel($stems[10],'uo') : '';
             case 16: //терминатив, ед.ч. 
-                return $stems[1] ? $stems[1].'ss'. KarGram::garmVowel($stems[10],'a'). 'h' : '';
+                return $stems[2] ? $stems[2].'ss'. KarGram::garmVowel($stems[10],'a'). 'h' : '';
         }
     }
 
@@ -91,9 +91,9 @@ class KarNameOlo
             case 64: // абессив, мн.ч. 
                 return self::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[10],'a'). 'h');        
             case 18: //аппроксиматив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'll'. KarGram::garmVowel($stems[10],'uo'));
+                return self::approxPl($stems[4], $stems[5], $stems[10]);
             case 67: //терминатив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'ss'. KarGram::garmVowel($stems[10],'a'). 'h');        
+                return self::addEndToMultiBase($stems[5], 'ss'. KarGram::garmVowel($stems[10],'a'). 'h');        
         }
     }
     
@@ -155,6 +155,24 @@ class KarNameOlo
                 $forms[] = $stem4. 'enke, '.$stem4. 'nneh';
             } else {
                 $forms[] = $stem4. 'nke, '.$stem4. 'nneh';
+            }
+        }
+        return join(', ', $forms);
+    }
+
+    public static function approxPl($stem4, $stem5, $harmony) {
+        if (!$stem4 || !$stem5) {
+            return '';
+        }
+        $stems5 = preg_split('/\//', $stem5);
+        foreach ($stems5 as $stem5) {
+            if (preg_match('/['.KarGram::consSet().']’?i$/u', $stem5)) {
+                $forms[] = $stem5. 'ell'. KarGram::garmVowel($harmony,'uo');
+            } else {
+                $stems4 = preg_split('/\//', $stem4);
+                foreach ($stems4 as $stem4) {
+                    $forms[] = $stem4. 'll'. KarGram::garmVowel($harmony,'uo');
+                }
             }
         }
         return join(', ', $forms);
