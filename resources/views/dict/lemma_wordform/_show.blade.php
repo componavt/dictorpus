@@ -38,9 +38,8 @@
                 <div class="col-sm-3">
                 @include('widgets.form.button._red', [
                     'id_name' => 'generate-wordforms',
-                    'on_click'=>"reloadWordforms(this, '?without_remove', [".$lemma->meaningIdsToList()."])", 
-                    'title' => trans('dict.generate_wordforms'),
-                    'event' => 'data-reload = '.$lemma->id.'_'.array_keys($dialect_values)[0]
+                    'on_click'=>"generateWordforms($lemma->id, [".$lemma->meaningIdsToList()."])", 
+                    'title' => trans('dict.generate_wordforms')
                     ])
                 </div>
             </div>                 

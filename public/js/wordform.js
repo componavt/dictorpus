@@ -74,9 +74,9 @@ function reloadWordformTotal() {
     }); 
 }    
 
-function reloadWordforms(i, attrs='', meanings=[]) {
-    var id = $(i).data('reload');
-    loadWordforms(id, 'reload/'+ attrs, meanings);
+function generateWordforms(lemma_id, attrs='', meanings=[]) {
+    var dialect_id = $( "#dialect_id option:selected" ).val();
+    loadWordforms(lemma_id+'_'+dialect_id, 'reload/?without_remove', meanings);
 }   
 
 function chooseDialectForGenerate(lemma_id) {

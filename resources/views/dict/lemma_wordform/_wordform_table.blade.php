@@ -14,8 +14,8 @@
                                                     ? $args_by_get.'&dialect_id='.$dialect_id 
                                                     : '?dialect_id='.$dialect_id,
                                   'without_text' => 1])
-                        <i data-reload="{{$lemma->id.'_'.$dialect_id}}" class="fa fa-sync-alt fa-lg reload-wordforms" 
-                           title="{{trans('messages.reload')}}" onClick="reloadWordforms(this, '', [{{$lemma->meaningIdsToList()}}])"></i>
+                        <i class="fa fa-sync-alt fa-lg reload-wordforms" title="{{trans('messages.reload')}}" 
+                           onClick="loadWordforms('{{$lemma->id}}_{{$dialect_id}}', 'reload/', [{{$lemma->meaningIdsToList()}}])"></i>
                         <a style="cursor: pointer" onClick="deleteWordforms('{{$lemma->id.'_'.(!$dialect_id? 'NULL' : $dialect_id)}}', [{{$lemma->meaningIdsToList()}}])"><i class="fa fa-trash fa-lg"></i></a>
                     @endif
 

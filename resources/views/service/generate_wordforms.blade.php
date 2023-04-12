@@ -11,7 +11,7 @@
         <li>ливвиковские {{$pos_name}}</li>
         <ul>
             @for($i=4; $i<6; $i++)
-            <li><a href="/service/generate_wordforms?search_lang=5&search_pos={{$pos_code}}&w_count={{$i}}">с {{$i}} словоформами</a></li>
+            <li><a href="/service/correct/generate_wordforms?search_lang=5&search_pos={{$pos_code}}&w_count={{$i}}">с {{$i}} словоформами</a></li>
             @endfor
         </ul>
         @endforeach
@@ -23,7 +23,7 @@
         <li>{{\App\Models\Dict\PartOfSpeech::getNameById($pos_id)}}</li>
         <ul>
             @foreach($pos_count as $w_count=>$count)
-            <li><a href="/service/wordforms_by_wordform_total?search_lang=5&search_pos={{$pos_id}}&w_count={{$w_count}}">с {{$w_count}} словоформами</a> ({{$count}})</li>
+            <li><a href="/service/correct/wordforms_by_wordform_total?search_lang=5&search_pos={{$pos_id}}&w_count={{$w_count}}">с {{$w_count}} словоформами</a> ({{$count}})</li>
             @endforeach
         </ul>
         @endforeach
