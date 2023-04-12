@@ -23,7 +23,7 @@
         <li>{{\App\Models\Dict\PartOfSpeech::getNameById($pos_id)}}</li>
         <ul>
             @foreach($pos_count as $w_count=>$count)
-            <li><a href="/service/correct/wordforms_by_wordform_total?search_lang=5&search_pos={{$pos_id}}&w_count={{$w_count}}">с {{$w_count}} словоформами</a> ({{$count}})</li>
+            <li><a href="/service/wordforms_by_wordform_total?search_lang=5&search_pos={{$pos_id}}&w_count={{$w_count}}">с {{$w_count}} словоформами</a> ({{$count}})</li>
             @endforeach
         </ul>
         @endforeach
