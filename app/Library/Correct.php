@@ -102,9 +102,9 @@ print "<p>".$lemma->lemma."</p>";
                     $lemma->reloadWordforms($dialect_id, true);
                     $w_count_res = $lemma->countWordformsByDialect($dialect_id);                
                     print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a> ".$w_count."->".$w_count_res."</p>";    
-/*                    if ($w_count_res != $right_counts[$w_count]) {
+                    if ($w_count_res != $right_counts[$w_count]) {
                         dd("INCORRECT WORDFORMS' COUNT!!!");
-                    }*/
+                    }
                 }
             } else {
                 $is_all_checked = true;
