@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Storage;
 
 use App\Library\Correct;
+use App\Library\Grammatic;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
@@ -70,6 +71,64 @@ print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a></p>";
                 }
             }
         }
+    }
+
+    public function addApproxTerm() {
+        $appr_sg = 17; // аппроксиматив, ед.ч.
+        $term_sg = 16; // терминатив, ед.ч.
+        $appr_pl = 18; // аппроксиматив, мн.ч.
+        $term_pl = 67; // терминатив, мн.ч. 
+        $lang_id=5;
+        $dialect_id=44;
+        
+        $lemmas = Lemma::whereLangId($lang_id)->whereIn('pos_id', PartOfSpeech::getNameIDs())->orderBy('lemma')
+                    ->where(function ($q)  use ($appr_sg, $term_sg, $appr_pl, $term_pl, $dialect_id) {
+                        $q->whereNotIn('id', function ($q2) use ($appr_sg, $dialect_id) {
+                            $q2->select('lemma_id')->from('lemma_wordform')
+                               ->whereDialectId($dialect_id)
+                               ->whereGramsetId($appr_sg);
+                        })->orWhereNotIn('id', function ($q2) use ($term_sg, $dialect_id) {
+                            $q2->select('lemma_id')->from('lemma_wordform')
+                               ->whereDialectId($dialect_id)
+                               ->whereGramsetId($term_sg);
+                        })->orWhereNotIn('id', function ($q2) use ($appr_pl, $dialect_id) {
+                            $q2->select('lemma_id')->from('lemma_wordform')
+                               ->whereDialectId($dialect_id)
+                               ->whereGramsetId($appr_pl);
+                        })->orWhereNotIn('id', function ($q2) use ($term_pl, $dialect_id) {
+                            $q2->select('lemma_id')->from('lemma_wordform')
+                               ->whereDialectId($dialect_id)
+                               ->whereGramsetId($term_pl);
+                        });
+                    })->whereIn('id', function ($q) {
+                        $q->select('lemma_id')->from('lemma_bases')
+                          ->whereBaseN(1);
+                    })->whereIn('id', function ($q) {
+                        $q->select('lemma_id')->from('lemma_bases')
+                          ->whereBaseN(2);
+                    })->whereIn('id', function ($q) {
+                        $q->select('lemma_id')->from('lemma_bases')
+                          ->whereBaseN(4);
+                    })->whereIn('id', function ($q) {
+                        $q->select('lemma_id')->from('lemma_bases')
+                          ->whereBaseN(5);
+                    })->get();
+print "<ol>";                    
+        foreach ($lemmas as $lemma) {            
+            $stems = $lemma->getBases($dialect_id);
+            $name_num = $lemma->getNameNum();
+            $as = Grammatic::wordformByStems($lang_id, $lemma->pos_id, $dialect_id, $appr_sg, $stems, $name_num);
+            $ts = Grammatic::wordformByStems($lang_id, $lemma->pos_id, $dialect_id, $term_sg, $stems, $name_num);
+            $ap = Grammatic::wordformByStems($lang_id, $lemma->pos_id, $dialect_id, $appr_pl, $stems, $name_num);
+            $tp = Grammatic::wordformByStems($lang_id, $lemma->pos_id, $dialect_id, $term_pl, $stems, $name_num);
+print '<li><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma."</a>: $as, $ts, $ap, $tp</li>";                    
+            $lemma->addWordforms($as, $appr_sg, $dialect_id);
+            $lemma->addWordforms($ts, $term_sg, $dialect_id);
+            $lemma->addWordforms($ap, $appr_pl, $dialect_id);
+            $lemma->addWordforms($tp, $term_pl, $dialect_id);
+            $lemma->updateWordformTotal();
+        }
+print "</ol>";                    
     }
 
     function addWordformAffixes(Request $request) {
