@@ -123,3 +123,10 @@ function showAudioInfo() {
         }
     });    
 }
+
+function callCreatePhonetic() {
+    $("#modalCreatePhonetic").modal('show');    
+}
+
+function createPhonetic() {
+}

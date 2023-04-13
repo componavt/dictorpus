@@ -401,7 +401,14 @@ class Meaning extends Model
             return;
         }
         foreach ($meanings as $meaning) {
-            self::storeLemmaMeaning($lemma_id, (int)$meaning['meaning_n'], $meaning['meaning_text']);
+            $meaning_obj = self::storeLemmaMeaning($lemma_id, (int)$meaning['meaning_n'], $meaning['meaning_text']);
+            if (!$meaning_obj) {
+                continue;
+            }
+            $meaning_obj->updateMeaningRelations($meaning['relation'] ?? []);
+            $meaning_obj->updateMeaningTranslations($meaning['translation'] ?? []);
+            $meaning_obj->updateConcepts($meaning['concepts'] ?? []);            
+            $meaning_obj->updatePlaces($meaning['places'] ?? []);
         }
     }
 

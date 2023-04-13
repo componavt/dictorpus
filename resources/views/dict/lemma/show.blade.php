@@ -13,6 +13,11 @@
 @stop
 
 @section('body')
+        @include('widgets.modal',['name'=>'modalCreatePhonetic',
+                              'title'=>trans('dict.create_phonetic'),
+                              'form_url' => LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id.'/create_phonetic').$args_by_get,
+                              'submit_title' => trans('messages.create'),
+                              'modal_view'=>'dict.lemma.form._create_phonetic'])
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
 
@@ -21,6 +26,7 @@
                        ['route' => 'lemma.destroy', 
                         'args'=>['id' => $lemma->id]]) 
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
+            | <a href="#" onClick="callCreatePhonetic()">{{ trans('dict.create_phonetic') }}</a>
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif

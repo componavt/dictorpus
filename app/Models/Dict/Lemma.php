@@ -117,6 +117,24 @@ class Lemma extends Model
         return $this->belongsToMany(Audio::class);
     }    
     
+    public function getWordformDialectIdAttribute() {
+        foreach ($this->meanings as $meaning) {
+            $dialect = $meaning->dialects()->first();
+            if ($dialect) {
+                return $dialect->id;
+            }
+        }
+        return $this->lang->mainDialect();
+    }
+
+    public function featuresToArray() {
+        $out = [];
+        foreach ($this->features->allowFeatures() as $f) {
+            $out[$f] = $this->features->{$f};
+        }
+        return $out;
+    }
+
     public function conceptNames() {
         $locale = LaravelLocalization::getCurrentLocale();
         $concepts=[];
@@ -927,6 +945,34 @@ dd($wordforms);
         return sizeof($texts);
     }
     
+    public function dataForCopy($new_lemma) {
+        $data = $this->featuresToArray();
+        $data['lemma'] = $new_lemma;
+        $data['lang_id'] = $this->lang_id;
+        $data['wordform_dialect_id'] = $this->wordform_dialect_id;
+        $data['pos_id'] = $this->pos_id;
+        $data['variants'] = $this->variants->pluck('id')->toArray();
+        $data['variants'][] = $this->id;
+        $count = 0;
+        foreach ($this->meanings as $meaning) {
+//dd($meaning->translations);            
+            $m["meaning_n"] = $meaning->meaning_n;
+            foreach ($meaning->meaningTexts as $meaning_text) {
+                $m["meaning_text"][$meaning_text->lang_id] = $meaning_text->meaning_text;
+            }
+            $m['concepts'] = $meaning->concepts->pluck('id')->toArray();
+            $m['places'] = $meaning->places->pluck('id')->toArray();
+            foreach ($meaning->meaningRelations as $relation) {
+                $m['relation'][$relation->id][] = $relation->pivot->meaning2_id;
+            }
+            foreach ($meaning->translations as $translation) {
+                $m['translation'][$translation->id][] = $translation->pivot->meaning2_id;
+            }
+            $data["new_meanings"][$count++] = $m;
+        }
+        return $data;        
+    }
+
     public static function storeLemma($data) {        
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);

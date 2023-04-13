@@ -12,6 +12,8 @@ use LaravelLocalization;
 
 use App\Models\User;
 
+use App\Library\Grammatic;
+
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\SentenceFragment;
@@ -187,6 +189,7 @@ class LemmaController extends Controller
      */
     public function store(Request $request)
     {
+//dd($request->all());        
         $this->validate($request, [
             'lemma'  => 'required|max:255',
             'lang_id'=> 'required|numeric',
@@ -205,6 +208,18 @@ class LemmaController extends Controller
 
         return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
+    }
+
+    public function createPhonetic($id, Request $request) {
+        $old_lemma = Lemma::find($id);
+        $data = $old_lemma->dataForCopy($request->new_lemma);
+        list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
+                = Grammatic::parseLemmaField($data);
+        $lemma = Lemma::store($new_lemma, $old_lemma->pos_id, $old_lemma->lang_id);
+        $lemma->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'], $stems);      
+        Meaning::storeLemmaMeanings($data['new_meanings'], $lemma->id);
+        return Redirect::to('/dict/lemma/'.($lemma->id).($this->args_by_get ? $this->args_by_get. '&' : '?').'update_text_links=1')
+                       ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
     /**
@@ -459,7 +474,7 @@ class LemmaController extends Controller
             'lang_id'=> 'required|numeric',
 //            'pos_id' => 'numeric',
         ]);
-        
+//dd($request->all());        
         $lemma->updateLemma($request->all());
         
         // MEANINGS UPDATING

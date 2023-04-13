@@ -103,6 +103,7 @@ return [
                   'N' => 'Noun group',
                   'V' => 'Verb group'],
     'copy_bases' => 'copy bases from another dialect',
+    'create_phonetic' => 'Сreate a phonetic variant',
     'create_list' => 'create a list',
     'create_new_lemma' => 'Create a new lemma',
     'degree' => 'degree of comparison',

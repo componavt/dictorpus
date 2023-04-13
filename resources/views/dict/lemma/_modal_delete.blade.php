@@ -1,13 +1,3 @@
-<!--aside class="modal" id="delete_confirm">
-    <header>
-        <h2>Удаление элемента</h2>
-    </header>
-    <section>Вы уверены, что хотите удалить этот элемент?</section>
-    <footer class="footer">
-        <a href="" class="confirm_cancel btn">Нет</a> 
-        <a href="" class="confirm_ok btn">Да</a>
-    </footer>
-</aside-->
 <div class="modal" id="confirm">
     <div class="modal-dialog">
         <div class="modal-content">
