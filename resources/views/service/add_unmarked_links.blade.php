@@ -11,7 +11,7 @@
     <ul>
     @foreach ($langs as $l_id=>$l_info)
         <li>
-            <a href="/service/add_unmarked_links?search_lang={{$l_id}}">
+            <a href="/service/correct/add_meaning_text_links?search_lang={{$l_id}}">
                 {{$l_info['name']}}
             </a> 
             ({{$l_info['unmarked_words_count']}})</li>
