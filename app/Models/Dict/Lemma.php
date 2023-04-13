@@ -1519,6 +1519,7 @@ dd($wordforms);
     public static function searchLemmas($query, $lemma) {
         $lemma = preg_replace("/\|/", '', $lemma);
         return $query -> where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma))
+                       -> orWhere('lemma_for_search', 'like', KarGram::changeLetters(Grammatic::toSearchForm($lemma)))
                        -> orWhere('lemma_for_search', 'like', $lemma)
                        -> orWhereIn('id', function ($q) use ($lemma) {
                             $q->select('lemma_id')->from('phonetics')

@@ -7,6 +7,7 @@ use Storage;
 use LaravelLocalization;
 
 use App\Library\Grammatic;
+use App\Library\Grammatic\KarGram;
 
 use App\Models\Corpus\Informant;
 
@@ -153,7 +154,10 @@ class Audio extends Model
                                 $q->whereIn('lang_id',$langs);
                             }
                             if ($lemma) {
-                                $q->where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma));
+                                $q->where(function ($q2) use ($lemma) {
+                                    $q2->where('lemma_for_search', 'like', Grammatic::toSearchForm($lemma))
+                                       ->orWhere('lemma_for_search', 'like', KarGram::changeLetters(Grammatic::toSearchForm($lemma)));
+                                });
                             }
                         });
                 });
