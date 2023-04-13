@@ -953,6 +953,19 @@ dd($wordforms);
         $data['pos_id'] = $this->pos_id;
         $data['variants'] = $this->variants->pluck('id')->toArray();
         $data['variants'][] = $this->id;
+        foreach ($this->phonetics as $phonetic) {
+            $data['new_phonetics'][$phonetic->id]['phonetic'] = $phonetic->phonetic;
+            $data['new_phonetics'][$phonetic->id]['places'] = $phonetic->places->pluck('id')->toArray();
+        }
+/*
+"phonetics" => array:1 [▼
+    2084 => array:2 [▼
+      "phonetic" => "tart΄uda"
+      "places" => array:1 [▶]
+    ]
+  ]
+ */
+//dd($data);        
         $count = 0;
         foreach ($this->meanings as $meaning) {
 //dd($meaning->translations);            
@@ -1013,7 +1026,8 @@ dd($wordforms);
         $this->storeReverseLemma($stem, $affix);
 
         $this->storeVariants($features['variants'] ?? []);
-        $this->storePhonetics($features['phonetics'] ?? []);
+        $this->updatePhonetics($features['phonetics'] ?? []);
+        $this->storePhonetics($features['new_phonetics'] ?? []);
         
         $this->storeWordformsFromSet($gramset_wordforms, $dialect_id); 
         $this->createDictionaryWordforms($wordforms, 
@@ -1332,6 +1346,22 @@ dd($wordforms);
     }
     
     public function storePhonetics($phonetics) {
+        foreach ($phonetics as $phonetic_id=>$phonetic_info) {
+            if (!$phonetic_info['phonetic']) {
+                continue;
+            }
+            $phonetic = Phonetic::create(['lemma_id'=>$this->id,'phonetic'=>$phonetic_info['phonetic']]);
+            $phonetic->places()->sync($phonetic_info['places']); 
+            $dialects = [];
+            foreach ($phonetic->places as $place) {
+                $dialects = array_merge($dialects, $place->dialects()->pluck('id')->toArray());
+            }
+            $phonetic->dialects()->sync(array_unique($dialects));
+            $phonetic->save();
+        }
+    }
+    
+    public function updatePhonetics($phonetics) {
         foreach ($phonetics as $phonetic_id=>$phonetic_info) {
             $phonetic = $this->phonetics()->whereId($phonetic_id)->first();
             if (!$phonetic_info['phonetic']) {
@@ -2184,7 +2214,7 @@ dd($wordforms);
      * 
      * @param array $phonetic_dialects [<phonetic1>=>[<dialect1_id>=>[<place1_id>, ...], ...], ...]
      */
-    public function updatePhonetics($phonetic_dialects) {
+    public function updatePhoneticDialects($phonetic_dialects) {
 /*if ($this->lemma=='pal’l’aine' && $this->lang_id==6) {
     dd($phonetic_dialects);
 } */       

@@ -50,6 +50,7 @@
 @section('footScriptExtra')
     {!!Html::script('js/essential_audio.js')!!}
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/lemma.js')!!}
     {!!Html::script('js/meaning.js')!!}
     {!!Html::script('js/text.js')!!}
@@ -58,6 +59,7 @@
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     loadWordforms({{$lemma->id}}, 'load?search_w={{$url_args['search_w']}}');
     @foreach ($lemma->meanings as $meaning)
         loadExamples('{{LaravelLocalization::localizeURL('/dict/meaning/examples/load')}}', {{$meaning->id}}, 0, {{$update_text_links}});

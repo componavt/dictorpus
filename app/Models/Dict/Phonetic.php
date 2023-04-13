@@ -21,7 +21,7 @@ class Phonetic extends Model
         parent::boot();
     }
 
-    protected $fillable = ['lemma_id','dialect_id','phonetic'];
+    protected $fillable = ['lemma_id','phonetic'];
 
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lemma;

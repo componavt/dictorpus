@@ -415,7 +415,7 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
                     } elseif ($concept->text_en && !$meaning_obj->meaningTexts()->where('lang_id',$meaning_lang_en)->first()) {
                         $meaning_text_obj = MeaningText::create(['meaning_id' => $meaning_obj->id, 'lang_id' => $meaning_lang_en, 'meaning_text' => $concept->text_en]);
                     }
-                    $lemma_obj->updatePhonetics($phonetic_dialects);
+                    $lemma_obj->updatePhoneticDialects($phonetic_dialects);
                     
                     $meaning_obj->updateDialects($phonetic_dialects);                    
                     $meaning_obj->addConcept($concept->id);
