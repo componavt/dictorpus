@@ -192,7 +192,7 @@ class AudioController extends Controller
     public function destroy($id, $informant_id=null)
     {
 //        $url = Route::current()->getName() == "informant.audio.destroy" && 
-        $url = url()->previous();
+//        $url = url()->previous();
         $error = false;
 //        $status_code = 200;
         $result =[];
@@ -222,10 +222,10 @@ class AudioController extends Controller
         }
         
         if ($error) {
-            return Redirect::to($url)
+            return Redirect::to('/dict/audio/'.($this->args_by_get))
                            ->withErrors($result['error_message']);
         }
-        return Redirect::to($url)
+        return Redirect::to('/dict/audio/'.($this->args_by_get))
               ->withSuccess($result['message']);
     }
     

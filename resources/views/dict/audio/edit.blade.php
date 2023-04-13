@@ -12,6 +12,11 @@
         <h2>{{ trans('messages.editing')}} {{ trans('dict.of_audio')}}: <span class='imp'>{{ $audio->filename}}</span></h2>
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/audio/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
+            @if (User::checkAccess('dict.edit'))
+                | @include('widgets.form.button._delete', 
+                           ['route' => 'audio.destroy', 
+                            'args'=>['id' => $audio->id]]) 
+            @endif
         </p>
         
         {!! Form::model($audio, array('method'=>'PUT', 'route' => array('audio.update', $audio->id))) !!}
@@ -56,9 +61,11 @@
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/rec-delete-link.js')!!}
 @stop
 
 @section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}');
     selectWithLang('.multiple-select-lemmas', "/dict/lemma/list_with_pos_meaning", 'lang_id');
     changeLangOfInformant('#informant_id');
 /*    $(".multiple-select-lemmas").select2({

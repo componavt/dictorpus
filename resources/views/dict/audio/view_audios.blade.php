@@ -13,6 +13,12 @@
                     место рождения: {{$audio->informant->birthPlaceString('',false)}} 
                     @endif
                 @endif
+                <div style='text-align: right'>
+                @if (User::checkAccess('dict.edit'))
+                    @include('widgets.form.button._edit_small_button', 
+                             ['route' => '/dict/audio/'.$audio->id.'/edit'])
+                @endif     
+                </div>
             </div>
         </div>
 @endforeach
