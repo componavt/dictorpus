@@ -30,7 +30,7 @@ class CorrectController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:admin,/', ['except'=>['addSynonyms']]);
+        $this->middleware('auth:admin,/');
     }
     
     public function index() {
@@ -176,29 +176,34 @@ print "</ol>";
 
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
+        $is_all_checked = false;
         
-        $word_groups = Word::whereChecked(0)
-                        ->whereIn('text_id', function ($q) use ($lang_id) {
-                            $q->select('id')->from('texts')->where('lang_id',$lang_id);
-                       })->whereNotIn('id', function ($query) {
-                            $query->select('word_id')->from('meaning_text');
-                })->groupBy('word')
-                //->take(10)
-                ->get(['word']);  
-        foreach ($word_groups as $group) {
-            $words = Word::where('word', 'like', $group->word)
+        while (!$is_all_checked) {
+            $word_groups = Word::whereChecked(0)
                             ->whereIn('text_id', function ($q) use ($lang_id) {
                                 $q->select('id')->from('texts')->where('lang_id',$lang_id);
                            })->whereNotIn('id', function ($query) {
                                 $query->select('word_id')->from('meaning_text');
-            })->get();  
-            foreach ($words as $word) {
-                $num_links = $word->setMeanings([], $lang_id);
-                if ($num_links) {
-    print "<p>text=".$word->text_id.", s_id=".$word->s_id.", w_id=".$word->w_id.", word=".$word->word. ', meaning links = <span style="color: red">'. $num_links. '</span>';            
+                    })->groupBy('word')
+                    ->take(10);  
+            if (!$word_groups->count()) {
+                $is_all_checked = true;
+            }
+            foreach ($word_groups->get(['word']) as $group) {
+                $words = Word::where('word', 'like', $group->word)
+                                ->whereIn('text_id', function ($q) use ($lang_id) {
+                                    $q->select('id')->from('texts')->where('lang_id',$lang_id);
+                               })->whereNotIn('id', function ($query) {
+                                    $query->select('word_id')->from('meaning_text');
+                })->get();  
+                foreach ($words as $word) {
+                    $num_links = $word->setMeanings([], $lang_id);
+                    if ($num_links) {
+        print "<p>text=".$word->text_id.", s_id=".$word->s_id.", w_id=".$word->w_id.", word=".$word->word. ', meaning links = <span style="color: red">'. $num_links. '</span>';            
+                    }
+                    $word->checked=1;
+                    $word->save();
                 }
-                $word->checked=1;
-                $word->save();
             }
         }
     }
