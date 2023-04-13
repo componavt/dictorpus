@@ -474,3 +474,15 @@ function selectAllFields(button_id, select_fields) {
     });
 }
 
+function changeLangOfInformant(informant_selector) {
+    $(informant_selector).on('change', function(){
+        $.ajax({
+            url: '/corpus/informant/'+selectedValuesToURL(informant_selector)+'/get_lang', 
+            type: 'GET',
+            success: function(lang_id){
+                $("#lang_id").val(lang_id).change();
+            }
+        }); 
+    });
+}
+

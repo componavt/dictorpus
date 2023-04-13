@@ -221,4 +221,11 @@ class InformantController extends Controller
         return view('corpus.informant.audio',
                 compact('dialect_values', 'informant', 'url_args'));        
     }
+    
+    public function getLang($id)
+    {
+        $informant = Informant::find($id); 
+        return $informant->birth_place && isset($informant->birth_place->dialects[0]) 
+                ? $informant->birth_place->dialects[0]->lang_id : null;
+    }
 }

@@ -31,6 +31,7 @@ Route::group(
 //        Route::get('gram_search', 'Corpus\GramSearchController@index');
         
         Route::get('informant/{id}/audio', 'Corpus\InformantController@audio');
+        Route::get('informant/{id}/get_lang', 'Corpus\InformantController@getLang');
         
         Route::get('informant/store', 'Corpus\InformantController@simpleStore');
         Route::get('genre/list', 'Corpus\GenreController@genreList');

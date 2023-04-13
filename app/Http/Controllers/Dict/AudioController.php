@@ -65,11 +65,19 @@ class AudioController extends Controller
     public function edit($id)
     {
         $audio = Audio::find($id);
+        
         $informant_values = [NULL => ''] + Informant::getList();
+        $lang_values = [NULL => ''] + Lang::getList();
+        $lemma_values = $audio->lemmas->pluck('lemma', 'id')->toArray();
+        $lang_id = $audio->informant && $audio->informant->birth_place 
+                && isset($audio->informant->birth_place->dialects[0]) 
+                ? $audio->informant->birth_place->dialects[0]->lang_id : null;
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        
         return view('dict.audio.edit',
-                compact('audio', 'informant_values', 'args_by_get', 'url_args'));
+                compact('audio', 'informant_values', 'lang_id', 'lang_values', 
+                        'lemma_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -93,6 +101,7 @@ class AudioController extends Controller
             $audio->filename = $request->filename;
         }
         $audio->save();
+        $audio->lemmas()->sync((array)$request->lemmas);
         
         return Redirect::to('/dict/audio/'.($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
