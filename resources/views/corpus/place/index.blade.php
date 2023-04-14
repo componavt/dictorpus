@@ -2,7 +2,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('corpus.place_list') }}
+{{ trans('navigation.places') }}
 @stop
 
 @section('headExtra')

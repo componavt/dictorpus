@@ -1684,11 +1684,11 @@ dd($wordforms);
                             });
     }
     
-    public static function searchByLang($lemmas, $lang) {
+    public static function searchByLang($builder, $lang) {
         if (!$lang) {
-            return $lemmas;
+            return $builder;
         }
-        return $lemmas->where('lang_id',$lang);
+        return $builder->where('lang_id',$lang);
     }
     
     public static function searchByPOS($lemmas, $pos) {

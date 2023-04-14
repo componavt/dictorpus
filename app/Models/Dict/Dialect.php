@@ -5,6 +5,8 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Corpus\Word;
 
 class Dialect extends Model
@@ -139,4 +141,26 @@ class Dialect extends Model
                -> whereDialectId($dialect_id);
         })->count();
     }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_lang'     => (int)$request->input('search_lang'),
+                ];
+        
+        return $url_args;
+    }
+    
+    public static function search(Array $url_args) {
+        $builder = self::orderBy('lang_id')->orderBy('sequence_number')->orderBy('id');
+        $builder = self::searchByLang($builder, $url_args['search_lang']);
+        return $builder;
+    }
+    
+    public static function searchByLang($builder, $lang) {
+        if (!$lang) {
+            return $builder;
+        }
+        return $builder->where('lang_id',$lang);
+    }
+    
 }

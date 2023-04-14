@@ -15,15 +15,20 @@ use App\Models\Dict\Lang;
 
 class DialectController extends Controller
 {
+    public $url_args=[];
+    public $args_by_get='';
+    
      /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth:ref.edit,/dict/dialect/', 
                 ['only' => ['create','store','edit','update','destroy']]);
+        $this->url_args = Dialect::urlArgs($request);          
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**
@@ -33,49 +38,17 @@ class DialectController extends Controller
      */
     public function index(Request $request)
     {
-        $limit_num = (int)$request->input('limit_num');
-        $lang_id = (int)$request->input('lang_id');
-        $page = (int)$request->input('page');
-        
-         if (!$page) {
-            $page = 1;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }      
-        
-        $dialects = Dialect::orderBy('lang_id')->orderBy('sequence_number')
-                           ->orderBy('id');       
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
 
-        if ($lang_id) {
-            $dialects = $dialects->where('lang_id', $lang_id);
-        } 
-         
-        $numAll = $dialects->count();
-        
-        $dialects = $dialects->paginate($limit_num);
-//       $dialects = $dialects->get();
+        $dialects = Dialect::search($url_args);       
+        $numAll = $dialects->count();        
+        $dialects = $dialects->paginate($url_args['limit_num']);
 
-//        $lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('dialects', true);
 
-        $url_args = ['lang_id'=>$lang_id];
-                
-        $args_by_get = search_values_by_URL($url_args);
-                
-        return view('dict.dialect.index')
-            ->with(['dialects' => $dialects,
-                        'limit_num' => $limit_num,
-                        'page'=>$page,
-                        'lang_values' => $lang_values,
-                        'lang_id'=>$lang_id,
-                        'url_args' => $url_args,
-                        'args_by_get' => $args_by_get,
-                        'numAll' => $numAll
-                       ]);
+        return view('dict.dialect.index',
+            compact('dialects', 'lang_values', 'numAll', 'args_by_get', 'url_args'));
     }
     
     /**
@@ -85,16 +58,23 @@ class DialectController extends Controller
      */
     public function create(Request $request)
     {
-        $lang_id = (int)$request->input('lang_id');
         $lang_values = Lang::getList();
-        $url_args = ['lang_id'=>$lang_id];
+        $url_args = $this->url_args;
 
-        return view('dict.dialect.create')
-                  ->with(['lang_values' => $lang_values,
-                          'url_args' => $url_args,
-                         ]);
+        return view('dict.dialect.create',
+                  compact('lang_values', 'url_args'));
     }
 
+    public function validateRequest(Request $request, $code_rule) {
+        $this->validate($request, [
+            'name_en'  => 'required|max:255',
+            'name_ru'  => 'required|max:255',
+            'code' => 'required|max:20|unique:dialects'.$code_rule
+            ]);
+        
+        $data = $request->all();
+        return $data;
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -102,14 +82,8 @@ class DialectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $this->validate($request, [
-            'name_en'  => 'required|max:255',
-            'name_ru'  => 'required|max:255',
-            'code' => 'required|max:20|unique:dialects'
-        ]);
-        
-        $dialect = Dialect::create($request->all());
+    {        
+        Dialect::create($this->validateRequest($request));
         
         return Redirect::to('/dict/dialect/')
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -134,23 +108,16 @@ class DialectController extends Controller
      */
     public function edit($id, Request $request)
     {
-        $lang_id = (int)$request->input('lang_id');
-
         $dialect = Dialect::find($id); 
         if (!$dialect) {
             return Redirect::to('/dict/dialect/')
                            ->withErrors('messages.record_not_exists');
-        }
-        
-        $lang_values = Lang::getList();
-        
-        $url_args = ['lang_id'=>$lang_id];
-        
-        return view('dict.dialect.edit')
-                  ->with(['dialect' => $dialect,
-                          'url_args' => $url_args,
-                          'lang_values' => $lang_values,
-                         ]);
+        }        
+        $lang_values = Lang::getList();        
+        $url_args = $this->url_args;
+
+        return view('dict.dialect.edit',
+                  compact('dialect', 'lang_values', 'url_args'));
     }
 
     /**
@@ -164,20 +131,9 @@ class DialectController extends Controller
     {
         $dialect = Dialect::find($id);
 
-        $this->validate($request, [
-            'name_en'  => 'required|max:255',
-            'name_ru'  => 'required|max:255',
-            'code' => 'required|max:20|unique:dialects,code,'.$dialect->id
-        ]);
+        $dialect->fill($this->validateRequest($request, ',code,'.$dialect->id))->save();
         
-        $dialect->fill($request->all())->save();
-        
-        $back_url = '/dict/dialect/';
-        if (isset($request['lang_id'])) {
-            $back_url .= '?lang_id='. $request['lang_id'];
-        }
-
-        return Redirect::to($back_url)
+        return Redirect::to('/dict/dialect/'.($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 

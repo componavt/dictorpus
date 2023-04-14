@@ -77,7 +77,7 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
-    {!!Html::script('js/dict.js')!!}
+    {!!Html::script('js/search.js')!!}
 @stop
 
 @section('jqueryFunc')

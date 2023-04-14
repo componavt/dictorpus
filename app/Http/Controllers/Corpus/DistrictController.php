@@ -4,26 +4,33 @@ namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use DB;
+//use DB;
 use LaravelLocalization;
 use Response;
 
 use App\Models\Corpus\District;
 use App\Models\Corpus\Region;
+use App\Models\Corpus\Text;
 
 class DistrictController extends Controller
 {
+    public $url_args=[];
+    public $args_by_get='';
+    
      /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
-        $this->middleware('auth:corpus.edit,/corpus/district/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:corpus.edit,/corpus/district/', 
+                ['only' => ['create','store','edit','update','destroy']]);
+        $this->url_args = District::urlArgs($request);          
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
     /**
@@ -31,62 +38,20 @@ class DistrictController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $district_name = $request->input('district_name');
-        $limit_num = (int)$request->input('limit_num');
-        $region_id = (int)$request->input('region_id');
-        $search_id = (int)$request->input('search_id');
-        $page = (int)$request->input('page');
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
 
-        if (!$page) {
-            $page = 1;
-        }
-        
-        if (!$search_id) {
-            $search_id = NULL;
-        }
-        
-        if ($limit_num<=0) {
-            $limit_num = 10;
-        } elseif ($limit_num>1000) {
-            $limit_num = 1000;
-        }   
-        
-        $locale = LaravelLocalization::getCurrentLocale();
-        $districts = District::orderBy('name_'.$locale);
-
-        if ($district_name) {
-            $districts = $districts->where(function($q) use ($district_name){
-                            $q->where('name_en','like', $district_name)
-                              ->orWhere('name_ru','like', $district_name);
-                    });
-        } 
-
-        if ($region_id) {
-            $districts = $districts->where('region_id',$region_id);
-        } 
-
-        if ($search_id) {
-            $districts = $districts->where('id',$search_id);
-        } 
-
+        $districts = District::search($url_args);       
         $numAll = $districts->count();
-
-        $districts = $districts->paginate($limit_num);
+        $districts = $districts->paginate($url_args['limit_num']);
         
         $region_values = Region::getListWithQuantity('districts');
         
-        return view('corpus.district.index')
-                    ->with(['districts' => $districts,
-                            'limit_num' => $limit_num,
-                            'district_name' => $district_name,
-                            'region_id'=>$region_id,
-                            'search_id'=>$search_id,
-                            'page'=>$page,
-                            'region_values' => $region_values,
-                            'numAll' => $numAll,
-            ]);
+        return view('corpus.district.index',
+                    compact('districts', 'region_values', 'numAll', 
+                            'args_by_get', 'url_args'));
     }
 
     /**
@@ -98,10 +63,20 @@ class DistrictController extends Controller
     {
         $region_values = Region::getList();
         
-        return view('corpus.district.create')
-                  ->with(['region_values' => $region_values]);
+        return view('corpus.district.create', compact('region_values'));
     }
 
+    public function validateRequest(Request $request) {
+        $this->validate($request, [
+            'name_en'  => 'max:150',
+            'name_ru'  => 'required|max:150',
+            'region_id' => 'numeric',
+            ]);
+        
+        $data = $request->all();
+        return $data;
+    }
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -110,13 +85,7 @@ class DistrictController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
-            'region_id' => 'numeric',
-        ]);
-        
-        $district = District::create($request->all());
+        $district = District::create($this->validateRequest($request));
         
         return Redirect::to('/corpus/district/?search_id='.$district->id)
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -144,9 +113,7 @@ class DistrictController extends Controller
         $district = District::find($id); 
         $region_values = Region::getList();
         
-        return view('corpus.district.edit')
-                  ->with(['region_values' => $region_values,
-                          'district' => $district]);
+        return view('corpus.district.edit', compact('district', 'region_values'));
     }
 
     /**
@@ -157,15 +124,9 @@ class DistrictController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        $this->validate($request, [
-            'name_en'  => 'max:150',
-            'name_ru'  => 'required|max:150',
-            'region_id' => 'numeric',
-        ]);
-        
+    {       
         $district = District::find($id);
-        $district->fill($request->all())->save();
+        $district->fill($this->validateRequest($request))->save();
         
         return Redirect::to('/corpus/district/?search_id='.$district->id)
             ->withSuccess(\Lang::get('messages.updated_success'));        
@@ -282,4 +243,21 @@ class DistrictController extends Controller
         }  
         return Response::json($list);
     }    
+    
+    public function textCount($id, Request $request) {
+        $without_link = $request->without_link;
+        $district = District::find($id);     
+        $count = Text::whereIn('event_id', function ($q) use ($id) {
+                        $q->select('id')->from('events')
+                          ->whereIn('place_id', function ($q2) use ($id) {
+                             $q2->select('id')->from('places')
+                                ->whereDistrictId($id);
+                          });                
+                     })->count();
+        $count = number_format($count, 0, ',', ' ');
+        if (!$count || $without_link) {
+            return $count;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/corpus/text?search_district='.$id).'">'.$count.'</a>';
+    }
 }

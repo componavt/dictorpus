@@ -1,4 +1,4 @@
-<?php $list_count = $limit_num * ($page-1) + 1;?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.page')
 
 @section('page_title')
@@ -20,7 +20,7 @@
         @endif
         </p>
 
-        @include('dict.dialect._search_form',['url' => '/dict/dialect/']) 
+        @include('dict.dialect._search_form') 
 
         @include('widgets.found_records', ['numAll'=>$numAll])
         
@@ -62,14 +62,13 @@
             @endforeach
         </tbody>
         </table>
-        {!! $dialects->appends(['limit_num' => $limit_num,
-                                           'lang_id'=>$lang_id])->render() !!}    
+        {!! $dialects->appends($url_args)->render() !!}    
         @endif
 @stop
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
-    {!!Html::script('js/dict.js')!!}
+    {!!Html::script('js/search.js')!!}
 @stop
 
 @section('jqueryFunc')

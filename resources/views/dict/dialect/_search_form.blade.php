@@ -1,28 +1,14 @@
         {!! Form::open(['url' => '/dict/dialect/', 
-                             'method' => 'get', 
-                             'class' => 'form-inline']) 
+                             'method' => 'get']) 
         !!}
 <div class="search-form row">
     <div class="col-sm-8">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'lang_id', 
+        @include('widgets.form.formitem._select',
+                ['name' => 'search_lang',
                  'values' =>$lang_values,
-                 'value' =>$lang_id,
-                 'attributes'=>['placeholder' => trans('dict.select_lang') ]]) 
+                 'value' =>$url_args['search_lang'],
+                 'attributes'=> ['placeholder'=>trans('dict.lang')] ])
     </div>
-    <div class="col-sm-4 search-button-b">       
-        <span>
-        {{trans('search.show_by')}}
-        </span>
-        @include('widgets.form.formitem._text', 
-                ['name' => 'limit_num', 
-                'value' => $limit_num, 
-                'attributes'=>['size' => 5,
-                               'placeholder' => trans('messages.limit_num') ]])
-        <span>
-                {{ trans('messages.records') }}
-        </span>
-        @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
-    </div>
+    @include('widgets.form._search_div')
 </div>                 
         {!! Form::close() !!}

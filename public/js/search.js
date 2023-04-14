@@ -79,3 +79,16 @@ function callChooseGram(el) {
     $("#modalChooseGram").modal('show');    
 }
 
+function loadCount(el_selector, url){    
+    $.ajax({
+        url: url, 
+        data: {},
+        type: 'GET',
+        success: function(num){       
+            $(el_selector).html(num);
+        },
+        error: function () {
+            $(el_selector).html('<i class="fa fa-sync-alt fa-lg reload" title="reload" onclick="loadCount(\''+el_selector+'\', \''+url+'\')"></i>');
+        }
+    });
+}

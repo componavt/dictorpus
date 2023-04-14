@@ -20,6 +20,7 @@ Route::group(
 
         Route::get('district/birth_list', 'Corpus\DistrictController@birthDistrictList');
         Route::get('district/list', 'Corpus\DistrictController@districtList');
+        Route::get('district/{id}/text_count', 'Corpus\DistrictController@textCount');
         
         Route::get('collection/2/{plot_id}', 'Corpus\CollectionController@runeTextsForPlot');
         Route::get('collection/3/motives/{motive_id}', 'Corpus\CollectionController@predictionTextsForMotive');

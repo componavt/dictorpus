@@ -5,6 +5,8 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
+use App\Library\Str;
+
 use App\Models\Corpus\Region;
 
 class District extends Model
@@ -83,5 +85,50 @@ class District extends Model
         }
         
         return $list;         
+    }
+    
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_id' => (int)$request->input('search_id'),
+                    'search_name' => $request->input('search_name'),
+                    'search_region' => (int)$request->input('search_region'),
+                ];
+        if (!$url_args['search_id']) {
+            $url_args['search_id'] = NULL;
+        }                
+        return $url_args;
+    }
+    
+    public static function search(Array $url_args) {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $builder = self::orderBy('name_'.$locale);
+        $builder = self::searchById($builder, $url_args['search_id']);
+        $builder = self::searchByName($builder, $url_args['search_name']);
+        $builder = self::searchByRegion($builder, $url_args['search_region']);
+        return $builder;
+    }
+    
+    public static function searchByName($builder, $name) {
+        if (!$name) {
+            return $builder;
+        }
+        return $builder->where(function($q) use ($name){
+                            $q->where('name_en','like', $name)
+                              ->orWhere('name_ru','like', $name);
+                    });
+    }
+    
+    public static function searchByRegion($builder, $region) {
+        if (!$region) {
+            return $builder;
+        }
+        return $builder->where('region_id',$region);
+    }
+    
+    public static function searchById($builder, $id) {
+        if (!$id) {
+            return $builder;
+        }
+        return $builder->where('id',$id);
     }
 }
