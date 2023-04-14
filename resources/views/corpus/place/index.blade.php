@@ -25,7 +25,7 @@
         @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($numAll)                
-        <table class="table-bordered table-wide rwd-table wide-md">
+        <table class="table-bordered table-wide table-striped rwd-table wide-md">
         <thead>
             <tr>
                 <th>{{ trans('corpus.region') }}</th>
@@ -102,15 +102,9 @@
                 </td>
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', 
-                            ['is_button'=>true, 
-                             'without_text' => 1,
-                             'route' => '/corpus/place/'.$place->id.'/edit'])
-                    @include('widgets.form.button._delete', 
-                            ['is_button'=>true, 
-                             'without_text' => 1,
-                             'route' => 'place.destroy', 
-                             'args'=>['id' => $place->id]])
+                    @include('widgets.form.button._edit_small_button', 
+                             ['route' => '/corpus/place/'.$place->id.'/edit'])
+                    @include('widgets.form.button._delete_small_button', ['obj_name' => 'place'])
                 </td>
                 @endif
             </tr>

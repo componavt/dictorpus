@@ -59,7 +59,7 @@
                 @if (User::checkAccess('corpus.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
                     @include('widgets.form.button._edit_small_button', 
-                             ['route' => '/dict/district/'.$district->id.'/edit'])
+                             ['route' => '/corpus/district/'.$district->id.'/edit'])
                     @include('widgets.form.button._delete_small_button', ['obj_name' => 'district'])
                 </td>
                 @endif

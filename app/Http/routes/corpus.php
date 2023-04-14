@@ -41,7 +41,9 @@ Route::group(
         Route::get('place/list', 'Corpus\PlaceController@placeList');
         Route::get('place/store', 'Corpus\PlaceController@simpleStore');
         Route::get('plot/list', 'Corpus\PlotController@plotList');
+        
         Route::get('recorder/store', 'Corpus\RecorderController@simpleStore');
+        Route::get('region/{id}/text_count', 'Corpus\RegionController@textCount');
         
         Route::get('sentence/{id}/edit', 'Corpus\SentenceController@edit');
         Route::get('sentence/{id}/markup', 'Corpus\SentenceController@markup');

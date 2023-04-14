@@ -11,6 +11,7 @@ use DB;
 use LaravelLocalization;
 
 use App\Models\Corpus\Region;
+use App\Models\Corpus\Text;
 
 class RegionController extends Controller
 {
@@ -181,5 +182,22 @@ class RegionController extends Controller
             return Redirect::to('/corpus/region/')
                   ->withSuccess($result['message']);
         }
+    }
+    
+    public function textCount($id, Request $request) {
+        $without_link = $request->without_link;
+        $region = Region::find($id);     
+        $count = Text::whereIn('event_id', function ($q) use ($id) {
+                        $q->select('id')->from('events')
+                          ->whereIn('place_id', function ($q2) use ($id) {
+                             $q2->select('id')->from('places')
+                                ->whereRegionId($id);
+                          });                
+                     })->count();
+        $count = number_format($count, 0, ',', ' ');
+        if (!$count || $without_link) {
+            return $count;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/corpus/text?search_region='.$id).'">'.$count.'</a>';
     }
 }
