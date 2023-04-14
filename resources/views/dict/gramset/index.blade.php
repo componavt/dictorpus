@@ -1,5 +1,3 @@
-<?php $search_pos_code = \App\Models\Dict\PartOfSpeech::getCodeById($url_args['search_pos']); ?>
-
 @extends('layouts.page')
 
 @section('page_title')
@@ -25,7 +23,6 @@
         @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($gramsets && $numAll)
-            {!! $gramsets->appends($url_args)->render() !!}
         <table class="table-bordered table-wide rwd-table wide-lg">
         <thead>
             <tr>
@@ -55,33 +52,9 @@
                 </td>
                 @endforeach
 
-                <td data-th="{{ trans('dict.lemmas') }}">
-                  <?php $count=sizeof($gramset->lemmas($url_args['search_pos'],$url_args['search_lang'])->groupBy('lemma_id')->get()); ?>
-                  @if ($count)
-                    <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/by_wordforms') }}{{$args_by_get_for_out}}&search_gramsets[1]={{$gramset->id}}">
-                        {{ number_format($count, 0, ',', ' ') }}
-                    </a>
-                  @else
-                    {{ $count }}
-                  @endif
-                </td>
-
-                <td data-th="{{ trans('dict.wordforms') }}">
-                    <a href="{{ LaravelLocalization::localizeURL('/dict/wordform/') }}{{$args_by_get_for_out}}&search_gramset={{$gramset->id}}">
-                        {{ number_format($gramset->wordforms($url_args['search_pos'],$url_args['search_lang'])->count(), 0, ',', ' ') }}
-                    </a>
-                </td>
-
-                <td data-th="{{ trans('corpus.texts') }} / {{ trans('corpus.words') }}">
-                  <?php $count_text = $gramset->countTexts($url_args['search_lang'], $url_args['search_pos']); ?>
-                  @if ($count_text)
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/sentence/results') }}?search_lang[]={{$url_args['search_lang']}}&search_words[1][p]={{$search_pos_code}}&search_words[1][gs]={{$gramset->id}}">
-                        {{ number_format($count_text, 0, ',', ' ') }}</a>
-                        / {{ number_format($gramset->countWords($url_args['search_lang'], $url_args['search_pos']), 0, ',', ' ') }}
-                  @else
-                    0
-                  @endif
-                </td>
+                <td data-th="{{ trans('dict.lemmas') }}" id="lemma-total-{{$gramset->id}}"></td>
+                <td data-th="{{ trans('dict.wordforms') }}" id="wordform-total-{{$gramset->id}}"></td>
+                <td data-th="{{ trans('corpus.texts') }} / {{ trans('corpus.words') }}" id="text_word-total-{{$gramset->id}}"></td>
                 
                 @if (User::checkAccess('ref.edit'))
                 <td data-th="{{ trans('dict.gramset_category') }}">
@@ -89,15 +62,9 @@
                 </td>
                 
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', ['route' => '/dict/gramset/'.$gramset->id.'/edit',
-                                                           'is_button' => true,
-                                                           'url_args' => $url_args,
-                                                           'without_text' => true])
-                    @include('widgets.form.button._delete', 
-                             ['is_button' => true,
-                              'route' => 'gramset.destroy', 
-                              'args'=>['id' => $gramset->id],
-                              'without_text' => true]) 
+                    @include('widgets.form.button._edit_small_button', 
+                             ['route' => '/dict/gramset/'.$gramset->id.'/edit'])
+                    @include('widgets.form.button._delete_small_button', ['obj_name' => 'gramset'])
                 </td>                
                 @endif
             </tr>
@@ -110,8 +77,14 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/dict.js')!!}
 @stop
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}');
+    @foreach($gramsets as $key=>$gramset)
+        loadCount('#lemma-total-{{$gramset->id}}', '{{ LaravelLocalization::localizeURL('/dict/gramset/'.$gramset->id.'/lemma_count/'.$url_args['search_lang'].'/'.$url_args['search_pos']) }}');
+        loadCount('#wordform-total-{{$gramset->id}}', '{{ LaravelLocalization::localizeURL('/dict/gramset/'.$gramset->id.'/wordform_count/'.$url_args['search_lang'].'/'.$url_args['search_pos']) }}');
+        loadCount('#text_word-total-{{$gramset->id}}', '{{ LaravelLocalization::localizeURL('/dict/gramset/'.$gramset->id.'/text_word_count/'.$url_args['search_lang'].'/'.$url_args['search_pos']) }}');
+    @endforeach
 @stop

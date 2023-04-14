@@ -401,7 +401,7 @@ class Gramset extends Model
         $search_words[1]['p'] = $pos_id ? [$pos_id] : [];
         $search_words[1]['gs'] = $this->id;
         $texts = Text::whereIn('id',array_unique(Sentence::searchWords($search_words)
-                   ->pluck('t1.text_id')));
+                   ->pluck('text1_id')));
         if ($lang_id) {
             $texts = $texts->whereLangId($lang_id);
         }

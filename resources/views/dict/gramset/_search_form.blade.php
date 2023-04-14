@@ -2,7 +2,7 @@
                              'method' => 'get']) 
         !!}
 
-<div class="row">
+<div class="search-form row">
     <div class="col-sm-4">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_pos', 
@@ -24,8 +24,6 @@
                  'value' => $url_args['search_category'],
                  'attributes'=>['placeholder' => trans('dict.select_category') ]]) 
     </div>
-</div>    
-<div class="row">
     <div class="col-sm-4 search-button-b">       
         <span>
         {{trans('search.show_by')}}

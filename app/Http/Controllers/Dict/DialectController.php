@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Response;
+use LaravelLocalization;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
@@ -59,7 +60,7 @@ class DialectController extends Controller
 //       $dialects = $dialects->get();
 
 //        $lang_values = Lang::getList();
-        $lang_values = Lang::getListWithQuantity('dialects');
+        $lang_values = Lang::getListWithQuantity('dialects', true);
 
         $url_args = ['lang_id'=>$lang_id];
                 
@@ -266,5 +267,30 @@ class DialectController extends Controller
         $all_dialects = Dialect::getList($lang_id);
 
         return Response::json($all_dialects);*/
+    }
+    
+    /*
+     * test: /ru/dict/dialect/47/text_count
+     */
+    public function textCount($id, Request $request) {
+        $without_link = $request->without_link;
+        $dialect = Dialect::find($id);     
+        $count = $dialect->texts()->count();
+        $count = number_format($count, 0, ',', ' ');
+        if (!$count || $without_link) {
+            return $count;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/corpus/text?search_dialect='.$dialect->id).'">'.$count.'</a>';
+    }
+    
+    public function wordformCount($id, Request $request) {
+        $without_link = $request->without_link;
+        $dialect = Dialect::find($id);     
+        $count = $dialect->wordforms()->count();
+        $count = number_format($count, 0, ',', ' ');
+        if (!$count || $without_link) {
+            return $count;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/dict/wordform?search_dialect='.$dialect->id).'">'.$count.'</a>';    
     }
 }

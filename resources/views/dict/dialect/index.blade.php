@@ -2,7 +2,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('dict.dialect_list') }}
+{{ trans('navigation.dialects') }}
 @stop
 
 @section('headExtra')
@@ -25,7 +25,7 @@
         @include('widgets.found_records', ['numAll'=>$numAll])
         
         @if ($numAll)                
-    <table class="table-bordered table-wide rwd-table wide-lg">
+    <table class="table-bordered table-wide table-striped rwd-table wide-md">
         <thead>
             <tr>
                 <th>{{ trans('messages.sequence_number') }}</th>
@@ -48,30 +48,14 @@
                 <td data-th="{{ trans('messages.in_english') }}">{{$dialect->name_en}}</td>
                 <td data-th="{{ trans('messages.in_russian') }}">{{$dialect->name_ru}}</td>
                 <td data-th="{{ trans('dict.code') }}">{{$dialect->code}}</td>
-                <td data-th="{{ trans('dict.wordforms') }}">
-                    <a href='{{ LaravelLocalization::localizeURL('/dict/wordform?search_dialect='.$dialect->id) }}'>
-                        {{$dialect->wordforms()->count()}}
-                    </a>
-                </td>
-                <td data-th="{{ trans('navigation.texts') }}">
-                    <a href='{{ LaravelLocalization::localizeURL('/corpus/text?search_dialect='.$dialect->id) }}'>
-                        {{$dialect->texts()->count()}}
-                    </a>
-                </td>
+                <td data-th="{{ trans('dict.wordforms') }}" id="wordform-total-{{$dialect->id}}" style="text-align: right"></td>
+                <td data-th="{{ trans('navigation.texts') }}" id="text-total-{{$dialect->id}}" style="text-align: right"></td>
 
                 @if (User::checkAccess('ref.edit'))
                 <td data-th="{{ trans('messages.actions') }}">
-                    @include('widgets.form.button._edit', 
-                            ['is_button'=>true, 
-                             'without_text' => 1,
-                             'url_args' => $url_args,
-                             'route' => '/dict/dialect/'.$dialect->id.'/edit'])
-                    @include('widgets.form.button._delete', 
-                            ['is_button'=>true, 
-                             'without_text' => 1,
-                            'url_args' => $url_args,
-                            'route' => 'dialect.destroy', 
-                            'args'=>['id' => $dialect->id]])
+                    @include('widgets.form.button._edit_small_button', 
+                             ['route' => '/dict/dialect/'.$dialect->id.'/edit'])
+                    @include('widgets.form.button._delete_small_button', ['obj_name' => 'dialect'])
                 </td>
                 @endif
             </tr>
@@ -85,9 +69,14 @@
 
 @section('footScriptExtra')
     {!!Html::script('js/rec-delete-link.js')!!}
+    {!!Html::script('js/dict.js')!!}
 @stop
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}');
+    @foreach($dialects as $dialect)
+        loadCount('#text-total-{{$dialect->id}}', '{{ LaravelLocalization::localizeURL('/dict/dialect/'.$dialect->id.'/text_count') }}');
+        loadCount('#wordform-total-{{$dialect->id}}', '{{ LaravelLocalization::localizeURL('/dict/dialect/'.$dialect->id.'/wordform_count') }}');
+    @endforeach
 @stop
 

@@ -18,12 +18,20 @@ Route::group(
         
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('concept/{id}/photo_preview', 'Dict\ConceptController@photoPreview');
+        
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
+        Route::get('dialect/{id}/text_count', 'Dict\DialectController@textCount');
+        Route::get('dialect/{id}/wordform_count', 'Dict\DialectController@wordformCount');
+        
         Route::get('example/create/{meaning_id}', 'Dict\ExampleController@create');        
         Route::get('example/store/{meaning_id}', 'Dict\ExampleController@store');        
         Route::get('example/{example_id}/edit', 'Dict\ExampleController@edit');        
         Route::get('example/{example_id}/update', 'Dict\ExampleController@update');        
+        
         Route::get('gramset/list', 'Dict\GramsetController@gramsetList');
+        Route::get('gramset/{id}/lemma_count/{lang_id}/{pos_id}', 'Dict\GramsetController@lemmaCount');
+        Route::get('gramset/{id}/text_word_count/{lang_id}/{pos_id}', 'Dict\GramsetController@textWordCount');
+        Route::get('gramset/{id}/wordform_count/{lang_id}/{pos_id}', 'Dict\GramsetController@wordformCount');
 
         Route::get('lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');

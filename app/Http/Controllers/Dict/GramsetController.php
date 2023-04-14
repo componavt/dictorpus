@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Response;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
+use LaravelLocalization;
 
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
@@ -39,7 +40,7 @@ class GramsetController extends Controller
         }
         
         if ($this->url_args['limit_num']<=0) {
-            $this->url_args['limit_num'] = 25;
+            $this->url_args['limit_num'] = 10;
         } elseif ($this->url_args['limit_num']>1000) {
             $this->url_args['limit_num'] = 1000;
         }   
@@ -61,8 +62,8 @@ class GramsetController extends Controller
         $numAll = sizeof($gramsets->get());
         $gramsets = $gramsets->paginate($url_args['limit_num']);         
 
-        $pos_values = PartOfSpeech::getGroupedListWithQuantity('gramsets');
-        $lang_values = Lang::getListWithQuantity('gramsets');
+        $pos_values = PartOfSpeech::getChangeableListWithQuantity('gramsets');
+        $lang_values = Lang::getListWithQuantity('gramsets', true);
         $category_values = GramsetCategory::getList();
 
         $gram_fields = Gramset::fieldsForIndex($gramsets);
@@ -329,4 +330,47 @@ class GramsetController extends Controller
 //dd($list);        
         return Response::json($list);
     }
+    
+    /*
+     * test: /ru/dict/gramset/3/lemma_count/
+     */
+    public function lemmaCount($id, $lang_id, $pos_id, Request $request) {
+        $without_link = $request->without_link;
+        $gramset = Gramset::find($id);    
+        $count=sizeof($gramset->lemmas($pos_id,$lang_id)->groupBy('lemma_id')->get()); 
+        $count = number_format($count, 0, ',', ' ');
+        if (!$count || $without_link) {
+            return $count;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/dict/lemmaby_wordforms?search_gramsets[1]='.$gramset->id).'">'.$count.'</a>';
+    }
+    
+    public function wordformCount($id, $lang_id, $pos_id, Request $request) {
+        $without_link = $request->without_link;
+        $gramset = Gramset::find($id);    
+        $count = $gramset->wordforms($pos_id,$lang_id)->count();
+        $count = number_format($count, 0, ',', ' ');
+        if (!$count || $without_link) {
+            return $count;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/dict/wordform?search_gramset='.$gramset->id).'">'.$count.'</a>';    
+    }
+    
+    public function textWordCount($id, $lang_id, $pos_id, Request $request) {
+        $pos_code = PartOfSpeech::getCodeById($pos_id);
+        $without_link = $request->without_link;
+        $gramset = Gramset::find($id);    
+        $count_text=$gramset->countTexts($lang_id, $pos_id); 
+        if (!$count_text) {
+            return 0;
+        }
+        $count_text = number_format($count_text, 0, ',', ' ');
+        $count_word = number_format($gramset->countWords($lang_id, $pos_id), 0, ',', ' ');
+        if ($without_link) {
+            return $count_text. ' / '. $count_word;
+        }
+        return '<a href="'.LaravelLocalization::localizeURL('/corpus/sentence/results?search_lang[]='.$lang_id.'&search_words[1][p]='.$pos_code.'&search_words[1][gs]='.$gramset->id).'">'.
+                $count_text.'</a>'. ' / '. $count_word;
+    }
+    
 }
