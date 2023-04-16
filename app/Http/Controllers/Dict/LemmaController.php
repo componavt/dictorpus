@@ -45,17 +45,16 @@ class LemmaController extends Controller
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.add,/dict/lemma/', 
-
-                ['only' => ['create','store']]);
+                ['only' => ['create','store', 'callCreatePhonetic']]);
         $this->middleware('auth:dict.edit,/dict/lemma/', 
-                          ['only' => ['edit','update','destroy',
-                                      'editExample', 'removeExample',
-                                      'editExamples','updateExamples',
-                                      'storeSimple', 'tmpUpdateStemAffix',
-                                      'createWordform', 'updateWordformFromText',
-                                      'editWordforms','updateWordforms', 'checkWordforms',
-                                      'reloadStemAffixByWordforms'
-                              ]]);
+                ['only' => ['edit','update','destroy',
+                            'editExample', 'removeExample',
+                            'editExamples','updateExamples',
+                            'storeSimple', 'store',
+                            'createWordform', 'updateWordformFromText',
+                            'editWordforms','updateWordforms', 'checkWordforms',
+                            'reloadStemAffixByWordforms'
+                    ]]);
         
         $this->url_args = Lemma::urlArgs($request);  
         
