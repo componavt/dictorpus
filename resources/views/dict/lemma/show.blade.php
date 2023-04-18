@@ -26,7 +26,7 @@
                        ['route' => 'lemma.destroy', 
                         'args'=>['id' => $lemma->id]]) 
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
-            | <a href="#" onClick="callCreatePhonetic()">{{ trans('dict.create_phonetic') }}</a>
+{{--            | <a href="#" onClick="callCreatePhonetic()">{{ trans('dict.create_phonetic') }}</a> --}}
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
         @endif

@@ -36,7 +36,7 @@ Route::group(
         Route::get('lemma/{id}/edit/examples', 'Dict\LemmaController@editExamples');
         Route::get('lemma/{id}/edit/example/{example_id}', 'Dict\LemmaController@editExample');
         Route::get('lemma/{id}/history', 'Dict\LemmaController@history');
-        Route::get('lemma/{id}/create_phonetic', 'Dict\LemmaController@createPhonetic')->name('lemma.create_phonetic'); 
+//        Route::get('lemma/{id}/create_phonetic', 'Dict\LemmaController@createPhonetic')->name('lemma.create_phonetic'); 
         Route::get('lemma/{id}/reload_stem_affix_by_wordforms', 'Dict\LemmaController@reloadStemAffixByWordforms');
         Route::get('lemma/{id}/{label_id}/add_label', 'Dict\LemmaController@addLabel');
         Route::get('lemma/{id}/{label_id}/remove_label', 'Dict\LemmaController@removeLabel');
