@@ -45,7 +45,7 @@ class LemmaController extends Controller
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.add,/dict/lemma/', 
-                ['only' => ['create','store', 'callCreatePhonetic']]);
+                ['only' => ['create','store', 'createPhonetic']]);
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                 ['only' => ['edit','update','destroy',
                             'editExample', 'removeExample',
@@ -211,6 +211,10 @@ class LemmaController extends Controller
 
     public function createPhonetic($id, Request $request) {
         $old_lemma = Lemma::find($id);
+        if (!$old_lemma || !$request->new_lemma) {
+            return Redirect::to('/dict/lemma/'.($id).($this->args_by_get ? $this->args_by_get. '&' : '?'))
+                           ->withError("Can't create empty lemma");        
+        }
         $data = $old_lemma->dataForCopy($request->new_lemma);
         list($new_lemma, $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
