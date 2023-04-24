@@ -65,7 +65,7 @@ class DialectController extends Controller
                   compact('lang_values', 'url_args'));
     }
 
-    public function validateRequest(Request $request, $code_rule) {
+    public function validateRequest(Request $request, $code_rule='') {
         $this->validate($request, [
             'name_en'  => 'required|max:255',
             'name_ru'  => 'required|max:255',
