@@ -131,7 +131,7 @@ class DialectDmarker extends Model
     }
     
     public static function updateData($mvariant_id, $dmarker_id, $dialect_id, $t_frequency, $t_fraction, $w_frequency, $w_fraction) {
-        if (DB::table('dialect_dmarker')->whereMvariantId($this->id)->whereDialectId($dialect_id)->count()) {
+        if (DB::table('dialect_dmarker')->whereMvariantId($mvariant_id)->whereDialectId($dialect_id)->count()) {
             DB::statement('UPDATE dialect_dmarker SET t_frequency='.$t_frequency.', t_fraction='.$t_fraction
                     . ', w_frequency='.$w_frequency.', w_fraction='.$w_fraction
                     . ' where mvariant_id='. $mvariant_id. ' and dialect_id='.$dialect_id);
