@@ -65,10 +65,13 @@ class DialectDmarkerController extends Controller
                         ->from('dialect_text');
                     })->get();
                     
-        foreach ($mvariants as $mvariant) {
+        foreach ($dialects as $dialect) {
+            $total_texts = $dialect->totalTexts();
+            $total_words = $dialect->totalWords();
+print "<h3>". $dialect->name. ", $total_texts / $total_words</h3>";          
+            foreach ($mvariants as $mvariant) {
 print "<p>". $mvariant->dmarker_id. ". ". $mvariant->name. "</p>";          
-            foreach ($dialects as $dialect) {
-                $mvariant->calculateFrequencyAndFraction($dialect);
+                $mvariant->calculateFrequencyAndFraction($dialect->id, $total_texts, $total_words);
 //exit(0);                
             }
         }

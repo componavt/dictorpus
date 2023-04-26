@@ -9,6 +9,7 @@ use App\Library\Experiments\Dmarker;
 
 use App\Library\Grammatic;
 
+use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
@@ -24,11 +25,11 @@ class Mvariant extends Model
     
     public function dialects(){
         return $this->belongsToMany(Dialect::class, 'dialect_dmarker')
-                ->withPivot('dmarker_id', 'frequency', 'fraction');
+                ->withPivot('dmarker_id', 't_frequency', 't_fraction', 'w_frequency', 'w_fraction');
     }
     
     public function rightFrequency($dialect_id): bool {
-        $frequency = $this->frequency($dialect_id);
+        $frequency = (int)$this->frequency($dialect_id);
         $right_answers = DialectDmarker::rules();
         if (!$frequency && !in_array($dialect_id, $right_answers[$this->id])
             || $frequency>0 && in_array($dialect_id, $right_answers[$this->id])) {
@@ -39,49 +40,70 @@ class Mvariant extends Model
     
     public function fraction($dialect_id){
         $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
-//dd($dialect->pivot->fraction);        
-        return $dialect ? round($dialect->pivot->fraction, 4) : '';
+//dd($dialect->pivot->fraction);  
+        $t_fraction = round($dialect->pivot->t_fraction, 4);
+        return !$dialect ? '' : (!$t_fraction ? 0 : $t_fraction. '/'. round($dialect->pivot->w_fraction, 4));
     }
     
     public function frequency($dialect_id){
 //dd($this->dialects);        
         $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
-        return $dialect ? $dialect->pivot->frequency : '';
+        $t_frequency = $dialect->pivot->t_frequency;
+        return !$dialect ? '' : (!$t_frequency ? 0 : $t_frequency. '/'. $dialect->pivot->w_frequency);
     }
     
-    public function calculateFrequencyAndFraction($dialect) {
+    public function calculateFrequencyAndFraction($dialect_id, $total_texts, $total_words) {
         if (!$this->template) {
             if (DB::table('dialect_dmarker')->whereMvariantId($this->id)->count()) {
                 DB::statement('DELETE FROM dialect_dmarker where mvariant_id='. $this->id);
             }
             return;
         }
-            $frequency = $this->countWords($dialect->id);
-            $fraction = $frequency === false ? NULL : $frequency / $dialect->totalWords();            
-        if (DB::table('dialect_dmarker')->whereMvariantId($this->id)->whereDialectId($dialect->id)->count()) {
-            DB::statement('UPDATE dialect_dmarker SET frequency='.$frequency.', fraction='.$fraction
-                    . ' where mvariant_id='. $this->id. ' and dialect_id='.$dialect->id);
-        } else {
-            DB::table('dialect_dmarker')->insert([
-                'dialect_id' => $dialect->id, 
-                'dmarker_id' => $this->dmarker_id, 
-                'mvariant_id' => $this->id, 
-                'frequency' => $frequency,
-                'fraction' => $fraction]);
-        }
+        list($sign, $template) = self::processTemplate($this->template);
+        
+        $t_frequency = $this->searchTexts($dialect_id, $sign, $template)->count();
+        $t_fraction = $t_frequency === false ? NULL : $t_frequency / $total_texts;   
+        
+        $w_frequency = $this->searchWords($dialect_id, $sign, $template)->count();
+        $w_fraction = $w_frequency === false ? NULL : $w_frequency / $total_words;   
+        
+        DialectDmarker::updateData($this->id, $this->dmarker_id, $dialect_id, $t_frequency, $t_fraction, $w_frequency, $w_fraction);
     }
     
-    public function searchWords($dialect_id) {
-        return self::searchByTemplate($this->template)
+    public function searchTexts($dialect_id, $sign, $template) {
+        return Text::whereIn('id', function ($q) use ($dialect_id) {
+                        $q -> select('text_id')->from('dialect_text')
+                           -> whereDialectId($dialect_id);
+                    })->whereIn('id', function ($q) use ($sign, $template) {
+                        $q -> select('text_id')->from('words')
+                           -> where('word', $sign, $template);   
+                    });
+    }
+    
+    public function searchWords($dialect_id, $sign, $template) {
+        return Word::where('word', $sign, $template)        
                     ->whereIn('text_id', function ($q) use ($dialect_id) {
-                $q -> select('text_id')->from('dialect_text')
-                   -> whereDialectId($dialect_id);
-            });
+                        $q -> select('text_id')->from('dialect_text')
+                           -> whereDialectId($dialect_id);
+                    });
     }
     
-    public function countWords($dialect_id) {
+    public static function processTemplate(string $template) {
+        $template = str_replace('C', "[".Grammatic::consSet()."]", $template);
+        $template = str_replace('V', "[".Grammatic::vowelSet()."]", $template);
+//dd($template);        
+        if (substr($template, 0, 1) == '!') {
+            $template = substr($template, 1);
+            $sign = 'not rlike';
+        } else {
+            $sign = 'rlike';
+        }
+        return [$sign, $template];
+    }
+    
+/*    public function countWords($dialect_id) {
         return self::searchWords($dialect_id)->count();
-/*        if (!sizeof ($words)) {
+        if (!sizeof ($words)) {
             return false;
         }
         $count = 0; 
@@ -90,9 +112,9 @@ class Mvariant extends Model
                 $count++;
             }
         }
-        return $count;*/
+        return $count;
     }
-/*    
+    
     public function fitWord(string $word) : bool {
         if (in_array($this->dmarker_id, [1,2])) {
             return self::checkInFirstSyllable($this->name, $word);
@@ -108,16 +130,4 @@ class Mvariant extends Model
         return false;
     }
 */   
-    public static function searchByTemplate(string $template) {
-        $template = str_replace('C', "[".Grammatic::consSet()."]", $template);
-        $template = str_replace('V', "[".Grammatic::vowelSet()."]", $template);
-//dd($template);        
-        if (substr($template, 0, 1) == '!') {
-            $template = substr($template, 1);
-            $sign = 'not rlike';
-        } else {
-            $sign = 'rlike';
-        }
-        return Word::where('word', $sign, $template);
-    }
 }
