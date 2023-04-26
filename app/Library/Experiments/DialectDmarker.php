@@ -3,6 +3,7 @@
 namespace App\Library\Experiments;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 use App\Models\Dict\Dialect;
 
