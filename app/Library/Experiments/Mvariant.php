@@ -58,11 +58,11 @@ class Mvariant extends Model
         $out = ['name' => $this->name,
                 'template' => $this->template,
                 'dialects' => []];
-        list($sign, $template) = self::processTemplate($this->template);
+        list($absence, $template) = self::processTemplate($this->template);
         foreach ($dialect_ids as $dialect_id) {
             $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
             if ($output == 'words') {
-                $d['words'] = $this->searchWords($dialect_id, $sign, $template)
+                $d['words'] = $this->searchWords($dialect_id, $absence, $template)
                         ->groupBy('word')->selectRaw('word, count(*) as count, text_id, w_id')
                         ->orderBy('count','desc')->orderBy('word')->get();
             } else {
@@ -84,29 +84,36 @@ class Mvariant extends Model
             }
             return;
         }
-        list($sign, $template) = self::processTemplate($this->template);
-        
-        $t_frequency = $this->searchTexts($dialect_id, $sign, $template)->count();
+        list($absence, $template) = self::processTemplate($this->template);
+
+        $t_frequency = $this->searchTexts($dialect_id, $absence, $template)->count();
         $t_fraction = $t_frequency === false ? NULL : $t_frequency / $total_texts;   
         
-        $w_frequency = $this->searchWords($dialect_id, $sign, $template)->count();
+        $w_frequency = $this->searchWords($dialect_id, $absence, $template)->count();
         $w_fraction = $w_frequency === false ? NULL : $w_frequency / $total_words;   
         
         DialectDmarker::updateData($this->id, $this->dmarker_id, $dialect_id, $t_frequency, $t_fraction, $w_frequency, $w_fraction);
     }
     
-    public function searchTexts($dialect_id, $sign, $template) {
-        return Text::whereIn('id', function ($q) use ($dialect_id) {
+    public function searchTexts($dialect_id, $absence, $template) {
+        $builder = Text::whereIn('id', function ($q) use ($dialect_id) {
                         $q -> select('text_id')->from('dialect_text')
                            -> whereDialectId($dialect_id);
-                    })->whereIn('id', function ($q) use ($sign, $template) {
+                    });
+        if ($absence) {
+                return $builder->whereNotIn('id', function ($q) use ($absence, $template) {
                         $q -> select('text_id')->from('words')
-                           -> where('word', $sign, $template);   
+                           -> where('word', 'rlike',  $template);   
+                    });
+        }
+        return $builder->whereIn('id', function ($q) use ($absence, $template) {
+                        $q -> select('text_id')->from('words')
+                           -> where('word', 'rlike',  $template);   
                     });
     }
     
-    public function searchWords($dialect_id, $sign, $template) {
-        return Word::where('word', $sign, $template)        
+    public function searchWords($dialect_id, $absence, $template) {
+        return Word::whereRaw("word ".($absence ? 'not ': '')."rlike '$template'")        
                     ->whereIn('text_id', function ($q) use ($dialect_id) {
                         $q -> select('text_id')->from('dialect_text')
                            -> whereDialectId($dialect_id);
@@ -119,11 +126,11 @@ class Mvariant extends Model
 //dd($template);        
         if (substr($template, 0, 1) == '!') {
             $template = substr($template, 1);
-            $sign = 'not rlike';
+            $absence = true;
         } else {
-            $sign = 'rlike';
+            $absence = false;
         }
-        return [$sign, $template];
+        return [$absence, $template];
     }
     
 /*    public function countWords($dialect_id) {

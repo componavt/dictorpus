@@ -3,7 +3,7 @@
             <th rowspan="2">Маркер</th>
             <th rowspan="2">Диалектный вариант</th>
     @foreach ($gr_dialects as $gr_name => $cols)
-            <th colspan="{{$cols}}">{{$gr_name}}</th>
+            <th colspan="{{2*$cols}}">{{$gr_name}}</th>
     @endforeach
         </tr>
         <tr>

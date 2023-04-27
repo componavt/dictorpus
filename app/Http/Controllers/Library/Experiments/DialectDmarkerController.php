@@ -51,6 +51,7 @@ class DialectDmarkerController extends Controller
     
     public function calculate() {
         $mvariants = Mvariant::orderBy('id')
+                     ->whereIn('id', [29,35,37,49])
 //                     ->where('dmarker_id', '>', 5)
 //                     ->where('dmarker_id', '<', 6)
 /*                     ->whereIn('dmarker_id', function ($q) {
