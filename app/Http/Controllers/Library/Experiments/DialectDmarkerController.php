@@ -27,7 +27,7 @@ class DialectDmarkerController extends Controller
      */
     public function index() {
         $output = 'frequency';
-        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init();
+        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init($output);
         
         return view('experiments.dialect_dmarker.index', 
                 compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
@@ -35,7 +35,7 @@ class DialectDmarkerController extends Controller
     
     public function fractions() {
         $output = 'fraction';
-        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init();
+        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init($output);
         
         return view('experiments.dialect_dmarker.index', 
                 compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
@@ -43,7 +43,7 @@ class DialectDmarkerController extends Controller
     
     public function words() {
         $output = 'words';
-        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init();
+        list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init($output);
         
         return view('experiments.dialect_dmarker.index', 
                 compact('dialects', 'dmarkers', 'gr_dialects', 'output'));

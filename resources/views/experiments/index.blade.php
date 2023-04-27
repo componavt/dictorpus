@@ -12,12 +12,12 @@
     <p><a href="/experiments/pattern_search">Поиск закономерностей в формировании словоформ</a></p>
 
     <h4>Поиск закономерностей в анализе словоформ</h4>
-    <p>для тверского словаря</p>
+    для тверского словаря
     <ul>    
         <li><a href="/experiments/pattern_search_in_wordforms?dialect_code=krl-new-tvr">сформировать множество</a></li>
         <li><a href="/experiments/pattern_search_in_wordforms_results?dialect_code=krl-new-tvr">посмотреть результаты</a></li>
     </ul>
-    <p>для ливвиковского словаря</p>
+    для ливвиковского словаря
     <ul>    
         <li><a href="/experiments/pattern_search_in_wordforms?dialect_code=olo-new">сформировать множество</a></li>
         <li><a href="/experiments/pattern_search_in_wordforms_results?dialect_code=olo-new">посмотреть результаты</a></li>
@@ -25,13 +25,13 @@
 
     <p><a href="/experiments/bible_language">Анализ языковых конструкций библейских текстов</a></p>
 
-    <p>Определение диалектной принадлежности</p>
+    <h4>Определение диалектной принадлежности</h4>
     <ul>
         <li><a href="/experiments/dialect_dmarker">таблица с частотами</a></li>
         <li><a href="/experiments/dialect_dmarker/fractions">таблица с долями</a></li>
         <li><a href="/experiments/dialect_dmarker/words">посмотреть слова</a></li>
     @if (User::checkAccess('admin'))
-        <li><a href="/experiments/dialect_dmarker/calculate">записать частоты</a></li>
+        <li><a href="/experiments/dialect_dmarker/calculate">переписать частоты</a></li>
     @endif
     </ul>
 @endsection

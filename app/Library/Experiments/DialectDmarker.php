@@ -113,7 +113,7 @@ class DialectDmarker extends Model
         ];        
     }
     
-    public static function init() {
+    public static function init($output) {
         $gr_dialects = $dialects = [];
         foreach (DialectDmarker::dialectListByGroups() as $gr_name => $dialect_grs) {
             $gr_dialects[$gr_name] = sizeof($dialect_grs);
@@ -127,6 +127,13 @@ class DialectDmarker extends Model
             }
         }                    
         $dmarkers = Dmarker::orderBy('id')->get();
+        foreach ($dmarkers as $marker) {
+            $d = [];
+            foreach ( $marker->mvariants as $variant ) {
+                $d[$variant->id] = $variant->dataForTable($output, array_keys($dialects));
+            }
+            $marker->mvariant_dialect = $d;
+        }
         return [$dialects, $dmarkers, $gr_dialects];
     }
     

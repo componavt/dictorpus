@@ -28,8 +28,10 @@ class Mvariant extends Model
                 ->withPivot('dmarker_id', 't_frequency', 't_fraction', 'w_frequency', 'w_fraction');
     }
     
-    public function rightFrequency($dialect_id): bool {
-        $frequency = (int)$this->frequency($dialect_id);
+    public function rightFrequency($dialect_id, $frequency=null): bool {
+        if (!$frequency) {
+            $frequency = (int)$this->frequency($dialect_id);
+        }
         $right_answers = DialectDmarker::rules();
         if (!$frequency && !in_array($dialect_id, $right_answers[$this->id])
             || $frequency>0 && in_array($dialect_id, $right_answers[$this->id])) {
@@ -52,6 +54,29 @@ class Mvariant extends Model
         return !$dialect ? '' : (!$t_frequency ? 0 : $t_frequency. ' / '. $dialect->pivot->w_frequency);
     }
     
+    public function dataForTable($output, $dialect_ids) {
+        $out = ['name' => $this->name,
+                'template' => $this->template,
+                'dialects' => []];
+        list($sign, $template) = self::processTemplate($this->template);
+        foreach ($dialect_ids as $dialect_id) {
+            $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
+            if ($output == 'words') {
+                $d['words'] = $this->searchWords($dialect_id, $sign, $template)
+                        ->groupBy('word')->selectRaw('word, count(*) as count, text_id, w_id')
+                        ->orderBy('count','desc')->orderBy('word')->get();
+            } else {
+                $d['t_frequency'] = $dialect ? $dialect->pivot->t_frequency : '';
+                $d['w_frequency'] = $dialect ? $dialect->pivot->w_frequency : '';
+                $d['t_fraction'] = $dialect ? round($dialect->pivot->t_fraction, 4) : '';
+                $d['w_fraction'] = $dialect ? round($dialect->pivot->w_fraction, 4) : '';
+                $d['right_frequency'] = $this->rightFrequency($dialect_id, $d['t_frequency']);
+            }
+            $out['dialects'][$dialect_id] = $d;
+        }
+        return $out;
+    }
+
     public function calculateFrequencyAndFraction($dialect_id, $total_texts, $total_words) {
         if (!$this->template) {
             if (DB::table('dialect_dmarker')->whereMvariantId($this->id)->count()) {
