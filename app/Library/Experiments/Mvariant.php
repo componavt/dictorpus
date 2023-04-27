@@ -70,7 +70,7 @@ class Mvariant extends Model
                 $d['w_frequency'] = $dialect ? $dialect->pivot->w_frequency : '';
                 $d['t_fraction'] = $dialect ? round($dialect->pivot->t_fraction, 4) : '';
                 $d['w_fraction'] = $dialect ? round($dialect->pivot->w_fraction, 4) : '';
-                $d['class'] = $this->rightFrequency($dialect_id, $d['t_frequency']) ? 'right' : 'wrong';
+                $d['color'] = $this->rightFrequency($dialect_id, $d['t_frequency']) ? 'black' : 'red';
             }
             $out['dialects'][$dialect_id] = $d;
         }

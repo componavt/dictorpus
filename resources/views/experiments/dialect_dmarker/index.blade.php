@@ -4,19 +4,6 @@
 {{ trans('navigation.experiments') }}
 @endsection
 
-@section('headExtra')
-    <style>
-        .right {
-            text-decoration: none; 
-            color: black;
-        }
-        .wrong {
-            text-decoration: none; 
-            color: red;            
-        }
-    </style>
-@endsection
-
 @section('body')
     <h2>Определение диалектной принадлежности</h2>
     
