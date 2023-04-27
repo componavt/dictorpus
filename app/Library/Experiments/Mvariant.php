@@ -42,14 +42,14 @@ class Mvariant extends Model
         $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
 //dd($dialect->pivot->fraction);  
         $t_fraction = round($dialect->pivot->t_fraction, 4);
-        return !$dialect ? '' : (!$t_fraction ? 0 : $t_fraction. '/'. round($dialect->pivot->w_fraction, 4));
+        return !$dialect ? '' : (!$t_fraction ? 0 : $t_fraction. ' / '. round($dialect->pivot->w_fraction, 4));
     }
     
     public function frequency($dialect_id){
 //dd($this->dialects);        
         $dialect = $this->dialects()->where('dialect_id', $dialect_id)->first();
         $t_frequency = $dialect->pivot->t_frequency;
-        return !$dialect ? '' : (!$t_frequency ? 0 : $t_frequency. '/'. $dialect->pivot->w_frequency);
+        return !$dialect ? '' : (!$t_frequency ? 0 : $t_frequency. ' / '. $dialect->pivot->w_frequency);
     }
     
     public function calculateFrequencyAndFraction($dialect_id, $total_texts, $total_words) {
