@@ -1,4 +1,4 @@
-<?php $link_style = 'style="text-decoration: none; color: '.$variant['right_frequency'] ? 'black' : 'red'.';"';
+<?php $link_style = 'style="text-decoration: none; color: '.($variant['right_frequency'] ? 'black' : 'red').';"';
       $align = 'style="text-align: '.($output=='frequency' ? 'right' : 'left').'"';
 ?>
 
