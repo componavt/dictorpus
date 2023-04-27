@@ -4,6 +4,6 @@
                 {{ $variant['t_'.$output] }}
                 </a>
             </td>
-            <td style="text-align: {{$output=='frequency' ? 'right' : 'left'}}">
+            <td style="text-align: {{$output=='frequency' ? 'right' : 'left'}}; color: {{ $variant['color'] }}">
                 {{ $variant['w_'.$output] }}
             </td>
