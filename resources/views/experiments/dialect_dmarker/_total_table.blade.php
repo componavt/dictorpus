@@ -33,14 +33,9 @@
                 @endif
             <td style="vertical-align: top"><b>{{ $variant_info['name'] }}</b></td>
                 @foreach ($dialects as $dialect_id => $dialect_info)
-                    @if ($output == 'frequency' || $output == 'fraction')
-                        @include('experiments.dialect_dmarker._td_frequency', [
-                            'template'=>$variant_info['template'], 
-                            'variant'=>$variant_info['dialects'][$dialect_id]])
-                    @elseif ($output == 'words')
-                        @include('experiments.dialect_dmarker._td_words',
-                            ['words'=>$variant_info['dialects'][$dialect_id]['words']])
-                    @endif
+                    @include('experiments.dialect_dmarker._td_'.$output, [
+                        'template'=>$variant_info['template'], 
+                        'variant'=>$variant_info['dialects'][$dialect_id]])
                 @endforeach
                 @if ( $count < sizeof($marker->mvariants) ) 
         </tr>    
