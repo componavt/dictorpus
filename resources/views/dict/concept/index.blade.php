@@ -55,8 +55,9 @@
                     0
                     @endif
                 </td>
-                <td data-th="{{ trans('messages.photo') }}" id='concept-photo_{{$concept->id}}'>
-                    <img class="img-loading" id="img-photo-loading_{{$concept->id}}" src="{{ asset('images/loading.gif') }}">
+                <td data-th="{{ trans('messages.photo') }}">
+                    <div id='concept-photo_{{$concept->id}}'></div>                    
+                    <img class="img-loading" id="img-photo-loading_{{$concept->id}}" src="{{ asset('images/loading_small.gif') }}">
                 </td>
                 @if (User::checkAccess('dict.edit'))
                 <td data-th="{{ trans('messages.actions') }}">

@@ -1,0 +1,1 @@
+<i class="fa fa-sync-alt fa-lg reload" title="{{trans('dict.reload_photo')}}" onclick="loadPhoto('{{$obj}}', '{{$id}}', '{{$url}}')"></i>

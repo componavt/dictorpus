@@ -1,6 +1,7 @@
-<?php 
-    $photo = $concept->photoPreview();
-?>
-@if ($photo) 
-    <a href="{{$photo['url']}}" target="_blank"><img src="{{$photo['source']}}"></a>
-@endif
+    @if ($photo['url'])
+    <a href="{{$photo['url']}}" target="_blank">
+    @endif
+        <img src="{{$photo['source']}}">
+    @if ($photo['url'])
+    </a>
+    @endif

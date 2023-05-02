@@ -94,6 +94,10 @@ class Meaning extends Model
             return true;
         }
     }
+    
+    public function photoInfo() {
+        return $this->concepts[0]->photoInfo();
+    }
 
         /**
      * Gets total number of sentences for examples in Lemma show page

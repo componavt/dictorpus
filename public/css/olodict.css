@@ -1102,6 +1102,10 @@ h1:before {
   background-color: #ededed;
 }
 
+.reload {
+    cursor: pointer;
+}
+
 @media screen and (min-width: 576px) {   
 .right-column .col {
     padding-left: 15px;

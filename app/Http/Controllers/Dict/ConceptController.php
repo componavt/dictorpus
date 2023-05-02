@@ -327,7 +327,26 @@ class ConceptController extends Controller
     
     public function photoPreview($id)
     {
-        $concept = Concept::find($id); 
-        return view('dict.concept._photo_preview', compact('concept'));
+        $concept = Concept::find($id);
+        if (!$concept->wiki_photo) {
+            return ' ';
+        }
+        $photo = $concept->photoPreview();
+        if (!$photo) {
+            return view('dict.concept._photo_reload', with(['obj'=>'concept', 'id'=>$id,
+                'url'=>'/dict/concept/'.$id.'/photo_preview']));
+        }
+        return view('dict.concept._photo_preview', compact('photo'));
     }
+/*    
+    public function photoView($id)
+    {
+        $concept = Concept::find($id);
+        $photo = $concept->photoInfo();
+        if (!$photo) {
+            return view('dict.concept._photo_reload', with(['obj'=>'concept', 'id'=>$id,
+                'url'=>'/dict/concept/".$id."/photo_preview']));
+        }
+        return view('dict.concept._photo_preview', compact('photo'));
+    }*/
 }

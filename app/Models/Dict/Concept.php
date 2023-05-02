@@ -111,13 +111,16 @@ class Concept extends Model
 
         $query_array = array (
             'action' => 'query',
-            'titles' => 'Image:'.$this->wiki_photo,
+            'titles' => 'File:'.$this->wiki_photo,
             'prop' => 'imageinfo',
             'format' => 'json',
             'iiprop' => 'url'
         );
         $query = http_build_query($query_array);
-        $result = file_get_contents($url . '?' . $query);        
+        $result = @file_get_contents($url . '?' . $query);    
+        if (!$result) {
+            return;
+        }
         $result = json_decode($result,true);
         $pages = $result['query']['pages'];
         if (!isset($pages[array_keys($pages)[0]]['imageinfo'][0])) {
@@ -145,15 +148,22 @@ class Concept extends Model
         );
 
         $query = http_build_query($query_array);
-        $result = file_get_contents($url . '?' . $query);        
+        $result = @file_get_contents($url . '?' . $query);        
+        if (!$result) {
+            return;
+        }
         $result = json_decode($result,true);
         $pages = $result['query']['pages'];
-        $photo = $pages[array_keys($pages)[0]];
-/*        if (!isset($photo['descriptionurl']) || !isset($photo['source'])) {
+        if (!isset($pages[array_keys($pages)[0]])) {
             return;
-        }*/
-        return ['url' => $this->photoInfo()['descriptionurl'] ?? null,
-                'source' => isset($photo['thumbnail']) && isset($photo['thumbnail']['source']) ? $photo['thumbnail']['source'] : null];        
+        }
+        $photo = $pages[array_keys($pages)[0]];
+        if (!isset($photo['thumbnail']) || !isset($photo['thumbnail']['source'])) {
+            return;
+        }
+        $url = $this->photoInfo();
+        return ['url' => isset($url['url']) ? $url['url'] : null,
+                'source' => $photo['thumbnail']['source']];        
     }
 
 

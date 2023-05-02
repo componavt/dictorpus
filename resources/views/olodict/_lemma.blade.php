@@ -29,9 +29,9 @@
         </div>
 
         @if ($meaning->hasPhoto())
-        <div class="meaning-photo">
-            @include('dict.meaning._photo')
+        <div id='meaning-photo_{{$meaning->id}}' class="meaning-photo">
         </div>
+        <img class="img-loading" id="img-photo-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
         @endif  
 
         <div class='lemma-meaning-b'>

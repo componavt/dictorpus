@@ -42,6 +42,7 @@
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/olodict.js')!!}
+    {!!Html::script('js/meaning.js')!!}
 @stop
 
 @section('jqueryFunc')
@@ -62,4 +63,12 @@
         placeholder: '{{trans('olodict.topic')}}',
         width: '100%'
     });
+    @foreach($lemmas as $lemma)
+        @foreach ($lemma->meaningsWithBestExamples() as $meaning)
+            @if ($meaning->hasPhoto())
+            loadPhoto('meaning', {{$meaning->id}}, '/dict/meaning/{{$meaning->id}}/photo');
+            @endif
+        @endforeach
+    @endforeach
+    
 @stop

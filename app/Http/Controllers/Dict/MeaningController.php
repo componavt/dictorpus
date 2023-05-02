@@ -206,7 +206,15 @@ class MeaningController extends Controller
     
     public function photo(int $meaning_id) {
         $meaning = Meaning::find($meaning_id);
-        return view('dict.meaning._photo', compact('meaning'));
+        if (!$meaning->concepts[0]->wiki_photo) {
+            return;
+        }
+        $photo = $meaning->photoInfo();
+        if (!$photo) {
+            return view('dict.concept._photo_reload', with(['obj'=>'meaning', 'id'=>$meaning_id,
+                'url'=>'/dict/meaning/'.$meaning_id.'/photo']));
+        }
+        return view('dict.concept._photo_preview', compact('photo'));
     }
     
 

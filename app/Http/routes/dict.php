@@ -18,6 +18,7 @@ Route::group(
         
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('concept/{id}/photo_preview', 'Dict\ConceptController@photoPreview');
+//        Route::get('concept/{id}/photo_view', 'Dict\ConceptController@photoView');
         
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
         Route::get('dialect/{id}/text_count', 'Dict\DialectController@textCount');
