@@ -408,4 +408,8 @@ print 'done.';
     public function addSynonyms() {
         Correct::addSynonyms();
     }
+    
+    public function addSrcForConcepts() {
+        Correct::addSrcForConcepts();
+    }
 }

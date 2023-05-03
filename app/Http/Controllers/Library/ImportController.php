@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Library;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Storage;
-use App\Http\Requests;
+//use App\Http\Requests;
 
 use App\Library\Grammatic;
 use App\Library\Import\ConceptParser;
@@ -223,4 +223,12 @@ print "Найдено ".sizeof($words).' слов.';
         }
         print "done.";
     }
+    
+    public function wikiPhoto() {
+        $filename = 'import/concept_images.csv';
+        $file_content = Storage::disk('local')->get($filename);
+        $file_lines = preg_split ("/\r?\n/",$file_content);
+        ConceptParser::wikiPhoto($file_lines);
+    }
+
 }

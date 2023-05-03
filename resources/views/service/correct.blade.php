@@ -20,6 +20,7 @@
         <p><a href="/service/correct/add_audiofiles_to_db">Добавить аудио-файлы в БД</a>
         <p><a href="/service/correct/add_synonyms">Добавить синонимов из группы понятий</a>
         <p><a href="/service/correct/add_approx_term">Добавить аппроксимативы и терминативы для ливвиковских именных частей речи</a></p>
+        <p><a href="/service/correct/add_src_for_concepts">Заполнить поля-источники у картинок понятий</a></p>
         
 {{--        <p><a href="/service/correct/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
         <p><a href="/service/correct/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>

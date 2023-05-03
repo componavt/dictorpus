@@ -153,4 +153,16 @@ print "</ul>";
 //exit(0);            
         }
     }
+    
+    public static function addSrcForConcepts() {
+        $concepts = Concept::whereNotNull('wiki_photo')
+                           ->where('wiki_photo', '<>', '')
+                           ->where(function($q) {
+                               $q->whereNull('src')
+                                 ->orWhereNull('src');
+                           })->get();
+        foreach ($concepts as $concept) {
+            $concept->updateWikiSrc();
+        }
+    }
 }

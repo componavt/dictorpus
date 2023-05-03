@@ -7,3 +7,4 @@
         Route::get('import/extract_livvic_compound_words', 'Library\ImportController@extractCompoundWords');
         Route::get('import/change_stem_for_compound_words', 'Library\ImportController@changeStemForCompoundWords');
         Route::get('import/phonetics_to_lemmas', 'Library\ImportController@phoneticsToLemmas');
+        Route::get('import/wiki_photo', 'Library\ImportController@wikiPhoto');

@@ -7,6 +7,7 @@ Route::group(
         Route::get('add_accusatives', 'Library\CorrectController@addAccusatives');
         Route::get('add_approx_term', 'Library\CorrectController@addApproxTerm');
         Route::get('add_audiofiles_to_db', 'Library\CorrectController@addAudiofilesToDb');
+        Route::get('add_src_for_concepts', 'Library\CorrectController@addSrcForConcepts');
         Route::get('add_meaning_text_links', 'Library\CorrectController@addMeaningTextLinks');
         Route::get('add_synonyms', 'Library\CorrectController@addSynonyms');
         Route::get('add_wordform_affixes', 'Library\CorrectController@addWordformAffixes');

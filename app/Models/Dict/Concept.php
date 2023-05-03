@@ -3,7 +3,7 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 
 use LaravelLocalization;
 
@@ -14,7 +14,11 @@ use App\Models\Dict\Lemma;
 class Concept extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['id', 'concept_category_id', 'pos_id', 'text_en', 'text_ru', 'wiki_photo'];
+    protected $fillable = ['concept_category_id', 'pos_id', 'text_en', 'text_ru', 'wiki_photo', 'src']; //'id', 
+    const WIKI_API = 'https://en.wikipedia.org/w/api.php';
+    const WIKI_URL = 'https://commons.wikimedia.org/wiki/File:';
+    const WIKI_SRC = 'https://upload.wikimedia.org/wikipedia/commons/';
+    const WIKI_SRC_THUMB  = 'https://upload.wikimedia.org/wikipedia/commons/thumb/';
     
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -103,21 +107,43 @@ class Concept extends Model
         })->count();
     }
     
+    public function updateWikiSrc() {
+        if (!$this->wiki_photo) {
+            $this->src = '';
+            $this->save();
+            return;
+        }
+        $WikiInfo = self::getWikiInfo($this->wiki_photo);
+        if (!$WikiInfo || !isset($WikiInfo['source'])) {
+            return;
+        }
+        if (preg_match("/^".str_replace('/', '\/', self::WIKI_SRC)."(.+)$/", $WikiInfo['source'], $regs)) {
+            $this->src = $regs[1];
+            $this->save();
+        }
+    }
+
     public function photoInfo() {
         if (!$this->wiki_photo) {
             return;
         }
-        $url = 'https://en.wikipedia.org/w/api.php';
-
+        if ($this->src) {
+            return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
+                    'source' => self::WIKI_SRC.$this->src];
+        }
+        return self::getWikiInfo($this->wiki_photo);
+    }
+    
+    public static function getWikiInfo($filename) {
         $query_array = array (
             'action' => 'query',
-            'titles' => 'File:'.$this->wiki_photo,
+            'titles' => 'File:'.$filename,
             'prop' => 'imageinfo',
             'format' => 'json',
             'iiprop' => 'url'
         );
         $query = http_build_query($query_array);
-        $result = @file_get_contents($url . '?' . $query);    
+        $result = @file_get_contents(self::WIKI_API . '?' . $query);    
         if (!$result) {
             return;
         }
@@ -131,15 +157,13 @@ class Concept extends Model
             return;
         }
         return ['url' => $photo['descriptionurl'],
-                'source' => $photo['url']];        
+                'source' => $photo['url']];                
     }
-    
+
     public function photoPreview() {
         if (!$this->wiki_photo) {
             return;
         }
-        $url = 'https://en.wikipedia.org/w/api.php';
-
         $query_array = array (
             'action' => 'query',
             'titles' => 'File:'.$this->wiki_photo,
@@ -148,7 +172,7 @@ class Concept extends Model
         );
 
         $query = http_build_query($query_array);
-        $result = @file_get_contents($url . '?' . $query);        
+        $result = @file_get_contents(self::WIKI_API . '?' . $query);        
         if (!$result) {
             return;
         }
@@ -162,7 +186,7 @@ class Concept extends Model
             return;
         }
         $url = $this->photoInfo();
-        return ['url' => isset($url['url']) ? $url['url'] : null,
+        return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),//isset($url['url']) ? $url['url'] : null,
                 'source' => $photo['thumbnail']['source']];        
     }
 

@@ -578,8 +578,21 @@ print "<p><b>Понятие ".$concept_obj->id.": ".$concept_obj->text_ru."</b><
 //dd($lang_meanings);                
             }
         }
+        
     }
 
+    public static function wikiPhoto(array $lines) {
+        foreach ($lines as $line) {
+            if (preg_match("/^(\d+)\s+(.+)$/u", $line, $regs)) {
+print "<p>id: ".$regs[1].", file: ".$regs[2]."</p>";                
+                $concept = Concept::find((int)$regs[1]);
+                if (!$concept->wiki_photo) {
+                    $concept->wiki_photo = $regs[2];
+                    $concept->updateWikiSrc();
+                }
+            }
+        }
+    }
     /**
      * 
      * @param array $letter_dialects ["a1" => 
