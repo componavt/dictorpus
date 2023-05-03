@@ -166,7 +166,7 @@ class Concept extends Model
         }
         if ($this->src) {
             return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
-                    'source' => self::WIKI_SRC_THUMB.$this->src];
+                    'source' => self::WIKI_SRC_THUMB.preg_replace("/\/([^\/]+)$/u","/\\1/50px-\\1",$this->src)];
         }
         $query_array = array (
             'action' => 'query',
