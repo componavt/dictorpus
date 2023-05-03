@@ -13,7 +13,7 @@ class AddSrcToConceptsTable extends Migration
     public function up()
     {
         Schema::table('concepts', function (Blueprint $table) {
-            $table->string('src',150)->nullable();
+            $table->string('src',500)->nullable();
         });
     }
 
