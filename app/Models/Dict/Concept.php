@@ -164,6 +164,10 @@ class Concept extends Model
         if (!$this->wiki_photo) {
             return;
         }
+        if ($this->src) {
+            return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
+                    'source' => self::WIKI_SRC_THUMB.$this->src];
+        }
         $query_array = array (
             'action' => 'query',
             'titles' => 'File:'.$this->wiki_photo,
