@@ -48,6 +48,10 @@ td[data-th] .form-group {
     margin-bottom: -10px;
 }
 
+.concept-photo img {
+    max-width: 300px;
+}
+
 @media (min-width: 767px) {
   .table-bordered.wide-md > tbody > tr > td {
     border: 1px solid #ddd;

@@ -56,7 +56,7 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('messages.photo') }}">
-                    <div id='concept-photo_{{$concept->id}}'></div>                    
+                    <div id='concept-photo_{{$concept->id}}' class='concept-photo'></div>                    
                     <img class="img-loading" id="img-photo-loading_{{$concept->id}}" src="{{ asset('images/loading_small.gif') }}">
                 </td>
                 @if (User::checkAccess('dict.edit'))
