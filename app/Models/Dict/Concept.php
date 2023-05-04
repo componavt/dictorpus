@@ -118,7 +118,7 @@ class Concept extends Model
             return;
         }
         if (preg_match("/^".str_replace('/', '\/', self::WIKI_SRC)."(.+)$/", $WikiInfo['source'], $regs)) {
-            $this->src = preg_replace("/svg$/u", "png",$regs[1]);
+            $this->src = $regs[1];
             $this->save();
         }
     }
