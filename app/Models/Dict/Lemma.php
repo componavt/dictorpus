@@ -1517,7 +1517,7 @@ dd($wordforms);
             return;
         }
         $this->wordforms()->attach($wordform_obj->id, 
-                            ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix'=>$affix, 
+                            ['gramset_id'=>$gramset_id, 'dialect_id'=>$dialect_id, 'affix'=>$affix, 'lang_id'=>$this->lang_id,
                              'wordform_for_search'=>Grammatic::changeLetters($wordform_obj->wordform, $this->lang_id)]);    
 /*
         $query = "DELETE FROM lemma_wordform WHERE lemma_id=".$this->id
