@@ -25,7 +25,7 @@
                    value="{{trans('messages.check')}}">
         @endif
         <p style='margin-top:20px'><img class="img-loading" id="loading-text" src="{{ asset('images/loading.gif') }}"></p>
-        <div id='spellchecking' style='white-space: pre-line'></div>
+        <div id="spellchecking" style="white-space: pre-line; margin-left:12px; margin-right: 12px;"></div>
 @stop
 
 @section('footScriptExtra')
