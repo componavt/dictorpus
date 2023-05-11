@@ -787,15 +787,17 @@ print "<p>sentence_id=".$this->sentence_id.", word_id=".$this->id."<br>\n".$new_
         $w_id = (int)$word->attributes()->id;
         $word_for_search = Grammatic::changeLetters((string)$word,$lang_id);
 
-        $wordforms = LemmaWordform::where('wordform_for_search', 'like', $word)           
+        $wordforms = LemmaWordform::where('wordform_for_search', 'like', $word_for_search)           
                                   ->whereLangId($lang_id);
-        $lemmas = Lemma::where('lemma_for_search', 'like', $word)           
+        $lemmas = Lemma::where('lemma_for_search', 'like', $word_for_search)           
                                   ->whereLangId($lang_id);
+        
+        $word->addAttribute('word',$word_for_search);            
+        
         if (!$wordforms->count() && !$lemmas->count()) {
             $word->addAttribute('class','no-wordforms');
         } else {
             $word->addAttribute('class','word-linked');            
-            $word->addAttribute('word',$word_for_search);            
             $word=Sentence::addLemmasBlock($word,$w_id);
         }
         return $word;
