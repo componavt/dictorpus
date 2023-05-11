@@ -1125,7 +1125,7 @@ class Text extends Model
         } else {
             $has_checked = false;
         }
-        foreach ($this->getWordformsByWord($word_obj->word) as $wordform) {
+        foreach (self::getWordformsByWord($word_obj->word, $this->lang_id) as $wordform) {
             $wg_id = $wordform->id. '_'. $wordform->gramset_id;
             $relevance = $checked_relevances[$wg_id] ?? ($has_checked ? 0 : 1);
             $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->id, $word_obj->w_id, $relevance);
@@ -1138,8 +1138,7 @@ class Text extends Model
      * @param Int $lang_id
      * @return Collection
      */
-    public function getWordformsByWord($word) {
-        $lang_id = $this->lang_id;
+    public static function getWordformsByWord($word, $lang_id) {
 // TODO BEFORE COMLETION        
         $wordforms = Wordform::where('lemma_wordform.wordform_for_search', 'like', $word)
                    ->join('lemma_wordform','lemma_wordform.wordform_id', '=', 'wordforms.id')
@@ -1244,7 +1243,7 @@ class Text extends Model
      *
      * return Array [SimpleXMLElement object, error text if exists]
      */
-    public static function toXML($text_xml, $id){
+    public static function toXML($text_xml, $id=NULL){
         libxml_use_internal_errors(true);
         if (!preg_match("/^\<\?xml/", $text_xml)) {
             $text_xml = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
@@ -1978,5 +1977,32 @@ dd($s->saveXML());
                   ->orWhere('text', 'rlike', $word);
             });
     }
+
+    public function createLemmaBlock($w_id) {
+        if (!$w_id) { return null; }
+        
+        $meaning_checked = $this->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1)->first();
+        $meaning_unchecked = $this->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
+        if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
+        
+        $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();
+        if (!$word_obj) {return null;} 
+        return $word_obj->createLemmaBlock($this->id, $w_id);
+    }
     
+    public static function spellchecking($text, $lang_id) {
+        list($markup_text) = Sentence::markup($text,1);
+        $markup_text = self::addBlocksToWords($markup_text, $lang_id);
+        return $markup_text;
+    }
+
+    public static function addBlocksToWords($text, $lang_id) {
+        list($sxe,$error_message) = self::toXML($text);
+        if ($error_message) { return $error_message; }
+
+        foreach ($sxe->xpath('//w') as $word) {
+            $word = Word::addBlockToWord($word, $lang_id);
+        }
+        return $sxe->asXML();
+    }
 }

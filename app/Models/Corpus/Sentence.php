@@ -727,7 +727,7 @@ AND t1.word_number-t2.word_number<=|B|;
     }
     
     /**
-     * Устанавить разметку с блоками слов
+     * Пометить искомые слова
 
      * @param array $search_w         - array ID of searching word object
      * 
@@ -767,10 +767,10 @@ AND t1.word_number-t2.word_number<=|B|;
         if ($meanings_checked || $meanings_unchecked) {
             $wordform_checked = $this->text->wordforms()->wherePivot('w_id',$w_id)
                               ->wherePivot('relevance', '>', 1)->count();
-            $wordform_unchecked = $this->text->wordforms()->wherePivot('w_id',$w_id)
-                              ->wherePivot('relevance', 1)->count();
+/*            $wordform_unchecked = $this->text->wordforms()->wherePivot('w_id',$w_id)
+                              ->wherePivot('relevance', 1)->count();*/
             $word_class = 'word-linked';
-            $word = $this->addLemmasBlock($word, $w_id, 
+            $word = self::addLemmasBlock($word, $this->text_id.'_'.$w_id, 
                     $meanings_checked && $wordform_checked ? 'word-checked' : 'word-unchecked');            
         }
 
@@ -784,10 +784,9 @@ AND t1.word_number-t2.word_number<=|B|;
         return $word;
     }
 
-    public function addLemmasBlock($word, $w_id, $block_class) {
-//        $word_obj = Word::getByTextWid($this->text_id, $w_id);
+    public static function addLemmasBlock($word, $block_id, $block_class='') {
         $link_block = $word->addChild('div');
-        $link_block->addAttribute('id','links_'.$this->text_id.'_'.$w_id);
+        $link_block->addAttribute('id','links_'.$block_id);
         $link_block->addAttribute('class','links-to-lemmas '.$block_class);
         $link_block->addAttribute('data-downloaded',0);
         

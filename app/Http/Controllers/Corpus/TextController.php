@@ -764,5 +764,18 @@ class TextController extends Controller
                         'lang_values', 'recorder_values', 'region_values', 
                         'place_values', 'plot_values', 'texts', 'topic_values', 
                         'numAll', 'args_by_get', 'url_args'));
+    } 
+    
+    public function spellchecking()
+    {        
+        $lang_values = Lang::getProjectList();
+        return view('corpus.text.spellchecking', compact(['lang_values']));
+    }
+    
+    public function analysSpellchecking(Request $request)
+    {        
+        $text = $request->input('text');
+        $lang_id = (int)$request->input('lang_id');
+        return Text::spellchecking($text, $lang_id);
     }
 }

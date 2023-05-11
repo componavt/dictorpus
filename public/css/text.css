@@ -312,3 +312,7 @@ h5:first-letter {
 .photo-in-modal img {
     width: 100%;
 }
+
+.no-wordforms {
+    border-bottom: 2px red dotted;
+}

@@ -2,6 +2,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords" content="Russian language, Veps language, Karelian language, corpus linguistics, computer-readable dictionary, русский язык, вепсский язык, карельский язык, корпусная лингвистика, машиночитаемый словарь">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--meta property="og:type" content="website">
     <meta property="og:site_name" content="VepKar">

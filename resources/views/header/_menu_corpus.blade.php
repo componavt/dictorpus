@@ -7,3 +7,4 @@
 <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_new_list/') }}">{{ trans('corpus.new_texts') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/corpus/text/full_updated_list/') }}">{{ trans('corpus.last_updated_texts') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/corpus_frequency') }}">{{ trans('navigation.corpus_freq') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/corpus/spellchecking') }}">{{ trans('navigation.spellchecking') }}</a></li>

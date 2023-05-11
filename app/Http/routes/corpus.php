@@ -59,6 +59,8 @@ Route::group(
         Route::get('sentence/{sentence_id}/translation/{w_id}_{lang_id}/update', 'Corpus\SentenceTranslationController@update');
         
         Route::get('speech_corpus', 'Corpus\TextController@speechCorpus');
+        Route::get('spellchecking', 'Corpus\TextController@spellchecking');
+        Route::post('spellchecking', 'Corpus\TextController@analysSpellchecking');
         
         Route::get('text/{id}/history', 'Corpus\TextController@history');
         Route::get('text/{id}/markup', 'Corpus\TextController@markupText');
@@ -86,6 +88,7 @@ Route::group(
         Route::get('word/freq_dict', 'Corpus\WordController@frequencyDict');
         Route::get('word/load_lemma_block/{text_id}_{w_id}', 'Corpus\WordController@loadLemmaBlock');       
         Route::get('word/load_word_block/{text_id}_{w_id}', 'Corpus\WordController@loadWordBlock');       
+        Route::get('word/load_unlinked_lemma_block/', 'Corpus\WordController@loadUnlinkedLemmaBlock');       
         Route::get('word/prediction', 'Corpus\WordController@lemmaGramsetPrediction');
         Route::get('word/update_meaning_links', 'Corpus\WordController@updateMeaningLinks');
         Route::get('word/update_word_block/{text_id}_{w_id}', 'Corpus\WordController@updateWordBlock');       

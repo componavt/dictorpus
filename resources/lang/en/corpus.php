@@ -134,6 +134,7 @@ return [
     
     'text' => 'text',
     'text_help' => 'You can force the end of a sentence with |<br>You can divide words by the en dash –',
+    'text_for_check' => 'Enter text to check',
     'text_fragment' => 'Fragment of text',
     'text_has_checked_meaning' => 'The text is locked for editing, as It has checked up links with lemmas. Changing the text would result in the loss of relevance of the text to lemmas.',
     'text_has_best_checked_meaning' => 'Текст заблокирован для редактирования, т.к. примеры из этого текста используются в мультимедийном словаре. Переразметка текста приведёт к потерям примеров. Для изменения текста рекомендуется перейти в режим "редактирования предложений"',

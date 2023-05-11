@@ -8,11 +8,12 @@ use DB;
 use LaravelLocalization;
 use User;
 
+use \App\Library\Grammatic;
 use App\Library\Str;
-//use \App\Library\Grammatic;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Wordform;
 
@@ -502,19 +503,8 @@ class Word extends Model
         return $str;
     }
     
-    public static function createLemmaBlock($text_id, $w_id) {
-        if (!$text_id || !$w_id) { return null; }
-        
-        $text = Text::find($text_id);
-        if (!$text) { return null; }
-        
-        $meaning_checked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1)->first();
-        $meaning_unchecked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
-        if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
-        
-        $word_obj = Word::whereTextId($text_id)->whereWId($w_id)->first();
-        if (!$word_obj) {return null;} 
-        $s_id = $word_obj->s_id;
+    public function createLemmaBlock($text_id, $w_id) {
+        $s_id = $this->s_id;
         if (!$s_id) {return null;} 
         
         $lemma_b = Lemma::whereIn('id', function ($q) use ($text_id, $w_id) {
@@ -528,8 +518,11 @@ class Word extends Model
         if (!$lemma_b->count()) {return null;} 
         $lemmas = $lemma_b->get();
         
-        $locale = LaravelLocalization::getCurrentLocale();        
-        $str = '<div><h3>'.$word_obj->word.'</h3>';
+        return self::lemmaBlock($this->word, $w_id, $lemmas, $text_id);
+    }
+    
+    public static function lemmaBlock($word, $w_id, $lemmas, $text_id=null, $wordform_ids=[]) {
+        $str = '<div><h3>'.$word.'</h3>';
         
         for ($i=0; $i<sizeof($lemmas); $i++) {
             $lemma_id = $lemmas[$i]->id;
@@ -537,42 +530,69 @@ class Word extends Model
                   . '<a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$lemma_id)
                   . '">'.$lemmas[$i]->lemma.'</a><br>'
                   . '<span> '.$lemmas[$i]->pos->name.'</span> <i>'
-                  . $lemmas[$i]->featsToString().'</i>';
+                  . $lemmas[$i]->featsToString().'</i>'
             
-            $meanings = Meaning::whereLemmaId($lemma_id)
-                    ->whereIn('id', function ($q) use ($text_id, $w_id) {
-                      $q->select('meaning_id')->from('meaning_text')
-                         ->whereTextId($text_id)->whereWId($w_id)
-                         ->where('relevance','>',0);
-                })->orderBy('meaning_n')->get();
-            $str .= '<div class="meanings_b">';
-            foreach ($meanings as $meaning) {
-                $str .= '<p>'.$meaning->getMultilangMeaningTextsString($locale).'</p>';
-            }
-            $str .= '</div>';
-            
-            $gramsets = Gramset::whereIn('id', function ($q) use ($text_id, $w_id, $lemma_id) {
-                    $q->select('gramset_id')->from('text_wordform')
-                      ->whereTextId($text_id)->whereWId($w_id)
-                      ->where('relevance','>',0)
-                      ->whereIn('wordform_id', function ($q2) use ($lemma_id) {
-                          $q2->select('wordform_id')->from('lemma_wordform')
-                             ->whereLemmaId($lemma_id);
-                      });
-                })->get();
-            if ($gramsets) {
-                $str .= '<div class="gramsets_b">';                
-                foreach ($gramsets as $gramset) {
-                    $str .= '<p>- '.$gramset->gramsetString().'</p>';
-                }
-                $str .= '</div>';                
-            }
-            $str .= '</div>';
+                  . self::meaningsBlock($lemma_id, $w_id, $text_id)
+                  . self::gramsetsBlock($lemma_id, $w_id, $text_id, $wordform_ids)
+                  . '</div>';
         }
         $str .= '</div>';
         return $str;
     }
     
+    public static function meaningsBlock($lemma_id, $w_id, $text_id=null) {
+        $locale = LaravelLocalization::getCurrentLocale();        
+        $str = '<div class="meanings_b">';
+        foreach (self::meaningsForLemmaBlock($lemma_id, $w_id, $text_id) as $meaning) {
+            $str .= '<p>'.$meaning->getMultilangMeaningTextsString($locale).'</p>';
+        }
+        return $str. '</div>';
+    }
+    
+    public static function meaningsForLemmaBlock($lemma_id, $w_id, $text_id=null) {
+        $meanings = Meaning::whereLemmaId($lemma_id);
+        if ($text_id) {
+            $meanings->whereIn('id', function ($q) use ($text_id, $w_id) {
+                  $q->select('meaning_id')->from('meaning_text')
+                     ->whereTextId($text_id)->whereWId($w_id)
+                     ->where('relevance','>',0);
+            });
+        }
+        return $meanings->orderBy('meaning_n')->get();
+    }
+    
+    public static function gramsetsBlock($lemma_id, $w_id, $text_id=null, $wordform_ids=[]) {
+        $gramsets = $text_id ? self::textGramsetsForlemmaBlock($lemma_id, $w_id, $text_id)
+                             : (sizeof($wordform_ids) ? self::wordformGramsetsForlemmaBlock($lemma_id, $wordform_ids) : null);
+        if (!$gramsets) {
+            return null;
+        }
+        $str = '<div class="gramsets_b">';                
+        foreach ($gramsets as $gramset) {
+            $str .= '<p>- '.$gramset->gramsetString().'</p>';
+        }
+        return $str. '</div>';                
+    }
+    
+    public static function textGramsetsForlemmaBlock($lemma_id, $w_id, $text_id=null) {             
+        return Gramset::whereIn('id', function ($q) use ($text_id, $w_id, $lemma_id) {
+            $q->select('gramset_id')->from('text_wordform')
+              ->whereTextId($text_id)->whereWId($w_id)
+              ->where('relevance','>',0)
+              ->whereIn('wordform_id', function ($q2) use ($lemma_id) {
+                  $q2->select('wordform_id')->from('lemma_wordform')
+                     ->whereLemmaId($lemma_id);
+              });
+        })->get();
+    }
+    
+    public static function wordformGramsetsForlemmaBlock($lemma_id, $wordform_ids=[]) {             
+        return Gramset::whereIn('id', function ($q) use ($wordform_ids, $lemma_id) {
+            $q->select('gramset_id')->from('lemma_wordform')
+              ->whereIn('wordform_id', $wordform_ids)
+              ->whereLemmaId($lemma_id);
+        })->get();
+    }
     
     public static function createGramsetBlock($text_id, $w_id) {
         $text = Text::find($text_id);
@@ -761,4 +781,22 @@ print "<p>sentence_id=".$this->sentence_id.", word_id=".$this->id."<br>\n".$new_
 //exit(0);            
         }
     }
+    
+    public static function addBlockToWord($word, $lang_id) {
+//dd((string)$word);       
+        $w_id = (int)$word->attributes()->id;
+        $word_for_search = Grammatic::changeLetters((string)$word,$lang_id);
+
+        $wordforms = LemmaWordform::where('wordform_for_search', 'like', $word)           
+                                  ->whereLangId($lang_id);
+        if (!$wordforms->count()) {
+            $word->addAttribute('class','no-wordforms');
+        } else {
+            $word->addAttribute('class','word-linked');            
+            $word->addAttribute('word',$word_for_search);            
+            $word=Sentence::addLemmasBlock($word,$w_id);
+        }
+        return $word;
+    }
+    
 }

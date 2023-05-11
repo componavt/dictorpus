@@ -18,6 +18,7 @@ return [
     'bin_answers' => [1=>'yes', 0=>'no'],
     'category' => 'category',
     'changed' => 'changed',
+    'check' => 'check',
     'choose' => 'choose',
     'close' => 'close', 
     'code' => 'code',

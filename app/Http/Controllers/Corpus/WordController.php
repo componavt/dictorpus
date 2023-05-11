@@ -20,6 +20,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -158,9 +159,30 @@ class WordController extends Controller
      */
     public function loadLemmaBlock($text_id, $w_id)
     {        
-        $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
-        $text = Text::find($text_id);
-        return Word::createLemmaBlock((int)$text_id, (int)$w_id);
+//        $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
+        $text = Text::find((int)$text_id);
+        if (!$text) {return;}
+        return $text->createLemmaBlock((int)$w_id);
+    }
+    
+    /**
+     * Calls by AJAX from lexical grammatic search, 
+     * @return string
+     */
+    public function loadUnlinkedLemmaBlock(Request $request)
+    {        
+        $word = $request->input('word');
+        $lang_id = (int)$request->input('lang_id');
+        if (!$word || !$lang_id) {return;}
+        $lemmas = Lemma::whereLangId($lang_id)
+                    ->whereIn('id', function ($q) use ($word) {
+                        $q->select('lemma_id')->from('lemma_wordform')
+                          ->where('wordform_for_search', 'like', $word);
+                    })->get();
+        $wordform_ids = LemmaWordform::whereLangId($lang_id)
+                            ->where('wordform_for_search', 'like', $word)
+                            ->pluck('wordform_id')->toArray();
+        return Word::lemmaBlock($word, null, $lemmas, null, $wordform_ids);
     }
     
     /**

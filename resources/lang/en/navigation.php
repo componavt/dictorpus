@@ -76,6 +76,7 @@ return [
     'service' => 'Service',
     'sosd' => 'Comparative-onomasiological dictionary of dialects',
     'speech_corpus' => 'Speech corpus',
+    'spellchecking' => 'Spellchecking',
     'sources' => 'References',
     'stats' => 'Statistics',
     'text_frequency' => 'Frequency of symbols in texts',

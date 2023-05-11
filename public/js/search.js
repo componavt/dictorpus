@@ -92,3 +92,4 @@ function loadCount(el_selector, url){
         }
     });
 }
+

@@ -53,17 +53,13 @@ function showLemmaLinked(text_id) {
  */
 function showWordBlock(locale) {
    $("body").on("click", ".word-linked", function(event) {
-//console.log('click');       
         event.preventDefault(); // reload event after AJAX reload
         var t_w_id = $(this).attr('id');
-//console.log('w_id: '+w_id);        
         $(".links-to-lemmas").hide(); // hide all open blocks
         var w_block = $("#links_"+t_w_id);
-//console.log(w_block);        
         w_block.show();
         var downloaded = w_block.data('downloaded');
         if (downloaded === 0) {
-//console.log("showLemmaLinked: text_id, w_id: " + text_id + ','+ w_id );
             loadWordBlock(t_w_id, '/'+locale+ '/corpus/word/load_lemma_block/' + t_w_id);
         }
     });
@@ -72,7 +68,7 @@ function showWordBlock(locale) {
         var div = $(".links-to-lemmas");
         if (!div.is(e.target)
             && div.has(e.target).length === 0) {
-                div.hide(); // скрываем его
+                div.hide(); // hide this block
         }
     });    
 }
@@ -83,12 +79,12 @@ function updateWordBlock(text_id, w_id) {
     
 }
 
-function loadWordBlock(w_id, url) {
+function loadWordBlock(w_id, url, data={}) {
     $("#links_"+w_id+".links-to-lemmas .img-loading").show();
 //console.log("loadWordBlock: " + url);
     $.ajax({
         url: url, 
-//        data: data,
+        data: data,
         type: 'GET',
         success: function(result){
             $("#links_"+w_id+".links-to-lemmas").html(result);
@@ -481,5 +477,53 @@ function callContextSentence(sentence_id, direction) {
             $("#context_"+sentence_id).html(result);
         }
     }); 
+}
+
+function spellchecking(locale){    
+    $('#spellchecking').html('');
+    $('#loading-text').show();
+    $.ajax({
+        url: '/'+locale+'/corpus/spellchecking', 
+        data: {
+            'text': $('#text').val(),
+            'lang_id': $("#lang_id option:selected" ).val()
+        },
+        type: 'POST',
+        success: function(text){       
+            $('#spellchecking').html(text);
+            $('#loading-text').hide();
+        },
+        error: function () {
+            $('#spellchecking').html('ERROR');
+            $('#loading-text').hide();
+        }
+    });
+}
+
+function showUnlinkedLemmaBlock(locale) {
+   $("body").on("click", ".word-linked", function(event) {
+        event.preventDefault(); // reload event after AJAX reload
+        var t_w_id = $(this).attr('id');
+        var data = {
+            'word': $(this).attr('word'),
+            'lang_id': $("#lang_id option:selected" ).val()
+
+        };
+        $(".links-to-lemmas").hide(); // hide all open blocks
+        var w_block = $("#links_"+t_w_id);
+        w_block.show();
+        var downloaded = w_block.data('downloaded');
+        if (downloaded === 0) {
+            loadWordBlock(t_w_id, '/'+locale+ '/corpus/word/load_unlinked_lemma_block/', data);
+        }
+    });
+        
+    $(document).mouseup(function (e){
+        var div = $(".links-to-lemmas");
+        if (!div.is(e.target)
+            && div.has(e.target).length === 0) {
+                div.hide(); // hide this block
+        }
+    });    
 }
 

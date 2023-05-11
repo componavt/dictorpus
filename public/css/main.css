@@ -653,6 +653,11 @@ h4 {
 .reload {
     cursor: pointer;
 }
+
+.img-loading {
+    display: none;
+}
+
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;
