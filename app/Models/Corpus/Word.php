@@ -789,7 +789,9 @@ print "<p>sentence_id=".$this->sentence_id.", word_id=".$this->id."<br>\n".$new_
 
         $wordforms = LemmaWordform::where('wordform_for_search', 'like', $word)           
                                   ->whereLangId($lang_id);
-        if (!$wordforms->count()) {
+        $lemmas = Lemma::where('lemma_for_search', 'like', $word)           
+                                  ->whereLangId($lang_id);
+        if (!$wordforms->count() && !$lemmas->count()) {
             $word->addAttribute('class','no-wordforms');
         } else {
             $word->addAttribute('class','word-linked');            

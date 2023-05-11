@@ -32,8 +32,5 @@ class AddLangIdInLemmaWordformTable extends Migration
     }
 }
 /*
-UPDATE lemma_wordform
-SET lemma_wordform.lang_id =(SELECT  lang_id
-		FROM lemmas
-		WHERE lemmas.id = lemma_wordform.lemma_id);
+UPDATE lemma_wordform SET lemma_wordform.lang_id=(SELECT lang_id FROM lemmas WHERE lemmas.id = lemma_wordform.lemma_id);
  */
