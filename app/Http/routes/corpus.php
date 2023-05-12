@@ -66,6 +66,7 @@ Route::group(
         Route::get('text/{id}/markup', 'Corpus\TextController@markupText');
         Route::get('text/{id}/sentences', 'Corpus\TextController@editSentences');
         Route::get('text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
+        Route::get('text/{id}/stats', 'Corpus\TextController@stats');
         Route::post('text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
         Route::get('text/add_example/{example_id}', 'Corpus\TextController@addExample');

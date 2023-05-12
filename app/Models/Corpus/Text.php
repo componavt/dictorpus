@@ -136,6 +136,15 @@ class Text extends Model
         }
         return $this->id.'_'.$count.'.mp3';
     }
+    
+    public function markedWords($status='all') {
+        return $this->words()->whereIn('id', function ($q) use ($status) {
+            $q->select('word_id')->from('meaning_text');
+            if ($status=='checked') {
+                $q->where('relevance','>','1');
+            }
+        });
+    }
    
     public function addMeaning($meaning_id, $s_id, $word_id, $w_id, $relevance) {
                         $this->meanings()->attach($meaning_id,

@@ -30,6 +30,7 @@ use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
 class TextController extends Controller
@@ -769,7 +770,7 @@ class TextController extends Controller
     public function spellchecking()
     {        
         $lang_values = Lang::getProjectList();
-        return view('corpus.text.spellchecking', compact(['lang_values']));
+        return view('corpus.text.spellchecking', compact('lang_values'));
     }
     
     public function analysSpellchecking(Request $request)
@@ -777,5 +778,34 @@ class TextController extends Controller
         $text = $request->input('text');
         $lang_id = (int)$request->input('lang_id');
         return Text::spellchecking($text, $lang_id);
+    }
+    
+    public function stats($id) {
+        $args_by_get = $this->args_by_get;
+        $text = Text::find($id);
+        $totalWords = $text->words()->count();
+        $markedWords = $text->markedWords()->count();
+        $markedWordsToAll = round(100 * $markedWords / $totalWords);
+        
+        $checked_words = $text->markedWords('checked')->count();
+        $checkedWordsToMarked = round(100 * $checked_words / $markedWords);
+        
+        $lemmas = Lemma::whereIn('id', function ($q) use ($id) {
+                            $q->select('lemma_id')->from('meanings')
+                              ->whereIn('id', function ($q2) use ($id) {
+                                $q2->select('meaning_id')->from('meaning_text')
+                                  ->whereTextId($id);
+                             });
+                         });
+        $totalLemmas = $lemmas->count();
+        $lemmas_by_pos = [];
+        foreach ($lemmas->groupBy('pos_id')->orderBy('count', 'DESC')->selectRaw('pos_id, count(*) as count')->get() as $row) {
+            $pos = PartOfSpeech::find($row->pos_id);
+            $lemmas_by_pos[$pos->name] = ['count'=>$row->count, '%'=>round(100 * $row->count / $totalLemmas)];
+        }
+        return view('corpus.text.stats', 
+                compact('checked_words', 'checkedWordsToMarked', 'lemmas_by_pos', 
+                        'markedWords', 'markedWordsToAll', 'text', 'totalLemmas', 
+                        'totalWords', 'args_by_get'));
     }
 }

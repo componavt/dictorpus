@@ -24,7 +24,7 @@
 {{--            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/markup') }}{{$args_by_get}}">{{ trans('corpus.re-markup') }}</a>        --}}    
             | @include('widgets.form.button._edit', 
                      ['route' => '/corpus/text/'.$text->id.'/sentences',
-                      'link_text' => ' '.trans('corpus.edit_sentences')])
+                      'link_text' => ' '.mb_strtolower(trans('corpus.sentences'))])
             @if (!$text->hasImportantExamples())
             | @include('widgets.form.button._delete', ['route' => 'text.destroy', 'args'=>['id' => $text->id]]) 
             @endif
@@ -32,7 +32,8 @@
         @else
             | {{ trans('messages.edit') }} | {{ trans('messages.delete') }} | {{ trans('messages.create_new_m') }}
         @endif 
-            | <a href="/corpus/text/{{ $text->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
+            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'). $text->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
+            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/stats') }}">{{ trans('navigation.stats') }}</a>            
             | <a href="{{ LaravelLocalization::localizeURL('/help/text/show') }}">? {{ trans('navigation.help') }}</a>            
         </p>
         
