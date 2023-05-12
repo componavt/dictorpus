@@ -9,6 +9,7 @@
 @stop
 
 @section('body')
+        {!! trans('blob.spellchecking') !!}
         @if (User::currentUser())
             @include('widgets.form.formitem._select', 
                     ['name' => 'lang_id', 
