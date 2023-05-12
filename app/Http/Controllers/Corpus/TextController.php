@@ -794,7 +794,8 @@ class TextController extends Controller
                             $q->select('lemma_id')->from('meanings')
                               ->whereIn('id', function ($q2) use ($id) {
                                 $q2->select('meaning_id')->from('meaning_text')
-                                  ->whereTextId($id);
+                                  ->whereTextId($id)
+                                  ->where('relevance', '<>', 0);
                              });
                          });
         $totalLemmas = $lemmas->count();
