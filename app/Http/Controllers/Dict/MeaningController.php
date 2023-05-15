@@ -28,7 +28,7 @@ class MeaningController extends Controller
         $this->middleware('auth:dict.add,/dict/meaning/', 
                 ['only' => ['create', 'store']]);
         $this->middleware('auth:dict.edit,/dict/meaning/', 
-                ['except' => ['create', 'store', 'index', 'loadExamples', 'reloadExamples', 'loadMoreExamples']]);
+                ['except' => ['create', 'store', 'index', 'loadExamples', 'reloadExamples', 'loadMoreExamples', 'photo']]);
     }
 
     /**

@@ -28,7 +28,8 @@ class ConceptController extends Controller
     {
 //dd($request->all());        
 //var_dump($request->input('limit_num'));
-        $this->middleware('auth:ref.edit,/dict/concept/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/concept/', 
+                ['only' => ['create','store','edit','update','destroy']]);
         $this->url_args = Concept::urlArgs($request); 
 //dd($this->url_args);        
 //var_dump($this->url_args); 
