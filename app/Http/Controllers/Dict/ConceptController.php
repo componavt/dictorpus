@@ -337,7 +337,7 @@ class ConceptController extends Controller
         if (!$concept->wiki_photo) {
             return ' ';
         }
-        $photo = $concept->photoPreview();//Info;
+        $photo = $concept->photoInfo();//Preview;
         if (!$photo) {
             return view('dict.concept._photo_reload', with(['obj'=>'concept', 'id'=>$id,
                 'url'=>'/dict/concept/'.$id.'/photo_preview']));
