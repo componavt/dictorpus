@@ -342,7 +342,7 @@ class GramsetController extends Controller
         if (!$count || $without_link) {
             return $count;
         }
-        return '<a href="'.LaravelLocalization::localizeURL('/dict/lemmaby_wordforms?search_gramsets[1]='.$gramset->id).'">'.$count.'</a>';
+        return '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/by_wordforms?search_gramsets[1]='.$gramset->id).'">'.$count.'</a>';
     }
     
     public function wordformCount($id, $lang_id, $pos_id, Request $request) {

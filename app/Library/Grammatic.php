@@ -267,7 +267,7 @@ class Grammatic
     }
     
     public static function toSearchForm($word) {
-        $word = preg_replace("/[’'`ʼ]/",'',$word);
+        $word = preg_replace("/[’'`ʼ]/u",'',$word);
         if (preg_match("/^\-(.+)$/u", $word, $regs)) {
             $word = $regs[1];
         }

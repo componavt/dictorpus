@@ -1345,7 +1345,7 @@ class GrammaticTest extends TestCase
             277=>'pezovienny',  5=>'pezoviekse', 6=>'pezoviettäh', 8=>'pezovies',  
             9=>'pezovies, pezoviespäi', 10=>'pezovedeh',  11=>'pezoviel', 
             12=>'pezoviel, pezovielpäi', 13=>'pezoviele', 14=>'pezovienke', 
-            15=>'pezovieči', 17=>'pezoviellyö', 16=>'pezoviessäh',
+            15=>'pezovieči', 17=>'pezoviellyö', 16=>'pezovedessäh',
             
             2=>'pezoviet', 57=>'pezoviet', 24=>'pezovezien, pezovezilöin', 22=>'pezovezii, pezovezilöi', 
             279=>'pezovezinny, pezovezilöinny', 59=>'pezovezikse, pezovezilöikse', 
@@ -1354,7 +1354,7 @@ class GrammaticTest extends TestCase
             25=>'pezovezil, pezovezilöil', 62=>'pezovezil, pezovezilpäi, pezovezilöil, pezovezilöilpäi', 
             63=>'pezovezile, pezovezilöile', 65=>'pezovezienke, pezovezinneh, pezovezilöinke, pezovezilöinneh', 
             66=>'pezoveziči, pezovezilöiči', 281=>'pezovezin, pezovezilöin', 
-            18=>'pezovezillyö, pezovezilöillyö', 67=>'pezovezissäh, pezovezilöissäh'];
+            18=>'pezoveziellyö, pezovezillyö, pezovezilöillyö', 67=>'pezovezissäh, pezovezilöissäh'];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1375,7 +1375,7 @@ class GrammaticTest extends TestCase
             2=>'puolet', 57=>'puolet', 24=>'puolien', 22=>'puolii', 279=>'puolinnu', 
             59=>'puolikse', 64=>'puolittah', 23=>'puolis', 60=>'puolis, puolispäi', 
             61=>'puolih',  25=>'puolil', 62=>'puolil, puolilpäi', 63=>'puolile', 
-            65=>'puolienke, puolinneh', 66=>'puoliči', 281=>'puolin', 18=>'puolilluo', 67=>'puolissah'];
+            65=>'puolienke, puolinneh', 66=>'puoliči', 281=>'puolin', 18=>'puolielluo', 67=>'puolissah'];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1394,7 +1394,7 @@ class GrammaticTest extends TestCase
  
             2=>'rannat', 57=>'rannat', 24=>'rantojen', 22=>'rantoja', 279=>'rantoina', 
             59=>'rannoiksi', 23=>'rannoissa', 60=>'rannoista', 61=>'rantoih', 280=>'rannoilla', 
-            62=>'rannoilta', 64=>'rannoitta', 65=>'rantoineh', 66=>'', 281=>'rannoin'];
+            62=>'rannoilta', 64=>'rannoitta', 65=>'rantoineh', 66=>'', 281=>'rannoin', 17=>'', 18=>''];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1408,12 +1408,12 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'randu',  56=>'randu, rannan', 3=>'rannan',  4=>'randua', 277=>'rannannu',  
                      5=>'rannakse', 6=>'rannattah', 8=>'rannas',  9=>'rannas, rannaspäi', 10=>'randah',  
-                     11=>'rannal', 12=>'rannal, rannalpäi', 13=>'rannale', 14=>'rannanke', 15=>'rannači', 17=>'rannalluo', 16=>'rannassah',
+                     11=>'rannal', 12=>'rannal, rannalpäi', 13=>'rannale', 14=>'rannanke', 15=>'rannači', 17=>'rannalluo', 16=>'randassah',
  
             2=>'rannat', 57=>'rannat', 24=>'rannoin', 22=>'randoi', 279=>'rannoinnu', 
             59=>'rannoikse', 64=>'rannoittah', 23=>'rannois', 60=>'rannois, rannoispäi', 61=>'randoih',  
             25=>'rannoil', 62=>'rannoil, rannoilpäi', 63=>'rannoile', 65=>'rannoinke, rannoinneh', 
-            66=>'rannoiči', 281=>'rannoin', 18=>'rannoilluo', 67=>'rannoissah'];
+            66=>'rannoiči', 281=>'rannoin', 18=>'rannoilluo', 67=>'randoissah'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1431,7 +1431,7 @@ class GrammaticTest extends TestCase
  
             2=>'pellot', 57=>'pellot', 24=>'peltojen', 22=>'peltoja', 279=>'peltoloina', 
             59=>'peltoloiksi', 23=>'peltoloissa', 60=>'peltoloista', 61=>'peltoloih', 280=>'peltoloilla', 
-            62=>'peltoloilta', 64=>'peltoloitta', 65=>'peltoloineh', 66=>'', 281=>'peltoloin'];
+            62=>'peltoloilta', 64=>'peltoloitta', 65=>'peltoloineh', 66=>'', 281=>'peltoloin', 17=>'', 18=>''];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1445,7 +1445,7 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'peldo',  56=>'peldo, pellon', 3=>'pellon',  4=>'pelduo', 277=>'pellonnu',  
                      5=>'pellokse', 6=>'pellottah', 8=>'pellos',  9=>'pellos, pellospäi', 10=>'peldoh',  
-                     11=>'pellol', 12=>'pellol, pellolpäi', 13=>'pellole', 14=>'pellonke', 15=>'pelloči', 17=>'pellolluo', 16=>'pellossah',
+                     11=>'pellol', 12=>'pellol, pellolpäi', 13=>'pellole', 14=>'pellonke', 15=>'pelloči', 17=>'pellolluo', 16=>'peldossah',
  
             2=>'pellot', 57=>'pellot', 24=>'peldoloin', 22=>'peldoloi', 279=>'peldoloinnu', 
             59=>'peldoloikse', 64=>'peldoloittah', 23=>'peldolois', 60=>'peldolois, peldoloispäi', 61=>'peldoloih',  
@@ -1468,7 +1468,7 @@ class GrammaticTest extends TestCase
  
             2=>'muat', 57=>'muat', 24=>'maijen', 22=>'maita', 279=>'maina', 
             59=>'maiksi', 23=>'maissa', 60=>'maista', 61=>'maih', 280=>'mailla', 
-            62=>'mailta', 64=>'maitta', 65=>'maineh', 66=>'', 281=>'main'];
+            62=>'mailta', 64=>'maitta', 65=>'maineh', 66=>'', 281=>'main', 17=>'', 18=>''];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1506,7 +1506,7 @@ class GrammaticTest extends TestCase
  
             2=>'nuoret', 57=>'nuoret', 24=>'nuorien', 22=>'nuorie', 279=>'nuorina', 
             59=>'nuoriksi', 23=>'nuorissa', 60=>'nuorista', 61=>'nuorih', 280=>'nuorilla', 
-            62=>'nuorilta', 64=>'nuoritta', 65=>'nuorineh', 66=>'', 281=>'nuorin'];
+            62=>'nuorilta', 64=>'nuoritta', 65=>'nuorineh', 66=>'', 281=>'nuorin', 17=>'', 18=>''];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1524,7 +1524,7 @@ class GrammaticTest extends TestCase
  
             2=>'nuoret', 57=>'nuoret', 24=>'nuorien', 22=>'nuorii', 279=>'nuorinnu', 
             59=>'nuorikse', 64=>'nuorittah', 23=>'nuoris', 60=>'nuoris, nuorispäi', 61=>'nuorih',  
-            25=>'nuoril', 62=>'nuoril, nuorilpäi', 63=>'nuorile', 65=>'nuorienke, nuorinneh', 66=>'nuoriči', 281=>'nuorin', 18=>'nuorilluo', 67=>'nuorissah'];
+            25=>'nuoril', 62=>'nuoril, nuorilpäi', 63=>'nuorile', 65=>'nuorienke, nuorinneh', 66=>'nuoriči', 281=>'nuorin', 18=>'nuorielluo', 67=>'nuorissah'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1542,7 +1542,7 @@ class GrammaticTest extends TestCase
  
             2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyijen', 22=>'lyhyitä', 279=>'lyhyinä', 
             59=>'lyhyiksi', 23=>'lyhyissä', 60=>'lyhyistä', 61=>'lyhyih', 280=>'lyhyillä', 
-            62=>'lyhyiltä', 64=>'lyhyittä', 65=>'lyhyineh', 66=>'', 281=>'lyhyin'];
+            62=>'lyhyiltä', 64=>'lyhyittä', 65=>'lyhyineh', 66=>'', 281=>'lyhyin', 17=>'', 18=>''];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1561,7 +1561,7 @@ class GrammaticTest extends TestCase
             2=>'lyhyöt', 57=>'lyhyöt', 24=>'lyhyzien', 22=>'lyhyzii', 279=>'lyhyzinny', 
             59=>'lyhyzikse', 64=>'lyhyzittäh', 23=>'lyhyzis', 60=>'lyhyzis, lyhyzispäi', 61=>'lyhyzih',  
             25=>'lyhyzil', 62=>'lyhyzil, lyhyzilpäi', 63=>'lyhyzile', 
-            65=>'lyhyzienke, lyhyzinneh', 66=>'lyhyziči', 281=>'lyhyzin', 18=>'lyhyzillyö', 67=>'lyhyzissäh'];
+            65=>'lyhyzienke, lyhyzinneh', 66=>'lyhyziči', 281=>'lyhyzin', 18=>'lyhyziellyö', 67=>'lyhyzissäh'];
         $this->assertEquals( $expected, $result);        
     }
     
@@ -1579,7 +1579,7 @@ class GrammaticTest extends TestCase
  
             2=>'vejet', 57=>'vejet', 24=>'vesien', 22=>'vesie', 279=>'vesinä', 
             59=>'vesiksi', 23=>'vesissä', 60=>'vesistä', 61=>'vesih', 280=>'vesillä', 
-            62=>'vesiltä', 64=>'vesittä', 65=>'vesineh', 66=>'', 281=>'vesin'];
+            62=>'vesiltä', 64=>'vesittä', 65=>'vesineh', 66=>'', 281=>'vesin', 17=>'', 18=>''];
         $this->assertEquals( $expected, $result);        
     }
 
@@ -1593,12 +1593,12 @@ class GrammaticTest extends TestCase
         $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
         $expected = [1=>'vezi',  56=>'vezi, vien', 3=>'vien',  4=>'vetty', 277=>'vienny',  
                      5=>'viekse', 6=>'viettäh', 8=>'vies',  9=>'vies, viespäi', 10=>'vedeh',  
-                     11=>'viel', 12=>'viel, vielpäi', 13=>'viele', 14=>'vienke', 15=>'vieči', 17=>'viellyö', 16=>'viessäh',
+                     11=>'viel', 12=>'viel, vielpäi', 13=>'viele', 14=>'vienke', 15=>'vieči', 17=>'viellyö', 16=>'vedessäh',
  
             2=>'viet', 57=>'viet', 24=>'vezien', 22=>'vezii', 279=>'vezinny', 
             59=>'vezikse', 64=>'vezittäh', 23=>'vezis', 60=>'vezis, vezispäi', 61=>'vezih',  
             25=>'vezil', 62=>'vezil, vezilpäi', 63=>'vezile', 
-            65=>'vezienke, vezinneh', 66=>'veziči', 281=>'vezin', 18=>'vezillyö', 67=>'vezissäh'];
+            65=>'vezienke, vezinneh', 66=>'veziči', 281=>'vezin', 18=>'veziellyö', 67=>'vezissäh'];
         $this->assertEquals( $expected, $result);        
     }
     
