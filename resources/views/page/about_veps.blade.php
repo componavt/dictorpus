@@ -5,5 +5,5 @@
 @endsection
 
 @section('body')
-{!! trans('blob.about_veps') !!}
+{!! trans('page.about_veps') !!}
 @endsection

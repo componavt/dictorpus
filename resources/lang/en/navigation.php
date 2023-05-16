@@ -39,6 +39,7 @@ return [
     'grams' => 'Grammemes',
     'help' => 'Help',
     'home' => 'Home',
+    'how_to_cite' => 'How to cite',
     'inflexion_groups' => 'Inflexion groups',
     'informants' => 'Informants',
     'langs'  => 'Languages',

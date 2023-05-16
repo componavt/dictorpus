@@ -5,6 +5,6 @@
 @endsection
 
 @section('body')
-    {!! trans('blob.sources') !!}<br>
+    {!! trans('page.sources') !!}<br>
 </div>
 @endsection

@@ -8,3 +8,4 @@
 <li><a href="http://dictorpus.krc.karelia.ru/{{$locale}}/dumps">{{ trans('navigation.dumps') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/permission') }}">{{ trans('navigation.permission') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/grants') }}">{{ trans('navigation.grants') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/how_to_cite') }}">{{ trans('navigation.how_to_cite') }}</a></li>

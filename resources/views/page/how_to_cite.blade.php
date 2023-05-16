@@ -1,9 +1,9 @@
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.permission') }}
+{{ trans('navigation.how_to_cite') }}
 @endsection
 
 @section('body')
-{!! trans('page.permission')!!}
+{!! trans('page.how_to_cite') !!}
 @endsection

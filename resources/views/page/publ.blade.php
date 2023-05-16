@@ -5,7 +5,7 @@
 @endsection
 
 @section('body')
-    {!! trans('blob.our_publications') !!}<br>
+    {!! trans('page.our_publications') !!}<br>
 
     <div class="row" style='margin-bottom: 20px'>
         @include('page.video_1_from_3', ['video' => 'dN_o4rgpTbQ'])
@@ -15,7 +15,7 @@
     
     
     <h2>{{ trans('navigation.publications_about')}}</h2>
-    {!! trans('blob.publications_about') !!}
+    {!! trans('page.publications_about') !!}
 
     <div class="row">
         @include('page.video_1_from_3', ['video' => 'm-QQW85U8U4'])

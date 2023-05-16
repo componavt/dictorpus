@@ -5,5 +5,5 @@
 @endsection
 
 @section('body')
-{!! trans('blob.grants') !!}
+{!! trans('page.grants') !!}
 @endsection
