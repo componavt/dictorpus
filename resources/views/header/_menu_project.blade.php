@@ -8,4 +8,5 @@
 <li><a href="http://dictorpus.krc.karelia.ru/{{$locale}}/dumps">{{ trans('navigation.dumps') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/permission') }}">{{ trans('navigation.permission') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/grants') }}">{{ trans('navigation.grants') }}</a></li>
+<li><a href="/docs/vepkar_manual_2022-12.pdf">{{ trans('navigation.user_manual') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/how_to_cite') }}">{{ trans('navigation.how_to_cite') }}</a></li>

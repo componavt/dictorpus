@@ -116,7 +116,7 @@ and open the template in the editor.
 
 @media screen and (min-width: 399px) {    
     .logo img {
-        width: 360px;
+        width: 300px;
     }
     .user-menu {
         font-size: 12px;

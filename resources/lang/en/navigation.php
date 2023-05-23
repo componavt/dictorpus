@@ -86,5 +86,6 @@ return [
     'video' => 'Video',
     'word_frequency' => 'Frequency dictionary of tokens',
     'wordforms' => 'Wordforms',
+    'user_manual' => 'User manual (in Russian)',
     'users' => 'Users',
 ];
