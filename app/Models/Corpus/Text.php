@@ -19,6 +19,7 @@ use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Wordform;
 
@@ -1238,6 +1239,8 @@ class Text extends Model
                      'word_id'=>$word->id, 'w_id'=>$w_id,
                      'relevance'=>$relevance]);            
         }
+        DB::statement("UPDATE meaning_text SET relevance=0 WHERE text_id=".$this->id
+                    . " and w_id=$w_id and meaning_id<>".$meaning_id);
 //dd($this->meanings()->wherePivot('w_id', $w_id)->get());        
     }
     
@@ -1435,23 +1438,22 @@ class Text extends Model
     }
     
     public static function createWordCheckedBlock($meaning_id, $text_id, $s_id, $w_id) {
-            $meaning = Meaning::find($meaning_id);
-            if (!$meaning) {
-                return;
-            }
-            $locale = LaravelLocalization::getCurrentLocale();
-            $url = '/corpus/text/'.$text_id.'/edit/example/'.$s_id.'_'.$w_id;
-            $str = '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
-                 .'">'.$meaning->lemma->lemma.'<span> ('
-                 .$meaning->getMultilangMeaningTextsString($locale)
-                 .')</span></a></div>';
-            
-            $str .= Word::createGramsetBlock($text_id, $w_id);
-            
-            $str.='<p class="text-example-edit"><a href="'
-                 .LaravelLocalization::localizeURL($url)
-                 .'" class="glyphicon glyphicon-pencil"></a>';
-            return $str;
+        $meaning = Meaning::find($meaning_id);
+        $text = Text::find($text_id);
+        if (!$meaning || !$text) { return; }
+        $locale = LaravelLocalization::getCurrentLocale();
+        $url = '/corpus/text/'.$text_id.'/edit/example/'.$s_id.'_'.$w_id;
+        
+        return  '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
+             .'">'.$meaning->lemma->lemma.'<span> ('
+             .$meaning->getMultilangMeaningTextsString($locale)
+             .')</span></a></div>'
+
+             .$text->createGramsetBlock($w_id)
+
+             .'<p class="text-example-edit"><a href="'
+             .LaravelLocalization::localizeURL($url)
+             .'" class="glyphicon glyphicon-pencil"></a>';
     }
     
     /**
@@ -1999,6 +2001,28 @@ dd($s->saveXML());
         return $word_obj->createLemmaBlock($this->id, $w_id);
     }
     
+    public function createGramsetBlock($w_id) {
+        $wordform = $this->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',2)->first();
+        if ($wordform) {
+            return '<p class="word-gramset">'.Gramset::getStringByID($wordform->pivot->gramset_id).'</p>';
+        } elseif (User::checkAccess('corpus.edit')) { 
+            $wordforms = $this->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
+            if (!sizeof($wordforms)) { return null; }
+
+            $str = '<div id="gramsets_'.$w_id.'" class="word-gramset-not-checked">';
+            foreach ($wordforms as $wordform) {
+                $gramset_id = $wordform->pivot->gramset_id;
+                $str .= '<p>'.Gramset::getStringByID($gramset_id)
+                     . '<span data-add="'.$this->id."_".$w_id."_".$wordform->id."_".$gramset_id
+                     . '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_gramset').' ('
+                     . $wordform->wordform.')" onClick="addWordGramset(this)"></span>'
+                     . '</p>';
+            }
+            $str .= '</div>';
+            return $str;
+        }
+    }
+    
     public static function spellchecking($text, $lang_id) {
         list($markup_text) = Sentence::markup($text,1);
         $markup_text = self::addBlocksToWords($markup_text, $lang_id);
@@ -2014,4 +2038,5 @@ dd($s->saveXML());
         }
         return $sxe->asXML();
     }
+    
 }

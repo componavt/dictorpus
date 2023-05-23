@@ -145,7 +145,7 @@ class WordController extends Controller
 // 2020-10-24 пока отключим, чтобы быстрее работало...            
 //            $word->updateMeaningAndWordformText();
 // 2020-11-20 добавим условие, потому что сильно тормозит
-            $text = Text::find($text_id);
+            $text = Text::find($text_id);            
             if (!$text->wordforms()->where('w_id', $w_id)->count()) {
                 $word->updateWordformText();
             }
@@ -291,7 +291,6 @@ dd($sxe->asXML());        */
 //dd($wordform->id);    
         $wordform->updateTextWordformLinks($regs[1],$regs[2],$regs[4]);
         return Word::createWordBlock($regs[1],$regs[2]);
-//        return Word::createGramsetBlock($regs[1],$regs[2]);
     }
     
     

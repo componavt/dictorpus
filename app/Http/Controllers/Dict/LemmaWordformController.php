@@ -69,9 +69,9 @@ class LemmaWordformController extends Controller
         if (!$text || !$word || !$word->s_id) { return; }
 
         $wordform = $request->input('wordform'); 
-            if (!$wordform) {
-                $wordform = $word -> word;
-            }
+        if (!$wordform) {
+            $wordform = $word -> word;
+        }
 
         $dialects = (array)$request->input('dialects'); 
         

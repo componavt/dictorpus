@@ -73,6 +73,7 @@ return [
         
     'name' => 'name',
     'nee' => 'nee',
+    'new_meaning' => 'a new meaning',
     'new_texts'=>'New texts',
     
     'of_author' => 'of the author',

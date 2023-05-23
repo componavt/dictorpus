@@ -79,7 +79,7 @@ class Predictor
      */
     public static function wordformsFromOtherLangsByAnalog(string $uword, int $lang_id, array $out, bool $maybe_proper_noun): array {
         $total_found=0;
-        $lemmas = Lemma::where('lang_id', '<>', $lang_id)
+        $lemmas = Lemma::where('lemmas.lang_id', '<>', $lang_id)
                        ->whereIn('pos_id', PartOfSpeech::changeablePOSIdList())
                        ->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
                        ->whereNotNull('gramset_id')

@@ -148,7 +148,7 @@ function addLemma(text_id, lang_id) {
 }
 
 function loadDataToWordformModal(text_id, w_id, wordform, lang_id, lang_code='ru') {
-//console.log('loadDataToWordformModal: w_id='+w_id);    
+console.log('loadDataToWordformModal: wordform='+wordform);    
     $.ajax({
         url: '/corpus/text/sentence', 
         data: {text_id: text_id, w_id: w_id },
@@ -244,7 +244,10 @@ function changeLemmaList(lang_id) {
 
 function changeWordBlock(text_id, w_id) {
 //console.log('changeWordBlock = text_id:'+text_id + ', w_id:' + w_id)    
-    $("w[id="+w_id+"].call-add-wordform").removeClass('call-add-wordform').addClass('meaning-checked gramset-checked')
+    $("w[id="+w_id+"]").removeClass('call-add-wordform')
+            .removeClass('meaning-not-checked')
+            .removeClass('gramset-not-checked')
+            .addClass('meaning-checked gramset-checked')
             .append('<div class="links-to-lemmas" id="links_'+w_id+'" data-download="0"></div>');
     loadWordBlock(w_id, '/corpus/word/load_word_block/' + text_id + '_' + w_id);
 }
@@ -312,28 +315,14 @@ function addWordform(text_id, lang_id, lang_code='ru') {
         if (!$(this).hasClass('call-add-wordform')) {
             return;
         }
-        var w_id = $(this).attr('id');
-        $('#addWordformSentence').attr('w_id', w_id);
         var wordform = $(this).html();        
-//console.log('addWordform. w_id: '+w_id);    
-
-        $("#modalAddWordform").modal('show');    
-        $(this).css('overflow', 'hidden');
-        loadDataToWordformModal(text_id, w_id, wordform, lang_id, lang_code);        
-        $("#modalAddWordform").modal('handleUpdate');
+        var w_id = $(this).attr('id');
+        callAddWordform($(this), text_id, w_id, wordform, lang_id, lang_code);
     });
     
     $("#modalAddWordform .close, #modalAddWordform .cancel").on('click', function() {
         clearWordformModal();
     });
-/*    
-    $(document).mouseup(function (e){ // событие клика по веб-документу
-		var div = $("#modalAddWordform"); 
-		if (!div.is(e.target) // если клик был не по нашему блоку
-		    && div.has(e.target).length === 0) { // и не по его дочерним элементам
-			clearWordformModal();
-		}
-	});*/
         
     $("#save-wordform").click(function(){
         var wordform = $( "#choose-wordform" ).val();
@@ -361,6 +350,16 @@ function addWordform(text_id, lang_id, lang_code='ru') {
     
     addLemma(text_id, lang_id);    
     editWord(text_id);    
+}
+
+function callAddWordform(el, text_id, w_id, wordform, lang_id, lang_code) {
+        $('#addWordformSentence').attr('w_id', w_id);
+//console.log('addWordform. w_id: '+w_id);    
+
+        $("#modalAddWordform").modal('show');    
+        $(this).css('overflow', 'hidden');
+        loadDataToWordformModal(text_id, w_id, wordform, lang_id, lang_code);        
+        $("#modalAddWordform").modal('handleUpdate');    
 }
 
 function fillInterpretation(str) {

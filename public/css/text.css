@@ -17,6 +17,12 @@ s {
     cursor:pointer;
 }
 
+.add-wordform-link {
+    background-color: #f0ad4e;
+    border: 1px solid #f0ad4e;
+    color: #fff;
+    margin: 5px 0;    
+}
 .links-to-lemmas {
     cursor: auto;
 }

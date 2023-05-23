@@ -34,6 +34,14 @@ class Word extends Model
         return $builder;
     }
     
+    public function checkedMeaning() {
+        return $this->meanings()->wherePivot('relevance','>',1)->first();
+    }
+
+    public function uncheckedMeanings() {
+        return $this->meanings()->wherePivot('relevance',1)->get();
+    }
+
     public function getLemmas() {
         $w_id = $this->w_id;
         $text_id = $this->text_id;
@@ -458,49 +466,63 @@ class Word extends Model
         $text = Text::find($text_id);
         if (!$text) { return null; }
         
-        $meaning_checked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1)->first();
-        $meaning_unchecked = $text->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
-        if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
-        
-        $word_obj = Word::whereTextId($text_id)->whereWId($w_id)->first();
-        $s_id = $word_obj->s_id;
-        if (!$s_id) {return null;} 
-        
+        $word_obj = self::whereTextId($text_id)->whereWId($w_id)->first();
+        if (!$word_obj) {return null;}         
+
+        if (!$word_obj->checkedMeaning() && !sizeof($word_obj->uncheckedMeanings())) { return null; }
+                
+        $str = '<div>'. ($word_obj->checkedMeaning() ? $word_obj->checkedMeaningForWordBlock()
+                         : $word_obj->uncheckedMeaningsForWordBlock())
+               .'</div>'. $text->createGramsetBlock($w_id)
+               . $word_obj->editLinksForWordBlock();
+
+        return $str;
+    }
+    
+    public function checkedMeaningForWordBlock() {
+        $meaning_checked = $this->checkedMeaning();
         $locale = LaravelLocalization::getCurrentLocale();
-        $url = '/corpus/text/'.$text_id.'/edit/example/'.$s_id.'_'.$w_id;
-        
-        $str = '<div>';
-        if ($meaning_checked) {
-            $str .= '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning_checked->lemma_id)
+        return   '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning_checked->lemma_id)
                  .'">'.$meaning_checked->lemma->lemma.'<span> '.$meaning_checked->lemma->pos->code.' ('
                  .$meaning_checked->getMultilangMeaningTextsString($locale)
                  .')</span></a></p>';
-        } else {
-            foreach ($meaning_unchecked as $meaning) {
+    }
+    
+    public function uncheckedMeaningsForWordBlock() {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $str = '';
+            foreach ($this->uncheckedMeanings() as $meaning) {
                 $str .= '<p><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
                      .'">'.$meaning->lemma->lemma.'<span> '.$meaning->lemma->pos->code.' ('
                      .$meaning->getMultilangMeaningTextsString($locale)
                      .')</span></a>';
                 if (User::checkAccess('corpus.edit')) {                
                     $str .= '<span class="fa fa-plus choose-meaning" data-add="'
-                         .$meaning->id.'_'.$text_id.'_'.$s_id.'_'.$w_id.'" title="'
+                         .$meaning->id.'_'.$this->text_id.'_'.$this->s_id.'_'.$this->w_id.'" title="'
                          .\Lang::trans('corpus.mark_right_meaning').'" onClick="addWordMeaning(this)"></span></p>';
                 }
             }
+        if (User::checkAccess('corpus.edit')) {                
+            $str.="<input class=\"add-wordform-link\" type=\"button\" value=\""
+                    . \Lang::trans('corpus.new_meaning')."\" onClick=\"callAddWordform(this, '"
+                    .$this->text_id."', '".$this->w_id."', '".$this->word."', '".$this->text->lang_id."', '".$locale."')\">";
         }
-        $str .= '</div>';
-
-        $str .= Word::createGramsetBlock($text_id, $w_id);
-
-        if (User::checkAccess('corpus.edit')) { // icons 'pensil' and 'sync'
-            $str.='<p class="text-example-edit">';
-            if (!$word_obj->hasImportantExamples()) {
-                $str.='<i class="fa fa-sync-alt fa-lg update-word-block" title="'.'" onclick="updateWordBlock('.$text_id.','.$w_id.')"></i>';
-            }
-            $str.='<a href="'.LaravelLocalization::localizeURL($url)
-                 .'" class="glyphicon glyphicon-pencil"></a></p>';
+        return  $str;
+    }
+    
+    // icons 'pensil' and 'sync'
+    public function editLinksForWordBlock() {
+        if (!User::checkAccess('corpus.edit')) { 
+            return '';
         }
-        return $str;
+        $url = '/corpus/text/'.$this->text_id.'/edit/example/'.$this->s_id.'_'.$this->w_id;
+        $str = '<p class="text-example-edit">';
+        if (!$this->hasImportantExamples()) {
+            $str.='<i class="fa fa-sync-alt fa-lg update-word-block" title="'
+                .'" onclick="updateWordBlock('.$this->text_id.','.$this->w_id.')"></i>';
+        }
+        return  $str.'<a href="'.LaravelLocalization::localizeURL($url)
+                .'" class="glyphicon glyphicon-pencil"></a></p>';
     }
     
     public function createLemmaBlock($text_id, $w_id) {
@@ -592,31 +614,6 @@ class Word extends Model
               ->whereIn('wordform_id', $wordform_ids)
               ->whereLemmaId($lemma_id);
         })->get();
-    }
-    
-    public static function createGramsetBlock($text_id, $w_id) {
-        $text = Text::find($text_id);
-        if ($text) {
-            $wordform = $text->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',2)->first();
-            if ($wordform) {
-                return '<p class="word-gramset">'.Gramset::getStringByID($wordform->pivot->gramset_id).'</p>';
-            } elseif (User::checkAccess('corpus.edit')) { 
-                $wordforms = $text->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
-                if (!sizeof($wordforms)) { return null; }
-                
-                $str = '<div id="gramsets_'.$w_id.'" class="word-gramset-not-checked">';
-                foreach ($wordforms as $wordform) {
-                    $gramset_id = $wordform->pivot->gramset_id;
-                    $str .= '<p>'.Gramset::getStringByID($gramset_id)
-                         . '<span data-add="'.$text_id."_".$w_id."_".$wordform->id."_".$gramset_id
-                         . '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_gramset').' ('
-                         . $wordform->wordform.')" onClick="addWordGramset(this)"></span>'
-                         . '</p>';
-                }
-                $str .= '</div>';
-                return $str;
-            }
-        }
     }
     
     /**
