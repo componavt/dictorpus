@@ -57,7 +57,6 @@ class UserController extends Controller
     public function create()
     {
         return Redirect::to('/user/');
-//        return view('user.create');
     }
 
     /**
@@ -69,18 +68,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         return Redirect::to('/user/');
-/*        $this->validate($request, [
-            'first_name'  => 'required|max:255',
-            'last_name'  => 'max:255',
-            'email'  => 'required|email|max:150',
-        ]);
-        
-        $user = User::create($request->all());
-        
-        return Redirect::to('/user/?search_id='.$user->id)
-            ->withSuccess(\Lang::get('messages.created_success'));  
- * 
- */      
     }
 
     /**

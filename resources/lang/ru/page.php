@@ -109,23 +109,23 @@ return [
                     Труды международной конференции «Корпусная лингвистика ‒ 2017». ‒ СПб., 2017. С. 172-177.</p>
                     
     ',
-    'permission' => '<p>Разрешение <a href="/docs/permission_bible.pdf">Института перевода Библии</a> на использование вепсских изданий, '
+    'permission' => '<p>Разрешение <a href="/docs/permissions/bible.pdf">Института перевода Библии</a> на использование вепсских изданий, '
                   . 'опубликованных Институтом для вепсского корпуса.</p>'
-                  . '<p>Разрешение <a href="/docs/permission_bible_karelian.pdf">Института перевода Библии</a> на использование изданий '
+                  . '<p>Разрешение <a href="/docs/permissions/bible_karelian.pdf">Института перевода Библии</a> на использование изданий '
                   . 'на ливвиковском и севернокарельском наречиях карельского языка, '
                   . 'опубликованных Институтом для проекта ВепКар.</p>'
-                  . '<p>Разрешение <a href="/docs/permission_periodika.pdf">издательства "Периодика"</a> на использование материалов '
+                  . '<p>Разрешение <a href="/docs/permissions/periodika.pdf">издательства "Периодика"</a> на использование материалов '
                   . 'карельской газеты "Oma Mua", вепсской газеты "Kodima", альманаха "Taival"  на карельском языке и альманаха "Verez tullei"'
                   . 'на вепсском языке для использования в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/chirkova_slavov.jpg">от Л.В. Чирковой и В.С. Славова</a> на вепсский и русский текст субтитров кинофильма '
                   . '«В чистой воде рыба клюет» (на вепсском "Sel\'ktas vedes kala kokib").</p>'
-                  . '<p>Разрешение <a href="/docs/permission_ValentinaKarakina.pdf">от В.И. Каракиной</a> на использование книги "Rohkie tijani".</p>'
-                  . '<p>Разрешение <a href="/docs/permission_periodika_lud_razg.pdf">издательства "Периодика"</a> на использование материалов '
+                  . '<p>Разрешение <a href="/docs/permissions/ValentinaKarakina.pdf">от В.И. Каракиной</a> на использование книги "Rohkie tijani".</p>'
+                  . '<p>Разрешение <a href="/docs/permissions/periodika_lud_razg.pdf">издательства "Периодика"</a> на использование материалов '
                   . '"Русско-карельского разговорника" (на людиковском наречии) в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/docs/permissions/saburova2020.pdf">от В.К. Сабуровой</a> на использование текста книги '
                   . '"Kun juuret alkaa herätä" в проекте ВепКар.</p>'
                   . '<p>Разрешение от Н.Н. Архиповой (Nina Kossi) на использование текстов книг '
-                  . '<a href="/docs/permission_arkhipova.pdf">"Vuuvven lippahaini"</a>, "<a href="/images/permissions/archipova_pisara-matkalaini.jpg">Pisara-matkalaini</a>" в проекте ВепКар.</p>'
+                  . '<a href="/docs/permissions/arkhipova.pdf">"Vuuvven lippahaini"</a>, "<a href="/images/permissions/archipova_pisara-matkalaini.jpg">Pisara-matkalaini</a>" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/pellinen_illan_netali.jpg">от Н.А. Пеллинен</a> на использование перевода стиха Ольги Смотровой '
                   . '"Il’l’an nedäli" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/kundozerova.jpg">от М.В. Кундозёровой</a> на использование перевода текста '
@@ -143,6 +143,8 @@ return [
                   . '<p>Разрешение <a href="/images/permissions/ruppieva.jpg">от Е.В. Руппиевой</a> на использование текстов в учебниках'
                   . ' в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/images/permissions/baranova.jpg">от Т.А. Барановой</a> на использование текстов переводов произведений'
+                  . ' в проекте ВепКар.</p>'
+                  . '<p>Разрешение <a href="/docs/permissions/tarasov.pdf">от С.С. Тарасова</a> на использование текстов произведений Тарасова С.В.'
                   . ' в проекте ВепКар.</p>',
 //                  . '<p>Разрешение <a href="/images/permissions/balakirev.jpg">от Н.М. Балакирева</a> на использование текста произведений '
 //                  . ' в проекте ВепКар.</p>',
