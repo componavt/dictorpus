@@ -15,6 +15,7 @@
         <div id='new-meanings'>
                 @include('dict.meaning.form._create',
                          ['count' => $i,
+                          'title' => '',
                           'langs_for_meaning' => $langs_for_meaning])
         </div>
         @endfor

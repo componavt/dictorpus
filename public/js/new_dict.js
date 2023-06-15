@@ -135,16 +135,17 @@ function addLemma(lang_id, label_id) {
     });    
 }
 
-function saveLemma(text_id, data) {
+function saveLemma(data) {
     $("#save-lemma").attr("disabled", true);    
     $.ajax({
         url: '/dict/lemma/store_simple', 
         data: data,
         type: 'GET',
-        success: function(lemma_id){
+        success: function(lemma_row){
             $("#modalAddLemma").modal('hide');
             $("#new_meanings_0__meaning_text__2_" ).val(null);
-            $("#save-lemma").attr("disabled", false);    
+            $("#save-lemma").attr("disabled", false);   
+            $("#lemmasRows").prepend(lemma_row);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert('saveLemma '+xhr.status);
