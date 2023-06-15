@@ -162,6 +162,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         
         Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class,
+        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
         
         ConsoleTVs\Charts\ChartsServiceProvider::class,
 //        PhpConsole\Laravel\ServiceProvider::class,  // debug
