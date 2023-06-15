@@ -23,12 +23,14 @@ $without_enter_form = true;
     @include('widgets.form.formitem._text', ['name' => 'country', 'title' => trans('auth.country') ])
     @include('widgets.form.formitem._text', ['name' => 'city', 'title' => trans('auth.city') ])
     @include('widgets.form.formitem._text', ['name' => 'affilation', 'title' => trans('auth.affilation') ])
+    @include('widgets.form.formitem._captcha')
     @include('widgets.form.formitem._submit', ['title' => trans('auth.register')])
-<div class="form-group">
-{!! app('captcha')->display()!!}
-{!! $errors->first('g-recaptcha-response','<p class="alert alert-danger">:message</p>')!!}
-</div>    
     {!! Form::close() !!}
     
     <p><a href='/reset'>{{trans('auth.reset')}}</a></p>
 @stop
+
+@section('jqueryFunc')
+    {!! Anhskohbo\NoCaptcha\Facades\NoCaptcha::renderJs() !!}
+@stop
+

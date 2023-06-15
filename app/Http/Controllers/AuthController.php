@@ -15,6 +15,7 @@ use Validator;
 use Mail;
 use Storage;
 use CurlHttp;
+use NoCaptcha;
 
 //use Barryvdh\Debugbar\Facade as Debugbar;
 

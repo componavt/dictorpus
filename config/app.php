@@ -224,7 +224,7 @@ return [
         'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
 //        'Diff'       => ViKon\Diff\Diff::class,
         'HtmlDiff'   => Caxy\HtmlDiff\HtmlDiff::class,
-        
+        'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,            
 //        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         
         'User' => App\Models\User::class,
