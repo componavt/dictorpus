@@ -36,6 +36,12 @@
         <li><a href="service/dict/school">Просмотреть отобранные леммы</a></li>
         <li><a href="service/dict/school/select">Выбрать леммы</a></li>
         </ul-->        
+        
+        <p>Отбор лемм для словаря Зайкова</p>
+        <ul>
+        <li><a href="service/dict/zaikov">Просмотреть отобранные леммы</a></li>
+        <li><a href="service/dict/zaikov/select">Выбрать леммы</a></li>
+        </ul>        
     @endif
     
     @if (User::checkAccess('admin'))

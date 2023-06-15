@@ -19,6 +19,7 @@ return [
     'add_fragment' => 'выделить фрагмент предложения',
     'add_to_list' => 'добавить в список',
     'add_translation' => 'добавить перевод',
+    'add-lemma' => 'Добавить лемму',
     'add-phrase' => 'добавить фразеологизм',
     'advtype' => 'тип наречия',
     'advtypes' => [NULL=> '',

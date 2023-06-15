@@ -9,7 +9,9 @@ use App\Http\Controllers\Controller;
 
 use App\Library\Str;
 
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Label;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 
@@ -249,7 +251,96 @@ class DictController extends Controller
         $pos_values = [NULL=>'']+PartOfSpeech::getList();
         
         return view('service.dict.school.index',
-                compact('label_id', 'lemmas', 'numAll', 'pos_values', 
+                compact('label_id', 'lemmas', 'numAll', 
+                        'pos_values', 'args_by_get', 'url_args'));
+    }
+    
+    public function zaikovSelect() {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $lang_id=4; // proper
+        $label_id = Label::ZaikovLabel; // for Zaikov dictionary
+        
+        $lemmas = Lemma::whereLangId($lang_id)
+                       ->whereNotIn('id', function ($q) use ($label_id) {
+                           $q->select('lemma_id')->from('label_lemma')
+                             ->whereLabelId($label_id);
+                       })->orderBy('lemma');
+//                       ->take(10);
+                       
+        if ($url_args['search_pos']) {
+            $lemmas->wherePosId($url_args['search_pos']);
+        } 
+               
+        if ($url_args['search_status'] == 3) {
+            $lemmas->whereIn('id', function ($q) {
+                $q->select('lemma_id')->from('audio_lemma');
+            });            
+        }
+        
+        $lemma_coll = $lemmas->get();
+        $lemmas = [];
+        foreach ($lemma_coll as $lemma) {
+            $lemmas[$lemma->id] = [
+                'lemma'=>$lemma->lemma, 
+                'pos_name'=>$lemma->pos->name];
+        }
+        $pos_values = [NULL=>'']+PartOfSpeech::getList();
+        
+        return view('service.dict.zaikov.select',
+                compact('label_id', 'lemmas', 'pos_values', 
+                        'args_by_get', 'url_args'));
+ 
+/*        foreach ($lemmas as $lemma) {
+//print "<p>".$lemma->id."</p>";            
+            $lemma->labels()->attach([$label_id]);
+            foreach ($lemma->meanings as $meaning) {
+                $meaning->labels()->attach([$label_id]);
+            }
+        }  */                   
+    }
+    
+    public function zaikovView(Request $request) {
+        $lang_id=4; // proper
+        $label_id = Label::ZaikovLabel; // for Zaikov dictionary
+        
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        $lemmas = Lemma::whereLangId($lang_id)
+            ->whereIn('id', function ($q) use ($label_id, $url_args) {
+                $q->select('lemma_id')->from('label_lemma')
+                  ->whereLabelId($label_id);
+                if (in_array($url_args['search_status'], [1,2])) {
+                    $q->whereStatus($url_args['search_status']==1 ? 1 : 0);
+                } 
+            })
+//            ->orderBy('lemma');
+            ->orderByRaw('lower(lemma)');
+
+        if ($url_args['search_pos']) {
+            $lemmas->wherePosId($url_args['search_pos']);
+        } 
+        
+        if ($url_args['search_status'] == 3) {
+            $lemmas->whereIn('id', function ($q) {
+                $q->select('lemma_id')->from('audio_lemma');
+            });            
+        }
+        
+        $numAll = $lemmas->count();
+        $lemmas = $lemmas->paginate($url_args['limit_num']);
+        $pos_values = [NULL=>'']+PartOfSpeech::getList();
+        $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
+        $dialect_values = Dialect::getList($lang_id);
+        $total_meanings = 2;
+        
+        return view('service.dict.zaikov.index',
+                compact('dialect_values', 'label_id', 'lang_id', 'langs_for_meaning', 
+                        'lemmas', 'numAll', 'pos_values', 'total_meanings', 
                         'args_by_get', 'url_args'));
     }
 }

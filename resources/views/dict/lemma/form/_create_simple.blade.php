@@ -5,18 +5,20 @@
         @include('widgets.form.formitem._select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,
-                 'value' =>$pos_id,
+                 'value' =>$pos_id ?? null,
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
         @include('dict.lemma.form._create_edit_pos_features', ['is_full_form'=>false]) 
-<div id='new-meanings'>
-        @include('dict.meaning.form._create',
-                 ['count' => 0,
-                  'title' => '',
-                  'langs_for_meaning' => $langs_for_meaning
-                 ])
-</div>
+        
+        @for ($i=0; $i<$total_meanings; $i++)
+        <div id='new-meanings'>
+                @include('dict.meaning.form._create',
+                         ['count' => $i,
+                          'langs_for_meaning' => $langs_for_meaning])
+        </div>
+        @endfor
+        
         @include('widgets.form.formitem._select',
                 ['name' => 'dialect_id', 
                  'values' =>$dialect_values,

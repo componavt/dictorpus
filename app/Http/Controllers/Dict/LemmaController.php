@@ -239,16 +239,29 @@ class LemmaController extends Controller
             'lemma'  => 'required|max:255',
             'lang_id'=> 'required|numeric',
             'pos_id' => 'numeric',
+            'label_id' => 'nullable|numeric',
         ]);
         
         $lemma = Lemma::storeLemma($request->all());
 //dd($request->all());
         LemmaFeature::store($lemma->id, $request);
 
-        $new_meanings[0]=['meaning_n' => 1,
-                          'meaning_text' =>
-                            [Lang::getIDByCode('ru') => $request->meaning]];    
+        for ($i=0; $i<2; $i++) {
+            $meaning_text = $request->{'meaning'. ($i>0 ? $i+1 : '')}; 
+            if ($meaning_text) {
+                $new_meanings[$i]=['meaning_n' => $i+1,
+                                  'meaning_text' =>
+                                    [Lang::getIDByCode('ru') => $meaning_text]];    
+            }
+        }
         Meaning::storeLemmaMeanings($new_meanings, $lemma->id);
+        
+        if ($request->label_id) {
+            $lemma->labels()->attach([$request->label_id]);
+            foreach ($lemma->meanings as $meaning) {
+                $meaning->labels()->attach([$request->label_id]);
+            }
+        }
         
         $lemma->updateTextLinks();
 
@@ -1003,8 +1016,15 @@ class LemmaController extends Controller
     }
     
     public function addLabel(int $id, int $label_id) {
-        DB::statement("INSERT INTO label_lemma (lemma_id, label_id, status)"
-                    . " VALUES ('$id', '$label_id', 0)");
+        $lemma = Lemma::find($id);
+//        DB::statement("INSERT INTO label_lemma (lemma_id, label_id, status)"
+//                    . " VALUES ('$id', '$label_id', 0)");
+        if ($lemma) {
+            $lemma->labels()->attach([$label_id]);
+            foreach ($lemma->meanings as $meaning) {
+                $meaning->labels()->attach([$label_id]);
+            }
+        }
         return;
     }
     

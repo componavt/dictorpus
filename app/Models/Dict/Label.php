@@ -11,6 +11,7 @@ class Label extends Model
     public $timestamps = false;
     protected $fillable = ['name_en', 'name_ru'];
     const OlodictLabel = 3;
+    const ZaikovLabel = 5;
     
     public function identifiableName()
     {

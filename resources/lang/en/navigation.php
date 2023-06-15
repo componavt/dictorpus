@@ -88,4 +88,5 @@ return [
     'wordforms' => 'Wordforms',
     'user_manual' => 'User manual (in Russian)',
     'users' => 'Users',
+    'zaikovdict' => "Zaikov's dictionary",
 ];

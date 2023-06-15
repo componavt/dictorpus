@@ -19,6 +19,8 @@ return [
     'add_fragment' => 'cut a fragment of the sentence',
     'add_to_list' => 'add to the list',
     'add_translation' => 'add a translation',
+    'add-lemma' => 'Add a lemma',
+    'add-phrase' => 'Add a phrase',
     'advtype' => 'adverb type',
     'advtypes' => [NULL=> '',
                     4 => 'direction',

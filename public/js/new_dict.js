@@ -110,3 +110,47 @@ function removeLabelMeaning(i, meaning_id, label_id, meaning_text) {
         }); 
     }
 }
+
+function addLemma(lang_id, label_id) {
+    $("#call-add-lemma").click(function(e) {
+        e.preventDefault();
+        $("#modalAddLemma").modal('show'); 
+    });
+    
+    $("#save-lemma").click(function(){
+        var data = {lang_id: lang_id, 
+                    label_id: label_id,
+                    lemma: $( "#lemma" ).val(),
+                    pos_id: $( "#pos_id option:selected" ).val(),
+                    meaning: $( "#new_meanings_0__meaning_text__2_" ).val(),
+                    wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
+                    number: $( "#number option:selected" ).val(),
+                    reflexive: $( "#reflexive" ).prop('checked'),
+                    impersonal: $( "#impersonal" ).prop('checked')};
+        saveLemma(data);
+    });
+    
+    $("#modalAddLemma .close, #modalAddLemma .cancel").on('click', function() {
+        $( "#new_meanings_0__meaning_text__2_" ).val(null);
+    });    
+}
+
+function saveLemma(text_id, data) {
+    $("#save-lemma").attr("disabled", true);    
+    $.ajax({
+        url: '/dict/lemma/store_simple', 
+        data: data,
+        type: 'GET',
+        success: function(lemma_id){
+            $("#modalAddLemma").modal('hide');
+            $("#new_meanings_0__meaning_text__2_" ).val(null);
+            $("#save-lemma").attr("disabled", false);    
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('saveLemma '+xhr.status);
+            alert(thrownError);
+            $("#save-lemma").attr("disabled", false);    
+        }
+    }); 
+}
+

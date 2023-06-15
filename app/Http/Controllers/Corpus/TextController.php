@@ -214,7 +214,7 @@ class TextController extends Controller
         
         return view('corpus.text.show',
                   compact('dialect_value', 'dialect_values', 'langs_for_meaning',  
-                          'photos', 'pos_id', 'pos_values', 'text',
+                          'photos', 'pos_id', 'pos_values', 'text', 
                           'args_by_get', 'url_args'));
     }
     
