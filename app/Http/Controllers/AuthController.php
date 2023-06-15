@@ -127,6 +127,7 @@ class AuthController extends Controller
             'city' => 'required',
             'country' => 'required',
             'affilation' => 'required',
+            'g-recaptcha-response'=>'required|captcha',
         ]);
         $input = $request->all();
         $credentials = [ 'email' => $request->email ];
