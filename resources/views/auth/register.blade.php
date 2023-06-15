@@ -30,7 +30,7 @@ $without_enter_form = true;
     <p><a href='/reset'>{{trans('auth.reset')}}</a></p>
 @stop
 
-@section('jqueryFunc')
+@section('footScriptExtra')
     {!! Anhskohbo\NoCaptcha\Facades\NoCaptcha::renderJs() !!}
 @stop
 
