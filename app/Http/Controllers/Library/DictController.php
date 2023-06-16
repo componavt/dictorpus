@@ -348,7 +348,7 @@ class DictController extends Controller
         
         $numAll = $lemmas->count();
         $lemmas = $lemmas->paginate($url_args['limit_num']);
-        $pos_values = PartOfSpeech::getList();
+        $pos_values = [NULL=>'']+PartOfSpeech::getList();
         $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
         $dialect_values = Dialect::getList($lang_id);
         $total_meanings = 2;
