@@ -17,6 +17,10 @@
                               'submit_id' => 'save-lemma',                              
                               'submit_title' => trans('messages.save'),
                               'modal_view'=>'dict.lemma.form._create_simple'])
+        @include('widgets.modal',['name'=>'modalAddMeaning',
+                              'title'=>trans('dict.add-meaning'),
+                              'submit_id' => 'save-meaning',                              
+                              'submit_title' => trans('messages.save')])
                                   
         @include('service.dict.zaikov._search_form',['url' => '/service/dict/zaikov']) 
         
@@ -38,8 +42,7 @@
         </thead>
         <tbody id='lemmasRows'>
             @foreach($lemmas as $lemma)
-                @include('service.dict.zaikov._row', ['list_count'=>$list_count++])
-                
+                @include('service.dict.zaikov._row', ['list_count'=>$list_count++])                
             @endforeach
         </tbody>
         </table>

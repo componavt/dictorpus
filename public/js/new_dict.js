@@ -130,9 +130,9 @@ function addLemma(lang_id, label_id) {
         saveLemma(data);
     });
     
-    $("#modalAddLemma .close, #modalAddLemma .cancel").on('click', function() {
+/*    $("#modalAddLemma .close, #modalAddLemma .cancel").on('click', function() {
         $( "#new_meanings_0__meaning_text__2_" ).val(null);
-    });    
+    }); */   
 }
 
 function saveLemma(data) {
@@ -143,7 +143,9 @@ function saveLemma(data) {
         type: 'GET',
         success: function(lemma_row){
             $("#modalAddLemma").modal('hide');
+            $("#lemma").val(null);
             $("#new_meanings_0__meaning_text__2_" ).val(null);
+            $("#pos_id option:selected" ).val(null);
             $("#save-lemma").attr("disabled", false);   
             $("#lemmasRows").prepend(lemma_row);
         },
@@ -155,3 +157,16 @@ function saveLemma(data) {
     }); 
 }
 
+function addMeaning(lemma_id) {
+    $.ajax({
+        url: '/service/dict/meaning/'+lemma_id+'/create', 
+        type: 'GET',
+        success: function(result){
+            $("#modalMeaning").modal('show'); 
+/*            $("#{{$lemma->id}}-"+lemma_id).append(result);*/
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}    

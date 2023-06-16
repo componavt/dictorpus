@@ -319,7 +319,8 @@ class DictController extends Controller
                 } 
             })
 //            ->orderBy('lemma');
-            ->orderByRaw('lower(lemma)');
+            ->orderBy('lemma_for_search');
+//            ->orderByRaw('lower(lemma)');
 
         if ($url_args['search_pos']) {
             $lemmas->wherePosId($url_args['search_pos']);
@@ -343,4 +344,18 @@ class DictController extends Controller
                         'lemmas', 'numAll', 'pos_values', 'total_meanings', 
                         'args_by_get', 'url_args'));
     }
+    
+    public function createMeaning($lemma_id, Request $request)
+    {
+        $lemma = Lemma::find($lemma_id);
+        if (!$lemma) {return;}
+        return view('service.dict.meaning._create', compact('lemma'));
+    }
+    
+    public function storeMeaning($lemma_id, Request $request)
+    {
+        $lemma = Lemma::find($lemma_id);
+        if (!$lemma) {return;}
+    }
+    
 }

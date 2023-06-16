@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-use DB;
+//use DB;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
 
 use App\Models\Dict\Lang;
+use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
 

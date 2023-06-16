@@ -986,7 +986,8 @@ dd($wordforms);
         return $data;        
     }
 
-    public static function storeLemma($data) {        
+    public static function storeLemma($data) {  
+        $data['lemma'] = mb_ereg_replace("\/", "|", $data['lemma']);
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
 //dd($gramset_wordforms);        
@@ -1555,7 +1556,7 @@ dd($wordforms);
     }
 
     public static function search(Array $url_args) {
-        $lemmas = self::orderBy('lemma');
+        $lemmas = self::orderBy('lemma_for_search');//orderByRaw('lower(lemma)');//orderBy('lemma');
 //        if ($url_args['search_wordform'] || $url_args['search_gramset']) {
   //          $lemmas = $lemmas->join('lemma_wordform', 'lemmas.id', '=', 'lemma_wordform.lemma_id');
 //            $lemmas = self::searchByWordform($lemmas, $url_args['search_wordform'], $url_args['search_lang']);
