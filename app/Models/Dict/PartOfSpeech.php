@@ -17,6 +17,7 @@ class PartOfSpeech extends Model
         'PROPN' => 's',
         'VERB' => 'v',
         'ADV' => 'adv',
+        'INTJ' => 'interj',
 //        '' => '',
     ];
     
