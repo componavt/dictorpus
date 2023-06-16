@@ -277,6 +277,12 @@ class DictController extends Controller
             $lemmas->wherePosId($url_args['search_pos']);
         } 
                
+        if ($url_args['search_lemma']) {
+            $lemmas->where(function ($query) use ($url_args) {
+                        Lemma::searchLemmas($query, $url_args['search_lemma']);
+                       });
+        } 
+        
         if ($url_args['search_status'] == 3) {
             $lemmas->whereIn('id', function ($q) {
                 $q->select('lemma_id')->from('audio_lemma');
