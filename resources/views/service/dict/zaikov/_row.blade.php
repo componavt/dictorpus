@@ -6,7 +6,7 @@
                     </a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">
-                        {{$lemma->pos->dict_code}}
+                        {{$lemma->pos ? $lemma->pos->dict_code : ''}}
                 </td>
                 <td data-th="{{ trans('dict.meanings') }}" id='meanings-{{$lemma->id}}'>
                 @foreach ($lemma->meaningsWithLabel($label_id) as $meaning) 
