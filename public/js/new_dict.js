@@ -123,6 +123,7 @@ function addLemma(lang_id, label_id) {
                     lemma: $( "#lemma" ).val(),
                     pos_id: $( "#pos_id option:selected" ).val(),
                     meaning: $( "#new_meanings_0__meaning_text__2_" ).val(),
+                    meaning1: $( "#new_meanings_1__meaning_text__2_" ).val(),
                     wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
                     number: $( "#number option:selected" ).val(),
                     reflexive: $( "#reflexive" ).prop('checked'),

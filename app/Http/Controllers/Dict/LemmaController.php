@@ -243,12 +243,12 @@ class LemmaController extends Controller
 //            'label_id' => 'nullable|numeric', // nullable неизвестен
         ]);
         
-        $lemma = Lemma::storeLemma($request->all());
+//        $lemma = Lemma::storeLemma($request->all());
 //dd($request->all());
-        LemmaFeature::store($lemma->id, $request);
+//        LemmaFeature::store($lemma->id, $request);
 
         for ($i=0; $i<2; $i++) {
-            $meaning_text = $request->{'meaning'. ($i>0 ? $i+1 : '')}; 
+            $meaning_text = $request->{'meaning'. ($i>0 ? $i : '')}; 
             if ($meaning_text) {
                 $new_meanings[$i]=['meaning_n' => $i+1,
                                   'meaning_text' =>

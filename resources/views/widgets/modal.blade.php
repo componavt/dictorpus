@@ -18,8 +18,8 @@
                 <input type="submit" class="btn btn-success" value="{{ $submit_title }}">
             @elseif (isset($submit_id) || isset($submit_onClick))
                 <button type="submit" class="btn btn-success"  
-                        {{ isset($submit_id) ? 'id="'.$submit_id.'"' : '' }}
-                        {{ isset($submit_onClick) ? 'onClick="'.$submit_onClick.'"' : '' }}>{{ $submit_title }}</button>
+                        {!! isset($submit_id) ? 'id="'.$submit_id.'"' : '' !!}
+                        {!! isset($submit_onClick) ? 'onClick="'.$submit_onClick.'"' : '' !!}>{{ $submit_title }}</button>
             @endif
                 <button type="button" class="btn btn-default cancel" data-dismiss="modal">{{trans('messages.close')}}</button>
             </div>
