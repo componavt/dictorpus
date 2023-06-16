@@ -188,7 +188,7 @@ function saveMeaning(label_id) {
             $("#modalAddMeaning").modal('hide');
             $("#modalAddMeaning .modal-body").html(null);
             $("#save-meaning").attr("disabled", false);   
-            $("#meanings-"+lemma_id).prepend(meanings);
+            $("#meanings-"+lemma_id).html(meanings);
         },
         error: function() {
             alert('error');
