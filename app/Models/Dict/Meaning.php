@@ -464,7 +464,8 @@ class Meaning extends Model
             $meaning_obj->updatePlaces($meaning['places'] ?? []);
             
             // is meaning has any meaning texts or any relations
-            if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count()) { 
+            if ($meaning_obj->meaningTexts()->count() || $meaning_obj->meaningRelations()->count() || $meaning_obj->translations()->count()
+                     || $meaning_obj->concepts()->count() || $meaning_obj->places()->count() || $meaning_obj->examples()->count()) { 
                 $meaning_obj -> meaning_n = $meaning['meaning_n'];
                 $meaning_obj -> save();
 

@@ -23,11 +23,8 @@ class ExampleController extends Controller
     }
     
     public function store(int $meaning_id, Request $request) {
-        $example = $request->input('example');
-        $example_ru = $request->input('example_ru');
-        
-        if ($example) {
-            $example_obj = Example::create(['meaning_id'=>$meaning_id, 'example' => $example, 'example_ru' => $example_ru]);
+        $example_obj = Example::store($meaning_id, $request->all());
+        if ($example_obj) {
             return view('dict.example.view', compact('example_obj'));     
         }
     }

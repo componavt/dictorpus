@@ -843,9 +843,12 @@ dd($wordforms);
      * @return int
      */
     public function getNewMeaningN(){
-        $builder = DB::table('meanings')->select(DB::raw('max(meaning_n) as max_meaning_n'))->where('lemma_id',$this->id)->first();
+        $last_meaning = $this->meanings()->orderBy('meaning_n', 'desc')->first();
+/*        $builder = DB::table('meanings')->select(DB::raw('max(meaning_n) as max_meaning_n'))->where('lemma_id',$this->id)->first();
         if ($builder) {
-            $max_meaning_n = $builder->max_meaning_n;
+            $max_meaning_n = $builder->max_meaning_n;*/
+        if ($last_meaning) {
+            $max_meaning_n = $last_meaning->meaning_n;
         } else {
             $max_meaning_n = 0;
         }

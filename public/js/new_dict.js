@@ -157,16 +157,42 @@ function saveLemma(data) {
     }); 
 }
 
-function addMeaning(lemma_id) {
+function addMeaning(lemma_id, label_id) {
     $.ajax({
         url: '/service/dict/meaning/'+lemma_id+'/create', 
+        data: {label_id: label_id},
         type: 'GET',
         success: function(result){
-            $("#modalMeaning").modal('show'); 
-/*            $("#{{$lemma->id}}-"+lemma_id).append(result);*/
+            $("#modalAddMeaning").modal('show'); 
+            $("#modalAddMeaning .modal-body").html(result);
         },
         error: function() {
             alert('error');
         }
     }); 
 }    
+
+function saveMeaning(label_id) {
+    $("#save-meaning").attr("disabled", true);   
+    var lemma_id = $("#modalAddMeaning #lemma_id").val();
+    $.ajax({
+        url: '/service/dict/meaning/'+lemma_id+'/store', 
+        data: {
+            label_id: label_id,
+            meaning: $("#modalAddMeaning #new_meaning" ).val(),
+            example: $("#modalAddMeaning #example" ).val(),
+            example_ru: $("#modalAddMeaning #example_ru" ).val()
+        },
+        type: 'GET',
+        success: function(meanings){
+            $("#modalAddMeaning").modal('hide');
+            $("#modalAddMeaning .modal-body").html(null);
+            $("#save-meaning").attr("disabled", false);   
+            $("#meanings-"+lemma_id).prepend(meanings);
+        },
+        error: function() {
+            alert('error');
+            $("#save-meaning").attr("disabled", false);    
+        }
+    }); 
+}

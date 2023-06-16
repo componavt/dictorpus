@@ -8,17 +8,15 @@
                 <td data-th="{{ trans('dict.pos') }}">
                         {{$lemma->pos ? $lemma->pos->dict_code : ''}}
                 </td>
-                <td data-th="{{ trans('dict.meanings') }}" id='meanings-{{$lemma->id}}'>
-                @foreach ($lemma->meaningsWithLabel($label_id) as $meaning) 
-                    @include('service.dict.zaikov._meaning')
-                @endforeach
+                <td data-th="{{ trans('dict.meanings') }}" id='meanings-{{ $lemma->id }}'>
+                    @include('service.dict.meaning._lemma_label_meanings')
                 </td>
                 <td data-th="{{ trans('messages.actions') }}" style="text-align:center">
-                    <i class="fa fa-plus fa-lg clickable link-color" onClick="addMeaning($lemma->id)"></i>
-                    <a class="set-status status{{$lemma->labelStatus($label_id)}}" id="status-{{$lemma->id}}" 
-                       onClick="setStatus({{$lemma->id}}, {{$label_id}})"
+                    <i class="fa fa-plus fa-lg clickable link-color" onClick="addMeaning({{ $lemma->id }}, {{ $label_id }})"></i>
+                    <a class="set-status status{{$lemma->labelStatus($label_id)}}" id="status-{{ $lemma->id }}" 
+                       onClick="setStatus({{ $lemma->id }}, {{ $label_id }})"
                        data-old="{{$lemma->labelStatus($label_id)}}" 
                        data-new="{{$lemma->labelStatus($label_id) ? 0 : 1}}"></a>
-                    <i class="fa fa-trash fa-lg remove-label" onClick="removeLabel({{$lemma->id}}, {{$label_id}})" title="Удалить из списка"></i>
+                    <i class="fa fa-trash fa-lg remove-label" onClick="removeLabel({{ $lemma->id }}, {{ $label_id }})" title="Удалить из списка"></i>
                 </td>
             </tr>

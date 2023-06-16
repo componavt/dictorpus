@@ -31,4 +31,13 @@ class Example extends Model
     {
         parent::boot();
     }
+    
+    public static function store($meaning_id, $data) {
+        if (!$data['example']) {
+            return;
+        }
+        return Example::create(['meaning_id'=>$meaning_id, 
+                                'example' => $data['example'], 
+                                'example_ru' => $data['example_ru']]);        
+    }
 }

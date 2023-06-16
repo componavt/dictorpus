@@ -10,9 +10,11 @@ use App\Http\Controllers\Controller;
 use App\Library\Str;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Example;
 use App\Models\Dict\Label;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 
 class DictController extends Controller
@@ -33,7 +35,7 @@ class DictController extends Controller
         $this->url_args = Str::urlArgs($request) + 
             ['search_pos'      => (int)$request->input('search_pos'),
              'search_status'   => (int)$request->input('search_status'),
-//                'search_lemma'    => $request->input('search_lemma'),
+             'search_lemma'    => $request->input('search_lemma'),
             ];
         
         $this->args_by_get = search_values_by_URL($this->url_args);
@@ -326,6 +328,12 @@ class DictController extends Controller
             $lemmas->wherePosId($url_args['search_pos']);
         } 
         
+        if ($url_args['search_lemma']) {
+            $lemmas->where(function ($query) use ($url_args) {
+                        Lemma::searchLemmas($query, $url_args['search_lemma']);
+                       });
+        } 
+        
         if ($url_args['search_status'] == 3) {
             $lemmas->whereIn('id', function ($q) {
                 $q->select('lemma_id')->from('audio_lemma');
@@ -349,13 +357,24 @@ class DictController extends Controller
     {
         $lemma = Lemma::find($lemma_id);
         if (!$lemma) {return;}
-        return view('service.dict.meaning._create', compact('lemma'));
+        $label_id = (int)$request->label_id;
+        return view('service.dict.meaning._create', 
+                compact('label_id', 'lemma'));
     }
     
     public function storeMeaning($lemma_id, Request $request)
     {
         $lemma = Lemma::find($lemma_id);
         if (!$lemma) {return;}
+        $label_id = (int)$request->label_id;
+        
+        $meaning_obj = Meaning::storeLemmaMeaning($lemma->id, $lemma->getNewMeaningN(), [Lang::getIDByCode('ru') => $request->meaning]);
+//        $lemma->updateTextLinks();
+        $meaning_obj->labels()->attach([$label_id]);
+        Example::store($meaning_obj->id, $request->all());
+        
+        return view('service.dict.meaning._lemma_label_meanings', 
+                compact('label_id', 'lemma'));
     }
     
 }
