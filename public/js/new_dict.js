@@ -145,7 +145,7 @@ function saveLemma(data) {
             $("#modalAddLemma").modal('hide');
             $("#lemma").val(null);
             $("#new_meanings_0__meaning_text__2_" ).val(null);
-            $("#pos_id option:selected" ).val(null);
+//            $("#pos_id option:selected" ).val(null);
             $("#save-lemma").attr("disabled", false);   
             $("#lemmasRows").prepend(lemma_row);
         },
