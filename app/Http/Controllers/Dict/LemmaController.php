@@ -1015,9 +1015,15 @@ class LemmaController extends Controller
     }
     
     public function removeLabel(int $id, int $label_id) {
-        DB::statement("DELETE from label_lemma where"
-                    . " lemma_id='$id' and label_id='$label_id'");
-        return;
+        $lemma = Lemma::find($id);
+        if (!$lemma) {
+            return;
+        }
+        
+        foreach ($lemma->meanings as $meaning) {
+            $meaning->labels()->detach($label_id);
+        }
+        $lemma->labels()->detach($label_id);
     }
     
     public function addLabel(int $id, int $label_id) {
@@ -1025,9 +1031,9 @@ class LemmaController extends Controller
 //        DB::statement("INSERT INTO label_lemma (lemma_id, label_id, status)"
 //                    . " VALUES ('$id', '$label_id', 0)");
         if ($lemma) {
-            $lemma->labels()->attach([$label_id]);
+            $lemma->labels()->syncWithoutDetaching([$label_id]);
             foreach ($lemma->meanings as $meaning) {
-                $meaning->labels()->attach([$label_id]);
+                $meaning->labels()->syncWithoutDetaching([$label_id]);
             }
         }
         return;
