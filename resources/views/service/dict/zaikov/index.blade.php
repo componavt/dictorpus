@@ -19,6 +19,7 @@
                               'modal_view'=>'dict.lemma.form._create_simple'])
         @include('widgets.modal',['name'=>'modalAddMeaning',
                               'title'=>trans('dict.add-meaning'),
+                              'submit_id' => 'save-meaning',                              
                               'submit_onClick' => 'saveMeaning('.$label_id.')',
                               'submit_title' => trans('messages.save')])
                                   
