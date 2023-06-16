@@ -48,9 +48,11 @@ class ExampleController extends Controller
                 $example_obj->save();
                 return view('dict.example._view', compact('example_obj'));     
             } else {
-                $example_obj->remove();
+                $example_obj->delete();
+                return ' ';
             }
         }
+        return ' ';
     }
     
 }
