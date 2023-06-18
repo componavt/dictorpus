@@ -4,6 +4,11 @@
     {{$meaning->getMultilangMeaningTextsString('ru')}}<br>
 @endforeach
 
+<div style='text-decoration: line-through;'>
+@foreach ($lemma->meaningsWithoutLabel($label_id) as $meaning) 
+    {{$meaning->getMultilangMeaningTextsString('ru')}}<br>
+@endforeach    
+</div>
 @include('service.dict.meaning._form_create',
         ['count' => '',
          'meaning_n' => 'Новое',
