@@ -16,7 +16,7 @@
                               'title'=>trans('dict.add-lemma'),
                               'submit_id' => 'save-lemma',                              
                               'submit_title' => trans('messages.save'),
-                              'modal_view'=>'dict.lemma.form._create_simple'])
+                              'modal_view'=>'service.dict.lemma._create'])
         @include('widgets.modal',['name'=>'modalAddMeaning',
                               'title'=>trans('dict.add-meaning'),
                               'submit_id' => 'save-meaning',                              

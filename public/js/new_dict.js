@@ -46,11 +46,7 @@ function createExample(meaning_id) {
     }); 
 }    
 
-/**
- * load edition form for meaning example in school dictionary
- * 
- * @param int example_id
- */
+// load edition form for meaning example in school dictionary
 function editExample(example_id) {
     $.ajax({
         url: '/dict/example/' + example_id + '/edit', 
@@ -64,20 +60,14 @@ function editExample(example_id) {
     }); 
 }    
 
-/**
- * add new meaning example in school dictionary
- * 
- * @param int meaning_id
- */
+// add new meaning example in school dictionary
 function updateExample(example_id) {
     var example_div = $('#b-example-'+example_id);
-    var example = $('#example-'+example_id).val();
-    var example_ru = $('#example_ru-'+example_id).val();
     $.ajax({
         url: '/dict/example/'+example_id+'/update', 
         data: {
-          example: example,
-          example_ru: example_ru,          
+          example: $('#example-'+example_id).val(),
+          example_ru: $('#example_ru-'+example_id).val(),          
         },
         type: 'GET',
         success: function(result){
@@ -87,28 +77,66 @@ function updateExample(example_id) {
             alert('error');
         }
     }); 
+}   
+
+// load edition form for meaning meaning in school dictionary
+function editMeaning(meaning_id) {
+    $.ajax({
+        url: '/dict/meaning/' + meaning_id + '/edit', 
+        type: 'GET',
+        success: function(result){
+            $("#b-meaning-"+ meaning_id).html(result);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
 }    
 
-/**
- * remove label with meaning in school dictionary
- * 
- * @param int meaning_id
- */
-function removeLabelMeaning(i, meaning_id, label_id, meaning_text) {
-    if (confirm('Вы действительно хотите удалить значение "'+meaning_text+'"?')) {
+// add new meaning meaning in school dictionary
+function updateMeaning(meaning_id) {
+    $.ajax({
+        url: '/dict/meaning/'+meaning_id+'/update', 
+        data: {
+          meaning_text: $('#meaning_text-'+meaning_id).val(),
+        },
+        type: 'GET',
+        success: function(result){
+            $('#b-meaning-'+meaning_id).css('display','inline').html(result);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}   
+
+// remove label with meaning in a dictionary
+function removeLabelMeaning(lemma_id, meaning_id, label_id, meaning_text) {
+//    if (confirm('Вы действительно хотите удалить из списка значение "'+meaning_text+'"?')) {
         $.ajax({
             url: '/dict/meaning/'+meaning_id+'/remove_label/'+label_id, 
             type: 'GET',
-            success: function(result){
-                if (result) {
-                    $("#meaning-"+meaning_id).remove();
-                }
+            success: function(meanings){
+                $("#meanings-"+lemma_id).html(meanings);
             },
             error: function() {
                 alert('error');
             }
         }); 
-    }
+//    }
+}
+
+function addLabelMeaning(lemma_id, meaning_id, label_id) {
+    $.ajax({
+        url: '/dict/meaning/'+meaning_id+'/add_label/'+label_id, 
+        type: 'GET',
+        success: function(meanings){
+            $("#meanings-"+lemma_id).html(meanings);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
 }
 
 function addLemma(lang_id, label_id) {
@@ -122,12 +150,21 @@ function addLemma(lang_id, label_id) {
                     label_id: label_id,
                     lemma: $( "#lemma" ).val(),
                     pos_id: $( "#pos_id option:selected" ).val(),
-                    meaning: $( "#new_meanings_0__meaning_text__2_" ).val(),
-                    meaning1: $( "#new_meanings_1__meaning_text__2_" ).val(),
+//                    meaning0: $( "#meaning0" ).val(),
                     wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
                     number: $( "#number option:selected" ).val(),
                     reflexive: $( "#reflexive" ).prop('checked'),
-                    impersonal: $( "#impersonal" ).prop('checked')};
+                    impersonal: $( "#impersonal" ).prop('checked'),
+                    meanings: {}
+                };
+        for (i=0; i<2; i++) {
+            data['meanings'][i] = {
+                meaning_text: $( "#meaning"+i ).val(),
+                example: $( "#example"+i ).val(),
+                example_ru: $( "#example_ru"+i ).val()
+            };
+        }        
+//console.log(data);                
         saveLemma(data);
     });
     
@@ -139,17 +176,20 @@ function addLemma(lang_id, label_id) {
 function saveLemma(data) {
     $("#save-lemma").attr("disabled", true);    
     $.ajax({
-        url: '/dict/lemma/store_simple', 
+        url: '/service/dict/lemma/store', 
         data: data,
         type: 'GET',
         success: function(lemma_row){
             $("#modalAddLemma").modal('hide');
             $("#lemma").val(null);
-            $("#new_meanings_0__meaning_text__2_" ).val(null);
-            $("#new_meanings_1__meaning_text__2_" ).val(null);
 //            $("#pos_id option:selected" ).val(null);
             $("#save-lemma").attr("disabled", false);   
             $("#lemmasRows").prepend(lemma_row);
+            for (i=0; i<2; i++) {
+                $( "#meaning"+i ).val(null);
+                $( "#example"+i ).val(null);
+                $( "#example_ru"+i ).val(null);
+            }        
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert('saveLemma '+xhr.status);
@@ -181,7 +221,7 @@ function saveMeaning(label_id) {
         url: '/service/dict/meaning/'+lemma_id+'/store', 
         data: {
             label_id: label_id,
-            meaning: $("#modalAddMeaning #new_meaning" ).val(),
+            meaning: $("#modalAddMeaning #meaning" ).val(),
             example: $("#modalAddMeaning #example" ).val(),
             example_ru: $("#modalAddMeaning #example_ru" ).val()
         },

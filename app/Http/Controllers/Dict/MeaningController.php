@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 
 use App\Models\Dict\Lang;
-use App\Models\Dict\Lemma;
+//use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
 
@@ -109,7 +109,11 @@ class MeaningController extends Controller
      */
     public function edit($id)
     {
-        //
+        $meaning = Meaning::find($id);
+        if (!$meaning) {
+            return;
+        }
+        return view('dict.meaning.form._edit_simple', compact('meaning'));
     }
 
     /**
@@ -121,7 +125,24 @@ class MeaningController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $meaning = Meaning::find($id);
+        if (!$meaning) {
+            return '';
+        }
+        $meaning_text_obj = $meaning->meaningTexts()->where('lang_id',2)->first(); // ru
+        if (!$meaning_text_obj) {
+            return '';
+        }
+        $meaning_text = $request->input('meaning_text');
+
+        if ($meaning_text) {
+            $meaning_text_obj -> meaning_text = $meaning_text;
+            $meaning_text_obj -> save();
+            return view('service.dict.meaning._view', compact('meaning'));     
+/*        } else {
+            $meaning_text_obj->delete();
+            return ' ';*/
+        }
     }
 
     /**
@@ -198,11 +219,24 @@ class MeaningController extends Controller
     
     public function removeLabel(int $meaning_id, int $label_id) {
         $meaning = Meaning::find($meaning_id);
-        if ($meaning) {
-            $meaning->labels()->detach($label_id);
-            return 1;
+        if (!$meaning) {
+            return;
         }
-        return 0;
+        $meaning->labels()->detach($label_id);
+        $lemma = $meaning->lemma;
+        return view('service.dict.lemma._meanings', 
+                compact('label_id', 'lemma'));
+    }
+    
+    public function addLabel(int $meaning_id, int $label_id) {
+        $meaning = Meaning::find($meaning_id);
+        if (!$meaning) {
+            return;
+        }
+        $meaning->labels()->attach($label_id);
+        $lemma = $meaning->lemma;
+        return view('service.dict.lemma._meanings', 
+                compact('label_id', 'lemma'));
     }
     
     public function photo(int $meaning_id) {

@@ -31,28 +31,29 @@ class ExampleController extends Controller
     
     public function edit(int $example_id) {
         $example = Example::find($example_id);
-        if ($example) {
-            return view('dict.example._edit', compact('example'));
+        if (!$example) {
+            return;
         }
+        return view('dict.example._edit', compact('example'));
     }
     
     public function update(int $example_id, Request $request) {
         $example_obj = Example::find($example_id);
-        if ($example_obj) {
-            $example = $request->input('example');
-            $example_ru = $request->input('example_ru');
-
-            if ($example) {
-                $example_obj->example = $example;
-                $example_obj->example_ru = $example_ru;
-                $example_obj->save();
-                return view('dict.example._view', compact('example_obj'));     
-            } else {
-                $example_obj->delete();
-                return ' ';
-            }
+        if (!$example_obj) {
+            return ' ';
         }
-        return ' ';
+        $example = $request->input('example');
+        $example_ru = $request->input('example_ru');
+
+        if ($example) {
+            $example_obj->example = $example;
+            $example_obj->example_ru = $example_ru;
+            $example_obj->save();
+            return view('dict.example._view', compact('example_obj'));     
+        } else {
+            $example_obj->delete();
+            return ' ';
+        }
     }
     
 }

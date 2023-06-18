@@ -25,6 +25,7 @@ Route::group(
         Route::get('dict/school/select', 'Library\DictController@schoolSelect');       
         Route::get('dict/zaikov', 'Library\DictController@zaikovView');       
         Route::get('dict/zaikov/select', 'Library\DictController@zaikovSelect');       
+        Route::get('dict/lemma/store', 'Library\DictController@storeLemma');
         Route::get('dict/meaning/{lemma_id}/create', 'Library\DictController@createMeaning');
         Route::get('dict/meaning/{lemma_id}/store', 'Library\DictController@storeMeaning');
         

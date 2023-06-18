@@ -23,7 +23,7 @@ use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
-use App\Models\Dict\Label;
+//use App\Models\Dict\Label;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaFeature;
@@ -240,7 +240,6 @@ class LemmaController extends Controller
             'lemma'  => 'required|max:255',
             'lang_id'=> 'required|numeric',
             'pos_id' => 'numeric',
-//            'label_id' => 'nullable|numeric', // nullable неизвестен
         ]);
         
         $lemma = Lemma::storeLemma($request->all());
@@ -258,7 +257,7 @@ class LemmaController extends Controller
         Meaning::storeLemmaMeanings($new_meanings, $lemma->id);
         $lemma->updateTextLinks();
         
-        if ($request->label_id) {
+/*        if ($request->label_id) {
             $label_id = $request->label_id;
             $lemma->labels()->attach([$label_id]);
             foreach ($lemma->meanings as $meaning) {
@@ -268,7 +267,7 @@ class LemmaController extends Controller
                 return view('service.dict.zaikov._row', 
                         compact('label_id', 'lemma'));
             }
-        }
+        }*/
         
         return $lemma->id;        
     }

@@ -14,6 +14,7 @@ use App\Models\Dict\Example;
 use App\Models\Dict\Label;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 
@@ -375,12 +376,52 @@ class DictController extends Controller
         $label_id = (int)$request->label_id;
         
         $meaning_obj = Meaning::storeLemmaMeaning($lemma->id, $lemma->getNewMeaningN(), [Lang::getIDByCode('ru') => $request->meaning]);
-//        $lemma->updateTextLinks();
+        $lemma->updateTextLinks();
         $meaning_obj->labels()->attach([$label_id]);
         Example::store($meaning_obj->id, $request->all());
         
-        return view('service.dict.meaning._lemma_label_meanings', 
+        return view('service.dict.lemma._meanings', 
                 compact('label_id', 'lemma'));
     }
     
+    /**
+     * Store a newly created resource in storage.
+     * 
+     * URL: /service/dict/lemma/store?lang_id=4&lemma=täh&meaning=test1&pos_id=5&label_id=5
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeLemma(Request $request)
+    {
+        $this->validate($request, [
+            'lemma'  => 'required|max:255',
+            'lang_id'=> 'required|numeric',
+            'pos_id' => 'numeric',
+            'label_id' => 'numeric', 
+        ]);
+        
+        $label_id = $request->label_id;
+        if (!$label_id) {
+            return;
+        } 
+        
+        $lemma = Lemma::storeLemma($request->all());
+        LemmaFeature::store($lemma->id, $request);
+        $lemma->labels()->attach([$label_id]);
+        
+        $meanings = (array)$request->meanings;
+        
+        for ($i=0; $i<sizeof($meanings); $i++)  {     
+            $meaning = Meaning::storeLemmaMeaning($lemma->id, $i+1, [Lang::getIDByCode('ru') => $meanings[$i]['meaning_text']]);
+            $meaning->labels()->attach([$label_id]);
+            Example::store($meaning->id, $meanings[$i]);
+        }
+        $lemma->updateTextLinks();
+        
+        if ($label_id == Label::ZaikovLabel) {
+            return view('service.dict.zaikov._row', 
+                    compact('label_id', 'lemma'));
+        }
+    }
 }

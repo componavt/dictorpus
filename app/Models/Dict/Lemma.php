@@ -1882,6 +1882,13 @@ dd($wordforms);
         })->get();
     }
     
+    public function meaningsWithoutLabel($label_id) {
+        return $this->meanings()->whereNotIn('id', function ($q) use ($label_id) {
+            $q->select('meaning_id')->from('label_meaning')
+              ->whereLabelId($label_id);
+        })->get();
+    }
+    
     public function getMultilangMeaningTexts() {
         $meanings = [];
         foreach ($this->meanings as $meaning_obj) {

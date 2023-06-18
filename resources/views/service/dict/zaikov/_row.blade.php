@@ -9,7 +9,7 @@
                         {{$lemma->pos ? $lemma->pos->dict_code : ''}}
                 </td>
                 <td data-th="{{ trans('dict.meanings') }}" id='meanings-{{ $lemma->id }}'>
-                    @include('service.dict.meaning._lemma_label_meanings')
+                    @include('service.dict.lemma._meanings')
                 </td>
                 <td data-th="{{ trans('messages.actions') }}" style="text-align:center">
                     <i class="fa fa-plus fa-lg clickable link-color" onClick="addMeaning({{ $lemma->id }}, {{ $label_id }})"></i>

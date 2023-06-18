@@ -246,6 +246,17 @@ class Meaning extends Model
         return $out;
     }
     
+    public function getMeaningTextByLangCode($lang_code) {
+        $lang = Lang::where('code',$lang_code)->first();
+        if (!$lang) {
+            return;
+        }
+        $meaning_text = $this->meaningTexts()->where('lang_id',$lang->id)->first();
+        if ($meaning_text) {
+            return $meaning_text->meaning_text;
+        }
+        
+    }
     public function getLemmaRelation($relation_id, $label_id=null, $label_status=1) {
         $relation_meanings = $this->meaningRelations()->wherePivot('relation_id', $relation_id);
         if ($label_id) {

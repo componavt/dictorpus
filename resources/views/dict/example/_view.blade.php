@@ -1,2 +1,4 @@
 <i>{{$example_obj->example}}</i> {{$example_obj->example_ru}}
-    <i class="fa fa-pencil-alt fa-lg clickable link-color" onClick="editExample({{$example_obj->id}})"></i>
+@if (!isset($access_edition) || $access_edition)
+    <i class="fa fa-pencil-alt fa-lg clickable blue-color" onClick="editExample({{$example_obj->id}})"></i>
+@endif
