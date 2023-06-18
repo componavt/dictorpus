@@ -413,7 +413,8 @@ class DictController extends Controller
         $meanings = (array)$request->meanings;
         
         for ($i=0; $i<sizeof($meanings); $i++)  {     
-            $meaning = Meaning::storeLemmaMeaning($lemma->id, $i+1, [Lang::getIDByCode('ru') => $meanings[$i]['meaning_text']]);
+            if (!$meanings[$i]['meaning_text']) { continue; }
+            $meaning = Meaning::storeLemmaMeaning($lemma->id, $i+1, [[Lang::getIDByCode('ru') => $meanings[$i]['meaning_text']]]);
             $meaning->labels()->attach([$label_id]);
             Example::store($meaning->id, $meanings[$i]);
         }
