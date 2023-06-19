@@ -50,11 +50,15 @@ class HomeController extends Controller
     }   
 
     public function page($page) {
-        return view('page.'.$page);        
+        if (View::exists('page.'.$page)) {
+            return view('page.'.$page);        
+        }
     }
     
     public function help($section, $page) {
-        return view('help.'.$section.'.'.$page);        
+        if (View::exists('help.'.$section.'.'.$page)) {
+            return view('help.'.$section.'.'.$page);   
+        }
     }
     
     public function simpleSearch(Request $request) {
