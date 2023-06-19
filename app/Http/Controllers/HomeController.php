@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use LaravelLocalization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\View;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
