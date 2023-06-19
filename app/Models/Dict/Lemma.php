@@ -302,6 +302,47 @@ class Lemma extends Model
                     ->get();
     }
     
+    public function zaikovTemplate() {
+        $lang_id = 4;
+        $dialect_id = 46;
+        if ($this->lang_id != $lang_id) {
+            return $this->lemma;
+        }
+        $template = $this->stemAffixForm();
+        $total_gramsets = 0;
+        
+        if ($this->pos->isName()) {
+            $total_gramsets = 28; //Gramset::countForPosLang(PartOfSpeech::getIDByCode('NOUN'), $lang_id);
+            $gramsets = [3,4]; // gen. sg, part. sg 
+        } elseif ($this->pos->isVerb()) {
+            $total_gramsets = 125;
+            $gramsets = [26,28]; // ind. pres. 1sg, ind. pres. 3sg 
+        }
+        
+        if (!$total_gramsets || $this->wordforms()->wherePivot('dialect_id', $dialect_id)->count() < $total_gramsets) {
+            return $template;
+        }
+        
+        $wordforms = [];
+        $max_stem = preg_replace("/\|\|/", '', $this->reverseLemma->stem);
+        foreach ($gramsets as $gramset_id) {
+            $wforms = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
+            if (!$wforms || !isset($wforms[0])) {
+                return $template;
+            }
+            $tmp = [];
+            foreach ($wforms as $w) {
+                if (!preg_match("/^".$max_stem."(.*)$/u", $w->wordform, $regs)) {
+                    return $template;
+                }
+                $tmp[] = isset($regs[1]) ? '-'.$regs[1] : '';
+            }
+            $wordforms[$gramset_id] = join('/',$tmp);
+        }
+        
+        return $template. ' ('.join(', ',$wordforms).')';     
+    }
+        
     /**
      * Wordforms array for one dialect.
      * Output in a table:

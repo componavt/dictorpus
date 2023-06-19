@@ -247,6 +247,15 @@ class Gramset extends Model
         return $out;
     }
     
+    public static function countForPosLang($pos_id, $lang_id) {
+        return Gramset::whereIn('id', function ($q) use ($pos_id, $lang_id) {
+            $q->select('gramset_id')->from('gramset_pos')
+              ->wherePosId($pos_id)
+              ->whereLangId($lang_id);
+        })->count();
+    }
+
+
     public static function getStringByID($gramset_id) {
         $gramset = self::find($gramset_id);
         if (!$gramset) {
