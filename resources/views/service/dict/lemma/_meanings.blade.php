@@ -1,5 +1,16 @@
 @foreach ($lemma->meaningsWithLabel($label_id) as $meaning) 
     <div id='meaning-{{$meaning->id}}'>
+        @if ($meaning->meaning_n > 1) 
+            <a onClick="meaningUp({{ $lemma->id }}, {{ $meaning->id}}, {{ $label_id }})" class='up'>&uarr;</a>
+        @else
+            &nbsp;&nbsp;
+        @endif
+        @if ($meaning->meaning_n < $lemma->maxMeaningN())
+            <a onClick="meaningDown({{ $lemma->id }}, {{ $meaning->id}}, {{ $label_id }})" class='down'>&darr;</a>
+        @else
+            &nbsp;&nbsp;
+        @endif
+        
         <i class="fa fa-times fa-lg clickable" data-delete="{{csrf_token()}}" 
            onClick="removeLabelMeaning({{ $lemma->id }}, {{ $meaning->id }}, {{ $label_id }}, '{{$meaning->getMultilangMeaningTextsString('ru')}}')"></i>
         @if ($lemma->meanings()->count()>1)

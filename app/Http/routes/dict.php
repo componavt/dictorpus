@@ -88,6 +88,8 @@ Route::group(
         Route::get('meaning/{meaning_id}/photo', 'Dict\MeaningController@photo');
         Route::get('meaning/{id}/edit', 'Dict\MeaningController@edit');        
         Route::get('meaning/{id}/update', 'Dict\MeaningController@update');        
+        Route::get('meaning/up/{id}', 'Dict\MeaningController@up');
+        Route::get('meaning/down/{id}', 'Dict\MeaningController@down');
         
         Route::get('pos', 'Dict\PartOfSpeechController@index');
 

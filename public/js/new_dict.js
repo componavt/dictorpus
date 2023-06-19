@@ -238,3 +238,31 @@ function saveMeaning(label_id) {
         }
     }); 
 }
+
+function meaningUp(lemma_id, meaning_id, label_id) {
+    $.ajax({
+        url: '/dict/meaning/up/'+meaning_id, 
+        data: {label_id: label_id},
+        type: 'GET',
+        success: function(meanings){
+            $("#meanings-"+lemma_id).html(meanings);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}    
+
+function meaningDown(lemma_id, meaning_id, label_id) {
+    $.ajax({
+        url: '/dict/meaning/down/'+meaning_id, 
+        data: {label_id: label_id},
+        type: 'GET',
+        success: function(meanings){
+            $("#meanings-"+lemma_id).html(meanings);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}    

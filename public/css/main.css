@@ -662,6 +662,22 @@ h4 {
     display: none;
 }
 
+.up,
+.down {
+    text-decoration: none;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+    top:-1px;
+}
+
+.up:hover,
+.down:hover {
+    color: #e5210a;
+    text-decoration: none;
+}
+
+
 @media screen and (min-width: 768px) {   
     .comment {
         margin-top: -50px;

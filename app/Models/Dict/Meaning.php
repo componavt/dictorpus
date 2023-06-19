@@ -400,7 +400,57 @@ class Meaning extends Model
         }
     }
     
-    /**
+    public function upMeaningN() {
+        if ($this->meaning_n == 1) {
+            return;
+        }
+        $prev_n = $this->meaning_n - 1;
+        $lemma = $this->lemma;
+        
+        $prev = $lemma->meanings()->where('id','<>',$this->id)->whereMeaningN($prev_n)->first();
+        if (!$prev) {
+            $this->meaning_n = $prev_n;
+            $this->save();
+            return;
+        }
+        
+        $nextN = $lemma->getNewMeaningN();
+        $prev->meaning_n = $nextN;
+        $prev->save();
+        
+        $this->meaning_n = $prev_n;
+        $this->save();
+        
+        $prev->meaning_n = 1+ $prev_n;
+        $prev->save();
+    }
+
+    public function downMeaningN() {
+        $lemma = $this->lemma;
+        if ($this->meaning_n == $lemma->maxMeaningN()) {
+            return;
+        }
+        $next_n = $this->meaning_n + 1;
+        
+        $next = $lemma->meanings()->where('id','<>',$this->id)->whereMeaningN($next_n)->first();
+        if (!$next) {
+            $this->meaning_n = $next_n;
+            $this->save();
+            return;
+        }
+        
+        $nextN = $lemma->getNewMeaningN();
+        $next->meaning_n = $nextN;
+        $next->save();
+        
+        $this->meaning_n = $next_n;
+        $this->save();
+        
+        $next->meaning_n = $next_n - 1;
+        $next->save();
+    }
+
+     /**
      * Stores array of new meanings for the lemma
      * 
      * @param Array $meanings [<count>=>["meaning_n" => "1", "meaning_text" => [<lang1_id> => <meaning_text11>,  <lang2_id> => <meaning_text12>, ...]],

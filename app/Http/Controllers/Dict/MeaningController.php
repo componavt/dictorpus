@@ -252,6 +252,29 @@ class MeaningController extends Controller
         return view('dict.concept._photo_preview', compact('photo'));
     }
     
+    public function up(int $meaning_id, Request $request) {
+        $meaning = Meaning::find($meaning_id);
+        if (!$meaning ) {
+            return;
+        }
+        $label_id = $request->label_id;
+        $meaning->upMeaningN();
+        $lemma = $meaning->lemma;
+        return view('service.dict.lemma._meanings', 
+                compact('label_id', 'lemma'));
+    }
+
+    public function down(int $meaning_id, Request $request) {
+        $meaning = Meaning::find($meaning_id);
+        if (!$meaning ) {
+            return;
+        }
+        $label_id = $request->label_id;
+        $meaning->downMeaningN();
+        $lemma = $meaning->lemma;
+        return view('service.dict.lemma._meanings', 
+                compact('label_id', 'lemma'));
+    }
 
     /** 
      * (1) Copy vepsian.{meaning} to vepkar.meanings (without meaning_text)
