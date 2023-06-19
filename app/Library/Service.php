@@ -52,8 +52,9 @@ print "</p>";
         $wordforms = DB::table($table_name)
                    ->whereLangId($lang_id)
                    ->*/
-        $gramsets = LemmaWordform::join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
-                         ->whereLangId($lang_id)
+//        $gramsets = LemmaWordform::join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
+  //                       ->where('lemmas.lang_id',$lang_id)
+        $gramsets = LemmaWordform::whereLangId($lang_id)
                          ->whereNotNull('gramset_id')
                          ->groupBy('gramset_id')
                          ->get(['gramset_id']);
@@ -70,7 +71,7 @@ print "</p>";
             $query = "!(".join(" OR ", $query).")";
             $wordforms = Wordform::join('lemma_wordform', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
                          ->join('lemmas', 'lemmas.id', '=', 'lemma_wordform.lemma_id')
-                         ->whereLangId($lang_id)
+                         ->where('lemmas.lang_id',$lang_id)
                          ->whereGramsetId($gramset->gramset_id)
                          ->whereRaw($query)
                          ->groupBy('wordform','gramset_id')

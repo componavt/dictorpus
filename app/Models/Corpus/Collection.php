@@ -34,6 +34,7 @@ class Collection {
         if (isset($genres[$id])) {
             return true;
         }
+        return false;
     }
     
     public static function getCollectionId($lang_ids, $genre_ids) {

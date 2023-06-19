@@ -24,6 +24,7 @@ class CollectionController extends Controller
     }
     
     public function show($id) {
+        $id = (int)$id;
         if (Collection::isCollectionId($id)) {
             if ($id == 3) {
                 $genre_arr = [Collection::getCollectionGenres($id)];
