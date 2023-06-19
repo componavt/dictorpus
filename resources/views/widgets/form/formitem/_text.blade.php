@@ -22,6 +22,10 @@ if (isset($class)) {
     $attributes['class'] .= ' '.$class;
 }
 
+if (isset($value) && is_array($value)) {
+    $value = imlpoide('',$value);
+}
+
 $id_name = preg_replace("/[\.\]\[]/","_",$name);
 $attributes['id'] = $id_name;
 
