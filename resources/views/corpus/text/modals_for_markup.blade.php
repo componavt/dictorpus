@@ -7,6 +7,7 @@
             @include('widgets.modal',['name'=>'modalAddLemma',
                                   'title'=>trans('corpus.add-lemma'),
                                   'submit_id' => 'save-lemma',
+                                  'lemma'=>null,
                                   'submit_title' => trans('messages.save'),
                                   'total_meanings' => 1,
                                   'modal_view'=>'dict.lemma.form._create_simple'])
