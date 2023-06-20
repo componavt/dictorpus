@@ -19,8 +19,11 @@
         {{$meaning->meaning_n}})
         @endif
         
-        <div id='b-labels-{{$meaning->id}}' style='display: inline; vertical-align: super; font-size: 8px'>
+        <div id='b-labels-{{$meaning->id}}' style='display: inline; vertical-align: super; font-size: 10px; margin-right: 5px;'>
             @include('service.dict.label._index')
+            <i class="fa fa-plus fa-lg clickable link-color" style="height:8px; width: 8px;" 
+               title="Добавить метку"
+               onClick="addLabel({{ $meaning->id }})"></i>
         </div>
         
         <div id='b-meaning-{{$meaning->id}}' style='display: inline'> 

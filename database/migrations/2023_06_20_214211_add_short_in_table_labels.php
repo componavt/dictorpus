@@ -33,5 +33,4 @@ class AddShortInTableLabels extends Migration
         });
     }
 }
-// insert into labels values (6, 'lingvistic', 'лингвистическое', 'ling.', 'линг.', 1);
-// insert into labels values (7, 'botanic', 'ботаническое', 'bot.', 'бот.', 1);
+

@@ -9,7 +9,7 @@
                  'title' => trans('dict.pos'),
                  'attributes' => ['id'=>'lemma_pos_id']])
                  
-        @include('dict.lemma.form._create_edit_pos_features', ['is_full_form'=>false]) 
+        @include('dict.lemma.form._create_edit_pos_features', ['is_full_form'=>false, 'lemma'=>null]) 
         
         @for ($i=0; $i<$total_meanings; $i++)
         <div id='new-meanings'>
