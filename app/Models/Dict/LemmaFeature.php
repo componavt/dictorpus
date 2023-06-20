@@ -3,10 +3,6 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
-use URL;
-use LaravelLocalization;
-use \Venturecraft\Revisionable\Revision;
 
 class LemmaFeature extends Model
 {

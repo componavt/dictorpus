@@ -22,6 +22,8 @@
                               'submit_id' => 'save-meaning',                              
                               'submit_onClick' => 'saveMeaning('.$label_id.')',
                               'submit_title' => trans('messages.save')])
+        @include('widgets.modal',['name'=>'modalViewWordforms',
+                              'title'=>trans('navigation.wordforms')])
                                   
         @include('service.dict.zaikov._search_form',['url' => '/service/dict/zaikov']) 
         
@@ -38,7 +40,7 @@
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.meanings') }}</th>
-                <th>{{ trans('messages.actions') }}</th>
+                <th style="min-width:90px">{{ trans('messages.actions') }}</th>
             </tr>
         </thead>
         <tbody id='lemmasRows'>

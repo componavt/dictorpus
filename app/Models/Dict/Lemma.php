@@ -312,11 +312,18 @@ class Lemma extends Model
         $total_gramsets = 0;
         
         if ($this->pos->isName()) {
-            $total_gramsets = 28; //Gramset::countForPosLang(PartOfSpeech::getIDByCode('NOUN'), $lang_id);
-            $gramsets = [3,4]; // gen. sg, part. sg 
+            $total_gramsets = $this->features && $this->features->number > 0 ? 14 : 28; //Gramset::countForPosLang(PartOfSpeech::getIDByCode('NOUN'), $lang_id);
+            $gramsets = $this->features && $this->features->number == 1 ? [24, 22] : [3,4]; // gen. sg, part. sg 
+// TODO: что насчет plural tantum ?
         } elseif ($this->pos->isVerb()) {
-            $total_gramsets = 125;
-            $gramsets = [26,28]; // ind. pres. 1sg, ind. pres. 3sg 
+            if ($this->features && $this->features->impersonal) {
+                $total_gramsets = 15;
+                $gramsets = [28]; // ind. pres. 1sg, ind. pres. 3sg 
+            } else {
+                $total_gramsets = 125;
+                $gramsets = [26,28]; // ind. pres. 1sg, ind. pres. 3sg 
+            }
+// TODO: безличные  	ajottua            
         }
         
         if (!$total_gramsets || $this->wordforms()->wherePivot('dialect_id', $dialect_id)->count() < $total_gramsets) {
@@ -340,7 +347,7 @@ class Lemma extends Model
             $wordforms[$gramset_id] = join('/',$tmp);
         }
         
-        return $template. ' ('.join(', ',$wordforms).')';     
+        return $template. ' ('.join(',&nbsp;',$wordforms).')';     
     }
         
     /**

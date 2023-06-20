@@ -12,8 +12,17 @@
                     @include('service.dict.lemma._meanings')
                 </td>
                 <td data-th="{{ trans('messages.actions') }}" style="text-align:center">
-                    <i class="fa fa-plus fa-lg clickable link-color" onClick="addMeaning({{ $lemma->id }}, {{ $label_id }})"></i>
-                    <a class="set-status status{{$lemma->labelStatus($label_id)}}" id="status-{{ $lemma->id }}" 
+                    @if ($lemma->wordforms()->wherePivot('dialect_id', $dialect_id)->count()) 
+                        <a onclick="viewWordforms({{ $lemma->id }}, {{$dialect_id}})" 
+                           title="Просмотреть словоформы"
+                           style="font-weight: bold; cursor: pointer">W</a>
+                    @endif
+                    <i class="fa fa-plus fa-lg clickable link-color" 
+                       onClick="addMeaning({{ $lemma->id }}, {{ $label_id }})"
+                       title="Добавить новое значение"></i>
+                    <a class="set-status status{{$lemma->labelStatus($label_id)}}" 
+                       id="status-{{ $lemma->id }}" 
+                       title="{{$lemma->labelStatus($label_id) ? 'снять пометку' : 'пометить как проверенное'}}"
                        onClick="setStatus({{ $lemma->id }}, {{ $label_id }})"
                        data-old="{{$lemma->labelStatus($label_id)}}" 
                        data-new="{{$lemma->labelStatus($label_id) ? 0 : 1}}"></a>

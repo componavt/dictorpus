@@ -26,13 +26,11 @@ function addSimpleExample(meaning_id) {
 function createExample(meaning_id) {
     var button = $('#add-example-for-'+meaning_id);
     var example_div = $('#new-example-'+meaning_id);
-    var example = $('#example-new-for-'+meaning_id).val();
-    var example_ru = $('#example_ru-new-for-'+meaning_id).val();
     $.ajax({
         url: '/dict/example/store/' + meaning_id, 
         data: {
-          example: example,
-          example_ru: example_ru,          
+          example: $('#example-new-for-'+meaning_id).val(),
+          example_ru: $('#example_ru-new-for-'+meaning_id).val(),          
         },
         type: 'GET',
         success: function(result){
@@ -266,3 +264,18 @@ function meaningDown(lemma_id, meaning_id, label_id) {
         }
     }); 
 }    
+
+function viewWordforms(lemma_id, dialect_id) {
+    $.ajax({
+        url: '/service/dict/wordforms/'+lemma_id, 
+        data: {dialect_id: dialect_id},
+        type: 'GET',
+        success: function(wordforms){
+            $("#modalViewWordforms .modal-body").html(wordforms);
+            $("#modalViewWordforms").modal('show');
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}

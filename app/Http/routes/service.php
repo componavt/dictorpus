@@ -28,6 +28,7 @@ Route::group(
         Route::get('dict/lemma/store', 'Library\DictController@storeLemma');
         Route::get('dict/meaning/{lemma_id}/create', 'Library\DictController@createMeaning');
         Route::get('dict/meaning/{lemma_id}/store', 'Library\DictController@storeMeaning');
+        Route::get('dict/wordforms/{lemma_id}', 'Library\DictController@wordforms');
         
         Route::get('audio/{list}', 'Dict\AudioController@recordGroup');
     });

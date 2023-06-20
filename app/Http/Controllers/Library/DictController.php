@@ -314,6 +314,7 @@ class DictController extends Controller
     
     public function zaikovView(Request $request) {
         $lang_id=4; // proper
+        $dialect_id = 46;
         $label_id = Label::ZaikovLabel; // for Zaikov dictionary
         
         $args_by_get = $this->args_by_get;
@@ -355,7 +356,7 @@ class DictController extends Controller
         $total_meanings = 2;
         
         return view('service.dict.zaikov.index',
-                compact('dialect_values', 'label_id', 'lang_id', 'langs_for_meaning', 
+                compact('dialect_id', 'dialect_values', 'label_id', 'lang_id', 'langs_for_meaning', 
                         'lemmas', 'numAll', 'pos_values', 'total_meanings', 
                         'args_by_get', 'url_args'));
     }
@@ -424,5 +425,16 @@ class DictController extends Controller
             return view('service.dict.zaikov._row', 
                     compact('label_id', 'lemma'));
         }
+    }
+    
+    public function wordforms($lemma_id, Request $request)
+    {
+        $dialect_id = (int)$request->input('dialect_id');
+        $lemma= Lemma::find((int)$lemma_id);
+        if (!$lemma) {
+            return;
+        }
+        $wordforms = $lemma->wordformsForTable($dialect_id);
+        return view('service.dict.wordforms._all', compact('lemma', 'wordforms'));
     }
 }
