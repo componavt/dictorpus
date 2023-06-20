@@ -397,6 +397,7 @@ class DictController extends Controller
      */
     public function storeLemma(Request $request)
     {
+        $dialect_id = 46;
         $this->validate($request, [
             'lemma'  => 'required|max:255',
             'lang_id'=> 'required|numeric',
@@ -425,7 +426,7 @@ class DictController extends Controller
         
         if ($label_id == Label::ZaikovLabel) {
             return view('service.dict.zaikov._row', 
-                    compact('label_id', 'lemma'));
+                    compact('dialect_id', 'label_id', 'lemma'));
         }
     }
     
