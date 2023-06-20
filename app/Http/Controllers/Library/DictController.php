@@ -437,4 +437,36 @@ class DictController extends Controller
         $wordforms = $lemma->wordformsForTable($dialect_id);
         return view('service.dict.wordforms._all', compact('lemma', 'wordforms'));
     }
+    
+    public function editLemma($lemma_id)
+    {
+        $lemma= Lemma::find((int)$lemma_id);
+        if (!$lemma) {
+            return;
+        }
+        $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
+        $dialect_values = Dialect::getList($lemma->lang_id);
+        $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
+        return view('service.dict.lemma._edit', 
+                compact('dialect_values', 'lemma', 'phrase_values', 'pos_values'));
+    }
+    
+    public function updateLemma($id, Request $request)
+    {
+//dd($request->all());        
+        $this->validate($request, [
+            'lemma'  => 'required|max:255',
+            'pos_id' => 'numeric',
+        ]);
+        $lemma= Lemma::find((int)$id);
+        if (!$lemma) {
+            return;
+        }
+        $data = $request->all();
+        $data['lang_id'] = $lemma->lang_id;
+        $lemma->updateLemma($data);
+        $lemma->updateTextLinks();
+        
+        return $lemma->zaikovTemplate();
+    }
 }

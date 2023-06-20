@@ -2,7 +2,7 @@
                 <td data-th="No">{{ $list_count ?? '' }}</td>
                 <td data-th="{{ trans('dict.lemma') }}">
                     <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma->id) }}">
-                        {{$lemma->zaikovTemplate()}}
+                       <span id='b-lemma-{{ $lemma->id }}'>{{$lemma->zaikovTemplate()}}</span>
                     </a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">
@@ -11,12 +11,14 @@
                 <td data-th="{{ trans('dict.meanings') }}" id='meanings-{{ $lemma->id }}'>
                     @include('service.dict.lemma._meanings')
                 </td>
-                <td data-th="{{ trans('messages.actions') }}" style="text-align:center">
+                <td data-th="{{ trans('messages.actions') }}" style="text-align:right">
                     @if ($lemma->wordforms()->wherePivot('dialect_id', $dialect_id)->count()) 
                         <a onclick="viewWordforms({{ $lemma->id }}, {{$dialect_id}})" 
                            title="Просмотреть словоформы"
                            style="font-weight: bold; cursor: pointer">W</a>
                     @endif
+                    <i class="fa fa-pencil-alt fa-lg clickable link-color" 
+                       onClick="editLemma({{$lemma->id}})" title="Изменить лемму"></i>
                     <i class="fa fa-plus fa-lg clickable link-color" 
                        onClick="addMeaning({{ $lemma->id }}, {{ $label_id }})"
                        title="Добавить новое значение"></i>

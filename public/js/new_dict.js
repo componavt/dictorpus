@@ -146,20 +146,20 @@ function addLemma(lang_id, label_id) {
     $("#save-lemma").click(function(){
         var data = {lang_id: lang_id, 
                     label_id: label_id,
-                    lemma: $( "#lemma" ).val(),
-                    pos_id: $( "#pos_id option:selected" ).val(),
+                    lemma: $( "#modalAddLemma #lemma" ).val(),
+                    pos_id: $( "#modalAddLemma #pos_id option:selected" ).val(),
 //                    meaning0: $( "#meaning0" ).val(),
-                    wordform_dialect_id: $( "#dialect_id option:selected" ).val(),
-                    number: $( "#number option:selected" ).val(),
-                    reflexive: $( "#reflexive" ).prop('checked'),
-                    impersonal: $( "#impersonal" ).prop('checked'),
+                    wordform_dialect_id: $( "#modalAddLemma #dialect_id option:selected" ).val(),
+                    number: $( "#modalAddLemma #number option:selected" ).val(),
+                    reflexive: $( "#modalAddLemma #reflexive" ).prop('checked'),
+                    impersonal: $( "#modalAddLemma #impersonal" ).prop('checked'),
                     meanings: {}
                 };
         for (i=0; i<2; i++) {
             data['meanings'][i] = {
-                meaning_text: $( "#meaning"+i ).val(),
-                example: $( "#example"+i ).val(),
-                example_ru: $( "#example_ru"+i ).val()
+                meaning_text: $( "#modalAddLemma #meaning"+i ).val(),
+                example: $( "#modalAddLemma #example"+i ).val(),
+                example_ru: $( "#modalAddLemma #example_ru"+i ).val()
             };
         }        
 //console.log(data);                
@@ -279,3 +279,46 @@ function viewWordforms(lemma_id, dialect_id) {
         }
     }); 
 }
+
+function editLemma(lemma_id) {
+    $.ajax({
+        url: '/service/dict/lemma/'+lemma_id+'/edit', 
+//        data: {label_id: label_id},
+        type: 'GET',
+        success: function(result){
+            $("#modalEditLemma").modal('show'); 
+            $("#modalEditLemma .modal-body").html(result);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}    
+
+function updateLemma() {
+    $("#update-lemma").attr("disabled", true); 
+    var lemma_id = $( "#modalEditLemma #lemma-id" ).attr('data-id');
+console.log(lemma_id);   
+    $.ajax({
+        url: '/service/dict/lemma/'+lemma_id+'/update', 
+        data: {lemma: $( "#modalEditLemma #lemma" ).val(),
+                pos_id: $( "#modalEditLemma #pos_id option:selected" ).val(),
+                wordform_dialect_id: $( "#modalEditLemma #dialect_id option:selected" ).val(),
+                number: $( "#modalEditLemma #number option:selected" ).val(),
+                reflexive: $( "#modalEditLemma #reflexive" ).prop('checked'),
+                impersonal: $( "#modalEditLemma #impersonal" ).prop('checked'),
+            },
+        type: 'GET',
+        success: function(lemma){
+            $("#update-lemma").attr("disabled", false);   
+            $("#modalEditLemma").modal('hide');
+            $("#modalEditLemma .modal-body").html(null);
+            $("#b-lemma-"+lemma_id).html(lemma);
+        },
+        error: function() {
+            alert('error');
+            $("#update-lemma").attr("disabled", false);    
+        }
+    }); 
+}
+

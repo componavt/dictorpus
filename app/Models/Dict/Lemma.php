@@ -1087,16 +1087,13 @@ dd($wordforms);
     }
     
     public function updateLemma($data) {
-//dd($data);        
         list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
-//dd($wordforms_list);        
-//dd($new_lemma, $stem, $affix, $stems);  
-        $lang_id = (int)$data['lang_id'];
+        $lang_id = (int)$data['lang_id'];            
+        $this->lang_id = $lang_id;
         $this->lemma = $new_lemma;
 //        $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
         $this->lemma_for_search = Grammatic::changeLetters($new_lemma, $lang_id);
-        $this->lang_id = $lang_id;
         $this->pos_id = (int)$data['pos_id'] ? (int)$data['pos_id'] : NULL;
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();

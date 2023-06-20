@@ -22,6 +22,11 @@
                               'submit_id' => 'save-meaning',                              
                               'submit_onClick' => 'saveMeaning('.$label_id.')',
                               'submit_title' => trans('messages.save')])
+        @include('widgets.modal',['name'=>'modalEditLemma',
+                              'title'=>trans('dict.edit-lemma'),
+                              'submit_id' => 'update-lemma',                              
+                              'submit_onClick' => 'updateLemma()',
+                              'submit_title' => trans('messages.save')])
         @include('widgets.modal',['name'=>'modalViewWordforms',
                               'title'=>trans('navigation.wordforms')])
                                   
@@ -40,7 +45,7 @@
                 <th>{{ trans('dict.lemma') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('dict.meanings') }}</th>
-                <th style="min-width:90px">{{ trans('messages.actions') }}</th>
+                <th style="min-width:110px">{{ trans('messages.actions') }}</th>
             </tr>
         </thead>
         <tbody id='lemmasRows'>
