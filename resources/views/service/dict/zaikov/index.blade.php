@@ -25,8 +25,16 @@
         @include('widgets.modal',['name'=>'modalEditLemma',
                               'title'=>trans('dict.edit-lemma'),
                               'submit_id' => 'update-lemma',                              
-                              'submit_onClick' => 'updateLemma()',
-                              'submit_title' => trans('messages.save')])
+                              'submit_onClick' => 'updateLemma('.$dialect_id.')',
+                              'submit_title' => trans('messages.save'),
+                              'lemma'=>null,
+                              'modal_view'=>'service.dict.lemma._edit'])
+        @include('widgets.modal',['name'=>'modalAddLabel',
+                              'title'=>trans('dict.add-label'),
+                              'submit_id' => 'add-label',                              
+                              'submit_onClick' => 'saveLabel()',
+                              'submit_title' => trans('messages.save'),
+                              'modal_view'=>'service.dict.label._create'])
         @include('widgets.modal',['name'=>'modalViewWordforms',
                               'title'=>trans('navigation.wordforms')])
                                   
@@ -69,6 +77,7 @@
 @section('jqueryFunc')
     selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);
     addLemma({{$lang_id}}, {{$label_id}});
-    posSelect(false);
+    posSelect(false, "#modalAddLemma");
+    posSelect(false, "#modalEditLemma");
 @stop
 

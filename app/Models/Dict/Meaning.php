@@ -39,10 +39,14 @@ class Meaning extends Model
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Concepts;
     use \App\Traits\Relations\BelongsToMany\Dialects;
-    use \App\Traits\Relations\BelongsToMany\Labels;
     use \App\Traits\Relations\BelongsToMany\MeaningRelations;
     use \App\Traits\Relations\BelongsToMany\Places;
     use \App\Traits\Relations\BelongsToMany\Translations;
+    
+    public function labels()
+    {
+        return $this->belongsToMany(Label::class);
+    }
     
     public function texts(){
         return $this->belongsToMany(Text::class,'meaning_text')

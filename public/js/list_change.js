@@ -1,33 +1,33 @@
-function posSelect(is_full_form=true) {
-    $("#pos_id")
+function posSelect(is_full_form=true, formName='') {
+    $(formName+" #pos_id")
         .change(function () {
             $(".lemma-feature-field").hide().prop("disabled", true);
-            if ($("#pos_id option:selected" ).val()==11) { // is verb
-                $("#reflexive-field").show().prop("disabled", false);
-                $("#impersonal-field").show().prop("disabled", false);
+            if ($(formName+" #pos_id option:selected" ).val()==11) { // is verb
+                $(formName+" #reflexive-field").show().prop("disabled", false);
+                $(formName+" #impersonal-field").show().prop("disabled", false);
                 if (is_full_form) {
                     $("#transitive-field").show().prop("disabled", false);
                 }
-                $("#without_gram-field").show().prop("disabled", false);
-            } else if ($("#pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun or pronoun
+                $(formName+" #without_gram-field").show().prop("disabled", false);
+            } else if ($(formName+" #pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun or pronoun
                 if (is_full_form) {
                     $("#animacy-field").show().prop("disabled", false);
                     $("#abbr-field").show().prop("disabled", false);
                 }
-                $("#number-field").show().prop("disabled", false);
-                $("#without_gram-field").show().prop("disabled", false);
-            } else if ($("#pos_id option:selected").val()==1) { // is adjective
+                $(formName+" #number-field").show().prop("disabled", false);
+                $(formName+" #without_gram-field").show().prop("disabled", false);
+            } else if ($(formName+" #pos_id option:selected").val()==1) { // is adjective
                 if (is_full_form) {
                     $("#degree-field").show().prop("disabled", false);
                 }
-                $("#number-field").show().prop("disabled", false);
-                $("#without_gram-field").show().prop("disabled", false);
-            } else if ($( "#pos_id option:selected" ).val()==10) { // is pronoun
+                $(formName+" #number-field").show().prop("disabled", false);
+                $(formName+" #without_gram-field").show().prop("disabled", false);
+            } else if ($( formName+" #pos_id option:selected" ).val()==10) { // is pronoun
                 if (is_full_form) {
                     $("#prontype-field").show().prop("disabled", false);
                 }
-                $("#number-field").show().prop("disabled", false);
-                $("#without_gram-field").show().prop("disabled", false);
+                $(formName+" #number-field").show().prop("disabled", false);
+                $(formName+" #without_gram-field").show().prop("disabled", false);
             } else if (is_full_form) {
                 if ($( "#pos_id option:selected" ).val()==6) { // is numeral
                     $("#numtype-field").show().prop("disabled", false);

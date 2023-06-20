@@ -280,30 +280,28 @@ function viewWordforms(lemma_id, dialect_id) {
     }); 
 }
 
-function editLemma(lemma_id) {
-    $.ajax({
-        url: '/service/dict/lemma/'+lemma_id+'/edit', 
-//        data: {label_id: label_id},
-        type: 'GET',
-        success: function(result){
-            $("#modalEditLemma").modal('show'); 
-            $("#modalEditLemma .modal-body").html(result);
-        },
-        error: function() {
-            alert('error');
-        }
-    }); 
+function editLemma(lemma_id, lemma, pos_id, number, reflexive, impersonal) {
+    $( "#modalEditLemma #lemma-id" ).val(lemma_id);
+    $( "#modalEditLemma #lemma" ).val(lemma);
+    $( "#modalEditLemma #pos_id option[value="+pos_id+"]" ).attr('selected', 'selected').trigger('change');
+    $( "#modalEditLemma #number option[value="+number+"]" ).attr('selected', 'selected')
+    if (reflexive) {
+        $( "#modalEditLemma #reflexive" ).prop('checked');
+    }
+    if (impersonal) {
+        $( "#modalEditLemma #impersonal" ).prop('checked');
+    }
+    $("#modalEditLemma").modal('show'); 
 }    
 
-function updateLemma() {
+function updateLemma(dialect_id) {
     $("#update-lemma").attr("disabled", true); 
-    var lemma_id = $( "#modalEditLemma #lemma-id" ).attr('data-id');
-console.log(lemma_id);   
+    var lemma_id = $( "#modalEditLemma #lemma-id" ).val();
     $.ajax({
         url: '/service/dict/lemma/'+lemma_id+'/update', 
         data: {lemma: $( "#modalEditLemma #lemma" ).val(),
                 pos_id: $( "#modalEditLemma #pos_id option:selected" ).val(),
-                wordform_dialect_id: $( "#modalEditLemma #dialect_id option:selected" ).val(),
+                wordform_dialect_id: dialect_id,
                 number: $( "#modalEditLemma #number option:selected" ).val(),
                 reflexive: $( "#modalEditLemma #reflexive" ).prop('checked'),
                 impersonal: $( "#modalEditLemma #impersonal" ).prop('checked'),
@@ -322,3 +320,46 @@ console.log(lemma_id);
     }); 
 }
 
+function addLabel(meaning_id) {
+    $( "#modalAddLabel #meaning-id" ).val(meaning_id);
+    $("#modalAddLabel").modal('show'); 
+}    
+
+function saveLabel() {
+    var meaning_id = $( "#modalAddLabel #meaning-id" ).val();
+    $("#add-label").attr("disabled", true); 
+    $("#modalAddLabel").modal('show'); 
+    $.ajax({
+        url: '/service/dict/label/'+meaning_id+'/store', 
+        data: {
+            label_id: $( "#modalAddLabel #label_id" ).val(),
+            name_ru: $( "#modalAddLabel #label_name_ru" ).val(),
+            short_ru: $( "#modalAddLabel #label_short_ru" ).val(),
+            name_en: $( "#modalAddLabel #label_name_en" ).val(),
+            short_en: $( "#modalAddLabel #label_short_en" ).val(),
+        },
+        type: 'GET',
+        success: function(labels){
+            $("#add-label").attr("disabled", false);   
+            $("#modalAddLabel").modal('hide');
+            $("#b-labels-"+meaning_id).html(labels);
+        },
+        error: function() {
+            alert('error');
+            $("#add-label").attr("disabled", false);    
+        }
+    }); 
+}    
+
+function removeVisibleLabel(meaning_id, label_id) {
+    $.ajax({
+        url: '/service/dict/'+meaning_id+'/label/'+label_id+'/remove', 
+        type: 'GET',
+        success: function(labels){
+            $("#b-labels-"+meaning_id).html(labels);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}

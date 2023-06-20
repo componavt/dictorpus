@@ -353,10 +353,12 @@ class DictController extends Controller
         $pos_values = [NULL=>'']+PartOfSpeech::getList();
         $langs_for_meaning = array_slice(Lang::getListWithPriority(),0,1,true);
         $dialect_values = Dialect::getList($lang_id);
+        $label_values = Label::getList();
         $total_meanings = 2;
         
         return view('service.dict.zaikov.index',
-                compact('dialect_id', 'dialect_values', 'label_id', 'lang_id', 'langs_for_meaning', 
+                compact('dialect_id', 'dialect_values', 'label_id', 
+                        'label_values', 'lang_id', 'langs_for_meaning', 
                         'lemmas', 'numAll', 'pos_values', 'total_meanings', 
                         'args_by_get', 'url_args'));
     }
@@ -438,7 +440,7 @@ class DictController extends Controller
         return view('service.dict.wordforms._all', compact('lemma', 'wordforms'));
     }
     
-    public function editLemma($lemma_id)
+/*    public function editLemma($lemma_id)
     {
         $lemma= Lemma::find((int)$lemma_id);
         if (!$lemma) {
@@ -449,7 +451,7 @@ class DictController extends Controller
         $pos_values = ['NULL'=>''] + PartOfSpeech::getGroupedList(); 
         return view('service.dict.lemma._edit', 
                 compact('dialect_values', 'lemma', 'phrase_values', 'pos_values'));
-    }
+    }*/
     
     public function updateLemma($id, Request $request)
     {
@@ -468,5 +470,30 @@ class DictController extends Controller
         $lemma->updateTextLinks();
         
         return $lemma->zaikovTemplate();
+    }
+    
+    public function storeLabel($meaning_id, Request $request) {
+        $meaning = Meaning::find((int)$meaning_id);
+        $data = $request->all(); 
+        if ($data['name_ru']) {
+            $label = Label::store($data);
+            $label_id = $label->id;
+        } else {
+            $label_id = (int)$request->label_id;            
+        }
+        if (!$meaning) {
+            return;
+        }
+        $meaning->labels()->syncWithoutDetaching([$label_id]);
+        return view('service.dict.label._index', compact('meaning'));
+    }
+    
+    public function removeVisibleLabel ($meaning_id, $label_id) {
+        $meaning = Meaning::find((int)$meaning_id);
+        if (!$meaning) {
+            return;
+        }
+        $meaning->labels()->detach($label_id);
+        return view('service.dict.label._index', compact('meaning'));        
     }
 }

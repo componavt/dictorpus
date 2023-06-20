@@ -60,6 +60,7 @@ return [
     'search' => 'search',
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',
+    'short' => 'Short name',
     'special_symbols' => 'special symbols',
     'supper_text' => 'to superscript',
     'text_exists' => 'There is a text associated with this entry',

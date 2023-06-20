@@ -18,7 +18,11 @@
                            style="font-weight: bold; cursor: pointer">W</a>
                     @endif
                     <i class="fa fa-pencil-alt fa-lg clickable link-color" 
-                       onClick="editLemma({{$lemma->id}})" title="Изменить лемму"></i>
+                       onClick="editLemma({{ $lemma->id }}, '{{ $lemma->lemma }}', {{ $lemma->pos_id }}, 
+                               {{ $lemma->features && $lemma->features->number ? $lemma->features->number : 0 }}, 
+                               {{ $lemma->features && $lemma->features->reflexive ? 1 : 0 }}, 
+                               {{ $lemma->features && $lemma->features->impersonal ? 1 : 0 }} )" 
+                       title="Изменить лемму"></i>
                     <i class="fa fa-plus fa-lg clickable link-color" 
                        onClick="addMeaning({{ $lemma->id }}, {{ $label_id }})"
                        title="Добавить новое значение"></i>

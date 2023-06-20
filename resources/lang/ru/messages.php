@@ -63,6 +63,7 @@ return [
     'section' => 'раздел',
     'seq_num' => 'п/н',
     'sequence_number' => 'No в списке',
+    'short' => 'краткое название',
     'special_symbols' => 'специальные символы',
     'supper_text' => 'в верхний индекс',
     'text_exists' => 'Существует текст, связанный с этой записью',

@@ -198,6 +198,7 @@ class PartOfSpeech extends Model
         $locale = LaravelLocalization::getCurrentLocale();
         
         $pos_collec = self::where('name_'.$locale, '<>', '')->orderBy('category')
+                          ->where('category', '<>', 3)
                           ->orderBy('name_'.$locale)->get();
         
         foreach ($pos_collec as $pos) {

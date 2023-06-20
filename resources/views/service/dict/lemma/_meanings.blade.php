@@ -13,11 +13,16 @@
             &nbsp;&nbsp;
         @endif
         
-        <i class="fa fa-times fa-lg clickable" data-delete="{{csrf_token()}}" title="удалить значение из словаря"
+        <i class="fa fa-times fa-lg clickable" title="удалить значение из словаря"
            onClick="removeLabelMeaning({{ $lemma->id }}, {{ $meaning->id }}, {{ $label_id }}, '{{$meaning->getMultilangMeaningTextsString('ru')}}')"></i>
         @if ($lemma->meanings()->count()>1)
         {{$meaning->meaning_n}})
         @endif
+        
+        <div id='b-labels-{{$meaning->id}}' style='display: inline; vertical-align: super; font-size: 8px'>
+            @include('service.dict.label._index')
+        </div>
+        
         <div id='b-meaning-{{$meaning->id}}' style='display: inline'> 
             @include('service.dict.meaning._view')
         </div>
