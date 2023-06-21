@@ -1092,7 +1092,6 @@ dd($wordforms);
         $lang_id = (int)$data['lang_id'];            
         $this->lang_id = $lang_id;
         $this->lemma = $new_lemma;
-//        $this->lemma_for_search = Grammatic::toSearchForm($new_lemma);
         $this->lemma_for_search = Grammatic::changeLetters($new_lemma, $lang_id);
         $this->pos_id = (int)$data['pos_id'] ? (int)$data['pos_id'] : NULL;
         $this->updated_at = date('Y-m-d H:i:s');
@@ -1964,6 +1963,15 @@ dd($wordforms);
              $meanings[] = $meaning_obj->getMultilangMeaningTextsString($lang_code);
         }
         return $meanings;
+    }
+    
+    public function getMeaningText($meaning_n, $lang_code) {
+        $meaning = $this->meanings()->whereMeaningN($meaning_n)->first();
+        if (!$meaning) {
+            return;
+        }
+//dd($meaning->meaningTexts()->whereLangId(Lang::getIDByCode($lang_code))->first());        
+        return $meaning->meaningTexts()->whereLangId(Lang::getIDByCode($lang_code))->first();
     }
     
     public function getFrequencyInCorpus() {

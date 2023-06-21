@@ -18,7 +18,9 @@
                 <div class="time">{{$lemma->created_at->formatLocalized("%H:%M")}}</div>
                 <div class="event">
                     <a href="{{ LaravelLocalization::localizeURL('/dict/lemma')}}/{{$lemma->id}}">{{$lemma->lemma}}</a> 
-                    (@if (isset($lemma->user)){{$lemma->user}}@endif), <i>{{$lemma->lang->code}}</i>, <b>{{$lemma->pos->code}}</b>,
+                    @if (isset($lemma->user))({{$lemma->user}}),@endif
+                    @if ($lemma->lang) <i>{{ $lemma->lang->code }}</i>,@endif 
+                    @if ($lemma->pos)<b>{{$lemma->pos->code}}</b>,@endif
                     {{join('; ',$lemma->getMultilangMeaningTexts())}}
                 </div>
             </div> 

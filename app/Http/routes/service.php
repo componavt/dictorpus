@@ -29,8 +29,12 @@ Route::group(
         Route::get('dict/lemma/store', 'Library\DictController@storeLemma');
 //        Route::get('dict/lemma/{id}/edit', 'Library\DictController@editLemma');
         Route::get('dict/lemma/{id}/update', 'Library\DictController@updateLemma');
+        Route::get('dict/lemma/{id}/edit_phrase', 'Library\DictController@editPhrase');
+        Route::get('dict/lemma/{id}/update_phrase', 'Library\DictController@updatePhrase');
         Route::get('dict/meaning/{lemma_id}/create', 'Library\DictController@createMeaning');
         Route::get('dict/meaning/{lemma_id}/store', 'Library\DictController@storeMeaning');
+        Route::get('dict/meaning/{meaning_id}/phrase/create', 'Library\DictController@createPhrase');
+        Route::get('dict/meaning/{meaning_id}/phrase/store', 'Library\DictController@storePhrase');
         Route::get('dict/{meaning_id}/label/{label_id}/remove', 'Library\DictController@removeVisibleLabel');
         Route::get('dict/wordforms/{lemma_id}', 'Library\DictController@wordforms');
         

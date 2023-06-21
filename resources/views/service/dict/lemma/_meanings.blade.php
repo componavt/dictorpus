@@ -29,14 +29,20 @@
         <div id='b-meaning-{{$meaning->id}}' style='display: inline'> 
             @include('service.dict.meaning._view')
         </div>
-    @foreach ($meaning->examples as $example) 
-        @include('dict.example.view', 
-            ['meaning_id'=>$meaning->id, 
-             'example_obj'=>$example])
-    @endforeach
-        <i id="add-example-for-{{$meaning->id}}" title="Добавить новый пример"
+        
+        @foreach ($meaning->examples as $example) 
+            @include('dict.example.view', 
+                ['meaning_id'=>$meaning->id, 
+                 'example_obj'=>$example])
+        @endforeach
+        <i id="add-example-for-{{ $meaning->id }}" title="Добавить новый пример"
            class="fa fa-plus fa-lg clickable blue-color" 
-           onClick="addSimpleExample({{$meaning->id}})"></i>                        
+           onClick="addSimpleExample({{$meaning->id}})"></i>   
+    
+        <a onclick="addPhrase({{ $meaning->id }})" class="clickable link-color" style="font-weight: bold; font-size: 18px; line-height: 14px">◊</a>
+        <div id="b-phrases-{{ $meaning->id }}">
+            @include('service.dict.meaning._phrases')            
+        </div>
     </div>
 @endforeach
 

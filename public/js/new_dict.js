@@ -363,3 +363,63 @@ function removeVisibleLabel(meaning_id, label_id) {
         }
     }); 
 }
+
+function addPhrase(meaning_id) {
+    $.ajax({
+        url: '/service/dict/meaning/' + meaning_id + '/phrase/create', 
+        type: 'GET',
+        success: function(result){
+            $('#b-phrases-'+meaning_id).append(result);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}    
+
+function createPhrase(meaning_id) {
+    $.ajax({
+        url: '/service/dict/meaning/' + meaning_id + '/phrase/store', 
+        data: {
+          phrase: $('#phrase-new-for-'+meaning_id).val(),
+          phrase_ru: $('#phrase_ru-new-for-'+meaning_id).val(),          
+        },
+        type: 'GET',
+        success: function(result){
+            $('#b-phrases-'+meaning_id).html(result);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}    
+
+function editPhrase(phrase_id) {
+    $.ajax({
+        url: '/service/dict/lemma/' + phrase_id + '/edit_phrase', 
+        type: 'GET',
+        success: function(result){
+            $("#b-phrase-"+ phrase_id).css('display','block').html(result);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}    
+
+function updatePhrase(phrase_id) {
+    $.ajax({
+        url: '/service/dict/lemma/' + phrase_id + '/update_phrase', 
+        data: {
+          phrase: $('#phrase-'+phrase_id).val(),
+          phrase_ru: $('#phrase_ru-'+phrase_id).val(),          
+        },
+        type: 'GET',
+        success: function(result){
+            $("#b-phrase-"+ phrase_id).css('display','inline').html(result);
+        },
+        error: function() {
+            alert('error');
+        }
+    }); 
+}   

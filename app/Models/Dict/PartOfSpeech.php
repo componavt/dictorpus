@@ -21,6 +21,8 @@ class PartOfSpeech extends Model
 //        '' => '',
     ];
     
+    const PhraseId = 19;
+    
     public $timestamps = false;
     
     use \Venturecraft\Revisionable\RevisionableTrait;

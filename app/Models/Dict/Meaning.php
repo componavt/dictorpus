@@ -48,6 +48,11 @@ class Meaning extends Model
         return $this->belongsToMany(Label::class);
     }
     
+    public function phrases()
+    {
+        return $this->belongsToMany(Lemma::class,'meaning_phrase','meaning_id','lemma_id');
+    }
+    
     public function texts(){
         return $this->belongsToMany(Text::class,'meaning_text')
                 ->withPivot('w_id')

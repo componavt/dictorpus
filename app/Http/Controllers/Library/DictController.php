@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Library\Grammatic;
 use App\Library\Str;
 
 use App\Models\Dict\Dialect;
@@ -16,6 +17,7 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 
 class DictController extends Controller
@@ -473,7 +475,7 @@ class DictController extends Controller
         return $lemma->zaikovTemplate();
     }
     
-    public function storeLabel($meaning_id, Request $request) {
+    public function storeLabel ($meaning_id, Request $request) {
         $meaning = Meaning::find((int)$meaning_id);
         $data = $request->all(); 
         if ($data['name_ru']) {
@@ -496,5 +498,67 @@ class DictController extends Controller
         }
         $meaning->labels()->detach($label_id);
         return view('service.dict.label._index', compact('meaning'));        
+    }
+    
+    public function createPhrase ($meaning_id) {
+        return view('service.dict.lemma._create_phrase', compact('meaning_id'));                
+    }
+    
+    public function storePhrase ($meaning_id, Request $request) {
+        if (!$request->phrase) {
+            return;
+        }
+        $meaning = Meaning::find((int)$meaning_id);
+        if (!$meaning) {
+            return;
+        }
+//        $lang_id = $meaning->lemma->lang_id;
+        $lemma_p = Lemma::store($request->phrase, 
+                PartOfSpeech::PhraseId, $meaning->lemma->lang_id);
+        
+        $meaning->phrases()->attach($lemma_p->id);
+        $meaning->lemma->phrases()->attach($lemma_p->id);
+        
+        $meaning_p = Meaning::create([
+            'meaning_n' => 1,
+            'lemma_id' => $lemma_p->id
+        ]);
+        $meaning_text = MeaningText::create([
+            'meaning_id' => $meaning_p->id,
+            'lang_id' => 2,
+            'meaning_text' => $request->phrase_ru
+        ]);
+        return view('service.dict.meaning._phrases', compact('meaning'));                
+    }
+    
+    public function editPhrase ($id) {
+        $lemma= Lemma::find((int)$id);
+        if (!$lemma) {
+            return;
+        }
+        $phrase_id = $lemma->id;
+        $func = 'updatePhrase('.$phrase_id.')';
+        $phrase = $lemma->lemma;
+        $phrase_ru = $lemma->meanings ? $lemma->meanings[0]->getMeaningTextByLangCode('ru') : '';
+        return view('service.dict.lemma._create_edit_phrase', 
+                compact('phrase', 'phrase_id', 'phrase_ru', 'func'));                
+    }
+// TODO: проверить удаление леммы-фразы    
+    public function updatePhrase ($id, Request $request) {
+        $lemma = Lemma::find((int)$id);
+        if (!$lemma || !$request->phrase) {
+            return;
+        }
+        $lemma->lemma = $request->phrase;
+        $lemma->lemma_for_search = Grammatic::changeLetters($lemma->lemma, $lemma->lang_id);
+        $lemma->save();
+        
+        $meaning_text = $lemma->getMeaningText(1, 'ru');
+        if (!$meaning_text) {
+            return;
+        }
+        $meaning_text->meaning_text = $request->phrase_ru;
+        $meaning_text->save();
+        return view('service.dict.meaning._phrase', ['phrase'=>$lemma]);                
     }
 }
