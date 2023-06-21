@@ -18,7 +18,7 @@ class PartOfSpeech extends Model
         'VERB' => 'v',
         'ADV' => 'adv',
         'INTJ' => 'interj',
-//        '' => '',
+        'POSTP' => 'postp',
     ];
     
     const PhraseId = 19;
