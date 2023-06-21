@@ -40,7 +40,7 @@
            onClick="addSimpleExample({{$meaning->id}})"></i>   
     
         <a onclick="addPhrase({{ $meaning->id }})" class="clickable link-color" style="font-weight: bold; font-size: 18px; line-height: 14px">◊</a>
-        <div id="b-phrases-{{ $meaning->id }}">
+        <div id="b-phrases-{{ $meaning->id }}" style="display: inline-block">
             @include('service.dict.meaning._phrases')            
         </div>
     </div>
