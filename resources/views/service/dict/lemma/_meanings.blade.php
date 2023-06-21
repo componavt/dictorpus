@@ -39,10 +39,10 @@
            class="fa fa-plus fa-lg clickable blue-color" 
            onClick="addSimpleExample({{$meaning->id}})"></i>   
     
-        <a onclick="addPhrase({{ $meaning->id }})" class="clickable link-color" style="font-weight: bold; font-size: 18px; line-height: 14px">◊</a>
-        <div id="b-phrases-{{ $meaning->id }}" style="display: inline-block">
+        <a onclick="addPhrase({{ $meaning->id }})" class="clickable link-color" 
+            title="Добавить новую фразу"
+           style="font-weight: bold; font-size: 18px; line-height: 14px">◊</a>
             @include('service.dict.meaning._phrases')            
-        </div>
     </div>
 @endforeach
 
