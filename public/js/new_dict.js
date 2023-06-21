@@ -386,7 +386,7 @@ function createPhrase(meaning_id) {
         },
         type: 'GET',
         success: function(result){
-            $('#meaning-'+meaning_id).append(result);
+            $('#b-phrases-'+meaning_id).html(result);
         },
         error: function() {
             alert('error');

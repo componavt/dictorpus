@@ -42,7 +42,9 @@
         <a onclick="addPhrase({{ $meaning->id }})" class="clickable link-color" 
             title="Добавить новую фразу"
            style="font-weight: bold; font-size: 18px; line-height: 14px">◊</a>
+        <div id="b-phrases-{{ $meaning->id }}" style="display: inline">
             @include('service.dict.meaning._phrases')            
+        </div>
     </div>
 @endforeach
 
