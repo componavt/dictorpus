@@ -303,7 +303,7 @@ function editLemma(lemma_id, lemma, pos_id, number, reflexive, impersonal) {
 function updateLemma(dialect_id) {
     $("#update-lemma").attr("disabled", true); 
     var lemma_id = $( "#modalEditLemma #lemma-id" ).val();
-console.log(lemma_id);    
+//console.log(lemma_id);    
     var data = {lemma: $( "#modalEditLemma #lemma" ).val(),
                 pos_id: $( "#modalEditLemma #pos_id option:selected" ).val(),
                 wordform_dialect_id: dialect_id,
