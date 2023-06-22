@@ -310,6 +310,9 @@ class Lemma extends Model
         }
         $template = $this->stemAffixForm();
         $total_gramsets = 0;
+        if (!$this->pos) {
+            return $this->lemma;
+        }
         
         if ($this->pos->isName()) {
             $total_gramsets = $this->features && $this->features->number > 0 ? 14 : 28; //Gramset::countForPosLang(PartOfSpeech::getIDByCode('NOUN'), $lang_id);

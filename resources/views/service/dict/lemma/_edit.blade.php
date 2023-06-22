@@ -1,6 +1,4 @@
-@if($lemma) 
-    <input type="hidden" id='lemma-id' value='{{ $lemma->id }}'>
-@endif
+<input type="hidden" id='lemma-id' value=''>
 <div class="row">
     <div class="col-sm-6">
         @include('widgets.form.formitem._text', 

@@ -151,8 +151,8 @@ function addLemma(lang_id, label_id) {
 //                    meaning0: $( "#meaning0" ).val(),
                     wordform_dialect_id: $( "#modalAddLemma #dialect_id option:selected" ).val(),
                     number: $( "#modalAddLemma #number option:selected" ).val(),
-                    reflexive: $( "#modalAddLemma #reflexive" ).prop('checked'),
-                    impersonal: $( "#modalAddLemma #impersonal" ).prop('checked'),
+                    reflexive: 0,
+                    impersonal: 0,
                     meanings: {}
                 };
         for (i=0; i<2; i++) {
@@ -161,7 +161,13 @@ function addLemma(lang_id, label_id) {
                 example: $( "#modalAddLemma #example"+i ).val(),
                 example_ru: $( "#modalAddLemma #example_ru"+i ).val()
             };
-        }        
+        }    
+        if ($( "#modalAddLemma #impersonal" ).prop('checked')) {
+            data['impersonal'] = 1;
+        }
+        if ($( "#modalAddLemma #reflexive" ).prop('checked')) {
+            data['reflexive'] = 1;
+        }
 //console.log(data);                
         saveLemma(data);
     });
@@ -283,7 +289,7 @@ function viewWordforms(lemma_id, dialect_id) {
 function editLemma(lemma_id, lemma, pos_id, number, reflexive, impersonal) {
     $( "#modalEditLemma #lemma-id" ).val(lemma_id);
     $( "#modalEditLemma #lemma" ).val(lemma);
-    $( "#modalEditLemma #pos_id option[value="+pos_id+"]" ).attr('selected', 'selected').trigger('change');
+    $( "#modalEditLemma #pos_id option[value='"+pos_id+"']" ).attr('selected', 'selected').trigger('change');
     $( "#modalEditLemma #number option[value="+number+"]" ).attr('selected', 'selected')
     if (reflexive) {
         $( "#modalEditLemma #reflexive" ).prop('checked');
@@ -297,15 +303,23 @@ function editLemma(lemma_id, lemma, pos_id, number, reflexive, impersonal) {
 function updateLemma(dialect_id) {
     $("#update-lemma").attr("disabled", true); 
     var lemma_id = $( "#modalEditLemma #lemma-id" ).val();
-    $.ajax({
-        url: '/service/dict/lemma/'+lemma_id+'/update', 
-        data: {lemma: $( "#modalEditLemma #lemma" ).val(),
+console.log(lemma_id);    
+    var data = {lemma: $( "#modalEditLemma #lemma" ).val(),
                 pos_id: $( "#modalEditLemma #pos_id option:selected" ).val(),
                 wordform_dialect_id: dialect_id,
                 number: $( "#modalEditLemma #number option:selected" ).val(),
-                reflexive: $( "#modalEditLemma #reflexive" ).prop('checked'),
-                impersonal: $( "#modalEditLemma #impersonal" ).prop('checked'),
-            },
+                reflexive: 0,
+                impersonal: 0
+            };
+    if ($( "#modalEditLemma #impersonal" ).prop('checked')) {
+        data['impersonal'] = 1;
+    }
+    if ($( "#modalEditLemma #reflexive" ).prop('checked')) {
+        data['reflexive'] = 1;
+    }
+    $.ajax({
+        url: '/service/dict/lemma/'+lemma_id+'/update', 
+        data: data,
         type: 'GET',
         success: function(lemma){
             $("#update-lemma").attr("disabled", false);   

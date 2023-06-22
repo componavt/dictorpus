@@ -41,6 +41,7 @@ class Grammatic
      * @return array
      */
     public static function parseLemmaField($data) {
+//dd($data);
         $lemma = self::toRightForm($data['lemma']);
         if (isset($data['number']) && $data['number']=='refl') {
             $data['reflexive'] = 1;
