@@ -1039,7 +1039,7 @@ dd($wordforms);
     }
 
     public static function storeLemma($data) {  
-        $data['lemma'] = mb_ereg_replace("\/", "|", $data['lemma']);
+//        $data['lemma'] = mb_ereg_replace("\/", "|", $data['lemma']);
         list($data['lemma'], $wordforms, $stem, $affix, $gramset_wordforms, $stems) 
                 = Grammatic::parseLemmaField($data);
 //dd($gramset_wordforms);        
