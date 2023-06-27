@@ -28,6 +28,10 @@ return [
     'license' => 'You can freely use the materials of our site and share them, most importantly - indicate authorship and a link to our resource.
                   <br><a href="https://creativecommons.org/licenses/by/4.0/">More about the CC BY 4.0 license</a>',
     
+    'mobile-b' => 'We bring to your attention the following Android mobile applications for your phone or tablet:<br>
+        &ndash; <a href="https://play.google.com/store/apps/details?id=vepkar.test">Dictionary of the Vepsian and Karelian languages Sanahelmi</a>;<br>
+        &ndash; <a href="https://play.google.com/store/apps/details?id=com.vepkar.vepkar_flutter">Karelian Multimedia Dictionary with voiced audio files</a>.',
+
     'on_dialects' => 'on :count dialects',
     
     'participants' => '<dl>'
