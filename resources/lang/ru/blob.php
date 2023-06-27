@@ -26,9 +26,9 @@ return [
     'license' => 'Вы можете свободно использовать материалы нашего сайта и делиться ими, главное — указать авторство и ссылку
                   на наш ресурс.<br><a href="https://creativecommons.org/licenses/by/4.0/">Подробнее о лицензии CC BY 4.0</a>',
     
-    'mobile-b' => 'Вы можете установить на свой телефон или планшет <a href="https://play.google.com/store/apps/details?id=vepkar.test">'
-                 .'словарь вепсского и карельского языков Sanahelmi</a>, построенный на основе данных ВепКар, 
-                   в виде мобильного приложения для платформы Android.',
+    'mobile-b' => 'Установите на свой телефон или планшет мобильные приложения для платформы Android, построенные на основе данных ВепКар:<br>
+        &ndash; <a href="https://play.google.com/store/apps/details?id=vepkar.test">словарь вепсского и карельского языков Sanahelmi</a>;<br>
+        &ndash; <a href="https://play.google.com/store/apps/details?id=com.vepkar.vepkar_flutter">словарь карельского языка с озвученными словами Karelian Multimedia Dictionary</a>.',
     
     'on_dialects' => 'на :count диалектах',
     
