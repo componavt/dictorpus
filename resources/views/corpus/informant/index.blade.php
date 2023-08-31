@@ -1,7 +1,7 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-@extends('layouts.master')
+@extends('layouts.page')
 
-@section('title')
+@section('page_title')
 {{ trans('corpus.informant_list') }}
 @stop
 
@@ -10,9 +10,7 @@
     {!!Html::style('css/table.css')!!}
 @stop
 
-@section('content')
-        <h1>{{ trans('corpus.informant_list') }}</h1>
-        
+@section('body')
         <p>
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/informant/create') }}">
@@ -74,7 +72,7 @@
                              'args'=>['id' => $informant->id]])
 
 {{----}}                    @if ($informant->lang) 
-                    <a class="btn btn-success btn-xs btn-detail" href="{{ LaravelLocalization::localizeURL('/corpus/informant/'.$informant->id).'/audio' }}">
+                    <a class="btn btn-success btn-xs btn-small" href="{{ LaravelLocalization::localizeURL('/corpus/informant/'.$informant->id).'/audio' }}">
                         <i class="fa fa-music"></i></a>
                     @endif {{----}}
                 </td>
@@ -95,8 +93,8 @@
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}');
-    selectBirthDistrict();
-    selectBirthPlace();
+    selectBirthDistrict('search_birth_region', '{{ trans('corpus.district') }} {{ trans('corpus.of_informant_birth') }}');
+    selectBirthPlace('search_birth_district', 'search_region_birth', '{{ trans('corpus.place') }} {{ trans('corpus.of_informant_birth') }}');
 @stop
 
 

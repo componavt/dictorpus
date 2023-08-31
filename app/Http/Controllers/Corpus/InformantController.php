@@ -47,7 +47,7 @@ class InformantController extends Controller
 
         $informants = $informants->paginate($url_args['limit_num']);
         
-        $region_values = [NULL => ''] + Region::getList();
+        $region_values = Region::getList();
         $district_values = District::getList();
         $place_values = Place::getList(false);
         
