@@ -11,12 +11,14 @@ use App\Library\Correct;
 use App\Library\Grammatic;
 
 use App\Models\Corpus\Text;
+use App\Models\Corpus\TextWordform;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
 use App\Models\Dict\Audio;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -411,5 +413,17 @@ print 'done.';
     
     public function addSrcForConcepts() {
         Correct::addSrcForConcepts();
+    }
+    
+    public function extraGramsets() {
+        $recs=TextWordform::whereRelevance(1)->where('text_id', '>', 5000)->get();
+        foreach($recs as $r) {
+            $lang_id = Text::find($r->text_id)->lang_id;
+            $count = LemmaWordform::whereWordformId($r->wordform_id)->whereGramsetId($r->gramset_id)->whereLangId($lang_id)->count();
+            if (!$count) {
+                print '<p><a href="/ru/corpus/text/'.$r->text_id.'?search_wid[0]='.$r->w_id.'">'.$r->text_id.','.$r->w_id.'</a>, '.$r->wordform_id.', '.$r->gramset_id.'</p>';
+            }
+        }
+print 'done.';        
     }
 }

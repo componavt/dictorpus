@@ -16,6 +16,7 @@ Route::group(
         Route::get('check_meaning_text', 'Library\CorrectController@checkMeaningText');
         Route::get('check_parallel_texts', 'Library\CorrectController@checkParallelTexts');
         Route::get('create_initial_wordforms', 'Library\CorrectController@createInitialWordforms');
+        Route::get('extra_gramsets', 'Library\CorrectController@extraGramsets');
         Route::get('generate_wordforms', 'Library\CorrectController@generateWordforms');        
         Route::get('move_char_out_word', 'Library\CorrectController@moveCharOutWord');       
 /*
