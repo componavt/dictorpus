@@ -416,14 +416,23 @@ print 'done.';
     }
     
     public function extraGramsets() {
-        $recs=TextWordform::whereRelevance(1)->where('text_id', '>', 5000)->get();
-        foreach($recs as $r) {
-            $lang_id = Text::find($r->text_id)->lang_id;
-            $count = LemmaWordform::whereWordformId($r->wordform_id)->whereGramsetId($r->gramset_id)->whereLangId($lang_id)->count();
-            if (!$count) {
-                print '<p><a href="/ru/corpus/text/'.$r->text_id.'?search_wid[0]='.$r->w_id.'">'.$r->text_id.','.$r->w_id.'</a>, '.$r->wordform_id.', '.$r->gramset_id.'</p>';
+        $texts = Text::all();
+        foreach ($texts as $text) {
+            $recs=TextWordform::whereRelevance(1)->whereTextId($text->id)->get();
+            $words = [];
+            $count = 0;
+            foreach($recs as $r) {
+                $lang_id = Text::find($r->text_id)->lang_id;
+                if (!LemmaWordform::whereWordformId($r->wordform_id)->whereGramsetId($r->gramset_id)->whereLangId($lang_id)->count()) {
+                    $words[]='search_wid['.$count++.']='.$r->w_id;
+                }
             }
-        }
+            if ($count>0) {
+                print '<p><a href="/ru/corpus/text/'. $r->text_id. '?'. 
+                      join('&',$words).'">'.$text->id.'. '.$text->title.'</a></p>';
+            }
 print 'done.';        
+//        exit(1);
+        }
     }
 }
