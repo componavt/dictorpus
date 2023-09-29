@@ -418,13 +418,17 @@ print 'done.';
     public function extraGramsets() {
         $texts = Text::all();
         foreach ($texts as $text) {
-            $recs=TextWordform::whereRelevance(1)->whereTextId($text->id)->get();
+            $recs=TextWordform::whereRelevance(1)->whereTextId($text->id)
+                    ->take(10)->get();
             $words = [];
             $count = 0;
             foreach($recs as $r) {
                 $lang_id = Text::find($r->text_id)->lang_id;
                 if (!LemmaWordform::whereWordformId($r->wordform_id)->whereGramsetId($r->gramset_id)->whereLangId($lang_id)->count()) {
                     $words[]='search_wid['.$count++.']='.$r->w_id;
+                    $query = 'DELETE FROM text_wordform where text_id='.$text->id.' and w_id='.$r->w_id.' and wordform_id='.$r->wordform_id.' and gramset_id='.$r->gramset_id;
+print "<p>$query</p>";                    
+//                    DB::statement($query);
                 }
             }
             if ($count>0) {
