@@ -8,7 +8,7 @@
                 'value' => $url_args['search_id'],
                 'attributes'=>['placeholder' => 'ID']])
     </div>
-    <div class="col-md-5">
+    <div class="col-md-3">
         @include('widgets.form.formitem._select2', 
                 ['name' => 'search_genre', 
                  'values' => $genre_values,
@@ -17,6 +17,14 @@
         ])                 
     </div>
     <div class="col-md-4">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_motype', 
+                 'values' => $motype_values,
+                 'value' => $url_args['search_motype'],
+                 'class'=>'multiple-select-motype form-control'
+        ])                 
+    </div>
+    <div class="col-md-2">
          @include('widgets.form.formitem._text', 
                 ['name' => 'search_name', 
                 'value' => $url_args['search_name'],

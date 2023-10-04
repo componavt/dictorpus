@@ -59,6 +59,10 @@
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}');
     selectGenre('search_corpus', '{{trans('corpus.genre')}}');
+    $(".multiple-select-motype").select2({
+        allowClear: true,
+        placeholder: '{{trans("corpus.motype")}}'
+    });
 @stop
 
 
