@@ -1834,7 +1834,7 @@ class Text extends Model
             $out['recording_year'][$rec->date] = number_format($rec->count, 0, ',', ' ');
         }        
         
-        $by_publ = self::selectRaw("year, count(*) as count")
+        $by_publ = DB::table('texts')->selectRaw("year, count(*) as count")
                          ->join('sources', 'texts.source_id', '=', 'sources.id')
                          ->groupBy('year')
                          ->orderBy('year')
@@ -1842,15 +1842,17 @@ class Text extends Model
         foreach ($by_publ as $rec) {
             $out['source_year'][$rec->year] = number_format($rec->count, 0, ',', ' ');
         }        
-
-        $by_creation = self::selectRaw("year(created_at) as year, count(*) as count")
+//dd($out['source_year']);
+        $by_creation = DB::table('texts')->selectRaw("year(created_at) as year, count(*) as count")
                          ->groupBy('year')
                          ->orderBy('year')
                          ->get();
+//dd($by_creation);        
         foreach ($by_creation as $rec) {
+//dd($rec, $rec->year);            
             $out['creation_date'][$rec->year] = number_format($rec->count, 0, ',', ' ');
         }    
-        
+//dd($out['creation_date']);        
         $years = array_unique(array_merge(array_keys($out['recording_year']), array_keys($out['source_year']),array_keys($out['creation_date'])));
         sort($years);
         $text_years=[];
