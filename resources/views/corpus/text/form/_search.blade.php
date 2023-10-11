@@ -194,12 +194,18 @@
                 ])
                                
     </div>
-    <div class="col-sm-4{{$url_args['with_audio'] ? '' : ' ext-form'}}" style='padding-top: 25px'>
+    <div class="col-sm-4{{$url_args['with_audio'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._checkbox',
                 ['name' => 'with_audio',
                 'value' => 1,
                 'checked' => $url_args['with_audio']==1,
                 'tail'=>trans('corpus.with_audio')]) 
+                
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'with_transtext',
+                'value' => 1,
+                'checked' => $url_args['with_transtext']==1,
+                'tail'=>trans('corpus.with_transtext')]) 
     </div>    
 @endif
     @include('widgets.form._search_div')

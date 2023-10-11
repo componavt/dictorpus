@@ -15,8 +15,9 @@ class DistributionChart extends Chart
     {
         parent::__construct();
 /*        $this->options(['scales'=> [
-                    'xAxes'=> ['stacked'=> true],
-                    'yAxes'=> ['stacked'=> true]]
+            'xAxes' => ['ticks' => ['max' => 2030]]]
+//                    'xAxes'=> ['stacked'=> true],
+//                    'yAxes'=> ['stacked'=> true]]
         ]);*/
     }
     

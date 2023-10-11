@@ -184,6 +184,7 @@ class StatsController extends Controller
     public function byYear() {
         $label_years = Text::countTextsByYears();
         $chart = new DistributionChart;
+        $chart->options(['scales'=> ['xAxes' => ['ticks' => ['max' => 2030]]]]);
         $colors = $chart->colors();
         $count = 0;
         $text_years=[];

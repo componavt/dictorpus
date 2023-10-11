@@ -184,6 +184,9 @@ class Text extends Model
         if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
         } 
+        if ($url_args['with_transtext']) {
+            $texts = $texts->whereNotNull('transtext_id');
+        } 
 /*
         if ($url_args['search_text']) {
             $texts = $texts->where('text','like','%'.$url_args['search_text'].'%');
@@ -1805,6 +1808,7 @@ class Text extends Model
                     'search_year_from'=> (int)$request->input('search_year_from'),
                     'search_year_to'  => (int)$request->input('search_year_to'),
                     'with_audio' => (boolean)$request->input('with_audio'),
+                    'with_transtext' => (boolean)$request->input('with_transtext'),
                 ];
         
         if ($url_args['search_without_genres']) {
