@@ -41,8 +41,9 @@ class OlodictController extends Controller
                 'with_audios'    => (int)$request->input('with_audios'),
                 'with_photos'    => (int)$request->input('with_photos'),
                 'with_template'    => (int)$request->input('with_template'),
-                'limit_num' => 10
+                'limit_num' => 5
             ];
+        $this->url_args['limit_num'] = 5;
 //dd($this->url_args['search_pos']);        
 /*        $url_args = $this->url_args;
         if ($url_args['search_lemma']) {
@@ -75,7 +76,7 @@ class OlodictController extends Controller
         $lemma_list = Olodict::lemmaList($url_args);
         $lemmas_total = sizeof($lemma_list->get());
         $lemma_list = $lemma_list->paginate($url_args['limit_num']);
-//dd($lemma_list);        
+        
         $gram_list = Olodict::gramLinks($url_args['search_letter']);
         $lemmas = Olodict::search($url_args);
         $dialect_id = Olodict::Dialect;
