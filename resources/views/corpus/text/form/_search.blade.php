@@ -1,6 +1,6 @@
         {!! Form::open(['url' => $form_url, 
                              'method' => 'get']) 
-        !!}
+        !!} 
 <div class="show-search-form">{{trans('search.advanced_search')}} &#8595;</div>
 <div class="search-form search-text">        
 <div class="row">
@@ -33,7 +33,7 @@
                 ])                               
     </div>
 @else
-    <div class="col-md-4{{$url_args['search_corpus'] || count_not_empty_elems($url_args)<4 ? '' : ' ext-form'}}">
+    <div class="col-md-4{{$url_args['search_corpus'] || count_not_empty_elems($url_args)<3 ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2', 
                 ['name' => 'search_corpus', 
                  'values' => $corpus_values,
