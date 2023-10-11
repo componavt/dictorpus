@@ -194,7 +194,7 @@
                 ])
                                
     </div>
-    <div class="col-sm-4{{$url_args['with_audio'] ? '' : ' ext-form'}}">
+    <div class="col-sm-4{{$url_args['with_audio'] || $url_args['with_transtext']  ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._checkbox',
                 ['name' => 'with_audio',
                 'value' => 1,
