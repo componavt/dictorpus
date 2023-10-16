@@ -58,6 +58,7 @@ class Text extends Model
     use \App\Traits\Relations\BelongsToMany\Motives;
     use \App\Traits\Relations\BelongsToMany\Plots;
     use \App\Traits\Relations\BelongsToMany\Topics;
+    use \App\Traits\Relations\BelongsToMany\Toponyms;
 //    use \App\Traits\Relations\BelongsToMany\Meanings;
     
     use \App\Traits\Relations\HasMany\Audiotexts;

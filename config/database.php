@@ -81,6 +81,21 @@ return [
             'engine' => null,
         ],
         
+        'topkar' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('TOPKAR_DATABASE'),
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+//            'collation' => 'utf8_bin',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+        
         // temp database to copy data to vepkar
         'vepsian' => [
             'driver' => 'mysql',

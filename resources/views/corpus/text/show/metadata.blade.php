@@ -53,4 +53,8 @@
         @if ($text->comment)
         <p>{{$text->comment}}</p>
         @endif
+
+        @if ($text->toponymUrls())
+        <p><b>{{trans('corpus.topkar_toponyms')}}:</b> {!! $text->toponymUrls() !!}</p>
+        @endif
 </div>      

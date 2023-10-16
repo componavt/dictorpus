@@ -155,6 +155,8 @@ return [
     'topic_list' => 'Список тем',
     'topic_removed' => 'Тема ":name" удалена.',
     
+    'topkar_toponyms' => 'топонимы из БД "ТопКар"',
+    
     'trans_author' => 'Автор перевода/оригинала',
     'translation_in' => 'перевод на',
     'transtext_lang' => 'язык перевода/оригинала',

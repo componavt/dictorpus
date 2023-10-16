@@ -151,6 +151,8 @@ return [
     'topic_has_text' => 'Topic ":name" can not be removed, there are texts with this topic',
     'topic_list' => 'Topic list',
     'topic_removed' => 'Topic ":name" is removed successfully.',
+
+    'topkar_toponyms' => 'TopKar toponyms',
     
     'trans_author' => 'Author of translation/original work',
     'translation_in' => 'translation in',

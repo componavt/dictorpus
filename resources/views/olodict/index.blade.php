@@ -29,7 +29,7 @@
     @if ($url_args['search_lemma'])
         @include('olodict._lemmas')    
     @else
-        <div class="page-b">{!! trans('olodict.'.$page.'_block') !!}</div>
+        <div class="page-b">{!!trans('olodict.'.$page.'_block', ['count'=>format_number($lemmas_total)]) !!}</div>
         <!--p><a href="{{ LaravelLocalization::localizeURL('/olodict/help')}}">{{trans('olodict.help_title')}}</a></p-->
 
     @endif
