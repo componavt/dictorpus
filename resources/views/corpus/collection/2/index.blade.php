@@ -25,4 +25,5 @@
         @endif
     @endforeach
 
+    <h4 style='margin-top: 20px;'><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/topics') }}">{{trans('collection.topic_index')}}</a></h4>
 @stop

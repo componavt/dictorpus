@@ -21,9 +21,10 @@ return [
                  <br><br>This collection contains previously published versions of Karelian runes of various genres.',
                 3 => 'Historical legends are oral prose narratives about the events of the distant past, small in volume. They are told with an emphasis on authenticity, based on historical realities, but at the same time they cannot serve as proof of a historical fact, since along with real events, elements of fiction are revealed in them. 
                  <br><br>This collection of Karelian historical legends is the first attempt at a comprehensive presentation of historical prose texts written down from the Karelians in the Karelian language. The texts were found in the Scientific Archive of the Karelian Research Center of the Russian Academy of Sciences, the Phonogram Archive of the Institute of Linguistics, Literature and History Karelian Research Center of the Russian Academy of Sciences, as well as in published sources.
-                 <br><br>The texts of historical legends are divided into cycles (plot-thematic groups). The presence of a toponymic motif is especially noted, which, combined with other motifs, can occupy a central or peripheral place in the historical legend.',
+                 <br><br>The texts of historical legends are divided into cycles (plot-thematic groups). The presence of a toponymic motive is especially noted, which, combined with other motives, can occupy a central or peripheral place in the historical legend.',
                ],
     'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
+    'topic_index' => 'Index of plots and thematics of Karelian runes',
     'name_list' => [
         1 => 'Veps lamentations',
         2 => 'Karelian Runes',

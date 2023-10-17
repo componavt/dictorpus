@@ -14,6 +14,7 @@ use App\Models\Corpus\Motive;
 use App\Models\Corpus\Motype;
 use App\Models\Corpus\Plot;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Topic;
 
 use App\Models\Dict\Dialect;
 
@@ -49,15 +50,36 @@ class CollectionController extends Controller
         return Redirect::to('/corpus/collection');
     }
     
-    public function runeTextsForPlot($plot_id) {
+    public function runeTopics() {
+        $genres = Genre::where('parent_id', Collection::getCollectionGenres(2))
+                   ->orderBy('sequence_number')->get();
+        $genre_arr = Genre::find(Collection::getCollectionGenres(2))
+                ->getSubGenreIds();
+        $lang_id = Collection::getCollectionLangs(2);
+        $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
+        return view('corpus.collection.2.topics',
+                compact('dialects', 'genres', 'lang_id'));        
+    }
+    
+    public function runesForPlot($plot_id) {
         $plot = Plot::find($plot_id);
         $lang_id = Collection::getCollectionLangs(2);
         $texts = $plot->texts()->whereIn('lang_id', $lang_id)->get()->sortBy('year');
         $page_title = trans('corpus.plot'). ': '. $plot->name;
         $url_args = '?search_collection=2&search_plot='.$plot->id;
         return view('corpus.collection.2.texts',
-                compact('lang_id', 'page_title', 'texts', 'url_args'));
-        
+                compact('lang_id', 'page_title', 'texts', 'url_args'));        
+    }
+    
+    public function runesForTopic($topic_id) {
+        $topic = Topic::find($topic_id);
+        $lang_id = Collection::getCollectionLangs(2);
+        $texts = $topic->texts()->whereIn('lang_id', $lang_id)->get()->sortBy('year');
+        $page_title = trans('corpus.topic'). ': '. $topic->name;
+        $url_args = '?search_collection=2&search_topic='.$topic->id;
+        $back_link = ['/corpus/collection/2/topics', trans('collection.topic_index')];
+        return view('corpus.collection.2.texts',
+                compact('back_link', 'page_title', 'texts', 'url_args'));        
     }
     
     public function predictionTextsForCycle($cycle_id) {
@@ -81,11 +103,10 @@ class CollectionController extends Controller
     
     public function predictionMotives() {
         $genre_id = Collection::getCollectionGenres(3);
-        $lang_id = Collection::getCollectionLangs(3);
+//        $lang_id = Collection::getCollectionLangs(3);
         $motypes = Motype::whereGenreId($genre_id)->orderBy('code')->get();
         return view('corpus.collection.3.motives',
-                compact('motypes'));
-        
+                compact('motypes'));        
     }
     
     public function predictionTextsForMotive($motive_id) {

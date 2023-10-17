@@ -12,6 +12,9 @@
 @section('body')
     <p>
         <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2') }}">{{trans('collection.to_collection')}}</a>
+        @if(isset($back_link)) 
+        | <a href="{{ LaravelLocalization::localizeURL($back_link[0]) }}">{{$back_link[1]}}</a>
+        @endif
     </p>
     
     <h2>{{$page_title}}</h2>

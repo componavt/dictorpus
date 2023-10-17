@@ -8,7 +8,7 @@ trait Topics
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function topics(){
-        return $this->belongsToMany(Topic::class)->withPivot('sequence_number')
+        return $this->belongsToMany(Topic::class)//->withPivot('sequence_number')
                     ->orderBy('topics.sequence_number');
     }
     
