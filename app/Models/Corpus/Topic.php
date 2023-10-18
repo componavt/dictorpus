@@ -53,6 +53,12 @@ class Topic extends Model
         return $genre_num.'.'.$plot->sequence_number.'.'.$this->sequence_number;
     }
     
+    public function textsForPlot($plot_id) {
+        return $this->texts()->whereIn('id', function ($q) use ($plot_id){
+                        $q->select('text_id')->from('plot_text')->wherePlotId($plot_id);
+                    });
+    }
+    
     /** Gets name by code, takes into account locale.
      * 
      * @return String

@@ -71,11 +71,15 @@ class CollectionController extends Controller
                 compact('lang_id', 'page_title', 'texts', 'url_args'));        
     }
     
-    public function runesForTopic($topic_id) {
+    public function runesForTopic($topic_id, Request $request) {
         $topic = Topic::find($topic_id);
+        $plot = Plot::find($request->plot_id);
+        if (!$topic || !$plot) {
+            return;
+        }
         $lang_id = Collection::getCollectionLangs(2);
-        $texts = $topic->texts()->whereIn('lang_id', $lang_id)->get()->sortBy('year');
-        $page_title = trans('corpus.topic'). ': '. $topic->name;
+        $texts = $topic->textsForPlot($plot->id)->whereIn('lang_id', $lang_id)->get()->sortBy('year');
+        $page_title = trans('corpus.plot'). ': '. $plot->name.'<br>'.trans('corpus.topic'). ': '. $topic->name;
         $url_args = '?search_collection=2&search_topic='.$topic->id;
         $back_link = ['/corpus/collection/2/topics', trans('collection.topic_index')];
         return view('corpus.collection.2.texts',

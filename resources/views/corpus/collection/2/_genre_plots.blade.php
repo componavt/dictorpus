@@ -9,8 +9,9 @@
         <ul>
             @foreach($plot->topics as $topic)
             <li>{{ $topic->name }} 
-                @if ($topic->texts->count())
-                (<a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/topics/'.$topic->id)}}">{{$topic->texts->count()}}</a>)
+                @if ($topic->textsForPlot($plot->id)->count())
+                (<a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/topics/'.$topic->id.'?plot_id='.$plot->id)}}">{{
+                    $topic->textsForPlot($plot->id)->count()}}</a>)
                 @endif
             </li>            
             @endforeach

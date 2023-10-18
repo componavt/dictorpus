@@ -17,7 +17,7 @@
         @endif
     </p>
     
-    <h2>{{$page_title}}</h2>
+    <h2>{!! $page_title !!}</h2>
     
     @if (sizeof($texts)) 
     <table class="table table-striped table-wide wide-md">
