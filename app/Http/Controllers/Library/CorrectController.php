@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use Storage;
+use DB;
 
 use App\Library\Correct;
 use App\Library\Grammatic;
@@ -428,14 +429,14 @@ print 'done.';
                     $words[]='search_wid['.$count++.']='.$r->w_id;
                     $query = 'DELETE FROM text_wordform where text_id='.$text->id.' and w_id='.$r->w_id.' and wordform_id='.$r->wordform_id.' and gramset_id='.$r->gramset_id;
 print "<p>$query</p>";                    
-//                    DB::statement($query);
+                    DB::statement($query);
                 }
             }
             if ($count>0) {
                 print '<p><a href="/ru/corpus/text/'. $r->text_id. '?'. 
                       join('&',$words).'">'.$text->id.'. '.$text->title.'</a></p>';
             }
-print 'done.';        
+//print 'done.';        
 //        exit(1);
         }
     }
