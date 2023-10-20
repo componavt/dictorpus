@@ -2,6 +2,7 @@
 <li><a href="{{ LaravelLocalization::localizeURL('/page/participants') }}">{{ trans('navigation.participants') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/sources') }}">{{ trans('navigation.sources') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/publ') }}">{{ trans('navigation.publications') }}</a></li>
+<li><a href="{{ LaravelLocalization::localizeURL('/page/mass_media') }}">{{ trans('navigation.mass_media') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/about_veps') }}">{{ trans('navigation.about_veps') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/page/about_karelians') }}">{{ trans('navigation.about_karelians') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/stats') }}">{{ trans('navigation.stats') }}</a></li>

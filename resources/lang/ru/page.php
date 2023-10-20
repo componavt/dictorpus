@@ -51,7 +51,74 @@ return [
             <p>Кроме того, вместо ссылки на весь корпус, вы можете поставить ссылку на какую-либо из 
             <a href="http://dictorpus.krc.karelia.ru/ru/page/publ">наших публикаций о корпусе.</p>',
     
+    'mass_media_talk' => '
+                    <p><a class="publ-title" href="https://vk.com/wall-89004728_2565?hash=1131a23228671160fe">Tutkimusmatkat Karjalua myöte</a><br>
+                    Nadezhda Bukina. Kodirandaine. 2 октября 2023</p>
+                    ',
+    'mass_media_write' => '<div class="row"><div class="col-sm-6">
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-10-18_40.pdf">Murrekartasta kuulee nykyihmisten ääniä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 40 (16606), 2023, c. 12.</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-08-23_32_9.pdf">Kieliaktivistit jakoivat hyviä käytäntöjään</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 32 (16598), 2023, c. 9.</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-08-23_32_14.pdf">Murrekartta täyttyy uusista puhenäytteistä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 32 (16598), 2023, c. 14.</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-03-01.pdf">VepKar-korpuksesta apua opiskeluun</a><br>
+                    Julia Veselova. Karjalan Sanomat, № 08 (16574), 2023, c. 13.</p>
+                    
+                    <p><a class="publ-title" href="/docs/oma_mua_2023_4_3.pdf">Kuulen omua pakinua</a><br>
+                    Uljana Tikkanen. Oma mua. № 4 (1644), 2023, c. 3.</p>
+
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-02-01_9.pdf">Liity mukaan puheiden keräämiseen</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 4 (16570), 2023, c. 9.</p>
+                    
+                    <p><a class="publ-title" href="https://omamedia.ru/news/tutkimus_karjalaiset_tutkijat_ker_v_t_veps_n_ja_karjalan_kielen_puhen_ytteit/">Tutkimus: Karjalaiset tutkijat keräävät vepsän ja karjalan kielen puhenäytteitä</a><br>
+                    Omamedia, 26 января 2023 г.</p>
+                    
+                    <p><a class="publ-title" href="http://www.krc.karelia.ru/news.php?id=4853">Бубриховские чтения-2022</a><br>
+                    КарНЦ РАН, 28 октября 2022 г.</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-11-02_09.pdf">VepKar vaalii vähemmistökieliä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 42 (16558), 2022, с. 9.</p>
+                    
+                    </div><div class="col-sm-6">
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-06-08_08.pdf">Puhemalleja on esillä teksteissä ja äänitteissä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat, №21 (16537), 2022, c. 8</p>
+                    
+                    <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
+                    Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
+                    
+                    <p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
+                    Natalie Pellinen. Oma mua, №01 (1541), 2021</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2021-10-20_12.pdf">Kielten mallit säilyvät korpuksessa</a><br>
+                    Marina Tolstyh. Karjalan Sanomat, №40 (16506), 2021, c. 12</p>
+                    
+                    <p><a class="publ-title" href="/docs/oma_mua_2021_21_6.pdf">Lyydin korpus kielen tiedustajile da opastujile abuh</a><br>
+                    Paušin Šan’uu. Oma mua, № 21 (1561), 2021, c. 6.
+                    
+                    <p><a class="publ-title" href="https://vk.com/@karrc-ludikovskoe-narechie-s-severa-na-ug-materialy-sopostavitelno">Людиковское наречие с севера на юг: материалы «Сопоставительно-ономасиологического словаря диалектов» в Открытом корпусе вепсского и карельского языков (ВепКар)</a><br>
+                    Вконтакте, 27 апреля 2020 г.</p>
+                    
+                    <p><a class="publ-title" href="https://vk.com/@karrc-aleksandr-pavlovich-barancev-nash-znamenityi-zemlyak">Александр Павлович Баранцев – наш знаменитый земляк</a><br>
+                    Вконтакте, 8 июня 2020 г.</p>
+                    
+                    <p><a class="publ-title" href="https://scientificrussia.ru/articles/proekt-vepkar">Проект ВепКар</a><br>
+                    Научная Россия, 28 мая 2019 г.</p>
+                    
+                    <p><a class="publ-title" href="http://fadn.gov.ru/news/2017/10/03/3406-na-forume-yazykovaya-politika-organizovannom-fadn-rossii-nagradili-laureatov-vserossiyskoy-premii-klyuchevoe-slovo">Всероссийская премия «Ключевое слово»</a><br>     
+                    Федеральное агентство по делам национальностей, 3&nbsp;октября&nbsp;2017&nbsp;г.</p>
+                    </div></div>',
     'our_publications' => '
+                    <p><a class="publ-title" href="http://mathem.krc.karelia.ru/publ.php?id=21778">ВепКар: руководство для пользователей. Учебное пособие</a><br>
+                    <i>Н.Б. Крижановская, А.А. Крижановский.</i> Научные редакторы И.П. Новак, Н.А. Пеллинен. Петрозаводск: КарНЦ РАН. 2023. 40 с.
+
+                    <p><a class="publ-title" href="http://journals.krc.karelia.ru/index.php/mathem/article/view/1773">Поиск почти похожих текстов в лингвистическом корпусе ВепКар</a><br> 
+                    <i>Быков Ф. Ю., Крижановский А. А.</i> Труды Карельского научного центра РАН. № 4. Серия Математическое моделирование и информационные технологии. 2023. C. 16-23. DOI:10.17076/mat1773.</p>
+                   
                     <p><a class="publ-title" href="http://www.krc.karelia.ru/publ.php?id=21082">Morphological inflectional rules for Karelian Proper verbs</a><br>
                     <i>Krizhanovskaya, N., Novak, I., Krizhanovsky, A., & Pellinen, N.</i> Eesti Ja Soome-Ugri Keeleteaduse Ajakiri. Journal of Estonian and Finno-Ugric Linguistics, 13(2). 2022. P. 47–78 DOI: 10.12697/jeful.2022.13.2.02</p>
                     
@@ -149,61 +216,6 @@ return [
 //                  . '<p>Разрешение <a href="/images/permissions/balakirev.jpg">от Н.М. Балакирева</a> на использование текста произведений '
 //                  . ' в проекте ВепКар.</p>',
     
-    'publications_about' => '
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-10-18_40.pdf">Murrekartasta kuulee nykyihmisten ääniä</a><br>
-                    Marina Tolstyh. Karjalan Sanomat. № 40 (16606), 2023, c. 12.</p>
-                    
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-08-23_32_9.pdf">Kieliaktivistit jakoivat hyviä käytäntöjään</a><br>
-                    Marina Tolstyh. Karjalan Sanomat. № 32 (16598), 2023, c. 9.</p>
-                    
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-08-23_32_14.pdf">Murrekartta täyttyy uusista puhenäytteistä</a><br>
-                    Marina Tolstyh. Karjalan Sanomat. № 32 (16598), 2023, c. 14.</p>
-                    
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-03-01.pdf">VepKar-korpuksesta apua opiskeluun</a><br>
-                    Julia Veselova. Karjalan Sanomat, № 08 (16574), 2023, c. 13.</p>
-                    
-                    <p><a class="publ-title" href="/docs/oma_mua_2023_4_3.pdf">Kuulen omua pakinua</a><br>
-                    Uljana Tikkanen. Oma mua. № 4 (1644), 2023, c. 3.</p>
-
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-02-01_9.pdf">Liity mukaan puheiden keräämiseen</a><br>
-                    Marina Tolstyh. Karjalan Sanomat. № 4 (16570), 2023, c. 9.</p>
-                    
-                    <p><a class="publ-title" href="https://omamedia.ru/news/tutkimus_karjalaiset_tutkijat_ker_v_t_veps_n_ja_karjalan_kielen_puhen_ytteit/">Tutkimus: Karjalaiset tutkijat keräävät vepsän ja karjalan kielen puhenäytteitä</a><br>
-                    Omamedia, 26 января 2023 г.</p>
-                    
-                    <p><a class="publ-title" href="http://www.krc.karelia.ru/news.php?id=4853">Бубриховские чтения-2022</a><br>
-                    КарНЦ РАН, 28 октября 2022 г.</p>
-                    
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-11-02_09.pdf">VepKar vaalii vähemmistökieliä</a><br>
-                    Marina Tolstyh. Karjalan Sanomat. № 42 (16558), 2022, с. 9.</p>
-                    
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat-2022-06-08_08.pdf">Puhemalleja on esillä teksteissä ja äänitteissä</a><br>
-                    Marina Tolstyh. Karjalan Sanomat, №21 (16537), 2022, c. 8</p>
-                    
-                    <p><a class="publ-title" href="/docs/oma_mua_2022_02-5.pdf">VepKar-korpussi kašvau ta kehittyy</a><br>
-                    Natalja Križanovskaja, Natalie Pellinen. Oma mua, № 2 (1592), 2022, c. 5.
-                    
-                    <p><a class="publ-title" href="/ru/page/publ_kaunista">Kaunista karjalua šähköresurssilla</a><br>
-                    Natalie Pellinen. Oma mua, №01 (1541), 2021</p>
-                    
-                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2021-10-20_12.pdf">Kielten mallit säilyvät korpuksessa</a><br>
-                    Marina Tolstyh. Karjalan Sanomat, №40 (16506), 2021, c. 12</p>
-                    
-                    <p><a class="publ-title" href="/docs/oma_mua_2021_21_6.pdf">Lyydin korpus kielen tiedustajile da opastujile abuh</a><br>
-                    Paušin Šan’uu. Oma mua, № 21 (1561), 2021, c. 6.
-                    
-                    <p><a class="publ-title" href="https://vk.com/@karrc-ludikovskoe-narechie-s-severa-na-ug-materialy-sopostavitelno">Людиковское наречие с севера на юг: материалы «Сопоставительно-ономасиологического словаря диалектов» в Открытом корпусе вепсского и карельского языков (ВепКар)</a><br>
-                    Вконтакте, 27 апреля 2020 г.</p>
-                    
-                    <p><a class="publ-title" href="https://vk.com/@karrc-aleksandr-pavlovich-barancev-nash-znamenityi-zemlyak">Александр Павлович Баранцев – наш знаменитый земляк</a><br>
-                    Вконтакте, 8 июня 2020 г.</p>
-                    
-                    <p><a class="publ-title" href="https://scientificrussia.ru/articles/proekt-vepkar">Проект ВепКар</a><br>
-                    Научная Россия, 28 мая 2019 г.</p>
-                    
-                    <p><a class="publ-title" href="http://fadn.gov.ru/news/2017/10/03/3406-na-forume-yazykovaya-politika-organizovannom-fadn-rossii-nagradili-laureatov-vserossiyskoy-premii-klyuchevoe-slovo">Всероссийская премия «Ключевое слово»</a><br>     
-                    Федеральное агентство по делам национальностей, 3&nbsp;октября&nbsp;2017&nbsp;г.</p>
-                    ',
     'sources' => '<p>Зайцева Н. Г., Муллонен И. И. <a href="http://elibrary.krc.karelia.ru/469/1/%D0%9D%D0%BE%D0%B2%D1%8B%D0%B9%20%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%BE-%D0%B2%D0%B5%D0%BF%D1%81%D1%81%D0%BA%D0%B8%D0%B9%20%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D1%8C.pdf">Новый русско-вепсский словарь. Uz’venä-vepsläine vajehnik</a>. – 2007.</p>
                   <p>Бойко Т. П., Маркианова Л. <a href="http://elibrary.krc.karelia.ru/401/1/russko-karelskij_slovar.pdf">Большой русско-карельский словарь (ливвиковское наречие). Suuri ven’a-karjalaine sanakniigu (livvin murreh)</a>. – 2011.</p>
                   <p>Зайков П. М., Ругоева Л. И. <a href="http://resources.krc.karelia.ru/illh/doc/redkie/slovar_zajkov.pdf">Карельско-русский словарь (севернокарельские диалекты)</a>. – 1999.</p>
