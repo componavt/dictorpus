@@ -150,6 +150,9 @@ return [
 //                  . ' в проекте ВепКар.</p>',
     
     'publications_about' => '
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-10-18_40.pdf">Murrekartasta kuulee nykyihmisten ääniä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 40 (16606), 2023, c. 12.</p>
+                    
                     <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-08-23_32_9.pdf">Kieliaktivistit jakoivat hyviä käytäntöjään</a><br>
                     Marina Tolstyh. Karjalan Sanomat. № 32 (16598), 2023, c. 9.</p>
                     

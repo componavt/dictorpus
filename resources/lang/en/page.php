@@ -49,8 +49,17 @@ return [
                   . '</ul>',
     
     'publications_about' => '
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-10-18_40.pdf">Murrekartasta kuulee nykyihmisten ääniä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 40 (16606), 2023, c. 12.</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-08-23_32_9.pdf">Kieliaktivistit jakoivat hyviä käytäntöjään</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 32 (16598), 2023, c. 9.</p>
+                    
+                    <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-08-23_32_14.pdf">Murrekartta täyttyy uusista puhenäytteistä</a><br>
+                    Marina Tolstyh. Karjalan Sanomat. № 32 (16598), 2023, c. 14.</p>
+                    
                     <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-03-01.pdf">VepKar-korpuksesta apua opiskeluun</a><br>
-                    Julia Veselova. Karjalan Sanomat, № 08 (16574). С. 13.</p>
+                    Julia Veselova. Karjalan Sanomat, № 08 (16574), 2023, c. 13.</p>
                     
                     <p><a class="publ-title" href="/docs/oma_mua_2023_4_3.pdf">Kuulen omua pakinua</a><br>
                     Uljana Tikkanen. Oma mua. № 4 (1644), 2023, c. 3.</p>
