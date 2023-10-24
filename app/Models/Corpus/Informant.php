@@ -157,22 +157,18 @@ class Informant extends Model
     }   
 
     public function unvoicedLemmasCount() {
-        return Lemma::whereLangId($this->lang->id)
-                ->whereNotIn('id',function ($q) {
-                    $q->select('lemma_id')->from('audio_lemma');
-                })->count();        
+        return $this->unvoicedLemmas()->count();        
     }
 
-    public function birthPlaceString($lang_id='', $all_place_names=true, $link='')
-    {
-        if (!$this->birth_place) {
-            return '';
+    public function unvoicedDialectLemmasCount() {
+        $dialects = $this->dialects;
+        if (!isset($dialects[0])) {
+            return;
         }
-        return Place::find($this->birth_place_id)
-                            ->placeString($lang_id, $all_place_names, $link);
-    }    
-    
-    public function notVoicedLemmas() {
+        return Lemma::searchByDialects($this->unvoicedLemmas(), [$dialects[0]->id])->count();        
+    }
+
+    public function unvoicedLemmas() {
         $informant = $this;
         return  Lemma::whereLangId($informant->lang->id)
                 ->whereNotIn('id', function ($q) use ($informant) { // не озвученные информантом
@@ -187,6 +183,16 @@ class Informant extends Model
                       ->whereInformantId($informant->id);
                 });
     }
+    
+    public function birthPlaceString($lang_id='', $all_place_names=true, $link='')
+    {
+        if (!$this->birth_place) {
+            return '';
+        }
+        return Place::find($this->birth_place_id)
+                            ->placeString($lang_id, $all_place_names, $link);
+    }    
+    
     
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();

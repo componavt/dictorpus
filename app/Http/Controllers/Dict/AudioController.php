@@ -248,7 +248,7 @@ class AudioController extends Controller
         }
         
         $dialect_values = [];
-        $lemmas = $informant->notVoicedLemmas();
+        $lemmas = $informant->unvoicedLemmas();
         foreach ($informant->dialects as $dialect) {
             $count = Lemma::searchByDialects($lemmas, [$dialect->id])->count();
 //dd(to_sql($count));            
@@ -257,7 +257,7 @@ class AudioController extends Controller
 
         $url_args = $this->url_args;
         
-        $lemmas = $informant->notVoicedLemmas();                
+        $lemmas = $informant->unvoicedLemmas();                
         $lemmas = Lemma::searchByLemma($lemmas, $url_args['search_lemma']); 
 
         if ($url_args['search_dialect']) {
