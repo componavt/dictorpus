@@ -14,6 +14,8 @@
     @include('corpus.informant._about')
     <p><a href="{{ LaravelLocalization::localizeURL('corpus/informant/'.$informant->id).'/audio'}}">Вернуться к информанту</a>
     <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id. '/record') }}">{{trans('dict.voice_new_lemmas')}}</a> ({{$informant->lemmas()->count()}})</p>
+    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/voiced' }}">{{trans('dict.check_voiced_lemmas')}}</a> ({{$informant->audios()->count()}})</p>
+    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) }}">{{trans('dict.edit_list_for_voicing')}}</a> ({{$informant->lemmas()->count()}})</p>
     
     <h3>{{trans('dict.add-lemmas-for-voicing')}}</h3>
     <p>Слов в <a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) }}">списке для озвучивания</a>: {{$informant->lemmas()->count()}}</p>
