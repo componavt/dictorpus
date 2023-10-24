@@ -247,26 +247,21 @@ class AudioController extends Controller
             return Redirect::to('/corpus/informant/');            
         }
         
-        $dialect_values = $informant->dialects->pluck('name','id')->toArray(); //[NULL=>''] + 
+        $dialect_values = [];
+        $lemmas = $informant->notVoicedLemmas();
+        foreach ($informant->dialects as $dialect) {
+            $count = Lemma::searchByDialects($lemmas, [$dialect->id])->count();
+//dd(to_sql($count));            
+            $dialect_values[$dialect->id] = $dialect->name . ($count ? " ($count)" : '');
+        }
+
         $url_args = $this->url_args;
-        $lemmas = Lemma::whereLangId($informant->lang->id)
-                ->whereNotIn('id', function ($q) {
-                    $q->select('lemma_id')->from('audio_lemma');
-                })
-                ->whereNotIn('id', function ($q) {
-                    $q->select('lemma_id')->from('informant_lemma');
-                });
-                
+        
+        $lemmas = $informant->notVoicedLemmas();                
         $lemmas = Lemma::searchByLemma($lemmas, $url_args['search_lemma']); 
 
         if ($url_args['search_dialect']) {
-            $lemmas -> whereIn('id', function ($q) use ($url_args) {
-                $q->select('lemma_id')->from('meanings')
-                  ->whereIn('id', function ($q2) use ($url_args) {
-                      $q2->select('meaning_id')->from('dialect_meaning')
-                         ->whereDialectId($url_args['search_dialect']);
-                  });
-            });
+            $lemmas=Lemma::searchByDialects($lemmas, [$url_args['search_dialect']]);
         }
                 
         $lemmas = $lemmas->groupBy('lemma')->orderBy('lemma')

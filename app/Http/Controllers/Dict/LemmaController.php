@@ -74,7 +74,7 @@ class LemmaController extends Controller
         $url_args = $this->url_args;
 
         $lemmas = Lemma::search($url_args);
-//dd($lemmas->toSql());        
+//dd(to_sql($lemmas));        
         $numAll = $lemmas->count();
 
         $lemmas = $lemmas->paginate($url_args['limit_num']);         

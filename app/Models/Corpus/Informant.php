@@ -172,6 +172,22 @@ class Informant extends Model
                             ->placeString($lang_id, $all_place_names, $link);
     }    
     
+    public function notVoicedLemmas() {
+        $informant = $this;
+        return  Lemma::whereLangId($informant->lang->id)
+                ->whereNotIn('id', function ($q) use ($informant) { // не озвученные информантом
+                    $q->select('lemma_id')->from('audio_lemma')
+                      ->whereIn('audio_id', function ($q2) use ($informant){
+                          $q2->select('id')->from('audios')
+                             ->whereInformantId($informant->id);
+                      });
+                })
+                ->whereNotIn('id', function ($q) use ($informant){ // не добавленные в список для озвучки
+                    $q->select('lemma_id')->from('informant_lemma')
+                      ->whereInformantId($informant->id);
+                });
+    }
+    
     public static function search(Array $url_args) {
         $locale = LaravelLocalization::getCurrentLocale();
         $informants = self::orderBy('name_'.$locale);  

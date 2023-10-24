@@ -13,6 +13,7 @@
 @section('body')        
     @include('corpus.informant._about')
     <p><a href="{{ LaravelLocalization::localizeURL('corpus/informant/'.$informant->id).'/audio'}}">Вернуться к информанту</a>
+    <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id. '/record') }}">{{trans('dict.voice_new_lemmas')}}</a> ({{$informant->lemmas()->count()}})</p>
     <p><a href="{{ LaravelLocalization::localizeURL('dict/audio/list/'.$informant->id) .'/choose'}}">{{trans('dict.add-lemmas-for-voicing')}}</a> ({{format_number($informant->unvoicedLemmasCount())}})</p>
 
     <h3>{{trans('dict.voiced_lemmas')}}</h3>
