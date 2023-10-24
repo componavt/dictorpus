@@ -13,6 +13,7 @@ class Label extends Model
     protected $fillable = ['name_en', 'name_ru', 'short_en', 'short_ru', 'visible'];
     const OlodictLabel = 3;
     const ZaikovLabel = 5;
+    const LDLLabel = 12;
     
     public function identifiableName()
     {

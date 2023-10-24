@@ -43,6 +43,7 @@ return [
     'inflexion_groups' => 'Inflexion groups',
     'informants' => 'Informants',
     'langs'  => 'Languages',
+    'ldl' => 'Ludic dialect lexicon',
     'lemma_frequency' => 'Frequency dictionary of lemmas marked up in the text',
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',

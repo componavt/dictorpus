@@ -561,4 +561,96 @@ class DictController extends Controller
         $meaning_text->save();
         return view('service.dict.meaning._phrase', ['phrase'=>$lemma]);                
     }
+    
+    /* отбираем все людиковские слова, связанные понятиями */
+    public function ldlSelect() {        
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $lang_id=6; // ludic
+        $label_id = Label::LDLLabel; 
+        
+        $lemmas = Lemma::whereLangId($lang_id)
+                       ->whereIn('id', function ($q) { // есть значения, привязанные к понятиям
+                           $q->select('lemma_id')->from('meanings')
+                             ->whereIn('id', function ($q2) {
+                                 $q2->select('meaning_id')->from('concept_meaning');
+                             });
+                       })->whereNotIn('id', function ($q) use ($label_id) { // еще не имеющие метку
+                           $q->select('lemma_id')->from('label_lemma')
+                             ->whereLabelId($label_id);
+                       })->orderBy('id')
+                       //->take(10)
+                       ->get();
+        foreach ($lemmas as $lemma) {
+            $lemma->labels()->attach([$label_id]);
+        }                       
+/*        
+        if ($url_args['search_pos']) {
+            $lemmas->wherePosId($url_args['search_pos']);
+        } 
+               
+        if ($url_args['search_status'] == 3) {
+            $lemmas->whereIn('id', function ($q) {
+                $q->select('lemma_id')->from('audio_lemma');
+            });            
+        }
+        
+        $lemma_coll = $lemmas->get();
+        $lemmas = [];
+        foreach ($lemma_coll as $lemma) {
+            $lemmas[$lemma->id] = [
+                'lemma'=>$lemma->lemma, 
+                'pos_name'=>$lemma->pos->name, 
+                'frequency'=>$lemma->getFrequencyInCorpus()];
+        }
+        $pos_values = [NULL=>'']+PartOfSpeech::getList();
+        
+        return view('service.dict.multi.select',
+                compact('label_id', 'lemmas', 'pos_values', 
+                        'args_by_get', 'url_args'));
+*/ 
+    }
+        
+    public function ldlView(Request $request) {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        
+        $lang_id=6; // ludic
+        $label_id = Label::LDLLabel; 
+        
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        $lemmas = Lemma::whereLangId($lang_id)
+                ->whereIn('lemmas.id', function ($q) use ($label_id, $url_args) {
+                    $q->select('lemma_id')->from('label_lemma')
+                      ->whereLabelId($label_id);
+                    if (in_array($url_args['search_status'], [1,2])) {
+                        $q->whereStatus($url_args['search_status']==1 ? 1 : 0);
+                    } 
+                });
+                
+        if ($url_args['search_pos']) {
+            $lemmas->wherePosId($url_args['search_pos']);
+        } 
+               
+        if ($url_args['search_status'] == 3) {
+            $lemmas->whereIn('id', function ($q) {
+                $q->select('lemma_id')->from('audio_lemma');
+            });            
+        }
+        
+        $numAll = $lemmas->count();
+        $lemmas = $lemmas->orderBy('lemma')->paginate($url_args['limit_num']);
+        $pos_values = [NULL=>'']+PartOfSpeech::getList();
+        
+        return view('service.dict.ldl.index',
+                compact('label_id', 'lemmas', 'numAll', 'pos_values',
+                        'args_by_get', 'url_args'));
+    }
 }
+
+    

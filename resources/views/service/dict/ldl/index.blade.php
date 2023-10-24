@@ -1,8 +1,8 @@
-<?php $list_count=1; ?>
+<?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
 @extends('layouts.page')
 
 @section('page_title')
-{{ trans('navigation.multidict') }}
+{{ trans('navigation.ldl') }}
 @stop
 
 @section('headExtra')
@@ -16,7 +16,7 @@
 @stop
 
 @section('body')        
-        @include('service.dict.multi._search_form',['url' => '/service/dict/multi']) 
+        @include('service.dict.ldl._search_form',['url' => '/service/dict/ldl']) 
         @include('widgets.found_records', ['numAll'=>$numAll])
 
         @if ($lemmas)
@@ -29,44 +29,44 @@
                 <th>{{ trans('dict.pos') }}</th>
                 <th>{{ trans('navigation.concepts') }}</th>
                 <!--th>{{ trans('messages.frequency') }}</th-->
-                <th>{{ trans('dict.listen') }}</th>
                 <th>{{ trans('messages.actions') }}</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($lemmas as $lemma_id=>$lemma)
-            <tr id="row-{{$lemma_id}}">
+            @foreach($lemmas as $lemma)
+            <tr id="row-{{$lemma->id}}">
                 <td data-th="No">{{ $list_count++ }}</td>
+                <td>
+                @foreach ($lemma->getAudioUrls() as $audio_url)
+                        @include('widgets.audio_decor', ['route'=>$audio_url])
+                @endforeach
+                </td>
                 <td data-th="{{ trans('dict.lemma') }}">
-                    <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma_id) }}">
-                        {{$lemma['lemma']}}
+                    <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma->id) }}">
+                        {{$lemma->lemma}}
                     </a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">
-                    {{$lemma['pos_name']}}
+                    {{$lemma->pos->name}}
                 </td>
                 <td data-th="{{ trans('navigation.concepts') }}">
-                    {{$lemma['concepts']}}
+                    {{$lemma->conceptNames()}}
                 </td>
 {{--                <td data-th="{{ trans('messages.frequency') }}">
                       {{$lemma['frequency']}}
                 </td> --}}
-                <td data-th="{{ trans('dict.listen') }}">
-@foreach ($lemma['audios'] as $audio_url)
-        @include('widgets.audio_decor', ['route'=>$audio_url])
-@endforeach
-                </td>
                 <td data-th="{{ trans('messages.actions') }}" style="text-align:center">
-                    <a class="set-status status{{$lemma['status']}}" id="status-{{$lemma_id}}" 
-                       onClick="setStatus({{$lemma_id}}, {{$label_id}})"
-                       data-old="{{$lemma['status']}}" 
-                       data-new="{{$lemma['status'] ? 0 : 1}}"></a>
-                    <i class="fa fa-trash fa-lg remove-label" onClick="removeLabel({{$lemma_id}}, {{$label_id}})" title="Удалить из списка"></i>
+                    <a class="set-status status{{$lemma->labelStatus($label_id)}}" id="status-{{$lemma->id}}" 
+                       onClick="setStatus({{$lemma->id}}, {{$label_id}})"
+                       data-old="{{$lemma->labelStatus($label_id)}}" 
+                       data-new="{{$lemma->labelStatus($label_id) ? 0 : 1}}"></a>
+                    <i class="fa fa-trash fa-lg remove-label" onClick="removeLabel({{$lemma->id}}, {{$label_id}})" title="Удалить из списка"></i>
                 </td>
             </tr>
             @endforeach
         </tbody>
         </table>
+            {!! $lemmas->appends($url_args)->render() !!}
         @endif
     </div>
 @stop
@@ -83,13 +83,6 @@
 @stop
 
 @section('jqueryFunc')
-    selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);
-    
-    $('#lemmasTable').DataTable( {
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.11.4/i18n/ru.json'
-        },
-        "order": [[ 3, "desc" ]]
-    } );
+    selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);    
 @stop
 
