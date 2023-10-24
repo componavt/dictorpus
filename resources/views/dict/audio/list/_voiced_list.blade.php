@@ -33,8 +33,8 @@
                 @include('widgets.form.button._delete', 
                          ['is_button'=>false, 
                           'without_text' => true,
-                          'route' => 'audio.destroy', 
-                          'args'=>['id' => $audio->id]])
+                          'route' => 'informant.audio.destroy', 
+                          'args'=>['id' => $audio->id, 'informant_id'=>$informant->id]])
                     <div class='record-button'>                  
                         <i id="record-audio-{{$lemma->id}}" 
                            class="fa fa-microphone record-audio record-stop fa-lg" 

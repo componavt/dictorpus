@@ -26,6 +26,6 @@
 @stop
 
 @section('jqueryFunc')
-    @include('dict.audio._record_js', ['lemmas'=>$informant->lemmas])
+    @include('dict.audio._record_js', ['lemmas'=>$informant->lemmas->sortBy('lemma')])
 @stop
 

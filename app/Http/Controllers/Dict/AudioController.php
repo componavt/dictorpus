@@ -6,14 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Storage;
 use Redirect;
-use Illuminate\Support\Facades\Route;
 
 use App\Models\User;
 
 use App\Models\Corpus\Informant;
 
 use App\Models\Dict\Audio;
-use App\Models\Dict\Label;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
@@ -229,96 +227,4 @@ class AudioController extends Controller
               ->withSuccess($result['message']);
     }
     
-    public function voicedList($informant_id) {
-        $informant = Informant::find($informant_id);
-        if (!$informant || !sizeof($informant->dialects)) {
-            return Redirect::to('/corpus/informant/');            
-        }
-        $audios = Audio::whereInformantId($informant_id)
-//                ->take(1)
-                ->get();
-        return view('dict.audio.list.voiced',
-                compact('audios', 'informant'));                
-    }
-    
-    public function chooseLemmasForList($informant_id) {
-        $informant = Informant::find($informant_id);
-        if (!$informant || !sizeof($informant->dialects)) {
-            return Redirect::to('/corpus/informant/');            
-        }
-        
-        $dialect_values = [];
-        $lemmas = $informant->unvoicedLemmas();
-        foreach ($informant->dialects as $dialect) {
-            $count = Lemma::searchByDialects($lemmas, [$dialect->id])->count();
-//dd(to_sql($count));            
-            $dialect_values[$dialect->id] = $dialect->name . ($count ? " ($count)" : '');
-        }
-
-        $url_args = $this->url_args;
-        
-        $lemmas = $informant->unvoicedLemmas();                
-        $lemmas = Lemma::searchByLemma($lemmas, $url_args['search_lemma']); 
-
-        if ($url_args['search_dialect']) {
-            $lemmas=Lemma::searchByDialects($lemmas, [$url_args['search_dialect']]);
-        }
-                
-        $lemmas = $lemmas->groupBy('lemma')->orderBy('lemma')
-                         ->take(250)
-                         ->get();
-
-        return view('dict.audio.list.choose',
-                compact('dialect_values', 'informant', 'lemmas', 'url_args'));                
-    }
-    
-    public function addLemmasToList($informant_id, Request $request) {
-        $informant = Informant::find($informant_id);
-        if (!$informant || !sizeof($informant->dialects)) {
-            return Redirect::to('/corpus/informant/');            
-        }
-        
-        $lemmas = $request->input('checked_lemmas');
-        $informant->lemmas()->attach($lemmas);
-
-        return Redirect::to('/dict/audio/list/'.$informant->id.'/choose?search_dialect='.$this->url_args['search_dialect']);
-    }
-    
-    public function indexList($informant_id) {
-        $informant = Informant::find($informant_id);
-        if (!$informant || !sizeof($informant->dialects)) {
-            return Redirect::to('/corpus/informant/');            
-        }
-        return view('dict.audio.list.index',
-                compact('informant'));        
-    }
-    
-    public function removeInList($informant_id, Request $request) {
-        $informant = Informant::find($informant_id);
-        if (!$informant || !sizeof($informant->dialects)) {
-            return Redirect::to('/corpus/informant/');            
-        }
-        $lemmas = $request->input('checked_lemmas');
-        $informant->lemmas()->detach($lemmas);
-        return Redirect::to('/dict/audio/list/'.$informant->id);
-    }
-    
-    public function deleteLemmaInList($informant_id, $lemma_id) {
-        $informant = Informant::find($informant_id);
-        $lemma = Lemma::find($lemma_id);
-        if (!$informant || !$lemma) {
-            return;            
-        }
-        $informant->lemmas()->detach($lemma->id);
-    }
-    
-    public function recordList($informant_id) {
-        $informant = Informant::find($informant_id);
-        if (!$informant || !sizeof($informant->dialects)) {
-            return Redirect::to('/corpus/informant/');            
-        }
-
-        return view('dict.audio.list.record',
-                compact('informant'));        
-    }
 }

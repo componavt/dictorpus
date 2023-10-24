@@ -6,15 +6,16 @@ Route::group(
     function()
     {
 //        Route::post('audio/list/{informant_id}/add', 'Dict\AudioController@addLemmasToList')->name('dict.audio.addToList');
-        Route::get('audio/list/{informant_id}/add', 'Dict\AudioController@addLemmasToList')->name('dict.audio.addToList');
-        Route::get('audio/list/{informant_id}/choose', 'Dict\AudioController@chooseLemmasForList');
-        Route::get('audio/list/{informant_id}/delete/{lemma_id}', 'Dict\AudioController@deleteLemmaInList');
-        Route::get('audio/list/{informant_id}/record', 'Dict\AudioController@recordList');
-        Route::get('audio/list/{informant_id}/remove', 'Dict\AudioController@removeInList');
-        Route::get('audio/list/{informant_id}/voiced', 'Dict\AudioController@voicedList');
-        Route::get('audio/list/{informant_id}', 'Dict\AudioController@indexList');
+        Route::get('audio/list/{informant_id}/add', 'Dict\AudioInformantController@addLemmasToList')->name('dict.audio.addToList');
+        Route::get('audio/list/{informant_id}/choose', 'Dict\AudioInformantController@chooseLemmasForList');
+        Route::get('audio/list/{informant_id}/delete/{lemma_id}', 'Dict\AudioInformantController@deleteLemmaFromList');
+        Route::get('audio/list/{informant_id}/record', 'Dict\AudioInformantController@recordList');
+        Route::get('audio/list/{informant_id}/remove', 'Dict\AudioInformantController@removeFromList');
+        Route::get('audio/list/{informant_id}/voiced', 'Dict\AudioInformantController@voicedList')->name('informant.audio.voiced');
+        Route::get('audio/list/{informant_id}', 'Dict\AudioInformantController@index');
+        Route::delete('audio/list/{informant_id}/{id}', 'Dict\AudioInformantController@destroy')->name('informant.audio.destroy');
+        
         Route::post('audio/upload', 'Dict\AudioController@upload');
-//        Route::delete('audio/list/{informant_id}/{id}', 'Dict\AudioController@destroy')->name('informant.audio.destroy');
         
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('concept/{id}/photo_preview', 'Dict\ConceptController@photoPreview');
