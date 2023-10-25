@@ -56,6 +56,9 @@ return [
                     Nadezhda Bukina. Kodirandaine. 2 октября 2023</p>
                     ',
     'mass_media_write' => '<div class="row"><div class="col-sm-6">
+                    <p><a class="publ-title" href="/docs/oma_mua_2023_41_7.pdf">Kuulen omad paginad- marafonan tuloksed</a><br>
+                    Paušin Šan’uu. Oma mua, № 41 (1681), c. 7.</p>
+                    
                     <p><a class="publ-title" href="/docs/karjalan_sanomat_2023-10-18_40.pdf">Murrekartasta kuulee nykyihmisten ääniä</a><br>
                     Marina Tolstyh. Karjalan Sanomat. № 40 (16606), 2023, c. 12.</p>
                     
