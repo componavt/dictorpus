@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 
 use App\Library\Experiments\Dmarker;
+use App\Library\Experiments\DialectDmarker;
 
 use App\Library\Grammatic;
 
@@ -18,6 +19,7 @@ class Mvariant extends Model
 {
     public $timestamps = false;
     protected $fillable = ['id', 'dmarker_id', 'name'];    
+    static private $coalitions = [];
     
     public function dmarker(){
         return $this->belongsTo(Dmarker::class);
@@ -89,7 +91,8 @@ class Mvariant extends Model
         $t_frequency = $this->searchTexts($dialect_id, $absence, $template)->count();
         $t_fraction = $t_frequency === false ? NULL : $t_frequency / $total_texts;   
         
-        $w_frequency = $this->searchWords($dialect_id, $absence, $template)->count();
+//        $w_frequency = $this->searchWords($dialect_id, $absence, $template)->count();
+        $w_frequency = sizeof($this->searchUniqueWords($dialect_id, $absence, $template)->get());
         $w_fraction = $w_frequency === false ? NULL : $w_frequency / $total_words;   
         
         DialectDmarker::updateData($this->id, $this->dmarker_id, $dialect_id, $t_frequency, $t_fraction, $w_frequency, $w_fraction);
@@ -120,6 +123,14 @@ class Mvariant extends Model
                     });
     }
     
+    public function searchUniqueWords($dialect_id, $absence, $template) {
+        return Word::whereRaw("word ".($absence ? 'not ': '')."rlike '$template'")        
+                    ->whereIn('text_id', function ($q) use ($dialect_id) {
+                        $q -> select('text_id')->from('dialect_text')
+                           -> whereDialectId($dialect_id);
+                    })->groupBy('word')->groupBy('text_id');
+    }
+    
     public static function processTemplate(string $template) {
         $template = str_replace('C', "[".Grammatic::consSet()."]", $template);
         $template = str_replace('V', "[".Grammatic::vowelSet()."]", $template);
@@ -133,7 +144,64 @@ class Mvariant extends Model
         return [$absence, $template];
     }
     
-/*    public function countWords($dialect_id) {
+    public static function createCoalitions($dialect_id) {
+//        DB::statement("DELETE FROM coalition_dialect where dialect_id=".$dialect_id);
+/*        $p1 = Mvariant::whereIn('id', function ($q) use ($dialect_id) {
+                        $q->select('mvariant_id')->from('dialect_dmarker')
+                          ->where('w_frequency', '>', 0)
+                          ->whereDialectId($dialect_id);
+                     })->orderBy('id')->pluck('id')->toArray();*/
+        $p = DialectDmarker::where('w_frequency', '>', 0)
+                           ->whereDialectId($dialect_id)
+                           ->orderBy('w_frequency', 'desc')
+                           ->take(20)
+                           ->pluck('mvariant_id')->toArray();
+/*        $min = DialectDmarker::whereDialectId($dialect_id)->whereMvariantId($p[0])
+                             ->first()->w_frequency;*/
+        $max = self::getVoices($dialect_id, $p); 
+        $min = 0.75*$max;
+//dd($dialect_id, $max, $min);        
+        sort($p);
+//dd($p1, $p);                     
+//        $p = [1, 2, 3, 4];
+        self::addCoalitions($p, [], $dialect_id, $min);
+print "<b>Коалиции для диалекта $dialect_id записаны</b><br>\n";             
+//dd(self::$coalitions);        
+    }
+    
+    public static function addCoalitions($players, $prev, $dialect_id, $min) {
+        foreach ($players as $i => $p) {
+            if (!sizeof($prev)) {
+                $coalition = [$p];
+            } else {
+                $coalition = array_merge($prev, [$p]);
+            }
+//            self::$coalitions[] = join('_',$coalition);
+            $coalition_str = join('_',$coalition);
+            $v = self::getVoices($dialect_id, $coalition);
+            
+            print $dialect_id. ": ";
+            if ($v>$min) {
+                if (!DB::table('coalition_dialect')->whereDialectId($dialect_id)->where('coalition', 'like', $coalition_str)->count()) {
+                    DB::statement("INSERT INTO coalition_dialect (coalition, dialect_id, frequency) VALUES ('".
+                            $coalition_str."', ".$dialect_id.", ".$v.")");
+                    print "записано ";
+                }
+                print $coalition_str. ' = <b>'. $v. '</b>';
+                print "<br>\n";
+            }
+            unset($players[$i]);
+            self::addCoalitions($players, $coalition, $dialect_id, $min);
+        }
+    }
+
+    public static function getVoices($dialect_id, $coalition) {
+        return DialectDmarker::selectRaw('sum(w_frequency) as sum')
+                 ->whereDialectId($dialect_id)->whereIn('mvariant_id', $coalition)
+                 ->first()->sum;
+    }
+
+    /*    public function countWords($dialect_id) {
         return self::searchWords($dialect_id)->count();
         if (!sizeof ($words)) {
             return false;

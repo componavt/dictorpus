@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Library\Experiments;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -50,8 +51,9 @@ class DialectDmarkerController extends Controller
     }
     
     public function calculate() {
+        DB::statement("DELETE FROM dialect_dmarker");
         $mvariants = Mvariant::orderBy('id')
-                     ->whereIn('id', [29,35,37,49])
+//                     ->whereIn('id', [29,35,37,49])
 //                     ->where('dmarker_id', '>', 5)
 //                     ->where('dmarker_id', '<', 6)
 /*                     ->whereIn('dmarker_id', function ($q) {
@@ -77,5 +79,24 @@ print "<p>". $mvariant->dmarker_id. ". ". $mvariant->name. "</p>";
             }
         }
 print 'done.';        
+    }
+    
+    public function calculateСoalitions() {
+        ini_set('max_execution_time', 100000);
+//        ini_set('memory_limit', '512M');
+                
+        $dialects = Dialect::whereIn('lang_id', [4,5,6])
+                    ->whereIn('id', function ($query) {
+                        $query->select('dialect_id')
+                        ->from('dialect_text');
+                    })->orderBy('id')
+//                    ->take(1)
+                    ->get();
+        foreach ($dialects as $dialect) {
+            Mvariant::createCoalitions($dialect->id);        
+        }
+    }
+    
+    public function calculateSSindex() {
     }
 }

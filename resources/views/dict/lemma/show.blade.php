@@ -21,14 +21,19 @@
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
 
-        @if (User::checkAccess('dict.edit'))
+        @if (User::checkAccess('dict.edit') && !$lemma->labels()->whereIn('id',[3,5])->count())
             | @include('widgets.form.button._delete', 
                        ['route' => 'lemma.destroy', 
                         'args'=>['id' => $lemma->id]]) 
+        @else
+            | {{ trans('messages.delete') }}
+        @endif
+
+        @if (User::checkAccess('dict.edit'))
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
             | <a href="#" onClick="callCreatePhonetic()">{{ trans('dict.create_phonetic') }}</a>
         @else
-            | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
+            | {{ trans('messages.edit') }}
         @endif
 
             | <a href="/dict/lemma/{{ $lemma->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>

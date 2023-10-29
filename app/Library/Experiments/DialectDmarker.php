@@ -9,7 +9,7 @@ use App\Models\Dict\Dialect;
 
 class DialectDmarker extends Model
 {
-    protected $table_name='dialect_dmarker';
+    protected $table='dialect_dmarker';
     
     public static function dialectListByGroups() {
         return [
@@ -22,7 +22,7 @@ class DialectDmarker extends Model
             'ливвиковские' => 
                 [30, 31, 32, 33, 34, 35, 36, 37],
             'людиковские' => 
-                [38, /*39,*/ 42, 41],
+                [38, 39, 42, 41],
         ];
     }
     
@@ -87,7 +87,7 @@ class DialectDmarker extends Model
 //                 56=>[6, 7, 50, 9, 8, 10, 11, 12, 13, 14, 15, 48, 49, 17, 18, 16, 19, 20, 21, 30, 31, 32, 33, 34, 35, 36, 37],
 //                 57=>[38, 39, 42, 41],
                  58=>[6, 7, 50, 9, 8, 10, 11, 12, 13, 14, 15, 16, 48, 17, 18, 19, 25, 26, 27, 28, 29, 49],
-                 59=>[19, 20, 21, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42, 41],
+                 59=>[19, 20, 21],
 //                 60=>[38, 41],
 //                 61=>[6, 7, 50, 9, 8, 10, 11, 12, 13, 14, 15, 48, 49, 17, 18, 16, 19, 20, 21, 30, 31, 32, 33, 34, 35, 36, 37, 39, 42],
 //                 62=>[30, 31, 32, 33, 34, 35, 36, 37, 42],
@@ -115,7 +115,7 @@ class DialectDmarker extends Model
     
     public static function init($output) {
         $gr_dialects = $dialects = [];
-        foreach (DialectDmarker::dialectListByGroups() as $gr_name => $dialect_grs) {
+        foreach (self::dialectListByGroups() as $gr_name => $dialect_grs) {
             $gr_dialects[$gr_name] = sizeof($dialect_grs);
             foreach ($dialect_grs as $dialect_id) {
                 $dialect = Dialect::find($dialect_id);

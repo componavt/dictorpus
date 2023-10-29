@@ -29,9 +29,11 @@
     <ul>
         <li><a href="/experiments/dialect_dmarker">таблица с частотами</a></li>
         <li><a href="/experiments/dialect_dmarker/fractions">таблица с долями</a></li>
-        <li><a href="/experiments/dialect_dmarker/words">посмотреть слова</a></li>
+        <!--li><a href="/experiments/dialect_dmarker/words">посмотреть слова</a></li-->
     @if (User::checkAccess('admin'))
         <li><a href="/experiments/dialect_dmarker/calculate">переписать частоты</a></li>
+        <li><a href="/experiments/dialect_dmarker/calculate_coalitions">переcчитать коалиции</a></li>
+        <li><a href="/experiments/dialect_dmarker/calculate_SSindex">переcчитать индексы Шепли-Шубика</a></li>
     @endif
     </ul>
 @endsection
