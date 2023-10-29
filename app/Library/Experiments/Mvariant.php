@@ -180,8 +180,8 @@ print "<b>Коалиции для диалекта $dialect_id записаны<
             $coalition_str = join('_',$coalition);
             $v = self::getVoices($dialect_id, $coalition);
             
-            print $dialect_id. ": ";
             if ($v>$min) {
+                print $dialect_id. ": ";
                 if (!DB::table('coalition_dialect')->whereDialectId($dialect_id)->where('coalition', 'like', $coalition_str)->count()) {
                     DB::statement("INSERT INTO coalition_dialect (coalition, dialect_id, frequency) VALUES ('".
                             $coalition_str."', ".$dialect_id.", ".$v.")");

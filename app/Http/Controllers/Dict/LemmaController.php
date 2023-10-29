@@ -756,15 +756,15 @@ class LemmaController extends Controller
     {
         $limit = 1000;
         $search_lemma = $request->input('q').'%';
-        $lang_id = (int)$request->input('lang_id');
+        $lang_id = (array)$request->input('lang_id');
         $list = [];
         
-        $lemmas = Lemma::where('lang_id',$lang_id)
-                       ->where('pos_id','<>',PartOfSpeech::getPhraseID())
+        $lemmas = Lemma::whereIn('lang_id',$lang_id)
+//                       ->where('pos_id','<>',PartOfSpeech::getPhraseID())
                        ->where('lemma','like', $search_lemma)
                        ->take($limit)
                        ->orderBy('lemma')->get();
-        
+//dd($lemmas);        
         foreach($lemmas as $lemma) {
             $list[] = ['id'  => $lemma->id, 
                        'text'=> $lemma->lemma. ' ('.$lemma->pos->name.') '.$lemma->phraseMeaning()];
