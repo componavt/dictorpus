@@ -153,4 +153,76 @@ class DialectDmarker extends Model
                 'w_fraction' => $w_fraction]);
         }        
     }
+    
+    public static function createCoalitions($dialect_id, $win_coef, $players_num) {
+//        DB::statement("DELETE FROM coalition_dialect where dialect_id=".$dialect_id);
+/*        $p1 = Mvariant::whereIn('id', function ($q) use ($dialect_id) {
+                        $q->select('mvariant_id')->from('dialect_dmarker')
+                          ->where('w_frequency', '>', 0)
+                          ->whereDialectId($dialect_id);
+                     })->orderBy('id')->pluck('id')->toArray();*/
+        $p = self::where('w_frequency', '>', 0)
+                           ->whereDialectId($dialect_id)
+                           ->orderBy('w_frequency', 'desc')
+                           ->take($players_num)
+                           ->pluck('mvariant_id')->toArray();
+/*        $min = DialectDmarker::whereDialectId($dialect_id)->whereMvariantId($p[0])
+                             ->first()->w_frequency;*/
+        $max = self::getVoices($dialect_id, $p); 
+        $min = $win_coef*$max;
+//dd($dialect_id, $max, $min);        
+        sort($p);
+//dd($p1, $p);                     
+//        $p = [1, 2, 3, 4];
+        self::addCoalitions($p, [], $dialect_id, $min);
+print "<b>Коалиции для диалекта $dialect_id записаны</b><br>\n";             
+//dd(self::$coalitions);        
+    }
+    
+    public static function addCoalitions($players, $prev, $dialect_id, $min) {
+        foreach ($players as $i => $p) {
+            if (!sizeof($prev)) {
+                $coalition = [$p];
+            } else {
+                $coalition = array_merge($prev, [$p]);
+            }
+//            self::$coalitions[] = join('_',$coalition);
+            $coalition_str = join('_',$coalition);
+            $v = self::getVoices($dialect_id, $coalition);
+            
+            if ($v>$min) {
+                print $dialect_id. ": ";
+                if (!DB::table('coalition_dialect')->whereDialectId($dialect_id)->where('coalition', 'like', $coalition_str)->count()) {
+                    DB::statement("INSERT INTO coalition_dialect (coalition, dialect_id, frequency) VALUES ('".
+                            $coalition_str."', ".$dialect_id.", ".$v.")");
+                    print "записано ";
+                }
+                print $coalition_str. ' = <b>'. $v. '</b>';
+                print "<br>\n";
+            }
+            unset($players[$i]);
+            self::addCoalitions($players, $coalition, $dialect_id, $min);
+        }
+    }
+    
+    public static function getVoices($dialect_id, $coalition) {
+        return self::selectRaw('sum(w_frequency) as sum')
+                 ->whereDialectId($dialect_id)->whereIn('mvariant_id', $coalition)
+                 ->first()->sum;
+    }
+
+    public static function calculateSSindex($dialect, $coalitions_num, $n) {
+        // игроки
+        $p = self::where('w_frequency', '>', 0)
+                           ->whereDialectId($dialect_id)
+                           ->orderBy('w_frequency', 'desc')
+                           ->take($n)
+                           ->pluck('mvariant_id')->toArray();
+        // выигрышные коалиции
+        $coalitions= DB::table('coalition_dialect')
+              ->whereDialectId($dialect_id)
+              ->orderBy('frequency', 'desc')
+              ->take($coalitions_num)
+              ->get();
+    }
 }

@@ -85,6 +85,8 @@ print 'done.';
         ini_set('max_execution_time', 100000);
 //        ini_set('memory_limit', '512M');
                 
+        $win_coef = 0.75;
+        $players_num = 20;
         $dialects = Dialect::whereIn('lang_id', [4,5,6])
                     ->whereIn('id', function ($query) {
                         $query->select('dialect_id')
@@ -93,10 +95,19 @@ print 'done.';
 //                    ->take(1)
                     ->get();
         foreach ($dialects as $dialect) {
-            Mvariant::createCoalitions($dialect->id);        
+            DialectDmarker::createCoalitions($dialect->id, $win_coef, $players_num);        
         }
     }
     
     public function calculateSSindex() {
+        $coalitions_num = 10;
+        $players_num = 20;
+        $dialects = DB::table('coalition_dialect')->groupBy('dialect_id')
+                      ->orderBy('dialect_id')
+                      ->take(1)
+                      ->get();//pluck('dialect_id')->toArray();
+        foreach ($dialects as $rec) {
+            DialectDmarker::calculateSSindex($rec->dialect_id, $coalitions_num, $players_num);                
+        }
     }
 }
