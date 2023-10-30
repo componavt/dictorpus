@@ -74,6 +74,14 @@ class Meaning extends Model
         }
     }
     
+    public function showShortLabels() {
+        $out = [];
+        foreach ($this->labels()->where('visible',1)->get() as $label) {
+            $out[] = $label->short;
+        }
+        return $out;
+    }
+    
     /** Gets list of meanings for lemma $lemma_id,
      * if $lang_id is empty, gets null
      * 

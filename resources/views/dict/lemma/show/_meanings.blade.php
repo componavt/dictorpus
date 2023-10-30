@@ -1,7 +1,11 @@
         @foreach ($lemma->meanings as $meaning)
         <div class="lemma-meaning">
             <div class="lemma-meaning-left">
-                <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}</h3>
+                <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}
+                    @if (sizeof($meaning->showShortLabels()))
+                        ({{ join(', ', $meaning->showShortLabels()) }})
+                    @endif
+                </h3>
 
                 @if ($meaning->hasPhoto())
                 <div class="meaning-b-photo">
