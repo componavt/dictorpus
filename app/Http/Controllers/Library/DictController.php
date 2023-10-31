@@ -533,7 +533,7 @@ class DictController extends Controller
         if (!$meaning->phrases()->wherePivot('lemma_id',$lemma_p->id)->count()) {
             $meaning->phrases()->attach($lemma_p->id);
         }
-        if (!$meaning->lemma->phrases()->wherePivot('lemma_id',$lemma_p->id)->count()) {
+        if (!$meaning->lemma->phrases()->wherePivot('phrase_id',$lemma_p->id)->count()) {
             $meaning->lemma->phrases()->attach($lemma_p->id);
         }
         return view('service.dict.meaning._phrases', compact('meaning'));                
