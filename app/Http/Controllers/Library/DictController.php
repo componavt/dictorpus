@@ -513,21 +513,29 @@ class DictController extends Controller
             return;
         }
 //        $lang_id = $meaning->lemma->lang_id;
-        $lemma_p = Lemma::store($request->phrase, 
-                PartOfSpeech::PhraseId, $meaning->lemma->lang_id);
-        
-        $meaning->phrases()->attach($lemma_p->id);
-        $meaning->lemma->phrases()->attach($lemma_p->id);
-        
-        $meaning_p = Meaning::create([
-            'meaning_n' => 1,
-            'lemma_id' => $lemma_p->id
-        ]);
-        $meaning_text = MeaningText::create([
-            'meaning_id' => $meaning_p->id,
-            'lang_id' => 2,
-            'meaning_text' => $request->phrase_ru
-        ]);
+        $lemma_p = Lemma::whereLemma($request->phrase)
+                        ->wherePosId(PartOfSpeech::PhraseId)
+                        ->whereLangId($meaning->lemma->lang_id)
+                        ->first();
+        if (!$lemma_p) {
+            $lemma_p = Lemma::store($request->phrase, 
+                    PartOfSpeech::PhraseId, $meaning->lemma->lang_id);
+            $meaning_p = Meaning::create([
+                'meaning_n' => 1,
+                'lemma_id' => $lemma_p->id
+            ]);
+            $meaning_text = MeaningText::create([
+                'meaning_id' => $meaning_p->id,
+                'lang_id' => 2,
+                'meaning_text' => $request->phrase_ru
+            ]);
+        }
+        if (!$meaning->phrases()->wherePivot('lemma_id',$lemma_p->id)->count()) {
+            $meaning->phrases()->attach($lemma_p->id);
+        }
+        if (!$meaning->lemma->phrases()->wherePivot('lemma_id',$lemma_p->id)->count()) {
+            $meaning->lemma->phrases()->attach($lemma_p->id);
+        }
         return view('service.dict.meaning._phrases', compact('meaning'));                
     }
     

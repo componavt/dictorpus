@@ -20,7 +20,7 @@ class DialectDmarkerController extends Controller
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/', 
-                         ['only' => ['calculate']]);
+                         ['only' => ['calculate', 'calculateСoalitions', 'calculateSSindex']]);
     }
     /**
      * /experiments/dialect_dmarker/
@@ -88,6 +88,7 @@ print 'done.';
         $win_coef = 0.75;
         $players_num = 20;
         $dialects = Dialect::whereIn('lang_id', [4,5,6])
+                    ->where('id', '>', 27)
                     ->whereIn('id', function ($query) {
                         $query->select('dialect_id')
                         ->from('dialect_text');
@@ -104,10 +105,38 @@ print 'done.';
         $players_num = 20;
         $dialects = DB::table('coalition_dialect')->groupBy('dialect_id')
                       ->orderBy('dialect_id')
-                      ->take(1)
+                      ->where('dialect_id', '>', 30)
+                      ->where('dialect_id', '<', 32)
                       ->get();//pluck('dialect_id')->toArray();
         foreach ($dialects as $rec) {
             DialectDmarker::calculateSSindex($rec->dialect_id, $coalitions_num, $players_num);                
         }
+print 'done';        
+    }
+    
+    public function compareFreqSSindex() {
+        $dialect_markers=[];
+        $dialects = Dialect::whereIn('lang_id', [4,5,6])
+                    ->whereIn('id', function ($query) {
+                        $query->select('dialect_id')
+                        ->from('dialect_dmarker')
+                        ->whereNotNull('SSindex');
+                    })->orderBy('id')
+                    ->get();
+        $dmarkers = Dmarker::orderBy('id')->get();
+        foreach ($dialects as $dialect) {        
+            foreach ($dmarkers as $marker) {
+                foreach ( $marker->mvariants as $variant ) {
+                   $d = $variant->dialects()->where('dialect_id', $dialect->id)->first();
+                   $dialect_markers[$dialect->name][$marker->id .'. '. $marker->name][$variant->id]
+                           =['name'=>$variant->name,
+                             'w_fraction'=>$d ? round($d->pivot->w_fraction, 4): '',
+                             'SSindex'=>$d ? round($d->pivot->SSindex, 4): ''];
+                }
+            }
+        } 
+//dd($dialect_markers);        
+        return view('experiments.dialect_dmarker.compare_freq_SSindex', 
+                compact('dialect_markers'));        
     }
 }

@@ -287,3 +287,9 @@ if (!function_exists('highlight')) {
         return mb_ereg_replace('('.$substr.')', '<span class="'.$class.'">\\1</span>', $str, 'i');
     }
 }
+
+if (!function_exists('fact')) {
+    function fact(int $n) {
+	return ($n >= 1) ?  ($n * fact($n - 1)) : 1;
+    }
+}

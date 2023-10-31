@@ -28,8 +28,9 @@
     <h4>Определение диалектной принадлежности</h4>
     <ul>
         <li><a href="/experiments/dialect_dmarker">таблица с частотами</a></li>
-        <li><a href="/experiments/dialect_dmarker/fractions">таблица с долями</a></li>
+        <li><a href="/experiments/dialect_dmarker/fractions">таблица с относительными частотами</a></li>
         <!--li><a href="/experiments/dialect_dmarker/words">посмотреть слова</a></li-->
+        <li><a href="/experiments/dialect_dmarker/compare_freq_SSindex">сравнить относительные частоты и индекс Шепли-Шубика</a></li>
     @if (User::checkAccess('admin'))
         <li><a href="/experiments/dialect_dmarker/calculate">переписать частоты</a></li>
         <li><a href="/experiments/dialect_dmarker/calculate_coalitions">переcчитать коалиции</a></li>

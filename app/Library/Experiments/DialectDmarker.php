@@ -211,18 +211,53 @@ print "<b>Коалиции для диалекта $dialect_id записаны<
                  ->first()->sum;
     }
 
-    public static function calculateSSindex($dialect, $coalitions_num, $n) {
+    public static function calculateSSindex($dialect_id, $coalitions_num, $n) {
         // игроки
-        $p = self::where('w_frequency', '>', 0)
+        $players = self::where('w_frequency', '>', 0)
                            ->whereDialectId($dialect_id)
                            ->orderBy('w_frequency', 'desc')
                            ->take($n)
                            ->pluck('mvariant_id')->toArray();
-        // выигрышные коалиции
+        sort($players);
+      foreach ($players as $p) {
+          $SSind[$p] = 0;
+        // выигрышные коалиции, содержащие игрока
+//select coalition from coalition_dialect where dialect_id=6 and (coalition like '50' or coalition rlike '^50_' or coalition rlike '_50_' or coalition rlike '_50$') limit 33
         $coalitions= DB::table('coalition_dialect')
               ->whereDialectId($dialect_id)
-              ->orderBy('frequency', 'desc')
-              ->take($coalitions_num)
-              ->get();
+              ->where(function ($q) use ($p) {
+                  $q->where('coalition', 'like', $p)
+                    ->orWhere('coalition', 'rlike', '^'.$p.'_')
+                    ->orWhere('coalition', 'rlike', '_'.$p.'_')
+                    ->orWhere('coalition', 'rlike', '_'.$p.'$');
+              })->get();
+              
+          foreach ($coalitions as $coalition) {
+//              $cp = preg_split('_', $coalition);
+//              $s = sizeof($cp);
+            $s = 1+substr_count($coalition->coalition, '_');
+            if (!DB::table('coalition_dialect') // если коалиция без игрока невыигрышная
+                  ->whereDialectId($dialect_id)
+                  ->whereCoalition(self::coalitionWithoutPlayer($coalition->coalition, $p))->count()) {
+                $SSind[$p] += fact($n-$s)*fact($s-1)/fact($n);
+            }                     
+          }
+          DB::statement("UPDATE dialect_dmarker SET SSindex=".$SSind[$p].
+                  " WHERE dialect_id=".$dialect_id. " AND mvariant_id=".$p);
+      }
+//dd($SSind);      
+    }
+    
+    public static function coalitionWithoutPlayer($coalition, $player) {
+        if ($coalition === (string)$player) {
+            return '';
+        }
+        if (preg_match("/^".$player."\_(.+)$/", $coalition, $regs)
+                || preg_match("/^(.+)\_".$player."$/", $coalition, $regs)) {
+            return $regs[1];
+        }
+        if (preg_match("/^(.+)\_".$player."(\_.+)$/", $coalition, $regs)) {
+            return $regs[1].$regs[2];
+        }
     }
 }

@@ -27,7 +27,7 @@ class Mvariant extends Model
     
     public function dialects(){
         return $this->belongsToMany(Dialect::class, 'dialect_dmarker')
-                ->withPivot('dmarker_id', 't_frequency', 't_fraction', 'w_frequency', 'w_fraction');
+                ->withPivot('dmarker_id', 't_frequency', 't_fraction', 'w_frequency', 'w_fraction', 'SSindex');
     }
     
     public function rightFrequency($dialect_id, $frequency=null): bool {

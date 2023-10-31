@@ -8,7 +8,7 @@
         </tr>
         <tr>
     @foreach ($dialects as $dialect_id => $info)
-            <th colspan='2'><a href="{{ LaravelLocalization::localizeURL('/corpus/text/?search_dialect='.$dialect_id)}}">{{$info['name']}}</a></th>
+            <th colspan='2'><a href="{{ LaravelLocalization::localizeURL('/corpus/text/?search_dialect='.$dialect_id)}}">{{ $info['name'] }}</a></th>
     @endforeach
         </tr>
         

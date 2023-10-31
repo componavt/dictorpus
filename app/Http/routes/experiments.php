@@ -7,6 +7,7 @@
         Route::get('experiments/dialect_dmarker/calculate', 'Library\Experiments\DialectDmarkerController@calculate');
         Route::get('experiments/dialect_dmarker/calculate_coalitions', 'Library\Experiments\DialectDmarkerController@calculateСoalitions');
         Route::get('experiments/dialect_dmarker/calculate_SSindex', 'Library\Experiments\DialectDmarkerController@calculateSSIndex');
+        Route::get('experiments/dialect_dmarker/compare_freq_SSindex', 'Library\Experiments\DialectDmarkerController@compareFreqSSindex');
         Route::get('experiments/dialect_dmarker/fractions', 'Library\Experiments\DialectDmarkerController@fractions');
         Route::get('experiments/dialect_dmarker/words', 'Library\Experiments\DialectDmarkerController@words');
         
