@@ -129,8 +129,10 @@ class Lemma extends Model
 
     public function featuresToArray() {
         $out = [];
-        foreach ($this->features->allowFeatures() as $f) {
-            $out[$f] = $this->features->{$f};
+        if ($this->features) {
+            foreach ($this->features->allowFeatures() as $f) {
+                $out[$f] = $this->features->{$f};
+            }
         }
         return $out;
     }
