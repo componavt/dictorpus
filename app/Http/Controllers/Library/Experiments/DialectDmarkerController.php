@@ -88,7 +88,7 @@ print 'done.';
         $win_coef = 0.75;
         $players_num = 20;
         $dialects = Dialect::whereIn('lang_id', [4,5,6])
-                    ->where('id', '>', 27)
+                    ->where('id', '>', 46)
                     ->whereIn('id', function ($query) {
                         $query->select('dialect_id')
                         ->from('dialect_text');
