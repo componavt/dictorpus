@@ -30,6 +30,12 @@ class Label extends Model
                  ->select('lemma_id');
     }
     
+    public static function ldlLemmas() {
+        return DB::table('label_lemma')->whereLabelId(self::LDLLabel)
+//                 ->whereStatus(1)
+                 ->select('lemma_id');
+    }
+    
     public static function getList()
     {     
         $locale = LaravelLocalization::getCurrentLocale();

@@ -106,7 +106,7 @@ print 'done.';
         $dialects = DB::table('coalition_dialect')->groupBy('dialect_id')
                       ->orderBy('dialect_id')
                       ->where('dialect_id', '>', 30)
-                      ->where('dialect_id', '<', 32)
+//                      ->where('dialect_id', '<', 32)
                       ->get();//pluck('dialect_id')->toArray();
         foreach ($dialects as $rec) {
             DialectDmarker::calculateSSindex($rec->dialect_id, $coalitions_num, $players_num);                

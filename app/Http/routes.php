@@ -26,9 +26,10 @@ Route::group(
         include_once 'routes/correct.php';
         include_once 'routes/corpus.php';
         include_once 'routes/dict.php';
+        include_once 'routes/experiments.php';        
         include_once 'routes/export.php';
         include_once 'routes/import.php';
-        include_once 'routes/experiments.php';        
+        include_once 'routes/ldl.php';
         include_once 'routes/service.php';
         include_once 'routes/olodict.php';
         include_once 'routes/stats.php';
