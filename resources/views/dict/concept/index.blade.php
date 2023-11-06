@@ -31,8 +31,8 @@
                 <th>ID</th>
                 <th>{{ trans('messages.category') }}</th>
                 <th>{{ trans('dict.pos') }}</th>
-                <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('messages.in_russian') }}</th>
+                <th>{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('dict.lemmas') }}</th>
                 <th>{{ trans('messages.photo') }}</th>
                 @if (User::checkAccess('dict.edit'))
@@ -46,8 +46,10 @@
                 <td data-th="ID">{{$concept->id}}</td>
                 <td data-th="{{ trans('messages.category') }}">{{$concept->concept_category_id}}</td>
                 <td data-th="{{ trans('dict.pos') }}">{{$concept->pos ? $concept->pos->name: ''}}</td>
+                <td data-th="{{ trans('messages.in_russian') }}">
+                    <a href="{{ show_route($concept, $args_by_get) }}">{{$concept->text_ru}}</a>
+                </td>
                 <td data-th="{{ trans('messages.in_english') }}">{{$concept->text_en}}</td>
-                <td data-th="{{ trans('messages.in_russian') }}">{{$concept->text_ru}}</td>
                 <td data-th="{{ trans('dict.lemmas') }}">
                     @if ($concept->countLemmas())
                     <a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}?search_concept={{$concept->id}}">{{$concept->countLemmas()}}</a>

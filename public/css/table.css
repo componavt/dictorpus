@@ -49,7 +49,7 @@ td[data-th] .form-group {
 }
 
 .concept-photo img {
-    max-width: 300px;
+    max-width: 150px;
 }
 
 @media (min-width: 767px) {

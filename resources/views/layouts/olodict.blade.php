@@ -26,6 +26,6 @@
         </section>
     </div>
 @include('footer.footer_olodict')
-@include('footer.foot_script_olodict')
+@include('footer.foot_script')
 </body>
 </html>

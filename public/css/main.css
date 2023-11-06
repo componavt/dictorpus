@@ -8,46 +8,16 @@ and open the template in the editor.
     Author     : componavt
 */
 
-@import url(buttons.css);
-@import url(fonts.css);
-@import url(forms.css);
+@import url(general.css);
 @import url(navigation.css);
 @import url(head.css);
-
-body {
-    background: url(/images/bg_decor.png) 0 0 no-repeat;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 14px;
-}
-
-a,
-a:active,
-a:focus,
-a:hover {
-    color: #972d1a;
-    text-decoration: underline;
-}
-
-.link-color {
-    color: #972d1a;    
-}
 
 .blue-color {
     color: #1a6897;   
 }
 
-.btn {
-    text-decoration: none;
-}
-.panel-default {
-    border-color: #d6d6d6;
-    border-radius: 0;
-}
-
-.panel-body {
-    font-size: 14px;
-    padding: 36px 4% 37px;
-    line-height: 150%;
+.footer-right-col {
+    margin-left: -22px;
 }
 
 h1 {
@@ -57,17 +27,6 @@ h1 {
     margin: 0 0 20px;
     padding-left: 43px;
     position: relative;
-}
-
-h1:before {
-    background-image: url(../images/icons.png);
-    background-repeat: no-repeat;
-    content: '';
-    height: 28px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 28px;
 }
 
 h2 {
@@ -81,14 +40,6 @@ h4 {
     font-size: 18px; 
     line-height: 150%;
     margin-bottom: 20px; 
-}
-
-.text-page {
-    line-height: 22px;
-    padding-top: 20px;
-}
-.text-page p {
-    margin: 0 0 20px;
 }
 
 .right-col {
@@ -140,22 +91,6 @@ h4 {
     padding: 5px 10px;
 }
 
-.footer {
-    background-color: #373737;
-    color: #fff;
-    margin-top: 35px;
-    padding: 35px 0 100px;
-}
-
-.footer-right-col {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    padding-left: 12%;
-}
-
 .developers {
     font-size: 15px;
     font-weight: bold;
@@ -166,33 +101,12 @@ h4 {
     position: relative;
 }
 
-.developers:before {
-    background: #fefefe url(../images/krc-logo.png) 50% 32px no-repeat;
-    border-top: 2px solid #dbd8d8;
-    content: '';
-    height: 136px;
-    left: 0;
-    position: absolute;
-    top: -35px;
-    width: 98px;
-}
-
-.developers a {
-    color: #fff;
-    text-decoration: none;
-}
-
 .license {
     color: #d4d4d4;
     font-size: 15px;
     font-style: italic;
     line-height: 22px;
     max-width: 350px;
-}
-
-.license a {
-    color: #6d6d6d;
-    text-decoration: underline;
 }
 
 .copyright {
@@ -218,18 +132,6 @@ h4 {
     position: absolute;
     top: 0;
     width: 141px;
-}
-
-.copy-left {
-    display: inline-block;
-    text-align: right;
-    margin: 0px;
-    -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: “FlipH”;
 }
 
 .corpus-text td:first-child{
@@ -654,10 +556,6 @@ h4 {
     font-weight: normal;
 }
 
-.reload {
-    cursor: pointer;
-}
-
 .img-loading {
     display: none;
 }
@@ -677,6 +575,14 @@ h4 {
     text-decoration: none;
 }
 
+.concept-page-photo {
+    text-align: right;
+}
+
+.concept-page-photo img {
+    max-width: 200px;
+}
+
 
 @media screen and (min-width: 768px) {   
     .comment {
@@ -686,9 +592,6 @@ h4 {
 @media screen and (min-width: 992px) {
     h1 {
         font-size: 33px;
-    }
-    h1:before {
-        top: 7px;
     }
     h2 {
         font-size: 24px;
@@ -702,12 +605,6 @@ h4 {
 @media screen and (min-width: 1200px) {
     h2 {
         font-size: 26px;
-    }
-}
-@media screen and (max-width: 1199px) {
-    .developers {
-        font-size: 14px;
-        line-height: 18px;
     }
 }
 @media screen and (min-width: 768px) and (max-width: 1200px) {   

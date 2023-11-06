@@ -58,6 +58,10 @@ class Lemma extends Model
         parent::boot();
     }
     
+    //Scopes
+    use \App\Traits\Scopes\LemmasForLdl;
+    use \App\Traits\Scopes\LemmasForConcept;
+    
     // Belongs To Methods
     use \App\Traits\Methods\toSqlFull;
     use \App\Traits\Methods\search\lemmasByDialects;

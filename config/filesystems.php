@@ -66,6 +66,12 @@ return [
             'visibility' => 'public',
         ],
         
+        'concepts' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/concepts'),
+            'visibility' => 'public',
+        ],
+        
         'photos' => [
             'driver' => 'local',
             'root' => storage_path('app/public/photo'),

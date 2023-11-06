@@ -8,7 +8,7 @@
                  'value' => $url_args['search_id'],
                  'attributes'=>['placeholder' => 'ID', 'size'=>3]])                                  
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_category', 
                  'values' => $category_values,

@@ -58,7 +58,7 @@
             @foreach($lemmas as $lemma)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
-                <td data-th="{{ trans('dict.lemma') }}"><a href="{{show_route($lemma, $args_by_get)}}">{{$lemma->lemma}}</a></td>
+                <td data-th="{{ trans('dict.lemma') }}"><a href="{{ show_route($lemma, $args_by_get) }}">{{$lemma->lemma}}</a></td>
             @if (!$url_args['search_lang'])
                 <td data-th="{{ trans('dict.lang') }}">
                     @if($lemma->lang)

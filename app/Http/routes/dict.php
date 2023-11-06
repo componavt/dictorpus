@@ -110,6 +110,7 @@ Route::group(
         
         Route::resource('concept', 'Dict\ConceptController',
                        ['names' => ['update' => 'concept.update',
+                                    'show' => 'concept.show',
                                     'store' => 'concept.store',
                                     'destroy' => 'concept.destroy']]);
         

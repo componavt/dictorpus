@@ -1,4 +1,3 @@
-<?php $column_title = 'name_'. LaravelLocalization::getCurrentLocale(); ?>
 @extends('layouts.page')
 
 @section('page_title')
@@ -18,7 +17,7 @@
             | <a href="">{{ trans('messages.history') }}</a>
         </p>
         
-        <h2>{{ $gram->{$column_title} }}</h2>
+        <h2>{{ $gram->name }}</h2>
         
         <p><i>{{ trans('dict.name_short')}} {{ trans('messages.in_english') }}:</i> <b>{{ $gram->name_short_en}}</b></p>
         

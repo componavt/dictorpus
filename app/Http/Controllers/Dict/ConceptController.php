@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Controller;
 use LaravelLocalization;
 use Response;
+use Storage;
 
 use App\Models\Corpus\Place;
 
@@ -96,7 +97,7 @@ class ConceptController extends Controller
         $concept = Concept::create($request->all());
         $concept->updateWikiSrc();
         
-        return Redirect::to('/dict/concept'.($this->args_by_get))
+        return Redirect::to('/dict/concept/'.$concept->id.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
     }
 
@@ -108,7 +109,18 @@ class ConceptController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/dict/concept/');
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $concept = Concept::find($id); 
+        
+        if ($concept) {
+            return Redirect::to('/dict/concept'.($this->args_by_get));          
+        }
+        
+        $langs = Lang::whereNotNull('name_ru');
+        return view('dict.concept.show', 
+                compact('concept', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -150,7 +162,7 @@ class ConceptController extends Controller
             $concept->updateWikiSrc();
         }
         
-        return Redirect::to('/dict/concept'.($this->args_by_get))
+        return Redirect::to('/dict/concept/'.$concept->id.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        
     }
 
@@ -336,6 +348,13 @@ class ConceptController extends Controller
         $concept = Concept::find($id);
         if (!$concept->wiki_photo) {
             return ' ';
+        }
+        $file = preg_replace("/\s/", '_', $concept->wiki_photo);
+        if (Storage::disk('concepts')->exists($file)) {
+            $photo = ['source' =>  Storage::disk('concepts')->url($file), 'url' => ''];
+            return view('dict.concept._photo_preview', compact('photo'));
+        } else {
+            return;
         }
         $photo = $concept->photoInfo();//Preview;
         if (!$photo) {

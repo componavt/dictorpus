@@ -11,20 +11,22 @@
     <p class="browsehappy">Вы используете  <strong>слишком старый</strong> браузер. Пожалуйста <a href="http://browsehappy.com/">обновите ваш браузер</a> для нормального серфинга по современным сайтам.</p>
     <![endif]-->
     <div class="container">
-@include('header.header_olodict')
+@include('header.header_ldl')
         <section>
 @include('errors.errmsg')
-            <div class="main-panel row">
-                <div class="left-column col-sm-3">
-                    @yield('left-column')
-                </div>
-                <div class="right-column col-sm-9">
-                    @yield('body')
+            @hasSection('clear_b')
+                @yield('clear_b')
+            @endif
+            @hasSection('body')
+            <div class="panel panel-default">
+                <div class="panel-body">
+                @yield('body')
                 </div>
             </div>
+            @endif
         </section>
     </div>
-@include('footer.footer_olodict')
-@include('footer.foot_script_olodict')
+@include('footer.footer_ldl')
+@include('footer.foot_script')
 </body>
 </html>

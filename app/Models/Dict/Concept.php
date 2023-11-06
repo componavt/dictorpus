@@ -14,7 +14,7 @@ use App\Models\Dict\Lemma;
 class Concept extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['concept_category_id', 'pos_id', 'text_en', 'text_ru', 'wiki_photo', 'src']; //'id', 
+    protected $fillable = ['concept_category_id', 'pos_id', 'text_en', 'text_ru', 'wiki_photo', 'src', 'descr_en', 'descr_ru']; //'id', 
     const WIKI_API = 'https://en.wikipedia.org/w/api.php';
     const WIKI_URL = 'https://commons.wikimedia.org/wiki/File:';
     const WIKI_SRC = 'https://upload.wikimedia.org/wikipedia/commons/';
@@ -45,12 +45,28 @@ class Concept extends Model
         return $text;
     }
     
+    public function getDescrAttribute() : String
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $column = "descr_" . $locale;
+        $text = $this->{$column};
+        
+        if (!$text && $locale!='ru') {
+            $text = $this->descr_ru;
+        }
+        
+        return $text;
+    }
+    
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\ConceptCategory;
     use \App\Traits\Relations\BelongsTo\POS;
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Meanings;
+    
+    //Scopes
+    use \App\Traits\Scopes\ConceptsForLdl;
     
     public function getSectionAttribute() : String
     {
