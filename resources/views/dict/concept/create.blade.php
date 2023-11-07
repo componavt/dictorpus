@@ -5,7 +5,7 @@
 @stop
 
 @section('body')
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/concept/') }}">{{ trans('messages.back_to_list') }}</a></p>
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/concept/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a></p>
         
         {!! Form::open(array('method'=>'POST', 'route' => array('concept.store'))) !!}
         @include('dict.concept._form_create_edit', 
