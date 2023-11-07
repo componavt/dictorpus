@@ -179,11 +179,11 @@ function addWordGramset(el) {
     }); 
 }    
 
-function loadPhoto(obj, id, url) {
+function loadPhoto(obj, id, url, with_url=1) {
     $("#img-photo-loading_"+ id).show();                
     $('#'+obj+'-photo_'+ id).html('');
     $.ajax({
-        url: url, 
+        url: url+'?with_url='+with_url, 
         type: 'GET',
         success: function(result){
             $('#'+obj+'-photo_'+ id).html(result);

@@ -27,7 +27,7 @@
 
 @section('jqueryFunc')
     @foreach($concepts as $concept)
-        loadPhoto('concept', {{$concept->id}}, '/dict/concept/{{$concept->id}}/photo_preview');
+        loadPhoto('concept', {{$concept->id}}, '/dict/concept/{{$concept->id}}/photo_preview', 0);
     @endforeach
 @stop
 

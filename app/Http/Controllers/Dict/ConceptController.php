@@ -343,25 +343,26 @@ class ConceptController extends Controller
                         'search_lang', 'search_places', 'lang_values', 'place_values'));
     }
     
-    public function photoPreview($id)
+    public function photoPreview($id, Request $request)
     {
         $concept = Concept::find($id);
         if (!$concept->wiki_photo) {
             return ' ';
         }
+        $with_url = $request->with_url;
         $file = preg_replace("/\s/", '_', $concept->wiki_photo);
-        if (Storage::disk('concepts')->exists($file)) {
+/*        if (Storage::disk('concepts')->exists($file)) {
             $photo = ['source' =>  Storage::disk('concepts')->url($file), 'url' => ''];
             return view('dict.concept._photo_preview', compact('photo'));
         } else {
             return;
-        }
+        }*/
         $photo = $concept->photoInfo();//Preview;
         if (!$photo) {
             return view('dict.concept._photo_reload', with(['obj'=>'concept', 'id'=>$id,
                 'url'=>'/dict/concept/'.$id.'/photo_preview']));
         }
-        return view('dict.concept._photo_preview', compact('photo'));
+        return view('dict.concept._photo_preview', compact('photo', 'with_url'));
     }
 /*    
     public function photoView($id)

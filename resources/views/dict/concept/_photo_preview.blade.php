@@ -1,7 +1,7 @@
-    @if ($photo['url'])
+    @if ($with_url && $photo['url'])
     <a href="{{$photo['url']}}" target="_blank">
     @endif
         <img src="{{$photo['source']}}">
-    @if ($photo['url'])
+    @if ($with_url && $photo['url'])
     </a>
     @endif

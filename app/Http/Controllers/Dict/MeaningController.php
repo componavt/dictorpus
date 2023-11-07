@@ -249,7 +249,8 @@ class MeaningController extends Controller
             return view('dict.concept._photo_reload', with(['obj'=>'meaning', 'id'=>$meaning_id,
                 'url'=>'/dict/meaning/'.$meaning_id.'/photo']));
         }
-        return view('dict.concept._photo_preview', compact('photo'));
+        $with_url = 1;
+        return view('dict.concept._photo_preview', compact('photo', 'with_url'));
     }
     
     public function up(int $meaning_id, Request $request) {
