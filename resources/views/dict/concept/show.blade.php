@@ -6,7 +6,7 @@
 
 @section('body')
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/concept/') }}">{{ trans('messages.back_to_list') }}</a>
+            <a href="{{ LaravelLocalization::localizeURL('/dict/concept/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             
         @if (User::checkAccess('ref.edit'))
             | @include('widgets.form.button._edit', ['route' => '/dict/concept/'.$concept->id.'/edit'])
