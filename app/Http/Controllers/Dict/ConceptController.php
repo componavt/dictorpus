@@ -114,7 +114,7 @@ class ConceptController extends Controller
         
         $concept = Concept::find($id); 
         
-        if ($concept) {
+        if (!$concept) {
             return Redirect::to('/dict/concept'.($this->args_by_get));          
         }
         
