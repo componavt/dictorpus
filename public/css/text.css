@@ -315,10 +315,29 @@ h5:first-letter {
     cursor: pointer;
 }
 
+.photo-in-modal {
+    text-align:center;
+}
+
 .photo-in-modal img {
-    width: 100%;
+    max-width: 100%;
 }
 
 .no-wordforms {
     border-bottom: 2px red dotted;
+}
+
+@media (min-width: 576px) {
+}
+
+@media (min-width: 768px) {
+    .photo-in-modal img {
+        max-width: 568px;
+    }
+}
+
+@media (min-width: 992px) {
+    .photo-in-modal img {
+        max-width: 868px;
+    }
 }
