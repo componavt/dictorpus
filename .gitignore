@@ -7,4 +7,5 @@ Homestead.json
 .env
 /nbproject/private/
 *.bak
+/public/media/*
 

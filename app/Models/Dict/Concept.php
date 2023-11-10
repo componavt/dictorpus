@@ -18,6 +18,7 @@ class Concept extends Model implements HasMediaConversions
     const WIKI_API = 'https://en.wikipedia.org/w/api.php';
     const WIKI_URL = 'https://commons.wikimedia.org/wiki/File:';
     const WIKI_SRC = 'https://upload.wikimedia.org/wikipedia/commons/';
+    const WIKI_PATH = 'https://commons.wikimedia.org/wiki/Special:FilePath/';
     const WIKI_SRC_THUMB  = 'https://upload.wikimedia.org/wikipedia/commons/thumb/';
     
     use HasMediaTrait;
@@ -80,6 +81,11 @@ class Concept extends Model implements HasMediaConversions
     public function getSectionAttribute() : String
     {
         return trans("dict.concept_section_".substr($this->id, 0,1));
+    }    
+
+    public function getWikiPhotoEncodedAttribute() : String
+    {
+        return preg_replace("/\s/", "_",$this->wiki_photo);
     }    
 
     public static function getPOSCodes() {
@@ -158,12 +164,13 @@ class Concept extends Model implements HasMediaConversions
                 $this->updateWikiSrc();
             }
             $this->uploadImageToLibrary();
-            $local_src = $this->getFirstMediaUrl('images', 'thumb');
+            $local_src = $this->getFirstMediaUrl('images');
         }
+
         if (!$local_src) {
             return null;
         }
-        return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
+        return ['url' => self::WIKI_URL.$this->wiki_photo_encoded,
                 'source' => $local_src];            
 /*        
         if ($this->src) {
@@ -174,11 +181,12 @@ class Concept extends Model implements HasMediaConversions
 */    }
     
     public function uploadImageToLibrary() {
-        if (!$this->src) {
+        if (!$this->wiki_photo) {
             return null;
         }
         ini_set( 'user_agent', 'VepKar/0.0 (http://http://dictorpus.krc.karelia.ru)' );
-        $this->addMediaFromUrl(self::WIKI_SRC.$this->src)
+//        $this->addMediaFromUrl(self::WIKI_SRC.$this->src.'?width=200')
+        $this->addMediaFromUrl(self::WIKI_PATH.$this->wiki_photo_encoded.'?width=1200')
              ->toCollection('images');
     }
 

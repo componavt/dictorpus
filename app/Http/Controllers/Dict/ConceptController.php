@@ -367,9 +367,9 @@ class ConceptController extends Controller
     }
     
     public function test() {
-dd(config('filesystems.disks.media.root'));        
+/*dd(config('filesystems.disks.media.root'));        
         $concept=Concept::find(2);
-        $concept->uploadImageToLibrary();
+        $concept->uploadImageToLibrary();*/
     }
     /*    
     public function photoView($id)
