@@ -184,7 +184,7 @@ class Concept extends Model implements HasMediaConversions
         if (!$this->wiki_photo) {
             return null;
         }
-        ini_set( 'user_agent', 'VepKar/0.0 (http://http://dictorpus.krc.karelia.ru)' );
+        ini_set( 'user_agent', 'VepKar/1.0 (http://dictorpus.krc.karelia.ru)' );
 //        $this->addMediaFromUrl(self::WIKI_SRC.$this->src.'?width=200')
         $this->addMediaFromUrl(self::WIKI_PATH.$this->wiki_photo_encoded.'?width=1200')
              ->toCollection('images');
