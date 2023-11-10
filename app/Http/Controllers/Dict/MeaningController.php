@@ -241,7 +241,7 @@ class MeaningController extends Controller
     
     public function photo(int $meaning_id) {
         $meaning = Meaning::find($meaning_id);
-        if (!$meaning->concepts()->count() || !$meaning->concepts[0]->wiki_photo) {
+        if (!$meaning || !$meaning->concepts()->count() || !$meaning->concepts[0]->wiki_photo) {
             return;
         }
         $photo = $meaning->photoInfo();
