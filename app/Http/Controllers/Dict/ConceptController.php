@@ -365,7 +365,12 @@ class ConceptController extends Controller
         }
         return view('dict.concept._photo_preview', compact('photo', 'with_url'));
     }
-/*    
+    
+    public function test() {
+        $concept=Concept::find(1);
+        $concept->uploadImageToLibrary();
+    }
+    /*    
     public function photoView($id)
     {
         $concept = Concept::find($id);

@@ -7,6 +7,8 @@ Route::group(
     function()
     {
         Route::get('addCompTypeToPhrases', 'Library\ServiceController@addCompTypeToPhrases');
+        Route::get('audio/{list}', 'Dict\AudioController@recordGroup');
+        
         Route::get('check_author', 'Library\ServiceController@checkAuthors');
         Route::get('check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('copy_lemmas', 'Library\ServiceController@copyLemmas');
@@ -40,5 +42,5 @@ Route::group(
         Route::get('dict/{meaning_id}/label/{label_id}/remove', 'Library\DictController@removeVisibleLabel');
         Route::get('dict/wordforms/{lemma_id}', 'Library\DictController@wordforms');
         
-        Route::get('audio/{list}', 'Dict\AudioController@recordGroup');
+        Route::get('test', 'Dict\ConceptController@test');
     });
