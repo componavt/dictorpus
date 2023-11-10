@@ -177,6 +177,7 @@ class Concept extends Model implements HasMediaConversions
         if (!$this->src) {
             return null;
         }
+        ini_set( 'user_agent', 'VepKar/0.0 (http://http://dictorpus.krc.karelia.ru)' );
         $this->addMediaFromUrl(self::WIKI_SRC.$this->src)
              ->toCollection('images');
     }

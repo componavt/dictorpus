@@ -367,7 +367,7 @@ class ConceptController extends Controller
     }
     
     public function test() {
-        $concept=Concept::find(1);
+        $concept=Concept::find(2);
         $concept->uploadImageToLibrary();
     }
     /*    
