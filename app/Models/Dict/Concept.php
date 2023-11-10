@@ -34,6 +34,16 @@ class Concept extends Model implements HasMediaConversions
         parent::boot();
     }
 
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\ConceptCategory;
+    use \App\Traits\Relations\BelongsTo\POS;
+
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Meanings;
+    
+    //Scopes
+    use \App\Traits\Scopes\ConceptsForLdl;
+    
     public function registerMediaConversions()
     {
         $this->addMediaConversion('thumb')
@@ -67,16 +77,6 @@ class Concept extends Model implements HasMediaConversions
         
         return $text;
     }
-    
-    // Belongs To Relations
-    use \App\Traits\Relations\BelongsTo\ConceptCategory;
-    use \App\Traits\Relations\BelongsTo\POS;
-
-    // Belongs To Many Relations
-    use \App\Traits\Relations\BelongsToMany\Meanings;
-    
-    //Scopes
-    use \App\Traits\Scopes\ConceptsForLdl;
     
     public function getSectionAttribute() : String
     {

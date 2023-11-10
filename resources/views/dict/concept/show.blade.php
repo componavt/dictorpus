@@ -21,6 +21,7 @@
     <div class="col-sm-8">
         <h2>{{ $concept->text }}</h2>
         
+        <p><b>{{ trans('messages.category') }}:</b> {{ $concept->concept_category_id }}. {{ $concept->conceptCategory->name }}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $concept->pos->name }}</p>
         <p><b>{{ trans('dict.name')}} {{ trans('messages.in_russian') }}:</b> {{ $concept->text_ru }}</p>        
         <p><b>{{ trans('dict.name')}} {{ trans('messages.in_english') }}:</b> {{ $concept->text_en }}</p>        
