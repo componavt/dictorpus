@@ -152,7 +152,7 @@ class Concept extends Model implements HasMediaConversions
         if (!$this->wiki_photo) {
             return;
         }
-/*        $local_src = $this->getFirstMediaUrl('images', 'thumb');
+        $local_src = $this->getFirstMediaUrl('images', 'thumb');
         if (!$local_src) {
             if (!$this->src) {
                 $this->updateWikiSrc();
@@ -165,13 +165,13 @@ class Concept extends Model implements HasMediaConversions
         }
         return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
                 'source' => $local_src];            
-*/        
+/*        
         if ($this->src) {
             return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
                     'source' => self::WIKI_SRC.$this->src];
         }
         return self::getWikiInfo($this->wiki_photo);
-    }
+*/    }
     
     public function uploadImageToLibrary() {
         if (!$this->src) {
