@@ -95,7 +95,8 @@ class ConceptController extends Controller
     {
         $this->validateForm($request);
         $concept = Concept::create($request->all());
-        $concept->updateWikiSrc();
+        $concept->uploadImageToLibrary();
+//        $concept->updateWikiSrc();
         
         return Redirect::to('/dict/concept/'.$concept->id.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.created_success'));        
@@ -158,9 +159,8 @@ class ConceptController extends Controller
         $concept = Concept::find($id);
         $old_wiki_photo = $concept->wiki_photo;
         $concept->fill($request->all())->save();
-        if ($old_wiki_photo != $concept->wiki_photo || !$concept->src) {
-            $concept->updateWikiSrc();
-        }
+        $concept->uploadImageToLibrary($old_wiki_photo);
+        //$concept->updateWikiSrc();
         
         return Redirect::to('/dict/concept/'.$concept->id.($this->args_by_get))
             ->withSuccess(\Lang::get('messages.updated_success'));        

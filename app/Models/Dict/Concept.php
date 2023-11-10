@@ -156,7 +156,7 @@ class Concept extends Model implements HasMediaConversions
 
     public function photoInfo() {
         if (!$this->wiki_photo) {
-            return;
+            return null;
         }
         $local_src = $this->getFirstMediaUrl('images', 'thumb');
         if (!$local_src) {
@@ -183,14 +183,20 @@ class Concept extends Model implements HasMediaConversions
         return self::getWikiInfo($this->wiki_photo);
 */    }
     
-    public function uploadImageToLibrary() {
+    public function uploadImageToLibrary($old_wiki_photo='') {
         if (!$this->wiki_photo) {
-            return null;
+            $this->clearMediaCollection('images');
+            return;
         }
-        ini_set( 'user_agent', 'VepKar/1.0 (http://dictorpus.krc.karelia.ru)' );
+        if ($old_wiki_photo != $this->wiki_photo) {
+            if ($old_wiki_photo) {
+                $this->clearMediaCollection('images');
+            }
+            ini_set( 'user_agent', 'VepKar/1.0 (http://dictorpus.krc.karelia.ru)' );
 //        $this->addMediaFromUrl(self::WIKI_SRC.$this->src.'?width=200')
-        $this->addMediaFromUrl(self::WIKI_PATH.$this->wiki_photo_encoded.'?width=1200')
-             ->toCollection('images');
+            $this->addMediaFromUrl(self::WIKI_PATH.$this->wiki_photo_encoded.'?width=1200')
+                 ->toCollection('images');
+        }
     }
 
     public static function getWikiInfo($filename) {
