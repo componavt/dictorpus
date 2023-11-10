@@ -3,15 +3,15 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-//use Illuminate\Http\Request;
-
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use LaravelLocalization;
 
 use App\Library\Str;
 
 use App\Models\Dict\Lemma;
 
-class Concept extends Model
+class Concept extends Model implements HasMediaConversions
 {
     public $timestamps = false;
     protected $fillable = ['concept_category_id', 'pos_id', 'text_en', 'text_ru', 'wiki_photo', 'src', 'descr_en', 'descr_ru']; //'id', 
@@ -20,6 +20,7 @@ class Concept extends Model
     const WIKI_SRC = 'https://upload.wikimedia.org/wikipedia/commons/';
     const WIKI_SRC_THUMB  = 'https://upload.wikimedia.org/wikipedia/commons/thumb/';
     
+    use HasMediaTrait;
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -32,6 +33,14 @@ class Concept extends Model
         parent::boot();
     }
 
+    public function registerMediaConversions()
+    {
+        $this->addMediaConversion('thumb')
+             ->setWidth(200);
+//             ->setManipulations(['w' => 200, 'h' => 200]);
+//             ->performOnCollections('wikimedia');
+    }
+    
     public function getTextAttribute() : String
     {
         $locale = LaravelLocalization::getCurrentLocale();
@@ -143,6 +152,20 @@ class Concept extends Model
         if (!$this->wiki_photo) {
             return;
         }
+/*        $local_src = $this->getFirstMediaUrl('images', 'thumb');
+        if (!$local_src) {
+            if (!$this->src) {
+                $this->updateWikiSrc();
+            }
+            $this->uploadImageToLibrary();
+            $local_src = $this->getFirstMediaUrl('images', 'thumb');
+        }
+        if (!$local_src) {
+            return null;
+        }
+        return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
+                'source' => $local_src];            
+*/        
         if ($this->src) {
             return ['url' => self::WIKI_URL.preg_replace("/\s/", "_",$this->wiki_photo),
                     'source' => self::WIKI_SRC.$this->src];
@@ -150,6 +173,14 @@ class Concept extends Model
         return self::getWikiInfo($this->wiki_photo);
     }
     
+    public function uploadImageToLibrary() {
+        if (!$this->src) {
+            return null;
+        }
+        $this->addMediaFromUrl(self::WIKI_SRC.$this->src)
+             ->toCollection('images');
+    }
+
     public static function getWikiInfo($filename) {
         $query_array = array (
             'action' => 'query',

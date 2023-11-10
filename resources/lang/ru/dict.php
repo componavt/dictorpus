@@ -229,6 +229,8 @@ return [
     'phonetics' => 'произношение',
     'phrase_lemmas' => 'леммы из фразы',
     'phrases' => 'фразеологизмы',
+    'places_use' => 'Места словоупотребления',
+    
     'pos' => 'часть речи',
     'pos_category' => 'категория части речи',
     'pos_categories' => [2 => 'глагольная',
@@ -237,6 +239,7 @@ return [
     'pos_category_2' => 'Cлова закрытого класса',
     'pos_category_3' => 'Другие',
     'pos_list' => 'Cписок частей речи',
+    
     'prediction_interpretation' => 'значение для предсказанной леммы',
     'prontype' => 'разряд местоимения',
     'prontypes' => [NULL=> '',

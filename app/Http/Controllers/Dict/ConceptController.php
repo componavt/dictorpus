@@ -350,13 +350,14 @@ class ConceptController extends Controller
             return ' ';
         }
         $with_url = $request->with_url;
-        $file = preg_replace("/\s/", '_', $concept->wiki_photo);
-/*        if (Storage::disk('concepts')->exists($file)) {
+/*        $file = preg_replace("/\s/", '_', $concept->wiki_photo);
+        if (Storage::disk('concepts')->exists($file)) {
             $photo = ['source' =>  Storage::disk('concepts')->url($file), 'url' => ''];
             return view('dict.concept._photo_preview', compact('photo'));
         } else {
             return;
         }*/
+        
         $photo = $concept->photoInfo();//Preview;
         if (!$photo) {
             return view('dict.concept._photo_reload', with(['obj'=>'concept', 'id'=>$id,

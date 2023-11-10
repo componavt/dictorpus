@@ -165,7 +165,8 @@ return [
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
         
         ConsoleTVs\Charts\ChartsServiceProvider::class,
-//        PhpConsole\Laravel\ServiceProvider::class,  // debug
+        Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
+ //        PhpConsole\Laravel\ServiceProvider::class,  // debug
 //        Barryvdh\Debugbar\ServiceProvider::class,   //composer require barryvdh/laravel-debugbar  // also debugger
         
         App\Providers\DictorpusServiceProvider::class,

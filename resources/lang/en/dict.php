@@ -210,6 +210,7 @@ return [
     'phonetics' => 'pronunciation',
     'phrase_lemmas' => 'Phrase lemmas',
     'phrases' => 'Phrases',
+    'places_use' => 'Places of use',
     'pos' => 'part of speech',
     'pos_category' => 'POS category',
     'pos_categories' => [2 => 'verb',

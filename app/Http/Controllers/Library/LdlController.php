@@ -80,4 +80,45 @@ class LdlController extends Controller
         return view('ldl.concept',
                 compact('alphabet', 'concept', 'lemmas', 'args_by_get', 'url_args'));
     }
+    
+    /**
+     * test: /dict/meaning/examples/reload/23813
+     * 
+     * @param INT $id
+     * @return \Illuminate\Http\Response
+     */
+    public function loadExamples (int $id, Request $request) {
+        $limit = 5;
+        $start = (int)$request->input('start');
+        $meaning = Meaning::find($id);
+        if (!$meaning) {
+            return NULL;
+        }
+        
+        $sentence_count = $meaning->countSentences(false);
+        $sentence_total = $meaning->countSentences(true);
+        $sentences = $meaning->sentences(false, $limit, $start);
+        $count=1+$start;   
+//dd($sentences);        
+        return view('dict.lemma.example.all', 
+                compact('meaning', 'limit', 'start', 'count',
+                        'sentence_count', 'sentence_total', 'sentences')); 
+    }
+
+    public function loadMoreExamples (int $id, Request $request) {
+        $limit = 5;
+        $start = (int)$request->input('start');
+        $meaning = Meaning::find($id);
+        if (!$meaning) {
+            return NULL;
+        }
+        
+        $sentence_count = $meaning->countSentences(false);
+        $sentences = $meaning->sentences(false, $limit, $start);
+        $count=1+$start;   
+        
+        return view('dict.lemma.example._limit', 
+                compact('meaning', 'limit', 'start', 'count',
+                        'sentence_count', 'sentences')); 
+    }
 }

@@ -246,6 +246,53 @@ label {
   font-weight: 700;
 }
 
+.audio-button {
+    display: inline-block;
+    position: relative;
+    top: 5px;
+}
+
+.lemma-b div.essential_audio.circle {
+    overflow: hidden;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin: 8px 0 5px 10px;
+}
+
+.lemma-b div.essential_audio.circle > div:nth-child(1) div {
+    width: 26px;
+    height: 20px;
+    top: -8px;
+    left: 0;
+    margin-left: 2px;
+}
+
+.lemma-b div.essential_audio.circle > div:nth-child(1) div:after {
+    top: -1px;
+    left: -1px;
+    width: 68%;
+    height: 68%;
+}
+
+.lemma-b h2 {
+    color: #911917;
+    display: flex;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 15px 5px 0 0;
+}
+
+
+
+
+
+
+
+
+
+
+
 @media (min-width: 576px) {   
     .logo {
         display: flex;

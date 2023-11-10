@@ -123,12 +123,12 @@ class Meaning extends Model
      *                           false - for view, output all positive examples (relevance>0)
      * @return array
      */
-    public function countSentences($for_edit=false)
+    public function countSentences($for_edit=false, $relevance=0)
     {    
         $sentence_builder = DB::table('meaning_text')
                               ->where('meaning_id',$this->id);
         if (!$for_edit) {
-            $sentence_builder = $sentence_builder->where('relevance','>',0);
+            $sentence_builder = $sentence_builder->where('relevance','>',$relevance);
         }
         return $sentence_builder->count();
     }
