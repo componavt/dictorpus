@@ -160,14 +160,14 @@ class Concept extends Model implements HasMediaConversions
         }
         $local_src = $this->getFirstMediaUrl('images', 'thumb');
         if (!$local_src) {
-            $local_src = $this->getMedia('images')->getUrl();
+            $local_src = $this->getFirstMediaUrl('images');
         }
         if (!$local_src) {
             if (!$this->src) {
                 $this->updateWikiSrc();
             }
             $this->uploadImageToLibrary();
-            $local_src = $this->getMedia('images')->getUrl();
+            $local_src = $this->getFirstMediaUrl('images');
         }
 
         if (!$local_src) {
