@@ -4,7 +4,7 @@
         <td> 
             {{ $count++ }}.
             @include('dict.lemma.example.sentence', 
-                ['relevance'=>$sentence['relevance'], 'is_edit' => 1])
+                ['relevance'=>$sentence['relevance'], 'is_edit' => $is_edit])
         </td>
     </tr>
 @endforeach
@@ -13,7 +13,7 @@
 @if ($count<=$sentence_count)
 <a {{--id="show-more-{{$meaning->id}}" --}}
    class="show-more-examples"
-   onClick ="showMoreExamples(this, {{$start+$limit}}, '{{LaravelLocalization::getCurrentLocale()}}')"
+   onClick ="showMoreExamples(this, {{$start+$limit}}, '{{LaravelLocalization::getCurrentLocale()}}', {{ $is_edit }})"
    data-for="{{$meaning->id}}">
         {{ trans('dict.more_examples') }}
 </a>

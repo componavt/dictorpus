@@ -33,7 +33,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
 @if ($sentence['text'])
 (<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id. '?search_sentence='.$sentence['s_id']) }}" 
     title="{{$place_title}}">{{$sentence['text']->title}}</a>)
-    @if (isset($is_edit) && User::checkAccess('dict.edit'))
+    @if (!empty($is_edit) && User::checkAccess('dict.edit'))
         @include('widgets.form.button._edit', 
                  ['route' => '/dict/lemma/'.$meaning->lemma->id.'/edit/example/'.$t_s_w,
                   'link_class' => 'sentence-edit',
@@ -41,7 +41,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
     @endif    
     
     @if (!isset($relevance) || $relevance==1)
-        @if (isset($is_edit) && User::checkAccess('dict.edit'))
+        @if (!empty($is_edit) && User::checkAccess('dict.edit'))
             @include('widgets.form.button._add', 
                     ['data_add' => $m_t_s_w,
                      'class' => 'add-example',
@@ -50,7 +50,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
         @endif
     @endif
     @if (!isset($relevance) || $relevance!=10)
-        @if (isset($is_edit) && User::checkAccess('dict.edit'))
+        @if (!empty($is_edit) && User::checkAccess('dict.edit'))
             @include('widgets.form.button._add', 
                     ['data_add' => $m_t_s_w,
                      'class' => 'add-great-example',
@@ -58,7 +58,7 @@ if($sentence['text']->event && $sentence['text']->event->place) {
                      'title' => trans('dict.add-example-10')])
         @endif
     @endif
-    @if (isset($is_edit) && User::checkAccess('dict.edit'))
+    @if (!empty($is_edit) && User::checkAccess('dict.edit'))
         @include('widgets.form.button._remove', 
                 ['data_for' => $m_t_s_w,
                  'class' => 'remove-example',

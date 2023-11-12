@@ -75,7 +75,7 @@ class Concept extends Model implements HasMediaConversions
             $text = $this->descr_ru;
         }
         
-        return $text;
+        return $text ? $text : '';
     }
     
     public function getSectionAttribute() : String

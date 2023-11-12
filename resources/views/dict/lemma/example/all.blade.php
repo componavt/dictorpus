@@ -26,7 +26,7 @@
         @endforeach
     </p>
 
-    @include('dict.lemma.example._limit')
+    @include('dict.lemma.example._limit', ['is_edit'=>1])
 
     <div id="more-{{$meaning->id}}" class="more-examples"></div>   
 

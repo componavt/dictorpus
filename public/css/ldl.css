@@ -152,7 +152,7 @@ h1:first-letter {
     top: 5px;
 }
 
-.lemma-b div.essential_audio.circle {
+.b-lemma div.essential_audio.circle {
     overflow: hidden;
     width: 20px;
     height: 20px;
@@ -160,7 +160,7 @@ h1:first-letter {
     margin: 8px 0 5px 10px;
 }
 
-.lemma-b div.essential_audio.circle > div:nth-child(1) div {
+.b-lemma div.essential_audio.circle > div:nth-child(1) div {
     width: 26px;
     height: 20px;
     top: -8px;
@@ -168,14 +168,14 @@ h1:first-letter {
     margin-left: 2px;
 }
 
-.lemma-b div.essential_audio.circle > div:nth-child(1) div:after {
+.b-lemma div.essential_audio.circle > div:nth-child(1) div:after {
     top: -1px;
     left: -1px;
     width: 68%;
     height: 68%;
 }
 
-.lemma-b h3 {
+.b-lemma h3 {
     font-weight: bold;
     font-size: 16px;
 }
@@ -195,7 +195,7 @@ h1:first-letter {
     left: -35px;
     top: -7px;
 }
-.lemma-b .lemma-phrase div.essential_audio.circle > div:nth-child(1) div {
+.b-lemma .lemma-phrase div.essential_audio.circle > div:nth-child(1) div {
     top: 2px;
     left: 0px;
 }
@@ -252,7 +252,7 @@ label {
     top: 5px;
 }
 
-.lemma-b div.essential_audio.circle {
+.b-lemma div.essential_audio.circle {
     overflow: hidden;
     width: 20px;
     height: 20px;
@@ -260,7 +260,7 @@ label {
     margin: 8px 0 5px 10px;
 }
 
-.lemma-b div.essential_audio.circle > div:nth-child(1) div {
+.b-lemma div.essential_audio.circle > div:nth-child(1) div {
     width: 26px;
     height: 20px;
     top: -8px;
@@ -268,14 +268,14 @@ label {
     margin-left: 2px;
 }
 
-.lemma-b div.essential_audio.circle > div:nth-child(1) div:after {
+.b-lemma div.essential_audio.circle > div:nth-child(1) div:after {
     top: -1px;
     left: -1px;
     width: 68%;
     height: 68%;
 }
 
-.lemma-b h2 {
+.b-lemma h2 {
     color: #911917;
     display: flex;
     font-weight: bold;
@@ -283,6 +283,9 @@ label {
     padding: 15px 5px 0 0;
 }
 
+.img-loading {
+    display: none;
+}
 
 
 

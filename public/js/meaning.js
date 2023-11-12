@@ -96,13 +96,13 @@ function loadExamples(route, id, start, update_examples) {
     }); 
 }
 
-function showMoreExamples(i, start, locale) {    
+function showMoreExamples(i, start, locale, is_edit=1) {    
     var id = $(i).attr('data-for');
     $("#img-loading-more_"+ id).show();
     
     $(i).hide();
     $.ajax({
-        url: '/' + locale + '/dict/meaning/examples/load_more/'+ id, 
+        url: '/' + locale + '/dict/meaning/examples/load_more/'+ id + '?is_edit='+is_edit, 
         data: {start: start},
         type: 'GET',
         success: function(result){

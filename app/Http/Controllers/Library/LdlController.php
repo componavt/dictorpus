@@ -13,6 +13,7 @@ use App\Models\Dict\Concept;
 //use App\Models\Dict\ConceptCategory;
 //use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\Meaning;
 //use App\Models\Dict\PartOfSpeech;
 //use App\Models\Dict\Relation;
 
@@ -95,29 +96,14 @@ class LdlController extends Controller
             return NULL;
         }
         
-        $sentence_count = $meaning->countSentences(false);
-        $sentence_total = $meaning->countSentences(true);
+        $sentence_count = $meaning->countSentences(false, 0);
+        if (!$sentence_count) {
+            return '';
+        }
         $sentences = $meaning->sentences(false, $limit, $start);
         $count=1+$start;   
 //dd($sentences);        
-        return view('dict.lemma.example.all', 
-                compact('meaning', 'limit', 'start', 'count',
-                        'sentence_count', 'sentence_total', 'sentences')); 
-    }
-
-    public function loadMoreExamples (int $id, Request $request) {
-        $limit = 5;
-        $start = (int)$request->input('start');
-        $meaning = Meaning::find($id);
-        if (!$meaning) {
-            return NULL;
-        }
-        
-        $sentence_count = $meaning->countSentences(false);
-        $sentences = $meaning->sentences(false, $limit, $start);
-        $count=1+$start;   
-        
-        return view('dict.lemma.example._limit', 
+        return view('ldl.examples', 
                 compact('meaning', 'limit', 'start', 'count',
                         'sentence_count', 'sentences')); 
     }

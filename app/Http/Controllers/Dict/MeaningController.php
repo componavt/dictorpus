@@ -203,6 +203,7 @@ class MeaningController extends Controller
     public function loadMoreExamples (int $id, Request $request) {
         $limit = 5;
         $start = (int)$request->input('start');
+        $is_edit = (int)$request->input('is_edit');
         $meaning = Meaning::find($id);
         if (!$meaning) {
             return NULL;
@@ -213,7 +214,7 @@ class MeaningController extends Controller
         $count=1+$start;   
         
         return view('dict.lemma.example._limit', 
-                compact('meaning', 'limit', 'start', 'count',
+                compact('meaning', 'limit', 'start', 'count', 'is_edit',
                         'sentence_count', 'sentences')); 
     }
     

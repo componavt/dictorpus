@@ -73,7 +73,7 @@
     
     chooseDialectForGenerate({{$lemma->id}});
     recDelete('{{ trans('messages.confirm_delete') }}');
-    showLemmaLinked();    
+//    showLemmaLinked();    
     
     showAudioInfo();
     
