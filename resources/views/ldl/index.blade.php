@@ -4,6 +4,7 @@
     @include('ldl._alphabet')
 
     <div class="row">
+    @php $count=1; @endphp
     @foreach ($concepts as $concept)
         <div class="col-sm-3">
             <div class="concept-b">
@@ -16,6 +17,13 @@
                 <img class="img-loading" id="img-photo-loading_{{$concept->id}}" src="{{ asset('images/loading_small.gif') }}">
              </div>
         </div>
+        @if ($count >3)
+    </div>
+    <div class="row">
+            @php $count=1; @endphp
+        @else    
+            @php $count++; @endphp
+        @endif
     @endforeach
     </div>
 
