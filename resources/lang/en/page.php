@@ -13,7 +13,9 @@ return [
     // “Veps language corpus”
     
     'about_karelians' => '',
+    'about_karelian_stats' => 'Karelians: 34 422 persons<br>The Karelian language: 13 872 persons',
     'about_veps' => '',
+    'about_veps_stats' => 'Vepses: 4 534 persons<br>The Veps language: 2 173 persons',
     
     'grants' => '<p>The project was supported by grants:</p>
                  <p>the Russian Foundation for the Humanities, grant No. 15-04-12006, "Veps thesaurus constructing based on word sense disambiguation in multilingual dictionary", 2015-2016.</p>

@@ -587,8 +587,9 @@ class Text extends Model
         }
         
         $this->motives()->sync((array)$request->motives);
-        
+//dd($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure));
         if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {
+            
             $error_message = $this->markup();
         }
 
@@ -947,6 +948,7 @@ class Text extends Model
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         list($this->text_structure, $sentences) = self::markupText($this->text, true, true);
+//dd($this->text_structure, $sentences);        
         foreach ($sentences as $s_id => $text_xml) {
             $sentence = Sentence::store($this->id, $s_id, $text_xml);
             $error_message = $this->updateMeaningAndWordformText($sentence, $text_xml);

@@ -583,8 +583,19 @@ h4 {
     max-width: 200px;
 }
 
+.photo-right-to-text img{
+    max-width: 300px;
+}
 
+@media screen and (min-width: 576px) {   
+}
 @media screen and (min-width: 768px) {   
+    .text-with-photo {
+        display: flex;
+    }
+    .photo-right-to-text {
+        padding-left: 20px;        
+    }
     .comment {
         margin-top: -50px;
     }    
@@ -600,6 +611,9 @@ h4 {
     .in_numbers-n {
         font-size: 35px;
         line-height: 35px;
+    }
+    .photo-right-to-text img{
+        max-width: 400px;        
     }
 }
 @media screen and (min-width: 1200px) {
