@@ -832,19 +832,21 @@ class TextController extends Controller
             return Redirect::to('/corpus/text/')
                            ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
         }
-        foreach ($request->photo as $photo_id=>$photo) {
-            $media = $text->getMedia()->where('id', $photo_id)->first();
-            if (!$media) {
-                continue;
+        if ($request->photo) {
+            foreach ($request->photo as $photo_id=>$photo) {
+                $media = $text->getMedia()->where('id', $photo_id)->first();
+                if (!$media) {
+                    continue;
+                }
+                if (!empty($request->{'file_'.$photo_id})) {
+    //                $text->uploadPhoto($request->file('photo')[$photo_id]['file'], $photo['title']);
+                    $text->uploadPhoto('file_'.$photo_id, $photo['title']);
+                    $text->deleteMedia($media->id);
+                    continue;
+                }
+                $media->name = $photo['title'];
+                $media->save();
             }
-            if (!empty($request->{'file_'.$photo_id})) {
-//                $text->uploadPhoto($request->file('photo')[$photo_id]['file'], $photo['title']);
-                $text->uploadPhoto('file_'.$photo_id, $photo['title']);
-                $text->deleteMedia($media->id);
-                continue;
-            }
-            $media->name = $photo['title'];
-            $media->save();
         }
         
         if (!empty($request->new_file)) {
