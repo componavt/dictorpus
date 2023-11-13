@@ -20,7 +20,7 @@
         {!! Form::model($text, ['method'=>'POST', 'route'=>['text.update.photos', $text->id], 'files'=>true] ) !!}
         <div class='row'>
         @foreach ($photos as $photo) 
-            <div class='col-sm-4' style='text-align: center'>
+            <div class='col-sm-4' style='text-align: center; padding-bottom: 20px;'>
                 <div style="background-color: #ccc3">
                     <img src="{{ $photo->getUrl('thumb') }}">
                     @include('widgets.form.formitem._text', 
