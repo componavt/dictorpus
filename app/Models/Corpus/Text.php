@@ -7,6 +7,8 @@ use DB;
 use Storage;
 use LaravelLocalization;
 use \Venturecraft\Revisionable\Revision;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 use App\Library\Grammatic;
 use App\Library\Str;
@@ -23,13 +25,14 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Wordform;
 
-class Text extends Model
+class Text extends Model implements HasMediaConversions
 {
     const PhotoDisk = 'photos';
     const PhotoDir = 'photo';
     protected $fillable = ['corpus_id', 'lang_id', 'source_id', 'event_id', 
                         'title', 'text', 'text_xml', 'text_structure', 'comment'];
 
+    use HasMediaTrait;
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -41,6 +44,12 @@ class Text extends Model
     public static function boot()
     {
         parent::boot();
+    }
+    
+    public function registerMediaConversions()
+    {
+        $this->addMediaConversion('thumb')
+             ->setHeight(200);
     }
     
     // Belongs To Relations
@@ -617,6 +626,25 @@ class Text extends Model
             Audiotext::create(['filename'=>$filename, 'text_id'=>$this->id]);            
         }
     }
+    
+    public function uploadPhotoFile($request)
+    {
+        // загрузка файла
+        if ($request->file('new_file')) {
+            $file = $request->file('new_file');
+            $upload_folder = 'storage/'.Audiotext::DIR;
+            $filename = $request->new_file_name 
+                    ? $request->new_file_name : $file->getClientOriginalName(); 
+            if ($this->audiotexts()->whereFilename($filename)->count()) {
+                $newfilename = $this->newAudiotextName();
+            }
+
+            $file->move($upload_folder, $filename);    
+            
+            Audiotext::create(['filename'=>$filename, 'text_id'=>$this->id]);            
+        }
+    }
+    
     public function storeVideo($youtube_id) {
 //dd($youtube_id);        
         if (!$youtube_id) {
@@ -1048,6 +1076,14 @@ class Text extends Model
         }
     }
     
+    public function uploadPhoto($filename, $name) {
+            $p = $this->addMediaFromRequest($filename)->toMediaLibrary();
+//            $p = $this->addMedia($file)->toMediaLibrary();
+            $p->name = $name; 
+            $p->save();        
+    }
+
+
     // saving old checked links
     public function checkedWords($old_xml, $for_meanings=true, $for_wordforms=true) {
         $checked_words = [];

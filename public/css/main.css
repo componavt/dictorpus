@@ -587,6 +587,13 @@ h4 {
     max-width: 300px;
 }
 
+.photo-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+}
+
 @media screen and (min-width: 576px) {   
 }
 @media screen and (min-width: 768px) {   

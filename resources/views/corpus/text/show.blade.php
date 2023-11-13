@@ -20,11 +20,13 @@
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             
         @if (user_corpus_edit())
-            | @include('widgets.form.button._edit', ['route' => '/corpus/text/'.$text->id.'/edit'])
 {{--            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/markup') }}{{$args_by_get}}">{{ trans('corpus.re-markup') }}</a>        --}}    
             | @include('widgets.form.button._edit', 
                      ['route' => '/corpus/text/'.$text->id.'/sentences',
                       'link_text' => ' '.mb_strtolower(trans('corpus.sentences'))])
+            | @include('widgets.form.button._edit', 
+                     ['route' => '/corpus/text/'.$text->id.'/photos',
+                      'link_text' => ' '.mb_strtolower(trans('corpus.photos_edit'))])
             @if (!$text->hasImportantExamples())
             | @include('widgets.form.button._delete', ['route' => 'text.destroy', 'args'=>['id' => $text->id]]) 
             @endif
@@ -40,6 +42,9 @@
         <h2>
             {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
             {!!highlight($text->title, $url_args['search_w'], 'search-word')!!}
+        @if (user_corpus_edit())
+            @include('widgets.form.button._edit', ['route' => '/corpus/text/'.$text->id.'/edit', 'without_text'=>1])
+        @endif 
         </h2>
         
         @if ($text->video && $text->video->youtube_id)

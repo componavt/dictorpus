@@ -49,8 +49,8 @@ class TextController extends Controller
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
                                      'addExample', 'editExample', 'updateExamples', 
-                                     'markupText',
-                                     'markupAllEmptyTextXML','markupAllTexts']]);
+                                     'editSentences', 'photos', 'updatePhotos', 'deletePhoto',                                     
+                                     'markupText', 'markupAllEmptyTextXML','markupAllTexts']]);
         $this->url_args = Text::urlArgs($request);  
         $this->url_args_w = remove_empty($this->url_args);
         $this->args_by_get = search_values_by_URL($this->url_args_w);
@@ -207,7 +207,8 @@ class TextController extends Controller
         $pos_id = PartOfSpeech::getIDByCode('Noun');
         $dialect_values = Dialect::getList($text->lang_id);
         $dialect_value = $text->dialectValue();
-        $photos = $text->getPhotoFiles();
+//        $photos = $text->getPhotoFiles();
+        $photos = $text->getMedia();
         
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
@@ -809,4 +810,66 @@ class TextController extends Controller
                         'markedWords', 'markedWordsToAll', 'text', 'totalLemmas', 
                         'totalWords', 'args_by_get'));
     }
+    
+    public function photos(int $id) {
+        $text = Text::find($id);
+        if (!$text) {
+            return Redirect::to('/corpus/text/')
+                           ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
+        }
+        
+        $args_by_get = $this->args_by_get;
+        $photos = $text->getMedia();
+        
+        return view('corpus.text.photos', 
+                compact('text', 'photos', 'args_by_get'));
+    }    
+    
+    public function updatePhotos(int $id, Request $request)
+    {
+        $text = Text::find($id);
+        if (!$text) {
+            return Redirect::to('/corpus/text/')
+                           ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
+        }
+        foreach ($request->photo as $photo_id=>$photo) {
+            $media = $text->getMedia()->where('id', $photo_id)->first();
+            if (!$media) {
+                continue;
+            }
+            if (!empty($request->{'file_'.$photo_id})) {
+//                $text->uploadPhoto($request->file('photo')[$photo_id]['file'], $photo['title']);
+                $text->uploadPhoto('file_'.$photo_id, $photo['title']);
+                $text->deleteMedia($media->id);
+                continue;
+            }
+            $media->name = $photo['title'];
+            $media->save();
+        }
+        
+        if (!empty($request->new_file)) {
+            $text->uploadPhoto('new_file', $request->new_title);
+//            $text->uploadPhoto($request->file('new_file'), $request->new_title);
+        }
+        return Redirect::to('/corpus/text/'.$id.'/photos'.($this->args_by_get))
+                    ->withSuccess('Фотографии изменены.');
+    }
+    
+    public function deletePhoto(int $id, int $photo_id)
+    {
+        $text = Text::find($id);
+        if (!$text) {
+            return Redirect::to('/corpus/text/')
+                           ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
+        }
+        $media = $text->getMedia()->where('id', $photo_id)->first();
+        if (!$media) {
+            return Redirect::to('/corpus/text/'.$id.'/photos'.($this->args_by_get))
+                        ->withError('Нет такого изображения');            
+        }
+        $text->deleteMedia($media->id);
+        return Redirect::to('/corpus/text/'.$id.'/photos'.($this->args_by_get))
+                    ->withSuccess('Фотография удалена.');
+    } 
+   
 }

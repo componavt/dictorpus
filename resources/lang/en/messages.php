@@ -72,6 +72,7 @@ return [
     'type' => 'Type',
     'updated_at' => 'updated',
     'updated_success' => 'Successfully updated',
+    'upload' => 'upload',
     'view' => 'view',
     'year' => 'year',
     'waiting' => 'Please wait, data is loading...',    

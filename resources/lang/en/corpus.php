@@ -74,6 +74,7 @@ return [
     'name' => 'name',
     'nee' => 'nee',
     'new_meaning' => 'a new meaning',
+    'new_photo' => 'New photo',
     'new_texts'=>'New texts',
     
     'of_author' => 'of the author',
@@ -95,6 +96,8 @@ return [
     
     'p' => 'p.',
     'parent' => 'parent section',
+    'photos' => 'Photos',
+    'photos_edit' => 'photos',
     
     'place' => 'Settlement',
     'place_list' => 'Settlement list',

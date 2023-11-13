@@ -79,6 +79,9 @@ Route::group(
         Route::get('text/limited_new_list', 'Corpus\TextController@limitedNewList');
         Route::get('text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
         Route::get('text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
+        Route::get('text/{id}/photos', 'Corpus\TextController@photos');
+        Route::post('text/{id}/photos', 'Corpus\TextController@updatePhotos')->name('text.update.photos');
+        Route::delete('text/{id}/photos/{photo_id}', 'Corpus\TextController@deletePhoto')->name('text.photos.destroy');
         Route::get('text/sentence', 'Corpus\TextController@showWordInSentence');
         Route::get('text/simple_search', 'Corpus\TextController@simpleSearch')->name('text.simple_search');
 
