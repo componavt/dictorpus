@@ -112,6 +112,10 @@ class DictController extends Controller
                       });
                 });
 
+        if ($url_args['search_lemma']) {
+            $lemmas->where('lemma', 'like', $url_args['search_lemma']);
+        } 
+               
         if ($url_args['search_pos']) {
             $lemmas->wherePosId($url_args['search_pos']);
         } 
@@ -167,6 +171,10 @@ class DictController extends Controller
             ->groupBy('lemma_id', 'word_id')
             ->latest(DB::raw('count(*)'));
 */
+        if ($url_args['search_lemma']) {
+            $lemmas->where('lemma', 'like', $url_args['search_lemma']);
+        } 
+               
         if ($url_args['search_pos']) {
             $lemmas->wherePosId($url_args['search_pos']);
         } 

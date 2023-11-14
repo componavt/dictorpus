@@ -1,6 +1,13 @@
 {!! Form::open(['url' => $url, 'method' => 'get']) !!}
 <div class="search-form row">
-    <div class="col-md-4">
+    <div class="col-md-2">
+        @include('widgets.form.formitem._text', 
+                ['name' => 'search_lemma', 
+                 'value' => $url_args['search_lemma'],
+                 'title' => trans('dict.lemma'),
+        ])                 
+    </div>
+    <div class="col-md-3">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_pos', 
                  'values' => $pos_values,
@@ -8,7 +15,7 @@
                  'title' => trans('dict.pos'),
         ])                 
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_status', 
                 'values' => trans('dict.output_checked_or_not'),
