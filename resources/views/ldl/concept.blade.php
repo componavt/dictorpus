@@ -40,9 +40,10 @@
                 @endif
                     {{ $meaning->textByLangCode($locale, 'ru') }}
 
-                @if ($meaning->places()->count())
+                @if ($meaning->places()->where('id', '<>', 245)->count()) 
                     <p>
-                        <b>{{ trans('dict.places_use') }}</b>: {{ join(', ', $meaning->places->pluck('name')->toArray()) }}
+                        <b>{{ trans('dict.places_use') }}</b>: 
+                        {{ join(', ', $meaning->places()->where('id', '<>', 245)->get()->pluck('name')->toArray()) }}
                     </p>
                 @endif
             </div>
