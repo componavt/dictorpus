@@ -1,6 +1,9 @@
 <?php namespace App\Traits\Scopes;
 
 //use App\Models\Dict\Label;
+/*
+ * for Concept
+ */
 
 trait ConceptsForLdl
 {    

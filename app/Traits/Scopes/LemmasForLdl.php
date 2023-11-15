@@ -1,5 +1,8 @@
 <?php namespace App\Traits\Scopes;
 
+/*
+ * for Lemma
+ */
 trait LemmasForLdl
 {    
     public static function scopeForLdl($builder) {

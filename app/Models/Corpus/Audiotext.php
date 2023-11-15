@@ -57,35 +57,16 @@ class Audiotext extends Model
         $places = [];
         $colors = Lang::MAP_COLORS;
         
-        $place_coll = Place::whereNotNull('latitude')
-                       ->whereNotNull('longitude')
-                       ->where('latitude', '>', 0)
-                       ->where('longitude', '>', 0)
-                       ->whereIn('id', function ($q1) {
-                            $q1->select('birth_place_id')->from('informants')
-                               ->whereIn('id', function ($q2) {
-                                    $q2->select('informant_id')->from('event_informant')
-                                    ->whereIn('event_id', function ($q3) {
-                                        $q3->select('event_id')->from('texts')
-                                           ->whereIn('id', function ($query3) {
-                                               $query3->select('text_id')->from('audiotexts');
-                                           });
-                                    });
-                               });
-                       })->get();
+        $place_coll = Place::whereNotNull('id')->withDialectAudio()
+                           ->withCoords()->get();
 //dd($place_coll);                       
         foreach ($place_coll as $place) {
             $place_id = $place->id;
-            $texts = Text::whereIn('event_id', function ($q1) use ($place_id) {
-                $q1->select('event_id')->from('event_informant')
-                   ->whereIn('informant_id', function ($q2) use ($place_id) {
-                    $q2->select('id')->from('informants')
-                       ->whereBirthPlaceId($place_id);                       
-                   });
-                })->whereIn('id', function ($q1) {
-                    $q1 -> select('text_id')->from('audiotexts');
-                })->get();                                       
-                    //$place->texts_with_audio()->get();//$place->texts;
+            $texts = Text::whereNotNull('id')
+                         ->InformantBirthPlace($place_id)
+                         ->WithAudio()
+                         ->dialectTexts()->get();                                       
+
             $popup = '<b>'.preg_replace("/['']/", "&#39;", $place->name).'</b>';
             foreach ($texts as $text) {
                 $audiotext = $text->audiotexts[0];

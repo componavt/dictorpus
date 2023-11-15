@@ -33,6 +33,10 @@ class Place extends Model
     // Methods
     use \App\Traits\Methods\getNameAttribute;
 
+    //Scopes
+    use \App\Traits\Scopes\WithCoords;
+    use \App\Traits\Scopes\WithDialectAudio;
+    
     public function identifiableName()
     {
         return $this->placeString('', false);//name;

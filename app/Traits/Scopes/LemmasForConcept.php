@@ -1,5 +1,8 @@
 <?php namespace App\Traits\Scopes;
 
+/*
+ * for Lemma
+ */
 trait LemmasForConcept
 {    
     public static function scopeForConcept($builder, $concept_id) {

@@ -1,5 +1,8 @@
 <?php namespace App\Traits\Scopes;
 
+/*
+ * for Meaning
+ */
 trait MeaningsForLdl
 {    
     public static function scopeForLdl($builder) {

@@ -52,6 +52,11 @@ class Text extends Model implements HasMediaConversions
              ->setHeight(200);
     }
     
+    //Scopes
+    use \App\Traits\Scopes\DialectTexts;
+    use \App\Traits\Scopes\InformantBirthPlace;
+    use \App\Traits\Scopes\WithAudio;
+    
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Corpus;
     use \App\Traits\Relations\BelongsTo\Event;
