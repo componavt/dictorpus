@@ -9,6 +9,7 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
 use App\Models\Dict\LemmaFeature;
+use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\Phonetic;
 use App\Models\Dict\ReverseLemma;
 use App\Models\Dict\Wordform;
