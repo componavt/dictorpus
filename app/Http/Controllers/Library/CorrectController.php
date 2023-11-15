@@ -440,4 +440,26 @@ print "<p>$query</p>";
 //        exit(1);
         }
     }
+    
+    /**
+     * Check all lemmas c Ü
+     * find their omonyms with Y
+     */
+    public function lemmasU() {
+        foreach ([4,5,6] as $lang_id) {
+            $lang = Lang::find($lang_id);
+            print "<h1>".$lang->name."</h1><ol>";
+            $lemmas = Lemma::where('lemma', 'like', '%ü%')
+                    ->whereLangId($lang_id)->get();
+            foreach ($lemmas as $lemma) {
+                print '<li><a href="'.show_route($lemma).'">'.$lemma->lemma.'</a>';
+                $omonym = Lemma::whereLangId($lang_id)->where('lemma', 'like', preg_replace("/ü/", 'y', $lemma->lemma))->first();
+                if ($omonym) {
+                    print ' === <a href="'.show_route($omonym).'">'.$omonym->lemma.'</a>';
+                }
+                print "</li>";
+            }
+            print "</ol>";
+        }
+    }
 }
