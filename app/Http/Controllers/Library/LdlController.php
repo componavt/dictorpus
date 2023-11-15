@@ -76,6 +76,7 @@ class LdlController extends Controller
         $lemmas = Lemma::whereLangId($lang_id)
                        ->forLdl()
                        ->forConcept($concept_id)
+//dd(to_sql($lemmas));       
                        ->orderBy('lemma')->get();
 
         return view('ldl.concept',

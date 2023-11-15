@@ -33,6 +33,9 @@ class Meaning extends Model
 
     protected $fillable = ['lemma_id','meaning_n'];
 
+    //Scopes
+    use \App\Traits\Scopes\MeaningsForLdl;
+    
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lemma;
 

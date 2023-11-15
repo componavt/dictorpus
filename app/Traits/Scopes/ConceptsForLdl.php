@@ -1,6 +1,6 @@
 <?php namespace App\Traits\Scopes;
 
-use App\Models\Dict\Label;
+//use App\Models\Dict\Label;
 
 trait ConceptsForLdl
 {    
@@ -9,7 +9,14 @@ trait ConceptsForLdl
                             $q->select('concept_id')->from('concept_meaning')
                               ->whereIn('meaning_id', function ($q2) {
                                   $q2->select('id')->from('meanings')
-                                     ->whereIn('lemma_id', Label::ldlLemmas());
+                                     ->whereIn('id', function ($q) {
+                                        $q->select('meaning_id')->from('meaning_place')
+                                            ->where('place_id', '<>', 245); // without Koikary
+                                     })->whereIn('lemma_id', function ($q) {
+                                        $q->select('id')->from('lemmas')
+                                          ->whereLangId(6); // Ludic                    
+                                     });                                          
+//                                     ->whereIn('lemma_id', Label::ldlLemmas());
                               });
                         });
     }
