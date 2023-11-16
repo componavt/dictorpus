@@ -75,10 +75,10 @@ class Audiotext extends Model
                         . ($text->event && $text->event->date ? ', '.$text->event->date : '') 
                         .')<br><audio controls><source src="'.$audiotext->url()
                         .'" type="audio/mpeg"></audio>';
-                if (sizeof($text->getPhotoFiles())) {
+                if (sizeof($text->getMedia())) {
                     $popup .= '<div>';
-                    foreach($text->getPhotoFiles() as $photo) {
-                        $popup .= '<img src="'.$text->photoDir().$photo.'" width="100">';
+                    foreach($text->getMedia() as $photo) {
+                        $popup .= '<img src="'. $photo->getUrl('thumb') .'" width="100">';
                     }
                     $popup .= '</div>';
                 }
