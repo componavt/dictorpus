@@ -10,7 +10,7 @@ if (isset($meaning)) {
 
 $place_title = $sentence['text']->dialects && isset($sentence['text']->dialects[0]) ? $sentence['text']->dialects[0]->name : '';
 if($sentence['text']->event && $sentence['text']->event && $sentence['text']->event->informants()->first() && $sentence['text']->event->informants()->first()->birth_place) {
-        $place_title .= ', :'. $sentence['text']->event->informants()->first()->birth_place->placeString();
+        $place_title .= ', '. $sentence['text']->event->informants()->first()->birth_place->name;
 }
 ?>
 @if (isset($meaning))
