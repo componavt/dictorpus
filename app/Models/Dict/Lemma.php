@@ -164,6 +164,7 @@ class Lemma extends Model
         foreach ($dialects as $dialect) {
             $ids[]=$dialect->dialect_id;
         }
+//dd($ids);        
         return $ids;
     }
 
@@ -265,6 +266,17 @@ class Lemma extends Model
         return Audio::getUrlsByLemmaId($this->id);
     }
 
+    public function WordformDialectPrefer() {
+        $user_dialect = User::userDialects();
+        $lemma_dialects = $this->dialectIds();
+        if (!sizeof($lemma_dialects)) {
+            return $user_dialect;
+        }
+        if (in_array($user_dialect, $lemma_dialects)) {
+            return $user_dialect;
+        }  
+        return $lemma_dialects[0];
+    }
 
     /*     // Lemma has many MeaningTexts through Meanings
     public function meaningTexts()
