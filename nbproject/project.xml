@@ -10,6 +10,7 @@
             <word>endfor</word>
             <word>endforeach</word>
             <word>endif</word>
+            <word>endphp</word>
             <word>enif</word>
             <word>ldl</word>
             <word>грамсета</word>
