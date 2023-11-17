@@ -97,7 +97,7 @@ class LdlController extends Controller
             return NULL;
         }
         
-        $sentence_count = $meaning->countSentences(false, 0);
+        $sentence_count = $meaning->countSentences(false, 1);
         if (!$sentence_count) {
             return '';
         }
