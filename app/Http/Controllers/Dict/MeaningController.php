@@ -192,7 +192,7 @@ class MeaningController extends Controller
         
         $sentence_count = $meaning->countSentences(false);
         $sentence_total = $meaning->countSentences(true);
-        $sentences = $meaning->sentences(false, $limit, $start);
+        $sentences = $meaning->sentences(true, $limit, $start); // always true to show unchecked examples
         $count=1+$start;   
 //dd($sentences);        
         return view('dict.lemma.example.all', 
