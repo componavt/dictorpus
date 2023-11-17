@@ -157,7 +157,7 @@ class Meaning extends Model
                               ->orderBy('s_id')
                               ->orderBy('word_id');
         if (!$for_edit) {
-            $sentence_builder = $sentence_builder->where('relevance','>',0);
+            $sentence_builder = $sentence_builder->where('relevance','>',$relevance);
         }
         
         if ($limit) {
