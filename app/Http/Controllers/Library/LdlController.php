@@ -101,7 +101,7 @@ class LdlController extends Controller
         if (!$sentence_count) {
             return '';
         }
-        $sentences = $meaning->sentences(false, $limit, $start, 4);
+        $sentences = $meaning->sentences(false, $limit, $start);
         $count=1+$start;   
 //dd($sentences);        
         return view('ldl.examples', 
