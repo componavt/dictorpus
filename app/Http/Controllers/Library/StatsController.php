@@ -141,6 +141,7 @@ class StatsController extends Controller
         $colors = $chart->colors();
         $count = 0;
         $genre_langs=[];
+//dd($lang_genres);        
         foreach ($lang_genres as $lang_name=>$genre_num) {
             if ($count==0) {
                 $chart->labels(array_keys($genre_num));                

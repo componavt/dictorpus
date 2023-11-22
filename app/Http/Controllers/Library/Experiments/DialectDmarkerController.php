@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\DB;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Charts\DistributionChart;
+
 use App\Library\Experiments\DialectDmarker;
 use App\Library\Experiments\Dmarker;
 use App\Library\Experiments\Mvariant;
+
+use App\Models\Corpus\Text;
 
 use App\Models\Dict\Dialect;
 
@@ -115,7 +119,7 @@ print 'done';
     }
     
     public function compareFreqSSindex() {
-        $dialect_markers=[];
+        $dialect_markers=$charts=[];
         $dialects = Dialect::whereIn('lang_id', [4,5,6])
                     ->whereIn('id', function ($query) {
                         $query->select('dialect_id')
@@ -125,18 +129,92 @@ print 'done';
                     ->get();
         $dmarkers = Dmarker::orderBy('id')->get();
         foreach ($dialects as $dialect) {        
+            $labels = $dataset = [];
             foreach ($dmarkers as $marker) {
                 foreach ( $marker->mvariants as $variant ) {
-                   $d = $variant->dialects()->where('dialect_id', $dialect->id)->first();
-                   $dialect_markers[$dialect->name][$marker->id .'. '. $marker->name][$variant->id]
+                    $d = $variant->dialects()->where('dialect_id', $dialect->id)->first();
+                    $dialect_markers[$dialect->name][$marker->id .'. '. $marker->name][$variant->id]
                            =['name'=>$variant->name,
                              'w_fraction'=>$d ? round($d->pivot->w_fraction, 4): '',
                              'SSindex'=>$d ? round($d->pivot->SSindex, 4): ''];
+                    if ($d && $d->pivot->SSindex) {
+                        $labels[] = $variant->id;
+                        $dataset[0][] = round($d->pivot->w_fraction, 4);
+                        $dataset[1][] = round($d->pivot->SSindex, 4);
+                    }
                 }
             }
+            $chart = new DistributionChart;
+            $colors = $chart->colors();
+            $chart->labels($labels);
+            $chart->dataset('Относит. частота', 'line', $dataset[0])->fill(false)
+                  ->color('#'.$colors[0])->backgroundColor('#'.$colors[0]);
+            $chart->dataset('Индекс Шепли-Шубика', 'line', $dataset[1])->fill(false)
+                  ->color('#'.$colors[1])->backgroundColor('#'.$colors[1]);
+            $charts[$dialect->name] = $chart;
         } 
-//dd($dialect_markers);        
+
         return view('experiments.dialect_dmarker.compare_freq_SSindex', 
-                compact('dialect_markers'));        
+                compact('charts', 'dialect_markers'));        
+    }
+    
+    public function example() {
+        $lang_id = 4;
+        $limit = 20;
+        
+        $d_fractions = []; // частоты диалектов
+        $right = $wrong = 0;
+        
+        $mvariants = Mvariant::orderBy('id')->get();
+
+        $dialects = Dialect::whereIn('id', function ($q) {
+            $q->select('dialect_id')->from('dialect_dmarker');
+        })->orderBy('id')->get();
+
+        foreach ($dialects as $dialect) {
+            $d_fractions[$dialect->id] = DialectDmarker::whereDialectId($dialect->id)
+                    ->orderBy('mvariant_id')->pluck('w_fraction', 'mvariant_id')
+                    ->toArray();
+        }
+        
+        $has_more_one_dialects = DB::table('dialect_text')->groupBy('text_id')
+                ->having(DB::raw('count(*)'), '>', 1)
+                ->pluck('text_id');
+
+        $texts = Text::whereLangId($lang_id)
+                    ->whereNotIn('id', $has_more_one_dialects)
+                    ->whereIn('id', function ($q) {
+                        $q->select('text_id')->from('dialect_text');
+                    })->orderBy('id')->get();
+dd(sizeof($texts));        
+        foreach ($texts as $text) {
+            $fractions = DialectDmarker::getWFractions($text, $mvariants);
+/*        
+        arsort($w_fractions); // сортируем по убыванию частот
+        $w_fractions = array_slice($w_fractions, 0, $limit, true); // оставляем первые 20
+        $w_fract = array_filter($w_fractions, function($element) { // удаляем пустые элементы
+            return !empty($element);
+        });
+*/        
+            $closeness = [];
+
+            foreach ($dialects as $dialect) {
+                $c = 0;
+                foreach ($fractions as $mvariant_id => $f) {
+                    $c += pow($f-$d_fractions[$dialect->id][$mvariant_id], 2);
+                }
+                $closeness[$dialect->id] = sqrt($c);
+            }
+            $guess = array_keys($closeness, min($closeness))[0];
+            if ($guess == $text->dialects()->first()->id) {
+                $right++;
+            } else {
+                $wrong++;
+            }
+        }
+dd($right, $wrong); 
+// 1165
+// 687
+
     }
 }

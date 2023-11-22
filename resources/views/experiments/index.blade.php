@@ -27,6 +27,7 @@
 
     <h4>Определение диалектной принадлежности</h4>
     <ul>
+        <li><a href="/experiments/dialect_dmarker/example">пример</a></li>
         <li><a href="/experiments/dialect_dmarker">таблица с частотами</a></li>
         <li><a href="/experiments/dialect_dmarker/fractions">таблица с относительными частотами</a></li>
         <!--li><a href="/experiments/dialect_dmarker/words">посмотреть слова</a></li-->

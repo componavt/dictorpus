@@ -3,13 +3,14 @@
         Route::get('experiments/bible_language/for_all', 'Library\Experiments\BibleLanguageController@forAll');
         Route::get('experiments/bible_language/for_selection/{corpus_id}', 'Library\Experiments\BibleLanguageController@forSelection');
 
-        Route::get('experiments/dialect_dmarker/', 'Library\Experiments\DialectDmarkerController@index');
         Route::get('experiments/dialect_dmarker/calculate', 'Library\Experiments\DialectDmarkerController@calculate');
         Route::get('experiments/dialect_dmarker/calculate_coalitions', 'Library\Experiments\DialectDmarkerController@calculateСoalitions');
         Route::get('experiments/dialect_dmarker/calculate_SSindex', 'Library\Experiments\DialectDmarkerController@calculateSSIndex');
         Route::get('experiments/dialect_dmarker/compare_freq_SSindex', 'Library\Experiments\DialectDmarkerController@compareFreqSSindex');
+        Route::get('experiments/dialect_dmarker/example', 'Library\Experiments\DialectDmarkerController@example');
         Route::get('experiments/dialect_dmarker/fractions', 'Library\Experiments\DialectDmarkerController@fractions');
         Route::get('experiments/dialect_dmarker/words', 'Library\Experiments\DialectDmarkerController@words');
+        Route::get('experiments/dialect_dmarker/', 'Library\Experiments\DialectDmarkerController@index');
         
         Route::get('experiments/pattern_search/', 'Library\Experiments\PatternSearchController@index');
         Route::get('experiments/pattern_search_in_wordforms/', 'Library\Experiments\PatternSearchController@inWordforms');

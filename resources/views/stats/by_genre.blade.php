@@ -4,10 +4,6 @@
 {{ trans('stats.stats_by_genre') }}
 @endsection
 
-@section('headExtra')
-    {!!Html::style('css/stats_by_corp.css')!!}
-@stop
-
 @section('body')
     <div id="GenreNumByLangChart" style="margin-bottom: 20px;">
         {!! $chart->container() !!}

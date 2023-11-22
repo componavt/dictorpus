@@ -123,7 +123,7 @@ class Mvariant extends Model
                     });
     }
     
-    public function searchUniqueWords($dialect_id, $absence, $template) {
+    public function searchUniqueWords($dialect_id, $absence, $template, $text_id=null) {
         return Word::whereRaw("word ".($absence ? 'not ': '')."rlike '$template'")        
                     ->whereIn('text_id', function ($q) use ($dialect_id) {
                         $q -> select('text_id')->from('dialect_text')

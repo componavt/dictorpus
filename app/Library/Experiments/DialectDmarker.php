@@ -5,6 +5,8 @@ namespace App\Library\Experiments;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\Models\Corpus\Word;
+
 use App\Models\Dict\Dialect;
 
 class DialectDmarker extends Model
@@ -259,5 +261,25 @@ print "<b>Коалиции для диалекта $dialect_id записаны<
         if (preg_match("/^(.+)\_".$player."(\_.+)$/", $coalition, $regs)) {
             return $regs[1].$regs[2];
         }
+    }
+    
+    public static function getWFractions($text, $mvariants) {
+        $w_fractions = [];
+        $total_words = $text->words()->count();
+
+        foreach ($mvariants as $mvariant) {
+            list($absence, $template) = Mvariant::processTemplate($mvariant->template);
+            $words = Word::whereTextId($text->id)->groupBy('word')->get();
+            $w_frequency = 0;
+            foreach ($words as $word) {
+                $p = preg_match("/".$template."/", $word->word);
+                if (!$absence && $p || $absence && !$p) {
+                    $w_frequency++;  
+                }
+            }
+            $w_fractions[$mvariant->id] = $w_frequency === false ? 0 : $w_frequency / $total_words;   
+            
+        }
+        return $w_fractions;
     }
 }

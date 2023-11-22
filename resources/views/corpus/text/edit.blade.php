@@ -58,6 +58,7 @@
         $(this).hide();
         $('#text').prop('readonly',false);
         $('#to_makeup').prop('disabled',false);
+        $('#text_structure').prop('readonly',false);
         $('#to_makeup_label').css('text-decoration','none')
                              .css('color','#972d1a')
                              .css('font-weight','bold');

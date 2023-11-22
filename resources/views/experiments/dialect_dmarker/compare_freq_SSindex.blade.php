@@ -10,6 +10,12 @@
     
     @foreach ($dialect_markers as $dialect_name => $dialect_markers)
     <h4>{{ $dialect_name }} диалект</h4>
+    
+    <div style="margin-bottom: 20px;">
+    {!! $charts[$dialect_name]->container() !!}
+    </div>
+    {!! $charts[$dialect_name]->script() !!}
+
     <table class="table-bordered table-wide table-striped rwd-table wide-md">
         <tr>
             <th>Маркер</th>
@@ -39,8 +45,11 @@
                 @endforeach
         </tr>
             @endif
-        @endforeach
-        
+        @endforeach        
     </table>
     @endforeach
 @endsection
+
+@section('footScriptExtra')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" charset="utf-8"></script>
+@stop
