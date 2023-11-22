@@ -296,7 +296,8 @@ class ConceptController extends Controller
             $search_places = array_keys($place_values);
         }
 //dd($search_places, $place_values);        
-        $concepts = Concept::orderBy('text_'.$locale)->pluck('text_'.$locale, 'id')->toArray();
+        $concepts = Concept::orderBy('id')//'text_'.$locale)
+                ->pluck('text_'.$locale, 'id')->toArray();
         $concept_lemmas = [];
 //dd($concepts);        
         
