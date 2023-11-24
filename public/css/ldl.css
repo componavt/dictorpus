@@ -287,8 +287,17 @@ label {
     display: none;
 }
 
+.audio-info-caller {
+    bottom: -5px;
+    color: #000;
+    font-size: 14px;
+}
 
-
+.audio-info {
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 18px;
+}
 
 
 

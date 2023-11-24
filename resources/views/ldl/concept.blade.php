@@ -28,9 +28,9 @@
     <div class="b-lemma">
         <h2>
             {{ $lemma->lemma }}
-            @if ($lemma->audios->first())
-                @include('widgets.audio_decor', ['route'=>$lemma->audios->first()->url()])
-            @endif
+            @foreach ($lemma->audios as $audio)
+                @include('ldl._audio')
+            @endforeach
         </h2>
         @foreach ($lemma->meanings as $meaning)
         <div class="lemma-meaning">
@@ -62,11 +62,15 @@
 @section('footScriptExtra')
     {!!Html::script('js/essential_audio.js')!!}
     {!!Html::script('js/meaning.js')!!}
+    {!!Html::script('js/lemma.js')!!}
     {!!Html::script('js/text.js')!!}
 @stop
 
 @section('jqueryFunc')
     loadPhoto('concept', {{$concept->id}}, '/dict/concept/{{$concept->id}}/photo_preview');
+    
+    showAudioInfo();
+    
     @foreach ($lemmas as $lemma)
         @foreach ($lemma->meanings as $meaning)
             loadExamples('{{LaravelLocalization::localizeURL('/ldl/meaning/examples/load')}}', {{$meaning->id}}, 0, 0);
