@@ -5,15 +5,11 @@
                 <?php
                     $transl_lemmas = [];
                     foreach ($translation_lemmas as $translation_lemma_id => $translation_lemma_info) {
-                        $transl_lemmas[] = '<a href="/dict/lemma/'.$translation_lemma_id.'">'.
+                        $transl_lemmas[$translation_lemma_info['lemma']] = '<a href="/dict/lemma/'.$translation_lemma_id.'">'.
                                         $translation_lemma_info['lemma'].'</a>';
-                                        //' ('.$translation_lemma_info['meaning'].')';
                     }
-                    /*if (sizeof($transl_lemmas)>1) {
-                        $translation_meanings =  '<br>'. join ('<br>',$transl_lemmas);
-                    } else {*/
-                        $translation_meanings =  join ('; ',$transl_lemmas);
-                    //}                        
+                    ksort($transl_lemmas);
+                    $translation_meanings =  join ('; ',$transl_lemmas);
                 ?>
                 <p><b>{{$lang_text}}:</b> {!! $translation_meanings !!}</p>
                 @endforeach

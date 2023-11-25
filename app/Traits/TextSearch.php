@@ -1,27 +1,11 @@
 <?php namespace App\Traits;
 
-use DB;
-use Storage;
-use LaravelLocalization;
-use \Venturecraft\Revisionable\Revision;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
-
 use App\Library\Grammatic;
 use App\Library\Str;
 
-use App\Models\User;
-
-use App\Models\Corpus\Event;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Sentence;
-use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
-use App\Models\Corpus\Word;
-
-use App\Models\Dict\Gramset;
-use App\Models\Dict\Meaning;
-use App\Models\Dict\Wordform;
 
 trait TextSearch
 {
