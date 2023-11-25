@@ -13,6 +13,7 @@ use App\Library\Str;
 use App\Models\User;
 
 use App\Models\Corpus\Event;
+use App\Models\Corpus\Genre;
 use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
