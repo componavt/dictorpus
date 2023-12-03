@@ -56,6 +56,7 @@ class Text extends Model implements HasMediaConversions
     }
     
     //Scopes
+    use \App\Traits\Scopes\HasOneDialect;
     use \App\Traits\Scopes\DialectTexts;
     use \App\Traits\Scopes\InformantBirthPlace;
     use \App\Traits\Scopes\WithAudio;

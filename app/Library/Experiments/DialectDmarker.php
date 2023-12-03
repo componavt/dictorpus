@@ -264,15 +264,20 @@ print "<b>Коалиции для диалекта $dialect_id записаны<
     }
     
     public static function getWFractions($text, $mvariants) {
-        $w_fractions = [];
-        $total_words = $text->words()->count();
+        $words = Word::whereTextId($text->id)->groupBy('word')->pluck('word')->toArray();
 
+        return self::getWFractionsForWords($words, $mvariants);
+    }
+    
+    public static function getWFractionsForWords($words, $mvariants) {
+        $w_fractions = [];
+        $total_words = sizeof($words);
+        
         foreach ($mvariants as $mvariant) {
             list($absence, $template) = Mvariant::processTemplate($mvariant->template);
-            $words = Word::whereTextId($text->id)->groupBy('word')->get();
             $w_frequency = 0;
             foreach ($words as $word) {
-                $p = preg_match("/".$template."/", $word->word);
+                $p = preg_match("/".$template."/", $word);
                 if (!$absence && $p || $absence && !$p) {
                     $w_frequency++;  
                 }
@@ -281,5 +286,35 @@ print "<b>Коалиции для диалекта $dialect_id записаны<
             
         }
         return $w_fractions;
+    }
+    
+    public static function dialectFractions() {
+        $d_fractions = []; // частоты диалектов
+        $dialects = Dialect::whereIn('id', function ($q) {
+                        $q->select('dialect_id')->from('dialect_dmarker');
+                    })->orderBy('id')->get();
+
+        foreach ($dialects as $dialect) {
+            $d_fractions[$dialect->id] = DialectDmarker::whereDialectId($dialect->id)
+                    ->orderBy('mvariant_id')->pluck('w_fraction', 'mvariant_id')
+                    ->toArray();
+        }
+        return $d_fractions;
+    }
+    
+    public static function dialectCloseness($text, $mvariants, $d_fractions) {
+        $closeness = [];
+        $words = preg_split("/[\s,.:!]+/", $text);        
+        
+        $fractions = DialectDmarker::getWFractionsForWords($words, $mvariants);
+        foreach (array_keys($d_fractions) as $dialect_id) {
+            $c = 0;
+            foreach ($fractions as $mvariant_id => $f) {
+                $c += pow($f-$d_fractions[$dialect_id][$mvariant_id], 2);
+            }
+            $closeness[$dialect_id] = sqrt($c);
+        }
+        asort($closeness);
+        return $closeness;
     }
 }

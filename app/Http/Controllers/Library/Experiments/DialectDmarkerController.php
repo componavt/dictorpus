@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Library\Experiments;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Storage;
 
 use App\Charts\DistributionChart;
 
@@ -17,6 +17,7 @@ use App\Library\Experiments\Mvariant;
 use App\Models\Corpus\Text;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Lang;
 
 class DialectDmarkerController extends Controller
 {
@@ -24,17 +25,22 @@ class DialectDmarkerController extends Controller
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/', 
-                         ['only' => ['calculate', 'calculateСoalitions', 'calculateSSindex']]);
+                         ['only' => ['calculate', 'calculateСoalitions', 
+                             'calculateSSindex', 'checkExperiment']]);
     }
     /**
      * /experiments/dialect_dmarker/
      * 
      */
     public function index() {
+        return view('experiments.dialect_dmarker.index');
+    }
+    
+    public function frequencies() {
         $output = 'frequency';
         list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init($output);
         
-        return view('experiments.dialect_dmarker.index', 
+        return view('experiments.dialect_dmarker.dialect_check', 
                 compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
     }
     
@@ -42,7 +48,7 @@ class DialectDmarkerController extends Controller
         $output = 'fraction';
         list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init($output);
         
-        return view('experiments.dialect_dmarker.index', 
+        return view('experiments.dialect_dmarker.dialect_check', 
                 compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
     }
     
@@ -50,7 +56,7 @@ class DialectDmarkerController extends Controller
         $output = 'words';
         list($dialects, $dmarkers, $gr_dialects) = DialectDmarker::init($output);
         
-        return view('experiments.dialect_dmarker.index', 
+        return view('experiments.dialect_dmarker.dialect_check', 
                 compact('dialects', 'dmarkers', 'gr_dialects', 'output'));
     }
     
@@ -158,63 +164,113 @@ print 'done';
                 compact('charts', 'dialect_markers'));        
     }
     
-    public function example() {
-        $lang_id = 4;
-        $limit = 20;
-        
+    public function checkExperiment() {
+        $mvariants = Mvariant::orderBy('id')->get();
+
+        $d_fractions = DialectDmarker::dialectFractions();
+
+        $stats = [];
+        foreach ([4,5,6] as $lang_id) {
+            $texts = Text::whereLangId($lang_id)
+                        ->hasOneDialect()
+                        ->whereIn('id', function ($q) {
+                            $q->select('text_id')->from('dialect_text');
+                        })->orderBy('id')->get();
+
+            $stats[$lang_id]['total'] = sizeof($texts);
+            
+            foreach ($texts as $text) {
+                $closeness = DialectDmarker::dialectCloseness($text, $mvariants, $d_fractions);                
+                $guess = array_keys($closeness)[0];
+                $guess_dialect = Dialect::find($guess);
+                $text_dialect = $text->dialects()->first()->id;
+                if ($guess == $text_dialect) {
+                    $stats[$lang_id]['texts']['right'][$text->id] = $closeness;
+                    $stats[$lang_id]['dialects'][$text_dialect]['right'][] = $text->id;
+                } else {
+                    $stats[$lang_id]['texts']['wrong'][$text->id] = $closeness;
+                    $stats[$lang_id]['dialects'][$text_dialect]['wrong'][] = $text->id;
+                }
+                
+                if ($guess_dialect->lang_id == $text->dialects()->first()->lang_id) {
+                    $stats['langs']['right'][$lang_id] = empty($stats['langs']['right'][$lang_id]) ? 1 : 1+$stats['langs']['right'][$lang_id];
+                } else {
+                    $stats['langs']['wrong'][$lang_id] = empty($stats['langs']['wrong'][$lang_id]) ? 1: 1+$stats['langs']['wrong'][$lang_id];                    
+                }
+            }
+        }       
+//        Storage::disk('public')->put('export/dialect_dmarker.txt', json_encode($stats));
+print 'done.';
+    }
+    
+    public function checkResults() {
+        $stats = json_decode(Storage::disk('public')->get('export/dialect_dmarker.txt'), true);
+        $langs = Lang::whereIn('id', [4,5,6])->orderBy('id')->get();
+        foreach ($langs as $lang) {
+            $labels[] = $lang->name. '('.$stats[$lang->id]['total'].')';
+            $dataset[0][] = 100*$stats['langs']['right'][$lang->id] / $stats[$lang->id]['total'];
+            $dataset[1][] = 100*$stats['langs']['wrong'][$lang->id] / $stats[$lang->id]['total'];
+        }
+//dd($stats['langs']);     
+        $chart = new DistributionChart;
+        $colors = $chart->colors();
+        $chart->labels($labels);
+        $chart->dataset('правильно', 'horizontalBar', $dataset[0])->fill(false)
+              ->color('#'.$colors[3])->backgroundColor('#'.$colors[3]);
+        $chart->dataset('ошибочно', 'horizontalBar', $dataset[1])->fill(false)
+              ->color('#'.$colors[2])->backgroundColor('#'.$colors[2]);
+        $chart->height(110);
+        $charts['langs'] = $chart;            
+
+        foreach ([4,5,6] as $lang_id) {
+            $dialects = Dialect::whereIn('id', array_keys($stats[$lang_id]['dialects']))
+                        ->orderBy('id')->get();
+            $dataset = [];
+            foreach ($dialects as $dialect) {
+                $right_count = empty($stats[$lang_id]['dialects'][$dialect->id]['right']) ? 0 :
+                        sizeof($stats[$lang_id]['dialects'][$dialect->id]['right']);
+                $wrong_count = empty($stats[$lang_id]['dialects'][$dialect->id]['wrong']) ? 0 :
+                        sizeof($stats[$lang_id]['dialects'][$dialect->id]['wrong']);
+                $total = $right_count+$wrong_count; 
+                $dataset[] = ['dialect_name' => $dialect->name. ' ('.$total.')',
+                            'wrong' => 100*$right_count/$total,
+                            'right' => 100*$wrong_count/$total];
+            }
+            $dataset = collect($dataset)->sortByDesc('wrong');
+            
+            $chart = new DistributionChart;
+            $colors = $chart->colors();
+            $chart->labels($dataset->pluck('dialect_name')->toArray());
+            $chart->dataset('правильно', 'horizontalBar', $dataset->pluck('wrong')->toArray())->fill(false)
+                  ->color('#'.$colors[3])->backgroundColor('#'.$colors[3]);
+            $chart->dataset('ошибочно', 'horizontalBar', $dataset->pluck('right')->toArray())->fill(false)
+                  ->color('#'.$colors[2])->backgroundColor('#'.$colors[2]);
+            $chart->height(50+20*sizeof($dataset));
+            $charts[$lang_id] = $chart;            
+        }
+        return view('experiments.dialect_dmarker.check_results', 
+                compact('charts', 'langs', 'stats'));        
+    }
+    
+    public function guess(Request $request) {
+        $text = $request->text;
         $d_fractions = []; // частоты диалектов
-        $right = $wrong = 0;
-        
         $mvariants = Mvariant::orderBy('id')->get();
 
         $dialects = Dialect::whereIn('id', function ($q) {
-            $q->select('dialect_id')->from('dialect_dmarker');
-        })->orderBy('id')->get();
+                        $q->select('dialect_id')->from('dialect_dmarker');
+                    })->orderBy('id')->get();
 
         foreach ($dialects as $dialect) {
             $d_fractions[$dialect->id] = DialectDmarker::whereDialectId($dialect->id)
                     ->orderBy('mvariant_id')->pluck('w_fraction', 'mvariant_id')
                     ->toArray();
         }
-        
-        $has_more_one_dialects = DB::table('dialect_text')->groupBy('text_id')
-                ->having(DB::raw('count(*)'), '>', 1)
-                ->pluck('text_id');
+        $closeness = DialectDmarker::dialectCloseness($text, $mvariants, $d_fractions);                
 
-        $texts = Text::whereLangId($lang_id)
-                    ->whereNotIn('id', $has_more_one_dialects)
-                    ->whereIn('id', function ($q) {
-                        $q->select('text_id')->from('dialect_text');
-                    })->orderBy('id')->get();
-dd(sizeof($texts));        
-        foreach ($texts as $text) {
-            $fractions = DialectDmarker::getWFractions($text, $mvariants);
-/*        
-        arsort($w_fractions); // сортируем по убыванию частот
-        $w_fractions = array_slice($w_fractions, 0, $limit, true); // оставляем первые 20
-        $w_fract = array_filter($w_fractions, function($element) { // удаляем пустые элементы
-            return !empty($element);
-        });
-*/        
-            $closeness = [];
-
-            foreach ($dialects as $dialect) {
-                $c = 0;
-                foreach ($fractions as $mvariant_id => $f) {
-                    $c += pow($f-$d_fractions[$dialect->id][$mvariant_id], 2);
-                }
-                $closeness[$dialect->id] = sqrt($c);
-            }
-            $guess = array_keys($closeness, min($closeness))[0];
-            if ($guess == $text->dialects()->first()->id) {
-                $right++;
-            } else {
-                $wrong++;
-            }
-        }
-dd($right, $wrong); 
-// 1165
-// 687
-
+        $guess = array_keys($closeness)[0];
+        $guess_dialect = Dialect::find($guess);
+        return $guess_dialect->name;
     }
+    
 }

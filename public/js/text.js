@@ -526,3 +526,23 @@ function showUnlinkedLemmaBlock(locale) {
     });    
 }
 
+function dialectGuess(locale){    
+    $('#results').html('');
+    $('#loading-text').show();
+    $.ajax({
+        url: '/'+locale+'/experiments/dialect_dmarker/guess', 
+        data: {
+            'text': $('#text').val(),
+        },
+        type: 'GET',
+        success: function(text){       
+            $('#results').html(text);
+            $('#loading-text').hide();
+        },
+        error: function () {
+            $('#results').html('ERROR');
+            $('#loading-text').hide();
+        }
+    });
+}
+

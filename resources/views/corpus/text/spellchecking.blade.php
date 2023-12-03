@@ -19,6 +19,7 @@
             @include('widgets.form.formitem._textarea', 
                     ['name' => 'text', 
                      'special_symbol' => true,
+                     'counter' => 2000,
                      'title'=>trans('corpus.text_for_check'),
                      'attributes'=>['rows'=>20]])
             <input class="btn btn-primary btn-default" type="button" 
@@ -32,10 +33,12 @@
 @section('footScriptExtra')
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/text.js')!!}
+    {!!Html::script('js/form.js')!!}
 @stop
 
 @section('jqueryFunc')
     toggleSpecial();
 {{-- show/hide a block with lemmas --}}
     showUnlinkedLemmaBlock('{{LaravelLocalization::getCurrentLocale()}}'); 
+    limitTextarea("#text");
 @stop

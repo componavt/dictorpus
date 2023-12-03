@@ -3,7 +3,6 @@
  * Created by PhpStorm.
  * User: Dmitriy Pivovarov aka AngryDeer http://studioweb.pro
  * Date: 25.01.16
- * Time: 4:41
  * Updated: 24.08.2016 by Nataly Krizhanovsky
  */?>
 <?php 
@@ -27,6 +26,9 @@ $attributes['id'] = $id_name;
     {!! Form::textarea($name, $value, $attributes) !!}
     @if ($special_symbol) 
         @include('dict.special_symbols',['id_name'=>$id_name])
+    @endif
+    @if (!empty($counter)) 
+        <div>{{ trans('corpus.char_left') }}: <span id="counter">{{ $counter }}</span></div>
     @endif
     <p class="help-block">
         {!! $errors->first($name) !!}

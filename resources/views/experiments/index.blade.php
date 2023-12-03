@@ -25,17 +25,5 @@
 
     <p><a href="/experiments/bible_language">Анализ языковых конструкций библейских текстов</a></p>
 
-    <h4>Определение диалектной принадлежности</h4>
-    <ul>
-        <li><a href="/experiments/dialect_dmarker/example">пример</a></li>
-        <li><a href="/experiments/dialect_dmarker">таблица с частотами</a></li>
-        <li><a href="/experiments/dialect_dmarker/fractions">таблица с относительными частотами</a></li>
-        <!--li><a href="/experiments/dialect_dmarker/words">посмотреть слова</a></li-->
-        <li><a href="/experiments/dialect_dmarker/compare_freq_SSindex">сравнить относительные частоты и индекс Шепли-Шубика</a></li>
-    @if (User::checkAccess('admin'))
-        <li><a href="/experiments/dialect_dmarker/calculate">переписать частоты</a></li>
-        <li><a href="/experiments/dialect_dmarker/calculate_coalitions">переcчитать коалиции</a></li>
-        <li><a href="/experiments/dialect_dmarker/calculate_SSindex">переcчитать индексы Шепли-Шубика</a></li>
-    @endif
-    </ul>
+    <h4><a href="/experiments/dialect_dmarker">Определение диалектной принадлежности</a></h4>
 @endsection

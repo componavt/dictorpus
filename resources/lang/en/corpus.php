@@ -27,8 +27,12 @@ return [
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',
     'by_sentences' => 'by sentences',
-    'comment' => 'comments',
+    
+    'char_left' => 'Characters left',
     'choose-gramset' => 'Choose a gramset',
+    'comment' => 'comments',
+    'comment_source' => 'comment to the source',
+    'comment_text' => 'comment to the text',
     
     'corpus' => 'corpus',
     'corpus_has_text' => 'Corpus ":name" can not be removed, there are texts in this corpus',

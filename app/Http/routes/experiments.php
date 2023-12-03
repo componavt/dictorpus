@@ -7,10 +7,13 @@
         Route::get('experiments/dialect_dmarker/calculate_coalitions', 'Library\Experiments\DialectDmarkerController@calculateСoalitions');
         Route::get('experiments/dialect_dmarker/calculate_SSindex', 'Library\Experiments\DialectDmarkerController@calculateSSIndex');
         Route::get('experiments/dialect_dmarker/compare_freq_SSindex', 'Library\Experiments\DialectDmarkerController@compareFreqSSindex');
-        Route::get('experiments/dialect_dmarker/example', 'Library\Experiments\DialectDmarkerController@example');
+        Route::get('experiments/dialect_dmarker/check', 'Library\Experiments\DialectDmarkerController@checkExperiment');
+        Route::get('experiments/dialect_dmarker/check_results', 'Library\Experiments\DialectDmarkerController@checkResults');
+        Route::get('experiments/dialect_dmarker/frequencies', 'Library\Experiments\DialectDmarkerController@frequencies');
         Route::get('experiments/dialect_dmarker/fractions', 'Library\Experiments\DialectDmarkerController@fractions');
         Route::get('experiments/dialect_dmarker/words', 'Library\Experiments\DialectDmarkerController@words');
         Route::get('experiments/dialect_dmarker/', 'Library\Experiments\DialectDmarkerController@index');
+        Route::get('experiments/dialect_dmarker/guess', 'Library\Experiments\DialectDmarkerController@guess');
         
         Route::get('experiments/pattern_search/', 'Library\Experiments\PatternSearchController@index');
         Route::get('experiments/pattern_search_in_wordforms/', 'Library\Experiments\PatternSearchController@inWordforms');
