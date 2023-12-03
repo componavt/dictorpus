@@ -199,7 +199,7 @@ print 'done';
                 }
             }
         }       
-//        Storage::disk('public')->put('export/dialect_dmarker.txt', json_encode($stats));
+        Storage::disk('public')->put('export/dialect_dmarker.txt', json_encode($stats));
 print 'done.';
     }
     
