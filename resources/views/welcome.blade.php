@@ -76,11 +76,11 @@
                 <img class="img-loading" src="{{ asset('images/loading.gif') }}">
                             </div>
                             
-                            <!--div class='mobile-b'>
+{{--                            <div class='mobile-b'>
                                 <a href="https://play.google.com/store/apps/developer?id=Andrew+Krizhanovsky" style="padding-top: 7px;">
                                     <img src="/images/google_play.png"></a>
                                 <div>{!!trans('blob.mobile-b')!!}</div>
-                            </div -->
+                            </div> --}}
                             
                             @if ($locale == 'ru') 
                             <div class="block-list" style="margin-top: 20px;">
