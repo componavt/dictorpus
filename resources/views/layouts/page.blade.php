@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-@yield('page_title')
+    @yield('page_title')
 @endsection
 
 @section('content')
