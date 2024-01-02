@@ -327,10 +327,11 @@ trait LemmaModify
         $this-> phraseLemmas()->detach();
         
         // связи с другими леммами - фонетическими вариантами
-        foreach ($this->variants as $lemma) {
+        DB::statement("DELETE from lemma_variants WHERE lemma1_id=".$this->id." or lemma2_id=".$this->id);
+/*        foreach ($this->variants as $lemma) {
             $lemma->variants()->detach($this->id);
         }
-        $this->variants()->detach();
+        $this->variants()->detach();*/
         
         if ($this->reverseLemma) {
             $this->reverseLemma->delete();
