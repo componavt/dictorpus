@@ -44,7 +44,7 @@ class OlodictController extends Controller
                 'limit_num' => 5
             ];
         $this->url_args['limit_num'] = 5;
-//dd($this->url_args['search_pos']);        
+//dd($this->url_args['by_alpha']);        
 /*        $url_args = $this->url_args;
         if ($url_args['search_lemma']) {
             if (!$url_args['search_letter']) {

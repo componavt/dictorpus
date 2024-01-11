@@ -38,6 +38,8 @@ function posSelect(is_full_form=true, formName='') {
                 } else if ($( "#pos_id option:selected" ).val()==19) { // is phrase
                     $("#phrase-field").show().prop("disabled", false);
                     $("#comptype-field").show().prop("disabled", false);
+                } else if ($( "#pos_id option:selected" ).val()==21) { // is participle
+                    $("#partype-field").show().prop("disabled", false);
                 }
             }
           })

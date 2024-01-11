@@ -14,7 +14,7 @@ function viewLetter(locale, letter_obj) {
 }
 
 function viewGram(locale, gram_obj) {
-    $("#search_word").val('');
+//    $("#search_word").val('');
     setClass(gram_obj, 'gram-active');
     clearSearchForm();
     
@@ -74,7 +74,8 @@ function dataForSearch() {
 function dataForAlpha() {
     return {
             search_letter: $(".letter-active").html(),
-            search_gram: $(".gram-active").html()
+            search_gram: $(".gram-active").html(),
+            by_alpha: 1
            };
 }
 
@@ -110,7 +111,7 @@ function loadLemmas(locale, page=1, by_alpha=true) {
         data = dataForSearch();
     }
     data['page'] = page;
-    data['by_alpha'] = true;
+//    data['by_alpha'] = true;
     
     $.ajax({
         url: '/'+locale+'/olodict/lemma_list', 
