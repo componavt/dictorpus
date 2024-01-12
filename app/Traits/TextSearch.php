@@ -353,13 +353,13 @@ trait TextSearch
         if (!$str) {
             return $texts;
         }
-        return $texts->where(function($q) use ($str){
+        return $texts->/*where(function($q) use ($str){
                         $q->whereIn('transtext_id',function($query) use ($str){
                             $query->select('id')
                             ->from(with(new Transtext)->getTable())
                             ->where('text','like', '%'.$str.'%');
-                        })->orWhere('text','like', '%'.$str.'%');
-                });
+                        })->or*/Where('text','like', '%'.$str.'%')/*;
+                })*/;
                        //->whereOr('transtexts.title','like', $text_title);
     }
 
