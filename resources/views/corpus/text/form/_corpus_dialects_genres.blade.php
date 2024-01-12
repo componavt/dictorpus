@@ -1,8 +1,10 @@
 <div class="row">
     <div class="col-sm-4">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'corpus_id', 
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'corpuses', 
                  'values' =>$corpus_values,
+                 'value' => $text? $text->corpusValue() : [1],
+                 'class'=>'multiple-select select-corpus form-control',
                  'title' => trans('corpus.corpus')]) 
                  
     </div>

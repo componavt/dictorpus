@@ -26,4 +26,8 @@ trait Genres
         return $value;
     }
     
+    public function genresToString($link=null) {
+        return $this->relationsToString('genres', $link);
+    }
+    
 }

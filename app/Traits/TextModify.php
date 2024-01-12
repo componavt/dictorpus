@@ -48,7 +48,7 @@ trait TextModify
         $text = self::with('transtext','event','source')->get()->find($id);
         $old_text = $text->text;
 
-        $text->fill($request->only('corpus_id','lang_id','title','text','text_structure', 'comment'));//,'text_xml'
+        $text->fill($request->only('lang_id','title','text','text_structure', 'comment'));//,'text_xml''corpus_id',
 
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();
@@ -65,6 +65,8 @@ trait TextModify
         $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml', 'trans_authors'));
         $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
         $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
+//dd($request->corpuses);
+        $this->corpuses()->sync($request->corpuses);
         
         $this->authors()->detach();
         $this->authors()->attach($request->authors);

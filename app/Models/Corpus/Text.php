@@ -29,8 +29,8 @@ class Text extends Model implements HasMediaConversions
 {
     const PhotoDisk = 'photos';
     const PhotoDir = 'photo';
-    protected $fillable = ['corpus_id', 'lang_id', 'source_id', 'event_id', 
-                        'title', 'text', 'text_xml', 'text_structure', 'comment'];
+    protected $fillable = ['lang_id', 'source_id', 'event_id', 'title', 'text',  //'corpus_id', 
+                           'text_xml', 'text_structure', 'comment'];
 
     use \App\Traits\TextMarkup;
     use \App\Traits\TextModify;
@@ -62,7 +62,7 @@ class Text extends Model implements HasMediaConversions
     use \App\Traits\Scopes\WithAudio;
     
     // Belongs To Relations
-    use \App\Traits\Relations\BelongsTo\Corpus;
+//    use \App\Traits\Relations\BelongsTo\Corpus;
     use \App\Traits\Relations\BelongsTo\Event;
     use \App\Traits\Relations\BelongsTo\Lang;
     use \App\Traits\Relations\BelongsTo\Source;
@@ -70,6 +70,7 @@ class Text extends Model implements HasMediaConversions
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Authors;
+    use \App\Traits\Relations\BelongsToMany\Corpuses;
     use \App\Traits\Relations\BelongsToMany\Cycles;
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Genres;
@@ -954,19 +955,6 @@ dd($s->saveXML());
                     true, $url_args['search_wid'] ?? []);
         endif; 
         return nl2br($this->text);
-    }
-    
-    public function genresToString($link=null) {
-        return $this->relationsToString('genres', $link);
-/*        $out = [];
-        foreach ($this->genres as $genre) {
-            $name = $genre->name;
-            if ($link) {
-                $name = to_link($name, $link.$genre->id);
-            }
-            $out[] = $name;
-        }
-        return join(', ', $out);*/
     }
     
     public function plotsToArray($link=null) {

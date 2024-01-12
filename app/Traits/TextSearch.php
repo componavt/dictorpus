@@ -58,6 +58,7 @@ trait TextSearch
         $texts = self::searchByAuthor($texts, $url_args['search_author']);
 //        $texts = self::searchByAuthors($texts, $url_args['search_author']);
         $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place'], $url_args['search_birth_district'], $url_args['search_birth_region']);
+        $texts = self::searchByCorpuses($texts, $url_args['search_corpus']);
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
         $texts = self::searchByInformant($texts, $url_args['search_informant']);
         $texts = self::searchByLang($texts, $url_args['search_lang']);
@@ -76,9 +77,9 @@ trait TextSearch
         
         $texts = self::searchByPivot($texts, 'text', 'motive', $url_args['search_motive']);
         
-        if ($url_args['search_corpus']) {
+/*        if ($url_args['search_corpus']) {
             $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
-        } 
+        } */
         if ($url_args['with_transtext']) {
             $texts = $texts->whereNotNull('transtext_id');
         } 
@@ -169,6 +170,17 @@ trait TextSearch
                     $query->select('text_id')
                     ->from("dialect_text")
                     ->whereIn('dialect_id',$dialects);
+                });
+    }
+    
+    public static function searchByCorpuses($texts, $corpuses) {
+        if (!sizeof($corpuses)) {
+            return $texts;
+        }
+        return $texts->whereIn('id',function($query) use ($corpuses){
+                    $query->select('text_id')
+                    ->from("corpus_text")
+                    ->whereIn('corpus_id',$corpuses);
                 });
     }
     

@@ -42,6 +42,7 @@
 @section('jqueryFunc')
     toggleSpecial();
     $(".multiple-select").select2();
+    
     selectDialect('lang_id');
     selectGenre('corpus_id');
     selectMotives('.multiple-select-motive', 'genres');

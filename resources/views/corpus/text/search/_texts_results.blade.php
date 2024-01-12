@@ -45,7 +45,7 @@
                 </td>
             @endif
             @if (!$url_args['search_corpus'])
-                <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpus->name}}</td>
+                <td data-th="{{ trans('corpus.corpus') }}">{{$text->corpusesToString()}}</td>
             @endif
             @if (!$url_args['search_genre'])
                 <td data-th="{{ trans('corpus.genre') }}">{{$text->genresToString()}}</td>

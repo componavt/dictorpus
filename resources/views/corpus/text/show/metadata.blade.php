@@ -1,5 +1,5 @@
 <div class="text-metadata">
-        <h4>{{ trans('corpus.corpus') }}: {{ $text->corpus->name }}</h4>
+        <h4>{{ trans('corpus.corpus') }}: {!! $text->corpusesToString('/corpus/text?search_corpus=') !!}</h4>
         
         @if ($text->genresToString())
         <p><b>{{trans('corpus.genre')}}:</b> <i>{!! $text->genresToString('/corpus/text?search_genre=') !!}</i></p>
