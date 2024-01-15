@@ -164,7 +164,7 @@ class TextController extends Controller
         $this->validate($request, [
             'title'  => 'required|max:255',
             'text'=> 'required',
-            'corpus_id' => 'required|numeric',
+            'corpuses' => 'required|array',
             'lang_id' => 'required|numeric',
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',

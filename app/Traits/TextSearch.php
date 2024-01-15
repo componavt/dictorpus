@@ -87,6 +87,7 @@ trait TextSearch
         if ($url_args['search_text']) {
             $texts = $texts->where('text','like','%'.$url_args['search_text'].'%');
         } */
+//dd(to_sql($texts));        
 //dd($texts->toSql());                                
 
         return $texts;
@@ -107,6 +108,7 @@ trait TextSearch
         $texts = $texts->whereIn('id',array_unique(Sentence::searchWords($url_args['words'])->pluck('t1.text_id')));
 //Sentence::searchByWords($texts, 'id', $url_args['words']);
 //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $texts->toSql()), $texts->getBindings()));            
+        
         return $texts;
     }
         
