@@ -330,6 +330,7 @@ trait TextModify
     }    
 
     public function remove() {
+        $this->corpuses()->detach();
         $this->dialects()->detach();
         $this->genres()->detach();
         $this->plots()->detach();
