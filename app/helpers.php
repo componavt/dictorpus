@@ -293,3 +293,15 @@ if (!function_exists('fact')) {
 	return ($n >= 1) ?  ($n * fact($n - 1)) : 1;
     }
 }
+
+if (!function_exists('css')) {
+    function css($filename) {
+        return '<link href="/css/'.$filename.'.css?'. filemtime(env('APP_ROOT').'public/css/'.$filename.'.css'). '" rel="stylesheet">';
+    }
+}
+
+if (!function_exists('js')) {
+    function js($filename) {
+        return '<script src="/js/'.$filename.'.js?'. filemtime(env('APP_ROOT').'public/js/'.$filename.'.js'). '"></script>';
+    }
+}

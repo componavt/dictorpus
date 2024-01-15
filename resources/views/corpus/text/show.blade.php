@@ -85,15 +85,15 @@
 @stop
 
 @section('footScriptExtra')
-    {!!Html::script('js/rec-delete-link.js')!!}
+    {!! js('rec-delete-link')!!}
     
-    {!!Html::script('js/lemma.js')!!}
-    {!!Html::script('js/list_change.js')!!}
-    {!!Html::script('js/meaning.js')!!}
-    {!!Html::script('js/select2.min.js')!!}
-    {!!Html::script('js/special_symbols.js')!!}
-    {!!Html::script('js/text.js')!!}
-    {!!Html::script('js/photo.js')!!}
+    {!! js('lemma') !!}
+    {!! js('list_change')!!}
+    {!! js('meaning')!!}
+    {!! js('select2.min')!!}
+    {!! js('special_symbols')!!}
+    {!! js('text')!!}
+    {!! js('photo')!!}
 @stop
 
 @section('jqueryFunc')
