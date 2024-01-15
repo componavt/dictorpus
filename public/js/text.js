@@ -138,6 +138,16 @@ function addLemma(text_id, lang_id) {
                     number: $( "#number option:selected" ).val(),
                     reflexive: $( "#reflexive" ).prop('checked'),
                     impersonal: $( "#impersonal" ).prop('checked')};
+        if ($("#reflexive" ).prop('checked')) {
+            data['reflexive'] = 1;
+        } else {
+            data['reflexive'] = 0;            
+        }
+        if ($("#impersonal" ).prop('checked')) {
+            data['impersonal'] = 1;
+        } else {
+            data['impersonal'] = 0;            
+        }
         saveLemma(text_id, data);
     });
     
