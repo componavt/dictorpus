@@ -166,7 +166,7 @@ class Meaning extends Model
             }
             $sentence_builder = $sentence_builder->take($limit);
         }
-//print "<p>". $sentence_builder->count()."</p>";       
+//dd($for_edit, to_sql($sentence_builder));       
         
         foreach ($sentence_builder->get() as $meaning_text) {
             $sentence = Text::extractSentence($meaning_text->text_id, 

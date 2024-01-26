@@ -96,14 +96,18 @@ function loadExamples(route, id, start, update_examples) {
     }); 
 }
 
-function showMoreExamples(i, start, locale, is_edit=1) {    
+function showMoreExamples(i, start, locale, is_edit=1, all=1) {    
     var id = $(i).attr('data-for');
     $("#img-loading-more_"+ id).show();
     
     $(i).hide();
     $.ajax({
-        url: '/' + locale + '/dict/meaning/examples/load_more/'+ id + '?is_edit='+is_edit, 
-        data: {start: start},
+        url: '/' + locale + '/dict/meaning/examples/load_more/'+ id, 
+        data: {
+            start: start,
+            is_edit: is_edit,
+            all: all
+        },
         type: 'GET',
         success: function(result){
             $("#more-"+ id).append(result);
