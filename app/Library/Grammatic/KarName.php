@@ -188,6 +188,7 @@ class KarName
                   6 => $stem6,
                   10 => $harmony
             ];
+//dd($stems, $stem0_syll, $regs[1].$regs[2]);        
         return [$stems, null, $regs[1], $regs[2]];
     }
     
@@ -268,16 +269,19 @@ class KarName
     
     /**
      * А. Если о.6 заканч. на
-     * 1) с.к.: C[oö] и в с.ф. 3 слога, то о.6 + i;
-     * 2) C[iuyoö] ИЛИ Vi, то о.6 + loi~löi;
-     * 3) Ce, то e > i;
-     * 4) Ca, то 
+     * 1) с.к.: C[oö] и в с.ф. 3 слога, то о.6 + i;     (A.3)
+     * 2) C[iuy] (А.1) 
+     * ИЛИ (C[oö] и (лив. или с.к. и в с.ф. 2 слога)    (А.2)
+     * ИЛИ Vi,                                          (А.7)
+     * то о.6 + loi~löi;         
+     * 3) Ce, то e > i;                                 (А.4)
+     * 4) Ca, то                                        (А.5)
      *  4.1) a > i если 
-     *      4.1.1) в с.ф. 2 слога и в о.6 в первом слоге есть гласные u, o (в том числе в составе VV: uu, uo, ui, ou, oi) 
-     *  ИЛИ 4.1.2) в с.ф. более 2-х слогов и о.6 заканч. на mpa/mba, ma или является прилагательным с о.6. на va.  
+     *      4.1.1) в о.6 два слога и в о.6 в первом слоге есть гласные u, o (в том числе в составе VV: uu, uo, ui, ou, oi) 
+     *  ИЛИ 4.1.2) в о.6 более двух слогов и о.6 заканч. на mpa/mba, ma или является прилагательным с о.6. на va.  
      * 4.2) a > oi, если 
-     *      4.2.1) в с.ф. 2 слога и в о.6 в первом слоге есть гласные a, e, i (в том числе в составе VV: ai, au, ua, ea, ii, ie, iu, ie, ee, eu); 
-     *  ИЛИ 4.2.2) в с.ф. более 2-х слогов и о.2 не заканч. на mpa / mba, ma и не является прилагательным с о.6. на va.
+     *      4.2.1) в о.6 два слога и в о.6 в первом слоге есть гласные a, e, i (в том числе в составе VV: ai, au, ua, ea, ii, ie, iu, ie, ee, eu); 
+     *  ИЛИ 4.2.2) в о.6 более 2-х слогов и о.2 НЕ заканч. на mpa / mba, ma и не является прилагательным с о.6. на va.
      * 5) Cä, то 
      *  5.1) ä > i если 
      *      5.1.1) в с.ф. 2 слога; 
@@ -304,26 +308,30 @@ class KarName
     public static function stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
+        $stem6_syll=KarGram::countSyllable($stem6);
+        
         if ($lang_id == 4 && preg_match("/".$C."’?[oö]$/u", $stem6) && $stem0_syll==3) { // А.1
             return $stem6.'i';
-        } elseif (preg_match("/".$C."[iuyoö]$/u", $stem6)
-                || preg_match("/".$V."i$/u", $stem6)) { // А.2
+        } elseif (preg_match("/".$C."’?[iuy]$/u", $stem6) // А.2
+                || (preg_match("/".$C."’?[oö]$/u", $stem6) && ($lang_id!=4 || $lang_id==4 && $stem0_syll==2)) 
+                || preg_match("/".$V."i$/u", $stem6)) {
             return $stem6.KarGram::garmVowel($harmony,'loi');
         } elseif (preg_match("/^(.+".$C.")e$/u", $stem6, $regs)) { // А.3
             return $regs[1].'i';
-        } elseif (preg_match("/^(.+".$C.")a$/u", $stem6, $regs)) { // А.4
-            if ($stem0_syll==2 && preg_match("/^".$C."?".$V."?[uo]/u", $stem6) // А.4.1.1
-                    || $stem0_syll>2 && (preg_match("/m[pb]?a$/u", $stem6) || $pos_id==1 && preg_match("/va$/u", $stem6))) { // А.4.1.2
+        } elseif (preg_match("/^(.+".$C.")a$/u", $stem6, $regs)) { // А.5
+//dd($regs);            
+            if ($stem6_syll==2 && preg_match("/^".$C."?".$V."?[uo]/u", $stem6) // А.4.1.1
+                    || $stem6_syll>2 && (preg_match("/m[pb]?a$/u", $stem6) || $pos_id==1 && preg_match("/va$/u", $stem6))) { // А.4.1.2
                 return $regs[1].'i';                
-            } elseif ($stem0_syll==2 && preg_match("/^".$C."?".$V."?[aei]/u", $stem6) // А.4.2.1
-                    || $stem0_syll>2 && !preg_match("/m[pb]?a$/u", $stem6) && !($pos_id==1 && preg_match("/va$/u", $stem6))) { // А.4.2.2
+            } elseif ($stem6_syll==2 && preg_match("/^".$C."?".$V."?[aei]/u", $stem6) // А.4.2.1
+                    || $stem6_syll>2 && !preg_match("/m[pb]?a$/u", $stem6) && !($pos_id==1 && preg_match("/va$/u", $stem6))) { // А.4.2.2
                 return $regs[1].'oi';                
             }
         } elseif (preg_match("/^(.+".$C.")ä$/u", $stem6, $regs)) { // А.5
-            if ($stem0_syll==2 // А.5.1.1
-                    || $stem0_syll>2 && preg_match("/[mvžsjpb]ä$/u", $stem6)) { // А.5.1.2
+            if ($stem6_syll==2 // А.5.1.1
+                    || $stem6_syll>2 && preg_match("/[mvžsjpb]ä$/u", $stem6)) { // А.5.1.2
                 return $regs[1].'i';                
-            } elseif ($stem0_syll>2 && preg_match("/[dtgkčhlnr]ä$/u", $stem6)) { // А.5.2
+            } elseif ($stem6_syll>2 && preg_match("/[dtgkčhlnr]ä$/u", $stem6)) { // А.5.2
                 return $regs[1].'öi';                
             }
         } elseif (preg_match("/^(.+)".$V."(".$V.")$/u", $stem6, $regs)) { // А.6
