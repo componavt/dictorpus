@@ -162,13 +162,20 @@ class KarName
      * @param type $regs = [0=>template, 1=>base, 2=>base-suff, 3=>list_of_pseudostems]
      */
     public static function stemsFromMiniTemplate($lang_id, $pos_id, $regs) {
-//dd("!!!!");        
-        $base = preg_replace('/ǁ/','',$regs[1]);
+//dd($regs);     
+        if (preg_match("/^(.+)ǁ(.+)$/", $regs[1], $sword)) {
+            $fword = $sword[1];
+            $base = $sword[2];
+        } else {
+            $fword = '';
+            $base = $regs[1];
+        }
+//        $base = preg_replace('/ǁ/','',$regs[1]);
         $stem0 = $base.$regs[2];
-        $out = [[$stem0], null, $regs[0], null];
+        $out = [[$fword.$stem0], null, $regs[0], null];
         $ps_list = preg_split("/\s*,\s*/", $regs[3]);
-        $harmony = KarGram::isBackVowels($regs[1].$regs[2]); // harmony
-        $stem0_syll=KarGram::countSyllable($regs[1].$regs[2]);
+        $harmony = KarGram::isBackVowels($stem0); // harmony
+        $stem0_syll=KarGram::countSyllable($stem0);
         
         list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);
         if (!$stem6) {
@@ -179,13 +186,13 @@ class KarName
         $stem5 = self::stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll);
         $stem4 = self::stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony);
         
-        $stems = [0 => $stem0,
-                  1 => $stem1, // single genetive base 
-                  2 => $stem2, // single illative base
-                  3 => $stem3,
-                  4 => $stem4,
-                  5 => $stem5,
-                  6 => $stem6,
+        $stems = [0 => $fword.$stem0,
+                  1 => $fword.$stem1, // single genetive base 
+                  2 => $fword.$stem2, // single illative base
+                  3 => $fword.$stem3,
+                  4 => $fword.$stem4,
+                  5 => $fword.$stem5,
+                  6 => $fword.$stem6,
                   10 => $harmony
             ];
 //dd($stems, $stem0_syll, $regs[1].$regs[2]);        
