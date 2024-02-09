@@ -15,6 +15,9 @@
         Route::get('experiments/dialect_dmarker/', 'Library\Experiments\DialectDmarkerController@index');
         Route::get('experiments/dialect_dmarker/guess', 'Library\Experiments\DialectDmarkerController@guess');
         
+        Route::get('experiments/ludgen/words', 'Library\Experiments\LudgenController@words')->name('ludgen.words');
+        Route::get('experiments/ludgen', 'Library\Experiments\LudgenController@index')->name('ludgen.index');
+        
         Route::get('experiments/pattern_search/', 'Library\Experiments\PatternSearchController@index');
         Route::get('experiments/pattern_search_in_wordforms/', 'Library\Experiments\PatternSearchController@inWordforms');
         Route::get('experiments/pattern_search_in_wordforms_results/', 'Library\Experiments\PatternSearchController@inWordformsResults');

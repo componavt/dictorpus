@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Library\Experiments;
+
+use Illuminate\Database\Eloquent\Model;
+use DB;
+
+class Ludgen extends Model
+{
+//    protected $table='dialect_dmarker';
+    const lang_id = 6;
+    const dialect_id = 42;
+    
+    public static function getNames() {
+//        return "halgo kirikkö lindu kydy počči d’ogi akke ukke emände nuotte leibe mua diä dänöi dänyöi tiäi pedäi astii puu hiili hiiri pieni tuohi lumi lapsi yksi vezi parži alaine petkel paimen tytär härkin pereh barbaz mätäz kirvez verez veres kaglus kynäbrys vahnuz hyvyz lapsut lyhyd d’algatoi iänetöi huondekselline";
+        return [
+            62004 => 'halgo',
+            13424 => 'kirikkö',
+            38637 => 'lindu',
+            50254 => 'kydy',
+            46747 => 'počči',
+            21396 => 'd’ogi',
+            29962 => 'akke',
+            66666 => 'ukke',
+            50308 => 'emände',
+            47713 => 'nuotte',
+            47289 => 'leibe',
+            14295 => 'mua',
+            37909 => 'diä',
+            67102 => 'dänöi',
+            69938 => 'dänyöi',
+            69883 => 'tiäi',
+            3540 => 'pedäi',
+            69940 => 'astii',
+            37234 => 'puu',
+            62160 => 'hiili',
+            30743 => 'hiiri',
+            21425 => 'pieni',
+            37342 => 'tuohi',
+            36683 => 'lumi',
+            13463 => 'lapsi',
+            62360 => 'yksi',
+            28722 => 'vezi',
+            48744 => 'parži',
+            70199 => 'alaine',
+            49174 => 'petkel',
+            46942 => 'paimen',
+            28825 => 'tytär',
+            70254 => 'härkin',
+            18330 => 'pereh',
+            40672 => 'barbaz',
+            70262 => 'mätäz',
+            47157 => 'kirvez',
+            46865 => 'verez',
+            46862 => 'veres',
+            28730 => 'kaglus',
+            40633 => 'kynäbrys',
+            70267 => 'vahnuz',
+            66796 => 'hyvyz',
+            70269 => 'lapsut',
+            51763 => 'lyhyd',
+            70271 => 'd’algatoi',
+            70272 => 'iänetöi',
+            70274 => 'huondekselline'            
+        ];
+    }
+    
+    public static function getVerbs() {
+//        return "kaččoda kuččuda kyzydä eččida itkeda andada ottada elädä d’uoda viedä haravoita tulda mändä purda magata pagišta pesta rubeta suvaita";
+        return [
+            3461 => 'kaččoda',
+            42494 => 'kuččuda',
+//            50380 => 'kyzydä',
+            41301 => 'eččida',
+            45142 => 'itkeda',
+            22172 => 'andada',
+            14596 => 'ottada',
+            14594 => 'elädä',
+            29444 => 'd’uoda',
+            62863 => 'viedä',
+            70904 => 'haravoita',
+            29594 => 'tulda',
+//            3525 => 'mändä',
+            67094 => 'purda',
+            43235 => 'magata',
+            22260 => 'pagišta',
+            44615 => 'pestä',
+            41869 => 'rubeta',
+            62330 => 'suvaita',  
+            41336 => 'suada'
+        ];
+    }    
+}
+//suada

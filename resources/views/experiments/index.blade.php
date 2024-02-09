@@ -26,4 +26,6 @@
     <p><a href="/experiments/bible_language">Анализ языковых конструкций библейских текстов</a></p>
 
     <h4><a href="/experiments/dialect_dmarker">Определение диалектной принадлежности</a></h4>
+    
+    <h4><a href="{{ route('ludgen.index') }}">Генерация словоформ для людиковского наречия карельского языка</a></h4>
 @endsection

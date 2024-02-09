@@ -586,5 +586,18 @@ trait LemmaModify
         }
     }
     
-    
+    public function reloadStemAffixByWordforms() {
+        list($max_stem, $affix) = $this->getStemAffixByWordforms();
+        if (!$this->reverseLemma) {      
+            $this->createReverseLemma($max_stem, $affix);
+        }
+        
+        $lemma_stem = preg_replace("/\|\|/", '', $this->reverseLemma->stem);
+        
+        if ($max_stem!=$lemma_stem || $affix!=$this->reverseLemma->affix) {
+            $this->reverseLemma->stem = $max_stem;
+            $this->reverseLemma->affix = $affix;
+            $this->reverseLemma->save();
+        }
+    }
 }

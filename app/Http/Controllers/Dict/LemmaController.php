@@ -924,13 +924,7 @@ class LemmaController extends Controller
                            ->withErrors('error.no_lemma');
         }
         
-        list($max_stem, $affix) = $lemma->getStemAffixByWordforms();
-        $lemma_stem = preg_replace("/\|\|/", '', $lemma->reverseLemma->stem);
-        if ($max_stem!=$lemma_stem || $affix!=$lemma->reverseLemma->affix) {
-            $lemma->reverseLemma->stem = $max_stem;
-            $lemma->reverseLemma->affix = $affix;
-            $lemma->reverseLemma->save();
-        }
+        $lemma->reloadStemAffixByWordforms();
         
         $lemma->updateWordformAffixes(true);
         
