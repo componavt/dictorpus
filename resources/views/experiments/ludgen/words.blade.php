@@ -28,14 +28,18 @@
         
         @php $count = 1; @endphp
         
-        @foreach ($lemmas as $lemma)
+        @foreach ($lemmas as $lemma_id => $lemma_info)
         <tr>
             <td>{{ $count++ }}</td>
-            <td><a href="{{ route('lemma.show',$lemma->id) }}">{{ $lemma->lemma}}</a></td>
-            <td style="text-align: right">{{ $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count() }}</td>
+            <td><a href="{{ route('lemma.show',$lemma_id) }}">{{ $lemma_info['lemma'] }}</a></td>
+            <td style="text-align: center">{{ $lemma_info['count'] }}</td>
             
             @foreach ($category_gramsets as $gramset_id => $gramset_name)
-            <td>{{ $lemma->wordform($gramset_id, $dialect_id) }}</td>
+            <td style="text-align: right">
+                @foreach ($lemma_info['wordforms'][$gramset_id] as $wordform)
+                {{ $lemma_info['stem'] }}<b>{{ $wordform->pivot->affix }}</b><br>
+                @endforeach
+            </td>
             @endforeach
         </tr>
         @endforeach

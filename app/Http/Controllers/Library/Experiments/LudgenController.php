@@ -12,6 +12,7 @@ use Storage;
 
 use App\Library\Experiments\Ludgen;
 
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
 
 class LudgenController extends Controller
@@ -30,19 +31,32 @@ class LudgenController extends Controller
     public function words(Request $request) {
         $what = $request->what;
         if ($what == 'verbs') {
-            $lemmas = Ludgen::getVerbs();
+            $words = Ludgen::getVerbs();
+            $pos_id = 11;
         } else {
-            $lemmas = Ludgen::getNames();
-        }
-        
-        foreach ($lemmas as $id => $w) {
-            $lemmas[$id] = Lemma::find($id);
-            $lemmas[$id]->reloadStemAffixByWordforms();        
-            $lemmas[$id]->updateWordformAffixes(true);
+            $words = Ludgen::getNames();
+            $pos_id = 5;
         }
         
         $dialect_id = Ludgen::dialect_id;
-        $gramsets = array_first($lemmas)->existGramsetsGrouped();
+        $gramsets = Gramset::getGroupedList($pos_id, Ludgen::lang_id);
+
+        foreach ($words as $id => $w) {
+            $lemma = Lemma::find($id);
+//            $lemmas[$id] = $lemma;
+//            $lemma->reloadStemAffixByWordforms();        
+//            $lemma->updateWordformAffixes(true);
+            $lemmas[$id]['lemma'] = $lemma->lemma;
+            $lemmas[$id]['stem'] = $lemma->reverseLemma->stem;
+            $lemmas[$id]['count'] = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count();
+            
+            foreach ($gramsets as $category_name => $category_gramsets) {
+                foreach ($category_gramsets as $gramset_id => $gramset_name) {
+                    $lemmas[$id]['wordforms'][$gramset_id] = $lemma->wordformsByGramsetDialect($gramset_id, $dialect_id);
+                }
+            }
+        }
+//dd($lemmas);        
 /*        
         $lemmas = [];
         $names = preg_split("/\s+/", Ludgen::getNames());
