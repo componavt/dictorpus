@@ -3,7 +3,9 @@
 namespace App\Library\Experiments;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
+//use DB;
+
+use App\Models\Dict\Lemma;
 
 class Ludgen extends Model
 {
@@ -89,6 +91,77 @@ class Ludgen extends Model
             62330 => 'suvaita',  
             41336 => 'suada'
         ];
-    }    
+    }   
+    
+    public static function groupedLemmas($words, $gramsets) {
+        $dialect_id = Ludgen::dialect_id;
+        
+        foreach ($words as $id => $w) {
+            $lemma = Lemma::find($id);
+//            $lemmas[$id] = $lemma;
+//            $lemma->reloadStemAffixByWordforms();        
+//            $lemma->updateWordformAffixes(true);
+            $lemmas[$id]['lemma'] = $lemma->lemma;
+            $lemmas[$id]['stem'] = $lemma->reverseLemma->stem;
+            $lemmas[$id]['count'] = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count();
+            
+            foreach ($gramsets as $category_name => $category_gramsets) {
+                foreach ($category_gramsets as $gramset_id => $gramset_name) {
+                    foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+                        $lemmas[$id]['wordforms'][$gramset_id][] = self::analysWordform($wordform->wordform, $lemmas[$id]['stem']);
+                    }
+                }
+            }
+        }
+//dd($lemmas[3461]);        
+/*        
+        $lemmas = [];
+        $names = preg_split("/\s+/", Ludgen::getNames());
+        foreach ($names as $w) {
+            $ls = Lemma::whereLangId(Ludgen::lang_id)
+                           ->where('lemma', 'like', $w);
+//dd(to_sql($ls));            
+            if ($ls->count()==0) {
+                dd("Не найдена лемма ($w)");
+            } elseif ($ls->count()>1) {
+                dd('Найдены омонимы '.$w);
+            } else {
+                $l = $ls->first();
+print $l->id." => '".$w."',<br>";                
+//                $lemmas['names'][$l->id] = $w;
+            }
+        }
+//dd($names);        
+        $verbs = preg_split("/\s+/", Ludgen::getVerbs());
+print "<p>verbs</p>";        
+        foreach ($verbs as $w) {
+            $ls = Lemma::whereLangId(Ludgen::lang_id)
+                           ->where('lemma', 'like', $w);
+//dd(to_sql($ls));            
+            if ($ls->count()==0) {
+                dd("Не найдена лемма ($w)");
+            } elseif ($ls->count()>1) {
+                dd('Найдены омонимы '.$w);
+            } else {
+                $l = $ls->first();
+print $l->id." => '".$w."',<br>";                
+//                $lemmas['verbs'][$l->id] = $w;
+            }
+        }
+*/      
+        return $lemmas;
+    }
+    
+    public static function analysWordform($wordform, $stem) {
+        $prefix = $affix ='';
+        if (preg_match("/^(.+\s+)(\S+)$/", $wordform, $regs)) {
+            $prefix = $regs[1];
+            $wordform = $regs[2];
+        }
+        if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
+            $affix = $regs[1];
+        }
+        return [$prefix, $affix];
+    }
 }
-//suada
+

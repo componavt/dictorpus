@@ -37,7 +37,7 @@
             @foreach ($category_gramsets as $gramset_id => $gramset_name)
             <td style="text-align: right">
                 @foreach ($lemma_info['wordforms'][$gramset_id] as $wordform)
-                {{ $lemma_info['stem'] }}<b>{{ $wordform->pivot->affix }}</b><br>
+                <b>{{ $wordform[0] }}</b>{{ $lemma_info['stem'] }}<b>{{ $wordform[1] }}</b><br>
                 @endforeach
             </td>
             @endforeach
