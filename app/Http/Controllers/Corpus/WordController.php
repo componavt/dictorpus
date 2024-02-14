@@ -175,10 +175,13 @@ class WordController extends Controller
         $lang_id = (int)$request->input('lang_id');
         if (!$word || !$lang_id) {return;}
         $lemmas = Lemma::whereLangId($lang_id)
-                    ->whereIn('id', function ($q) use ($word) {
-                        $q->select('lemma_id')->from('lemma_wordform')
-                          ->where('wordform_for_search', 'like', $word);
+                    ->where(function ($query) use ($word) {
+                        $query->whereIn('id', function ($q) use ($word) {
+                            $q->select('lemma_id')->from('lemma_wordform')
+                              ->where('wordform_for_search', 'like', $word);
+                        })->orWhere('lemma_for_search', 'like', $word);
                     })->get();
+
         $wordform_ids = LemmaWordform::whereLangId($lang_id)
                             ->where('wordform_for_search', 'like', $word)
                             ->pluck('wordform_id')->toArray();
