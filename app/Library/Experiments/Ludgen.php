@@ -44,7 +44,7 @@ class Ludgen extends Model
             62360 => 'yksi',
             28722 => 'vezi',
             48744 => 'parži',
-            70199 => 'alaine',
+//            70199 => 'alaine',
             49174 => 'petkel',
             46942 => 'paimen',
             28825 => 'tytär',
@@ -162,6 +162,64 @@ print $l->id." => '".$w."',<br>";
             $affix = $regs[1];
         }
         return [$prefix, $affix];
+    }
+    
+    public static function getAffixes($lem_ids, $gramsets, $what) {
+//dd($gramsets);
+        $affixes = $lemmas = [];
+        foreach ($lem_ids as $lemma_id) {
+            $lemmas[] = Lemma::find($lemma_id);
+        }
+        foreach (array_values($gramsets) as $category_gramsets) {
+            foreach (array_keys($category_gramsets) as $gramset_id) {      
+                if ($what == 'verbs') {
+                    $affixes[$gramset_id]['вспом. глаголы'] = self::getPrefixes($lemmas, $gramset_id);                    
+                }
+                $affixes[$gramset_id]['окончания'] = self:: maxFlexion($lemmas, $gramset_id);
+            }
+        } 
+//dd($affixes);        
+        return $affixes;
+    }
+    
+    // ищем максимальное совпадение окончаний
+    public static function maxFlexion($lemmas, $gramset_id) {
+        $dialect_id = Ludgen::dialect_id;
+        $flexions = $wordforms = [];
+        foreach ($lemmas as $lemma) {
+            $ws = $lemma->wordformsByGramsetDialect($gramset_id, $dialect_id);
+            foreach ($ws as $i => $w) {
+                $wordforms[$i][] = $w->wordform;
+            }
+        }
+//if ($gramset_id==3) { dd($wordforms); }
+        foreach ($wordforms as $i => $ws) {
+            $f = $ws[0];
+            for ($j=1; $j<sizeof($ws); $j++) {
+               while (strlen($f) && !preg_match("/".$f."$/", $ws[$j])) {
+                   $f = substr($f, 1);
+               } 
+            }
+            $flexions[$i] = $f;
+        }
+//if ($gramset_id==3) { dd($flexions); }
+        return array_filter($flexions);
+    }
+    
+    public static function getPrefixes($lemmas, $gramset_id) {
+        $dialect_id = Ludgen::dialect_id;
+        $prefixes = [];
+        foreach ($lemmas as $lemma) {
+            foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+                $words = preg_split("/\s+/", $wordform->wordform);
+                if (sizeof($words) == 1) {
+                    continue;
+                }
+                array_pop($words); // удаляем последнее слово
+                $prefixes[] = join(' ', $words);
+            }
+        }
+        return array_unique($prefixes);
     }
 }
 

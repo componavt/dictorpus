@@ -45,4 +45,24 @@ class LudgenController extends Controller
                 compact('gramsets', 'lemmas', 'what'));
     }
     
+    public function affixes(Request $request) {
+        $what = $request->what;
+        if ($what == 'verbs') {
+            $lemmas = array_keys(Ludgen::getVerbs());
+            $pos_id = 11;
+        } else {
+            $lemmas = array_keys(Ludgen::getNames());
+            $pos_id = 5;
+        }
+        
+        $gramsets = Gramset::getGroupedList($pos_id, Ludgen::lang_id);
+        
+        $affixes = Ludgen::getAffixes($lemmas, $gramsets, $what);
+//dd($affixes[array_key_first($affixes)]);
+        $cols = array_keys($affixes[array_key_first($affixes)]);
+        
+        return view('experiments.ludgen.affixes',
+                compact('affixes', 'cols', 'gramsets', 'what'));
+    }
+    
 }

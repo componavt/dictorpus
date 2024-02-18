@@ -7,11 +7,11 @@
 @section('body')
     <h2>Генерация словоформ для людиковского наречия карельского языка на примере Святозерского диалекта</h2>
     <h3>
-        Отобранные слова<br>    
+        Отобранные     
     @if ($what == 'verbs')
-        Глаголы
+        глаголы
     @else 
-        Именные формы
+        именные части речи
     @endif
     </h3>
 
@@ -36,9 +36,11 @@
             
             @foreach ($category_gramsets as $gramset_id => $gramset_name)
             <td style="text-align: right">
-                @foreach ($lemma_info['wordforms'][$gramset_id] as $wordform)
+                @if (!empty($lemma_info['wordforms'][$gramset_id]))
+                    @foreach ($lemma_info['wordforms'][$gramset_id] as $wordform)
                 <b>{{ $wordform[0] }}</b>{{ $lemma_info['stem'] }}<b>{{ $wordform[1] }}</b><br>
-                @endforeach
+                    @endforeach
+                @endif
             </td>
             @endforeach
         </tr>
