@@ -141,6 +141,7 @@ class Meaning extends Model
      *
      * @param $for_edit Boolean: true - for edition, output all sentences, 
      *                           false - for view, output all positive examples (relevance>0)
+     * @param $relevance - если нужно выбрать для конкретного relevance
      * @return array
      */
     public function sentences($for_edit=false, $limit='', $start=0, $relevance=''){
@@ -158,6 +159,8 @@ class Meaning extends Model
                               ->orderBy('word_id');
         if (!$for_edit) {
             $sentence_builder = $sentence_builder->where('relevance','>',1);
+        } else {
+            $sentence_builder = $sentence_builder->where('relevance','>',0); // добавлено 19.02.2024
         }
         
         if ($limit) {

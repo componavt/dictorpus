@@ -211,6 +211,7 @@ class MeaningController extends Controller
         
         $sentence_count = $meaning->countSentences(false);
         $sentences = $meaning->sentences($is_edit, $limit, $start);
+
         $count=1+$start;   
         
         return view('dict.lemma.example._limit', 
