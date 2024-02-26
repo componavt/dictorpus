@@ -18,7 +18,7 @@
         @include('page.video_1_from_3', ['video' => 'BDhjFRK3HIA'])
         @include('page.video_1_from_3', ['video' => 'J0gnMVTd9SI'])
         @include('page.video_1_from_3', ['video' => 'KdlBe_s7hd8'])
-        @include('page.video_1_from_3', ['video' => 'm-QQW85U8U4'])
+{{--        @include('page.video_1_from_3', ['video' => 'm-QQW85U8U4']) --}}
         @include('page.video_1_from_3', ['video' => 'tYH611xhZE0'])
         @include('page.video_1_from_3', ['video' => 'd6DnVDVFwGQ'])
         @include('page.video_1_from_3', ['video' => 'rDTEKEQd7YI'])
