@@ -6,7 +6,10 @@
 trait DialectTexts
 {    
     public static function scopeDialectTexts($builder) {
-        return $builder->whereIn('corpus_id', [1,4]);
+        return $builder->whereIn('id', function ($q) {
+                    $q->select('text_id')->from('corpus_text')
+                           ->whereIn('corpus_id', [1,4]);  // dialect texts
+                });
     }
 }    
 

@@ -15,7 +15,10 @@ trait WithDialectAudio
                                            ->whereIn('id', function ($query3) {
                                                $query3->select('text_id')->from('audiotexts');
                                            })
-                                           ->whereIn('corpus_id', [1,4]); // dialect texts
+                                           ->whereIn('id', function ($query4) {
+                                               $query4->select('text_id')->from('corpus_text')
+                                                      ->whereIn('corpus_id', [1,4]);  // dialect texts
+                                           });
                                     });
                                });
                        });

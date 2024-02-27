@@ -58,8 +58,9 @@ class Audiotext extends Model
         $colors = Lang::MAP_COLORS;
         
         $place_coll = Place::whereNotNull('id')->withDialectAudio()
-                           ->withCoords()->get();
-//dd($place_coll);                       
+                           ->withCoords()->orderBy('name_ru')->get();
+//dd(to_sql($place_coll));        
+//dd($place_coll->pluck('name_ru')->toArray());                       
         foreach ($place_coll as $place) {
             $place_id = $place->id;
             $texts = Text::whereNotNull('id')
@@ -90,6 +91,7 @@ class Audiotext extends Model
                 'popup'=>$popup
             ];
         }
+//dd($places);        
         return $places;
     }
 }
