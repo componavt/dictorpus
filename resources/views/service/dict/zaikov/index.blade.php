@@ -70,11 +70,13 @@
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/list_change.js')!!}
+    {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/lemma.js')!!}
     {!!Html::script('js/new_dict.js')!!}
 @stop
 
 @section('jqueryFunc')
+    toggleSpecial();
     selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);
     addLemma({{$lang_id}}, {{$label_id}});
     posSelect(false, "#modalAddLemma");
