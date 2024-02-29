@@ -9,7 +9,7 @@
         $symb_list['^'] = 'соединить предложения';/*, 'V̱'=>'любая гласная', 'C̱'=>'любая согласная'*/
     }
 ?>
-<a class='special-symbols-link' type='button' data-for='{{$id_name}}-special'>{{isset($special_sym) ? $special_sym : ''}}ä</a>
+<a class='special-symbols-link' onClick="toggleSpecialJS(this)" type='button' data-for='{{$id_name}}-special'>{{isset($special_sym) ? $special_sym : ''}}ä</a>
 
 <div id='{{$id_name}}-special' class='special-symbols'>
     <div class="special-symbols-header">

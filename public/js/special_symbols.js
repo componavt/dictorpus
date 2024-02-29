@@ -11,6 +11,14 @@ function toggleSpecial() {
         });
 }
 
+function toggleSpecialJS(el) {
+        var id=$(el).attr('data-for');
+/*            $(".special-symbols").hide();
+        $(".special-symbols-link").show();*/
+        $(el).hide();
+        $("#"+id).show(); /*"slow"*/
+}
+
 function closeSpecial(id) {
     $("#"+id).hide();
     $(".special-symbols-link").show();
