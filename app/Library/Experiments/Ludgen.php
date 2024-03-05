@@ -101,8 +101,8 @@ class Ludgen extends Model
 
     public static function groupedLemmas($words, $gramsets) {
         $dialect_id = Ludgen::dialect_id;
-        
-        foreach ($words as $id => $w) {
+       
+        foreach ($words as $id) {
             $lemma = Lemma::find($id);
             $lemmas[$id]['lemma'] = $lemma->lemma;
             $lemmas[$id]['stem'] = $lemma->reverseLemma->stem;
