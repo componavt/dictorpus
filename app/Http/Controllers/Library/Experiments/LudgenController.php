@@ -42,7 +42,7 @@ class LudgenController extends Controller
     
     public function affixes(Request $request) {
         $what = $request->what; 
-        list($words, $pos_id) = Ludgen::getLemmas($what);
+        list($lemmas, $pos_id) = Ludgen::getLemmas($what);
         
         $gramsets = Gramset::getGroupedList($pos_id, Ludgen::lang_id);
         
@@ -57,7 +57,7 @@ class LudgenController extends Controller
     public function bases(Request $request) {
         $what = $request->what; 
         list($lemmas) = Ludgen::getLemmas($what);
-        $bases = Ludgen::getBases1($lemmas);
+        $bases = Ludgen::getBases($lemmas);
         return view('experiments.ludgen.bases',
                 compact('bases', 'what'));
     }

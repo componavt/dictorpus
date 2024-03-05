@@ -189,27 +189,28 @@ class Ludgen extends Model
         return array_unique($prefixes);
     }
     
-    public static function getBases1($lemmas) {
-        $dialect_id = Ludgen::dialect_id;
-        $gramset_id = 3; // генитив, ед.ч.
+    public static function getBases($lemmas) {
         $bases=[];
-//dd($lemmas);        
         foreach ($lemmas as $lemma_id) {
-            $tmp = [];
             $lemma = Lemma::find($lemma_id);
-if (!$lemma) {
-    dd($lemma_id);
-}            
-            foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
-                if (preg_match("/^(.+)n$/", $wordform->wordform, $regs)) {
-                    $tmp[] = $regs[1];
-                } else {
-                    dd('У генитива нет окончания -n');
-                }
-            }
-            $bases[$lemma->id] = [$lemma->lemma, join(', ', $tmp)];
+            $bases[$lemma_id][1] = Ludgen::getBase1($lemma);
         }
         return $bases;
+    }
+    
+    public static function getBase1($lemma) {
+        $dialect_id = Ludgen::dialect_id;
+        $gramset_id = 3; // генитив, ед.ч.
+
+        $bases = [];
+        foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+            if (preg_match("/^(.+)n$/", $wordform->wordform, $regs)) {
+                $bases[] = $regs[1];
+            } else {
+                dd('У генитива нет окончания -n');
+            }
+        }
+        return join(', ', $bases);
     }
 }
 

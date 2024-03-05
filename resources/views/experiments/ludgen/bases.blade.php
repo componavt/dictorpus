@@ -22,11 +22,11 @@
         
         @php $count = 1; @endphp
         
-        @foreach ($bases as $lemma_id => list($lemma, $base))
+        @foreach ($bases as $lemma_id => $lemma_bases))
         <tr>
             <td>{{ $count++ }}</td>
-            <td><a href="{{ route('lemma.show',$lemma_id) }}">{{ $lemma }}</a></td>
-            <td>{{ $base }}</td>
+            <td><a href="{{ route('lemma.show',$lemma_id) }}">{{ $lemma_bases[0] }}</a></td>
+            <td>{{ $lemma_bases[1] }}</td>
         </tr>
         @endforeach
     </table>
