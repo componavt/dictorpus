@@ -13,6 +13,7 @@
     
     <ul>
         <li><a href="{{ route('ludgen.words', ['what'=>$what]) }}">Отобранные слова</a></li>
+        <li><a href="{{ route('ludgen.bases', ['what'=>$what]) }}">Основы</a></li>
         <li><a href="{{ route('ludgen.affixes', ['what'=>$what]) }}">Окончания{{ $what == 'verbs' ? ', вспомогательные глаголы' : '' }}</a></li>
     </ul>
     

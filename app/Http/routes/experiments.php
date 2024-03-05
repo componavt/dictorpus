@@ -16,6 +16,7 @@
         Route::get('experiments/dialect_dmarker/guess', 'Library\Experiments\DialectDmarkerController@guess');
         
         Route::get('experiments/ludgen/affixes', 'Library\Experiments\LudgenController@affixes')->name('ludgen.affixes');
+        Route::get('experiments/ludgen/bases', 'Library\Experiments\LudgenController@bases')->name('ludgen.bases');
         Route::get('experiments/ludgen/words', 'Library\Experiments\LudgenController@words')->name('ludgen.words');
         Route::get('experiments/ludgen', 'Library\Experiments\LudgenController@index')->name('ludgen.index');
         

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Library\Experiments;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+//use Illuminate\Support\Facades\DB;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Storage;
+//use Storage;
 
 //use App\Charts\DistributionChart;
 
+use App\Library\Grammatic\KarNameLud;
 use App\Library\Experiments\Ludgen;
 
 use App\Models\Dict\Gramset;
@@ -28,14 +29,8 @@ class LudgenController extends Controller
     }
     
     public function words(Request $request) {
-        $what = $request->what;
-        if ($what == 'verbs') {
-            $words = Ludgen::getVerbs();
-            $pos_id = 11;
-        } else {
-            $words = Ludgen::getNames();
-            $pos_id = 5;
-        }
+        $what = $request->what; 
+        list($words, $pos_id) = Ludgen::getLemmas($what);
         
         $gramsets = Gramset::getGroupedList($pos_id, Ludgen::lang_id);
         
@@ -46,14 +41,8 @@ class LudgenController extends Controller
     }
     
     public function affixes(Request $request) {
-        $what = $request->what;
-        if ($what == 'verbs') {
-            $lemmas = array_keys(Ludgen::getVerbs());
-            $pos_id = 11;
-        } else {
-            $lemmas = array_keys(Ludgen::getNames());
-            $pos_id = 5;
-        }
+        $what = $request->what; 
+        list($words, $pos_id) = Ludgen::getLemmas($what);
         
         $gramsets = Gramset::getGroupedList($pos_id, Ludgen::lang_id);
         
@@ -63,6 +52,14 @@ class LudgenController extends Controller
         
         return view('experiments.ludgen.affixes',
                 compact('affixes', 'cols', 'gramsets', 'what'));
+    }
+    
+    public function bases(Request $request) {
+        $what = $request->what; 
+        list($lemmas) = Ludgen::getLemmas($what);
+        $bases = Ludgen::getBases1($lemmas);
+        return view('experiments.ludgen.bases',
+                compact('bases', 'what'));
     }
     
 }

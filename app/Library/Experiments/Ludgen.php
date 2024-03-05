@@ -14,7 +14,6 @@ class Ludgen extends Model
     const dialect_id = 42;
     
     public static function getNames() {
-//        return "halgo kirikkö lindu kydy počči d’ogi akke ukke emände nuotte leibe mua diä dänöi dänyöi tiäi pedäi astii puu hiili hiiri pieni tuohi lumi lapsi yksi vezi parži alaine petkel paimen tytär härkin pereh barbaz mätäz kirvez verez veres kaglus kynäbrys vahnuz hyvyz lapsut lyhyd d’algatoi iänetöi huondekselline";
         return [
             62004 => 'halgo',
             13424 => 'kirikkö',
@@ -68,7 +67,6 @@ class Ludgen extends Model
     }
     
     public static function getVerbs() {
-//        return "kaččoda kuččuda kyzydä eččida itkeda andada ottada elädä d’uoda viedä haravoita tulda mändä purda magata pagišta pesta rubeta suvaita";
         return [
             3461 => 'kaččoda',
             42494 => 'kuččuda',
@@ -93,14 +91,19 @@ class Ludgen extends Model
         ];
     }   
     
+    public static function getLemmas($what) {
+        if ($what == 'verbs') {
+            return [array_keys(Ludgen::getVerbs()), 11];
+        } else {
+            return [array_keys(Ludgen::getNames()), 5];
+        }        
+    }
+
     public static function groupedLemmas($words, $gramsets) {
         $dialect_id = Ludgen::dialect_id;
         
         foreach ($words as $id => $w) {
             $lemma = Lemma::find($id);
-//            $lemmas[$id] = $lemma;
-//            $lemma->reloadStemAffixByWordforms();        
-//            $lemma->updateWordformAffixes(true);
             $lemmas[$id]['lemma'] = $lemma->lemma;
             $lemmas[$id]['stem'] = $lemma->reverseLemma->stem;
             $lemmas[$id]['count'] = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count();
@@ -113,42 +116,6 @@ class Ludgen extends Model
                 }
             }
         }
-//dd($lemmas[3461]);        
-/*        
-        $lemmas = [];
-        $names = preg_split("/\s+/", Ludgen::getNames());
-        foreach ($names as $w) {
-            $ls = Lemma::whereLangId(Ludgen::lang_id)
-                           ->where('lemma', 'like', $w);
-//dd(to_sql($ls));            
-            if ($ls->count()==0) {
-                dd("Не найдена лемма ($w)");
-            } elseif ($ls->count()>1) {
-                dd('Найдены омонимы '.$w);
-            } else {
-                $l = $ls->first();
-print $l->id." => '".$w."',<br>";                
-//                $lemmas['names'][$l->id] = $w;
-            }
-        }
-//dd($names);        
-        $verbs = preg_split("/\s+/", Ludgen::getVerbs());
-print "<p>verbs</p>";        
-        foreach ($verbs as $w) {
-            $ls = Lemma::whereLangId(Ludgen::lang_id)
-                           ->where('lemma', 'like', $w);
-//dd(to_sql($ls));            
-            if ($ls->count()==0) {
-                dd("Не найдена лемма ($w)");
-            } elseif ($ls->count()>1) {
-                dd('Найдены омонимы '.$w);
-            } else {
-                $l = $ls->first();
-print $l->id." => '".$w."',<br>";                
-//                $lemmas['verbs'][$l->id] = $w;
-            }
-        }
-*/      
         return $lemmas;
     }
     
@@ -220,6 +187,29 @@ print $l->id." => '".$w."',<br>";
             }
         }
         return array_unique($prefixes);
+    }
+    
+    public static function getBases1($lemmas) {
+        $dialect_id = Ludgen::dialect_id;
+        $gramset_id = 3; // генитив, ед.ч.
+        $bases=[];
+//dd($lemmas);        
+        foreach ($lemmas as $lemma_id) {
+            $tmp = [];
+            $lemma = Lemma::find($lemma_id);
+if (!$lemma) {
+    dd($lemma_id);
+}            
+            foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+                if (preg_match("/^(.+)n$/", $wordform->wordform, $regs)) {
+                    $tmp[] = $regs[1];
+                } else {
+                    dd('У генитива нет окончания -n');
+                }
+            }
+            $bases[$lemma->id] = [$lemma->lemma, join(', ', $tmp)];
+        }
+        return $bases;
     }
 }
 
