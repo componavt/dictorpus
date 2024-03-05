@@ -25,7 +25,7 @@
         @foreach ($bases as $lemma_id => list($lemma, $base))
         <tr>
             <td>{{ $count++ }}</td>
-            <td><a href="{{ route('lemma.show',$lemma) }}">{{ $lemma }}</a></td>
+            <td><a href="{{ route('lemma.show',$lemma_id) }}">{{ $lemma }}</a></td>
             <td>{{ $base }}</td>
         </tr>
         @endforeach
