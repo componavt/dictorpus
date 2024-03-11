@@ -38,7 +38,7 @@
             <td style="text-align: right">
                 @if (!empty($lemma_info['wordforms'][$gramset_id]))
                     @foreach ($lemma_info['wordforms'][$gramset_id] as $wordform)
-                <b>{{ $wordform[0] }}</b>{{ $lemma_info['stem'] }}<b>{{ $wordform[1] }}</b><br>
+                <b>{{ $wordform[0] }}</b>{{ $wordform[1] }}<b>{{ $wordform[2] }}</b><br>
                     @endforeach
                 @endif
             </td>

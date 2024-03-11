@@ -9,7 +9,7 @@ use App\Library\Grammatic\KarName;
 // ./vendor/bin/phpunit tests/Library/Grammatic/KarNameTest
 
 class KarNameTest extends TestCase
-{/*
+{
     public function testStemsFromTemplateMittuine() {
         $template = 'mittu|ine (-zen/-man, -stu/-mua; -zii/-mii)';
         $name_num = '';
@@ -715,7 +715,7 @@ class KarNameTest extends TestCase
                     null, 'hikileh', 'ti'];
         $this->assertEquals( $expected, $result);                
     }
-*/    
+    
     public function testStemsFromMiniTemplateUlkoaitta() {
         $template = 'ulkoǁait|ta [a/ta]';
         $name_num = '';

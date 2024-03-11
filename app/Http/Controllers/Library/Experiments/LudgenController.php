@@ -56,10 +56,16 @@ class LudgenController extends Controller
     
     public function bases(Request $request) {
         $what = $request->what; 
-        list($lemmas) = Ludgen::getLemmas($what);
-        $bases = Ludgen::getBases($lemmas);
+        list($words) = Ludgen::getLemmas($what);
+        
+        $gramsets = [1=>'номинатив ед.ч.', 3=>'генетив ед.ч.', 4=>'партитив ед.ч.', 10=>'иллатив ед.ч.',
+            2=>'номинатив мн.ч.', 24=>'генетив мн.ч.',22=>'партитив мн.ч.', 61=>'иллатив мн.ч.',];
+        $wordforms = Ludgen::getWordforms($words, array_keys($gramsets));
+        $bases = Ludgen::getBases($words);
+        $dict_forms = Ludgen::dictForms($words);
+//dd($bases);        
         return view('experiments.ludgen.bases',
-                compact('bases', 'what'));
+                compact('bases', 'dict_forms', 'gramsets', 'what', 'wordforms'));
     }
     
 }

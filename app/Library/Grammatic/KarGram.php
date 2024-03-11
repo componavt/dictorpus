@@ -386,7 +386,7 @@ class KarGram
             if ($lang_id == 5) { // livvic
                 return KarNameOlo::templateFromWordforms($wordforms, $number);
             } elseif ($lang_id == 6) { 
-                return KarNameLud::templateFromWordforms($wordforms, $number);
+                return KarNameLud::templateFromWordforms($wordforms); // , $number
             } else { 
                 return KarName::templateFromWordforms($wordforms);
             }     

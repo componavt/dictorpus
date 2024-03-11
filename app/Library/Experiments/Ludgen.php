@@ -14,41 +14,52 @@ class Ludgen extends Model
     const dialect_id = 42;
     
     public static function getNames() {
-        return [
-            62004 => 'halgo',
-            13424 => 'kirikkö',
-            38637 => 'lindu',
-            50254 => 'kydy',
-            46747 => 'počči',
-            21396 => 'd’ogi',
-            29962 => 'akke',
-            66666 => 'ukke',
-            50308 => 'emände',
-            47713 => 'nuotte',
-            47289 => 'leibe',
+        $lemmas = [
             14295 => 'mua',
             37909 => 'diä',
+            
+            62004 => 'halgo',
+            13424 => 'kirikkö',
+            
+            38637 => 'lindu',
+            50254 => 'kydy',
+            37234 => 'puu',
+            
+            47289 => 'leibe',
+            50308 => 'emände',
+            29962 => 'akke',
+            66666 => 'ukke',
+            47713 => 'nuotte',
+            70274 => 'huondekselline',            
+            70199 => 'alaine',
+            
+            21396 => 'd’ogi',
+            37342 => 'tuohi',
+            69940 => 'astii',
+            62160 => 'hiili',
+            36683 => 'lumi',
+            21425 => 'pieni',
+            30743 => 'hiiri',
+            62360 => 'yksi',
+            13463 => 'lapsi',
+            28722 => 'vezi',
+            48744 => 'parži',
+            46747 => 'počči',
+            
+            70271 => 'd’algatoi',
+            70272 => 'iänetöi',
             67102 => 'dänöi',
             69938 => 'dänyöi',
             69883 => 'tiäi',
             3540 => 'pedäi',
-            69940 => 'astii',
-            37234 => 'puu',
-            62160 => 'hiili',
-            30743 => 'hiiri',
-            21425 => 'pieni',
-            37342 => 'tuohi',
-            36683 => 'lumi',
-            13463 => 'lapsi',
-            62360 => 'yksi',
-            28722 => 'vezi',
-            48744 => 'parži',
-            70199 => 'alaine',
+
+            51763 => 'lyhyd',
+            18330 => 'pereh',            
             49174 => 'petkel',
             46942 => 'paimen',
-            28825 => 'tytär',
             70254 => 'härkin',
-            18330 => 'pereh',
+            28825 => 'tytär',
+            70269 => 'lapsut',
             40672 => 'barbaz',
             70262 => 'mätäz',
             47157 => 'kirvez',
@@ -58,12 +69,17 @@ class Ludgen extends Model
             40633 => 'kynäbrys',
             70267 => 'vahnuz',
             66796 => 'hyvyz',
-            70269 => 'lapsut',
-            51763 => 'lyhyd',
-            70271 => 'd’algatoi',
-            70272 => 'iänetöi',
-            70274 => 'huondekselline'            
         ];
+/*        $reverse_lemmas = [];
+        foreach ($lemmas as $lemma_id=>$lemma) {
+            $reverse_lemmas[$lemma_id] = mb_strrev($lemma);
+        }
+        asort($reverse_lemmas);
+        foreach ($reverse_lemmas as $lemma_id=>$lemma) {
+            $reverse_lemmas[$lemma_id] = $lemmas[$lemma_id];
+        }
+dd($reverse_lemmas);  */
+        return $lemmas;
     }
     
     public static function getVerbs() {
@@ -119,6 +135,31 @@ class Ludgen extends Model
         return $lemmas;
     }
     
+    public static function getWordforms($words, $gramsets) {
+        $dialect_id = Ludgen::dialect_id;
+       
+        foreach ($words as $id) {
+            $lemma = Lemma::find($id);
+            
+            foreach ($gramsets as $gramset_id) {
+                foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+                    $wordforms[$id][$gramset_id][] = self::analysWordform($wordform->wordform, $lemma->reverseLemma->stem);
+                }
+            }
+        }
+        return $wordforms;
+    }
+    
+    public static function dictForms($words) {
+        $out = [];
+       
+        foreach ($words as $id) {
+            $lemma = Lemma::find($id);
+            $out[$id] = $lemma->dictForm();
+        }
+        return $out;
+    }
+    
     public static function analysWordform($wordform, $stem) {
         $prefix = $affix ='';
         if (preg_match("/^(.+\s+)(\S+)$/", $wordform, $regs)) {
@@ -128,7 +169,7 @@ class Ludgen extends Model
         if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
             $affix = $regs[1];
         }
-        return [$prefix, $affix];
+        return [$prefix, $stem, $affix];
     }
     
     public static function getAffixes($lem_ids, $gramsets, $what) {
@@ -193,6 +234,7 @@ class Ludgen extends Model
         $bases=[];
         foreach ($lemmas as $lemma_id) {
             $lemma = Lemma::find($lemma_id);
+            $bases[$lemma_id][0] = $lemma->lemma;
             $bases[$lemma_id][1] = Ludgen::getBase1($lemma);
         }
         return $bases;

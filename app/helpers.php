@@ -305,3 +305,38 @@ if (!function_exists('js')) {
         return '<script src="/js/'.$filename.'.js?'. filemtime(env('APP_ROOT').'public/js/'.$filename.'.js'). '"></script>';
     }
 }
+
+if (!function_exists('mb_strrev')) {
+    function mb_strrev($str){
+        $r = '';
+        for ($i = mb_strlen($str); $i>=0; $i--) {
+            $r .= mb_substr($str, $i, 1);
+        }
+        return $r;
+    }
+}
+
+if (!function_exists('str_diff')) {
+    function str_diff($str1, $str2){
+        $r = '';
+        $i=0;
+        $equal = true;
+        while($equal && $i<mb_strlen($str1) && $i<mb_strlen($str2)) {
+            if (mb_substr($str1, $i, 1) == mb_substr($str2, $i, 1)) {
+                $r .= mb_substr($str1, $i, 1);
+                $i++;
+            } else {
+                $equal = false;
+            }
+//print "<p>$r, $i, $equal</p>";                
+        }
+//        if (!)
+        if (mb_substr($str1, $i)) {
+            $r .= '<del class="diffmod">'.mb_substr($str1, $i).'</del>';
+        }
+        if (mb_substr($str2, $i)) {
+            $r .= '<ins class="diffmod">'.mb_substr($str2, $i).'</ins>';
+        }
+        return $r;
+    }
+}

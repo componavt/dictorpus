@@ -1364,7 +1364,7 @@ dd($wordforms);
         $out = $this->stemAffixForm();
 //dd($out);        
         $dialect_id = $this->lang->mainDialect();
-        if (!$this->reverseLemma || !$this->reverseLemma->stem || !in_array($this->lang_id, [1,4,5]) || !$dialect_id) { // not veps and livvi
+        if (!$this->reverseLemma || !$this->reverseLemma->stem || !$dialect_id) {  //|| !in_array($this->lang_id, [1,4,5])
             return $out;
         }
         $max_stem = preg_replace("/\|\|/", '', $this->reverseLemma->stem);
