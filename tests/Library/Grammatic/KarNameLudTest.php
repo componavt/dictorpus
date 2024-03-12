@@ -1,23 +1,23 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+//use Illuminate\Foundation\Testing\WithoutMiddleware;
+//use Illuminate\Foundation\Testing\DatabaseMigrations;
+//use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use App\Library\Grammatic\KarNameOlo;
+use App\Library\Grammatic\KarNameLud;
 
-// ./vendor/bin/phpunit tests/Library/Grammatic/KarNameOloTest
+// ./vendor/bin/phpunit tests/Library/Grammatic/KarNameLudTest
 
 class KarNameOloTest extends TestCase
 {
-    public function testWordformByStemsWithApostroph()
-    {
-        $dialect_id=44;
-        $gramset_id = 22;
-        $stems = ['gor’a', 'gor’a', 'gor’a', 'gor’ua', 'gor’a', 'gor’i'];
-        $result = KarNameOlo::wordformByStemsPl($stems, $gramset_id, $dialect_id);
-        
-        $expected = 'gor’ii';
-        $this->assertEquals( $expected, $result);        
+    public function testStemsFromTemplateMittuine() {
+        $template = 'halgo []';
+        $name_num = '';
+        $pos_id=5;
+        $lang_id=6;
+        $result = KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+
+        $expected = [['mittuine', 'mittuze/mittuma', 'mittuze/mittuma', 'mittustu/mittumua', 'mittuzi/mittumi', 'mittuzi/mittumi', 10=>TRUE], '', 'mittu', 'ine'];
+        $this->assertEquals( $expected, $result);     
     }
 }
