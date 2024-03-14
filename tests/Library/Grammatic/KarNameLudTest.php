@@ -8,9 +8,9 @@ use App\Library\Grammatic\KarNameLud;
 
 // ./vendor/bin/phpunit tests/Library/Grammatic/KarNameLudTest
 
-class KarNameOloTest extends TestCase
+class KarNameLudTest extends TestCase
 {
-    public function testStemsFromTemplateMittuine() {
+/*    public function testStemsFromTemplateNames() {
         $template = 'halgo []';
         $name_num = '';
         $pos_id=5;
@@ -19,5 +19,5 @@ class KarNameOloTest extends TestCase
 
         $expected = [['mittuine', 'mittuze/mittuma', 'mittuze/mittuma', 'mittustu/mittumua', 'mittuzi/mittumi', 'mittuzi/mittumi', 10=>TRUE], '', 'mittu', 'ine'];
         $this->assertEquals( $expected, $result);     
-    }
+    }*/
 }

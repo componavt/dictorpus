@@ -16,7 +16,7 @@ class PartOfSpeechTest extends TestCase
     {
         $result = PartOfSpeech::getNameIDs();
         
-        $expected = [1, 5, 6, 10, 13, 14, 20];
+        $expected = [1, 5, 6, 10, 13, 14, 20, 21];
         $this->assertEquals( $expected, $result);        
     }
     

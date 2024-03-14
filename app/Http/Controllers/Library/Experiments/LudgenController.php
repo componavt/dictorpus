@@ -10,10 +10,11 @@ use App\Http\Controllers\Controller;
 
 //use App\Charts\DistributionChart;
 
-use App\Library\Grammatic\KarNameLud;
+use App\Library\Grammatic;
 use App\Library\Experiments\Ludgen;
 
 use App\Models\Dict\Gramset;
+use App\Models\Dict\Lemma;
 
 class LudgenController extends Controller
 {
@@ -66,6 +67,51 @@ class LudgenController extends Controller
 //dd($bases);        
         return view('experiments.ludgen.bases',
                 compact('bases', 'dict_forms', 'gramsets', 'what', 'wordforms'));
+    }
+    
+    public function dataForTests(Request $request) {
+        $what = $request->what; 
+        list($words, $pos_id) = Ludgen::getLemmas($what);
+        $dialect_id = Ludgen::dialect_id;
+        
+        print "<pre>";
+/*        print "\t\$templates = [\n";
+        foreach (Ludgen::dictForms($words) as $lemma_id => $template) {
+            print "\t    ".$lemma_id ." => '". $template."',\n";
+        }
+        print "\t];\n\n\n";
+
+        print "\t\$expected = [\n";
+        foreach (Ludgen::getBases($words) as $lemma_id => $bases) {
+            $lemma = Lemma::find($lemma_id);
+            print "\t    ".$lemma_id ." => [0 => [";
+            foreach ($bases as $i=>$base) {
+                print $i." => ";
+                if ($i==10) {
+                    print ($base ? 'true': 'false');
+                } else {
+                    print "'". $base."', ";
+                } 
+            }
+            print "], ".
+                  "1 => null, ".
+                  "2 => '".$lemma->reverseLemma->stem."', ".
+                  "3 => '".$lemma->reverseLemma->affix."'";
+            print "],\n";
+        }
+        print "\t];\n";
+*/
+        print "\t\$expected = [\n";
+        foreach ($words as $id) {
+            $lemma = Lemma::find($id);
+            print "\t    ".$id ." => [";
+            foreach (Grammatic::getListForAutoComplete(Ludgen::lang_id, $pos_id) as $gramset_id) {
+                print $gramset_id."=>'".$lemma->wordform($gramset_id, $dialect_id)."', ";
+            }
+            print "],\n";
+        }
+        print "\t];\n";
+        print "</pre>";
     }
     
 }

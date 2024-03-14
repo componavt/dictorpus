@@ -177,22 +177,28 @@ class KarName
         $harmony = KarGram::isBackVowels($stem0); // harmony
         $stem0_syll=KarGram::countSyllable($stem0);
         
-        list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);
-        if (!$stem6) {
-            return $out;
+        if ($lang_id==6) {
+            list ($stem1, $stem2, $stem3) = KarNameLud::stems1_2_3FromMiniTemplate($base, $stem0, $ps_list);
+//            $stem3 = KarNameLud::stem3FromMiniTemplate($base, $stem0, $stem1, $ps_list);
+            $stem4 = KarNameLud::stem4FromMiniTemplate($stem0, $stem1, $harmony);
+            $stem5 = KarNameLud::stem5FromMiniTemplate($stem0, $stem2, $harmony);            
+        } else {
+            list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);
+            if (!$stem6) {
+                return $out;
+            }
+            $stem2 = self::stem2FromMiniTemplate($base, $stem1, $stem6, isset($ps1[1]) ? $ps1[1]: null);
+            $stem3 = self::stem3FromMiniTemplate($stem6, $lang_id, $harmony);
+            $stem5 = self::stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll);
+            $stem4 = self::stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony);
         }
-        $stem2 = self::stem2FromMiniTemplate($base, $stem1, $stem6, isset($ps1[1]) ? $ps1[1]: null);
-        $stem3 = self::stem3FromMiniTemplate($stem6, $lang_id, $harmony);
-        $stem5 = self::stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll);
-        $stem4 = self::stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony);
-        
         $stems = [0 => $fword.$stem0,
                   1 => $fword.$stem1, // single genetive base 
                   2 => $fword.$stem2, // single illative base
                   3 => $fword.$stem3,
                   4 => $fword.$stem4,
                   5 => $fword.$stem5,
-                  6 => $fword.$stem6,
+                  6 => $lang_id==6 ? '' : $fword.$stem6,
                   10 => $harmony
             ];
 //dd($stems, $stem0_syll, $regs[1].$regs[2]);        
@@ -721,11 +727,12 @@ class KarName
     }
     
     public static function wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
-        switch ($gramset_id) {
-            case 2: // номинатив, мн.ч. 
-                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? KarNameOlo::addEndToMultiBase($stems[1], 't') : '');
-            case 57: // аккузатив, мн.ч. 
-                return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? KarNameOlo::addEndToMultiBase($stems[1], 't') : '');
+        if ($lang_id !=6) {
+            switch ($gramset_id) {
+                case 2: // номинатив, мн.ч. 
+                case 57: // аккузатив, мн.ч. 
+                    return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? KarNameOlo::addEndToMultiBase($stems[1], 't') : '');
+            }
         }
         
         if ($name_num !='pl' && in_array($gramset_id, self::gramsetListSg($lang_id))) {
@@ -735,6 +742,8 @@ class KarName
         if ($name_num !='sg' && in_array($gramset_id, self::gramsetListPl($lang_id))) {
             if ($lang_id==5) {
                 return KarNameOlo::wordformByStemsPl($stems, $gramset_id, $dialect_id);
+            } elseif ($lang_id==6) {
+                return KarNameLud::wordformByStemsPl($stems, $gramset_id, $name_num, $dialect_id);
             } else {        
                 return self::wordformByStemsPl($stems, $gramset_id, $dialect_id);
             }
@@ -747,7 +756,7 @@ class KarName
             case 1: // номинатив, ед.ч. 
                 return $stems[0];
             case 56: // аккузатив, ед.ч. 
-                return $stems[0].($stems[1] ? ', '.$stems[1].'n' : '');
+                return self::accSg($stems[0],$stems[1]);
             case 3: // генитив, ед.ч. 
                 return $stems[1] ? $stems[1].'n' : '';
             case 4: // партитив, ед.ч. 
@@ -757,12 +766,24 @@ class KarName
         }
         if ($lang_id==5) {
             return KarNameOlo::wordformByStemsSg($stems, $gramset_id, $dialect_id);
+        } elseif ($lang_id==6) {
+            return KarNameLud::wordformByStemsSg($stems, $gramset_id, $dialect_id);
         } else {
             return self::wordformByStemsSgProp($stems, $gramset_id, $dialect_id);
-        }
-        
+        }        
     }
     
+    public static function accSg($stem0, $stem1) {
+        if (!$stem1) {
+            return $stem0;
+        }
+        
+        $w[] =  $stem0;
+        $w[] =  $stem1.'n';
+        sort($w);
+        
+        return join(', ', $w);
+    }
     /**
      * $stems[10] - harmony
      * 

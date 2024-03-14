@@ -5,6 +5,7 @@ namespace App\Library\Experiments;
 use Illuminate\Database\Eloquent\Model;
 //use DB;
 
+use App\Library\Grammatic\KarGram;
 use App\Models\Dict\Lemma;
 
 class Ludgen extends Model
@@ -236,6 +237,12 @@ dd($reverse_lemmas);  */
             $lemma = Lemma::find($lemma_id);
             $bases[$lemma_id][0] = $lemma->lemma;
             $bases[$lemma_id][1] = Ludgen::getBase1($lemma);
+            $bases[$lemma_id][2] = Ludgen::getBase2($lemma);
+            $bases[$lemma_id][3] = Ludgen::getBase3($lemma);
+            $bases[$lemma_id][4] = Ludgen::getBase4($lemma);
+            $bases[$lemma_id][5] = Ludgen::getBase5($lemma);
+            $bases[$lemma_id][6] = '';
+            $bases[$lemma_id][10] = KarGram::isBackVowels($lemma->lemma);
         }
         return $bases;
     }
@@ -250,6 +257,62 @@ dd($reverse_lemmas);  */
                 $bases[] = $regs[1];
             } else {
                 dd('У генитива нет окончания -n');
+            }
+        }
+        return join(', ', $bases);
+    }
+    
+    public static function getBase2($lemma) {
+        $dialect_id = Ludgen::dialect_id;
+        $gramset_id = 10; // иллатив, ед.ч.
+
+        $bases = [];
+        foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+            if (preg_match("/^(.+)h$/", $wordform->wordform, $regs)) {
+                $bases[] = $regs[1];
+            } else {
+                dd('У иллатива нет окончания -h');
+            }
+        }
+        return join(', ', $bases);
+    }
+    
+    public static function getBase3($lemma) {
+        $dialect_id = Ludgen::dialect_id;
+        $gramset_id = 4; // партитив, ед.ч.
+
+        $bases = [];
+        foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+            $bases[] = $wordform->wordform;
+        }
+        return join(', ', $bases);
+    }
+    
+    public static function getBase4($lemma) {
+        $dialect_id = Ludgen::dialect_id;
+        $gramset_id = 24; // генитив, мн.ч.
+
+        $bases = [];
+        foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+            if (preg_match("/^(.+)den$/", $wordform->wordform, $regs)) {
+                $bases[] = $regs[1];
+            } else {
+                dd('У генитива '.$wordform->wordform.' мн.ч. нет окончания -den');
+            }
+        }
+        return join(', ', $bases);
+    }
+    
+    public static function getBase5($lemma) {
+        $dialect_id = Ludgen::dialect_id;
+        $gramset_id = 22; // партитив, мн.ч.
+
+        $bases = [];
+        foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
+            if (preg_match("/^(.+)d$/", $wordform->wordform, $regs)) {
+                $bases[] = $regs[1];
+            } else {
+                dd('У партитива мн.ч. нет окончания -d');
             }
         }
         return join(', ', $bases);
