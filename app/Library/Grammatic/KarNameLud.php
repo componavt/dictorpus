@@ -379,7 +379,6 @@ class KarNameLud
         } else {
             return null;
         }
-//dd($wordforms);        
         
         if ($wordforms[10]=='h')  {
             $wordforms[10]='';

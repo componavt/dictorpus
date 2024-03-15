@@ -75,7 +75,11 @@ class LudgenController extends Controller
         $dialect_id = Ludgen::dialect_id;
         
         print "<pre>";
-/*        print "\t\$templates = [\n";
+        foreach (Ludgen::dictForms($words) as $lemma_id => $template) {
+            print $template."\n";
+        }
+        
+        print "\t\$templates = [\n";
         foreach (Ludgen::dictForms($words) as $lemma_id => $template) {
             print "\t    ".$lemma_id ." => '". $template."',\n";
         }
@@ -100,7 +104,7 @@ class LudgenController extends Controller
             print "],\n";
         }
         print "\t];\n";
-*/
+
         print "\t\$expected = [\n";
         foreach ($words as $id) {
             $lemma = Lemma::find($id);
