@@ -59,8 +59,7 @@ class LudgenController extends Controller
         $what = $request->what; 
         list($words) = Ludgen::getLemmas($what);
         
-        $gramsets = [1=>'номинатив ед.ч.', 3=>'генетив ед.ч.', 4=>'партитив ед.ч.', 10=>'иллатив ед.ч.',
-            2=>'номинатив мн.ч.', 24=>'генетив мн.ч.',22=>'партитив мн.ч.', 61=>'иллатив мн.ч.',];
+        $gramsets = Ludgen::getMainGramsets($what);
         $wordforms = Ludgen::getWordforms($words, array_keys($gramsets));
         $bases = Ludgen::getBases($words);
         $dict_forms = Ludgen::dictForms($words);
