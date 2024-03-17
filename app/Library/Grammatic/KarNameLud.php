@@ -110,13 +110,13 @@ class KarNameLud
      *    (CVVV или CVV) , то  о.1+lUOi 
      * Б. В остальных случаях  о.1+i, при этом если о.1 заканч. на
      * 1) O и с.ф. оканчивается на O, то O>UO
-     * 2) ka, то a>uo
-     * 3) Ai, то Ai>UO
-     * 4) Oi, то Oi>OLUO
-     * 5) hte, то hte>ks
-     * 6) rde, то rde>rž
-     * 7) de, то de>z
-     * 8) A, то -A
+     * 2) A, в первом слоге есть А и в о.1 не больше двух слогов, то A>UO
+     * 3) A, в первом слоге нет А и в о.1 больше двух слогов (т.е. в остальных случаях на A), то -A
+     * 4) Ai, то Ai>UO
+     * 5) Oi, то Oi>OLUO
+     * 6) hte, то hte>ks
+     * 7) rde, то rde>rž
+     * 8) de, то de>z
      * 9) e, то -e
      * 
      * @param string $stem1
@@ -128,29 +128,30 @@ class KarNameLud
     public static function stem4FromMiniTemplate($stem0, $stem1, $harmony) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
+        $stem1_syll=KarGram::countSyllable($stem1);
 
         if (preg_match("/^".$C.$V."{2,3}$/u", $stem1)) {            // А
             return $stem1.KarGram::garmVowel($harmony,'luoi');
         }                                                     
             
         if (preg_match("/^(.+)[oö]$/u", $stem1, $regs) && preg_match("/[oö]$/u", $stem0) // Б.1
-            || preg_match("/^(.+k)a$/u", $stem1, $regs) // Б.2
-            || preg_match("/^(.+)[aä]i$/u", $stem1, $regs)) { // Б.3
+            || preg_match("/^(.+)[aä]$/u", $stem1, $regs) && $stem1_syll<3 && preg_match("/^".$C."?".$V."?[aä]/u", $stem1) // Б.2
+            || preg_match("/^(.+)[aä]i$/u", $stem1, $regs)) { // Б.4
             return $regs[1].KarGram::garmVowel($harmony,'uoi');
             
-        } elseif (preg_match("/^(.+)[oö]i$/u", $stem1, $regs)) { // Б.4
+        } elseif (preg_match("/^(.+)[oö]i$/u", $stem1, $regs)) { // Б.5
             return $regs[1].KarGram::garmVowel($harmony,'oluoi');
             
-        } elseif (preg_match("/^(.+)hte$/u", $stem1, $regs)) { // Б.5
+        } elseif (preg_match("/^(.+)hte$/u", $stem1, $regs)) { // Б.6
             return $regs[1].'ksi';
             
-        } elseif (preg_match("/^(.+)rde$/u", $stem1, $regs)) { // Б.6
+        } elseif (preg_match("/^(.+)rde$/u", $stem1, $regs)) { // Б.7
             return $regs[1].'rži';
             
-        } elseif (preg_match("/^(.+)de$/u", $stem1, $regs)) { // Б.7
+        } elseif (preg_match("/^(.+)de$/u", $stem1, $regs)) { // Б.8
             return $regs[1].'zi';
             
-        } elseif (preg_match("/^(.+)[aä]$/u", $stem1, $regs) // Б.8            
+        } elseif (preg_match("/^(.+)[aä]$/u", $stem1, $regs) // Б.3            
             || preg_match("/^(.+)e$/u", $stem1, $regs)) { // Б.9
             return $regs[1].'i';
         }
@@ -162,13 +163,13 @@ class KarNameLud
      *    (CVVV или CVV) , то  о.2+lUOi 
      * Б. В остальных случаях  о.2+i, при этом если о.2 заканч. на
      * 1) O и с.ф. оканчивается на O, то O>UO
-     * 2) ka, то a>uo
-     * 3) Ai, то Ai>UO
-     * 4) Oi, то Oi>OLUO
-     * 5) hte, то hte>ks
-     * 6) rde, то rde>rž
-     * 7) de, то de>z
-     * 8) A, то -A
+     * 2) A и в первом слоге есть А и в о.2 не больше двух слогов, то A>UO
+     * 3) A и в первом слоге нет А или в о.2 больше двух слогов (т.е. в остальных случаях на A), то -A
+     * 4) Ai, то Ai>UO
+     * 5) Oi, то Oi>OLUO
+     * 6) hte, то hte>ks
+     * 7) rde, то de>z
+     * 8) de, то de>z
      * 9) e, то -e
      * 
      * @param string $stem1
@@ -180,13 +181,14 @@ class KarNameLud
     public static function stem5FromMiniTemplate($stem0, $stem2, $harmony) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
+        $stem2_syll=KarGram::countSyllable($stem2);
 
         if (preg_match("/^".$C.$V."{2,3}$/u", $stem2)) {            // А
             return $stem2.KarGram::garmVowel($harmony,'luoi');
         }                                                     
             
         if (preg_match("/^(.+)[oö]$/u", $stem2, $regs) && preg_match("/[oö]$/u", $stem0) // Б.1
-            || preg_match("/^(.+k)a$/u", $stem2, $regs) // Б.2
+            || preg_match("/^(.+)[aä]$/u", $stem2, $regs) && $stem2_syll<3 && preg_match("/^".$C."?".$V."?[aä]/u", $stem2) // Б.2
             || preg_match("/^(.+)[aä]i$/u", $stem2, $regs)) { // Б.3
             return $regs[1].KarGram::garmVowel($harmony,'uoi');
             
