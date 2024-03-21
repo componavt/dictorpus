@@ -25,7 +25,7 @@ use App\Models\Dict\Lemma;
 
 class GrammaticTest extends TestCase
 {
-/*    // Ref: 10. potkiekseh
+    // Ref: 10. potkiekseh
     public function testWordformsByStemsKarVerbOloPotkiekseh() {
         $template = 'potki|ekseh (-mmos, -h/-hes; -tahes; -h/-hes, -ttihes)';
         $lang_id = 5;
@@ -2297,7 +2297,7 @@ class GrammaticTest extends TestCase
         $expected = ['ivualen', 'ivual’ou', 'ivual’l’a', 'ivuali', 'ivualit', 'ivual’l’en'];
         $this->assertEquals( $expected, $result);        
     }
-*/        
+        
     public function testStemsFromTemplateLudicNames() {
         $lang_id = 6;
         $pos_id=5;
