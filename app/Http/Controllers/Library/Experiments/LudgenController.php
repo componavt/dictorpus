@@ -74,9 +74,9 @@ class LudgenController extends Controller
         $dialect_id = Ludgen::dialect_id;
         
         print "<pre>";
-        foreach (Ludgen::dictForms($words) as $lemma_id => $template) {
+/*        foreach (Ludgen::dictForms($words) as $lemma_id => $template) {
             print $template."\n";
-        }
+        }*/
         
         print "\t\$templates = [\n";
         foreach (Ludgen::dictForms($words) as $lemma_id => $template) {

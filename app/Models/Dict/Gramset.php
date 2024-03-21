@@ -333,7 +333,7 @@ class Gramset extends Model
      */
     public static function dictionaryGramsets($pos_id, $number=NULL, $lang_id=5) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            if ($lang_id==4 || $lang_id==6) { // proper karelian пока не известно какие нужны формы для plural tantum
+            if ($lang_id==4 || $lang_id==6) { // proper karelian, ludic пока не известно какие нужны формы для plural tantum
                 return [0=>3, 1=>10, 2=>4, 3=>1];    // 3=gen sg, 10=ill sg, 4=part sg, 1=nom sg          
             } elseif ($number==1) { // plural
                 if ($lang_id == 1) { // vepsian

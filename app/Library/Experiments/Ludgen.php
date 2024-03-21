@@ -241,17 +241,28 @@ dd($reverse_lemmas);  */
     }
     
     public static function getBases($lemmas) {
+        $dialect_id = Ludgen::dialect_id;
         $bases=[];
         foreach ($lemmas as $lemma_id) {
             $lemma = Lemma::find($lemma_id);
+            for ($i=0; $i<7; $i++) {
+                $bases[$lemma_id][$i] = $lemma->getBase($i, $dialect_id, $bases);
+            }
+            if ($lemma->reverseLemma) {
+                $bases[$lemma_id][10] = $lemma->harmony();
+            }
+/*            
             $bases[$lemma_id][0] = $lemma->lemma;
-            $bases[$lemma_id][1] = Ludgen::getBase1($lemma);
+            
+            $bases[$lemma_id][1] = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $is_reflexive);
+
+                    Ludgen::getBase1($lemma);
             $bases[$lemma_id][2] = Ludgen::getBase2($lemma);
             $bases[$lemma_id][3] = Ludgen::getBase3($lemma);
             $bases[$lemma_id][4] = Ludgen::getBase4($lemma);
             $bases[$lemma_id][5] = Ludgen::getBase5($lemma);
             $bases[$lemma_id][6] = '';
-            $bases[$lemma_id][10] = KarGram::isBackVowels($lemma->lemma);
+            $bases[$lemma_id][10] = KarGram::isBackVowels($lemma->lemma);*/
         }
         return $bases;
     }
@@ -309,7 +320,7 @@ dd($reverse_lemmas);  */
                 dd('У генитива '.$wordform->wordform.' мн.ч. нет окончания -den');
             }
         }
-        return join(', ', $bases);
+        return join('/', $bases);
     }
     
     public static function getBase5($lemma) {
@@ -324,7 +335,7 @@ dd($reverse_lemmas);  */
                 dd('У партитива мн.ч. нет окончания -d');
             }
         }
-        return join(', ', $bases);
+        return join('/', $bases);
     }
 }
 

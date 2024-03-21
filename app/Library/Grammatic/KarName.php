@@ -68,6 +68,8 @@ class KarName
                 return self::getStem4FromWordform($lemma, $dialect_id);
             case 5: // illative pl (tver) OR partitive pl (olo)
                 return self::getStem5FromWordform($lemma, $dialect_id);
+            case 6: // partitive sg base
+                return self::getStem6FromWordform($lemma, $dialect_id);
         }
     }
     
@@ -79,12 +81,17 @@ class KarName
                 if (preg_match("/^(.+)n$/", trim($g), $regs)) { 
                     $stems4[] = $regs[1];
                 }            
+            } elseif ($lemma->lang_id == 6) {
+                if (preg_match("/^(.+)den$/", trim($g), $regs)) { 
+                    $stems4[] = $regs[1];
+                }            
             } else {
                 if (preg_match("/^(.+?)e??n$/u", trim($g), $regs)) {
                     $stems4[] = $regs[1];
                 }
             }
         }
+        sort($stems4);
         return join('/', $stems4);
     }
     
@@ -96,10 +103,29 @@ class KarName
         } else { // partitive pl
             $partPls = preg_split('/,/', $lemma->wordform(22, $dialect_id));
             $stems5=[];
+//dd($lemma->wordform(22, $dialect_id));            
             foreach ($partPls as $p) {
-                $stems5[] = preg_replace('/ii$/', 'i', trim($p));            
+                if ($lemma->lang_id == 6) {
+                    if (preg_match("/^(.+)d$/", trim($p), $regs)) { 
+                        $stems5[] = $regs[1];
+                    }            
+                } else {                
+                    $stems5[] = preg_replace('/ii$/', 'i', trim($p));            
+                }
             }
+            sort($stems5);
             return join('/', $stems5);
+        }
+        return '';
+    }
+    
+    public static function getStem6FromWordform($lemma, $dialect_id) {
+        if ($lemma->lang_id != 6) {
+            return null;
+        }
+        $part_sg = $lemma->wordform(4, $dialect_id); 
+        if (preg_match("/^(.+)d$/", $part_sg, $regs) || preg_match("/^(.+)te$/", $part_sg, $regs)) { 
+            return $regs[1];
         }
         return '';
     }
@@ -178,10 +204,11 @@ class KarName
         $stem0_syll=KarGram::countSyllable($stem0);
         
         if ($lang_id==6) {
-            list ($stem1, $stem2, $stem3) = KarNameLud::stems1_2_3FromMiniTemplate($base, $stem0, $ps_list);
-//            $stem3 = KarNameLud::stem3FromMiniTemplate($base, $stem0, $stem1, $ps_list);
-            $stem4 = KarNameLud::stem4FromMiniTemplate($stem0, $stem1, $harmony);
-            $stem5 = KarNameLud::stem5FromMiniTemplate($stem0, $stem2, $harmony);            
+// $ok = $regs[2];            
+            list ($stem1, $stem2, $stem6) = KarNameLud::initialStemsFromMiniTemplate($base, $regs[2], $stem0, $ps_list);
+            $stem3 = KarNameLud::stem3FromMiniTemplate($stem6);
+            $stem4 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem1, $stem6, $harmony, $pos_id);
+            $stem5 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem2, $stem6, $harmony, $pos_id);            
         } else {
             list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);
             if (!$stem6) {
@@ -198,7 +225,7 @@ class KarName
                   3 => $fword.$stem3,
                   4 => $fword.$stem4,
                   5 => $fword.$stem5,
-                  6 => $lang_id==6 ? '' : $fword.$stem6,
+                  6 => $fword.$stem6,
                   10 => $harmony
             ];
 //dd($stems, $stem0_syll, $regs[1].$regs[2]);        

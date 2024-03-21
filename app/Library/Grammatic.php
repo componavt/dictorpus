@@ -511,4 +511,21 @@ class Grammatic
             return KarGram::templateFromWordforms($wordforms, $lang_id, $pos_id, $number);
         }        
     }
+    
+    public static function addEndToMultiBase($base, $end, $div='\/') {
+        if (!$base) {
+            return '';
+        }
+        $bases = preg_split('/'.$div.'/', $base);
+        $ends = preg_split('/,/', $end);
+        $forms = [];
+        foreach($bases as $base) {
+            foreach($ends as $end) {
+                $forms[] = trim($base).trim($end);
+            }
+        }
+        sort($forms);
+        return join(', ', $forms);
+    }
+    
 }

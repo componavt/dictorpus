@@ -63,53 +63,38 @@ class KarNameOlo
             case 22: // партитив, мн.ч. 
                 return self::partPl($stems[5]);
             case 59: // транслатив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'kse');
+                return Grammatic::addEndToMultiBase($stems[4], 'kse');
             case 23: // инессив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 's');
+                return Grammatic::addEndToMultiBase($stems[4], 's');
             case 60: // элатив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 's, späi');
+                return Grammatic::addEndToMultiBase($stems[4], 's, späi');
             case 61: // иллатив, мн.ч. 
-                return self::addEndToMultiBase($stems[5], 'h');
+                return Grammatic::addEndToMultiBase($stems[5], 'h');
             case 25: // адессив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 'l');
+                return Grammatic::addEndToMultiBase($stems[4], 'l');
             case 62: // аблатив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 'l, lpäi');
+                return Grammatic::addEndToMultiBase($stems[4], 'l, lpäi');
             case 63: // аллатив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 'le');
+                return Grammatic::addEndToMultiBase($stems[4], 'le');
             case 65: // комитатив, мн.ч. 
                 return self::comPl($stems[4]);
             case 66: // пролатив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'či');
+                return Grammatic::addEndToMultiBase($stems[4], 'či');
             case 281: // инструктив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'n');                       
+                return Grammatic::addEndToMultiBase($stems[4], 'n');                       
         }
         
         if (!isset($stems[10])) { return ''; }
         switch ($gramset_id) {
             case 279: // эссив, мн.ч.
-                return self::addEndToMultiBase($stems[4], 'nn'. KarGram::garmVowel($stems[10],'u'));
+                return Grammatic::addEndToMultiBase($stems[4], 'nn'. KarGram::garmVowel($stems[10],'u'));
             case 64: // абессив, мн.ч. 
-                return self::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[10],'a'). 'h');        
+                return Grammatic::addEndToMultiBase($stems[4], 'tt'. KarGram::garmVowel($stems[10],'a'). 'h');        
             case 18: //аппроксиматив, мн.ч. 
                 return self::approxPl($stems[4], $stems[5], $stems[10]);
             case 67: //терминатив, мн.ч. 
-                return self::addEndToMultiBase($stems[5], 'ss'. KarGram::garmVowel($stems[10],'a'). 'h');        
+                return Grammatic::addEndToMultiBase($stems[5], 'ss'. KarGram::garmVowel($stems[10],'a'). 'h');        
         }
-    }
-    
-    public static function addEndToMultiBase($base, $end, $div='\/') {
-        if (!$base) {
-            return '';
-        }
-        $bases = preg_split('/'.$div.'/', $base);
-        $ends = preg_split('/,/', $end);
-        $forms = [];
-        foreach($bases as $base) {
-            foreach($ends as $end) {
-                $forms[] = trim($base).trim($end);
-            }
-        }
-        return join(', ', $forms);
     }
     
     public static function genPl($stem4, $stem5) {

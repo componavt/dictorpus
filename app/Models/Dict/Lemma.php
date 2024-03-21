@@ -514,6 +514,7 @@ class Lemma extends Model
                 }
                 $wordform_arr[]=$w;
             }
+            sort($wordform_arr);
             return join(', ',$wordform_arr);
         }        
     }
