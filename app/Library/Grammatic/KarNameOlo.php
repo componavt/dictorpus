@@ -2,7 +2,7 @@
 
 namespace App\Library\Grammatic;
 
-//use App\Library\Grammatic;
+use App\Library\Grammatic;
 use App\Library\Grammatic\KarGram;
 /*
 use App\Models\Dict\Gramset;

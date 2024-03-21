@@ -758,7 +758,7 @@ class KarName
             switch ($gramset_id) {
                 case 2: // номинатив, мн.ч. 
                 case 57: // аккузатив, мн.ч. 
-                    return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? KarNameOlo::addEndToMultiBase($stems[1], 't') : '');
+                    return $name_num == 'pl' ? $stems[0] : ($name_num != 'sg' && $stems[1] ? Grammatic::addEndToMultiBase($stems[1], 't') : '');
             }
         }
         
