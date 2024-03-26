@@ -24,7 +24,7 @@ class AudioInformantController extends Controller
     public function __construct(Request $request)
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:dict.edit,/dict/audio');
+        $this->middleware('auth:dict.audio,/dict/audio');
         
         $this->url_args = Audio::urlArgs($request);        
         $this->args_by_get = search_values_by_URL($this->url_args);

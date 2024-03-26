@@ -8,11 +8,16 @@
                             <a href="{{ url('/experiments') }}">{{ trans('navigation.experiments') }}</a>
                             <a href="{{ url('/service') }}">{{ trans('navigation.service') }}</a>
                             @endif
+                            
                             @if (User::checkAccess('admin'))
                             <a href="{{ url('/user') }}"><i class="fa fa-btn fa-user user-menu-img"></i>{{ trans('navigation.users') }}</a>
                             <a href="{{ url('/role') }}"><i class="fa fa-btn fa-users user-menu-img"></i>{{ trans('navigation.roles') }}</a>
                             @endif
 
+                            @if (user_dict_audio() && $user->informant_id)
+                            <a href="{{ route('informant.audio',$user->informant_id)}}"><i class="fa fa-btn fa-volume-up user-menu-img"></i>{{ trans('auth.perm.dict.audio')}}</a>
+                            @endif
+                            
                             <a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('navigation.logout') }}</a>
                         </div>                        
                     @elseif (!isset($without_enter_form) || !$without_enter_form)
