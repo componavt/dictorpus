@@ -107,7 +107,7 @@ class KarNameLud
                 return $regs[1].'i';
             }            
         } else {                                                     // В
-            if (preg_match("/^(.+)[oö]$/u", $stemSg, $regs) && preg_match("/[oö]$/u", $stem0)   // В.1
+            if (preg_match("/^(.+)[oö]$/u", $stemSg, $regs)   // В.1
                     || preg_match("/^(.+)[aä]i$/u", $stem6, $regs)) {                           // В.6
                 return $regs[1].KarGram::garmVowel($harmony,'oi').'/'.$regs[1].KarGram::garmVowel($harmony,'uoi');                
             } elseif (preg_match("/^(.+)a$/u", $stemSg, $regs)) {                                // В.2-3
