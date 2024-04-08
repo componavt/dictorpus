@@ -162,7 +162,7 @@ class KarName
         
         // mini template
         if (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\[([^\]]*)\]/", $template, $regs)) {
-            return self::stemsFromMiniTemplate($lang_id, $pos_id, $regs);
+            return self::stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num);
         // only plural
         } elseif ($name_num == 'pl' && preg_match($lemma_okon3_shab.",\s*".$okon3_shab."\)/", $template, $regs)) {
 //            $name_num = 'pl';
@@ -187,7 +187,7 @@ class KarName
      * 
      * @param type $regs = [0=>template, 1=>base, 2=>base-suff, 3=>list_of_pseudostems]
      */
-    public static function stemsFromMiniTemplate($lang_id, $pos_id, $regs) {
+    public static function stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num) {
 //dd($regs);     
         if (preg_match("/^(.+)ǁ(.+)$/", $regs[1], $sword)) {
             $fword = $sword[1];
@@ -229,7 +229,7 @@ class KarName
                   10 => $harmony
             ];
 //dd($stems, $stem0_syll, $regs[1].$regs[2]);        
-        return [$stems, null, $regs[1], $regs[2]];
+        return [$stems, $name_num, $regs[1], $regs[2]];
     }
     
     public static function stems1And6FromMiniTemplate($base, $stem0, $ps_list) {
@@ -536,7 +536,6 @@ class KarName
      *               [[0=>'Viändöi', 1=>'Viändöi', 2=>'Viändöi', 3=>'Viändöidy', 4=>'', 5=>''], 'Viändö', 'i']
      */
     public static function stemsSgFromTemplate($regs) {
-//dd($regs);    
         $base = preg_replace('/ǁ/','',$regs[1]);
         $gen_sg_suff = $regs[3];
         $par_sg_suff = $regs[4];
