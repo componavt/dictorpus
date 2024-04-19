@@ -9,7 +9,7 @@ trait Meanings
      */
     public function meanings()
     {
-        return $this->hasMany(Meaning::class);
+        return $this->hasMany(Meaning::class)->orderBy('meaning_n');
 //        return $this->hasMany('App\Models\Dict\Meaning'); // is working too
     }
 }
