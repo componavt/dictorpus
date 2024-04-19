@@ -10,12 +10,12 @@
                  'attributes' => ['id'=>'lemma_lang_id']])
                                   
         @include('widgets.form.formitem._select2',
-                ['name' => 'wordform_dialect_id', 
-                 'values' =>$dialect_values,
-                 'value' => $wordform_dialect_value,
-                 'is_multiple' => false,
-                 'title' => trans('dict.dialect_in_lemma_form'),
-                 'class'=>'select-wordform-dialect form-control'])
+                ['name' => 'variants',
+                 'title' => trans('dict.variants'),
+                 'values' => isset($lemma_variants) ? $lemma_variants : [],
+                 'value' => isset($lemma_variants) ? array_keys($lemma_variants) : [],
+                 'class'=> 'multiple-select-variants'
+            ])
     </div>
     <div class="col-sm-4">        
         @include('widgets.form.formitem._select',
@@ -46,12 +46,12 @@
                  'title'=>trans('dict.lemma')])
                                   
         @include('widgets.form.formitem._select2',
-                ['name' => 'variants',
-                 'title' => trans('dict.variants'),
-                 'values' => isset($lemma_variants) ? $lemma_variants : [],
-                 'value' => isset($lemma_variants) ? array_keys($lemma_variants) : [],
-                 'class'=> 'multiple-select-variants'
-            ])
+                ['name' => 'wordform_dialect_id', 
+                 'values' =>$dialect_values,
+                 'value' => $wordform_dialect_value,
+                 'is_multiple' => false,
+                 'title' => trans('dict.dialect_in_lemma_form'),
+                 'class'=>'select-wordform-dialect form-control'])
     </div>
 </div>
 
