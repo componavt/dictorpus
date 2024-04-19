@@ -36,7 +36,9 @@ class Corpus extends Model
     
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Genres;
-    use \App\Traits\Relations\HasMany\Texts;
+    
+    // Belongs To Many Relations    
+    use \App\Traits\Relations\BelongsToMany\Texts;
 
     /** Gets name of this corpus by code, takes into account locale.
      * 
@@ -107,8 +109,10 @@ class Corpus extends Model
         foreach ($corpuses as $corpus) {        
             foreach (Lang::projectLangs() as $lang) {
                 $num_texts = Text::whereLangId($lang->id)
-                        ->whereCorpusId($corpus->id)
-                        ->count();
+                        ->whereIn('id', function($q) use ($corpus) {
+                            $q->select('text_id')->from('corpus_text')
+                              ->whereCorpusId($corpus->id);
+                        })->count();
                 $out[$lang->name][$corpus->name] = number_format($num_texts, 0, ',', ' ');
             }
         }
