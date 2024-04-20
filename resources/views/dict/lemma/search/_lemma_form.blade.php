@@ -41,7 +41,7 @@
                  'value' =>$url_args['search_concept_category'],
                  'title'=> trans('dict.concept_category') ]) 
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-4{{$url_args['search_concept'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2',
                 ['name' => 'search_concept', 
                  'is_multiple' => false,
@@ -50,13 +50,13 @@
                  'title' => trans('dict.concept'),
                  'class'=>'select-concept form-control']) 
     </div>
-    <div class="col-sm-4{{$url_args['search_meaning'] ? '' : ' ext-form'}}">
+    <div class="col-sm-4">
         @include('widgets.form.formitem._text',
                 ['name' => 'search_meaning',
                 'value' => $url_args['search_meaning'],
                 'special_symbol' => true,
                 'help_func' => "callHelp('help-text-fields')",
-                'title'=>trans('dict.interpretation')])
+                'title'=>trans('dict.meaning')])
     </div>
     <div class="col-sm-1{{$url_args['search_id'] ? '' : ' ext-form'}}">
             @include('widgets.form.formitem._text',
