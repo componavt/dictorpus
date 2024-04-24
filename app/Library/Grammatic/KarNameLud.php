@@ -89,11 +89,11 @@ class KarNameLud
         $V = "[".KarGram::vowelSet()."]";
         $stem6_syll=KarGram::countSyllable($stem6);
 
-        if (preg_match("/^".$C.$V."{2,3}$/u", $stemSg)) {            // А
+        if (preg_match("/^".$C.'’?'.$V."{2,3}$/u", $stemSg)) {            // А
             return $stemSg.KarGram::garmVowel($harmony,'luoi');
         }                                                     
           
-        if (preg_match("/".$C."$/u", $stem6)) {                      // Б
+        if (preg_match("/".$C."’?$/u", $stem6)) {                      // Б
             if (preg_match("/^(.+)hte$/u", $stemSg, $regs)) {        // Б.1
                 return $regs[1].'ksi';
 
@@ -111,10 +111,10 @@ class KarNameLud
                     || preg_match("/^(.+)[aä]i$/u", $stem6, $regs)) {                           // В.6
                 return $regs[1].KarGram::garmVowel($harmony,'oi').'/'.$regs[1].KarGram::garmVowel($harmony,'uoi');                
             } elseif (preg_match("/^(.+)a$/u", $stemSg, $regs)) {                                // В.2-3
-                if ($stem6_syll==2 && preg_match("/^".$C."*".$V."?[uo]/u", $stem6)               // В.2а
+                if ($stem6_syll==2 && preg_match("/^".$C."*’?".$V."?[uo]/u", $stem6)               // В.2а
                     || $stem6_syll>2 && (preg_match("/m[pb]?a$/u", $stem6) || $pos_id==1 && preg_match("/va$/u", $stem6))) { // В.2б
                         return $regs[1].'i';                
-                } elseif ($stem6_syll==2 && preg_match("/^".$C."*".$V."?[aei]/u", $stem6)        // В.3а
+                } elseif ($stem6_syll==2 && preg_match("/^".$C."*’?".$V."?[aei]/u", $stem6)        // В.3а
                     || $stem6_syll>2 && !preg_match("/m[pb]?a$/u", $stem6) && !($pos_id==1 && preg_match("/va$/u", $stem6))) { // В.3б
                         return $regs[1].'oi/'.$regs[1].'uoi';     
                 }

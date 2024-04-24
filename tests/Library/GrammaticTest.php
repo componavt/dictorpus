@@ -2351,6 +2351,7 @@ class GrammaticTest extends TestCase
 	    40633 => 'kynäbry|s [kse, s]',
 	    70267 => 'vahnu|z [de, t]',
 	    66796 => 'hyvy|z [de, t]',
+            40704 => 'd’alg|e [a]',
 	];
 
         foreach ($templates as $lemma_id=>$template) {
@@ -2389,7 +2390,7 @@ class GrammaticTest extends TestCase
 	    67102 => [0 => [0 => 'dänöi', 1 => 'dänöi', 2 => 'dänöi', 3 => 'dänöid', 4 => 'dänölöi/dänölyöi', 5 => 'dänölöi/dänölyöi', 6 => 'dänöi', 10 => false], 1 => null, 2 => 'dänö', 3 => 'i'],
 	    69938 => [0 => [0 => 'dänyöi', 1 => 'dänyöi', 2 => 'dänyöi', 3 => 'dänyöid', 4 => 'dänyölöi/dänyölyöi', 5 => 'dänyölöi/dänyölyöi', 6 => 'dänyöi', 10 => false], 1 => null, 2 => 'dänyö', 3 => 'i'],
 	    69883 => [0 => [0 => 'tiäi', 1 => 'tiäi', 2 => 'tiäi', 3 => 'tiäid', 4 => 'tiäilyöi', 5 => 'tiäilyöi', 6 => 'tiäi', 10 => false], 1 => null, 2 => 'tiä', 3 => 'i'],
-	    3540 => [0 => [0 => 'pedäi', 1 => 'pedäjä', 2 => 'pedäjä', 3 => 'pedäjäd', 4 => 'pedäji', 5 => 'pedäji', 6 => 'pedäjä', 10 => false], 1 => null, 2 => 'pedä', 3 => 'i'],
+	    3540 =>  [0 => [0 => 'pedäi', 1 => 'pedäjä', 2 => 'pedäjä', 3 => 'pedäjäd', 4 => 'pedäji', 5 => 'pedäji', 6 => 'pedäjä', 10 => false], 1 => null, 2 => 'pedä', 3 => 'i'],
 	    51763 => [0 => [0 => 'lyhyd', 1 => 'lyhydä', 2 => 'lyhydä', 3 => 'lyhytte', 4 => 'lyhydi', 5 => 'lyhydi', 6 => 'lyhyt', 10 => false], 1 => null, 2 => 'lyhy', 3 => 'd'],
 	    18330 => [0 => [0 => 'pereh', 1 => 'perehe', 2 => 'perehe', 3 => 'perehte', 4 => 'perehi', 5 => 'perehi', 6 => 'pereh', 10 => false], 1 => null, 2 => 'pereh', 3 => ''],
 	    49174 => [0 => [0 => 'petkel', 1 => 'petkele', 2 => 'petkele', 3 => 'petkelte', 4 => 'petkeli', 5 => 'petkeli', 6 => 'petkel', 10 => false], 1 => null, 2 => 'petkel', 3 => ''],
@@ -2406,6 +2407,7 @@ class GrammaticTest extends TestCase
 	    40633 => [0 => [0 => 'kynäbrys', 1 => 'kynäbrykse', 2 => 'kynäbrykse', 3 => 'kynäbryste', 4 => 'kynäbryksi', 5 => 'kynäbryksi', 6 => 'kynäbrys', 10 => false], 1 => null, 2 => 'kynäbry', 3 => 's'],
 	    70267 => [0 => [0 => 'vahnuz', 1 => 'vahnude', 2 => 'vahnude', 3 => 'vahnutte', 4 => 'vahnuzi', 5 => 'vahnuzi', 6 => 'vahnut', 10 => true], 1 => null, 2 => 'vahnu', 3 => 'z'],
 	    66796 => [0 => [0 => 'hyvyz', 1 => 'hyvyde', 2 => 'hyvyde', 3 => 'hyvytte', 4 => 'hyvyzi', 5 => 'hyvyzi', 6 => 'hyvyt', 10 => false], 1 => null, 2 => 'hyvy', 3 => 'z'],
+	    40704 => [0 => [0 => 'd’alge', 1 => 'd’alga', 2 => 'd’alga', 3 => 'd’algad', 4 => 'd’algoi/d’alguoi', 5 => 'd’algoi/d’alguoi', 6 => 'd’alga', 10 => true], 1 => null, 2 => 'd’alg', 3 => 'e'],
 	];
         $this->assertEquals( $expected, $result);        
     }
