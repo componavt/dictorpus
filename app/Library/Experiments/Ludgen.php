@@ -29,7 +29,6 @@ class Ludgen extends Model
             47289 => 'leibe',
             50308 => 'emände',
             29962 => 'akke',
-            66666 => 'ukke',
             47713 => 'nuotte',
             70274 => 'huondekselline',            
             70199 => 'alaine',
@@ -130,6 +129,9 @@ dd($reverse_lemmas);  */
        
         foreach ($words as $id) {
             $lemma = Lemma::find($id);
+            if (!$lemma) {
+                dd('Нет леммы с id='.$id);
+            }
             $lemmas[$id]['lemma'] = $lemma->lemma;
             $lemmas[$id]['stem'] = $lemma->reverseLemma->stem;
             $lemmas[$id]['count'] = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count();

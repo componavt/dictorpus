@@ -865,7 +865,8 @@ dd($wordforms);
     }
     
     public function maxMeaningN(){
-        $last_meaning = $this->meanings()->orderBy('meaning_n', 'desc')->first();
+//        $last_meaning = $this->meanings()->orderBy('meaning_n', 'desc')->first();
+        $last_meaning = $this->meanings()->selectRaw('max(meaning_n) as meaning_n')->first();
         if (!$last_meaning) {
             return 0;
         }

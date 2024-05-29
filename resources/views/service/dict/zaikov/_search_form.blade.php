@@ -2,9 +2,10 @@
 <div class="search-form row">
     <div class="col-md-3">
         @include('widgets.form.formitem._text',
-                       ['name' => 'search_lemma',
-                        'value'=> $url_args['search_lemma'],
-                        'title' => trans('dict.lemma')])
+                ['name' => 'search_lemma',
+                 'special_symbol' => true,
+                 'value'=> $url_args['search_lemma'],
+                 'title' => trans('dict.lemma')])
     </div>
     <div class="col-sm-4">
         @include('widgets.form.formitem._select', 

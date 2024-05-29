@@ -2524,6 +2524,35 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testStemsFromTemplateTverNames() {
+        $lang_id = 4;
+        $pos_id = 5;
+        $dialect_id = 47;
+        $num = NULL;
+	$templates = [
+	    1 => 'mua []',
+	    2 => 'lyhy|t [ö, t]',
+	    3 => 'ai|ga [ja]',
+	    4 => 've|zi [je/de, t]',
+	    5 => 'kat|e [tie, et]',
+	    6 => 'ahkiv|o [o]',
+	];
+
+        foreach ($templates as $lemma_id=>$template) {
+            $result[$lemma_id] = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
+        }
+
+	$expected = [
+	    1 => [0 => [0 => 'mua', 1 => 'mua', 2 => 'mua', 3 => 'muada', 4 => 'mualoi', 5 => 'mualoi', 6 => 'mua', 10 => true], 1 => null, 2 => 'mua', 3 => ''],
+	    2 => [0 => [0 => 'lyhyt', 1 => 'lyhyö', 2 => 'lyhyö', 3 => 'lyhyttä', 4 => 'lyhyzi', 5 => 'lyhyzi', 6 => 'lyhyt', 10 => false], 1 => null, 2 => 'lyhy', 3 => 't'],
+            3 => [0 => [0 => 'aiga', 1 => 'aija', 2 => 'aiga', 3 => 'aigua', 4 => 'aijoi', 5 => 'aigoi', 6 => 'aiga', 10 => true], 1 => null, 2 => 'ai', 3 => 'ga'],
+	    4 => [0 => [0 => 'vezi', 1 => 'veje', 2 => 'vede', 3 => 'vettä', 4 => 'vezilöi', 5 => 'vezilöi', 6 => 'vet', 10 => false], 1 => null, 2 => 've', 3 => 'zi'],
+	    5 => [0 => [0 => 'kate', 1 => 'kattie', 2 => 'kattie', 3 => 'katetta', 4 => 'kattieloi', 5 => 'kattieloi', 6 => 'katet', 10 => true], 1 => null, 2 => 'kat', 3 => 'e'],
+	    6 => [0 => [0 => 'ahkivo', 1 => 'ahkivo', 2 => 'ahkivo', 3 => 'ahkivuo', 4 => 'ahkivoloi', 5 => 'ahkivoloi', 6 => 'ahkivo', 10 => true], 1 => null, 2 => 'ahkiv', 3 => 'o'],
+	];
+        $this->assertEquals( $expected, $result);        
+    }
+
 /*    
     public function testWordformsByStemsKarVerbProper() {
         $template = '';

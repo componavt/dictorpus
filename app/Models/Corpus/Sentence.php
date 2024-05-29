@@ -402,7 +402,7 @@ AND t1.word_number-t2.word_number<=|B|;
         if ($search_by_pos) {
             $lemma_conds[] = 'pos_id in ('. join(', ', $word['p']). ')';
         }
-        if (sizeof($lang_ids)) {
+        if (!empty($lang_ids) && !empty($lang_ids[0])) {
             $lemma_conds[] = 'lang_id in ('. join(', ', $lang_ids). ')';                                
         }
         if (sizeof($lemma_conds)) {
@@ -434,7 +434,7 @@ AND t1.word_number-t2.word_number<=|B|;
         if (isset($word['l']) && $word['l']) {
             $lemma_conds[] = "lemma_for_search rlike '". $word['l']."'";
         }
-        if (sizeof($lang_ids)) {
+        if (!empty($lang_ids) && !empty($lang_ids[0])) {
             $lemma_conds[] = 'lang_id in ('. join(', ', $lang_ids). ')';                                
         }
         
@@ -473,7 +473,7 @@ AND t1.word_number-t2.word_number<=|B|;
                             if ($search_by_pos) {
                                 $query2->whereIn('pos_id', $word['p']);
                             }
-                            if (sizeof($lang_ids)) {
+                            if (!empty($lang_ids) && !empty($lang_ids[0])) {
                                 $query2->whereIn('lang_id', $lang_ids);                                
                             }
                         });
@@ -512,7 +512,7 @@ AND t1.word_number-t2.word_number<=|B|;
                     if ($search_by_lemma) {
                         $query2->where('lemma_for_search', 'rlike', $word['l']);
                     }
-                    if (sizeof($lang_ids)) {
+                    if (!empty($lang_ids) && !empty($lang_ids[0])) {
                         $query2->whereIn('lang_id', $lang_ids);                                
                     }
                 });
@@ -595,7 +595,7 @@ AND t1.word_number-t2.word_number<=|B|;
 //dd(Sentence::searchTexts($args));
         $builder = self::searchWords($args['words'], Sentence::searchTexts($args), $args['search_lang']);
 //dd(to_sql($builder));        
-//dd($builder->get());            
+//dd(to_sql($builder), $builder, $builder->get());            
 //        return sizeof($builder->get());
         return [sizeof($builder->get()), $builder];
 //        return [$builder->count(), $builder];

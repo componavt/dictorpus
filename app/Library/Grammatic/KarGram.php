@@ -254,7 +254,7 @@ class KarGram
         $lang_id = Dialect::getLangIDByID($dialect_id);
         
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
-            return KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num);
+            return KarName::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
         } elseif ($pos_id == PartOfSpeech::getVerbID()) {
             return KarVerb::stemsFromTemplate($template, $lang_id, $name_num, $is_reflexive);
         } else {

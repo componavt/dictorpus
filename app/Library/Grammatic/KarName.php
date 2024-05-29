@@ -152,7 +152,7 @@ class KarName
         return array_merge(self::gramsetListSg($lang_id), self::gramsetListPl($lang_id));
     }
         
-    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num) {      
+    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id=null) {      
         $base_shab = "([^\s\(\]\|]+)";
         $base_suff_shab = "([^\s\(\]\|]*)";
 //        $okon1_shab = "(-?[^\-\,\;\)]+)";
@@ -162,7 +162,7 @@ class KarName
         
         // mini template
         if (preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\[([^\]]*)\]/", $template, $regs)) {
-            return self::stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num);
+            return self::stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num, $dialect_id);
         // only plural
         } elseif ($name_num == 'pl' && preg_match($lemma_okon3_shab.",\s*".$okon3_shab."\)/", $template, $regs)) {
 //            $name_num = 'pl';
@@ -187,7 +187,7 @@ class KarName
      * 
      * @param type $regs = [0=>template, 1=>base, 2=>base-suff, 3=>list_of_pseudostems]
      */
-    public static function stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num) {
+    public static function stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num, $dialect_id) {
 //dd($regs);     
         if (preg_match("/^(.+)ǁ(.+)$/", $regs[1], $sword)) {
             $fword = $sword[1];
@@ -210,14 +210,14 @@ class KarName
             $stem4 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem1, $stem6, $harmony, $pos_id);
             $stem5 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem2, $stem6, $harmony, $pos_id);            
         } else {
-            list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);
+            list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);          
             if (!$stem6) {
                 return $out;
             }
             $stem2 = self::stem2FromMiniTemplate($base, $stem1, $stem6, isset($ps1[1]) ? $ps1[1]: null);
-            $stem3 = self::stem3FromMiniTemplate($stem6, $lang_id, $harmony);
-            $stem5 = self::stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll);
-            $stem4 = self::stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony);
+            $stem3 = self::stem3FromMiniTemplate($stem6, $lang_id, $harmony, $dialect_id);
+            $stem5 = self::stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll, $dialect_id);
+            $stem4 = self::stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony, $dialect_id);
         }
         $stems = [0 => $fword.$stem0,
                   1 => $fword.$stem1, // single genetive base 
@@ -266,39 +266,42 @@ class KarName
     }
     
     // partitive sg
-    public static function stem3FromMiniTemplate($stem6, $lang_id, $harmony) {
+    public static function stem3FromMiniTemplate($stem6, $lang_id, $harmony, $dialect_id) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
-//        if (preg_match("/^(.+?".$C."’?)(".$V.")$/", $stem6, $regs)) {
-//dd($stem6, $lang_id, $harmony);        
-        if (preg_match("/^(.+".$C.")(".$V.")$/u", $stem6, $regs)) {
-//dd($regs);            
+        if (preg_match("/^(.+".$C.")(".$V.")$/u", $stem6, $regs)) { // 1)
             if (in_array($regs[2], ['a', 'o'])) {
                 return $regs[1].'u'.$regs[2];
             } elseif (in_array($regs[2], ['y', 'ö'])) {
                 return $regs[1].'yö';
-            } elseif ($regs[2]== 'e') {
-                return $regs[1].'ie';
             } elseif ($regs[2] =='u') {
                 return $regs[1].'uo';
             } elseif ($regs[2]=='ä' && $lang_id==5) { // livvic
                 return $regs[1].'iä';
             } elseif ($regs[2]=='ä') { // proper
                 return $regs[1].'yä';
+            } elseif ($regs[2]== 'e') {
+                return $regs[1].'ie';
             } elseif ($regs[2] =='i' && $lang_id==5) { // livvic
                 return $regs[1].'ii';
             } elseif ($regs[2] =='i') { // proper
                 return $regs[1].'ie';
             }
-        } elseif (preg_match("/".$V.$V."$/u", $stem6)) {
+        } elseif (preg_match("/".$V.$V."$/u", $stem6)) { // 2)
             if ($lang_id == 5) {
                 return $stem6.KarGram::garmVowel($harmony,'du');
+            } elseif ($dialect_id == 47) { // tver
+                return $stem6.KarGram::garmVowel($harmony,'da');                
             } else {
                 return $stem6.KarGram::garmVowel($harmony,'ta');                
             }
         } else { // ending by consonant
             if ($lang_id == 4) { // proper
-                return $stem6.KarGram::garmVowel($harmony,'ta');                
+                if ($dialect_id == 47 && preg_match("/[lnr]$/u", $stem6)) {
+                    return $stem6.KarGram::garmVowel($harmony,'da');                    
+                } else {
+                    return $stem6.KarGram::garmVowel($harmony,'ta');  
+                }
             } elseif (preg_match("/[lnr]$/u", $stem6)) {
                 return $stem6.KarGram::garmVowel($harmony,'du');
             } elseif (preg_match("/[hst]$/u", $stem6)) {
@@ -309,6 +312,7 @@ class KarName
     
     /**
      * А. Если о.6 заканч. на
+     * 0) твер: C[iuyoö] то о.6 + loi~löi;
      * 1) с.к.: C[oö] и в с.ф. 3 слога, то о.6 + i;     (A.3)
      * 2) C[iuy] (А.1) 
      * ИЛИ (C[oö] и (лив. или с.к. и в с.ф. 2 слога)    (А.2)
@@ -327,13 +331,16 @@ class KarName
      *      5.1.1) в с.ф. 2 слога; 
      *  ИЛИ 5.1.2) в с.ф. более 2-х слогов и о.6 заканч. на [mvžsjpb]ä.
      *  5.2) ä > öi если в с.ф. более 2-х слогов и о.6 заканч. на [dtgkčhlnr]ä.
-     * 6) VV (кроме Vi), то: с.к.: – первый V → + i; ливв.: о.6 + loi~löi.
+     * 6) VV (кроме Vi), то: с.к.: – первый V → + i; ливв. и твер.: о.6 + loi~löi.
      * 
      * Б. Если о.6 заканч. на C, то о.6 > о.1 → если о.1 заканч. на
-     * 1) Ce и с.ф. заканч. на [sšzž]i, то o.5.=с.ф ;
+     * 1) Ce и с.ф. заканч. на [sšzž]i, то 
+     * твер.: =с.ф+loi~löi
+     * остальные:  =с.ф;
      * 2) Ce и с.ф. не заканч. на [sšzž]i, то e > i;
      * 3) C[aä], то a, ä > i;
      * 4) VV, то
+     * твер: 4.1) UO, то O > zi, 4.3) ie, то  + loi~löi
      * с.к.: 4.1) uo > ui, 4.2) yö > yi, 4.3) ie > ei; 
      * ливв.: 4.1) если о.1 заканч. на uo, yö, то – o, ö → + zi;
      *        4.2) иначе о.6 + loi~löi.
@@ -345,12 +352,14 @@ class KarName
      * @param boolean $harmony
      * @return string
      */
-    public static function stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll) {
+    public static function stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll, $dialect_id) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
         $stem6_syll=KarGram::countSyllable($stem6);
         
-        if ($lang_id == 4 && preg_match("/".$C."’?[oö]$/u", $stem6) && $stem0_syll==3) { // А.1
+        if ($dialect_id == 47 && preg_match("/".$C."’?[iuyoö]$/u", $stem6)) { 
+            return $stem6.KarGram::garmVowel($harmony,'loi');            
+        } elseif ($lang_id == 4 && preg_match("/".$C."’?[oö]$/u", $stem6) && $stem0_syll==3) { // А.1
             return $stem6.'i';
         } elseif (preg_match("/".$C."’?[iuy]$/u", $stem6) // А.2
                 || (preg_match("/".$C."’?[oö]$/u", $stem6) && ($lang_id!=4 || $lang_id==4 && $stem0_syll==2)) 
@@ -375,7 +384,7 @@ class KarName
                 return $regs[1].'öi';                
             }
         } elseif (preg_match("/^(.+)".$V."(".$V.")$/u", $stem6, $regs)) { // А.6
-            if ($lang_id == 4) {
+            if ($lang_id == 4 && $dialect_id <> 47) {
                 return $regs[1].$regs[2].'i';
             } else {
                 return $stem6.KarGram::garmVowel($harmony,'loi');
@@ -383,13 +392,23 @@ class KarName
         } elseif (preg_match("/".$C."$/u", $stem6)) { // Б
 //            if (preg_match("/^(.+".$C.")e$/u", $stem1, $regs)) {
             if (preg_match("/^(.+)e$/u", $stem1, $regs) && preg_match("/[sšzž]i$/u", $stem0)) { // Б.1
+                if ($dialect_id == 47) {
+                    return $stem0.KarGram::garmVowel($harmony,'loi');
+                } else {
                     return $stem0;
+                }
             } elseif (preg_match("/^(.+".$C.")e$/u", $stem1, $regs) && !preg_match("/[sšzž]i$/u", $stem0)) { // Б.2
                 return $regs[1].'i';
             } elseif (preg_match("/^(.+".$C.")[aä]$/u", $stem1, $regs)) { // Б.3
                     return $regs[1].'i';
             } elseif (preg_match("/^(.+?)(".$V.")(".$V.")$/u", $stem1, $regs)) { // Б.4
-                if ($lang_id == 4) {
+                if ($dialect_id == 47) {
+                    if (preg_match("/^(.+?[uy])[oö]$/u", $stem1, $regs)) {
+                        return $regs[1].'zi';
+                    } elseif (preg_match("/ie$/u", $stem1)) {
+                        return $stem1.KarGram::garmVowel($harmony,'loi');
+                    }
+                } elseif ($lang_id == 4) {
                     switch ($regs[2].$regs[3]) { // Б.4.1
                         case 'uo': return $regs[1].'ui';
                         case 'yö': return $regs[1].'yi';
@@ -414,18 +433,19 @@ class KarName
      * 2) ua, то ua > avoi
      * 3) iä, то iä > ävöi.
      * 
-     * Б. Если o.5 заканч. на С[oöuy]i  и о.6 на С[oöuy]  и кол-во слогов в o.5 и о.6 одинаковое, 
+     * Б. (не для твер.) Если o.5 заканч. на С[oöuy]i  и о.6 на С[oöuy]  и кол-во слогов в o.5 и о.6 одинаковое, 
      *    то о.1+i.
      * 
-     * В. Если o.5 заканч. на l[oö]i и кол-во слогов в o.5 больше чем в о.6, 
+     * В. Если o.5 заканч. на l[oö]i (для тверского на С[oö]i) и кол-во слогов в o.5 больше чем в о.6, 
      *    то =o.5.
      * 
-     * Г. Если o.5 заканч. на Vi и о.6 заканч. на VV, 
+     * Г. (не для твер.) Если o.5 заканч. на Vi и о.6 заканч. на VV, 
      *    то =o.5.
      * 
-     * Д. Если o.5 заканч. на Ci и перед конечным i есть čč, šš, ss, k, t, p, g, d, b, то o.5 > о.1 → если о.1 заканч. на
+     * Д. Если o.5 заканч. на Ci и перед конечным i есть kk, tt, pp, čč, šš, ss, k, t, p, g, d, b, то o.5 > о.1 → если о.1 заканч. на
      * 1) СV, то V> i; 
-     * 2) ie>ei, ua>ai, iä>äi
+     * 2) ie>ei, 
+     * кроме твер. ua>ai, iä>äi
      * 
      * Е. если o.5 заканч. на Ci, то =o.5
      * 
@@ -435,7 +455,7 @@ class KarName
      * @param boolean $harmony
      * @return string
      */
-    public static function stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony) {
+    public static function stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony, $dialect_id) {
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
         $syl_count5 = KarGram::countSyllable($stem5);
@@ -451,19 +471,22 @@ class KarName
             } elseif (preg_match("/^(.+)iä$/u", $stem1, $regs)) {   // А.3
                 return $regs[1].'ävöi';
             }
-        } elseif (preg_match("/".$C."[oöuy]i$/u", $stem5) && preg_match("/".$C."[oöuy]$/u", $stem6) 
-                && $syl_count5==$syl_count6) {                                                     // Б
+        } elseif ($dialect_id != 47 && preg_match("/".$C."[oöuy]i$/u", $stem5)  
+                && preg_match("/".$C."[oöuy]$/u", $stem6) && $syl_count5==$syl_count6) {         // Б
             return $stem1.'i';
             
-        } elseif (preg_match("/l[oö]i$/u", $stem5) && $syl_count5>$syl_count6                      // В
-                || preg_match("/".$V."i$/u", $stem5) && preg_match("/".$V.$V."$/u", $stem1)) {     // Г
+        } elseif ($syl_count5>$syl_count6 && ($dialect_id == 47 && preg_match("/".$C."[oö]i$/u", $stem5)
+                || $dialect_id != 47 && preg_match("/l[oö]i$/u", $stem5))                        // В
+                || $dialect_id != 47 && preg_match("/".$V."i$/u", $stem5) 
+                    && preg_match("/".$V.$V."$/u", $stem1)) {                                    // Г
             return $stem5;
             
         } elseif (preg_match("/".$C."i$/u", $stem5)) { // Г
-            if (preg_match("/čči$|šši$|ssi$|[ktpgdb]i$/u", $stem5)) {     // Д
+            if (preg_match("/[ktpčšs]{2}i$|[ktpgdb]i$/u", $stem5)) {     // Д
                 if (preg_match("/^(.+".$C.")".$V."$/u", $stem1, $regs)) { // Д.1
                     return $regs[1].'i';
-                } elseif (preg_match("/^(.+)i([eä])$/u", $stem1, $regs)) {
+                } elseif (preg_match("/^(.+)i(e)$/u", $stem1, $regs)
+                    || $dialect_id != 47 && preg_match("/^(.+)i(ä)$/u", $stem1, $regs)) {
                     return $regs[1].$regs[2].'i';
                 } elseif (preg_match("/^(.+)ua$/u", $stem1, $regs)) {
                     return $regs[1].'ai';
