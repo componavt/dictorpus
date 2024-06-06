@@ -18,7 +18,7 @@
             @endif
                 <th>{{ trans('corpus.title') }}</th>
                 @if (!$url_args['search_word'])
-                <th>{{ trans('messages.translation') }}</th>
+                <th>{{ trans('corpus.translation') }}</th>
                 @else
                 <th style='text-align: center'>{{ trans('corpus.sentences') }}</th>
                 @endif

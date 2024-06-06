@@ -4,11 +4,11 @@
     <div class="col-sm-6">
         @include('widgets.form.formitem._text', 
                 ['name' => 'name_en', 
-                 'title'=>trans('corpus.name').' '.trans('messages.in_english')])
+                 'title'=>trans('messages.name').' '.trans('messages.in_english')])
                  
         @include('widgets.form.formitem._text', 
                 ['name' => 'name_ru', 
-                 'title'=>trans('corpus.name').' '.trans('messages.in_russian')])
+                 'title'=>trans('messages.name').' '.trans('messages.in_russian')])
     </div>                 
     <div class="col-sm-6">
     @foreach ($project_langs as $lang) 
