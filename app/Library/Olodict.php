@@ -77,8 +77,8 @@ class Olodict
             
         } elseif ($url_args['search_letter']) {
             $lemmas -> where('lemma_for_search', 'like', $url_args['search_letter'].'%');
-            
-        } else {
+        }    
+//        } else {
             if ($url_args['search_pos']) {
                 $lemmas -> where('pos_id', $url_args['search_pos']);
             }
@@ -88,7 +88,7 @@ class Olodict
             $lemmas = self::searchByAudios($lemmas, $url_args['with_audios']);
             $lemmas = self::searchByConcept($lemmas, $url_args['search_concept'], $url_args['search_concept_category']);
             $lemmas = self::searchByPhotos($lemmas, $url_args['with_photos']);
-        }
+//        }
 //dd(to_sql($lemmas));        
         return $lemmas ->orderBy('lemma_for_search')
                 ->groupBy('lemma');

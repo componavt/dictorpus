@@ -62,6 +62,6 @@
             'tail'=>trans('olodict.exact_search')]) 
 
     <div class="form-group ">
-        <input type='button' value="{{trans('messages.reset')}}" class='btn btn-primary btn-default' onClick="resetSearchForm()">
+        <input type='button' value="{{trans('messages.reset')}}" class='btn btn-primary btn-default' onClick="resetSearchForm('{{ $locale }}')">
     </div>
 </form>                          

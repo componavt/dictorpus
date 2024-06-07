@@ -49,17 +49,12 @@
     toggleSpecial();
     selectConcept('search_concept_category', 'search_pos', '{{trans('dict.concept')}}', true, '{{$label_id}}');
     $(".select-pos").select2({
-        allowClear: true,
-        placeholder: '{{trans('dict.pos')}}',
-        width: '100%'
-    });
-    $(".select-pos").select2({
-        allowClear: true,
+        allowClear: false,
         placeholder: '{{trans('dict.pos')}}',
         width: '100%'
     });
     $(".select-topic").select2({
-        allowClear: true,
+        allowClear: false,
         placeholder: '{{trans('olodict.topic')}}',
         width: '100%'
     });

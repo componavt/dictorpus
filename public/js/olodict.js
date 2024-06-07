@@ -5,7 +5,8 @@ function setClass(obj, class_name) {
 function viewLetter(locale, letter_obj) {
     $(".gram-active").removeClass('gram-active');
     $(".lemma-active").removeClass('lemma-active');
-    clearSearchForm();
+//    clearSearchForm();
+    $("#search_word").val(null);
 
     setClass(letter_obj, 'letter-active');
     
@@ -16,7 +17,8 @@ function viewLetter(locale, letter_obj) {
 function viewGram(locale, gram_obj) {
 //    $("#search_word").val('');
     setClass(gram_obj, 'gram-active');
-    clearSearchForm();
+//    clearSearchForm();
+    $("#search_word").val(null);
     
     loadLemmas(locale);
 }
@@ -27,20 +29,26 @@ function viewLemma(lemma_obj) {
     loadLemma(lemma_obj.getAttribute('data-id'));
 }
 
-function resetSearchForm() {
+function resetSearchForm(locale) {
     clearSearchForm();
-    $('#search_pos').trigger('change');    
-    $('#search_concept').trigger('change');    
+//    $('#search_pos').trigger('change');    
+//    $('#search_concept').trigger('change');   
+    loadLemmas(locale);
 }
 
 function clearSearchForm() {
     $("#search_word").val(null);
     $("#search_meaning").val(null);
-    $('#search_pos').val(null);
-    $('#search_concept').val(null);
-    $('#search_concept_category').val(null);
+    $('#search_pos').val(null).trigger('change');
+    $('#search_concept').val(null).trigger('change');
+    $('#search_concept_category').val(null).trigger('change');
     $('#with_audio').prop( "checked", false );
     $('#with_template').prop( "checked", false );
+    
+    $(".letter-active").removeClass('letter-active');
+    $(".gram-active").removeClass('gram-active');
+    $(".lemma-active").removeClass('lemma-active');  
+    $("#gram-links").html(null);
 }
 
 function dataForSearch() {
@@ -67,7 +75,10 @@ function dataForSearch() {
             search_concept_category: $("#search_concept_category").val(),
             with_audios: with_audios,
             with_photos: with_photos,
-            with_template: with_template
+            with_template: with_template,
+            
+            search_letter: $(".letter-active").html(),
+            search_gram: $(".gram-active").html(),
               };
 }
 
@@ -80,9 +91,9 @@ function dataForAlpha() {
 }
 
 function searchLemmas(locale) {
-    $(".letter-active").removeClass('letter-active');
+/*    $(".letter-active").removeClass('letter-active');
     $(".gram-active").removeClass('gram-active');
-    $(".lemma-active").removeClass('lemma-active');
+    $(".lemma-active").removeClass('lemma-active');*/
     
     var data = dataForSearch();
     data['by_alpha'] = false;
@@ -105,13 +116,14 @@ function searchLemmas(locale) {
 
 function loadLemmas(locale, page=1, by_alpha=true) {
     var data;
-    if (by_alpha) {
+/*    if (by_alpha) {
         data = dataForAlpha();
-    } else {
+    } else {*/
         data = dataForSearch();
-    }
+/*    }*/
     data['page'] = page;
 //    data['by_alpha'] = true;
+console.log(data);  
     
     $.ajax({
         url: '/'+locale+'/olodict/lemma_list', 
