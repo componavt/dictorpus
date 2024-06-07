@@ -41,7 +41,7 @@
     {!!Html::script('js/essential_audio.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
-    {!!Html::script('js/olodict.js')!!}
+    {!! js('olodict') !!}
     {!!Html::script('js/meaning.js')!!}
 @stop
 
