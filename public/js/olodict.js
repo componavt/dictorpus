@@ -6,19 +6,19 @@ function viewLetter(locale, letter_obj) {
     $(".gram-active").removeClass('gram-active');
     $(".lemma-active").removeClass('lemma-active');
 //    clearSearchForm();
-    $("#search_word").val(null);
+    clearWordForm();
 
     setClass(letter_obj, 'letter-active');
+    loadGrams();
     
     loadLemmas(locale);
-    loadGrams();
 }
 
 function viewGram(locale, gram_obj) {
 //    $("#search_word").val('');
     setClass(gram_obj, 'gram-active');
 //    clearSearchForm();
-    $("#search_word").val(null);
+    clearWordForm();
     
     loadLemmas(locale);
 }
@@ -32,7 +32,8 @@ function viewLemma(lemma_obj) {
 function resetSearchForm(locale) {
     clearSearchForm();
 //    $('#search_pos').trigger('change');    
-//    $('#search_concept').trigger('change');   
+//    $('#search_concept').trigger('change'); 
+    clearLetters();
     loadLemmas(locale);
 }
 
@@ -44,11 +45,17 @@ function clearSearchForm() {
     $('#search_concept_category').val(null).trigger('change');
     $('#with_audio').prop( "checked", false );
     $('#with_template').prop( "checked", false );
-    
+}
+
+function clearWordForm() {
+    $("#search_word").val(null);
+}
+
+function clearLetters() {
     $(".letter-active").removeClass('letter-active');
     $(".gram-active").removeClass('gram-active');
     $(".lemma-active").removeClass('lemma-active');  
-    $("#gram-links").html(null);
+    $("#gram-links").html(null);    
 }
 
 function dataForSearch() {

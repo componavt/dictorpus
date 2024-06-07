@@ -6,7 +6,7 @@
              'special_sym' => '|',
              'full_special_list' => false,
              'value' => isset($url_args['search_word']) ? $url_args['search_word'] : '',
-             'attributes' => ['onKeyUp' => "searchLemmas('$locale')",
+             'attributes' => ['onKeyUp' => "clearLetters(); searchLemmas('$locale')",
                              'placeholder' => trans('olodict.word') ]]) 
     <!--div class="form-group ">
         <input id="search_word" type='text' onKeyUp="searchLemmas('{{$locale}}')" placeholder="{{trans('olodict.word')}}"
