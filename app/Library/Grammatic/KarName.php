@@ -356,7 +356,7 @@ class KarName
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
         $stem6_syll=KarGram::countSyllable($stem6);
-        
+//dd($stem6);        
         if ($dialect_id == 47 && preg_match("/".$C."’?[iuyoö]$/u", $stem6)) { 
             return $stem6.KarGram::garmVowel($harmony,'loi');            
         } elseif ($lang_id == 4 && preg_match("/".$C."’?[oö]$/u", $stem6) && $stem0_syll==3) { // А.1
@@ -367,13 +367,13 @@ class KarName
             return $stem6.KarGram::garmVowel($harmony,'loi');
         } elseif (preg_match("/^(.+".$C.")e$/u", $stem6, $regs)) { // А.3
             return $regs[1].'i';
-        } elseif (preg_match("/^(.+".$C.")a$/u", $stem6, $regs)) { // А.5
-//dd($regs);            
-            if ($stem6_syll==2 && preg_match("/^".$C."?".$V."?[uo]/u", $stem6) // А.4.1.1
-                    || $stem6_syll>2 && (preg_match("/m[pb]?a$/u", $stem6) || $pos_id==1 && preg_match("/va$/u", $stem6))) { // А.4.1.2
+        } elseif (preg_match("/^(.+".$C.")a$/u", $stem6, $regs)) { // А.4
+//dd($stem6,$stem6_syll, preg_match("/^".$C."*".$V."*[aei]/u", $stem6));            
+            if (($stem6_syll==2 && preg_match("/^".$C."*".$V."*[uo]/u", $stem6)) // А.4.1.1
+                    || ($stem6_syll>2 && (preg_match("/m[pb]?a$/u", $stem6) || $pos_id==1 && preg_match("/va$/u", $stem6)))) { // А.4.1.2
                 return $regs[1].'i';                
-            } elseif ($stem6_syll==2 && preg_match("/^".$C."?".$V."?[aei]/u", $stem6) // А.4.2.1
-                    || $stem6_syll>2 && !preg_match("/m[pb]?a$/u", $stem6) && !($pos_id==1 && preg_match("/va$/u", $stem6))) { // А.4.2.2
+            } elseif (($stem6_syll==2 && preg_match("/^".$C."*".$V."*[aei]/u", $stem6)) // А.4.2.1
+                    || ($stem6_syll>2 && !preg_match("/m[pb]?a$/u", $stem6) && !($pos_id==1 && preg_match("/va$/u", $stem6)))) { // А.4.2.2
                 return $regs[1].'oi';                
             }
         } elseif (preg_match("/^(.+".$C.")ä$/u", $stem6, $regs)) { // А.5
