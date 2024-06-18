@@ -75,8 +75,9 @@ return [
                         <a href="/en/corpus/speech_corpus/">The Speech corpus</a> contains texts with audio recordings. 
                         The VepKar User Guide (in Russian) will help you work in the corpus and make full use of the corpus search engine. 
                         The VepKar corpus data is the basis for growing resources such as the Baltic-Finnish 
-                        <a href="/en/corpus/audiotext/map/">Audio Map</a> of Karelia and 
-                        the Karelian <a href="/en/olodict/">Multimedia Dictionary</a> (LiPaS – Livvin paginan sanat).</p>
+                        <a href="/en/corpus/audiotext/map/">Audio Map</a> of Karelia, 
+                        the Karelian <a href="/en/olodict/">Multimedia Dictionary</a> (LiPaS – Livvin paginan sanat)
+                        and <a href="/en/ldl/">Ludic dialect lexicon</a>.</p>
                         
                         <p>The developed corpus manager is an open source 
                         project <a href="https://github.com/componavt/dictorpus">Dictorpus</a>.
