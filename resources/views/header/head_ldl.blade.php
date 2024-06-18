@@ -16,9 +16,9 @@
     {!!Html::style('css/font-awesome_5.6.3.css')!!}
 
     <!-- Styles -->
-    {!!Html::style('css/bootstrap.min.css')!!}    
-    {!!Html::style('css/languages.min.css')!!}    
-    {!!Html::style('css/ldl.css')!!}
+    {!! css('bootstrap.min') !!}    
+    {!! css('languages.min') !!}    
+    {!! css('ldl') !!}
     
     @yield('headExtra')
     

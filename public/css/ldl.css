@@ -299,8 +299,42 @@ label {
     line-height: 18px;
 }
 
+.place-usage {
+    margin-top: 10px;
+}
 
+.wordforms-b .wordform-title {
+    color: #fff;
+    background-color: #e31e24;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px 7px;
+    text-align: center;
+}
 
+.wordform-dialect {
+    background-color: #911917;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+}
+
+.wordforms-b td, th {
+  padding: 5px 7px;
+}
+
+.wordforms-b table {
+  border-spacing: 4px;
+  border-collapse: separate;
+}
+
+.wordforms-b .table-striped > tbody > tr:nth-of-type(2n+1) {
+  background-color: #d8d8d8;
+}
+
+.wordforms-b .table-striped > tbody > tr:nth-of-type(2n) {
+  background-color: #ededed;
+}
 
 
 

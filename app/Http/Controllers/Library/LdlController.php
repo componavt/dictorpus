@@ -11,6 +11,7 @@ use App\Library\Ldl;
 
 use App\Models\Dict\Concept;
 //use App\Models\Dict\ConceptCategory;
+use App\Models\Dict\Dialect;
 //use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
@@ -68,6 +69,7 @@ class LdlController extends Controller
         }
         
         $lang_id=6;
+        $without_dialect = 45;
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
 
@@ -80,7 +82,8 @@ class LdlController extends Controller
                        ->orderBy('lemma')->get();
 
         return view('ldl.concept',
-                compact('alphabet', 'concept', 'lemmas', 'args_by_get', 'url_args'));
+                compact('alphabet', 'concept', 'lemmas', 'without_dialect',
+                        'args_by_get', 'url_args'));
     }
     
     /**

@@ -52,6 +52,23 @@ td[data-th] .form-group {
     max-width: 150px;
 }
 
+.table-wide {
+    width: 100%;
+}
+
+.table-wide th {
+    text-align: center;
+}
+
+.table-wide th::first-letter {
+    text-transform: uppercase;
+}
+
+.table-wide td {
+    padding: 10px 15px;
+}
+
+
 @media (min-width: 767px) {
   .table-bordered.wide-md > tbody > tr > td {
     border: 1px solid #ddd;

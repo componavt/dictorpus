@@ -2,10 +2,11 @@
 @extends('layouts.ldl')
 
 @section('headExtra')
-    {!!Html::style('css/essential_audio.css')!!}
-    {!!Html::style('css/essential_audio_circle.css')!!}
-    {!!Html::style('css/lemma.css')!!}
-    {!!Html::style('css/text.css')!!}
+    {!! css('essential_audio') !!}
+    {!! css('essential_audio_circle') !!}
+    {!! css('table') !!}
+    {!! css('lemma') !!}
+    {!! css('text') !!}
 @stop
 
 @section('clear_b')
@@ -25,36 +26,7 @@
     </div>
 
     @foreach ($lemmas as $lemma)
-    <div class="b-lemma">
-        <h2>
-            {{ $lemma->lemma }}
-            @foreach ($lemma->audios as $audio)
-                @include('ldl._audio')
-            @endforeach
-        </h2>
-        @foreach ($lemma->meanings as $meaning)
-        <div class="lemma-meaning">
-            <div class="lemma-meaning-left">
-                @if (sizeof($lemma->meanings) >1)
-                    {{$meaning->meaning_n}}.
-                @endif
-                    {{ $meaning->textByLangCode($locale, 'ru') }}
-
-                @if ($meaning->places()->where('id', '<>', 245)->count()) 
-                    <p>
-                        <b>{{ trans('dict.places_use') }}</b>: 
-                        {{ join(', ', $meaning->places()->where('id', '<>', 245)->get()->pluck('name')->toArray()) }}
-                    </p>
-                @endif
-            </div>
-                
-            <div class="lemma-meaning-examples">
-                <img class="img-loading" id="img-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
-                <div  id="meaning-examples_{{$meaning->id}}"></div>
-            </div>
-        </div>
-        @endforeach
-    </div>
+        @include('ldl._lemma')
     @endforeach
 
 @stop
