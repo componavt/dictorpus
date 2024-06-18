@@ -11,7 +11,7 @@ use App\Library\Ldl;
 
 use App\Models\Dict\Concept;
 //use App\Models\Dict\ConceptCategory;
-use App\Models\Dict\Dialect;
+//use App\Models\Dict\Dialect;
 //use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
@@ -54,9 +54,7 @@ class LdlController extends Controller
             $url_args['search_letter'] = $alphabet[0];
         }
         
-        $concepts = Concept::where('text_'.$locale, 'like', $url_args['search_letter'].'%')
-                           ->forLdl()
-                           ->orderBy('text_'.$locale)->get();
+        $concepts = Ldl::concepts();
         
         return view('ldl.index',
                 compact('alphabet', 'concepts', 'args_by_get', 'url_args'));
@@ -110,5 +108,51 @@ class LdlController extends Controller
         return view('ldl.examples', 
                 compact('meaning', 'limit', 'start', 'count',
                         'sentence_count', 'sentences')); 
+    }
+    
+    public function stats() {
+        $lang_id=6;
+        $without_dialect = 45;
+        $symbols = 0;
+        $lemmas_c = 0;
+        $meanings_c = 0;
+        $sentences_c = 0;
+        $wordforms_c = 0;
+        
+        $concepts = Ldl::concepts();
+        $concepts_c = sizeof($concepts);
+        
+        foreach ($concepts as $concept) {
+            $lemmas = Lemma::whereLangId($lang_id)
+                           ->forLdl()
+                           ->forConcept($concept->id)->get();
+            $lemmas_c += sizeof($lemmas);
+            
+            foreach ($lemmas as $lemma) {
+//                $symbols += mb_strlen($lemma->lemma); 
+                $meanings_c +=$lemma->meanings()->count();
+                foreach ($lemma->meanings as $meaning) {
+/*                    foreach($meaning->meaningTexts()->pluck('meaning_text')->toArray() as $meaning_text) {
+                        $symbols += mb_strlen($meaning_text);                     
+                    } */
+                    $sentences_c += $meaning->countSentences(false, 4);
+/*                    $sentences = $meaning->sentences(false, '', 0, 10);
+                    $sentences_c += sizeof($sentences);
+                    foreach ($sentences as $sent) {
+                        $symbols += mb_strlen($sent['s']);                                         
+                        $symbols += mb_strlen($sent['trans_s']);                                         
+                    }*/
+                }
+                foreach ($lemma->wordforms()->wherePivot('dialect_id','<>', $without_dialect)->get()
+                            as $wordform) {
+                    $wordforms_c += 1;
+//                    $symbols += mb_strlen($wordform->wordform);                     
+                }
+            }
+        }
+        
+//dd($lemmas);        
+        return view('ldl.stats',
+                compact('concepts_c', 'lemmas_c', 'meanings_c', 'sentences_c', 'symbols', 'wordforms_c'));
     }
 }

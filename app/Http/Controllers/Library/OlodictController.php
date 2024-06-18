@@ -146,8 +146,9 @@ class OlodictController extends Controller
         $lemmas_c = sizeof($lemmas);
         foreach ($lemmas as $lemma) {
             $symbols += mb_strlen($lemma->lemma); 
-            $meanings_c +=$lemma->meanings()->count();
-            foreach ($lemma->meanings as $meaning) {
+            $meanings = $lemma->meaningsWithBestExamples();
+            $meanings_c += sizeof($meanings);
+            foreach ($meanings as $meaning) {
                 foreach($meaning->meaningTexts()->pluck('meaning_text')->toArray() as $meaning_text) {
                     $symbols += mb_strlen($meaning_text);                     
                 } 

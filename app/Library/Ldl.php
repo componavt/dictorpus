@@ -25,4 +25,11 @@ class Ldl
                       ->orderBy('letter')
                       ->pluck('letter')->toArray();
     }
+    
+    public static function concepts() {
+        $locale = LaravelLocalization::getCurrentLocale();
+        return Concept::whereNotNull('text_'.$locale)
+                        ->forLdl()
+                        ->orderBy('text_'.$locale)->get();        
+    }
 }
