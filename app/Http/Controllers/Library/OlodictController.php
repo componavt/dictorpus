@@ -134,4 +134,38 @@ class OlodictController extends Controller
     public function abbr() {
         return view('olodict.abbr');
     }
+    
+    public function stats() {
+        $dialect_id = Olodict::Dialect;
+        $symbols = 0;
+        $meanings_c = 0;
+        $sentences_c = 0;
+        $wordforms_c = 0;
+        
+        $lemmas = Lemma::whereIn('id', Label::checkedOloLemmas())->get();
+        $lemmas_c = sizeof($lemmas);
+        foreach ($lemmas as $lemma) {
+            $symbols += mb_strlen($lemma->lemma); 
+            $meanings_c +=$lemma->meanings()->count();
+            foreach ($lemma->meanings as $meaning) {
+                foreach($meaning->meaningTexts()->pluck('meaning_text')->toArray() as $meaning_text) {
+                    $symbols += mb_strlen($meaning_text);                     
+                } 
+//dd($lemma->lemma, $meaning->sentences(false, '', 0, 10)); 
+                $sentences = $meaning->sentences(false, '', 0, 10);
+                $sentences_c += sizeof($sentences);
+                foreach ($sentences as $sent) {
+                    $symbols += mb_strlen($sent['s']);                                         
+                    $symbols += mb_strlen($sent['trans_s']);                                         
+                }
+            }
+            foreach ($lemma->wordformsByDialect($dialect_id) as $wordform) {
+                $wordforms_c += 1;
+                $symbols += mb_strlen($wordform->wordform);                     
+            }
+        }
+//dd($lemmas);        
+        return view('olodict.stats',
+                compact('lemmas_c', 'meanings_c', 'sentences_c', 'symbols', 'wordforms_c'));
+    }
 }

@@ -303,6 +303,10 @@ label {
     margin-top: 10px;
 }
 
+.wordforms-b table {
+    width: 100%;
+}
+
 .wordforms-b .wordform-title {
     color: #fff;
     background-color: #e31e24;
@@ -312,10 +316,11 @@ label {
     text-align: center;
 }
 
-.wordform-dialect {
+.wordforms-b .wordform-dialect {
     background-color: #911917;
     color: #fff;
     font-size: 14px;
+    padding: 2px 7px;
     text-align: center;
 }
 
