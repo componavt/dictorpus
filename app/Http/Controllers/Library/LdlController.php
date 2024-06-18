@@ -15,7 +15,7 @@ use App\Models\Dict\Concept;
 //use App\Models\Dict\Label;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
-//use App\Models\Dict\PartOfSpeech;
+use App\Models\Dict\PartOfSpeech;
 //use App\Models\Dict\Relation;
 
 class LdlController extends Controller
@@ -118,6 +118,7 @@ class LdlController extends Controller
         $meanings_c = 0;
         $sentences_c = 0;
         $wordforms_c = 0;
+        $pos_c = $poses = [];
         
         $concepts = Ldl::concepts();
         $concepts_c = sizeof($concepts);
@@ -129,6 +130,7 @@ class LdlController extends Controller
             $lemmas_c += sizeof($lemmas);
             
             foreach ($lemmas as $lemma) {
+                $pos_c[$lemma->pos_id] = empty($pos_c[$lemma->pos_id]) ? 1 : 1 + $pos_c[$lemma->pos_id] ;
 //                $symbols += mb_strlen($lemma->lemma); 
                 $meanings_c +=$lemma->meanings()->count();
                 foreach ($lemma->meanings as $meaning) {
@@ -151,8 +153,13 @@ class LdlController extends Controller
             }
         }
         
+        foreach ($pos_c as $pos_id => $count) {
+            $pos = PartOfSpeech::find($pos_id);
+            $poses[$pos->name] = $count; 
+        }
+        
 //dd($lemmas);        
         return view('ldl.stats',
-                compact('concepts_c', 'lemmas_c', 'meanings_c', 'sentences_c', 'symbols', 'wordforms_c'));
+                compact('concepts_c', 'lemmas_c', 'meanings_c', 'poses', 'sentences_c', 'symbols', 'wordforms_c'));
     }
 }
