@@ -54,7 +54,7 @@ class LdlController extends Controller
             $url_args['search_letter'] = $alphabet[0];
         }
         
-        $concepts = Ldl::concepts();
+        $concepts = Ldl::concepts($url_args['search_letter']);
         
         return view('ldl.index',
                 compact('alphabet', 'concepts', 'args_by_get', 'url_args'));

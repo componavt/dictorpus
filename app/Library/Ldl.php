@@ -26,10 +26,13 @@ class Ldl
                       ->pluck('letter')->toArray();
     }
     
-    public static function concepts() {
+    public static function concepts($search_letter=null) {
         $locale = LaravelLocalization::getCurrentLocale();
-        return Concept::whereNotNull('text_'.$locale)
-                        ->forLdl()
-                        ->orderBy('text_'.$locale)->get();        
+        $concepts = Concept::whereNotNull('text_'.$locale)
+                        ->forLdl();
+        if ($search_letter) {
+            $concepts->where('text_'.$locale, 'like', $search_letter.'%');
+        }
+        return $concepts->orderBy('text_'.$locale)->get();        
     }
 }
