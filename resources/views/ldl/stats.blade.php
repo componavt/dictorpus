@@ -7,7 +7,7 @@
 
 <div style="margin-left: 20px;">
 @foreach ($poses as $pos_name => $count)
-    <p>{{ $pos_name }}: {{ $count }}</p>
+    <p>{{ $pos_name }}: {{ format_number($count) }}</p>
 @endforeach
 </div>
 <p>{{ format_number($meanings_c) }} значений</p>

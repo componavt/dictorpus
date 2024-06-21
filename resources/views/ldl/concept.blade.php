@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-sm-8">
             <h1>{{ $concept->text }}</h1>
-            <p>{{ $concept->descr}}</p>
+            <p><big>{{ $concept->descr}}</big></p>
             <p><b>{{ trans('dict.pos') }}:</b> {{ $concept->pos->name}}</p>
         </div>
         <div class="col-sm-4 concept-page-photo">
