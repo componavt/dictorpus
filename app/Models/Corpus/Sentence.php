@@ -521,10 +521,11 @@ AND t1.word_number-t2.word_number<=|B|;
     }
     
     public static function searchTexts(Array $url_args) {
+        if (empty($url_args['search_corpus']) && empty($url_args['search_dialect']) && empty($url_args['search_genre']) && empty($url_args['search_lang']) && empty($url_args['search_year_from']) && empty($url_args['search_year_to'])) {
+            return null;
+        }
         $texts = Text::select('id');        
-        if ($url_args['search_corpus']) {
-            $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
-        } 
+        $texts = Text::searchByCorpuses($texts, $url_args['search_corpus']);
         $texts = Text::searchByDialects($texts, $url_args['search_dialect']);
         $texts = Text::searchByGenres($texts, $url_args['search_genre']);
         $texts = Text::searchByLang($texts, $url_args['search_lang']);
@@ -592,8 +593,13 @@ AND t1.word_number-t2.word_number<=|B|;
      * @return collection
      */
     public static function entryNumber($args) {
+//dd($args);       
 //dd(Sentence::searchTexts($args));
-        $builder = self::searchWords($args['words'], Sentence::searchTexts($args), $args['search_lang']);
+        $texts = Sentence::searchTexts($args);
+        if (!is_array($texts)) {
+            return [0, null];
+        }
+        $builder = self::searchWords($args['words'], $texts, $args['search_lang']);
 //dd(to_sql($builder));        
 //dd(to_sql($builder), $builder, $builder->get());            
 //        return sizeof($builder->get());
