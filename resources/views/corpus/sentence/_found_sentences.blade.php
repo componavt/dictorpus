@@ -6,8 +6,6 @@
             'marked_words' => $words, 
             'with_left_context' => true,
             'with_right_context' => true]) 
-{{--,
-            'count' => $sentence_id]--}}            
     </div>
     @endforeach
 </ul>

@@ -1,3 +1,4 @@
+@if (!empty($sentence))
     @if (isset($with_left_context) && $with_left_context) 
 <?php
         $left_context = \App\Models\Corpus\Sentence::whereTextId($sentence->text_id)
@@ -23,3 +24,4 @@
         </span>
         @endif
     @endif
+@endif
