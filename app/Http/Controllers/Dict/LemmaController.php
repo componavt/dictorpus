@@ -933,7 +933,7 @@ class LemmaController extends Controller
     
     /**
      * SQL: select lemmas.id as lem_id, lemma, count(*) as frequency from lemmas, meaning_text, meanings where meaning_text.meaning_id=meanings.id and meanings.lemma_id=lemmas.id and relevance>0 group by lem_id order by frequency DESC;
-     * 
+     * select lemma_id, count(*) as frequency from meaning_text
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
@@ -956,40 +956,68 @@ class LemmaController extends Controller
                                ->groupBy('pos_id')
                                ->latest('frequency')
                                ->get(['pos_id', DB::raw('count(*) as frequency')]);
+//dd($lemmas_for_pos);        
         $pos_values = [NULL=>''];
         foreach ($lemmas_for_pos as $lemma) {
             $pos_values[$lemma->pos_id] = $lemma->pos->name ." (".number_format($lemma->frequency, 0, '', ' ').")";
         }
 
         if ($url_args['search_lang']) {
-            $lemmas = Lemma::selectFromMeaningText($url_args['search_dialect'])
+            $lemmas = Lemma::whereIn('id', function ($q1) use ($url_args) {
+                $q1->select('lemma_id')->from('meanings')
+                   ->whereIn('id', function ($q2) use ($url_args) {
+                       $q2->select('meaning_id')->from('meaning_text')
+                          ->where('relevance', '>', 0);
+                        if ($url_args['search_dialect']) {
+                            $q2->whereIn('text_id', function ($q) use ($url_args) {
+                                $q->select('text_id')->from('dialect_text')
+                                  ->whereDialectId($url_args['search_dialect']);
+                            });
+                        }                       
+                   });
+                })->whereLangId($url_args['search_lang']);
+
+/*            $lemmas = Lemma::selectFromMeaningText($url_args['search_dialect'])
                            ->join('parts_of_speech','parts_of_speech.id','=','lemmas.pos_id')
                            ->whereLangId($url_args['search_lang'])
                            ->groupBy('lemma_id', 'word_id')
                            ->latest('lemma');
-                        
+*/                        
             if ($url_args['search_pos']) {
                 $lemmas = $lemmas->wherePosId($url_args['search_pos']);
             } 
-            
-//dd($lemmas->toSql());
-            $lemma_coll = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name']);
+//dd(to_sql($lemmas));
+//            $lemma_coll = $lemmas->get(['lemma', 'lemma_id', 'parts_of_speech.name_'.$locale.' as pos_name']);
+            $lemma_coll = $lemmas->with('meanings')->with('pos')->orderBy('lemma')->get(['lemma', 'id', 'pos_id']);
+//dd($lemma_coll);            
             $lemmas = [];
             foreach ($lemma_coll as $lemma) {
-                if (isset($lemmas[$lemma->lemma_id])) {
+//dd($lemma);                
+/*                if (isset($lemmas[$lemma->lemma_id])) {
                     $lemmas[$lemma->lemma_id]['frequency'] = 1+$lemmas[$lemma->lemma_id]['frequency'];
                     continue;
                 }
                 $lemmas[$lemma->lemma_id] = [
                     'lemma'=>$lemma->lemma, 
                     'pos_name'=>$lemma->pos_name, 
-                    'frequency'=>1];
+                    'frequency'=>1];*/
+                $frequence = DB::table('meaning_text')->whereIn('meaning_id', function ($q) use ($lemma) {
+                    $q->select('id')->from('meanings')->whereLemmaId($lemma->id);
+                })->where('relevance', '>', 0)->count();
+/*                $lemmas[$lemma->id] = [
+                    'lemma'=>$lemma->lemma, 
+                    'pos_name'=>$lemma->pos ? $lemma->pos->name : null, 
+                    'frequency'=>$frequence];*/
+                $lemmas[$lemma->id] = [
+                    'lemma'=>$lemma->lemma, 
+                    'pos_name'=>$lemma->pos ? $lemma->pos->name : null, 
+                    'frequency'=>$frequence];
             }
         } else {
             $lemmas = NULL;
         }
         $dialect_values = [NULL=>'']+Dialect::getList();
-                
+//dd($lemmas);                
         return view('corpus.text.frequency.lemmas',
                 compact('dialect_values', 'lang_values', 'lemmas', 'pos_values', 
                         'args_by_get', 'url_args'));
