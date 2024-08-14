@@ -30,10 +30,10 @@ h1 {
 }
 
 h2 {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: bold;
-    line-height: 28px;
-    margin: 0 0 20px;
+    line-height: 18px;
+    margin: 5px 0 15px;
 }
 
 h4 {
@@ -47,9 +47,9 @@ h4 {
 }
 .corpus_means_text {
     color: #5b5b5b;
-    font-size: 16px;
+    font-size: 14px;
     font-style: italic;
-    line-height: 22px;
+    line-height: 18px;
     padding-bottom: 20px;
 }
 
@@ -60,8 +60,8 @@ h4 {
     background-position: top left, bottom left;
     background-repeat: repeat-x;
     color: #202020;
-    font-size: 18px;
-    line-height: 24px;
+    font-size: 16px;
+    line-height: 22px;
     margin-bottom: 20px;
     padding: 30px 20px;
 }
@@ -605,7 +605,7 @@ h4 {
     }
     .comment {
         margin-top: -50px;
-    }    
+    } 
 }
 @media screen and (min-width: 992px) {
     h1 {
@@ -621,6 +621,14 @@ h4 {
     }
     .photo-right-to-text img{
         max-width: 400px;        
+    }
+    .corpus_means_text {
+        font-size: 16px;
+        line-height: 22px;
+    }
+    .in_numbers {
+        font-size: 18px;
+        line-height: 24px;
     }
 }
 @media screen and (min-width: 1200px) {
