@@ -208,7 +208,8 @@ class Text extends Model implements HasMediaConversions
     
     public function getCollectionId() {
         $genre_ids = $this->genres()->pluck('genre_id')->toArray();
-        return Collection::getCollectionId($this->lang_id, $genre_ids);
+        $author_ids = $this->authors()->pluck('id')->toArray();
+        return Collection::getCollectionId($this->lang_id, $genre_ids, $author_ids);
     }
 
     public function processTextBeforeSaving($text) {

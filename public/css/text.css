@@ -327,12 +327,20 @@ h5:first-letter {
     border-bottom: 2px red dotted;
 }
 
+.author_b img {
+    max-width: 200px;
+    width: 100%;
+}
+
 @media (min-width: 576px) {
 }
 
 @media (min-width: 768px) {
     .photo-in-modal img {
         max-width: 568px;
+    }
+    .author_b img {
+        max-width: 320px;
     }
 }
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 
+use App\Models\Corpus\Author;
 use App\Models\Corpus\Collection;
 use App\Models\Corpus\Cycle;
 use App\Models\Corpus\Genre;
@@ -26,24 +27,36 @@ class CollectionController extends Controller
     
     public function show($id) {
         $id = (int)$id;
-        if (Collection::isCollectionId($id)) {
-            if ($id == 3) {
-                $genre_arr = [Collection::getCollectionGenres($id)];
-                $genres = [Genre::find($genre_arr[0])];
-            } else {
-                $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
-                           ->orderBy('sequence_number')->get();
-                $genre_arr = Genre::find(Collection::getCollectionGenres($id))
-                        ->getSubGenreIds();
-            }
-            $lang_id = Collection::getCollectionLangs($id);
-            $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
-            $text_count = Text::whereIn('lang_id', $lang_id)
-                              ->whereIn('id', function ($q) use ($genre_arr) {
-                                $q->select('text_id')->from('genre_text')
-                                  ->whereIn('genre_id', $genre_arr);
-                            })->count();
 
+        if (Collection::isCollectionId($id)) {
+            if (Collection::isCollectionByAuthor($id)) {
+                $author_id = Collection::getCollectionAuthors($id);
+                $author = Author::find($author_id);
+                $text_count = Text::whereIn('id', function ($q) use ($author_id) {
+                                    $q->select('text_id')->from('author_text')
+                                      ->whereIn('author_id', [$author_id]);
+                                })->count();
+                return view('corpus.collection.'.$id.'.index',
+                        compact('author', 'id', 'text_count'));
+                
+            } elseif (Collection::isCollectionByGenre($id)) {
+                if ($id == 3) {
+                    $genre_arr = [Collection::getCollectionGenres($id)];
+                    $genres = [Genre::find($genre_arr[0])];
+                } else {
+                    $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
+                               ->orderBy('sequence_number')->get();
+                    $genre_arr = Genre::find(Collection::getCollectionGenres($id))
+                            ->getSubGenreIds();
+                }
+                $lang_id = Collection::getCollectionLangs($id);
+                $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
+                $text_count = Text::whereIn('lang_id', $lang_id)
+                                  ->whereIn('id', function ($q) use ($genre_arr) {
+                                    $q->select('text_id')->from('genre_text')
+                                      ->whereIn('genre_id', $genre_arr);
+                                })->count();
+            }
             return view('corpus.collection.'.$id.'.index',
                     compact('dialects', 'genres', 'id', 'lang_id', 'text_count'));
         }
