@@ -20,7 +20,7 @@
         </div>
     </div>
     
-    @foreach ($author->texts as $text)
+    @foreach ($author->texts->sortBy('title') as $text)
         @include('corpus.collection._text', 
                 ['event' => $text->event, 'source' => $text->source])
     @endforeach
