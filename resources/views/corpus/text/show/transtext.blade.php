@@ -14,5 +14,5 @@
                 ? str_replace("<s id=\"","<s class=\"trans_sentence\" id=\"transtext_s", 
                         mb_ereg_replace('[¦^]', '', $text->transtext->text_xml)) 
                 : nl2br(mb_ereg_replace('[¦^]', '', $text->transtext->text)); ?>
-        <div id="transtext">{!! highlight($markup_text, $url_args['search_w'], 'search-word') !!}</div>
+        <div id="transtext">{!! highlight(highlight($markup_text, $url_args['search_w']), $url_args['search_text']) !!}</div>
 @endif      

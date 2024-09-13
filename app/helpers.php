@@ -287,11 +287,30 @@ if (!function_exists('found_rem')) {
 }
 
 if (!function_exists('highlight')) {
-    function highlight($str, $substr, $class) {
+    function highlight($str, $substr, $class='search-word') {
+/*if ($substr == 'лет назад') {
+    dd($str, $substr);
+} */    $str = preg_replace('/\n/', '', $str);   
         if (!$substr) {
             return $str;
         }
-        return mb_ereg_replace('('.$substr.')', '<span class="'.$class.'">\\1</span>', $str, 'i');
+        if (!preg_match('/\s+/', $substr)) {
+            return mb_ereg_replace('('.$substr.')', '<span class="'.$class.'">\\1</span>', $str, 'i');
+        }
+        $words = preg_split('/\s+/', $substr);
+        $pattern = '^(.*)('.join(')(\s*<*[^>]*>*\s*<*[^>]*>*\s*)(', $words).')(.*)$';
+        if (preg_match("/".$pattern."/iu", $str, $regs)) {
+            $out = $regs[1];
+            for ($i=2; $i<sizeof($regs)-1; $i++) {
+                if ($i%2 == 0) {
+                    $out .= '<span class="'.$class.'">'.$regs[$i].'</span>';
+                } else {
+                    $out .= $regs[$i];
+                }
+            }
+            return $out.$regs[sizeof($regs)-1];
+        }
+        return $str;
     }
 }
 
