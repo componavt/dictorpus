@@ -193,8 +193,9 @@ class TextController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $for_print = (int)($request->for_print);
         $text = Text::find($id);
        
         if (!$text) {
@@ -207,16 +208,21 @@ class TextController extends Controller
         $pos_id = PartOfSpeech::getIDByCode('Noun');
         $dialect_values = Dialect::getList($text->lang_id);
         $dialect_value = $text->dialectValue();
-//        $photos = $text->getPhotoFiles();
         $photos = $text->getMedia();
         
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+       
+        if ($for_print) {
+            return view('corpus.text.show_print',
+                      compact('dialect_value', 'dialect_values', 'for_print', 
+                              'langs_for_meaning',  'photos', 'pos_id', 'pos_values', 
+                              'text', 'args_by_get', 'url_args'));            
+        }
         return view('corpus.text.show',
-                  compact('dialect_value', 'dialect_values', 'langs_for_meaning',  
-                          'photos', 'pos_id', 'pos_values', 'text', 
-                          'args_by_get', 'url_args'));
+                  compact('dialect_value', 'dialect_values',
+                          'langs_for_meaning',  'photos', 'pos_id', 'pos_values', 
+                          'text', 'args_by_get', 'url_args'));
     }
     
     public function editSentences($id) {

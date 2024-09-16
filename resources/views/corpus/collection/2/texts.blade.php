@@ -1,5 +1,5 @@
 <?php $list_count = 1;?>
-@extends('layouts.page')
+@extends('layouts.'.($for_print ? 'for_print' : 'page'))
 
 @section('page_title')
 {{ trans('collection.name_list')[2] }}

@@ -1,4 +1,4 @@
-@extends('layouts.page')
+@extends('layouts.'.($for_print ? 'for_print' : 'page'))
 
 @section('page_title')
 {{ trans('collection.name_list')[2] }}
@@ -10,7 +10,7 @@
 
 @section('body')
     <p>
-        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2') }}">{{trans('collection.to_collection')}}</a>
+        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2?for_print='.$for_print) }}">{{trans('collection.to_collection')}}</a>
     </p>
     <h2>{{trans('collection.topic_index')}}</h2>
 

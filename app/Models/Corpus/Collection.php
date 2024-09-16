@@ -1,7 +1,7 @@
 <?php
 namespace App\Models\Corpus;
 
-use App\Models\Corpus\Author;
+//use App\Models\Corpus\Author;
 use App\Models\Corpus\Genre;
 
 class Collection {

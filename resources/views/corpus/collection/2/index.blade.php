@@ -1,5 +1,5 @@
 <?php $collection_id = 2; ?>
-@extends('layouts.page')
+@extends('layouts.'.($for_print ? 'for_print' : 'page'))
 
 @section('page_title')
 {{ trans('navigation.collections') }}
@@ -25,5 +25,5 @@
         @endif
     @endforeach
 
-    <h4 style='margin-top: 20px;'><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/topics') }}">{{trans('collection.topic_index')}}</a></h4>
+    <h4 style='margin-top: 20px;'><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/topics?for_print='.$for_print) }}">{{trans('collection.topic_index')}}</a></h4>
 @stop
