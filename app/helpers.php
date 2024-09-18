@@ -290,7 +290,7 @@ if (!function_exists('highlight')) {
     function highlight($str, $substr, $class='search-word') {
 /*if ($substr == 'лет назад') {
     dd($str, $substr);
-} */    $str = preg_replace('/\n/', '', $str);   
+} */    $str = preg_replace('/\n/', ' ', $str);   
         if (!$substr) {
             return $str;
         }
@@ -328,7 +328,8 @@ if (!function_exists('css')) {
 
 if (!function_exists('js')) {
     function js($filename) {
-        return '<script src="/js/'.$filename.'.js?'. filemtime(env('APP_ROOT').'public/js/'.$filename.'.js'). '"></script>';
+        $code = @filemtime(env('APP_ROOT').'public/js/'.$filename.'.js');
+        return '<script src="/js/'.$filename.'.js?'. $code. '"></script>';
     }
 }
 
