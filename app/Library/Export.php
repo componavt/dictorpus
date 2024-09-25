@@ -156,9 +156,9 @@ class Export
             if (!$lemma->pos) {
                 continue;
             }
-            $lemma_line = $lemma->id."\t".$lemma->pos->unimorph."\t".$lemma->featsToString()."\t".join('; ', $lemma->getMultilangMeaningTexts());       
+            $lemma_line = $lemma->id."\t".$lemma->lemma."\t".$lemma->pos->unimorph."\t".$lemma->featsToString()."\t".join('; ', $lemma->getMultilangMeaningTexts());       
             Storage::disk('public')->append($file_lemmas, $lemma_line);
-            
+/*            
             if (!in_array($lemma->pos_id, PartOfSpeech::getNameIDs()) && $lemma->pos_id != PartOfSpeech::getVerbID()) {
                 continue;
             }
@@ -182,7 +182,7 @@ class Export
             if (sizeof ($lines)) {
                 Storage::disk('public')->append($file_wordforms, join("\n", $lines));
             }
-            
+*/            
             $count++;
         }
         print 'done.';
