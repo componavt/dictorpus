@@ -12,7 +12,10 @@ use DB;
 
 use App\Library\Export;
 
+use App\Models\Corpus\Collection;
+use App\Models\Corpus\Genre;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Transtext;
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Gram;
@@ -42,7 +45,7 @@ class ExportController extends Controller
     /*
      * annotation for CONLL
      */
-    public function exportAnnotationConll() {
+    public function annotationConll() {
         $filename = 'export/conll/annotation.txt';
         
         Storage::disk('public')->put($filename, "# Parts of speech");
@@ -79,7 +82,7 @@ class ExportController extends Controller
     /*
      * vepkar-20190129-vep
      */
-    public function exportLemmasToUniMorph(Request $request) {
+    public function lemmasToUniMorph(Request $request) {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         
@@ -103,7 +106,7 @@ class ExportController extends Controller
     /*
      * vepkar-20190129-vep
      */
-    public function exportCompoundsToUniMorph() {
+    public function compoundsToUniMorph() {
 //        ini_set('max_execution_time', 7200);
 //        ini_set('memory_limit', '512M');
         $date = Carbon::now();
@@ -143,7 +146,7 @@ class ExportController extends Controller
     /*
      * vepkar-20190129-vep
      */
-    public function exportLemmasWithPOS() {
+    public function lemmasWithPOS() {
         $date = Carbon::now();
         $date_now = $date->toDateString();
         
@@ -171,7 +174,7 @@ class ExportController extends Controller
     /*
      * vepkar-20190129-vep
      */
-    public function exportTextsToCONLL() {//Request $request
+    public function textsToCONLL() {//Request $request
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
 //dd(ini_get('memory_limit'));
@@ -199,7 +202,7 @@ class ExportController extends Controller
      * vepkar-20190129-vep
      * 
      */
-    public function exportSentencesToLines() {//Request $request
+    public function sentencesToLines() {//Request $request
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
 //dd(ini_get('memory_limit'));
@@ -218,7 +221,7 @@ class ExportController extends Controller
         print  '<p><a href="'.Storage::url($filename).'">'.$lang->name.'</a>';            
     }
 
-    public function exportBible() {
+    public function bible() {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
 //dd(ini_get('memory_limit'));
@@ -420,5 +423,46 @@ class ExportController extends Controller
                     $meaning->meaning_n."\t".$meaning_text->meaning_text);
         }
         print "done.";
+    }
+    
+    public function runes () {
+        $cid = 2;
+        $genre_arr = Genre::find(Collection::getCollectionGenres($cid))
+                          ->getSubGenreIds();
+        $lang_id = Collection::getCollectionLangs($cid);
+
+        $texts = Text::whereIn('lang_id', $lang_id)
+                     ->whereIn('id', function ($q) use ($genre_arr) {
+                        $q->select('text_id')->from('genre_text')
+                          ->whereIn('genre_id', $genre_arr);
+                     })->orderBy('id')->pluck('id')->toArray();
+
+        $transtexts = Transtext::whereIn('id', function ($q) use ($texts) {
+                        $q->select('transtext_id')->from('texts')
+                          ->whereIn('id', $texts);
+                     })->orderBy('id')->pluck('id')->toArray();
+                     
+dd(join(',',$transtexts));
+/*        $filename = 'export/runes.sql';
+        Storage::disk('public')->put($filename, "ID\tлемма\tN\tзначение");
+        $lang_ru = Lang::where('code','ru')->first()->id;
+        foreach ($meanings as $meaning) {
+            $meaning_text = $meaning->meaningTexts()->where('lang_id',$lang_ru)->first();
+            if (!$meaning_text) {
+                dd('Пустое '.$meaning->meaning_n.' значение '.$meaning->id.' у леммы '.$meaning->lemma_id);
+// select lemma_id, meaning_n from meanings where id not in (select meaning_id from meaning_texts where lang_id=2) and lemma_id in (select id from lemmas where lang_id=5);                                
+            }
+            Storage::disk('public')->append($filename, $meaning->lemma_id."\t".$meaning->lemma->lemma."\t".
+                    $meaning->meaning_n."\t".$meaning_text->meaning_text);
+        }
+        print "done.";*/
+    }
+    
+    public function oloDict(Request $request) {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+        
+        $dir_name = "export/olo_dict/";                
+        Export::oloDict($dir_name);
     }
 }
