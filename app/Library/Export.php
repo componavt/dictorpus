@@ -10,7 +10,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
-use App\Models\Dict\LemmaWordform;
+use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
 class Export
@@ -139,5 +139,52 @@ class Export
             $data[$gramset->id]['en'] = $gramset->gramsetString();
         }        
         return $data;
+    }
+    
+    public static function oloDict($dir_name) {
+        $lang_id = 5;
+        $dialect_id = 44;
+        $file_lemmas = $dir_name.'lemmas.csv';
+        Storage::disk('public')->put($file_lemmas, " ");
+        $file_wordforms = $dir_name.'wordforms.csv';
+        Storage::disk('public')->put($file_wordforms, " ");
+        $lemmas = Lemma::where('lang_id',$lang_id)
+                ->orderBy('lemma')
+                ->get();
+        $count = 0;
+        foreach ($lemmas as $lemma) {
+            if (!$lemma->pos) {
+                continue;
+            }
+            $lemma_line = $lemma->id."\t".$lemma->lemma."\t".$lemma->pos->unimorph."\t".$lemma->featsToString()."\t".join('; ', $lemma->getMultilangMeaningTexts());       
+            Storage::disk('public')->append($file_lemmas, $lemma_line);
+            
+            if (!in_array($lemma->pos_id, PartOfSpeech::getNameIDs()) && $lemma->pos_id != PartOfSpeech::getVerbID()) {
+                continue;
+            }
+            
+            $pos_code = $lemma->pos->unimorph;
+            if ($pos_code == 'V' && $lemma->features && $lemma->features->reflexive) {
+                $pos_code .= ';REFL';
+            }
+            
+            $wordforms = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->get();
+            if (!$wordforms) { continue; }
+            $lines = [];
+            foreach ($wordforms as $wordform) {
+                $gramset=$wordform->gramsetPivot();
+                if (!$gramset) { continue; }
+                $features = $gramset->toUniMorph($pos_code);
+                if (!$features) { continue; }
+                $lines[] = $lemma->id."\t".$wordform->wordform."\t".$features;
+            }
+            
+            if (sizeof ($lines)) {
+                Storage::disk('public')->append($file_wordforms, join("\n", $lines));
+            }
+           
+            $count++;
+        }
+        print 'done.';
     }
 }

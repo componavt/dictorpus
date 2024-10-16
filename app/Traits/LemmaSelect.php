@@ -117,4 +117,47 @@ trait LemmaSelect
                     ->count();
     }
         
+    public function toUniMorph($dialect_id) {
+        $pos_id = $this->pos_id;
+        
+        if (!in_array($pos_id, PartOfSpeech::getNameIDs()) && $pos_id != PartOfSpeech::getVerbID()) {
+            return false;
+        } 
+        $pos = PartOfSpeech::find($pos_id);
+        if (!$pos) { return false; }
+        
+        $pos_code = $pos->unimorph;
+        if ($pos_code == 'V' && $this->features && $this->features->reflexive) {
+            $pos_code .= ';REFL';
+        }
+//dd($this->wordforms);              
+        $wordforms = $this->wordforms()->wherePivot('dialect_id',$dialect_id)->get();//wordformsWithGramsets();
+//dd($dialect_id, $wordforms);
+        if (!$wordforms) { return false; }
+        $lines = [];
+        foreach ($wordforms as $wordform) {
+            $gramset=$wordform->gramsetPivot();
+            if (!$gramset) { continue; }
+            $features = $gramset->toUniMorph($pos_code);
+            if (!$features) { continue; }
+            $lines[] = $this->lemma."\t".$wordform->wordform."\t".$features;
+        }
+        return join("\n", $lines);
+    }
+    
+    public function compoundToUniMorph() {
+        if ($this->features && $this->features->comptype_id) {
+            $comptype = $this->features->comptype_id;
+        } else {
+            $comptype = '';
+        }
+        $lemmas = $this->phraseLemmas;
+        if (!$lemmas) { return false; }
+        $tmp = [];
+        foreach ($lemmas as $lemma) {
+            $tmp[] = $lemma->lemma;
+        }
+        return $this->lemma. "\t$comptype\t". join(";", $tmp);
+    }
+        
 }
