@@ -547,7 +547,8 @@ AND t1.word_number-t2.word_number<=|B|;
             $out[$i]['w'] = $out[$i]['l'] = $out[$i]['p'] = $out[$i]['g']  = $out[$i]['gs'] = [];
             
             if (isset($word['w']) && $word['w']) {
-                if (preg_match("/^\"(.+)\"$/", trim($word['w']), $regs)) {
+                $word['w'] = trim($word['w']);                
+                if (preg_match("/^\"(.+)\"$/", $word['w'], $regs)) {
                     $out[$i]['w'] = Grammatic::toSearchByPattern($regs[1]);
                 } else {
                     $out[$i]['l'] = Grammatic::toSearchByPattern($word['w']);                
