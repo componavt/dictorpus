@@ -153,7 +153,9 @@ class Grammatic
         if (!preg_match("/\{\{/", $template)) {
             $template = preg_replace('/\|\|/','ǁ',$template);
         }
-     
+        if (preg_match("/^(.+)(\s+[\[\(].+)$/", $template, $regs)) {
+            $template = preg_replace("/\s+/", '_', $regs[1]).$regs[2];
+        }
         if ($lang_id == 1) {
             list($stems, $name_num, $max_stem, $affix) = VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);  
         } else {
@@ -162,7 +164,9 @@ class Grammatic
             }
             list($stems, $name_num, $max_stem, $affix) = KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);       
         }
+//dd($stems, $name_num, $max_stem, $affix);        
         $max_stem = preg_replace('/ǁ/','||',$max_stem);
+        $max_stem = preg_replace('/\_/',' ',$max_stem);
         
         if ($lang_id != 1 && is_array($stems) && sizeof($stems)>1) {
             $stems[10] = KarGram::isBackVowels($max_stem.$affix);

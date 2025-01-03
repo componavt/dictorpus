@@ -188,7 +188,8 @@ class KarName
      * @param type $regs = [0=>template, 1=>base, 2=>base-suff, 3=>list_of_pseudostems]
      */
     public static function stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num, $dialect_id) {
-//dd($regs);     
+//dd($regs);    
+        $regs[1] = preg_replace('/\_/',' ',$regs[1]);
         if (preg_match("/^(.+)ǁ(.+)$/", $regs[1], $sword)) {
             $fword = $sword[1];
             $base = $sword[2];
@@ -202,7 +203,7 @@ class KarName
         $ps_list = preg_split("/\s*,\s*/", $regs[3]);
         $harmony = KarGram::isBackVowels($stem0); // harmony
         $stem0_syll=KarGram::countSyllable($stem0);
-        
+
         if ($lang_id==6) {
 // $ok = $regs[2];            
             list ($stem1, $stem2, $stem6) = KarNameLud::initialStemsFromMiniTemplate($base, $regs[2], $stem0, $ps_list);
@@ -210,7 +211,7 @@ class KarName
             $stem4 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem1, $stem6, $harmony, $pos_id);
             $stem5 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem2, $stem6, $harmony, $pos_id);            
         } else {
-            list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);          
+            list ($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);   
             if (!$stem6) {
                 return $out;
             }
@@ -356,6 +357,7 @@ class KarName
         $C = "[".KarGram::consSet()."]";
         $V = "[".KarGram::vowelSet()."]";
         $stem6_syll=KarGram::countSyllable($stem6);
+//dd($stem6.KarGram::garmVowel($harmony,'loi'));        
 //dd($stem6);        
         if ($dialect_id == 47 && preg_match("/".$C."’?[iuyoö]$/u", $stem6)) { 
             return $stem6.KarGram::garmVowel($harmony,'loi');            

@@ -76,7 +76,8 @@ class KarGram
      * @return INT 1 - односложное, 2 - двусложное, 3 - трехсложное, 4 - многосложное
      */
     public static function countSyllable($stem) {
-        if (preg_match("/\|\|([^\|]+)$/", $stem, $regs) 
+        if (preg_match("/\s+([^\_]+)$/", $stem, $regs) 
+                || preg_match("/\|\|([^\|]+)$/", $stem, $regs) 
                 || preg_match("/ǁ([^ǁ]+)$/", $stem, $regs) ) {
             $stem = $regs[1];
         }
