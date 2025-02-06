@@ -34,8 +34,8 @@ return [
     
     'perm.admin' => 'Супер-права',
     'perm.dict.add'=> 'Пополнение словаря',
-    'perm.dict.edit'=> 'Редакция словаря',
     'perm.dict.audio' => 'Озвучивание словаря',
+    'perm.dict.edit'=> 'Редакция словаря',
     'perm.corpus.edit'=> 'Редакция корпуса',
     'perm.photo.edit'=> 'Редакция фотографий',
     'perm.ref.edit'=> 'Редакция справочников',
