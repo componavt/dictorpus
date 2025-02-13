@@ -10,12 +10,17 @@ trait lemmasByDialects
                             $query->select('lemma_id')->from('dialect_lemma')
                                   ->whereIn('dialect_id', $dialects);
         });*/
-        return $lemmas -> whereIn('id', function ($q) use ($dialects) {
-                $q->select('lemma_id')->from('meanings')
-                  ->whereIn('id', function ($q2) use ($dialects) {
-                      $q2->select('meaning_id')->from('dialect_meaning')
-                        ->whereIn('dialect_id', $dialects);
-                  });
+        return $lemmas ->where(function ($query) use ($dialects) {
+                $query-> whereIn('id', function ($q) use ($dialects) {
+                    $q->select('lemma_id')->from('meanings')
+                      ->whereIn('id', function ($q2) use ($dialects) {
+                          $q2->select('meaning_id')->from('dialect_meaning')
+                            ->whereIn('dialect_id', $dialects);
+                      });
+                })->orWhereIn('id', function ($q) use ($dialects) {
+                    $q->select('lemma_id')->from('lemma_wordform')
+                      ->whereIn('dialect_id', $dialects);
+                });
             });
     }
 }
