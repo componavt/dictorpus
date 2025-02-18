@@ -4,8 +4,8 @@ use DB;
 
 use App\Library\Grammatic;
 
-
 use App\Models\Corpus\Audiotext;
+use App\Models\Corpus\Cyrtext;
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
@@ -45,7 +45,7 @@ trait TextModify
         $request['text'] = self::process($request['text']);
         $to_makeup = (int)$request['to_makeup'];
         
-        $text = self::with('transtext','event','source')->get()->find($id);
+        $text = self::with('transtext','event','source','cyrtext')->get()->find($id);
         $old_text = $text->text;
 
         $text->fill($request->only('lang_id','title','text','text_structure', 'comment'));//,'text_xml''corpus_id',
@@ -59,10 +59,13 @@ trait TextModify
     public function storeAdditionInfo($request, $old_text=NULL, $to_makeup=true){
         $error_message = '';
         $request['transtext_text'] = self::process($request['transtext_text']);
+        $request['cyrtext_text'] = self::process($request['cyrtext_text']);
         $request['event_date'] = (int)$request['event_date'];
-        
+//dd($request->all());        
+        Cyrtext::store($this->id, $request['cyrtext_title'], $request['cyrtext_text']);
         $this->storeVideo($request->youtube_id);
-        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text','transtext_text_xml', 'trans_authors'));
+        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text', 'trans_authors'));//'transtext_text_xml',
+        $this->storeCyrtext($request->only('cyrtext_title','cyrtext_text'));
         $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
         $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
 //dd($request->corpuses);
@@ -84,7 +87,6 @@ trait TextModify
         $this->plots()->attach($request->plots);
         
         $this->topics()->detach();
-  //      $this->topics()->attach($request->topics);
         foreach ($request->topics as $topic) {
             if ($topic['topic_id']) {
                 $this->topics()->attach([$topic['topic_id'] => ['sequence_number'=>(int)$topic['sequence_number']]]);
@@ -92,14 +94,17 @@ trait TextModify
         }
         
         $this->motives()->sync((array)$request->motives);
-//dd($old_text, $request->text, $old_text != $request->text, !$this->text_structure, $to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure));
-        if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {
+        
+        $this->uploadAudioFile($request);
+
+        if ($to_makeup && ($request->transtext_text || $request['cyrtext_text'])) {
             
-            $error_message = $this->markup();
+        }
+//dd($old_text, $request->text, $old_text != $request->text, !$this->text_structure, $to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure));
+        if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {            
+//            $error_message = $this->markup();
         }
 
-        $this->uploadAudioFile($request);
-        
         $this->push();        
         
         return $error_message;
@@ -170,12 +175,7 @@ trait TextModify
      * @return INT or NULL
      */
     public function storeTranstext($request_data){
-        $is_empty_data = true;
-//        if ($request_data['transtext_title'] && $request_data['transtext_text']) {
-        if ($request_data['transtext_title']) {
-            $is_empty_data = false;
-        }
-//dd($is_empty_data);
+        $is_empty_data = !empty(($request_data['transtext_title'])) ? false : true;
         if ($this) {
             $transtext_id = $this->transtext_id;
         } else {
@@ -218,6 +218,47 @@ trait TextModify
                      ->count()) {
                 Transtext::destroy($transtext_id);
             }
+        }
+    }    
+    
+    /**
+     * Checks request data. If the request data is not null, 
+     * updates Cyrtext if it exists or creates new 
+     * 
+     * If the request data is null and Cyrtext exists, destroy it.
+     * 
+     * @return NULL
+     */
+    public function storeCyrtext($request_data){
+        $is_empty_data = !empty(($request_data['cyrtext_title'])) ? false : true;
+        if ($this) {
+            $cyrtext_id = $this->id;
+        } else {
+            $cyrtext_id = NULL;
+        }
+
+        if (!$is_empty_data) {
+            foreach (['title','text'] as $column) {
+                $data_to_fill[$column] = ($request_data['cyrtext_'.$column]) ? $request_data['cyrtext_'.$column] : NULL;
+            }
+            if ($cyrtext_id) {               
+                $cyrtext = Cyrtext::find($cyrtext_id);
+                $old_text = $cyrtext->text;
+                $cyrtext->fill($data_to_fill);
+                if ($data_to_fill['text'] && ($old_text != $data_to_fill['text'] || !$cyrtext->text_xml)) {
+                    $cyrtext->markup();
+                }
+                $cyrtext->save();
+            } else {
+                $cyrtext = Cyrtext::firstOrCreate($data_to_fill);
+
+                if ($data_to_fill['text']) {
+                    $cyrtext->markup();
+                }
+                $cyrtext->save();
+            }                        
+        } elseif ($cyrtext_id) {
+            Cyrtext::destroy($cyrtext_id);
         }
     }    
     

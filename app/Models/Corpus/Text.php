@@ -15,7 +15,7 @@ use App\Library\Grammatic;
 
 use App\Models\User;
 
-//use App\Models\Corpus\Event;
+use App\Models\Corpus\Cyrtext;
 use App\Models\Corpus\Sentence;
 //use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
@@ -110,6 +110,12 @@ class Text extends Model implements HasMediaConversions
     public function video()
     {
         return $this->hasOne(Video::class);
+    }
+   
+    // Text __has_one__ Cyrtext
+    public function cyrtext()
+    {
+        return $this->hasOne(Cyrtext::class, 'id');
     }
    
     public function topics(){

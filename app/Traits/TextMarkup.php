@@ -36,6 +36,7 @@ trait TextMarkup
         return [$text, $pseudo_end];
     }
 
+    
     /**
      * Gets a markup text with sentences
      * 
@@ -44,6 +45,7 @@ trait TextMarkup
      * @param string $text  text without mark up
      * @param boolean $with_words  if it is true, sentences divided into words
      * @param boolean $by_sentences  if it is true, return only text structure and the array of sentences
+     *                                        false, return full marked text
      * @return string text with markup (split to sentences and words) if $by_sentences=false
      *      OR [<markup text>, <sentences>] if $by_sentences=true
      */
@@ -112,4 +114,13 @@ trait TextMarkup
         DB::statement("DELETE FROM sentences WHERE s_id>$s_id and text_id=".(int)$this->id);
     }
 
+    public function cyrToSentence($sentence, $words) {
+        if (empty($sentence) || empty ($words)) {
+            return $sentence;
+        }
+        foreach ($words as $i => $word) {
+            $sentence = preg_replace("/(<w\s+id=\"".$i."\"\>[^<]+)(\<\/w\>)/", '${1}<sup>'.$word.'</sup>${2}', $sentence);
+        }
+        return $sentence;
+    }
 }

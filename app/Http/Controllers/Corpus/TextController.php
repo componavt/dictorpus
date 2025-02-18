@@ -48,7 +48,7 @@ class TextController extends Controller
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
                          ['only' => ['create','store','edit','update','destroy',
-                                     'addExample', 'editExample', 'updateExamples', 
+                                     'addExample', 'checkSentences', 'editExample', 'updateExamples', 
                                      'editSentences', 'photos', 'updatePhotos', 'deletePhoto',                                     
                                      'markupText', 'markupAllEmptyTextXML','markupAllTexts']]);
         $this->url_args = Text::urlArgs($request);  
@@ -169,16 +169,16 @@ class TextController extends Controller
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',
             'event_date' => 'numeric',
+            'cyrtext.title'  => 'max:255',
         ]);
-        $request['text'] = Text::process($request['text']);
-        $request['transtext_text'] = Text::process($request['transtext_text']);
 
         $text = Text::create($request->only('corpus_id','lang_id','title', 'comment')); //,'source_id','event_id',
+        $request['text'] = Text::process($request['text']);
         $text->text = $text->processTextBeforeSaving($request->text);
 
         $error_message = $text -> storeAdditionInfo($request);
 
-        $redirect = Redirect::to('/corpus/text/'.($text->id).($this->args_by_get));
+        $redirect = Redirect::to('/corpus/text/'.($text->id).'/check_sentence'.($this->args_by_get));
         if ($error_message) {
             $redirect = $redirect->withErrors($error_message);
         } else {
@@ -242,16 +242,7 @@ class TextController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
-        $trans_sentences = [];
-        if ($text->transtext && $text->transtext->text_xml) {
-//            $markup_text = str_replace("<s id=\"","<s class=\"trans_sentence\" id=\"transtext_s", $text->transtext->text_xml); 
-            list($sxe,$error_message) = Text::toXML($text->transtext->text_xml,$text->transtext_id);
-            if (!$error_message) {
-                foreach ($sxe->xpath('//s') as $s) {
-                    $trans_sentences[(int)$s->attributes()->id] = mb_ereg_replace('[¦^]', '', $s->asXML());
-                }
-            } 
-        }
+        $trans_sentences = $text->transtext ? $text->transtext->getSentencesFromXML() : [];
 
         return view('corpus.text.sentences',
                 compact('dialect_value', 'dialect_values', 'langs_for_meaning', 
@@ -318,6 +309,26 @@ class TextController extends Controller
                         'args_by_get', 'url_args'));
     }
 
+    public function checkSentences($id) {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $text = Text::find($id);       
+        if (!$text) {
+            return Redirect::to('/corpus/text/')
+                           ->withErrors(\Lang::get('corpus.text_not_found',['id'=>$id]));            
+        }
+        list($text->text_structure, $sentences) = Text::markupText($text->text, true, true);
+        $trans_sentences = !empty($text->transtext) ? $text->transtext->getSentencesFromXML() : [];
+        $cyr_sentences = !empty($text->cyrtext) ? $text->cyrtext->getSentencesFromXML(true) : [];
+        $total = max(sizeof($sentences), sizeof($trans_sentences), sizeof($cyr_sentences));
+//dd($sentences, $trans_sentences, $cyr_sentences, $total);        
+       
+        return view('corpus.text.check_sentences',
+                compact('cyr_sentences', 'sentences', 'text', 'total', 'trans_sentences', 
+                        'args_by_get', 'url_args'));
+    }
+
     /**
      * Shows the form for editing of text example for all lemma meanings connected with this sentence.
      *
@@ -375,13 +386,14 @@ class TextController extends Controller
             'lang_id' => 'required|numeric',
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',
+            'cyrtext.title'  => 'max:255',
 //            'new_file' => 'mimetypes:audio/mp3',
 //            'event_date' => 'numeric',
         ]);
 //dd($request->topics);
         $error_message = Text::updateByID($request, $id);
+        $redirect = Redirect::to('/corpus/text/'.$id. (empty($request->to_makeup) ? '' : '/check_sentence').$this->args_by_get);
         
-        $redirect = Redirect::to('/corpus/text/'.$id.($this->args_by_get));
         if ($error_message) {
             return $redirect->withErrors($error_message);
         } else {
@@ -542,11 +554,11 @@ class TextController extends Controller
         }
         $text->save();            
         
-        $transText = Transtext::find($text->transtext_id);
+/*        $transText = Transtext::find($text->transtext_id);
         if ($transText) {
             $transText->markup();
             $transText->save(); 
-        }
+        }*/
         
         return Redirect::to('/corpus/text/'.($text->id).($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));        

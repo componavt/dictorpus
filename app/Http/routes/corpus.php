@@ -64,10 +64,14 @@ Route::group(
         Route::get('spellchecking', 'Corpus\TextController@spellchecking');
         Route::post('spellchecking', 'Corpus\TextController@analysSpellchecking');
         
+        Route::get('text/{id}/check_sentence', 'Corpus\TextController@checkSentences')->name('text.check_sentences');
+        Route::get('text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
         Route::get('text/{id}/history', 'Corpus\TextController@history');
         Route::get('text/{id}/markup', 'Corpus\TextController@markupText');
         Route::get('text/{id}/sentences', 'Corpus\TextController@editSentences');
-        Route::get('text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
+        Route::get('text/{id}/photos', 'Corpus\TextController@photos');
+        Route::post('text/{id}/photos', 'Corpus\TextController@updatePhotos')->name('text.update.photos');
+        Route::delete('text/{id}/photos/{photo_id}', 'Corpus\TextController@deletePhoto')->name('text.photos.destroy');
         Route::get('text/{id}/stats', 'Corpus\TextController@stats');
         Route::post('text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
@@ -79,9 +83,6 @@ Route::group(
         Route::get('text/limited_new_list', 'Corpus\TextController@limitedNewList');
         Route::get('text/limited_updated_list', 'Corpus\TextController@limitedUpdatedList');
         Route::get('text/markup_all_texts', 'Corpus\TextController@markupAllTexts');
-        Route::get('text/{id}/photos', 'Corpus\TextController@photos');
-        Route::post('text/{id}/photos', 'Corpus\TextController@updatePhotos')->name('text.update.photos');
-        Route::delete('text/{id}/photos/{photo_id}', 'Corpus\TextController@deletePhoto')->name('text.photos.destroy');
         Route::get('text/sentence', 'Corpus\TextController@showWordInSentence');
         Route::get('text/simple_search', 'Corpus\TextController@simpleSearch')->name('text.simple_search');
 

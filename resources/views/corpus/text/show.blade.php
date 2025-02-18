@@ -6,7 +6,7 @@
 
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
-    {!!Html::style('css/text.css')!!}
+    {!! css('text')!!}
     {!!Html::style('css/select2.min.css')!!}
 @stop
 
@@ -70,17 +70,20 @@
         </div>
         @endif
 
+    @if ($text->cyrtext)
+            @include('corpus.text.show.3_columns')
+    @else
         <div class="row corpus-text">
             <div class="col-sm-{{$text->transtext ? '6' : '12'}}">
             @include('corpus.text.show.text')
-        @if ($text->transtext)
             </div>
-                
+        @if ($text->transtext)               
             <div class="col-sm-6">
             @include('corpus.text.show.transtext')
-        @endif      
             </div>
+        @endif      
         </div>
+    @endif      
         
 @stop
 
@@ -108,5 +111,6 @@
     checkLemmaForm();
     toggleSpecial();  
     openBigPhoto('.photo');
+    toggleColumns();
 @stop
 

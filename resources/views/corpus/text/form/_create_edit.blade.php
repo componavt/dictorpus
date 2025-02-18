@@ -6,8 +6,33 @@
     <div class="col-sm-6">
 @include('corpus.text.form._text')
 
+@include('corpus.text.form._cyrtext')
+
 @include('corpus.text.form._event')
 
+<br>
+@include('widgets.form.formitem._submit', ['title' => $submit_title])
+    </div>
+    
+    <div class="col-sm-6">
+@include('corpus.text.form._transtext')
+
+@include('corpus.text.form._source')        
+
+@include('corpus.text.form._archive_krc')        
+
+@include('widgets.form.formitem._textarea', 
+        ['name' => 'source.comment', 
+         'value' => ($action=='edit' && $text->source) ? ($text->source->comment) : NULL,
+         'title'=>trans('corpus.comment_source'),
+         'attributes' => ['rows'=>3],
+        ])
+@include('widgets.form.formitem._textarea', 
+        ['name' => 'comment', 
+         'value' => ($action=='edit') ? ($text->comment) : NULL,
+         'title'=>trans('corpus.comment_text'),
+         'attributes' => ['rows'=>3],
+        ])
 @include('widgets.form.formitem._text', 
         ['name' => 'youtube_id', 
          'value' => ($action=='edit' && $text->video) ? ($text->video->youtube_id) : NULL,
@@ -35,29 +60,6 @@
     </div>
 </div-->
 @endif
-<br>
-@include('widgets.form.formitem._submit', ['title' => $submit_title])
-    </div>
-    
-    <div class="col-sm-6">
-@include('corpus.text.form._transtext')
-
-@include('corpus.text.form._source')        
-
-@include('corpus.text.form._archive_krc')        
-
-@include('widgets.form.formitem._textarea', 
-        ['name' => 'source.comment', 
-         'value' => ($action=='edit' && $text->source) ? ($text->source->comment) : NULL,
-         'title'=>trans('corpus.comment_source'),
-         'attributes' => ['rows'=>3],
-        ])
-@include('widgets.form.formitem._textarea', 
-        ['name' => 'comment', 
-         'value' => ($action=='edit') ? ($text->comment) : NULL,
-         'title'=>trans('corpus.comment_text'),
-         'attributes' => ['rows'=>3],
-        ])
     </div>
 </div>                 
 

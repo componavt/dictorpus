@@ -4,14 +4,12 @@ namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Dict\Lang;
 use App\Models\Corpus\Text;
 
-class Transtext extends Model
+class Cyrtext extends Model
 {
     use \App\Traits\Methods\getSentencesFromXML;
-    
-    protected $fillable = ['lang_id','title','text','text_xml'];
+    protected $fillable = ['id','title','text','text_xml'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -29,10 +27,10 @@ class Transtext extends Model
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Authors;
     
-    // Transtext __belongs_to__ Lang
-    public function lang()
+    // Cyrtext __belongs_to__ Text 1:1
+    public function text()
     {
-        return $this->belongsTo(Lang::class);
+        return $this->belongsTo(Text::class,'id','id');
     }
 
     /**
@@ -50,25 +48,31 @@ class Transtext extends Model
     }    
 
     /**
-     * remove transtext if exists and don't link with other texts
+     * remove cyrtext if exists and don't link with other texts
      * 
-     * @param INT $transtext_id
-     * @param INT $text_id
+     * @param INT $id
      */
-    public static function removeUnused($transtext_id, $text_id) {
-        if ($transtext_id && !Text::where('id','<>',$text_id)
-                                  ->where('transtext_id',$transtext_id)
-                                  ->count()) {
-            Transtext::find($transtext_id)->delete();
+    public static function removeUnused($id) {
+        if ($id && Text::where('id',$id)->count()) {
+            Cyrtext::find($id)->delete();
         }        
     }
     
-    public function authorsToString() {
-        $authors = [];
-        foreach ($this->authors as $author) {
-            $name = $author->getNameByLang($this->lang_id);
-            $authors[] = $name ? $name : $author->name;
+    public static function store($id, $title, $text) {
+        if (empty($title) && empty($text)) {
+            return;
         }
-        return join(', ', $authors);
+
+        $cyrtext = self::find($id);
+        
+        if (!empty($cyrtext)) {
+            $cyrtext->title = $title;
+            $cyrtext->text = $text;
+            $cyrtext->save();
+        } else {
+            self::create(['id'=>$id, 'title'=>$title, 'text'=>$text]);
+        }
     }
+    
+
 }

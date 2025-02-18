@@ -18,6 +18,7 @@ return [
     'audio_map' => 'Аудио-карта',
     'audios' => 'Аудиозаписи лемм',
     'authors' => 'Авторы / переводчики',
+    
     'collections' => 'Коллекции',
     'concept_categories' => 'Категории понятий',
     'concepts' => 'Понятия',
@@ -26,6 +27,7 @@ return [
     'corpus_freq' => 'Частотные словари',
     'corpuses' => 'Подкорпусы',
     'cycles' => 'Циклы',
+    
     'dialects' => 'Диалекты',
     'dict_selections' => 'Выборки',
     'dictionary' => 'Словарь',

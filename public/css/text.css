@@ -332,6 +332,19 @@ h5:first-letter {
     width: 100%;
 }
 
+.button-close {
+/*    border:1px #972d1a solid; */
+    border-radius: 50%;
+    color: #972d1a; 
+    display: inline-block; 
+    height: 25px; 
+    cursor: pointer;
+    margin-top:20px; 
+    text-align: center; 
+    vertical-align: middle; 
+    width: 25px; 
+}
+
 @media (min-width: 576px) {
 }
 
