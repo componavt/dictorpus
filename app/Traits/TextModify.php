@@ -64,8 +64,6 @@ trait TextModify
 //dd($request->all());        
 //        Cyrtext::store($this->id, $request['cyrtext_title'], $request['cyrtext_text']);
         $this->storeVideo($request->youtube_id);
-        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text', 'trans_authors'));//'transtext_text_xml',
-        $this->storeCyrtext($request->only('cyrtext_title','cyrtext_text'));
         $this->storeEvent($request->only('event_place_id','event_date','event_informants','event_recorders'));
         $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
 //dd($request->corpuses);
@@ -94,16 +92,16 @@ trait TextModify
         }
         
         $this->motives()->sync((array)$request->motives);
+
+        $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text', 'trans_authors'));//'transtext_text_xml',
+        $this->storeCyrtext($request->only('cyrtext_title','cyrtext_text'));
         
         $this->uploadAudioFile($request);
 
-        if ($to_makeup && ($request->transtext_text || $request['cyrtext_text'])) {
-            
-        }
 //dd($old_text, $request->text, $old_text != $request->text, !$this->text_structure, $to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure));
-        if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {            
-//            $error_message = $this->markup();
-        }
+/*        if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {            
+            $error_message = $this->markup();
+        }*/
 
         $this->push();        
         
@@ -231,32 +229,20 @@ trait TextModify
      */
     public function storeCyrtext($request_data){
         $is_empty_data = !empty(($request_data['cyrtext_title'])) ? false : true;
-        if ($this) {
-            $cyrtext_id = $this->id;
-        } else {
-            $cyrtext_id = NULL;
-        }
+        $cyrtext_id = $this->id;
+
         if (!$is_empty_data) {
             foreach (['title','text'] as $column) {
                 $data_to_fill[$column] = ($request_data['cyrtext_'.$column]) ? $request_data['cyrtext_'.$column] : NULL;
             }
-            if ($cyrtext_id) {               
-                $cyrtext = Cyrtext::find($cyrtext_id);
-//                $old_text = $cyrtext->text;
-                $cyrtext->fill($data_to_fill);
-//dd($old_text, $data_to_fill['text']);                
-//                if ($data_to_fill['text'] && ($old_text != $data_to_fill['text'] || !$cyrtext->text_xml)) {
-                    $cyrtext->markup();
-//                }
-                $cyrtext->save();
+            $data_to_fill['text_xml']=self::markupText( $data_to_fill['text']);
+            if ($this->cyrtext) {
+                $this->cyrtext->fill($data_to_fill);
+                $this->cyrtext->save();
             } else {
-                $cyrtext = Cyrtext::firstOrCreate($data_to_fill);
-
-                if ($data_to_fill['text']) {
-                    $cyrtext->markup();
-                }
-                $cyrtext->save();
-            }                        
+                $data_to_fill['id']=$cyrtext_id;
+                Cyrtext::create($data_to_fill);
+            }
         } elseif ($cyrtext_id) {
             Cyrtext::destroy($cyrtext_id);
         }
