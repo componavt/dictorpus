@@ -62,7 +62,7 @@ trait TextModify
         $request['cyrtext_text'] = self::process($request['cyrtext_text']);
         $request['event_date'] = (int)$request['event_date'];
 //dd($request->all());        
-        Cyrtext::store($this->id, $request['cyrtext_title'], $request['cyrtext_text']);
+//        Cyrtext::store($this->id, $request['cyrtext_title'], $request['cyrtext_text']);
         $this->storeVideo($request->youtube_id);
         $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text', 'trans_authors'));//'transtext_text_xml',
         $this->storeCyrtext($request->only('cyrtext_title','cyrtext_text'));
@@ -236,18 +236,18 @@ trait TextModify
         } else {
             $cyrtext_id = NULL;
         }
-
         if (!$is_empty_data) {
             foreach (['title','text'] as $column) {
                 $data_to_fill[$column] = ($request_data['cyrtext_'.$column]) ? $request_data['cyrtext_'.$column] : NULL;
             }
             if ($cyrtext_id) {               
                 $cyrtext = Cyrtext::find($cyrtext_id);
-                $old_text = $cyrtext->text;
+//                $old_text = $cyrtext->text;
                 $cyrtext->fill($data_to_fill);
-                if ($data_to_fill['text'] && ($old_text != $data_to_fill['text'] || !$cyrtext->text_xml)) {
+//dd($old_text, $data_to_fill['text']);                
+//                if ($data_to_fill['text'] && ($old_text != $data_to_fill['text'] || !$cyrtext->text_xml)) {
                     $cyrtext->markup();
-                }
+//                }
                 $cyrtext->save();
             } else {
                 $cyrtext = Cyrtext::firstOrCreate($data_to_fill);
