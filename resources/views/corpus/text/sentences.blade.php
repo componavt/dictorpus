@@ -47,7 +47,7 @@
             @endif 
             
             <td>
-                {!! $trans_sentences[$sentence->s_id] ?? '' !!}
+                {!! $trans_sentences[$sentence->s_id]['sentence'] ?? '' !!}
             </td>
         </tr>
         @endforeach     

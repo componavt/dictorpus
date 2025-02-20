@@ -243,7 +243,7 @@ class TextController extends Controller
         $url_args = $this->url_args;
         
         $trans_sentences = $text->transtext ? $text->transtext->getSentencesFromXML() : [];
-
+//dd($sentences, $trans_sentences);
         return view('corpus.text.sentences',
                 compact('dialect_value', 'dialect_values', 'langs_for_meaning', 
                         'pos_id', 'pos_values', 'sentences', 'text', 
