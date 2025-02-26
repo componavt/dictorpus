@@ -5,7 +5,6 @@ namespace App\Models\Dict;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
-use \Venturecraft\Revisionable\Revision;
 //use Arrays;
 
 use App\Library\Grammatic;
@@ -25,9 +24,9 @@ class Lemma extends Model
 {
     protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search', 'wordform_total'];
     
-    use \App\Traits\LemmaModify;
-    use \App\Traits\LemmaSearch;
-    use \App\Traits\LemmaSelect;
+    use \App\Traits\Modify\LemmaModify;
+    use \App\Traits\Search\LemmaSearch;
+    use \App\Traits\Select\LemmaSelect;
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -1026,79 +1025,6 @@ dd($wordforms);
             }
         }
         return $sentences;
-    }
-    
-    public static function lastCreated($limit='') {
-        $lemmas = self::latest();
-        if ($limit) {
-            $lemmas = $lemmas->take($limit);
-        }
-        $lemmas = $lemmas->get();
-        foreach ($lemmas as $lemma) {
-            $revision = Revision::where('revisionable_type','like','%Lemma')
-                                ->where('key','created_at')
-                                ->where('revisionable_id',$lemma->id)
-                                ->latest()->first();
-            if ($revision) {
-                $lemma->user = User::getNameByID($revision->user_id);
-            }
-        }
-        return $lemmas;
-    }
-    
-    public static function lastUpdated($limit='',$is_grouped=0) {
-        $revisions = Revision::where('revisionable_type','like','%Lemma')
-                            ->where('key','updated_at')
-                            ->groupBy('revisionable_id')
-                            ->latest()->take($limit)->get();
-        $lemmas = [];
-        foreach ($revisions as $revision) {
-            $lemma = Lemma::find($revision->revisionable_id);
-            if ($lemma) {
-                $lemma->user = User::getNameByID($revision->user_id);
-                if ($is_grouped) {
-                    $updated_date = $lemma->updated_at->formatLocalized(trans('main.date_format'));            
-                    $lemmas[$updated_date][] = $lemma;
-                } else {
-                    $lemmas[] = $lemma;
-                }
-            }
-        }
-        
-        return $lemmas;
-    }
-    
-    public function allHistory() {
-        $all_history = $this->revisionHistory->filter(function ($item) {
-                            return $item['key'] != 'updated_at'
-                                 && !($item['key'] == 'reflexive' && $item['old_value'] == null && $item['new_value'] == 0);
-                        });
-        foreach ($all_history as $history) {
-            $history->what_created = trans('history.lemma_accusative');
-        }
-        foreach ($this->meanings as $meaning) {
-            foreach ($meaning->revisionHistory as $history) {
-                $history->what_created = trans('history.meaning_accusative', ['num'=>$meaning->meaning_n]);
-            }
-            $all_history = $all_history -> merge($meaning->revisionHistory);
-            foreach($meaning->meaningTexts as $meaning_text) {
-               foreach ($meaning_text->revisionHistory as $history) {
-                   $lang = $meaning_text->lang->name;
-                   $fieldName = $history->fieldName();
-                   $history->field_name = trans('history.'.$fieldName.'_accusative'). ' '
-                           . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
-                           . " ($lang)";
-               }
-               $all_history = $all_history -> merge($meaning_text->revisionHistory);
-            }
-        }
-         
-        $all_history = $all_history->sortByDesc('id')
-                      ->groupBy(function ($item, $key) {
-                            return (string)$item['updated_at'];
-                        });
-//dd($all_history);                        
-        return $all_history;
     }
     
     public function firstDialect() {

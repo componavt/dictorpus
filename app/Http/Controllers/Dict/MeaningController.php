@@ -279,6 +279,20 @@ class MeaningController extends Controller
                 compact('label_id', 'lemma'));
     }
 
+    public function fullNewList(Request $request)
+    {
+        $portion = 1000;
+        $new_meanings = Meaning::lastCreated($portion)
+                    ->groupBy(function ($item, $key) {
+                        return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
+                    });
+        if (!$new_meanings) {            
+            return Redirect::to('/');
+        }
+        return view('dict.meaning.list.full_new', compact('new_meanings'));
+    }
+    
+    
     /** 
      * (1) Copy vepsian.{meaning} to vepkar.meanings (without meaning_text)
      * (2) Copy vepsian.{meaning.meaning_text, translation_lemma} to vepkar.meaning_texts

@@ -48,14 +48,18 @@ return [
     'ldl' => 'Людиковский диалектный лексикон',
     'lemma_frequency' => 'Частотный словарь лемм, размеченных в тексте',
     'lemmas' => 'Леммы',
+    'logout' => 'Выйти',
+    
     'mass_media' => 'СМИ о проекте',
     'mass_media_show' => 'Нас показывают',
     'mass_media_talk' => 'О нас говорят',
     'mass_media_write' => 'О нас пишут',
     'motives' => 'Мотивы',
     'motypes' => 'Типы мотивов',
-    'logout' => 'Выйти',
     'multidict' => 'Мультимедийный словарь',
+    
+    'new_meanings' => 'Новые значения',
+    
     'omonyms' => 'Омонимы',
     'participants' => 'Участники проекта',
     'parts_of_speech' => 'Части речи',

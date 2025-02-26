@@ -18,7 +18,8 @@ use App\Models\Dict\Relation;
 
 class Meaning extends Model
 {
-    use \App\Traits\MeaningModify;
+    use \App\Traits\Modify\MeaningModify;
+    use \App\Traits\Select\MeaningSelect;
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;

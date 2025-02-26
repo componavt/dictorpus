@@ -32,9 +32,9 @@ class Text extends Model implements HasMediaConversions
     protected $fillable = ['lang_id', 'source_id', 'event_id', 'title', 'text',  //'corpus_id', 
                            'text_xml', 'text_structure', 'comment'];
 
+    use \App\Traits\Modify\TextModify;
+    use \App\Traits\Search\TextSearch;
     use \App\Traits\TextMarkup;
-    use \App\Traits\TextModify;
-    use \App\Traits\TextSearch;
     use HasMediaTrait;
     use \Venturecraft\Revisionable\RevisionableTrait;
 

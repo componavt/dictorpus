@@ -1,4 +1,4 @@
-<?php namespace App\Traits;
+<?php namespace App\Traits\Modify;
 
 use DB;
 

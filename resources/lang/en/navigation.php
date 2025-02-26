@@ -55,6 +55,9 @@ return [
     'motives' => 'Motives',
     'motypes' => 'Motive types',
     'multidict' => 'Multimedia dictionary',
+    
+    'new_meanings' => 'New meanings',
+    
     'omonyms' => 'Omonyms',
     'our_publications' => 'Our publications',
     'participants' => 'Participants',

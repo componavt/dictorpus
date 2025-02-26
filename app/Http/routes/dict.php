@@ -84,6 +84,7 @@ Route::group(
 //        Route::get('meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
         Route::get('meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
         Route::get('meaning/examples/load_more/{id}', 'Dict\MeaningController@loadMoreExamples');
+        Route::get('meaning/full_new_list', 'Dict\MeaningController@fullNewList');
         Route::get('meaning/{meaning_id}/add_label/{label_id}', 'Dict\MeaningController@addLabel');
         Route::get('meaning/{meaning_id}/remove_label/{label_id}', 'Dict\MeaningController@removeLabel');
         Route::get('meaning/{meaning_id}/photo', 'Dict\MeaningController@photo');

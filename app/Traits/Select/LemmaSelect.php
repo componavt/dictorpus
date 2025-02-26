@@ -1,9 +1,12 @@
-<?php namespace App\Traits;
+<?php namespace App\Traits\Select;
+
+use \Venturecraft\Revisionable\Revision;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gram;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\GramsetCategory;
+use App\Models\User;
 
 trait LemmaSelect
 {
@@ -159,5 +162,79 @@ trait LemmaSelect
         }
         return $this->lemma. "\t$comptype\t". join(";", $tmp);
     }
+ 
+    public static function lastCreated($limit='') {
+        $lemmas = self::latest();
+        if ($limit) {
+            $lemmas = $lemmas->take($limit);
+        }
+        $lemmas = $lemmas->get();
+        foreach ($lemmas as $lemma) {
+            $revision = Revision::where('revisionable_type','like','%Lemma')
+                                ->where('key','created_at')
+                                ->where('revisionable_id',$lemma->id)
+                                ->latest()->first();
+            if ($revision) {
+                $lemma->user = User::getNameByID($revision->user_id);
+            }
+        }
+        return $lemmas;
+    }
+    
+    public static function lastUpdated($limit='',$is_grouped=0) {
+        $revisions = Revision::where('revisionable_type','like','%Lemma')
+                            ->where('key','updated_at')
+                            ->groupBy('revisionable_id')
+                            ->latest()->take($limit)->get();
+        $lemmas = [];
+        foreach ($revisions as $revision) {
+            $lemma = self::find($revision->revisionable_id);
+            if ($lemma) {
+                $lemma->user = User::getNameByID($revision->user_id);
+                if ($is_grouped) {
+                    $updated_date = $lemma->updated_at->formatLocalized(trans('main.date_format'));            
+                    $lemmas[$updated_date][] = $lemma;
+                } else {
+                    $lemmas[] = $lemma;
+                }
+            }
+        }
         
+        return $lemmas;
+    }
+    
+    public function allHistory() {
+        $all_history = $this->revisionHistory->filter(function ($item) {
+                            return $item['key'] != 'updated_at'
+                                 && !($item['key'] == 'reflexive' && $item['old_value'] == null && $item['new_value'] == 0);
+                        });
+        foreach ($all_history as $history) {
+            $history->what_created = trans('history.lemma_accusative');
+        }
+        foreach ($this->meanings as $meaning) {
+            foreach ($meaning->revisionHistory as $history) {
+                $history->what_created = trans('history.meaning_accusative', ['num'=>$meaning->meaning_n]);
+            }
+            $all_history = $all_history -> merge($meaning->revisionHistory);
+            foreach($meaning->meaningTexts as $meaning_text) {
+               foreach ($meaning_text->revisionHistory as $history) {
+                   $lang = $meaning_text->lang->name;
+                   $fieldName = $history->fieldName();
+                   $history->field_name = trans('history.'.$fieldName.'_accusative'). ' '
+                           . trans('history.meaning_genetiv',['num'=>$meaning->meaning_n])
+                           . " ($lang)";
+               }
+               $all_history = $all_history -> merge($meaning_text->revisionHistory);
+            }
+        }
+         
+        $all_history = $all_history->sortByDesc('id')
+                      ->groupBy(function ($item, $key) {
+                            return (string)$item['updated_at'];
+                        });
+//dd($all_history);                        
+        return $all_history;
+    }
+    
+    
 }
