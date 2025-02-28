@@ -21,6 +21,11 @@ if($sentence['text']->event && $sentence['text']->event && $sentence['text']->ev
     </span>
 @endif
 
+@if (!empty($with_cyrilic) && !empty($sentence['cyr_s'])) 
+    <i>{!! preg_replace("/w id=\"/", "w id=\"cyr_".$text_id."_", 
+            preg_replace("/w id=\"".$sentence['w_id']."\"/", "w class=\"cyr-word-marked\" id=\"".$sentence['w_id']."\"", $sentence['cyr_s'])) !!}</i><br>
+@endif
+
 @include('corpus.sentence.view', ['sentence_xml' => $sentence['s'], 
                                   'text'=>$sentence['text'], 
                                   'sentence' => $sentence['sent_obj'],

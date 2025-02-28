@@ -371,10 +371,29 @@ trait TextModify
         $this->words()->delete();
         $this->video()->delete();
 
+        if ($this->cyrtext) {
+            $this->cyrtext->delete();
+        }
+        
+        $transtext_id = $this->transtext_id;
+        $this->transtext_id = null;
+        $this->save();
+        Transtext::removeByID($transtext_id);
+        
+        $event_id = $this->event_id;
+        $this->event_id = null;
+        $this->save();
+        Event::removeByID($event_id);
+        
+        $source_id = $this->source_id;
+        $this->source_id = null;
+        $this->save();
+        Source::removeByID($source_id);
+        
         $this->delete();
     }    
 
-    public static function removeAll($text) {
+/*    public static function removeAll($text) {
         $id = $text->id;
         $text_title = $text->title;
 
@@ -389,7 +408,7 @@ trait TextModify
         Source::removeByID($source_id);
 
         return $text_title;
-    }
+    }*/
 
     public function updateXML($text_xml) {
         $this->text_xml = $text_xml;

@@ -19,6 +19,8 @@ use App\Models\Dict\Wordform;
 
 class Word extends Model
 {
+    use \App\Traits\Modify\WordModify;
+    
     public $timestamps = false;
     
     protected $fillable = ['text_id', 'sentence_id', 's_id', 'w_id', 'word', 'word_number'];
@@ -687,68 +689,6 @@ class Word extends Model
         return [$is_word, $str, $word, $words];
     }
 
-    public static function wordAddToSentence($is_word, $word, $str, $word_count) {
-        if ($is_word) { // the previous char is part of a word, the word ends
-            if (!preg_match("/([a-zA-ZА-Яа-яЁё])/u",$word, $regs)) {
-                $str .= $word;
-            } else {
-//dd($regs);
-                $str .= '<w id="'.$word_count++.'">'.$word.'</w>';
-            }
-            $is_word = false;
-        }
-        return [$is_word, $str, $word_count]; 
-    }
-
-    /**
-     * Divides string on words
-     * Suppose that the first and the last symbols of the string are the word chars, they are not special
-     *
-     * @param string $token  text without mark up
-     * @param integer $word_count  initial word count
-     *
-     * @return array text with markup (split to words) and next word count
-     */
-    public static function splitWord($token, $word_count): array
-    {        
-        $str = '';
-        $i = 0;
-        $is_word = TRUE; // the first char enters in a word
-        $words = [];
-        $word = '';
-        while ($i<mb_strlen($token)) {
-            $char = mb_substr($token,$i,1);
-            if ($char == '<') { // begin of a tag 
-                list ($is_word, $str, $word, $words) = self::endWord($is_word, $str, $word, $words, $word_count);
-                list ($i, $str) = self::tagOutWord($token, $i, $str);
-                
-                // the char is a delimeter or white space
-            } elseif (mb_strpos(Sentence::word_delimeters(), $char)!==false || preg_match("/\s/",$char)
-                       // if word is ending with a dash, the dash is putting out of the word
-                      || $is_word && Sentence::dashIsOutOfWord($char, $token, $i) ) { 
-                list ($is_word, $str, $word, $words) = self::endWord($is_word, $str, $word, $words, $word_count);
-                $str .= $char;
-            } else {                
-                // if word is not started AND (the char is not dash or the next char is not special) THEN the new word started
-                if (!$is_word && !Sentence::dashIsOutOfWord($char, $token, $i)) { 
-                    $is_word = true;
-                    $str .= '<w id="'.$word_count++.'">';
-                }
-                if ($is_word) {
-                    $word .= $char;
-                } else {
-                    $str .= $char;            
-                }
-            }
-//print "$i: $char| word: $word| is_word: $is_word| str: $str\n";            
-            $i++;
-        }
-        $str .= $word;
-        $words[$word_count-1] = $word;
-//print "$i: $char| word: $word| str: $str\n";            
-        return [$str, $words]; 
-    }
-    
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request/*, 100*/) + [
                     'search_dialect'  => (int)$request->input('search_dialect'),

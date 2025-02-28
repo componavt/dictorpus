@@ -216,46 +216,13 @@ class WordController extends Controller
      */
     public function edit($text_id, $w_id, Request $request) {
         $word = trim($request->input('word'));
-        
-        $text_obj = Text::findOrFail($text_id);
+        $cyr_word = trim($request->input('cyr_word'));
         
         $word_obj = Word::whereTextId($text_id)
                         ->whereWId($w_id)->first();
         if (!$word_obj) { return; }
         
-        $sent_obj = Sentence::whereTextId($text_id)
-                        ->whereSId($word_obj->s_id)->first();
-        if (!$sent_obj) { return; }
-        
-        $sentence = $sent_obj->text_xml;
-//dd($sent_obj->text_xml);        
-/*        list($sxe,$error_message) = Text::toXML($sent_obj->text_xml,'');
-        if ($error_message) { return; }
-dd($sxe->asXML());        */
-        
-        $next_word_count = Word::nextWId($text_id);
-        
-        list ($str, $words) = Word::splitWord($word, $next_word_count);
-        
-        $i = mb_strpos($sentence, '<w id="'.$w_id.'">');
-        $j = mb_strpos($sentence, '</w>', $i+7);
-        $new_sentence = mb_substr($sentence, 0, $i).'<w id="'.$w_id.'">'.$str.mb_substr($sentence, $j);
-        $sent_obj->text_xml = $new_sentence;
-        $sent_obj->save();
-        
-        $lang_id = $text_obj->lang_id;
-
-        foreach ($words as $k=>$w) {
-            $word_for_search = Grammatic::changeLetters($words[$k],$lang_id);
-            if ($k>=$next_word_count) {
-                $word_obj = Word::create(['text_id' => $text_id, 'sentence_id' => $sent_obj->id, 's_id' => $sent_obj->s_id, 'w_id' => $k, 'word' => $word_for_search]);
-            } else {
-                $word_obj->word = $word_for_search;
-                $word_obj->save();
-            }
-            $word_obj->setMeanings([], $lang_id);
-            $text_obj->setWordforms([], $word_obj);        
-        }
+        $word_obj->splitInSentence($word, $cyr_word);        
     }
     
     /**

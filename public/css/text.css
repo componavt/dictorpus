@@ -12,6 +12,10 @@ s {
     background: #fefea6;
 }
 
+.cyr-word-marked {
+    background: #bef587;
+}
+
 .lemma-linked,
 .call-add-wordform {
     cursor:pointer;

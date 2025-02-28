@@ -182,10 +182,10 @@ function addLemma(text_id, lang_id) {
 }
 
 function loadDataToWordformModal(text_id, w_id, wordform, lang_id, lang_code='ru') {
-console.log('loadDataToWordformModal: wordform='+wordform);    
+//console.log('loadDataToWordformModal: wordform='+wordform);    
     $.ajax({
         url: '/corpus/text/sentence', 
-        data: {text_id: text_id, w_id: w_id },
+        data: {text_id: text_id, w_id: w_id, with_cyrilic:1 },
         type: 'GET',
         success: function(result){
             $("#addWordformSentence").html(result);               
@@ -464,16 +464,25 @@ function editWord(text_id) {
         $("#modalEditWord").modal('show'); 
         var wordform = $( "#choose-wordform" ).val();
         $( "#word" ).val(wordform);
-//alert('editWord#call-edit-word: '+ wordform);    
+//        var cyrtext_w_id = $("#modalEditWord .cyr-word-marked").attr('id');
+        $( "#cyr_word" ).val($("#modalEditWord .cyr-word-marked").html());
+//console.log(cyrtext_w_id);
+        //alert('editWord#call-edit-word: '+ wordform);    
     });
     
     $("#save-word").click(function(){
         var word = $( "#word" ).val();
+        var cyr_word = $( "#cyr_word" ).val();
         var old_wordform = $("#modalEditWord .word-marked").html();
         var text_w_id = $("#modalEditWord .word-marked").attr('id');
         if (word !== old_wordform) {
+            const countOccurrences = (text, search) => (text.match(new RegExp(search, 'g')) || []).length;
+            if (cyr_word && (countOccurrences(word, '¦')>0 || countOccurrences(cyr_word, '¦')>0) && countOccurrences(word, '¦')!==countOccurrences(cyr_word, '¦')) {
+                alert('Слова должны быть разбиты на одинаковое количество частей');
+            } else {
 //alert('editWord#save-word: '+w_id+', '+ old_wordform+', '+ word);    
-            saveWord(text_w_id, word);
+                saveWord(text_w_id, word, cyr_word);
+            }
         } else {
             $("#modalEditWord").modal('hide');
             $("#choose-wordform").focus();
@@ -482,12 +491,15 @@ function editWord(text_id) {
         
 }
 
-function saveWord(text_w_id, word) { 
+function saveWord(text_w_id, word, cyr_word) { 
 //alert('saveWord: '+w_id+', '+ word);    
     $("#save-word").attr("disabled", true);
     $.ajax({
         url: '/corpus/word/edit/' + text_w_id + '/', 
-        data: {word: word},
+        data: {
+            word: word, 
+            cyr_word: cyr_word
+        },
         type: 'GET',
         success: function(){
             location.reload();

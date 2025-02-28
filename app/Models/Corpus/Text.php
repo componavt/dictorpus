@@ -585,6 +585,7 @@ class Text extends Model implements HasMediaConversions
                 's_id' => $s_id,
                 'text' => $text, 
                 'trans_s' => $text->getTransSentence($s_id),
+                'cyr_s' => $text->getCyrSentence($s_id),
                 'w_id' => $w_id, 
                 'relevance' => $relevance]; 
     }
@@ -602,6 +603,21 @@ class Text extends Model implements HasMediaConversions
             }                    
         }
         return mb_ereg_replace('[¦^]', '', $trans_s);
+    }
+
+    public function getCyrSentence($s_id) {
+        $cyr_s = '';
+        if (!empty($this->cyrtext)) {
+            $cyrtext = $this->cyrtext;
+            list($cyr_sxe,$cyr_error) = self::toXML($cyrtext->text_xml,'trans: '.$this->id);
+            if (!$cyr_error) {
+                $cyr_sent = $cyr_sxe->xpath('//s[@id="'.$s_id.'"]');
+                if (isset($cyr_sent[0])) {
+                    $cyr_s = $cyr_sent[0]->asXML();
+                }
+            }                    
+        }
+        return mb_ereg_replace('[¦^]', '', $cyr_s);
     }
 
     public static function lastCreated($limit='') {

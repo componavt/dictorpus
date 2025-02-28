@@ -429,7 +429,8 @@ class TextController extends Controller
             try{
                 $text = Text::find($id);
                 if($text){
-                    $text_title = Text::removeAll($text);
+                    $text_title = $text->title;
+                    $text->remove();
                     $result['message'] = \Lang::get('corpus.text_removed', ['name'=>$text_title]);
                 }
                 else{
@@ -711,6 +712,7 @@ class TextController extends Controller
         if (!$text_id || !$w_id) {
             return;
         }
+        $with_cyrilic = (int)$request->input('with_cyrilic');
         
         $word = Word::getByTextWid($text_id, $w_id);
        
@@ -718,10 +720,11 @@ class TextController extends Controller
             return;
         }
         
-        $sentence = Text::extractSentence($text_id, $word->s_id, $w_id);            
-                                
-        return view('dict.lemma.example.sentence')
-                ->with(['sentence'=>$sentence,'relevance'=>'', 'count'=>'']);
+        $sentence = Text::extractSentence($text_id, $word->s_id, $w_id); 
+        $relevance = $count = '';
+        
+        return view('dict.lemma.example.sentence', 
+                compact('count', 'relevance', 'sentence', 'text_id', 'with_cyrilic'));
     }
     
     /**

@@ -45,7 +45,7 @@
             @endphp
             <div class='to-markup'>
                     <input id="to_makeup" name="to_makeup" type="checkbox" value='1'{{$readonly ? ' disabled' : ''}} 
-                           @if (empty($text->text_xml)) checked @endif>
+                           @if (empty($text->text_structure)) checked @endif>
                     <label id="to_makeup_label" for="to_makeup" 
                     {!!$to_makeup_style!!}>ПЕРЕРАЗМЕТИТЬ</label>
             </div>
