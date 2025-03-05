@@ -119,8 +119,7 @@ return [
     'record_place' => 'recording place',
     'record_year' => 'year of recording',
     'recording_year' => 'year of recording',
-    'recorded' => 'recorded',
-    
+    'recorded' => 'recorded',    
     'record_by' => 'Recorded by',
     'recorder' => 'Recorder',
     'recorder_list' => 'Recorders list',
@@ -130,6 +129,8 @@ return [
     'region' => 'Region',
     'region_list' => 'Region list',
     'region_removed' => 'Region ":name" is removed successfully.',
+    
+    'rgo_info' => 'The materials published on the Audio Map in 2024 were prepared as part of the project "Filling the Audio Map of Karelian and Vepsian Dialects." The project is supported by the Russian Geographical Society.',
     
     'select_corpus' => 'Select corpus',
     'sentences' => 'Sentences',
