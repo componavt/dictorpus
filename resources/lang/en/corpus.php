@@ -99,6 +99,7 @@ return [
     'of_text' => 'of the text',
     'of_texts' => 'of texts',
     'of_topic' => 'of the topic',
+    'of_unchecked_words' => '{0} unchecked words|{1} unchecked word|[2,*] unchecked words.',
     
     'p' => 'p.',
     'parent' => 'parent section',

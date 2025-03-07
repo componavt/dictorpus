@@ -16,10 +16,12 @@ use App\Models\Corpus\Collection;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
+use App\Models\Corpus\Word;
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
@@ -464,5 +466,43 @@ dd(join(',',$transtexts));
         
         $dir_name = "export/olo_dict/";                
         Export::oloDict($dir_name);
+    }
+    
+    public function concordance(Request $request) {
+        $ids = (array)($request->text_id);
+        $table=Text::concordanceForIds($ids);
+//dd($table); 
+
+        $filename = 'export/monuments_concordance.csv';
+        Storage::disk('public')->put($filename, "Часть речи\tФОРМА\tПример\tИсходное написание\tНачальная форма\tПеревод\tКоличество употреблений");
+        foreach ($table as $pos=>$gramsets) {
+            ksort($gramsets);
+            foreach ($gramsets as $gramset => $words) {
+                ksort($words);
+                foreach ($words as $word => $cyrwords) {
+                    ksort($cyrwords);
+                    foreach ($cyrwords as $cyrword => $lemmas) {
+                        ksort($lemmas);
+                        foreach ($lemmas as $lemma => $meanings) {
+                            ksort($meanings);
+                            foreach ($meanings as $meaning => $count) {
+                                $line = $pos."\t".$gramset."\t".$word."\t".$cyrword."\t".$lemma."\t".$meaning."\t".$count;
+                                Storage::disk('public')->append($filename, $line);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+/*        foreach ($new_words as $words) {
+            ksort($words);
+                $line .= "\t\t";
+                foreach ($words as $word => $cyrwords) {
+                    ksort($cyrwords);
+                    $line .= $word."\t";
+                    
+                }
+        }*/
+        print "done.";
     }
 }

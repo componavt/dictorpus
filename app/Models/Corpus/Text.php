@@ -34,6 +34,7 @@ class Text extends Model implements HasMediaConversions
 
     use \App\Traits\Modify\TextModify;
     use \App\Traits\Search\TextSearch;
+    use \App\Traits\Select\TextSelect;
     use \App\Traits\TextMarkup;
     use HasMediaTrait;
     use \Venturecraft\Revisionable\RevisionableTrait;

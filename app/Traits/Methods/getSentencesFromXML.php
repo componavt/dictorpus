@@ -29,4 +29,18 @@ trait getSentencesFromXML
         }
         return $sentences;        
     }
+    public function getWordsFromXML() {
+        $words = [];
+        if (!$this->text_xml) {
+            return $words;
+        }
+        list($sxe,$error_message) = Text::toXML($this->text_xml,$this->id);
+        if ($error_message) {
+            return $words;
+        }
+        foreach ($sxe->xpath('//w') as $w) {
+            $words[(int)$w->attributes()->id] = (string)$w;
+        }
+        return $words;        
+    }
 }

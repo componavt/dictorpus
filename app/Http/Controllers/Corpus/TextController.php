@@ -893,6 +893,27 @@ class TextController extends Controller
         $text->deleteMedia($media->id);
         return Redirect::to('/corpus/text/'.$id.'/photos'.($this->args_by_get))
                     ->withSuccess('Фотография удалена.');
+    }
+    
+    public function concordance(Text $text)
+    {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+       
+        $concordance=$text->concordance();
+        
+        $unchecked_count = Word::whereTextId($text->id)
+                ->whereIn('id', function ($q) use($text) {
+                    $q->select('word_id')->from('meaning_text')
+                      ->whereTextId($text->id);
+                })->whereNotIn('id', function ($q) use($text) {
+                    $q->select('word_id')->from('meaning_text')
+                      ->whereTextId($text->id)
+                      ->where('relevance', '>', 1);
+                })->count();
+        
+        return view('corpus.text.concordance', 
+                compact('text', 'concordance', 'unchecked_count', 'args_by_get', 'url_args'));
     } 
    
 }
