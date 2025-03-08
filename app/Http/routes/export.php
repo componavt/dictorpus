@@ -15,7 +15,7 @@ Route::group(
         Route::get('for_mobile', 'Library\ExportController@forMobile');        
         Route::get('for_speech', 'Library\ExportController@forSpeech');        
         Route::get('lemma_with_pos', 'Library\ExportController@lemmasWithPOS');
-        Route::get('concordance', 'Library\ExportController@concordance'); 
+        Route::get('concordance', 'Library\ExportController@concordance')->name('text.concordance.export'); 
         Route::get('multidict', 'Library\ExportController@multidict');                
         Route::get('multidict_without_concepts', 'Library\ExportController@multidictWithoutConcepts');                
         Route::get('olo_dict', 'Library\ExportController@oloDict');                

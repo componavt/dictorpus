@@ -50,7 +50,7 @@ class TextController extends Controller
                          ['only' => ['create','store','edit','update','destroy',
                                      'addExample', 'checkSentences', 'editExample', 'updateExamples', 
                                      'editSentences', 'photos', 'updatePhotos', 'deletePhoto',                                     
-                                     'markupText', 'markupAllEmptyTextXML','markupAllTexts']]);
+                                     'markupText', 'markupAllEmptyTextXML','markupAllTexts', 'concordance']]);
         $this->url_args = Text::urlArgs($request);  
         $this->url_args_w = remove_empty($this->url_args);
         $this->args_by_get = search_values_by_URL($this->url_args_w);

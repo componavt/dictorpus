@@ -6,7 +6,7 @@ use App\Models\Dict\Gramset;
 trait TextSelect
 {
     public static function concordanceForIds($text_ids) {
-        $texts = Text::whereIn('id', $ids)->get();
+        $texts = self::whereIn('id', $text_ids)->get();
         
         $table = [];
         foreach ($texts as $text) {   
@@ -41,12 +41,13 @@ trait TextSelect
                   ->whereTextId($text_id)
                   ->where('relevance', '>', 1);
             })->first();
-//dd($word, to_sql($gramset));            
+//dd($word, to_sql($gramset));      
+            $cyr_word = empty($cyr_words[$word->w_id]) ? '' : $cyr_words[$word->w_id];
             $gramset_info = !empty($gramset) ? $gramset->gramsetString() : '';
                   //часть речи  грам. признаки             слово норм.  исход. написание         лемма        значение
-            $table[$word->code][$gramset_info][$word->word][$cyr_words[$word->w_id]][$word->lemma][$word->meaning_text] = 
-                    empty ($table[$word->code][$gramset_info][$word->word][$cyr_words[$word->w_id]][$word->lemma][$word->meaning_text]) ? 1
-                    : 1+ $table[$word->code][$gramset_info][$word->word][$cyr_words[$word->w_id]][$word->lemma][$word->meaning_text];
+            $table[$word->code][$gramset_info][$word->word][$cyr_word][$word->lemma][$word->meaning_text] = 
+                    empty ($table[$word->code][$gramset_info][$word->word][$cyr_word][$word->lemma][$word->meaning_text]) ? 1
+                    : 1+ $table[$word->code][$gramset_info][$word->word][$cyr_word][$word->lemma][$word->meaning_text];
         }
         return $table;        
     }
@@ -57,9 +58,10 @@ trait TextSelect
                          $q->select('word_id')->from('meaning_text');
                      })->get();
         foreach ($words as $word) {
-            $table[''][''][$word->word][$cyr_words[$word->w_id]][''][''] 
-                    = empty($table[''][''][$word->word][$cyr_words[$word->w_id]]['']['']) ? 1
-                    : 1+$table[''][''][$word->word][$cyr_words[$word->w_id]][''][''];
+            $cyr_word = empty($cyr_words[$word->w_id]) ? '' : $cyr_words[$word->w_id];
+            $table[''][''][$word->word][$cyr_word][''][''] 
+                    = empty($table[''][''][$word->word][$cyr_word]['']['']) ? 1
+                    : 1+$table[''][''][$word->word][$cyr_word][''][''];
         }
         return $table;        
     }

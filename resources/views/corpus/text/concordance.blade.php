@@ -9,13 +9,16 @@
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/').$args_by_get}}">{{ trans('messages.back_to_list') }}</a> |
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/').$args_by_get }}">{{ trans('messages.back_to_show') }}</a>            
             | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/stats') }}">Вернуться к статистике</a>            
+        @if (user_corpus_edit())
+        | <a href="{{ route('text.concordance.export', ['text_id'=>$text->id]) }}">Скачать</a>
+        @endif
         </p>
         
         <h2>Конкорданс {{ trans('corpus.of_text') }} &laquo;{{ $text->title }}&raquo;</h2>
         
         <p>В конкорданс включены только проверенные и неразмеченные слова.
         @if ($unchecked_count)
-            В тексте осталось {{ number_with_space($unchecked_count, 0, ',', ' ') }} {{ trans('corpus.of_unchecked_words', $unchecked_count%10==0 ? $unchecked_count : ($unchecked_count%100>20 ? $unchecked_count%10  : $unchecked_count%100)) }}.
+            В тексте осталось {{ number_with_space($unchecked_count, 0, ',', ' ') }} {{ trans_choice('corpus.of_unchecked_words', $unchecked_count%10==0 ? $unchecked_count : ($unchecked_count%100>20 ? $unchecked_count%10  : $unchecked_count%100)) }}.
             Чтобы включить их в конкорданс, закончите проверку.
         @endif
         </p>
@@ -25,7 +28,9 @@
                 <th>Часть речи</th>
                 <th>ФОРМА</th>
                 <th>Пример</th>
+        @if (!empty($text->cyrtext))
                 <th>Исходное написание</th>
+        @endif
                 <th>Начальная форма</th>
                 <th>Перевод</th>
                 <th>Количество употреблений</th>
@@ -45,7 +50,9 @@
                 <td>{{ $pos }}</td>
                 <td>{{ $gramset }}</td>
                 <td>{{ $word }}</td>
+            @if (!empty($text->cyrtext))
                 <td>{{ $cyrword }}</td>
+            @endif
                 <td>{{ $lemma }}</td>
                 <td>{{ $meaning }}</td>
                 <td>{{ $count }}</td>

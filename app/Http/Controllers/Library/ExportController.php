@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -31,8 +32,10 @@ use App\Models\Dict\Wordform;
 class ExportController extends Controller
 {
     public function __construct(Request $request) {
+        $for_editors = ['concordance'];
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
-        $this->middleware('auth:admin,/');
+        $this->middleware('auth:admin,/', ['except' =>$for_editors]);
+        $this->middleware('auth:corpus.edit,/', ['only' =>$for_editors]); 
     }
     
     public function index() {
@@ -470,11 +473,20 @@ dd(join(',',$transtexts));
     
     public function concordance(Request $request) {
         $ids = (array)($request->text_id);
+//dd($ids);        
         $table=Text::concordanceForIds($ids);
 //dd($table); 
 
-        $filename = 'export/monuments_concordance.csv';
-        Storage::disk('public')->put($filename, "Часть речи\tФОРМА\tПример\tИсходное написание\tНачальная форма\tПеревод\tКоличество употреблений");
+        $filename = "concordance".date('Y-m-d').".csv";
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $handle = fopen('php://temp', 'r+');
+        fputcsv($handle, ['Часть речи','ФОРМА','Пример','Исходное написание','Начальная форма','Перевод','Количество употреблений']); 
+
         foreach ($table as $pos=>$gramsets) {
             ksort($gramsets);
             foreach ($gramsets as $gramset => $words) {
@@ -486,23 +498,20 @@ dd(join(',',$transtexts));
                         foreach ($lemmas as $lemma => $meanings) {
                             ksort($meanings);
                             foreach ($meanings as $meaning => $count) {
-                                $line = $pos."\t".$gramset."\t".$word."\t".$cyrword."\t".$lemma."\t".$meaning."\t".$count;
-                                Storage::disk('public')->append($filename, $line);
+                                fputcsv($handle, [$pos,$gramset,$word,$cyrword,$lemma,$meaning,$count]);
                             }
                         }
                     }
                 }
             }
         }
-/*        foreach ($new_words as $words) {
-            ksort($words);
-                $line .= "\t\t";
-                foreach ($words as $word => $cyrwords) {
-                    ksort($cyrwords);
-                    $line .= $word."\t";
-                    
-                }
-        }*/
-        print "done.";
+
+        // Перемещаем указатель в начало файла
+        rewind($handle);
+        $csvContent = stream_get_contents($handle);
+        fclose($handle);
+
+        // Возвращаем файл пользователю
+        return Response::make($csvContent, 200, $headers);
     }
 }
