@@ -1,8 +1,15 @@
 <?php $list_count = $url_args['limit_num'] * ($url_args['page']-1) + 1;?>
-        @if ($numAll)
+@if ($numAll)
+    @if (user_corpus_edit())
+        {!! Form::open(['url' => route('text.concordance.export'), 'method' => 'get']) !!}
+    @endif
         <table class="table-bordered table-striped table-wide rwd-table wide-md">
         <thead>
             <tr>
+    @if (user_corpus_edit())
+                <th><input id="toggler" type='checkbox' checked="" 
+                           onChange="toggleChecked(this, '.ids')"></th>
+    @endif
                 <th>No</th>
             @if (!$url_args['search_lang'])
                 <th>{{ trans('dict.lang') }}</th>
@@ -30,6 +37,9 @@
         <tbody>
             @foreach($texts as $text)
             <tr>
+        @if (user_corpus_edit())
+            <td><input class="ids" type="checkbox" name="text_id[]" value="{{ $text->id }}" checked=""></td>
+        @endif
                 <td data-th="No">{{ $list_count++ }}</td>
             @if (!$url_args['search_lang'])
                 <td data-th="{{ trans('dict.lang') }}">{{$text->lang->name}}</td>
@@ -91,5 +101,9 @@
             @endforeach
         </tbody>
         </table>
+    @if (user_corpus_edit())
+        @include('widgets.form.formitem._submit', ['title' => 'Выгрузить конкорданс'])
+        {!! Form::close() !!}
+    @endif
         {!! $texts->appends($url_args_w)->render() !!}
-        @endif
+@endif

@@ -41,6 +41,7 @@
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/search.js')!!}
     {!!Html::script('js/help.js')!!}
+    {!!Html::script('js/form.js')!!}
 @stop
 
 @section('jqueryFunc')
