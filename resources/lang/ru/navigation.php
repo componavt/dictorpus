@@ -22,6 +22,7 @@ return [
     'collections' => 'Коллекции',
     'concept_categories' => 'Категории понятий',
     'concepts' => 'Понятия',
+    'concordance' => 'Конкорданс',
     'copy_lemmas' => 'Копирование лемм',
     'corpus' => 'Корпус',
     'corpus_freq' => 'Частотные словари',

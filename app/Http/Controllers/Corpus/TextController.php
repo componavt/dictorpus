@@ -47,7 +47,7 @@ class TextController extends Controller
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
-                         ['only' => ['create','store','edit','update','destroy',
+                         ['only' => ['create','store','edit','update','destroy', 'stats',
                                      'addExample', 'checkSentences', 'editExample', 'updateExamples', 
                                      'editSentences', 'photos', 'updatePhotos', 'deletePhoto',                                     
                                      'markupText', 'markupAllEmptyTextXML','markupAllTexts', 'concordance']]);
@@ -811,7 +811,7 @@ class TextController extends Controller
         
         $checked_words = $text->markedWords('checked')->count();
         $checkedWordsToMarked = round(100 * $checked_words / $markedWords);
-        
+//dd($totalWords);        
         $lemmas = Lemma::whereIn('id', function ($q) use ($id) {
                             $q->select('lemma_id')->from('meanings')
                               ->whereIn('id', function ($q2) use ($id) {
@@ -820,6 +820,7 @@ class TextController extends Controller
                                   ->where('relevance', '<>', 0);
                              });
                          });
+//dd($lemmas)                         
         $totalLemmas = $lemmas->count();
         $lemmas_by_pos = [];
         foreach ($lemmas->groupBy('pos_id')->orderBy('count', 'DESC')->selectRaw('pos_id, count(*) as count')->get() as $row) {

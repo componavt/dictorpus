@@ -15,7 +15,7 @@
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/').$args_by_get}}">{{ trans('messages.back_to_list') }}</a> |
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/').$args_by_get }}">{{ trans('messages.back_to_show') }}</a>            
         @if (user_corpus_edit())
-            | <a href="{{ route('text.concordance', $text) }}">Конкорданс</a>
+            | <a href="{{ route('text.concordance', $text) }}">{{ trans('navigation.concordance') }}</a>
         @endif
         </p>
         

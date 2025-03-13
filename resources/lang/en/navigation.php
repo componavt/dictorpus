@@ -21,6 +21,7 @@ return [
     'collections' => 'Collections',
     'concept_categories' => 'Concept categories',
     'concepts' => 'Сoncepts',
+    'concordance' => 'Concordance',
     'copy_lemmas' => 'Copying lemmas',
     'corpus' => 'Corpus',
     'corpus_freq' => 'Frequency vocabularies',
