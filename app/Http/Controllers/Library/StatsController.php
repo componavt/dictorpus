@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Library;
 
-//use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -33,7 +33,7 @@ class StatsController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/text/', 
+        $this->middleware('auth:corpus.edit,/', 
                          ['only' => ['byCorpMarkup']]);
     }
     
