@@ -806,6 +806,7 @@ class TextController extends Controller
         $args_by_get = $this->args_by_get;
         $text = Text::find($id);
         $totalWords = $text->words()->count();
+//dd(to_sql($text->markedWords()));        
         $markedWords = $text->markedWords()->count();
         $markedWordsToAll = round(100 * $markedWords / $totalWords);
         

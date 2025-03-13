@@ -167,8 +167,10 @@ class Text extends Model implements HasMediaConversions
     }
     
     public function markedWords($status='all') {
-        return $this->words()->whereIn('id', function ($q) use ($status) {
-            $q->select('word_id')->from('meaning_text');
+        $text_id = $this->id;
+        return $this->words()->whereIn('id', function ($q) use ($status, $text_id) {
+            $q->select('word_id')->from('meaning_text')
+              ->whereTextId($text_id);
             if ($status=='checked') {
                 $q->where('relevance','>','1');
             }

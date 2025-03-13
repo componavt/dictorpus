@@ -25,6 +25,18 @@ use App\Models\Dict\LemmaWordform;
 
 class StatsController extends Controller
 {
+     /**
+     * Instantiate a new new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(Request $request)
+    {
+        // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
+        $this->middleware('auth:corpus.edit,/corpus/text/', 
+                         ['only' => ['byCorpMarkup']]);
+    }
+    
     public function index()
     {
         return view('stats.index');
