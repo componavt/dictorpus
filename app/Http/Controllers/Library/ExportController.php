@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use PhpOffice\PhpWord\Settings;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -17,12 +18,12 @@ use App\Models\Corpus\Collection;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
-use App\Models\Corpus\Word;
+//use App\Models\Corpus\Word;
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
-use App\Models\Dict\Gramset;
+//use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
@@ -513,5 +514,31 @@ dd(join(',',$transtexts));
 
         // Возвращаем файл пользователю
         return Response::make($csvContent, 200, $headers);
+    }
+    
+    public function annotatedText1(Text $text) {
+        Settings::setTempDir(env('TMP_DIR'));
+        return response()->download($text->annotatedText1Export(env('TMP_DIR')))
+                ->deleteFileAfterSend(true);
+
+//        return response()->download($filePath)->deleteFileAfterSend(true);
+    }
+    
+    public function annotatedText2(Text $text) {
+    }
+    
+    public function sentencesWithTranslation () {
+        $lang_id=5;
+        $dialect_id=44;
+        $dir_name = "export/livvic_sentences/";                
+        
+        $texts = Text::whereLangId($lang_id)
+                     ->whereNotNull('transtext_id')
+                     ->whereIn('id', function ($q) use ($dialect_id) {
+                        $q->select('text_id')->from('dialect_text')
+                          ->whereDialectId($dialect_id);
+                     })->orderBy('id')->get();
+//dd($texts->count());                     
+        Export::sentencesWithTranslation($texts, $dir_name);             
     }
 }

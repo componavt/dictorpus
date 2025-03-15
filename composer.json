@@ -17,7 +17,7 @@
         "anhskohbo/no-captcha": "*",
         "doctrine/dbal": "v2.4.2",
         "consoletvs/charts": "6.*",
-        "phpoffice/phpword": "^0.18.3",
+        "phpoffice/phpword": "0.18",
         "spatie/laravel-medialibrary": "4.0.0"
     },
     "require-dev": {

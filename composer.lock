@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53a3b1e65799e50ddb62f6b4b46ede03",
+    "content-hash": "3aca00aaabb3e06660e98f3ac05ee214",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -3043,22 +3043,25 @@
         },
         {
             "name": "phpoffice/phpword",
-            "version": "0.18.3",
+            "version": "0.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PHPWord.git",
-                "reference": "be0190cd5d8f95b4be08d5853b107aa4e352759a"
+                "reference": "1bd7cd62381051db6d6c7174d3c95a3ada48bc0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PHPWord/zipball/be0190cd5d8f95b4be08d5853b107aa4e352759a",
-                "reference": "be0190cd5d8f95b4be08d5853b107aa4e352759a",
+                "url": "https://api.github.com/repos/PHPOffice/PHPWord/zipball/1bd7cd62381051db6d6c7174d3c95a3ada48bc0f",
+                "reference": "1bd7cd62381051db6d6c7174d3c95a3ada48bc0f",
                 "shasum": ""
             },
             "require": {
                 "ext-xml": "*",
                 "laminas/laminas-escaper": "^2.2",
                 "php": "^5.3.3 || ^7.0 || ^8.0"
+            },
+            "replace": {
+                "laminas/laminas-zendframework-bridge": "*"
             },
             "require-dev": {
                 "dompdf/dompdf": "0.8.* || 1.0.*",
@@ -3083,7 +3086,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "0.19-dev"
+                    "dev-develop": "0.18-dev"
                 }
             },
             "autoload": {
@@ -3149,9 +3152,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PHPWord/issues",
-                "source": "https://github.com/PHPOffice/PHPWord/tree/0.18.3"
+                "source": "https://github.com/PHPOffice/PHPWord/tree/0.18.0"
             },
-            "time": "2022-02-17T15:40:03+00:00"
+            "time": "2021-02-12T21:28:06+00:00"
         },
         {
             "name": "psr/cache",

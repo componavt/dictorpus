@@ -11,6 +11,7 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
+use App\Models\Corpus\Sentence;
 use App\Models\Dict\Wordform;
 
 class Export
@@ -186,5 +187,37 @@ class Export
             $count++;
         }
         print 'done.';
+    }
+    
+    /**
+     * Collection $texts
+     */
+    public static function sentencesWithTranslation($texts, $dir_name) {
+//dd($texts->pluck('id')->toArray());        
+        
+        $filename = $dir_name."forYandex_".date('Y-m-d').".csv";
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+        $handle = fopen('php://temp', 'r+');
+        foreach ($texts as $text) {
+            foreach ($text->sentencesWithTranslation() as $s) {
+                fputcsv($handle, [$s[0], $s[1]], "\t");
+            }
+        }
+        foreach (Text::sentencesFromOlodict($texts->pluck('id')->toArray()) as $s) {
+            fputcsv($handle, [$s[0], $s[1]], "\t");
+        }
+       
+    // Переместить указатель в начало файла
+    rewind($handle);
+    $csvContent = stream_get_contents($handle);
+    fclose($handle);
+
+    // Сохранение файла в хранилище
+    Storage::disk('public')->put($filename, $csvContent);
+
+    echo "Файл сохранен: " . storage_path('app/public/' . $filename);
     }
 }

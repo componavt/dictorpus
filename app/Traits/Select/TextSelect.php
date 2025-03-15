@@ -1,7 +1,16 @@
 <?php namespace App\Traits\Select;
 
+use DB;
+
+use App\Library\Grammatic\KarGram;
+
 use App\Models\Corpus\Word;
+use App\Models\Corpus\Sentence;
+use App\Models\Corpus\SentenceFragment;
+use App\Models\Corpus\SentenceTranslation;
+
 use App\Models\Dict\Gramset;
+use App\Models\Dict\Meaning;
 
 trait TextSelect
 {
@@ -64,5 +73,75 @@ trait TextSelect
                     : 1+$table[''][''][$word->word][$cyr_word][''][''];
         }
         return $table;        
+    }
+    
+    /**
+     * возвращает массив предложений с переводами, первым элементом - заголовки текста
+     * @return array
+     */
+    public function sentencesWithTranslation() {
+        $out = [];
+        $transtext = $this->transtext;
+        if (empty($transtext)) {
+            return $out;
+        }
+        $trans_sentences = $transtext->getSentencesFromXML();
+        if (empty($trans_sentences)) {
+            return $out;
+        }
+        // либо нет цифр в переводе, либо цифры есть в оригинале
+        if (!preg_match("/\d+/", $transtext->title) || preg_match("/\d+/", $this->title)) {
+            $out[] = [$this->title, $transtext->title];
+        }
+        $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
+        foreach ($sentences as $sentence) {
+            $s = KarGram::changeLetters(preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($sentence->text_xml))));
+            $ts = preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($trans_sentences[$sentence->s_id]['sentence'])));
+            $out[] = [$s, $ts];
+        }
+        return $out;
+    }
+
+// select text_id, s_id from meaning_text where relevance=10 and meaning_id in (select id from meanings where lemma_id in 
+// (select lemma_id from label_lemma where label_id=3 and status=1)) group by text_id, s_id;
+    public static function sentencesFromOlodict($without_text_ids=[]) {
+        $label_id=3;
+        $out = $sids = [];
+        $meanings = Meaning::whereIn('lemma_id', function ($q) use ($label_id) {
+            $q->select('lemma_id')->from('label_lemma')
+              ->whereLabelId($label_id)
+              ->whereStatus(1);
+        })->get();
+        foreach ($meanings as $meaning) {
+            $mtexts = DB::table('meaning_text')->whereMeaningId($meaning->id)
+                        ->whereNotIn('text_id', $without_text_ids)
+                        ->whereRelevance(10)->get();
+            foreach ($mtexts as $mtext) {
+                $sids[$mtext->text_id][$mtext->s_id][]=$mtext->w_id;
+            }
+        }
+        foreach ($sids as $text_id => $sents) {
+            $text = self::find($text_id);
+            if (empty($text)) {
+                continue;
+            }
+            $trans_sentences = !empty($text->transtext) ? $text->transtext->getSentencesFromXML() : [];
+            foreach ($sents as $s_id=>$w_ids) {
+                $sentence = Sentence::whereTextId($text_id)->whereSId($s_id)->first();
+                foreach ($w_ids as $w_id) {
+                    $fragment = SentenceFragment::getBySW($sentence->id, $w_id);
+                    $s = KarGram::changeLetters(preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($fragment ? $fragment->text_xml: $sentence->text_xml))));
+                    $ts = process_text(SentenceTranslation::getTextForLocale($sentence->id, $w_id));
+                    if (empty($ts) && !empty($trans_sentences[$s_id])) {
+                        $ts = $trans_sentences[$s_id]['sentence'];
+                    }
+                    if (empty($ts)) {
+                        continue;
+                    }
+                    $out[] = [$s, preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($ts)))];
+                }
+            }
+        }
+        return $out;
     }
 }

@@ -65,7 +65,6 @@ Route::group(
         Route::post('spellchecking', 'Corpus\TextController@analysSpellchecking');
         
         Route::get('text/{id}/check_sentence', 'Corpus\TextController@checkSentences')->name('text.check_sentences');
-        Route::get('text/{text}/concordance', 'Corpus\TextController@concordance')->name('text.concordance');
         Route::get('text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
         Route::get('text/{id}/history', 'Corpus\TextController@history');
         Route::get('text/{id}/markup', 'Corpus\TextController@markupText');
@@ -76,6 +75,7 @@ Route::group(
         Route::get('text/{id}/stats', 'Corpus\TextController@stats');
         Route::post('text/{id}/update/examples', 'Corpus\TextController@updateExamples')
                         ->name('text.update.examples');
+        Route::get('text/{text}/concordance', 'Corpus\TextController@concordance')->name('text.concordance');
         Route::get('text/add_example/{example_id}', 'Corpus\TextController@addExample');
         Route::get('text/frequency/lemmas', 'Dict\LemmaController@frequencyInTexts');
         Route::get('text/frequency/symbols', 'Corpus\TextController@frequencySymbols');
