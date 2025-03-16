@@ -1,28 +1,73 @@
 <?php namespace App\Traits\Export;
 
-use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\IOFactory;
-use PhpOffice\PhpWord\SimpleType\JcTable;
+//use PhpOffice\PhpWord\PhpWord;
+//use PhpOffice\PhpWord\IOFactory;
+//use PhpOffice\PhpWord\SimpleType\JcTable;
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Corpus\Sentence;
 
 trait TextExport
 {
-    public function annotatedText1Export(/*$dir*/) {
-        $handle = fopen('php://temp', 'r+');
+    public function annotatedText1Export($dir) {
+        $filePath = $dir.'/annotated1_'.$this->id.'.xlsx';
+        // Создаем Excel-Writer
+        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer->openToFile($filePath); // Сохранение в файл
+        // Заголовки
+//        $headerRow = WriterEntityFactory::createRowFromArray(['ID', 'Имя', 'Email']);
+  //      $writer->addRow($headerRow);
+
         $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
         $trans_sentences = empty($this->transtext) ? [] : $this->transtext->getSentencesFromXML();
         $cyr_sentences = empty($this->cyrtext) ? [] : $this->cyrtext->getSentencesFromXML(true);
         foreach ($sentences as $sentence) {
             $words = $this->words()->whereSId($sentence->s_id)->orderBy('w_id')->get();
             $words_count = sizeof($words);
+            $row = $empty_row = array_fill(0, $words_count, "");
             if (!empty($cyr_sentences[$sentence->s_id])) {
-                fputcsv($handle, [strip_tags($cyr_sentences[$sentence->s_id]['sentence'])]);                     
+                $row[0] = strip_tags($cyr_sentences[$sentence->s_id]['sentence']);
+                $writer->addRow(WriterEntityFactory::createRowFromArray($row));
             }
             if (!empty($trans_sentences[$sentence->s_id])) {
-                fputcsv($handle, [strip_tags($trans_sentences[$sentence->s_id]['sentence'])]);                     
+                $row[0] = strip_tags($trans_sentences[$sentence->s_id]['sentence']);
+                $writer->addRow(WriterEntityFactory::createRowFromArray($row));
             }
-            fputcsv($handle, [strip_tags($sentence->text_xml)]);     
+            $row[0] = strip_tags($sentence->text_xml);
+            $writer->addRow(WriterEntityFactory::createRowFromArray($row));
+            
+            $out = [];
+            foreach ($words as $word) {
+                $out[4][$word->w_id]=$word->word;
+            }
+//dd($out);            
+            $writer->addRow(WriterEntityFactory::createRowFromArray($out[4]));
+            $writer->addRow(WriterEntityFactory::createRowFromArray($empty_row));
+            $writer->addRow(WriterEntityFactory::createRowFromArray($empty_row));
+        }
+
+        $writer->close(); // Закрываем файл
+        return $filePath;
+        
+/*        $handle = fopen('php://temp', 'r+');
+        $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
+        $trans_sentences = empty($this->transtext) ? [] : $this->transtext->getSentencesFromXML();
+        $cyr_sentences = empty($this->cyrtext) ? [] : $this->cyrtext->getSentencesFromXML(true);
+        foreach ($sentences as $sentence) {
+            $words = $this->words()->whereSId($sentence->s_id)->orderBy('w_id')->get();
+            $words_count = sizeof($words);
+            $row = array_fill(0, $words_count, "\u{00A0}");
+            if (!empty($cyr_sentences[$sentence->s_id])) {
+                $row[0] = strip_tags($cyr_sentences[$sentence->s_id]['sentence']);
+                fputcsv($handle, $row, "\t");                     
+            }
+            if (!empty($trans_sentences[$sentence->s_id])) {
+                $row[0] = strip_tags($trans_sentences[$sentence->s_id]['sentence']);
+                fputcsv($handle, $row, "\t");                     
+            }
+            $row[0] = strip_tags($sentence->text_xml);
+            fputcsv($handle, $row, "\t");                     
             
             $out = [];
             foreach ($words as $word) {
@@ -37,7 +82,7 @@ trait TextExport
         $csvContent = stream_get_contents($handle);
         fclose($handle);
         
-        return $csvContent;
+        return $csvContent;*/
 /*        $phpWord = new PhpWord();
         $phpWord->setDefaultFontName('Times New Roman'); // Название шрифта
         $phpWord->setDefaultFontSize(12); // Размер шрифта

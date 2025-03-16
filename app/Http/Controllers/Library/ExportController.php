@@ -517,16 +517,16 @@ dd(join(',',$transtexts));
     }
     
     public function annotatedText1(Text $text) {
-        $filename = 'annotated1_'.$text->id.'.csv';
+/*        $filename = 'annotated1_'.$text->id.'.csv';
         $headers = [
             'Content-Type' => 'text/csv; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
         $csvContent = $text->annotatedText1Export();
-        return Response::make($csvContent, 200, $headers);
-/*        Settings::setTempDir(env('TMP_DIR'));
+        return Response::make($csvContent, 200, $headers);*/
+        Settings::setTempDir(env('TMP_DIR'));
         return response()->download($text->annotatedText1Export(env('TMP_DIR')))
-                ->deleteFileAfterSend(true);*/
+                ->deleteFileAfterSend(true);
     }
     
     public function annotatedText2(Text $text) {

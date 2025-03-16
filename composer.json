@@ -18,7 +18,8 @@
         "doctrine/dbal": "v2.4.2",
         "consoletvs/charts": "6.*",
         "phpoffice/phpword": "0.18",
-        "spatie/laravel-medialibrary": "4.0.0"
+        "spatie/laravel-medialibrary": "4.0.0",
+        "box/spout": "3.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
