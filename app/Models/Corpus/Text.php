@@ -344,10 +344,10 @@ class Text extends Model implements HasMediaConversions
         }
 //dd($text_xml);        
         $sxe = simplexml_load_string($text_xml);
-//dd($text_xml);       
+//dd($id, $text_xml);       
         $error_text = '';
         if (!$sxe) {
-            $error_text = "XML loading error". ' ('.$id.": $text_xml)\n";
+            $error_text = "XML loading error". ' (text_id='.$id.": $text_xml)\n";
             foreach(libxml_get_errors() as $error) {
                 $error_text .= "\t". $error->message;
             }

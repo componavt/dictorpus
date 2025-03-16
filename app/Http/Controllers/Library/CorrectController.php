@@ -248,6 +248,7 @@ print '<p>'.$text->id.'</p>';
 //dd($texts);       
         foreach ($texts as $text) {
 //dd($text->id);            
+//dd($text->text_xml);  
             list($sxe,$error_message) = Text::toXML($text->text_xml, $text->id);
 //dd($text->text_xml);  
 //dd($sxe);            

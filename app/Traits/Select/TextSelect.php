@@ -79,34 +79,36 @@ trait TextSelect
      * возвращает массив предложений с переводами, первым элементом - заголовки текста
      * @return array
      */
-    public function sentencesWithTranslation() {
-        $out = [];
+    public function sentencesWithTranslation($sentences) {
         $transtext = $this->transtext;
         if (empty($transtext)) {
-            return $out;
+            return $sentences;
         }
         $trans_sentences = $transtext->getSentencesFromXML();
         if (empty($trans_sentences)) {
-            return $out;
+            return $sentences;
         }
         // либо нет цифр в переводе, либо цифры есть в оригинале
         if (!preg_match("/\d+/", $transtext->title) || preg_match("/\d+/", $this->title)) {
-            $out[] = [$this->title, $transtext->title];
+            $sentences[$this->title] = $transtext->title;
         }
-        $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
-        foreach ($sentences as $sentence) {
-            $s = KarGram::changeLetters(preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($sentence->text_xml))));
-            $ts = preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($trans_sentences[$sentence->s_id]['sentence'])));
-            $out[] = [$s, $ts];
+        $sents = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
+        foreach ($sents as $sentence) {
+            $s = KarGram::changeLetters(self::clearText($sentence->text_xml));
+            $ts = self::clearText($trans_sentences[$sentence->s_id]['sentence']);
+//            $sentences[!empty($s) ? $s : $this->id.'_'.$sentence->s_id] = $ts;
+            if (!empty($s)) {
+                $sentences[$s] = $ts;
+            }
         }
-        return $out;
+        return $sentences;
     }
 
 // select text_id, s_id from meaning_text where relevance=10 and meaning_id in (select id from meanings where lemma_id in 
 // (select lemma_id from label_lemma where label_id=3 and status=1)) group by text_id, s_id;
-    public static function sentencesFromOlodict($without_text_ids=[]) {
+    public static function sentencesFromOlodict($sentences, $without_text_ids=[]) {
         $label_id=3;
-        $out = $sids = [];
+        $sids = [];
         $meanings = Meaning::whereIn('lemma_id', function ($q) use ($label_id) {
             $q->select('lemma_id')->from('label_lemma')
               ->whereLabelId($label_id)
@@ -130,7 +132,7 @@ trait TextSelect
                 $sentence = Sentence::whereTextId($text_id)->whereSId($s_id)->first();
                 foreach ($w_ids as $w_id) {
                     $fragment = SentenceFragment::getBySW($sentence->id, $w_id);
-                    $s = KarGram::changeLetters(preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($fragment ? $fragment->text_xml: $sentence->text_xml))));
+                    $s = KarGram::changeLetters(self::clearText($fragment ? $fragment->text_xml: $sentence->text_xml));
                     $ts = process_text(SentenceTranslation::getTextForLocale($sentence->id, $w_id));
                     if (empty($ts) && !empty($trans_sentences[$s_id])) {
                         $ts = $trans_sentences[$s_id]['sentence'];
@@ -138,10 +140,18 @@ trait TextSelect
                     if (empty($ts)) {
                         continue;
                     }
-                    $out[] = [$s, preg_replace("/\^/", "", preg_replace("/\s+/", " ", strip_tags($ts)))];
+                    $sentences[!empty($s) ? $s : $text_id.'_'.$s_id] = self::clearText($ts);
                 }
             }
         }
-        return $out;
+        return $sentences;
+    }
+    
+    public static function clearText($text) {
+        return preg_replace("/^\[*\s*[\.\,\–\–\—\-\‒:\d\s\*]+/u", "", 
+                    preg_replace("/[\^\|¦]/u", "", 
+                            preg_replace("/\s+/", " ", 
+                                    trim(
+                                            strip_tags($text)))));
     }
 }

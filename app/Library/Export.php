@@ -201,23 +201,25 @@ class Export
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
         $handle = fopen('php://temp', 'r+');
+        $sentences = [];
         foreach ($texts as $text) {
-            foreach ($text->sentencesWithTranslation() as $s) {
-                fputcsv($handle, [$s[0], $s[1]], "\t");
-            }
+//dd($text->sentencesWithTranslation());   
+            $sentences = $text->sentencesWithTranslation($sentences);
         }
-        foreach (Text::sentencesFromOlodict($texts->pluck('id')->toArray()) as $s) {
-            fputcsv($handle, [$s[0], $s[1]], "\t");
+        $sentences = Text::sentencesFromOlodict($sentences, $texts->pluck('id')->toArray());
+        foreach ($sentences as $s=>$ts) {
+            fputcsv($handle, [$s, $ts], "\t"); // с кавычками
+//            fwrite($handle, $s."\t".$ts."\n");
         }
        
-    // Переместить указатель в начало файла
-    rewind($handle);
-    $csvContent = stream_get_contents($handle);
-    fclose($handle);
+        // Переместить указатель в начало файла
+        rewind($handle);
+        $csvContent = stream_get_contents($handle);
+        fclose($handle);
 
-    // Сохранение файла в хранилище
-    Storage::disk('public')->put($filename, $csvContent);
+        // Сохранение файла в хранилище
+        Storage::disk('public')->put($filename, $csvContent);
 
-    echo "Файл сохранен: " . storage_path('app/public/' . $filename);
+        echo "Файл сохранен: " . storage_path('app/public/' . $filename);
     }
 }
