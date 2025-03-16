@@ -16,8 +16,8 @@
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/').$args_by_get }}">{{ trans('messages.back_to_show') }}</a>            
         @if (user_corpus_edit())
             | <a href="{{ route('text.concordance', $text) }}">{{ trans('navigation.concordance') }}</a>
-            | <a href="{{ route('text.annotated1.export', $text) }}">Аннотированный (1 вариант)</a>
-            | <a href="{{ route('text.annotated2.export', $text) }}">Аннотированный (2 вариант)</a>
+            | <b>Аннотированный текст</b> (<a href="{{ route('text.annotated.export', ['text'=>$text, 'type'=>1]) }}">1 вариант</a>,
+            <a href="{{ route('text.annotated.export', ['text'=>$text, 'type'=>2]) }}">2 вариант</a>)
         @endif
         </p>
         

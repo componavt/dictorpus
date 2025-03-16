@@ -60,6 +60,7 @@ trait TextSelect
         }
         return $table;        
     }
+    
 // select count(*) from text_wordform where word_id >0 and word_id not in (select id from words);
     public function concordanceForNew($table, $cyr_words) {
         $words = Word::where('words.text_id', $this->id)

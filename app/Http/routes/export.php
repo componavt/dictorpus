@@ -17,8 +17,7 @@ Route::group(
         Route::get('lemma_with_pos', 'Library\ExportController@lemmasWithPOS');
         Route::get('concordance', 'Library\ExportController@concordance')->name('text.concordance.export'); 
         Route::get('sentences_with_translation', 'Library\ExportController@sentencesWithTranslation');
-        Route::get('text/annotated1/{text}', 'Library\ExportController@annotatedText1')->name('text.annotated1.export'); 
-        Route::get('text/annotated2/{text}', 'Library\ExportController@annotatedText2')->name('text.annotated2.export'); 
+        Route::get('text/{text}/annotated/{type}', 'Library\ExportController@annotatedText')->name('text.annotated.export'); 
         Route::get('multidict', 'Library\ExportController@multidict');                
         Route::get('multidict_without_concepts', 'Library\ExportController@multidictWithoutConcepts');                
         Route::get('olo_dict', 'Library\ExportController@oloDict');                

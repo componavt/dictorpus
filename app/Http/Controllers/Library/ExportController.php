@@ -516,20 +516,17 @@ dd(join(',',$transtexts));
         return Response::make($csvContent, 200, $headers);
     }
     
-    public function annotatedText1(Text $text) {
-/*        $filename = 'annotated1_'.$text->id.'.csv';
+    public function annotatedText(Text $text, $type) {
+/**        $filename = 'annotated1_'.$text->id.'.csv';
         $headers = [
             'Content-Type' => 'text/csv; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
         $csvContent = $text->annotatedText1Export();
-        return Response::make($csvContent, 200, $headers);*/
+        return Response::make($csvContent, 200, $headers);**/
         Settings::setTempDir(env('TMP_DIR'));
-        return response()->download($text->annotatedText1Export(env('TMP_DIR')))
+        return response()->download($text->annotatedTextExport(env('TMP_DIR'), $type))
                 ->deleteFileAfterSend(true);
-    }
-    
-    public function annotatedText2(Text $text) {
     }
     
     public function sentencesWithTranslation () {

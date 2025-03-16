@@ -740,4 +740,14 @@ print "<p>sentence_id=".$this->sentence_id.", word_id=".$this->id."<br>\n".$new_
         return $word;
     }
     
+    public function checkedGramset() {
+        $word = $this;
+        return Gramset::whereIn('id', function ($q) use ($word) {
+            $q->select('gramset_id')->from('text_wordform')
+              ->whereWId($word->w_id)
+              ->whereTextId($word->text_id)
+              ->where('relevance', '>', 1);
+        })->first();        
+    }
+    
 }
