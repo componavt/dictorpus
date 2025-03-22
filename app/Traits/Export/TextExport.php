@@ -28,49 +28,10 @@ trait TextExport
         
         foreach ($sentences as $sentence) {
             $words = $this->words()->whereSId($sentence->s_id)->orderBy('w_id')->get();
-            $words_count = sizeof($words);
-            if (!empty($cyr_sentences[$sentence->s_id])) {
-                $sheet->setCellValue('A'.$row++, strip_tags($cyr_sentences[$sentence->s_id]['sentence']));
-            }
-            if (!empty($trans_sentences[$sentence->s_id])) {
-                $sheet->setCellValue('A'.$row++, strip_tags($trans_sentences[$sentence->s_id]['sentence']));
-            }
-            $sheet->setCellValue('A'.$row++, trim(strip_tags($sentence->text_xml)));
-            
-            $out = [];
-            $i = 1;
-            foreach ($words as $word) {
-                $letter = Coordinate::stringFromColumnIndex($i);   
-                $gramset = $word->checkedGramset();
-                $meaning = $word->checkedMeaning();
-                $mg = [!empty($meaning) ? $meaning->textByLangCode('ru') : '',
-                       !empty($gramset) ? $gramset->gramsetString() : ''];  
-                if ($type == 2) {
-                    $out[1][$letter]= join("- ", $mg);
-                } else {
-                    $out[1][$letter]=$mg[0];
-                    $out[2][$letter]=$mg[1];                    
-                }
-                $out[3][$letter]= empty($cyr_words[$word->w_id]) ? '' : $cyr_words[$word->w_id];
-                $out[4][$letter]=$word->word;
-                $i++;
-            }
-//dd($out);            
-//        $sheet->getRowDimension(1)->setRowHeight(30);
-            foreach ($out as $r) {
-//                $sheet->getRowDimension($row)->setRowHeight(-1); // автоматическая высота строки                    
-                foreach ($r as $letter => $c) {
-                    $cell = $letter.$row;
-                    $sheet->setCellValue($cell, empty($c) ? "\u{2002}" : $c);
-                    
-                    $sheet->getStyle($cell)->getAlignment()->setWrapText(true); // перенос по словам                    
-                    $sheet->getStyle($cell)->getAlignment()->setVertical(Alignment::VERTICAL_TOP); // вертикальное выравнивание по верху
-                    $sheet->getStyle($cell)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN); // рамка //BORDER_MEDIUM
-//                    $sheet->getStyle($cell)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setIndent(1); 1 cлишком много, дробные не поддерживаются
-                } 
-                $row++;
-            }
-            
+            list($sheet, $row) = $this->{'annotatedTextExportSentence'.($type==3 ? '3' : '')}($sheet, $row, trim(strip_tags($sentence->text_xml)),
+                    strip_tags($cyr_sentences[$sentence->s_id]['sentence']), 
+                    strip_tags($trans_sentences[$sentence->s_id]['sentence']));            
+            list($sheet, $row) = $this->{'annotatedTextExportWords'.($type==3 ? '3' : '')}($sheet, $words, $cyr_words, $row, $type);
             $sheet->setCellValue('A'.$row++, "");
             $sheet->setCellValue('A'.$row++, "");
         }
@@ -191,6 +152,85 @@ trait TextExport
         $writer = IOFactory::createWriter($phpWord, 'Word2007');
         $writer->save($filePath);
 */        
+    }
+    
+    public function annotatedTextExportSentence($sheet, $row, $sentence, $cyr_sentence, $trans_sentence) {
+        if (!empty($cyr_sentence)) {
+            $sheet->setCellValue('A'.$row++, $cyr_sentence);
+        }
+        if (!empty($trans_sentence)) {
+            $sheet->setCellValue('A'.$row++, $trans_sentence);
+        }
+        $sheet->setCellValue('A'.$row++, $sentence);
+        return [$sheet, $row];
+    }
+    
+    public function annotatedTextExportSentence3($sheet, $row, $sentence, $cyr_sentence, $trans_sentence) {
+        $sheet = $this->sheetCellSet($sheet, 'A'.$row, !empty($cyr_sentence) ? $cyr_sentence : '');
+        $sheet = $this->sheetCellSet($sheet, 'C'.$row, !empty($trans_sentence) ? $trans_sentence : '');
+        $sheet = $this->sheetCellSet($sheet, 'B'.$row, $sentence);
+        $row++;
+        return [$sheet, $row];
+    }
+    
+    public function annotatedTextExportWords($sheet, $words, $cyr_words, $row, $type=1) {
+        $out = [];
+        $i = 1;
+        foreach ($words as $word) {
+            $letter = Coordinate::stringFromColumnIndex($i);   
+            $gramset = $word->checkedGramset();
+            $meaning = $word->checkedMeaning();
+            $mg = [!empty($meaning) ? $meaning->textByLangCode('ru') : ''];
+            if (!empty($gramset)) {
+                $mg[1] = $gramset->gramsetString();
+            }
+            if ($type == 1) {
+                $out[1][$letter]=$mg[0];
+                $out[2][$letter]=!empty($mg[1]) ? $mg[1] : '';                    
+            } else {
+                $out[1][$letter]= join("-", $mg);
+            }
+            $out[3][$letter]= empty($cyr_words[$word->w_id]) ? '' : $cyr_words[$word->w_id];
+            $out[4][$letter]=$word->word;
+            $i++;
+        }
+//        $sheet->getRowDimension(1)->setRowHeight(30);
+        foreach ($out as $r) {
+//                $sheet->getRowDimension($row)->setRowHeight(-1); // автоматическая высота строки                    
+            foreach ($r as $letter => $c) {
+                $sheet = $this->sheetCellSet($sheet, $letter.$row, $c);
+            } 
+            $row++;
+        }
+        return [$sheet, $row];
+    }
+    
+    public function annotatedTextExportWords3($sheet, $words, $cyr_words, $row) {
+        $out = [];
+        $i = 1;
+        foreach ($words as $word) {
+            $gramset = $word->checkedGramset();
+            $meaning = $word->checkedMeaning();
+            $sheet = $this->sheetCellSet($sheet, 'A'.$row, empty($cyr_words[$word->w_id]) ? '' : $cyr_words[$word->w_id]);
+            $sheet = $this->sheetCellSet($sheet, 'B'.$row, $word->word);
+            $c = !empty($meaning) ? $meaning->textByLangCode('ru') : ''; 
+            if (!empty($gramset)) {
+                $c .= ' ('.$gramset->gramsetString(). ')';
+            }
+            $sheet = $this->sheetCellSet($sheet, 'C'.$row, $c);
+            $row++;
+        }
+        return [$sheet, $row];
+    }
+    
+    public function sheetCellSet($sheet, $cell, $contant) {
+        $sheet->setCellValue($cell, empty($contant) ? "\u{2002}" : $contant);
+
+        $sheet->getStyle($cell)->getAlignment()->setWrapText(true); // перенос по словам                    
+        $sheet->getStyle($cell)->getAlignment()->setVertical(Alignment::VERTICAL_TOP); // вертикальное выравнивание по верху
+        $sheet->getStyle($cell)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN); // рамка //BORDER_MEDIUM
+//                    $sheet->getStyle($cell)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setIndent(1); 1 cлишком много, дробные не поддерживаются
+        return $sheet;
     }
     
 }

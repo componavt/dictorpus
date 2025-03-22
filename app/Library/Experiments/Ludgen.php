@@ -94,16 +94,16 @@ dd($reverse_lemmas);  */
             14594 => 'elädä',
             29444 => 'd’uoda',
             62863 => 'viedä',
-            70904 => 'haravoita',
+            41336 => 'suada',
             29594 => 'tulda',
             3525 => 'mändä',
             67094 => 'purda',
-            43235 => 'magata',
             22260 => 'pagišta',
             44615 => 'pestä',
+            43235 => 'magata',
             41869 => 'rubeta',
+            70904 => 'haravoita',
             62330 => 'suvaita',  
-            41336 => 'suada'
         ];
     }   
     

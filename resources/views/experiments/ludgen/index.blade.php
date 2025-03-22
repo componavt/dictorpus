@@ -19,6 +19,7 @@
     
     @endforeach
     
+    <li><a href="{{ route('ludgen.verb_types') }}">Виды глаголов</a></li>
 @endsection
 
 @section('footScriptExtra')
