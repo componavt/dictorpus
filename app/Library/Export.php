@@ -151,13 +151,14 @@ class Export
         Storage::disk('public')->put($file_wordforms, " ");
         $lemmas = Lemma::where('lang_id',$lang_id)
                 ->orderBy('lemma')
+                ->limit(100)
                 ->get();
         $count = 0;
         foreach ($lemmas as $lemma) {
             if (!$lemma->pos) {
                 continue;
             }
-            $lemma_line = $lemma->id."\t".$lemma->lemma."\t".$lemma->pos->unimorph."\t".$lemma->featsToString()."\t".join('; ', $lemma->getMultilangMeaningTexts());       
+            $lemma_line = $lemma->id."\t".$lemma->lemma."\t".$lemma->pos->lgr."\t".$lemma->featsToString()."\t".join('; ', $lemma->getMultilangMeaningTexts());       
             Storage::disk('public')->append($file_lemmas, $lemma_line);
             
             if (!in_array($lemma->pos_id, PartOfSpeech::getNameIDs()) && $lemma->pos_id != PartOfSpeech::getVerbID()) {
@@ -168,22 +169,24 @@ class Export
             if (!$pos_code) { continue; }
             
             if ($pos_code == 'V' && $lemma->features && $lemma->features->reflexive) {
-                $pos_code = ';REFL';
+                $pos_code = '.REFL';
             }
             
             $wordforms = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->get();
             if (!$wordforms) { 
-                $lines[] = $lemma->id."\t".$pos_code;
-                continue; 
-                
+                continue;                 
             }
             $lines = [];
             foreach ($wordforms as $wordform) {
                 $gramset=$wordform->gramsetPivot();
-                if ($gramset) { 
-                    $pos_code .= ";".$gramset->tolgr(';');
+                if (!$gramset) { 
+                    continue;
                 }
-                $lines[] = $lemma->id."\t".$wordform->wordform."\t".$pos_code;
+                $features = $gramset->tolgr('.');
+                if (!$features) { 
+                    continue;
+                }
+                $lines[] = $lemma->id."\t".$wordform->wordform."\t".$features;
             }
             
             if (sizeof ($lines)) {
