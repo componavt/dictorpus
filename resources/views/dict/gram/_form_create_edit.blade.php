@@ -15,6 +15,8 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'name_ru', 
                  'title'=>trans('dict.name').' '.trans('messages.in_russian')])
+<br>                 
+@include('widgets.form.formitem._submit', ['title' => $submit_title])
     </div>             
     <div class="col-sm-6">
         @include('widgets.form.formitem._select', 
@@ -27,6 +29,9 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'unimorph', 
                  'title'=>trans('dict.unimorph')])                 
+        @include('widgets.form.formitem._text', 
+                ['name' => 'lgr', 
+                 'title'=>trans('dict.lgr')])                 
         @include('widgets.form.formitem._text',
                 ['name' => 'sequence_number',
                  'attributes'=>['size' => 2],
@@ -34,4 +39,3 @@
     </div>             
 </div>             
 
-@include('widgets.form.formitem._submit', ['title' => $submit_title])

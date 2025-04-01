@@ -182,6 +182,7 @@ return [
     'lemmas' => 'леммы',
     'lemmas_added' => 'Добавлено :count лемм',
     'lemma_removed' => 'Лемма ":name" удалена.',
+    'lgr' => 'Код Лейпцигской системы правил глоссирования',
     'list_for_voicing' => 'Список для озвучивания',
     'list_languages' => 'Список языков',
     'list_lemmas' => 'Список лемм',
