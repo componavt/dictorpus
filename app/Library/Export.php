@@ -151,7 +151,7 @@ class Export
         Storage::disk('public')->put($file_wordforms, " ");
         $lemmas = Lemma::where('lang_id',$lang_id)
                 ->orderBy('lemma')
-                ->limit(100)
+//                ->limit(100)
                 ->get();
         $count = 0;
         foreach ($lemmas as $lemma) {
