@@ -8,7 +8,7 @@ use LaravelLocalization;
 class PartOfSpeech extends Model
 {
     protected $table = 'parts_of_speech';
-    protected $fillable = ['name_en', 'name_ru', 'code', 'category', 'name_short_ru', 'without_gram'];
+    protected $fillable = ['name_en', 'name_ru', 'code', 'category', 'name_short_ru', 'without_gram', 'lgr'];
     
     const DICT_CODES = [
         'CCONJ' => 'conj',

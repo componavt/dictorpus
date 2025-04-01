@@ -21,6 +21,9 @@
         @include('widgets.form.formitem._text', 
                 ['name' => 'code', 
                  'title'=>trans('dict.code')])
+        @include('widgets.form.formitem._text', 
+                ['name' => 'lgr', 
+                 'title'=>trans('dict.lgr')])
         <br>         
         @include('widgets.form.formitem._checkbox_for_field', 
                 ['name' => 'without_gram', 

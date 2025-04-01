@@ -16,7 +16,9 @@
                     @else
                     {{ $pos->name }} 
                     @endif
-                    ({{ $pos->code }})
+                    @if ($pos->lgr)
+                    ({{ $pos->lgr }})
+                    @endif
                     @if (User::checkAccess('admin'))
                         @include('widgets.form.button._edit', ['route' => '/dict/pos/'.$pos->id.'/edit', 'without_text' => 1])                        
                     @endif

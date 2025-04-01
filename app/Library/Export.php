@@ -164,20 +164,26 @@ class Export
                 continue;
             }
             
-            $pos_code = $lemma->pos->unimorph;
+            $pos_code = $lemma->pos->lgr;
+            if (!$pos_code) { continue; }
+            
             if ($pos_code == 'V' && $lemma->features && $lemma->features->reflexive) {
-                $pos_code .= ';REFL';
+                $pos_code = ';REFL';
             }
             
             $wordforms = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->get();
-            if (!$wordforms) { continue; }
+            if (!$wordforms) { 
+                $lines[] = $lemma->id."\t".$pos_code;
+                continue; 
+                
+            }
             $lines = [];
             foreach ($wordforms as $wordform) {
                 $gramset=$wordform->gramsetPivot();
-                if (!$gramset) { continue; }
-                $features = $gramset->toUniMorph($pos_code);
-                if (!$features) { continue; }
-                $lines[] = $lemma->id."\t".$wordform->wordform."\t".$features;
+                if ($gramset) { 
+                    $pos_code .= ";".$gramset->tolgr(';');
+                }
+                $lines[] = $lemma->id."\t".$wordform->wordform."\t".$pos_code;
             }
             
             if (sizeof ($lines)) {

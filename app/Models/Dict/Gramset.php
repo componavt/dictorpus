@@ -471,6 +471,18 @@ class Gramset extends Model
 //        return $feats;
         return join(';',$feats);
     }
+    
+    public function toLGR($div='-') {
+        $feats = [];
+        $fields = ['Infinitive', 'Participle','Voice', 'Tense', 'Mood', 'Negation', 'Person', 'Number', 'Case'];
+        foreach ($fields as $field) {
+            $name = 'gram'.$field;
+            if ($this->$name) {
+                $feats[] = $this->$name->lgr;
+            }
+        }  
+        return join($div,$feats);
+    }
 }
 
 /*

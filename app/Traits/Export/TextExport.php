@@ -215,7 +215,7 @@ trait TextExport
             $sheet = $this->sheetCellSet($sheet, 'B'.$row, $word->word);
             $c = !empty($meaning) ? $meaning->textByLangCode('ru') : ''; 
             if (!empty($gramset)) {
-                $c .= ' ('.$gramset->gramsetString(). ')';
+                $c .= '-'.$gramset->toLGR();
             }
             $sheet = $this->sheetCellSet($sheet, 'C'.$row, $c);
             $row++;
