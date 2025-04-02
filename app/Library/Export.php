@@ -145,23 +145,26 @@ class Export
     public static function oloDict($dir_name) {
         $lang_id = 5;
         $dialect_id = 44;
-        $file_lemmas = $dir_name.'lemmas.csv';
-        Storage::disk('public')->put($file_lemmas, " ");
-        $file_wordforms = $dir_name.'wordforms.csv';
-        Storage::disk('public')->put($file_wordforms, " ");
         $lemmas = Lemma::where('lang_id',$lang_id)
                 ->orderBy('lemma')
 //                ->limit(100)
                 ->get();
-        $count = 0;
+        
+        $file_lemmas = $dir_name.'lemmas.csv';
+        Storage::disk('public')->put($file_lemmas, " ");
         foreach ($lemmas as $lemma) {
             if (!$lemma->pos) {
                 continue;
             }
             $lemma_line = $lemma->id."\t".$lemma->lemma."\t".$lemma->pos->lgr."\t".$lemma->featsToString()."\t".join('; ', $lemma->getMultilangMeaningTexts());       
             Storage::disk('public')->append($file_lemmas, $lemma_line);
-            
-            if (!in_array($lemma->pos_id, PartOfSpeech::getNameIDs()) && $lemma->pos_id != PartOfSpeech::getVerbID()) {
+        }
+        
+        $file_wordforms = $dir_name.'wordforms.csv';
+        Storage::disk('public')->put($file_wordforms, " ");
+//        $count = 0;
+        foreach ($lemmas as $lemma) {
+            if (!$lemma->pos || !in_array($lemma->pos_id, PartOfSpeech::getNameIDs()) && $lemma->pos_id != PartOfSpeech::getVerbID()) {
                 continue;
             }
             
@@ -193,7 +196,7 @@ class Export
                 Storage::disk('public')->append($file_wordforms, join("\n", $lines));
             }
            
-            $count++;
+//            $count++;
         }
         print 'done.';
     }

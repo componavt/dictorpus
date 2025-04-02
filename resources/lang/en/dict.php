@@ -122,6 +122,8 @@ return [
                   1 => 'positive',
                   2 => 'comparative',
                   3 => 'superlative'],
+    'descr' => 'description',    
+    'descriptive' => 'descriptive',
     'check_delete_wordforms' =>'to delete word forms for this dialect',
     
     'dialect' => 'Dialect',
@@ -163,6 +165,7 @@ return [
     'lemmas' => 'lemmas',
     'lemmas_added' => ':count lemmas are added',
     'lemma_removed' => 'Lemma ":name" is removed successfully.',
+    'lgr' => 'Code of Leipzig Glossing Rules',
     'list_for_voicing' => 'List for voicing',
     'list_languages' => 'Languages',
     'list_lemmas' => 'List of lemmas',

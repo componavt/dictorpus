@@ -7,6 +7,7 @@ function posSelect(is_full_form=true, formName='') {
                 $(formName+" #impersonal-field").show().prop("disabled", false);
                 if (is_full_form) {
                     $("#transitive-field").show().prop("disabled", false);
+                    $("#descriptive-field").show().prop("disabled", false);
                 }
                 $(formName+" #without_gram-field").show().prop("disabled", false);
             } else if ($(formName+" #pos_id option:selected").val()==5 || $("#pos_id option:selected").val()==14) { // is noun or proper noun or pronoun

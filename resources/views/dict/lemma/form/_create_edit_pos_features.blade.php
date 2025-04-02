@@ -25,6 +25,10 @@
                 ['name' => 'transitive', 
                  'title'=>trans('dict.transitive').' '.trans('dict.verb')])
 
+        @include('widgets.form.formitem._radio_for_field', 
+                ['name' => 'descriptive', 
+                 'title'=>trans('dict.descriptive').' '.trans('dict.verb')])
+
         @include('widgets.form.formitem._select_for_field', 
                 ['name' => 'prontype', 
                  'lang_file'=> 'dict'])

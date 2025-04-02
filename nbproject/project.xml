@@ -5,17 +5,5 @@
         <data xmlns="http://www.netbeans.org/ns/php-project/1">
             <name>dictorpus</name>
         </data>
-        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
-            <word>elseif</word>
-            <word>endfor</word>
-            <word>endforeach</word>
-            <word>endif</word>
-            <word>endphp</word>
-            <word>enif</word>
-            <word>ldl</word>
-            <word>грамсета</word>
-            <word>речи</word>
-            <word>слова</word>
-        </spellchecker-wordlist>
     </configuration>
 </project>
