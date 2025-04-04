@@ -134,7 +134,7 @@ dd($reverse_lemmas);  */
                 dd('Нет леммы с id='.$id);
             }
             $lemmas[$id]['lemma'] = $lemma->lemma;
-            $lemmas[$id]['stem'] = $lemma->reverseLemma->stem;
+            $lemmas[$id]['stem'] = $lemma->reverseLemma ? $lemma->reverseLemma->stem : $lemma->lemma;
             $lemmas[$id]['count'] = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count();
             
             foreach ($gramsets as $category_name => $category_gramsets) {
