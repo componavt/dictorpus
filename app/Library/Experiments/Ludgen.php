@@ -98,6 +98,7 @@ dd($reverse_lemmas);  */
             29594 => 'tulda',
             3525 => 'mändä',
             67094 => 'purda',
+            43596 => 'särbäi',
             22260 => 'pagišta',
             44615 => 'pestä',
             43235 => 'magata',
