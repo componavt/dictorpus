@@ -191,7 +191,7 @@ class KarName
 //dd($regs);    
         $regs[1] = preg_replace('/\_/',' ',$regs[1]);
         if (preg_match("/^(.+)ǁ(.+)$/", $regs[1], $sword)) {
-            $fword = $sword[1];
+            $fword = preg_replace('/ǁ/','',$sword[1]);
             $base = $sword[2];
         } else {
             $fword = '';
