@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
+use DB;
+use Carbon\Carbon;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -34,7 +36,7 @@ class StatsController extends Controller
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/', 
-                         ['only' => ['byCorpMarkup']]);
+                         ['only' => ['byEditors', 'byCorpMarkup']]);
     }
     
     public function index()
@@ -44,16 +46,64 @@ class StatsController extends Controller
     
     public function byUser()
     {
-        $total_users = User::count(); 
-        $total_editors = User::whereIn('id', function ($q) {
+        $total_users = number_format(User::count(), 0, ',', ' '); 
+        $total_editors = number_format(User::whereIn('id', function ($q) {
                             $q->select('user_id')->from('role_users')
                               ->whereIn('role_id', [1,4]);
-                        })->count(); 
-        $total_active_editors = User::countActiveEditors(); 
-        return view('stats.by_user')
-                ->with(['total_users' => number_format($total_users, 0, ',', ' '),
-                        'total_editors' => number_format($total_editors, 0, ',', ' '),
-                        'total_active_editors' => number_format($total_active_editors, 0, ',', ' ')]);
+                        })->count(), 0, ',', ' '); 
+        $total_active_editors = number_format(User::countActiveEditors(), 0, ',', ' '); 
+        return view('stats.by_user', 
+                compact('total_active_editors', 'total_editors', 'total_users'));
+    }
+    
+    public function byEditors()
+    {
+        $users = User::whereIn('id', function ($q) {
+                    $q->select('user_id')->from('revisions');
+                })
+//                ->limit(1)
+                ->get();
+        $editors = collect();
+        foreach ($users as $user) {
+            $history = DB::table('revisions')
+                         ->where('user_id',$user->id)
+                         ->orderBy('updated_at','desc');
+            $user->count = number_format($history->count(), 0, ',', ' ');
+            $user->last_time = $history->first()->updated_at;
+            $editors->push($user);
+        }
+        $editors->sortByDesc('last_time');
+//dd($editors);        
+        return view('stats.by_editors', 
+                compact('editors'));
+    }
+    
+    public function byEditor(User $user, Request $request)
+    {
+        $min_date = $request->input('min_date');
+        $max_date = $request->input('max_date');
+        if (empty($min_date) || empty($max_date)) {
+            $rec = DB::table('revisions')
+                     ->where('user_id',$user->id)
+                     ->selectRaw('min(created_at) as min, max(created_at) as max')
+                     ->first();
+            if (!$rec) { return;}
+            $min_date = Carbon::parse($rec->min)->toDateString();
+            $max_date = Carbon::parse($rec->max)->toDateString();
+        }
+//select min(created_at), max(created_at)  from revisions where user_id=2519;        
+        $history = DB::table('revisions')
+                     ->where('user_id',$user->id)
+                     ->where('updated_at', '>', $min_date)
+                     ->where('updated_at', '>', $max_date)
+                     ->groupBy('revisionable_type', 'key')
+                     ->orderBy('revisionable_type')
+                     ->orderBy('key')
+                     ->select('revisionable_type', 'key', DB::raw('count(*) as count'))
+                     ->get();
+dd($history);        
+        return view('stats.by_editor', 
+                compact('history'));
     }
     
     public function byDict()

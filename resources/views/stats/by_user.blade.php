@@ -20,4 +20,8 @@
             <td>{{trans('stats.total_active_editors')}}</td><td>{{$total_active_editors}}</td>
         </tr>
     </table>
+
+    @if (is_editor())
+    <p style='margin-top: 20px'><a href="{{ route('stats.by_editors') }}">{{ trans('stats.stats_by_editors') }}</a></p>
+    @endif
 @stop

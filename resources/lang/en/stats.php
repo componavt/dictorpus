@@ -43,6 +43,7 @@ return [
     'stats_by_corp' => 'Statistics by corpus',
     'stats_by_corpus' => 'Statistics by subcorpuses',
     'stats_by_dict' => 'Statistics by dictionary',
+    'stats_by_editors' => 'Statistics by editors',
     'stats_by_words' => 'Statistics by words in the text',
     'stats_by_examples' => 'Statistics by examples (words in sentences automatically tied to a lemma)',
     'stats_by_year' => 'Statistics by years',

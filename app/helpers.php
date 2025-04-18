@@ -72,6 +72,18 @@ if (! function_exists('plural_from_model')) {
     }
 }
 
+if (! function_exists('is_editor')) {
+    function is_editor()
+    {
+        $auth_user=Sentinel::check();
+        return User::whereId($auth_user->id)
+                   ->whereIn('id', function ($q) {
+                            $q->select('user_id')->from('role_users')
+                              ->whereIn('role_id', [1,4]);
+                    })->count();
+    }
+}
+
 if (! function_exists('user_dict_edit')) {
     function user_dict_edit()
     {
