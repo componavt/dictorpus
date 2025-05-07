@@ -97,7 +97,7 @@ class GramsetController extends Controller
         $grams = [];        
         foreach (GramCategory::all()->sortBy('sequence_number') as $gc) {         //   id is gram_category_id
             $grams[$gc->name_en] = ['name'=> $gc->name,
-                                    'grams' => [NULL=>''] + Gram::getList($gc->id)];
+                                    'grams' => [NULL=>''] + Gram::getList($gc->id, false)];
         }
 
         return view('dict.gramset.create',
@@ -342,7 +342,7 @@ class GramsetController extends Controller
         if (!$count || $without_link) {
             return $count;
         }
-        return '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/by_wordforms?search_gramsets[1]='.$gramset->id).'">'.$count.'</a>';
+        return '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/by_wordforms?search_lang='.$lang_id.'&search_pos='.$pos_id.'&search_gramsets[1]='.$gramset->id).'">'.$count.'</a>';
     }
     
     public function wordformCount($id, $lang_id, $pos_id, Request $request) {
@@ -353,7 +353,7 @@ class GramsetController extends Controller
         if (!$count || $without_link) {
             return $count;
         }
-        return '<a href="'.LaravelLocalization::localizeURL('/dict/wordform?search_gramset='.$gramset->id).'">'.$count.'</a>';    
+        return '<a href="'.LaravelLocalization::localizeURL('/dict/wordform?search_lang='.$lang_id.'&search_pos='.$pos_id.'&search_gramset='.$gramset->id).'">'.$count.'</a>';    
     }
     
     public function textWordCount($id, $lang_id, $pos_id, Request $request) {
