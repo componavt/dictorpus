@@ -81,7 +81,7 @@ class WordformController extends Controller
                                 
         //$dialect_values = Dialect::getList();
         $dialect_values = $lang_id ? [NULL=>'']+Dialect::getList($lang_id): [];
-        $gramset_values = $pos_id ? [NULL=>'']+Gramset::getList($pos_id,$lang_id,true): [];
+        $gramset_values = [NULL=>'']+Gramset::getList($pos_id,$lang_id,true);
 
         return view('dict.wordform.index',
                 compact('dialect_values', 'gramset_values', 'lang_values', 'numAll',
