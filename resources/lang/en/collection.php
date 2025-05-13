@@ -22,6 +22,15 @@ return [
                 3 => 'Historical legends are oral prose narratives about the events of the distant past, small in volume. They are told with an emphasis on authenticity, based on historical realities, but at the same time they cannot serve as proof of a historical fact, since along with real events, elements of fiction are revealed in them. 
                  <br><br>This collection of Karelian historical legends is the first attempt at a comprehensive presentation of historical prose texts written down from the Karelians in the Karelian language. The texts were found in the Scientific Archive of the Karelian Research Center of the Russian Academy of Sciences, the Phonogram Archive of the Institute of Linguistics, Literature and History Karelian Research Center of the Russian Academy of Sciences, as well as in published sources.
                  <br><br>The texts of historical legends are divided into cycles (plot-thematic groups). The presence of a toponymic motive is especially noted, which, combined with other motives, can occupy a central or peripheral place in the historical legend.',
+                4 => 'Nikolai Mikhailovich Balakirev (30.04.1935–27.03.2023) – a Tver-Karelian writer, local historian, and ethnographer. '
+                    . 'He was born in the village of Stan (now Likhoslavl District, Tver Region). '
+                    . '<br><br>He served in the navy, rising from navigator to submarine commander, Captain 1st rank. '
+                    . 'After retiring, he returned to his native village and dedicated himself to local history and ethnographic work, as well as preserving the Karelian language. '
+                    . '<br><br>His first novella in Karelian, "Kuzmičča," was published in 2004. This was followed by the books "Stuanovoine" (2014) and "Miun paginat kyläläzih näh" (2019).',
+                5 => 'Stanislav Vasilyevich Tarasov (18.03.1937–23.05.2018) – a Tver-Karelian poet and public figure. He was born in the village of Berezovka (Kurgi, now Likhoslavl District, Tver Region). '
+                    . '<br><br>After serving in the army, he worked as a driver while also being the artistic director at a rural cultural center in the village of Kozlovo in the Spirovsky District, and later as a game warden in the Likhoslavl District. '
+                    . 'He spent the last years of his life in his ancestral home in the village of Vasilki. '
+                    . '<br><br>Stanislav Vasilyevich’s poems in Karelian and Russian are dedicated to his native village, nature, and fellow villagers. His first collection of poems in Karelian, “Oma randa,” was published in 1997. In 1999, his story “Kyynelet” was released.',
                ],
     'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
     'topic_index' => 'Index of plots and thematics of Karelian runes',
@@ -29,6 +38,8 @@ return [
         1 => 'Veps lamentations',
         2 => 'Karelian Runes',
         3 => 'Karelian Legends',
+        4 => 'Nikolai Mikhailovich Balakirev',
+        5 => 'Stanislav Vasilyevich Tarasov',
     ],
     'prediction_cycles' => 'Prediction cycles',
 //    'to_motive_index' => 'to Motive index',
