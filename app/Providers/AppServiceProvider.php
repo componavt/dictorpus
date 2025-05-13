@@ -16,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Устанавливаем временную директорию только для этого проекта
+        if (env('TMP_DIR')) {
+            putenv('TMPDIR=' . env('TMP_DIR'));
+        }
 /*        DB::listen(function ($query) {
             $location = collect(debug_backtrace())->filter(function ($trace) {
                 return isset($trace['file']) && !str_contains($trace['file'], 'vendor/');
