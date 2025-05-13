@@ -862,7 +862,6 @@ class TextController extends Controller
                     continue;
                 }
                 if (!empty($request->{'file_'.$photo_id})) {
-    //                $text->uploadPhoto($request->file('photo')[$photo_id]['file'], $photo['title']);
                     $text->uploadPhoto('file_'.$photo_id, $photo['title']);
                     $text->deleteMedia($media->id);
                     continue;

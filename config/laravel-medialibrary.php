@@ -56,4 +56,6 @@ return [
             'CacheControl' => 'max-age=604800',
         ],
     ],
+    'temporary_directory_path' => env('TMP_DIR'),
+    
 ];
