@@ -30,7 +30,6 @@ $sentence_xml = mb_ereg_replace('[¦^]', '', $sentence_xml);
     {!! $sentence_xml !!}
 @endif
 
-!!!
 
 
 
