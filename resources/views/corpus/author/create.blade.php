@@ -11,6 +11,6 @@
         @include('corpus.author._form_create_edit', ['submit_title' => trans('messages.create'),
                                       'author' => null,
                                       'action' => 'create'])
-        @include('widgets.form.formitem._submit', ['title' => $submit_title])
+        @include('widgets.form.formitem._submit', ['title' =>  trans('messages.create_new_m')])
         {!! Form::close() !!}
 @stop

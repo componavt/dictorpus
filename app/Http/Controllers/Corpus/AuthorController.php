@@ -63,8 +63,11 @@ class AuthorController extends Controller
      */
     public function create()
     {
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
         $project_langs=Lang::projectLangs(); 
-        return view('corpus.author.create', compact('project_langs'));
+        return view('corpus.author.create', compact('project_langs', 'args_by_get', 'url_args'));
     }
 
     public function validateRequest(Request $request) {
