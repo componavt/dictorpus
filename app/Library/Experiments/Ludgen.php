@@ -5,7 +5,6 @@ namespace App\Library\Experiments;
 use Illuminate\Database\Eloquent\Model;
 //use DB;
 
-use App\Library\Grammatic\KarGram;
 use App\Models\Dict\Lemma;
 
 class Ludgen extends Model
@@ -254,6 +253,7 @@ dd($reverse_lemmas);  */
             for ($i=0; $i<7; $i++) {
                 $bases[$lemma_id][$i] = $lemma->getBase($i, $dialect_id, $bases);
             }
+//dd($bases);            
             if ($lemma->reverseLemma) {
                 $bases[$lemma_id][10] = $lemma->harmony();
             }

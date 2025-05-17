@@ -4,7 +4,7 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 
-use LaravelLocalization;
+//use LaravelLocalization;
 
 class GramCategory extends Model
 {

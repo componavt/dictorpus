@@ -202,7 +202,7 @@ class KarGram
     public static function getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
             return KarName::getStemFromWordform($lemma, $stem_n, $dialect_id);
-        } elseif (in_array($pos_id, PartOfSpeech::getNameIDs())) { 
+        } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
             return KarVerb::getStemFromWordform($lemma, $stem_n, $dialect_id);
         }
     }

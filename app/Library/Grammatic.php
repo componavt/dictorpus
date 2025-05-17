@@ -69,7 +69,7 @@ class Grammatic
         return self::wordformsFromDict($lemma, $max_stem, $affix);
     }
 
-    public static function getAffixFromtemplate($template, $name_num) {       
+    public static function getAffixFromtemplate($template, $name_num) {  
         if (!preg_match("/\s/", $template) && preg_match("/^([^\{\(]*)\|([^\|]*)$/", $template, $regs)) {
             $base = $regs[1];
             $base_suff = $regs[2];
@@ -486,15 +486,18 @@ class Grammatic
     }
     
     /**
-     * Присоединение морфем к основам, возможно к спискам основ 
-     * @param string $list
-     * @param string $alom
+     * Присоединение морфем (или списка морфем) к основам (или спискам основ)
+     * 
+     * @param string $bases
+     * @param string $morfs
      */
-    public static function joinMorfToBases($bases, $morf){
+    public static function joinMorfToBases($bases, $morfs){
         if (!$bases) { return ''; }
         $forms=[];
         foreach (preg_split("/[,\/]\s*/", $bases) as $base) {
-            $forms[] = $base.$morf;
+            foreach (preg_split("/\,\s*/", $morfs) as $morf) {
+                $forms[] = $base.$morf;
+            }
         }
         return join(", ", $forms);              
     }

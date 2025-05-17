@@ -229,13 +229,14 @@ class Lemma extends Model
      */
     public function getBase($base_n, $dialect_id=null, $bases=null) {        
         $base = $this->getBaseFromDB($base_n, $dialect_id);
-
+//dd($base);
         if ($base) {
             return $base;
         }
+//dd($base_n, $dialect_id);        
         if ($dialect_id) { 
             $base = Grammatic::getStemFromStems($bases, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $this->lemma);
-//dd($base);
+//dd($base_n, $base);
             if (!$base) {
                 $is_reflexive = $this->features && $this->features->reflexive ? true : false;
                 $base = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $is_reflexive);
