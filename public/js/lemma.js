@@ -130,3 +130,26 @@ function callCreatePhonetic() {
 
 function createPhonetic() {
 }
+
+function suggestTemplates() {
+    $.ajax({
+        url: '/dict/lemma/suggest_templates', 
+        type: 'GET',
+        data: {
+            lang_id: $( "#lang_id option:selected" ).val(), 
+            lemma: $( "#lemma" ).val(),
+            pos_id: $( "#pos_id option:selected" ).val(),
+        },
+        success: function(result){            
+            $("#choose_template").html(result);
+            $("#modalSuggestTemplates").modal('show');    
+        },
+        error: function() {
+        }
+    }); 
+}   
+
+function insertTemplate(template) {
+    $("#modalSuggestTemplates").modal('hide');    
+    $("#lemma").val(template);
+}

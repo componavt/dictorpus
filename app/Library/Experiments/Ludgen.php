@@ -250,7 +250,7 @@ dd($reverse_lemmas);  */
         $bases=[];
         foreach ($lemmas as $lemma_id) {
             $lemma = Lemma::find($lemma_id);
-            for ($i=0; $i<7; $i++) {
+            for ($i=0; $i<8; $i++) {
                 $bases[$lemma_id][$i] = $lemma->getBase($i, $dialect_id, $bases);
             }
 //dd($bases);            

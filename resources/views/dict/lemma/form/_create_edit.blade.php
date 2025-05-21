@@ -44,6 +44,8 @@
                  'help_func' => 'callHelpLemma()',
                  'value' => $lemma_value,
                  'title'=>trans('dict.lemma')])
+                 
+        <p><a href="#" onClick="suggestTemplates()">{{ trans('dict.suggest_template') }}</a></p>
                                   
         @include('widgets.form.formitem._select2',
                 ['name' => 'wordform_dialect_id', 

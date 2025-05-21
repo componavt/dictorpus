@@ -82,9 +82,6 @@ class KarVerb
             case 79: // 12. индикатив, презенс, 3 л., мн.ч., отриц. 
                 return Grammatic::interLists(self::negVerb($gramset_id, $dialect_id), $stems[6]);                
 
-            case 79: // 12. индикатив, презенс, 3 л., мн.ч., отриц. 
-                return !$def ? Grammatic::interLists(self::negVerb($gramset_id, $dialect_id), $stems[6]) : '';
-                
             case 32: // 13. индикатив, имперфект, 1 л., ед.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[3], 'n') : '';
             case 33: // 14. индикатив, имперфект, 2 л., ед.ч., пол. 
@@ -591,8 +588,9 @@ class KarVerb
                 }
                 return '';
             case 4: // indicative imperfect 3 sg
-                $ind_imp_3_sg = $lemma->wordform(34, $dialect_id); 
-                return $ind_imp_3_sg ? preg_replace("/,\s*/", '/',$ind_imp_3_sg) : '';
+                $stems4 = preg_split("/\s*,\s*/", $lemma->wordform(34, $dialect_id)); 
+                sort($stems4);
+                return join('/',$stems4);
             case 6: // indicative presence 3 pl
                 if (preg_match("/^(.+)h$/", $lemma->wordform(31, $dialect_id), $regs)) { 
                     return preg_replace("/,\s*/", '/',$regs[1]);
@@ -610,10 +608,14 @@ class KarVerb
                 }
                 return '';
             case 3: // indicative imperfect 1 sg
-                if (preg_match("/^(.+)n$/", $lemma->wordform(32, $dialect_id), $regs)) {
-                    return $regs[1];
+                $stems3 = [];
+                foreach (preg_split("/\s*,\s*/", $lemma->wordform(32, $dialect_id)) as $wordform) {
+                    if (preg_match("/^(.+)n$/", $wordform, $regs)) {
+                        $stems3[] = $regs[1];
+                    }
                 }
-                return '';
+                sort($stems3);
+                return join('/',$stems3);
             case 7: // indicative imperfect 3 pl
                 if (preg_match("/^(.+)ih$/", $lemma->wordform(37, $dialect_id), $regs)) {
                     return $regs[1];
@@ -644,6 +646,7 @@ class KarVerb
      */
 
     public static function indPres1SingByStem($stem, $is_backV) {
+//dd($stem);        
         $C = "[".KarGram::consSet()."]’?";
         if (preg_match("/^(.+".$C.")e$/u", $stem, $regs)) {
             $stem = $regs[1].KarGram::garmVowel($is_backV,'o');
@@ -1515,4 +1518,11 @@ class KarVerb
         
         return " [".$wordform."]";
     }
+    
+    public static function suggestTemplates($lang_id, $word) {
+        if ($lang_id == 6) {
+            return KarVerbLud::suggestTemplates($word);
+        }
+        return [];
+    }    
 }

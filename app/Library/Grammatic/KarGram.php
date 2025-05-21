@@ -402,4 +402,11 @@ class KarGram
         }
         return NULL;
     }
+    
+    public static function suggestTemplates($lang_id, $pos_id, $word) {
+        if ($pos_id == PartOfSpeech::getVerbID()) {
+            return KarVerb::suggestTemplates($lang_id, $word);
+        }
+        return [];
+    }    
 }

@@ -25,6 +25,10 @@
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.lemma._form'])
 
+        @include('widgets.modal',['name'=>'modalSuggestTemplates',
+                                  'title'=>trans('dict.choose_template'),
+                                  'modal_view'=>'dict.lemma.choose_template'])
+
         {!! Form::model($lemma, array('method'=>'PUT', 'route' => array('lemma.update', $lemma->id))) !!}
         @include('dict.lemma.form._create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit',

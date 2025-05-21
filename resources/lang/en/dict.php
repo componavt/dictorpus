@@ -78,14 +78,6 @@ return [
                     3 => 'партитив ед.ч.',
                     4 => 'слабая основа мн.ч.',
                     5 => 'сильная основа мн.ч.'],
-    'base_list_6_name' => [
-                    0 => 'начальная форма',
-                    1 => 'слабая гласная основа',
-                    2 => 'сильная гласная основа',
-                    3 => 'партитив ед.ч.',
-                    4 => 'слабая основа мн.ч.',
-                    5 => 'сильная основа мн.ч.',
-                    6 => 'сильная / согласная основа'],
     'base_list_5_verb' => [
                     0 => 'начальная форма',
 //                    1 => 'слабая гласная у одноосновных или сильная гласная у двуосновных',
@@ -97,11 +89,30 @@ return [
                     6 => 'пассивная основа, презенс 3л. мн.ч.',
                     7 => 'сильноступенная пассивная основа, имперфект 3л. мн.ч.',
                     8 => 'сильная гласная / согласная основа'],
+    'base_list_6_name' => [
+                    0 => 'начальная форма',
+                    1 => 'слабая гласная основа',
+                    2 => 'сильная гласная основа',
+                    3 => 'партитив ед.ч.',
+                    4 => 'слабая основа мн.ч.',
+                    5 => 'сильная основа мн.ч.',
+                    6 => 'сильная / согласная основа'],
+    'base_list_6_verb' => [
+                    0 => 'начальная форма',
+                    1 => 'слабая гласная основа презенс',
+                    2 => 'сильная гласная основа презенс',
+                    3 => 'слабая гласная основа имперфекта',
+                    4 => 'сильная гласная основа имперфекта',
+                    5 => 'сильная основа актива',
+                    6 => 'слабая основа пассива',
+                    7 => 'основа пассива'],
     'case' => 'Case',
     'category_removed' => 'Сategory ":name" is removed successfully.',
     'check_voiced_lemmas' => 'Check voiced lemmas',
+    'choose_template' => 'Сhoose a template',
     'clear_wordforms' => 'clear wordforms',
     'code' => 'code',
+    'common_wordforms_total' => 'Number of common wordforms', 
     'concept' => 'concept',
     'concept_removed' => 'Сoncept ":name" is removed successfully.',
     'concept_section_A' => 'UNIVERSE',
@@ -151,31 +162,38 @@ return [
     
     'impersonal' => 'impersonal',
     'in_dictionary' => 'in dictionary',
+    'in_pos'=>'in :count parts of speech',    
     'infinitive' => 'infinitive',
     'interpretation' => 'interpretation',
+    
     'join_harmony' => 'unite different only in harmony ',
+    
     'lang' => 'language',
     'lang_code' => 'Language code',
     'lang_from' => 'from the language',
     'lang_to' => 'to the language',
     'last_updated_lemmas' => 'Last updated lemmas',
+    
     'lemma' => 'lemma',
     'lemma_frequency_comment' => 'Lemma and the number of links to words in the texts. All links are summed, except the links with the label "does not fit at all". If a word in the text is automatically marked with a lemma with N meanings and these found meanings have not yet been verified, then all N links will be calculated.',
     'lemma_meaning' => 'lemma with meaning',
     'lemmas' => 'lemmas',
     'lemmas_added' => ':count lemmas are added',
     'lemma_removed' => 'Lemma ":name" is removed successfully.',
+    
     'lgr' => 'Code of Leipzig Glossing Rules',
     'list_for_voicing' => 'List for voicing',
     'list_languages' => 'Languages',
     'list_lemmas' => 'List of lemmas',
     'list_long_lemmas' => 'List of longest lemmas',
     'listen' => 'listen',
+    
     'meaning' => 'meaning',
     'meanings' => 'meanings',
     'meaning_place' => 'locality of word usage',
     'mood' => 'mood',
     'more_examples' => 'more examples &gt;&gt;',
+    
     'name' => 'name',
     'name_short' => 'short name',
     'negation' => 'negation',
@@ -303,6 +321,8 @@ return [
     'status' => 'status',
     'status0' => 'is not checked',
     'status1' => 'is checked',
+    'suggest_template' => 'suggest a template',
+    
     'tense' => 'Tense',
     'transitive' => 'transitive',
     'translation' => 'translation',
@@ -326,8 +346,5 @@ return [
     'wordforms_removed' => 'Wordforms are removed.',
     'wordforms_total' => 'Total number of wordforms',
     'wordforms_grouped_total' => 'Общее количество словоформ, cгруппированных по частям речи, т.е. все совпадающие словоформы, имеющие общую часть речи, считаются за одну',
-    'unique_wordforms_total' => 'Number of unique wordforms', 
-    'common_wordforms_total' => 'Number of common wordforms', 
-    'in_pos'=>'in :count parts of speech'
-    
+    'unique_wordforms_total' => 'Number of unique wordforms',     
 ];

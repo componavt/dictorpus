@@ -482,19 +482,22 @@ class Grammatic
                 }
             }
         }
+        sort($forms);
         return join(", ", $forms);
     }
     
     /**
      * Присоединение морфем (или списка морфем) к основам (или спискам основ)
      * 
-     * @param string $bases
+     * @param string $base
      * @param string $morfs
      */
-    public static function joinMorfToBases($bases, $morfs){
-        if (!$bases) { return ''; }
+    public static function joinMorfToBases($base, $morfs){
+        if (!$base) { return ''; }
         $forms=[];
-        foreach (preg_split("/[,\/]\s*/", $bases) as $base) {
+        $bases = preg_split("/[,\/]\s*/", $base);
+        sort($bases);
+        foreach ($bases as $base) {
             foreach (preg_split("/\,\s*/", $morfs) as $morf) {
                 $forms[] = $base.$morf;
             }
@@ -535,4 +538,11 @@ class Grammatic
         return join(', ', $forms);
     }
     
+    public static function suggestTemplates($lang_id, $pos_id, $word) {
+        $word = preg_replace("/\|/u", '', $word);
+        if ($lang_id != 1) {
+            return KarGram::suggestTemplates($lang_id, $pos_id, $word);
+        }
+        return [];
+    }    
 }

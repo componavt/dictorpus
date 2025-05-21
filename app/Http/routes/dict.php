@@ -57,6 +57,7 @@ Route::group(
         Route::get('lemma/omonyms', 'Dict\LemmaController@omonyms');
         Route::get('lemma/phrases', 'Dict\LemmaController@phrases');
         Route::get('lemma/sorted_by_length', 'Dict\LemmaController@sortedByLength')->name('lemma.sorted_by_length');
+        Route::get('lemma/suggest_templates', 'Dict\LemmaApiController@suggestTemplates');
         Route::get('lemma/full_new_list', 'Dict\LemmaController@fullNewList');
         Route::get('lemma/full_updated_list', 'Dict\LemmaController@fullUpdatedList');
         Route::get('lemma/limited_new_list', 'Dict\LemmaController@limitedNewList');
