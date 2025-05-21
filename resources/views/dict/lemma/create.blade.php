@@ -23,6 +23,10 @@
                                   'title'=>trans('navigation.help'),
                                   'modal_view'=>'help.lemma._form'])
                                   
+        @include('widgets.modal',['name'=>'modalSuggestTemplates',
+                                  'title'=>trans('dict.choose_template'),
+                                  'modal_view'=>'dict.lemma.choose_template'])
+
         {!! Form::open(array('method'=>'POST', 'route' => ['lemma.store'])) !!}
         @include('dict.lemma.form._create_edit', ['submit_title' => trans('messages.create_new_f'),
                                       'action' => 'create',
