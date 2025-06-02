@@ -40,6 +40,8 @@
         Route::get('experiments/search_by_analog/results_search_pos', 'Library\Experiments\SearchByAnalogController@resultsSearchPOS');
         Route::get('experiments/search_by_analog/write_winners', 'Library\Experiments\SearchByAnalogController@writeWinners');
 
+        Route::get('experiments/templgen', 'Library\Experiments\TemplGenController@index')->name('templgen.index');
+
         Route::get('experiments/vowel_gradation/', 'Library\Experiments\VowelGradationController@index');
         Route::get('experiments/vowel_gradation/nom_gen_part/{num}/{pos_code}/{sl}/{part_gr}', 'Library\Experiments\VowelGradationController@nomGenPart');
         Route::get('experiments/vowel_gradation/verb_imp_3sg/', 'Library\Experiments\VowelGradationController@verbImp3Sg');

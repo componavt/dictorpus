@@ -545,4 +545,16 @@ class Grammatic
         }
         return [];
     }    
+    
+    public static function extractStem($words) {
+        $stem = array_shift($words);
+        foreach ($words as $word) {
+            while (!preg_match("/^".$stem."/", $word)) {
+                $affix = mb_substr($stem, -1, 1). $affix;
+                $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
+//print "\n$wordform, $stem";                
+            }
+        }
+        return [$stem, $affix];
+    }
 }

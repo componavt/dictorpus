@@ -15,11 +15,13 @@
         <li><a href="{{ route('ludgen.words', ['what'=>$what]) }}">Отобранные слова</a></li>
         <li><a href="{{ route('ludgen.bases', ['what'=>$what]) }}">Основы</a></li>
         <li><a href="{{ route('ludgen.affixes', ['what'=>$what]) }}">Окончания{{ $what == 'verbs' ? ', вспомогательные глаголы' : '' }}</a></li>
+        @if ($what == 'verbs')
+        <li><a href="{{ route('ludgen.verb_types') }}">Виды глаголов</a></li>
+        @endif
     </ul>
     
     @endforeach
     
-    <li><a href="{{ route('ludgen.verb_types') }}">Виды глаголов</a></li>
 @endsection
 
 @section('footScriptExtra')

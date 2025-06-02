@@ -1506,7 +1506,12 @@ class KarVerb
         }
     }
 
-    public static function templateFromWordforms($wordforms) {
+    public static function templateFromWordforms($wordforms, $lang_id) {
+        if ($lang_id == 5) { // livvic
+            return KarVerbOlo::templateFromWordforms($wordforms, $number);
+        } elseif ($lang_id == 6) { 
+            return KarVerbLud::templateFromWordforms($wordforms, $number);
+        }
         $wordform = $wordforms[26] ?? null; // prs 1st sg
         if (!$wordform) { 
             return null;

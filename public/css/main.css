@@ -613,6 +613,7 @@ h4 {
     }
     h2 {
         font-size: 24px;
+        line-height: 24px;
     }
     
     .in_numbers-n {
@@ -634,6 +635,7 @@ h4 {
 @media screen and (min-width: 1200px) {
     h2 {
         font-size: 26px;
+        line-height: 26px;
     }
 }
 @media screen and (min-width: 768px) and (max-width: 1200px) {   

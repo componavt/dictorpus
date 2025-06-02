@@ -28,4 +28,10 @@
     <h4><a href="/experiments/dialect_dmarker">Определение диалектной принадлежности</a></h4>
     
     <h4><a href="{{ route('ludgen.index') }}">Генерация словоформ для людиковского наречия карельского языка</a></h4>
+    
+    <h4>Вывод правил построения шаблонов</h4>
+    <ul>
+        <li><a href="/experiments/templgen?what=names&lang_id=4">для именных частей речи собственно карельского наречия</a></li>
+        <li><a href="/experiments/templgen?what=names&lang_id=6">для именных частей речи людиковского наречия</a></li>
+    </ul>
 @endsection

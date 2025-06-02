@@ -1099,7 +1099,13 @@ class KarName
         return [];
     }
     
-    public static function templateFromWordforms($wordforms) {
+    public static function templateFromWordforms($wordforms, $lang_id=4) {
+        if ($lang_id == 5) { // livvic
+            return KarNameOlo::templateFromWordforms($wordforms, $number);
+        } elseif ($lang_id == 6) { 
+            return KarNameLud::templateFromWordforms($wordforms); // , $number
+        }
+        
         foreach ($wordforms as $gramset_id => $wordform) {
             if (preg_match("/^-(.+)$/", $wordform, $regs)) {
                 $wordforms[$gramset_id] = $regs[1];
@@ -1132,4 +1138,11 @@ class KarName
         
         return " [".$wordforms[3].", $regs1[1]]";
     }
+    
+    public static function suggestTemplates($lang_id, $word) {
+        if ($lang_id == 6) {
+            return KarNameLud::suggestTemplates($word);
+        }
+        return [];
+    }    
 }
