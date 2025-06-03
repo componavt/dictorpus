@@ -18,6 +18,7 @@ use App\Models\Corpus\Text;
 use App\Models\Corpus\Topic;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Lang;
 
 class CollectionController extends Controller
 {
@@ -41,6 +42,8 @@ class CollectionController extends Controller
                         compact('author', 'id', 'text_count'));
                 
             } elseif (Collection::isCollectionByGenre($id)) {
+                $lang_ids = Collection::getCollectionLangs($id);
+                $langs = Lang::whereIn('id', $lang_ids)->orderBy('id')->get();
                 if ($id == 3) {
                     $genre_arr = [Collection::getCollectionGenres($id)];
                     $genres = [Genre::find($genre_arr[0])];
@@ -50,16 +53,45 @@ class CollectionController extends Controller
                     $genre_arr = Genre::find(Collection::getCollectionGenres($id))
                             ->getSubGenreIds();
                 }
-                $lang_id = Collection::getCollectionLangs($id);
-                $dialects = Dialect::whereIn('lang_id', $lang_id)->get();
-                $text_count = Text::whereIn('lang_id', $lang_id)
+                $text_count = Text::whereIn('lang_id', $lang_ids)
                                   ->whereIn('id', function ($q) use ($genre_arr) {
                                     $q->select('text_id')->from('genre_text')
                                       ->whereIn('genre_id', $genre_arr);
                                 })->count();
+                $dialects = [];
+                if ($id == 1) {
+                    $dialects = Dialect::whereIn('lang_id', $lang_ids)->get();
+                } elseif ($id == 6) {
+                    foreach ($genres as $genre) {
+                        foreach ($langs as $lang) {
+                        $dials = Dialect::where('lang_id', $lang->id)->get();
+                            foreach ($dials as $dialect) {
+                                $texts = $dialect->textsByGenre($genre->id)->sortBy('title');
+                                if (!count($texts)) {
+                                    continue;
+                                }
+                                $dialects[$genre->id]['langs'][$lang->id]['dialects'][$dialect->id] = ['dialect'=>$dialect, 'texts'=>$texts];
+                            }
+                            $dialects[$genre->id]['langs'][$lang->id]['lang_text_count'] = 
+                                    Text::where('lang_id', $lang->id)
+                                      ->whereIn('id', function ($q) use ($genre) {
+                                        $q->select('text_id')->from('genre_text')
+                                          ->where('genre_id', $genre->id);
+                                    })->count();
+                        } 
+                        $dialects[$genre->id]['genre_text_count'] = 
+                                Text::whereIn('lang_id', $lang_ids)
+                                  ->whereIn('id', function ($q) use ($genre) {
+                                    $q->select('text_id')->from('genre_text')
+                                      ->where('genre_id', $genre->id);
+                                })->count();
+                    }
+//dd($dialects);                    
+                }
+                return view('corpus.collection.'.$id.'.index',
+                        compact('dialects', 'for_print', 'genres', 'id', 'lang_ids', 
+                                'langs', 'text_count'));
             }
-            return view('corpus.collection.'.$id.'.index',
-                    compact('dialects', 'for_print', 'genres', 'id', 'lang_id', 'text_count'));
         }
         return Redirect::to('/corpus/collection');
     }

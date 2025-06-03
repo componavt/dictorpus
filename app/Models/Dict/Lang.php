@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use LaravelLocalization;
 
 use App\Models\Corpus\Audiotext;
-use App\Models\Corpus\Corpus;
+//use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 use App\Models\Dict\Lemma;
@@ -52,6 +52,17 @@ class Lang extends Model
     // Methods
     use \App\Traits\Methods\getNameAttribute;
 
+    public function getShortAttribute() : String
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        if ($locale != 'ru' || empty($this->short_ru)) {
+            $name = $this->name;
+        } else {
+            $name = $this->short_ru;
+        }
+        
+        return $name ? $name: '';
+    }
     public function audiotexts()
     {
         return $this->hasManyThrough(Audiotext::class, Text::class);

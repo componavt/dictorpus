@@ -18,7 +18,7 @@
     @foreach ($genres[0]->cycles as $cycle)
 {{--            @if ($cycle->texts->count()) --}}
         <li><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/3/'.$cycle->id) }}">{{$cycle->name}}</a> ({{$cycle->texts->count()}})</li>
-{{--                @foreach ($cycle->texts()->whereIn('lang_id', $lang_id)->orderBy('title')->get() as $text)
+{{--                @foreach ($cycle->texts()->whereIn('lang_id', $lang_ids)->orderBy('title')->get() as $text)
     @include('corpus.collection._text', 
             ['event' => $text->event, 'source' => null])
                 @endforeach

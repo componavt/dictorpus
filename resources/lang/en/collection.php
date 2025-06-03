@@ -31,11 +31,20 @@ return [
                     . '<br><br>After serving in the army, he worked as a driver while also being the artistic director at a rural cultural center in the village of Kozlovo in the Spirovsky District, and later as a game warden in the Likhoslavl District. '
                     . 'He spent the last years of his life in his ancestral home in the village of Vasilki. '
                     . '<br><br>Stanislav Vasilyevich’s poems in Karelian and Russian are dedicated to his native village, nature, and fellow villagers. His first collection of poems in Karelian, “Oma randa,” was published in 1997. In 1999, his story “Kyynelet” was released.',
+                6 => 'Карельские причитания, оформлявшие ключевые этапы свадебного, похоронно-поминального и рекрутского обрядов, считаются исследователями одним из самых архаичных '
+                    . 'жанров устной народной поэзии карелов. В рамках всего корпуса представленных причетных текстов можно выделить три локальные традиции: севернокарельскую, '
+                    . 'среднекарельскую и южнокарельскую. Основной особенностью обрядовых причитаний является метафорический язык, который формировался при помощи традиционных '
+                    . 'поэтических формул, приемов и различных выразительных средств. Настоящая коллекция включает в себя тексты причитаний, собранные по преимуществу в течение '
+                    . 'ХХ века и опубликованные в сборнике «Карельские причитания». Книга была подготовлена А. С. Степановой и Т. А. Коски и увидела свет в 1976 году (Карельские '
+                    . 'причитания // Изд. подгот. А. С. Степанова. Петрозаводск: Карелия, 1976. 534 с.). Наиболее ранние варианты причитаний представлены текстами, выявленными в '
+                    . 'статье Н. Ф. Лескова «Корельская свадьба» (Лесков Н. Корельская свадьба // Живая старина. – Вып.3-4. – СПб., 1894. – С. 499 – 511). Наряду с этим '
+                    . 'можно познакомиться и с вариантами современных причитаний, которые удалось зафиксировать во время полевых исследований в течение первой половины XXI века.',
                ],
     'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
     'topic_index' => 'Index of plots and thematics of Karelian runes',
     'name_list' => [
         1 => 'Veps lamentations',
+        6 => 'Karelian lamentations',
         2 => 'Karelian Runes',
         3 => 'Karelian Legends',
         4 => 'Nikolai Mikhailovich Balakirev',

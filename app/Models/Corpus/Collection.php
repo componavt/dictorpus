@@ -7,7 +7,7 @@ use App\Models\Corpus\Genre;
 class Collection {
    
     public static function getCollectionGenres($collection_id=null) {
-        $genres = [1=>19, 2=>66, 3=>60];
+        $genres = [1=>19, 2=>66, 3=>60, 6=>19];
         if (!$collection_id) {
             return $genres;
         }
@@ -27,7 +27,7 @@ class Collection {
     }
 
     public static function getCollectionLangs($collection_id=null) : array {
-        $langs = [1=>[1], 2=>[4,5,6], 3=>[4,5,6]];
+        $langs = [1=>[1], 2=>[4,5,6], 3=>[4,5,6], 6=>[4,5,6]];
         if (!$collection_id) {
             return $langs;
         }
