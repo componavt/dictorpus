@@ -343,6 +343,7 @@ trait LemmaModify
         $meanings = $this->meanings;
 
         foreach ($meanings as $meaning) {
+            $meaning->phrases()->detach();
             $meaning->remove();
         }
 
