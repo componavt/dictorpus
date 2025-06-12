@@ -1099,7 +1099,7 @@ class KarName
         return [];
     }
     
-    public static function templateFromWordforms($wordforms, $lang_id=4) {
+    public static function templateFromWordforms($wordforms, $lang_id=4, $number) {
         if ($lang_id == 5) { // livvic
             return KarNameOlo::templateFromWordforms($wordforms, $number);
         } elseif ($lang_id == 6) { 

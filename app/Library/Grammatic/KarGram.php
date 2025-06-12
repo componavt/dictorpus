@@ -384,7 +384,7 @@ class KarGram
     
     public static function templateFromWordforms($wordforms, $lang_id, $pos_id, $number) {
         if (in_array($pos_id, PartOfSpeech::getNameIDs())) {
-            return KarName::templateFromWordforms($wordforms, $lang_id);
+            return KarName::templateFromWordforms($wordforms, $lang_id, $number);
         } elseif ($pos_id == PartOfSpeech::getVerbID()) { 
             return KarVerb::templateFromWordforms($wordforms, $lang_id);
         }
