@@ -94,9 +94,10 @@ class TemplGen extends Model
             }
             
             $forms[$affix.'_'.$a1.'_'.$a2]['lemmas'][] = [$lemma->lemma, $w1->wordform, $w3->wordform, $w2->wordform];
-            $forms[$affix.'_'.$a1.'_'.$a2][0] = $affix;
-            $forms[$affix.'_'.$a1.'_'.$a2][1] = $a1;
-            $forms[$affix.'_'.$a1.'_'.$a2][2] = $a2;
+            $forms[$affix.'_'.$a1.'_'.$a2]['template'] = ($affix ? '|'.$affix : ''). ' ['.$a1. ($a2=='-' ? '' : ', '.$a2). ']';
+//            $forms[$affix.'_'.$a1.'_'.$a2][0] = $affix;
+//            $forms[$affix.'_'.$a1.'_'.$a2][1] = $a1;
+//            $forms[$affix.'_'.$a1.'_'.$a2][2] = $a2;
         }
 //        asort($forms);
         return $forms;

@@ -23,27 +23,29 @@ class TemplGenController extends Controller
         } else {
             
         }
-//dd($table['_a_-']);        
+//dd($table);        
         print "<table border=1>";
         foreach ($table as $row_id => $row) {
             $count_rows = count($row['lemmas']);
             $first_lemma = array_pop($row['lemmas']);
             print '<tr>';
-            for($i=0; $i<count($first_lemma); $i++) {
+            print '<td align="right">'.$first_lemma[0].'</td>';
+            print "<td rowspan=".$count_rows." valign=top>".$row['template']."</td>";
+/*            for($i=0; $i<count($first_lemma); $i++) {
                 print '<td align="right">'.$first_lemma[$i].'</td>';
-            }
+            }*/
             print '<td>'.join(', ', $first_lemma).'</td>';
 /*            for($i=0; $i<3; $i++) {
                 print "<td rowspan=".$count_rows." valign=top>".$row[$i]."</td>";
             }*/
-            print "<td rowspan=".$count_rows." valign=top>".$row['template']."</td>";
             print '</tr>';
             
             foreach ($row['lemmas'] as $lemma) {
                 print '<tr>';
-                for($i=0; $i<count($lemma); $i++) {
+                print '<td align="right">'.$lemma[0].'</td>';
+/*                for($i=0; $i<count($lemma); $i++) {
                     print '<td align="right">'.$lemma[$i].'</td>';
-                }
+                }*/
                 print '<td>'.join(', ', $lemma).'</td></tr>';
             }
         }
