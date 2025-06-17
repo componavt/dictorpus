@@ -12,15 +12,6 @@ use App\Library\Grammatic\KarVerbLud;
 class KarVerbLudTest extends TestCase
 {
     public function testSuggestTemplates() {
-/*$words = ["ottai", "ottaii", "ottai ", "ottai", "ottaai", "ottai"];
-
-foreach ($words as $word) {
-    if (preg_match('/^(.+)([kptcsh])\2ai$/u', $word)) {
-        echo "$word: MATCH\n";
-    } else {
-        echo "$word: no match\n";
-    }
-} */       
         $verbs = [
 	    3461 => 'kaččoda',
             42494 => 'kuččuda',

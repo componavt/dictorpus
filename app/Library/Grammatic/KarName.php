@@ -1152,121 +1152,308 @@ class KarName
         $U = KarGram::garmVowel($is_back,'u');
         $templates = [];
         
-        if (preg_match('/'.$C.'’[aä]$/u', $word)                         // hil’l’a
-                || preg_match('/[uy]{2}$/u', $word)) {                   // alušpuu     
+        if (preg_match('/'.$C.'’[aä]$/u', $word)                        // hil’l’a
+                || preg_match('/[uy]{2}$/u', $word)) {                // alušpuu     
             $templates[] = $word.' [, ]';
         }    
-        if (preg_match('/'.$C.'’?[aäiuyoö]$/u', $word)                   // šyvä
-                || preg_match('/'.$V.$V.'$/u', $word)) {                 // työ     
+        if (preg_match('/'.$C.'’?[aäiuyoö]$/u', $word)                    // šyvä
+                || preg_match('/'.$V.$V.'$/u', $word)) {                  // työ     
             $templates[] = $word.' []';
         }    
-        if (preg_match('/[rhlnr]$/u', $word)) {                          // penker     
+        if (preg_match('/[rhlnr]$/u', $word)) {                        // penker     
             $templates[] = $word.' [e, ]';
         }    
-        if (preg_match('/^(.+?)([hlrn]i)$/u', $word, $r)) {              // jouhi 
+        if (preg_match('/^(.+?)([hlrn]i)$/u', $word, $r)) {             // jouhi 
             $templates[] = $r[1].'|'.$r[2].' [e, ]';
         }    
         if (preg_match('/^(.+?)([čkpt])\2([aäioöuy])$/u', $word, $r)) { // muččo 
             $templates[] = $r[1].$r[2].'|'.$r[2].$r[3].' ['.$r[3].']';
         }    
-        if (preg_match('/^(.+?)([nrv])\2(eh)$/u', $word, $r)) {          // elänneh 
+        if (preg_match('/^(.+?)([nrv])\2(eh)$/u', $word, $r)) {       // elänneh 
             $templates[] = $r[1].$r[2].'|'.$r[2].$r[3].' [tehe, '.$r[2].$r[3].']';
         }    
         if (preg_match('/^(.+?)([aä])(š)$/u', $word, $r)) {              // eväš 
-            $templates[] = $r[1].$r[2].'|'.$r[3].' [h'.$r[2].']';
+            $templates[] = $r[1].$r[2].'|'.$r[3].' [h'.$r[2].', '.$r[3].']';
         }    
-        if (preg_match('/^(.+?)([čk])([uy])([sš])$/u', $word, $r)) {     // alačuš 
+        if (preg_match('/^(.+?)([čk])([uy])([sš])$/u', $word, $r)) {   // alačuš 
             $templates[] = $r[1].$r[2].'|'.$r[3].$r[4].' ['.$r[2].$r[3].$O.', '.$r[3].'t]';
         }    
-        if (preg_match('/^(.+?)([lnrsš])(t)([aäoöuyi])$/u', $word, $r)        // kulta
-                || preg_match('/^(.+?)(m)(p)([aäoöuyi])$/u', $word, $r)) {       // lämpö
+        if (preg_match('/^(.+?)([lnrsš])(t)([aäoöuyi])$/u', $word, $r)  // kulta
+                || preg_match('/^(.+?)(m)(p)([aäoöuyi])$/u', $word, $r)) {// lämpö
             $templates[] = $r[1].$r[2].'|'.$r[3].$r[4].' ['.$r[2].$r[4].']';
         }    
-        if (preg_match('/^(.+?t)(ti)$/u', $word, $r)) {                  // alapirtti 
+        if (preg_match('/^(.+?t)(ti)$/u', $word, $r)) {             // alapirtti 
             $templates[] = $r[1].'|'.$r[2].' ['.$A.']';
         }    
-        if (preg_match('/^(.+?č)([aä]š)$/u', $word, $r)) {               // hautapačaš 
+        if (preg_match('/^(.+?č)([aä]š)$/u', $word, $r)) {         // hautapačaš 
             $templates[] = $r[1].'|'.$r[2].' [č'.$A.'he, '.$r[2].']';
         }    
-        if (preg_match('/^(.+?)(č){2}(i)$/u', $word, $r)) {               // veičči 
-            $templates[] = $r[1].$r[2].'|'.$r[2].$r[3].' ['.$r[2].'e, s]';
+        if (preg_match('/^(.+?)(č){2}(i)$/u', $word, $r)) {            // veičči 
+            $templates[] = $r[1].'|'.$r[2].$r[2].$r[3].' ['.$r[2].'e, s]';
         }    
-        if (preg_match('/^(.+?lli)(t[aä])$/u', $word, $r)) {               // kallita 
+        if (preg_match('/^(.+?lli)(t[aä])$/u', $word, $r)) {          // kallita 
             $templates[] = $r[1].'|'.$r[2].' [če]';
         }    
-        if (preg_match('/^(.+?)(c)(en)$/u', $word, $r)) {               // joucen 
-            $templates[] = $r[1].$r[2].'|'.$r[2].$r[3].' ['.$r[2].'e, s]';
+        if (preg_match('/^(.+?)(c)(en)$/u', $word, $r)) {              // joucen 
+            $templates[] = $r[1].$r[2].'|'.$r[3].' ['.$r[2].'ene, '.$r[3].']';
         }    
-        if (preg_match('/^(.+?č)(in)$/u', $word, $r)) {               // kaklačin 
+        if (preg_match('/^(.+?č)(in)$/u', $word, $r)) {              // kaklačin 
             $templates[] = $r[1].'|'.$r[2].' [čime, '.$r[2].']';
         }    
-        if (preg_match('/^(.+?)(i)$/u', $word, $r)        // šuvi
+        if (preg_match('/^(.+?h)(ti)$/u', $word, $r)                    // lehti
                 || preg_match('/^(.+?[šlrkt])(ki)$/u', $word, $r)       // koški
-                || preg_match('/^(.+?h)(ti)$/u', $word, $r)) {       // lehti
+                || preg_match('/^(.+?)(i)$/u', $word, $r)) {             // šuvi
             $templates[] = $r[1].'|'.$r[2].' [e]';
         }    
-        if (preg_match('/^(.+?)([čkpt])\2i$/u', $word, $r)) {               // ahventuppi 
-            $templates[] = $r[1].$r[2].'|'.$r[2].' [e]';
+        if (preg_match('/^(.+?)([čkpt])\2i$/u', $word, $r)) {      // ahventuppi 
+            $templates[] = $r[1].$r[2].'|'.$r[2].'i [e]';
         }    
         
-        if (preg_match('/^(.+?)(is)$/u', $word, $r)) {               // kapris 
+        if (preg_match('/^(.+?'.$C.')(is)$/u', $word, $r)) {           // kapris 
             $templates[] = $r[1].'|'.$r[2].' [ehe, '.$r[2].']';
         }    
-        if (preg_match('/^(.+?VV)(š)$/u', $word, $r)) {               // autuoš 
+        if (preg_match('/^(.+?'.$V.$V.')(š)$/u', $word, $r)) {         // autuoš 
             $templates[] = $r[1].'|'.$r[2].' [h'.$A.', '.$r[2].']';
         }    
-        if (preg_match('/^(.+?)([aä])(š)$/u', $word, $r)) {               // kankaš 
-            $templates[] = $r[1].'|'.$r[2].$r[3].' [h'.$r[2].', '.$r[3].']'; 
+        if (preg_match('/^(.+?)([aä])(š)$/u', $word, $r)) {            // kankaš 
+            $templates[] = $r[1].$r[2].'|'.$r[3].' [h'.$r[2].', '.$r[3].']'; 
         }    
-        if (preg_match('/^(.+?e)(š)$/u', $word, $r)                    // mieš
-                || preg_match('/^(.+?i)(s)$/u', $word, $r)) {       // kiärmis
+        if (preg_match('/^(.+?e)(š)$/u', $word, $r)                      // mieš
+                || preg_match('/^(.+?i)(s)$/u', $word, $r)) {         // kiärmis
             $templates[] = $r[1].'|'.$r[2].' [he, '.$r[2].']';
         }    
-        if (preg_match('/^(.+?)(kši)$/u', $word, $r)) {               // lakši 
+        if (preg_match('/^(.+?)(kši)$/u', $word, $r)) {                 // lakši 
             $templates[] = $r[1].'|'.$r[2].' [he]'; 
         }    
-        if (preg_match('/^(.+?)(ksi)$/u', $word, $r)) {               // yksi 
+        if (preg_match('/^(.+?)(ksi)$/u', $word, $r)) {                  // yksi 
             $templates[] = $r[1].'|'.$r[2].' [he/hte, h]'; 
         }    
-        if (preg_match('/^(.+?[ht])(ti)$/u', $word, $r)) {               // vahti 
+        if (preg_match('/^(.+?[ht])(ti)$/u', $word, $r)) {              // vahti 
             $templates[] = $r[1].'|'.$r[2].' [i]'; 
         }    
-        if (preg_match('/^(.+?k)([aä])(si)$/u', $word, $r)) {               // käsi 
+        if (preg_match('/^(.*?k)([aä])(si)$/u', $word, $r)) {            // käsi 
             $templates[] = $r[1].'|'.$r[2].$r[3].' [i'.$r[2].', '.$r[2].'t]'; 
         }    
-        if (preg_match('/^(.+?)([aä]t[aä])$/u', $word, $r)) {               // henkenhätä 
+        if (preg_match('/^(.+?)([aä]t[aä])$/u', $word, $r)) {      // henkenhätä 
             $templates[] = $r[1].'|'.$r[2].' [i'.$A.']'; 
         }    
-        if (preg_match('/^(.+?C)(e)$/u', $word, $r)) {               // holve 
+        if (preg_match('/^(.+?'.$C.')(e)$/u', $word, $r)) {             // holve 
             $templates[] = $r[1].'|'.$r[2].' [ie, et]'; 
         }    
-        if (preg_match('/^(.+?VC)(e)$/u', $word, $r)                   // iltakoite
-                || preg_match('/^(.+?)(eki)$/u', $word, $r)       // reki
-                || preg_match('/^(.+?)(et)$/u', $word, $r)) {       // apposet
+        if (preg_match('/^(.+?'.$V.$C.')(e)$/u', $word, $r)         // iltakoite
+                || preg_match('/^(.+?)(eki)$/u', $word, $r)              // reki
+                || preg_match('/^(.+?)(et)$/u', $word, $r)) {         // apposet
             $templates[] = $r[1].'|'.$r[2].' [ie]';
         }    
-        if (preg_match('/^(.+?)(et[aä])$/u', $word, $r)) {               // hieta 
+        if (preg_match('/^(.+?)(et[aä])$/u', $word, $r)) {              // hieta 
             $templates[] = $r[1].'|'.$r[2].' [ij'.$A.']'; 
         }    
-        if (preg_match('/^(.+?)(si)$/u', $word, $r)) {               // hiisi 
+        if (preg_match('/^(.+?)(si)$/u', $word, $r)) {                  // hiisi 
             $templates[] = $r[1].'|'.$r[2].' [je, t]'; 
         }    
-        if (preg_match('/^(.+?)([kt])(i)$/u', $word, $r)) {               // hiki 
+        if (preg_match('/^(.+?)([kt]i)$/u', $word, $r)) {                // hiki 
             $templates[] = $r[1].'|'.$r[2].' [je]'; 
         }    
-        if (preg_match('/^(.+?k)([aä]š)$/u', $word, $r)) {               // jiäkäš 
+        if (preg_match('/^(.+?k)([aä]š)$/u', $word, $r)) {             // jiäkäš 
             $templates[] = $r[1].'|'.$r[2].' [k'.$A.'h'.$A.', '.$r[2].']'; 
         }    
-        if (preg_match('/^(.+?)(jeh)$/u', $word, $r)                   // aijeh
-                || preg_match('/^(.+?[lk])(eh)$/u', $word, $r)       // eläkeh
-                || preg_match('/^(.+?r[uy])(is)$/u', $word, $r)) {       // ruis
+        if (preg_match('/^(.+?)(jeh)$/u', $word, $r)                    // aijeh
+                || preg_match('/^(.+?[lk])(eh)$/u', $word, $r)         // eläkeh
+                || preg_match('/^(.*?r[uy])(is)$/u', $word, $r)) {       // ruis
             $templates[] = $r[1].'|'.$r[2].' [kehe, '.$r[2].']';
         }    
-        if (preg_match('/^(.+?š)(e)(l)$/u', $word, $r)        // ašel
-                || preg_match('/^(.+?i)(je)(n)$/u', $word, $r)) {       // ijen
-            $templates[] = $r[1].'|'.$r[2].' [ke'.$r[3].'e, '.$r[2].']';
+        if (preg_match('/^(.+?š)(e)(l)$/u', $word, $r)                   // ašel
+                || preg_match('/^(.*?i)(je)(n)$/u', $word, $r)) {        // ijen
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [ke'.$r[3].'e, '.$r[2].$r[3].']';
+        }    
+        if (preg_match('/^(.+?)([sš])$/u', $word, $r)) {                // jänis
+            $templates[] = $r[1].'|'.$r[2].' [k'.$r[2].'e, '.$r[2].']';
+        }    
+        if (preg_match('/^(.+?)(kši)$/u', $word, $r)) {                 // šukši 
+            $templates[] = $r[1].'|'.$r[2].' [kše, š]'; 
+        }    
+        if (preg_match('/^(.+?t)([uy]t)$/u', $word, $r)) {              // kätyt 
+            $templates[] = $r[1].'|'.$r[2].' [k'.$U.$O.', '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?l)(t[uy][aä])$/u', $word, $r)) {      // huuhaltua 
+            $templates[] = $r[1].'|'.$r[2].' [l'.$A.', '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?)(in)$/u', $word, $r)) {                // alačoin 
+            $templates[] = $r[1].'|'.$r[2].' [m'.$A.', '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?m)(p[aä])$/u', $word, $r)                 // kampa
+                || preg_match('/^(.+?m)([bp]i)$/u', $word, $r)) {    // nuorembi
+            $templates[] = $r[1].'|'.$r[2].' [m'.$A.']';
+        }    
+        if (preg_match('/^(.+?[aäi])(n)$/u', $word, $r)                // kaššin
+                || preg_match('/^(.+?V)(in)$/u', $word, $r)) {        // huokain
+            $templates[] = $r[1].'|'.$r[2].' [me, '.$r[2].']';
+        }    
+        if (preg_match('/^(.+?)(mi)$/u', $word, $r)) {                  // liemi 
+            $templates[] = $r[1].'|'.$r[2].' [me, n]'; 
+        }    
+        if (preg_match('/^(.+?m)(pi)$/u', $word, $r)) {                 // lampi 
+            $templates[] = $r[1].'|'.$r[2].' [me]'; 
+        }    
+        if (preg_match('/^(.+?)(ši)$/u', $word, $r)) {                   
+            $templates[] = $r[1].'|'.$r[2].' [ne, t]';                  // kynši
+            $templates[] = $r[1].'|'.$r[2].' [ne/te, t]';               // kanši
+        }    
+        if (preg_match('/^(.+?r[uy])([sš])$/u', $word, $r)            // ankaruš
+                || preg_match('/^(.+?[uy])(t)$/u', $word, $r)) {      // katonut
+            $templates[] = $r[1].'|'.$r[2].' ['.$O.', '.$r[2].']';
+        }    
+        if (preg_match('/^(.+?[hk][uy])([sš])$/u', $word, $r)) {        // pahuš 
+            $templates[] = $r[1].'|'.$r[2].' ['.$O.', t]'; 
+        }    
+        if (preg_match('/^(.+?m)(m[aä]š)$/u', $word, $r)               // hammaš
+                || preg_match('/^(.+?p)([aä]š)$/u', $word, $r)      // jiäruopaš
+                || preg_match('/^(.+?)(v[aä]š)$/u', $word, $r)) {      // karvaš
+            $templates[] = $r[1].'|'.$r[2].' [p'.$A.'h'.$A.', '.$r[2].']';
+        }    
+        if (preg_match('/^(.+?p)([aä]n)$/u', $word, $r)) {              // hapan 
+            $templates[] = $r[1].'|'.$r[2].' [p'.$A.'me, '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?)(veh)$/u', $word, $r)                   // helveh
+                || preg_match('/^(.+?)(vis)$/u', $word, $r)) {         // tarvis
+            $templates[] = $r[1].'|'.$r[2].' [pehe, '.$r[2].']';
+        }    
+        if (preg_match('/^(.+?m)(me)(l)$/u', $word, $r)                // vemmel
+                || preg_match('/^(.+?)(ve)(n)$/u', $word, $r)) {        // haven
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [pe'.$r[3].'e, '.$r[2].$r[3].']';
+        }    
+        if (preg_match('/^(.+?)([čkpt])(e)$/u', $word, $r)) {             // ape 
+            $templates[] = $r[1].$r[2].'|'.$r[3].' ['.$r[2].'ie, et]'; 
+        }    
+        if (preg_match('/^(.+?m)(min)$/u', $word, $r)) {               // lämmin 
+            $templates[] = $r[1].'|'.$r[2].' [pim'.$A.', '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?)(pši)$/u', $word, $r)) {                 // lapši 
+            $templates[] = $r[1].'|'.$r[2].' [pše, š]'; 
+        }    
+        if (preg_match('/^(.+?m)(m[uy]t)$/u', $word, $r)) {             // immyt 
+            $templates[] = $r[1].'|'.$r[2].' [p'.$U.$O.', '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?r)(ši)$/u', $word, $r)) {                  
+            $templates[] = $r[1].'|'.$r[2].' [re, t]';                  // karši
+            $templates[] = $r[1].'|'.$r[2].' [re]';                 // itkuvirši
+            $templates[] = $r[1].'|'.$r[2].' [re/te, t]';               // hirši
+        }    
+        if (preg_match('/^(.+?s)(k[aä])$/u', $word, $r)) {         // paharaiska 
+            $templates[] = $r[1].'|'.$r[2].' [s'.$A.']'; 
+        }    
+        if (preg_match('/^(.+?)(ni)$/u', $word, $r)) {                // koivuni 
+            $templates[] = $r[1].'|'.$r[2].' [se, is]'; 
+        }    
+        if (preg_match('/^(.+?)(n[ei])$/u', $word, $r)) {            // čirkkuni 
+            $templates[] = $r[1].'|'.$r[2].' [se, s]'; 
+        }    
+        if (preg_match('/^(.+?t)([aä]r)$/u', $word, $r)) {              // tytär 
+            $templates[] = $r[1].'|'.$r[2].' [t'.$r[2].'e]'; 
+        }    
+        if (preg_match('/^(.+?[ht])([aä]š)$/u', $word, $r)              // puhaš
+                || preg_match('/^(.+?)(j[aä]š)$/u', $word, $r)) {       // hijaš
+            $templates[] = $r[1].'|'.$r[2].' [t'.$A.'h'.$A.', '.$r[2].']';
+        }    
+        if (preg_match('/^(.+?)([lnr])\2([aä])(š)$/u', $word, $r)) {    // allaš 
+            $templates[] = $r[1].$r[2].'|'.$r[2].$r[3].$r[4].' [t'.$r[3].'h'.$r[3].', '.$r[2].$r[3].$r[4].']'; 
+        }    
+        if (preg_match('/^(.+?)([hj]e)(h)$/u', $word, $r)               // kajeh
+                || preg_match('/^(.+?n)(ne)(l)$/u', $word, $r)         // kannel
+                || preg_match('/^(.+?n)(ne)(r)$/u', $word, $r)) {      // manner
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [te'.$r[3].'e, '.$r[2].$r[3].']';
+        }    
+        if (preg_match('/^(.+?[^v])(v{1,2}e)(h)$/u', $word, $r)) {      // huuvveh
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [pe'.$r[3].'e, '.$r[2].$r[3].']';
+        }    
+        if (preg_match('/^(.+?i)(je)$/u', $word, $r)                    // voije
+                || preg_match('/^(.+?n)(ne)$/u', $word, $r)             // jänne
+                || preg_match('/^(.+?[oö]š)(še)$/u', $word, $r)         // košše
+                || preg_match('/^(.*?'.$V.$C.')(e)$/u', $word, $r)       // kare
+                || preg_match('/^(.+?'.$V.'t)(e)$/u', $word, $r)) {     // kaute
+            $templates[] = $r[1].'|'.$r[2].' [tie, '.$r[2].'t]';
+        }    
+        if (preg_match('/^(.+?[aä]š)(še)$/u', $word, $r)                // kašše
+                || preg_match('/^(.+?[aä]t)(e)$/u', $word, $r)) {       // jiäte
+            $templates[] = $r[1].'|'.$r[2].' [tie]';
+        }    
+        if (preg_match('/^(.+?)(jin)$/u', $word, $r)                   // vuajin
+                || preg_match('/^(.+?n)(nin)$/u', $word, $r)           // kannin
+                || preg_match('/^(.+?š)(šin)$/u', $word, $r)         // jaluššin
+                || preg_match('/^(.+?t)(in)$/u', $word, $r)) {         // šoitin
+            $templates[] = $r[1].'|'.$r[2].' [time, '.$r[2].']';
+        }    
+        if (preg_match('/^(.+?t)([oö]in)$/u', $word, $r)) {          // hävitöin 
+            $templates[] = $r[1].'|'.$r[2].' [t'.$O.'m'.$A.', '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?s)(s[uy]in)$/u', $word, $r)) {           // issuin 
+            $templates[] = $r[1].'|'.$r[2].' [tuime, '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?v)([aä]t)$/u', $word, $r)) {              // kevät 
+            $templates[] = $r[1].'|'.$r[2].' ['.$U.$A.', '.$r[2].']'; 
+        }    
+        if (preg_match('/^(.+?)([aä]k[aä])$/u', $word, $r)               // haka
+                || preg_match('/^(.+?)([aä]t[aä])$/u', $word, $r)) {  // holvata
+            $templates[] = $r[1].'|'.$r[2].' ['.$U.$A.']';
+        }    
+        if (preg_match('/^(.+?)([oö]t[aä])$/u', $word, $r)) {          // ahjota 
+            $templates[] = $r[1].'|'.$r[2].' ['.$U.$O.']'; 
+        }    
+        if (preg_match('/^(.+?[uy])([oö]ši)$/u', $word, $r)) {          // vuoši 
+            $templates[] = $r[1].'|'.$r[2].' ['.$U.'vve/'.$O.'te, '.$O.'t]'; 
+        }    
+        if (preg_match('/^(.+?[uy])(ši)$/u', $word, $r)) {           // kuukauši 
+            $templates[] = $r[1].'|'.$r[2].' [ve, t]'; 
+        }    
+        if (preg_match('/^(.+?)([ktp])(i)$/u', $word, $r)) {             // joki 
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [ve]'; 
+        }    
+        if (preg_match('/^(.+?)([ktp])([aäiuyoö])$/u', $word, $r)) {    // hauki 
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [v'.$r[3].']'; 
+        }    
+        if (preg_match('/^(.*?[uy]{2})(ši)$/u', $word, $r)) {            // uuši
+            $templates[] = $r[1].'|'.$r[2].' [vve, t]'; 
+        }    
+        if (preg_match('/^(.+?)(n)(ti)$/u', $word, $r)) {                // anti
+            $templates[] = $r[1].$r[2].'|'.$r[3].' ['.$r[2].'i]'; 
+        }    
+        if (preg_match('/^(.+?[ht])(tu)([aä])$/u', $word, $r)      // juokšuttua
+           || preg_match('/^(.+?'.$C.')([uy])([aä])$/u', $word, $r)) {// čirškua
+            $templates[] = $r[1].'|'.$r[2].$r[3].' ['.$r[3].', '.$r[2].$r[3].']';
+        }    
+        if (preg_match('/^(.+?[thlrš])(k)([aäoöuy])$/u', $word, $r)     // pitkä
+                || preg_match('/^(.+?[uyhr])(t)([aä])$/u', $word, $r)) {// parta
+            $templates[] = $r[1].'|'.$r[2].$r[3].' ['.$r[3].']';
+        }    
+        if (preg_match('/^(.+?)(et)([oö])$/u', $word, $r)) {            // tieto
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [ij'.$r[3].']'; 
+        }    
+        if (preg_match('/^(.+?)([kt])([aäiuyoö])$/u', $word, $r)        // reikä
+                || preg_match('/^(.+?i)(k)([aä])$/u', $word, $r)         // aika
+                || preg_match('/^(.+?i)([tv])([oö])$/u', $word, $r)     // hoito
+                || preg_match('/^(.+?i)([kt])([uy])$/u', $word, $r)) {  // joiku
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [j'.$r[3].']'; 
+        }    
+        if (preg_match('/^(.+?n)(t)([uy])$/u', $word, $r)) {            // lintu
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [n'.$r[3].']'; 
+        }    
+        if (preg_match('/^(.+?)([uy])([oö][kt])([aäoö])$/u', $word, $r)) {// luota
+            $templates[] = $r[1].$r[2].'|'.$r[3].$r[4].' ['.$r[2].'vv'.$r[4].']'; 
+        }    
+        if (preg_match('/^(.+?'.$V.')([tpk])([aä])$/u', $word, $r)       // hupa
+                || preg_match('/^(.+?)([kp])([oö])$/u', $word, $r)       // hako
+                || preg_match('/^(.+?V)(t)([oö])$/u', $word, $r)        // huuto
+                || preg_match('/^(.+?V)([kpt])([uy])$/u', $word, $r)) {  // šuku
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [v'.$r[3].']'; 
+        }    
+        if (preg_match('/^(.+?[uy]{2})(t)([oö])$/u', $word, $r)) { // kalanpyytö
+            $templates[] = $r[1].'|'.$r[2].$r[3].' [vv'.$r[3].']'; 
+        }    
+        if (preg_match('/^(.+?)([kp])[oö]ni$/u', $word, $r)) {         // näköni
+            $templates[] = $r[1].'|'.$r[2].$O.'ni ['.$r[2].$O.'se, v'.$O.'is]'; 
         }    
         
+        $templates = array_unique($templates);
         sort($templates);
         return $templates;
     }    
