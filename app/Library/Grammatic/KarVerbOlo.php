@@ -327,7 +327,7 @@ class KarVerbOlo
     
     public static function getStemFromWordform($lemma, $stem_n, $dialect_id) {
         switch ($stem_n) {
-            case 2: // indicative ptresence 3 sg
+            case 2: // indicative presence 3 sg
                 if (preg_match("/^(.+)n$/", $lemma->wordform(28, $dialect_id), $regs)) {
                     return preg_replace("/,\s*/", '/',$regs[1]);
                 }

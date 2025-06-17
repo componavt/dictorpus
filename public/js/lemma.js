@@ -139,6 +139,8 @@ function suggestTemplates() {
             lang_id: $( "#lang_id option:selected" ).val(), 
             lemma: $( "#lemma" ).val(),
             pos_id: $( "#pos_id option:selected" ).val(),
+            dialect_id: $( "#wordform_dialect_id option:selected" ).val(),
+            is_reflexive: $('#reflexive').prop('checked') ? 1 : 0,
         },
         success: function(result){            
             $("#choose_template").html(result);

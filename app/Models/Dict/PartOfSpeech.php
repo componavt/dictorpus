@@ -408,6 +408,15 @@ class PartOfSpeech extends Model
 
         return $categories;
     }
+    
+    public function mainGramsets() {
+        if ($this->isVerb()) {
+            return [170, 26, 28, 31]; // , 32, 34, 37
+        } elseif ($this->isName()) {
+            return [1, 3, 10, 4]; //, 24, 22
+        }
+        return [];
+    }
 }
 
 // 
