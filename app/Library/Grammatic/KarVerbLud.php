@@ -910,27 +910,27 @@ class KarVerbLud
         $V = "[".KarGram::vowelSet()."]";
         $templates = [];
         
-        if (preg_match('/^(.+?)([kptčcšsh])\2('.$V.")(d[aä])$/u", $verb, $regs) 
-                || preg_match("/^(.+?)([kptčcšsh])\2(".$V.")(i)$/u", $verb, $regs)) { // А1
+        if (preg_match('/^(.+?)([kptčcšsh])’?\2’?('.$V.")(d’?[aä])$/u", $verb, $regs) 
+                || preg_match("/^(.+?)([kptčcšsh])’?\2(".$V.")(i)$/u", $verb, $regs)) { // А1
             $templates[] = $regs[1].$regs[2]."|".$regs[2].$regs[3].$regs[4].' ['.$regs[3].']';
             
-        } elseif (preg_match("/^(.+?".$V.")(d[aä])$/u", $verb, $regs) 
+        } elseif (preg_match("/^(.+?".$V.")(d’?[aä])$/u", $verb, $regs) 
                 || preg_match("/^(.+?".$V.")(i)$/u", $verb, $regs)) { // А2
             $templates[] = $regs[1]."|".$regs[2].' []';
             
-        } elseif (preg_match("/^(.+?".$C.$V.")(t[aä])$/u", $verb, $regs)) { // Б
+        } elseif (preg_match("/^(.+?".$C.'’?'.$V.")(t’?[aä])$/u", $verb, $regs)) { // Б
             $templates[] = $regs[1]."|".$regs[2].' [d'.KarGram::garmVowel(KarGram::isBackVowels($verb),'a').']';
 
-        } elseif (preg_match("/^(.+?)(st[aä])$/u", $verb, $regs)) { // В
+        } elseif (preg_match("/^(.+?)(s’?t’?[aä])$/u", $verb, $regs)) { // В
             $templates[] = $regs[1]."|".$regs[2].' [ze]';
 
-        } elseif (preg_match("/^(.+?)(št[aä])$/u", $verb, $regs)) { // Г
+        } elseif (preg_match("/^(.+?)(š’?t’?[aä])$/u", $verb, $regs)) { // Г
             $templates[] = $regs[1]."|".$regs[2].' [že]';
             
-        } elseif (preg_match("/^(.+?".$C.")([dt][aä])$/u", $verb, $regs)) { // Д
+        } elseif (preg_match("/^(.+?".$C.")([d’?t’?][aä])$/u", $verb, $regs)) { // Д
             $templates[] = $regs[1]."|".$regs[2].' [e]';
             
-        } elseif (preg_match("/^(.+?".$V.$V.")(t[aä])$/u", $verb, $regs)) { // Е
+        } elseif (preg_match("/^(.+?".$V.$V.")(t’?[aä])$/u", $verb, $regs)) { // Е
             $templates[] = $regs[1]."|".$regs[2].' [če]';
         }
         return $templates;

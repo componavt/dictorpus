@@ -1247,7 +1247,7 @@ dd($wordforms);
         list($max_stem) = Grammatic::maxStem($wordforms);
 //dd($max_stem);            
         if (preg_match("/^".$max_stem."(.*)/u", $this->lemma, $regs)) {
-            $affix = $regs[1];
+            $affix = !empty($regs[1]) ? $regs[1] : '';
         } else {
             $affix = false;
         }    

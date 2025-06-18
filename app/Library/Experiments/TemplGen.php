@@ -60,7 +60,11 @@ class TemplGen extends Model
 //        asort($forms);
         return $forms;
     }
-    
+
+    public static function getNames5($rlemmas, $dialect_id) {
+        return self::getNames4($rlemmas, $dialect_id);
+        
+    }    
     public static function getNames4($rlemmas, $dialect_id) {
         $forms = [];
         $p1 = 3;
@@ -68,6 +72,9 @@ class TemplGen extends Model
         $p3 = 10;
         foreach ($rlemmas as $rlemma) {
             $lemma = $rlemma->lemma;
+            $lemma->reloadStemAffixByWordforms();     
+            $lemma->updateWordformAffixes(true);
+            
             $affix = $rlemma->affix;
             $w1 = $lemma->wordformsByGramsetDialect($p1, $dialect_id)->first();
             $w2 = $lemma->wordformsByGramsetDialect($p2, $dialect_id)->first();
@@ -95,11 +102,7 @@ class TemplGen extends Model
             
             $forms[$affix.'_'.$a1.'_'.$a2]['lemmas'][] = [$lemma->lemma, $w1->wordform, $w3->wordform, $w2->wordform];
             $forms[$affix.'_'.$a1.'_'.$a2]['template'] = ($affix ? '|'.$affix : ''). ' ['.$a1. ($a2=='-' ? '' : ', '.$a2). ']';
-//            $forms[$affix.'_'.$a1.'_'.$a2][0] = $affix;
-//            $forms[$affix.'_'.$a1.'_'.$a2][1] = $a1;
-//            $forms[$affix.'_'.$a1.'_'.$a2][2] = $a2;
         }
-//        asort($forms);
         return $forms;
     }
 }
