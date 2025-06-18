@@ -620,7 +620,7 @@ class KarVerbLud
         
         $V="[".KarGram::vowelSet()."]";
         
-        if (preg_match("/".$V."(’?)t[aä]$/u", $stem0)) {
+        if (preg_match("/".$V."t’?[aä]$/u", $stem0)) {
             return $stem5. 'nn';
         }
             return $stem5. 'n';
@@ -842,7 +842,7 @@ class KarVerbLud
      * @return string
      */
     public static function stem5FromMiniTemplate($stem0) {
-        if (preg_match("/^(.+)[dt][aä]$/u", $stem0, $regs)    
+        if (preg_match("/^(.+)[dt]’?[aä]$/u", $stem0, $regs)    
             || preg_match("/^(.+)i$/u", $stem0, $regs)) { // A
             return $regs[1];
         }
