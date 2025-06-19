@@ -33,6 +33,7 @@ a:hover {
     font-size: 14px;
     padding: 36px 4% 37px;
     line-height: 150%;
+    position: relative;
 }
 
 .text-page {
