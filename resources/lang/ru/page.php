@@ -193,7 +193,7 @@ return [
                     Труды международной конференции «Корпусная лингвистика ‒ 2017». ‒ СПб., 2017. С. 172-177.</p>
                     
     ',
-    'permission' => '<p style="text-align: right; position: absolute; top: 36px; right: 4%"><a class="btn btn-primary btn-default" href="/docs/permissions/permission_form.pdf">бланк разрешения</a></p>'
+    'permission' => '<p style="text-align: right; position: absolute; top: 36px; right: 4%"><a class="btn btn-primary btn-default" href="/docs/permissions/permission_form.doc">бланк разрешения</a></p>'
                   . '<p>Разрешение <a href="/docs/permissions/bible.pdf">Института перевода Библии</a> на использование вепсских изданий, '
                   . 'опубликованных Институтом для вепсского корпуса.</p>'
                   . '<p>Разрешение <a href="/docs/permissions/bible_karelian.pdf">Института перевода Библии</a> на использование изданий '
