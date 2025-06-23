@@ -62,7 +62,44 @@ class TemplGen extends Model
     }
 
     public static function getNames5($rlemmas, $dialect_id) {
-        return self::getNames4($rlemmas, $dialect_id);
+        $forms = [];
+        $p1 = 3;
+        $p2 = 4;
+        $p3 = 10;
+        foreach ($rlemmas as $rlemma) {
+            $lemma = $rlemma->lemma;
+//            $lemma->reloadStemAffixByWordforms();     
+//            $lemma->updateWordformAffixes(true);
+            
+            $affix = $rlemma->affix;
+            $w1 = $lemma->wordformsByGramsetDialect($p1, $dialect_id)->first();
+            $w2 = $lemma->wordformsByGramsetDialect($p2, $dialect_id)->first();
+            $w3 = $lemma->wordformsByGramsetDialect($p3, $dialect_id)->first();
+            if (!$w1 || !$w2 || !$w3) {
+                continue;
+            }
+            if (!preg_match("/^(.+)n$/", $w1->pivot->affix, $regs)) {
+                continue;
+            }
+            $a1 = $regs[1];
+
+            if (!preg_match("/^(.+)h$/", $w3->pivot->affix, $regs)) {
+                continue;
+            } 
+            if ($regs[1]!=$a1) {
+                $a1 .= '/'.$regs[1];
+            }
+            
+            if (preg_match("/^(.*)[td][uy]$/", $w2->pivot->affix, $regs)) {
+                $a2 = $regs[1];
+            } else {
+                $a2 = '-';
+            }
+            
+            $forms[$affix.'_'.$a1.'_'.$a2]['lemmas'][] = [$lemma->lemma, $w1->wordform, $w3->wordform, $w2->wordform];
+            $forms[$affix.'_'.$a1.'_'.$a2]['template'] = ($affix ? '|'.$affix : ''). ' ['.$a1. ($a2=='-' ? '' : ', '.$a2). ']';
+        }
+        return $forms;
         
     }    
     public static function getNames4($rlemmas, $dialect_id) {
@@ -72,8 +109,8 @@ class TemplGen extends Model
         $p3 = 10;
         foreach ($rlemmas as $rlemma) {
             $lemma = $rlemma->lemma;
-            $lemma->reloadStemAffixByWordforms();     
-            $lemma->updateWordformAffixes(true);
+//            $lemma->reloadStemAffixByWordforms();     
+//            $lemma->updateWordformAffixes(true);
             
             $affix = $rlemma->affix;
             $w1 = $lemma->wordformsByGramsetDialect($p1, $dialect_id)->first();

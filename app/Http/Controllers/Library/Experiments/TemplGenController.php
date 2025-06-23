@@ -24,7 +24,7 @@ class TemplGenController extends Controller
             
         }
 //dd($table);        
-        print "<table border=1>";
+        print "<table border=1>\n";
         foreach ($table as $row_id => $row) {
             $count_rows = count($row['lemmas']);
             $first_lemma = array_pop($row['lemmas']);
@@ -38,7 +38,7 @@ class TemplGenController extends Controller
 /*            for($i=0; $i<3; $i++) {
                 print "<td rowspan=".$count_rows." valign=top>".$row[$i]."</td>";
             }*/
-            print '</tr>';
+            print "</tr>\n";
             
             foreach ($row['lemmas'] as $lemma) {
                 print '<tr>';
@@ -46,7 +46,7 @@ class TemplGenController extends Controller
 /*                for($i=0; $i<count($lemma); $i++) {
                     print '<td align="right">'.$lemma[$i].'</td>';
                 }*/
-                print '<td>'.join(', ', $lemma).'</td></tr>';
+                print '<td>'.join(', ', $lemma)."</td></tr>\n";
             }
         }
         print "</table>";
