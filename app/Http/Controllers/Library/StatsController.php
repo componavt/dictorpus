@@ -122,7 +122,9 @@ class StatsController extends Controller
         $models = [
             'App\Models\Dict\Lemma'  => 'лемм',
             'App\Models\Dict\Wordform' => 'словоформ',
+            'App\Models\Dict\Audio'  => 'аудиозаписей лемм',
             'App\Models\Corpus\Text' => 'текстов',
+            'App\Models\Corpus\AudioText' => 'аудиозаписей текстов',
         ];
         // Проверка дат
         $min_date = $request->input('min_date');
