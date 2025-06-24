@@ -41,7 +41,9 @@
     
     <h3>Изменено</h3>
     @foreach ($history_updated as $title => $count)
+        @if (!empty($count))
     <p>{{ $title }}: <b>{{ format_number($count) }}</b></p>
+        @endif
     @endforeach
     
     <p><a href="{{ route('stats.by_editors') }}">К списку редакторов</a></p>
