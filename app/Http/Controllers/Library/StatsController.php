@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Library;
 use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
+use Venturecraft\Revisionable\Revision;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -58,7 +59,7 @@ class StatsController extends Controller
     
     public function byEditors()
     {
-        $users = User::whereIn('id', function ($q) {
+/*        $users = User::whereIn('id', function ($q) {
                     $q->select('user_id')->from('revisions');
                 })
 //                ->limit(1)
@@ -72,38 +73,107 @@ class StatsController extends Controller
             $user->last_time = $history->first()->updated_at;
             $editors->push($user);
         }
-        $editors->sortByDesc('last_time');
-//dd($editors);        
+        $editors->sortByDesc('last_time');*/
+        
+/*        // Получаем агрегированные данные по revisions: группируем по user_id
+        $revisionStats = collect(DB::table('revisions')
+            ->select('user_id', DB::raw('COUNT(*) as revisions_count'), DB::raw('MAX(updated_at) as last_time'))
+            ->groupBy('user_id')
+            ->get())
+            ->keyBy('user_id'); // для быстрого доступа по user_id
+//dd(get_class($revisionStats));
+        // Получаем пользователей, участвующих в revisions
+        $userIds = $revisionStats->keys();
+        $users = User::whereIn('id', $userIds)->get();
+
+        // Собираем коллекцию редакторов
+        $editors = $users->map(function ($user) use ($revisionStats) {
+            $stats = $revisionStats[$user->id];
+            $user->count = number_format($stats->revisions_count, 0, ',', ' ');
+            $user->last_time = $stats->last_time;
+            return $user;
+        })->sortByDesc('last_time');    */
+        
+        // Получаем агрегированные данные по ревизиям
+        $revisionStats = Revision::query()
+            ->select('user_id', DB::raw('COUNT(*) as revisions_count'), DB::raw('MAX(updated_at) as last_time'))
+            ->whereNotNull('user_id') // на всякий случай, если есть null
+            ->groupBy('user_id')
+            ->get()
+            ->keyBy('user_id');
+
+        // Получаем всех пользователей, которые что-то редактировали
+        $users = User::whereIn('id', $revisionStats->keys())->get();
+
+        // Собираем итоговую коллекцию
+        $editors = $users->map(function ($user) use ($revisionStats) {
+            $stats = $revisionStats[$user->id];
+            $user->count = number_format($stats->revisions_count, 0, ',', ' ');
+            $user->last_time = $stats->last_time;
+            return $user;
+        })->sortByDesc('last_time');
+        //dd($editors);        
         return view('stats.by_editors', 
                 compact('editors'));
     }
     
     public function byEditor(User $user, Request $request)
     {
+        $models = [
+            'App\Models\Dict\Lemma'  => 'лемм',
+            'App\Models\Dict\Wordform' => 'словоформ',
+            'App\Models\Corpus\Text' => 'текстов',
+        ];
+        // Проверка дат
         $min_date = $request->input('min_date');
         $max_date = $request->input('max_date');
+
         if (empty($min_date) || empty($max_date)) {
-            $rec = DB::table('revisions')
-                     ->where('user_id',$user->id)
+            $rec = Revision::where('user_id',$user->id)
                      ->selectRaw('min(created_at) as min, max(created_at) as max')
                      ->first();
+            
             if (!$rec) { return;}
+            
             $min_date = Carbon::parse($rec->min)->toDateString();
             $max_date = Carbon::parse($rec->max)->toDateString();
         }
-//select min(created_at), max(created_at)  from revisions where user_id=2519;        
-        $history = DB::table('revisions')
-                     ->where('user_id',$user->id)
-                     ->where('updated_at', '>', $min_date)
-                     ->where('updated_at', '>', $max_date)
-                     ->groupBy('revisionable_type', 'key')
-                     ->orderBy('revisionable_type')
-                     ->orderBy('key')
-                     ->select('revisionable_type', 'key', DB::raw('count(*) as count'))
-                     ->get();
-dd($history);        
+
+        $minDate = Carbon::parse($min_date)->startOfDay();
+        $maxDate = Carbon::parse($max_date)->endOfDay();
+        
+        $history_created = Revision::where('user_id',$user->id)
+                     ->whereBetween('updated_at', [$minDate, $maxDate])
+                     ->where('key', 'created_at')
+                     ->whereIn('revisionable_type', array_keys($models))
+                     ->groupBy('revisionable_type')
+//                     ->orderBy('revisionable_type')
+                     ->select('revisionable_type', DB::raw('count(*) as count'))
+                     ->get()
+                     ->keyBy('revisionable_type');
+
+        $history_updated = [];
+
+        foreach ($models as $modelClass => $label) {
+            $count = Revision::where('user_id', $user->id)
+                ->whereBetween('updated_at', [$minDate, $maxDate])
+                ->where('key', '<>', 'created_at')
+                ->where('revisionable_type', $modelClass)
+                ->distinct('revisionable_id')
+                ->count('revisionable_id'); // только уникальные ID
+
+            $history_updated[$label] = $count;
+        }   
+        
+        $quarter_query = '?min_date='.Carbon::now()->startOfQuarter()->format('Y-m-d')
+                       . '&max_date='. Carbon::now()->format('Y-m-d');
+        $year_query = '?min_date='.Carbon::now()->startOfYear()->format('Y-m-d')
+                       . '&max_date='. Carbon::now()->format('Y-m-d');
+        
+        
         return view('stats.by_editor', 
-                compact('history'));
+                compact('history_created', 'history_updated', 'max_date', 
+                        'min_date', 'models', 'quarter_query', 'year_query', 'user'));
     }
     
     public function byDict()

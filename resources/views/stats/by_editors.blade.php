@@ -12,12 +12,14 @@
     <table class="table-bordered stats-table">
         <tr>
             <th>Редактор</th>
+            <th>Роль</th>
             <th>Количество правок</th>
             <th>Последняя редакция</th>
         </tr>
         @foreach ($editors as $editor)
         <tr>
             <td><a href="{{ route('stats.by_editor', $editor) }}">{{ $editor->name }}</a></td>
+            <td>{{ $editor->rolesNames() }}</td>
             <td>{{ $editor->count }}</td>
             <td>{{ $editor->last_time }}</td>
         </tr>
