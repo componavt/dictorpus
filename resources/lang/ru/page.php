@@ -254,6 +254,8 @@ return [
                   . '<a href="/docs/permissions/Carelia.pdf">журнала "Carelia", включая номера "Taival" и "Vеrеz tullei"</a> (начиная с ноября 1993 г.) для размещения в ВепКар.</p>'    
                   . '<p>Разрешение <a href="/images/permissions/semenov.jpg">от М.П. Семёнова</a> на использование переводов на карельский язык Семёнова П.М. '
                   . ' в проекте ВепКар.</p>'
+                  . '<p>Разрешение <a href="/docs/permissions/zaitseva.pdf">от Н.Г. Зайцевой</a> на использование сборников '
+                  . '"Iso Lisoi", "Vauktan unen süles", "Virantanaz", "Minun vepsläine oza" в проекте ВепКар.</p>'
                    ,
 //                  . '<p>Разрешение <a href="/images/permissions/balakirev.jpg">от Н.М. Балакирева</a> на использование текста произведений '
 //                  . ' в проекте ВепКар.</p>',
