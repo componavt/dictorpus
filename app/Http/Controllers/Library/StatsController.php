@@ -159,15 +159,22 @@ class StatsController extends Controller
         foreach ($models as $modelClass => $label) {
             $count = Revision::where('user_id', $user->id)
                 ->whereBetween('updated_at', [$minDate, $maxDate])
-                ->where('key', '<>', 'created_at')
                 ->where('revisionable_type', $modelClass)
+                ->where('key', '<>', 'created_at')
+                ->whereNotIn('revisionable_id', function ($q) use ($user, $minDate, $maxDate, $modelClass) {
+                    $q->select('revisionable_id')->from('revisions')
+                      ->where('user_id',$user->id)
+                     ->whereBetween('updated_at', [$minDate, $maxDate])
+                     ->where('key', 'created_at')
+                     ->where('revisionable_type', $modelClass);
+                })
                 ->distinct('revisionable_id')
                 ->count('revisionable_id'); // только уникальные ID
 
             $history_updated[$label] = $count;
-            if (!empty($history_created[$modelClass])) {
+/*            if (!empty($history_created[$modelClass])) {
                 $history_updated[$label] -= $history_created[$modelClass]->count;
-            }
+            }*/
         }   
         
         $quarter_query = '?min_date='.Carbon::now()->startOfQuarter()->format('Y-m-d')
