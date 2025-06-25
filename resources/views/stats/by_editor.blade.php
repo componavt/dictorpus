@@ -9,7 +9,7 @@
 @stop
 
 @section('body')
-    по редактору: <b>{{ $user->name }}</b> ({{ $user->rolesNames() }})
+    по редактору: <b>{{ $user->name }}</b> ({{ $user->rolesNames() }})<br>
     {{ $user->country }}@if ($user->city), {{ $user->city }}@endif @if ($user->affilation), {{ $user->affilation }}@endif
     
     {!! Form::open(array('method'=>'GET', 'route' => ['stats.by_editor', $user])) !!}

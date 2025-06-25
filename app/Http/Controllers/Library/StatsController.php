@@ -165,6 +165,9 @@ class StatsController extends Controller
                 ->count('revisionable_id'); // только уникальные ID
 
             $history_updated[$label] = $count;
+            if (!empty($history_created[$modelClass])) {
+                $history_updated[$label] -= $history_created[$modelClass]->count;
+            }
         }   
         
         $quarter_query = '?min_date='.Carbon::now()->startOfQuarter()->format('Y-m-d')
