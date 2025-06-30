@@ -1342,7 +1342,7 @@ class KarName
         if (preg_match('/^(.+?s)(k[aä])$/u', $word, $r)) {         // paharaiska 
             $templates[] = $r[1].'|'.$r[2].' [s'.$A.']'; 
         }    
-        if (preg_match('/^(.+?)(ni)$/u', $word, $r)) {                // koivuni 
+        if (preg_match('/^(.+?[^i])(ni)$/u', $word, $r)) {            // koivuni 
             $templates[] = $r[1].'|'.$r[2].' [se, is]'; 
         }    
         if (preg_match('/^(.+?)(n[ei])$/u', $word, $r)) {            // čirkkuni 

@@ -41,8 +41,8 @@ class Text extends Model implements HasMediaConversions
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
-    protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
-    protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
+    protected $revisionCleanup = false; //Remove old revisions (works only when used with $historyLimit)
+    protected $historyLimit = 999999; //Stop tracking revisions after 500 changes have been made.
     protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
 
 
@@ -630,38 +630,71 @@ class Text extends Model implements HasMediaConversions
             $texts = $texts->take($limit);
         }
         $texts = $texts->get();
+        
+        // Получаем id всех текстов
+        $textIds = $texts->pluck('id')->all();
+
+        // Получаем последние ревизии по созданию для всех текстов
+        $revisions = Revision::where('revisionable_type', 'like', '%Text')
+            ->where('key', 'created_at')
+            ->whereIn('revisionable_id', $textIds)
+            ->latest()
+            ->get()
+            ->unique('revisionable_id')
+            ->keyBy('revisionable_id');
+
+        // Получаем id пользователей, чтобы не дёргать по одному
+        $userIds = $revisions->pluck('user_id')->unique()->all();
+        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+
+        // Назначаем user-имя каждому тексту
         foreach ($texts as $text) {
-            $revision = Revision::where('revisionable_type','like','%Text')
-                                ->where('key','created_at')
-                                ->where('revisionable_id',$text->id)
-                                ->latest()->first();
+            $revision = $revisions->get($text->id);
             if ($revision) {
-                $text->user = User::getNameByID($revision->user_id);
+                $text->user = $users[$revision->user_id]->name ?? null;
             }
         }
+        
         return $texts;
     }
     
     public static function lastUpdated($limit='',$is_grouped=0) {
-        $revisions = Revision::where('revisionable_type','like','%Text')
-                            ->where('key','updated_at')
-                            ->groupBy('revisionable_id')
-                            ->latest()->take($limit)->get();
-        $texts = [];
+        // Получаем ревизии одним запросом
+        $revisions = Revision::where('revisionable_type', 'like', '%Text')
+            ->where('key', 'updated_at')
+            ->latest()
+            ->get()
+            ->unique('revisionable_id')  // берём только одну ревизию на каждый текст
+            ->take($limit);
+
+        // Собираем id текстов и пользователей
+        $textIds = $revisions->pluck('revisionable_id')->all();
+        $userIds = $revisions->pluck('user_id')->filter()->unique()->all();
+
+        // Загружаем тексты и пользователей пачкой
+        $texts = self::whereIn('id', $textIds)->get()->keyBy('id');
+        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+
+        $result = [];
+
         foreach ($revisions as $revision) {
-            $text = self::find($revision->revisionable_id);
-            if (!$text || !$revision->user_id) {
+            $text = $texts->get($revision->revisionable_id);
+            if (!$text) {
                 continue;
             }
-            $text->user = User::getNameByID($revision->user_id);
+
+            // Добавляем имя пользователя
+            $text->user = $users[$revision->user_id]->name ?? null;
+
             if ($is_grouped) {
-                $updated_date = $text->updated_at->formatLocalized(trans('main.date_format'));            
-                $texts[$updated_date][] = $text;
+                $updated_date = $text->updated_at->formatLocalized(trans('main.date_format'));
+                $result[$updated_date][] = $text;
             } else {
-                $texts[] = $text;
+                $result[] = $text;
             }
         }
-        return $texts;
+
+        return $result;
     }
     
     public static function processSentenceForExport($sentence) {

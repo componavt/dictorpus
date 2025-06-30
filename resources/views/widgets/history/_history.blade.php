@@ -61,6 +61,9 @@ foreach($histories as $history) {
             $history_strings[] = trans('messages.created'). ' '
                                . $history->field_name .': <b>'
                                . $history->newValue().'</b>';
+    elseif (!empty($history->oldValue()) && empty($history->newValue())) : 
+            $history_strings[] = trans('messages.deleted'). ' '
+                               . $history->field_name .'</b>';
     elseif ($fieldName == 'text') :
 //            $diff = \Diff::compare($history->oldValue(), $history->newValue());
             $htmlDiff = HtmlDiff::create($history->oldValue(), $history->newValue(),$diffConfig);
