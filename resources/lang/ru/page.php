@@ -256,6 +256,9 @@ return [
                   . ' в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/docs/permissions/zaitseva.pdf">от Н.Г. Зайцевой</a> на использование сборников '
                   . '"Izo Lizoi", "Vauktan unen süles", "Virantanaz", "Minun vepsläine oza" в проекте ВепКар.</p>'
+                  . '<p>Разрешение <a href="/docs/permissions/lukkareva_volkov.pdf">от Н.А. Луккаревой</a> на использование текстов '
+                  . 'А.Л. Волкова в проекте ВепКар.</p>'
+    
                    ,
 //                  . '<p>Разрешение <a href="/images/permissions/balakirev.jpg">от Н.М. Балакирева</a> на использование текста произведений '
 //                  . ' в проекте ВепКар.</p>',
