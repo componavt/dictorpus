@@ -30,7 +30,7 @@ trait TextExport
             $words = $this->words()->whereSId($sentence->s_id)->orderBy('w_id')->get();
             list($sheet, $row) = $this->{'annotatedTextExportSentence'.($type==3 ? '3' : '')}($sheet, $row, trim(strip_tags($sentence->text_xml)),
                     strip_tags($cyr_sentences[$sentence->s_id]['sentence']), 
-                    strip_tags($trans_sentences[$sentence->s_id]['sentence']));            
+                    strip_tags($trans_sentences[$sentence->s_id]['sentence'] ?? ''));            
             list($sheet, $row) = $this->{'annotatedTextExportWords'.($type==3 ? '3' : '')}($sheet, $words, $cyr_words, $row, $type);
             $sheet->setCellValue('A'.$row++, "");
             $sheet->setCellValue('A'.$row++, "");

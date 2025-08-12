@@ -258,6 +258,8 @@ return [
                   . '"Izo Lizoi", "Vauktan unen süles", "Virantanaz", "Minun vepsläine oza" в проекте ВепКар.</p>'
                   . '<p>Разрешение <a href="/docs/permissions/lukkareva_volkov.pdf">от Н.А. Луккаревой</a> на использование текстов '
                   . 'А.Л. Волкова в проекте ВепКар.</p>'
+                  . '<p>Разрешение <a href="/docs/permissions/dubinskaya_kibir.pdf">от М.В. Дубинской</a> на использование текста произведения '
+                  . 'В.В. Иванова "Третий родник" в проекте ВепКар.</p>'
     
                    ,
 //                  . '<p>Разрешение <a href="/images/permissions/balakirev.jpg">от Н.М. Балакирева</a> на использование текста произведений '
