@@ -27,7 +27,7 @@ trait LemmaModify
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
         
-        $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'], $stems);           
+        $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'] ?? null, $stems);           
         
         $this->storePhrase(isset($data['phrase']) ? $data['phrase'] : null);
     }

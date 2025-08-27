@@ -59,9 +59,9 @@ class Grammatic
             $name_num =  null;
         }
        
-        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id'], $is_reflexive);
+        list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id'] ?? null, $is_reflexive);
         $lemma = preg_replace("/\|\|/", '',$max_stem). $affix;
-        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'], $name_num, $stems, $is_reflexive);
+        $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'] ?? null, $name_num, $stems, $is_reflexive);
 //dd($stems, $name_num, $gramset_wordforms);        
         if ($gramset_wordforms) {
             return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
