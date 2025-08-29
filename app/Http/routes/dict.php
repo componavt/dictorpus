@@ -168,6 +168,16 @@ Route::group(
                                     'store' => 'relation.store',
                                     'destroy' => 'relation.destroy']]);
         
+        Route::resource('synset', 'Dict\SynsetController',
+                       ['names' => ['update' => 'synset.update',
+                                    'store' => 'synset.store',
+                                    'destroy' => 'synset.destroy']]);
+        
+        Route::resource('syntype', 'Dict\SyntypeController',
+                       ['names' => ['update' => 'syntype.update',
+                                    'store' => 'syntype.store',
+                                    'destroy' => 'syntype.destroy']]);
+        
         Route::resource('wordform', 'Dict\WordformController',
                        ['names' => ['update' => 'wordform.update']]);
     });        

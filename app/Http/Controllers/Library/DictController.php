@@ -19,6 +19,7 @@ use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
+use App\Models\Dict\Synset;
 
 class DictController extends Controller
 {
@@ -631,8 +632,8 @@ class DictController extends Controller
     }
         
     public function ldlView(Request $request) {
-        ini_set('max_execution_time', 7200);
-        ini_set('memory_limit', '512M');
+//        ini_set('max_execution_time', 7200);
+//        ini_set('memory_limit', '512M');
         
         $lang_id=6; // ludic
         $label_id = Label::LDLLabel; 
@@ -665,6 +666,34 @@ class DictController extends Controller
         
         return view('service.dict.ldl.index',
                 compact('label_id', 'lemmas', 'numAll', 'pos_values',
+                        'args_by_get', 'url_args'));
+    }
+    
+    public function synsetsView(Request $request) {
+        $lang_id = $request->lang_id ?? 5; // livvic
+        $pos_id = $request->pos_id ?? 1; // adjective
+
+        
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+
+        $first_meaning = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')
+                ->whereLangId($lang_id)
+                ->wherePosId($pos_id)
+                ->whereIn('meanings.id', function($q) { // полные синонимы
+                    $q->select('meaning1_id')->from('meaning_relation')
+                      ->whereRelationId(Synset::RELATION_FULL);
+                })->whereNotIn('meanings.id', function($q) {        // не в синсетах
+                    $q->select('meaning_id')->from('meaning_synset');
+                })
+                ->select('meanings.*', 'lemmas.lemma')
+                ->orderBy('lemma')->first();
+                 
+        $new_set = Synset::findSet($lang_id, $pos_id, $first_meaning->id, [$first_meaning->id=>[$first_meaning, Synset::RELATION_FULL]]);
+
+        $pos_values = [NULL=>'']+PartOfSpeech::getList();
+        return view('service.dict.synsets.index',
+                compact('lang_id', 'new_set', 'pos_values',
                         'args_by_get', 'url_args'));
     }
 }

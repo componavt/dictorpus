@@ -462,4 +462,5 @@ print "</ol>";
                      })->latest('id')->get();
         return view('service.authors', compact('texts'));        
     }    
+    
 }

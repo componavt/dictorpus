@@ -18,6 +18,7 @@
     @if (User::checkAccess('dict.edit'))
         <h3>Дополнение данных</h3>
         <p><a href="service/copy_lemmas">Скопировать леммы из одного языка (наречия) в другой</a></p>
+        
         <p>Отбор лемм для ливвиковского мультимедийного словаря LiPas</p>
         <ul>
         <li><a href="service/dict/multi">Просмотреть отобранные леммы</a></li>
@@ -47,7 +48,10 @@
         <ul>
         <li><a href="service/dict/ldl">Просмотреть отобранные леммы</a></li>
         <li><a href="service/dict/ldl/select">Выбрать леммы</a></li>
-        </ul>        
+        </ul>       
+        
+        <p><a href="service/dict/synsets">Словарь синонимов</a></p>
+        
     @endif
     
     @if (User::checkAccess('admin'))
