@@ -25,7 +25,8 @@ Route::group(
         Route::get('dict/multi/select', 'Library\DictController@multiSelect');       
         Route::get('dict/school', 'Library\DictController@schoolView');       
         Route::get('dict/school/select', 'Library\DictController@schoolSelect');       
-        Route::get('dict/synsets', 'Library\DictController@synsetsView');       
+        Route::get('dict/synsets', 'Library\DictController@synsetsView')->name('dict.synsets.index');       
+        Route::get('dict/synsets/find_new_synset', 'Library\DictController@findNewSynset')->name('dict.synsets.find_new');
         Route::get('dict/zaikov', 'Library\DictController@zaikovView');       
         Route::get('dict/zaikov/select', 'Library\DictController@zaikovSelect');  
         Route::get('dict/ldl', 'Library\DictController@ldlView');       

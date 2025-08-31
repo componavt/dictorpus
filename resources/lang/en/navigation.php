@@ -90,6 +90,8 @@ return [
     'spellchecking' => 'Spellchecking',
     'sources' => 'References',
     'stats' => 'Statistics',
+    'synsets' => 'Dictionary of synonyms',
+    
     'text_frequency' => 'Frequency of symbols in texts',
     'texts' => 'Texts',
     'topics' => 'Topics',

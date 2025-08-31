@@ -139,4 +139,10 @@ class SynsetController extends Controller
 */    
     }
     
+    public function setStatus(int $id, int $status) {
+        $synset = Synset::findOrFail($id);
+        $synset->status = $status == 1 ? 1 : 0;
+        $synset->save();
+        return $synset->status;
+    }
 }

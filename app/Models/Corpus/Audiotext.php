@@ -56,7 +56,15 @@ class Audiotext extends Model
     public static function onMap() {
         $places = [];
         $colors = Lang::MAP_COLORS;
-        
+/*             $texts = Text::whereNotNull('id')
+                         ->WithAudio()
+                         ->where(function ($q) {
+                             $q->where('created_at', '>', '2024-01-01 00:00:00')
+                               ->where('created_at', '<', '2025-01-01 00:00:00');
+                         })
+                         ->dialectTexts()->get();    
+dd($texts);             
+*/       
         $place_coll = Place::whereNotNull('id')->withDialectAudio()
                            ->withCoords()->orderBy('name_ru')->get();
 //dd(to_sql($place_coll));        

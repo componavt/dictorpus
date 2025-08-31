@@ -19,8 +19,12 @@ class CreateSynsetsTable extends Migration
             $table->smallInteger('lang_id')->unsigned();
             $table->     foreign('lang_id')->references('id')->on('langs');
             
+            // pos PartOfSpeech
+            $table->tinyInteger('pos_id')->unsigned()->nullable();
+            $table->    foreign('pos_id')->references('id')->on('parts_of_speech');
+            
             $table->text('comment');
-            $table->enum('status', ['draft','approved','archived'])->default('draft');            
+            $table->tinyInteger('status')->unsigned()->default(0);
             $table->timestamps();
         });
     }

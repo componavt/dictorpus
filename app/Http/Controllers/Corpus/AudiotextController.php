@@ -71,6 +71,7 @@ class AudiotextController extends Controller
     public function onMap(Request $request) {
         $legend = Lang::legendForMap();
         $places = Audiotext::onMap();
+
         return view('corpus.audiotext.map', 
                 compact('legend', 'places')); 
     }

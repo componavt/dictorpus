@@ -20,6 +20,7 @@ use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Synset;
+use App\Models\Dict\Syntype;
 
 class DictController extends Controller
 {
@@ -39,6 +40,7 @@ class DictController extends Controller
         $this->url_args = Str::urlArgs($request) + 
             ['search_pos'      => (int)$request->input('search_pos'),
              'search_status'   => (int)$request->input('search_status'),
+             'search_lang'   => (int)$request->input('search_lang'),
              'search_lemma'    => $request->input('search_lemma'),
             ];
         
@@ -670,30 +672,62 @@ class DictController extends Controller
     }
     
     public function synsetsView(Request $request) {
-        $lang_id = $request->lang_id ?? 5; // livvic
-        $pos_id = $request->pos_id ?? 1; // adjective
-
-        
-        $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        if (empty($url_args['search_lang'])) {
+            $url_args['search_lang'] = 5; // livvic
+        }
+        if (empty($url_args['search_pos'])) {
+            $url_args['search_pos'] = 1; // adjective
+        }
+        $args_by_get = search_values_by_URL($url_args);
+       
+//        $new_set = Synset::findSynset($url_args['search_lang'], $url_args['search_pos']);
+        $new_set_founded = Synset::newSetFounded($url_args['search_lang'], $url_args['search_pos']);
+        
+        $synsets = Synset::whereLangId($url_args['search_lang']);
+                
+        if (!empty($url_args['search_pos'])) {
+            $synsets->wherePosId($url_args['search_pos']);
+        } 
+               
+        if (!empty($url_args['search_status'])) {
+            $synsets->whereStatus($url_args['search_status']==1 ? 1 : 0);
+        }
+        
+        $numAll = $synsets->count();
+        $synsets = $synsets->orderBy('id')->paginate($url_args['limit_num']);
 
-        $first_meaning = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')
-                ->whereLangId($lang_id)
-                ->wherePosId($pos_id)
-                ->whereIn('meanings.id', function($q) { // полные синонимы
-                    $q->select('meaning1_id')->from('meaning_relation')
-                      ->whereRelationId(Synset::RELATION_FULL);
-                })->whereNotIn('meanings.id', function($q) {        // не в синсетах
-                    $q->select('meaning_id')->from('meaning_synset');
-                })
-                ->select('meanings.*', 'lemmas.lemma')
-                ->orderBy('lemma')->first();
-                 
-        $new_set = Synset::findSet($lang_id, $pos_id, $first_meaning->id, [$first_meaning->id=>[$first_meaning, Synset::RELATION_FULL]]);
-
+        $lang_values = Lang::getProjectList();
         $pos_values = [NULL=>'']+PartOfSpeech::getList();
+        $status_values = trans('dict.output_checked_or_not');
+        unset($status_values[3]);
+        
         return view('service.dict.synsets.index',
-                compact('lang_id', 'new_set', 'pos_values',
+                compact('lang_values', 'new_set_founded', 'numAll', 'pos_values',
+                        'status_values', 'synsets', 'args_by_get', 'url_args'));
+    }
+    
+    public function findNewSynset(Request $request) {
+        $url_args = $this->url_args;
+        if (empty($url_args['search_lang'])) {
+            $url_args['search_lang'] = 5; // livvic
+        }
+        if (empty($url_args['search_pos'])) {
+            $url_args['search_pos'] = 1; // adjective
+        }
+        $args_by_get = search_values_by_URL($url_args);
+        
+        $lang = Lang::findOrFail($url_args['search_lang']);
+        $pos = PartOfSpeech::findOrFail($url_args['search_pos']);
+       
+        $new_set = collect(Synset::findSynset($url_args['search_lang'], $url_args['search_pos']));
+        $core = $new_set->where('type', Synset::RELATION_FULL);
+        $periphery = $new_set->where('type', Synset::RELATION_NEAR);
+        
+        $syntype_values = Syntype::getList();
+//dd($new_set, $core, $periphery);        
+        return view('service.dict.synsets.find_new',
+                compact('core', 'lang', 'periphery', 'pos', 'syntype_values', 
                         'args_by_get', 'url_args'));
     }
 }

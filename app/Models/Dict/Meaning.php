@@ -14,7 +14,7 @@ use App\Models\Corpus\SentenceTranslation;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Relation;
 
-//use App\Models\Corpus\Word;
+use App\Models\Dict\Synset;
 
 class Meaning extends Model
 {
@@ -61,6 +61,11 @@ class Meaning extends Model
         return $this->belongsToMany(Text::class,'meaning_text')
                 ->withPivot('w_id')
                 ->withPivot('relevance');
+    }
+    
+    public function synsets(){
+        return $this->belongsToMany(Synset::class,'meaning_synset')
+                ->withPivot('syntype_id');
     }
     
     // Has Many Relations
@@ -250,9 +255,13 @@ class Meaning extends Model
         $meaning_text = $this->meaningTexts()->where('lang_id',$lang->id)->first();
         if ($meaning_text) {
             return $meaning_text->meaning_text;
-        }
-        
+        }       
     }
+    
+    public function getMeaningTextLocale() {
+        return $this->getMeaningTextByLangCode(LaravelLocalization::getCurrentLocale());
+    }
+    
     public function getLemmaRelation($relation_id, $label_id=null, $label_status=1) {
         $relation_meanings = $this->meaningRelations()->wherePivot('relation_id', $relation_id);
         if ($label_id) {

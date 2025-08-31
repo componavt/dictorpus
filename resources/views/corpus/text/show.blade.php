@@ -6,7 +6,7 @@
 
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
-    {!! css('text')!!}
+    {!!Html::style('css/text.css')!!}
     {!!Html::style('css/select2.min.css')!!}
 @stop
 

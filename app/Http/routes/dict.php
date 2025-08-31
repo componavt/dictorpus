@@ -20,6 +20,7 @@ Route::group(
         Route::get('concept/list', 'Dict\ConceptController@conceptList');
         Route::get('concept/{id}/photo_preview', 'Dict\ConceptController@photoPreview');
 //        Route::get('concept/{id}/photo_view', 'Dict\ConceptController@photoView');
+        Route::get('concept/sosd/', 'Dict\ConceptController@SOSD');
         
         Route::get('dialect/list', 'Dict\DialectController@dialectList');
         Route::get('dialect/{id}/text_count', 'Dict\DialectController@textCount');
@@ -100,7 +101,7 @@ Route::group(
         Route::get('reverse_lemma/inflexion_groups', 'Dict\ReverseLemmaController@inflexionGroups');
         Route::get('reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
 
-        Route::get('concept/sosd/', 'Dict\ConceptController@SOSD');
+        Route::get('synset/{id}/set_status/{status}', 'Dict\SynsetController@setStatus');
         
         Route::get('wordform/create', 'Dict\WordformController@create'); 
         Route::get('wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');

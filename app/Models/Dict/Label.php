@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use LaravelLocalization;
 
+use App\Models\Dict\Syntype;
+
 class Label extends Model
 {
     public $timestamps = false;
@@ -23,6 +25,10 @@ class Label extends Model
     // Methods
     use \App\Traits\Methods\getNameAttribute;
     use \App\Traits\Methods\getShortAttribute;
+    
+    public function syntypes(){
+        return $this->belongsToMany(Syntype::class,'label_syntype');
+    }
     
     public static function checkedOloLemmas() {
         return DB::table('label_lemma')->whereLabelId(self::OlodictLabel)
