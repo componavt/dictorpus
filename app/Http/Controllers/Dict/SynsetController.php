@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-//use Redirect;
+use Redirect;
 
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -51,8 +51,24 @@ class SynsetController extends Controller
 //        return Redirect::to('/dict/synset/'.($this->args_by_get));
     }
     
-    public function store() {
-//        return Redirect::to('/dict/synset/'.($this->args_by_get));
+    public function validateRequest(Request $request, $code_rule='') {
+        $this->validate($request, [
+            'lang_id'=> 'required|numeric',
+            'pos_id' => 'numeric',
+            ]);
+        
+        $data = $request->only(['lang_id', 'pos_id', 'comment']);
+        return $data;
+    }
+    
+    public function store(Request $request) {
+        if (!empty($request->syntypes)) {
+            $synset = Synset::create($this->validateRequest($request));
+            foreach ($request->syntypes as $meaning_id => $syntype_id) {
+                $synset->meanings()->attach([$meaning_id=>['syntype_id'=>$syntype_id]]);
+            }
+        }
+        return Redirect::to('/service/dict/synsets/'.($this->args_by_get));
     }
     
     public function edit($id)

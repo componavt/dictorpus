@@ -12,7 +12,7 @@
 @section('body')  
     <p>
     @if (!empty($new_set_founded)) 
-        <a href="{{ route('dict.synsets.find_new') }}">Проверить найденный синсет</a> |
+        <a href="{{ route('dict.synsets.find_new', $url_args) }}">Проверить найденный синсет</a> |
     @endif
         <a href="#">Создать новый</a>
     </p>
@@ -25,9 +25,12 @@
     <thead>
         <tr>
             <th>ID</th>
+        @if (empty($url_args['search_pos']))
             <th>{{ trans('dict.pos') }}</th>
+        @endif
             <th>{{ trans('dict.core') }}</th>
             <th>{{ trans('dict.periphery') }}</th>
+            <th>{{ trans('corpus.comment') }}</th>
             <th>{{ trans('dict.potential_members') }}</th>
             <th>{{ trans('messages.actions') }}</th>
         </tr>
@@ -36,12 +39,20 @@
         @foreach($synsets as $synset)
         <tr id="row-{{ $synset->id }}">
             <td data-th="ID">{{ $synset->id }}</td>
-            <td data-th="{{ trans('dict.pos') }}">
-            </td>
+        @if (empty($url_args['search_pos']))
+            <td data-th="{{ trans('dict.pos') }}">{{ $synset->pos->name }}</td>
+        @endif
             <td data-th="{{ trans('dict.core') }}">
+        @foreach ($synset->core as $meaning)
+                <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        
+        @endforeach
             </td>
             <td data-th="{{ trans('dict.periphery') }}">
+        @foreach ($synset->periphery as $meaning)
+                <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        
+        @endforeach
             </td>
+            <td data-th="{{ trans('corpus.comment') }}">{{ $synset->comment }}</td>
             <td data-th="{{ trans('navigation.potential_members') }}">
             </td>
             <td data-th="{{ trans('messages.actions') }}" style="text-align:center">

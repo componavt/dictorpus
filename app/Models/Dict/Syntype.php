@@ -19,6 +19,9 @@ class Syntype extends Model
     protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
     protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
 
+    const TYPE_FULL = 1;
+    const TYPE_PART = 2;
+    
     public static function boot()
     {
         parent::boot();
@@ -31,7 +34,7 @@ class Syntype extends Model
     {
         return $this->belongsToMany(Label::class);
     }
-    public static function getList()
+    public static function getList($full=false)
     {     
         $locale = LaravelLocalization::getCurrentLocale();
         
@@ -39,7 +42,7 @@ class Syntype extends Model
         
         $list = array();
         foreach ($types as $row) {
-            $list[$row->id] = $row->name;
+            $list[$row->id] = $row->name. ($full ? ': '.$row->comment : '');
         }
         
         return $list;         

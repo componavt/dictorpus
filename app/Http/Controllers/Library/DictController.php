@@ -676,9 +676,9 @@ class DictController extends Controller
         if (empty($url_args['search_lang'])) {
             $url_args['search_lang'] = 5; // livvic
         }
-        if (empty($url_args['search_pos'])) {
+/*        if (empty($url_args['search_pos'])) {
             $url_args['search_pos'] = 1; // adjective
-        }
+        }*/
         $args_by_get = search_values_by_URL($url_args);
        
 //        $new_set = Synset::findSynset($url_args['search_lang'], $url_args['search_pos']);
@@ -712,19 +712,17 @@ class DictController extends Controller
         if (empty($url_args['search_lang'])) {
             $url_args['search_lang'] = 5; // livvic
         }
-        if (empty($url_args['search_pos'])) {
-            $url_args['search_pos'] = 1; // adjective
-        }
+        
+        list($new_set, $url_args['search_pos']) = Synset::findSynset($url_args['search_lang'], $url_args['search_pos']);
         $args_by_get = search_values_by_URL($url_args);
         
-        $lang = Lang::findOrFail($url_args['search_lang']);
-        $pos = PartOfSpeech::findOrFail($url_args['search_pos']);
-       
-        $new_set = collect(Synset::findSynset($url_args['search_lang'], $url_args['search_pos']));
+        $new_set = collect($new_set);
         $core = $new_set->where('type', Synset::RELATION_FULL);
         $periphery = $new_set->where('type', Synset::RELATION_NEAR);
         
-        $syntype_values = Syntype::getList();
+        $lang = Lang::findOrFail($url_args['search_lang']);
+        $pos = PartOfSpeech::findOrFail($url_args['search_pos']);
+        $syntype_values = Syntype::getList(1);
 //dd($new_set, $core, $periphery);        
         return view('service.dict.synsets.find_new',
                 compact('core', 'lang', 'periphery', 'pos', 'syntype_values', 
