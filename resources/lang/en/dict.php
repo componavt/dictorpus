@@ -224,6 +224,7 @@ return [
     'of_lemmas' => 'of lemmas',
     'of_pos' => 'of part of speech',
     'of_relation' => 'of relation',
+    'of_synsets' => 'of synset',
     'of_wordform' => 'of wordform',
 
     'omonyms' => 'omonyms',

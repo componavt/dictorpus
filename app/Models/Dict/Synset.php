@@ -43,7 +43,12 @@ class Synset extends Model
                 ->where('syntype_id', '<>', Syntype::TYPE_FULL)
                 ->withPivot('syntype_id');
     }
+
+    public function getNameAttribute(){
+        return '№'.$this->id;
+    }
     
+    /* return true if a new synset founded */
     public static function newSetFounded($lang_id, $pos_id=null) {
         return Meaning::whereIn('lemma_id', function ($q) use ($lang_id, $pos_id) {
                 $q->select('id')->from('lemmas')
@@ -60,8 +65,32 @@ class Synset extends Model
                 ->count() > 1;                 
     }
 
-    public static function findSynset($lang_id, $pos_id=null) {
-        $first_meaning = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')
+    /* find all possible synsets */
+    public static function findSynsets($lang_id, $pos_id=null) {
+        $sets = [];
+        $except = [];
+        $count=1;
+        do {
+            $new_set = self::findSynset($lang_id, $pos_id, $except);
+//dd($new_set);            
+            if (!empty($new_set)) {
+                $except = array_merge($except, array_keys($new_set));
+/*print '<pre>';                
+var_dump($except);   
+var_dump(array_keys($new_set));
+print '</pre>';                */
+                $firstValue = $new_set[array_key_first($new_set)];
+                $sets[$count]['pos_name'] = $firstValue['meaning']->lemma->pos->name;
+                $new_set = collect($new_set);
+                $sets[$count]['core'] = $new_set->where('type', self::RELATION_FULL);
+                $sets[$count++]['periphery'] = $new_set->where('type', self::RELATION_NEAR);
+            }
+        } while (!empty($new_set)); 
+        return $sets;
+    }
+
+    public static function findSynset($lang_id, $pos_id=null, $except=[]) {
+        $first_meaning = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')                
                 ->whereLangId($lang_id)
                 ->whereIn('meanings.id', function($q) { // полные синонимы
                     $q->select('meaning1_id')->from('meaning_relation')
@@ -69,22 +98,29 @@ class Synset extends Model
                 })->whereNotIn('meanings.id', function($q) {        // не в синсетах
                     $q->select('meaning_id')->from('meaning_synset');
                 });
+        if (!empty($except)) {
+            $first_meaning->whereNotIn('meanings.id', $except);
+        }        
         if (!empty($pos_id)) {
             $first_meaning->wherePosId($pos_id);
         }        
-        $first_meaning = $first_meaning->select('meanings.*', 'lemmas.lemma', 'lemmas.pos_id')
-                ->orderBy('lemma')->with('meaningTexts')->first();
-
-        if (empty($pos_id)) {
-            $pos_id = $first_meaning->pos_id;
+        $first_meaning = $first_meaning->select('meanings.*')
+                ->orderBy('lemma')->with('meaningTexts')->with('lemma')->first();
+        
+        if (!$first_meaning) {
+            return null;
         }
-        return [self::findSet($lang_id, $pos_id, $first_meaning->id, [$first_meaning->id=>['meaning'=>$first_meaning, 'type'=>Synset::RELATION_FULL]]), $pos_id];
+        if (empty($pos_id)) {
+            $pos_id = $first_meaning->lemma->pos_id;
+        }
+
+        return self::findSet($lang_id, $pos_id, $first_meaning->id, [$first_meaning->id=>['meaning'=>$first_meaning, 'type'=>Synset::RELATION_FULL]]);
     }
     
-    public static function findSet($lang_id, $pos_id, $first_id, $set=[]) {        
+    public static function findSet($lang_id, $pos_id, $first_id, $set=[], $except=[]) {        
         $meanings = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')
                 ->join('meaning_relation', 'meaning1_id', '=', 'meanings.id')
-                ->whereNotIn('meanings.id', array_keys($set))
+                ->whereNotIn('meanings.id', array_keys($set)+$except)
                 ->whereLangId($lang_id)
                 ->wherePosId($pos_id)
                 ->whereMeaning2Id($first_id)
@@ -92,8 +128,8 @@ class Synset extends Model
                 ->whereNotIn('meanings.id', function($q) {        // не в синсетах
                     $q->select('meaning_id')->from('meaning_synset');
                 })
-                ->select('meanings.*', 'lemmas.lemma', 'meaning_relation.relation_id')
-                ->orderBy('lemma')->with('meaningTexts')->get();
+                ->select('meanings.*', 'meaning_relation.relation_id')
+                ->orderBy('lemma')->with('meaningTexts')->with('lemma')->get();
 
         foreach ($meanings as $meaning) {
             if (empty($set[$meaning->id])) {

@@ -231,6 +231,7 @@ return [
     'of_lemmas' => 'лемм',
     'of_meaning' => 'значения',
     'of_pos' => 'части речи',
+    'of_synsets' => 'синсета',
     'of_relation' => 'отношения',
     'of_wordform' => 'словоформы',
     
@@ -333,6 +334,7 @@ return [
     'status' => 'статус',
     'status0' => 'не проверено',
     'status1' => 'проверено',
+    'synset_removed' => 'Синсет №:num удален',
     'syntype' => 'тип синонимии',
     'suggest_template' => 'Предложить шаблон',
     

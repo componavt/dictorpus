@@ -7,12 +7,13 @@
 @section('headExtra')
     <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.11.4/css/dataTables.bootstrap.min.css">
     {!!Html::style('css/table.css')!!}
+    {!!Html::style('css/lemma.css')!!}
 @stop
 
 @section('body')  
     <p>
     @if (!empty($new_set_founded)) 
-        <a href="{{ route('dict.synsets.find_new', $url_args) }}">Проверить найденный синсет</a> |
+        <a href="{{ route('dict.synsets.find_new', $url_args) }}">Проверить найденные синсеты</a> |
     @endif
         <a href="#">Создать новый</a>
     </p>
@@ -55,12 +56,21 @@
             <td data-th="{{ trans('corpus.comment') }}">{{ $synset->comment }}</td>
             <td data-th="{{ trans('navigation.potential_members') }}">
             </td>
-            <td data-th="{{ trans('messages.actions') }}" style="text-align:center">
+            <td data-th="{{ trans('messages.actions') }}" style="text-align:center; width: 90px;">
                 <a class="set-status status{{ $synset->status }}" id="status-{{ $synset->id }}" 
                    onClick="setStatus({{ $synset->id }})"
                    title = "{{ $synset->status ? 'вернуть в черновики' : 'опубликовать' }}"
                    data-old="{{ $synset->status }}" 
                    data-new="{{ $synset->status ? 0 : 1 }}"></a>
+                @include('widgets.form.button._edit', [
+                    'is_button'=>true, 
+                    'without_text' => 1,
+                    'route' => '/dict/synset/'.$synset->id.'/edit'])
+                @include('widgets.form.button._delete', [
+                    'is_button'=>true, 
+                    'without_text' => 1,
+                    'route' => 'synset.destroy', 
+                    'args'=>['id' => $synset->id]])
             </td>
         </tr>
         @endforeach
@@ -77,8 +87,10 @@
     <script src="//cdn.datatables.net/plug-ins/1.11.4/type-detection/numeric-comma.js"></script>
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/synset.js')!!}
+    {!!Html::script('js/rec-delete-link.js')!!}
 @stop
 
 @section('jqueryFunc')
+    recDelete('{{ trans('messages.confirm_delete') }}');
 @stop
 

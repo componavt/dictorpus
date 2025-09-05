@@ -219,6 +219,7 @@ class Export
             $sentences = $text->sentencesWithTranslation($sentences);
         }
         $sentences = Text::sentencesFromOlodict($sentences, $texts->pluck('id')->toArray());
+        
         foreach ($sentences as $s=>$ts) {
             fputcsv($handle, [$s, $ts], "\t"); // с кавычками
 //            fwrite($handle, $s."\t".$ts."\n");

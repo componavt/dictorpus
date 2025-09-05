@@ -10,6 +10,7 @@ use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Synset;
+use App\Models\Dict\Syntype;
 
 class SynsetController extends Controller
 {
@@ -67,22 +68,26 @@ class SynsetController extends Controller
             foreach ($request->syntypes as $meaning_id => $syntype_id) {
                 $synset->meanings()->attach([$meaning_id=>['syntype_id'=>$syntype_id]]);
             }
+            $synset->pos_id = $synset->meanings()->first()->lemma->pos_id;
+            $synset->save();
         }
         return Redirect::to('/service/dict/synsets/'.($this->args_by_get));
     }
     
     public function edit($id)
     {
-/*        $synset = Synset::find($id);
+        $synset = Synset::find($id);
         
-        $lang_values = [NULL => ''] + Lang::getList();
+        $lang_values = Lang::getProjectList();
+        $pos_values = [NULL=>''] + PartOfSpeech::getList();
+        $syntype_values = Syntype::getList(1);
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
         return view('dict.synset.edit',
-                compact('synset', 'informant_values', 'lang_id', 'lang_values', 
-                        'lemma_values', 'args_by_get', 'url_args'));
-*/    }
+                compact('synset', 'lang_values', 'pos_values', 'syntype_values',
+                        'args_by_get', 'url_args'));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -120,15 +125,14 @@ class SynsetController extends Controller
      */
     public function destroy($id, $informant_id=null)
     {
-/*        $error = false;
+        $error = false;
         $result =[];
-        if($id != "" && $id > 0) {
+        if(!empty($id)) {
             try{
                 $synset = Synset::find($id);
                 if($synset){
-                    $result['message'] = \Lang::get('dict.synset_removed', ['name'=>$synset->filename]);
-                    $synset->lemmas()->detach();
-                    Storage::disk('synsets')->delete($synset->filename);
+                    $result['message'] = \Lang::get('dict.synset_removed', ['num'=>$synset->id]);
+                    $synset->meanings()->detach();
                     $synset->delete();
                 } else{
                     $error = true;
@@ -150,9 +154,9 @@ class SynsetController extends Controller
             return Redirect::to('/dict/synset/'.($this->args_by_get))
                            ->withErrors($result['error_message']);
         }
-        return Redirect::to('/dict/synset/'.($this->args_by_get))
+        return Redirect::to('/service/dict/synsets/'.($this->args_by_get))
               ->withSuccess($result['message']);
-*/    
+    
     }
     
     public function setStatus(int $id, int $status) {

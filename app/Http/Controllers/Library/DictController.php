@@ -712,20 +712,16 @@ class DictController extends Controller
         if (empty($url_args['search_lang'])) {
             $url_args['search_lang'] = 5; // livvic
         }
-        
-        list($new_set, $url_args['search_pos']) = Synset::findSynset($url_args['search_lang'], $url_args['search_pos']);
         $args_by_get = search_values_by_URL($url_args);
         
-        $new_set = collect($new_set);
-        $core = $new_set->where('type', Synset::RELATION_FULL);
-        $periphery = $new_set->where('type', Synset::RELATION_NEAR);
+        $synsets = Synset::findSynsets($url_args['search_lang'], $url_args['search_pos']);        
+//dd($synsets);        
         
         $lang = Lang::findOrFail($url_args['search_lang']);
-        $pos = PartOfSpeech::findOrFail($url_args['search_pos']);
         $syntype_values = Syntype::getList(1);
 //dd($new_set, $core, $periphery);        
         return view('service.dict.synsets.find_new',
-                compact('core', 'lang', 'periphery', 'pos', 'syntype_values', 
+                compact('lang', 'synsets', 'syntype_values', 
                         'args_by_get', 'url_args'));
     }
 }
