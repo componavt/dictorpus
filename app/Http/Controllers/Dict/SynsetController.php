@@ -77,16 +77,18 @@ class SynsetController extends Controller
     public function edit($id)
     {
         $synset = Synset::find($id);
+        $potential_members = $synset->searchPotentialMembers();
         
         $lang_values = Lang::getProjectList();
         $pos_values = [NULL=>''] + PartOfSpeech::getList();
         $syntype_values = Syntype::getList(1);
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        $action = 'edit';
         
-        return view('dict.synset.edit',
-                compact('synset', 'lang_values', 'pos_values', 'syntype_values',
-                        'args_by_get', 'url_args'));
+        return view('dict.synset.modify',
+                compact('action', 'synset', 'lang_values', 'pos_values', 
+                        'potential_members', 'syntype_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -98,23 +100,15 @@ class SynsetController extends Controller
      */
     public function update(Request $request, $id)
     {
-/*        $synset = Synset::find($id);
-        $this->validate($request, [
-            'informant_id'  => 'required|integer',
-            'filename'  => 'max:100',
-        ]);
+        $synset = Synset::find($id);
         
-        $synset->informant_id = (int)$request->informant_id;
-        if ($synset->filename != $request->filename) {
-            Storage::disk('synsets')->move($synset->filename, $request->filename);
-            $synset->filename = $request->filename;
-        }
+        $synset->comment = $request->comment;
         $synset->save();
-        $synset->lemmas()->sync((array)$request->lemmas);
+        $synset->meanings()->sync((array)$request->meanings);
         
-        return Redirect::to('/dict/synset/'.($this->args_by_get))
+        return Redirect::to('/service/dict/synsets/'.($this->args_by_get))
                        ->withSuccess(\Lang::get('messages.updated_success'));
-*/    }
+    }
     
     
     /**
@@ -123,7 +117,7 @@ class SynsetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, $informant_id=null)
+    public function destroy($id)
     {
         $error = false;
         $result =[];
@@ -164,5 +158,24 @@ class SynsetController extends Controller
         $synset->status = $status == 1 ? 1 : 0;
         $synset->save();
         return $synset->status;
+    }
+    
+    public function removeMeaning(int $id, int $meaning_id)
+    {
+        $synset = Synset::find($id);
+
+        return $synset->meanings()->detach($meaning_id);
+    }
+
+    public function potentialMembersEdit(int $id, Request $request)
+    {
+        $synset = Synset::find($id);
+        $syntype_values = Syntype::getList(1);
+        
+        $potential_members = $synset->searchPotentialMembers($request->comment);
+        
+        return view('dict.synset._potential_rows',
+                compact('potential_members', 'synset', 'syntype_values'));
+        
     }
 }

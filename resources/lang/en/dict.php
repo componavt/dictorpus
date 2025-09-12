@@ -259,7 +259,7 @@ return [
     'pos_category_2' => 'Closed class words',
     'pos_category_3' => 'Other',
     'pos_list' => 'List of parts of speech',
-    'potential_members' => 'potential members',
+    'potential_members' => 'Potential members',
     'prontype' => 'pronoun type',
     'prontypes' => [NULL=> '',
                     1 => 'personal',

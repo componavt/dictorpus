@@ -55,6 +55,9 @@
             </td>
             <td data-th="{{ trans('corpus.comment') }}">{{ $synset->comment }}</td>
             <td data-th="{{ trans('navigation.potential_members') }}">
+        @foreach ($synset->searchPotentialMembers() as $meaning)
+                <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        
+        @endforeach
             </td>
             <td data-th="{{ trans('messages.actions') }}" style="text-align:center; width: 90px;">
                 <a class="set-status status{{ $synset->status }}" id="status-{{ $synset->id }}" 

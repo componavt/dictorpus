@@ -265,7 +265,7 @@ return [
     'pos_category_3' => 'Другие',
     'pos_list' => 'Cписок частей речи',
     
-    'potential_members' => 'возможные кандидаты',
+    'potential_members' => 'Возможные кандидаты',
     'prediction_interpretation' => 'значение для предсказанной леммы',
     'prontype' => 'разряд местоимения',
     'prontypes' => [NULL=> '',

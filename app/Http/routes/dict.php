@@ -102,6 +102,8 @@ Route::group(
         Route::get('reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
 
         Route::get('synset/{id}/set_status/{status}', 'Dict\SynsetController@setStatus');
+        Route::get('synset/{id}/remove_meaning/{meaning_id}', 'Dict\SynsetController@removeMeaning');
+        Route::get('synset/{id}/edit/potential_members', 'Dict\SynsetController@potentialMembersEdit');
         
         Route::get('wordform/create', 'Dict\WordformController@create'); 
         Route::get('wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');

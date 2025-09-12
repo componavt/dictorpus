@@ -8,6 +8,7 @@ use App\Models\Dict\Meaning;
 
 class Synset extends Model
 {
+    use \App\Traits\Select\SynsetSelect;
     protected $revisionEnabled = true;
     protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
     protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
@@ -22,6 +23,8 @@ class Synset extends Model
 
     const RELATION_FULL = 7;
     const RELATION_NEAR = 11;
+    const StopWords =
+            ['более','довольно','как','очень','соответствующий','также'];
 
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
@@ -33,111 +36,36 @@ class Synset extends Model
     }
 
     public function core(){
-        return $this->belongsToMany(Meaning::class)
+/*        return $this->belongsToMany(Meaning::class)
                 ->whereSyntypeId(Syntype::TYPE_FULL)
-                ->withPivot('syntype_id');
+                ->withPivot('syntype_id');*/
+        return $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
+                    ->wherePivot('syntype_id', Syntype::TYPE_FULL)
+                    ->withPivot('syntype_id')
+                    ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+                    ->orderBy('lemmas.lemma')
+                    ->select('meanings.*', 'meaning_synset.syntype_id'); 
     }
     
     public function periphery(){
-        return $this->belongsToMany(Meaning::class)
+/*        return $this->belongsToMany(Meaning::class)
                 ->where('syntype_id', '<>', Syntype::TYPE_FULL)
-                ->withPivot('syntype_id');
+                ->withPivot('syntype_id');*/
+        return $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
+                    ->wherePivot('syntype_id', '<>', Syntype::TYPE_FULL)
+                    ->withPivot('syntype_id')
+                    ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+                    ->orderBy('lemmas.lemma')
+                    ->select('meanings.*', 'meaning_synset.syntype_id'); 
     }
 
     public function getNameAttribute(){
         return '№'.$this->id;
     }
     
-    /* return true if a new synset founded */
-    public static function newSetFounded($lang_id, $pos_id=null) {
-        return Meaning::whereIn('lemma_id', function ($q) use ($lang_id, $pos_id) {
-                $q->select('id')->from('lemmas')
-                    ->whereLangId($lang_id);
-                if (!empty($pos_id)) {
-                    $q->wherePosId($pos_id);
-                }
-                })->whereIn('id', function($q) { // полные или частичные синонимы
-                    $q->select('meaning1_id')->from('meaning_relation')
-                   ->whereIn('relation_id', [self::RELATION_FULL, self::RELATION_NEAR]);
-                })->whereNotIn('id', function($q) {        // не в синсетах
-                    $q->select('meaning_id')->from('meaning_synset');
-                })
-                ->count() > 1;                 
-    }
-
-    /* find all possible synsets */
-    public static function findSynsets($lang_id, $pos_id=null) {
-        $sets = [];
-        $except = [];
-        $count=1;
-        do {
-            $new_set = self::findSynset($lang_id, $pos_id, $except);
-//dd($new_set);            
-            if (!empty($new_set)) {
-                $except = array_merge($except, array_keys($new_set));
-/*print '<pre>';                
-var_dump($except);   
-var_dump(array_keys($new_set));
-print '</pre>';                */
-                $firstValue = $new_set[array_key_first($new_set)];
-                $sets[$count]['pos_name'] = $firstValue['meaning']->lemma->pos->name;
-                $new_set = collect($new_set);
-                $sets[$count]['core'] = $new_set->where('type', self::RELATION_FULL);
-                $sets[$count++]['periphery'] = $new_set->where('type', self::RELATION_NEAR);
-            }
-        } while (!empty($new_set)); 
-        return $sets;
-    }
-
-    public static function findSynset($lang_id, $pos_id=null, $except=[]) {
-        $first_meaning = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')                
-                ->whereLangId($lang_id)
-                ->whereIn('meanings.id', function($q) { // полные синонимы
-                    $q->select('meaning1_id')->from('meaning_relation')
-                      ->whereRelationId(self::RELATION_FULL);
-                })->whereNotIn('meanings.id', function($q) {        // не в синсетах
-                    $q->select('meaning_id')->from('meaning_synset');
-                });
-        if (!empty($except)) {
-            $first_meaning->whereNotIn('meanings.id', $except);
-        }        
-        if (!empty($pos_id)) {
-            $first_meaning->wherePosId($pos_id);
-        }        
-        $first_meaning = $first_meaning->select('meanings.*')
-                ->orderBy('lemma')->with('meaningTexts')->with('lemma')->first();
-        
-        if (!$first_meaning) {
-            return null;
-        }
-        if (empty($pos_id)) {
-            $pos_id = $first_meaning->lemma->pos_id;
-        }
-
-        return self::findSet($lang_id, $pos_id, $first_meaning->id, [$first_meaning->id=>['meaning'=>$first_meaning, 'type'=>Synset::RELATION_FULL]]);
-    }
-    
-    public static function findSet($lang_id, $pos_id, $first_id, $set=[], $except=[]) {        
-        $meanings = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')
-                ->join('meaning_relation', 'meaning1_id', '=', 'meanings.id')
-                ->whereNotIn('meanings.id', array_keys($set)+$except)
-                ->whereLangId($lang_id)
-                ->wherePosId($pos_id)
-                ->whereMeaning2Id($first_id)
-                ->whereIn('relation_id', [self::RELATION_FULL, self::RELATION_NEAR])
-                ->whereNotIn('meanings.id', function($q) {        // не в синсетах
-                    $q->select('meaning_id')->from('meaning_synset');
-                })
-                ->select('meanings.*', 'meaning_relation.relation_id')
-                ->orderBy('lemma')->with('meaningTexts')->with('lemma')->get();
-
-        foreach ($meanings as $meaning) {
-            if (empty($set[$meaning->id])) {
-                $set[$meaning->id] = ['meaning'=>$meaning, 'type'=>$meaning->relation_id];
-                $set = $set + self::findSet($lang_id, $pos_id, $meaning->id, $set);
-            }
-        }
-        return $set;
+    public static function removeStopWords($terms) {
+        $termsArray = preg_split('/\s+/u', $terms);
+        return implode(' ', array_diff($termsArray, self::StopWords));
     }
     
 }

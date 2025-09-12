@@ -170,6 +170,11 @@ h4 .fa {
     cursor: pointer;
 }
 
+.reload-list {
+    color: #ef3928;
+    cursor: pointer;    
+}
+
 #lemmaStemAffix {
     font-weight: bold;
     font-size: 14px;
@@ -201,9 +206,13 @@ h4 .fa {
 }
 
 .add-to-list,
-.remove-label,
-.remove-meaning {
+.remove-label {
     color: #972d1a;
+    cursor: pointer;
+}
+
+.remove-from-list {
+    color: #ef3928;
     cursor: pointer;
 }
 

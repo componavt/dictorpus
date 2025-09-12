@@ -392,3 +392,11 @@ if (!function_exists('js')) {
     }
 }
 
+// Разбиваем по точкам, точкам с запятой, тире и т.п.
+if (!function_exists('splitDefinition')) {
+    function split_definition($text) {
+//dd($text);        
+        $parts = preg_split('/[,.;–—]+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
+        return array_map('trim', $parts);
+    }
+}

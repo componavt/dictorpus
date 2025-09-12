@@ -22,7 +22,7 @@
     
     <table style="width: 100%">
         @if (count($synset['core']))
-        <tr><th colspan="2">{{ trans('dict.core') }}</th></tr>
+        <tr><th colspan='2'>{{ trans('dict.core') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
             @foreach ($synset['core'] as $meaning_id=>$member)
 <?php //dd($member['meaning']);    ?>
                 @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_FULL])
@@ -30,7 +30,7 @@
         @endif
         
         @if (count($synset['periphery']))
-        <tr><th colspan="2">{{ trans('dict.periphery') }}</th></tr>
+        <tr><th colspan='2'>{{ trans('dict.periphery') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
             @foreach ($synset['periphery'] as $meaning_id=>$member)
                 @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_PART])
             @endforeach
