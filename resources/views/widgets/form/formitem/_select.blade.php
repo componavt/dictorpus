@@ -18,7 +18,7 @@ $attributes['id'] = $id_name;
 
 ?>
 
-<div class="form-group {{ $errors->has($name) || $errors->has($name) ? 'has-error' : '' }}">
+<div class="form-group{{ $errors->has($name) || $errors->has($name) ? ' has-error' : '' }}{{ !empty($is_flex) ? ' flexible' : '' }}">
     @if($title)
 	<label for="{{$name}}">
             {{ $title }}

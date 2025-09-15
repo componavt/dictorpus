@@ -15,7 +15,7 @@
     @if (!empty($new_set_founded)) 
         <a href="{{ route('dict.synsets.find_new', $url_args) }}">Проверить найденные синсеты</a> |
     @endif
-        <a href="#">Создать новый</a>
+        <a href="{{ route('synset.create', $url_args) }}">Создать новый</a>
     </p>
     
     @include('service.dict.synsets._search_form',['url' => '/service/dict/synsets']) 

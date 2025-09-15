@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Redirect;
 
 use App\Models\Dict\Lang;
-use App\Models\Dict\Lemma;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Synset;
 use App\Models\Dict\Syntype;
@@ -28,8 +27,8 @@ class SynsetController extends Controller
         $this->middleware('auth:dict.edit,/dict/synset', 
                           ['except'=>['index']]);
         
-//        $this->url_args = Synset::urlArgs($request);        
-//        $this->args_by_get = search_values_by_URL($this->url_args);
+        $this->url_args = Synset::urlArgs($request);        
+        $this->args_by_get = search_values_by_URL($this->url_args);
     }
     
     public function index() {
@@ -62,16 +61,35 @@ class SynsetController extends Controller
         return $data;
     }
     
+    public function create()
+    {       
+        $args_by_get = $this->args_by_get;
+        $url_args = $this->url_args;
+        
+        $lang = Lang::find($url_args['search_lang']);
+        if (!$lang) {
+            Redirect::to('/service/dict/synsets/'.($this->args_by_get))
+                    ->withErrors('Выберите язык');
+        }
+        $pos_values = PartOfSpeech::getList();
+        $syntype_values = Syntype::getList(1);
+        $action = 'create';
+        
+        return view('dict.synset.modify',
+                compact('action', 'lang', 'pos_values', 'syntype_values', 
+                        'args_by_get', 'url_args'));
+    }
+    
     public function store(Request $request) {
-        if (!empty($request->syntypes)) {
+//dd($request->all());        
+        if (!empty($request->meanings)) {
             $synset = Synset::create($this->validateRequest($request));
-            foreach ($request->syntypes as $meaning_id => $syntype_id) {
-                $synset->meanings()->attach([$meaning_id=>['syntype_id'=>$syntype_id]]);
-            }
+            $synset->meanings()->sync((array)$request->meanings);
             $synset->pos_id = $synset->meanings()->first()->lemma->pos_id;
             $synset->save();
         }
-        return Redirect::to('/service/dict/synsets/'.($this->args_by_get));
+        return Redirect::to('/service/dict/synsets/'.($this->args_by_get))
+                ->withSuccess(\Lang::get('messages.created_success'));;
     }
     
     public function edit($id)
@@ -79,7 +97,6 @@ class SynsetController extends Controller
         $synset = Synset::find($id);
         $potential_members = $synset->searchPotentialMembers();
         
-        $lang_values = Lang::getProjectList();
         $pos_values = [NULL=>''] + PartOfSpeech::getList();
         $syntype_values = Syntype::getList(1);
         $args_by_get = $this->args_by_get;
@@ -87,8 +104,8 @@ class SynsetController extends Controller
         $action = 'edit';
         
         return view('dict.synset.modify',
-                compact('action', 'synset', 'lang_values', 'pos_values', 
-                        'potential_members', 'syntype_values', 'args_by_get', 'url_args'));
+                compact('action', 'pos_values', 'synset', 'potential_members', 
+                        'syntype_values', 'args_by_get', 'url_args'));
     }
 
     /**
@@ -151,31 +168,5 @@ class SynsetController extends Controller
         return Redirect::to('/service/dict/synsets/'.($this->args_by_get))
               ->withSuccess($result['message']);
     
-    }
-    
-    public function setStatus(int $id, int $status) {
-        $synset = Synset::findOrFail($id);
-        $synset->status = $status == 1 ? 1 : 0;
-        $synset->save();
-        return $synset->status;
-    }
-    
-    public function removeMeaning(int $id, int $meaning_id)
-    {
-        $synset = Synset::find($id);
-
-        return $synset->meanings()->detach($meaning_id);
-    }
-
-    public function potentialMembersEdit(int $id, Request $request)
-    {
-        $synset = Synset::find($id);
-        $syntype_values = Syntype::getList(1);
-        
-        $potential_members = $synset->searchPotentialMembers($request->comment);
-        
-        return view('dict.synset._potential_rows',
-                compact('potential_members', 'synset', 'syntype_values'));
-        
     }
 }

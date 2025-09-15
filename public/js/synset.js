@@ -53,11 +53,17 @@ function addMeaningToList(meaning_id) {
     $("#meaning-"+meaning_id).css('text-decoration','none');
 }
 
-function reloadPotentialMembers(synset_id) {
+function reloadPotentialMembers(synset_id, lang_id) {
     var comment = $("#comment").val();
     $.ajax({
-        url: '/dict/synset/'+synset_id+'/edit/potential_members?comment='+comment, 
+        url: '/dict/synset/'+synset_id+'/edit/potential_members', 
         type: 'GET',
+        data: {
+            lang_id: lang_id,
+            pos_id: $('#pos_id option:selected').val(),
+            comment: comment,
+            without: collectIds('.meanings', 'id')
+        },
         success: function(result){
             $("#potential-members").html(result);
         },
@@ -66,3 +72,19 @@ function reloadPotentialMembers(synset_id) {
     }); 
 }
 
+function addMember() {
+    $.ajax({
+        url: '/dict/synset/edit/new_members', 
+        type: 'GET',
+        data: {
+            meanings: selectedValuesToURL("#new_members")
+        },
+        success: function(result){
+            $("#new-members").append(result);
+            $("#pos_id").prop('disabled', true);
+            $(".select-member").val(null).trigger('change');
+        },
+        error: function() {
+        }
+    }); 
+}

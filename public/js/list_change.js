@@ -418,33 +418,7 @@ function selectMotives(selector=".select-motive", genre_var='search_genre', plac
           };
     selectAjax("/corpus/motive/list", data, placeholder, allow_clear, selector);
 }
-/*
-function selectMotive(motype_var='search_motype', parent_id='', placeholder='', allow_clear=false){
-    $(".select-motive").select2({
-        allowClear: allow_clear,
-        placeholder: placeholder,
-        width: '100%',
-        ajax: {
-          url: "/corpus/motive/list",
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return {
-              q: params.term, // search term
-              motype_id: selectedValuesToURL("#" + motype_var),
-              parent_id: parent_id
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data
-            };
-          },          
-          cache: true
-        }
-    });   
-}
- */
+
 function selectAjax(route, data, placeholder, allow_clear, selector){
     $(selector).select2({
         allowClear: allow_clear,
@@ -489,3 +463,24 @@ function changeLangOfInformant(informant_selector) {
     });
 }
 
+function selectSynsetMembers(selector=".select-member", lang_id, placeholder='', allow_clear=false){
+    var data = function (params) {
+            return {
+              q: params.term, // search term
+              search_lang: lang_id,
+              search_pos: $('#pos_id option:selected').val(),
+              without: collectIds('.meanings', 'id')
+            };
+          };
+    selectAjax("/dict/synset/members_list", data, placeholder, allow_clear, selector);
+}
+
+function collectIds(selector, attr) {
+    var list = [];
+    $(selector).each(function( index, element ){
+        list.push($(this).data(attr));
+    });
+console.log(list);  
+    return list;
+    
+}

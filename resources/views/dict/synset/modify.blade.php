@@ -5,6 +5,7 @@
 @stop
 
 @section('headExtra')
+    {!!Html::style('css/select2.min.css')!!}
     {!!Html::style('css/lemma.css')!!}
 @stop
 
@@ -13,8 +14,11 @@
 @stop
 
 @section('footScriptExtra')
+    {!! js('select2.min') !!}
+    {!! js('list_change') !!}
     {!! js('synset') !!}
 @stop
 
 @section('jqueryFunc')
+    selectSynsetMembers(".select-member", '{{ $url_args['search_lang'] }}', 'введите карельское или русское слово');
 @stop

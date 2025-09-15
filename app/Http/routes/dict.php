@@ -50,9 +50,9 @@ Route::group(
         
         Route::get('lemma/by_wordforms', 'Dict\LemmaController@byWordforms')->name('lemma.by_wordforms');
         Route::get('lemma/store_simple', 'Dict\LemmaController@storeSimple');
-        Route::get('lemma/list', 'Dict\LemmaController@lemmaLangList');
-        Route::get('lemma/meanings_list', 'Dict\LemmaController@meaningsList');
-        Route::get('lemma/list_with_pos_meaning', 'Dict\LemmaController@listWithPosMeaning');
+        Route::get('lemma/list', 'Dict\LemmaApiController@lemmaLangList');
+        Route::get('lemma/meanings_list', 'Dict\LemmaApiController@meaningsList');
+        Route::get('lemma/list_with_pos_meaning', 'Dict\LemmaApiController@listWithPosMeaning');
         Route::get('lemma/relation', 'Dict\LemmaController@relation');
         Route::get('lemma/remove/example/{example_id}', 'Dict\LemmaController@removeExample');
         Route::get('lemma/omonyms', 'Dict\LemmaController@omonyms');
@@ -101,9 +101,11 @@ Route::group(
         Route::get('reverse_lemma/inflexion_groups', 'Dict\ReverseLemmaController@inflexionGroups');
         Route::get('reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
 
-        Route::get('synset/{id}/set_status/{status}', 'Dict\SynsetController@setStatus');
-        Route::get('synset/{id}/remove_meaning/{meaning_id}', 'Dict\SynsetController@removeMeaning');
-        Route::get('synset/{id}/edit/potential_members', 'Dict\SynsetController@potentialMembersEdit');
+        Route::get('synset/{id}/set_status/{status}', 'Dict\SynsetApiController@setStatus');
+        Route::get('synset/{id}/remove_meaning/{meaning_id}', 'Dict\SynsetApiController@removeMeaning');
+        Route::get('synset/{id}/edit/potential_members', 'Dict\SynsetApiController@potentialMembersEdit');
+        Route::get('synset/members_list', 'Dict\SynsetApiController@membersList');
+        Route::get('synset/edit/new_members', 'Dict\SynsetApiController@newMembersEdit');
         
         Route::get('wordform/create', 'Dict\WordformController@create'); 
         Route::get('wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
@@ -174,6 +176,7 @@ Route::group(
         Route::resource('synset', 'Dict\SynsetController',
                        ['names' => ['update' => 'synset.update',
                                     'store' => 'synset.store',
+                                    'create' => 'synset.create',
                                     'destroy' => 'synset.destroy']]);
         
         Route::resource('syntype', 'Dict\SyntypeController',

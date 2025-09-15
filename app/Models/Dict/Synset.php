@@ -68,4 +68,13 @@ class Synset extends Model
         return implode(' ', array_diff($termsArray, self::StopWords));
     }
     
+    public static function urlArgs($request) {
+        $url_args = url_args($request) + [
+                    'search_lang'     => (int)$request->input('search_lang'),
+                    'search_pos'    => (int)$request->input('search_pos'),
+                ];
+        
+        return $url_args;
+    }
+    
 }

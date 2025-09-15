@@ -108,6 +108,9 @@ h1:before {
     cursor: pointer;
 }
 
+.flexible {
+    display: flex;
+}
 
 @media (min-width: 992px) {
     h1:before {

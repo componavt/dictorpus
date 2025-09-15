@@ -1,34 +1,50 @@
     <table style="width: 100%">
-        @if (count($synset->core))
+        @if (!empty($synset) && $action=='edit')
+            @if (count($synset->core))
         <tr><th colspan='2'>{{ trans('dict.core') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
-            @foreach ($synset->core as $meaning)
+                @foreach ($synset->core as $meaning)
 <?php //dd($member['meaning']);    ?>
-                @include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id])
-            @endforeach
-        @endif
+@include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id])
+                @endforeach
+            @endif
         
-        @if (count($synset->periphery))
+            @if (count($synset->periphery))
         <tr><th colspan='2'>{{ trans('dict.periphery') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
-            @foreach ($synset->periphery as $meaning)
-                @include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id])
-            @endforeach
-        @endif                
+                @foreach ($synset->periphery as $meaning)
+@include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id])
+                @endforeach
+            @endif                
     </table>
+        @endif
 
-    @include('widgets.form.formitem._textarea',
-            ['name' => 'comment',
-             'attributes' => ['rows' => 3],
-             'title' => trans('corpus.comment')])
-        
-        @if ($action=='edit' && count($potential_members))
+            @include('widgets.form.formitem._textarea',
+                    ['name' => 'comment',
+                     'attributes' => ['rows' => 3],
+                     'title' => trans('corpus.comment')])
+
     <table style="width: 100%">
-        <tr><th><i class="fa fa-sync-alt fa-lg reload-list" title="перегрузить список с учетом комментария" onclick="reloadPotentialMembers({{ $synset->id }})"></i></th>
+        <tr><th><i class="fa fa-sync-alt fa-lg reload-list" title="перегрузить список с учетом комментария" onclick="reloadPotentialMembers('{{ !empty($synset)? $synset->id : 0 }}', '{{ !empty($synset)? $synset->lang_id : $lang->id }}')"></i></th>
             <th style='padding: 0 20px'>{{ trans('dict.potential_members') }}</th>
             <th>{{ trans('dict.syntype') }}</th></tr>
         <tbody id='potential-members'>
-            @include('/dict/synset/_potential_rows')
+        @if ($action=='edit' && count($potential_members))
+@include('/dict/synset/_potential_rows')
+        @endif
+        </tbody>
+        <tbody id='new-members'>
         </tbody>
     </table>
-        @endif
         
+    <h3>Искать в словаре</h3>
+    <div class="row">
+        <div class='col-sm-9'>
+    @include('widgets.form.formitem._select2',
+            ['name' => 'new_members',
+             'class'=>'select-member'])
+        </div>
+        <div class='col-sm-3'>
+            <input class="btn btn-info btn-default" type="button" value="добавить" onclick="addMember()">            
+        </div>
+    </div>
+
     @include('widgets.form.formitem._submit', ['title' => $submit_title])

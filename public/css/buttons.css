@@ -31,3 +31,17 @@
     text-align: right;
     top: 6px;
 }
+
+.btn-info {
+  text-transform: uppercase;
+}
+
+.btn-info,
+.btn-info:active,
+.btn-info:hover,
+.btn-info:active:hover,
+.btn-info:focus {
+  background-color: #972d1a;
+  border-color: #972d1a;
+}
+
