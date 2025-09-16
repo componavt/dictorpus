@@ -1,0 +1,1 @@
+<i class="fa fa-plus-circle fa-lg add-to-list" onClick="addMeaningToList({{ $meaning->id }})" title="Добавить в синсет"></i>

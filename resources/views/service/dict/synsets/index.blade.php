@@ -29,10 +29,12 @@
         @if (empty($url_args['search_pos']))
             <th>{{ trans('dict.pos') }}</th>
         @endif
+            <th>{{ trans('dict.dominant') }}</th>
+            <th>Определение</th>
             <th>{{ trans('dict.core') }}</th>
             <th>{{ trans('dict.periphery') }}</th>
-            <th>{{ trans('corpus.comment') }}</th>
             <th>{{ trans('dict.potential_members') }}</th>
+            <th>Русские синонимы</th>
             <th>{{ trans('messages.actions') }}</th>
         </tr>
     </thead>
@@ -43,8 +45,14 @@
         @if (empty($url_args['search_pos']))
             <td data-th="{{ trans('dict.pos') }}">{{ $synset->pos->name }}</td>
         @endif
+            <td data-th="{{ trans('dict.dominant') }}">
+        @if (!empty($synset->dominant))
+                <a href="{{ route('lemma.show', $synset->dominant->lemma_id) }}">{{ $synset->dominant->lemma->lemma }}</a><sup title="{{ $synset->dominant->getMeaningTextLocale() }}">{{ $synset->dominant->meaning_n}}</sup>        
+        @endif
+            </td>
+            <td>{{ $synset->descr }}</td>
             <td data-th="{{ trans('dict.core') }}">
-        @foreach ($synset->core as $meaning)
+        @foreach ($synset->coreWithoutDominant as $meaning)
                 <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        
         @endforeach
             </td>
@@ -53,12 +61,12 @@
                 <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        
         @endforeach
             </td>
-            <td data-th="{{ trans('corpus.comment') }}">{{ $synset->comment }}</td>
             <td data-th="{{ trans('navigation.potential_members') }}">
         @foreach ($synset->searchPotentialMembers() as $meaning)
                 <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        
         @endforeach
             </td>
+            <td>{{ $synset->comment }}</td>
             <td data-th="{{ trans('messages.actions') }}" style="text-align:center; width: 100px;">
                 <a class="set-status status{{ $synset->status }}" id="status-{{ $synset->id }}" 
                    onClick="setStatus({{ $synset->id }})"

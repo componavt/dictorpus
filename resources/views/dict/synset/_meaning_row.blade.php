@@ -1,11 +1,21 @@
-        <tr id='meaning-{{ $meaning->id }}'>
-            <td><i class="fa fa-trash fa-lg remove-from-list" onClick="removeMeaningFromList({{ $meaning->id }})" title="Удалить из синсета"></i>&nbsp;</td>
+        <tr id='meaning-{{ $meaning->id }}' class="meaning-row" style="@if ($meaning->id===$synset->dominant_id) font-weight:bold; @endif">
+            <td>
+                <span style="padding-right: 10px">
+                    <input id="dominant-{{ $meaning->id }}" class="check-dominant" data-id="{{ $meaning->id }}" 
+                           type='radio' name='dominant_id' value='{{ $meaning->id }}'{{ $meaning->id===$synset->dominant_id ? ' checked' : '' }}
+                           style="@if ($disabled) display:none; @endif" title="Выберите доминанту">
+                </span>
+            </td>         
+            <td id='meaning_td_{{ $meaning->id }}' style='padding-right:10px'>
+@include('dict.synset._button_'.$button)                
+            </td>
             <td class="meanings" data-id="{{ $meaning->id }}" style='padding-right: 20px'><a href="{{ route('lemma.show', $meaning->lemma->id) }}">{{ $meaning->lemma->lemma }}</a>: 
                 {{ $meaning->meaning_n}}. {{ $meaning->getMeaningTextLocale() }} </td>
             <td>
                 @include('widgets.form.formitem._select',
                         ['name' => 'meanings['.$meaning->id.'][syntype_id]',
                          'values' =>$syntype_values,
-                         'value' => $syntype_id])
+                         'value' => $syntype_id,
+                         'attributes' => ['disabled' => $disabled]])
             </td>
         </tr>

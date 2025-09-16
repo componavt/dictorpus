@@ -19,32 +19,47 @@ class Synset extends Model
         parent::boot();
     }
 
-    protected $fillable = ['lang_id','pos_id', 'status', 'comment'];
+    protected $guarded = ['id', 'created_at', 'updated_at'];   
 
     const RELATION_FULL = 7;
     const RELATION_NEAR = 11;
     const StopWords =
-            ['более','довольно','как','очень','соответствующий','также'];
+            ['более','довольно','как','недостаточно','очень','соответствующий','также'];
 
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
     use \App\Traits\Relations\BelongsTo\POS;
 
+    public function dominant()
+    {
+        return $this->belongsTo(Meaning::class);
+    }   
+    
     public function meanings(){
         return $this->belongsToMany(Meaning::class)
                 ->withPivot('syntype_id');
     }
 
     public function core(){
-/*        return $this->belongsToMany(Meaning::class)
-                ->whereSyntypeId(Syntype::TYPE_FULL)
-                ->withPivot('syntype_id');*/
         return $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
                     ->wherePivot('syntype_id', Syntype::TYPE_FULL)
                     ->withPivot('syntype_id')
                     ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
                     ->orderBy('lemmas.lemma')
                     ->select('meanings.*', 'meaning_synset.syntype_id'); 
+    }
+    
+    public function coreWithoutDominant(){
+        $builder = $this->belongsToMany(Meaning::class, 'meaning_synset', 'synset_id', 'meaning_id')
+                    ->wherePivot('syntype_id', Syntype::TYPE_FULL)
+                    ->withPivot('syntype_id')
+                    ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+                    ->orderBy('lemmas.lemma')
+                    ->select('meanings.*', 'meaning_synset.syntype_id'); 
+        if ($this->dominant) {
+            $builder -> where('meanings.id', '<>', $this->dominant_id);
+        }
+        return $builder;
     }
     
     public function periphery(){

@@ -57,12 +57,13 @@ class SynsetController extends Controller
             'pos_id' => 'numeric',
             ]);
         
-        $data = $request->only(['lang_id', 'pos_id', 'comment']);
+        $data = $request->only(['lang_id', 'pos_id', 'comment', 'descr', 'dominant_id']);
         return $data;
     }
     
     public function create()
     {       
+        $default_pos_id = 1;
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         
@@ -76,7 +77,7 @@ class SynsetController extends Controller
         $action = 'create';
         
         return view('dict.synset.modify',
-                compact('action', 'lang', 'pos_values', 'syntype_values', 
+                compact('action', 'default_pos_id', 'lang', 'pos_values', 'syntype_values', 
                         'args_by_get', 'url_args'));
     }
     
@@ -120,6 +121,8 @@ class SynsetController extends Controller
         $synset = Synset::find($id);
         
         $synset->comment = $request->comment;
+        $synset->descr = $request->descr;
+        $synset->dominant_id = (int)$request->dominant_id;
         $synset->save();
         $synset->meanings()->sync((array)$request->meanings);
         

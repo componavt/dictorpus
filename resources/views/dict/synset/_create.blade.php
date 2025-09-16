@@ -7,6 +7,7 @@
                 ['name' => 'pos_id',
                  'title'=> 'часть&nbsp;речи:&nbsp;',
                  'is_flex' => true,
+                 'value' => $default_pos_id,
                  'values' => $pos_values])
         </div>
     </div>

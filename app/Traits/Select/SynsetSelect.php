@@ -110,7 +110,7 @@ trait SynsetSelect
         
         $terms = join(' ',array_unique($terms));
 
-        $excludedMeaningIds = array_merge($without, $this->meanings()->pluck('id')->toArray());
+        $excludedMeaningIds = array_merge((array)$without, $this->meanings()->pluck('id')->toArray());
 
         return self::searchRelevantMeanings($terms, $this->lang_id, $this->pos_id, $excludedMeaningIds);            
     }

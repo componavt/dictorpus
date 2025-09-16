@@ -1,0 +1,1 @@
+<i class="fa fa-trash fa-lg remove-from-list" onClick="removeMeaningFromList({{ $meaning->id }})" title="Удалить из синсета"></i>

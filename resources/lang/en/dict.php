@@ -147,6 +147,8 @@ return [
     'dialects' => 'Dialects',
     'dialects_usage' => 'dialects of usage',
     'dict_sound' => 'Dictionary sounding',
+    'dominant' => 'Dominant',
+    
     'edit_list_for_voicing' => 'Modify the list for voicing',
     'example_comment' => 'Checked examples / Unchecked examples / Total number',
     'generate_wordforms' => 'generate wordforms',

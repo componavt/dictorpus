@@ -48,7 +48,7 @@ class SynsetApiController extends Controller
             $synset = new Synset;
             $synset->lang_id = (int)$request->lang_id;
             $synset->pos_id = (int)$request->pos_id;
-            $synset->save();
+//            $synset->save();
         }
         $syntype_values = Syntype::getList(1);
         

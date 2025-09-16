@@ -44,6 +44,7 @@ function removeMeaningFromList(meaning_id) {
     $("#meanings_"+meaning_id+'__syntype_id_').prop('disabled', true);
     $("#meaning-"+meaning_id).css('text-decoration','line-through');
     $("#meaning_td_"+meaning_id).html('<i class="fa fa-plus-circle fa-lg add-to-list" onClick="addMeaningToList('+meaning_id+')" title="Добавить в синсет"></i>&nbsp;');
+    $("#dominant-"+meaning_id).hide();
 }
     
 
@@ -51,6 +52,7 @@ function addMeaningToList(meaning_id) {
     $("#meanings_"+meaning_id+'__syntype_id_').prop('disabled', false);
     $("#meaning_td_"+meaning_id).html('<i class="fa fa-trash fa-lg remove-from-list" onClick="removeMeaningFromList('+meaning_id+')" title="Удалить из синсета"></i>&nbsp;');
     $("#meaning-"+meaning_id).css('text-decoration','none');
+    $("#dominant-"+meaning_id).show();
 }
 
 function reloadPotentialMembers(synset_id, lang_id) {

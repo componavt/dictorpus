@@ -25,22 +25,32 @@
         <tr><th colspan='2'>{{ trans('dict.core') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
             @foreach ($synset['core'] as $meaning_id=>$member)
 <?php //dd($member['meaning']);    ?>
-                @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_FULL])
+                @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_FULL, 'button'=>'remove', 'disabled'=>0])
             @endforeach
         @endif
         
         @if (count($synset['periphery']))
         <tr><th colspan='2'>{{ trans('dict.periphery') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
             @foreach ($synset['periphery'] as $meaning_id=>$member)
-                @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_PART])
+                @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_PART, 'button'=>'remove', 'disabled'=>0])
             @endforeach
         @endif
     </table>
 
-    @include('widgets.form.formitem._textarea',
-            ['name' => 'comment',
-             'attributes' => ['rows' => 3],
-             'title' => trans('corpus.comment')])
+    <div class="row">
+        <div class="col-sm-6">
+            @include('widgets.form.formitem._textarea',
+                    ['name' => 'comment',
+                     'attributes' => ['rows' => 3],
+                     'title' => 'Русские синонимы'])                
+        </div>
+        <div class="col-sm-6">
+            @include('widgets.form.formitem._textarea',
+                    ['name' => 'descr',
+                     'attributes' => ['rows' => 3],
+                     'title' => 'Определение доминанты'])                
+        </div>
+    </div>
         
     @include('widgets.form.formitem._submit', ['title' => trans('messages.create_new_m')])
     {!! Form::close() !!}

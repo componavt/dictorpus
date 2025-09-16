@@ -21,4 +21,10 @@
 
 @section('jqueryFunc')
     selectSynsetMembers(".select-member", '{{ $url_args['search_lang'] }}', 'введите карельское или русское слово');
+    
+    $(".check-dominant").on('click', function() {
+        id = $(this).data('id');
+        $(".meaning-row").css('font-weight', 'normal');
+        $("#meaning-"+id).css('font-weight', 'bold');
+    });
 @stop
