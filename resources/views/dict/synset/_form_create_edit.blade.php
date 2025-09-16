@@ -5,14 +5,14 @@
         <tr><th colspan='3'>{{ trans('dict.core') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
                 @foreach ($synset->core as $meaning)
 <?php //dd($member['meaning']);    ?>
-@include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id, 'button'=>'remove', 'disabled'=>0])
+@include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id, 'button'=>'remove', 'disabled'=>false])
                 @endforeach
             @endif
         
             @if (count($synset->periphery))
         <tr><th colspan='3'>{{ trans('dict.periphery') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
                 @foreach ($synset->periphery as $meaning)
-@include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id, 'button'=>'remove', 'disabled'=>0])
+@include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id, 'button'=>'remove', 'disabled'=>false])
                 @endforeach
             @endif                
     </table>

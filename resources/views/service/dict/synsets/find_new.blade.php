@@ -25,7 +25,7 @@
         <tr><th colspan='2'>{{ trans('dict.core') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
             @foreach ($synset['core'] as $meaning_id=>$member)
 <?php //dd($member['meaning']);    ?>
-                @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_FULL, 'button'=>'remove', 'disabled'=>0])
+                @include('/dict/synset/_meaning_row', ['meaning'=>$member['meaning'], 'syntype_id'=>\App\Models\Dict\Syntype::TYPE_FULL, 'button'=>'remove', 'disabled'=>false])
             @endforeach
         @endif
         
