@@ -164,7 +164,7 @@ class MeaningController extends Controller
      */
     public function addExample($example_id, $relevance)
     {
-        if ($relevance != 10) {
+        if ($relevance != 10 && $relevance!=7) {
             $relevance = 5;
         }
         MeaningTextRel::updateExamples([$example_id=>$relevance]);

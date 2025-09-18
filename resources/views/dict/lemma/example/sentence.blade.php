@@ -8,7 +8,7 @@ if (isset($meaning)) {
     $m_t_s_w = $meaning->id.'_'.$t_s_w;
 } 
 
-$place_title = $sentence['text']->dialects && isset($sentence['text']->dialects[0]) ? $sentence['text']->dialects[0]->name : '';
+$place_title = $sentence['text']->corpusesToString(). ' / '. $sentence['text']->dialectsToString();
 if($sentence['text']->event && $sentence['text']->event && $sentence['text']->event->informants()->first() && $sentence['text']->event->informants()->first()->birth_place) {
         $place_title .= ', '. $sentence['text']->event->informants()->first()->birth_place->name;
 }
@@ -37,7 +37,7 @@ if($sentence['text']->event && $sentence['text']->event && $sentence['text']->ev
 
 @if ($sentence['text'])
 (<a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$sentence['text']->id. '?search_sentence='.$sentence['s_id']) }}" 
-    title="{{$place_title}}">{{$sentence['text']->title}}</a>{{--@if ($place_title),
+    title="{{ $place_title }}">{{$sentence['text']->title}}</a>{{--@if ($place_title),
                                                              {{ $place_title }}@endif--}})
     @if (!empty($is_edit) && User::checkAccess('dict.edit'))
         @include('widgets.form.button._edit', 
@@ -46,7 +46,7 @@ if($sentence['text']->event && $sentence['text']->event && $sentence['text']->ev
                   'without_text' => 1])
     @endif    
     
-    @if (!isset($relevance) || $relevance==1)
+    @if (empty($relevance) || $relevance!=5)
         @if (!empty($is_edit) && User::checkAccess('dict.edit'))
             @include('widgets.form.button._add', 
                     ['data_add' => $m_t_s_w,
@@ -55,11 +55,20 @@ if($sentence['text']->event && $sentence['text']->event && $sentence['text']->ev
                      'title' => trans('dict.add-example-5')])
         @endif
     @endif
-    @if (!isset($relevance) || $relevance!=10)
+    @if (empty($relevance) || $relevance!=7)
         @if (!empty($is_edit) && User::checkAccess('dict.edit'))
             @include('widgets.form.button._add', 
                     ['data_add' => $m_t_s_w,
                      'class' => 'add-great-example',
+                     'relevance' => 7,
+                     'title' => trans('dict.add-example-7')])
+        @endif
+    @endif
+    @if (empty($relevance) || $relevance!=10)
+        @if (!empty($is_edit) && User::checkAccess('dict.edit'))
+            @include('widgets.form.button._add', 
+                    ['data_add' => $m_t_s_w,
+                     'class' => 'add-best-example',
                      'relevance' => 10,
                      'title' => trans('dict.add-example-10')])
         @endif

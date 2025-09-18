@@ -105,8 +105,14 @@
     margin-left: 10px;
 }
 
-.add-great-example {
+.add-best-example {
     color: green;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.add-great-example {
+    color: blue;
     cursor: pointer;
     margin-left: 10px;
 }
