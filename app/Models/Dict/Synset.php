@@ -3,6 +3,7 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 use App\Models\Dict\Meaning;
 
@@ -47,6 +48,26 @@ class Synset extends Model
                     ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
                     ->orderBy('lemmas.lemma')
                     ->select('meanings.*', 'meaning_synset.syntype_id'); 
+    }
+    
+    public function meaningsWithFrequencies($meanings){
+        // разом получаем частоты для всех meaning_id
+        $freqs = DB::table('meaning_text')
+            ->select('meaning_id', DB::raw('count(*) as freq'))
+            ->whereIn('meaning_id', $meanings->pluck('id'))
+            ->where('relevance', '>', 0)
+            ->groupBy('meaning_id')
+            ->pluck('freq', 'meaning_id'); // получаем [meaning_id => freq]
+
+        // навешиваем частоты на модели
+        $meanings->each(function($meaning) use ($freqs) {
+            $meaning->freq = $freqs[$meaning->id] ?? 0;
+        });
+        return $meanings->sortByDesc('freq');
+    }
+    
+    public function coreWithFrequencies(){
+        return $this->meaningsWithFrequencies($this->core);
     }
     
     public function coreWithoutDominant(){

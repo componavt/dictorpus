@@ -72,6 +72,24 @@ class Meaning extends Model
     use \App\Traits\Relations\HasMany\Examples;
     use \App\Traits\Relations\HasMany\MeaningTexts;
 
+    public function textFrequency() {
+        $builder = DB::table('meaning_text')->whereMeaningId($this->id);
+        return $builder->count();
+    }
+
+    public function examplesByRelevancesB($relevances) {
+        return DB::table('meaning_text')->whereMeaningId($this->id)
+                 ->whereIn('relevance',$relevances);
+    }
+
+    public function countBestExamples() {
+        return $this->examplesByRelevancesB([10])->count();
+    }
+
+    public function countGreatExamples() {
+        return $this->examplesByRelevancesB([7])->count();
+    }
+
     public function textByLangCode($lang_code, $default_code='') {
         $lang_id = Lang::getIDByCode($lang_code);
         $meaning_text_obj = MeaningText::where('lang_id',$lang_id)->where('meaning_id',$this->id)->first();
@@ -486,7 +504,7 @@ dd($relevance);
         }
         return $relevances;
     }
-
+    
     public static function countTranslations(){
         return DB::table('meaning_translation')->count();
     }
@@ -495,5 +513,5 @@ dd($relevance);
         return DB::table('meaning_relation')->count();
     }
         
-    
+  
 }

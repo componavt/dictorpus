@@ -96,10 +96,10 @@ trait SynsetSelect
         return $set;
     }
     
-    /* Найти для синсета Meanings, близкие по значению, кандидатов на включение
+    /* Найти для синсета meanings, близкие по толкованию, кандидатов на включение
      * 
      */ 
-    public function searchPotentialMembers($comment='', $without = []) {
+    public function searchPotentialMembers($comment='', $without_meanings = []) {
         $terms = split_definition(empty($comment) ? $this->comment : $comment);
         $lang = Lang::where('code','ru')->first();
         
@@ -110,7 +110,13 @@ trait SynsetSelect
         
         $terms = join(' ',array_unique($terms));
 
-        $excludedMeaningIds = array_merge((array)$without, $this->meanings()->pluck('id')->toArray());
+        $this_meanings = $this->meanings()->pluck('id')->toArray();
+        
+        $excludedMeaningIds = array_merge((array)$without_meanings, $this_meanings,
+                Meaning::whereIn('lemma_id', function ($q) use ($this_meanings) {
+                    $q->select('lemma_id')->from('meanings')
+                      ->whereIn('id', $this_meanings);
+                })->pluck('id')->toArray());
 
         return self::searchRelevantMeanings($terms, $this->lang_id, $this->pos_id, $excludedMeaningIds);            
     }
