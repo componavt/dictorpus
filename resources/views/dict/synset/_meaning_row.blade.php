@@ -11,14 +11,9 @@
             </td>
             <td class="meanings" data-id="{{ $meaning->id }}" style='padding-right: 20px'><a href="{{ route('lemma.show', $meaning->lemma->id) }}">{{ $meaning->lemma->lemma }}</a>: 
                 {{ $meaning->meaning_n}}. {{ $meaning->getMeaningTextLocale() }} 
-                (<span class="warning">{{ isset($meaning->freq) ? $meaning->freq : $meaning->textFrequency() }}</span>
-                @if (!empty($meaning->countBestExamples()))
-                / <span class="relevance-10">{{ $meaning->countBestExamples() }}</span>
-                @endif
-                @if (!empty($meaning->countGreatExamples()))
-                / <span class="relevance-7">{{ $meaning->countGreatExamples() }}</span>
-                @endif
-                )</td>
+                (<span class="warning">{{ isset($meaning->freq) ? $meaning->freq : $meaning->textFrequency() }}</span>{!! 
+                !empty($meaning->countBestExamples()) ? ' / <span class="relevance-10">'.$meaning->countBestExamples().'</span>' : '' !!}{!! 
+                !empty($meaning->countGreatExamples()) ? ' / <span class="relevance-7">'.$meaning->countGreatExamples().'</span>' : '' !!})</td>
             <td>
                 @include('widgets.form.formitem._select',
                         ['name' => 'meanings['.$meaning->id.'][syntype_id]',
