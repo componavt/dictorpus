@@ -16,10 +16,12 @@
         
         <h2>Конкорданс {{ trans('corpus.of_text') }} &laquo;{{ $text->title }}&raquo;</h2>
         
-        <p>В конкорданс включены только проверенные и неразмеченные слова.
+        <p>В конкорданс включены только проверенные (выбраны значения) и неразмеченные слова.
         @if ($unchecked_count)
-            В тексте осталось {{ number_with_space($unchecked_count, 0, ',', ' ') }} {{ trans_choice('corpus.of_unchecked_words', $unchecked_count%10==0 ? $unchecked_count : ($unchecked_count%100>20 ? $unchecked_count%10  : $unchecked_count%100)) }}.
-            Чтобы включить их в конкорданс, закончите проверку.
+            В тексте осталось {{ number_with_space($unchecked_count, 0, ',', ' ') }} {{ trans_choice('corpus.of_unchecked_words', $unchecked_count%10==0 ? $unchecked_count : ($unchecked_count%100>20 ? $unchecked_count%10  : $unchecked_count%100)) }}
+            с невыбранными значениями.
+            Чтобы включить их в конкорданс, закончите проверку. 
+            Если грамматическая информация не выбрана, но выбрано значение, то слово включается в конкорданс без грамматической информации.
         @endif
         </p>
         
