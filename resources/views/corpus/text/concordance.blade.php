@@ -18,7 +18,7 @@
         
         <p>В конкорданс включены только проверенные (выбраны значения) и неразмеченные слова.
         @if ($unchecked_count)
-            В тексте осталось {{ number_with_space($unchecked_count, 0, ',', ' ') }} {{ trans_choice('corpus.of_unchecked_words', $unchecked_count%10==0 ? $unchecked_count : ($unchecked_count%100>20 ? $unchecked_count%10  : $unchecked_count%100)) }}
+            В тексте осталось {{ number_with_space($unchecked_count, 0, ',', ' ') }} {{ trans_choice('corpus.of_words', $unchecked_count%10==0 ? $unchecked_count : ($unchecked_count%100>20 ? $unchecked_count%10  : $unchecked_count%100)) }}
             с невыбранными значениями.
             Чтобы включить их в конкорданс, закончите проверку. 
             Если грамматическая информация не выбрана, но выбрано значение, то слово включается в конкорданс без грамматической информации.
