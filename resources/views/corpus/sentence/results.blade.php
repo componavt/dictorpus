@@ -31,7 +31,9 @@
             @endif
         @endif
         
+    @if(!User::checkAccess('corpus.edit'))
         <p>{{trans('messages.script_executed', ['n'=>(int)(microtime(true) - $script_start)])}}</p>
+    @endif
 @stop
 
 @section('footScriptExtra')

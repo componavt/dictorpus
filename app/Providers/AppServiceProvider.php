@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
-use DB;
-use Illuminate\Support\Facades\Log;
+//use DB;
+//use Illuminate\Support\Facades\Log;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
         if (env('TMP_DIR')) {
             putenv('TMPDIR=' . env('TMP_DIR'));
         }
+
+        View::composer('layouts.master', function ($view) {
+            $view->with('scriptTime', microtime(true) - LARAVEL_START);
+        });
+        
 /*        DB::listen(function ($query) {
             $location = collect(debug_backtrace())->filter(function ($trace) {
                 return isset($trace['file']) && !str_contains($trace['file'], 'vendor/');

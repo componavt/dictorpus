@@ -57,7 +57,7 @@ return [
     'reload' => 'reload',
     'reset' => 'reset',
     'save' => 'save',
-    'script_executed' => 'The script was executed in :n seconds.',
+    'script_executed' => 'The script was executed in :n sec.',
     'search' => 'search',
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',

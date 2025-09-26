@@ -8,11 +8,11 @@ use DB;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Library\Grammatic;
+//use App\Library\Grammatic;
 use App\Library\Str;
 use App\Library\Predictor;
 
-use App\Models\Corpus\Sentence;
+//use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 

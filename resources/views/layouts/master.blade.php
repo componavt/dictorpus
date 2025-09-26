@@ -18,6 +18,9 @@
         <section>
 @include('errors.errmsg')
 @yield('content')
+    @if(User::checkAccess('corpus.edit') && !empty($scriptTime))
+        <p>{{ trans('messages.script_executed', ['n'=>round($scriptTime, 1)])}}</p>
+    @endif
         </section>
     </div>
 @include('footer.footer')

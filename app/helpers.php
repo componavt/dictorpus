@@ -400,3 +400,11 @@ if (!function_exists('splitDefinition')) {
         return array_map('trim', $parts);
     }
 }
+
+if (!function_exists('add_loading_image_to_xml')) {
+    function add_loading_image_to_xml(SimpleXMLElement $parent, string $src = '/images/waiting_small.gif') {
+        $load_img = $parent->addChild('img');
+        $load_img->addAttribute('class', 'img-loading');
+        $load_img->addAttribute('src', $src);
+    }
+}

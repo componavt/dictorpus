@@ -70,9 +70,7 @@ class SentenceController extends Controller
         $script_start = microtime(true);
 
         $url_args['words'] = Sentence::preparedWordsForSearch($url_args['search_words']);
-//dd($url_args['words']);        
         $search_query=Sentence::searchQueryToString($url_args);
-//dd($search_query);        
         $entry_number = $numAll = 0;
         $text_sentences =[];
         $texts = null;
@@ -81,15 +79,12 @@ class SentenceController extends Controller
         } else {
             $refine = false;
             list($entry_number, $sentence_builder) = Sentence::entryNumber($url_args); // считаем количество вхождений
-//dd($entry_number);   
-//dd(to_sql($sentence_builder));            
             if ($entry_number>0) {
-//                $texts = Text::searchWithSentences($url_args); // выбираем тексты
                 $texts = Text::whereIn('id', array_unique($sentence_builder->pluck('text1_id')));
                 $numAll = $texts->count();
                 $texts = $texts->paginate($this->url_args['limit_num']);
                 $sentences = collect($sentence_builder->get());
-//dd($sentences);                
+                
                 foreach($texts as $text) {                
                     foreach ($sentences->where('text1_id', $text->id) as $sentence) {
                         if (!isset($text_sentences[$text->id]['sentences'][$sentence->sentence1_id])) {
@@ -102,10 +97,6 @@ class SentenceController extends Controller
                     }
                 }
             }
-//dd($text_sentences);            
-//var_dump($sentence_builder->take(10)->pluck('text1_id'));         
-//dd($sentence_builder->take(10)->get());     
-//            exit(0);
         }      
         return view('corpus.sentence.results',
                 compact('texts', 'numAll', 'entry_number', 'refine', 'script_start',
