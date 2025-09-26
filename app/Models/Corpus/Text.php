@@ -5,15 +5,11 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Storage;
-use LaravelLocalization;
-use \Venturecraft\Revisionable\Revision;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 use App\Library\Grammatic;
 //use App\Library\Str;
-
-use App\Models\User;
 
 use App\Models\Corpus\Cyrtext;
 use App\Models\Corpus\Sentence;
@@ -21,7 +17,6 @@ use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Word;
 
-use App\Models\Dict\Gramset;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Wordform;
 
@@ -32,10 +27,13 @@ class Text extends Model implements HasMediaConversions
     protected $fillable = ['lang_id', 'source_id', 'event_id', 'title', 'text',  //'corpus_id', 
                            'text_xml', 'text_structure', 'comment'];
 
+    use \App\Traits\Export\TextExportExcel;
     use \App\Traits\Export\TextExport;
     use \App\Traits\Modify\TextModify;
     use \App\Traits\Search\TextSearch;
+    use \App\Traits\Select\TextHistory;
     use \App\Traits\Select\TextSelect;
+    use \App\Traits\Select\TextWordBlock;
     use \App\Traits\TextMarkup;
     use HasMediaTrait;
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -329,33 +327,6 @@ class Text extends Model implements HasMediaConversions
     }
     
     /**
-     * Load xml from string, create SimpleXMLelement
-     *
-     * @param $text_xml - markup text
-     * @param id - identifier of object Text or Transtext
-     *
-     * return Array [SimpleXMLElement object, error text if exists]
-     */
-    public static function toXML($text_xml, $id=NULL){
-        libxml_use_internal_errors(true);
-        if (!preg_match("/^\<\?xml/", $text_xml)) {
-            $text_xml = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>'.
-                                     '<text>'.$text_xml.'</text>';
-        }
-//dd($text_xml);        
-        $sxe = simplexml_load_string($text_xml);
-//dd($id, $text_xml);       
-        $error_text = '';
-        if (!$sxe) {
-            $error_text = "XML loading error". ' (text_id='.$id.": $text_xml)\n";
-            foreach(libxml_get_errors() as $error) {
-                $error_text .= "\t". $error->message;
-            }
-        }
-        return [$sxe,$error_text];
-    }
-
-    /**
      * Gets identifier of the sentence by ID of word in the text
 
      * @param $w_id INT identifier of the word in the text
@@ -368,74 +339,7 @@ class Text extends Model implements HasMediaConversions
         return $sentence->s_id;
     }
 
-    /**
-     * Gets markup text with links from words to related lemmas
-
-     * @param string $markup_text     - text with markup tags
-     * @param string $search_word     - string of searching word
-     * @param string $search_sentence - ID of searching sentence object
-     * @param boolean $with_edit      - 1 if it is the edit mode
-     * @param array $search_w         - array ID of searching word object
-     * 
-     * @return string                 - transformed text with markup tags
-     **/
-    public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=[]){
-        if (!$markup_text) {
-            $markup_text = $this->text_xml;
-        }
-        list($sxe,$error_message) = self::toXML($markup_text,'');
-//dd($error_message, $markup_text);        
-        if ($error_message) {
-            return $markup_text;
-        }
-        $sentences = $sxe->xpath('//s');
-        foreach ($sentences as $sentence) {
-                $s_id = (int)$sentence->attributes()->id;
-//dd($sentence);     
-            foreach ($sentence->children() as $word) {
-                $word = $this->editWordBlock($word, $s_id, $search_word, $search_sentence, $with_edit, $search_w);
-            }
-            $sentence_class = "sentence";
-            if ($search_sentence && $search_sentence==$s_id) {
-                $sentence_class .= " word-marked";
-            }
-            $sentence->addAttribute('class',$sentence_class);
-            $sentence->attributes()->id = 'text_s'.$s_id;
-        }
-        
-        return $sxe->asXML();
-    }
-
-    public function editWordBlock($word, $s_id, $search_word=null, $search_sentence=null, $with_edit=null, $search_w=[]) {
-        $word_id = (int)$word->attributes()->id;
-        if (!$word_id) { return $word; }
-        
-        $meanings_checked = $this->meanings()->wherePivot('w_id',$word_id)
-                          ->wherePivot('relevance', '>', 1)->count();
-        $meanings_unchecked = $this->meanings()->wherePivot('w_id',$word_id)
-                          ->wherePivot('relevance', 1)->count();
-        $word_class = '';
-        if ($meanings_checked || $meanings_unchecked) {
-            list ($word, $word_class) = $this->addMeaningsBlock($word, $s_id, 
-                    $word_id, $meanings_checked, $meanings_unchecked, $with_edit);
-            
-        } elseif (User::checkAccess('corpus.edit')) {
-            $word_class = 'lemma-linked call-add-wordform';
-        }
-
-//        if ($search_word && Grammatic::toSearchForm((string)$word) == $search_word 
-        if ($search_word && Grammatic::changeLetters((string)$word, $this->lang_id) == $search_word 
-                || sizeof($search_w) && in_array($word_id,$search_w)) {
-            $word_class .= ' word-marked';
-        }
-
-        if ($word_class) {
-            $word->addAttribute('class',$word_class);
-        }
-        return $word;
-    }
-
-    public function addMeaningsBlock($word, $s_id, $word_id, $meanings_checked, $meanings_unchecked, $with_edit=null) {
+/*    public function addMeaningsBlock($word, $s_id, $word_id, $meanings_checked, $meanings_unchecked, $with_edit=null) {
         $word_class = 'lemma-linked';
         $link_block = $word->addChild('div');
         $link_block->addAttribute('id','links_'.$word_id);
@@ -469,74 +373,8 @@ class Text extends Model implements HasMediaConversions
         
         return [$word, $word_class];        
     }
+*/
 
-    public static function addLinkToLemma($link_block, $lemma, $meaning, $id, $has_checked_meaning, $with_edit) {
-        $link_div = $link_block->addChild('div');
-        $link = $link_div->addChild('a',$lemma->lemma);
-        $link->addAttribute('href',LaravelLocalization::localizeURL('/dict/lemma/'.$lemma->id));
-
-        $locale = LaravelLocalization::getCurrentLocale();
-        $link->addChild('span',' ('.$meaning->getMultilangMeaningTextsString($locale).')');
-        // icon 'plus' - for choosing meaning
-        if ($with_edit && !$has_checked_meaning && User::checkAccess('corpus.edit')) {
-            $link_div= self::addEditMeaningButton($link_div, $id);
-        }
-        return $link_block;
-    }
-
-    // icon 'plus' - for choosing gramset
-    public static function addEditGramsetButton($link_div, $id) {
-        $add_link = $link_div->addChild('span');
-        $add_link->addAttribute('data-add',$id);
-        $add_link->addAttribute('class','fa fa-plus choose-gramset'); //  fa-lg 
-        $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
-        $add_link->addAttribute('onClick','addWordGramset(this)');
-        return $link_div;
-    }
-
-    // icon 'plus' - for choosing meaning
-    public static function addEditMeaningButton($link_div, $id) {
-        $add_link = $link_div->addChild('span');
-        $add_link->addAttribute('data-add',$id);
-        $add_link->addAttribute('class','fa fa-plus choose-meaning'); //  fa-lg 
-        $add_link->addAttribute('title',trans('corpus.mark_right_meaning'));
-        return $link_div;
-    }
-
-    // icon 'pensil'
-    public static function addEditExampleButton($link_block, $text_id, $s_id, $word_id) {
-        if (!User::checkAccess('corpus.edit')) {
-            return;
-        }
-        $button_edit_p = $link_block->addChild('p');
-        $button_edit_p->addAttribute('class','text-example-edit'); 
-        $button_edit = $button_edit_p->addChild('a',' ');//,'&#9999;'
-        $button_edit->addAttribute('href',
-                LaravelLocalization::localizeURL('/corpus/text/'.$text_id.
-                        '/edit/example/'.$s_id.'_'.$word_id)); 
-        $button_edit->addAttribute('class','glyphicon glyphicon-pencil');  
-        return $link_block;
-    }
-    
-    public static function createWordCheckedBlock($meaning_id, $text_id, $s_id, $w_id) {
-        $meaning = Meaning::find($meaning_id);
-        $text = Text::find($text_id);
-        if (!$meaning || !$text) { return; }
-        $locale = LaravelLocalization::getCurrentLocale();
-        $url = '/corpus/text/'.$text_id.'/edit/example/'.$s_id.'_'.$w_id;
-        
-        return  '<div><a href="'.LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id)
-             .'">'.$meaning->lemma->lemma.'<span> ('
-             .$meaning->getMultilangMeaningTextsString($locale)
-             .')</span></a></div>'
-
-             .$text->createGramsetBlock($w_id)
-
-             .'<p class="text-example-edit"><a href="'
-             .LaravelLocalization::localizeURL($url)
-             .'" class="glyphicon glyphicon-pencil"></a>';
-    }
-    
     /**
      * choose all sentences and all words
      * if a word is given then choose only sentences, containing the word, and only given words
@@ -624,220 +462,6 @@ class Text extends Model implements HasMediaConversions
         return mb_ereg_replace('[¦^]', '', $cyr_s);
     }
 
-    public static function lastCreated($limit='') {
-        $texts = self::latest();
-        if ($limit) {
-            $texts = $texts->take($limit);
-        }
-        $texts = $texts->get();
-        
-        // Получаем id всех текстов
-        $textIds = $texts->pluck('id')->all();
-
-        // Получаем последние ревизии по созданию для всех текстов
-        $revisions = Revision::where('revisionable_type', 'like', '%Text')
-            ->where('key', 'created_at')
-            ->whereIn('revisionable_id', $textIds)
-            ->latest()
-            ->get()
-            ->unique('revisionable_id')
-            ->keyBy('revisionable_id');
-
-        // Получаем id пользователей, чтобы не дёргать по одному
-        $userIds = $revisions->pluck('user_id')->unique()->all();
-        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
-
-        // Назначаем user-имя каждому тексту
-        foreach ($texts as $text) {
-            $revision = $revisions->get($text->id);
-            if ($revision) {
-                $text->user = $users[$revision->user_id]->name ?? null;
-            }
-        }
-        
-        return $texts;
-    }
-    
-    public static function lastUpdated($limit='',$is_grouped=0) {
-        // Получаем ревизии одним запросом
-        $revisions = Revision::where('revisionable_type', 'like', '%Text')
-            ->where('key', 'updated_at')
-            ->latest()
-            ->get()
-            ->unique('revisionable_id')  // берём только одну ревизию на каждый текст
-            ->take($limit);
-
-        // Собираем id текстов и пользователей
-        $textIds = $revisions->pluck('revisionable_id')->all();
-        $userIds = $revisions->pluck('user_id')->filter()->unique()->all();
-
-        // Загружаем тексты и пользователей пачкой
-        $texts = self::whereIn('id', $textIds)->get()->keyBy('id');
-        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
-
-        $result = [];
-
-        foreach ($revisions as $revision) {
-            $text = $texts->get($revision->revisionable_id);
-            if (!$text) {
-                continue;
-            }
-
-            // Добавляем имя пользователя
-            $text->user = $users[$revision->user_id]->name ?? null;
-
-            if ($is_grouped) {
-                $updated_date = $text->updated_at->formatLocalized(trans('main.date_format'));
-                $result[$updated_date][] = $text;
-            } else {
-                $result[] = $text;
-            }
-        }
-
-        return $result;
-    }
-    
-    public static function processSentenceForExport($sentence) {
-        $sentence = trim(str_replace("\n"," ",strip_tags($sentence)));
-        return str_replace("\'","'",$sentence);
-    }
-    
-    public function toCONLL() {
-        $out = "";
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
-        if ($error_message) {
-            return NULL;
-        }
-        $sentences = $sxe->xpath('//s');
-        $is_last_item = sizeof($sentences);
-        foreach ($sentences as $sentence) {
-            $out .= "# text_id = ".$this->id."\n".
-                    "# sent_id = ".$this->id."-".$sentence['id']."\n".
-                    //$sentence->asXML()."\n".
-                    "# text = ".Text::processSentenceForExport($sentence->asXML())."\n";
-            $trans_text = Text::processSentenceForExport($this->getTransSentence($sentence['id']));
-            if ($trans_text) {
-                $out .= "# text_ru = ".$trans_text."\n";
-            }
-            $count = 1;
-            foreach ($sentence->w as $w) {
-                $words = Word::toCONLL($this->id, (int)$w['id'], (string)$w);
-                if (!$words) {
-                    $out .= "$count\tERROR\n";
-                    continue;
-                }
-                foreach ($words as $line) {
-                    $out .= "$count\t".
-                            //$w->asXML().
-                            $line."\n";
-                }
-                $count++;
-            }
-            if ($is_last_item-- > 1) {
-                $out .= "\n";
-            }
-        }
-        return $out;
-    }
-    
-    public function breakIntoVerses() {
-        $verses = [];
-        $v_text = trim(preg_replace("/\r/",'',preg_replace("/\n/",'',preg_replace("/\|/",'',$this->text))));
-        $prev_verse=0;
-        while (preg_match("/^(.*?)\<sup\>(\d+)\<\/sup\>(.*)$/", $v_text, $regs)) {
-            if ($prev_verse) {
-                $verses[$prev_verse] = trim($regs[1]);
-            }
-            $prev_verse = $regs[2];
-            $v_text = $regs[3];
-        }
-        $verses[$prev_verse]= trim($v_text);
-//dd($this->id, $verses);        
-        return $verses;
-    }
-    
-    public function sentencesToLines() {
-        $out = "";
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
-        if ($error_message) {
-            return NULL;
-        }
-        $sentences = $sxe->xpath('//s');
-        $is_last_item = sizeof($sentences);
-        foreach ($sentences as $sentence) {
-            $words = [];
-            foreach ($sentence->w as $w) {
-                $words[] = Word::uniqueLemmaWords($this->id, (int)$w['id'], (string)$w);
-            }
-            $out .= join('|',$words)."\n";
-        }
-        return $out;
-    }
-    
-    public function allHistory() {
-        $all_history = $this->revisionHistory->filter(function ($item) {
-                            return $item['key'] != 'updated_at' 
-                                   && $item['key'] != 'text_xml'
-                                   && $item['key'] != 'transtext_id'
-                                   && $item['key'] != 'event_id'
-                                   && $item['key'] != 'checked'
-                                   && $item['key'] != 'text_structure'
-                                   && $item['key'] != 'source_id';
-                                 //&& !($item['key'] == 'reflexive' && $item['old_value'] == null && $item['new_value'] == 0);
-                        });
-        foreach ($all_history as $history) {
-            $history->what_created = trans('history.text_accusative');
-        }
- 
-        if ($this->transtext) {
-            $transtext_history = $this->transtext->revisionHistory->filter(function ($item) {
-                                return $item['key'] != 'text_xml';
-                            });
-            foreach ($transtext_history as $history) {
-                    $history->what_created = trans('history.transtext_accusative');
-                    $fieldName = $history->fieldName();
-                    $history->field_name = trans('history.'.$fieldName.'_accusative')
-                            . ' '. trans('history.transtext_genetiv');
-                }
-                $all_history = $all_history -> merge($transtext_history);
-        }
-        
-        if ($this->event) {
-            $event_history = $this->event->revisionHistory->filter(function ($item) {
-                                return $item['key'] != 'text_xml';
-                            });
-            foreach ($event_history as $history) {
-                    $fieldName = $history->fieldName();
-                    $history->field_name = trans('history.'.$fieldName.'_accusative')
-                            . ' '. trans('history.event_genetiv');
-                }
-                $all_history = $all_history -> merge($event_history);
-        }
-        
-        if ($this->source) {
-            $source_history = $this->source->revisionHistory->filter(function ($item) {
-                                return $item['key'] != 'text_xml';
-                            });
-            foreach ($source_history as $history) {
-                    $fieldName = $history->fieldName();
-                    $history->field_name = trans('history.'.$fieldName.'_accusative')
-                            . ' '. trans('history.source_genetiv');
-                }
-                $all_history = $all_history -> merge($source_history);
-        }
-         
-        $all_history = $all_history->sortByDesc('id')
-                      ->groupBy(function ($item, $key) {
-                            return (string)$item['updated_at'];
-                        });
-//dd($all_history);                        
-        return $all_history;
-    }
-    
-/*    public static function totalCount(){
-        return self::count();
-    }*/
-          
     public static function countExamples(){
 //        $examples = DB::table('meaning_text')->groupBy('text_id', 'w_id')->get(['text_id', 'w_id']);
 //        return sizeof($examples);
@@ -957,66 +581,6 @@ class Text extends Model implements HasMediaConversions
         return $text_years;
     }
     
-    public function splitXMLToSentencesAndWrite() {       
-        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
-        if ($error_message) {
-            dd($error_message);
-        }
-        
-        foreach ($sxe->xpath('//s') as $s) {
-            $s_obj = Sentence::firstOrCreate([
-                'text_id'=> $this->id,
-                's_id' => $s->attributes()->id]);
-            $s_obj->text_xml = $s->asXML();
-            $s_obj->save();
-            $s[0]='';
-        }
-        $this->text_structure = $sxe->asXML();
-//dd($this->text_structure);        
-        $this->save();
-        /*
-print "<pre>";        
-        $sxe = new DOMDocument('1.0', 'utf-8');
-        libxml_use_internal_errors(true);
-        $sxe->LoadHTML($this->text_xml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-//        $sxe->LoadXML($this->text_xml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        foreach ($sxe->getElementsByTagName('s') as $s) {
-dd($s->saveXML());            
-        }
-        */
-    }
-    
-    /**
-     * Преобразует текст перед выводом на отдельной странице (Text show).
-     * Собирает предложения и расставляет блоки со ссылками на леммы 
-     * и вызов функций редактирования.
-     * 
-     * @param array $url_args
-     * @return string
-     */
-    public function textForPage($url_args) { 
-//mb_internal_encoding("UTF-8");
-//mb_regex_encoding("UTF-8");        
-        if ($this->text_structure) :
-            $this->text_xml = $this->text_structure;
-            $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
-            foreach ($sentences as $s) {
-                $s->text_xml = mb_ereg_replace('[¦^]', '', $s->text_xml);
-//dd($s->text_xml);                
-                $this->text_xml = mb_ereg_replace("\<s id=\"".$s->s_id."\"\/\>", 
-//                        '<sup>'.$s->id.'</sup>'.
-                        $s->text_xml, $this->text_xml);                
-            }
-        endif; 
-//dd($this->text_xml);        
-        if ($this->text_xml) :
-            return $this->setLemmaLink($this->text_xml, 
-                    $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
-                    true, $url_args['search_wid'] ?? []);
-        endif; 
-        return nl2br($this->text);
-    }
-    
     public function plotsToArray($link=null) {
         return $this->relationsToArr('plots', $link);
     }
@@ -1051,56 +615,5 @@ dd($s->saveXML());
     
     public function topicsToArray($link=null) {
         return $this->relationsToArr('topics', $link);
-    }
-    
-    public function createLemmaBlock($w_id) {
-        if (!$w_id) { return null; }
-        
-        $meaning_checked = $this->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance','>',1)->first();
-        $meaning_unchecked = $this->meanings()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
-        if (!$meaning_checked && !sizeof($meaning_unchecked)) { return null; }
-        
-        $word_obj = Word::whereTextId($this->id)->whereWId($w_id)->first();
-        if (!$word_obj) {return null;} 
-        return $word_obj->createLemmaBlock($this->id, $w_id);
-    }
-    
-    public function createGramsetBlock($w_id) {
-        $wordform = $this->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',2)->first();
-        if ($wordform) {
-            return '<p class="word-gramset">'.Gramset::getStringByID($wordform->pivot->gramset_id).'</p>';
-        } elseif (User::checkAccess('corpus.edit')) { 
-            $wordforms = $this->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
-            if (!sizeof($wordforms)) { return null; }
-
-            $str = '<div id="gramsets_'.$w_id.'" class="word-gramset-not-checked">';
-            foreach ($wordforms as $wordform) {
-                $gramset_id = $wordform->pivot->gramset_id;
-                $str .= '<p>'.Gramset::getStringByID($gramset_id)
-                     . '<span data-add="'.$this->id."_".$w_id."_".$wordform->id."_".$gramset_id
-                     . '" class="fa fa-plus choose-gramset" title="'.\Lang::trans('corpus.mark_right_gramset').' ('
-                     . $wordform->wordform.')" onClick="addWordGramset(this)"></span>'
-                     . '</p>';
-            }
-            $str .= '</div>';
-            return $str;
-        }
-    }
-    
-    public static function spellchecking($text, $lang_id) {
-        list($markup_text) = Sentence::markup($text,1);
-        $markup_text = self::addBlocksToWords($markup_text, $lang_id);
-        return $markup_text;
-    }
-
-    public static function addBlocksToWords($text, $lang_id) {
-        list($sxe,$error_message) = self::toXML($text);
-        if ($error_message) { return $error_message; }
-
-        foreach ($sxe->xpath('//w') as $word) {
-            $word = Word::addBlockToWord($word, $lang_id);
-        }
-        return $sxe->asXML();
-    }
-    
+    }           
 }

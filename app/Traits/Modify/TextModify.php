@@ -619,5 +619,34 @@ trait TextModify
 // select id from meanings where lemma_id in (SELECT id from lemmas where lemma like '$word_t' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like '$word_t')))    
 // select id from meanings where lemma_id in (SELECT id from lemmas where lemma like 'myö' or id in (SELECT lemma_id FROM lemma_wordform WHERE wordform_id in (SELECT id from wordforms where wordform like 'myö')));    
 
+    public function splitXMLToSentencesAndWrite() {       
+        list($sxe,$error_message) = self::toXML($this->text_xml,$this->id);
+        if ($error_message) {
+            dd($error_message);
+        }
+        
+        foreach ($sxe->xpath('//s') as $s) {
+            $s_obj = Sentence::firstOrCreate([
+                'text_id'=> $this->id,
+                's_id' => $s->attributes()->id]);
+            $s_obj->text_xml = $s->asXML();
+            $s_obj->save();
+            $s[0]='';
+        }
+        $this->text_structure = $sxe->asXML();
+//dd($this->text_structure);        
+        $this->save();
+        /*
+print "<pre>";        
+        $sxe = new DOMDocument('1.0', 'utf-8');
+        libxml_use_internal_errors(true);
+        $sxe->LoadHTML($this->text_xml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+//        $sxe->LoadXML($this->text_xml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        foreach ($sxe->getElementsByTagName('s') as $s) {
+dd($s->saveXML());            
+        }
+        */
+    }
+    
 
 }

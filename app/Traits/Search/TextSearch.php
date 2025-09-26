@@ -40,6 +40,7 @@ trait TextSearch
 //                    'search_year'     => (int)$request->input('search_year'),
                     'search_year_from'=> (int)$request->input('search_year_from'),
                     'search_year_to'  => (int)$request->input('search_year_to'),
+                    'wblock_preloaded' => (int)$request->input('wblock_preloaded'),
                     'with_audio' => (boolean)$request->input('with_audio'),
                     'with_transtext' => (boolean)$request->input('with_transtext'),
                 ];

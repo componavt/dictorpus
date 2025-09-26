@@ -20,6 +20,7 @@ class Sentence extends Model
 {
     protected $fillable = ['text_id', 's_id','text_xml'];
 
+    use \App\Traits\Select\SentenceWordBlock;
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;

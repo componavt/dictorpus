@@ -20,6 +20,7 @@ use App\Models\Dict\Wordform;
 class Word extends Model
 {
     use \App\Traits\Modify\WordModify;
+    use \App\Traits\Select\WordBlock;
     
     public $timestamps = false;
     
@@ -717,27 +718,6 @@ print "<p>sentence_id=".$this->sentence_id.", word_id=".$this->id."<br>\n".$new_
             $this->sentence->numerateWords();            
 //exit(0);            
         }
-    }
-    
-    public static function addBlockToWord($word, $lang_id) {
-//dd((string)$word);       
-        $w_id = (int)$word->attributes()->id;
-        $word_for_search = Grammatic::changeLetters((string)$word,$lang_id);
-
-        $wordforms = LemmaWordform::where('wordform_for_search', 'like', $word_for_search)           
-                                  ->whereLangId($lang_id);
-        $lemmas = Lemma::where('lemma_for_search', 'like', $word_for_search)           
-                                  ->whereLangId($lang_id);
-        
-        $word->addAttribute('word',$word_for_search);            
-        
-        if (!$wordforms->count() && !$lemmas->count()) {
-            $word->addAttribute('class','no-wordforms');
-        } else {
-            $word->addAttribute('class','word-linked');            
-            $word=Sentence::addLemmasBlock($word,$w_id);
-        }
-        return $word;
     }
     
     public function checkedGramset() {
