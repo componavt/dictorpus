@@ -51,6 +51,7 @@ return [
     'lemmas' => 'Леммы',
     'logout' => 'Выйти',
     
+    'marathon_native' => 'Марафон "Слушаю родной говор"',
     'mass_media' => 'СМИ о проекте',
     'mass_media_show' => 'Нас показывают',
     'mass_media_talk' => 'О нас говорят',

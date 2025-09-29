@@ -49,6 +49,8 @@ return [
     'lemma_frequency' => 'Frequency dictionary of lemmas marked up in the text',
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',
+    
+    'marathon_native' => 'Marathon "Listening to Native Dialect"',
     'mass_media' => 'Mass media about the project',
     'mass_media_show' => 'VepKar on TV',
     'mass_media_talk' => 'VepKar on Radio',

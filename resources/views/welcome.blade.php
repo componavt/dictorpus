@@ -85,8 +85,8 @@
                             @if ($locale == 'ru') 
                             <div class="block-list" style="margin-top: 20px;">
                             <p class="full-list">
-                                <a href="https://vk.com/speechvepkar
-                                   ">Марафон записей вепсской и карельской речи</a>
+                                <a href="https://vk.com/muamankieli
+                                   ">{{ trans('navigation.marathon_native') }}</a>
                             </p>
                             </div>
                             @endif
