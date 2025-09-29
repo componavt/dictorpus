@@ -86,7 +86,7 @@
                             <div class="block-list" style="margin-top: 20px;">
                             <p class="full-list">
                                 <a href="https://vk.com/muamankieli
-                                   ">{{ trans('navigation.marathon_native') }}</a>
+                                   ">{{ trans('navigation.marathon') }} "Lapsennu opastettu – ku kiveh kirjutettu"</a>
                             </p>
                             </div>
                             @endif

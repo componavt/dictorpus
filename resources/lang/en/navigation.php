@@ -50,7 +50,7 @@ return [
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',
     
-    'marathon_native' => 'Marathon "Listening to Native Dialect"',
+    'marathon' => 'Marathon',
     'mass_media' => 'Mass media about the project',
     'mass_media_show' => 'VepKar on TV',
     'mass_media_talk' => 'VepKar on Radio',
