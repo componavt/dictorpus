@@ -6,10 +6,18 @@ if (!isset($sentence_xml)) {
 $sentence_xml = mb_ereg_replace('[¦^]', '', $sentence_xml);
 ?>
 
-@if (isset($with_edit) && $with_edit) 
-    {!! $text->setLemmaLink($sentence_xml, $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null, true, $marked_words ?? []) !!}
+@if (!empty($with_edit)) 
+    {!! $text->setLemmaLink($sentence_xml, 
+                            $url_args['search_word'] ?? null, 
+                            $url_args['search_sentence'] ?? null, 
+                            true, 
+                            $marked_words ?? [], 
+                            $meanings_by_wid ?? [], 
+                            $gramsets_by_wid ?? [],
+                            $wordforms ?? [],
+                            $url_args['wblock_preloaded'] ?? false) !!}
     
-@elseif (isset($for_view) && $for_view) 
+@elseif (!empty($for_view)) 
     @include('corpus.sentence.view')
     
 @else 

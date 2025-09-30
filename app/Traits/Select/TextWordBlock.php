@@ -10,9 +10,50 @@ use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\Wordform;
 
 trait TextWordBlock
 {
+    public function meaningsGramsetsByWid() {
+        $wids = Word::where('text_id', $this->id)->pluck('w_id');
+
+        $meanings = Meaning::join('meaning_text', 'meaning_text.meaning_id', '=', 'meanings.id')
+            ->where('text_id', $this->id)
+            ->whereIn('w_id', $wids)
+            ->with('lemma')
+            ->with('meaningTexts')
+            ->get();
+
+        $gramsets = Gramset::join('text_wordform', 'text_wordform.gramset_id', '=', 'gramsets.id')
+            ->where('text_id', $this->id)
+            ->whereIn('w_id', $wids)
+            ->get();
+
+        $wordforms = Wordform::whereIn('id', function ($q) use ($wids) {
+                $q->select('wordform_id')->from('text_wordform')
+                ->where('text_id', $this->id)
+                ->whereIn('w_id', $wids);
+            })->pluck('wordform','id')->toArray();
+            
+        return [$this->listByWidRelevance($meanings), $this->listByWidRelevance($gramsets), $wordforms];
+    }
+
+    public function listByWidRelevance($list) {
+        $out = [];
+        foreach ($list as $m) {
+            $w = $m->w_id;
+            if (!isset($out[$w])) {
+                $out[$w] = ['checked' => null, 'unchecked' => null];
+            }
+            if ($m->relevance > 1) {
+                $out[$w]['checked'] = $m; 
+            } elseif ($m->relevance == 1) {
+                $out[$w]['unchecked'][] = $m;
+            }
+        }
+        return $out;
+    }    
+    
     /**
      * Преобразует текст перед выводом на отдельной странице (Text show).
      * Собирает предложения и расставляет блоки со ссылками на леммы 
@@ -23,7 +64,7 @@ trait TextWordBlock
      * @param array $url_args
      * @return string
      */
-    public function textForPage($url_args) { 
+    public function textForPage($url_args, $meanings=[], $gramsets=[], $wordforms=[]) { 
 //mb_internal_encoding("UTF-8");
 //mb_regex_encoding("UTF-8");        
         if ($this->text_structure) :
@@ -38,7 +79,7 @@ trait TextWordBlock
         if ($this->text_xml) :
             return $this->setLemmaLink($this->text_xml, 
                     $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
-                    true, $url_args['search_wid'] ?? []);
+                    true, $url_args['search_wid'] ?? [], $meanings, $gramsets, $wordforms);
         endif; 
         return nl2br($this->text);
     }
@@ -54,19 +95,19 @@ trait TextWordBlock
      * 
      * @return string                 - transformed text with markup tags
      **/
-    public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=[], $preloaded=false){
+    public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=[], $meanings=[], $gramsets=[], $wordforms=[], $preloaded=false){
         if (!$markup_text) {
             $markup_text = $this->text_xml;
         }
         list($sxe,$error_message) = self::toXML($markup_text,'');
         if ($error_message) { return $markup_text; }
-        
+//dd($gramsets);        
         $sentences = $sxe->xpath('//s');
         foreach ($sentences as $sentence) {
                 $s_id = (int)$sentence->attributes()->id;
             foreach ($sentence->children() as $word) {            
                 $word = 
-                $this->editWordBlock($word, $s_id, $search_word, $search_sentence, $with_edit, $search_w, $preloaded);
+                $this->editWordBlock($word, $s_id, $search_word, $with_edit, $search_w, $meanings, $gramsets, $wordforms, $preloaded);
             }
             
             // назначаем класс
@@ -88,24 +129,19 @@ trait TextWordBlock
      * @param SimpleXMLElement $word 
      * @param integer $s_id   
      * @param string $search_word     - string of searching word
-     * @param integer $search_sentence - ID of searching sentence object
      * @param boolean $with_edit      - 1 if it is the edit mode
      * @param array $search_w         - array ID of searching word object
      * @param boolean $preloaded      - 1 if with preloaded word blocks
      * @return SimpleXMLElement $word
      */
-    public function editWordBlock($word, $s_id, $search_word=null, $search_sentence=null, $with_edit=null, $search_w=[], $preloaded=false) {
+    public function editWordBlock($word, $s_id, $search_word=null, $with_edit=null, $search_w=[], $meanings=[], $gramsets=[], $wordforms=[], $preloaded=false) {
         $w_id = (int)$word->attributes()->id;
         if (!$w_id) { return $word; }
         
-        $meanings_checked = $this->meanings()->wherePivot('w_id',$w_id)
-                          ->wherePivot('relevance', '>', 1)->count();
-        $meanings_unchecked = $this->meanings()->wherePivot('w_id',$w_id)
-                          ->wherePivot('relevance', 1)->count();
         $word_class = '';
-        if ($meanings_checked || $meanings_unchecked) {
+        if (!empty($meanings[$w_id]['checked']) || !empty($meanings[$w_id]['unchecked']) && count($meanings[$w_id]['unchecked'])) {
             list ($word, $word_class) = 
-                $this->addMeaningsBlock($word, $s_id, $meanings_checked, $meanings_unchecked, $with_edit, $preloaded);
+                $this->addWordBlock($word, $s_id, $meanings[$w_id] ?? [], $gramsets[$w_id] ?? [], $wordforms ?? [], $with_edit, $preloaded);
             
         } elseif (User::checkAccess('corpus.edit')) {
             $word_class = 'lemma-linked call-add-wordform';
@@ -132,8 +168,9 @@ trait TextWordBlock
      * @param boolean $preloaded
      * @return SimpleXMLElement
      */
-    public function addMeaningsBlock($word, $s_id, $meanings_checked, $meanings_unchecked, $with_edit=null, $preloaded=false) {
+    public function addWordBlock($word, $s_id, $meanings=[], $gramsets=[], $wordforms=[], $with_edit=null, $preloaded=false) {
         $w_id = (int)$word->attributes()->id;
+        $s_word = Grammatic::changeLetters((string)$word,$this->lang_id);
         $word_class = 'lemma-linked';
         
         // создаём <div>
@@ -150,29 +187,139 @@ trait TextWordBlock
                 $link_block = self::addEditExampleButton($link_block, $this->id, $s_id, $w_id);
             }
         } else {
-            $link_block = Word::addMeaningsBlock($link_block, $this->id, $w_id);
+            $link_block = $this->addMeaningsBlock($link_block, $s_id, $w_id, $meanings, $gramsets, $wordforms, $s_word);
         }
                 
-//        $has_checked_meaning = false;
-        if ($meanings_checked) {
+        if (!empty($meanings['checked'])) {
             $word_class .= ' meaning-checked';
-        } elseif ($meanings_unchecked>1) {
+        } elseif (!empty($meanings['unchecked']) && count($meanings['unchecked'])>1) {
             $word_class .= ' polysemy';                
         } else {
             $word_class .= ' meaning-not-checked';
         }
         
-        $wordforms = $this->wordforms()->wherePivot('w_id',$w_id);
-        if (!$wordforms->wherePivot('relevance', '>', 0)->count()) {
-            $word_class .= ' no-gramsets';
-        } elseif ($wordforms->wherePivot('relevance',2)->count()) {
+        if (!empty($gramsets['checked'])) {
             $word_class .= ' gramset-checked';
-        } else { 
-            $word_class .= ' gramset-not-checked';
+        } elseif (!empty($gramsets['unchecked'])) {
+            $word_class .= ' gramset-not-checked';            
+        } else {
+            $word_class .= ' no-gramsets';
         }
         return [$word, $word_class];        
     }
 
+        public function addMeaningsBlock(\SimpleXMLElement $parent, $s_id, $w_id, $meanings=[], $gramsets=[], $wordforms, $s_word='') {
+        if (empty($meanings['checked']) && empty($meanings['unchecked'])) { return null; }
+                
+        $block_div = $parent->addChild('div');
+        if (!empty($meanings['checked'])) {
+            $this->buildCheckedMeaningNode($block_div, $meanings['checked']);
+        } else {
+            $this->buildUncheckedMeaningsNode($block_div, $meanings['unchecked'], $s_word);
+        }
+        // грамсеты
+        $this->buildGramsetBlock($block_div, $w_id, $gramsets, $wordforms);
+
+        // ссылки редактирования
+        $this->buildEditLinksNode($block_div, $s_id, $w_id);
+
+        return $parent;
+    }
+    
+    // Было checkedMeaningForWordBlock() → стало buildCheckedMeaningNode()
+    public function buildCheckedMeaningNode(\SimpleXMLElement $parent, $meaning_checked) {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $p = $parent->addChild('p');
+        $a = $p->addChild('a', htmlspecialchars($meaning_checked->lemma->lemma, ENT_XML1));
+        $a->addAttribute('href', LaravelLocalization::localizeURL('dict/lemma/'.$meaning_checked->lemma_id));
+
+        $a->addChild('span', 
+            ' '.$meaning_checked->lemma->pos->code.' ('.$meaning_checked->getMultilangMeaningTextsString($locale).')'
+        );
+
+    }
+
+    // Было uncheckedMeaningsForWordBlock() → стало buildUncheckedMeaningsNode()
+    public function buildUncheckedMeaningsNode(\SimpleXMLElement $parent, $unchecked_meanings, $s_word='') {
+        $locale = LaravelLocalization::getCurrentLocale();
+
+        foreach ($unchecked_meanings as $meaning) {
+            $p = $parent->addChild('p');
+            $a = $p->addChild('a', htmlspecialchars($meaning->lemma->lemma, ENT_XML1));
+            $a->addAttribute('href', LaravelLocalization::localizeURL('dict/lemma/'.$meaning->lemma_id));
+
+            $a->addChild('span', 
+                ' '.$meaning->lemma->pos->code.' ('.$meaning->getMultilangMeaningTextsString($locale).')'
+            );
+
+            if (User::checkAccess('corpus.edit')) {
+                $span = $p->addChild('span', ' ');
+                $span->addAttribute('class', 'fa fa-plus choose-meaning');
+                $span->addAttribute('data-add', $meaning->id.'_'.$this->id.'_'.$meaning->s_id.'_'.$meaning->w_id);
+                $span->addAttribute('title', \Lang::trans('corpus.mark_right_meaning'));
+                $span->addAttribute('onClick', "addWordMeaning(this)");
+            }
+        }
+
+        if (User::checkAccess('corpus.edit')) {
+            $input = $parent->addChild('input');
+            $input->addAttribute('class', 'add-wordform-link');
+            $input->addAttribute('type', 'button');
+            $input->addAttribute('value', \Lang::trans('corpus.new_meaning'));
+            $input->addAttribute(
+                'onclick',
+                "callAddWordform(this, '".$this->id."', '".$meaning->w_id."', '".$s_word."', '".$this->lang_id."', '".$locale."')"
+            );
+        }
+    }
+
+    public function buildGramsetBlock(\SimpleXMLElement $parent, $w_id, $gramsets, $wordforms) {
+        if (!empty($gramsets['checked'])) {
+            $p = $parent->addChild('p', $gramsets['checked']->gramsetString());
+            $p->addAttribute('class', 'word-gramset');
+            return $p;
+        } elseif (User::checkAccess('corpus.edit') && !empty($gramsets['unchecked'])) {
+            $div = $parent->addChild('div');
+            $div->addAttribute('id', 'gramsets_'.$w_id);
+            $div->addAttribute('class', 'word-gramset-not-checked');
+
+            foreach ($gramsets['unchecked'] as $gramset) {
+                $p = $div->addChild('p', $gramset->gramsetString());
+                $span = $p->addChild('span');
+                $span->addAttribute('data-add', $this->id."_".$w_id."_".$gramset->wordform_id."_".$gramset->id);
+                $span->addAttribute('class', 'fa fa-plus choose-gramset');
+                $span->addAttribute('title', \Lang::trans('corpus.mark_right_gramset').' ('.($wordforms[$gramset->wordform_id] ?? '').')');
+                $span->addAttribute('onClick', 'addWordGramset(this)');
+            }
+            return $div;
+        }
+        return null;
+    }
+    
+    // Было editLinksForWordBlock() → стало buildEditLinksNode()
+    public function buildEditLinksNode(\SimpleXMLElement $parent, $s_id, $w_id) {
+        if (!User::checkAccess('corpus.edit')) {
+            return null;
+        }
+
+        $url = '/corpus/text/'.$this->id.'/edit/example/'.$s_id.'_'.$w_id;
+        $p = $parent->addChild('p');
+        $p->addAttribute('class', 'text-example-edit');
+
+        if (!$this->hasImportantExamples()) {
+            $i = $p->addChild('i', ' ');
+            $i->addAttribute('class', 'fa fa-sync-alt fa-lg update-word-block');
+            $i->addAttribute('title', '');
+            $i->addAttribute('onclick', "updateWordBlock(".$this->id.",".$w_id.")");
+        }
+
+        $a = $p->addChild('a', ' ');
+        $a->addAttribute('href', LaravelLocalization::localizeURL($url));
+        $a->addAttribute('class', 'glyphicon glyphicon-pencil');
+
+    //    return $p;
+    }    
+    
     public static function addLinkToLemma($link_block, $lemma, $meaning, $id, $has_checked_meaning, $with_edit) {
         $link_div = $link_block->addChild('div');
         $link = $link_div->addChild('a',$lemma->lemma);
@@ -272,35 +419,6 @@ trait TextWordBlock
             $str .= '</div>';
             return $str;
         }
-    }
-    
-    public function buildGramsetBlock(\SimpleXMLElement $parent, $w_id) {
-        $wordform = $this->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',2)->first();
-
-        if ($wordform) {
-            $p = $parent->addChild('p', Gramset::getStringByID($wordform->pivot->gramset_id));
-            $p->addAttribute('class', 'word-gramset');
-            return $p;
-        } elseif (User::checkAccess('corpus.edit')) {
-            $wordforms = $this->wordforms()->wherePivot('w_id',$w_id)->wherePivot('relevance',1)->get();
-            if (!sizeof($wordforms)) { return null; }
-
-            $div = $parent->addChild('div');
-            $div->addAttribute('id', 'gramsets_'.$w_id);
-            $div->addAttribute('class', 'word-gramset-not-checked');
-
-            foreach ($wordforms as $wordform) {
-                $gramset_id = $wordform->pivot->gramset_id;
-                $p = $div->addChild('p', Gramset::getStringByID($gramset_id));
-                $span = $p->addChild('span');
-                $span->addAttribute('data-add', $this->id."_".$w_id."_".$wordform->id."_".$gramset_id);
-                $span->addAttribute('class', 'fa fa-plus choose-gramset');
-                $span->addAttribute('title', \Lang::trans('corpus.mark_right_gramset').' ('.$wordform->wordform.')');
-                $span->addAttribute('onClick', 'addWordGramset(this)');
-            }
-            return $div;
-        }
-        return null;
     }
     
     public static function spellchecking($text, $lang_id) {

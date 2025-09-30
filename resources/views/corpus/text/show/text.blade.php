@@ -15,5 +15,10 @@
 @endif      
 
 @if ($text->text)
-            <div id="text">{!! highlight(highlight($text->textForPage($url_args), $url_args['search_w']), $url_args['search_text']); !!}</div>
+            <div id="text">{!! highlight(highlight($text->textForPage($url_args, 
+                                                                      $meanings_by_wid ?? [], 
+                                                                      $gramsets_by_wid ?? [],
+                                                                      $wordforms ?? []), 
+                                                   $url_args['search_w']), 
+                                                   $url_args['search_text']); !!}</div>
 @endif      

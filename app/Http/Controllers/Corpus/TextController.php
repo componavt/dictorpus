@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
+use DB;
 
 use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
@@ -212,17 +213,18 @@ class TextController extends Controller
         
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms) = $text->meaningsGramsetsByWid();
        
         if ($for_print) {
             return view('corpus.text.show_print',
-                      compact('dialect_value', 'dialect_values', 'for_print', 
-                              'langs_for_meaning',  'photos', 'pos_id', 'pos_values', 
-                              'text', 'args_by_get', 'url_args'));            
+                      compact('dialect_value', 'dialect_values', 'for_print', 'gramsets_by_wid', 
+                              'langs_for_meaning', 'meanings_by_wid',  'photos', 'pos_id', 'pos_values', 
+                              'text', 'wordforms', 'args_by_get', 'url_args'));            
         }
         return view('corpus.text.show',
-                  compact('dialect_value', 'dialect_values',
-                          'langs_for_meaning',  'photos', 'pos_id', 'pos_values', 
-                          'text', 'args_by_get', 'url_args'));
+                  compact('dialect_value', 'dialect_values', 'gramsets_by_wid',
+                          'langs_for_meaning', 'meanings_by_wid',  'photos', 'pos_id', 'pos_values', 
+                          'text', 'wordforms', 'args_by_get', 'url_args'));
     }
     
     public function editSentences($id) {
@@ -239,15 +241,19 @@ class TextController extends Controller
         $pos_id = PartOfSpeech::getIDByCode('Noun');
         $pos_values = PartOfSpeech::getGroupedList();   
         
+        $trans_sentences = $text->transtext ? $text->transtext->getSentencesFromXML() : [];
+        
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        $url_args['wblock_preloaded'] = true;
         
-        $trans_sentences = $text->transtext ? $text->transtext->getSentencesFromXML() : [];
-//dd($sentences, $trans_sentences);
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms) = $text->meaningsGramsetsByWid();
+//dd($meanings_by_wid);        
         return view('corpus.text.sentences',
-                compact('dialect_value', 'dialect_values', 'langs_for_meaning', 
+                compact('dialect_value', 'dialect_values', 'gramsets_by_wid', 
+                        'langs_for_meaning', 'meanings_by_wid',
                         'pos_id', 'pos_values', 'sentences', 'text', 
-                        'trans_sentences', 'args_by_get', 'url_args'));
+                        'trans_sentences', 'wordforms', 'args_by_get', 'url_args'));
     }
 
     /**

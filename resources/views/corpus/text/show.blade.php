@@ -20,7 +20,6 @@
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             
         @if (user_corpus_edit())
-{{--            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/markup') }}{{$args_by_get}}">{{ trans('corpus.re-markup') }}</a>        --}}    
             | @include('widgets.form.button._edit', 
                      ['route' => '/corpus/text/'.$text->id.'/sentences',
                       'link_text' => ' '.mb_strtolower(trans('corpus.sentences'))])
