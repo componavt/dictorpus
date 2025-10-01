@@ -64,6 +64,43 @@ class Word extends Model
         return $lemmas -> get();
     }
 
+    public function checkedLemma() {
+        $w_id = $this->w_id;
+        $text_id = $this->text_id;
+        $lemma = Lemma::whereIn('id', function ($query) use ($text_id, $w_id) {
+            $query->select('lemma_id')->from('meanings')
+                  ->whereIn('id', function ($query) use ($text_id, $w_id) {
+                        $query->select('meaning_id')->from('meaning_text')
+                              ->where('relevance', '>', 1)
+                              ->where('text_id',$text_id)
+                              ->where('w_id',$w_id);
+                    });
+            });
+        return $lemma -> first();
+    }
+
+    public function isChecked(){
+        return $this->meanings->wherePivot('relevance','>',1)->count();
+    }
+
+    public function isChangeable(){
+        $lang = $this->text->lang_id;
+        $meanings = $this->meanings->where('relevance', '>', 1)->pluck('id'); // checked
+        if (empty($meanings)) {
+            $meanings = $this->meanings->where('relevance', '>', 0)->pluck('id'); // unchecked
+        }
+        if (empty($meanings)) {return false;}
+        
+        return (boolean)DB::table('gramset_pos')->where('lang_id',$lang)
+                ->whereIn('pos_id',function ($q) use ($meanings) {
+                    $q->select('pos_id')->from('lemmas')
+                      ->whereIn('id', function($q2) use ($meanings) {
+                          $q2->select('lemma_id')->from('meanings')
+                             ->whereIn('id', $meanings);
+                      });
+                })->count();
+    }
+    
     /**
      * remove <s>
      * @param boolean $highlight - if true, highlight the word
