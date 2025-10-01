@@ -1,6 +1,7 @@
 <?php
-
 namespace App\Library;
+
+use DB;
 
 use App\Models\Dict\Concept;
 use App\Models\Dict\Lang;
@@ -8,6 +9,7 @@ use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 
+use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
 class Correct
@@ -165,4 +167,40 @@ print "</ul>";
             $concept->updateWikiSrc();
         }
     }
+    
+    public static function missingGramsets() {
+        $pos_ids = DB::table('gramset_pos')->groupBy('pos_id')->pluck('pos_id');
+
+        foreach (Lang::projectLangs() as $lang) {
+            print '<h1>'.$lang->name.'</h1><ol>';
+            $text_ids = Text::whereLangId($lang->id)
+                    //->take(1)
+                    ->pluck('id');
+            $words = Word::whereIn('text_id', $text_ids)
+                         ->whereIn('id', function ($q) use ($pos_ids) {
+                             $q->select('word_id')->from('meaning_text')
+                               ->whereIn('meaning_id', function($q2) use ($pos_ids) {
+                                   $q2->select('id')->from('meanings')
+                                      ->whereIn('lemma_id', function($q3) use ($pos_ids) {
+                                          $q3->select('id')->from('lemmas')
+                                             ->whereIn('pos_id', $pos_ids);
+                                      });
+                               });
+//                               ->where('relevance', '>', 0);
+                         })
+                         ->whereNotIn('id', function ($q) {
+                             $q->select('word_id')->from('text_wordform');
+                         })
+                         ->orderBy('text_id')->orderBy('w_id')->get();
+//dd(to_sql($words));
+            foreach ($words as $word) {
+//                if ($word->isChangeable()) {
+                    print '<li>Текст No <a href="/corpus/text/'.$word->text_id.'?search_wid='.$word->w_id.'">'.$word->text_id.'</a>, ('.$word->w_id.') '.$word->word.'</p>';
+                    $word->updateWordformText();
+//                }
+            }
+            print "</ol>";
+        }
+    }
+    
 }

@@ -463,4 +463,9 @@ print "<p>$query</p>";
             print "</ol>";
         }
     }
+    
+    public function missingGramsets() {
+        print "<h3>Изменяемые слова, у которых найдены значения, но отсутствуют в БД грамсеты</h3>";
+        Correct::missingGramsets();
+    }
 }

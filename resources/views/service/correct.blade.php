@@ -23,6 +23,7 @@
         <p><a href="/service/correct/add_src_for_concepts">Заполнить поля-источники у картинок понятий</a></p>
         <p><a href="/service/correct/extra_gramsets">Выявить у разметки лишние грамсеты</a></p>
         <p><a href="/service/correct/lemmas_u">Леммы с Ü</a></p>
+        <p><a href="/service/correct/missing_gramsets">Проверка пропавших связей "текст-грамсет"</a></p>
         
 {{--        <p><a href="/service/correct/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
         <p><a href="/service/correct/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>

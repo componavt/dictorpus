@@ -19,6 +19,7 @@ Route::group(
         Route::get('extra_gramsets', 'Library\CorrectController@extraGramsets');
         Route::get('generate_wordforms', 'Library\CorrectController@generateWordforms');        
         Route::get('lemmas_u', 'Library\CorrectController@LemmasU');        
+        Route::get('missing_gramsets', 'Library\CorrectController@missingGramsets');        
         Route::get('move_char_out_word', 'Library\CorrectController@moveCharOutWord');       
 /*
         Route::get('tmp_fill_sentence_id_in_text_wordform', 'Library\CorrectTmpController@tmpFillSentenceIdInTextWordform');
