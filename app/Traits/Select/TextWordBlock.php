@@ -35,7 +35,13 @@ trait TextWordBlock
                 ->whereIn('w_id', $wids);
             })->pluck('wordform','id')->toArray();
             
-        return [$this->listByWidRelevance($meanings), $this->listByWidRelevance($gramsets), $wordforms];
+        $words_with_important_examples = Word::where('text_id', $this->id)
+                ->whereIn('id',function ($q) {
+                    $q->select('word_id')->from('meaning_text')
+                      ->where('relevance', '>', 5);
+                })->pluck('w_id');
+            
+        return [$this->listByWidRelevance($meanings), $this->listByWidRelevance($gramsets), $wordforms, $words_with_important_examples];
     }
 
     public function listByWidRelevance($list) {
@@ -64,7 +70,7 @@ trait TextWordBlock
      * @param array $url_args
      * @return string
      */
-    public function textForPage($url_args, $meanings=[], $gramsets=[], $wordforms=[]) { 
+    public function textForPage($url_args, $meanings=[], $gramsets=[], $wordforms=[], $words_with_important_examples=[]) { 
 //mb_internal_encoding("UTF-8");
 //mb_regex_encoding("UTF-8");        
         if ($this->text_structure) :
@@ -78,8 +84,11 @@ trait TextWordBlock
         endif; 
         if ($this->text_xml) :
             return $this->setLemmaLink($this->text_xml, 
-                    $url_args['search_word'] ?? null, $url_args['search_sentence'] ?? null,
-                    true, $url_args['search_wid'] ?? [], $meanings, $gramsets, $wordforms);
+                    $url_args['search_word'] ?? null, 
+                    $url_args['search_sentence'] ?? null,
+                    true, 
+                    $url_args['search_wid'] ?? [], 
+                    $meanings, $gramsets, $wordforms,$words_with_important_examples);
         endif; 
         return nl2br($this->text);
     }
@@ -95,7 +104,7 @@ trait TextWordBlock
      * 
      * @return string                 - transformed text with markup tags
      **/
-    public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=[], $meanings=[], $gramsets=[], $wordforms=[], $preloaded=false){
+    public function setLemmaLink($markup_text=null, $search_word=null, $search_sentence=null, $with_edit=true, $search_w=[], $meanings=[], $gramsets=[], $wordforms=[], $words_with_important_examples=[], $preloaded=false){
         if (!$markup_text) {
             $markup_text = $this->text_xml;
         }
@@ -107,7 +116,7 @@ trait TextWordBlock
                 $s_id = (int)$sentence->attributes()->id;
             foreach ($sentence->children() as $word) {            
                 $word = 
-                $this->editWordBlock($word, $s_id, $search_word, $with_edit, $search_w, $meanings, $gramsets, $wordforms, $preloaded);
+                $this->editWordBlock($word, $s_id, $search_word, $with_edit, $search_w, $meanings, $gramsets, $wordforms, $words_with_important_examples, $preloaded);
             }
             
             // назначаем класс
@@ -134,14 +143,19 @@ trait TextWordBlock
      * @param boolean $preloaded      - 1 if with preloaded word blocks
      * @return SimpleXMLElement $word
      */
-    public function editWordBlock($word, $s_id, $search_word=null, $with_edit=null, $search_w=[], $meanings=[], $gramsets=[], $wordforms=[], $preloaded=false) {
+    public function editWordBlock($word, $s_id, $search_word=null, $with_edit=null, $search_w=[], $meanings=[], $gramsets=[], $wordforms=[], $words_with_important_examples=[], $preloaded=false) {
         $w_id = (int)$word->attributes()->id;
         if (!$w_id) { return $word; }
         
         $word_class = '';
         if (!empty($meanings[$w_id]['checked']) || !empty($meanings[$w_id]['unchecked']) && count($meanings[$w_id]['unchecked'])) {
             list ($word, $word_class) = 
-                $this->addWordBlock($word, $s_id, $meanings[$w_id] ?? [], $gramsets[$w_id] ?? [], $wordforms ?? [], $with_edit, $preloaded);
+                $this->addWordBlock($word,    $s_id, 
+                                    $meanings[$w_id] ?? [], 
+                                    $gramsets[$w_id] ?? [], 
+                                    $wordforms, 
+                                    $words_with_important_examples[$w_id] ?? [], 
+                                    $with_edit,     $preloaded);
             
         } elseif (User::checkAccess('corpus.edit')) {
             $word_class = 'lemma-linked call-add-wordform';
@@ -168,7 +182,7 @@ trait TextWordBlock
      * @param boolean $preloaded
      * @return SimpleXMLElement
      */
-    public function addWordBlock($word, $s_id, $meanings=[], $gramsets=[], $wordforms=[], $with_edit=null, $preloaded=false) {
+    public function addWordBlock($word, $s_id, $meanings=[], $gramsets=[], $wordforms=[], $words_with_important_examples=[], $with_edit=null, $preloaded=false) {
         $w_id = (int)$word->attributes()->id;
         $s_word = Grammatic::changeLetters((string)$word,$this->lang_id);
         $word_class = 'lemma-linked';
@@ -187,7 +201,7 @@ trait TextWordBlock
                 $link_block = self::addEditExampleButton($link_block, $this->id, $s_id, $w_id);
             }
         } else {
-            $link_block = $this->addMeaningsBlock($link_block, $s_id, $w_id, $meanings, $gramsets, $wordforms, $s_word);
+            $link_block = $this->addMeaningsBlock($link_block, $s_id, $w_id, $meanings, $gramsets, $wordforms, $words_with_important_examples, $s_word);
         }
                 
         if (!empty($meanings['checked'])) {
@@ -208,7 +222,7 @@ trait TextWordBlock
         return [$word, $word_class];        
     }
 
-        public function addMeaningsBlock(\SimpleXMLElement $parent, $s_id, $w_id, $meanings=[], $gramsets=[], $wordforms, $s_word='') {
+        public function addMeaningsBlock(\SimpleXMLElement $parent, $s_id, $w_id, $meanings=[], $gramsets=[], $wordforms=[], $words_with_important_examples=[], $s_word='') {
         if (empty($meanings['checked']) && empty($meanings['unchecked'])) { return null; }
                 
         $block_div = $parent->addChild('div');
@@ -221,7 +235,7 @@ trait TextWordBlock
         $this->buildGramsetBlock($block_div, $w_id, $gramsets, $wordforms);
 
         // ссылки редактирования
-        $this->buildEditLinksNode($block_div, $s_id, $w_id);
+        $this->buildEditLinksNode($block_div, $s_id, $w_id, in_array($w_id, $words_with_important_examples));
 
         return $parent;
     }
@@ -297,7 +311,7 @@ trait TextWordBlock
     }
     
     // Было editLinksForWordBlock() → стало buildEditLinksNode()
-    public function buildEditLinksNode(\SimpleXMLElement $parent, $s_id, $w_id) {
+    public function buildEditLinksNode(\SimpleXMLElement $parent, $s_id, $w_id, $has_important_examples=true) {
         if (!User::checkAccess('corpus.edit')) {
             return null;
         }
@@ -306,7 +320,7 @@ trait TextWordBlock
         $p = $parent->addChild('p');
         $p->addAttribute('class', 'text-example-edit');
 
-        if (!$this->hasImportantExamples()) {
+        if (!$has_important_examples) {
             $i = $p->addChild('i', ' ');
             $i->addAttribute('class', 'fa fa-sync-alt fa-lg update-word-block');
             $i->addAttribute('title', '');

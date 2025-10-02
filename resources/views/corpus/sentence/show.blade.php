@@ -14,7 +14,8 @@ $sentence_xml = mb_ereg_replace('[¦^]', '', $sentence_xml);
                             $marked_words ?? [], 
                             $meanings_by_wid ?? [], 
                             $gramsets_by_wid ?? [],
-                            $wordforms ?? [],
+                            $wordforms ?? [], 
+                            $words_with_important_examples ?? [],
                             $url_args['wblock_preloaded'] ?? false) !!}
     
 @elseif (!empty($for_view)) 

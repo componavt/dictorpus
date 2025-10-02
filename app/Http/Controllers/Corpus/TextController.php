@@ -213,18 +213,19 @@ class TextController extends Controller
         
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        list($meanings_by_wid, $gramsets_by_wid, $wordforms) = $text->meaningsGramsetsByWid();
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) 
+                = !empty($url_args['wblock_preloaded']) ? $text->meaningsGramsetsByWid() : [[],[],[],[]];
        
         if ($for_print) {
             return view('corpus.text.show_print',
                       compact('dialect_value', 'dialect_values', 'for_print', 'gramsets_by_wid', 
                               'langs_for_meaning', 'meanings_by_wid',  'photos', 'pos_id', 'pos_values', 
-                              'text', 'wordforms', 'args_by_get', 'url_args'));            
+                              'text', 'wordforms', 'words_with_important_examples', 'args_by_get', 'url_args'));            
         }
         return view('corpus.text.show',
                   compact('dialect_value', 'dialect_values', 'gramsets_by_wid',
                           'langs_for_meaning', 'meanings_by_wid',  'photos', 'pos_id', 'pos_values', 
-                          'text', 'wordforms', 'args_by_get', 'url_args'));
+                          'text', 'wordforms', 'words_with_important_examples', 'args_by_get', 'url_args'));
     }
     
     public function editSentences($id) {
@@ -247,13 +248,13 @@ class TextController extends Controller
         $url_args = $this->url_args;
         $url_args['wblock_preloaded'] = true;
         
-        list($meanings_by_wid, $gramsets_by_wid, $wordforms) = $text->meaningsGramsetsByWid();
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) = $text->meaningsGramsetsByWid();
 //dd($meanings_by_wid);        
         return view('corpus.text.sentences',
                 compact('dialect_value', 'dialect_values', 'gramsets_by_wid', 
                         'langs_for_meaning', 'meanings_by_wid',
                         'pos_id', 'pos_values', 'sentences', 'text', 
-                        'trans_sentences', 'wordforms', 'args_by_get', 'url_args'));
+                        'trans_sentences', 'wordforms', 'words_with_important_examples', 'args_by_get', 'url_args'));
     }
 
     /**
