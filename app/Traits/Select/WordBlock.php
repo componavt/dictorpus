@@ -1,13 +1,16 @@
 <?php namespace App\Traits\Select;
 
 use LaravelLocalization;
-
 use App\Library\Grammatic;
 
 use App\Models\User;
 use App\Models\Corpus\Sentence;
+use App\Models\Corpus\Text;
+
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaWordform;
+use App\Models\Dict\Meaning;
 
 trait WordBlock
 {

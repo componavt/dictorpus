@@ -3,10 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
-use LaravelLocalization;
-use User;
 
 use App\Library\Str;
 
