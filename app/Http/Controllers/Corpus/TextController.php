@@ -214,7 +214,7 @@ class TextController extends Controller
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) 
-                = !empty($url_args['wblock_preloaded']) ? $text->meaningsGramsetsByWid() : [[],[],[],[]];
+                = $text->meaningsGramsetsByWid();
        
         if ($for_print) {
             return view('corpus.text.show_print',
