@@ -235,7 +235,7 @@ trait TextWordBlock
         $this->buildGramsetBlock($block_div, $w_id, $gramsets, $wordforms);
 
         // ссылки редактирования
-        $this->buildEditLinksNode($block_div, $s_id, $w_id, in_array($w_id, $words_with_important_examples));
+        $this->buildEditLinksNode($block_div, $s_id, $w_id, in_array($w_id, (array)$words_with_important_examples));
 
         return $parent;
     }
