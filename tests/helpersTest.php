@@ -48,6 +48,15 @@ class helpersTest extends TestCase
         $this->assertEquals( $expected, $result );        
     }
     
+    public function testremoveDiacritics()
+    {
+        $word = 'astịa';
+        $result = remove_diacritics($word);
+        
+        $expected = 'astia';
+        $this->assertEquals( $expected, $result );        
+    }
+    
 /*    public function testHighlight3wordsAndSign()
     {
         $str = "\n".'<s class="trans_sentence" id="transtext_s12"><w id="80">Церковь-то</w> <w id="81">была</w> <w id="82">построена</w> <w id="83">три</w> <w id="84">тысячи</w> <w id="85">лет</w> <w id="86">назад</w>, <w id="87">так</w> <w id="88">уж</w> <w id="89">наверное</w> <w id="90">много</w> <w id="91">времени</w> <w id="92">прошло</w>.</s>';

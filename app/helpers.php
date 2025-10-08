@@ -408,3 +408,16 @@ if (!function_exists('add_loading_image_to_xml')) {
         $load_img->addAttribute('src', $src);
     }
 }
+
+if (!function_exists('remove_diacritics')) {
+    function remove_diacritics($str) {
+        // Нормализуем строку в форму NFD (разложенные символы)
+        $normalized = normalizer_normalize($str, Normalizer::FORM_D);
+
+        // Удаляем все combining-символы (диакритику)
+        $withoutDiacritics = preg_replace('/\p{Mn}/u', '', $normalized);
+
+        // Возвращаем в компактную форму (опционально)
+        return normalizer_normalize($withoutDiacritics, Normalizer::FORM_C);
+    }
+}

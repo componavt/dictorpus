@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
-use DB;
+//use DB;
 
 use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
