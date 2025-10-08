@@ -399,7 +399,7 @@ class KarVerbOlo
         $stems[7] = self::parseImp3Pl(preg_replace("/-/", $base, $regs[7]), $is_reflexive); //stem7
         $stems[8] = $is_reflexive ? self::vocalStrongConsRef($stems[0], $stems[3], $stems[7])
                                     : self::vocalStrongCons($stems[0], $stems[3], $stems[7]); // stem8
-        $stems[5] = self::weakImpBase($stems[1], $stems[4], $stems[8], $is_reflexive); //stem5
+        $stems[5] = self::weakImpBase($stems[1], $stems[4], $is_reflexive); //stem5
         return [$stems, null, $regs[1], $regs[2]];
     }
 
@@ -449,7 +449,7 @@ class KarVerbOlo
         $stems[4] = preg_replace("/-/", $base, $regs[4]); // stem4
         $stems[8] = $is_reflexive ? self::vocalStrongConsRef($stems[0], $stems[3], $stems[4])
                                     : self::vocalStrongCons($stems[0], $stems[3], $stems[7]); // stem8
-        $stems[5] = self::weakImpBase($stems[1], $stems[4], $stems[8], $is_reflexive); //stem5
+        $stems[5] = self::weakImpBase($stems[1], $stems[4], $is_reflexive); //stem5
         return [$stems, 'def', $regs[1], $regs[2]];
     }
 
@@ -505,7 +505,7 @@ class KarVerbOlo
         $stems[7] = self::parseImp3Pl(preg_replace("/-/", $base, $regs[6]), $is_reflexive); //stem7
         $stems[8] = $is_reflexive ? self::vocalStrongConsRef($stems[0], $stems[3], $stems[4])
                                     : self::vocalStrongCons($stems[0], $stems[3], $stems[7]); // stem8
-        $stems[5] = self::weakImpBase($stems[1], $stems[4], $stems[8], $is_reflexive); //stem5
+        $stems[5] = self::weakImpBase($stems[1], $stems[4], $is_reflexive); //stem5
 //dd($stems);        
         return [$stems, 'def', $regs[1], $regs[2]];
     }
@@ -717,7 +717,7 @@ class KarVerbOlo
      *      iä > ävöi
      * 2) если в п.о.1 > 1 слогов, то =п.о.1 – конечный V или VV (все, что есть до первого согласного с конца) → + конечные i или Vi из искомой формы 
      */
-    public static function weakImpBase($stem1, $stem4, $stem8, $is_reflexive=null) {
+    public static function weakImpBase($stem1, $stem4, $is_reflexive=null) {
         if (!$stem1 && !$is_reflexive || !$stem4) {
             return '';
         }
