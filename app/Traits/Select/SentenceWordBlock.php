@@ -1,15 +1,10 @@
 <?php namespace App\Traits\Select;
 
-use LaravelLocalization;
-
-use App\Library\Grammatic;
-
-use App\Models\User;
-use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Meaning;
+use App\Models\Dict\Wordform;
 
 trait SentenceWordBlock
 {

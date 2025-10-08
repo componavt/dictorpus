@@ -134,8 +134,12 @@ class SentenceController extends Controller
         $with_left_context = (int)$request->input('with_left_context');
         $with_right_context = (int)$request->input('with_right_context');
         $for_view = true;
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) 
+                = $sentence->text->meaningsGramsetsByWid($sentence->words()->pluck('w_id'));
+//dd($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples);        
         return view('corpus.sentence.show', 
-                compact('sentence', 'for_view', 'with_left_context', 'with_right_context'));
+                compact('sentence', 'for_view', 'with_left_context', 'with_right_context',
+                        'meanings_by_wid', 'gramsets_by_wid', 'wordforms', 'words_with_important_examples'));
     }
 
     /**
@@ -172,7 +176,11 @@ class SentenceController extends Controller
             }
         }
         $with_edit = true;
-        return view('corpus.sentence.show', compact('text', 'sentence', 'with_edit'));
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) 
+                = $sentence->text->meaningsGramsetsByWid($sentence->words()->pluck('w_id'));
+        return view('corpus.sentence.show', 
+                compact('text', 'sentence', 'with_edit', 'meanings_by_wid', 
+                        'gramsets_by_wid', 'wordforms', 'words_with_important_examples'));
     }
 
     public function markup($id)

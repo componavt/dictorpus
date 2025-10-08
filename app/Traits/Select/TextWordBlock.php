@@ -14,9 +14,10 @@ use App\Models\Dict\Wordform;
 
 trait TextWordBlock
 {
-    public function meaningsGramsetsByWid() {
-        $wids = Word::where('text_id', $this->id)->pluck('w_id');
-
+    public function meaningsGramsetsByWid($wids=null) {
+        if (empty($wids)) {
+            $wids = Word::where('text_id', $this->id)->pluck('w_id');
+        }
         $meanings = Meaning::join('meaning_text', 'meaning_text.meaning_id', '=', 'meanings.id')
             ->where('text_id', $this->id)
             ->whereIn('w_id', $wids)

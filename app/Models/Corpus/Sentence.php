@@ -40,6 +40,7 @@ class Sentence extends Model
     // Has Many Relations
     use \App\Traits\Relations\HasMany\SentenceFragments;    // fragments()
     use \App\Traits\Relations\HasMany\SentenceTranslations; // translations()
+    use \App\Traits\Relations\HasMany\Words;
     
     public static function getBySid($text_id, $s_id) {
         return self::whereTextId($text_id)->whereSId($s_id)->first();
