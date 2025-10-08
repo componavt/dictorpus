@@ -411,13 +411,16 @@ if (!function_exists('add_loading_image_to_xml')) {
 
 if (!function_exists('remove_diacritics')) {
     function remove_diacritics($str) {
-        // Нормализуем строку в форму NFD (разложенные символы)
+/*        // Нормализуем строку в форму NFD (разложенные символы)
         $normalized = normalizer_normalize($str, Normalizer::FORM_D);
 
         // Удаляем все combining-символы (диакритику)
         $withoutDiacritics = preg_replace('/\p{Mn}/u', '', $normalized);
 
         // Возвращаем в компактную форму (опционально)
-        return normalizer_normalize($withoutDiacritics, Normalizer::FORM_C);
+        return normalizer_normalize($withoutDiacritics, Normalizer::FORM_C);*/
+        $diacritics = ['ạ', 'ẹ', 'ị', 'ọ', 'ụ', 'Ạ', 'Ẹ', 'Ị', 'Ọ', 'Ụ'];
+        $plain      = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
+        return str_replace($diacritics, $plain, $str);        
     }
 }
