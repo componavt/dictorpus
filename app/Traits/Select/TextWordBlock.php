@@ -39,8 +39,8 @@ trait TextWordBlock
                 ->whereIn('id',function ($q) {
                     $q->select('word_id')->from('meaning_text')
                       ->where('relevance', '>', 5);
-                })->pluck('w_id');
-            
+                })->pluck('w_id')->toArray();
+                
         return [$this->listByWidRelevance($meanings), $this->listByWidRelevance($gramsets), $wordforms, $words_with_important_examples];
     }
 
@@ -154,7 +154,7 @@ trait TextWordBlock
                                     $meanings[$w_id] ?? [], 
                                     $gramsets[$w_id] ?? [], 
                                     $wordforms, 
-                                    $words_with_important_examples[$w_id] ?? [], 
+                                    in_array($w_id, $words_with_important_examples), 
                                     $with_edit,     $preloaded);
             
         } elseif (User::checkAccess('corpus.edit')) {
@@ -182,7 +182,7 @@ trait TextWordBlock
      * @param boolean $preloaded
      * @return SimpleXMLElement
      */
-    public function addWordBlock($word, $s_id, $meanings=[], $gramsets=[], $wordforms=[], $words_with_important_examples=[], $with_edit=null, $preloaded=false) {
+    public function addWordBlock($word, $s_id, $meanings=[], $gramsets=[], $wordforms=[], $has_important_examples=false, $with_edit=null, $preloaded=false) {       
         $w_id = (int)$word->attributes()->id;
         $s_word = Grammatic::changeLetters((string)$word,$this->lang_id);
         $word_class = 'lemma-linked';
@@ -201,7 +201,7 @@ trait TextWordBlock
                 $link_block = self::addEditExampleButton($link_block, $this->id, $s_id, $w_id);
             }
         } else {
-            $link_block = $this->addMeaningsBlock($link_block, $s_id, $w_id, $meanings, $gramsets, $wordforms, $words_with_important_examples, $s_word);
+            $link_block = $this->addMeaningsBlock($link_block, $s_id, $w_id, $meanings, $gramsets, $wordforms, $has_important_examples, $s_word);
         }
                 
         if (!empty($meanings['checked'])) {
@@ -222,7 +222,7 @@ trait TextWordBlock
         return [$word, $word_class];        
     }
 
-        public function addMeaningsBlock(\SimpleXMLElement $parent, $s_id, $w_id, $meanings=[], $gramsets=[], $wordforms=[], $words_with_important_examples=[], $s_word='') {
+        public function addMeaningsBlock(\SimpleXMLElement $parent, $s_id, $w_id, $meanings=[], $gramsets=[], $wordforms=[], $has_important_examples=false, $s_word='') {
         if (empty($meanings['checked']) && empty($meanings['unchecked'])) { return null; }
                 
         $block_div = $parent->addChild('div');
@@ -235,7 +235,7 @@ trait TextWordBlock
         $this->buildGramsetBlock($block_div, $w_id, $gramsets, $wordforms);
 
         // ссылки редактирования
-        $this->buildEditLinksNode($block_div, $s_id, $w_id, in_array($w_id, (array)$words_with_important_examples));
+        $this->buildEditLinksNode($block_div, $s_id, $w_id, $has_important_examples);
 
         return $parent;
     }
