@@ -302,6 +302,7 @@ class Grammatic
         $word = trim($word);
         $word = self::removeSpaces($word);
         $word = preg_replace("/['´`΄]+/u", "’", $word);
+        $word = remove_diacritics($word);
         return $word;
     }
     

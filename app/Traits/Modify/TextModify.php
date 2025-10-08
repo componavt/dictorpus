@@ -548,7 +548,7 @@ trait TextModify
         } else {
             $has_checked = false;
         }
-        foreach (self::getWordformsByWord($word_obj->word, $this->lang_id) as $wordform) {
+        foreach (self::getWordformsByWord(remove_diacritics($word_obj->word), $this->lang_id) as $wordform) {
             $wg_id = $wordform->id. '_'. $wordform->gramset_id;
             $relevance = $checked_relevances[$wg_id] ?? ($has_checked ? 0 : 1);
             $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->id, $word_obj->w_id, $relevance);
