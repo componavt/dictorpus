@@ -6,6 +6,7 @@ use DB;
 use App\Models\Dict\Concept;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 
@@ -170,20 +171,24 @@ print "</ul>";
     
     public static function missingGramsets() {
         $pos_ids = DB::table('gramset_pos')->groupBy('pos_id')->pluck('pos_id');
+        $unchangeble_lemmas = LemmaFeature::whereWithoutGram(1)->pluck('id');
 
         foreach (Lang::projectLangs() as $lang) {
-            print '<h1>'.$lang->name.'</h1><ol>';
-            $text_ids = Text::whereLangId($lang->id)
-                    //->take(1)
+            if ($lang->id!=4) { continue; }
+            print '<br><h1>'.$lang->name.'</h1><br><ol>';
+            $text_ids = Text::whereLangId($lang->id)->orderBy('id')
+//->where('id','>', 
+                    ->take(100)
                     ->pluck('id');
             $words = Word::whereIn('text_id', $text_ids)
-                         ->whereIn('id', function ($q) use ($pos_ids) {
+                         ->whereIn('id', function ($q) use ($pos_ids, $unchangeble_lemmas) {
                              $q->select('word_id')->from('meaning_text')
-                               ->whereIn('meaning_id', function($q2) use ($pos_ids) {
+                               ->whereIn('meaning_id', function($q2) use ($pos_ids, $unchangeble_lemmas) {
                                    $q2->select('id')->from('meanings')
-                                      ->whereIn('lemma_id', function($q3) use ($pos_ids) {
+                                      ->whereIn('lemma_id', function($q3) use ($pos_ids, $unchangeble_lemmas) {
                                           $q3->select('id')->from('lemmas')
-                                             ->whereIn('pos_id', $pos_ids);
+                                             ->whereIn('pos_id', $pos_ids)
+                                             ->wherenotIn('id', $unchangeble_lemmas);
                                       });
                                });
 //                               ->where('relevance', '>', 0);
