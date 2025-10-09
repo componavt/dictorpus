@@ -50,10 +50,12 @@ class helpersTest extends TestCase
     
     public function testremoveDiacritics()
     {
-        $word = 'astịa';
-        $result = remove_diacritics($word);
-        
-        $expected = 'astia';
+        $words = ['astịa', 'päiv', 'šuoni', 'abeutti̬a', 'mä̱gi'];
+        $result = [];
+        foreach ($words as $word) {
+            $result[] = remove_diacritics($word);
+        }
+        $expected = ['astia', 'päiv', 'šuoni', 'abeuttia', 'mägi'];
         $this->assertEquals( $expected, $result );        
     }
     

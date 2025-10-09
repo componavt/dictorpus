@@ -419,8 +419,14 @@ if (!function_exists('remove_diacritics')) {
 
         // Возвращаем в компактную форму (опционально)
         return normalizer_normalize($withoutDiacritics, Normalizer::FORM_C);*/
-        $diacritics = ['ạ', 'ẹ', 'ị', 'ọ', 'ụ', 'Ạ', 'Ẹ', 'Ị', 'Ọ', 'Ụ'];
-        $plain      = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
-        return str_replace($diacritics, $plain, $str);        
+        // Только замена символов с точкой снизу (precomposed)
+        $diacriticVowels = ['ạ', 'ẹ', 'ị', 'ọ', 'ụ', 'Ạ', 'Ẹ', 'Ị', 'Ọ', 'Ụ'];
+        $plainVowels     = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
+        $str = str_replace($diacriticVowels, $plainVowels, $str);
+
+        // Удаление ТОЛЬКО combining-знаков (например, ◌̬ U+032C, ◌̱ U+0331)
+        // \p{Mn} удаляет все non-spacing marks, но НЕ трогает Ä, Ö и др.
+        $str = preg_replace('/\p{Mn}/u', '', $str);    
+        return $str;
     }
 }
