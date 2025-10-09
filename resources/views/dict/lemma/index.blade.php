@@ -93,7 +93,7 @@
                     @elseif (in_array($lemma->pos_id, $not_changeable_pos_list))
                     —
                     @else
-                    0
+                    <span class="unchecked-count">0</span>
                     @endif
                 </td>
                 <td data-th="{{ trans('messages.examples') }}">
