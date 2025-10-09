@@ -147,7 +147,7 @@ class Lemma extends Model
         if (in_array($this->pos_id, PartOfSpeech::notChangeablePOSIdList())) { // неизменяемая часть речи
             return false;
         }
-        if ($this->features && !empty($lemma->features->without_gram)) {  // неизменяемое как признак
+        if ($this->features && !empty($this->features->without_gram)) {  // неизменяемое как признак
             return false;
         }
         return true;
