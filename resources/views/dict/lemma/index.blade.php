@@ -90,7 +90,7 @@
                         @if ($lemma->wordforms()->whereNull('gramset_id')->count())
                         + <span class="unchecked-count">{{$lemma->wordforms()->whereNull('gramset_id')->count()}}</span>
                         @endif
-                    @elseif (in_array($lemma->pos_id, $not_changeable_pos_list))
+                    @elseif (!$lemma->isChangable())
                     —
                     @else
                     <span class="unchecked-count">0</span>
