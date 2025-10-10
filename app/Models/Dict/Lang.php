@@ -237,11 +237,12 @@ class Lang extends Model
     }
     
     public static function projectLangIDs() {
-        $ids = [];
+/*        $ids = [];
         foreach (self::projectLangs() as $lang) {
            $ids[] = $lang->id; 
         }
-        return $ids;       
+        return $ids;   */
+        return self::projectLangs()->pluck('id');
     }
     
     public static function nonProjectLangs() {

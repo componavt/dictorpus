@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use App\Models\Dict\Gramset;
+use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\LemmaWordform;
@@ -160,5 +161,20 @@ print "</p>";
         $new_meaning->translations()->attach($meaning->lemma->lang_id, ['meaning2_id'=>$meaning->id]);
         $meaning->translations()->attach($new_lemma->lang_id, ['meaning2_id'=>$new_meaning->id]);
     }
-    
+       
+    public static function lemmasWithoutWordforms() {
+        $unchangeble_lemmas = LemmaFeature::whereWithoutGram(1)->pluck('id');
+        $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIds())
+                       ->whereIn('pos_id', PartOfSpeech::ChangeablePOSIdList())
+                       ->whereNotIn('id', $unchangeble_lemmas)
+                       ->whereNotIn('id', function($q) {
+                           $q->select('lemma_id')->from('lemma_wordform');
+                       })
+                       ->orderBy('lang_id')->get();
+        print "<ol>";
+        foreach ($lemmas as $lemma) {
+           print '<li><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></li>';
+        }
+        print "</ol>";                
+    }
 }

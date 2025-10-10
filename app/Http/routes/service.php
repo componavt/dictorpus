@@ -13,6 +13,7 @@ Route::group(
         Route::get('check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('copy_lemmas', 'Library\ServiceController@copyLemmas');
         Route::get('illative_table', 'Library\ServiceController@illativeTable');       
+        Route::get('lemmas_without_wordforms', 'Library\ServiceController@lemmasWithoutWordforms');        
         Route::get('reGenerateTverPartic2active', 'Library\ServiceController@reGenerateTverPartic2active');
         Route::get('regenerate_wrong_names', 'Library\ServiceController@reGenerateWrongNames');
         Route::get('regenerate_livvic_ill_pl', 'Library\ServiceController@reGenerateLivvicIllPl');

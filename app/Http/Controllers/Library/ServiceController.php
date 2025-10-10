@@ -463,4 +463,8 @@ print "</ol>";
         return view('service.authors', compact('texts'));        
     }    
     
+    public function lemmasWithoutWordforms() {
+        print "<h3>Изменяемые леммы, у которых нет словоформ</h3>";
+        Service::lemmasWithoutWordforms();
+    }
 }
