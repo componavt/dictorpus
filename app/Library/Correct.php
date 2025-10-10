@@ -201,7 +201,9 @@ print "</ul>";
             foreach ($words as $word) {
 //                if ($word->isChangeable()) {
                     print '<li>Текст No <a href="/corpus/text/'.$word->text_id.'?search_wid='.$word->w_id.'">'.$word->text_id.'</a>, ('.$word->w_id.') '.$word->word.'</p>';
-                    $word->updateWordformText();
+//                    $word->updateWordformText();
+                    $word->text->setWordforms([], $word);
+
 //                }
             }
             print "</ol>";
