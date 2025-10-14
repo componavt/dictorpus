@@ -20,7 +20,7 @@
             @if ($numAll)     
             <ol start='{{$list_count}}'>
                 @foreach($texts as $text)
-                <li>
+                <li class="with-first-big-letter">
                     @include('corpus.sentence._found_sentences', 
                     ['sentences' => $text_sentences[$text->id]['sentences'],
                      'words' => $text_sentences[$text->id]['words']])

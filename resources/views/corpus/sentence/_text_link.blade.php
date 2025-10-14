@@ -1,3 +1,4 @@
+{!! $text->corpusesToString('') !!} /
 {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
 <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}?{{--{{$args_by_get}}&--}}{{$wid_for_link}}">{{$text->title}}</a>
 @if ($text->transtext)
@@ -13,4 +14,4 @@
 @elseif ($text->source && $text->source->bookToString())
     ({{$text->source->bookToString()}})
 @endif
-</small>
+</span>
