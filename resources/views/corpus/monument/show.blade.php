@@ -4,7 +4,7 @@
 
 @section('body')
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/monument/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
+            <a href="{{ LaravelLocalization::localizeURL('/corpus/monument/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
             
         @if (User::checkAccess('corpus.edit'))
             | @include('widgets.form.button._edit', ['route' => '/corpus/monument/'.$monument->id.'/edit'])
