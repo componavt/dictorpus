@@ -41,6 +41,7 @@ class Lang extends Model
     use \App\Traits\Relations\HasMany\Corpuses;
     use \App\Traits\Relations\HasMany\Dialects;
     use \App\Traits\Relations\HasMany\Lemmas;
+    use \App\Traits\Relations\HasMany\Monuments;
     use \App\Traits\Relations\HasMany\ReverseLemmas;
     use \App\Traits\Relations\HasMany\Texts;
     

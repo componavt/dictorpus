@@ -89,6 +89,7 @@ return [
     'of_district' => 'of the district',
     'of_genre' => 'of the genre',
     'of_informant' => 'of the informant',
+    'of_monument' => 'of the monument',
     'of_motive' => 'of the motive',
     'of_motype' => 'of the motive type',
     'of_place' => 'of the place',

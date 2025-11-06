@@ -39,6 +39,7 @@ return [
                     . 'причитания // Изд. подгот. А. С. Степанова. Петрозаводск: Карелия, 1976. 534 с.). Наиболее ранние варианты причитаний представлены текстами, выявленными в '
                     . 'статье Н. Ф. Лескова «Корельская свадьба» (Лесков Н. Корельская свадьба // Живая старина. – Вып.3-4. – СПб., 1894. – С. 499 – 511). Наряду с этим '
                     . 'можно познакомиться и с вариантами современных причитаний, которые удалось зафиксировать во время полевых исследований в течение первой половины XXI века.',
+                7 => '',
                ],
     'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
     'topic_index' => 'Index of plots and thematics of Karelian runes',
@@ -49,6 +50,7 @@ return [
         3 => 'Karelian Legends',
         4 => 'Nikolai Mikhailovich Balakirev',
         5 => 'Stanislav Vasilyevich Tarasov',
+        7 => 'Monuments of Karelian and Vepsian writing',
     ],
     'prediction_cycles' => 'Prediction cycles',
 //    'to_motive_index' => 'to Motive index',

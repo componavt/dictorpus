@@ -138,6 +138,11 @@ Route::group(
                                     'store' => 'informant.store',
                                     'destroy' => 'informant.destroy']]);
         
+        Route::resource('monument', 'Corpus\MonumentController',
+                       ['names' => ['update' => 'monument.update',
+                                    'store' => 'monument.store',
+                                    'destroy' => 'monument.destroy']]);
+        
         Route::resource('motive', 'Corpus\MotiveController',
                        ['names' => ['update' => 'motive.update',
                                     'store' => 'motive.store',

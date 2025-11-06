@@ -3,7 +3,7 @@ if (!isset($checked)) { $checked = null; }
 if (!isset($values)) { $values = []; }
 
 ?>
-<div class="{!! $errors->has($name) ? 'has-error' : null !!}">
+<div class="form-group{!! $errors->has($name) ? ' has-error' : null !!}">
     @if(isset($title))
 	<label for="{{$name}}">{{ $title }}</label>
     @endif

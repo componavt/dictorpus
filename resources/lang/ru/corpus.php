@@ -89,6 +89,7 @@ return [
     'of_district' => 'района',
     'of_genre' => 'жанра',
     'of_informant' => 'информанта',
+    'of_monument' => 'памятника',
     'of_motive' => 'мотива',
     'of_motype' => 'типа мотива',
     'of_place' => 'населенного пункта',

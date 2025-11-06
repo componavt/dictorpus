@@ -55,6 +55,7 @@ return [
     'mass_media_show' => 'VepKar on TV',
     'mass_media_talk' => 'VepKar on Radio',
     'mass_media_write' => 'VepKar in News',
+    'monuments' => 'Monuments of Karelian and Vepsian writing',
     'motives' => 'Motives',
     'motypes' => 'Motive types',
     'multidict' => 'Multimedia dictionary',

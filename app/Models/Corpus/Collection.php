@@ -62,6 +62,8 @@ class Collection {
             return true;
         } elseif (self::isCollectionbyGenre($id)) {
             return true;
+        } elseif ($id==7) {
+            return true;
         }
         return false;
     }

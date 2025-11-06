@@ -430,3 +430,38 @@ if (!function_exists('remove_diacritics')) {
         return $str;
     }
 }
+
+if (!function_exists('textToHtml')) {
+    function text_to_html($text) {
+        if (empty($text)) {
+            return null;
+        }
+        
+        // 1. Обработка всех HTTP/HTTPS ссылок
+        $text = preg_replace_callback(
+            '/\b(https?:\/\/[^\s<>"{}()]+[^\s<>"{}().,;:!?])/i',
+            function ($matches) {
+                $url = rtrim($matches[1], '.');
+                $safeUrl = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+                return '<a href="' . $safeUrl . '">' . $safeUrl . '</a>';
+            },
+            $text
+        );
+
+        // 2. Обработка ТОЛЬКО DOI с явным префиксом "DOI:"
+        $text = preg_replace_callback(
+            '/\bDOI:\s*(10\.\d{4,}(?:\.\d+)*(?:\/[^\s<>{}()"\']*)?)/i',
+            function ($matches) {
+                $doi = trim($matches[1], '.');
+                $safeDoi = htmlspecialchars($doi, ENT_QUOTES, 'UTF-8');
+                return 'DOI: <a href="https://doi.org/' . $safeDoi . '">' . $safeDoi . '</a>';
+            },
+            $text
+        );
+        
+        // Переводы строк → <br>
+        $text = nl2br($text, false);
+
+        return $text;
+    }
+}
