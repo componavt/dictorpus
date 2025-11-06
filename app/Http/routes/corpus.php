@@ -141,6 +141,7 @@ Route::group(
         Route::resource('monument', 'Corpus\MonumentController',
                        ['names' => ['update' => 'monument.update',
                                     'store' => 'monument.store',
+                                    'show' => 'monument.show',
                                     'destroy' => 'monument.destroy']]);
         
         Route::resource('motive', 'Corpus\MotiveController',

@@ -43,7 +43,9 @@
             @foreach($monuments as $monument)
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
-                <td data-th="{{ trans('corpus.name') }}">{{ $monument->title }}</td>
+                <td data-th="{{ trans('corpus.name') }}">
+                    <a href="{{ route('monument.show', $monument->id) }}">{{ $monument->title }}</a>
+                </td>
                 <td data-th="{{ trans('dict.lang') }}">
                     @if ($monument->lang)
                         {{ $monument->lang->name }}
