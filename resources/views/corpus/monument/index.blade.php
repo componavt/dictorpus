@@ -67,7 +67,7 @@
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
-                <td data-th="{{ trans('messages.actions') }}" style="min-width: 130px;">
+                <td data-th="{{ trans('messages.actions') }}" style="min-width: 130px; text-align: center">
                     @include('widgets.form.button._edit', 
                             ['is_button'=>true, 
                              'without_text' => 1,

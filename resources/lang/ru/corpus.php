@@ -74,6 +74,7 @@ return [
     
     'mark_right_meaning' => 'отметить правильное значение',
     'mark_right_gramset' => 'отметить правильный грамсет',
+    'monument_removed' => 'Памятник ":name" удален.',
     'motive' => 'Мотив',
     'motype' => 'тип мотива',
     

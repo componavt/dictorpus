@@ -72,6 +72,7 @@ return [
     'listen' => 'Listen',
     'longitude'=>'longitude',
     
+    'monument_removed' => 'Monument ":name" is removed successfully.',
     'mark_right_gramset' => 'choose right gramset',
     'mark_right_meaning' => 'choose right meaning',
     'motive' => 'Motive',
