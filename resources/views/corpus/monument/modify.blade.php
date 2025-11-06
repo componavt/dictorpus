@@ -30,4 +30,13 @@
         todayHighlight: true
     });
     
+    $('#publ_date_to').datepicker({
+        format: 'mm.yyyy',  
+        startView: 2,       
+        minViewMode: 1,        
+        autoclose: true,      
+        language: 'ru',       
+        todayHighlight: true
+    });
+    
 @stop
