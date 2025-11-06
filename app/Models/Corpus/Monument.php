@@ -25,6 +25,8 @@ class Monument extends Model
         'publ_date_from' => 'date',
         'publ_date_to'   => 'date',
         'has_trans' => 'boolean',
+        'is_printed' => 'boolean',
+        'is_full' => 'boolean',
     ];
     
     
@@ -159,17 +161,21 @@ class Monument extends Model
     public static function search(Array $url_args) {
         $objs = self::orderBy('id', 'desc');
 
-        $objs = self::searchIntField($objs, 'dialect_id', $url_args['search_lang']);
+        $objs = self::searchIntField($objs, 'dialect_id', $url_args['search_dialect']);
+        $objs = self::searchIntField($objs, 'is_printed', $url_args['search_is_printed']);
         $objs = self::searchIntField($objs, 'lang_id', $url_args['search_lang']);
         $objs = self::searchStrField($objs, 'title', $url_args['search_title']);
-        
+        $objs = self::searchIntField($objs, 'type_id', $url_args['search_type']);
+
         return $objs;
     }
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
-                    'search_dialects' => (array)$request->input('search_dialects') ? (array)$request->input('search_dialects') : null,
+                    'search_dialect' => (int)$request->input('search_dialect') ? (int)$request->input('search_dialect') : null,
+                    'search_is_printed'     => (int)$request->input('search_is_printed') ? (int)$request->input('search_is_printed') : null,
                     'search_lang'     => (int)$request->input('search_lang') ? (int)$request->input('search_lang') : null,
                     'search_title' => $request->input('search_title'),
+                    'search_type'     => (int)$request->input('search_type') ? (int)$request->input('search_type') : null,
                 ];
         
         return $url_args;

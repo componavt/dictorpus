@@ -33,6 +33,7 @@
                 <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('dict.dialect') }}</th>
                 <th>{{ trans('messages.type') }}</th>
+                <th>{{ trans('monument.is_printed') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th>{{ trans('messages.actions') }}</th>
                 @endif
@@ -54,8 +55,13 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('messages.type') }}">
-                    @if ($monument->type)
-                        {{ $monument->dialect->name }}
+                    @if ($monument->type_id && isset(trans('monument.type_values')[$monument->type_id]) )
+                        {{ trans('monument.type_values')[$monument->type_id] }}
+                    @endif
+                </td>
+                <td data-th="{{ trans('messages.is_printed') }}">
+                    @if (isset(trans('monument.is_printed_values')[$monument->is_printed]) )
+                        {{ trans('monument.is_printed_values')[$monument->is_printed] }}
                     @endif
                 </td>
                 @if (User::checkAccess('corpus.edit'))
@@ -88,7 +94,7 @@
 
 @section('jqueryFunc')
     recDelete('{{ trans('messages.confirm_delete') }}');
-    selectWithLang('.select-dialects', "/dict/dialect/list", 'search_lang', '{{ trans('dict.dialect') }}');
+    selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '{{ trans('dict.dialect') }}');
 @stop
 
 

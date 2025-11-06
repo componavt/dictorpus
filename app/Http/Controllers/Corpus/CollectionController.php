@@ -92,7 +92,7 @@ class CollectionController extends Controller
                         compact('dialects', 'for_print', 'genres', 'id', 'lang_ids', 
                                 'langs', 'text_count'));
             } elseif ($id == 7) {
-                Redirect::to('/corpus/monument');
+                return Redirect::to('/corpus/monument');
             }
         }
         return Redirect::to('/corpus/collection');
