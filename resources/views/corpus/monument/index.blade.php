@@ -31,7 +31,6 @@
                 <th>No</th>
                 <th>{{ trans('corpus.name') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
-                <th>{{ trans('dict.dialect') }}</th>
                 <th>{{ trans('messages.type') }}</th>
                 <th>{{ trans('monument.is_printed') }}</th>
                 @if (User::checkAccess('corpus.edit'))
@@ -49,11 +48,6 @@
                 <td data-th="{{ trans('dict.lang') }}">
                     @if ($monument->lang)
                         {{ $monument->lang->name }}
-                    @endif
-                </td>
-                <td data-th="{{ trans('dict.dialect') }}">
-                    @if ($monument->dialect)
-                        {{ $monument->dialect->name }}
                     @endif
                 </td>
                 <td data-th="{{ trans('messages.type') }}">
