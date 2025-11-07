@@ -450,7 +450,7 @@ if (!function_exists('textToHtml')) {
 
         // 2. Обработка ТОЛЬКО DOI с явным префиксом "DOI:"
         $text = preg_replace_callback(
-            '/\bDOI:\s*(10\.\d{4,}(?:\.\d+)*(?:\/[^\s<>{}()"\']*)?)/i',
+            '/\bDOI:\s*(10\.\d{4,}(?:\.\d+)*(?:\/[^\s<>{}"\']*)?)/i',
             function ($matches) {
                 $doi = trim($matches[1], '.');
                 $safeDoi = htmlspecialchars($doi, ENT_QUOTES, 'UTF-8');
