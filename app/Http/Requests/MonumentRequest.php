@@ -52,4 +52,35 @@ class MonumentRequest extends FormRequest
             'pages' => trans('monument.pages'),
         ];
     }
+    
+    protected function getValidatorInstance()
+    {
+        $validator = parent::getValidatorInstance();
+        $this->addCustomDateValidation($validator); 
+        return $validator;
+    }   
+    
+    /**
+     * Добавляет кастомную валидацию: 
+     * - "по" не может быть без "с",
+     * - "по" не может быть раньше "с".
+     */
+    private function addCustomDateValidation($validator) {
+        $validator->after(function ($validator) {
+            $from = $this->input('publ_date_from');
+            $to   = $this->input('publ_date_to');
+
+            $fromDate = parse_date_mm_yyyy($from);
+            $toDate   = parse_date_mm_yyyy($to);
+
+            if ($to && !$from) {
+                $validator->errors()->add('publ_date_to', 'Нельзя указать дату "по", если не указана дата "с".');
+            }
+
+            if ($fromDate && $toDate && $toDate->lt($fromDate)) {
+                $validator->errors()->add('publ_date_to', 'Дата "по" не может быть раньше даты "с".');
+            }
+        });
+    }
+    
 }

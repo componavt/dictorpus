@@ -465,3 +465,24 @@ if (!function_exists('textToHtml')) {
         return $text;
     }
 }
+
+if (!function_exists('parse_date_mm_yyyy')) {
+    /**
+     * Парсит строку в формате 'мм.гггг' → Carbon\Carbon объект
+     *
+     * @param string|null $str Например: '06.2025'
+     * @return \Carbon\Carbon|null
+     */
+    function parse_date_mm_yyyy($str)
+    {
+        if (!$str || !preg_match('/^(\d{1,2})\.(\d{4})$/', $str, $m)) {
+            return null;
+        }
+        $month = (int)$m[1];
+        $year  = (int)$m[2];
+        if ($month < 1 || $month > 12) {
+            return null;
+        }
+        return new \Carbon\Carbon("$year-$month-01");
+    }
+}

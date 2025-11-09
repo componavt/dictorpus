@@ -158,6 +158,20 @@ class Monument extends Model
         }
     }
     
+    public static function urlArgs($request) {
+        $url_args = Str::urlArgs($request) + [
+                    'search_dialect' => (int)$request->input('search_dialect') ? (int)$request->input('search_dialect') : null,
+                    'search_is_printed'     => (int)$request->input('search_is_printed') ? (int)$request->input('search_is_printed') : null,
+                    'search_lang'     => (int)$request->input('search_lang') ? (int)$request->input('search_lang') : null,
+                    'search_publ_date_from'     => (int)$request->input('search_publ_date_from') ? (int)$request->input('search_publ_date_from') : null,
+                    'search_publ_date_to'     => (int)$request->input('search_publ_date_to') ? (int)$request->input('search_publ_date_to') : null,
+                    'search_title' => $request->input('search_title'),
+                    'search_type'     => (int)$request->input('search_type') ? (int)$request->input('search_type') : null,
+                ];
+        
+        return $url_args;
+    }    
+    
     public static function search(Array $url_args) {
         $objs = self::orderBy('id', 'desc');
 
@@ -166,19 +180,51 @@ class Monument extends Model
         $objs = self::searchIntField($objs, 'lang_id', $url_args['search_lang']);
         $objs = self::searchStrField($objs, 'title', $url_args['search_title']);
         $objs = self::searchIntField($objs, 'type_id', $url_args['search_type']);
-
-        return $objs;
-    }
-    public static function urlArgs($request) {
-        $url_args = Str::urlArgs($request) + [
-                    'search_dialect' => (int)$request->input('search_dialect') ? (int)$request->input('search_dialect') : null,
-                    'search_is_printed'     => (int)$request->input('search_is_printed') ? (int)$request->input('search_is_printed') : null,
-                    'search_lang'     => (int)$request->input('search_lang') ? (int)$request->input('search_lang') : null,
-                    'search_title' => $request->input('search_title'),
-                    'search_type'     => (int)$request->input('search_type') ? (int)$request->input('search_type') : null,
-                ];
+        $objs = self::searchByPublDate($objs, $url_args['search_publ_date_from'], $url_args['search_publ_date_to']);
         
-        return $url_args;
+        return $objs;
     }    
     
+    public static function searchByPublDate($objs, $fromYear, $toYear) {
+        if ($fromYear) {
+            $from = new \Carbon\Carbon("$fromYear-01-01");
+            if ($from) {
+                // Ищем памятники, у которых НАЧАЛО <= искомого КОНЦА
+                // Но у нас диапазон — поэтому:
+                $objs->where(function ($q) use ($from) {
+                    // Вариант 1: publ_date_from известна → она >= $from
+                    $q->where(function ($q2) use ($from) {
+                        $q2->whereNotNull('publ_date_from')
+                           ->whereDate('publ_date_from', '>=', $from->toDateString());
+                    })
+                    // Вариант 2: только publ_date_to известна → она >= $from
+                    ->orWhere(function ($q2) use ($from) {
+                        $q2->whereNull('publ_date_from')
+                           ->whereNotNull('publ_date_to')
+                           ->whereDate('publ_date_to', '>=', $from->toDateString());
+                    });
+                });
+            }
+        }
+
+        if ($toYear) {
+            $to = new \Carbon\Carbon("$toYear-12-31");
+            if ($to) {
+                $objs->where(function ($q) use ($to) {
+                    $q->where(function ($q2) use ($to) {
+                        $q2->whereNotNull('publ_date_to')
+                           ->whereDate('publ_date_to', '<=', $to->toDateString());
+                    })
+                    ->orWhere(function ($q2) use ($to) {
+                        $q2->whereNull('publ_date_to')
+                           ->whereNotNull('publ_date_from')
+                           ->whereDate('publ_date_from', '<=', $to->toDateString());
+                    });
+                });
+            }
+
+        }
+//dd(to_sql($objs));        
+        return $objs;
+    }
 }

@@ -40,6 +40,7 @@ return [
     'publ' => 'publication of the text of the monument',
     'publ_date' => 'date of creation/publication',
     'study' => 'monument study',
+    'to' => 'to',
     'type' => 'type of monument',
     'type_values' => [
         1 => 'dictionary',

@@ -36,6 +36,21 @@
                  'value' =>$url_args['search_is_printed'],
                  'attributes'=>['placeholder' => trans('monument.is_printed')]])
     </div>
+    <div class="col-sm-4">
+        <div class='flex-hor-group' style="justify-content: flex-start; flex-wrap: nowrap">
+            <span style='margin-right: 0.5rem'>{{ trans('messages.from') }}</span>
+            @include('widgets.form.formitem._text', 
+                    ['name' => 'search_publ_date_from',
+                     'value' => $url_args['search_publ_date_from'],
+                     'attributes'=> ['placeholder' => 'гггг']])  
+
+            <span style='margin: 0 0.5rem 0 2rem'>{{ trans('monument.to') }}</span>                         
+            @include('widgets.form.formitem._text', 
+                    ['name' => 'search_publ_date_to',
+                     'value' => $url_args['search_publ_date_to'],
+                     'attributes'=> ['placeholder' => 'гггг']])     
+        </div>
+    </div>
     <div class="col-sm-4 search-button-b">       
         <span>
         {{ trans('search.show_by') }}

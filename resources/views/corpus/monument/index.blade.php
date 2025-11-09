@@ -31,6 +31,7 @@
                 <th>No</th>
                 <th>{{ trans('corpus.name') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
+                <th>{{ trans('monument.publ_date') }}</th>
                 <th>{{ trans('messages.type') }}</th>
                 <th>{{ trans('monument.is_printed') }}</th>
                 @if (User::checkAccess('corpus.edit'))
@@ -49,6 +50,9 @@
                     @if ($monument->lang)
                         {{ $monument->lang->name }}
                     @endif
+                </td>
+                <td data-th="{{ trans('dict.lang') }}">
+                    {{ $monument->publ_date }}
                 </td>
                 <td data-th="{{ trans('messages.type') }}">
                     @if ($monument->type_id && isset(trans('monument.type_values')[$monument->type_id]) )

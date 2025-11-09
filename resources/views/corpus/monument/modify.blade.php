@@ -21,7 +21,7 @@
 @section('jqueryFunc')
     selectDialect('lang_id', '', true);
     
-    $('#publ_date_from').datepicker({
+/*    $('#publ_date_from').datepicker({
         format: 'mm.yyyy',       // формат отображения: 06.2025
         startView: 2,            // начинать с выбора года (0 = дни, 1 = месяцы, 2 = годы)
         minViewMode: 1,          // минимальный режим — выбор месяца
@@ -37,6 +37,6 @@
         autoclose: true,      
         language: 'ru',       
         todayHighlight: true
-    });
+    });*/
     
 @stop
