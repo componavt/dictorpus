@@ -52,7 +52,7 @@
                     @endif
                 </td>
                 <td data-th="{{ trans('dict.lang') }}">
-                    {{ $monument->publ_date }}
+                    {{ $monument->publ_date_brief }}
                 </td>
                 <td data-th="{{ trans('messages.type') }}">
                     @if ($monument->type_id && isset(trans('monument.type_values')[$monument->type_id]) )

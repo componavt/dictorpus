@@ -68,45 +68,78 @@ class Monument extends Model
         return $this->publ_date_to ? $this->publ_date_to->format('m.Y') : null;
     }
     
-    public function getPublDateAttribute() {
+    // Основной атрибут — с полными названиями
+    public function getPublDateAttribute()
+    {
+        return $this->formatPublicationDate();
+    }
+
+    // Краткий атрибут — с сокращёнными названиями
+    public function getPublDateBriefAttribute()
+    {
+        return $this->formatPublicationDate(true);
+    }    
+    
+    public function formatPublicationDate($brief = false) {
         $from = $this->publ_date_from; // Carbon|null
         $to   = $this->publ_date_to;   // Carbon|null
 
-        $format = function ($date) {
+        $months = trans('date.'.($brief ? 'mons' : 'months')); 
+
+        $format = function ($date) use ($months) {
             if (!$date) {
                 return null;
             }
-            return $date->formatLocalized('%B %Y');
+            return $months[$date->month] . ' ' . $date->year;
         };
 
         $fromStr = $format($from);
         $toStr   = $format($to);
 
-        if (!$fromStr && !$toStr) {
-            return null;
-        }
-
-        if ($fromStr && !$toStr) {
-            return $fromStr;
-        }
-
-        if (!$fromStr && $toStr) {
-            return $toStr;
-        }
-
-        if ($fromStr === $toStr) {
-            return $fromStr;
-        }
-
-        if (
-            $from && $to &&
-            $from->year === $to->year &&
+    // Отладка
+/*    \Log::info([
+        'from_year' => $from->year,
+        'from_month' => $from->month,
+        'to_year' => $to->year,
+        'to_month' => $to->month,
+        'is_full_century' => (
+            $from->year === 1801 &&
+            $to->year === 1900 &&
             $from->month === 1 &&
             $to->month === 12
-        ) {
+        ),
+        'centuryStart' => (floor(($from->year - 1) / 100) * 100) + 1,
+        'centuryEnd'   => (floor(($from->year - 1) / 100) * 100) + 1 + 99
+    ]);*/
+
+        if (!$fromStr && !$toStr) { return null; }
+        if ($fromStr && !$toStr)  { return $fromStr; }
+        if (!$fromStr && $toStr)  { return $toStr; }
+        if ($fromStr === $toStr)  { return $fromStr; }
+
+        // Правило: весь один год
+        if ($from && $to && $from->year === $to->year && $from->month === 1 && $to->month === 12) {
             return (string) $from->year;
         }
 
+        // Правило: несколько полных лет → "1841–1842"
+        if ($from && $to && $from->month === 1 && $to->month === 12) {
+
+            // Проверяем, охватывает ли диапазон ЦЕЛЫЙ век
+            $centuryStart = (int)(floor(($from->year - 1) / 100) * 100) + 1; // 1801
+            $centuryEnd   = (int)$centuryStart + 99;                         // 1900
+
+            if (
+                $from->year === $centuryStart &&
+                $to->year === $centuryEnd
+            ) {
+                $century = floor(($from->year - 1) / 100) + 1;
+                return $century . ' '.trans('date.'.($brief ? 'cen' : 'century'));
+            }
+
+            // Иначе — обычный диапазон годов
+            return $from->year . '–' . $to->year;
+        }
         return "$fromStr – $toStr";
     }
     
@@ -122,6 +155,8 @@ class Monument extends Model
             $value = preg_replace('/^(\d)\.(\d{4})$/', '0$1.$2', $value);
             try {
                 $date = Carbon::createFromFormat('m.Y', $value);
+                // Устанавливаем первый день месяца
+                $date->day(1);
                 // Laravel сам сохранит как Y-m-d благодаря касту 'date'
                 $this->attributes['publ_date_from'] = $date;
             } catch (\Exception $e) {
@@ -146,6 +181,8 @@ class Monument extends Model
             $value = preg_replace('/^(\d)\.(\d{4})$/', '0$1.$2', $value);
             try {
                 $date = Carbon::createFromFormat('m.Y', $value);
+                // Устанавливаем последний день месяца
+                $date->endOfMonth();
                 // Laravel сам сохранит как Y-m-d благодаря касту 'date'
                 $this->attributes['publ_date_to'] = $date;
             } catch (\Exception $e) {
