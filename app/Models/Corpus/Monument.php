@@ -137,7 +137,15 @@ class Monument extends Model
     
     public function setTypesAttribute($value)
     {
-        $this->attributes['types'] = $value ? json_encode($value) : null;
+        if (!$value) {
+            $this->attributes['types'] = null;
+            return;
+        }
+
+        // Преобразуем все элементы в целые числа
+        $intValues = array_map('intval', $value);
+
+        $this->attributes['types'] = json_encode($intValues);
     }
 
     public function setDialectIdAttribute($value)
