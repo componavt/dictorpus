@@ -31,6 +31,7 @@ return [
     'created' => 'создал(а)',
     'created_at' => 'дата создания',
     'created_success' => 'Создание успешно завершено',
+    'date' => 'дата',
     'delete' => 'удалить',
     'deleted' => 'удалил(а)',
     'delete_confirmation' => 'Подтверждение удаления',

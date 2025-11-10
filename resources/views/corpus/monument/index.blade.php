@@ -31,7 +31,7 @@
                 <th>No</th>
                 <th>{{ trans('corpus.name') }}</th>
                 <th>{{ trans('dict.lang') }}</th>
-                <th>{{ trans('monument.publ_date') }}</th>
+                <th>{{ trans('messages.date') }}</th>
                 <th>{{ trans('messages.type') }}</th>
                 <th>{{ trans('monument.is_printed') }}</th>
                 @if (User::checkAccess('corpus.edit'))

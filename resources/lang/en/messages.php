@@ -30,6 +30,7 @@ return [
     'created' => 'created',
     'created_at' => 'created at',
     'created_success' => 'Successfully created',
+    'date' => 'date',
     'delete' => 'delete',
     'deleted' => 'deleted',
     'delete_confirmation' => 'Delete confirmation',
