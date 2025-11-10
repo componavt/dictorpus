@@ -60,8 +60,7 @@
                  'values' =>$lang_values,
                  'value' => $monument ? $monument->langValue() : [],
                  'title' => trans('dict.lang'),
-                 'class' => 'select-lang form-control',
-                 'attributes' => ['id'=>'lang_id']])
+                 'class' => 'select-lang form-control'])
                  
         @include('widgets.form.formitem._select2', 
                 ['name' => 'dialect_id', 

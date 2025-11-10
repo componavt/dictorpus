@@ -19,7 +19,7 @@
 @stop
 
 @section('jqueryFunc')
-    selectDialect('lang_id', '', true);
+    selectDialect('langs', '', true);
     $(".select-lang").select2({});
     $(".select-type").select2({});
     
