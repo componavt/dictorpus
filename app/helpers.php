@@ -486,3 +486,37 @@ if (!function_exists('parse_date_mm_yyyy')) {
         return new \Carbon\Carbon("$year-$month-01");
     }
 }
+
+if (!function_exists('clean_int_array')) {
+    /**
+     * Очищает входной массив от пустых значений и возвращает массив целых чисел.
+     * Если результат пуст — возвращает null или [] (по флагу).
+     *
+     * @param mixed $value
+     * @param bool $returnNullIfEmpty
+     * @return array|null
+     */
+    function clean_int_array($value, $returnNullIfEmpty = true)
+    {
+        if (is_null($value) || $value === '') {
+            return $returnNullIfEmpty ? null : [];
+        }
+
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        // Удаляем пустые строки и null
+        $filtered = array_filter($value, function ($v) {
+            return $v !== '' && $v !== null;
+        });
+
+        // Преобразуем в целые числа
+        $ints = array_map('intval', $filtered);
+
+        // Сбрасываем ключи
+        $ints = array_values($ints);
+
+        return ($returnNullIfEmpty && empty($ints)) ? null : $ints;
+    }
+}

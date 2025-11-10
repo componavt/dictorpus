@@ -21,7 +21,7 @@
         <h2>{{ $monument->title }}</h2>
         
         @if ($monument->langs)
-        <p><b>{{ trans('monument.lang') }}:</b> {{ $monument->langsToString() }}@if ($monument->dialect), {{ $monument->dialect->name }}@endif</p>
+        <p><b>{{ trans('monument.lang') }}:</b> {{ $monument->langsAndDialectsToString() }}</p>
         @endif
         
         @if ($monument->place)
@@ -46,7 +46,7 @@
         @endif
         
         @if ($monument->has_trans !== null)
-        <p><b>{{ trans('monument.has_trans') }}:</b> {{ $monument->has_trans && !empty(trans('monument.has_trans_values')[$monument->has_trans]) 
+        <p><b>{{ trans('monument.has_trans') }}:</b> {{ !empty(trans('monument.has_trans_values')[$monument->has_trans]) 
             ? trans('monument.has_trans_values')[$monument->has_trans] : null }}</p>
         @endif
         

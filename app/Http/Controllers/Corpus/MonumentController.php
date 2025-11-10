@@ -48,7 +48,7 @@ class MonumentController extends Controller
         $monuments = $monuments->paginate($url_args['limit_num']);
         
         $lang_values = Lang::getList();
-        $dialect_values = Dialect::getList($url_args['search_lang']);
+        $dialect_values = Dialect::getList();
         
         return view('corpus.monument.index',
                     compact('dialect_values', 'lang_values', 'monuments', 'numAll',
@@ -66,7 +66,7 @@ class MonumentController extends Controller
         $url_args = $this->url_args;
         
         $lang_values = Lang::getList();
-        $dialect_values = [NULL=>'']+Dialect::getList($url_args['search_lang']);
+        $dialect_values = Dialect::getList($url_args['search_lang']);
         
         $action = 'create';
         
@@ -117,7 +117,7 @@ class MonumentController extends Controller
         $monument = Monument::find($id); 
         $lang_values = Lang::getList();
         
-        $dialect_values = [NULL=>'']+Dialect::getList($url_args['search_lang']);
+        $dialect_values = Dialect::getList($url_args['search_lang']);
         
         $action = 'edit';
         

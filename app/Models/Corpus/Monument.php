@@ -17,9 +17,9 @@ class Monument extends Model
     protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
 
     protected $fillable = ['author', 'title', 'place', 'publ_date_from', 
-        'publ_date_to', 'pages', 'bibl_descr', 'dialect_id', 
-        'graphic_id', 'has_trans', 'volume', 'types', 'is_printed', 'is_full', 
-        'dcopy_link', 'publ', 'study', 'archive', 'comment'];    
+        'publ_date_to', 'pages', 'bibl_descr', 'graphic_id', 'has_trans', 
+        'volume', 'types', 'is_printed', 'is_full', 'dcopy_link', 'publ', 
+        'study', 'archive', 'comment'];    
 
     protected $casts = [
         'publ_date_from' => 'date',
@@ -37,13 +37,10 @@ class Monument extends Model
     }
 
     // Scopes
-//    use \App\Traits\Scopes\SearchByType;
-    
-    // Belongs To Relations
-//    use \App\Traits\Relations\BelongsTo\Lang;
-    use \App\Traits\Relations\BelongsTo\Dialect;
+//    use \App\Traits\Scopes\SearchByType;    
 
     // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Langs;
     
     public function getGraphicNameAttribute() {
@@ -226,7 +223,23 @@ class Monument extends Model
         return join(', ', $list);
     }
     
+    public function langsAndDialectsToString()
+    {
+        $list = [];
+        
+        foreach ($this->langs as $lang) {
+            $dialects = [];
+            foreach ($this->dialects()->whereLangId($lang->id)->get() as $dialect) {
+                $dialects[] = $dialect->name;
+            }
+            $list[] = $lang->name. (sizeof($dialects) ? ' ('.join(', ', $dialects).')' : '');
+            
+        }
+        return join(', ', $list);
+    }
+    
     public function storeAdditionInfo($data){
         $this->langs()->sync($data['langs']);
+        $this->dialects()->sync($data['dialects']);
     }
 }

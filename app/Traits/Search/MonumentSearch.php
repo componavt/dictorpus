@@ -10,7 +10,7 @@ trait MonumentSearch
     
     public static function urlArgs($request) {
         $url_args = Str::urlArgs($request) + [
-                    'search_dialect' => (int)$request->input('search_dialect') ? (int)$request->input('search_dialect') : null,
+                    'search_dialect' => $request->input('search_dialect') ? clean_int_array($request->input('search_dialect')) : [],
                     'search_is_printed'     => (int)$request->input('search_is_printed') ? (int)$request->input('search_is_printed') : null,
                     'search_lang'     => (int)$request->input('search_lang') ? (int)$request->input('search_lang') : null,
                     'search_publ_date_from'     => (int)$request->input('search_publ_date_from') ? (int)$request->input('search_publ_date_from') : null,
@@ -25,13 +25,24 @@ trait MonumentSearch
     public static function search(Array $url_args) {
         $objs = self::orderBy('id', 'desc');
 
-        $objs = self::searchIntField($objs, 'dialect_id', $url_args['search_dialect']);
+        $objs = self::searchByDialect($objs, $url_args['search_dialect']);
         $objs = self::searchIntField($objs, 'is_printed', $url_args['search_is_printed']);
         $objs = self::searchByLang($objs, $url_args['search_lang']);
         $objs = self::searchByPublDate($objs, $url_args['search_publ_date_from'], $url_args['search_publ_date_to']);
         $objs = self::searchStrField($objs, 'title', $url_args['search_title']);
         $objs = self::searchByType($objs, $url_args['search_type']);
-        
+
+        return $objs;
+    }    
+    
+    public static function searchByDialect($objs, $dialect_id) {
+        if (empty($dialect_id) || !count($dialect_id)) {
+            return $objs;
+        }
+        $objs->whereIn('id', function ($q) use ($dialect_id) {
+            $q->select('monument_id')->from('dialect_monument')
+              ->whereIn('dialect_id', $dialect_id);
+        });
         return $objs;
     }    
     

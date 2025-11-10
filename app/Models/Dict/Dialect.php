@@ -84,7 +84,7 @@ class Dialect extends Model
         $dialects = self::orderBy('sequence_number');
         
         if ($lang_id) {
-            $dialects = $dialects->where('lang_id',$lang_id);
+            $dialects = $dialects->whereIn('lang_id',(array)$lang_id);
         }
         
         $dialects = $dialects->get();

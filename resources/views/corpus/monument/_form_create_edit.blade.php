@@ -63,11 +63,10 @@
                  'class' => 'select-lang form-control'])
                  
         @include('widgets.form.formitem._select2', 
-                ['name' => 'dialect_id', 
+                ['name' => 'dialects', 
                  'values' =>$dialect_values,
-                 'value' => $monument ? [$monument->dialect_id] : [],
+                 'value' => $monument ? $monument->dialectValue() : [],
                  'title' => trans('dict.dialect'),
-                 'is_multiple'=>false,
                  'class'=>'select-dialect form-control'
         ])
         
