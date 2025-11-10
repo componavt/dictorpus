@@ -20,6 +20,8 @@
 
 @section('jqueryFunc')
     selectDialect('lang_id', '', true);
+    $(".select-lang").select2({});
+    $(".select-type").select2({});
     
 /*    $('#publ_date_from').datepicker({
         format: 'mm.yyyy',       // формат отображения: 06.2025

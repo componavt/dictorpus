@@ -47,7 +47,7 @@ class MonumentController extends Controller
 
         $monuments = $monuments->paginate($url_args['limit_num']);
         
-        $lang_values = Lang::getListWithQuantity('monuments', !user_dict_edit());
+        $lang_values = Lang::getList();
         $dialect_values = Dialect::getList($url_args['search_lang']);
         
         return view('corpus.monument.index',
@@ -137,6 +137,7 @@ class MonumentController extends Controller
     {
         $monument = Monument::find($id);
         $monument->fill($request->all())->save();
+        $monument->storeAdditionInfo($request->all());
         
         return Redirect::to('/corpus/monument/'.$monument->id)
             ->withSuccess(\Lang::get('messages.updated_success'));        

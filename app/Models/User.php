@@ -48,19 +48,13 @@ class User extends EloquentUser
         return $this->first_name . ' '. $this->last_name;
     }
          
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Dialects;
+    use \App\Traits\Relations\BelongsToMany\Langs;
+    
     // User __has_many__ Roles
     public function roles(){
         return $this->belongsToMany(Role::class, 'role_users');
-    }
-    
-    // User __has_many__ Langs
-    public function langs(){
-        return $this->belongsToMany(Lang::class, 'lang_user');
-    }
-    
-    // User __has_many__ Langs
-    public function dialects(){
-        return $this->belongsToMany(Dialect::class, 'dialect_user');
     }
     
     public static function currentUser(){
@@ -128,11 +122,11 @@ class User extends EloquentUser
     }
     
     /**
-     * Gets a list of languages for the user.
+     * Gets a list of languages for model.
      *
      * @return string
      */
-    public function langString()
+/*    public function langString()
     {
         $langs = $this->langs;
         $list = [];
@@ -141,7 +135,7 @@ class User extends EloquentUser
             $list[] = $lang->name;
         }
         return join(', ', $list);
-    }
+    }*/
     
     /**
      * Gets a list of names of roles for the user.
@@ -154,36 +148,6 @@ class User extends EloquentUser
         return self::where('id',$user_id)->first()->rolesNames();
     }
     
-    /**
-     * Gets IDs of langs for lang's form field
-     *
-     * @return Array
-     */
-    public function langValue():Array{
-        $value = [];
-        if ($this->langs) {
-            foreach ($this->langs as $lang) {
-                $value[] = $lang->id;
-            }
-        }
-        return $value;
-    }
-
-    /**
-     * Gets IDs of dialects for lang's form field
-     *
-     * @return Array
-     */
-    public function dialectValue():Array{
-        $value = [];
-        if ($this->dialects) {
-            foreach ($this->dialects as $dialect) {
-                $value[] = $dialect->id;
-            }
-        }
-        return $value;
-    }
-
     public function permValue():Array {        
         $user_perms = $this->permissions;
 

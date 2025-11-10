@@ -20,8 +20,8 @@
         @endif
         <h2>{{ $monument->title }}</h2>
         
-        @if ($monument->lang)
-        <p><b>{{ trans('monument.lang') }}:</b> {{ $monument->lang->name }}@if ($monument->dialect), {{ $monument->dialect->name }}@endif</p>
+        @if ($monument->langs)
+        <p><b>{{ trans('monument.lang') }}:</b> {{ $monument->langsToString() }}@if ($monument->dialect), {{ $monument->dialect->name }}@endif</p>
         @endif
         
         @if ($monument->place)
@@ -54,9 +54,8 @@
         <p><b>{{ trans('monument.volume') }}:</b> {{ $monument->volume }}</p>
         @endif
         
-        @if ($monument->type_id)
-        <p><b>{{ trans('monument.type') }}:</b> {{ isset(trans('monument.type_values')[$monument->type_id]) 
-            ? trans('monument.type_values')[$monument->type_id] : null }}</p>
+        @if ($monument->types)
+        <p><b>{{ trans('monument.type') }}:</b> {{ $monument->typesToString() }}</p>
         @endif
         
         @if ($monument->is_printed !== null)

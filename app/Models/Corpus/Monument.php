@@ -5,10 +5,10 @@ namespace App\Models\Corpus;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-use App\Library\Str;
-
 class Monument extends Model
 {
+    use \App\Traits\Search\MonumentSearch;
+    
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -17,8 +17,8 @@ class Monument extends Model
     protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
 
     protected $fillable = ['author', 'title', 'place', 'publ_date_from', 
-        'publ_date_to', 'pages', 'bibl_descr', 'lang_id', 'dialect_id', 
-        'graphic_id', 'has_trans', 'volume', 'type_id', 'is_printed', 'is_full', 
+        'publ_date_to', 'pages', 'bibl_descr', 'dialect_id', 
+        'graphic_id', 'has_trans', 'volume', 'types', 'is_printed', 'is_full', 
         'dcopy_link', 'publ', 'study', 'archive', 'comment'];    
 
     protected $casts = [
@@ -27,6 +27,7 @@ class Monument extends Model
         'has_trans' => 'boolean',
         'is_printed' => 'boolean',
         'is_full' => 'boolean',
+        'types' => 'array',
     ];
     
     
@@ -35,13 +36,15 @@ class Monument extends Model
         parent::boot();
     }
 
-    // Belongs To Relations
-    use \App\Traits\Relations\BelongsTo\Lang;
-    use \App\Traits\Relations\BelongsTo\Dialect;
+    // Scopes
+//    use \App\Traits\Scopes\SearchByType;
     
-    // Methods
-    use \App\Traits\Methods\search\strField;
-    use \App\Traits\Methods\search\intField;
+    // Belongs To Relations
+//    use \App\Traits\Relations\BelongsTo\Lang;
+    use \App\Traits\Relations\BelongsTo\Dialect;
+
+    // Belongs To Many Relations
+    use \App\Traits\Relations\BelongsToMany\Langs;
     
     public function getGraphicNameAttribute() {
         if (!empty($this->graphic_id) && !empty(trans('monument.graphic_values')[$this->graphic_id])) {
@@ -49,17 +52,11 @@ class Monument extends Model
         }
     }
 
-    public function getTypeAttribute() {
-        if (!empty($this->type_id) && !empty(trans('monument.type_values')[$this->type_id])) {
-            return trans('monument.type_values')[$this->type_id];
-        }
+    public function getTypesAttribute($value)
+    {
+        return $value ? json_decode($value, true) : [];
     }
 
-    public function setDialectIdAttribute($value)
-    {
-        $this->attributes['dialect_id'] = empty($value) ? null : $value;
-    }
-    
     public function getPublDateFromForFormAttribute() {
         return $this->publ_date_from ? $this->publ_date_from->format('m.Y') : null;
     }
@@ -87,9 +84,7 @@ class Monument extends Model
         $months = trans('date.'.($brief ? 'mons' : 'months')); 
 
         $format = function ($date) use ($months) {
-            if (!$date) {
-                return null;
-            }
+            if (!$date) { return null; }
             return $months[$date->month] . ' ' . $date->year;
         };
 
@@ -129,10 +124,7 @@ class Monument extends Model
             $centuryStart = (int)(floor(($from->year - 1) / 100) * 100) + 1; // 1801
             $centuryEnd   = (int)$centuryStart + 99;                         // 1900
 
-            if (
-                $from->year === $centuryStart &&
-                $to->year === $centuryEnd
-            ) {
+            if ( $from->year === $centuryStart && $to->year === $centuryEnd) {
                 $century = floor(($from->year - 1) / 100) + 1;
                 return $century . ' '.trans('date.'.($brief ? 'cen' : 'century'));
             }
@@ -141,6 +133,16 @@ class Monument extends Model
             return $from->year . '–' . $to->year;
         }
         return "$fromStr – $toStr";
+    }
+    
+    public function setTypesAttribute($value)
+    {
+        $this->attributes['types'] = $value ? json_encode($value) : null;
+    }
+
+    public function setDialectIdAttribute($value)
+    {
+        $this->attributes['dialect_id'] = empty($value) ? null : $value;
     }
     
     public function setPublDateFromAttribute($value) {
@@ -194,74 +196,29 @@ class Monument extends Model
             $this->attributes['publ_date_to'] = $value;
         }
     }
-    
-    public static function urlArgs($request) {
-        $url_args = Str::urlArgs($request) + [
-                    'search_dialect' => (int)$request->input('search_dialect') ? (int)$request->input('search_dialect') : null,
-                    'search_is_printed'     => (int)$request->input('search_is_printed') ? (int)$request->input('search_is_printed') : null,
-                    'search_lang'     => (int)$request->input('search_lang') ? (int)$request->input('search_lang') : null,
-                    'search_publ_date_from'     => (int)$request->input('search_publ_date_from') ? (int)$request->input('search_publ_date_from') : null,
-                    'search_publ_date_to'     => (int)$request->input('search_publ_date_to') ? (int)$request->input('search_publ_date_to') : null,
-                    'search_title' => $request->input('search_title'),
-                    'search_type'     => (int)$request->input('search_type') ? (int)$request->input('search_type') : null,
-                ];
-        
-        return $url_args;
-    }    
-    
-    public static function search(Array $url_args) {
-        $objs = self::orderBy('id', 'desc');
 
-        $objs = self::searchIntField($objs, 'dialect_id', $url_args['search_dialect']);
-        $objs = self::searchIntField($objs, 'is_printed', $url_args['search_is_printed']);
-        $objs = self::searchIntField($objs, 'lang_id', $url_args['search_lang']);
-        $objs = self::searchStrField($objs, 'title', $url_args['search_title']);
-        $objs = self::searchIntField($objs, 'type_id', $url_args['search_type']);
-        $objs = self::searchByPublDate($objs, $url_args['search_publ_date_from'], $url_args['search_publ_date_to']);
-        
-        return $objs;
-    }    
-    
-    public static function searchByPublDate($objs, $fromYear, $toYear) {
-        if ($fromYear) {
-            $from = new \Carbon\Carbon("$fromYear-01-01");
-            if ($from) {
-                // Ищем памятники, у которых НАЧАЛО <= искомого КОНЦА
-                // Но у нас диапазон — поэтому:
-                $objs->where(function ($q) use ($from) {
-                    // Вариант 1: publ_date_from известна → она >= $from
-                    $q->where(function ($q2) use ($from) {
-                        $q2->whereNotNull('publ_date_from')
-                           ->whereDate('publ_date_from', '>=', $from->toDateString());
-                    })
-                    // Вариант 2: только publ_date_to известна → она >= $from
-                    ->orWhere(function ($q2) use ($from) {
-                        $q2->whereNull('publ_date_from')
-                           ->whereNotNull('publ_date_to')
-                           ->whereDate('publ_date_to', '>=', $from->toDateString());
-                    });
-                });
+/*    public function typeValue():Array{
+        $value = [];
+        if ($this->types) {
+            foreach ($this->types as type) {
+                $value[] = $lang->id;
             }
         }
-
-        if ($toYear) {
-            $to = new \Carbon\Carbon("$toYear-12-31");
-            if ($to) {
-                $objs->where(function ($q) use ($to) {
-                    $q->where(function ($q2) use ($to) {
-                        $q2->whereNotNull('publ_date_to')
-                           ->whereDate('publ_date_to', '<=', $to->toDateString());
-                    })
-                    ->orWhere(function ($q2) use ($to) {
-                        $q2->whereNull('publ_date_to')
-                           ->whereNotNull('publ_date_from')
-                           ->whereDate('publ_date_from', '<=', $to->toDateString());
-                    });
-                });
-            }
-
+        return $value;
+    }*/
+    
+    public function typesToString()
+    {
+        $list = [];
+        $type_values = trans('monument.type_values');
+        
+        foreach ($this->types as $type_id) {
+            $list[] = isset($type_values[$type_id]) ? $type_values[$type_id] : null;
         }
-//dd(to_sql($objs));        
-        return $objs;
+        return join(', ', $list);
+    }
+    
+    public function storeAdditionInfo($data){
+        $this->langs()->sync($data['langs']);
     }
 }

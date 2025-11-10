@@ -36,8 +36,12 @@ class Gramset extends Model
     
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\PartsOfSpeech;
-    use \App\Traits\Relations\BelongsToMany\Langs;
 
+    public function langs()
+    {
+        return $this->belongsToMany(Lang::class,'gramset_pos','gramset_id','lang_id');
+    }
+    
     public function lemmas($pos_id='', $lang_id=''){
         $builder = $this->belongsToMany(Lemma::class,'lemma_wordform');
         if ($pos_id) {

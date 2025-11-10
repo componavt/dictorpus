@@ -55,10 +55,12 @@
                  'title'=>trans('monument.comment')])     
     </div>
     <div class="col-sm-4">
-        @include('widgets.form.formitem._select', 
-                ['name' => 'lang_id', 
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'langs', 
                  'values' =>$lang_values,
+                 'value' => $monument ? $monument->langValue() : [],
                  'title' => trans('dict.lang'),
+                 'class' => 'select-lang form-control',
                  'attributes' => ['id'=>'lang_id']])
                  
         @include('widgets.form.formitem._select2', 
@@ -84,9 +86,11 @@
                  'values' =>trans('monument.has_trans_values'),
                  'title' => trans('monument.has_trans')])
                  
-        @include('widgets.form.formitem._select', 
-                ['name' => 'type_id', 
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'types', 
                  'values' =>[NULL=>'']+trans('monument.type_values'),
+                 'value' => $monument ? $monument->types : [],
+                 'class' => 'select-type form-control',
                  'title' => trans('monument.type')])
                  
         @include('widgets.form.formitem._radio', 

@@ -47,17 +47,13 @@
                     <a href="{{ route('monument.show', $monument->id) }}">{{ $monument->title }}</a>
                 </td>
                 <td data-th="{{ trans('dict.lang') }}">
-                    @if ($monument->lang)
-                        {{ $monument->lang->name }}
-                    @endif
+                    {{ $monument->langsToString() }}
                 </td>
                 <td data-th="{{ trans('dict.lang') }}">
                     {{ $monument->publ_date_brief }}
                 </td>
                 <td data-th="{{ trans('messages.type') }}">
-                    @if ($monument->type_id && isset(trans('monument.type_values')[$monument->type_id]) )
-                        {{ trans('monument.type_values')[$monument->type_id] }}
-                    @endif
+                    {{ $monument->typesToString() }}
                 </td>
                 <td data-th="{{ trans('messages.is_printed') }}">
                     @if (isset(trans('monument.is_printed_values')[$monument->is_printed]) )
