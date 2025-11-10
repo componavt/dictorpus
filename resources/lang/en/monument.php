@@ -44,8 +44,11 @@ return [
     'type' => 'type of monument',
     'type_values' => [
         1 => 'dictionary',
-        2 => 'translation',
+        4 => 'folklore text',
         3 => 'grammar essay',
+        5 => 'speech sample',
+        2 => 'translation',
+//        6 => '',
     ],
     'volume' => 'volume of Karelian/Vepsian text (words)',
 ];
