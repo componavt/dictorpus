@@ -32,11 +32,11 @@
         @if (User::checkAccess('dict.edit'))
             | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/create') }}{{$args_by_get}}">{{ trans('messages.create_new_f') }}</a>
             | <a href="#" onClick="callCreatePhonetic()">{{ trans('dict.create_phonetic') }}</a>
+            | <a href="/dict/lemma/{{ $lemma->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
         @else
             | {{ trans('messages.edit') }}
         @endif
 
-            | <a href="/dict/lemma/{{ $lemma->id }}/history{{$args_by_get}}">{{ trans('messages.history') }}</a>
         </p>
 
         @include('dict.lemma.show._title')
