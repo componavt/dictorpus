@@ -46,7 +46,7 @@ class LemmaController extends Controller
     {
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:dict.add,/dict/lemma/', 
-                ['only' => ['create','store', 'createPhonetic']]);
+                ['only' => ['create','store', 'createPhonetic', 'history']]);
         $this->middleware('auth:dict.edit,/dict/lemma/', 
                 ['only' => ['edit','update','destroy',
                             'editExample', 'removeExample',

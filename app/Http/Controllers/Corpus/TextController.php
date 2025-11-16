@@ -48,7 +48,7 @@ class TextController extends Controller
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware('auth:corpus.edit,/corpus/text/', 
-                         ['only' => ['create','store','edit','update','destroy', 'stats',
+                         ['only' => ['create','store','edit','update','destroy', 'history', 'stats',
                                      'addExample', 'checkSentences', 'editExample', 'updateExamples', 
                                      'editSentences', 'photos', 'updatePhotos', 'deletePhoto',                                     
                                      'markupText', 'markupAllEmptyTextXML','markupAllTexts', 'concordance']]);
