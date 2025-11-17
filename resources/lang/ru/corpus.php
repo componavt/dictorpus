@@ -139,6 +139,8 @@ return [
     
     'select_corpus' => 'Выберите корпус',
     'sentences' => 'Предложения',
+    'show_gram_markup' => 'Показать граматическую разметку',
+    'show_meaning_markup' => 'Показать семантическую разметку',
     
     'source' => 'Источник',
     'source_author' => 'Автор публикации',

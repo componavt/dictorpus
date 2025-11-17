@@ -138,6 +138,8 @@ return [
     
     'select_corpus' => 'Select corpus',
     'sentences' => 'Sentences',
+    'show_gram_markup' => 'Show grammatic markup',
+    'show_meaning_markup' => 'Show semantic markup',
     
     'source' => 'Source',
     'source_author' => 'publication author',

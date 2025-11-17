@@ -208,7 +208,7 @@ trait TextWordBlock
         if (!empty($meanings['checked'])) {
             $word_class .= ' meaning-checked';
         } elseif (!empty($meanings['unchecked']) && count($meanings['unchecked'])>1) {
-            $word_class .= ' polysemy';                
+            $word_class .= ' meaning-polysemy';                
         } else {
             $word_class .= ' meaning-not-checked';
         }
@@ -216,7 +216,11 @@ trait TextWordBlock
         if (!empty($gramsets['checked'])) {
             $word_class .= ' gramset-checked';
         } elseif (!empty($gramsets['unchecked'])) {
-            $word_class .= ' gramset-not-checked';            
+            if (count($gramsets['unchecked'])>1) {
+                $word_class .= ' gramset-polysemy';                
+            } else {
+                $word_class .= ' gramset-not-checked';            
+            }
         } else {
             $word_class .= ' no-gramsets';
         }

@@ -36,21 +36,6 @@ s {
     color: #2eaf38; 
 }
 
-/*  meanings is not checked and the lemma has one meaning = blue */
-.lemma-linked.meaning-not-checked {
-    color: #337ab7;
-}
-
-.lemma-linked.meaning-checked.gramset-not-checked,
-.lemma-linked.meaning-not-checked.gramset-checked{
-    color: #2eafaf;
-}
-
-/* meanings is not checked and the lemma has than one meaning = red */
-.lemma-linked.polysemy {
-    color: red;
-}
-
 .lemma-linked p {
     margin: 0;
 }

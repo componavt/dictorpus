@@ -228,7 +228,18 @@ class TextController extends Controller
                           'text', 'wordforms', 'words_with_important_examples', 'args_by_get', 'url_args'));
     }
     
-    public function editSentences($id) {
+    public function editSentences($id, Request $request) {
+        $url_args = $this->url_args;
+        $url_args['wblock_preloaded'] = true;
+        $color = $request->color;
+        if ($color != 'gram') {
+            $url_args['color'] = 'gram'; // для переключения противоположное
+        } else {
+            $url_args['color'] = 'meaning';            
+        }
+//dd($color);        
+        $args_by_get = search_values_by_URL(remove_empty($url_args));
+        
         $text = Text::find($id);       
         if (!$text) {
             return Redirect::to('/corpus/text/')
@@ -243,15 +254,11 @@ class TextController extends Controller
         $pos_values = PartOfSpeech::getGroupedList();   
         
         $trans_sentences = $text->transtext ? $text->transtext->getSentencesFromXML() : [];
-        
-        $args_by_get = $this->args_by_get;
-        $url_args = $this->url_args;
-        $url_args['wblock_preloaded'] = true;
-        
+                
         list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) = $text->meaningsGramsetsByWid();
 //dd($meanings_by_wid);        
         return view('corpus.text.sentences',
-                compact('dialect_value', 'dialect_values', 'gramsets_by_wid', 
+                compact('color', 'dialect_value', 'dialect_values', 'gramsets_by_wid', 
                         'langs_for_meaning', 'meanings_by_wid',
                         'pos_id', 'pos_values', 'sentences', 'text', 
                         'trans_sentences', 'wordforms', 'words_with_important_examples', 'args_by_get', 'url_args'));

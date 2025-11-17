@@ -7,6 +7,7 @@
 @section('headExtra')
     {!!Html::style('css/lemma.css')!!}
     {!!Html::style('css/text.css')!!}
+    {!!Html::style('css/'.$color.'_color.css')!!}
     {!!Html::style('css/select2.min.css')!!}
 @stop
 
@@ -18,6 +19,7 @@
             | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}">{{ trans('messages.back_to_show') }}</a>            
         @if (user_corpus_edit())
             | @include('widgets.form.button._edit', ['route' => '/corpus/text/'.$text->id.'/edit'])
+            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/sentences') }}{{$args_by_get}}">{{ trans('corpus.show_'.$url_args['color'].'_markup') }}</a>
         @else
             | {{ trans('messages.edit') }}
         @endif 
