@@ -37,6 +37,7 @@ return [
     'of_texts' => 'texts',
     'of_them' => '',//of them
     'of_translations' => 'translations',
+    'of_variants' => 'variant|variants',
     'of_wordforms' => 'wordforms',
 
     'stats_by_genre' => 'Stats by genres',
@@ -54,6 +55,7 @@ return [
     'total_checked_examples' => 'Number of verified examples',
     'total_checked_words' => 'The number of words in the text (green color), anchored by experts to any meaning of the word in the dictionary',
     'checked_words_in_text' => 'The number of verified words by experts',
+    'total_homonyms' => 'Total grammatical homonyms',
     'total_lemmas' => 'Total lemmas',
     'total_marked_words' => 'The number of marked words in the texts, i.e. automatically linked to any lemma in the dictionary',
     'marked_words_in_text' => 'The number of marked words',

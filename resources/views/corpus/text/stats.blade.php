@@ -15,6 +15,9 @@
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/').$args_by_get}}">{{ trans('messages.back_to_list') }}</a> |
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/').$args_by_get }}">{{ trans('messages.back_to_show') }}</a>            
         @if (user_corpus_edit())
+            | @include('widgets.form.button._edit', 
+                     ['route' => '/corpus/text/'.$text->id.'/sentences',
+                      'link_text' => ' '.mb_strtolower(trans('corpus.sentences'))])
             | <a href="{{ route('text.concordance', $text) }}">{{ trans('navigation.concordance') }}</a>
             | <b>Аннотированный текст</b> (@foreach (range(1,3) as $type)
             <a href="/service/export/text/{{ $text->id }}/annotated/{{ $type }}">{{ $type }} вариант</a>@if ($type<3),@endif 
@@ -35,7 +38,15 @@
             {{trans('stats.total_lemmas')}}: <b>{{$totalLemmas}}</b>, {{trans('stats.of_them')}}
             @foreach ($lemmas_by_pos as $name=>$info)
                 <br><span style='margin-left:42px;'>{{$name}}: <b>{{$info['count']}}</b> ({{$info['%']}}%)</span>
+            @endforeach   
+            
+        <p>
+            {{trans('stats.total_homonyms')}}: <b>{{ $homonyms->sum('total_words') }}</b>, {{trans('stats.of_them')}}
+            @foreach ($homonyms as $info)
+                <br><span style='margin-left:42px;'>{{ $info->homonym_count }} {{ trans_choice('stats.of_variants', $info->homonym_count) }}: 
+                    <b>{{ $info->total_words }}</b></span>
             @endforeach        
+            
         <p style='font-style: italic; text-align: right'>{{date('d-m-Y')}}</p>
         
         

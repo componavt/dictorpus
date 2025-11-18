@@ -23,6 +23,7 @@
         @else
             | {{ trans('messages.edit') }}
         @endif 
+            | <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.'/stats') }}">{{ trans('navigation.stats') }}</a>            
         </p>
         
         <h2>

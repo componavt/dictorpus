@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Response;
-//use DB;
+use DB;
 
 use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
@@ -232,10 +232,12 @@ class TextController extends Controller
         $url_args = $this->url_args;
         $url_args['wblock_preloaded'] = true;
         $color = $request->color;
-        if ($color != 'gram') {
-            $url_args['color'] = 'gram'; // для переключения противоположное
-        } else {
+        if ($color != 'meaning') {
             $url_args['color'] = 'meaning';            
+            $color = 'gram';
+        } else {
+            $url_args['color'] = 'gram'; // для переключения противоположное
+            $color = 'meaning';
         }
 //dd($color);        
         $args_by_get = search_values_by_URL(remove_empty($url_args));
@@ -842,8 +844,39 @@ class TextController extends Controller
             $pos = PartOfSpeech::find($row->pos_id);
             $lemmas_by_pos[$pos->name] = ['count'=>$row->count, '%'=>round(100 * $row->count / $totalLemmas)];
         }
+
+/*SELECT 
+    inner_query.count AS homonym_count, 
+    COUNT(inner_query.w_id) AS total_words
+FROM (
+    SELECT w_id, COUNT(*) AS count 
+    FROM text_wordform 
+    WHERE text_id = 3821 
+    GROUP BY w_id 
+    HAVING COUNT(*) > 1
+) AS inner_query
+GROUP BY inner_query.count
+ORDER BY homonym_count;*/        
+
+        $homonyms = DB::table(DB::raw('(
+            SELECT w_id, COUNT(*) AS count 
+            FROM text_wordform 
+            WHERE text_id = ?
+            GROUP BY w_id 
+            HAVING COUNT(*) > 1
+        ) AS inner_query'))
+        ->setBindings([$id]) // Привязываем значение text_id
+        ->selectRaw('inner_query.count AS homonym_count, COUNT(inner_query.w_id) AS total_words')
+        ->groupBy('inner_query.count')
+        ->orderBy('homonym_count')
+        ->get();    
+        // Превращаем в коллекцию, если это массив
+        if (!is_object($homonyms) || !method_exists($homonyms, 'sum')) {
+            $homonyms = collect($homonyms);
+        }        
+        
         return view('corpus.text.stats', 
-                compact('checked_words', 'checkedWordsToMarked', 'lemmas_by_pos', 
+                compact('checked_words', 'checkedWordsToMarked', 'homonyms', 'lemmas_by_pos', 
                         'markedWords', 'markedWordsToAll', 'text', 'totalLemmas', 
                         'totalWords', 'args_by_get'));
     }
