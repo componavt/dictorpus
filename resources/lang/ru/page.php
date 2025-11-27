@@ -226,8 +226,9 @@ return [
                   . '"Olipa kerran koira (ukrainalaini starina)" (<a href="/images/permissions/vorobey.jpg">23.10.2020</a>).</p>'
     
                   . '<p>От <b>А.Н. Гапеевой</b> на использование в проекте ВепКар статей за 2024-2025 '
-                  . '(<a href="/docs/permissions/gapeeva.pdf">5.08.2025</a>) и за 2018-2025 '
-                  . '(<a href="/docs/permissions/gapeeva_2025-10.pdf">15.10.2025</a>).</p>'
+                  . '(<a href="/docs/permissions/gapeeva.pdf">5.08.2025</a>), за 2018-2025 '
+                  . '(<a href="/docs/permissions/gapeeva_2025-10.pdf">15.10.2025</a>) за 2021-2025 '
+                  . '(<a href="/images/permissions/gapeeva.jpg">22.11.2025</a>).</p>'
     
                   . '<p>от <b>Л.Г. Громовой</b> на использование в проекте ВепКар текстов в учебном пособии для чтения и говорения на карельском языке (тверской говор) '
                   . '"Aiga lugie i paissa karielakši" (<a href="/images/permissions/gromova_aiga.jpg">18.03.2024</a>) '
