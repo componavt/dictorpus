@@ -70,6 +70,7 @@ class SentenceController extends Controller
         $script_start = microtime(true);
 
         $url_args['words'] = Sentence::preparedWordsForSearch($url_args['search_words']);
+//dd($url_args['words']);        
         $search_query=Sentence::searchQueryToString($url_args);
         $entry_number = $numAll = 0;
         $text_sentences =[];
@@ -79,6 +80,7 @@ class SentenceController extends Controller
         } else {
             $refine = false;
             list($entry_number, $sentence_builder) = Sentence::entryNumber($url_args); // считаем количество вхождений
+//dd($entry_number);            
             if ($entry_number>0) {
                 $texts = Text::whereIn('id', array_unique($sentence_builder->pluck('text1_id')));
                 $numAll = $texts->count();
