@@ -237,6 +237,9 @@ return [
                   . '<p>От <b>М.В. Дубинской</b> на использование в проекте ВепКар текста произведения В.В. Иванова "Третий родник" '
                   . '(<a href="/docs/permissions/dubinskaya_kibir.pdf">2.07.2025</a>).</p>'
     
+                  . '<p>От <b>О.А. Дубицкой</b> на использование в проекте ВепКар  статей и переводов, опубликованных в газете "Oma Mua" '
+                  . '(<a href="/images/permissions/dubitskaya.jpg">6.12.2025</a>).</p>'
+    
                   . '<p>От <b>Н.Г. Зайцевой</b> на использование в проекте ВепКар сборников "Izo Lizoi", "Vauktan unen süles", "Virantanaz", "Minun vepsläine oza" '
                   . '(<a href="/docs/permissions/zaitseva.pdf">24.06.2025</a>).</p>'
     
