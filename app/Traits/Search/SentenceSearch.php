@@ -570,13 +570,17 @@ public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = []
             return DB::table('words')->whereRaw('1=0');
         }
 
-        return DB::table(DB::raw('(' . implode(',', $finalResults->pluck('sentence1_id')->map(fn($id) => "($id)") . ')') . ') as fake'))
+        return DB::table(DB::raw('(' . implode(',', $finalResults->pluck('sentence1_id')->map(function($id) { 
+            return "($id)";
+        }). ')') . ') as fake'))
             ->selectRaw('text1_id, sentence1_id, w1_id, w2_id, w3_id')
             ->whereIn('sentence1_id', $finalResults->pluck('sentence1_id')->toArray());
     }
 
     // Если только 2 слова — возвращаем пары
-    return DB::table(DB::raw('(' . implode(',', $pairResults->pluck('sentence1_id')->map(fn($id) => "($id)") . ')') . ') as fake'))
+    return DB::table(DB::raw('(' . implode(',', $pairResults->pluck('sentence1_id')->map(function($id) { 
+            return "($id)";
+        }) . ')') . ') as fake'))
         ->selectRaw('text1_id, sentence1_id, w1_id, w2_id')
         ->whereIn('sentence1_id', $pairResults->pluck('sentence1_id')->toArray());
 }    
