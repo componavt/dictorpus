@@ -242,6 +242,31 @@ function selectTopic(plot_var='search_plot', placeholder='', allow_clear=false){
     });   
 }
 
+function selectEventDistrict(region_var='search_event_region', placeholder='', allow_clear=false){
+    $(".select-event-district").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/district/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              region_id: $("#" + region_var).val()
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
 function selectDistrict(region_var='search_region', placeholder='', allow_clear=false){
     $(".select-district").select2({
         allowClear: allow_clear,

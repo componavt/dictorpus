@@ -55,6 +55,7 @@
     selectPlot('.multiple-select-plot', 'search_genre');
     selectTopic('search_plot');
     selectGenre();
+    selectEventDistrict();
     selectDistrict();
     selectEventPlace();
     selectPlace();
