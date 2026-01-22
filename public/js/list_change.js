@@ -267,6 +267,32 @@ function selectDistrict(region_var='search_region', placeholder='', allow_clear=
     });   
 }
 
+function selectEventPlace(district_var='search_event_district', region_var='search_event_region', placeholder='', allow_clear=false){
+    $(".select-event-place").select2({
+        allowClear: allow_clear,
+        placeholder: placeholder,
+        width: '100%',
+        ajax: {
+          url: "/corpus/place/list",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              region_id: $("#" + region_var).val(),
+              district_id: selectedValuesToURL("#" + district_var)
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },          
+          cache: true
+        }
+    });   
+}
+
 function selectPlace(district_var='search_district', region_var='search_region', placeholder='', allow_clear=false){
     $(".select-place").select2({
         allowClear: allow_clear,

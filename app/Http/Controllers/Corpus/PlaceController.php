@@ -219,7 +219,7 @@ class PlaceController extends Controller
                     foreach ($place->other_names as $other_name) {
                        $other_name->delete();
                     }
-                    if ($place->texts()->count() >0) {
+                    if (!empty($place->texts()->count()) || !empty($place->eventTexts()->count())) {
                         $error = true;
                         $result['error_message'] = \Lang::get('messages.text_exists');
                     } elseif ($place->informants()->count() >0) {

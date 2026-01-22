@@ -50,6 +50,10 @@
         </p>
         @endif
         
+        @if ($text->placesToString())
+        <p><b>{{trans('corpus.place_mentioned')}}:</b> <i>{!! $text->placesToString('/corpus/text?search_place=') !!}</i></p>
+        @endif
+        
         @if ($text->comment)
         <p>{{$text->comment}}</p>
         @endif

@@ -10,6 +10,14 @@
 
 @include('corpus.text.form._event')
 
+@include('widgets.form.formitem._select2', 
+        ['name' => 'places', 
+         'values' =>$place_values,
+         'value' => !empty($text) ? $text->placeValue() : [],
+         'call_add_onClick' => "addPlace('place_id')",
+         'call_add_title' => trans('messages.create_new_g'),
+         'title' => trans('corpus.place_mentioned')]) 
+                 
 <br>
 @include('widgets.form.formitem._submit', ['title' => $submit_title])
     </div>

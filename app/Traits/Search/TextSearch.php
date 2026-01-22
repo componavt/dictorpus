@@ -20,6 +20,9 @@ trait TextSearch
                     'search_cycle'     => (array)$request->input('search_cycle'),
                     'search_dialect'  => (array)$request->input('search_dialect'),
                     'search_district'  => (array)$request->input('search_district'),
+                    'search_event_district'  => (array)$request->input('search_event_district'),
+                    'search_event_place'    => (array)$request->input('search_event_place'),
+                    'search_event_region' => $request->input('search_event_region'),
                     'search_genre'    => (array)$request->input('search_genre'),
                     'search_informant'=> $request->input('search_informant'),
                     'search_lang'     => (array)$request->input('search_lang'),
@@ -63,6 +66,7 @@ trait TextSearch
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
         $texts = self::searchByInformant($texts, $url_args['search_informant']);
         $texts = self::searchByLang($texts, $url_args['search_lang']);
+        $texts = self::searchByEventPlace($texts, $url_args['search_event_place'], $url_args['search_event_district'], $url_args['search_event_region']);
         $texts = self::searchByPlace($texts, $url_args['search_place'], $url_args['search_district'], $url_args['search_region']);
         $texts = self::searchByRecorder($texts, $url_args['search_recorder']);
         $texts = self::searchByTitle($texts, $url_args['search_title']);
@@ -278,7 +282,7 @@ trait TextSearch
         return $texts->whereIn('lang_id',$langs);
     }
     
-    public static function searchByPlace($texts, $places, $districts, $region) {
+    public static function searchByEventPlace($texts, $places, $districts, $region) {
         if (!sizeof($places) && !sizeof($districts) && !$region) {
             return $texts;
         }
@@ -302,6 +306,32 @@ trait TextSearch
                         });
                     }
                 });
+    }
+    
+    public static function searchByPlace($texts, $places, $districts, $region) {
+        if (!sizeof($places) && !sizeof($districts) && !$region) {
+            return $texts;
+        }
+        return $texts->whereIn('id', function ($query) use ($places, $districts, $region) {
+                    $query->select('text_id')->from('place_text');
+                    if (sizeof($places)) {
+                        $query->whereIn('place_id', $places);
+                    }
+                    if (sizeof($districts) || $region) {
+                        $texts->whereIn('place_id', function ($q2) use ($districts, $region){
+                            $q2->select('id')->from('places');
+                            if (sizeof($districts)) {
+                                $q2->whereIn('district_id',$districts);
+                            }
+                            if ($region) {
+                                $q2->whereIn('district_id', function ($q3) use ($region){
+                                    $q3->select('id')->from('districts')
+                                       ->whereRegionId($region);                                    
+                                });
+                            }
+                        });
+                    }                
+            });
     }
     
     public static function searchByRecorder($texts, $recorder) {

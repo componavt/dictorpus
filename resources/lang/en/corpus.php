@@ -62,7 +62,7 @@ return [
     'in_dict' => [1=>'yes', 2=>'no', 0=>'output all words'],
     'in_native' => 'in native',
     'informant' => 'Informant',
-    'informants' => 'Informant(s)',
+    'informants' => 'Infor&shy;mant(s)',
     'informant_list' => 'Informant list',
     'informant_name' => 'Informant name',
     'informant_removed' => 'Informant ":name" is removed successfully.',
@@ -72,9 +72,10 @@ return [
     'listen' => 'Listen',
     'longitude'=>'longitude',
     
-    'monument_removed' => 'Monument ":name" is removed successfully.',
     'mark_right_gramset' => 'choose right gramset',
     'mark_right_meaning' => 'choose right meaning',
+    'mention' => 'men&shy;tion',
+    'monument_removed' => 'Monument ":name" is removed successfully.',
     'motive' => 'Motive',
     'motype' => 'Motive type',
         
@@ -111,6 +112,7 @@ return [
     
     'place' => 'Settlement',
     'place_list' => 'Settlement list',
+    'place_mentioned' => 'settlements mentioned',
     'place_removed' => 'Settlement ":name" is removed successfully.',
 
     'plot' => 'plot',

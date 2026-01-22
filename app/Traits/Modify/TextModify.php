@@ -84,6 +84,8 @@ trait TextModify
         $this->plots()->detach();
         $this->plots()->attach($request->plots);
         
+        $this->places()->sync($request->places);
+        
         $this->topics()->detach();
         foreach ($request->topics as $topic) {
             if ($topic['topic_id']) {

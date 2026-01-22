@@ -75,6 +75,7 @@ class Text extends Model implements HasMediaConversions
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Genres;
     use \App\Traits\Relations\BelongsToMany\Motives;
+    use \App\Traits\Relations\BelongsToMany\Places;
     use \App\Traits\Relations\BelongsToMany\Plots;
     use \App\Traits\Relations\BelongsToMany\Topics;
     use \App\Traits\Relations\BelongsToMany\Toponyms;

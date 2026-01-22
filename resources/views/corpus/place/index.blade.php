@@ -28,18 +28,22 @@
         <table class="table-bordered table-wide table-striped rwd-table wide-md">
         <thead>
             <tr>
-                <th>{{ trans('corpus.region') }}</th>
-                <th>{{ trans('corpus.district') }}</th>
-                <th>{{ trans('corpus.name') }}</th>
-                <th>{{ trans('corpus.latitude') }}</th>
-                <th>{{ trans('corpus.longitude') }}</th>
-                <th>{{ trans('navigation.dialects') }}</th>
-                <th>{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})</th>
-                <th>{{ trans('navigation.texts') }} ({{ trans('corpus.birth_place') }})</th>
-                <th>{{ trans('navigation.informants') }}</th>
+                <th rowspan="2">{{ trans('corpus.region') }}</th>
+                <th rowspan="2">{{ trans('corpus.district') }}</th>
+                <th rowspan="2">{{ trans('corpus.name') }}</th>
+                <th rowspan="2">{{ trans('corpus.latitude') }}</th>
+                <th rowspan="2">{{ trans('corpus.longitude') }}</th>
+                <th rowspan="2">{{ trans('navigation.dialects') }}</th>
+                <th colspan="3">{{ trans('navigation.texts') }}</th>
+                <th rowspan="2">{{ trans('corpus.informants') }}</th>
                 @if (User::checkAccess('corpus.edit'))
-                <th>{{ trans('messages.actions') }}</th>
+                <th rowspan="2">{{ trans('messages.actions') }}</th>
                 @endif
+            </tr>
+            <tr>
+                <th style="font-size: 11px">{{ trans('corpus.record_place') }}</th>
+                <th style="font-size: 11px">{{ trans('corpus.birth_place') }}</th>
+                <th style="font-size: 11px">{{ trans('corpus.mention') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -64,19 +68,19 @@
                 </td>
                 
                 <td data-th="{{ trans('corpus.latitude') }}">
-                    {{ $place->latitude ? sprintf("%.05f\n", $place->latitude) : '' }}
+                    {{ !empty($place->latitude && $place->latitude>0) ? sprintf("%.05f\n", $place->latitude) : '' }}
                 </td>
                 <td data-th="{{ trans('corpus.longitude') }}">
-                    {{ $place->longitude ? sprintf("%.05f\n", $place->longitude) : '' }}
+                    {{ !empty($place->longitude && $place->longitude>0) ? sprintf("%.05f\n", $place->longitude) : '' }}
                 </td>
                 
                 <td data-th="{{ trans('navigation.dialects') }}">
                     {{$place->dialectListToString()}}
                 </td>
                 <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.record_place') }})">
-                    @if($place->texts()->count())
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}?search_place={{$place->id}}">
-                        {{ $place->texts()->count() }}
+                    @if($place->eventTexts()->count())
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}?search_event_place={{$place->id}}">
+                        {{ $place->eventTexts()->count() }}
                     </a>
                     @else 
                         0
@@ -86,6 +90,15 @@
                     @if($place->countTextBirthPlace())
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}?search_birth_place={{$place->id}}">
                         {{ $place->countTextBirthPlace() }}
+                    </a>
+                    @else 
+                        0
+                    @endif
+                </td>
+                <td class="number-cell" data-th="{{ trans('navigation.texts') }} ({{ trans('corpus.mention') }})">
+                    @if($place->texts()->count())
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text') }}?search_place={{$place->id}}">
+                        {{ $place->texts()->count() }}
                     </a>
                     @else 
                         0

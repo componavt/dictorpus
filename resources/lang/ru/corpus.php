@@ -62,7 +62,7 @@ return [
     'in_dict' => [1=>'да', 2=>'нет', 0=> 'вывести всё'],
     'in_native' => 'на родном',
     'informant' => 'Информант',
-    'informants' => 'Информант(ы)',
+    'informants' => 'Инфор&shy;мант(ы)',
     'informant_list' => 'Список информантов',
     'informant_name' => 'Имя информанта',
     'informant_removed' => 'Информант ":name" удален.',
@@ -74,6 +74,7 @@ return [
     
     'mark_right_meaning' => 'отметить правильное значение',
     'mark_right_gramset' => 'отметить правильный грамсет',
+    'mention' => 'упоми&shy;нание',
     'monument_removed' => 'Памятник ":name" удален.',
     'motive' => 'Мотив',
     'motype' => 'тип мотива',
@@ -112,6 +113,7 @@ return [
     
     'place' => 'Населенный пункт',
     'place_list' => 'Список населенных пунктов',
+    'place_mentioned' => 'упомянутые поселения',
     'place_removed' => 'Населенный пункт ":name" удален.',
 
     'plot' => 'сюжет',

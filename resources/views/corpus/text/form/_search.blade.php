@@ -71,29 +71,29 @@
         ])                 
     </div>
 @endif
-    <div class="col-md-4{{$url_args['search_region'] ? '' : ' ext-form'}}">
+    <div class="col-md-4{{$url_args['search_event_region'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select', 
-                ['name' => 'search_region', 
+                ['name' => 'search_event_region', 
                  'values' => $region_values,
-                 'value' => $url_args['search_region'],
+                 'value' => $url_args['search_event_region'],
                  'title' => trans('corpus.region'). ' '. trans('corpus.of_recording')]) 
     </div>
-    <div class="col-md-4{{sizeof($url_args['search_district']) ? '' : ' ext-form'}}">
+    <div class="col-md-4{{sizeof($url_args['search_event_district']) ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2', 
-                ['name' => 'search_district', 
+                ['name' => 'search_event_district', 
                  'values' => $district_values,
-                 'value' => $url_args['search_district'],
+                 'value' => $url_args['search_event_district'],
                  'title' => trans('corpus.district'). ' '. trans('corpus.of_recording'),
-                 'class'=>'select-district form-control'
+                 'class'=>'select-event-district form-control'
         ]) 
     </div>    
-    <div class="col-md-4{{sizeof($url_args['search_place']) ? '' : ' ext-form'}}">
+    <div class="col-md-4{{sizeof($url_args['search_event_place']) ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select2', 
-                ['name' => 'search_place', 
+                ['name' => 'search_event_place', 
                  'values' => $place_values,
-                 'value' => $url_args['search_place'],
+                 'value' => $url_args['search_event_place'],
                  'title' => trans('corpus.place'). ' '. trans('corpus.of_recording'),
-                 'class'=>'select-place form-control'
+                 'class'=>'select-event-place form-control'
         ]) 
     </div>    
     
@@ -122,7 +122,33 @@
                  'class'=>'select-birth-place form-control'
         ]) 
     </div>    
-    
+
+    <div class="col-md-4{{$url_args['search_region'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select', 
+                ['name' => 'search_region', 
+                 'values' => $region_values,
+                 'value' => $url_args['search_region'],
+                 'title' => trans('corpus.region'). ' '. trans('corpus.of_recording')]) 
+    </div>
+    <div class="col-md-4{{sizeof($url_args['search_district']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_district', 
+                 'values' => $district_values,
+                 'value' => $url_args['search_district'],
+                 'title' => trans('corpus.district'). ' '. trans('corpus.of_recording'),
+                 'class'=>'select-district form-control'
+        ]) 
+    </div>    
+    <div class="col-md-4{{sizeof($url_args['search_place']) ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'search_place', 
+                 'values' => $place_values,
+                 'value' => $url_args['search_place'],
+                 'title' => trans('corpus.place'). ' '. trans('corpus.of_recording'),
+                 'class'=>'select-place form-control'
+        ]) 
+    </div>    
+
     <div class="col-md-4{{$url_args['search_informant'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._select', 
                 ['name' => 'search_informant', 

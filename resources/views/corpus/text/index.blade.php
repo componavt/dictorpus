@@ -56,6 +56,7 @@
     selectTopic('search_plot');
     selectGenre();
     selectDistrict();
+    selectEventPlace();
     selectPlace();
     selectBirthDistrict();
     selectBirthPlace();

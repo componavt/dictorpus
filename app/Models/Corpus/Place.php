@@ -44,6 +44,7 @@ class Place extends Model
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Dialects;
+    use \App\Traits\Relations\BelongsToMany\Texts;
     
     public function district()
     {
@@ -73,14 +74,14 @@ class Place extends Model
     }
 
     // Place __has_many_through__ Texts
-    public function texts()
+    public function eventTexts()
     {
         return $this->hasManyThrough(Text::class, Event::class);
     }
 
     public function texts_with_audio()
     {
-        return $this->texts()->whereIn('texts.id', function ($q) {
+        return $this->eventTexts()->whereIn('texts.id', function ($q) {
             $q -> select('text_id')->from('audiotexts');
         });
     }
