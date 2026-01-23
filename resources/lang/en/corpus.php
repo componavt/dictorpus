@@ -101,7 +101,7 @@ return [
     'of_motive' => 'of the motive',
     'of_motype' => 'of the motive type',
     'of_place' => 'of the place',
-    'of_plot' => 'of the plot',
+    'of_plot' => 'of the plot / character',
     'of_recorder' => 'of the recorder',
     'of_recording' => 'of recording',
     'of_region' => 'of the region',
@@ -121,10 +121,10 @@ return [
     'place_mentioned' => 'settlements mentioned',
     'place_removed' => 'Settlement ":name" is removed successfully.',
 
-    'plot' => 'plot',
-    'plot_has_text' => 'Plot ":name" can not be removed, there are texts with this plot',
-    'plot_list' => 'Plot list',
-    'plot_removed' => 'Plot ":name" is removed successfully.',
+    'plot' => 'plot / character',
+    'plot_has_text' => 'Plot / character ":name" can not be removed, there are texts with this plot',
+    'plot_list' => 'Plot / character list',
+    'plot_removed' => 'Plot / character ":name" is removed successfully.',
     
     're-markup' => 're-markup text to XML',
     

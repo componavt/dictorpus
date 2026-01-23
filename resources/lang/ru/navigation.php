@@ -69,7 +69,7 @@ return [
     'permission' => 'Разрешения',
     'phrases' => 'Фразеологизмы',
     'places' => 'Населенные пункты',
-    'plots' => 'Сюжеты/персонажи',
+    'plots' => 'Сюжеты / персонажи',
     'pos_common_wordforms' => 'Совпадения словоформ по частям речи',
     'publications' => 'Публикации',
     'publications_about' => 'СМИ о проекте',
