@@ -32,8 +32,8 @@
                 </td>
                 <td data-th="{{ trans('auth.roles') }} / {{ trans('navigation.langs') }}">
                     {{$user->rolesNames()}}
-                    @if ($user->langString())
-                    <br>{{$user->langString()}}
+                    @if ($user->langsToString())
+                    <br>{{$user->langsToString()}}
                     @endif
                 </td>
                 <td data-th="{{ trans('auth.last_activity') }}">

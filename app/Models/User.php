@@ -10,8 +10,8 @@ use DB;
 
 use App\Models\Corpus\Informant;
 
-use App\Models\Dict\Dialect;
-use App\Models\Dict\Lang;
+//use App\Models\Dict\Dialect;
+//use App\Models\Dict\Lang;
 
 use App\Models\Role;
 

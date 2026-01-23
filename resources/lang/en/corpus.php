@@ -30,6 +30,12 @@ return [
     
     'char_left' => 'Characters left',
     'choose-gramset' => 'Choose a gramset',
+    'celebration_type' => 'Link to the celebration map',
+    'celebration_types' => [
+        1=>'by informant\'s place of birth',
+        2=>'by recording location',
+        3=>'by mentioned settlement',
+    ],
     'comment' => 'comments',
     'comment_source' => 'comment to the source',
     'comment_text' => 'comment to the text',
