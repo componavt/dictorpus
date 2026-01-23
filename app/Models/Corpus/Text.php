@@ -616,5 +616,10 @@ class Text extends Model implements HasMediaConversions
     
     public function topicsToArray($link=null) {
         return $this->relationsToArr('topics', $link);
-    }           
+    }  
+    
+    public function celebrationTypeValue() {
+        return DB::table('celebration_type_text')->whereTextId($this->id)
+                 ->pluck('type_id');
+    }
 }

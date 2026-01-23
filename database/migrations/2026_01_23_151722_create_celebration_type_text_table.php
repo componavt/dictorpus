@@ -13,8 +13,12 @@ class CreateCelebrationTypeTextTable extends Migration
     public function up()
     {
         Schema::create('celebration_type_text', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
+            $table->unsignedTinyInteger('type_id');
+
+            $table->unsignedInteger('text_id');
+            $table->foreign('text_id')->references('id')->on('texts');
+            
+            $table->primary(['type_id', 'text_id']);
         });
     }
 

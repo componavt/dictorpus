@@ -18,6 +18,12 @@
          'call_add_title' => trans('messages.create_new_g'),
          'title' => trans('corpus.place_mentioned')]) 
                  
+@include('widgets.form.formitem._select2', 
+        ['name' => 'celebration_types', 
+         'values' =>trans('corpus.celebration_types'),
+         'value' => !empty($text) ? $text->celebrationTypeValue() : [],
+         'title' => trans('corpus.celebration_type')]) 
+                 
 <br>
 @include('widgets.form.formitem._submit', ['title' => $submit_title])
     </div>
