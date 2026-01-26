@@ -84,7 +84,7 @@ trait TextModify
         $this->plots()->detach();
         $this->plots()->attach($request->plots);
         
-        $this->places()->sync($request->places);
+        $this->places()->sync((array)$request->places);
         
         $this->topics()->detach();
         foreach ($request->topics as $topic) {
@@ -94,6 +94,7 @@ trait TextModify
         }
         
         $this->motives()->sync((array)$request->motives);
+        $this->setCelebrationTypeIds((array)$request->celebration_types);
 
         $this->storeTranstext($request->only('transtext_lang_id','transtext_title','transtext_text', 'trans_authors'));//'transtext_text_xml',
         $this->storeCyrtext($request->only('cyrtext_title','cyrtext_text'));

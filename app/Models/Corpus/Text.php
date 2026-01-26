@@ -618,8 +618,41 @@ class Text extends Model implements HasMediaConversions
         return $this->relationsToArr('topics', $link);
     }  
     
-    public function celebrationTypeValue() {
-        return DB::table('celebration_type_text')->whereTextId($this->id)
-                 ->pluck('type_id');
+    public function getCelebrationTypeIds() {
+        return DB::table('celebration_type_text')
+                ->whereTextId($this->id)
+                ->pluck('type_id');
+    }
+    
+    public function setCelebrationTypeIds(array $typeIds) {
+        DB::table('celebration_type_text')->where('text_id', $this->id)->delete();
+
+        $rows = array_map(function ($typeId) {
+                return [
+                    'text_id' => $this->id,
+                    'type_id' => (int)$typeId,
+                ];
+            }, $typeIds);
+
+        if (!empty($rows)) {
+            DB::table('celebration_type_text')->insert($rows);
+        }
+    }
+    
+    public function getCelebrationPlaces() {
+        $places = [];
+        foreach ($this->getCelebrationTypeIds() as $type_id) {
+dd($this->event);             
+            if ($type_id == 1 && $this->event) { // по месту рождения информанта
+                $places[] = $this->event->informant->place_id;                
+                
+            }
+            if ($type_id == 2 && $this->event) { // по месту записи
+                $places[] = $this->event->place_id;                
+            }
+            if ($type_id == 3 && $this->places()->count()) { // по упомянутому поселению
+                $places[] = $this->places()->pluck('id');
+            }
+        }
     }
 }

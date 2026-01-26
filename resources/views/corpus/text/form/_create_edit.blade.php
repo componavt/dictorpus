@@ -21,7 +21,7 @@
 @include('widgets.form.formitem._select2', 
         ['name' => 'celebration_types', 
          'values' =>trans('corpus.celebration_types'),
-         'value' => !empty($text) ? $text->celebrationTypeValue() : [],
+         'value' => !empty($text) ? $text->getCelebrationTypeIds() : [],
          'title' => trans('corpus.celebration_type')]) 
                  
 <br>

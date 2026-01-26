@@ -45,5 +45,7 @@ Route::group(
         Route::get('dict/{meaning_id}/label/{label_id}/remove', 'Library\DictController@removeVisibleLabel');
         Route::get('dict/wordforms/{lemma_id}', 'Library\DictController@wordforms');
         
+        Route::get('elf/texts_for_map', 'Library\ElfController@textsForMap')->name('elf.texts_for_map');
+        
         Route::get('test', 'Dict\ConceptController@test');
     });
