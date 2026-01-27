@@ -17,7 +17,7 @@ class ElfController extends Controller
     {
         // permission= corpus.edit, redirect failed users to /service/index, authorized actions list:
         $this->middleware('auth:corpus.edit,/service/index', 
-                          ['only'=>['index']]);
+                          ['only'=>['textsForMap']]);
         
 /*        $this->url_args = url_args($request) + 
             [
@@ -44,8 +44,9 @@ class ElfController extends Controller
     {
         $texts = Text::whereIn('id', function ($q) {
                 $q->select('text_id')->from('plot_text')
-                  ->where('plot_id', env('PLOT_CELEBRATION_id'));
+                  ->where('plot_id', env('PLOT_CELEBRATION_ID'));
             })->orderBy('id')->get();
+//dd($texts);            
         $text_places = [];
         foreach ($texts as $text) {
             foreach ($text->getCelebrationPlaces() as $cplace) {
