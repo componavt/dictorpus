@@ -642,17 +642,22 @@ class Text extends Model implements HasMediaConversions
     public function getCelebrationPlaces() {
         $places = [];
         foreach ($this->getCelebrationTypeIds() as $type_id) {
-dd($this->event);             
             if ($type_id == 1 && $this->event) { // по месту рождения информанта
-                $places[] = $this->event->informant->place_id;                
+                foreach ($this->event->informants as $informant) {
+                    if ($informant->birth_place_id) {
+                        $places[] = $informant->birth_place_id;                
+                    }
+                }
                 
             }
             if ($type_id == 2 && $this->event) { // по месту записи
                 $places[] = $this->event->place_id;                
             }
             if ($type_id == 3 && $this->places()->count()) { // по упомянутому поселению
-                $places[] = $this->places()->pluck('id');
+                $places = array_merge($places, $this->places()->pluck('id')->toArray());
             }
         }
+        sort($places);
+        return array_unique($places);
     }
 }

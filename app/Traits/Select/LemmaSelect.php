@@ -6,6 +6,7 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gram;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\GramsetCategory;
+use App\Models\Dict\PartOfSpeech;
 use App\Models\User;
 
 trait LemmaSelect

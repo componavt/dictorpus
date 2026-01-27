@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use LaravelLocalization;
-use Illuminate\Support\Facades\Redirect;
 
+use App\Models\Corpus\Place;
 use App\Models\Corpus\Text;
 
 class ElfController extends Controller
@@ -46,15 +45,20 @@ class ElfController extends Controller
         $texts = Text::whereIn('id', function ($q) {
                 $q->select('text_id')->from('plot_text')
                   ->where('plot_id', env('PLOT_CELEBRATION_id'));
-            })->get();
-        $places = [];
+            })->orderBy('id')->get();
+        $text_places = [];
         foreach ($texts as $text) {
             foreach ($text->getCelebrationPlaces() as $cplace) {
-                $places[$cplace][$text_id] = $text;
+                $text_places[$cplace][$text->id] = $text;
             }
         }
-dd($places);            
+        $places = Place::whereIn('id', array_keys($text_places))->get();
+        $regions = [];
+        foreach ($places as $place) {
+           $regions[$place->region->name][$place->district->name][$place->id]= $place->name; 
+        }
+//dd($regions);            
         return view('service.elf.texts_for_map',
-                compact('places'));
+                compact('regions', 'text_places'));
     }
 }

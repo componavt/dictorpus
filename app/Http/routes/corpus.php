@@ -126,6 +126,7 @@ Route::group(
         Route::resource('text', 'Corpus\TextController',
                        ['names' => ['update' => 'text.update',
                                     'store' => 'text.store',
+                                    'show' => 'text.show',
                                     'destroy' => 'text.destroy']]);
         
         Route::resource('district', 'Corpus\DistrictController',
