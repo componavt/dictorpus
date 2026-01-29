@@ -59,6 +59,7 @@
             <tr>
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td data-th="{{ trans('dict.lemma') }}">
+                    @if (empty($lemma->is_norm)) <sup>d</sup> @endif
                     <a href="{{ show_route($lemma, $args_by_get) }}">{{$lemma->lemma}}</a>
                     @if ($lemma->features && !empty($lemma->features->number))  
                     <sup>{{ $lemma->features->number }}</sup>
@@ -133,8 +134,9 @@
             
             <p><big>*</big> -  {{ trans('dict.wordform_comment') }}</p>
             <p><big>**</big> -  {{ trans('dict.example_comment') }}</p>
-            <p><big>1</big> -  {{ trans('dict.numbers')[1] }}</p>
-            <p><big>2</big> -  {{ trans('dict.numbers')[2] }}</p>
+            <p><big><sup>d</sup></big> -  {{ trans('dict.is_norm_values')[0] }} {{ trans('dict.lemma') }}</p>
+            <p><big><sup>1</sup></big> -  {{ trans('dict.numbers')[1] }}</p>
+            <p><big><sup>2</sup></big> -  {{ trans('dict.numbers')[2] }}</p>
         @endif
 @stop
 

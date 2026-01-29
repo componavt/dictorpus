@@ -168,6 +168,10 @@ return [
     'in_pos'=>'in :count parts of speech',    
     'infinitive' => 'infinitive',
     'interpretation' => 'interpretation',
+    'is_norm_values' => [
+        1 => 'normalized', 
+        0 => 'dialectal'
+    ],
     
     'join_harmony' => 'unite different only in harmony ',
     
@@ -323,6 +327,7 @@ return [
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
+    'show_dialectal' => 'show dialectal variants',
     
     'speaker' => 'Speaker',
     'status' => 'status',

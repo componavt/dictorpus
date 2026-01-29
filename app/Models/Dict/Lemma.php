@@ -22,7 +22,7 @@ use App\Models\Dict\PartOfSpeech;
 
 class Lemma extends Model
 {
-    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search', 'wordform_total'];
+    protected $fillable = ['lemma','lang_id','pos_id', 'lemma_for_search', 'wordform_total', 'is_norm'];
     
     use \App\Traits\Modify\LemmaModify;
     use \App\Traits\Search\LemmaSearch;

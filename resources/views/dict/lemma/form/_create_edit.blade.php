@@ -8,7 +8,12 @@
                  'value' =>$lang_id,
                  'title' => trans('dict.lang'),
                  'attributes' => ['id'=>'lemma_lang_id']])
-                                  
+
+        @include('widgets.form.formitem._radio', 
+                ['name' => 'is_norm', 
+                 'values' => trans('dict.is_norm_values'),
+                 'checked' => $lemma->is_norm ?? 1])
+                 
         @include('widgets.form.formitem._select2',
                 ['name' => 'variants',
                  'title' => trans('dict.variants'),

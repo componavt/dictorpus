@@ -26,6 +26,7 @@ trait LemmaSearch
                     'search_w' => (string)$request->input('search_w'),
                     'search_wordform' => $request->input('search_wordform'),
                     'search_wordforms'=> (array)$request->input('search_wordforms'),
+                    'show_dialectal'      => (int)$request->input('show_dialectal'),
                     'with_audios'     => (int)$request->input('with_audios'),
                     'with_examples'   => (int)$request->input('with_examples')
                 ];
@@ -71,6 +72,10 @@ trait LemmaSearch
         $lemmas = self::searchByDialects($lemmas, $url_args['search_dialects']);
         $lemmas = self::searchWithAudios($lemmas, $url_args['with_audios']);
         $lemmas = self::searchWithExamples($lemmas, $url_args['with_examples']);
+        
+        if (empty($url_args['show_dialectal'])) {
+            $lemmas->whereIsNorm(1);
+        }
 
         $lemmas = $lemmas
                 //->groupBy('lemmas.id') // отключено, неправильно показывает общее число записей

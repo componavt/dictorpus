@@ -24,6 +24,7 @@ trait LemmaModify
         $this->lemma = $new_lemma;
         $this->lemma_for_search = Grammatic::changeLetters($new_lemma, $lang_id);
         $this->pos_id = (int)$data['pos_id'] ? (int)$data['pos_id'] : NULL;
+        $this->is_norm = $data['is_norm']!=1 ? 0 : 1;
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
         

@@ -89,8 +89,16 @@
     <div class="col-sm-2 margin-to-ext">       
         @include('widgets.form.formitem._submit', ['title' => trans('messages.view')])
     </div>
+    <div class="col-sm-6{{$url_args['show_dialectal'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'show_dialectal',
+                'value' => 1,
+                'checked' => $url_args['show_dialectal']==1,
+                'tail'=>trans('dict.show_dialectal')]) 
+    </div>
 </div>      
 <div class="hide-search-form">{{trans('search.simple_search')}} &#8593;</div>
+
         {!! Form::hidden('search_label', $url_args['search_label']) !!}        
         {!! Form::close() !!}
 
