@@ -220,8 +220,8 @@ class Export
         }
         $sentences = Text::sentencesFromOlodict($sentences, $texts->pluck('id')->toArray());
         
-        foreach ($sentences as $s=>$ts) {
-            fputcsv($handle, [$s, $ts], "\t"); // с кавычками
+        foreach ($sentences as $s=>$info) {
+            fputcsv($handle, [$info['corpus'], $s, $info['trans']], "\t"); // с кавычками
 //            fwrite($handle, $s."\t".$ts."\n");
         }
        

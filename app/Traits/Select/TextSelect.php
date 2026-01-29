@@ -78,6 +78,7 @@ trait TextSelect
     
     /**
      * возвращает массив предложений с переводами, первым элементом - заголовки текста
+     * [<text_title>=>['corpus'=><corpus_names>, 'trans'=><transtext_title>]]
      * @return array
      */
     public function sentencesWithTranslation($sentences) {
@@ -89,9 +90,13 @@ trait TextSelect
         if (empty($trans_sentences)) {
             return $sentences;
         }
+        $corpuses = $this->corpusesToString();
         // либо нет цифр в переводе, либо цифры есть в оригинале
         if (!preg_match("/\d+/", $transtext->title) || preg_match("/\d+/", $this->title)) {
-            $sentences[$this->title] = $transtext->title;
+            $sentences[$this->title] = [
+                'corpus' => $corpuses,
+                'trans' => $transtext->title
+            ];
         }
         $sents = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
         foreach ($sents as $sentence) {
@@ -99,9 +104,13 @@ trait TextSelect
             $ts = self::clearText($trans_sentences[$sentence->s_id]['sentence']);
 //            $sentences[!empty($s) ? $s : $this->id.'_'.$sentence->s_id] = $ts;
             if (!empty($s)) {
-                $sentences[$s] = $ts;
+                $sentences[$s] =[
+                    'corpus' => $corpuses,
+                    'trans' => $ts
+                ];
             }
         }
+//dd($sentences);        
         return $sentences;
     }
 
@@ -141,10 +150,14 @@ trait TextSelect
                     if (empty($ts)) {
                         continue;
                     }
-                    $sentences[!empty($s) ? $s : $text_id.'_'.$s_id] = self::clearText($ts);
+                    $sentences[!empty($s) ? $s : $text_id.'_'.$s_id] = [
+                        'corpus' => $text->corpusesToString(),
+                        'trans' => self::clearText($ts)
+                    ];
                 }
             }
         }
+//dd($sentences);        
         return $sentences;
     }
     
