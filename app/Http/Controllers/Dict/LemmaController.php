@@ -54,7 +54,7 @@ class LemmaController extends Controller
                             'storeSimple', 'store',
                             'createWordform', 'updateWordformFromText',
                             'editWordforms','updateWordforms', 'checkWordforms',
-                            'reloadStemAffixByWordforms'
+                            'reloadStemAffixByWordforms', 'setDialectal'
                     ]]);
         
         $this->url_args = Lemma::urlArgs($request);  
@@ -970,6 +970,14 @@ class LemmaController extends Controller
             }
         }
         return;
+    }
+    
+    public function setDialectal(int $id) {
+        $lemma = Lemma::find($id);
+        if ($lemma) {
+            $lemma->is_norm = 0;
+            $lemma->save();
+        }
     }
     
 }

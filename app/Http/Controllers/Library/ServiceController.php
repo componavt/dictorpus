@@ -467,4 +467,24 @@ print "</ol>";
         print "<h3>Изменяемые леммы, у которых нет словоформ</h3>";
         Service::lemmasWithoutWordforms();
     }
+    
+    public function dialectalLemmas(Request $request) {
+        $by = $request->by;  
+        $lang_id = (int)$request->search_lang;  
+        if (!$lang_id) {
+            $lang_id = 1;             
+        }
+        
+        if ($by == 'sosd') {
+            $lemmas = Service::dialectalLemmasBySosd($lang_id);
+        } else {
+            $lemmas = Lemma::whereLangId($lang_id)
+                    ->orderBy('lemma')
+                    ->pluck('lemma', 'id')->toArray();
+        }
+        $lang = Lang::find($lang_id);
+        
+        return view('service.dialectal_lemmas', 
+                compact('by', 'lang', 'lemmas'));
+    }
 }

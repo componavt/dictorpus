@@ -13,7 +13,6 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 
-use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
@@ -587,7 +586,6 @@ public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = []
 
     return ['results' => $pairResults, 'is_limited' => $is_limited];
 }    
-    
     /**
      *  $words = [
             1 =>  [
