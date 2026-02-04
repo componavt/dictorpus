@@ -44,6 +44,7 @@ Route::group(
         Route::get('lemma/{id}/{label_id}/add_label', 'Dict\LemmaController@addLabel');
         Route::get('lemma/{id}/{label_id}/remove_label', 'Dict\LemmaController@removeLabel');
         Route::get('lemma/{id}/{label_id}/set_status/{status}', 'Dict\LemmaController@setStatus');
+        Route::get('lemma/{id}/set_dialectal', 'Dict\LemmaController@setDialectal');
         Route::get('lemma/{id}/wordform_total', 'Dict\LemmaController@getWordformTotal'); 
         Route::post('lemma/{id}/update/examples', 'Dict\LemmaController@updateExamples')
                         ->name('lemma.update.examples');

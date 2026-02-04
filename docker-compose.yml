@@ -1,0 +1,110 @@
+services:
+  mariadb:
+    image: mariadb:12.1
+    container_name: dictorpus-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: vepkar
+      MARIADB_USER: vepkar
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - dictorpus-network
+
+  web:
+    build: .
+    container_name: dictorpus-web
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    # УБИРАЕМ внешний порт (будет доступен только через nginx)
+    expose:
+      - "80"
+    volumes:
+      - E:\projects\dictorpus:/var/www/html
+    networks:
+      - dictorpus-network
+
+  topkar-web:
+    build: E:\projects\topkar
+    container_name: topkar-web
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    # УБИРАЕМ внешний порт (будет доступен только через nginx)
+    expose:
+      - "80"
+    volumes:
+      - E:\projects\topkar:/var/www/html
+    networks:
+      - dictorpus-network
+
+  aspos-web:
+    build: E:\projects\aspos
+    container_name: aspos-web
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    expose:
+      - "80"
+    volumes:
+      - E:\projects\aspos:/var/www/html
+    networks:
+      - dictorpus-network
+
+
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+      - topkar-web
+      - aspos-web
+    networks:
+      - dictorpus-network
+    command: >
+      sh -c "echo 'events { worker_connections 1024; }
+      http {
+        server {
+          listen 80;
+          server_name dictorpus.local;
+          location / {
+            proxy_pass http://dictorpus-web:80;
+            proxy_set_header Host \$$host;
+            proxy_set_header X-Real-IP \$$remote_addr;
+          }
+        }
+        server {
+          listen 80;
+          server_name topkar.local;
+          location / {
+            proxy_pass http://topkar-web:80;
+            proxy_set_header Host \$$host;
+            proxy_set_header X-Real-IP \$$remote_addr;
+          }
+        }
+        server {
+          listen 80;
+          server_name aspos.local;
+          location / {
+            proxy_pass http://aspos-web:80;
+            proxy_set_header Host \$$host;
+            proxy_set_header X-Real-IP \$$remote_addr;
+          }
+        }
+      }' > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+
+volumes:
+  mariadb_data:
+    driver: local
+
+networks:
+  dictorpus-network:
+    driver: bridge

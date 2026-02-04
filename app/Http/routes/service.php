@@ -12,6 +12,7 @@ Route::group(
         Route::get('check_author', 'Library\ServiceController@checkAuthors');
         Route::get('check_wordforms_by_rules', 'Library\ServiceController@checkWordformsByRules');
         Route::get('copy_lemmas', 'Library\ServiceController@copyLemmas');
+        Route::get('dialectal_lemmas', 'Library\ServiceController@dialectalLemmas');
         Route::get('illative_table', 'Library\ServiceController@illativeTable');       
         Route::get('lemmas_without_wordforms', 'Library\ServiceController@lemmasWithoutWordforms');        
         Route::get('reGenerateTverPartic2active', 'Library\ServiceController@reGenerateTverPartic2active');

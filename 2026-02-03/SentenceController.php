@@ -88,15 +88,14 @@ class SentenceController extends Controller
                 
                 foreach($texts as $text) {                
                     foreach ($sentences->where('text1_id', $text->id) as $sentence) {
-//dd(($sentence);                        
-                        $sentence_id = $sentence->sentence1_id;
+                        $sentence_id = $sentence['sentence1_id'];
 
                         if (!isset($text_sentences[$text->id]['sentences'][$sentence_id])) {
                             $text_sentences[$text->id]['sentences'][$sentence_id] = Sentence::find($sentence_id);
                         }
 
                         for ($i = 1; $i <= sizeof($url_args['words']); $i++) {
-                            $text_sentences[$text->id]['words'][] = $sentence->{'w'.$i.'_id'};
+                            $text_sentences[$text->id]['words'][] = $sentence['w'.$i.'_id'];
                         }
                     }
                 }

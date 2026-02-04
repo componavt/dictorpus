@@ -2,6 +2,7 @@
 
 namespace App\Library;
 
+use App\Models\Dict\Concept;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -176,5 +177,23 @@ print "</p>";
            print '<li><a href="/ru/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a></li>';
         }
         print "</ol>";                
+    }
+       
+    public static function dialectalLemmasBySosd(int $lang_id) {
+        $concept_lemmas = [];
+        foreach (Concept::orderBy('text_ru')->get() as $concept) {
+            $lemmas = Lemma::whereLangId($lang_id)
+                    ->where('is_norm', 1)
+                    ->whereIn('id', function ($q1) use ($concept) {
+                        $q1->select('lemma_id')->from('meanings')
+                           ->whereIn('id', function ($q2) use ($concept) {
+                               $q2->select('meaning_id')->from('concept_meaning')
+                                  ->where('concept_id', $concept->id);
+                           });
+                    })->orderBy('lemma')
+                    ->pluck('lemma', 'id')->toArray();
+            $concept_lemmas[$concept->text] = $lemmas;
+        }
+        return $concept_lemmas;
     }
 }
