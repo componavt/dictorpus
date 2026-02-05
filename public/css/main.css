@@ -593,6 +593,13 @@ h4 {
     margin-top: 20px;
     text-align: center;
 }
+.clickable {
+    cursor: pointer;
+}
+.big_sign {
+    text-decoration: none; 
+    font-size: 20px;
+}
 
 @media screen and (min-width: 576px) {   
 }

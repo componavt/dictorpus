@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use App\Models\Dict\Concept;
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
@@ -180,6 +181,7 @@ print "</p>";
     }
        
     public static function dialectalLemmasBySosd(int $lang_id) {
+        $dialect_names = Dialect::getList();
         $concept_lemmas = [];
         foreach (Concept::orderBy('text_ru')->get() as $concept) {
             $lemmas = Lemma::whereLangId($lang_id)
@@ -190,10 +192,38 @@ print "</p>";
                                $q2->select('meaning_id')->from('concept_meaning')
                                   ->where('concept_id', $concept->id);
                            });
-                    })->orderBy('lemma')
-                    ->pluck('lemma', 'id')->toArray();
-            $concept_lemmas[$concept->text] = $lemmas;
+                    })->orderBy('lemma')->get();
+//                    ->pluck('lemma', 'id')->toArray();
+/*            if (count($lemmas)) {
+                $concept_lemmas[$concept->text] = $lemmas;
+            }*/
+            $lemmasWithDialects = self::dialectalLemmasWithCountWordforms($lemmas, $dialect_names);
+            if (!empty ($lemmasWithDialects)) {
+                $concept_lemmas[$concept->text] = $lemmasWithDialects;
+            }
         }
         return $concept_lemmas;
     }
+    
+    public static function dialectalLemmasWithCountWordforms($lemmas, $dialect_names=null) {
+        $lemmasWithDialects = [];
+        if (empty($dialect_names)) {
+            $dialect_names = Dialect::getList();
+        }
+        foreach ($lemmas as $lemma) {
+            if ($lemma->wordforms()->whereIn('dialect_id', Lang::normDialectIDsbyId($lemma->lang_id))->count() >20) {
+                continue; // есть как минимум 20 словоформ нормированного варианта, значит не диалектная точно
+            }                
+            $dialects = $lemma->wordforms()->whereNotNull('dialect_id')
+                    ->selectRaw('dialect_id, count(*) as count')
+                    ->groupBy('dialect_id')->orderBy('dialect_id')->get();
+            $d = [];
+            foreach ($dialects as $row) {
+                $d[] =  $dialect_names[$row['dialect_id']]. ' - '. $row['count'];
+            }
+            $lemmasWithDialects[$lemma->id] = ['lemma'=>$lemma->lemma, 'wordforms'=> join(', ', $d)];
+        }
+        return $lemmasWithDialects;
+    }
+    
 }

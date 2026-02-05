@@ -309,6 +309,16 @@ class Lang extends Model
         return NULL;
     }
     
+    public static function normDialectIDsbyId($lang_id) {
+        switch ($lang_id) {
+            case 1: return [43];
+            case 4: return [46, 47];
+            case 5: return [44];
+            case 6: return [42];
+        }
+        return [];
+    }
+    
     public static function legendForMap() {
         $out = [];
         foreach (self::MAP_COLORS as $lang_id => $color) {

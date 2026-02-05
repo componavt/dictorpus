@@ -478,9 +478,10 @@ print "</ol>";
         if ($by == 'sosd') {
             $lemmas = Service::dialectalLemmasBySosd($lang_id);
         } else {
-            $lemmas = Lemma::whereLangId($lang_id)
-                    ->orderBy('lemma')
-                    ->pluck('lemma', 'id')->toArray();
+            $all_lemmas = Lemma::whereLangId($lang_id)
+                    ->orderBy('lemma')->get();
+//                    ->pluck('lemma', 'id')->toArray();
+            $lemmas = Service::dialectalLemmasWithCountWordforms($all_lemmas);
         }
         $lang = Lang::find($lang_id);
         
