@@ -47,20 +47,27 @@
         <li><a href="{{ route('elf.texts_for_map') }}">Просмотреть отобранные тексты для карты "Праздничная культура Южной Карелии"</a></li>
         </ul>       
         
-        <p>Отметить диалектные леммы</p>
+        <p>Нормированные/диалектные леммы</p>
         <ul>
-            <li>сгруппированные по понятиям</li>
+            <li>Нормированные леммы, сгруппированные по понятиям</li>
             <ul>
             @foreach ($langs as $l_id=>$l_name)
                 <li>
                     <a href="service/dialectal_lemmas?by=sosd&search_lang={{$l_id}}">{{$l_name}}</a></li>
             @endforeach
             </ul>
-            <li>отсортированные по алфавиту</li>
+            <li>Нормированные леммы, отсортированные по алфавиту</li>
             <ul>
             @foreach ($langs as $l_id=>$l_name)
                 <li>
-                    <a href="service/dialectal_lemmas?by=alfa&search_lang={{$l_id}}">{{$l_name}}</a></li>
+                    <a href="service/dialectal_lemmas?by=norm&search_lang={{$l_id}}">{{$l_name}}</a></li>
+            @endforeach
+            </ul>
+            <li>Диалектные леммы, отсортированные по алфавиту</li>
+            <ul>
+            @foreach ($langs as $l_id=>$l_name)
+                <li>
+                    <a href="service/dialectal_lemmas?by=dial&search_lang={{$l_id}}">{{$l_name}}</a></li>
             @endforeach
             </ul>
         </ul>       

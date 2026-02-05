@@ -211,8 +211,8 @@ print "</p>";
             $dialect_names = Dialect::getList();
         }
         foreach ($lemmas as $lemma) {
-            if ($lemma->wordforms()->whereIn('dialect_id', Lang::normDialectIDsbyId($lemma->lang_id))->count() >20) {
-                continue; // есть как минимум 20 словоформ нормированного варианта, значит не диалектная точно
+            if ($lemma->wordforms()->whereIn('dialect_id', Lang::normDialectIDsbyId($lemma->lang_id))->count() >=13) {
+                continue; // есть как минимум 13 словоформ нормированного варианта, значит не диалектная точно
             }                
             $dialects = $lemma->wordforms()->whereNotNull('dialect_id')
                     ->selectRaw('dialect_id, count(*) as count')

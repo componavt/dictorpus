@@ -972,10 +972,12 @@ class LemmaController extends Controller
         return;
     }
     
-    public function setDialectal(int $id) {
+    public function setDialectal(int $id, Request $request) {
+        $is_norm = $request->is_norm;
+        
         $lemma = Lemma::find($id);
         if ($lemma) {
-            $lemma->is_norm = 0;
+            $lemma->is_norm = $is_norm ? 1 : 0;
             $lemma->save();
         }
     }

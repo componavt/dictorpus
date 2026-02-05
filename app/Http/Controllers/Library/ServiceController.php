@@ -470,6 +470,9 @@ print "</ol>";
     
     public function dialectalLemmas(Request $request) {
         $by = $request->by;  
+        if ($by !='sosd' && $by !='norm') {
+            $by = 'dial';
+        }
         $lang_id = (int)$request->search_lang;  
         if (!$lang_id) {
             $lang_id = 1;             
@@ -478,10 +481,10 @@ print "</ol>";
         if ($by == 'sosd') {
             $lemmas = Service::dialectalLemmasBySosd($lang_id);
         } else {
-            $all_lemmas = Lemma::whereLangId($lang_id)
+            $lemmas_by_alpha = Lemma::whereLangId($lang_id)
+                    ->where('is_norm', $by=='norm' ? 1 : 0)
                     ->orderBy('lemma')->get();
-//                    ->pluck('lemma', 'id')->toArray();
-            $lemmas = Service::dialectalLemmasWithCountWordforms($all_lemmas);
+            $lemmas = Service::dialectalLemmasWithCountWordforms($lemmas_by_alpha);
         }
         $lang = Lang::find($lang_id);
         
