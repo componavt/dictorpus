@@ -80,15 +80,19 @@ class SentenceController extends Controller
         } else {
             $refine = false;
             list($entry_number, $sentences, $is_limited) = Sentence::entryNumber($url_args); // считаем количество вхождений
-//dd($entry_number);            
+//dd($entry_number);   
+//dd(to_sql($sentences));
+//dd($sentences);
+//dd($sentences->pluck('text1_id')->unique()->get());
             if ($entry_number>0) {
-                $texts = Text::whereIn('id', $sentences->pluck('text1_id')->unique());
+                $texts = Text::whereIn('id', $sentences->pluck('text1_id')); //->unique()
                 $numAll = $texts->count();
+//dd($numAll);                
                 $texts = $texts->paginate($this->url_args['limit_num']);
-                
+//dd($texts);       
                 foreach($texts as $text) {                
                     foreach ($sentences->where('text1_id', $text->id) as $sentence) {
-//dd(($sentence);                        
+//dd(($sentences->where('text_id', $text->id)->get()));                        
                         $sentence_id = $sentence->sentence1_id;
 
                         if (!isset($text_sentences[$text->id]['sentences'][$sentence_id])) {
@@ -101,10 +105,11 @@ class SentenceController extends Controller
                     }
                 }
             }
+//dd($text_sentences);            
         }      
         return view('corpus.sentence.results',
                 compact('entry_number', 'is_limited', 'numAll', 'refine', 'script_start',
-                        'texts', 'search_query', 'text_sentences', 'args_by_get', 'url_args'));
+                        'texts', 'search_query', 'sentences', 'args_by_get', 'url_args'));
     }
 
     public function wordGramForm(Request $request)

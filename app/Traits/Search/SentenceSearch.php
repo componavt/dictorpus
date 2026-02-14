@@ -288,6 +288,7 @@ trait SentenceSearch
     public static function entryNumber($args) {
 //dd($args['words']);        
         $texts = Sentence::searchTexts($args);
+//dd($texts);        
         if (!is_array($texts)) {
             return [0, collect([]), false];
         }
@@ -295,7 +296,7 @@ trait SentenceSearch
         $results = $result['results'];
         $is_limited = $result['is_limited'];
 
-        $count = $results->count();
+        $count = $result['results']->count();
         return [$count, $results, $is_limited];
     }
     
@@ -416,12 +417,12 @@ AND t1.word_number-t2.word_number<=|B|;
         if (!$search_by_lemma && !$search_by_pos && !$search_by_grams && !$search_by_gramset) {
             return $builder;
         }
-        $twf_alias = 'twf_' . str_replace('.', '_', $table_name);
+/*        $twf_alias = 'twf_' . str_replace('.', '_', $table_name);
         $builder->join("text_wordform as {$twf_alias}", function ($join) use ($table_name, $twf_alias) {
             $join->on("{$twf_alias}.word_id", '=', DB::raw($table_name.'id'));
         })
-        ->where("{$twf_alias}.relevance", '>', 0);
-
+        ->where("{$twf_alias}.relevance", '>', 0);*/
+//dd($builder->count());
         $builder=$builder->whereIn($table_name.'id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_grams, $search_by_gramset, $lang_ids) {
             $q->select('word_id')->from('text_wordform')
               ->where('relevance', '>', 0);
@@ -455,6 +456,8 @@ AND t1.word_number-t2.word_number<=|B|;
                 });
             }                    
         });
+//dd($builder->count());
+//dd(to_sql($builder));
        
 //\Log::info("searchWordsByWord end");
         return $builder;
@@ -500,9 +503,10 @@ public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = []
         if ($text_ids) {
             $builder->whereIn('t1.text_id', $text_ids);
         }
+//dd($builder->count());        
         $builder = self::searchWordsByWord($builder, 't1.', $words[1], $lang_ids);
-        $results = $builder->get();
-        return ['results' => $results, 'is_limited' => false];
+//dd($builder->get());        
+        return ['results' => $builder, 'is_limited' => false];
     }
 
     // Шаг 1: Ищем пары первых двух слов
@@ -538,7 +542,7 @@ public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = []
 
     // Шаг 2: для 3+ слов
     if ($word_total >= 3) {
-        $sentenceIds = $pairResults->pluck('sentence1_id')->unique()->toArray();
+        $sentenceIds = $pairResults->pluck('sentence1_id')->unique();//->toArray();
 
         $builder3 = DB::table('words as t3')
             ->whereIn('t3.sentence_id', $sentenceIds)
@@ -553,7 +557,7 @@ public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = []
             $sentenceId = $pair->sentence1_id;
             if (!isset($w3Results[$sentenceId])) continue;
 
-            // !!! ВАЖНО: в твоей системе w_id = word_number, поэтому:
+            // !!! ВАЖНО: w_id = word_number, поэтому:
             $w1_pos = $pair->w1_id;
             $w2_pos = $pair->w2_id;
             $w3_pos = $w3Results[$sentenceId]->w3_id; // потому что select 't3.w_id as w3_id'
