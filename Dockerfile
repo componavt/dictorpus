@@ -1,21 +1,25 @@
 FROM php:7.4-apache
 
-# Включить mod_rewrite для Laravel
+# Р’РєР»СЋС‡РёС‚СЊ mod_rewrite
 RUN a2enmod rewrite
 
-# Установить зависимости и PHP-расширения
+# РЈСЃС‚Р°РЅРѕРІРёС‚СЊ build-Р·Р°РІРёСЃРёРјРѕСЃС‚Рё Рё СЂР°СЃС€РёСЂРµРЅРёСЏ
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    zip \
+    git \
     unzip \
-    mariadb-client \
+    libzip-dev \
+    $PHPIZE_DEPS \
     && docker-php-ext-install pdo pdo_mysql zip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && pecl install xdebug-3.1.6 \
+    && docker-php-ext-enable xdebug \
+    && apt-get purge -y --auto-remove $PHPIZE_DEPS \
+    && rm -rf /var/lib/apt/lists/*
 
-# Копируем ваш конфиг Apache
+COPY php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+# РљРѕРїРёСЂСѓРµРј РєРѕРЅС„РёРі Apache
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# КРИТИЧНО: Закомментировать глобальный DocumentRoot в apache2.conf
+# Р—Р°РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ РіР»РѕР±Р°Р»СЊРЅС‹Р№ DocumentRoot
 RUN sed -i 's|DocumentRoot /var/www/html|#DocumentRoot /var/www/html|g' /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html

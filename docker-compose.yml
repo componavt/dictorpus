@@ -25,7 +25,11 @@ services:
     expose:
       - "80"
     volumes:
-      - E:\projects\dictorpus:/var/www/html
+    # Работало с обратными слешами (Windows-стиль)
+    # - E:\projects\dictorpus:/var/www/html
+    # Используем Unix-стиль — стабильнее для WSL2
+      - E:/projects/dictorpus:/var/www/html
+#      - E:/projects/dictorpus/docker/php/conf.d:/usr/local/etc/php/conf.d
     networks:
       - dictorpus-network
 

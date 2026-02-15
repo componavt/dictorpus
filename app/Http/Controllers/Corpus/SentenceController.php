@@ -19,10 +19,10 @@ use App\Models\Dict\PartOfSpeech;
 
 class SentenceController extends Controller
 {
-    public $url_args=[];
-    public $args_by_get='';
-    
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
@@ -30,10 +30,12 @@ class SentenceController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/sentence/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/sentence/', 
-                         ['only' => ['create','store','edit','update','destroy','markup']]);
-        $this->url_args = Sentence::urlArgs($request);  
-        
+        $this->middleware(
+            'auth:corpus.edit,/corpus/sentence/',
+            ['only' => ['create', 'store', 'edit', 'update', 'destroy', 'markup']]
+        );
+        $this->url_args = Sentence::urlArgs($request);
+
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
@@ -42,20 +44,31 @@ class SentenceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
 
         $corpus_values = Corpus::getListWithQuantity('texts');
-        $lang_values = Lang::getListWithQuantity('texts');        
+        $lang_values = Lang::getListWithQuantity('texts');
         $dialect_values = Dialect::getList();
         $genre_values = Genre::getList();
         $pos_values = PartOfSpeech::getListForCorpus();
         $gram_values = Gram::getListForCorpus();
-//dd($gram_values);        
-        return view('corpus.sentence.index',
-                compact('corpus_values', 'dialect_values', 'genre_values', 'gram_values',
-                        'lang_values', 'pos_values', 'args_by_get', 'url_args'));
+        //dd($gram_values);        
+        return view(
+            'corpus.sentence.index',
+            compact(
+                'corpus_values',
+                'dialect_values',
+                'genre_values',
+                'gram_values',
+                'lang_values',
+                'pos_values',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -70,29 +83,50 @@ class SentenceController extends Controller
         $script_start = microtime(true);
 
         $url_args['words'] = Sentence::preparedWordsForSearch($url_args['search_words']);
-//dd($url_args['words']);        
-        $search_query=Sentence::searchQueryToString($url_args);
+        //dd($url_args['words']);        
+        $search_query = Sentence::searchQueryToString($url_args);
         $entry_number = $numAll = 0;
-        $text_sentences =[];
+        $text_sentences = [];
         $texts = null;
         if (!sizeof($url_args['words'])) {
             $refine = $sentences = true; // отправляем уточнить запрос, без слов искать не будем
         } else {
             $refine = false;
             list($entry_number, $sentences, $is_limited) = Sentence::entryNumber($url_args); // считаем количество вхождений
-//dd($entry_number);   
-//dd(to_sql($sentences));
-//dd($sentences);
-//dd($sentences->pluck('text1_id')->unique()->get());
-            if ($entry_number>0) {
-                $texts = Text::whereIn('id', $sentences->pluck('text1_id')); //->unique()
+            //dd($entry_number);   
+            //dd(to_sql($sentences));
+            //dd($sentences);
+            //dd($sentences->pluck('text1_id')->unique()->get());
+            if ($entry_number > 0) {
+                // searchWordsBySteps всегда возвращает коллекцию
+                $all_sentences = $sentences;
+
+                // Извлекаем уникальные ID текстов
+                $text_ids = $all_sentences->pluck('text1_id')->unique();
+                $texts = Text::whereIn('id', $text_ids);
                 $numAll = $texts->count();
-//dd($numAll);                
+                //dd($numAll);
                 $texts = $texts->paginate($this->url_args['limit_num']);
-//dd($texts);       
-                foreach($texts as $text) {                
-                    foreach ($sentences->where('text1_id', $text->id) as $sentence) {
-//dd(($sentences->where('text_id', $text->id)->get()));                        
+                //dd($texts);
+
+                // Группируем предложения по ID текста для эффективной фильтрации
+                $sentences_by_text = [];
+                foreach ($all_sentences as $sentence) {
+                    $text_id = $sentence->text1_id;
+                    if (!isset($sentences_by_text[$text_id])) {
+                        $sentences_by_text[$text_id] = [];
+                    }
+                    $sentences_by_text[$text_id][] = $sentence;
+                }
+
+                // Инициализируем переменную для хранения предложений по текстам
+                $text_sentences = [];
+
+                foreach ($texts as $text) {
+                    if (!isset($sentences_by_text[$text->id])) {
+                        continue;
+                    }
+                    foreach ($sentences_by_text[$text->id] as $sentence) {
                         $sentence_id = $sentence->sentence1_id;
 
                         if (!isset($text_sentences[$text->id]['sentences'][$sentence_id])) {
@@ -100,26 +134,41 @@ class SentenceController extends Controller
                         }
 
                         for ($i = 1; $i <= sizeof($url_args['words']); $i++) {
-                            $text_sentences[$text->id]['words'][] = $sentence->{'w'.$i.'_id'};
+                            $text_sentences[$text->id]['words'][] = $sentence->{'w' . $i . '_id'};
                         }
                     }
                 }
             }
-//dd($text_sentences);            
-        }      
-        return view('corpus.sentence.results',
-                compact('entry_number', 'is_limited', 'numAll', 'refine', 'script_start',
-                        'texts', 'search_query', 'sentences', 'args_by_get', 'url_args'));
+            //dd($text_sentences);            
+        }
+        return view(
+            'corpus.sentence.results',
+            compact(
+                'entry_number',
+                'is_limited',
+                'numAll',
+                'refine',
+                'script_start',
+                'texts',
+                'search_query',
+                'sentences',
+                'args_by_get',
+                'url_args',
+                'text_sentences'
+            )
+        );
     }
 
     public function wordGramForm(Request $request)
     {
         $count = (int)$request->input('count');
-                                
-        return view('corpus.sentence._search_word_form',
-                 compact('count'));
+
+        return view(
+            'corpus.sentence._search_word_form',
+            compact('count')
+        );
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -143,12 +192,22 @@ class SentenceController extends Controller
         $with_left_context = (int)$request->input('with_left_context');
         $with_right_context = (int)$request->input('with_right_context');
         $for_view = true;
-        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) 
-                = $sentence->text->meaningsGramsetsByWid($sentence->words()->pluck('w_id'));
-//dd($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples);        
-        return view('corpus.sentence.show', 
-                compact('sentence', 'for_view', 'with_left_context', 'with_right_context',
-                        'meanings_by_wid', 'gramsets_by_wid', 'wordforms', 'words_with_important_examples'));
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples)
+            = $sentence->text->meaningsGramsetsByWid($sentence->words()->pluck('w_id'));
+        //dd($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples);        
+        return view(
+            'corpus.sentence.show',
+            compact(
+                'sentence',
+                'for_view',
+                'with_left_context',
+                'with_right_context',
+                'meanings_by_wid',
+                'gramsets_by_wid',
+                'wordforms',
+                'words_with_important_examples'
+            )
+        );
     }
 
     /**
@@ -162,7 +221,7 @@ class SentenceController extends Controller
         $sentence = Sentence::findOrfail($id);
         return view('corpus.sentence.edit', compact('sentence'));
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -172,9 +231,9 @@ class SentenceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sentence = Sentence::findOrfail($id);        
+        $sentence = Sentence::findOrfail($id);
         $text = $sentence->text;
-        
+
         $text_xml = $request->input('text_xml');
         if ($text_xml && $sentence->text_xml != $text_xml) {
             $sentence->text_xml = $text_xml;
@@ -185,28 +244,37 @@ class SentenceController extends Controller
             }
         }
         $with_edit = true;
-        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples) 
-                = $sentence->text->meaningsGramsetsByWid($sentence->words()->pluck('w_id'));
-        return view('corpus.sentence.show', 
-                compact('text', 'sentence', 'with_edit', 'meanings_by_wid', 
-                        'gramsets_by_wid', 'wordforms', 'words_with_important_examples'));
+        list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples)
+            = $sentence->text->meaningsGramsetsByWid($sentence->words()->pluck('w_id'));
+        return view(
+            'corpus.sentence.show',
+            compact(
+                'text',
+                'sentence',
+                'with_edit',
+                'meanings_by_wid',
+                'gramsets_by_wid',
+                'wordforms',
+                'words_with_important_examples'
+            )
+        );
     }
 
     public function markup($id)
     {
-        $sentence = Sentence::findOrfail($id);        
+        $sentence = Sentence::findOrfail($id);
         $text = $sentence->text;
-        
+
         $text_xml = $sentence->text_xml;
         $error_message = $text->updateMeaningAndWordformText($sentence, $text_xml, true);
         if ($error_message) {
             return $error_message;
         }
-        $sentence_xml = $sentence->text_xml; 
+        $sentence_xml = $sentence->text_xml;
         $with_edit = true;
         return view('corpus.sentence.show', compact('text', 'sentence', 'with_edit'));
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
