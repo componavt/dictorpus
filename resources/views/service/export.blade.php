@@ -21,5 +21,5 @@
         <p><a href="export/concepts_without_images">Экспорт понятий без картинок</a></p>
         <p><a href="export/multidict_without_concepts">Экспорт лемм мультисловаря без понятий</a></p>
         <p><a href="export/olo_dict">Экспорт ливвиковского словаря</a></p>
-        <p><a href="export/sentences_with_translation">Экспорт ливвиковского новописьменных предложений с переводами</a></p>
+        <p><a href="export/for_yandex">Экспорт предложений для Яндекса</a></p>
 @endsection
