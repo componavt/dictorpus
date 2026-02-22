@@ -236,7 +236,7 @@ class Export
      */
     public static function oloNormSentencesWithTranslation($texts, $dir_name)
     {
-        $filename = $dir_name . "_olo_norm_with_translations" . ".csv";
+        $filename = $dir_name . "olo_norm_with_translations" . ".csv";
         $sentences = [];
 
         foreach ($texts as $text) {
@@ -256,13 +256,14 @@ class Export
     public static function otherOloSentences($without_text_ids, $without_sentence_ids, $dir_name)
     {
         $lang_id = 5; // olo
-        $filename = $dir_name . "_other_olo" . ".csv";
-
+        $filename = $dir_name . "other_olo" . ".csv";
+        $without_text_ids[] = 4343;
+        $sentences = [];
+        
         $texts_with_translations = Text::whereLangId($lang_id)
             ->whereNotNull('transtext_id')
             ->whereNotIn('id', $without_text_ids)
             ->orderBy('id')->get();
-        $sentences = [];
         foreach ($texts_with_translations as $text) {
             $sentences = $text->sentencesWithTranslation($sentences, $without_sentence_ids, 1);
         }
@@ -271,12 +272,11 @@ class Export
             ->whereNull('transtext_id')
             ->whereNotIn('id', $without_text_ids)
             ->orderBy('id')->get();
-        $sentences = [];
         foreach ($texts_without_translations as $text) {
             $sentences = $text->sentencesWithoutTranslation($sentences, $without_sentence_ids);
         }
 
-        self::writeSentencesForYandex($filename, $sentences, "Остальные ливвиковские предложения");
+        self::writeSentencesForYandex($filename, $sentences, "Остальные ливвиковские предложения", 1);
     }
 
     /**
@@ -285,12 +285,14 @@ class Export
     public static function krlSentences($dir_name)
     {
         $lang_id = 4; // krl
-        $filename = $dir_name . "_krl" . ".csv";
+        $without_text_ids = [6083, 6158, 6918];
+        $sentences = [];
+        $filename = $dir_name . "krl" . ".csv";
 
         $texts_with_translations = Text::whereLangId($lang_id)
             ->whereNotNull('transtext_id')
+            ->whereNotIn('id', $without_text_ids)
             ->orderBy('id')->get();
-        $sentences = [];
         foreach ($texts_with_translations as $text) {
             $sentences = $text->sentencesWithTranslation($sentences, [], 1);
         }
@@ -298,15 +300,14 @@ class Export
         $texts_without_translations = Text::whereLangId($lang_id)
             ->whereNull('transtext_id')
             ->orderBy('id')->get();
-        $sentences = [];
         foreach ($texts_without_translations as $text) {
             $sentences = $text->sentencesWithoutTranslation($sentences);
         }
 
-        self::writeSentencesForYandex($filename, $sentences, "Собственно карельские предложения");
+        self::writeSentencesForYandex($filename, $sentences, "Собственно карельские предложения", 1);
     }
 
-    public static function writeSentencesForYandex($filename, $sentences, $message)
+    public static function writeSentencesForYandex($filename, $sentences, $message, $with_dialect=false)
     {
         $headers = [
             'Content-Type' => 'text/csv; charset=utf-8',
@@ -315,7 +316,10 @@ class Export
         $handle = fopen('php://temp', 'r+');
 
         foreach ($sentences as $s => $info) {
-            fputcsv($handle, [$info['corpus'], $info['dialect'], $s, $info['trans']], "\t"); // с кавычками
+            $line = $with_dialect ? 
+                    [$info['corpus'], $info['dialect'], $s, !empty($info['trans']) ? $info['trans'] : '']
+                    : [$info['corpus'], $s, $info['trans']];
+            fputcsv($handle, $line, "\t"); // с кавычками
         }
 
         // Переместить указатель в начало файла
@@ -326,6 +330,6 @@ class Export
         // Сохранение файла в хранилище
         Storage::disk('public')->put($filename, $csvContent);
 
-        echo $message . ' сохранены в ' . storage_path('app/public/' . $filename);
+        echo $message . ' сохранены в ' . storage_path('app/public/' . $filename)."\n";
     }
 }

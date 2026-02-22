@@ -111,7 +111,14 @@ trait TextSelect
             ->whereNotIn('id', $without_sentences)
             ->orderBy('s_id')->get();
         foreach ($sents as $sentence) {
-            $s = KarGram::changeLetters(self::clearText($sentence->text_xml));
+            $s = $sentence->text_xml;
+            if (!preg_match("/\<w/", $s)) {
+                continue; // если в предложении нет карельских или вепсских слов
+            }
+            $s = KarGram::changeLetters(self::clearText($s));
+if (empty($trans_sentences[$sentence->s_id])) {
+    dd($this->id, $sentence->s_id);
+}            
             $ts = self::clearText($trans_sentences[$sentence->s_id]['sentence']);
             //            $sentences[!empty($s) ? $s : $this->id.'_'.$sentence->s_id] = $ts;
             if (!empty($s)) {
