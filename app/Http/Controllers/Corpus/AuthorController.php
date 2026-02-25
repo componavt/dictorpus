@@ -192,10 +192,10 @@ class AuthorController extends Controller
         }
         
         if ($error) {
-                return Redirect::to('/corpus/author/')
+                return Redirect::to('/corpus/author/'.($this->args_by_get))
                                ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/corpus/author/')
+            return Redirect::to('/corpus/author/'.($this->args_by_get))
                   ->withSuccess($result['message']);
         }
     }
