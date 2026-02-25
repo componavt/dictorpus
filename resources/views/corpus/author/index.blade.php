@@ -64,8 +64,8 @@
                     {{$author->namesToString()}}
                 </td>
                 <td data-th="{{ trans('navigation.texts') }}" style="text-align: center">
-                    @if($author->texts()->count())
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text?search_author=')}} {{$author->id}}">{{ $author->texts()->count() }}</a>
+                    @if($author->texts()->count() || $author->transtexts()->count() )
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text?search_author=')}} {{$author->id}}">{{ $author->texts()->count() + $author->transtexts()->count() }}</a>
                     @else
                     0
                     @endif

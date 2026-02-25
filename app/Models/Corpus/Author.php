@@ -29,6 +29,7 @@ class Author extends Model
     
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Texts;
+    use \App\Traits\Relations\BelongsToMany\Transtexts;
     
     // Has Many Relations
     use \App\Traits\Relations\HasMany\AuthorNames;
