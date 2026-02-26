@@ -118,6 +118,7 @@ return [
     'choose_template' => 'Выберите шаблон',
     'clear_wordforms' => 'очистить словоформы',
     'code' => 'Код',
+    'collocates' => 'Сочетаемость',
     'common_wordforms_total' => 'Общее количество повторяющихся словоформ', 
     'comptype' => 'Тип выражения',
     'comptypes' => [NULL=> '',

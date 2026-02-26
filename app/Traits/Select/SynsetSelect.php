@@ -105,7 +105,9 @@ trait SynsetSelect
         
         foreach ($this->meanings as $meaning) {
             $meaning_text = $meaning->meaningTexts()->whereLangId($lang->id)->first();
-            $terms = array_merge($terms, split_definition($meaning_text->meaning_text));
+            if ($meaning_text) {
+                $terms = array_merge($terms, split_definition($meaning_text->meaning_text));
+            }
         }
         
         $terms = join(' ',array_unique($terms));

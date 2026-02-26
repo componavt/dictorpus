@@ -16,6 +16,10 @@
             @endif                
     </table>
         @endif
+    @include('widgets.form.formitem._textarea',
+            ['name' => 'collocates',
+             'attributes' => ['rows' => 5],
+             'title' => 'Сочетаемость'])                
 
     <div class="row">
         <div class="col-sm-6">

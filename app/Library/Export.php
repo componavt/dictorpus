@@ -257,7 +257,6 @@ class Export
     {
         $lang_id = 5; // olo
         $filename = $dir_name . "other_olo" . ".csv";
-        $without_text_ids[] = 4343;
         $sentences = [];
         
         $texts_with_translations = Text::whereLangId($lang_id)
@@ -285,7 +284,7 @@ class Export
     public static function krlSentences($dir_name)
     {
         $lang_id = 4; // krl
-        $without_text_ids = [6083, 6158, 6918];
+        $without_text_ids = [6083, 6158];
         $sentences = [];
         $filename = $dir_name . "krl" . ".csv";
 

@@ -56,8 +56,7 @@ class SynsetController extends Controller
             'lang_id'=> 'required|numeric',
             'pos_id' => 'numeric',
             ]);
-        
-        $data = $request->only(['lang_id', 'pos_id', 'comment', 'descr', 'dominant_id']);
+        $data = $request->only(['lang_id', 'pos_id', 'comment', 'descr', 'dominant_id', 'collocates']);
         return $data;
     }
     
@@ -122,6 +121,7 @@ class SynsetController extends Controller
         
         $synset->comment = $request->comment;
         $synset->descr = $request->descr;
+        $synset->collocates = $request->collocates;
         $synset->dominant_id = (int)$request->dominant_id;
         $synset->save();
         $synset->meanings()->sync((array)$request->meanings);

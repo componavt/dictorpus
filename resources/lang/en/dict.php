@@ -112,6 +112,7 @@ return [
     'choose_template' => 'Сhoose a template',
     'clear_wordforms' => 'clear wordforms',
     'code' => 'code',
+    'collocates' => 'Collocates',
     'common_wordforms_total' => 'Number of common wordforms', 
     'comptype' => 'Compound type',
     'comptypes' => [NULL=> '',
