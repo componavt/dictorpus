@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\Settings;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Storage;
 use Carbon\Carbon;
-use DB;
 
 use App\Library\Export;
 
@@ -26,9 +26,11 @@ use App\Models\Dict\GramCategory;
 //use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
+use App\Models\Dict\MeaningText;
 
 class ExportController extends Controller
 {
@@ -279,23 +281,30 @@ class ExportController extends Controller
 
         $filename = 'export/for_mobile/gramsets.csv';
         Storage::disk('public')->put($filename, '');
-        foreach (Export::gramsetsForMobile() as $gramset_id => $info) {
-            Storage::disk('public')->append($filename, $gramset_id . ",\"" . $info['en'] . "\",\"" . $info['ru'] . '"');
+        $gramsets = Export::gramsetsForMobile();
+        if (!empty($gramsets)) {
+            foreach ($gramsets as $gramset_id => $info) {
+                Storage::disk('public')->append($filename, $gramset_id . ",\"" . $info['en'] . "\",\"" . $info['ru'] . '"');
+            }
         }
 
 
         $filename = 'export/for_mobile/lemmas.csv';
         Storage::disk('public')->put($filename, '');
-        //dd(Export::lemmasForMobile());        
-        foreach (Export::lemmasForMobile() as $lemma_id => $info) {
-            Storage::disk('public')->append($filename, $lemma_id . ",\"" . $info['lemma'] . "\"," . $info['lang_id'] . "," . $info['pos_id'] . ",\"" . $info['meaning_ru'] . '"');
+        $lemmas = Export::lemmasForMobile();
+        if (!empty($lemmas)) {
+            foreach ($lemmas as $lemma_id => $info) {
+                Storage::disk('public')->append($filename, $lemma_id . ",\"" . $info['lemma'] . "\"," . $info['lang_id'] . "," . $info['pos_id'] . ",\"" . $info['meaning_ru'] . '"');
+            }
         }
 
         $filename = 'export/for_mobile/wordforms.csv';
-        Export::wordformsForMobile($filename);
         Storage::disk('public')->put($filename, '');
-        foreach (Export::wordformsForMobile() as $wordform_id => $info) {
-            Storage::disk('public')->append($filename, $wordform_id . "," . $info['lemma_id'] . ",\"" . $info['wordform'] . "\"," . $info['gramset_id']);
+        $wordforms = Export::wordformsForMobile($filename);
+        if (!empty($wordforms)) {
+            foreach ($wordforms as $wordform_id => $info) {
+                Storage::disk('public')->append($filename, $wordform_id . "," . $info['lemma_id'] . ",\"" . $info['wordform'] . "\"," . $info['gramset_id']);
+            }
         }
 
         print "done.";
@@ -554,5 +563,52 @@ class ExportController extends Controller
         $dir_name = "export/for_yandex/" . date('Y-m-d') . '/';
 
         Export::forYandex($dir_name);
+    }
+
+    /**
+     * Экспорт русских толкований из словаря
+     *
+     * Выгрузка в CSV-файл с колонками:
+     * - номер по порядку
+     * - meanings.lemma_id
+     * - meanings.id
+     * - meanings.meaning_n
+     * - lemmas.lemma
+     * - lemmas.lang.code
+     * - lemmas.pos.code
+     * - meaning_texts.meaning_text
+     */
+    public function exportRussianMeanings()
+    {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+
+        // Создаем директорию если её нет
+        Storage::disk('public')->makeDirectory('export/wordnet');
+
+        foreach (Lang::projectLangs() as $lang) {
+            $filename = 'export/wordnet/meanings_' . $lang->code . '.csv';
+            Export::exportRussianMeanings($filename, $lang);
+            print "Значения выгружены в файл: " . Storage::url($filename);
+        }
+    }
+
+    /**
+     * Экспорт русских переводов
+     */
+    public function exportRussianTranslations()
+    {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+
+        $filename = 'export/wordnet/examples.csv';
+        // Создаем директорию если её нет
+        Storage::disk('public')->makeDirectory('export/wordnet');
+
+        foreach (Lang::projectLangs() as $lang) {
+            $filename = 'export/wordnet/examples_' . $lang->code . '.csv';
+            Export::exportRussianTranslations($filename, $lang->id);
+            print "Переводы выгружены в файл: " . Storage::url($filename);
+        }
     }
 }

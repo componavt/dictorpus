@@ -2,14 +2,18 @@
 
 namespace App\Library;
 
-use LaravelLocalization;
-use Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Corpus\Text;
+use App\Models\Corpus\Transtext;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
+use App\Models\Dict\Meaning;
+use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Corpus\Sentence;
 use App\Models\Dict\Wordform;
@@ -82,6 +86,11 @@ class Export
         $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIDs())
             //->take(100)
             ->get();
+
+        if ($lemmas->isEmpty()) {
+            return $data; // Возвращаем пустой массив, если нет лемм
+        }
+
         foreach ($lemmas as $lemma) {
             $meanings = $lemma->getLangMeaningTexts('ru');
             if (!sizeof($meanings)) {
@@ -100,6 +109,126 @@ class Export
         return $data;
     }
 
+    /**
+     * Экспорт русских толкований из словаря
+     *
+     * Выгрузка в CSV-файл с колонками:
+     * - номер по порядку
+     * - meanings.lemma_id
+     * - meanings.id
+     * - meanings.meaning_n
+     * - lemmas.lemma
+     * - lemmas.lang.code
+     * - lemmas.pos.code
+     * - meaning_texts.meaning_text
+     *
+     * @param string $filename Имя файла для сохранения
+     * @param Lang $lang язык
+     * @return bool Успех или неудача
+     */
+    public static function exportRussianMeanings($filename, $lang)
+    {
+        // ID русского языка
+        $rus_lang_id = 2;
+
+        // Получаем данные из БД
+        $meaning_texts = MeaningText::where('meaning_texts.lang_id', $rus_lang_id)
+            ->join('meanings', 'meaning_texts.meaning_id', '=', 'meanings.id')
+            ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+            ->join('langs', 'lemmas.lang_id', '=', 'langs.id')
+            ->join('parts_of_speech', 'lemmas.pos_id', '=', 'parts_of_speech.id')
+            ->where('lemmas.lang_id', $lang->id)
+            ->select(
+                'meanings.lemma_id',
+                'meanings.id as meaning_id',
+                'meanings.meaning_n',
+                'lemmas.lemma',
+                'langs.code as lang_code',
+                'parts_of_speech.code as pos_code',
+                'meaning_texts.meaning_text'
+            )
+            ->orderBy('lemmas.lang_id')
+            ->orderBy('lemmas.lemma')
+            ->orderBy('meanings.meaning_n')
+            ->get();
+
+        // Заголовок CSV файла
+        $header = "№\tID леммы\tID значения\tномер значения\лемма\tкод языка\tкод части речи\tтолкование\n";
+        Storage::disk('public')->put($filename, $header);
+
+        // Записываем данные
+        $counter = 1;
+        foreach ($meaning_texts as $row) {
+            // Форматируем строку для CSV
+            $line = $counter . "\t" .
+                $row->lemma_id . "\t" .
+                $row->meaning_id . "\t" .
+                $row->meaning_n . "\t" .
+                '"' . str_replace('"', '""', $row->lemma) . "\"\t" .
+                $row->lang_code . "\t" .
+                $row->pos_code . "\t" .
+                '"' . str_replace('"', '""', $row->meaning_text) . '"';
+
+            Storage::disk('public')->append($filename, $line);
+            $counter++;
+        }
+
+        return true;
+    }
+
+    /**
+     * Экспорт русских переводов предложений 
+     *
+     * Выгрузка в CSV-файл с колонками:
+     * - номер по порядку
+     * - ID значения
+     * - meaning_texts.meaning_text - предложение на русском языке, перевод проверенного примера
+     *
+     * @param string $filename Имя файла для сохранения
+     * @param int $lang_id язык текстов
+     * @return bool Успех или неудача
+     */
+    public static function exportRussianTranslations($filename, $lang_id)
+    {
+        // ID русского языка
+        $lang_ru = 2;
+
+        Storage::disk('public')->put($filename, "Номер по порядку\tID значения\tпример");
+
+        $texts = Text::whereNotNull('transtext_id')
+            ->where('lang_id', $lang_id)
+            ->whereIn('id', function ($q) use ($lang_id) {
+                $q->select('id')->from('meaning_text')
+                    ->where('relevance', '>', 1);
+            })->get();
+
+        $count = 0;
+        foreach ($texts as $text) {
+            $text_id = $text->id;
+            $transtext = $text->transtext;
+            $examples = DB::table('meaning_text')
+                ->select(['s_id', 'meaning_id'])
+                ->where('text_id', $text_id)
+                ->where('relevance', '>', 1)
+                ->get();
+
+            if (empty($examples)) {
+                continue;
+            }
+
+            foreach ($examples as $example) {
+                $count++;
+                $s_id = $example->s_id;
+                $sentence = Text::processSentenceForExport($text->getTransSentence($s_id));
+                if (empty($sentence)) {
+                    continue;
+                }
+                $line = $count . "\t" . $example->meaning_id . "\t" . $sentence;
+                Storage::disk('public')->append($filename, $line);
+            }
+        }
+    }
+
     public static function wordformsForMobile(string $filename)
     {
         $start = 1;
@@ -107,8 +236,11 @@ class Export
         $filename .= '_from_' . $start;
         Storage::disk('public')->put($filename, '');
 
-        //        $data=[];
+        $data = []; // Подготовим данные для возврата
         $max_lemma_id = Lemma::selectRaw("max(id) as max")->first()->max;
+        if (!$max_lemma_id) {
+            return $data; // Возвращаем пустой массив, если нет лемм
+        }
 
         $portion = 100;
         $step = 0;
@@ -116,35 +248,44 @@ class Export
             $lemmas = Lemma::whereIn('lang_id', Lang::projectLangIDs())
                 ->where('id', '>', $start + $step * $portion)
                 ->where('id', '<=', $start + ($step + 1) * $portion)
-                //                        ->take(100)
                 ->get();
+
             foreach ($lemmas as $lemma) {
                 $wordforms = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
                     ->whereLemmaId($lemma->id)
                     ->groupBy('wordform_id', 'gramset_id')
                     ->get(['wordform', 'gramset_id']);
+
                 foreach ($wordforms as $wordform) {
                     Storage::disk('public')->append($filename, $count . "," . $lemma->id . ",\"" . $wordform->wordform . "\"," . $wordform->gramset_id);
-                    /*                    $data[$count++] = [
-                        'wordform'=>$wordform->wordform,
-                        'lemma_id'=>$lemma->id,
-                        'gramset_id'=>$wordform->gramset_id];*/
+                    $data[$count] = [
+                        'wordform' => $wordform->wordform,
+                        'lemma_id' => $lemma->id,
+                        'gramset_id' => $wordform->gramset_id
+                    ];
                     $count++;
                 }
             }
             $step++;
         }
-        return $data;
+
+        return $data; // Возвращаем данные для возможного использования
     }
 
     public static function gramsetsForMobile()
     {
         $data = [];
-        foreach (Gramset::get() as $gramset) {
+        $gramsets = Gramset::get();
+
+        if ($gramsets->isEmpty()) {
+            return []; // Возвращаем пустой массив вместо null
+        }
+
+        foreach ($gramsets as $gramset) {
             $data[$gramset->id]['ru'] = $gramset->gramsetString();
         }
         LaravelLocalization::setLocale('en');
-        foreach (Gramset::get() as $gramset) {
+        foreach ($gramsets as $gramset) {
             $data[$gramset->id]['en'] = $gramset->gramsetString();
         }
         return $data;
@@ -258,7 +399,7 @@ class Export
         $lang_id = 5; // olo
         $filename = $dir_name . "other_olo" . ".csv";
         $sentences = [];
-        
+
         $texts_with_translations = Text::whereLangId($lang_id)
             ->whereNotNull('transtext_id')
             ->whereNotIn('id', $without_text_ids)
@@ -306,7 +447,7 @@ class Export
         self::writeSentencesForYandex($filename, $sentences, "Собственно карельские предложения", 1);
     }
 
-    public static function writeSentencesForYandex($filename, $sentences, $message, $with_dialect=false)
+    public static function writeSentencesForYandex($filename, $sentences, $message, $with_dialect = false)
     {
         $headers = [
             'Content-Type' => 'text/csv; charset=utf-8',
@@ -315,9 +456,9 @@ class Export
         $handle = fopen('php://temp', 'r+');
 
         foreach ($sentences as $s => $info) {
-            $line = $with_dialect ? 
-                    [$info['corpus'], $info['dialect'], $s, !empty($info['trans']) ? $info['trans'] : '']
-                    : [$info['corpus'], $s, $info['trans']];
+            $line = $with_dialect ?
+                [$info['corpus'], $info['dialect'], $s, !empty($info['trans']) ? $info['trans'] : '']
+                : [$info['corpus'], $s, $info['trans']];
             fputcsv($handle, $line, "\t"); // с кавычками
         }
 
@@ -329,6 +470,6 @@ class Export
         // Сохранение файла в хранилище
         Storage::disk('public')->put($filename, $csvContent);
 
-        echo $message . ' сохранены в ' . storage_path('app/public/' . $filename)."\n";
+        echo $message . ' сохранены в ' . storage_path('app/public/' . $filename) . "\n";
     }
 }

@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY php/conf.d/php-overrides.ini /usr/local/etc/php/conf.d/php-overrides.ini
+
 # Копируем конфиг Apache
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 

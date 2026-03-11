@@ -21,6 +21,8 @@ Route::group(
         Route::get('multidict_without_concepts', 'Library\ExportController@multidictWithoutConcepts');
         Route::get('olo_dict', 'Library\ExportController@oloDict');
         Route::get('runes', 'Library\ExportController@runes');
+        Route::get('russian_meanings', 'Library\ExportController@exportRussianMeanings');
+        Route::get('russian_translations', 'Library\ExportController@exportRussianTranslations');
         Route::get('sentences', 'Library\ExportController@sentencesToLines');
         Route::get('unimorph', 'Library\ExportController@lemmasToUniMorph');
     }

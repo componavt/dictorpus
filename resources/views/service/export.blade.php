@@ -22,4 +22,6 @@
         <p><a href="export/multidict_without_concepts">Экспорт лемм мультисловаря без понятий</a></p>
         <p><a href="export/olo_dict">Экспорт ливвиковского словаря</a></p>
         <p><a href="export/for_yandex">Экспорт предложений для Яндекса</a></p>
-@endsection
+        <p><a href="export/russian_meanings">Экспорт русских толкований из словаря для WordNet</a></p>
+        <p><a href="export/russian_translations">Экспорт русских переводов примеров к словарю для WordNet</a></p>
+    @endsection
