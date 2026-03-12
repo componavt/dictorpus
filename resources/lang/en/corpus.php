@@ -27,70 +27,70 @@ return [
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',
     'by_sentences' => 'by sentences',
-    
+
     'char_left' => 'Characters left',
     'choose-gramset' => 'Choose a gramset',
     'celebration_type' => 'Link to the celebration map',
     'celebration_types' => [
-        1=>'by informant\'s place of birth',
-        2=>'by recording location',
-        3=>'by mentioned settlement',
+        1 => 'by informant\'s place of birth',
+        2 => 'by recording location',
+        3 => 'by mentioned settlement',
     ],
     'comment' => 'comments',
     'comment_source' => 'comment to the source',
     'comment_text' => 'comment to the text',
-    
+
     'corpus' => 'corpus',
     'corpus_has_text' => 'Corpus ":name" can not be removed, there are texts in this corpus',
     'corpus_list' => 'Corpus list',
     'corpus_removed' => 'Corpus ":name" is removed successfully.',
     'creation_date' => 'year of additing into VepKar',
     'cycle' => 'cycle',
-    'cyrtext_text' =>'Text in Cyrillic',
-    'cyrtext_title' =>'Title in Cyrillic',
-    
+    'cyrtext_text' => 'Text in Cyrillic',
+    'cyrtext_title' => 'Title in Cyrillic',
+
     'district' => 'District',
     'district_list' => 'District list',
     'district_removed' => 'District ":name" is removed successfully.',
-    
+
     'edit_sentences' => 'edit sentences',
     'edit_word' => 'correct the word in the text',
     'fragment' => 'fragment',
-    
+
     'genre' => 'genre',
     'genre_has_text' => 'Genre ":name" can not be removed, there are texts with this genre',
     'genre_list' => 'Genre list',
     'genre_removed' => 'Genre ":name" is removed successfully.',
     'gram_search' => 'Lexico-grammatical search',
     'has_link_with_lemma' => 'linked with lemma',
-    
+
     'in_corpus' => 'in texts',
-    'in_dict' => [1=>'yes', 2=>'no', 0=>'output all words'],
+    'in_dict' => [1 => 'yes', 2 => 'no', 0 => 'output all words'],
     'in_native' => 'in native',
     'informant' => 'Informant',
     'informants' => 'Infor&shy;mant(s)',
     'informant_list' => 'Informant list',
     'informant_name' => 'Informant name',
     'informant_removed' => 'Informant ":name" is removed successfully.',
-    
+
     'last_updated_texts' => 'Last updated texts',
-    'latitude'=>'latitude',
+    'latitude' => 'latitude',
     'listen' => 'Listen',
-    'longitude'=>'longitude',
-    
+    'longitude' => 'longitude',
+
     'mark_right_gramset' => 'choose right gramset',
     'mark_right_meaning' => 'choose right meaning',
     'mention' => 'men&shy;tion',
     'monument_removed' => 'Monument ":name" is removed successfully.',
     'motive' => 'Motive',
     'motype' => 'Motive type',
-        
+
     'name' => 'name',
     'nee' => 'nee',
     'new_meaning' => 'a new meaning',
     'new_photo' => 'New photo',
-    'new_texts'=>'New texts',
-    
+    'new_texts' => 'New texts',
+
     'of_author' => 'of the author',
     'of_informant_birth' => 'of informant birth',
     'of_corpus' => 'of the corpus',
@@ -108,14 +108,14 @@ return [
     'of_text' => 'of the text',
     'of_texts' => 'of texts',
     'of_topic' => 'of the topic',
-//    'of_unchecked_words' => '{0} unchecked words|{1} unchecked word|[2,*] unchecked words.',
     'of_words' => ' word| words',
-    
+    'only_checked' => 'only expert-verified results',
+
     'p' => 'p.',
     'parent' => 'parent section',
     'photos' => 'Photos',
     'photos_edit' => 'photos',
-    
+
     'place' => 'Settlement',
     'place_list' => 'Settlement list',
     'place_mentioned' => 'settlements mentioned',
@@ -125,30 +125,30 @@ return [
     'plot_has_text' => 'Plot / character ":name" can not be removed, there are texts with this plot',
     'plot_list' => 'Plot / character list',
     'plot_removed' => 'Plot / character ":name" is removed successfully.',
-    
+
     're-markup' => 're-markup text to XML',
-    
+
     'record_place' => 'recording place',
     'record_year' => 'year of recording',
     'recording_year' => 'year of recording',
-    'recorded' => 'recorded',    
+    'recorded' => 'recorded',
     'record_by' => 'Recorded by',
     'recorder' => 'Recorder',
     'recorder_list' => 'Recorders list',
     'recorder_name' => 'Recorder name',
     'recorder_removed' => 'Recorder ":name" is removed successfully.',
-    
+
     'region' => 'Region',
     'region_list' => 'Region list',
     'region_removed' => 'Region ":name" is removed successfully.',
-    
+
     'rgo_info' => 'The materials published on the Audio Map in 2024 were prepared as part of the project "Filling the Audio Map of Karelian and Vepsian Dialects." The project is supported by the Russian Geographical Society.',
-    
+
     'select_corpus' => 'Select corpus',
     'sentences' => 'Sentences',
     'show_gram_markup' => 'Show grammatic markup',
     'show_meaning_markup' => 'Show semantic markup',
-    
+
     'source' => 'Source',
     'source_author' => 'publication author',
     'source_pages' => 'pages',
@@ -156,7 +156,7 @@ return [
     'source_year' => 'publication year',
     'speech' => 'Speech',
     'symbol' => 'symbol',
-    
+
     'text' => 'text',
     'text_help' => 'You can force the end of a sentence with |<br>You can divide words by the en dash –',
     'text_for_check' => 'Enter text to check',
@@ -168,22 +168,22 @@ return [
     'text_removed' => 'Text ":name" is removed successfully.',
     'text_xml' => 'markup text',
     'texts' => 'texts',
-    
+
     'title' => 'Title',
-    
+
     'topic' => 'topic',
     'topic_has_text' => 'Topic ":name" can not be removed, there are texts with this topic',
     'topic_list' => 'Topic list',
     'topic_removed' => 'Topic ":name" is removed successfully.',
 
     'topkar_toponyms' => 'TopKar toponyms',
-    
+
     'trans_author' => 'Author of translation/original work',
     'translation_in' => 'translation in',
     'transtext_lang' => 'language of translation/original work',
     'transtext_text' => 'text of translation/original work',
     'transtext_title' => 'title of translation/original work',
-    
+
     'year_of_birth' => 'year of birth',
     'youtube_id' => 'YouTube Identifier',
     'word' => 'Word',

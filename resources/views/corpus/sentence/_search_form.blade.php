@@ -68,6 +68,13 @@
         </span>
         @include('widgets.form.formitem._submit', ['title' => trans('messages.search')])
     </div>
+    <div class="col-md-12{{$url_args['only_checked'] ? '' : ' ext-form'}}">
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'only_checked',
+                'value' => 1,
+                'checked' => $url_args['only_checked']==1,
+                'tail'=>trans('corpus.only_checked')]) 
+    </div>
 </div>                 
 </div>
 <div class="hide-search-form">{{trans('search.simple_search')}} &#8593;</div>

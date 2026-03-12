@@ -2,8 +2,8 @@
 
 namespace App\Traits\Search;
 
-use DB;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 use App\Library\Grammatic;
@@ -25,6 +25,7 @@ trait SentenceSearch
     public static function urlArgs($request)
     {
         $url_args = Str::urlArgs($request) + [
+            'only_checked'  => (int)$request->input('only_checked'),
             'search_corpus'   => (array)$request->input('search_corpus'),
             'search_dialect'  => (array)$request->input('search_dialect'),
             'search_genre'    => (array)$request->input('search_genre'),
@@ -51,24 +52,6 @@ trait SentenceSearch
         }
         return $url_args;
     }
-
-    /*    public static function search(Array $url_args) {
-        $sentences = self::orderBy('id')
-            ->whereIn('text_id', function ($q) use ($url_args) {
-                $q ->select('id')->from('texts');
-                if ($url_args['search_corpus']) {
-                    $q = $q->whereIn('corpus_id',$url_args['search_corpus']);
-                } 
-                $q = Text::searchByDialects($q, $url_args['search_dialect']);
-                $q = Text::searchByGenres($q, $url_args['search_genre']);
-                $q = Text::searchByLang($q, $url_args['search_lang']);
-                $q = Text::searchByYear($q, $url_args['search_year_from'], $url_args['search_year_to']);
-            });
-        
-        $sentences = self::searchByWords($sentences, 'text_id', $url_args['search_word1'], $url_args['search_word2'], $url_args['search_distance_from'], $url_args['search_distance_to']);
-        return $sentences;
-    }
-*/
 
     public static function searchTexts(array $url_args)
     {
@@ -258,6 +241,10 @@ trait SentenceSearch
                 (isset($word['d_f']) && isset($word['d_t'])
                     ? trans('search.in_distance', ['from' => $word['d_f'], 'to' => $word['d_t']]) : '')
                 . ' <b>' . trans('corpus.word') . " $i</b>: " . join(' <span class="warning">' . trans('search.and') . '</span> ', $tmp);
+            if (!empty($args['only_checked'])) {
+                $tmp[] = trans('corpus.only_checked');
+            }
+            $out[] = trans('corpus.only_checked');
         }
         return join(' <span class="warning">' . trans('search.and') . '</span><br>', $out);
     }
@@ -338,7 +325,7 @@ trait SentenceSearch
         if (!is_array($texts)) {
             return [0, collect([]), false];
         }
-        $result = self::searchWordsBySteps($args['words'], $texts, $args['search_lang']);
+        $result = self::searchWordsBySteps($args['words'], $texts, $args['search_lang'], $args['only_checked']);
         $results = $result['results'];
         $is_limited = $result['is_limited'];
 
@@ -448,14 +435,13 @@ AND t1.word_number-t2.word_number<=|B|;
         return $builder;
     }
 
-    public static function searchWordsByWord($builder, $table_name, $word, $lang_ids = [])
+    public static function searchWordsByWord($builder, $table_name, $word, $lang_ids = [], $only_checked = false)
     {
-        //dd($word);        
         //\Log::info("searchWordsByWord start", ['table_name' => $table_name, 'word' => $word]);
 
         $search_by_pos = !empty($word['p']) && sizeof($word['p']);
         if ($search_by_pos && PartOfSpeech::isExistNonChangableIDs($word['p'])) {
-            return self::searchWordsByWordForNotChangablePOS($builder, $table_name, $word, $lang_ids);
+            return self::searchWordsByWordForNotChangablePOS($builder, $table_name, $word, $lang_ids, $only_checked);
         }
 
         if (!empty($word['w']) && is_string($word['w'])) {
@@ -469,15 +455,10 @@ AND t1.word_number-t2.word_number<=|B|;
         if (!$search_by_lemma && !$search_by_pos && !$search_by_grams && !$search_by_gramset) {
             return $builder;
         }
-        /*        $twf_alias = 'twf_' . str_replace('.', '_', $table_name);
-        $builder->join("text_wordform as {$twf_alias}", function ($join) use ($table_name, $twf_alias) {
-            $join->on("{$twf_alias}.word_id", '=', DB::raw($table_name.'id'));
-        })
-        ->where("{$twf_alias}.relevance", '>', 0);*/
-        //dd($builder->count());
-        $builder = $builder->whereIn($table_name . 'id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_grams, $search_by_gramset, $lang_ids) {
+
+        $builder = $builder->whereIn($table_name . 'id', function ($q) use ($word, $search_by_lemma, $search_by_pos, $search_by_grams, $search_by_gramset, $lang_ids, $only_checked) {
             $q->select('word_id')->from('text_wordform')
-                ->where('relevance', '>', 0);
+                ->where('relevance', '>', $only_checked ? 1 : 0);
             if ($search_by_lemma || $search_by_pos) {
                 $q->whereIn('wordform_id', function ($query1) use ($word, $search_by_lemma, $search_by_pos, $lang_ids) {
                     $query1->select('wordform_id')
@@ -515,16 +496,16 @@ AND t1.word_number-t2.word_number<=|B|;
         return $builder;
     }
 
-    public static function searchWordsByWordForNotChangablePOS($builder, $table_name, $word, $lang_ids = [])
+    public static function searchWordsByWordForNotChangablePOS($builder, $table_name, $word, $lang_ids = [], $only_checked = false)
     {
         if (isset($word['w']) && $word['w']) {
             $builder = $builder->where($table_name . 'word', 'rlike', $word['w']);
         }
         $search_by_lemma = isset($word['l']) && $word['l'];
 
-        return $builder->whereIn($table_name . 'id', function ($q) use ($word, $search_by_lemma, $lang_ids) {
+        return $builder->whereIn($table_name . 'id', function ($q) use ($word, $search_by_lemma, $lang_ids, $only_checked) {
             $q->select('word_id')->from('meaning_text')
-                ->where('relevance', '>', 0)
+                ->where('relevance', '>', $only_checked ? 1 : 0)
                 ->whereIn('meaning_id', function ($query1) use ($word, $search_by_lemma, $lang_ids) {
                     $query1->select('id')->from('meanings')
                         ->whereIn('lemma_id', function ($query2) use ($word, $search_by_lemma, $lang_ids) {
@@ -541,7 +522,7 @@ AND t1.word_number-t2.word_number<=|B|;
         });
     }
 
-    public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = [])
+    public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = [], $only_checked = false)
     {
         $word_total = count($words);
         $limit = 5000;
@@ -557,7 +538,7 @@ AND t1.word_number-t2.word_number<=|B|;
             if ($text_ids) {
                 $builder->whereIn('t1.text_id', $text_ids);
             }
-            $builder = self::searchWordsByWord($builder, 't1.', $words[1], $lang_ids);
+            $builder = self::searchWordsByWord($builder, 't1.', $words[1], $lang_ids, $only_checked);
 
             // Применяем лимит как и для 2+ слов
             $results = collect($builder->limit($limit + 1)->get());
@@ -576,7 +557,7 @@ AND t1.word_number-t2.word_number<=|B|;
         if ($text_ids) {
             $builder1->whereIn('t1.text_id', $text_ids);
         }
-        $builder1 = self::searchWordsByWord($builder1, 't1.', $words[1], $lang_ids);
+        $builder1 = self::searchWordsByWord($builder1, 't1.', $words[1], $lang_ids, $only_checked);
 
         $pairBuilder = $builder1
             ->join('words as t2', function ($join) use ($words) {
@@ -587,7 +568,7 @@ AND t1.word_number-t2.word_number<=|B|;
             })
             ->select('t1.text_id as text1_id', 't1.sentence_id as sentence1_id', 't1.w_id as w1_id', 't2.w_id as w2_id');
 
-        $pairBuilder = self::searchWordsByWord($pairBuilder, 't2.', $words[2], $lang_ids);
+        $pairBuilder = self::searchWordsByWord($pairBuilder, 't2.', $words[2], $lang_ids, $only_checked);
 
         // Запрашиваем LIMIT + 1
         $pairResults = collect($pairBuilder->limit($limit + 1)->get());
@@ -609,7 +590,7 @@ AND t1.word_number-t2.word_number<=|B|;
                 ->whereIn('t3.sentence_id', $sentenceIds)
                 ->select('t3.sentence_id as sentence1_id', 't3.w_id as w3_id', 't3.text_id as text1_id');
 
-            $builder3 = self::searchWordsByWord($builder3, 't3.', $words[3], $lang_ids);
+            $builder3 = self::searchWordsByWord($builder3, 't3.', $words[3], $lang_ids, $only_checked);
             $w3Results = collect($builder3->get())->groupBy('sentence1_id'); // группируем по sentence_id для обработки множественных вхождений
 
             $finalResults = collect();
