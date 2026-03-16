@@ -24,6 +24,7 @@
         <p><a href="/service/correct/extra_gramsets">Выявить у разметки лишние грамсеты</a></p>
         <p><a href="/service/correct/lemmas_u">Леммы с Ü</a></p>
         <p><a href="/service/correct/missing_gramsets">Добавление отсутствующих связей "текст-грамсет"</a></p>
+        <p><a href="/service/correct/sources">Источники</a></p>
         
 {{--        <p><a href="/service/correct/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
         <p><a href="/service/correct/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>

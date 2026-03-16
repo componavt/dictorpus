@@ -11,6 +11,7 @@ use DB;
 use App\Library\Correct;
 use App\Library\Grammatic;
 
+use App\Models\Corpus\Source;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\TextWordform;
 use App\Models\Corpus\Transtext;
@@ -467,6 +468,32 @@ print "<p>$query</p>";
     public function missingGramsets() {
         print "<h3>Изменяемые слова, у которых найдены значения, но отсутствуют в БД грамсеты. По возможности создаются связи text_wordform</h3>";
         Correct::missingGramsets();
+    }
+    
+    /*
+     * select author, title, year, comment, count(*) as count from sources where title is not null group by author, title, year, comment order by count DESC, title, year, author, comment;
+     */
+    public function sources() {
+        $sources = Source::select('author', 'title', 'year', 'comment', DB::raw('count(*) as count'))
+            ->whereNotNull('title')
+            ->groupBy('author', 'title', 'year', 'comment')
+            ->orderBy('count', 'desc')
+            ->orderBy('title')
+            ->orderBy('year')
+            ->orderBy('author')
+            ->orderBy('comment')
+//            ->take(1200)
+            ->get();
+        
+        $count = 1;
+        print "<table width=100% border=1>\n".
+              "<tr><th>No</th><th>Автор</th><th>Название</th><th>Год</th><th>Комментарий</th><th>Количество</th></tr>\n";
+        foreach ($sources as $source) {
+            $title = str_replace('_', "_ ", str_replace('/', "/ ", $source->title));
+            $comment = str_replace('_', "_ ", str_replace('/', "/ ", $source->comment));
+            print "<tr><td>".$count++."</td><td>".$source->author."</td><td>".htmlspecialchars($title)."</td><td>".$source->year."</td><td>".htmlspecialchars($comment)."</td><td>".$source->count."</td></tr>\n";
+        }        
+        print "</table>\n";
     }
         
 }
