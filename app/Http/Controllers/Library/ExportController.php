@@ -633,8 +633,10 @@ class ExportController extends Controller
         Storage::disk('public')->makeDirectory($imagedir);
         File::cleanDirectory(storage_path('app/public/' . $imagedir));
 
-        Export::meaningsforMultimediaDictionary($filename, $imagedir, $imagefile);
+        $images = Export::meaningsforMultimediaDictionary($filename);
         print "<p>Значения выгружены в файл: " . Storage::url($filename, $imagedir) . "</p>";
+
+        Export::imagesforMultimediaDictionary($images, $imagedir, $imagefile);
         print "<p>Изображения выгружены в файл: " . Storage::url($imagefile) . "</p>";
     }
 }

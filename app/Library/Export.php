@@ -485,11 +485,11 @@ class Export
         }
     }
 
-    public static function meaningsforMultimediaDictionary($filename, $imagedir, $imagefile)
+    public static function meaningsforMultimediaDictionary($filename)
     {
         Storage::disk('public')->put($filename, "id\tlemma_id\tmeaning_n\tmeaning_ru\tmeaning_en\tmeaning_fi\timage_id");
-        Storage::disk('public')->put($imagefile, "id\timage");
         $meanings = Meaning::orderBy('id')->get();
+        $images = [];
 
         foreach ($meanings as $meaning) {
             $image = $meaning->photoInfo();
@@ -501,12 +501,22 @@ class Export
                 $meaning_ru . "\t" . $meaning_en . "\t" . $meaning_fi . "\t" . $image_id;
             Storage::disk('public')->append($filename, $line);
             if (!empty($image['id'])) {
-                $relativePath = $imagedir . '/' . $image['id'] . '.jpg';
-                $target = Storage::disk('public')->getAdapter()->applyPathPrefix($relativePath);
-                File::copy($image['thumb_path'], $target);
-                $line = $image['id'] . "\t" . $image['wiki_photo'];
-                Storage::disk('public')->append($imagefile, $line);
+                $images[$image_id] = ['thumb_path' => $image['thumb_path'], 'wiki_photo' => $image['wiki_photo']];
             }
+        }
+
+        return $images;
+    }
+
+    public static function imagesforMultimediaDictionary($images, $imagedir, $imagefile)
+    {
+        Storage::disk('public')->put($imagefile, "id\timage");
+        foreach ($images as $image_id => $info) {
+            $relativePath = $imagedir . '/' . $image_id . '.jpg';
+            $target = Storage::disk('public')->getAdapter()->applyPathPrefix($relativePath);
+            File::copy($info['thumb_path'], $target);
+            $line = $image_id . "\t" . $info['wiki_photo'];
+            Storage::disk('public')->append($imagefile, $line);
         }
     }
 }
