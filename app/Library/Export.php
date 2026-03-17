@@ -480,7 +480,9 @@ class Export
         $lemmas = Lemma::orderBy('id')->with('lang')->with('pos')
             ->get();
         foreach ($lemmas as $lemma) {
-            $line = $lemma->id . "\t" . $lemma->lang->code . "\t" . $lemma->lemma . "\t" . $lemma->pos->code;
+            $lang_code = empty($lemma->lang) ? null : $lemma->lang->code;
+            $pos_code = empty($lemma->pos) ? null : $lemma->pos->code;
+            $line = $lemma->id . "\t" . $lang_code . "\t" . $lemma->lemma . "\t" . $pos_code;
             Storage::disk('public')->append($filename, $line);
         }
     }
