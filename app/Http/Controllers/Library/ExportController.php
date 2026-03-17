@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\Settings;
@@ -610,5 +611,30 @@ class ExportController extends Controller
             Export::exportRussianTranslations($filename, $lang->id);
             print "Переводы выгружены в файл: " . Storage::url($filename);
         }
+    }
+
+    public function forMultimediaDictionary()
+    {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+
+        $dirname = "export/for_multimedia_dictionary";
+        // Создаем директорию если её нет
+        Storage::disk('public')->makeDirectory($dirname);
+
+        $filename = $dirname . '/lemmas.csv';
+        Export::lemmasforMultimediaDictionary($filename);
+        print "<p>Леммы выгружены в файл: " . Storage::url($filename) . "</p>";
+
+        $imagedir = $dirname . '/images';
+        $imagefile = $dirname . '/images.csv';
+        $filename = $dirname . '/meanings.csv';
+
+        Storage::disk('public')->makeDirectory($imagedir);
+        File::cleanDirectory(storage_path('app/public/' . $imagedir));
+
+        Export::meaningsforMultimediaDictionary($filename, $imagedir, $imagefile);
+        print "<p>Значения выгружены в файл: " . Storage::url($filename, $imagedir) . "</p>";
+        print "<p>Изображения выгружены в файл: " . Storage::url($imagefile) . "</p>";
     }
 }

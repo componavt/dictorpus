@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -107,126 +108,6 @@ class Export
             ];
         }
         return $data;
-    }
-
-    /**
-     * Экспорт русских толкований из словаря
-     *
-     * Выгрузка в CSV-файл с колонками:
-     * - номер по порядку
-     * - meanings.lemma_id
-     * - meanings.id
-     * - meanings.meaning_n
-     * - lemmas.lemma
-     * - lemmas.lang.code
-     * - lemmas.pos.code
-     * - meaning_texts.meaning_text
-     *
-     * @param string $filename Имя файла для сохранения
-     * @param Lang $lang язык
-     * @return bool Успех или неудача
-     */
-    public static function exportRussianMeanings($filename, $lang)
-    {
-        // ID русского языка
-        $rus_lang_id = 2;
-
-        // Получаем данные из БД
-        $meaning_texts = MeaningText::where('meaning_texts.lang_id', $rus_lang_id)
-            ->join('meanings', 'meaning_texts.meaning_id', '=', 'meanings.id')
-            ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
-            ->join('langs', 'lemmas.lang_id', '=', 'langs.id')
-            ->join('parts_of_speech', 'lemmas.pos_id', '=', 'parts_of_speech.id')
-            ->where('lemmas.lang_id', $lang->id)
-            ->select(
-                'meanings.lemma_id',
-                'meanings.id as meaning_id',
-                'meanings.meaning_n',
-                'lemmas.lemma',
-                'langs.code as lang_code',
-                'parts_of_speech.code as pos_code',
-                'meaning_texts.meaning_text'
-            )
-            ->orderBy('lemmas.lang_id')
-            ->orderBy('lemmas.lemma')
-            ->orderBy('meanings.meaning_n')
-            ->get();
-
-        // Заголовок CSV файла
-        $header = "№\tID леммы\tID значения\tномер значения\tлемма\tкод языка\tкод части речи\tтолкование\n";
-        Storage::disk('public')->put($filename, $header);
-
-        // Записываем данные
-        $counter = 1;
-        foreach ($meaning_texts as $row) {
-            // Форматируем строку для CSV
-            $line = $counter . "\t" .
-                $row->lemma_id . "\t" .
-                $row->meaning_id . "\t" .
-                $row->meaning_n . "\t" .
-                '"' . str_replace('"', '""', $row->lemma) . "\"\t" .
-                $row->lang_code . "\t" .
-                $row->pos_code . "\t" .
-                '"' . str_replace('"', '""', $row->meaning_text) . '"';
-
-            Storage::disk('public')->append($filename, $line);
-            $counter++;
-        }
-
-        return true;
-    }
-
-    /**
-     * Экспорт русских переводов предложений 
-     *
-     * Выгрузка в CSV-файл с колонками:
-     * - номер по порядку
-     * - ID значения
-     * - meaning_texts.meaning_text - предложение на русском языке, перевод проверенного примера
-     *
-     * @param string $filename Имя файла для сохранения
-     * @param int $lang_id язык текстов
-     * @return bool Успех или неудача
-     */
-    public static function exportRussianTranslations($filename, $lang_id)
-    {
-        // ID русского языка
-        $lang_ru = 2;
-
-        Storage::disk('public')->put($filename, "Номер по порядку\tID значения\tпример");
-
-        $texts = Text::whereNotNull('transtext_id')
-            ->where('lang_id', $lang_id)
-            ->whereIn('id', function ($q) use ($lang_id) {
-                $q->select('id')->from('meaning_text')
-                    ->where('relevance', '>', 1);
-            })->get();
-
-        $count = 0;
-        foreach ($texts as $text) {
-            $text_id = $text->id;
-            $transtext = $text->transtext;
-            $examples = DB::table('meaning_text')
-                ->select(['s_id', 'meaning_id'])
-                ->where('text_id', $text_id)
-                ->where('relevance', '>', 1)
-                ->get();
-
-            if (empty($examples)) {
-                continue;
-            }
-
-            foreach ($examples as $example) {
-                $count++;
-                $s_id = $example->s_id;
-                $sentence = Text::processSentenceForExport($text->getTransSentence($s_id));
-                if (empty($sentence)) {
-                    continue;
-                }
-                $line = $count . "\t" . $example->meaning_id . "\t" . $sentence;
-                Storage::disk('public')->append($filename, $line);
-            }
-        }
     }
 
     public static function wordformsForMobile(string $filename)
@@ -471,5 +352,161 @@ class Export
         Storage::disk('public')->put($filename, $csvContent);
 
         echo $message . ' сохранены в ' . storage_path('app/public/' . $filename) . "\n";
+    }
+
+    /**
+     * Экспорт русских толкований из словаря
+     *
+     * Выгрузка в CSV-файл с колонками:
+     * - номер по порядку
+     * - meanings.lemma_id
+     * - meanings.id
+     * - meanings.meaning_n
+     * - lemmas.lemma
+     * - lemmas.lang.code
+     * - lemmas.pos.code
+     * - meaning_texts.meaning_text
+     *
+     * @param string $filename Имя файла для сохранения
+     * @param Lang $lang язык
+     * @return bool Успех или неудача
+     */
+    public static function exportRussianMeanings($filename, $lang)
+    {
+        // ID русского языка
+        $rus_lang_id = 2;
+
+        // Получаем данные из БД
+        $meaning_texts = MeaningText::where('meaning_texts.lang_id', $rus_lang_id)
+            ->join('meanings', 'meaning_texts.meaning_id', '=', 'meanings.id')
+            ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+            ->join('langs', 'lemmas.lang_id', '=', 'langs.id')
+            ->join('parts_of_speech', 'lemmas.pos_id', '=', 'parts_of_speech.id')
+            ->where('lemmas.lang_id', $lang->id)
+            ->select(
+                'meanings.lemma_id',
+                'meanings.id as meaning_id',
+                'meanings.meaning_n',
+                'lemmas.lemma',
+                'langs.code as lang_code',
+                'parts_of_speech.code as pos_code',
+                'meaning_texts.meaning_text'
+            )
+            ->orderBy('lemmas.lang_id')
+            ->orderBy('lemmas.lemma')
+            ->orderBy('meanings.meaning_n')
+            ->get();
+
+        // Заголовок CSV файла
+        $header = "№\tID леммы\tID значения\tномер значения\tлемма\tкод языка\tкод части речи\tтолкование\n";
+        Storage::disk('public')->put($filename, $header);
+
+        // Записываем данные
+        $counter = 1;
+        foreach ($meaning_texts as $row) {
+            // Форматируем строку для CSV
+            $line = $counter . "\t" .
+                $row->lemma_id . "\t" .
+                $row->meaning_id . "\t" .
+                $row->meaning_n . "\t" .
+                '"' . str_replace('"', '""', $row->lemma) . "\"\t" .
+                $row->lang_code . "\t" .
+                $row->pos_code . "\t" .
+                '"' . str_replace('"', '""', $row->meaning_text) . '"';
+
+            Storage::disk('public')->append($filename, $line);
+            $counter++;
+        }
+
+        return true;
+    }
+
+    /**
+     * Экспорт русских переводов предложений 
+     *
+     * Выгрузка в CSV-файл с колонками:
+     * - номер по порядку
+     * - ID значения
+     * - meaning_texts.meaning_text - предложение на русском языке, перевод проверенного примера
+     *
+     * @param string $filename Имя файла для сохранения
+     * @param int $lang_id язык текстов
+     * @return bool Успех или неудача
+     */
+    public static function exportRussianTranslations($filename, $lang_id)
+    {
+        // ID русского языка
+        $lang_ru = 2;
+
+        Storage::disk('public')->put($filename, "Номер по порядку\tID значения\tпример");
+
+        $texts = Text::whereNotNull('transtext_id')
+            ->where('lang_id', $lang_id)
+            ->whereIn('id', function ($q) use ($lang_id) {
+                $q->select('id')->from('meaning_text')
+                    ->where('relevance', '>', 1);
+            })->get();
+
+        $count = 0;
+        foreach ($texts as $text) {
+            $text_id = $text->id;
+            $transtext = $text->transtext;
+            $examples = DB::table('meaning_text')
+                ->select(['s_id', 'meaning_id'])
+                ->where('text_id', $text_id)
+                ->where('relevance', '>', 1)
+                ->get();
+
+            if (empty($examples)) {
+                continue;
+            }
+
+            foreach ($examples as $example) {
+                $count++;
+                $s_id = $example->s_id;
+                $sentence = Text::processSentenceForExport($text->getTransSentence($s_id));
+                if (empty($sentence)) {
+                    continue;
+                }
+                $line = $count . "\t" . $example->meaning_id . "\t" . $sentence;
+                Storage::disk('public')->append($filename, $line);
+            }
+        }
+    }
+
+    public static function lemmasforMultimediaDictionary($filename)
+    {
+        Storage::disk('public')->put($filename, "id\tlang\tlemma\tpos");
+        $lemmas = Lemma::orderBy('id')->with('lang')->with('pos')
+            ->get();
+        foreach ($lemmas as $lemma) {
+            $line = $lemma->id . "\t" . $lemma->lang->code . "\t" . $lemma->lemma . "\t" . $lemma->pos->code;
+            Storage::disk('public')->append($filename, $line);
+        }
+    }
+
+    public static function meaningsforMultimediaDictionary($filename, $imagedir, $imagefile)
+    {
+        Storage::disk('public')->put($filename, "id\tlemma_id\tmeaning_n\tmeaning_ru\tmeaning_en\tmeaning_fi\timage_id");
+        Storage::disk('public')->put($imagefile, "id\timage");
+        $meanings = Meaning::orderBy('id')->get();
+
+        foreach ($meanings as $meaning) {
+            $image = $meaning->photoInfo();
+            $meaning_ru = $meaning->meaningTexts()->where('lang_id', 2)->first()->meaning_text ?? '';
+            $meaning_en = $meaning->meaningTexts()->where('lang_id', 3)->first()->meaning_text ?? '';
+            $meaning_fi = $meaning->meaningTexts()->where('lang_id', 7)->first()->meaning_text ?? '';
+            $image_id = $image['id'] ?? '';
+            $line = $meaning->id . "\t" . $meaning->lemma_id . "\t" . $meaning->meaning_n . "\t" .
+                $meaning_ru . "\t" . $meaning_en . "\t" . $meaning_fi . "\t" . $image_id;
+            Storage::disk('public')->append($filename, $line);
+            if (!empty($image['id'])) {
+                $relativePath = $imagedir . '/' . $image['id'] . '.jpg';
+                $target = Storage::disk('public')->getAdapter()->applyPathPrefix($relativePath);
+                File::copy($image['thumb_path'], $target);
+                $line = $image['id'] . "\t" . $image['wiki_photo'];
+                Storage::disk('public')->append($imagefile, $line);
+            }
+        }
     }
 }

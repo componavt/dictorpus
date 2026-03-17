@@ -12,6 +12,7 @@ Route::group(
         Route::get('conll', 'Library\ExportController@textsToCONLL');
         Route::get('conll/annotation', 'Library\ExportController@annotationConll');
         Route::get('for_mobile', 'Library\ExportController@forMobile');
+        Route::get('for_multimedia_dictionary', 'Library\ExportController@forMultimediaDictionary');
         Route::get('for_speech', 'Library\ExportController@forSpeech');
         Route::get('lemma_with_pos', 'Library\ExportController@lemmasWithPOS');
         Route::get('concordance', 'Library\ExportController@concordance')->name('text.concordance.export');

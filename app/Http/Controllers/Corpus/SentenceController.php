@@ -93,10 +93,7 @@ class SentenceController extends Controller
         } else {
             $refine = false;
             list($entry_number, $sentences, $is_limited) = Sentence::entryNumber($url_args); // считаем количество вхождений
-            //dd($entry_number);   
-            //dd(to_sql($sentences));
-            //dd($sentences);
-            //dd($sentences->pluck('text1_id')->unique()->get());
+
             if ($entry_number > 0) {
                 // searchWordsBySteps всегда возвращает коллекцию
                 $all_sentences = $sentences;
