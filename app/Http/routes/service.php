@@ -46,6 +46,7 @@ Route::group(
         Route::get('dict/wordforms/{lemma_id}', 'Library\DictController@wordforms');
 
         Route::get('elf/texts_for_map', 'Library\ElfController@textsForMap')->name('elf.texts_for_map');
+        Route::get('elf/bible_texts', 'Library\ElfController@bibleTexts')->name('elf.bible_texts');
 
         Route::get('test', 'Dict\ConceptController@test');
     }
