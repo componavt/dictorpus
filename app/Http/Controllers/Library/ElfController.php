@@ -10,16 +10,18 @@ use App\Models\Corpus\Text;
 
 class ElfController extends Controller
 {
-    public $url_args=[];
-    public $args_by_get='';
-    
+    public $url_args = [];
+    public $args_by_get = '';
+
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /service/index, authorized actions list:
-        $this->middleware('auth:corpus.edit,/service/index', 
-                          ['only'=>['textsForMap']]);
-        
-/*        $this->url_args = url_args($request) + 
+        $this->middleware(
+            'auth:corpus.edit,/service/index',
+            ['only' => ['textsForMap']]
+        );
+
+        /*        $this->url_args = url_args($request) + 
             [
                 'by_alpha'  => (int)$request->input('by_alpha'),
                 'search_concept_category'  => $request->input('search_concept_category'),
@@ -39,14 +41,14 @@ class ElfController extends Controller
 //dd($this->url_args['by_alpha']);        
         $this->args_by_get = search_values_by_URL($this->url_args); */
     }
-    
+
     public function textsForMap()
     {
         $texts = Text::whereIn('id', function ($q) {
-                $q->select('text_id')->from('plot_text')
-                  ->where('plot_id', env('PLOT_CELEBRATION_ID'));
-            })->orderBy('id')->get();
-//dd($texts);            
+            $q->select('text_id')->from('plot_text')
+                ->where('plot_id', env('PLOT_CELEBRATION_ID'));
+        })->orderBy('id')->get();
+        //dd($texts);            
         $text_places = [];
         foreach ($texts as $text) {
             foreach ($text->getCelebrationPlaces() as $cplace) {
@@ -56,10 +58,14 @@ class ElfController extends Controller
         $places = Place::whereIn('id', array_keys($text_places))->get();
         $regions = [];
         foreach ($places as $place) {
-           $regions[$place->region->name][$place->district->name][$place->id]= $place->name; 
+            $regions[$place->region->name][$place->district->name][$place->id] = $place->name;
         }
-//dd($regions);            
-        return view('service.elf.texts_for_map',
-                compact('regions', 'text_places'));
+        //dd($regions);            
+        return view(
+            'service.elf.texts_for_map',
+            compact('regions', 'text_places')
+        );
     }
+
+    public function bibleTexts() {}
 }
