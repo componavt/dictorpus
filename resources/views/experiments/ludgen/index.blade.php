@@ -16,7 +16,9 @@
         <li><a href="{{ route('ludgen.bases', ['what'=>$what]) }}">Основы</a></li>
         <li><a href="{{ route('ludgen.affixes', ['what'=>$what]) }}">Окончания{{ $what == 'verbs' ? ', вспомогательные глаголы' : '' }}</a></li>
         @if ($what == 'verbs')
-        <li><a href="{{ route('ludgen.verb_types') }}">Виды глаголов</a></li>
+        <li><a href="{{ route('ludgen.verb_types') }}">Типы глаголов Святозерского диалекта</a></li>
+        <li><a href="{{ route('ludgen.verb_types') }}">Типы глаголов Святозерского диалекта</a></li>
+        <li><a href="{{ route('ludgen.base_stats') }}">Статистика основ людиковских глаголов</a></li>        
         @endif
     </ul>
     
