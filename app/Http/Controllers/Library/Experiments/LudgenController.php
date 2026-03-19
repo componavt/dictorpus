@@ -194,49 +194,10 @@ class LudgenController extends Controller
 
     public function baseStats()
     {
-        $lang_id = Ludgen::lang_id;
-        $pos_id = 11;
-        $total_verbs = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)->count();
-        $C = '[bcčdfghjklmnprsšzžtv]';
-        $V = '[aeiouyäö]';
-        $type_counts[1] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$V . 'da$'])->count();
-        $type_counts[2] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$V . 'dä$'])->count();
-        $type_counts[3] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$V . 'ta$'])->count();
-        $type_counts[4] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$V . 'tä$'])->count();
-        $type_counts[5] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", ['i$'])->count();
-        $type_counts[6] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$C . 'da$'])->count();
-        $type_counts[7] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$C . 'dä$'])->count();
-        $type_counts[8] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$C . 'ta$'])->count();
-        $type_counts[9] = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma REGEXP ?", [$C . 'tä$'])->count();
-        $types = [
-            'Одноосновные' => [
-                'da' => $type_counts[1],
-                'dä' => $type_counts[2],
-                'ta' => $type_counts[3],
-                'tä' => $type_counts[4],
-                'i' => $type_counts[5]
-            ],
-            'Двуосновные' => [
-                'da' => $type_counts[6],
-                'dä' => $type_counts[7],
-                'ta' => $type_counts[8],
-                'tä' => $type_counts[9]
-            ],
-        ];
-        $other_verbs = Lemma::where('lang_id', $lang_id)->where('pos_id', $pos_id)
-            ->whereRaw("lemma NOT REGEXP ?", ['(da|dä|ta|tä|i)$'])->select('lemma')->get();
+        list($types, $ctypes, $other_verbs, $total_verbs) = Ludgen::baseStats();
         return view(
             'experiments.ludgen.base_stats',
-            compact('other_verbs', 'total_verbs', 'types')
+            compact('ctypes', 'other_verbs', 'total_verbs', 'types')
         );
     }
 }

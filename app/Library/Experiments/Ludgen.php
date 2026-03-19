@@ -9,29 +9,30 @@ use App\Models\Dict\Lemma;
 
 class Ludgen extends Model
 {
-//    protected $table='dialect_dmarker';
+    //    protected $table='dialect_dmarker';
     const lang_id = 6;
     const dialect_id = 42;
-    
-    public static function getNames() {
+
+    public static function getNames()
+    {
         $lemmas = [
             14295 => 'mua',
             37909 => 'diä',
-            
+
             62004 => 'halgo',
             13424 => 'kirikkö',
-            
+
             38637 => 'lindu',
             50254 => 'kydy',
             37234 => 'puu',
-            
+
             47289 => 'leibe',
             50308 => 'emände',
             29962 => 'akke',
             47713 => 'nuotte',
-            70274 => 'huondekselline',            
+            70274 => 'huondekselline',
             70199 => 'alaine',
-            
+
             21396 => 'd’ogi',
             37342 => 'tuohi',
             69940 => 'astii',
@@ -44,7 +45,7 @@ class Ludgen extends Model
             28722 => 'vezi',
             48744 => 'parži',
             46747 => 'počči',
-            
+
             70271 => 'd’algatoi',
             70272 => 'iänetöi',
             67102 => 'dänöi',
@@ -53,7 +54,7 @@ class Ludgen extends Model
             3540 => 'pedäi',
 
             51763 => 'lyhyd',
-            18330 => 'pereh',            
+            18330 => 'pereh',
             49174 => 'petkel',
             46942 => 'paimen',
             70254 => 'härkin',
@@ -69,7 +70,7 @@ class Ludgen extends Model
             70267 => 'vahnuz',
             66796 => 'hyvyz',
         ];
-/*        $reverse_lemmas = [];
+        /*        $reverse_lemmas = [];
         foreach ($lemmas as $lemma_id=>$lemma) {
             $reverse_lemmas[$lemma_id] = mb_strrev($lemma);
         }
@@ -80,8 +81,9 @@ class Ludgen extends Model
 dd($reverse_lemmas);  */
         return $lemmas;
     }
-    
-    public static function getVerbs() {
+
+    public static function getVerbs()
+    {
         return [
             3461 => 'kaččoda',
             42494 => 'kuččuda',
@@ -103,42 +105,60 @@ dd($reverse_lemmas);  */
             43235 => 'magata',
             41869 => 'rubeta',
             70904 => 'haravoita',
-            62330 => 'suvaita',  
+            62330 => 'suvaita',
         ];
-    }   
-    
-    public static function getMainGramsets($what) {
-        if ($what == 'verbs') {
-            return [26=>'1л. ед.ч. през. инд.', 28=>'3л. ед.ч. през. инд.', 32=>'1 л. ед. ч. имп. инд.', 34=>'3 л. ед. ч. имп. инд.',
-                    179=>'перфект', 31=>'3 л. мн. ч. през. инд.', 37=>'3 л. мн. ч. имп. инд.',];            
-        } 
-        return [1=>'номинатив ед.ч.', 3=>'генетив ед.ч.', 4=>'партитив ед.ч.', 10=>'иллатив ед.ч.',
-                2=>'номинатив мн.ч.', 24=>'генетив мн.ч.',22=>'партитив мн.ч.', 61=>'иллатив мн.ч.',];
     }
-    
-    public static function getLemmas($what) {
+
+    public static function getMainGramsets($what)
+    {
+        if ($what == 'verbs') {
+            return [
+                26 => '1л. ед.ч. през. инд.',
+                28 => '3л. ед.ч. през. инд.',
+                32 => '1 л. ед. ч. имп. инд.',
+                34 => '3 л. ед. ч. имп. инд.',
+                179 => 'перфект',
+                31 => '3 л. мн. ч. през. инд.',
+                37 => '3 л. мн. ч. имп. инд.',
+            ];
+        }
+        return [
+            1 => 'номинатив ед.ч.',
+            3 => 'генетив ед.ч.',
+            4 => 'партитив ед.ч.',
+            10 => 'иллатив ед.ч.',
+            2 => 'номинатив мн.ч.',
+            24 => 'генетив мн.ч.',
+            22 => 'партитив мн.ч.',
+            61 => 'иллатив мн.ч.',
+        ];
+    }
+
+    public static function getLemmas($what)
+    {
         if ($what == 'verbs') {
             return [array_keys(Ludgen::getVerbs()), 11];
         } else {
             return [array_keys(Ludgen::getNames()), 5];
-        }        
+        }
     }
 
-    public static function groupedLemmas($words, $gramsets) {
+    public static function groupedLemmas($words, $gramsets)
+    {
         $dialect_id = Ludgen::dialect_id;
-       
+
         foreach ($words as $id) {
             $lemma = Lemma::find($id);
             if (!$lemma) {
-                dd('Нет леммы с id='.$id);
+                dd('Нет леммы с id=' . $id);
             }
             $lemmas[$id]['lemma'] = $lemma->lemma;
             if (empty($lemma->reverseLemma)) {
                 $lemma->reloadStemAffixByWordforms();
             }
             $lemmas[$id]['stem'] = $lemma->reverseLemma->stem;
-            $lemmas[$id]['count'] = $lemma->wordforms()->wherePivot('dialect_id',$dialect_id)->count();
-            
+            $lemmas[$id]['count'] = $lemma->wordforms()->wherePivot('dialect_id', $dialect_id)->count();
+
             foreach ($gramsets as $category_name => $category_gramsets) {
                 foreach ($category_gramsets as $gramset_id => $gramset_name) {
                     foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
@@ -149,13 +169,14 @@ dd($reverse_lemmas);  */
         }
         return $lemmas;
     }
-    
-    public static function getWordforms($words, $gramsets) {
+
+    public static function getWordforms($words, $gramsets)
+    {
         $dialect_id = Ludgen::dialect_id;
-       
+
         foreach ($words as $id) {
             $lemma = Lemma::find($id);
-            
+
             foreach ($gramsets as $gramset_id) {
                 foreach ($lemma->wordformsByGramsetDialect($gramset_id, $dialect_id) as $wordform) {
                     $wordforms[$id][$gramset_id][] = self::analysWordform($wordform->wordform, $lemma->reverseLemma->stem);
@@ -164,49 +185,53 @@ dd($reverse_lemmas);  */
         }
         return $wordforms;
     }
-    
-    public static function dictForms($words) {
+
+    public static function dictForms($words)
+    {
         $out = [];
-       
+
         foreach ($words as $id) {
             $lemma = Lemma::find($id);
             $out[$id] = $lemma->dictForm();
         }
         return $out;
     }
-    
-    public static function analysWordform($wordform, $stem) {
-        $prefix = $affix ='';
+
+    public static function analysWordform($wordform, $stem)
+    {
+        $prefix = $affix = '';
         if (preg_match("/^(.+\s+)(\S+)$/", $wordform, $regs)) {
             $prefix = $regs[1];
             $wordform = $regs[2];
         }
-        if (preg_match("/^".$stem."(.*)$/u", $wordform, $regs)) {
+        if (preg_match("/^" . $stem . "(.*)$/u", $wordform, $regs)) {
             $affix = $regs[1];
         }
         return [$prefix, $stem, $affix];
     }
-    
-    public static function getAffixes($lem_ids, $gramsets, $what) {
-//dd($gramsets);
+
+    public static function getAffixes($lem_ids, $gramsets, $what)
+    {
+        //dd($gramsets);
         $affixes = $lemmas = [];
         foreach ($lem_ids as $lemma_id) {
             $lemmas[] = Lemma::find($lemma_id);
         }
         foreach (array_values($gramsets) as $category_gramsets) {
-            foreach (array_keys($category_gramsets) as $gramset_id) {      
+            foreach (array_keys($category_gramsets) as $gramset_id) {
                 if ($what == 'verbs') {
-                    $affixes[$gramset_id]['вспом. глаголы'] = self::getPrefixes($lemmas, $gramset_id);                    
+                    $affixes[$gramset_id]['вспом. глаголы'] = self::getPrefixes($lemmas, $gramset_id);
                 }
-                $affixes[$gramset_id]['окончания'] = self:: maxFlexion($lemmas, $gramset_id);
+                $affixes[$gramset_id]['окончания'] = self::maxFlexion($lemmas, $gramset_id);
             }
-        } 
-//dd($affixes);        
+        }
+        //dd($affixes);        
         return $affixes;
     }
-    
+
     // ищем максимальное совпадение окончаний
-    public static function maxFlexion($lemmas, $gramset_id) {
+    public static function maxFlexion($lemmas, $gramset_id)
+    {
         $dialect_id = Ludgen::dialect_id;
         $flexions = $wordforms = [];
         foreach ($lemmas as $lemma) {
@@ -215,21 +240,22 @@ dd($reverse_lemmas);  */
                 $wordforms[$i][] = $w->wordform;
             }
         }
-//if ($gramset_id==3) { dd($wordforms); }
+        //if ($gramset_id==3) { dd($wordforms); }
         foreach ($wordforms as $i => $ws) {
             $f = $ws[0];
-            for ($j=1; $j<sizeof($ws); $j++) {
-               while (strlen($f) && !preg_match("/".$f."$/", $ws[$j])) {
-                   $f = substr($f, 1);
-               } 
+            for ($j = 1; $j < sizeof($ws); $j++) {
+                while (strlen($f) && !preg_match("/" . $f . "$/", $ws[$j])) {
+                    $f = substr($f, 1);
+                }
             }
             $flexions[$i] = $f;
         }
-//if ($gramset_id==3) { dd($flexions); }
+        //if ($gramset_id==3) { dd($flexions); }
         return array_filter($flexions);
     }
-    
-    public static function getPrefixes($lemmas, $gramset_id) {
+
+    public static function getPrefixes($lemmas, $gramset_id)
+    {
         $dialect_id = Ludgen::dialect_id;
         $prefixes = [];
         foreach ($lemmas as $lemma) {
@@ -244,20 +270,21 @@ dd($reverse_lemmas);  */
         }
         return array_unique($prefixes);
     }
-    
-    public static function getBases($lemmas) {
+
+    public static function getBases($lemmas)
+    {
         $dialect_id = Ludgen::dialect_id;
-        $bases=[];
+        $bases = [];
         foreach ($lemmas as $lemma_id) {
             $lemma = Lemma::find($lemma_id);
-            for ($i=0; $i<8; $i++) {
+            for ($i = 0; $i < 8; $i++) {
                 $bases[$lemma_id][$i] = $lemma->getBase($i, $dialect_id, $bases);
             }
-//dd($bases);            
+            //dd($bases);            
             if ($lemma->reverseLemma) {
                 $bases[$lemma_id][10] = $lemma->harmony();
             }
-/*            
+            /*            
             $bases[$lemma_id][0] = $lemma->lemma;
             
             $bases[$lemma_id][1] = Grammatic::getStemFromWordform($this, $base_n, $this->lang_id,  $this->pos_id, $dialect_id, $is_reflexive);
@@ -272,8 +299,9 @@ dd($reverse_lemmas);  */
         }
         return $bases;
     }
-    
-    public static function getBase1($lemma) {
+
+    public static function getBase1($lemma)
+    {
         $dialect_id = Ludgen::dialect_id;
         $gramset_id = 3; // генитив, ед.ч.
 
@@ -287,8 +315,9 @@ dd($reverse_lemmas);  */
         }
         return join(', ', $bases);
     }
-    
-    public static function getBase2($lemma) {
+
+    public static function getBase2($lemma)
+    {
         $dialect_id = Ludgen::dialect_id;
         $gramset_id = 10; // иллатив, ед.ч.
 
@@ -302,8 +331,9 @@ dd($reverse_lemmas);  */
         }
         return join(', ', $bases);
     }
-    
-    public static function getBase3($lemma) {
+
+    public static function getBase3($lemma)
+    {
         $dialect_id = Ludgen::dialect_id;
         $gramset_id = 4; // партитив, ед.ч.
 
@@ -313,8 +343,9 @@ dd($reverse_lemmas);  */
         }
         return join(', ', $bases);
     }
-    
-    public static function getBase4($lemma) {
+
+    public static function getBase4($lemma)
+    {
         $dialect_id = Ludgen::dialect_id;
         $gramset_id = 24; // генитив, мн.ч.
 
@@ -323,13 +354,14 @@ dd($reverse_lemmas);  */
             if (preg_match("/^(.+)den$/", $wordform->wordform, $regs)) {
                 $bases[] = $regs[1];
             } else {
-                dd('У генитива '.$wordform->wordform.' мн.ч. нет окончания -den');
+                dd('У генитива ' . $wordform->wordform . ' мн.ч. нет окончания -den');
             }
         }
         return join('/', $bases);
     }
-    
-    public static function getBase5($lemma) {
+
+    public static function getBase5($lemma)
+    {
         $dialect_id = Ludgen::dialect_id;
         $gramset_id = 22; // партитив, мн.ч.
 
@@ -343,5 +375,53 @@ dd($reverse_lemmas);  */
         }
         return join('/', $bases);
     }
-}
 
+    public static function baseStats()
+    {
+        $lang_id = Ludgen::lang_id;
+        $pos_id = 11;
+        $total_verbs[0] = Lemma::forLangAndPos($lang_id, $pos_id)->count();
+        $total_verbs[1] = Lemma::forLangAndPos($lang_id, $pos_id)
+            ->inTexts()
+            ->count();
+
+        $C = '[bcčdfghjklmnprsšzžtv]';
+        $V = '[aeiouyäö]';
+        $templates = [
+            'Одноосновные' => [
+                'da' => $V . 'da$',
+                'dä' => $V . 'dä$',
+                'ta' => $V . 'ta$',
+                'tä' => $V . 'tä$',
+                'i' => 'i$',
+            ],
+            'Двуосновные' => [
+                'da' => $C . 'da$',
+                'dä' => $C . 'dä$',
+                'ta' => $C . 'ta$',
+                'tä' => $C . 'tä$'
+            ],
+        ];
+        foreach ($templates as $group => $ttypes) {
+            foreach ($ttypes as $type => $regex) {
+                $types[$group][$type] = Lemma::forLangAndPos($lang_id, $pos_id)
+                    ->whereRaw("lemma REGEXP ?", [$regex])->count();
+                $ctypes[$group][$type] = Lemma::forLangAndPos($lang_id, $pos_id)
+                    ->inTexts()
+                    ->whereRaw("lemma REGEXP ?", [$regex])->count();
+            }
+        }
+
+        $other_verbs[0] = Lemma::forLangAndPos($lang_id, $pos_id)
+            ->whereRaw("lemma NOT REGEXP ?", ['(da|dä|ta|tä|i)$'])
+            ->orderBy('lemma')
+            ->select('lemma')->get()->pluck('lemma');
+        $other_verbs[1] = Lemma::forLangAndPos($lang_id, $pos_id)
+            ->inTexts()
+            ->whereRaw("lemma NOT REGEXP ?", ['(da|dä|ta|tä|i)$'])
+            ->orderBy('lemma')
+            ->select('lemma')->get()->pluck('lemma');
+
+        return [$types, $ctypes, $other_verbs, $total_verbs];
+    }
+}

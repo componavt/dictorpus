@@ -1,16 +1,19 @@
-<?php namespace App\Traits\Scopes;
+<?php
 
-use DB;
+namespace App\Traits\Scopes;
+
+use Illuminate\Support\Facades\DB;
 /*
  * for Text
  */
+
 trait HasOneDialect
-{    
-    public static function scopeHasOneDialect($builder) {
+{
+    public static function scopeHasOneDialect($builder)
+    {
         return $builder->whereNotIn('id', function ($q) {
             $q->select('text_id')->from('dialect_text')->groupBy('text_id')
                 ->having(DB::raw('count(*)'), '>', 1);
         });
     }
-}    
-
+}
