@@ -171,4 +171,44 @@ class KarVerbOloTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    public function testParseImp3Pl() {
+        // Примеры из файла rules_verb_reflex_Olo_v2.docx
+        // п.о. 7 (сильноступенная пассивная основа, имперфект индикатива, 3л. мн.ч.)
+        // Формат: [словоформа_имперфект_3л_мн_ч, ожидаемая_основа_7, является_возвратным]
+
+        $testCases = [
+            // Возвратные глаголы (с суффиксом -ihes)
+            ['pačkahteltihes', 'pačkahtelt', true],   // пример 1
+            ['pačkahtettihes', 'pačkahtett', true],   // пример 2
+            ['pahoiteltihes', 'pahoitelt', true],     // пример 3
+            ['pakittihes', 'pakitt', true],           // пример 5
+            ['palkattihes', 'palkatt', true],         // пример 6
+            ['perrettihes', 'perrett', true],         // пример 7
+            ['pestihes', 'pest', true],               // пример 8
+            ['piettihes', 'piett', true],             // пример 9
+            ['potkittihes', 'potkitt', true],         // пример 10
+            ['puašittihes', 'puašitt', true],         // пример 11
+            ['punottihes', 'punott', true],           // пример 12
+            ['pyrrittihes', 'pyrritt', true],         // пример 13
+
+            // Невозвратные глаголы (с суффиксом -ih)
+            ['pačkahteltih', 'pačkahtelt', false],
+            ['pakittih', 'pakitt', false],
+            ['palkattih', 'palkatt', false],
+        ];
+
+        foreach ($testCases as $case) {
+            $wordform = $case[0];
+            $expected = $case[1];
+            $isReflexive = $case[2];
+
+            $result = KarVerbOlo::parseImp3Pl($wordform, $isReflexive);
+
+            $this->assertEquals(
+                $expected, 
+                $result, 
+                "Failed for wordform: $wordform, reflexive: " . ($isReflexive ? 'true' : 'false')
+            );
+        }
+    }    
 }

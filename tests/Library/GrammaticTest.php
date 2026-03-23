@@ -103,6 +103,172 @@ class GrammaticTest extends TestCase
         $this->assertEquals( $expected, $result);        
     }
     
+    /**
+     * Тест извлечения основ из шаблона для возвратного глагола kačahtuakseh
+     * Шаблон: kačaht|uakseh (-ammos, -ah/-ahes; -etahes; -ih/-ihes, -ettihes)
+     * 
+     * Основы согласно rules_verb_reflex_Olo_v2.docx:
+     * п.о.0 (с.ф.): kačahtuakseh
+     * п.о.1 (слабая гласная основа): kačahta
+     * п.о.2 (инд. презенс 3л. ед.ч.): kačahtah/kačahtahes
+     * п.о.3 (сильная гласная основа): kačahta
+     * п.о.4 (инд. имперфект 3л. ед.ч.): kačahtih/kačahtihes
+     * п.о.5 (слабая основа имперфекта): kačahti
+     * п.о.6 (пассивная основа, презенс 3л. мн.ч.): kačahtetahes
+     * п.о.7 (сильноступенная пассивная основа, имперфект 3л. мн.ч.): kačahtett
+     * п.о.8 (сильная гласная/согласная основа): kačahta
+     */
+    public function testStemsFromTemplateKarVerbOloKacahtuakseh() {
+        $template = 'kačaht|uakseh (-ammos, -ah/-ahes; -etahes; -ih/-ihes, -ettihes)';
+        $lang_id = 5;
+        $pos_id = 11;
+        $name_num = null;
+        $dialect_id = '';
+        $is_reflexive = true;
+        
+        $result = Grammatic::stemsFromTemplate(
+            $template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive
+        );
+        
+        $expected = [
+            [
+                0 => 'kačahtuakseh',      // с.ф. (словарная форма)
+                1 => 'kačahta',           // п.о.1 (слабая гласная основа)
+                2 => 'kačahtah/kačahtahes', // п.о.2 (инд. презенс 3л. ед.ч.)
+                3 => 'kačahta',           // п.о.3 (сильная гласная основа)
+                4 => 'kačahtih/kačahtihes', // п.о.4 (инд. имперфект 3л. ед.ч.)
+                5 => 'kačahti',           // п.о.5 (слабая основа имперфекта)
+                6 => 'kačahtetahes',      // п.о.6 (пассивная основа, презенс 3л. мн.ч.)
+                7 => 'kačahtett',         // п.о.7 (сильноступенная пассивная основа, имперфект 3л. мн.ч.)
+                8 => 'kačahta',           // п.о.8 (сильная гласная/согласная основа)
+                10 => true,               // гармония гласных (задние)
+            ],
+            $name_num,
+            'kačaht',                     // max_stem
+            'uakseh'                      // affix
+        ];
+        
+        $this->assertEquals($expected, $result);        
+    }    
+    // Ref: 1. kačahtuakseh
+public function testWordformsByStemsKarVerbOloKacahtuakseh() {
+    $template = 'kačaht|uakseh (-ammos, -ah/-ahes; -etahes; -ih/-ihes, -ettihes)';
+    $lang_id = 5;
+    $pos_id = 11;
+    $name_num = null;
+    $dialect_id = '';
+    $is_reflexive = true;
+    
+    list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate(
+        $template, $lang_id, $pos_id, $name_num, $dialect_id, $is_reflexive
+    );
+    
+    $result = Grammatic::wordformsByStems(
+        $lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive
+    );
+    
+    // По скриншотам парадигмы kačahtuakseh
+    $expected = [
+        // Индикатив, презенс, положительные формы (1-8)
+        26 => 'kačahtammos',           27 => 'kačahtattos',            28 => 'kačahtah, kačahtahes',  
+        29 => 'kačahtammokseh',        30 => 'kačahtattokseh',         31 => 'kačahtetahes', 
+        295 => 'kačahtai',             296 => 'kačahtetahes', 
+        
+        // Индикатив, презенс, отрицательные формы (9-14)
+        70 => 'en kačahtai',           71 => 'et kačahtai',            72 => 'ei kačahtai',  
+        73 => 'emmo kačahtai',         78 => 'etto kačahtai',          79 => 'ei kačahtetahes', 
+        
+        // Индикатив, имперфект, положительные формы (15-20)
+        32 => 'kačahtimmos',           33 => 'kačahtittos',            34 => 'kačahtih, kačahtihes',  
+        35 => 'kačahtimmokseh',        36 => 'kačahtittokseh',         37 => 'kačahtettihes',  // ✅ ПРАВИЛЬНО
+        
+        // Индикатив, имперфект, отрицательные формы (21-26)
+        80 => 'en kačahtannuhes',      81 => 'et kačahtannuhes',       82 => 'ei kačahtannuhes',  
+        83 => 'emmo kačahtannuhes',    84 => 'etto kačahtannuhes',     85 => 'ei kačahtettuhes', 
+        
+        // Индикатив, перфект, положительные формы (27-32)
+        86 => 'olen kačahtannuhes',       87 => 'olet kačahtannuhes',      88 => 'on kačahtannuhes',  
+        89 => 'olemmo kačahtannuhes',     90 => 'oletto kačahtannuhes',    91 => 'ollah kačahtettuhes, on kačahtettuhes',  
+        
+        // Индикатив, перфект, отрицательные формы (33-38)
+        92 => 'en ole kačahtannuhes',    93 => 'et ole kačahtannuhes',    94 => 'ei ole kačahtannuhes',  
+        95 => 'emmo ole kačahtannuhes',  96 => 'etto ole kačahtannuhes',  97 => 'ei olla kačahtettuhes',
+        
+        // Индикатив, плюсквамперфект, положительные формы (39-44)
+        98 => 'olin kačahtannuhes',      99 => 'olit kačahtannuhes',      100 => 'oli kačahtannuhes', 
+        101 => 'olimmo kačahtannuhes',   102 => 'olitto kačahtannuhes',   103 => 'oldih kačahtettuhes, oli kačahtettuhes', 
+        
+        // Индикатив, плюсквамперфект, отрицательные формы (45-50)
+        104 => 'en olluh kačahtannuhes', 105 => 'et olluh kačahtannuhes', 107 => 'ei olluh kačahtannuhes', 
+        108 => 'emmo olluh kačahtannuhes', 106 => 'etto olluh kačahtannuhes', 109 => 'ei oldu kačahtettuhes',
+        
+        // Императив, положительные формы (51-55)
+        51 => 'kačahtai',          52 => 'kačahtakkahes',  
+        53 => 'kačahtakkuammokseh', 54 => 'kačahtakkuattokseh', 55 => 'kačahtettahes',  // ✅ ПРАВИЛЬНО (НЕ kačahtettihesahes!)
+        
+        // Императив, отрицательные формы (56-59)
+        50 => 'älä kačahtai',      74 => 'älgäh kačahtakkahes',  
+        75 => '',                  76 => 'äigiä kačahtakkuattokseh', 77 => 'äldähes kačahtettahes',  
+        
+        // Кондиционал, презенс, положительные формы (60-65)
+        38 => 'kačahtazimmos',     39 => 'kačahtazittos',     40 => 'kačahtazihes',  
+        41 => 'kačahtazimmokseh',  42 => 'kačahtazittokseh',  43 => 'kačahtettazihes', 
+        
+        // Кондиционал, презенс, отрицательные формы (66-71)
+        110 => 'en kačahtazihes', 111 => 'et kačahtazihes', 112 => 'ei kačahtazihes', 
+        113 => 'emmo kačahtazihes', 114 => 'etto kačahtazihes', 115 => 'ei kačahtettazihes',
+
+        // Кондиционал, имперфект, положительные формы (72-77)
+        44 => 'kačahtannuzimmos',     45 => 'kačahtannuzittos',    46 => 'kačahtannuzihes',  
+        47 => 'kačahtannuzimmokseh',  48 => 'kačahtannuzittokseh', 49 => 'kačahtettanuzihes', 
+        
+        // Кондиционал, имперфект, отрицательные формы (78-83)
+        116 => 'en kačahtannuzihes', 117 => 'et kačahtannuzihes', 118 => 'ei kačahtannuzihes', 
+        119 => 'emmo kačahtannuzihes', 120 => 'etto kačahtannuzihes', 121 => 'ei kačahtettanuzihes',
+        
+        // Кондиционал, перфект, положительные формы (84-89)
+        122 => 'olizin kačahtannuhes', 123 => 'olizit kačahtannuhes', 124 => 'olis kačahtannuhes', 
+        126 => 'olizimmo kačahtannuhes', 127 => 'olizitto kačahtannuhes', 128 => 'oldas kačahtettuhes', 
+        
+        // Кондиционал, перфект, отрицательные формы (90-95)
+        129 => 'en olis kačahtannuhes', 130 => 'et olis kačahtannuhes', 131 => 'ei olis kačahtannuhes', 
+        132 => 'emmo olis kačahtannuhes', 133 => 'etto olis kačahtannuhes', 134 => 'ei oldas kačahtettuhes',
+        
+        // Кондиционал, плюсквамперфект, положительные формы (96-101)
+        135 => 'olluzin kačahtannuhes', 125 => 'olluzit kačahtannuhes', 136 => 'ollus kačahtannuhes', 
+        137 => 'olluzimmo kačahtannuhes', 138 => 'olluzitto kačahtannuhes', 139 => 'oldanus kačahtettuhes', 
+        
+        // Кондиционал, плюсквамперфект, отрицательные формы (102-107)
+        140 => 'en ollus kačahtannuhes', 141 => 'et ollus kačahtannuhes', 142 => 'ei ollus kačahtannuhes', 
+        143 => 'emmo ollus kačahtannuhes', 144 => 'etto ollus kačahtannuhes', 145 => 'ei oldanus kačahtettuhes',
+        
+        // Потенциал, презенс, положительные формы (108-113)
+        146 => 'kačahtannemmos', 147 => 'kačahtannettos', 148 => 'kačahtannehes', 
+        149 => 'kačahtannemmokseh', 150 => 'kačahtannettokseh', 151 => 'kačahtettannehes', 
+        
+        // Потенциал, презенс, отрицательные формы (114-119)
+        152 => 'en kačahtannei', 153 => 'et kačahtannei', 154 => 'ei kačahtannei', 
+        155 => 'emmo kačahtannei', 156 => 'etto kačahtannei', 157 => 'ei kačahtettannehes',
+        
+        // Потенциал, перфект, положительные формы (120-125)
+        158 => 'ollen kačahtannuhes', 159 => 'ollet kačahtannuhes', 160 => 'ollou kačahtannuhes', 
+        161 => 'ollemmo kačahtannuhes', 162 => 'olletto kačahtannuhes', 163 => 'oldaneh kačahtettuhes', 
+        
+        // Потенциал, перфект, отрицательные формы (126-131)
+        164 => 'en olle kačahtannuhes', 165 => 'et olle kačahtannuhes', 166 => 'ei olle kačahtannuhes', 
+        167 => 'emmo olle kačahtannuhes', 168 => 'etto olle kačahtannuhes', 169 => 'ei oldane kačahtettuhes',
+        
+        // Инфинитивы и причастия (132-134)
+        170 => 'kačahtuakseh', 171 => '', 172 => '', 
+        173 => '', 174 => '', 175 => '', 
+        176 => '', 177 => '', 312 => '',
+        
+        178 => '', 179 => 'kačahtannuhes', 180 => '', 181 => 'kačahtettuhes'
+    ];
+    
+    $this->assertEquals($expected, $result);        
+}
+
     public function testChangeLettersWithoutLang()
     {
         $word = 'tulow';
@@ -1232,7 +1398,6 @@ class GrammaticTest extends TestCase
         $pos_id = 11; 
         $num = NULL;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
-//dd($result);        
         $expected = [[0=>'kil’l’uo',
                       1=>'kil’l’u',
                       2=>'kil’l’uu',

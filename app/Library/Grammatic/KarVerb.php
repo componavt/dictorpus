@@ -294,27 +294,23 @@ class KarVerb
      * @return type
      */
     public static function stemsFromTemplate($template, $lang_id, $name_num, $is_reflexive=null) {      
-        $base_shab = "([^\s\(\]\|]+)";
-        $base_suff_shab = "([^\s\(\]\|]*)";
-        $okon_shab = "(-?[^\-\,\;\)]+?\/?-?[^\-\,\;\)]*)";
-        $lemma_okon_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab;
+        $base_shab = "([^\s\(\]\|]+)"; // неизменяемая часть = любая непустая строка символов без пробелов, скобочек и |
+        $base_suff_shab = "([^\s\(\]\|]*)"; // изменяемая часть =  любая строка символов без пробелов, скобочек и | (может быть пустой)
+        $okon_shab = "(-?[^\-\,\;\)]+?\/?-?[^\-\,\;\)]*)"; // окончание формы, может начанаться с - (или нет), далее любые символы, кроме знаков. Примеры: -nämmös ИЛИ -däh/-dähes
+        $lemma_okon_shab = "/^".$base_shab."\|?".$base_suff_shab."\s*\(".$okon_shab; // словарная форма и первая форма
 
         // mini template
         if ($lang_id==4 && preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\[([^\]]*)\]/", $template, $regs)) {
             return self::stemsFromMiniTemplate($regs, $name_num);
         } elseif ($lang_id==6 && preg_match("/^".$base_shab."\|?".$base_suff_shab."\s*\[([^\]]*)\]/", $template, $regs)) {
             return KarVerbLud::stemsFromMiniTemplate($regs, $name_num);
-        } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {
-//dd('regs:',$regs);            
+        } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\)/", $template, $regs)) {// безличный глагол ед.ч., например, pakastu|o (-u; -i)
             return KarVerbOlo::stemsFromTemplateDef($regs, $is_reflexive);    
-        } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  // + 3sd pl
-//dd('regs:',$regs);            
+        } elseif ($lang_id==5 && preg_match( $lemma_okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  // безличный глагол мн.ч., например, kivist|iä (-äy; -etäh; -i, -ettih)
             return KarVerbOlo::stemsFromTemplateDefPl($regs, $is_reflexive);    
-        } elseif ($lang_id==5 && preg_match($lemma_okon_shab."\,\s*".$okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  
-//dd('regs:',$regs);            
+        } elseif ($lang_id==5 && preg_match($lemma_okon_shab."\,\s*".$okon_shab."\;\s*".$okon_shab."\;\s*".$okon_shab."\,\s*".$okon_shab."\)/", $template, $regs)) {  // peit|työ (-yn, -tyy; -ytäh; -yi, -yttih)
             return KarVerbOlo::stemsFromFullTemplate($regs, $is_reflexive);    
         } else {
-//dd("!!!!");                
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
         

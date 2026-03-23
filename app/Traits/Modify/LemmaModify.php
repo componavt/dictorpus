@@ -5,6 +5,7 @@ use DB;
 use App\Library\Grammatic;
 
 use App\Models\Dict\Dialect;
+use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaBase;
