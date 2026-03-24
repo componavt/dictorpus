@@ -53,7 +53,7 @@ class Export
      * 
      * @param Collection $text
      */
-    public static function exportBible($lang_id)
+    public static function Bible($lang_id)
     {
         $texts = Text::where('lang_id', $lang_id)
             ->whereCorpusId(2)
@@ -371,7 +371,7 @@ class Export
      * @param Lang $lang язык
      * @return bool Успех или неудача
      */
-    public static function exportRussianMeanings($filename, $lang)
+    public static function russianMeanings($filename, $lang)
     {
         // ID русского языка
         $rus_lang_id = 2;
@@ -398,26 +398,34 @@ class Export
             ->get();
 
         // Заголовок CSV файла
-        $header = "№\tID леммы\tID значения\tномер значения\tлемма\tкод языка\tкод части речи\tтолкование\n";
-        Storage::disk('public')->put($filename, $header);
+        $file = fopen(storage_path('app/public/' . $filename), 'w');
+        fputcsv($file, [
+            'id',
+            'lemma_id',
+            'meaning_id',
+            'meaning_num',
+            'lemma',
+            'lang',
+            'pos',
+            'meaning_ru'
+        ]);
 
         // Записываем данные
         $counter = 1;
         foreach ($meaning_texts as $row) {
-            // Форматируем строку для CSV
-            $line = $counter . "\t" .
-                $row->lemma_id . "\t" .
-                $row->meaning_id . "\t" .
-                $row->meaning_n . "\t" .
-                '"' . str_replace('"', '""', $row->lemma) . "\"\t" .
-                $row->lang_code . "\t" .
-                $row->pos_code . "\t" .
-                '"' . str_replace('"', '""', $row->meaning_text) . '"';
-
-            Storage::disk('public')->append($filename, $line);
-            $counter++;
+            fputcsv($file, [
+                $counter++,
+                $row->lemma_id,
+                $row->meaning_id,
+                $row->meaning_n,
+                $row->lemma,
+                $row->lang_code,
+                $row->pos_code,
+                $row->meaning_text,
+            ]);
+            // fputcsv по умолчанию: separator=',', enclosure='"', escape='\\'
         }
-
+        fclose($file);
         return true;
     }
 
@@ -433,12 +441,17 @@ class Export
      * @param int $lang_id язык текстов
      * @return bool Успех или неудача
      */
-    public static function exportRussianTranslations($filename, $lang_id)
+    public static function russianTranslations($filename, $lang_id)
     {
         // ID русского языка
         $lang_ru = 2;
 
-        Storage::disk('public')->put($filename, "Номер по порядку\tID значения\tпример");
+        $file = fopen(storage_path('app/public/' . $filename), 'w');
+        fputcsv($file, [
+            'id',
+            'meaning_id',
+            'example'
+        ]);
 
         $texts = Text::whereNotNull('transtext_id')
             ->where('lang_id', $lang_id)
@@ -447,7 +460,7 @@ class Export
                     ->where('relevance', '>', 1);
             })->get();
 
-        $count = 0;
+        $count = 1;
         foreach ($texts as $text) {
             $text_id = $text->id;
             $transtext = $text->transtext;
@@ -462,16 +475,22 @@ class Export
             }
 
             foreach ($examples as $example) {
-                $count++;
                 $s_id = $example->s_id;
                 $sentence = Text::processSentenceForExport($text->getTransSentence($s_id));
                 if (empty($sentence)) {
                     continue;
                 }
+                fputcsv($file, [
+                    $count++,
+                    $example->meaning_id,
+                    $sentence,
+                ]);
+
                 $line = $count . "\t" . $example->meaning_id . "\t" . $sentence;
                 Storage::disk('public')->append($filename, $line);
             }
         }
+        fclose($file);
     }
 
     public static function lemmasforMultimediaDictionary($filename)

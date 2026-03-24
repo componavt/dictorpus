@@ -250,7 +250,7 @@ class ExportController extends Controller
         $lang = Lang::find($lang_id);
         $filename = 'export/bible/vepkar-' . $date_now . '-' . $lang->code . '.txt';
         Storage::disk('public')->put($filename, "# " . $lang->name);
-        $lines = Export::exportBible($lang_id);
+        $lines = Export::Bible($lang_id);
         foreach ($lines as $book => $chapters) {
             foreach ($chapters as $chapter => $verses) {
                 foreach ($verses as $verse => $v_text) {
@@ -589,7 +589,7 @@ class ExportController extends Controller
 
         foreach (Lang::projectLangs() as $lang) {
             $filename = 'export/wordnet/meanings_' . $lang->code . '.csv';
-            Export::exportRussianMeanings($filename, $lang);
+            Export::russianMeanings($filename, $lang);
             print "Значения выгружены в файл: " . Storage::url($filename);
         }
     }
@@ -608,7 +608,7 @@ class ExportController extends Controller
 
         foreach (Lang::projectLangs() as $lang) {
             $filename = 'export/wordnet/examples_' . $lang->code . '.csv';
-            Export::exportRussianTranslations($filename, $lang->id);
+            Export::russianTranslations($filename, $lang->id);
             print "Переводы выгружены в файл: " . Storage::url($filename);
         }
     }
