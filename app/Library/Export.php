@@ -422,7 +422,7 @@ class Export
                 $row->lang_code,
                 $row->pos_code,
                 $row->meaning_text,
-            ], ',', '"', '');
+            ], ',', '"', '\0');
         }
         fclose($file);
         return true;
@@ -483,7 +483,7 @@ class Export
                     $count++,
                     $example->meaning_id,
                     $sentence,
-                ], ',', '"', '');
+                ], ',', '"', '\0');
             }
         }
         fclose($file);
