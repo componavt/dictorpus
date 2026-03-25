@@ -399,7 +399,7 @@ class Export
 
         // Заголовок CSV файла
         $file = fopen(storage_path('app/public/' . $filename), 'w');
-        fputcsv($file, [
+        fwrite($file, csv_row([
             'id',
             'lemma_id',
             'meaning_id',
@@ -408,12 +408,12 @@ class Export
             'lang',
             'pos',
             'meaning_ru'
-        ]);
+        ]));
 
         // Записываем данные
         $counter = 1;
         foreach ($meaning_texts as $row) {
-            fputcsv($file, [
+            fwrite($file, csv_row([
                 $counter++,
                 $row->lemma_id,
                 $row->meaning_id,
@@ -422,7 +422,7 @@ class Export
                 $row->lang_code,
                 $row->pos_code,
                 $row->meaning_text,
-            ], ',', '"', '\0');
+            ]));
         }
         fclose($file);
         return true;
@@ -446,11 +446,11 @@ class Export
         $lang_ru = 2;
 
         $file = fopen(storage_path('app/public/' . $filename), 'w');
-        fputcsv($file, [
+        fwrite($file, csv_row([
             'id',
             'meaning_id',
             'example'
-        ]);
+        ]));
 
         $texts = Text::whereNotNull('transtext_id')
             ->where('lang_id', $lang_id)
@@ -479,11 +479,11 @@ class Export
                 if (empty($sentence)) {
                     continue;
                 }
-                fputcsv($file, [
+                fwrite($file, csv_row([
                     $count++,
                     $example->meaning_id,
                     $sentence,
-                ], ',', '"', '\0');
+                ]));
             }
         }
         fclose($file);

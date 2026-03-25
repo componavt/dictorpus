@@ -1,6 +1,11 @@
 <?php
 
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
+use App\Models\User;
 
 /**
  * Creates a revision record.
@@ -30,30 +35,31 @@ function createRevisionRecord($obj, $key, $old = null, $new = null)
         ]
     ];
     $revision = new \Venturecraft\Revisionable\Revision;
-    \DB::table($revision->getTable())->insert($revisions);
+    DB::table($revision->getTable())->insert($revisions);
     return true;
 }
 
 if (! function_exists('number_with_space')) {
-    function number_with_space($num) {
+    function number_with_space($num)
+    {
         return number_format($num, 0, '', ' ');
     }
 }
 
 if (! function_exists('show_route')) {
-    function show_route($model, $args_by_get=null)
+    function show_route($model, $args_by_get = null)
     {
         return route_for_model($model, 'show', $args_by_get);
     }
 }
 
 if (! function_exists('route_for_model')) {
-    function route_for_model($model, $route, $args_by_get=null/*, $resource = null*/)
+    function route_for_model($model, $route, $args_by_get = null/*, $resource = null*/)
     {
-/*        $resource = $resource ?? plural_from_model($model);
+        /*        $resource = $resource ?? plural_from_model($model);
 
         return route("{$resource}.show", $model);*/
-        return route(single_from_model($model).".{$route}", $model).$args_by_get;
+        return route(single_from_model($model) . ".{$route}", $model) . $args_by_get;
     }
 }
 if (! function_exists('single_from_model')) {
@@ -75,12 +81,12 @@ if (! function_exists('plural_from_model')) {
 if (! function_exists('is_editor')) {
     function is_editor()
     {
-        $auth_user=Sentinel::check();
+        $auth_user = Sentinel::check();
         return User::whereId($auth_user->id)
-                   ->whereIn('id', function ($q) {
-                            $q->select('user_id')->from('role_users')
-                              ->whereIn('role_id', [1,4]);
-                    })->count();
+            ->whereIn('id', function ($q) {
+                $q->select('user_id')->from('role_users')
+                    ->whereIn('role_id', [1, 4]);
+            })->count();
     }
 }
 
@@ -122,41 +128,41 @@ if (! function_exists('user_photo_edit')) {
 if (! function_exists('to_sql')) {
     function to_sql($query)
     {
-//dd($query->toSql(), $query->getBindings());        
-        return vsprintf(str_replace(array('?'), array('\'%s\''), $query->toSql()), $query->getBindings());            
-
+        //dd($query->toSql(), $query->getBindings());        
+        return vsprintf(str_replace(array('?'), array('\'%s\''), $query->toSql()), $query->getBindings());
     }
 }
 
 if (! function_exists('convert_quotes')) {
-    function convert_quotes($str) {
+    function convert_quotes($str)
+    {
         $chr_map = array(
-           // Windows codepage 1252
-//           "\xC2\x82" => "'", // U+0082⇒U+201A single low-9 quotation mark
-           "\xC2\x84" => '"', // U+0084⇒U+201E double low-9 quotation mark
-//           "\xC2\x8B" => "'", // U+008B⇒U+2039 single left-pointing angle quotation mark
-//           "\xC2\x91" => "'", // U+0091⇒U+2018 left single quotation mark
-//           "\xC2\x92" => "'", // U+0092⇒U+2019 right single quotation mark
-           "\xC2\x93" => '"', // U+0093⇒U+201C left double quotation mark
-           "\xC2\x94" => '"', // U+0094⇒U+201D right double quotation mark
-//           "\xC2\x9B" => "'", // U+009B⇒U+203A single right-pointing angle quotation mark
+            // Windows codepage 1252
+            //           "\xC2\x82" => "'", // U+0082⇒U+201A single low-9 quotation mark
+            "\xC2\x84" => '"', // U+0084⇒U+201E double low-9 quotation mark
+            //           "\xC2\x8B" => "'", // U+008B⇒U+2039 single left-pointing angle quotation mark
+            //           "\xC2\x91" => "'", // U+0091⇒U+2018 left single quotation mark
+            //           "\xC2\x92" => "'", // U+0092⇒U+2019 right single quotation mark
+            "\xC2\x93" => '"', // U+0093⇒U+201C left double quotation mark
+            "\xC2\x94" => '"', // U+0094⇒U+201D right double quotation mark
+            //           "\xC2\x9B" => "'", // U+009B⇒U+203A single right-pointing angle quotation mark
 
-           // Regular Unicode     // U+0022 quotation mark (")
-                                  // U+0027 apostrophe     (')
-           "\xC2\xAB"     => '"', // U+00AB left-pointing double angle quotation mark
-           "\xC2\xBB"     => '"', // U+00BB right-pointing double angle quotation mark
-//           "\xE2\x80\x98" => "'", // U+2018 left single quotation mark
-//           "\xE2\x80\x99" => "'", // U+2019 right single quotation mark
-//           "\xE2\x80\x9A" => "'", // U+201A single low-9 quotation mark
-//           "\xE2\x80\x9B" => "'", // U+201B single high-reversed-9 quotation mark
-           "\xE2\x80\x9C" => '"', // U+201C left double quotation mark
-           "\xE2\x80\x9D" => '"', // U+201D right double quotation mark
-           "\xE2\x80\x9E" => '"', // U+201E double low-9 quotation mark
-           "\xE2\x80\x9F" => '"', // U+201F double high-reversed-9 quotation mark
-//           "\xE2\x80\xB9" => "'", // U+2039 single left-pointing angle quotation mark
-//           "\xE2\x80\xBA" => "'", // U+203A single right-pointing angle quotation mark
+            // Regular Unicode     // U+0022 quotation mark (")
+            // U+0027 apostrophe     (')
+            "\xC2\xAB"     => '"', // U+00AB left-pointing double angle quotation mark
+            "\xC2\xBB"     => '"', // U+00BB right-pointing double angle quotation mark
+            //           "\xE2\x80\x98" => "'", // U+2018 left single quotation mark
+            //           "\xE2\x80\x99" => "'", // U+2019 right single quotation mark
+            //           "\xE2\x80\x9A" => "'", // U+201A single low-9 quotation mark
+            //           "\xE2\x80\x9B" => "'", // U+201B single high-reversed-9 quotation mark
+            "\xE2\x80\x9C" => '"', // U+201C left double quotation mark
+            "\xE2\x80\x9D" => '"', // U+201D right double quotation mark
+            "\xE2\x80\x9E" => '"', // U+201E double low-9 quotation mark
+            "\xE2\x80\x9F" => '"', // U+201F double high-reversed-9 quotation mark
+            //           "\xE2\x80\xB9" => "'", // U+2039 single left-pointing angle quotation mark
+            //           "\xE2\x80\xBA" => "'", // U+203A single right-pointing angle quotation mark
         );
-        $chr = array_keys  ($chr_map);
+        $chr = array_keys($chr_map);
         $rpl = array_values($chr_map);
         return str_replace($chr, $rpl, html_entity_decode($str, ENT_QUOTES, "UTF-8"));
     }
@@ -165,14 +171,14 @@ if (! function_exists('convert_quotes')) {
 if (! function_exists('to_link')) {
     function to_link($str, $link)
     {
-        return '<a href="'.LaravelLocalization::localizeURL($link).'">'.$str.'</a>';            
-
+        return '<a href="' . LaravelLocalization::localizeURL($link) . '">' . $str . '</a>';
     }
 }
 
 // extracts some parameters from object Request into array $url_args
 if (! function_exists('url_args')) {
-    function url_args($request, $limit_min=10) {
+    function url_args($request, $limit_min = 10)
+    {
         $url_args = [
             'limit_num' => (int)$request->input('limit_num'), // number of records per page
             'page'      => (int)$request->input('page'),      // number of page
@@ -180,12 +186,12 @@ if (! function_exists('url_args')) {
         if (!$url_args['page']) {
             $url_args['page'] = 1;
         }
-        
-        if ($url_args['limit_num']<=0) {
+
+        if ($url_args['limit_num'] <= 0) {
             $url_args['limit_num'] = $limit_min;
-        } elseif ($url_args['limit_num']>1000) {
+        } elseif ($url_args['limit_num'] > 1000) {
             $url_args['limit_num'] = 1000;
-        }   
+        }
         return $url_args;
     }
 }
@@ -194,83 +200,90 @@ if (! function_exists('url_args')) {
 // Usage: 
 // $this->args_by_get = search_values_by_URL($this->url_args);
 if (! function_exists('search_values_by_URL')) {
-    function search_values_by_URL(array $url_args=NULL)
+    function search_values_by_URL(array $url_args = NULL)
     {
         $out = http_build_query(remove_empty($url_args));
-        return $out ? '?'.$out : '';
+        return $out ? '?' . $out : '';
     }
 }
 
 if (! function_exists('remove_empty')) {
-    function remove_empty(array $url_args=NULL)
+    function remove_empty(array $url_args = NULL)
     {
-        if (isset($url_args['limit_num']) && $url_args['limit_num']==10) {
+        if (isset($url_args['limit_num']) && $url_args['limit_num'] == 10) {
             unset($url_args['limit_num']);
         }
-        if (isset($url_args['page']) && $url_args['page']==1) {
+        if (isset($url_args['page']) && $url_args['page'] == 1) {
             unset($url_args['page']);
         }
-        foreach ( $url_args as $k=>$v ) {
-            if (!$v || is_array($v) && (!sizeof($v) || sizeof($v)==1 && isset($v[1]) && !$v[1])) {
+        foreach ($url_args as $k => $v) {
+            if (!$v || is_array($v) && (!sizeof($v) || sizeof($v) == 1 && isset($v[1]) && !$v[1])) {
                 unset($url_args[$k]);
-            } 
+            }
         }
         return $url_args;
     }
 }
 
 if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
-    function mb_ucfirst($string) {
+    function mb_ucfirst($string)
+    {
         $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
         return $string;
     }
 }
 
 if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
-    function mb_ucfirst($string) {
+    function mb_ucfirst($string)
+    {
         $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
         return $string;
     }
 }
 
 if (!function_exists('prev_args')) {
-    function prev_args($url_args) {
-        $url_args['page'] = $url_args['page'] > 1 ? $url_args['page']-1 : 1;
+    function prev_args($url_args)
+    {
+        $url_args['page'] = $url_args['page'] > 1 ? $url_args['page'] - 1 : 1;
         return search_values_by_URL($url_args);
     }
 }
 
 if (!function_exists('next_args')) {
-    function next_args($url_args) {
-        $url_args['page'] = $url_args['page']+1;
+    function next_args($url_args)
+    {
+        $url_args['page'] = $url_args['page'] + 1;
         return search_values_by_URL($url_args);
     }
 }
 
 if (!function_exists('args_replace')) {
-    function args_replace($url_args, $key, $value) {
+    function args_replace($url_args, $key, $value)
+    {
         $url_args[$key] = $value;
         return search_values_by_URL($url_args);
     }
 }
 
 if (!function_exists('process_text')) {
-    function process_text($text) {
+    function process_text($text)
+    {
         $text = str_replace("\n", "<br>", trim($text));
         return $text;
     }
 }
 
 if (!function_exists('count_not_empty_elems')) {
-    function count_not_empty_elems($list) {
+    function count_not_empty_elems($list)
+    {
         $count = 0;
         foreach ($list as $key => $value) {
-            if (is_array($value) && sizeof($value)>0 && !empty($value[0])) {
+            if (is_array($value) && sizeof($value) > 0 && !empty($value[0])) {
                 $count++;
-//print "<p>$key=$value[0]</p>";                
-            } elseif(!empty($value)) {
+                //print "<p>$key=$value[0]</p>";                
+            } elseif (!empty($value)) {
                 $count++;
-//print "<p>$key=$value</p>";                
+                //print "<p>$key=$value</p>";                
             }
         }
         return $count;
@@ -278,77 +291,86 @@ if (!function_exists('count_not_empty_elems')) {
 }
 
 if (!function_exists('remove_hyphens')) {
-    function remove_hyphens($str) {
+    function remove_hyphens($str)
+    {
         return preg_replace('/&shy;/', '', $str);
     }
 }
 
 if (!function_exists('format_number')) {
-    function format_number($total) {
+    function format_number($total)
+    {
         return number_format($total, 0, ',', ' ');
     }
 }
 
 if (!function_exists('found_rem')) {
-/**
- * Высчитывается остаток от деления для последующего вычисления окончания фразы
- */
-    function found_rem($total) {
-        return $total>20 ? ($total%10==0 ? $total : $total%10)  : $total;
+    /**
+     * Высчитывается остаток от деления для последующего вычисления окончания фразы
+     */
+    function found_rem($total)
+    {
+        return $total > 20 ? ($total % 10 == 0 ? $total : $total % 10)  : $total;
     }
 }
 
 if (!function_exists('highlight')) {
-    function highlight($str, $substr, $class='search-word') {
-/*if ($substr == 'лет назад') {
+    function highlight($str, $substr, $class = 'search-word')
+    {
+        /*if ($substr == 'лет назад') {
     dd($str, $substr);
-} */    $str = preg_replace('/\n/', ' ', $str);   
+} */
+        $str = preg_replace('/\n/', ' ', $str);
         if (!$substr) {
             return $str;
         }
         if (!preg_match('/\s+/', $substr)) {
-            return mb_ereg_replace('('.$substr.')', '<span class="'.$class.'">\\1</span>', $str, 'i');
+            return mb_ereg_replace('(' . $substr . ')', '<span class="' . $class . '">\\1</span>', $str, 'i');
         }
         $words = preg_split('/\s+/', $substr);
-        $pattern = '^(.*)('.join(')(\s*<*[^>]*>*\s*<*[^>]*>*\s*)(', $words).')(.*)$';
-        if (preg_match("/".$pattern."/iu", $str, $regs)) {
+        $pattern = '^(.*)(' . join(')(\s*<*[^>]*>*\s*<*[^>]*>*\s*)(', $words) . ')(.*)$';
+        if (preg_match("/" . $pattern . "/iu", $str, $regs)) {
             $out = $regs[1];
-            for ($i=2; $i<sizeof($regs)-1; $i++) {
-                if ($i%2 == 0) {
-                    $out .= '<span class="'.$class.'">'.$regs[$i].'</span>';
+            for ($i = 2; $i < sizeof($regs) - 1; $i++) {
+                if ($i % 2 == 0) {
+                    $out .= '<span class="' . $class . '">' . $regs[$i] . '</span>';
                 } else {
                     $out .= $regs[$i];
                 }
             }
-            return $out.$regs[sizeof($regs)-1];
+            return $out . $regs[sizeof($regs) - 1];
         }
         return $str;
     }
 }
 
 if (!function_exists('fact')) {
-    function fact(int $n) {
-	return ($n >= 1) ?  ($n * fact($n - 1)) : 1;
+    function fact(int $n)
+    {
+        return ($n >= 1) ?  ($n * fact($n - 1)) : 1;
     }
 }
 
 if (!function_exists('css')) {
-    function css($filename) {
-        return '<link href="/css/'.$filename.'.css?'. filemtime(env('APP_ROOT').'public/css/'.$filename.'.css'). '" rel="stylesheet">';
+    function css($filename)
+    {
+        return '<link href="/css/' . $filename . '.css?' . filemtime(env('APP_ROOT') . 'public/css/' . $filename . '.css') . '" rel="stylesheet">';
     }
 }
 
 if (!function_exists('js')) {
-    function js($filename) {
-        $code = @filemtime(env('APP_ROOT').'public/js/'.$filename.'.js');
-        return '<script src="/js/'.$filename.'.js?'. $code. '"></script>';
+    function js($filename)
+    {
+        $code = @filemtime(env('APP_ROOT') . 'public/js/' . $filename . '.js');
+        return '<script src="/js/' . $filename . '.js?' . $code . '"></script>';
     }
 }
 
 if (!function_exists('mb_strrev')) {
-    function mb_strrev($str){
+    function mb_strrev($str)
+    {
         $r = '';
-        for ($i = mb_strlen($str); $i>=0; $i--) {
+        for ($i = mb_strlen($str); $i >= 0; $i--) {
             $r .= mb_substr($str, $i, 1);
         }
         return $r;
@@ -356,53 +378,58 @@ if (!function_exists('mb_strrev')) {
 }
 
 if (!function_exists('str_diff')) {
-    function str_diff($str1, $str2){
+    function str_diff($str1, $str2)
+    {
         $r = '';
-        $i=0;
+        $i = 0;
         $equal = true;
-        while($equal && $i<mb_strlen($str1) && $i<mb_strlen($str2)) {
+        while ($equal && $i < mb_strlen($str1) && $i < mb_strlen($str2)) {
             if (mb_substr($str1, $i, 1) == mb_substr($str2, $i, 1)) {
                 $r .= mb_substr($str1, $i, 1);
                 $i++;
             } else {
                 $equal = false;
             }
-//print "<p>$r, $i, $equal</p>";                
+            //print "<p>$r, $i, $equal</p>";                
         }
-//        if (!)
+        //        if (!)
         if (mb_substr($str1, $i)) {
-            $r .= '<del class="diffmod">'.mb_substr($str1, $i).'</del>';
+            $r .= '<del class="diffmod">' . mb_substr($str1, $i) . '</del>';
         }
         if (mb_substr($str2, $i)) {
-            $r .= '<ins class="diffmod">'.mb_substr($str2, $i).'</ins>';
+            $r .= '<ins class="diffmod">' . mb_substr($str2, $i) . '</ins>';
         }
         return $r;
     }
 }
 
 if (!function_exists('css')) {
-    function css($filename) {
-        return '<link href="/css/'.$filename.'.css?'. filemtime(env('APP_ROOT').'public/css/'.$filename.'.css'). '" rel="stylesheet">';
+    function css($filename)
+    {
+        return '<link href="/css/' . $filename . '.css?' . filemtime(env('APP_ROOT') . 'public/css/' . $filename . '.css') . '" rel="stylesheet">';
     }
 }
 
 if (!function_exists('js')) {
-    function js($filename) {
-        return '<script src="/js/'.$filename.'.js?'. filemtime(env('APP_ROOT').'public/js/'.$filename.'.js'). '"></script>';
+    function js($filename)
+    {
+        return '<script src="/js/' . $filename . '.js?' . filemtime(env('APP_ROOT') . 'public/js/' . $filename . '.js') . '"></script>';
     }
 }
 
 // Разбиваем по точкам, точкам с запятой, тире и т.п.
 if (!function_exists('splitDefinition')) {
-    function split_definition($text) {
-//dd($text);        
+    function split_definition($text)
+    {
+        //dd($text);        
         $parts = preg_split('/[,.;–—]+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
         return array_map('trim', $parts);
     }
 }
 
 if (!function_exists('add_loading_image_to_xml')) {
-    function add_loading_image_to_xml(SimpleXMLElement $parent, string $src = '/images/waiting_small.gif') {
+    function add_loading_image_to_xml(SimpleXMLElement $parent, string $src = '/images/waiting_small.gif')
+    {
         $load_img = $parent->addChild('img');
         $load_img->addAttribute('class', 'img-loading');
         $load_img->addAttribute('src', $src);
@@ -410,8 +437,9 @@ if (!function_exists('add_loading_image_to_xml')) {
 }
 
 if (!function_exists('remove_diacritics')) {
-    function remove_diacritics($str) {
-/*        // Нормализуем строку в форму NFD (разложенные символы)
+    function remove_diacritics($str)
+    {
+        /*        // Нормализуем строку в форму NFD (разложенные символы)
         $normalized = normalizer_normalize($str, Normalizer::FORM_D);
 
         // Удаляем все combining-символы (диакритику)
@@ -426,17 +454,18 @@ if (!function_exists('remove_diacritics')) {
 
         // Удаление ТОЛЬКО combining-знаков (например, ◌̬ U+032C, ◌̱ U+0331)
         // \p{Mn} удаляет все non-spacing marks, но НЕ трогает Ä, Ö и др.
-        $str = preg_replace('/\p{Mn}/u', '', $str);    
+        $str = preg_replace('/\p{Mn}/u', '', $str);
         return $str;
     }
 }
 
 if (!function_exists('textToHtml')) {
-    function text_to_html($text) {
+    function text_to_html($text)
+    {
         if (empty($text)) {
             return null;
         }
-        
+
         // 1. Обработка всех HTTP/HTTPS ссылок
         $text = preg_replace_callback(
             '/\b(https?:\/\/[^\s<>"{}()]+[^\s<>"{}().,;:!?])/i',
@@ -458,7 +487,7 @@ if (!function_exists('textToHtml')) {
             },
             $text
         );
-        
+
         // Переводы строк → <br>
         $text = nl2br($text, false);
 
@@ -518,5 +547,27 @@ if (!function_exists('clean_int_array')) {
         $ints = array_values($ints);
 
         return ($returnNullIfEmpty && empty($ints)) ? null : $ints;
+    }
+}
+
+/**
+ * Encode one CSV row per RFC 4180 (double-quote escaping only, no backslash).
+ * Compatible with PHP 7.3+
+ */
+if (!function_exists('csv_row')) {
+    function csv_row(array $fields, string $sep = ','): string
+    {
+        $cells = array_map(function ($value) use ($sep) {
+            $value = (string) $value;
+            // double any existing quotes inside the value
+            $value = str_replace('"', '""', $value);
+            // wrap in quotes if field contains separator, quote, newline or carriage return
+            if (strpbrk($value, $sep . "\"\n\r") !== false) {
+                $value = '"' . $value . '"';
+            }
+            return $value;
+        }, $fields);
+
+        return implode($sep, $cells) . "\n";
     }
 }
