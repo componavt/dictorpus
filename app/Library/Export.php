@@ -422,8 +422,7 @@ class Export
                 $row->lang_code,
                 $row->pos_code,
                 $row->meaning_text,
-            ]);
-            // fputcsv по умолчанию: separator=',', enclosure='"', escape='\\'
+            ], separator: ',', enclosure: '"', escape: '');
         }
         fclose($file);
         return true;
@@ -484,10 +483,7 @@ class Export
                     $count++,
                     $example->meaning_id,
                     $sentence,
-                ]);
-
-                $line = $count . "\t" . $example->meaning_id . "\t" . $sentence;
-                Storage::disk('public')->append($filename, $line);
+                ], separator: ',', enclosure: '"', escape: '');
             }
         }
         fclose($file);
