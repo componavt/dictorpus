@@ -422,7 +422,7 @@ class Export
                 $row->lang_code,
                 $row->pos_code,
                 $row->meaning_text,
-            ], separator: ',', enclosure: '"', escape: '');
+            ], ',', '"', '');
         }
         fclose($file);
         return true;
@@ -483,7 +483,7 @@ class Export
                     $count++,
                     $example->meaning_id,
                     $sentence,
-                ], separator: ',', enclosure: '"', escape: '');
+                ], ',', '"', '');
             }
         }
         fclose($file);
