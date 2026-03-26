@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.master', function ($view) {
             $view->with('scriptTime', microtime(true) - LARAVEL_START);
         });
-        
+
         // Устанавливаем локаль для Carbon
         Carbon::setLocale(app()->getLocale());
 
@@ -46,8 +46,14 @@ class AppServiceProvider extends ServiceProvider
                 setlocale(LC_TIME, 'en_US.UTF-8');
             }
         }
-        
-/*        DB::listen(function ($query) {
+
+        // Помесячное логирование
+        $monthlyFile = storage_path('logs/laravel-' . date('Y-m') . '.log');
+        $handler = new \Monolog\Handler\StreamHandler($monthlyFile);
+        $this->app['log']->getMonolog()->pushHandler($handler);
+
+
+        /*        DB::listen(function ($query) {
             $location = collect(debug_backtrace())->filter(function ($trace) {
                 return isset($trace['file']) && !str_contains($trace['file'], 'vendor/');
             })->first(); // берем первый элемент не из каталога вендора
