@@ -351,7 +351,7 @@ class Export
         // Сохранение файла в хранилище
         Storage::disk('public')->put($filename, $csvContent);
 
-        echo $message . ' сохранены в ' . storage_path('app/public/' . $filename) . "\n";
+        echo "<h3>".$message . ' сохранены в ' . storage_path('app/public/' . $filename) . "</h3>\n";
     }
 
     /**

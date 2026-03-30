@@ -116,9 +116,10 @@ trait TextSelect
                 continue; // если в предложении нет карельских или вепсских слов
             }
             $s = KarGram::changeLetters(self::clearText($s));
-if (empty($trans_sentences[$sentence->s_id])) {
-    dd($this->id, $sentence->s_id);
-}            
+            if (empty($trans_sentences[$sentence->s_id])) {
+                print "<P>В тексте ".$this->id .'не хватает перевода для предложения '. $sentence->s_id."</p>";
+                continue;
+            }           
             $ts = self::clearText($trans_sentences[$sentence->s_id]['sentence']);
             //            $sentences[!empty($s) ? $s : $this->id.'_'.$sentence->s_id] = $ts;
             if (!empty($s)) {
