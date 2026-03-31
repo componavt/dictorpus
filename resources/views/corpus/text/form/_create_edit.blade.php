@@ -52,6 +52,11 @@
          'value' => ($action=='edit' && $text->video) ? ($text->video->youtube_id) : NULL,
          'title'=>trans('corpus.youtube_id')])
 
+@include('widgets.form.formitem._text', 
+        ['name' => 'rutube_id', 
+         'value' => ($action=='edit' && $text->video) ? ($text->video->rutube_id) : NULL,
+         'title'=>trans('corpus.rutube_id')])
+
 @if ($action=='edit')         
 <input type='hidden' id='text_id' value='{{$text->id}}'>
         <p> <b>Аудиофайлы</b>         

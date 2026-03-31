@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Video extends Model
 {
-    protected $fillable = ['text_id', 'youtube_id'];
-    
+    protected $fillable = ['text_id', 'youtube_id', 'rutube_id'];
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -19,11 +19,10 @@ class Video extends Model
     {
         parent::boot();
     }
-    
+
     // Dialect __belongs_to__ Lang
     public function text()
     {
         return $this->belongsTo(Text::class);
-    }    
-
+    }
 }

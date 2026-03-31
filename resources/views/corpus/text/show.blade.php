@@ -47,7 +47,7 @@
         @endif 
         </h2>
         
-        @if ($text->video && $text->video->youtube_id)
+        @if ($text->hasVideoCode())
         <div class="row">
             <div class="col-sm-6">
         @endif
@@ -58,13 +58,13 @@
         
         @include('corpus.audiotext._show_files',['audiotexts'=>$text->audiotexts])
         
-        @if ($text->video && $text->video->youtube_id)
+        @if ($text->hasVideoCode())
             </div>
             <div class="col-sm-6">
-                @include('widgets.youtube',
+                @include('corpus.video.show',
                         ['width' => '100%',
                          'height' => '270',
-                         'video' => $text->video->youtube_id
+                         'video' => $text->video
                         ])
             </div>
         </div>

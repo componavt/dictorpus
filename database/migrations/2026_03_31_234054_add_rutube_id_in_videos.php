@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class AddCollocatesInSynsets extends Migration
+class AddRutubeIdInVideos extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddCollocatesInSynsets extends Migration
      */
     public function up()
     {
-        Schema::table('synsets', function (Blueprint $table) {
-            $table->text('collocates')->nullable()->after('comment');
+        Schema::table('videos', function (Blueprint $table) {
+            $table->string('rutube_id', 50)->nullable()->after('youtube_id');
         });
     }
 
@@ -25,8 +25,8 @@ class AddCollocatesInSynsets extends Migration
      */
     public function down()
     {
-        Schema::table('synsets', function (Blueprint $table) {
-            $table->dropColumn('collocates');
+        Schema::table('videos', function (Blueprint $table) {
+            $table->dropColumn('rutube_id');
         });
     }
 }
