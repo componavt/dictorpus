@@ -183,10 +183,10 @@ class LabelController extends Controller
         }
 
         if ($error) {
-            return Redirect::to('/dict/label/')
+            return Redirect::to('/dict/label/' . ($this->args_by_get))
                 ->withErrors($result['error_message']);
         } else {
-            return Redirect::to('/dict/label/')
+            return Redirect::to('/dict/label/' . ($this->args_by_get))
                 ->withSuccess($result['message']);
         }
     }
