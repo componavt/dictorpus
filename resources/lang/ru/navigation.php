@@ -18,7 +18,7 @@ return [
     'audio_map' => 'Аудиокарта',
     'audios' => 'Аудиозаписи лемм',
     'authors' => 'Авторы / переводчики',
-    
+
     'collections' => 'Коллекции',
     'concept_categories' => 'Категории понятий',
     'concepts' => 'Понятия',
@@ -28,7 +28,7 @@ return [
     'corpus_freq' => 'Частотные словари',
     'corpuses' => 'Подкорпусы',
     'cycles' => 'Циклы',
-    
+
     'dialects' => 'Диалекты',
     'dict_selections' => 'Выборки',
     'dictionary' => 'Словарь',
@@ -45,12 +45,13 @@ return [
     'how_to_cite' => 'Как ссылаться на корпус',
     'inflexion_groups' => 'Группы слов с одинаковыми флексиями',
     'informants' => 'Информанты',
+    'labels'  => 'Пометы',
     'langs'  => 'Языки',
     'ldl' => 'Людиковский диалектный лексикон',
     'lemma_frequency' => 'Частотный словарь лемм, размеченных в тексте',
     'lemmas' => 'Леммы',
     'logout' => 'Выйти',
-    
+
     'marathon' => 'Марафон',
     'mass_media' => 'СМИ о проекте',
     'mass_media_show' => 'Нас показывают',
@@ -60,9 +61,9 @@ return [
     'motives' => 'Мотивы',
     'motypes' => 'Типы мотивов',
     'multidict' => 'Мультимедийный словарь',
-    
+
     'new_meanings' => 'Новые значения',
-    
+
     'omonyms' => 'Омонимы',
     'participants' => 'Участники проекта',
     'parts_of_speech' => 'Части речи',

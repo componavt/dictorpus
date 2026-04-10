@@ -9,3 +9,4 @@
 <li><a href="{{ LaravelLocalization::localizeURL('/page/references_gram') }}">{{ trans('navigation.ref_gram') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/dict/concept') }}">{{ trans('navigation.concepts') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/dict/audio') }}">{{ trans('navigation.audios') }}</a></li>
+<li><a href="{{ route('label.index') }}">{{ trans('navigation.labels') }}</a></li>

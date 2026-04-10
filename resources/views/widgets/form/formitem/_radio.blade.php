@@ -11,7 +11,7 @@ if (!isset($values)) { $values = []; }
         @if (isset($with_break) && $with_break) 
         <br>
         @endif
-        {!! Form::radio($name, $value, $value===$checked) !!}
+        <input type="radio" name="{{ $name }}" value="{{ $value }}"@if ($value===$checked) checked @endif>
         {{$tail ?? null}}
     @endforeach
     <p class="help-block">{!! $errors->first($name) !!}</p>

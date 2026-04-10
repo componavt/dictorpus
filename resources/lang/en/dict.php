@@ -9,7 +9,7 @@ return [
     |
     |
     */
-    
+
     'abbr' => 'abbreviation',
     'add-example-5' => 'add a good example',
     'add-example-10' => 'add the best example',
@@ -23,15 +23,17 @@ return [
     'add-meaning' => 'Add a new meaning',
     'add-phrase' => 'Add a phrase',
     'advtype' => 'adverb type',
-    'advtypes' => [NULL=> '',
-                    4 => 'direction',
-                    3 => 'location',
-                    1 => 'manner',
-                    8 => 'measures and degrees',
-                    6 => 'modal nature',
-                    5 => 'quantity or degree',
-                    2 => 'state',
-                    7 => 'time'],
+    'advtypes' => [
+        NULL => '',
+        4 => 'direction',
+        3 => 'location',
+        1 => 'manner',
+        8 => 'measures and degrees',
+        6 => 'modal nature',
+        5 => 'quantity or degree',
+        2 => 'state',
+        7 => 'time'
+    ],
     'animacy' => 'animate',
     'affix' => 'affix',
     'affixes' => 'affixes',
@@ -40,72 +42,80 @@ return [
     'inanimacy' => 'inanimate',
     'bases' => 'Bases',
     'base_list_1_name' => [
-                    0 => 'base form',
-                    1 => 'гласная основа',
-                    2 => 'основа иллатива',
-                    3 => 'партитив ед.ч.',
-                    4 => 'основа мн.ч.'],
+        0 => 'base form',
+        1 => 'гласная основа',
+        2 => 'основа иллатива',
+        3 => 'партитив ед.ч.',
+        4 => 'основа мн.ч.'
+    ],
     'base_list_1_verb' => [
-                    0 => 'infinitive base',
-                    1 => 'presence base',
-                    2 => 'imperfect base',
-                    3 => 'основа 2-го прич. актив ед.ч.',
-                    4 => 'conditional base',
-                    5 => 'III infinitive base',
-                    6 => 'infinitive penultimate letter',
-                    7 => 'infinitive last letter',
-                    8 => 'imperative 3-d person single' ],
+        0 => 'infinitive base',
+        1 => 'presence base',
+        2 => 'imperfect base',
+        3 => 'основа 2-го прич. актив ед.ч.',
+        4 => 'conditional base',
+        5 => 'III infinitive base',
+        6 => 'infinitive penultimate letter',
+        7 => 'infinitive last letter',
+        8 => 'imperative 3-d person single'
+    ],
     'base_list_4_name' => [
-                    0 => 'base form',
-                    1 => 'слабая гласная основа',
-                    2 => 'сильная гласная основа',
-                    3 => 'партитив ед.ч.',
-                    4 => 'слабая основа мн.ч.',
-                    5 => 'сильная основа мн.ч.'],
+        0 => 'base form',
+        1 => 'слабая гласная основа',
+        2 => 'сильная гласная основа',
+        3 => 'партитив ед.ч.',
+        4 => 'слабая основа мн.ч.',
+        5 => 'сильная основа мн.ч.'
+    ],
     'base_list_4_verb' => [
-                    0 => 'начальная форма',
-                    1 => 'слабая гласная основа презенса',
-                    2 => 'гласная сильная основа презенса',
-                    3 => 'слабая гласная основа имперфекта',
-                    4 => 'сильная гласная основа имперфекта',
-                    5 => 'сильная согласная основа',
-                    6 => 'слабая основа пассива',
-                    7 => 'сильная основа пассива'],
+        0 => 'начальная форма',
+        1 => 'слабая гласная основа презенса',
+        2 => 'гласная сильная основа презенса',
+        3 => 'слабая гласная основа имперфекта',
+        4 => 'сильная гласная основа имперфекта',
+        5 => 'сильная согласная основа',
+        6 => 'слабая основа пассива',
+        7 => 'сильная основа пассива'
+    ],
     'base_list_5_name' => [
-                    0 => 'base form',
-                    1 => 'слабая гласная основа',
-                    2 => 'сильная гласная основа',
-                    3 => 'партитив ед.ч.',
-                    4 => 'слабая основа мн.ч.',
-                    5 => 'сильная основа мн.ч.'],
+        0 => 'base form',
+        1 => 'слабая гласная основа',
+        2 => 'сильная гласная основа',
+        3 => 'партитив ед.ч.',
+        4 => 'слабая основа мн.ч.',
+        5 => 'сильная основа мн.ч.'
+    ],
     'base_list_5_verb' => [
-                    0 => 'начальная форма',
-//                    1 => 'слабая гласная у одноосновных или сильная гласная у двуосновных',
-                    1 => 'слабая гласная',
-                    2 => 'индикатив презенс 3 л. ед.ч.',
-                    3 => 'сильная гласная основа презенса',
-                    4 => 'индикатив имперфект 3 л. ед.ч.',
-                    5 => 'слабая основа имперфекта',
-                    6 => 'пассивная основа, презенс 3л. мн.ч.',
-                    7 => 'сильноступенная пассивная основа, имперфект 3л. мн.ч.',
-                    8 => 'сильная гласная / согласная основа'],
+        0 => 'начальная форма',
+        //                    1 => 'слабая гласная у одноосновных или сильная гласная у двуосновных',
+        1 => 'слабая гласная',
+        2 => 'индикатив презенс 3 л. ед.ч.',
+        3 => 'сильная гласная основа презенса',
+        4 => 'индикатив имперфект 3 л. ед.ч.',
+        5 => 'слабая основа имперфекта',
+        6 => 'пассивная основа, презенс 3л. мн.ч.',
+        7 => 'сильноступенная пассивная основа, имперфект 3л. мн.ч.',
+        8 => 'сильная гласная / согласная основа'
+    ],
     'base_list_6_name' => [
-                    0 => 'начальная форма',
-                    1 => 'слабая гласная основа',
-                    2 => 'сильная гласная основа',
-                    3 => 'партитив ед.ч.',
-                    4 => 'слабая основа мн.ч.',
-                    5 => 'сильная основа мн.ч.',
-                    6 => 'сильная / согласная основа'],
+        0 => 'начальная форма',
+        1 => 'слабая гласная основа',
+        2 => 'сильная гласная основа',
+        3 => 'партитив ед.ч.',
+        4 => 'слабая основа мн.ч.',
+        5 => 'сильная основа мн.ч.',
+        6 => 'сильная / согласная основа'
+    ],
     'base_list_6_verb' => [
-                    0 => 'начальная форма',
-                    1 => 'слабая гласная основа презенс',
-                    2 => 'сильная гласная основа презенс',
-                    3 => 'слабая гласная основа имперфекта',
-                    4 => 'сильная гласная основа имперфекта',
-                    5 => 'сильная основа актива',
-                    6 => 'слабая основа пассива',
-                    7 => 'основа пассива'],
+        0 => 'начальная форма',
+        1 => 'слабая гласная основа презенс',
+        2 => 'сильная гласная основа презенс',
+        3 => 'слабая гласная основа имперфекта',
+        4 => 'сильная гласная основа имперфекта',
+        5 => 'сильная основа актива',
+        6 => 'слабая основа пассива',
+        7 => 'основа пассива'
+    ],
     'case' => 'Case',
     'category_removed' => 'Сategory ":name" is removed successfully.',
     'check_voiced_lemmas' => 'Check voiced lemmas',
@@ -113,17 +123,19 @@ return [
     'clear_wordforms' => 'clear wordforms',
     'code' => 'code',
     'collocates' => 'Collocates',
-    'common_wordforms_total' => 'Number of common wordforms', 
+    'common_wordforms_total' => 'Number of common wordforms',
     'comptype' => 'Compound type',
-    'comptypes' => [NULL=> '',
-                  'N' => 'Noun group',
-                  'V' => 'Verb group'],
+    'comptypes' => [
+        NULL => '',
+        'N' => 'Noun group',
+        'V' => 'Verb group'
+    ],
     'concept' => 'concept',
     'concept_removed' => 'Сoncept ":name" is removed successfully.',
     'concept_section_A' => 'UNIVERSE',
     'concept_section_B' => 'MAN',
     'concept_section_C' => 'MAN AND THE UNIVERSE',
-    'confirm_delete_wordforms' =>'Do you want to delete word forms for this dialect?',
+    'confirm_delete_wordforms' => 'Do you want to delete word forms for this dialect?',
     'conll' => 'Code CONLL',
     'copy_bases' => 'copy bases from another dialect',
     'core' => 'Сore',
@@ -131,14 +143,16 @@ return [
     'create_list' => 'create a list',
     'create_new_lemma' => 'Create a new lemma',
     'degree' => 'degree of comparison',
-    'degrees' => [NULL=> '',
-                  1 => 'positive',
-                  2 => 'comparative',
-                  3 => 'superlative'],
-    'descr' => 'description',    
+    'degrees' => [
+        NULL => '',
+        1 => 'positive',
+        2 => 'comparative',
+        3 => 'superlative'
+    ],
+    'descr' => 'description',
     'descriptive' => 'descriptive',
-    'check_delete_wordforms' =>'to delete word forms for this dialect',
-    
+    'check_delete_wordforms' => 'to delete word forms for this dialect',
+
     'dialect' => 'Dialect',
     'dialect_usage' => 'Dialect of usage',
     'dialect_can_not_be_removed' => 'The dialect can not be removed, there is the related wordforms or texts',
@@ -149,7 +163,7 @@ return [
     'dialects_usage' => 'dialects of usage',
     'dict_sound' => 'Dictionary sounding',
     'dominant' => 'Dominant',
-    
+
     'edit_list_for_voicing' => 'Modify the list for voicing',
     'example_comment' => 'Checked examples / Unchecked examples / Total number',
     'generate_wordforms' => 'generate wordforms',
@@ -163,62 +177,69 @@ return [
     'gramset_removed' => 'Set of grammatical attributes ":name" is removed successfully.',
     'gramsets' => 'grammatical attributes',
     'hide_examples' => '&lt; &lt; hide examples',
-    
+
     'impersonal' => 'impersonal',
     'in_dictionary' => 'in dictionary',
-    'in_pos'=>'in :count parts of speech',    
+    'in_pos' => 'in :count parts of speech',
     'infinitive' => 'infinitive',
     'interpretation' => 'interpretation',
     'is_norm_values' => [
-        1 => 'normalized', 
+        1 => 'normalized',
         0 => 'dialectal'
     ],
-    
+
     'join_harmony' => 'unite different only in harmony ',
-    
+
+    'label_can_not_be_removed' => 'The label can not be removed, there is the related lemmas',
+    'label_removed' => 'Помета ":name" удалена.',
+
     'lang' => 'language',
     'lang_code' => 'Language code',
     'lang_from' => 'from the language',
     'lang_to' => 'to the language',
     'last_updated_lemmas' => 'Last updated lemmas',
-    
+
     'lemma' => 'lemma',
     'lemma_frequency_comment' => 'Lemma and the number of links to words in the texts. All links are summed, except the links with the label "does not fit at all". If a word in the text is automatically marked with a lemma with N meanings and these found meanings have not yet been verified, then all N links will be calculated.',
     'lemma_meaning' => 'lemma with meaning',
     'lemmas' => 'lemmas',
     'lemmas_added' => ':count lemmas are added',
     'lemma_removed' => 'Lemma ":name" is removed successfully.',
-    
+
     'lgr' => 'Code of Leipzig Glossing Rules',
     'list_for_voicing' => 'List for voicing',
     'list_languages' => 'Languages',
     'list_lemmas' => 'List of lemmas',
     'list_long_lemmas' => 'List of longest lemmas',
     'listen' => 'listen',
-    
+
     'meaning' => 'meaning',
     'meanings' => 'meanings',
     'meaning_place' => 'locality of word usage',
     'mood' => 'mood',
     'more_examples' => 'more examples &gt;&gt;',
-    
+
     'name' => 'name',
     'name_short' => 'short name',
     'negation' => 'negation',
-    'new_lemma'=>'New lemma',
-    'new_lemmas'=>'New lemmas',
+    'new_lemma' => 'New lemma',
+    'new_lemmas' => 'New lemmas',
     'num_shift_error' => 'Number of erroneous transitions for the first :num',
     'number' => 'Number',
-    'numbers' => [NULL=> '',
-                    2 => 'singularia tantum',
-                    1 => 'pluralia tantum'],
+    'numbers' => [
+        NULL => '',
+        2 => 'singularia tantum',
+        1 => 'pluralia tantum'
+    ],
     'numtype' => 'numeral type',
-    'numtypes' => [NULL=> '',
-                   1 => 'cardinal',
-                   2 => 'collective',
-                   3 => 'ordinal',
-                   4 => 'fractional'],
-    
+    'numtypes' => [
+        NULL => '',
+        1 => 'cardinal',
+        2 => 'collective',
+        3 => 'ordinal',
+        4 => 'fractional'
+    ],
+
     'of_audio' => 'of audio',
     'of_category' => 'of category',
     'of_concept' => 'of concept',
@@ -226,6 +247,7 @@ return [
     'of_example' => 'of example',
     'of_gram' => 'of grammatical attribute',
     'of_gramset' => 'of gramset',
+    'of_label' => 'of label',
     'of_lang' => 'of lang',
     'of_lemma' => 'of lemma',
     'of_lemmas' => 'of lemmas',
@@ -237,19 +259,22 @@ return [
     'omonyms' => 'omonyms',
     'only_checked' => 'Only checked?',
     'output_checked_or_not' => [
-        0=>'everything',
-        1=>'only checked',
-        2=>'only unchecked',
-        3=>'only with audio'],
-    
+        0 => 'everything',
+        1 => 'only checked',
+        2 => 'only unchecked',
+        3 => 'only with audio'
+    ],
+
     'periphery' => 'Periphery',
     'participle' => 'participle',
     'partype' => 'Participle type',
-    'partypes' => [NULL=> '',
-                  '1a' => 'I active',
-                  '2a' => 'II active',
-                  '1p' => 'I passive',
-                  '2p' => 'II passive'],
+    'partypes' => [
+        NULL => '',
+        '1a' => 'I active',
+        '2a' => 'II active',
+        '1p' => 'I passive',
+        '2p' => 'II passive'
+    ],
     'part_of_speech' => 'part of speech',
     'parts_of_speech' => 'parts of speech',
     'person' => 'person',
@@ -259,66 +284,75 @@ return [
     'places_use' => 'Places of use',
     'pos' => 'part of speech',
     'pos_category' => 'POS category',
-    'pos_categories' => [2 => 'verb',
-                         1 => 'name'],
-    
+    'pos_categories' => [
+        2 => 'verb',
+        1 => 'name'
+    ],
+
     'pos_category_1' => 'Open class words',
     'pos_category_2' => 'Closed class words',
     'pos_category_3' => 'Other',
     'pos_list' => 'List of parts of speech',
     'potential_members' => 'Potential members',
     'prontype' => 'pronoun type',
-    'prontypes' => [NULL=> '',
-                    1 => 'personal',
-                    2 => 'possesive',
-                    3 => 'reflexive',
-                    4 => 'reciprocal',
-                    10 => 'indefinite',
-                    5 => 'indeterminate personal',
-                    6 => 'demonstrative',
-                    7 => 'interrogative',
-                    8 => 'relative',
-                    9 => 'negative',
-                    11=> 'attributive',
-        ],
-    
+    'prontypes' => [
+        NULL => '',
+        1 => 'personal',
+        2 => 'possesive',
+        3 => 'reflexive',
+        4 => 'reciprocal',
+        10 => 'indefinite',
+        5 => 'indeterminate personal',
+        6 => 'demonstrative',
+        7 => 'interrogative',
+        8 => 'relative',
+        9 => 'negative',
+        11 => 'attributive',
+    ],
+
     'record_by_informant' => 'Recording by informant',
-//    'reflexive' => 'reflexive',
+    //    'reflexive' => 'reflexive',
     'reflexive' => 'reflexive',
     'relation_list' => 'List of semantic relations',
     'relation' => 'Semantic relation',
     'relations' => 'Semantic relations',
-    
-    'relevance' => 'relevance',    
-    'relevance_scope' => [10 => 'the best example',
-                    7 => 'an excellent example',
-                    5 => 'a good example',
-                    3 => 'a bad example',
-                    1 => 'not checked',
-                    0 => 'not suitable'],
-    
-    'relevance_scope_for_select' => [10 => '<span class="relevance-10">the best example</span>',
-                    7 => 'an excellent example',
-                    5 => 'a good example',
-                    3 => 'a bad example',
-                    1 => 'not checked',
-                    0 => 'not suitable'],
-    
-    'relevance_scope_example' => [10 => 'the best',
-                    7 => 'an excellent',
-                    5 => 'a good',
-                    3 => 'a bad'],
+
+    'relevance' => 'relevance',
+    'relevance_scope' => [
+        10 => 'the best example',
+        7 => 'an excellent example',
+        5 => 'a good example',
+        3 => 'a bad example',
+        1 => 'not checked',
+        0 => 'not suitable'
+    ],
+
+    'relevance_scope_for_select' => [
+        10 => '<span class="relevance-10">the best example</span>',
+        7 => 'an excellent example',
+        5 => 'a good example',
+        3 => 'a bad example',
+        1 => 'not checked',
+        0 => 'not suitable'
+    ],
+
+    'relevance_scope_example' => [
+        10 => 'the best',
+        7 => 'an excellent',
+        5 => 'a good',
+        3 => 'a bad'
+    ],
     'reload_photo' => 'Reload photo',
     'reload-stem-affix-by-wordforms' => 'Re-highlight the unchangeble part by existing word forms',
-    
+
     'remove-example' => 'this example is not suitable',
     'reverse_relation' => 'reverse relation',
     'right_sort' => 'by final letters',
-    
+
     'search_lemmas_by_wordforms' => 'Lemma search by wordforms',
     'search_pos' => 'Search of a part of speech by endings',
     'search_gramset' => 'Gramset search',
-            
+
     'select_category' => 'Select a category',
     'select_concept' => 'Select a concept',
     'select_concept_category' => 'Select a concept category',
@@ -329,20 +363,24 @@ return [
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
     'show_dialectal' => 'show dialectal variants',
-    
+
     'speaker' => 'Speaker',
     'status' => 'status',
     'status0' => 'is not checked',
     'status1' => 'is checked',
     'suggest_template' => 'suggest a template',
     'syntype' => 'type of synonymy',
-    
+
     'tense' => 'Tense',
     'transitive' => 'transitive',
     'translation' => 'translation',
     'unimorph' => 'UniMorph code',
     'variants' => 'phonetic variants',
     'verb' => 'verb',
+    'visible_values' => [
+        0 => 'service',
+        1 => 'public',
+    ],
     'voice' => 'voice',
     'voice_new_lemmas' => 'Voice new lemmas',
     'voiced_lemmas' => 'Voiced lemmas',
@@ -360,5 +398,5 @@ return [
     'wordforms_removed' => 'Wordforms are removed.',
     'wordforms_total' => 'Total number of wordforms',
     'wordforms_grouped_total' => 'Общее количество словоформ, cгруппированных по частям речи, т.е. все совпадающие словоформы, имеющие общую часть речи, считаются за одну',
-    'unique_wordforms_total' => 'Number of unique wordforms',     
+    'unique_wordforms_total' => 'Number of unique wordforms',
 ];

@@ -27,7 +27,7 @@ return [
     'corpus_freq' => 'Frequency vocabularies',
     'corpuses' => 'Corpuses',
     'cycles' => 'Cycles',
-    
+
     'dialects' => 'Dialects',
     'dict_selections' => 'Selections',
     'dictionary' => 'Dictionary',
@@ -44,12 +44,13 @@ return [
     'how_to_cite' => 'How to cite',
     'inflexion_groups' => 'Inflexion groups',
     'informants' => 'Informants',
+    'labels'  => 'Labels',
     'langs'  => 'Languages',
     'ldl' => 'Ludic dialect lexicon',
     'lemma_frequency' => 'Frequency dictionary of lemmas marked up in the text',
     'lemmas' => 'Lemmas',
     'logout' => 'Logout',
-    
+
     'marathon' => 'Marathon',
     'mass_media' => 'Mass media about the project',
     'mass_media_show' => 'VepKar on TV',
@@ -59,9 +60,9 @@ return [
     'motives' => 'Motives',
     'motypes' => 'Motive types',
     'multidict' => 'Multimedia dictionary',
-    
+
     'new_meanings' => 'New meanings',
-    
+
     'omonyms' => 'Omonyms',
     'our_publications' => 'Our publications',
     'participants' => 'Participants',
@@ -94,7 +95,7 @@ return [
     'sources' => 'References',
     'stats' => 'Statistics',
     'synsets' => 'Dictionary of synonyms',
-    
+
     'text_frequency' => 'Frequency of symbols in texts',
     'texts' => 'Texts',
     'topics' => 'Topics',
