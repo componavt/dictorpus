@@ -30,8 +30,8 @@
             <tr>
                 <th>No</th>
                 <th>{{ trans('dict.visible_values')[1] }}?</th>
-                <th>{{ trans('messages.in_russian') }}</th>
-                <th>{{ trans('messages.in_english') }}</th>
+                <th colspan="2">{{ trans('messages.in_russian') }}</th>
+                <th colspan="2">{{ trans('messages.in_english') }}</th>
                 <th>{{ trans('navigation.lemmas') }}</th>                
                 @if (User::checkAccess('ref.edit'))
                 <th>{{ trans('messages.actions') }}</th>
@@ -41,10 +41,24 @@
         <tbody>
             @foreach($labels as $label)
             <tr>
-                <td data-th="{{ trans('messages.sequence_number') }}">{{ $list_count++ }}</td>
-                <td data-th="{{ trans('dict.visible_values')[1] }}" style="text-align: center">{{ $label->visible ? '+' : '-' }}</td>
-                <td data-th="{{ trans('messages.in_russian') }}">{{ $label->name_ru }}</td>
-                <td data-th="{{ trans('messages.in_english') }}">{{ $label->name_en }}</td>
+                <td data-th="{{ trans('messages.sequence_number') }}">
+                    {{ $list_count++ }}
+                </td>
+                <td data-th="{{ trans('dict.visible_values')[1] }}" style="text-align: center">
+                    {{ $label->visible ? '+' : '-' }}
+                </td>
+                <td data-th="{{ trans('dict.name').' '.trans('messages.in_russian') }}">
+                    {{ $label->name_ru }}
+                </td>
+                <td data-th="{{ trans('messages.short').' '.trans('messages.in_russian') }}">
+                    {{ $label->short_ru }}
+                </td>
+                <td data-th="{{ trans('dict.name').' '.trans('messages.in_english') }}">
+                    {{ $label->name_en }}
+                </td>
+                <td data-th="{{ trans('messages.short').' '.trans('messages.in_english') }}">
+                    {{ $label->short_en }}
+                </td>
                 <td data-th="{{ trans('navigation.lemmas') }}" style="text-align: right">
                     @php $lemma_count = $label->lemmaCount(); @endphp
                     @if ($lemma_count) 

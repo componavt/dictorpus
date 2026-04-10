@@ -1,16 +1,29 @@
         @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
 
-        @include('widgets.form.formitem._text', 
-                ['name' => 'name_en', 
-                 'title'=>trans('dict.name').' '.trans('messages.in_english')])
-                 
+<div class="row">
+    <div class="col-sm-6">        
         @include('widgets.form.formitem._text', 
                 ['name' => 'name_ru', 
                  'title'=>trans('dict.name').' '.trans('messages.in_russian')])
+                 
+        @include('widgets.form.formitem._text', 
+                ['name' => 'short_ru', 
+                 'title'=>trans('messages.short').' '.trans('messages.in_russian')])
                  
         @include('widgets.form.formitem._radio', 
                 ['name' => 'visible', 
                  'values' => trans('dict.visible_values'),
                  'checked' => $label ? (int)$label->visible : '1'])
-
-@include('widgets.form.formitem._submit', ['title' => $submit_title])
+    </div>
+    <div class="col-sm-6">        
+        @include('widgets.form.formitem._text', 
+                ['name' => 'name_en', 
+                 'title'=>trans('dict.name').' '.trans('messages.in_english')])
+                 
+        @include('widgets.form.formitem._text', 
+                ['name' => 'short_en', 
+                 'title'=>trans('messages.short').' '.trans('messages.in_english')])
+                 
+        @include('widgets.form.formitem._submit', ['title' => $submit_title])
+    </div>
+</div>
