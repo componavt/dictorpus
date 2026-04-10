@@ -11,16 +11,16 @@ use App\Models\Dict\ConceptCategory;
 
 class ConceptCategoryController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/concept_category', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/concept_category', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -29,8 +29,8 @@ class ConceptCategoryController extends Controller
     public function index(Request $request)
     {
         $concept_categories = ConceptCategory::orderBy('id')->get();
-//dd($concept_categories);        
-        return view('dict.concept_category.index',compact('concept_categories'));
+        //dd($concept_categories);        
+        return view('dict.concept_category.index', compact('concept_categories'));
     }
 
     /**
@@ -56,11 +56,11 @@ class ConceptCategoryController extends Controller
             'name_en'  => 'max:75',
             'name_ru'  => 'required|max:75',
         ]);
-        
+
         $concept_category = ConceptCategory::create($request->all());
-        
+
         return Redirect::to('/dict/concept_category/')
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -82,9 +82,9 @@ class ConceptCategoryController extends Controller
      */
     public function edit($id)
     {
-        $concept_category = ConceptCategory::find($id); 
-        
-        return view('dict.concept_category.edit',compact('concept_category'));
+        $concept_category = ConceptCategory::find($id);
+
+        return view('dict.concept_category.edit', compact('concept_category'));
     }
 
     /**
@@ -100,17 +100,17 @@ class ConceptCategoryController extends Controller
             'name_en'  => 'max:75',
             'name_ru'  => 'required|max:75',
         ]);
-//dd($request);       
-        
-        if (!$request->reverse_concept_category_id) {
-            $request->reverse_concept_category_id = NULL;
+
+        $data = $request->all();
+        if (empty($data['reverse_concept_category_id'])) {
+            $data['reverse_concept_category_id'] = NULL;
         }
-        
+
         $concept_category = ConceptCategory::whereId($id)->first();
-        $concept_category->fill($request->all())->save();
-        
+        $concept_category->fill($data)->save();
+
         return Redirect::to('/dict/concept_category/')
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -123,37 +123,36 @@ class ConceptCategoryController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "") {
-            try{
+        $result = [];
+        if ($id != "") {
+            try {
                 $concept_category = ConceptCategory::whereId($id)->first();
-                if($concept_category){
+                if ($concept_category) {
                     $concept_category_name = $concept_category->name;
                     $concept_category->delete();
-                    $result['message'] = \Lang::get('dict.category_removed', ['name'=>$concept_category_name]);
-                }
-                else{
+                    $result['message'] = trans('dict.category_removed', ['name' => $concept_category_name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/dict/concept_category/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/dict/concept_category/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/dict/concept_category/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
 }

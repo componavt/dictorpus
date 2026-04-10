@@ -1,20 +1,24 @@
-<?php namespace App\Traits\Relations\BelongsToMany;
+<?php
 
-use LaravelLocalization;
+namespace App\Traits\Relations\BelongsToMany;
+
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 trait WordformDialects
 {
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function wordformDialects(){
+    public function wordformDialects()
+    {
         $locale = LaravelLocalization::getCurrentLocale();
         return $this->belongsToMany('App\Models\Dict\Dialect', 'lemma_wordform')
-//                    ->withPivot('gramset_id','wordform_id')
-                    ->orderBy('name_'.$locale);
+            //                    ->withPivot('gramset_id','wordform_id')
+            ->orderBy('name_' . $locale);
     }
-    
-    public function getWordformDialectIds() {
+
+    public function getWordformDialectIds()
+    {
         $dialects = $this->wordformDialects()->groupBy('id')->orderBy('sequence_number')->get();
         $ids = [];
         foreach ($dialects as $dialect) {

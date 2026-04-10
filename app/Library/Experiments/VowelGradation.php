@@ -2,9 +2,7 @@
 
 namespace App\Library\Experiments;
 
-use DB;
-use Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
-class VowelGradation
-{
-}
+class VowelGradation {}

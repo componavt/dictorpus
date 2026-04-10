@@ -4,10 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-//use Illuminate\Support\Facades\Auth;
-
-//use DB;
-//use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider

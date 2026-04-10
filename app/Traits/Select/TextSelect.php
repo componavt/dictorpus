@@ -2,7 +2,7 @@
 
 namespace App\Traits\Select;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Library\Grammatic\KarGram;
 
@@ -117,9 +117,9 @@ trait TextSelect
             }
             $s = KarGram::changeLetters(self::clearText($s));
             if (empty($trans_sentences[$sentence->s_id])) {
-                print "<P>В тексте ".$this->id .'не хватает перевода для предложения '. $sentence->s_id."</p>";
+                print "<P>В тексте " . $this->id . 'не хватает перевода для предложения ' . $sentence->s_id . "</p>";
                 continue;
-            }           
+            }
             $ts = self::clearText($trans_sentences[$sentence->s_id]['sentence']);
             //            $sentences[!empty($s) ? $s : $this->id.'_'.$sentence->s_id] = $ts;
             if (!empty($s)) {

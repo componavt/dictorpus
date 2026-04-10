@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-//use DB;
+use Illuminate\Support\Facades\Redirect;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
 
 use App\Models\Dict\Lang;
-//use App\Models\Dict\Lemma;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
 
@@ -19,17 +17,21 @@ use App\Models\Corpus\MeaningTextRel;
 
 class MeaningController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:dict.add,/dict/meaning/', 
-                ['only' => ['create', 'store']]);
-        $this->middleware('auth:dict.edit,/dict/meaning/', 
-                ['except' => ['create', 'store', 'index', 'loadExamples', 'reloadExamples', 'loadMoreExamples', 'photo']]);
+        $this->middleware(
+            'auth:dict.add,/dict/meaning/',
+            ['only' => ['create', 'store']]
+        );
+        $this->middleware(
+            'auth:dict.edit,/dict/meaning/',
+            ['except' => ['create', 'store', 'index', 'loadExamples', 'reloadExamples', 'loadMoreExamples', 'photo']]
+        );
     }
 
     /**
@@ -53,15 +55,17 @@ class MeaningController extends Controller
     {
         $count = (int)$request->input('count');
         $meaning_n = (int)$request->input('meaning_n');
-//        $langs_for_meaning = Lang::getListInterface();
+        //        $langs_for_meaning = Lang::getListInterface();
         $langs_for_meaning = Lang::getListForMeaning();
-                                
+
         return view('dict.meaning.form._create')
-                  ->with(array('count' => $count,
-                               'new_meaning_n' => $meaning_n,
-                               'langs_for_meaning' => $langs_for_meaning
-                              )
-                        );
+            ->with(
+                array(
+                    'count' => $count,
+                    'new_meaning_n' => $meaning_n,
+                    'langs_for_meaning' => $langs_for_meaning
+                )
+            );
     }
 
     /**
@@ -69,14 +73,15 @@ class MeaningController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function createRelation($id,$relation_id)
+    public function createRelation($id, $relation_id)
     {
         $relation_text = Relation::find($relation_id)->name;
         return view('dict.lemma._form_new_relation')
-                  ->with(['meaning_id' => $id,
-                          'relation_id' => $relation_id,
-                          'relation_text' => $relation_text                           
-                         ]);
+            ->with([
+                'meaning_id' => $id,
+                'relation_id' => $relation_id,
+                'relation_text' => $relation_text
+            ]);
     }
 
     /**
@@ -129,17 +134,17 @@ class MeaningController extends Controller
         if (!$meaning) {
             return '';
         }
-        $meaning_text_obj = $meaning->meaningTexts()->where('lang_id',2)->first(); // ru
+        $meaning_text_obj = $meaning->meaningTexts()->where('lang_id', 2)->first(); // ru
         if (!$meaning_text_obj) {
             return '';
         }
         $meaning_text = $request->input('meaning_text');
 
         if ($meaning_text) {
-            $meaning_text_obj -> meaning_text = $meaning_text;
-            $meaning_text_obj -> save();
-            return view('service.dict.meaning._view', compact('meaning'));     
-/*        } else {
+            $meaning_text_obj->meaning_text = $meaning_text;
+            $meaning_text_obj->save();
+            return view('service.dict.meaning._view', compact('meaning'));
+            /*        } else {
             $meaning_text_obj->delete();
             return ' ';*/
         }
@@ -155,7 +160,7 @@ class MeaningController extends Controller
     {
         //
     }
-    
+
     /**
      * /dict/meaning/example/add/1418_5_59_3093
      * 
@@ -164,11 +169,11 @@ class MeaningController extends Controller
      */
     public function addExample($example_id, $relevance)
     {
-        if ($relevance != 10 && $relevance!=7) {
+        if ($relevance != 10 && $relevance != 7) {
             $relevance = 5;
         }
-        MeaningTextRel::updateExamples([$example_id=>$relevance]);
-        return '<span class="glyphicon glyphicon-star relevance-'.$relevance.'"></span>';
+        MeaningTextRel::updateExamples([$example_id => $relevance]);
+        return '<span class="glyphicon glyphicon-star relevance-' . $relevance . '"></span>';
     }
 
     /**
@@ -177,7 +182,8 @@ class MeaningController extends Controller
      * @param INT $id
      * @return \Illuminate\Http\Response
      */
-    public function loadExamples (int $id, Request $request) {
+    public function loadExamples(int $id, Request $request)
+    {
         $limit = 5;
         $start = (int)$request->input('start');
         $update_examples = (int)$request->input('update_examples');
@@ -185,22 +191,32 @@ class MeaningController extends Controller
         if (!$meaning) {
             return NULL;
         }
-        
+
         if (User::checkAccess('dict.edit') && ($update_examples || !$meaning->texts()->count())) {
             $meaning->reloadExamples();
         }
-        
+
         $sentence_count = $meaning->countSentences(false);
         $sentence_total = $meaning->countSentences(true);
         $sentences = $meaning->sentences(true, $limit, $start); // always true to show unchecked examples
-        $count=1+$start;   
-//dd($sentences);        
-        return view('dict.lemma.example.all', 
-                compact('meaning', 'limit', 'start', 'count',
-                        'sentence_count', 'sentence_total', 'sentences')); 
+        $count = 1 + $start;
+        //dd($sentences);        
+        return view(
+            'dict.lemma.example.all',
+            compact(
+                'meaning',
+                'limit',
+                'start',
+                'count',
+                'sentence_count',
+                'sentence_total',
+                'sentences'
+            )
+        );
     }
 
-    public function loadMoreExamples (int $id, Request $request) {
+    public function loadMoreExamples(int $id, Request $request)
+    {
         $limit = 5;
         $start = (int)$request->input('start');
         $is_edit = (int)$request->input('is_edit');
@@ -208,96 +224,121 @@ class MeaningController extends Controller
         if (!$meaning) {
             return NULL;
         }
-        
+
         $sentence_count = $meaning->countSentences(false);
         $sentences = $meaning->sentences($is_edit, $limit, $start);
 
-        $count=1+$start;   
-        
-        return view('dict.lemma.example._limit', 
-                compact('meaning', 'limit', 'start', 'count', 'is_edit',
-                        'sentence_count', 'sentences')); 
+        $count = 1 + $start;
+
+        return view(
+            'dict.lemma.example._limit',
+            compact(
+                'meaning',
+                'limit',
+                'start',
+                'count',
+                'is_edit',
+                'sentence_count',
+                'sentences'
+            )
+        );
     }
-    
-    public function removeLabel(int $meaning_id, int $label_id) {
+
+    public function removeLabel(int $meaning_id, int $label_id)
+    {
         $meaning = Meaning::find($meaning_id);
         if (!$meaning) {
             return;
         }
         $meaning->labels()->detach($label_id);
         $lemma = $meaning->lemma;
-        return view('service.dict.lemma._meanings', 
-                compact('label_id', 'lemma'));
+        return view(
+            'service.dict.lemma._meanings',
+            compact('label_id', 'lemma')
+        );
     }
-    
-    public function addLabel(int $meaning_id, int $label_id) {
+
+    public function addLabel(int $meaning_id, int $label_id)
+    {
         $meaning = Meaning::find($meaning_id);
         if (!$meaning) {
             return;
         }
         $meaning->labels()->attach($label_id);
         $lemma = $meaning->lemma;
-        return view('service.dict.lemma._meanings', 
-                compact('label_id', 'lemma'));
+        return view(
+            'service.dict.lemma._meanings',
+            compact('label_id', 'lemma')
+        );
     }
-    
-    public function photo(int $meaning_id) {
+
+    public function photo(int $meaning_id)
+    {
         $meaning = Meaning::find($meaning_id);
         if (!$meaning || !$meaning->concepts()->count() || !$meaning->concepts[0]->wiki_photo) {
             return;
         }
         $photo = $meaning->photoInfo();
         if (!$photo) {
-            return view('dict.concept._photo_reload', with(['obj'=>'meaning', 'id'=>$meaning_id,
-                'url'=>'/dict/meaning/'.$meaning_id.'/photo']));
+            return view('dict.concept._photo_reload', with([
+                'obj' => 'meaning',
+                'id' => $meaning_id,
+                'url' => '/dict/meaning/' . $meaning_id . '/photo'
+            ]));
         }
         $with_url = 1;
         return view('dict.concept._photo_preview', compact('photo', 'with_url'));
     }
-    
-    public function up(int $meaning_id, Request $request) {
+
+    public function up(int $meaning_id, Request $request)
+    {
         $meaning = Meaning::find($meaning_id);
-        if (!$meaning ) {
+        if (!$meaning) {
             return;
         }
         $label_id = $request->label_id;
         $meaning->upMeaningN();
         $lemma = $meaning->lemma;
-        return view('service.dict.lemma._meanings', 
-                compact('label_id', 'lemma'));
+        return view(
+            'service.dict.lemma._meanings',
+            compact('label_id', 'lemma')
+        );
     }
 
-    public function down(int $meaning_id, Request $request) {
+    public function down(int $meaning_id, Request $request)
+    {
         $meaning = Meaning::find($meaning_id);
-        if (!$meaning ) {
+        if (!$meaning) {
             return;
         }
         $label_id = $request->label_id;
         $meaning->downMeaningN();
         $lemma = $meaning->lemma;
-        return view('service.dict.lemma._meanings', 
-                compact('label_id', 'lemma'));
+        return view(
+            'service.dict.lemma._meanings',
+            compact('label_id', 'lemma')
+        );
     }
 
     public function fullNewList(Request $request)
     {
         $portion = 1000;
         $new_meanings = Meaning::lastCreated($portion)
-                    ->groupBy(function ($item, $key) {
-                        return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
-                    });
-        if (!$new_meanings) {            
+            ->groupBy(function ($item, $key) {
+                return (string)$item['created_at']->formatLocalized(trans('main.date_format'));
+            });
+        if (!$new_meanings) {
             return Redirect::to('/');
         }
         return view('dict.meaning.list.full_new', compact('new_meanings'));
     }
-    
-    
+
+
     /** 
      * (1) Copy vepsian.{meaning} to vepkar.meanings (without meaning_text)
      * (2) Copy vepsian.{meaning.meaning_text, translation_lemma} to vepkar.meaning_texts
      */
-/*    
+    /*    
     public function tempInsertVepsianMeanings()
     {
         $meanings = DB::connection('vepsian')->table('meaning')->orderBy('id')->get();
@@ -359,7 +400,5 @@ class MeaningController extends Controller
             }       
         endforeach;
     }
- */    
-    
-    
+ */
 }

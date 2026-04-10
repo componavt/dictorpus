@@ -3,11 +3,10 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
-use LaravelLocalization;
+use Illuminate\Support\Facades\DB;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Corpus\Text;
-//use App\Models\Corpus\Transtext;
 use App\Models\Corpus\SentenceFragment;
 use App\Models\Corpus\SentenceTranslation;
 

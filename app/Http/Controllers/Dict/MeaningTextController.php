@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -12,14 +12,14 @@ use App\Models\Dict\MeaningText;
 
 class MeaningTextController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/meaning_text/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/meaning_text/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -96,12 +96,12 @@ class MeaningTextController extends Controller
     {
         //
     }
-    
+
     /** 
      * Joins meaning_text.meaning_text for a same meaning_id and a same lang_id
      * with glue '; ' 
      */
-/*    public function tempJoinMeaningText()
+    /*    public function tempJoinMeaningText()
     {
         $meanings = DB::table('meaning_texts')
                             ->groupBy('meaning_id','lang_id')

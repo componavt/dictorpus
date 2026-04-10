@@ -18,14 +18,14 @@ class Authenticate
      * @return mixed
      */
     public function handle($request, Closure $next, $permission, $route_url) // $guard = null
-    {  
-//dd($permission);        
+    {
+        //dd($permission);        
         if (!User::checkAccess($permission)) {
-            return Redirect::to($route_url) 
-                ->withErrors(\Lang::get('error.permission_denied'));
+            return Redirect::to($route_url)
+                ->withErrors(trans('error.permission_denied'));
         }
 
-/*        if (Auth::guard($guard)->guest()) {
+        /*        if (Auth::guard($guard)->guest()) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             }

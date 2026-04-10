@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use LaravelLocalization;
-use Redirect;
-use Response;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 
 use App\Models\Dict\Lang;
 
@@ -16,24 +16,24 @@ use App\Models\Corpus\Author;
 
 class AuthorController extends Controller
 {
-    public $url_args=[];
-    public $args_by_get='';
-    
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:corpus.edit,/corpus/author/', ['only' => 
-            ['create','store','edit','update','destroy']]);
-        
-        $this->url_args = Author::urlArgs($request);  
-        
+        $this->middleware('auth:corpus.edit,/corpus/author/', ['only' =>
+        ['create', 'store', 'edit', 'update', 'destroy']]);
+
+        $this->url_args = Author::urlArgs($request);
+
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -43,17 +43,19 @@ class AuthorController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        $authors = Author::orderBy('name_'.$locale);
+        $authors = Author::orderBy('name_' . $locale);
         $authors = Author::searchByName($authors, $url_args['search_name']);
-//dd(vsprintf(str_replace(array('?'), array('\'%s\''), $authors->toSql()), $authors->getBindings()));            
-        
+        //dd(vsprintf(str_replace(array('?'), array('\'%s\''), $authors->toSql()), $authors->getBindings()));            
+
         $numAll = $authors->count();
         $authors = $authors->paginate($url_args['limit_num']);
-        
-        return view('corpus.author.index',
-                    compact('authors', 'numAll', 'args_by_get', 'url_args'));
+
+        return view(
+            'corpus.author.index',
+            compact('authors', 'numAll', 'args_by_get', 'url_args')
+        );
     }
 
     /**
@@ -65,17 +67,18 @@ class AuthorController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
-        $project_langs=Lang::projectLangs(); 
+
+        $project_langs = Lang::projectLangs();
         return view('corpus.author.create', compact('project_langs', 'args_by_get', 'url_args'));
     }
 
-    public function validateRequest(Request $request) {
+    public function validateRequest(Request $request)
+    {
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         return $request->all();
     }
 
@@ -87,22 +90,22 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        $data=$this->validateRequest($request);       
+        $data = $this->validateRequest($request);
         $author = Author::create($data);
         $author->updateNames((array)$request->names);
-        
+
         return Redirect::to('/corpus/author')
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
 
     public function simpleStore(Request $request)
     {
-        $data=$this->validateRequest($request);       
+        $data = $this->validateRequest($request);
         $author = Author::create($data);
         $author->updateNames((array)$request->names);
         return Response::json([$author->id, $author->name]);
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -123,9 +126,9 @@ class AuthorController extends Controller
     public function edit($id)
     {
         $url_args = $this->url_args;
-        $author = Author::find($id); 
-        $project_langs=Lang::projectLangs(); 
-        
+        $author = Author::find($id);
+        $project_langs = Lang::projectLangs();
+
         return view('corpus.author.edit', compact('author', 'project_langs', 'url_args'));
     }
 
@@ -138,14 +141,14 @@ class AuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data=$this->validateRequest($request);       
+        $data = $this->validateRequest($request);
         $author = Author::find($id);
         $author->fill($data)->save();
         $author->updateNames((array)$request->names);
-        
-//        return Redirect::to('/corpus/author/?search_id='.$author->id)
-        return Redirect::to('/corpus/author/'.($this->args_by_get))
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        //        return Redirect::to('/corpus/author/?search_id='.$author->id)
+        return Redirect::to('/corpus/author/' . ($this->args_by_get))
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -158,45 +161,44 @@ class AuthorController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $author = Author::find($id);
-                if($author){
+                if ($author) {
                     $author_name = $author->name;
-                    if ($author->texts()->count()>0) {
+                    if ($author->texts()->count() > 0) {
                         $error = true;
-                        $result['error_message'] = \Lang::get('corpus.author_has_text', ['name'=>$author_name]);                        
+                        $result['error_message'] = trans('corpus.author_has_text', ['name' => $author_name]);
                     } else {
                         foreach ($author->authorNames as $name) {
-                            $name -> delete();
+                            $name->delete();
                         }
                         $author->delete();
-                        $result['message'] = \Lang::get('corpus.author_removed', ['name'=>$author_name]);
+                        $result['message'] = trans('corpus.author_removed', ['name' => $author_name]);
                     }
-                }
-                else{
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
-            $status_code = 400;
-            $result['message']='Request data is empty';
-        }
-        
-        if ($error) {
-                return Redirect::to('/corpus/author/'.($this->args_by_get))
-                               ->withErrors($result['error_message']);
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
         } else {
-            return Redirect::to('/corpus/author/'.($this->args_by_get))
-                  ->withSuccess($result['message']);
+            $error = true;
+            $status_code = 400;
+            $result['message'] = 'Request data is empty';
+        }
+
+        if ($error) {
+            return Redirect::to('/corpus/author/' . ($this->args_by_get))
+                ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/corpus/author/' . ($this->args_by_get))
+                ->withSuccess($result['message']);
         }
     }
 }

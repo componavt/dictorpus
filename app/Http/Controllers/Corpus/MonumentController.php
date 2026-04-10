@@ -8,8 +8,8 @@ use App\Http\Requests\MonumentRequest;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use LaravelLocalization;
-use Response;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Illuminate\Support\Facades\Response;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
@@ -17,17 +17,22 @@ use App\Models\Corpus\Monument;
 
 class MonumentController extends Controller
 {
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:corpus.edit,/corpus/monument/', 
-                ['except' => ['index']]);
-        
-        $this->url_args = Monument::urlArgs($request);          
+        $this->middleware(
+            'auth:corpus.edit,/corpus/monument/',
+            ['except' => ['index']]
+        );
+
+        $this->url_args = Monument::urlArgs($request);
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
@@ -40,19 +45,27 @@ class MonumentController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $monuments = Monument::search($url_args);
 
         $numAll = $monuments->count();
 
         $monuments = $monuments->paginate($url_args['limit_num']);
-        
+
         $lang_values = Lang::getList();
         $dialect_values = Dialect::getList();
-        
-        return view('corpus.monument.index',
-                    compact('dialect_values', 'lang_values', 'monuments', 'numAll',
-                            'args_by_get', 'url_args'));
+
+        return view(
+            'corpus.monument.index',
+            compact(
+                'dialect_values',
+                'lang_values',
+                'monuments',
+                'numAll',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -64,15 +77,22 @@ class MonumentController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $lang_values = Lang::getList();
         $dialect_values = Dialect::getList($url_args['search_lang']);
-        
+
         $action = 'create';
-        
-        return view('corpus.monument.modify',
-                  compact('action', 'dialect_values', 'lang_values', 
-                          'args_by_get', 'url_args'));
+
+        return view(
+            'corpus.monument.modify',
+            compact(
+                'action',
+                'dialect_values',
+                'lang_values',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -83,10 +103,10 @@ class MonumentController extends Controller
      */
     public function store(MonumentRequest $request)
     {
-//dd($request->all());        
-        $monument = Monument::create($request->all());        
-        return Redirect::to('/corpus/monument/'.$monument->id)
-            ->withSuccess(\Lang::get('messages.created_success'));        
+        //dd($request->all());        
+        $monument = Monument::create($request->all());
+        return Redirect::to('/corpus/monument/' . $monument->id)
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -99,8 +119,10 @@ class MonumentController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        return view('corpus.monument.show',
-                  compact('monument', 'args_by_get', 'url_args'));
+        return view(
+            'corpus.monument.show',
+            compact('monument', 'args_by_get', 'url_args')
+        );
     }
 
     /**
@@ -113,17 +135,25 @@ class MonumentController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
-        $monument = Monument::find($id); 
+
+        $monument = Monument::find($id);
         $lang_values = Lang::getList();
-        
+
         $dialect_values = Dialect::getList($url_args['search_lang']);
-        
+
         $action = 'edit';
-        
-        return view('corpus.monument.modify',
-                  compact('action', 'dialect_values', 'lang_values', 'monument',
-                          'args_by_get', 'url_args'));
+
+        return view(
+            'corpus.monument.modify',
+            compact(
+                'action',
+                'dialect_values',
+                'lang_values',
+                'monument',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -138,9 +168,9 @@ class MonumentController extends Controller
         $monument = Monument::find($id);
         $monument->fill($request->all())->save();
         $monument->storeAdditionInfo($request->all());
-        
-        return Redirect::to('/corpus/monument/'.$monument->id)
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        return Redirect::to('/corpus/monument/' . $monument->id)
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -153,38 +183,36 @@ class MonumentController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $monument = Monument::find($id);
-                if($monument){
+                if ($monument) {
                     $monument_name = $monument->name;
                     $monument->delete();
-                    $result['message'] = \Lang::get('corpus.monument_removed', ['name'=>$monument_name]);
-                }
-                else{
+                    $result['message'] = trans('corpus.monument_removed', ['name' => $monument_name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/corpus/monument/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/corpus/monument/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/corpus/monument/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
-    
 }

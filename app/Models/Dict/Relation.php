@@ -3,7 +3,7 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class Relation extends Model
 {
@@ -26,7 +26,7 @@ class Relation extends Model
 
     // Methods
     use \App\Traits\Methods\getNameAttribute;
-    
+
     /** Gets reverse relation
      * 
      * Relation belongs_to Relation
@@ -35,35 +35,34 @@ class Relation extends Model
      */
     public function reverseRelation()
     {
-        return $this->belongsTo(Relation::class,'reverse_relation_id');
-/*        $reverse_relation_id = $this->reverse_relation_id;
+        return $this->belongsTo(Relation::class, 'reverse_relation_id');
+        /*        $reverse_relation_id = $this->reverse_relation_id;
         if (!$reverse_relation_id) {
             return false;
         }
         return self::find($reverse_relation_id);*/
-        
-    } 
-    
-    // Relation __has_many__ Meanings
-    public function meanings(){
-        return $this->belongsToMany(Meaning::class, 'meaning_relation', 'meaning1_id')
-                    ->withPivot('meaning2_id');
     }
-    
+
+    // Relation __has_many__ Meanings
+    public function meanings()
+    {
+        return $this->belongsToMany(Meaning::class, 'meaning_relation', 'meaning1_id')
+            ->withPivot('meaning2_id');
+    }
+
     /** Gets list of relations
      * 
      * @return Array [1=>'antonyms',..]
      */
     public static function getList()
-    {     
+    {
         $relations = self::orderBy('sequence_number')->get();
-        
+
         $list = array();
         foreach ($relations as $row) {
             $list[$row->id] = $row->name;
         }
-        
-        return $list;         
+
+        return $list;
     }
-    
 }

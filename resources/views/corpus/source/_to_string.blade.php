@@ -6,7 +6,7 @@
     }
     
     if ($source->ieeh_archive_number1) {
-        $archive = '<b>'.\Lang::get('corpus.archive_krc').':</b> <i>№'.$source->ieeh_archive_number1;
+        $archive = '<b>'.trans('corpus.archive_krc').':</b> <i>№'.$source->ieeh_archive_number1;
         
         if ($source->ieeh_archive_number2) {
             $archive .= '/'.$source->ieeh_archive_number2;

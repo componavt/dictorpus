@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use DB;
-use LaravelLocalization;
+use Illuminate\Support\Facades\DB;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\User;
 use App\Models\Role;
 
 class RoleController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
@@ -33,9 +33,9 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         $roles = Role::orderBy('slug')->get();
-        
+
         return view('role.index')
-                    ->with(['roles' => $roles]);
+            ->with(['roles' => $roles]);
     }
 
     /**
@@ -60,7 +60,7 @@ class RoleController extends Controller
         $role = Role::create($request->all());
 
         return Redirect::to('/role/')
-            ->withSuccess(\Lang::get('messages.created_success'));  
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -82,23 +82,24 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::find($id); 
-        
+        $role = Role::find($id);
+
         $perm_values = (new User)->getPermList();
         $role_perms = $role->permissions;
 
         $perm_value = [];
-        foreach ($perm_values as $perm=>$perm_t) {
+        foreach ($perm_values as $perm => $perm_t) {
             if (isset($role_perms[$perm]) && $role_perms[$perm]) {
                 $perm_value[] = $perm;
             }
         }
-       
+
         return view('role.edit')
-                  ->with(['role' => $role,
-                          'perm_values' => $perm_values,
-                          'perm_value' => $perm_value,
-                         ]);
+            ->with([
+                'role' => $role,
+                'perm_values' => $perm_values,
+                'perm_value' => $perm_value,
+            ]);
     }
 
     /**
@@ -116,9 +117,9 @@ class RoleController extends Controller
             $role->permissions = [];
         }
         $role->save();
-        
-        return Redirect::to('/role/?search_id='.$role->id)
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        return Redirect::to('/role/?search_id=' . $role->id)
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -131,38 +132,37 @@ class RoleController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $role = Role::find($id);
-                if($role){
+                if ($role) {
                     $role_name = $role->name;
                     $role->users()->detach();
                     $role->delete();
-                    $result['message'] = \Lang::get('role_removed', ['name'=>$role_name]);
-                }
-                else{
+                    $result['message'] = trans('role_removed', ['name' => $role_name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/role/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/role/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/role/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
 }

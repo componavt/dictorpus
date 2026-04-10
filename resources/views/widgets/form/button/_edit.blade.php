@@ -15,7 +15,7 @@
         if (isset($without_text) && $without_text) {
             $link_text = '';
         } elseif(!isset($link_text) || !$link_text) {
-            $link_text = ' '.\Lang::get('messages.edit');
+            $link_text = ' '.trans('messages.edit');
         }
         $link = LaravelLocalization::localizeURL($route);
         $format = '<a  href="%s"';

@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Library;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Dict\Concept;
 use App\Models\Dict\Lang;
@@ -22,36 +23,38 @@ class Correct
      * 
      * @param INT $lang_id
      */
-    public static function addWordformAffixesForLang($lang_id) {
-        $lemmas = Lemma::where('lang_id',$lang_id)
-                       ->whereIn('id',function($q) use ($lang_id){
-                            $q->select('lemma_id')->from('lemma_wordform')
-                              ->whereNull('affix')->whereNotNull('gramset_id')
-                              ->whereIn('wordform_id',function($query){
-                                    $query->select('id')->from('wordforms')
-                                      ->where('wordform','NOT LIKE','% %');
-                               });
-                       })
-                       ->orderBy('id')//->take(10)
-//                       ->whereId(17)        
-                       ->get(); 
+    public static function addWordformAffixesForLang($lang_id)
+    {
+        $lemmas = Lemma::where('lang_id', $lang_id)
+            ->whereIn('id', function ($q) use ($lang_id) {
+                $q->select('lemma_id')->from('lemma_wordform')
+                    ->whereNull('affix')->whereNotNull('gramset_id')
+                    ->whereIn('wordform_id', function ($query) {
+                        $query->select('id')->from('wordforms')
+                            ->where('wordform', 'NOT LIKE', '% %');
+                    });
+            })
+            ->orderBy('id') //->take(10)
+            //                       ->whereId(17)        
+            ->get();
         foreach ($lemmas as $lemma) {
             if (!$lemma->updateWordformAffixes()) {
-print '<p><a href="/dict/lemma/'.$lemma->id.'">'.$lemma->lemma.'</a> - WRONG STEM</p>';                
+                print '<p><a href="/dict/lemma/' . $lemma->id . '">' . $lemma->lemma . '</a> - WRONG STEM</p>';
             }
-print "<p>".$lemma->lemma."</p>";                 
+            print "<p>" . $lemma->lemma . "</p>";
         }
-    }    
-    
+    }
+
     /**
      * Обойти все леммы, посчитать количество словоформ и записать в поле lemmas.wordform_total
      */
-    public static function calculateLemmaWordforms() {
+    public static function calculateLemmaWordforms()
+    {
         $is_all_checked = false;
-        while (!$is_all_checked) {        
+        while (!$is_all_checked) {
             $lemmas = Lemma::whereNull('wordform_total')
-                    ->take(10);
-            if ($lemmas->count()) {               
+                ->take(10);
+            if ($lemmas->count()) {
                 foreach ($lemmas->get() as $lemma) {
                     $lemma->wordform_total = LemmaWordform::whereLemmaId($lemma->id)->count();
                     $lemma->save();
@@ -59,52 +62,56 @@ print "<p>".$lemma->lemma."</p>";
             } else {
                 $is_all_checked = true;
             }
-        }        
+        }
     }
-    
+
     /**
      * Создать массив пар <количество_словоформ у леммы> - <количество лемм с таким числом словоформ>
      * select lemma_id, count(*) as count from lemma_wordform group by lemma_id order by ;
      */
-    public static function countLemmaWordforms($lang_id) {
+    public static function countLemmaWordforms($lang_id)
+    {
         $counts = [];
         $lemma_counts = Lemma::whereLangId($lang_id)
-                             ->whereIn('pos_id', PartOfSpeech::changeablePOSIdList())
-                             ->groupBy('wordform_total','pos_id')
-                             ->selectRaw('pos_id, wordform_total, count(*) as count')
-                             ->orderBy('wordform_total')
-                             ->get();
-//dd($lemma_counts);        
+            ->whereIn('pos_id', PartOfSpeech::changeablePOSIdList())
+            ->groupBy('wordform_total', 'pos_id')
+            ->selectRaw('pos_id, wordform_total, count(*) as count')
+            ->orderBy('wordform_total')
+            ->get();
+        //dd($lemma_counts);        
         foreach ($lemma_counts as $count) {
             $counts[$count->pos_id][$count->wordform_total] = $count->count;
         }
         return $counts;
     }
-    
-    public static function generateWordforms($lang_id, $pos_code, $w_count) {
+
+    public static function generateWordforms($lang_id, $pos_code, $w_count)
+    {
         if ($lang_id == 5) {
-            $dialect_id=44;
-        } else {return;}
-        
+            $dialect_id = 44;
+        } else {
+            return;
+        }
+
         if ($pos_code != 'NOUN') {
             $pos_code = 'ADJ';
         }
         $pos = PartOfSpeech::getByCode($pos_code);
         $pos_id = $pos->id;
-        $right_counts = [4=>37, 5=>55];
-        
+        $right_counts = [4 => 37, 5 => 55];
+
         $is_all_checked = false;
-        while (!$is_all_checked) {        
+        while (!$is_all_checked) {
             $lemmas = Lemma::lemmasWithWordformsByCount($lang_id, $pos_id, $w_count)
-                    ->take(10)
-                    ->orderBy('lemma');
-//  ->count();
-//dd($lemmas);   
-            if ($lemmas->count()) {               
+                ->take(10)
+                ->orderBy('lemma');
+            //  ->count();
+            //dd($lemmas);   
+            if ($lemmas->count()) {
                 foreach ($lemmas->get() as $lemma) {
                     $lemma->reloadWordforms($dialect_id, true);
-                    $w_count_res = $lemma->countWordformsByDialect($dialect_id);                
-                    print "<p><a href=\"/dict/lemma/".$lemma->id."\">".$lemma->lemma."</a> ".$w_count."->".$w_count_res."</p>";    
+                    $w_count_res = $lemma->countWordformsByDialect($dialect_id);
+                    print "<p><a href=\"/dict/lemma/" . $lemma->id . "\">" . $lemma->lemma . "</a> " . $w_count . "->" . $w_count_res . "</p>";
                     if ($w_count_res != $right_counts[$w_count]) {
                         dd("INCORRECT WORDFORMS' COUNT!!!");
                     }
@@ -115,28 +122,30 @@ print "<p>".$lemma->lemma."</p>";
         }
         print "<p>done.</p>\n";
     }
-    
-    public static function moveCharOutWord($char) {
-        $words = Word::where('word', 'like', $char.'%')->get();
-//dd($words);        
+
+    public static function moveCharOutWord($char)
+    {
+        $words = Word::where('word', 'like', $char . '%')->get();
+        //dd($words);        
         foreach ($words as $word) {
-//dd($word);            
+            //dd($word);            
             $word->moveCharOut($char);
         }
     }
-    
-    public static function addSynonyms() {
+
+    public static function addSynonyms()
+    {
         $concepts = Concept::all();
         foreach ($concepts as $concept) {
-print $concept->text.'<ul>';            
+            print $concept->text . '<ul>';
             foreach (Lang::projectLangs() as $lang) {
-print $lang->code.'<ul>';                
+                print $lang->code . '<ul>';
                 $meanings = $concept->meanings()->whereIn('lemma_id', function ($q) use ($lang) {
                     $q->select('id')->from('lemmas')->whereLangId($lang->id);
                 })->get();
                 $lemmas = [];
                 foreach ($meanings as $meaning) {
-print '<li><a href="/ru/dict/lemma/'.$meaning->lemma_id.'">'.$meaning->lemma->lemma.'</a></li>';     
+                    print '<li><a href="/ru/dict/lemma/' . $meaning->lemma_id . '">' . $meaning->lemma->lemma . '</a></li>';
                     $lemmas[$meaning->id] = $meaning->lemma;
                 }
                 foreach ($lemmas as $meaning1 => $lemma1) {
@@ -147,67 +156,70 @@ print '<li><a href="/ru/dict/lemma/'.$meaning->lemma_id.'">'.$meaning->lemma->le
                         if ($lemma1->variants()->whereLemma2Id($lemma2->id)->count()) {
                             continue;
                         }
-print '<p><a href="/ru/dict/lemma/'.$lemma1->id.'">'.$lemma1->lemma.'</a> - СИНОНИМ - <a href="/ru/dict/lemma/'.$lemma2->id.'">'.$lemma2->lemma.'</a>';                        
+                        print '<p><a href="/ru/dict/lemma/' . $lemma1->id . '">' . $lemma1->lemma . '</a> - СИНОНИМ - <a href="/ru/dict/lemma/' . $lemma2->id . '">' . $lemma2->lemma . '</a>';
                     }
                 }
-print "</ul>";                
+                print "</ul>";
             }
-print "</ul>";            
-//exit(0);            
+            print "</ul>";
+            //exit(0);            
         }
     }
-    
-    public static function addSrcForConcepts() {
+
+    public static function addSrcForConcepts()
+    {
         $concepts = Concept::whereNotNull('wiki_photo')
-                           ->where('wiki_photo', '<>', '')
-                           ->where(function($q) {
-                               $q->whereNull('src')
-                                 ->orWhereNull('src');
-                           })->get();
+            ->where('wiki_photo', '<>', '')
+            ->where(function ($q) {
+                $q->whereNull('src')
+                    ->orWhereNull('src');
+            })->get();
         foreach ($concepts as $concept) {
             $concept->updateWikiSrc();
         }
     }
-    
-    public static function missingGramsets() {
+
+    public static function missingGramsets()
+    {
         $pos_ids = DB::table('gramset_pos')->groupBy('pos_id')->pluck('pos_id');
         $unchangeble_lemmas = LemmaFeature::whereWithoutGram(1)->pluck('id');
 
         foreach (Lang::projectLangs() as $lang) {
-            if ($lang->id!=4) { continue; }
-            print '<br><h1>'.$lang->name.'</h1><br><ol>';
+            if ($lang->id != 4) {
+                continue;
+            }
+            print '<br><h1>' . $lang->name . '</h1><br><ol>';
             $text_ids = Text::whereLangId($lang->id)->orderBy('id')
-//->where('id','>', 
-                    ->take(100)
-                    ->pluck('id');
+                //->where('id','>', 
+                ->take(100)
+                ->pluck('id');
             $words = Word::whereIn('text_id', $text_ids)
-                         ->whereIn('id', function ($q) use ($pos_ids, $unchangeble_lemmas) {
-                             $q->select('word_id')->from('meaning_text')
-                               ->whereIn('meaning_id', function($q2) use ($pos_ids, $unchangeble_lemmas) {
-                                   $q2->select('id')->from('meanings')
-                                      ->whereIn('lemma_id', function($q3) use ($pos_ids, $unchangeble_lemmas) {
-                                          $q3->select('id')->from('lemmas')
-                                             ->whereIn('pos_id', $pos_ids)
-                                             ->wherenotIn('id', $unchangeble_lemmas);
-                                      });
-                               });
-//                               ->where('relevance', '>', 0);
-                         })
-                         ->whereNotIn('id', function ($q) {
-                             $q->select('word_id')->from('text_wordform');
-                         })
-                         ->orderBy('text_id')->orderBy('w_id')->get();
-//dd(to_sql($words));
+                ->whereIn('id', function ($q) use ($pos_ids, $unchangeble_lemmas) {
+                    $q->select('word_id')->from('meaning_text')
+                        ->whereIn('meaning_id', function ($q2) use ($pos_ids, $unchangeble_lemmas) {
+                            $q2->select('id')->from('meanings')
+                                ->whereIn('lemma_id', function ($q3) use ($pos_ids, $unchangeble_lemmas) {
+                                    $q3->select('id')->from('lemmas')
+                                        ->whereIn('pos_id', $pos_ids)
+                                        ->wherenotIn('id', $unchangeble_lemmas);
+                                });
+                        });
+                    //                               ->where('relevance', '>', 0);
+                })
+                ->whereNotIn('id', function ($q) {
+                    $q->select('word_id')->from('text_wordform');
+                })
+                ->orderBy('text_id')->orderBy('w_id')->get();
+            //dd(to_sql($words));
             foreach ($words as $word) {
-//                if ($word->isChangeable()) {
-                    print '<li>Текст No <a href="/corpus/text/'.$word->text_id.'?search_wid='.$word->w_id.'">'.$word->text_id.'</a>, ('.$word->w_id.') '.$word->word.'</p>';
-//                    $word->updateWordformText();
-                    $word->text->setWordforms([], $word);
+                //                if ($word->isChangeable()) {
+                print '<li>Текст No <a href="/corpus/text/' . $word->text_id . '?search_wid=' . $word->w_id . '">' . $word->text_id . '</a>, (' . $word->w_id . ') ' . $word->word . '</p>';
+                //                    $word->updateWordformText();
+                $word->text->setWordforms([], $word);
 
-//                }
+                //                }
             }
             print "</ol>";
         }
     }
-    
 }
