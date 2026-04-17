@@ -4,13 +4,13 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class Gram extends Model
 {
     public $timestamps = false;
     protected $fillable = ['gram_category_id', 'name_short_en', 'name_en', 'name_short_ru', 'name_ru', 'sequence_number', 'conll', 'unimorph', 'lgr'];
-        
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -25,33 +25,33 @@ class Gram extends Model
 
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\GramCategory;
-    
+
     // Methods
     use \App\Traits\Methods\getNameAttribute;
 
-    public function getShortNameAttribute() : String
+    public function getShortNameAttribute(): String
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_short_" . $locale;
         return $this->{$column};
     }
 
-    public function getCodeAttribute() : String
+    public function getCodeAttribute(): String
     {
         $v = $this->unimorph;
-        if (!$v && $this->name_en=='infinitive II') {
-          return "2NFIN";  
-        } elseif (!$v && $this->name_en=='infinitive III') {
-          return "3NFIN";  
-        }        
-        return str_replace(';','_',$v);
+        if (!$v && $this->name_en == 'infinitive II') {
+            return "2NFIN";
+        } elseif (!$v && $this->name_en == 'infinitive III') {
+            return "3NFIN";
+        }
+        return str_replace(';', '_', $v);
     }
 
     /** Gets short name of this grammatical attribute, takes into account locale.
      * 
      * @return String
      */
-    public function getNameShortAttribute() : String
+    public function getNameShortAttribute(): String
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_short_" . $locale;
@@ -65,18 +65,18 @@ class Gram extends Model
      * 
      * @return String
      */
-    public function getNameWithShort() : String
+    public function getNameWithShort(): String
     {
         $name = $this->name;
         $locale = LaravelLocalization::getCurrentLocale();
-        $short_name_column = 'name_short_'. $locale;
+        $short_name_column = 'name_short_' . $locale;
         if ($this->{$short_name_column}) {
-            $name .= ' ('. $this->{$short_name_column} . ')';
-        }    
+            $name .= ' (' . $this->{$short_name_column} . ')';
+        }
         return $name;
     }
-    
-    
+
+
     /** Gets all grams for given category sorted, 
      * for example objects "sg", "pl" ($category_id is 2), 
      * or case objects: "nominative", "genititive", ... (when ($category_id is 1).
@@ -87,27 +87,25 @@ class Gram extends Model
      */
     public static function getByCategory($category_id)
     {
-        return self::where('gram_category_id',$category_id)->orderBy('sequence_number')->get();
-         
+        return self::where('gram_category_id', $category_id)->orderBy('sequence_number')->get();
     }
-    
+
     public static function getByCode($code)
     {
         if ($code == "2NFIN") {
             return self::whereNameEn('infinitive II')->first();
         } elseif ($code == "3NFIN") {
             return self::whereNameEn('infinitive III')->first();
-        }        
+        }
         $code = str_replace('_', ';', $code);
         return self::whereUnimorph($code)->first();
-         
     }
-    
+
     public static function getNameByCode($code)
     {
         $item = self::getByCode($code);
         if ($item && isset($item->name)) {
-//dd($pos->id);
+            //dd($pos->id);
             return $item->name;
         }
     }
@@ -116,10 +114,10 @@ class Gram extends Model
      * @param int $category_id
      * @return Array [1=>'номинатив',..]
      */
-    public static function getList(int $category_id, $with_short_name=true)
+    public static function getList(int $category_id, $with_short_name = true)
     {
         $grams = self::getByCategory($category_id);
-                
+
         $list = [];
         foreach ($grams as $gram) {
             if ($with_short_name) {
@@ -128,22 +126,23 @@ class Gram extends Model
                 $list[$gram->id] = $gram->name;
             }
         }
-        
-        return $list;         
+
+        return $list;
     }
-    
+
     /**
      * Get list of grams for words in texts
      * 
      * @return Array ['падеж'=>['NOM' => 'номинатив', ...], ...]
      */
-    public static function getListForCorpus() {
-        $grams = [];        
+    public static function getListForCorpus()
+    {
+        $grams = [];
         $locale = LaravelLocalization::getCurrentLocale();
 
         $gram_categories = GramCategory::all()->sortBy('sequence_number');
         $grams = array();
-        
+
         foreach ($gram_categories as $gc) {         //   id is gram_category_id
             $grams[$gc->id][0] = $gc->name;
             foreach (self::getByCategory($gc->id) as $g) {
@@ -153,6 +152,6 @@ class Gram extends Model
         //case to beginning
         $cases = $grams[1];
         unset($grams[1]);
-        return [1=>$cases]+$grams;         
+        return [1 => $cases] + $grams;
     }
 }

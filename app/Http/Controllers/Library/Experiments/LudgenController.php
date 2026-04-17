@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Library\Experiments;
 
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\DB;
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
-//use Storage;
 
 use App\Library\Grammatic;
 use App\Library\Grammatic\KarGram;

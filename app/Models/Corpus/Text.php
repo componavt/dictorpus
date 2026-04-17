@@ -136,6 +136,11 @@ class Text extends Model implements HasMediaConversions
             ->orderBy('text_topic.sequence_number');
     }
 
+    public function hasVideoCode()
+    {
+        return $this->video && ($this->video->youtube_id || $this->video->rutube_id);
+    }
+
     public function topicValueWithNumber(): array
     {
         $value = [];

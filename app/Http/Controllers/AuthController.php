@@ -7,17 +7,15 @@ use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use Redirect;
-use Sentinel;
-use Activation;
-use Reminder;
-use Validator;
-use Mail;
-use Storage;
+use Illuminate\Support\Facades\Redirect;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Cartalyst\Sentinel\Laravel\Facades\Activation;
+use Cartalyst\Sentinel\Laravel\Facades\Reminder;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use CurlHttp;
-use NoCaptcha;
-
-//use Barryvdh\Debugbar\Facade as Debugbar;
+use Anhskohbo\NoCaptcha\Facades\NoCaptcha;
 
 use App\Models\User;
 
@@ -41,7 +39,7 @@ class AuthController extends Controller
      */
     public function register()
     {
-        return view('auth.register');//->with('errors',$errors);
+        return view('auth.register'); //->with('errors',$errors);
     }
 
 
@@ -64,48 +62,40 @@ class AuthController extends Controller
      */
     public function loginProcess(Request $request)
     {
-        try
-        {
+        try {
             $this->validate($request, [
                 'email' => 'required|email',
                 'password' => 'required',
             ]);
             $remember = (bool) $request->remember;
-            if (Sentinel::authenticate($request->all(), $remember))
-            {
-                return back();//intended('/');
+            if (Sentinel::authenticate($request->all(), $remember)) {
+                return back(); //intended('/');
             }
-            $errors = \Lang::get('error.incorrect_login_pass');
+            $errors = trans('error.incorrect_login_pass');
             return back()
                 ->withInput()
                 ->withErrors($errors);
-        }
-        catch (NotActivatedException $e)
-        {
-            $sentuser= $e->getUser();
+        } catch (NotActivatedException $e) {
+            $sentuser = $e->getUser();
             $activation = Activation::create($sentuser);
             $code = $activation->code;
-            $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function($m) use ($sentuser)
-            {
-                $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
-                $m->to($sentuser->email)->subject(\Lang::get('mail.account_activation_subj'));
+            $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function ($m) use ($sentuser) {
+                $m->from('nataly@krc.karelia.ru', trans('main.site_abbr'));
+                $m->to($sentuser->email)->subject(trans('mail.account_activation_subj'));
             });
 
-            if ($sent === 0)
-            {
+            if ($sent === 0) {
                 return Redirect::to('login')
-                    ->withErrors(\Lang::get('error.email_activation_error'));
+                    ->withErrors(trans('error.email_activation_error'));
             }
-            $errors = \Lang::get('error.account_not_activated');
+            $errors = trans('error.account_not_activated');
             return view('auth.login')->withErrors($errors);
-        }
-        catch (ThrottlingException $e)
-        {
+        } catch (ThrottlingException $e) {
             $delay = $e->getDelay();
-            $errors = \Lang::get('error.account_throttle', array('delay'=>$delay));
-//            "Ваш аккаунт блокирован на {$delay} секунд.";
+            $errors = trans('error.account_throttle', array('delay' => $delay));
+            //            "Ваш аккаунт блокирован на {$delay} секунд.";
         }
-        return back()//->getTargetUrl()
+        return back() //->getTargetUrl()
             ->withInput()
             ->withErrors($errors);
     }
@@ -128,43 +118,40 @@ class AuthController extends Controller
             'city' => 'required',
             'country' => 'required',
             'affilation' => 'required',
-            'g-recaptcha-response'=>'required|captcha',
+            'g-recaptcha-response' => 'required|captcha',
         ]);
         $input = $request->all();
-        $credentials = [ 'email' => $request->email ];
-        
-        if($user = Sentinel::findByCredentials($credentials)) {
+        $credentials = ['email' => $request->email];
+
+        if ($user = Sentinel::findByCredentials($credentials)) {
             return Redirect::to('register')
                 //view('auth.register')
-                ->withErrors(\Lang::get('error.email_is_registered'));
+                ->withErrors(trans('error.email_is_registered'));
         }
-        
-        if ($sentuser = User::registration($input))
-        {
+
+        if ($sentuser = User::registration($input)) {
             $activation = Activation::create($sentuser);
             $code = $activation->code;
-            
-            $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function($m) use ($sentuser)
-            {
-                $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
-                $m->to($sentuser->email)->subject(\Lang::get('mail.account_activation_subj'));
+
+            $sent = Mail::send('mail.account_activate', compact('sentuser', 'code'), function ($m) use ($sentuser) {
+                $m->from('nataly@krc.karelia.ru', trans('main.site_abbr'));
+                $m->to($sentuser->email)->subject(trans('mail.account_activation_subj'));
             });
-            if ($sent === 0)
-            {
+            if ($sent === 0) {
                 return Redirect::to('register')
-                    ->withErrors(\Lang::get('error.email_activation_error'));
+                    ->withErrors(trans('error.email_activation_error'));
             }
 
             $role = Sentinel::findRoleBySlug('user');
             $role->users()->attach($sentuser);
 
             return Redirect::to('login')
-                ->withSuccess(\Lang::get('auth.account_is_created'))
+                ->withSuccess(trans('auth.account_is_created'))
                 ->with('userId', $sentuser->getUserId());
         }
         return Redirect::to('register')
             ->withInput()
-            ->withErrors(\Lang::get('error.register_failed'));
+            ->withErrors(trans('error.register_failed'));
     }
 
 
@@ -179,14 +166,13 @@ class AuthController extends Controller
     {
         $sentuser = Sentinel::findById($id);
 
-        if ( ! Activation::complete($sentuser, $code))
-        {
+        if (! Activation::complete($sentuser, $code)) {
             return Redirect::to("login")
-                ->withErrors(\Lang::get('error.activation_code_expired'));
+                ->withErrors(trans('error.activation_code_expired'));
         }
 
         return Redirect::to('login')
-            ->withSuccess(\Lang::get('auth.account_is_activated'));
+            ->withSuccess(trans('auth.account_is_activated'));
     }
 
 
@@ -197,9 +183,9 @@ class AuthController extends Controller
      */
     public function resetOrder()
     {
-//var_dump(1);
+        //var_dump(1);
         return view('auth.reset_order');
-//        return view('auth.login');
+        //        return view('auth.login');
     }
 
 
@@ -214,28 +200,25 @@ class AuthController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
         ]);
-//dd($request);
+        //dd($request);
         $email = $request->email;
         $sentuser = Sentinel::findByCredentials(compact('email'));
-//dd($sentuser);
-        if ( ! $sentuser)
-        {
+        //dd($sentuser);
+        if (! $sentuser) {
             return back()
                 ->withInput()
-                ->withErrors(\Lang::get('error.no_user_with_email'));
+                ->withErrors(trans('error.no_user_with_email'));
         }
         $reminder = Reminder::exists($sentuser) ?: Reminder::create($sentuser);
         $code = $reminder->code;
-//dd($code);
-        $sent = Mail::send('mail.account_reminder', compact('sentuser', 'code'), function($m) use ($sentuser)
-        {
-            $m->from('nataly@krc.karelia.ru', \Lang::get('main.site_abbr'));
-            $m->to($sentuser->email)->subject(\Lang::get('auth.password_reset'));
+        //dd($code);
+        $sent = Mail::send('mail.account_reminder', compact('sentuser', 'code'), function ($m) use ($sentuser) {
+            $m->from('nataly@krc.karelia.ru', trans('main.site_abbr'));
+            $m->to($sentuser->email)->subject(trans('auth.password_reset'));
         });
-        if ($sent === 0)
-        {
+        if ($sent === 0) {
             return Redirect::to('reset')
-                ->withErrors(\Lang::get('error.email_not_sent'));
+                ->withErrors(trans('error.email_not_sent'));
         }
         return Redirect::to('wait');
     }
@@ -269,19 +252,17 @@ class AuthController extends Controller
             'password_confirm' => 'required|same:password',
         ]);
         $user = Sentinel::findById($id);
-        if ( ! $user)
-        {
+        if (! $user) {
             return back()
                 ->withInput()
-                ->withErrors(\Lang::get('error.no_user'));
+                ->withErrors(trans('error.no_user'));
         }
-        if ( ! Reminder::complete($user, $code, $request->password))
-        {
+        if (! Reminder::complete($user, $code, $request->password)) {
             return Redirect::to('login')
-                ->withErrors(\Lang::get('error.old_reset_code'));
+                ->withErrors(trans('error.old_reset_code'));
         }
         return Redirect::to('login')
-            ->withSuccess(\Lang::get('auth.password_updated'));
+            ->withSuccess(trans('auth.password_updated'));
     }
 
     /**
@@ -292,5 +273,4 @@ class AuthController extends Controller
         Sentinel::logout();
         return Redirect::intended('/');
     }
-
 }

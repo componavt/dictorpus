@@ -19,24 +19,26 @@ class LangController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/lang/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/lang/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
-    
-   /**
+
+    /**
      * Show the list of languages.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        
+
         $langs = Lang::orderBy('sequence_number')->get();
         $total_count = Lang::count();
 
-        return view('dict.lang.index')->with(array('languages' => $langs,
-                                                   'total_count' => $total_count));
+        return view('dict.lang.index')->with(array(
+            'languages' => $langs,
+            'total_count' => $total_count
+        ));
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -60,11 +62,11 @@ class LangController extends Controller
             'name_ru'  => 'required|max:64',
             'code'  => 'required|max:20',
         ]);
-        
+
         $lang = Lang::create($request->all());
-        
+
         return Redirect::to('/dict/lang/')
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -86,10 +88,10 @@ class LangController extends Controller
      */
     public function edit($id)
     {
-        $lang = Lang::find($id); 
-        
+        $lang = Lang::find($id);
+
         return view('dict.lang.edit')
-                  ->with(['lang' => $lang]);
+            ->with(['lang' => $lang]);
     }
 
     /**
@@ -106,13 +108,13 @@ class LangController extends Controller
             'name_ru'  => 'required|max:64',
             'code'  => 'required|max:20',
         ]);
-        
+
         $lang = Lang::find($id);
-//dd($request);       
+        //dd($request);       
         $lang->fill($request->all())->save();
-        
+
         return Redirect::to('/dict/lang/')
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**

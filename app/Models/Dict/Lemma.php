@@ -1507,7 +1507,7 @@ class Lemma extends Model
         $format .= '>%s</a>';
         $link = URL::route('lemma.destroy', ['id' => $this->id]);
         $token = csrf_token();
-        $title = \Lang::get('messages.delete');
+        $title = trans('messages.delete');
         return sprintf($format, $link, $token, $title, $title);
     }
  * 

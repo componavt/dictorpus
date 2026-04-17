@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Library;
 
 use Illuminate\Http\Request;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Caxy\HtmlDiff\HtmlDiff;
 use Caxy\HtmlDiff\HtmlDiffConfig;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Library\Grammatic;
 use App\Library\Grammatic\VepsName;
@@ -26,13 +25,12 @@ use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
-//use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
 class CorrectTmpController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
@@ -42,73 +40,77 @@ class CorrectTmpController extends Controller
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:admin,/');
     }
-        
+
     /**
      * select count(*) from lemma_wordform where wordform_for_search='';
      */
-    public function tmpFillWordformForSearch() {
+    public function tmpFillWordformForSearch()
+    {
         $is_all_checked = false;
         while (!$is_all_checked) {
-//            $lemma = Lemma::orderBy('id')->first();
+            //            $lemma = Lemma::orderBy('id')->first();
             $lemma_wordform = Wordform::join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
-                                ->join('lemmas', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
-                                ->where('lemma_wordform.wordform_for_search','')
-                                ->take(1)->first();
+                ->join('lemmas', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
+                ->where('lemma_wordform.wordform_for_search', '')
+                ->take(1)->first();
             if ($lemma_wordform) {
-            DB::statement("UPDATE lemma_wordform SET wordform_for_search='".
-                          Grammatic::changeLetters($lemma_wordform->wordform, $lemma_wordform->lang_id).
-                          "' WHERE wordform_id=".$lemma_wordform->wordform_id. " and lemma_id=".$lemma_wordform->lemma_id);
+                DB::statement("UPDATE lemma_wordform SET wordform_for_search='" .
+                    Grammatic::changeLetters($lemma_wordform->wordform, $lemma_wordform->lang_id) .
+                    "' WHERE wordform_id=" . $lemma_wordform->wordform_id . " and lemma_id=" . $lemma_wordform->lemma_id);
             } else {
                 $is_all_checked = true;
             }
-//exit(0);            
+            //exit(0);            
         }
     }
-    
-    public function tmpFillGenres() {
-        $lang_id=1;
-        $corpus_id=6;
-        $genre_id=11;
+
+    public function tmpFillGenres()
+    {
+        $lang_id = 1;
+        $corpus_id = 6;
+        $genre_id = 11;
         $texts = Text::whereLangId($lang_id)->whereCorpusId($corpus_id)
-                     ->whereNotIn('id', function ($query) {
-                         $query->select('text_id')->from('genre_text');
-                     })->get();
-//dd($texts);    
+            ->whereNotIn('id', function ($query) {
+                $query->select('text_id')->from('genre_text');
+            })->get();
+        //dd($texts);    
         foreach ($texts as $text) {
             $text->genres()->attach($genre_id);
-        }            
+        }
         print 'done.';
     }
-    
+
     /**
      * update texts set checked=0;
      */
-    public function tmpSplitTextsIntoSentences() {
+    public function tmpSplitTextsIntoSentences()
+    {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        
+
         $is_all_checked = false;
         while (!$is_all_checked) {
             $text = Text::orderBy('id')->whereChecked(0)->first();
             if ($text) {
                 $text->splitXMLToSentencesAndWrite();
-//exit(0);               
-                $text->checked=1;
+                //exit(0);               
+                $text->checked = 1;
                 $text->save();
             } else {
                 $is_all_checked = true;
             }
         }
-print 'done';        
+        print 'done';
     }
 
     /**
      * update sentences set checked=0;
      */
-    public function tmpWordNumbersForWords() {
+    public function tmpWordNumbersForWords()
+    {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        
+
         $is_all_checked = false;
         while (!$is_all_checked) {
             $word = Word::whereWordNumber(0)->first();
@@ -118,14 +120,14 @@ print 'done';
             }
             $sentence = Sentence::whereTextId($word->text_id)->whereSId($word->s_id)->first();
             if (!$sentence) {
-                dd("Нет предложения ".$word->text_id. '-'. $word->s_id);
+                dd("Нет предложения " . $word->text_id . '-' . $word->s_id);
             }
             $sentence->numerateWords();
-            $sentence->checked=1;
+            $sentence->checked = 1;
             $sentence->save();
-    //dd($sentence->id);
+            //dd($sentence->id);
         }
-print 'done';        
+        print 'done';
     }
 
     /**
@@ -133,84 +135,88 @@ print 'done';
      * 
      * update sentences set checked=0;
      */
-    public function tmpMoveBrFromSentences() {
+    public function tmpMoveBrFromSentences()
+    {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        
+
         $is_all_checked = false;
         while (!$is_all_checked) {
             $sentence = Sentence::orderBy('id')/*->whereChecked(0)*/
-                        ->where('text_xml', 'like', '<s id="_"><br/>%')
-                        ->orWhere('text_xml', 'like', '<s id="__"><br/>%')
-                        ->orWhere('text_xml', 'like', '<s id="___"><br/>%')->first();
+                ->where('text_xml', 'like', '<s id="_"><br/>%')
+                ->orWhere('text_xml', 'like', '<s id="__"><br/>%')
+                ->orWhere('text_xml', 'like', '<s id="___"><br/>%')->first();
             if ($sentence) {
-                    $sentence->moveBrFromSentences();
-/*                $sentence->checked=1;
+                $sentence->moveBrFromSentences();
+                /*                $sentence->checked=1;
                 $sentence->save();*/
             } else {
                 $is_all_checked = true;
             }
-//                    dd($sentence->id);
+            //                    dd($sentence->id);
         }
-print 'done';        
+        print 'done';
     }
 
     /**
      * select count(*) from words where sentence_id=0;
      */
-    public function tmpFillSentenceIdInWords() {
+    public function tmpFillSentenceIdInWords()
+    {
         $is_all_checked = false;
         while (!$is_all_checked) {
             $word = Word::whereSentenceId(0)->first();
             if ($word) {
                 $sentence = Sentence::whereTextId($word->text_id)
-                                    ->whereSId($word->s_id)->first();
+                    ->whereSId($word->s_id)->first();
                 if (!$sentence) {
-                    dd("Нет предложения ". $word->text_id. '-'.$word->s_id);
+                    dd("Нет предложения " . $word->text_id . '-' . $word->s_id);
                 }
-                DB::statement("UPDATE words SET sentence_id='".$sentence->id.
-                              "' WHERE text_id=".$word->text_id. ' and s_id='.$word->s_id);
-//exit(1);                
+                DB::statement("UPDATE words SET sentence_id='" . $sentence->id .
+                    "' WHERE text_id=" . $word->text_id . ' and s_id=' . $word->s_id);
+                //exit(1);                
             } else {
                 $is_all_checked = true;
             }
-//exit(0);            
+            //exit(0);            
         }
     }
-    
+
     /**
      * select count(*) from text_wordform where sentence_id=0;
      */
-    public function tmpFillSentenceIdInTextWordform() {
+    public function tmpFillSentenceIdInTextWordform()
+    {
         $is_all_checked = false;
         while (!$is_all_checked) {
-//            $text_wordform = TextWordform::whereIsNull('sentence_id')->first();
+            //            $text_wordform = TextWordform::whereIsNull('sentence_id')->first();
             $text_wordform = TextWordform::whereSentenceId(0)->first();
             if ($text_wordform) {
                 $text_id = $text_wordform->text_id;
                 $w_id = $text_wordform->w_id;
-                $sentence = Sentence::whereIn('id', function($q) use ($text_id, $w_id) {
-                    $q -> select('sentence_id')->from('words')
-                       -> whereTextId($text_id)
-                       ->whereWId($w_id);
+                $sentence = Sentence::whereIn('id', function ($q) use ($text_id, $w_id) {
+                    $q->select('sentence_id')->from('words')
+                        ->whereTextId($text_id)
+                        ->whereWId($w_id);
                 })->first();
                 if (!$sentence) {
-                    dd("Нет предложения ". $text_id. '-'.$w_id);
+                    dd("Нет предложения " . $text_id . '-' . $w_id);
                 }
-                DB::statement("UPDATE text_wordform SET sentence_id='".$sentence->id.
-                              "' WHERE text_id=".$text_id. ' and w_id='.$w_id);
-//exit(1);                
+                DB::statement("UPDATE text_wordform SET sentence_id='" . $sentence->id .
+                    "' WHERE text_id=" . $text_id . ' and w_id=' . $w_id);
+                //exit(1);                
             } else {
                 $is_all_checked = true;
             }
-//exit(0);            
+            //exit(0);            
         }
     }
-    
+
     /**
      * select count(*) from text_wordform where word_id=0;
      */
-    public function tmpFillWordIdInTextWordform() {
+    public function tmpFillWordIdInTextWordform()
+    {
         $is_all_checked = false;
         while (!$is_all_checked) {
             $text_wordform = TextWordform::whereWordId(0)->first();
@@ -218,17 +224,17 @@ print 'done';
                 $text_id = $text_wordform->text_id;
                 $w_id = $text_wordform->w_id;
                 $word = Word::whereTextId($text_id)
-                       ->whereWId($w_id)->first();
+                    ->whereWId($w_id)->first();
                 if (!$word) {
-                    dd("Нет слова ". $text_id. '-'.$w_id);
+                    dd("Нет слова " . $text_id . '-' . $w_id);
                 }
-                DB::statement("UPDATE text_wordform SET word_id='".$word->id.
-                              "' WHERE text_id=".$text_id. ' and w_id='.$w_id);
-//exit(1);                
+                DB::statement("UPDATE text_wordform SET word_id='" . $word->id .
+                    "' WHERE text_id=" . $text_id . ' and w_id=' . $w_id);
+                //exit(1);                
             } else {
                 $is_all_checked = true;
             }
-//exit(0);            
+            //exit(0);            
         }
     }
     
@@ -312,7 +318,7 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
         }
          
     }
- */ 
+ */
     /** 
      * (1) Copy vepsian.wordform to vepkar.wordforms (without dublicates)
      * (2) Copy vepsian.lemma_gram_wordform to vepkar.lemma_wordform
@@ -408,7 +414,7 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
         }
     }
  *
- */  
+ */
     /**
      * When we add column lang_id in table gramset_pos,
      * we old records associated with vepsian lang (lang_id=1) and
@@ -431,14 +437,14 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
             }
         }
     }
-*/    
+*/
     /**
      * Reads some gramsets for non-reflexive verbs and 
      * inserts the same records for reflexive verbs.
      *
      * @return null
      */
-/*    
+    /*    
     public function tempInsertGramsetsForReflexive()
     {
         $reflexive_sequence_number=143;
@@ -476,8 +482,8 @@ print "<br>".$wordform_obj->id.'='.$wordform_obj->wordform."; lemma: ".$lemma->i
     }
  * 
  */
-//select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
-/*
+    //select count(*) from words where (word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%') and text_id in (SELECT id from texts where lang_id=5);
+    /*
     public function tmpProcessOldLetters() {
         $lang_id=5;
         $words = Word::whereRaw("(word like '%Ü%' COLLATE utf8_bin OR word like '%ü%' COLLATE utf8_bin OR word like '%w%')"
@@ -525,7 +531,7 @@ print "<p>".$word->word;
     }
  * 
  */
-    
+
     /*    
     public function tempInsertVepsianText()
     {
@@ -581,7 +587,7 @@ print "<p>".$word->word;
         endforeach;
      }
  */
-/*
+    /*
     public function tempInsertVepsianDialectText()
     {
         DB::connection('mysql')->table('dialect_text')->delete();
@@ -623,10 +629,10 @@ print "<p>".$word->word;
      }
  * 
  */
-     // select text1_id,text2_id,t1.event_id,t2.event_id  from text_pair, text as t1, text as t2 where t2.lang_id=2 and t2.event_id is not null and text_pair.text1_id=t1.id and text_pair.text2_id=t2.id;
-     // select text1_id,text2_id,text.event_id from text_pair,text where text.lang_id=2 and text.event_id is not null and text_pair.text2_id=text.id;
-    
-/*    
+    // select text1_id,text2_id,t1.event_id,t2.event_id  from text_pair, text as t1, text as t2 where t2.lang_id=2 and t2.event_id is not null and text_pair.text1_id=t1.id and text_pair.text2_id=t2.id;
+    // select text1_id,text2_id,text.event_id from text_pair,text where text.lang_id=2 and text.event_id is not null and text_pair.text2_id=text.id;
+
+    /*    
     public function tempInsertVepsianSource()
     {
         $veps_sources = DB::connection('vepsian')
@@ -665,7 +671,7 @@ print "<p>".$word->word;
      }
  * 
  */
-    
+
     /*    
     public function tempInsertVepsianPlace()
     {
@@ -718,7 +724,7 @@ print "<p>".$word->word;
  * 
  */
 
-/*    
+    /*    
     public function tempInsertVepsianInformant()
     {
         $veps_informants = DB::connection('vepsian')
@@ -740,8 +746,8 @@ print "<p>".$word->word;
      }
  * 
  */
-    
-/*    
+
+    /*    
     public function tempInsertVepsianRecorder()
     {
         $veps_recorders = DB::connection('vepsian')

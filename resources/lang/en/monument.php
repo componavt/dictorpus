@@ -11,7 +11,7 @@ return [
     */
 
     'archive' => 'archive data (archive name, code)',
-    'author' => 'author / compiler / translator',  
+    'author' => 'author / compiler / translator',
     'bibl_descr' => 'full bibliographic description',
     'comment' => 'comment',
     'dcopy_link' => 'link to a digital copy of the original',
@@ -46,9 +46,10 @@ return [
         1 => 'dictionary',
         4 => 'folklore text',
         3 => 'grammar essay',
+        6 => 'original text',
         5 => 'speech sample',
         2 => 'translation',
-//        6 => '',
+        //        6 => '',
     ],
     'volume' => 'volume of Karelian/Vepsian text (words)',
 ];

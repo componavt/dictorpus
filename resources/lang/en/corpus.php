@@ -143,6 +143,7 @@ return [
     'region_removed' => 'Region ":name" is removed successfully.',
 
     'rgo_info' => 'The materials published on the Audio Map in 2024 were prepared as part of the project "Filling the Audio Map of Karelian and Vepsian Dialects." The project is supported by the Russian Geographical Society.',
+    'rutube_id' => 'RuTube Identifier',
 
     'select_corpus' => 'Select corpus',
     'sentences' => 'Sentences',

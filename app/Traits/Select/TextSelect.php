@@ -2,7 +2,7 @@
 
 namespace App\Traits\Select;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Library\Grammatic\KarGram;
 
@@ -55,7 +55,7 @@ trait TextSelect
                     ->whereTextId($text_id)
                     ->where('relevance', '>', 1);
             })->first();
-            //dd($word, to_sql($gramset));      
+            //dd($word, to_sql($gramset));
             $cyr_word = empty($cyr_words[$word->w_id]) ? '' : $cyr_words[$word->w_id];
             $gramset_info = !empty($gramset) ? $gramset->gramsetString() : '';
             //часть речи  грам. признаки             слово норм.  исход. написание         лемма        значение
@@ -119,7 +119,7 @@ trait TextSelect
             if (empty($trans_sentences[$sentence->s_id])) {
                 print "<P>В тексте <a href=".route('text.sentences', $this->id) .'">'.$this->id. '</a> не хватает перевода для предложения '. $sentence->s_id."</p>";
                 continue;
-            }           
+            }
             $ts = self::clearText($trans_sentences[$sentence->s_id]['sentence']);
             //            $sentences[!empty($s) ? $s : $this->id.'_'.$sentence->s_id] = $ts;
             if (!empty($s)) {
@@ -130,7 +130,7 @@ trait TextSelect
                 ];
             }
         }
-        //dd($sentences);        
+        //dd($sentences);
         return $sentences;
     }
 
@@ -159,11 +159,11 @@ trait TextSelect
                 ];
             }
         }
-        //dd($sentences);        
+        //dd($sentences);
         return $sentences;
     }
 
-    // select text_id, s_id from meaning_text where relevance=10 and meaning_id in (select id from meanings where lemma_id in 
+    // select text_id, s_id from meaning_text where relevance=10 and meaning_id in (select id from meanings where lemma_id in
     // (select lemma_id from label_lemma where label_id=3 and status=1)) group by text_id, s_id;
     public static function sentencesFromOlodict($sentences, $without_text_ids = [])
     {
@@ -215,7 +215,7 @@ trait TextSelect
                 }
             }
         }
-        //dd($sentences);        
+        //dd($sentences);
         return [$sentences, $sentence_ids];
     }
 

@@ -3,7 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Library\Str;
 
@@ -15,10 +15,10 @@ use App\Models\Dict\Lemma;
 class Informant extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['birth_place_id','birth_date','name_en','name_ru'];
-    
+    protected $fillable = ['birth_place_id', 'birth_date', 'name_en', 'name_ru'];
+
     use \Venturecraft\Revisionable\RevisionableTrait;
-    
+
     protected $revisionEnabled = true;
     protected $revisionCleanup = true; //Remove old revisions (works only when used with $historyLimit)
     protected $historyLimit = 500; //Stop tracking revisions after 500 changes have been made.
@@ -28,7 +28,7 @@ class Informant extends Model
     {
         parent::boot();
     }
-    
+
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Audios;
     // Belongs To Many Relations
@@ -36,34 +36,37 @@ class Informant extends Model
 
     // Methods
     use \App\Traits\Methods\getNameAttribute;
-    
-    public function getDialectsAttribute() {
+
+    public function getDialectsAttribute()
+    {
         $birth_place = $this->birth_place;
         if (!$birth_place) {
             return null;
         }
-        
-        return $birth_place->dialects;        
+
+        return $birth_place->dialects;
     }
 
-    public function getLangAttribute() {
+    public function getLangAttribute()
+    {
         $dialects = $this->dialects;
-        
+
         if (!isset($dialects[0])) {
             return null;
         }
-        
-        return $dialects[0]->lang;        
+
+        return $dialects[0]->lang;
     }
 
-    public function getDialectNameAttribute() {
+    public function getDialectNameAttribute()
+    {
         $names = [];
-        
+
         foreach ($this->dialects as $dialect) {
             $names[] = $dialect->name;
         }
-        
-        return join(', ', $names);        
+
+        return join(', ', $names);
     }
 
     /** Gets place, takes into account locale.
@@ -74,29 +77,29 @@ class Informant extends Model
      */
     public function birth_place()
     {
-        return $this->belongsTo(Place::class);//,'birth_place_id'
-    }  
-    
+        return $this->belongsTo(Place::class); //,'birth_place_id'
+    }
+
     // Informant __has_many__ Events
     public function events()
     {
         return $this->hasMany(Event::class);
     }
-    
+
     // Informant __has_many_through__ Texts
     public function texts()
     {
         $informant_id = $this->id;
-//        return $this->hasManyThrough(Text::class, Event::class);
-        $texts = Text::whereIn('event_id', function($query) use ($informant_id) {
-                                $query->select('event_id')->from('event_informant')
-                                      ->where('informant_id',$informant_id);
-                              });
+        //        return $this->hasManyThrough(Text::class, Event::class);
+        $texts = Text::whereIn('event_id', function ($query) use ($informant_id) {
+            $query->select('event_id')->from('event_informant')
+                ->where('informant_id', $informant_id);
+        });
         return $texts;
     }
-    
+
     public static function getNameById($id)
-    {     
+    {
         if (!$id) {
             return;
         }
@@ -106,25 +109,25 @@ class Informant extends Model
         }
         return $informant->name;
     }
-    
+
     /** Gets list of informant
      * 
      * @return Array [1=>'Vepsian',..]
      */
     public static function getList()
-    {     
+    {
         $locale = LaravelLocalization::getCurrentLocale();
-        
-        $informants = self::orderBy('name_'.$locale)->get();
-        
+
+        $informants = self::orderBy('name_' . $locale)->get();
+
         $list = array();
         foreach ($informants as $row) {
-            $list[$row->id] = $row->informantString('',false);
+            $list[$row->id] = $row->informantString('', false);
         }
-        
-        return $list;         
+
+        return $list;
     }
-    
+
     /**
      * Gets full information about informant
      * 
@@ -134,135 +137,143 @@ class Informant extends Model
      * 
      * @return String
      */
-    public function informantString($lang_id='', $all_place_names=true, $link='')
+    public function informantString($lang_id = '', $all_place_names = true, $link = '')
     {
         $info = [];
-        
+
         if ($this->name) {
             $info[0] = $this->name;
         }
         if ($link) {
-            $info[0] = to_link($info[0], $link.'informant='.$this->id);
+            $info[0] = to_link($info[0], $link . 'informant=' . $this->id);
         }
-        
+
         if ($this->birth_date) {
             $info[] = $this->birth_date;
         }
-        
-        if ($this->birth_place) {
-            $info[] = $this->birthPlaceString($lang_id, $all_place_names, $link ? $link.'birth_place=': '');
-        }
-        
-        return join(', ', $info);
-    }   
 
-    public function unvoicedLemmasCount() {
-        return $this->unvoicedLemmas()->count();        
+        if ($this->birth_place) {
+            $info[] = $this->birthPlaceString($lang_id, $all_place_names, $link ? $link . 'birth_place=' : '');
+        }
+
+        return join(', ', $info);
     }
 
-    public function unvoicedDialectLemmasCount() {
+    public function unvoicedLemmasCount()
+    {
+        return $this->unvoicedLemmas()->count();
+    }
+
+    public function unvoicedDialectLemmasCount()
+    {
         $dialects = $this->dialects;
         if (!isset($dialects[0])) {
             return;
         }
-        return Lemma::searchByDialects($this->unvoicedLemmas(), [$dialects[0]->id])->count();        
+        return Lemma::searchByDialects($this->unvoicedLemmas(), [$dialects[0]->id])->count();
     }
 
-    public function unvoicedLemmas() {
+    public function unvoicedLemmas()
+    {
         $informant = $this;
         return  Lemma::whereLangId($informant->lang->id)
-                ->whereNotIn('id', function ($q) use ($informant) { // не озвученные информантом
-                    $q->select('lemma_id')->from('audio_lemma')
-                      ->whereIn('audio_id', function ($q2) use ($informant){
-                          $q2->select('id')->from('audios')
-                             ->whereInformantId($informant->id);
-                      });
-                })
-                ->whereNotIn('id', function ($q) use ($informant){ // не добавленные в список для озвучки
-                    $q->select('lemma_id')->from('informant_lemma')
-                      ->whereInformantId($informant->id);
-                });
+            ->whereNotIn('id', function ($q) use ($informant) { // не озвученные информантом
+                $q->select('lemma_id')->from('audio_lemma')
+                    ->whereIn('audio_id', function ($q2) use ($informant) {
+                        $q2->select('id')->from('audios')
+                            ->whereInformantId($informant->id);
+                    });
+            })
+            ->whereNotIn('id', function ($q) use ($informant) { // не добавленные в список для озвучки
+                $q->select('lemma_id')->from('informant_lemma')
+                    ->whereInformantId($informant->id);
+            });
     }
-    
-    public function birthPlaceString($lang_id='', $all_place_names=true, $link='')
+
+    public function birthPlaceString($lang_id = '', $all_place_names = true, $link = '')
     {
         if (!$this->birth_place) {
             return '';
         }
         return Place::find($this->birth_place_id)
-                            ->placeString($lang_id, $all_place_names, $link);
-    }    
-    
-    
-    public static function search(Array $url_args) {
+            ->placeString($lang_id, $all_place_names, $link);
+    }
+
+
+    public static function search(array $url_args)
+    {
         $locale = LaravelLocalization::getCurrentLocale();
-        $informants = self::orderBy('name_'.$locale);  
-        
+        $informants = self::orderBy('name_' . $locale);
+
         $informants = self::searchByName($informants, $url_args['search_name']);
         $informants = self::searchByRegion($informants, $url_args['search_birth_region']);
         $informants = self::searchByDistrict($informants, $url_args['search_birth_district']);
 
         if ($url_args['search_birth_place']) {
-            $informants = $informants->where('birth_place_id',$url_args['search_birth_place']);
-        } 
+            $informants = $informants->where('birth_place_id', $url_args['search_birth_place']);
+        }
 
         if ($url_args['search_birth']) {
-            $informants = $informants->where('birth_date',$url_args['search_birth']);
-        } 
+            $informants = $informants->where('birth_date', $url_args['search_birth']);
+        }
 
         if ($url_args['search_id']) {
-            $informants = $informants->where('id',$url_args['search_id']);
-        } 
+            $informants = $informants->where('id', $url_args['search_id']);
+        }
         return $informants;
     }
-    
-    public static function searchByName($informants, $name) {
+
+    public static function searchByName($informants, $name)
+    {
         if (!$name) {
             return $informants;
         }
-        return $informants->where(function($q) use ($name){
-                        $q->where('name_en','like', $name)
-                          ->orWhere('name_ru','like', $name);
-                });
+        return $informants->where(function ($q) use ($name) {
+            $q->where('name_en', 'like', $name)
+                ->orWhere('name_ru', 'like', $name);
+        });
     }
 
-    public static function searchByRegion($informants, $region_id) {
+    public static function searchByRegion($informants, $region_id)
+    {
         if (!$region_id) {
             return $informants;
         }
-        return $informants->whereIn('birth_place_id',function($q) use ( $region_id){
-                    $q->select('id')->from('places')
-                       ->whereIn('district_id', function($q1) use ($region_id){
-                            $q1->select('id')->from('districts')
-                               ->whereRegionId($region_id);                                        
-                        });
-                });                            
+        return $informants->whereIn('birth_place_id', function ($q) use ($region_id) {
+            $q->select('id')->from('places')
+                ->whereIn('district_id', function ($q1) use ($region_id) {
+                    $q1->select('id')->from('districts')
+                        ->whereRegionId($region_id);
+                });
+        });
     }
-    
-    public static function searchByDistrict($informants, $district_ids) {
+
+    public static function searchByDistrict($informants, $district_ids)
+    {
         if (!sizeof($district_ids)) {
             return $informants;
         }
-        return $informants->whereIn('birth_place_id',function($q) use ($district_ids){
-                        $q->select('id')->from('places')
-                           ->whereIn('district_id',$district_ids);
-                    });                            
-    } 
-    
-    public static function urlArgs($request) {
+        return $informants->whereIn('birth_place_id', function ($q) use ($district_ids) {
+            $q->select('id')->from('places')
+                ->whereIn('district_id', $district_ids);
+        });
+    }
+
+    public static function urlArgs($request)
+    {
         $url_args = Str::urlArgs($request) + [
-                    'search_birth'   => (int)$request->input('search_corpus'),
-                    'search_birth_district'  => (array)$request->input('search_birth_district'),
-                    'search_birth_place' => (array)$request->input('search_birth_place'),
-                    'search_birth_region' => $request->input('search_birth_region'),
-                    'search_id'  => (int)$request->input('search_id'),
-                    'search_name'   => $request->input('search_name'),
-                ];
-        
+            'search_birth'   => (int)$request->input('search_corpus'),
+            'search_birth_district'  => (array)$request->input('search_birth_district'),
+            'search_birth_place' => (array)$request->input('search_birth_place'),
+            'search_birth_region' => $request->input('search_birth_region'),
+            'search_id'  => (int)$request->input('search_id'),
+            'search_name'   => $request->input('search_name'),
+        ];
+
         $url_args['search_birth'] = $url_args['search_birth'] ? $url_args['search_birth'] : NULL;
-        
+
         $url_args['search_id'] = $url_args['search_id'] ? $url_args['search_id'] : NULL;
-        
+
         return $url_args;
     }
 }

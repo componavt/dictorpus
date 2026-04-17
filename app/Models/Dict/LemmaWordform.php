@@ -3,17 +3,14 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-
-//use App\Library\Grammatic;
-
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class LemmaWordform extends Model
 {
     protected $table = 'lemma_wordform';
-    
+
     public $timestamps = false;
-    
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -25,18 +22,20 @@ class LemmaWordform extends Model
     {
         parent::boot();
     }
-    
-    public static function selectWhereLang(int $lang_id) {
+
+    public static function selectWhereLang(int $lang_id)
+    {
         return DB::table('lemma_wordform')
-                     ->whereIn('lemma_id',function($q) use ($lang_id){
-                         $q->select('id')->from('lemmas')
-                           ->where('lang_id', $lang_id);
-                     });        
+            ->whereIn('lemma_id', function ($q) use ($lang_id) {
+                $q->select('id')->from('lemmas')
+                    ->where('lang_id', $lang_id);
+            });
     }
-    
-    public static function storeByPrediction(string $prediction, string $interpretation, int $lang_id) {
+
+    public static function storeByPrediction(string $prediction, string $interpretation, int $lang_id)
+    {
         list($lemma, $meaning_or_pos, $gramset_id) = preg_split("/\_/", $prediction);
-        if ((int)$lemma>0) {
+        if ((int)$lemma > 0) {
             $lemma_obj = Lemma::find($lemma);
             if (!$lemma_obj) {
                 return [null, null, null];
@@ -47,7 +46,7 @@ class LemmaWordform extends Model
         if (!$lemma_obj) {
             return [null, null, null];
         }
-        $meaning_obj=Meaning::storeLemmaMeaning($lemma_obj->id, 1, [2=>$interpretation]);
+        $meaning_obj = Meaning::storeLemmaMeaning($lemma_obj->id, 1, [2 => $interpretation]);
         return [$lemma_obj, $meaning_obj->id, $gramset_id];
     }
 }

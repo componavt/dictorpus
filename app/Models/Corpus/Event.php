@@ -3,7 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
@@ -12,9 +12,9 @@ use App\Models\Corpus\Text;
 
 class Event extends Model
 {
-    protected $fillable = ['place_id','date']; //'informant_id',
+    protected $fillable = ['place_id', 'date']; //'informant_id',
     public $timestamps = false;
-    
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -25,16 +25,16 @@ class Event extends Model
         'name_ru'  => 'string:<strong>%s</strong>',
     );
     protected $revisionFormattedFieldNames = array(
-//        'title' => 'Title',
-//        'small_name' => 'Nickname',
-//        'deleted_at' => 'Deleted At'
+        //        'title' => 'Title',
+        //        'small_name' => 'Nickname',
+        //        'deleted_at' => 'Deleted At'
     );
 
     public static function boot()
     {
         parent::boot();
     }
-    
+
     /** 
      * Event belongs_to Informant
      * 
@@ -43,8 +43,8 @@ class Event extends Model
     public function informants()
     {
         return $this->belongsToMany(Informant::class);
-    }    
-    
+    }
+
     /** 
      * Event belongs_to Place
      * 
@@ -53,56 +53,64 @@ class Event extends Model
     public function place()
     {
         return $this->belongsTo(Place::class);
-    }  
-    
+    }
+
     // Event __has_many__ Recorders
-    public function recorders(){
+    public function recorders()
+    {
         return $this->belongsToMany(Recorder::class);
     }
-    
+
     // Event __has_many__ Textrs
-    public function texts(){
+    public function texts()
+    {
         return $this->hasMany(Text::class);
     }
-    
-    public function informantsWithLink($link=null) {
+
+    public function informantsWithLink($link = null)
+    {
         $out = [];
         foreach ($this->informants as $informant) {
             $out[] = $informant->informantString('', true, $link);
         }
         return $out;
     }
-    
-    public function recordersWithLink($link=null) {
+
+    public function recordersWithLink($link = null)
+    {
         $out = [];
         foreach ($this->recorders as $recorder) {
             $name = $recorder->name;
             if ($link) {
-                $name = to_link($name, $link.$recorder->id);
+                $name = to_link($name, $link . $recorder->id);
             }
             $out[] = $name;
         }
         return $out;
     }
-    
-    public function updateInformantsAndRecorders($request_data) {
-//dd($this);        
-//dd($request_data);        
+
+    public function updateInformantsAndRecorders($request_data)
+    {
+        //dd($this);        
+        //dd($request_data);        
         $this->informants()->detach();
         $this->informants()->attach($request_data['event_informants']);
         $this->recorders()->detach();
         $this->recorders()->attach($request_data['event_recorders']);
-//dd($this);        
-//dd($this->informants);        
+        //dd($this);        
+        //dd($this->informants);        
     }
-    
-    public static function removeByID($id) {
+
+    public static function removeByID($id)
+    {
         $event = self::find($id);
-        if (!$event) { return; }
+        if (!$event) {
+            return;
+        }
         $event->informants()->detach();
         $event->recorders()->detach();
         $event->delete();
-    }    
+    }
 
     /**
      * remove event if exists and don't link with other texts
@@ -110,24 +118,27 @@ class Event extends Model
      * @param INT $event_id
      * @param INT $text_id
      */
-    public static function removeUnused($event_id, $text_id) {
-        if (!$event_id) { 
-            return;             
+    public static function removeUnused($event_id, $text_id)
+    {
+        if (!$event_id) {
+            return;
         }
-        if (Text::where('id','<>',$text_id)
-                ->where('event_id',$event_id) 
-                ->count()) {
-            return; 
-                
+        if (Text::where('id', '<>', $text_id)
+            ->where('event_id', $event_id)
+            ->count()
+        ) {
+            return;
         }
         $event = self::find($event_id);
-        if (!$event) { return; }
-        
+        if (!$event) {
+            return;
+        }
+
         $event->informants()->detach();
         $event->recorders()->detach();
         $event->delete();
     }
-    
+
     /**
      * Is it possible to change the event of text?
      * Yes, if no other texts with event_id=$this->id, besides $text
@@ -140,31 +151,45 @@ class Event extends Model
      *                    1 - to update the event
      *                    2 - nothing doing, because event is not changed
      */
-    public function isPossibleChanged($text, $new_data) {
-        if (!$this) { return 0; }
-//var_dump($new_data);        
-        
-        $texts = Text::where('event_id',$this->id)
-                ->where('id','<>',$text->id)->get();
-        // no other texts besides $text
-        if (sizeof($texts)==0) { return 1; }
+    public function isPossibleChanged($text, $new_data)
+    {
+        if (!$this) {
+            return 0;
+        }
+        //var_dump($new_data);        
 
-        if ($this->place_id != $new_data['event_place_id']
-            ||  $this->date != $new_data['event_date']) {
-            return 0; }
-            
-        $informants = DB::table('event_informant')->where('event_id', $this->id)->lists('informant_id');    
-//var_dump($informants);
-//var_dump($new_data['event_informants']);
-        if (sizeof(array_diff($informants,(array)$new_data['event_informants']))
-                || sizeof(array_diff((array)$new_data['event_informants'],$informants))) {
-            return 0; } // different informants
-        
-        $recorders = (array)DB::table('event_recorder')->where('event_id', $this->id)->lists('recorder_id');    
-        if (sizeof(array_diff($recorders, (array)$new_data['event_recorders']))
-                || sizeof(array_diff((array)$new_data['event_recorders'],$recorders))) {
-            return 0; } // different recorders      
-        
+        $texts = Text::where('event_id', $this->id)
+            ->where('id', '<>', $text->id)->get();
+        // no other texts besides $text
+        if (sizeof($texts) == 0) {
+            return 1;
+        }
+
+        if (
+            $this->place_id != $new_data['event_place_id']
+            ||  $this->date != $new_data['event_date']
+        ) {
+            return 0;
+        }
+
+        $informants = DB::table('event_informant')->where('event_id', $this->id)->lists('informant_id');
+        //var_dump($informants);
+        //var_dump($new_data['event_informants']);
+        if (
+            sizeof(array_diff($informants, (array)$new_data['event_informants']))
+            || sizeof(array_diff((array)$new_data['event_informants'], $informants))
+        ) {
+            return 0;
+        } // different informants
+
+        $recorders = (array)DB::table('event_recorder')->where('event_id', $this->id)->lists('recorder_id');
+        if (
+            sizeof(array_diff($recorders, (array)$new_data['event_recorders']))
+            || sizeof(array_diff((array)$new_data['event_recorders'], $recorders))
+        ) {
+            return 0;
+        } // different recorders      
+
         return 2;
     }
     /**
@@ -199,7 +224,7 @@ class Event extends Model
     }    
  * 
  */
-    
+
     /**
      * Gets full information about event as string
      * 
@@ -209,20 +234,19 @@ class Event extends Model
      * 
      * @return String
      */
-/*    public function eventString()//$lang_id
+    /*    public function eventString()//$lang_id
     {
         $event_info = $this->eventArray();//($lang_id);
         if (!$event_info) {
             return NULL;
         }
-        $event_info['informant'] = '<i>'. \Lang::get('corpus.informant'). ':</i> '. $event_info['informant'];
-        $event_info['place'] = '<i>'. \Lang::get('corpus.record_place'). ':</i> '. $event_info['place'];       
-        $event_info['date'] = '<i>'. \Lang::get('corpus.record_year'). ':</i> '. $event_info['date'];
-        $event_info['recorders'] = '<i>'. \Lang::get('corpus.recorded'). ':</i> '. join(', ',$event_info['recorders']);
+        $event_info['informant'] = '<i>'. trans('corpus.informant'). ':</i> '. $event_info['informant'];
+        $event_info['place'] = '<i>'. trans('corpus.record_place'). ':</i> '. $event_info['place'];       
+        $event_info['date'] = '<i>'. trans('corpus.record_year'). ':</i> '. $event_info['date'];
+        $event_info['recorders'] = '<i>'. trans('corpus.recorded'). ':</i> '. join(', ',$event_info['recorders']);
         
         return join('<br>',$event_info);
     }    
  * 
  */
-    
 }

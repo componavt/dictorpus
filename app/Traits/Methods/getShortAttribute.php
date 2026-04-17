@@ -1,6 +1,8 @@
-<?php namespace App\Traits\Methods;
+<?php
 
-use LaravelLocalization;
+namespace App\Traits\Methods;
+
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 trait getShortAttribute
 {
@@ -8,16 +10,16 @@ trait getShortAttribute
      * 
      * @return String
      */
-    public function getShortAttribute() : String
+    public function getShortAttribute(): String
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "short_" . $locale;
         $name = $this->{$column};
-        
-        if (!$name && $locale!='ru') {
+
+        if (!$name && $locale != 'ru') {
             $name = $this->short_ru;
         }
-        
-        return $name ? $name: '';
+
+        return $name ? $name : '';
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
-use URL;
-use LaravelLocalization;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class Phonetic extends Model
 {
@@ -21,22 +21,23 @@ class Phonetic extends Model
         parent::boot();
     }
 
-    protected $fillable = ['lemma_id','phonetic'];
+    protected $fillable = ['lemma_id', 'phonetic'];
 
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lemma;
-    
+
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Places;
-    
+
     /**
      * 
      * @param Array $dialects [<dialect1_id>=>[<place1_id>, ...], ...]
      */
-    public function updateDialects($dialects) {
+    public function updateDialects($dialects)
+    {
         foreach ($dialects as $dialect_id => $places) {
-            if (!$this->dialects()->where('dialect_id', $dialect_id)->first()) {            
+            if (!$this->dialects()->where('dialect_id', $dialect_id)->first()) {
                 $this->dialects()->attach($dialect_id);
             }
             foreach ($places as $place_id) {
@@ -46,12 +47,12 @@ class Phonetic extends Model
             }
         }
     }
-    
-    public function remove() {
+
+    public function remove()
+    {
         $this->dialects()->detach();
         $this->places()->detach();
 
         $this->delete();
     }
-    
 }

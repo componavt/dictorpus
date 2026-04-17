@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Library\Experiments;
 
 use Illuminate\Http\Request;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use App\Library\Experiments\PatternSearch;
 use App\Library\Str;
@@ -17,54 +16,56 @@ use App\Models\Dict\Gramset;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
-//use App\Models\Dict\LemmaWordform;
-//use App\Models\Dict\Wordform;
 
 class PatternSearchController extends Controller
 {
-    public function __construct() {
-        $this->middleware('auth:dict.edit,/experiments/', 
-                          ['only' => ['inWordforms']]);
+    public function __construct()
+    {
+        $this->middleware(
+            'auth:dict.edit,/experiments/',
+            ['only' => ['inWordforms']]
+        );
     }
 
-    public function index() {
+    public function index()
+    {
         $pos_code = 'NOUN';
         $pos_id = PartOfSpeech::getIDByCode($pos_code);
         $pos = PartOfSpeech::getNameById($pos_id);
-        
+
         $lang_code = 'krl';
         $lang_id = Lang::getIDByCode($lang_code);
         $lang = Lang::getNameByCode($lang_code);
-                
+
         $dialect_code = 'krl-new';
         $dialect_id = Dialect::getIDByCode($dialect_code);
         $dialect = Dialect::getNameByID($dialect_id);
-        
+
         $gramset_id = 3; //генетив
         $gramset = Gramset::getStringByID($gramset_id);
         $lemmas = Lemma::whereLangId($lang_id)
-                       ->wherePosId($pos_id)->orderBy('lemma')->get();
-        $types=[];
-print "<ol>";        
+            ->wherePosId($pos_id)->orderBy('lemma')->get();
+        $types = [];
+        print "<ol>";
         foreach ($lemmas as $lemma) {
-            $wordform = $lemma->wordform($gramset_id,$dialect_id);
+            $wordform = $lemma->wordform($gramset_id, $dialect_id);
             if (!$wordform) {
                 continue;
             }
-//print "<li>".$lemma->lemma. ' - '. $wordform;            
+            //print "<li>".$lemma->lemma. ' - '. $wordform;            
             list($m, $p) = PatternSearch::diff($lemma->lemma, $wordform);
-//dd($diff);            
-            $types[$m]['all_count'] = isset($types[$m]['all_count']) ? 1+$types[$m]['all_count'] : 1;
-            $types[$m]['-'][$p]['count'] = isset($types[$m]['-'][$p]['count']) ? 1+$types[$m]['-'][$p]['count'] : 1;
+            //dd($diff);            
+            $types[$m]['all_count'] = isset($types[$m]['all_count']) ? 1 + $types[$m]['all_count'] : 1;
+            $types[$m]['-'][$p]['count'] = isset($types[$m]['-'][$p]['count']) ? 1 + $types[$m]['-'][$p]['count'] : 1;
             $types[$m]['-'][$p]['lemmas'][] = $lemma->lemma;
             $types[$m]['-'][$p]['wordforms'][] = $wordform;
         }
-        $types=collect($types)->sortByDesc('all_count');
-//dd($types);        
-//dd($pos_id, $lang_id);        
+        $types = collect($types)->sortByDesc('all_count');
+        //dd($types);        
+        //dd($pos_id, $lang_id);        
         return view('experiments/pattern_search/index', compact('gramset', 'types', 'pos', 'lang', 'dialect'));
     }
-    
+
     /**
      * Для начала нужно из словоформ ливвиковского младописьменного варианта выбрать только имена (существительные и прилагательные), которые:
      * 1) в форме номинатива ед. заканчиваются на Сu или Сa, при этом в форме генитива ед. заканчиваются на an, далее нужно выбрать для них формы партитива множественного числа;
@@ -89,151 +90,160 @@ print "<ol>";
      * 
      * $part_gr - одна из групп: 1) парт. мн.ч. на oi/öi; 2) парт. мн.ч. на ii; 3) два парт. мн.ч.
      */
-    public function nomGenPart($num, $pos_code, $sl, $part_gr) {
-        if ($num==1 || $num==3) {
-            $u='u';
-            $a='a';
-            $o='o';
+    public function nomGenPart($num, $pos_code, $sl, $part_gr)
+    {
+        if ($num == 1 || $num == 3) {
+            $u = 'u';
+            $a = 'a';
+            $o = 'o';
         } else {
-            if ($num!=2) {
-                $num=4;
+            if ($num != 2) {
+                $num = 4;
             }
-            $u='y';
-            $a='ä';
-            $o='ö';
+            $u = 'y';
+            $a = 'ä';
+            $o = 'ö';
         }
         if ($pos_code != 'NOUN') {
             $pos_code = 'ADJ';
         }
-        $sl= (int)$sl;
+        $sl = (int)$sl;
         $part_gr = (int)$part_gr;
         $pos_list = ['NOUN' => 'существительные', 'ADJ' => 'прилагательные'];
-        $parts = [1=>'парт. мн.ч. на '.$o.'i', 2=> 'парт. мн.ч. на ii', 3=>'два парт. мн.ч.'];
+        $parts = [1 => 'парт. мн.ч. на ' . $o . 'i', 2 => 'парт. мн.ч. на ii', 3 => 'два парт. мн.ч.'];
         $part_gr_name = $parts[$part_gr];
-        
+
         $lang_id = 5;
         $dialect_id = 44;
         $nomSg_id = 1;
         $genSg_id = 3;
         $partPl_id = 22;
-        $template = "[".KarGram::consSet()."]";            
+        $template = "[" . KarGram::consSet() . "]";
         $words = [];
-        
+
         $pos = PartOfSpeech::getByCode($pos_code);
         $pos_id = $pos->id;
         $pos_name = $pos_list[$pos_code];
-        $lemmas = Lemma::where('pos_id',$pos_id)
-                        ->where('lang_id',$lang_id)
-                        ->join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
-                        ->where('gramset_id', $nomSg_id)
-                        ->where('dialect_id', $dialect_id)
-                        ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id');
-        
-        if ($num==1 || $num==2) {
-            $lemmas = $lemmas->where(function ($query) use($a,$u) {
-                            $query->where('wordform', 'like', '%'.$u)
-                                  ->orWhere('wordform', 'like', '%'.$a);
-                        });
-            $template .= "[".$u.$a."]";            
-        }                
+        $lemmas = Lemma::where('pos_id', $pos_id)
+            ->where('lang_id', $lang_id)
+            ->join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
+            ->where('gramset_id', $nomSg_id)
+            ->where('dialect_id', $dialect_id)
+            ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id');
+
+        if ($num == 1 || $num == 2) {
+            $lemmas = $lemmas->where(function ($query) use ($a, $u) {
+                $query->where('wordform', 'like', '%' . $u)
+                    ->orWhere('wordform', 'like', '%' . $a);
+            });
+            $template .= "[" . $u . $a . "]";
+        }
         $lemmas = $lemmas->get([DB::raw("lemmas.id as id, wordform")]);
         foreach ($lemmas as $lemma) {
             $nom = $lemma->wordform;
-            if (!preg_match("/".$template."$/u", $nom)) {
+            if (!preg_match("/" . $template . "$/u", $nom)) {
                 continue;
             }
-            if ($sl>0 && KarGram::countSyllable($nom)!=$sl) {
+            if ($sl > 0 && KarGram::countSyllable($nom) != $sl) {
                 continue;
             }
             $gens = preg_split("/,\s*/", $lemma->wordform($genSg_id, $dialect_id));
             $tmp = [];
             foreach ($gens as $gen) {
-                if (preg_match("/".$a."n$/u", $gen)) {
-                    $tmp[]=$gen;
+                if (preg_match("/" . $a . "n$/u", $gen)) {
+                    $tmp[] = $gen;
                 }
             }
             if (sizeof($tmp)) {
                 $part = $lemma->wordform($partPl_id, $dialect_id);
                 $part_list = preg_split("/,\s/", $part);
-                if ($part_gr==1 && sizeof($part_list)==1 && preg_match("/".$o."i$/", $part)
-                        || $part_gr==2 && sizeof($part_list)==1 && preg_match("/ii$/", $part)
-                        || $part_gr==3 && sizeof($part_list)>1 
-                        || $part_gr==4 && preg_match("/[".KarGram::consSet()."]i$/", $part)) {
-                    $words[$lemma->id]=[
-                        'nom' =>$nom,
-                        'gen' =>join(', ', $tmp),
-                        'part' =>$part,
-                        'part_r' => Str::reverse($part)];
+                if (
+                    $part_gr == 1 && sizeof($part_list) == 1 && preg_match("/" . $o . "i$/", $part)
+                    || $part_gr == 2 && sizeof($part_list) == 1 && preg_match("/ii$/", $part)
+                    || $part_gr == 3 && sizeof($part_list) > 1
+                    || $part_gr == 4 && preg_match("/[" . KarGram::consSet() . "]i$/", $part)
+                ) {
+                    $words[$lemma->id] = [
+                        'nom' => $nom,
+                        'gen' => join(', ', $tmp),
+                        'part' => $part,
+                        'part_r' => Str::reverse($part)
+                    ];
                 }
             }
         }
         $words = collect($words);
         $words = $words->sortBy('part_r');
         return view('experiments/vowel_gradation/nom_gen_part', compact('num', 'words', 'pos_name', 'sl', 'part_gr_name'));
-    }    
-    
+    }
+
     /**
      * 
      * глаголы, у которых с.ф. на ua, а 3 л. ед. ч. през. имперф. на oi
      */
-    public function verbImp3Sg() {
+    public function verbImp3Sg()
+    {
         $imp3sg = 34;
-        $pos_id=11;
-        $lang_id=5;
+        $pos_id = 11;
+        $lang_id = 5;
         $dialect_id = 44;
-        $lemmas = Lemma::where('pos_id',$pos_id)
-                        ->whereRaw('lemmas.lang_id='.$lang_id)
-                        ->where('lemma', 'like', '%ua')
-                        ->join('reverse_lemmas', 'reverse_lemmas.id', '=', 'lemmas.id')
-                        ->join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
-                        ->where('gramset_id', $imp3sg)
-                        ->where('dialect_id', $dialect_id)
-                        ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
-                        ->where('wordform', 'like', '%oi')
-                        ->orderBy('reverse_lemma')
-                        ->get([DB::raw("lemmas.id as id, lemma, wordform")]);
-//dd($lemmas);        
+        $lemmas = Lemma::where('pos_id', $pos_id)
+            ->whereRaw('lemmas.lang_id=' . $lang_id)
+            ->where('lemma', 'like', '%ua')
+            ->join('reverse_lemmas', 'reverse_lemmas.id', '=', 'lemmas.id')
+            ->join('lemma_wordform', 'lemma_wordform.lemma_id', '=', 'lemmas.id')
+            ->where('gramset_id', $imp3sg)
+            ->where('dialect_id', $dialect_id)
+            ->join('wordforms', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+            ->where('wordform', 'like', '%oi')
+            ->orderBy('reverse_lemma')
+            ->get([DB::raw("lemmas.id as id, lemma, wordform")]);
+        //dd($lemmas);        
         return view('experiments/vowel_gradation/verb_imp_3sg', compact('lemmas'));
     }
-    
-    public function inWordforms(Request $request) {
-/*        $lang_code = $request->input('lang_code');
+
+    public function inWordforms(Request $request)
+    {
+        /*        $lang_code = $request->input('lang_code');
         $lang_id = Lang::getIDByCode($lang_code);*/
-                
+
         $dialect_code = $request->input('dialect_code');
         $dialect_id = Dialect::getIDByCode($dialect_code);
-        
-        $dubles = [1=>56, 2=>57, 52=>55, 74=>77, 282=>297, 24=>281, 181=>298, 51=>295];
+
+        $dubles = [1 => 56, 2 => 57, 52 => 55, 74 => 77, 282 => 297, 24 => 281, 181 => 298, 51 => 295];
         DB::statement("DELETE FROM pattern_search where dialect_id='$dialect_id'");
         PatternSearch::letterGroups(/*$lang_id, */$dialect_id, '', 5, $dubles);
-print "done.";        
-//dd($let_groups);       
+        print "done.";
+        //dd($let_groups);       
     }
-    
-    public function inWordformsResults(Request $request) {
-/*        $lang_code = $request->input('lang_code');
+
+    public function inWordformsResults(Request $request)
+    {
+        /*        $lang_code = $request->input('lang_code');
         $lang_id = Lang::getIDByCode($lang_code);
         $lang = Lang::getNameByCode($lang_code);*/
-                                
+
         $dialect_code = $request->input('dialect_code');
         $dialect_id = Dialect::getIDByCode($dialect_code);
         $dialect = Dialect::getNameByID($dialect_id);
-        
-        $dubles = [1=>56, 2=>57, 52=>55, 74=>77, 282=>297, 24=>281, 181=>298, 51=>295];
+
+        $dubles = [1 => 56, 2 => 57, 52 => 55, 74 => 77, 282 => 297, 24 => 281, 181 => 298, 51 => 295];
         $patterns_coll = DB::table('pattern_search')
-                      ->whereDialectId($dialect_id)
-//                      ->groupBy('ending')
-                      ->orderBy('end_reverse')->get();
+            ->whereDialectId($dialect_id)
+            //                      ->groupBy('ending')
+            ->orderBy('end_reverse')->get();
         $patterns = [];
         foreach ($patterns_coll as $pattern) {
             $patterns[$pattern->ending][]
-                    =['pos_id'=>$pattern->pos_id,
-                      'gramset_id'=> $pattern->gramset_id,
-                      'count'=> $pattern->count];
+                = [
+                    'pos_id' => $pattern->pos_id,
+                    'gramset_id' => $pattern->gramset_id,
+                    'count' => $pattern->count
+                ];
         }
-        return view('experiments/pattern_search/in_wordforms', 
-                compact('patterns', 'lang', 'dialect', 'dubles', 'lang_id', 'dialect_id'));
+        return view(
+            'experiments/pattern_search/in_wordforms',
+            compact('patterns', 'lang', 'dialect', 'dubles', 'lang_id', 'dialect_id')
+        );
     }
-    
-        
 }

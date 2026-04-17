@@ -10,10 +10,9 @@
         <?php $count=1; ?>
         @foreach($videos as $video)
         <div class="col-sm-6">
-            @include('widgets.youtube',
+            @include('corpus.video.show',
                     ['width' => '100%',
-                     'height' => '270',
-                     'video' => $video->youtube_id
+                     'height' => '270'
                     ])
             <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$video->text_id) }}">{{$video->text->title}}</a></p>        
         </div>

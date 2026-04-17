@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
 
-//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
-//use DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Dict\Dialect;

@@ -7,22 +7,22 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use DB;
-use LaravelLocalization;
+use Illuminate\Support\Facades\DB;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Corpus\Region;
 use App\Models\Corpus\Text;
 
 class RegionController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:corpus.edit,/corpus/region/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:corpus.edit,/corpus/region/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
 
     /**
@@ -38,30 +38,31 @@ class RegionController extends Controller
         if (!$search_id) {
             $search_id = NULL;
         }
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        $regions = Region::orderBy('name_'.$locale);
+        $regions = Region::orderBy('name_' . $locale);
 
         if ($region_name) {
-            $regions = $regions->where(function($q) use ($region_name){
-                            $q->where('name_en','like', $region_name)
-                              ->orWhere('name_ru','like', $region_name);
-                    });
-        } 
+            $regions = $regions->where(function ($q) use ($region_name) {
+                $q->where('name_en', 'like', $region_name)
+                    ->orWhere('name_ru', 'like', $region_name);
+            });
+        }
 
         if ($search_id) {
-            $regions = $regions->where('id',$search_id);
-        } 
+            $regions = $regions->where('id', $search_id);
+        }
 
         $numAll = $regions->count();
 
         $regions = $regions->get();
-        
+
         return view('corpus.region.index')
-                    ->with(['regions' => $regions,
-                            'region_name' => $region_name,
-                            'search_id'=>$search_id,
-                            'numAll' => $numAll,
+            ->with([
+                'regions' => $regions,
+                'region_name' => $region_name,
+                'search_id' => $search_id,
+                'numAll' => $numAll,
             ]);
     }
 
@@ -87,11 +88,11 @@ class RegionController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         $region = Region::create($request->all());
-        
-        return Redirect::to('/corpus/region/?search_id='.$region->id)
-            ->withSuccess(\Lang::get('messages.created_success'));        
+
+        return Redirect::to('/corpus/region/?search_id=' . $region->id)
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -113,10 +114,10 @@ class RegionController extends Controller
      */
     public function edit($id)
     {
-        $region = Region::find($id); 
-        
+        $region = Region::find($id);
+
         return view('corpus.region.edit')
-                  ->with(['region' => $region]);
+            ->with(['region' => $region]);
     }
 
     /**
@@ -132,12 +133,12 @@ class RegionController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         $region = Region::find($id);
         $region->fill($request->all())->save();
-        
-        return Redirect::to('/corpus/region/?search_id='.$region->id)
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        return Redirect::to('/corpus/region/?search_id=' . $region->id)
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -150,54 +151,54 @@ class RegionController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $region = Region::find($id);
-                if($region){
+                if ($region) {
                     $region_name = $region->name;
                     $region->delete();
-                    $result['message'] = \Lang::get('corpus.region_removed', ['name'=>$region_name]);
-                }
-                else{
+                    $result['message'] = trans('corpus.region_removed', ['name' => $region_name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/corpus/region/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/corpus/region/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/corpus/region/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
-    
-    public function textCount($id, Request $request) {
+
+    public function textCount($id, Request $request)
+    {
         $without_link = $request->without_link;
-        $region = Region::find($id);     
+        $region = Region::find($id);
         $count = Text::whereIn('event_id', function ($q) use ($id) {
-                        $q->select('id')->from('events')
-                          ->whereIn('place_id', function ($q2) use ($id) {
-                             $q2->select('id')->from('places')
-                                ->whereRegionId($id);
-                          });                
-                     })->count();
+            $q->select('id')->from('events')
+                ->whereIn('place_id', function ($q2) use ($id) {
+                    $q2->select('id')->from('places')
+                        ->whereRegionId($id);
+                });
+        })->count();
         $count = number_format($count, 0, ',', ' ');
         if (!$count || $without_link) {
             return $count;
         }
-        return '<a href="'.LaravelLocalization::localizeURL('/corpus/text?search_region='.$id).'">'.$count.'</a>';
+        return '<a href="' . LaravelLocalization::localizeURL('/corpus/text?search_region=' . $id) . '">' . $count . '</a>';
     }
 }

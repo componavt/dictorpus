@@ -4,12 +4,10 @@ namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
 
-//use LaravelLocalization;
-
 class GramCategory extends Model
 {
     public $timestamps = false;
-    
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -21,43 +19,44 @@ class GramCategory extends Model
     {
         parent::boot();
     }
-    
+
     // Methods
     use \App\Traits\Methods\getNameAttribute;
-    
+
     /** Gets list of categories
      * 
      * @return Array [1=>'case',..]
      */
     public static function getList()
-    {     
+    {
         $categories = self::orderBy('id')->get();
-        
+
         $list = array();
         foreach ($categories as $row) {
             $list[$row->id] = $row->name;
         }
-        
-        return $list;         
+
+        return $list;
     }
-    
+
     /** Gets list of name_en categories for field names of grams
      * 
      * @return Array ['case',..]
      */
     public static function getNames()
-    {     
+    {
         $categories = self::orderBy('sequence_number')->get();
-        
+
         $list = array();
         foreach ($categories as $row) {
             $list[] = $row->name_en;
         }
-        
-        return $list;         
+
+        return $list;
     }
-    
-    public static function getIDByName($name) {
+
+    public static function getIDByName($name)
+    {
         $category = self::where('name_en', $name)->first();
         if (!$category) {
             return null;

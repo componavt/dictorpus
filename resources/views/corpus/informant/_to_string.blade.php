@@ -6,7 +6,7 @@
         }
         
         if ($informant->birth_date) {
-            $info[] = '<b>'.\Lang::get('corpus.birth_year'). '</b> <i>'. $informant->birth_date.'</i>';
+            $info[] = '<b>'.trans('corpus.birth_year'). '</b> <i>'. $informant->birth_date.'</i>';
         }
 
         $informant_info = join(', ', $info);

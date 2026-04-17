@@ -1,6 +1,8 @@
-<?php namespace App\Traits\Methods;
+<?php
 
-use LaravelLocalization;
+namespace App\Traits\Methods;
+
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 trait getNameAttribute
 {
@@ -8,16 +10,16 @@ trait getNameAttribute
      * 
      * @return String
      */
-    public function getNameAttribute() : String
+    public function getNameAttribute(): String
     {
         $locale = LaravelLocalization::getCurrentLocale();
         $column = "name_" . $locale;
         $name = $this->{$column};
-        
-        if (!$name && $locale!='ru') {
+
+        if (!$name && $locale != 'ru') {
             $name = $this->name_ru;
         }
-        
-        return $name ? $name: '';
+
+        return $name ? $name : '';
     }
 }

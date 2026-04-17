@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use Response;
+use Illuminate\Support\Facades\Response;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
@@ -15,10 +15,10 @@ use App\Models\Corpus\Topic;
 
 class TopicController extends Controller
 {
-    public $url_args=[];
-    public $args_by_get='';
-    
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
@@ -26,9 +26,9 @@ class TopicController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/topic/', ['only' => ['create','store','edit','update','destroy']]);
-        $this->url_args = Topic::urlArgs($request);  
-        
+        $this->middleware('auth:corpus.edit,/corpus/topic/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
+        $this->url_args = Topic::urlArgs($request);
+
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
@@ -41,7 +41,7 @@ class TopicController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $topics = Topic::search($url_args)->get()->sortBy('number_in_genres');
         $numAll = $topics->count();
 
@@ -49,9 +49,18 @@ class TopicController extends Controller
         $genre_values = Genre::getList();
         $plot_values = Plot::getList();
 
-        return view('corpus.topic.index', 
-                    compact('corpus_values', 'genre_values', 'numAll', 
-                            'plot_values', 'topics', 'args_by_get', 'url_args'));
+        return view(
+            'corpus.topic.index',
+            compact(
+                'corpus_values',
+                'genre_values',
+                'numAll',
+                'plot_values',
+                'topics',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -63,17 +72,25 @@ class TopicController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $genre_values = Genre::getNumeredList();
-        $plot_values = [NULL => ''] + Plot::getList();  
+        $plot_values = [NULL => ''] + Plot::getList();
         $genre_id = 66; // руны
-        
-        return view('corpus.topic.create', 
-                compact('genre_id', 'genre_values', 'plot_values',  
-                        'args_by_get', 'url_args'));
+
+        return view(
+            'corpus.topic.create',
+            compact(
+                'genre_id',
+                'genre_values',
+                'plot_values',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
-    public function validateRequest(Request $request) {
+    public function validateRequest(Request $request)
+    {
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
@@ -91,24 +108,24 @@ class TopicController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $this->validateRequest($request);
-        
+
         $topic = Topic::create($request->all());
         $topic->saveAddition($request->plot_id);
-        
-        return Redirect::to('/corpus/topic/'.($this->args_by_get))
-            ->withSuccess(\Lang::get('messages.created_success'));        
+
+        return Redirect::to('/corpus/topic/' . ($this->args_by_get))
+            ->withSuccess(trans('messages.created_success'));
     }
 
     public function simpleStore(Request $request)
     {
-        $this->validateRequest($request);        
+        $this->validateRequest($request);
         $topic = Topic::create($request->all());
         $topic->saveAddition($request->plot_id);
-        return $topic->id;        
+        return $topic->id;
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -117,7 +134,7 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/corpus/topic/'.($this->args_by_get));
+        return Redirect::to('/corpus/topic/' . ($this->args_by_get));
     }
 
     /**
@@ -130,16 +147,25 @@ class TopicController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
-        $topic = Topic::find($id); 
+
+        $topic = Topic::find($id);
         $genre_values = Genre::getNumeredList();
         $genre_id = $topic->genre_id;
-        $plot_values = [NULL => ''] + Plot::getList();  
+        $plot_values = [NULL => ''] + Plot::getList();
         $plot_value = $topic->plotValue();
-//dd($plot_value);        
-        return view('corpus.topic.edit', 
-                compact('genre_id', 'genre_values', 'plot_value', 
-                        'plot_values', 'topic', 'args_by_get', 'url_args'));
+        //dd($plot_value);        
+        return view(
+            'corpus.topic.edit',
+            compact(
+                'genre_id',
+                'genre_values',
+                'plot_value',
+                'plot_values',
+                'topic',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -155,14 +181,14 @@ class TopicController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-//dd($request->all());        
+        //dd($request->all());        
         $topic = Topic::find($id);
         $topic->fill($request->all())->save();
         $topic->saveAddition($request->plot_id);
-        
-//        return Redirect::to('/corpus/topic/?search_id='.$topic->id)
-        return Redirect::to('/corpus/topic/'.($this->args_by_get))
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        //        return Redirect::to('/corpus/topic/?search_id='.$topic->id)
+        return Redirect::to('/corpus/topic/' . ($this->args_by_get))
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -175,46 +201,45 @@ class TopicController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $topic = Topic::find($id);
-                if($topic){
+                if ($topic) {
                     $topic_name = $topic->name;
-                    if ($topic->texts()->count()>0) {
+                    if ($topic->texts()->count() > 0) {
                         $error = true;
-                        $result['error_message'] = \Lang::get('corpus.topic_has_text', ['name'=>$topic_name]);                        
+                        $result['error_message'] = trans('corpus.topic_has_text', ['name' => $topic_name]);
                     } else {
                         $topic->plots()->detach();
                         $topic->delete();
-                        $result['message'] = \Lang::get('corpus.topic_removed', ['name'=>$topic_name]);
+                        $result['message'] = trans('corpus.topic_removed', ['name' => $topic_name]);
                     }
-                }
-                else{
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          } catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        } else{
-            $error =true;
-            $status_code = 400;
-            $result['message']='Request data is empty';
-        }
-        
-        if ($error) {
-                return Redirect::to('/corpus/topic/'.($this->args_by_get))
-                               ->withErrors($result['error_message']);
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
         } else {
-            return Redirect::to('/corpus/topic/'.($this->args_by_get))
-                  ->withSuccess($result['message']);
+            $error = true;
+            $status_code = 400;
+            $result['message'] = 'Request data is empty';
+        }
+
+        if ($error) {
+            return Redirect::to('/corpus/topic/' . ($this->args_by_get))
+                ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/corpus/topic/' . ($this->args_by_get))
+                ->withSuccess($result['message']);
         }
     }
-    
+
     /**
      * Gets list of places for drop down list in JSON format
      * Test url: /corpus/topic/list?lang_id[]=1
@@ -223,30 +248,31 @@ class TopicController extends Controller
      */
     public function topicList(Request $request)
     {
-        $topic_name = '%'.$request->input('q').'%';
+        $topic_name = '%' . $request->input('q') . '%';
         $plot_ids = (array)$request->input('plot_id');
 
         $list = [];
-        $topics = Topic::where(function($q) use ($topic_name){
-                            $q->where('name_en','like', $topic_name)
-                              ->orWhere('name_ru','like', $topic_name);
-                         });
-        if (sizeof($plot_ids)) {                 
+        $topics = Topic::where(function ($q) use ($topic_name) {
+            $q->where('name_en', 'like', $topic_name)
+                ->orWhere('name_ru', 'like', $topic_name);
+        });
+        if (sizeof($plot_ids)) {
             $topics = $topics->whereIn('id', function ($q) use ($plot_ids) {
                 $q->select('topic_id')->from('plot_topic')
-                  ->whereIn('plot_id', $plot_ids);
+                    ->whereIn('plot_id', $plot_ids);
             });
         }
-        
-        $topics = $topics->orderBy('sequence_number')->get();
-                         
-        foreach ($topics as $topic) {
-            $list[]=['id'  => $topic->id, 
-                     'text'=> $topic->name];
-        }  
-//dd($list);        
-//dd(sizeof($places));
-        return Response::json($list);
 
+        $topics = $topics->orderBy('sequence_number')->get();
+
+        foreach ($topics as $topic) {
+            $list[] = [
+                'id'  => $topic->id,
+                'text' => $topic->name
+            ];
+        }
+        //dd($list);        
+        //dd(sizeof($places));
+        return Response::json($list);
     }
 }

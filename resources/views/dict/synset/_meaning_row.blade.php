@@ -1,8 +1,8 @@
-        <tr id='meaning-{{ $meaning->id }}' class="meaning-row" style="@if ($meaning->id===$synset->dominant_id) font-weight:bold; @endif">
+<tr id='meaning-{{ $meaning->id }}' class="meaning-row" style="@if (!empty($synset->dominant_id) && $meaning->id===$synset->dominant_id) font-weight:bold; @endif">
             <td>
                 <span style="padding-right: 10px">
                     <input id="dominant-{{ $meaning->id }}" class="check-dominant" data-id="{{ $meaning->id }}" 
-                           type='radio' name='dominant_id' value='{{ $meaning->id }}'{{ $meaning->id===$synset->dominant_id ? ' checked' : '' }}
+                           type='radio' name='dominant_id' value='{{ $meaning->id }}'{{ (!empty($synset->dominant_id) && $meaning->id===$synset->dominant_id) ? ' checked' : '' }}
                            style="@if ($disabled) display:none; @endif" title="Выберите доминанту">
                 </span>
             </td>         

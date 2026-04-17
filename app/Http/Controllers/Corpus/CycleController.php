@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Redirect;
-use Response;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Cycle;
@@ -15,10 +15,10 @@ use App\Models\Corpus\Genre;
 
 class CycleController extends Controller
 {
-    public $url_args=[];
-    public $args_by_get='';
-    
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
@@ -26,9 +26,9 @@ class CycleController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/cycle/', ['except' => ['index','cycleList']]);
-        $this->url_args = Cycle::urlArgs($request);  
-        
+        $this->middleware('auth:corpus.edit,/corpus/cycle/', ['except' => ['index', 'cycleList']]);
+        $this->url_args = Cycle::urlArgs($request);
+
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
@@ -41,7 +41,7 @@ class CycleController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $cycles = Cycle::search($url_args);
         $numAll = $cycles->count();
 
@@ -49,9 +49,17 @@ class CycleController extends Controller
         $corpus_values = Corpus::getList();
         $genre_values = Genre::getList();
 
-        return view('corpus.cycle.index', 
-                    compact('corpus_values', 'genre_values', 'cycles', 'numAll', 
-                            'args_by_get', 'url_args'));
+        return view(
+            'corpus.cycle.index',
+            compact(
+                'corpus_values',
+                'genre_values',
+                'cycles',
+                'numAll',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -63,11 +71,13 @@ class CycleController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $genre_id = Genre::LEGEND_ID;
         $genre_values = Genre::getNumeredList();
-        return view('corpus.cycle.create', 
-                compact('genre_id', 'genre_values', 'args_by_get', 'url_args'));
+        return view(
+            'corpus.cycle.create',
+            compact('genre_id', 'genre_values', 'args_by_get', 'url_args')
+        );
     }
 
     /**
@@ -80,16 +90,16 @@ class CycleController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         $cycle = Cycle::create($request->all());
-        
-        return Redirect::to('/corpus/cycle/'.($this->args_by_get))
-            ->withSuccess(\Lang::get('messages.created_success'));        
+
+        return Redirect::to('/corpus/cycle/' . ($this->args_by_get))
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -100,7 +110,7 @@ class CycleController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/corpus/cycle/'.($this->args_by_get));
+        return Redirect::to('/corpus/cycle/' . ($this->args_by_get));
     }
 
     /**
@@ -113,14 +123,20 @@ class CycleController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
-        $cycle = Cycle::find($id); 
+
+        $cycle = Cycle::find($id);
         $genre_id = Genre::LEGEND_ID;
         $genre_values = Genre::getNumeredList();
-        
-        return view('corpus.cycle.edit', 
-                compact('genre_values', 'cycle',
-                        'args_by_get', 'url_args'));
+
+        return view(
+            'corpus.cycle.edit',
+            compact(
+                'genre_values',
+                'cycle',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -136,13 +152,13 @@ class CycleController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         $cycle = Cycle::find($id);
         $cycle->fill($request->all())->save();
-        
-//        return Redirect::to('/corpus/cycle/?search_id='.$cycle->id)
-        return Redirect::to('/corpus/cycle/'.($this->args_by_get))
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        //        return Redirect::to('/corpus/cycle/?search_id='.$cycle->id)
+        return Redirect::to('/corpus/cycle/' . ($this->args_by_get))
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -155,45 +171,44 @@ class CycleController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $cycle = Cycle::find($id);
-                if($cycle){
+                if ($cycle) {
                     $cycle_name = $cycle->name;
-                    if ($cycle->texts()->count()>0) {
+                    if ($cycle->texts()->count() > 0) {
                         $error = true;
-                        $result['error_message'] = \Lang::get('corpus.cycle_has_text', ['name'=>$cycle_name]);                        
+                        $result['error_message'] = trans('corpus.cycle_has_text', ['name' => $cycle_name]);
                     } else {
                         $cycle->delete();
-                        $result['message'] = \Lang::get('corpus.cycle_removed', ['name'=>$cycle_name]);
+                        $result['message'] = trans('corpus.cycle_removed', ['name' => $cycle_name]);
                     }
-                }
-                else{
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          } catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        } else{
-            $error =true;
-            $status_code = 400;
-            $result['message']='Request data is empty';
-        }
-        
-        if ($error) {
-                return Redirect::to('/corpus/cycle/'.($this->args_by_get))
-                               ->withErrors($result['error_message']);
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
         } else {
-            return Redirect::to('/corpus/cycle/'.($this->args_by_get))
-                  ->withSuccess($result['message']);
+            $error = true;
+            $status_code = 400;
+            $result['message'] = 'Request data is empty';
+        }
+
+        if ($error) {
+            return Redirect::to('/corpus/cycle/' . ($this->args_by_get))
+                ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/corpus/cycle/' . ($this->args_by_get))
+                ->withSuccess($result['message']);
         }
     }
-    
+
     /**
      * Gets list of places for drop down list in JSON format
      * Test url: /corpus/cycle/list?lang_id[]=1
@@ -202,31 +217,32 @@ class CycleController extends Controller
      */
     public function cycleList(Request $request)
     {
-        $cycle_name = '%'.$request->input('q').'%';
-        
+        $cycle_name = '%' . $request->input('q') . '%';
+
         $genre_ids = (array)$request->input('genre_id');
         foreach (Genre::whereIn('parent_id', $genre_ids)->get() as $g) {
             $genre_ids[] = $g->id;
         }
 
         $list = [];
-        $cycles = Cycle::where(function($q) use ($cycle_name){
-                            $q->where('name_en','like', $cycle_name)
-                              ->orWhere('name_ru','like', $cycle_name);
-                         });
-        if (sizeof($genre_ids)) {                 
-            $cycles = $cycles -> whereIn('genre_id',$genre_ids);
+        $cycles = Cycle::where(function ($q) use ($cycle_name) {
+            $q->where('name_en', 'like', $cycle_name)
+                ->orWhere('name_ru', 'like', $cycle_name);
+        });
+        if (sizeof($genre_ids)) {
+            $cycles = $cycles->whereIn('genre_id', $genre_ids);
         }
-        
-        $cycles = $cycles->orderBy('sequence_number')->get();
-                         
-        foreach ($cycles as $cycle) {
-            $list[]=['id'  => $cycle->id, 
-                     'text'=> $cycle->name];
-        }  
-//dd($list);        
-//dd(sizeof($places));
-        return Response::json($list);
 
+        $cycles = $cycles->orderBy('sequence_number')->get();
+
+        foreach ($cycles as $cycle) {
+            $list[] = [
+                'id'  => $cycle->id,
+                'text' => $cycle->name
+            ];
+        }
+        //dd($list);        
+        //dd(sizeof($places));
+        return Response::json($list);
     }
 }

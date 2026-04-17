@@ -3,7 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Library\Str;
 
@@ -16,8 +16,8 @@ use App\Models\Corpus\Text;
 class Place extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['district_id','region_id','name_en','name_ru', 'latitude', 'longitude'];
-    
+    protected $fillable = ['district_id', 'region_id', 'name_en', 'name_ru', 'latitude', 'longitude'];
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -36,26 +36,26 @@ class Place extends Model
     //Scopes
     use \App\Traits\Scopes\WithCoords;
     use \App\Traits\Scopes\WithDialectAudio;
-    
+
     public function identifiableName()
     {
-        return $this->placeString('', false);//name;
-    }    
+        return $this->placeString('', false); //name;
+    }
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Texts;
-    
+
     public function district()
     {
         return $this->belongsTo(District::class);
-    }  
-    
+    }
+
     public function region()
     {
         return $this->belongsTo(Region::class);
-    }    
-    
+    }
+
     public function other_names()
     {
         return $this->hasMany(PlaceName::class);
@@ -64,13 +64,13 @@ class Place extends Model
     // Place __has_many__ Events
     public function events()
     {
-        return $this->hasMany(Event::class,'place_id');
+        return $this->hasMany(Event::class, 'place_id');
     }
 
     // Place __has_many__ Informants
     public function informants()
     {
-        return $this->hasMany(Informant::class,'birth_place_id');
+        return $this->hasMany(Informant::class, 'birth_place_id');
     }
 
     // Place __has_many_through__ Texts
@@ -82,7 +82,7 @@ class Place extends Model
     public function texts_with_audio()
     {
         return $this->eventTexts()->whereIn('texts.id', function ($q) {
-            $q -> select('text_id')->from('audiotexts');
+            $q->select('text_id')->from('audiotexts');
         });
     }
 
@@ -90,65 +90,65 @@ class Place extends Model
      * 
      * @return Array [1=>'Пондала (Pondal), Бабаевский р-н, Вологодская обл.',..]
      */
-    public static function getListByLang($lang_id, $full_name=false)
-    {     
+    public static function getListByLang($lang_id, $full_name = false)
+    {
         $locale = LaravelLocalization::getCurrentLocale();
-        $name_field = 'name_'.$locale;
+        $name_field = 'name_' . $locale;
         $places = self::whereIn('id', function ($q) use ($lang_id) {
-                            $q->select('place_id')->from('dialect_place')
-                              ->whereIn('dialect_id', function ($q2) use ($lang_id) {
-                                  $q2->select('id')->from('dialects')
-                                     ->whereLangId($lang_id);
-                              });
-                        })->orderBy($name_field)->get();
-        
+            $q->select('place_id')->from('dialect_place')
+                ->whereIn('dialect_id', function ($q2) use ($lang_id) {
+                    $q2->select('id')->from('dialects')
+                        ->whereLangId($lang_id);
+                });
+        })->orderBy($name_field)->get();
+
         $list = array();
         foreach ($places as $row) {
             $list[$row->id] = $full_name ? $row->placeString() : $row->{$name_field};
         }
-        
-        return $list;         
+
+        return $list;
     }
-    
+
     /** Gets list of places
      * 
      * @return Array [1=>'Пондала (Pondal), Бабаевский р-н, Вологодская обл.',..]
      */
-    public static function getList($full=true)
-    {     
+    public static function getList($full = true)
+    {
         $locale = LaravelLocalization::getCurrentLocale();
-        
-        $places = self::orderBy('name_'.$locale)->get();
-        
+
+        $places = self::orderBy('name_' . $locale)->get();
+
         $list = array();
         foreach ($places as $row) {
-            $list[$row->id] = $full ? $row->placeString('', false): $row->name;
+            $list[$row->id] = $full ? $row->placeString('', false) : $row->name;
         }
-        
-        return $list;         
+
+        return $list;
     }
-    
+
     /** Gets list of places
      * 
      * @return Array [1=>'Dialectal texts (199)',..]
      */
     public static function getListWithQuantity($method_name)
-    {     
+    {
         $locale = LaravelLocalization::getCurrentLocale();
-        
-        $places = self::orderBy('name_'.$locale)->get();
-        
+
+        $places = self::orderBy('name_' . $locale)->get();
+
         $list = array();
         foreach ($places as $row) {
-            $count=$row->$method_name()->count();
+            $count = $row->$method_name()->count();
             $name = $row->placeString('', false);
             if ($count) {
                 $name .= " ($count)";
             }
             $list[$row->id] = $name;
         }
-        
-        return $list;         
+
+        return $list;
     }
 
     /**
@@ -160,132 +160,140 @@ class Place extends Model
      * 
      * @return String
      */
-    
-    public function placeString($lang_id='', $all_place_names=true, $link='')
+
+    public function placeString($lang_id = '', $all_place_names = true, $link = '')
     {
         $info = [];
-        
+
         if ($this->name) {
             $info[0] = $this->name;
             if ($link) {
-                $info[0] = to_link($info[0], $link.$this->id);
+                $info[0] = to_link($info[0], $link . $this->id);
             }
             if ($all_place_names && $this->other_names()->count()) {
                 $other_names = $this->other_names();
                 if ($lang_id) {
-                    $other_names = $other_names -> where('lang_id',$lang_id);
+                    $other_names = $other_names->where('lang_id', $lang_id);
                 }
-                $other_names = $other_names -> get();
-                
+                $other_names = $other_names->get();
+
                 $tmp = [];
                 foreach ($other_names as $other_name) {
-                    $tmp[] = $other_name->name; 
+                    $tmp[] = $other_name->name;
                 }
                 if (sizeof($tmp)) {
-                    $info[0] .= ' ('.join(', ',$tmp).')';
+                    $info[0] .= ' (' . join(', ', $tmp) . ')';
                 }
             }
         }
-        
+
         if ($this->district) {
             $info[] = $this->district->name;
         }
-        
+
         if ($this->region) {
             $info[] = $this->region->name;
         }
-        
+
         return join(', ', $info);
-    }    
-    
-    public static function urlArgs($request) {
+    }
+
+    public static function urlArgs($request)
+    {
         $url_args = Str::urlArgs($request) + [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
-                    'search_district'  => (int)$request->input('search_district'),
-                    'search_id'       => (int)$request->input('search_id'),
-                    'search_name'     => $request->input('search_name'),
-                    'search_region'     => (int)$request->input('search_region'),
-                ];
-        
+            'limit_num'       => (int)$request->input('limit_num'),
+            'page'            => (int)$request->input('page'),
+            'search_district'  => (int)$request->input('search_district'),
+            'search_id'       => (int)$request->input('search_id'),
+            'search_name'     => $request->input('search_name'),
+            'search_region'     => (int)$request->input('search_region'),
+        ];
+
         if (!$url_args['search_id']) {
             $url_args['search_id'] = NULL;
         }
-        
+
         return $url_args;
     }
-    
-    public static function search(Array $url_args) {
+
+    public static function search(array $url_args)
+    {
         $locale = LaravelLocalization::getCurrentLocale();
-        $places = self::orderBy('name_'.$locale);
+        $places = self::orderBy('name_' . $locale);
 
         $places = self::searchByDistrict($places, $url_args['search_district']);
         $places = self::searchByID($places, $url_args['search_id']);
         $places = self::searchByPlaceName($places, $url_args['search_name']);
         $places = self::searchByRegion($places, $url_args['search_region']);
-//dd($places->toSql());                                
+        //dd($places->toSql());                                
         return $places;
     }
-    
-    public static function searchByPlaceName($places, $place_name) {
+
+    public static function searchByPlaceName($places, $place_name)
+    {
         if (!$place_name) {
             return $places;
         }
-        return $places->where(function($q) use ($place_name){
-                        $q->whereIn('id',function($query) use ($place_name){
-                            $query->select('place_id')
-                            ->from(with(new PlaceName)->getTable())
-                            ->where('name','like', $place_name);
-                        })->orWhere('name_en','like', $place_name)
-                          ->orWhere('name_ru','like', $place_name);
-                });
+        return $places->where(function ($q) use ($place_name) {
+            $q->whereIn('id', function ($query) use ($place_name) {
+                $query->select('place_id')
+                    ->from(with(new PlaceName)->getTable())
+                    ->where('name', 'like', $place_name);
+            })->orWhere('name_en', 'like', $place_name)
+                ->orWhere('name_ru', 'like', $place_name);
+        });
     }
-    
-    public static function searchByRegion($places, $region_id) {
+
+    public static function searchByRegion($places, $region_id)
+    {
         if (!$region_id) {
             return $places;
         }
-        return $places->where('region_id',$region_id);
+        return $places->where('region_id', $region_id);
     }
-    
-    public static function searchByDistrict($places, $district_id) {
+
+    public static function searchByDistrict($places, $district_id)
+    {
         if (!$district_id) {
             return $places;
         }
-        return $places->where('district_id',$district_id);
+        return $places->where('district_id', $district_id);
     }
-    
-    public static function searchByID($places, $search_id) {
+
+    public static function searchByID($places, $search_id)
+    {
         if (!$search_id) {
             return $places;
         }
-        return $places->where('id',$search_id);
+        return $places->where('id', $search_id);
     }
-    
-    public function countTextBirthPlace() {
+
+    public function countTextBirthPlace()
+    {
         $place = $this->id;
-        $texts = Text::whereIn('event_id',function($query) use ($place){
-                    $query->select('event_id')
-                    ->from('event_informant')
-                    ->whereIn('informant_id',function($query) use ($place){
-                        $query->select('id')
+        $texts = Text::whereIn('event_id', function ($query) use ($place) {
+            $query->select('event_id')
+                ->from('event_informant')
+                ->whereIn('informant_id', function ($query) use ($place) {
+                    $query->select('id')
                         ->from('informants')
-                        ->where('birth_place_id',$place);
-                    });
+                        ->where('birth_place_id', $place);
                 });
+        });
         return $texts->count();
     }
-    
+
     /**
      * @return Array [<dialect1> => <lang1>, ... ]
      */
-    public function getDialectLangs() {
+    public function getDialectLangs()
+    {
         $out = [];
-        
+
         foreach ($this->dialects as $dialect) {
             $out[$dialect->id] = $dialect->lang_id;
         }
-        
+
         return $out;
     }
 }

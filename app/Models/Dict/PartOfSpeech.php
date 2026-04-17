@@ -3,13 +3,13 @@
 namespace App\Models\Dict;
 
 use Illuminate\Database\Eloquent\Model;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class PartOfSpeech extends Model
 {
     protected $table = 'parts_of_speech';
     protected $fillable = ['name_en', 'name_ru', 'code', 'category', 'name_short_ru', 'without_gram', 'lgr'];
-    
+
     const DICT_CODES = [
         'CCONJ' => 'conj',
         'NOUN' => 's',
@@ -20,11 +20,11 @@ class PartOfSpeech extends Model
         'INTJ' => 'interj',
         'POSTP' => 'postp',
     ];
-    
+
     const PhraseId = 19;
-    
+
     public $timestamps = false;
-    
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -36,29 +36,29 @@ class PartOfSpeech extends Model
     {
         parent::boot();
     }
-    
+
     // PartOfSpeech __has_many__ Gramset
     public function gramsets()
     {
-        return $this->belongsToMany(Gramset::class,'gramset_pos','pos_id', 'gramset_id')
-                ->orderBy('sequence_number');
+        return $this->belongsToMany(Gramset::class, 'gramset_pos', 'pos_id', 'gramset_id')
+            ->orderBy('sequence_number');
     }
-     
+
     // PartOfSpeech __has_many__ Lemma
     public function lemmas()
     {
-        return $this->hasMany(Lemma::class,'pos_id');
+        return $this->hasMany(Lemma::class, 'pos_id');
     }
-    
+
     public function identifiableName()
     {
         return $this->name;
-    }    
+    }
 
     // Methods
     use \App\Traits\Methods\getNameAttribute;
-    
-/* TODO: разобраться для какого проекта объединяли предлоги и послелоги?       
+
+    /* TODO: разобраться для какого проекта объединяли предлоги и послелоги?       
     // muttator
     public function getCodeAttribute($code)
     {
@@ -67,7 +67,7 @@ class PartOfSpeech extends Model
         }
         return $code;
     }
- */       
+ */
     // muttator
     public function getUnimorphAttribute()
     {
@@ -85,33 +85,33 @@ class PartOfSpeech extends Model
         }
         return $code;
     }
-        
+
     public function getDictCodeAttribute()
     {
         $dict_codes = self::DICT_CODES;
-        return isset($dict_codes[$this->code]) ? $dict_codes[$this->code].'.' : $this->code;
+        return isset($dict_codes[$this->code]) ? $dict_codes[$this->code] . '.' : $this->code;
     }
-        
+
     // PartOfSpeech has many Wordforms through Lemma
     public function wordforms()
     {
         $lemmas = $this->lemmas;
         $wordforms = collect([]);
         foreach ($lemmas as $lemma) {
-            $wordforms = $wordforms -> merge($lemma->wordforms);
+            $wordforms = $wordforms->merge($lemma->wordforms);
         }
-//        return $this->hasManyThrough('App\Models\Dict\Wordform', 'App\Models\Dict\Lemma', 'pos_id');
+        //        return $this->hasManyThrough('App\Models\Dict\Wordform', 'App\Models\Dict\Lemma', 'pos_id');
     }
-    
+
     public static function getIDByCode($code)
     {
         $pos = self::getByCode($code);
         if ($pos && isset($pos->id)) {
-//dd($pos->id);
+            //dd($pos->id);
             return $pos->id;
         }
     }
-        
+
     public static function getCodeByID($id)
     {
         $pos = self::find($id);
@@ -119,16 +119,16 @@ class PartOfSpeech extends Model
             return $pos->code;
         }
     }
-        
+
     public static function getNameById($id)
     {
         $pos = self::find($id);
         if ($pos && isset($pos->name)) {
-//dd($pos->id);
+            //dd($pos->id);
             return $pos->name;
         }
     }
-        
+
     public static function getNameByCode($code)
     {
         $pos = self::getByCode($code);
@@ -136,60 +136,68 @@ class PartOfSpeech extends Model
             return $pos->name;
         }
     }
-        
+
     public static function getByCode($code)
     {
         $pos = self::where('code', $code)->first();
         return $pos;
     }
-        
+
     /** Gets all parts of speech for this category
      * 
      * @param int $category category of parts of speech
      * 
      * @return \Illuminate\Http\Response
      */
-    public static function getByCategory($category, $order_by='id')
+    public static function getByCategory($category, $order_by = 'id')
     {
-        return self::where('category',$category)->orderBy($order_by)->get();
-         
+        return self::where('category', $category)->orderBy($order_by)->get();
     }
-    
-    public static function getPhraseID() {
+
+    public static function getPhraseID()
+    {
         return self::getIDByCode('PHRASE');
     }
-        
-    public static function getNameIDs() {
-        return [self::getIDByCode('ADJ'), 
-                self::getIDByCode('NOUN'), 
-                self::getIDByCode('NUM'), 
-                self::getIDByCode('PRON'), 
-                self::getIDByCode('DET'),
-                self::getIDByCode('PROPN'), 
-                self::getIDByCode('PRE'),
-                self::getIDByCode('PRTC')];
+
+    public static function getNameIDs()
+    {
+        return [
+            self::getIDByCode('ADJ'),
+            self::getIDByCode('NOUN'),
+            self::getIDByCode('NUM'),
+            self::getIDByCode('PRON'),
+            self::getIDByCode('DET'),
+            self::getIDByCode('PROPN'),
+            self::getIDByCode('PRE'),
+            self::getIDByCode('PRTC')
+        ];
     }
-    
-    public static function isNameId($id) {
+
+    public static function isNameId($id)
+    {
         return in_array($id, self::getNameIDs());
     }
-    
-    public function isName() {
+
+    public function isName()
+    {
         return self::isNameId($this->id);
     }
-    
-    public static function getVerbID() {
+
+    public static function getVerbID()
+    {
         return self::getIDByCode('VERB');
     }
-    
-    public static function isVerbId($id) {
-        return $id==self::getVerbID();
+
+    public static function isVerbId($id)
+    {
+        return $id == self::getVerbID();
     }
-    
-    public function isVerb() {
+
+    public function isVerb()
+    {
         return self::isVerbId($this->id);
     }
-    
+
     /** Gets list of parts of speech, sorts by category and alphabetically 
      * 
      * @return Array [1=>'Adjective',..]
@@ -197,40 +205,40 @@ class PartOfSpeech extends Model
     public static function getList()
     {
         $parts_of_speech = [];
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        
-        $pos_collec = self::where('name_'.$locale, '<>', '')->orderBy('category')
-                          ->where('category', '<>', 3)
-                          ->orderBy('name_'.$locale)->get();
-        
+
+        $pos_collec = self::where('name_' . $locale, '<>', '')->orderBy('category')
+            ->where('category', '<>', 3)
+            ->orderBy('name_' . $locale)->get();
+
         foreach ($pos_collec as $pos) {
             $parts_of_speech[$pos->id] = $pos->name;
         }
-        
-        return $parts_of_speech;         
+
+        return $parts_of_speech;
     }
-        
+
     public static function getListForOlodict()
     {
         $parts_of_speech = [];
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        
-        $pos_collec = self::where('name_'.$locale, '<>', '')->orderBy('category')
-                          ->whereIn('id', function ($q1) {
-                              $q1->select('pos_id')->from('lemmas')
-                                 ->whereIn('id', Label::checkedOloLemmas());
-                          })
-                          ->orderBy('name_'.$locale)->get();
-        
+
+        $pos_collec = self::where('name_' . $locale, '<>', '')->orderBy('category')
+            ->whereIn('id', function ($q1) {
+                $q1->select('pos_id')->from('lemmas')
+                    ->whereIn('id', Label::checkedOloLemmas());
+            })
+            ->orderBy('name_' . $locale)->get();
+
         foreach ($pos_collec as $pos) {
             $parts_of_speech[$pos->id] = $pos->name;
         }
-        
-        return $parts_of_speech;         
+
+        return $parts_of_speech;
     }
-        
+
     /** Gets list of parts of speech group by category
      * 
      * @return Array ['Open class words' => [1=>'Adjective',..], ...]
@@ -238,51 +246,52 @@ class PartOfSpeech extends Model
     public static function getGroupedList()
     {
         $categories = self::groupBy('category')->orderBy('category')->get(['category']);
-        
+
         $pos_grouped = array();
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        
+
         foreach ($categories as $row) {
-            foreach (self::getByCategory($row->category, 'name_'.$locale) as $pos) {
-                $pos_grouped[\Lang::get('dict.pos_category_'.$row->category)][$pos->id] = $pos->name;
+            foreach (self::getByCategory($row->category, 'name_' . $locale) as $pos) {
+                $pos_grouped[trans('dict.pos_category_' . $row->category)][$pos->id] = $pos->name;
             }
         }
-        
-        return $pos_grouped;         
+
+        return $pos_grouped;
     }
-    
+
     /**
      * Get list of parts of speech for words in texts
      * select * from parts_of_speech where id in (select pos_id from lemmas where id in (select lemma_id from meanings where id in (select meaning_id from meaning_text where relevance>0)));
      * 
      * @return Array ['NOUN' => 'существительное', ...]
      */
-    public static function getListForCorpus() {
+    public static function getListForCorpus()
+    {
         $parts_of_speech = [];
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        
-        $pos_collec = self::where('name_'.$locale, '<>', '')
-                          ->whereIn('id', function ($q1) {
-                              $q1->select('pos_id')->from('lemmas')
-                                 ->whereIn('id', function ($q2) {
-                                    $q2->select('lemma_id')->from('meanings')
-                                       ->whereIn('id', function ($q3) {
-                                            $q3->select('meaning_id')->from('meaning_text')
-                                               ->where('relevance', '>', 0);                                     
-                                       });                                     
-                                 });
-                          })
-                          ->orderBy('name_'.$locale)->get();
-        
+
+        $pos_collec = self::where('name_' . $locale, '<>', '')
+            ->whereIn('id', function ($q1) {
+                $q1->select('pos_id')->from('lemmas')
+                    ->whereIn('id', function ($q2) {
+                        $q2->select('lemma_id')->from('meanings')
+                            ->whereIn('id', function ($q3) {
+                                $q3->select('meaning_id')->from('meaning_text')
+                                    ->where('relevance', '>', 0);
+                            });
+                    });
+            })
+            ->orderBy('name_' . $locale)->get();
+
         foreach ($pos_collec as $pos) {
             $parts_of_speech[$pos->code] = $pos->name;
         }
-        
-        return $parts_of_speech;         
+
+        return $parts_of_speech;
     }
-        
+
     /** Gets list of parts of speech group by category with quantity of records of $model_name
      * 
      * @return Array ['Open class words' => [1=>'Adjective (5)',..], ...]
@@ -290,36 +299,38 @@ class PartOfSpeech extends Model
     public static function getGroupedListWithQuantity($method_name)
     {
         $categories = self::groupBy('category')->orderBy('category')->get(['category']);
-        
+
         $pos_grouped = array();
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        
+
         foreach ($categories as $row) {
-            foreach (self::getByCategory($row->category, 'name_'.$locale) as $pos) {
-                $count=0;
+            foreach (self::getByCategory($row->category, 'name_' . $locale) as $pos) {
+                $count = 0;
                 $pos_name = $pos->name;
                 if ($pos->$method_name()) {
-                    $count=$pos->$method_name()->count();
+                    $count = $pos->$method_name()->count();
                 }
                 if ($count) {
-                    $pos_name .= " (". number_with_space($count).")";
+                    $pos_name .= " (" . number_with_space($count) . ")";
                 }
-                $pos_grouped[\Lang::get('dict.pos_category_'.$row->category)][$pos->id] = $pos_name;
+                $pos_grouped[trans('dict.pos_category_' . $row->category)][$pos->id] = $pos_name;
             }
         }
-        
-        return $pos_grouped;         
+
+        return $pos_grouped;
     }
-    
-    public function isChangeable() {
+
+    public function isChangeable()
+    {
         if ($this->gramsets && sizeof($this->gramsets)) {
             return true;
-        } 
-        return false;            
+        }
+        return false;
     }
-    
-    public static function isExistNonChangableIDs($ids) {
+
+    public static function isExistNonChangableIDs($ids)
+    {
         foreach ($ids as $id) {
             $pos = self::find($id);
             if (!$pos) {
@@ -331,85 +342,91 @@ class PartOfSpeech extends Model
         }
     }
 
-    public static function changeablePOSList() {
+    public static function changeablePOSList()
+    {
         $out = [];
         foreach (self::all() as $pos) {
             if ($pos->isChangeable()) {
                 $out[] = $pos;
             }
-        } 
-//dd($out);
+        }
+        //dd($out);
         return $out;
     }
-    
-    public static function getChangeableListWithQuantity($method_name) {
+
+    public static function getChangeableListWithQuantity($method_name)
+    {
         $out = [];
-       
+
         foreach (self::all() as $pos) {
             if ($pos->isChangeable()) {
-                $count=0;
+                $count = 0;
                 $pos_name = $pos->name;
                 if ($pos->$method_name()) {
-                    $count=number_format($pos->$method_name()->count(), 0, ',', ' ');
+                    $count = number_format($pos->$method_name()->count(), 0, ',', ' ');
                 }
                 if ($count) {
                     $pos_name .= " ($count)";
                 }
                 $out[$pos->id] = $pos_name;
             }
-        } 
-//dd($out);
+        }
+        //dd($out);
         asort($out);
         return $out;
     }
-    
-    public static function changeablePOSIdList() {
+
+    public static function changeablePOSIdList()
+    {
         $out = [];
         foreach (self::all() as $pos) {
             if ($pos->isChangeable()) {
                 $out[] = $pos->id;
             }
-        } 
-//dd($out);
+        }
+        //dd($out);
         sort($out);
         return $out;
     }
-    
-    public static function notChangeablePOSList() {
+
+    public static function notChangeablePOSList()
+    {
         $out = [];
         foreach (self::all() as $pos) {
             if (!$pos->isChangeable()) {
                 $out[] = $pos;
             }
-        } 
-//dd($out);
+        }
+        //dd($out);
         return $out;
     }
-    
-    public static function notChangeablePOSIdList() {
+
+    public static function notChangeablePOSIdList()
+    {
         $out = [];
         foreach (self::all() as $pos) {
             if (!$pos->isChangeable()) {
                 $out[] = $pos->id;
             }
-        } 
-//dd($out);
+        }
+        //dd($out);
         sort($out);
         return $out;
     }
-    
+
     public static function posCategories()
-    {   
+    {
         $categories = [];
-        
-        for ($i=1; $i<=3; $i++) {
-            $categories[$i] = \Lang::get('dict.pos_category_'.$i);
+
+        for ($i = 1; $i <= 3; $i++) {
+            $categories[$i] = trans('dict.pos_category_' . $i);
         }
 
         return $categories;
     }
-    
-    public function mainGramsets() {
+
+    public function mainGramsets()
+    {
         if ($this->isVerb()) {
             return [170, 26, 28, 31]; // , 32, 34, 37
         } elseif ($this->isName()) {

@@ -7,17 +7,17 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use Response;
+use Illuminate\Support\Facades\Response;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 
 class GenreController extends Controller
 {
-    public $url_args=[];
-    public $args_by_get='';
-    
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
@@ -25,9 +25,9 @@ class GenreController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/genre/', ['only' => ['create','store','edit','update','destroy']]);
-        $this->url_args = Genre::urlArgs($request);  
-        
+        $this->middleware('auth:corpus.edit,/corpus/genre/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
+        $this->url_args = Genre::urlArgs($request);
+
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
@@ -40,16 +40,23 @@ class GenreController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $genres = Genre::search($url_args);
         $numAll = $genres->count();
 
         $genres = $genres->get();
         $corpus_values = [NULL => ''] + Corpus::getListWithQuantity('genres');
-//dd($genre_by_corpus);        
-        return view('corpus.genre.index', 
-                    compact('corpus_values', 'genres', 'numAll', 
-                            'args_by_get', 'url_args'));
+        //dd($genre_by_corpus);        
+        return view(
+            'corpus.genre.index',
+            compact(
+                'corpus_values',
+                'genres',
+                'numAll',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -61,11 +68,13 @@ class GenreController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $corpus_values = Corpus::getList();
-        $genre_values = [NULL => ''] + Genre::getNumeredList();        
-        return view('corpus.genre.create', 
-                compact('corpus_values', 'genre_values', 'args_by_get', 'url_args'));
+        $genre_values = [NULL => ''] + Genre::getNumeredList();
+        return view(
+            'corpus.genre.create',
+            compact('corpus_values', 'genre_values', 'args_by_get', 'url_args')
+        );
     }
 
     /**
@@ -78,16 +87,16 @@ class GenreController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         $genre = Genre::create($request->all());
-        
-        return Redirect::to('/corpus/genre/'.($this->args_by_get))
-            ->withSuccess(\Lang::get('messages.created_success'));        
+
+        return Redirect::to('/corpus/genre/' . ($this->args_by_get))
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -98,7 +107,7 @@ class GenreController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/corpus/genre/'.($this->args_by_get));
+        return Redirect::to('/corpus/genre/' . ($this->args_by_get));
     }
 
     /**
@@ -111,14 +120,21 @@ class GenreController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
-        $genre = Genre::find($id); 
+
+        $genre = Genre::find($id);
         $corpus_values = Corpus::getList();
-        $genre_values = [NULL => ''] + Genre::getNumeredList();        
-        
-        return view('corpus.genre.edit', 
-                compact('corpus_values', 'genre', 'genre_values', 
-                        'args_by_get', 'url_args'));
+        $genre_values = [NULL => ''] + Genre::getNumeredList();
+
+        return view(
+            'corpus.genre.edit',
+            compact(
+                'corpus_values',
+                'genre',
+                'genre_values',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -134,13 +150,13 @@ class GenreController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         $genre = Genre::find($id);
         $genre->fill($request->all())->save();
-        
-//        return Redirect::to('/corpus/genre/?search_id='.$genre->id)
-        return Redirect::to('/corpus/genre/'.($this->args_by_get))
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        //        return Redirect::to('/corpus/genre/?search_id='.$genre->id)
+        return Redirect::to('/corpus/genre/' . ($this->args_by_get))
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -153,45 +169,44 @@ class GenreController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $genre = Genre::find($id);
-                if($genre){
+                if ($genre) {
                     $genre_name = $genre->name;
-                    if ($genre->texts()->count()>0) {
+                    if ($genre->texts()->count() > 0) {
                         $error = true;
-                        $result['error_message'] = \Lang::get('corpus.genre_has_text', ['name'=>$genre_name]);                        
+                        $result['error_message'] = trans('corpus.genre_has_text', ['name' => $genre_name]);
                     } else {
                         $genre->delete();
-                        $result['message'] = \Lang::get('corpus.genre_removed', ['name'=>$genre_name]);
+                        $result['message'] = trans('corpus.genre_removed', ['name' => $genre_name]);
                     }
-                }
-                else{
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          } catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        } else{
-            $error =true;
-            $status_code = 400;
-            $result['message']='Request data is empty';
-        }
-        
-        if ($error) {
-                return Redirect::to('/corpus/genre/'.($this->args_by_get))
-                               ->withErrors($result['error_message']);
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
         } else {
-            return Redirect::to('/corpus/genre/'.($this->args_by_get))
-                  ->withSuccess($result['message']);
+            $error = true;
+            $status_code = 400;
+            $result['message'] = 'Request data is empty';
+        }
+
+        if ($error) {
+            return Redirect::to('/corpus/genre/' . ($this->args_by_get))
+                ->withErrors($result['error_message']);
+        } else {
+            return Redirect::to('/corpus/genre/' . ($this->args_by_get))
+                ->withSuccess($result['message']);
         }
     }
-    
+
     /**
      * Gets list of places for drop down list in JSON format
      * Test url: /corpus/genre/list?lang_id[]=1
@@ -200,27 +215,28 @@ class GenreController extends Controller
      */
     public function genreList(Request $request)
     {
-        $genre_name = '%'.$request->input('q').'%';
+        $genre_name = '%' . $request->input('q') . '%';
         $corpus_ids = (array)$request->input('corpus_id');
 
         $list = [];
-        $genres = Genre::where(function($q) use ($genre_name){
-                            $q->where('name_en','like', $genre_name)
-                              ->orWhere('name_ru','like', $genre_name);
-                         });
-        if (sizeof($corpus_ids)) {                 
-            $genres = $genres -> whereIn('corpus_id',$corpus_ids);
+        $genres = Genre::where(function ($q) use ($genre_name) {
+            $q->where('name_en', 'like', $genre_name)
+                ->orWhere('name_ru', 'like', $genre_name);
+        });
+        if (sizeof($corpus_ids)) {
+            $genres = $genres->whereIn('corpus_id', $corpus_ids);
         }
-        
-        $genres = $genres->orderBy('sequence_number')->get();
-                         
-        foreach ($genres as $genre) {
-            $list[]=['id'  => $genre->id, 
-                     'text'=> $genre->numberInList(). '. '. $genre->name];
-        }  
-//dd($list);        
-//dd(sizeof($places));
-        return Response::json($list);
 
+        $genres = $genres->orderBy('sequence_number')->get();
+
+        foreach ($genres as $genre) {
+            $list[] = [
+                'id'  => $genre->id,
+                'text' => $genre->numberInList() . '. ' . $genre->name
+            ];
+        }
+        //dd($list);        
+        //dd(sizeof($places));
+        return Response::json($list);
     }
 }

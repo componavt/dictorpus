@@ -21,7 +21,7 @@
     if (isset($without_text) && $without_text) {
         $title = '';
     } else {
-        $title = \Lang::get('messages.delete');
+        $title = trans('messages.delete');
     }
 
     print sprintf($format, $link, $token, $title, $title ? ' '.$title : '');

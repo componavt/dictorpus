@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Cartalyst\Sentinel\Roles\EloquentRole;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\User;
 
 class Role extends EloquentRole
 {
-    protected $fillable = ['slug','name','permissions'];
-    
+    protected $fillable = ['slug', 'name', 'permissions'];
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -28,7 +28,7 @@ class Role extends EloquentRole
      * 
      * @return String
      */
-    public function getLnameAttribute() : String
+    public function getLnameAttribute(): String
     {
         $locale = LaravelLocalization::getCurrentLocale();
         if ($locale == 'ru') {
@@ -36,15 +36,16 @@ class Role extends EloquentRole
         } else {
             $name = $this->slug;
         }
-        
+
         return $name;
     }
-    
+
     // Role __has_many__ Users
-    public function users(){
+    public function users()
+    {
         return $this->belongsToMany(User::class, 'role_users');
     }
-    
+
     /**
      * Gets a list of permissions for the user.
      *
@@ -54,7 +55,7 @@ class Role extends EloquentRole
     {
         $permissions = $this->permissions;
         $list = [];
-//dd($permissions);       
+        //dd($permissions);       
         if ($permissions) {
             foreach ($permissions as $key => $value) {
                 $list[] = $key;
@@ -68,15 +69,15 @@ class Role extends EloquentRole
      * @return Array [1=>'admin',..]
      */
     public static function getList()
-    {     
-        
+    {
+
         $regions = self::all();
-        
+
         $list = array();
         foreach ($regions as $row) {
             $list[$row->id] = $row->name;
         }
         asort($list);
-        return $list;         
+        return $list;
     }
 }

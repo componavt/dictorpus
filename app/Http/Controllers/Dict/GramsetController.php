@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Response;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
@@ -19,65 +19,78 @@ use App\Models\Dict\PartOfSpeech;
 
 class GramsetController extends Controller
 {
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:ref.edit,/dict/gramset/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/gramset/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
         $this->url_args = [
-                    'limit_num'       => (int)$request->input('limit_num'),
-                    'page'            => (int)$request->input('page'),
-                    'search_category' => (int)$request->input('search_category'),
-                    'search_lang'     => (int)$request->input('search_lang'),
-                    'search_pos'      => (int)$request->input('search_pos'),
-                ];
-        
+            'limit_num'       => (int)$request->input('limit_num'),
+            'page'            => (int)$request->input('page'),
+            'search_category' => (int)$request->input('search_category'),
+            'search_lang'     => (int)$request->input('search_lang'),
+            'search_pos'      => (int)$request->input('search_pos'),
+        ];
+
         if (!$this->url_args['page']) {
             $this->url_args['page'] = 1;
         }
-        
-        if ($this->url_args['limit_num']<=0) {
+
+        if ($this->url_args['limit_num'] <= 0) {
             $this->url_args['limit_num'] = 10;
-        } elseif ($this->url_args['limit_num']>1000) {
+        } elseif ($this->url_args['limit_num'] > 1000) {
             $this->url_args['limit_num'] = 1000;
-        }   
-        
+        }
+
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
-    
-     /**
+
+    /**
      * Show the list of gramsets.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
+    {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $gramsets = Gramset::search($url_args);
         $numAll = sizeof($gramsets->get());
-        $gramsets = $gramsets->paginate($url_args['limit_num']);         
+        $gramsets = $gramsets->paginate($url_args['limit_num']);
 
         $pos_values = PartOfSpeech::getChangeableListWithQuantity('gramsets');
         $lang_values = Lang::getListWithQuantity('gramsets', true);
         $category_values = GramsetCategory::getList();
 
         $gram_fields = Gramset::fieldsForIndex($gramsets);
-              
+
         $url_args_for_out = $url_args; // for links to lemmas and wordforms
         unset($url_args_for_out['page']);
         $args_by_get_for_out = search_values_by_URL($url_args_for_out);
-        
-        
-        return view('dict.gramset.index',
-                compact('gram_fields', 'category_values', 'gramsets', 
-                        'lang_values', 'numAll', 'pos_values', 
-                        'args_by_get', 'args_by_get_for_out', 'url_args'));
-    }   
+
+
+        return view(
+            'dict.gramset.index',
+            compact(
+                'gram_fields',
+                'category_values',
+                'gramsets',
+                'lang_values',
+                'numAll',
+                'pos_values',
+                'args_by_get',
+                'args_by_get_for_out',
+                'url_args'
+            )
+        );
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -88,22 +101,31 @@ class GramsetController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $pos_values = PartOfSpeech::getGroupedList();
         $lang_values = Lang::getList();
-        
+
         $gramset_category_values = GramsetCategory::getList();
-        
-        $grams = [];        
+
+        $grams = [];
         foreach (GramCategory::all()->sortBy('sequence_number') as $gc) {         //   id is gram_category_id
-            $grams[$gc->name_en] = ['name'=> $gc->name,
-                                    'grams' => [NULL=>''] + Gram::getList($gc->id, false)];
+            $grams[$gc->name_en] = [
+                'name' => $gc->name,
+                'grams' => [NULL => ''] + Gram::getList($gc->id, false)
+            ];
         }
 
-        return view('dict.gramset.create',
-                  compact('grams', 'gramset_category_values',
-                          'lang_values', 'pos_values',
-                          'args_by_get', 'url_args'));
+        return view(
+            'dict.gramset.create',
+            compact(
+                'grams',
+                'gramset_category_values',
+                'lang_values',
+                'pos_values',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -119,40 +141,40 @@ class GramsetController extends Controller
             'gram_id_case'  => 'numeric|required_without_all:gram_id_number,gram_id_tense,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
             'gram_id_tense'  => 'numeric|required_without_all:gram_id_case,gram_id_number,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
             'gram_id_person'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
-            'gram_id_mood'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle', 
-            'gram_id_negation'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_infinitive,gram_id_voice,gram_id_participle', 
-            'gram_id_infinitive'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_voice,gram_id_participle', 
-            'gram_id_voice'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_participle', 
-            'gram_id_participle'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice', 
-            'gram_id_reflexive'  => 'numeric', 
+            'gram_id_mood'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
+            'gram_id_negation'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_infinitive,gram_id_voice,gram_id_participle',
+            'gram_id_infinitive'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_voice,gram_id_participle',
+            'gram_id_voice'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_participle',
+            'gram_id_participle'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice',
+            'gram_id_reflexive'  => 'numeric',
             'sequence_number' => 'numeric',
             'parts_of_speech' => 'required|array',
             'langs' => 'required|array',
         ]);
 
         foreach (GramCategory::getNames() as $gc_name) {
-            $column = 'gram_id_'.$gc_name;
+            $column = 'gram_id_' . $gc_name;
             if (!$request[$column]) {
                 $request[$column] = NULL;
             }
         }
 
         $gramset = Gramset::create($request->all());
-        
-//        $gramset ->parts_of_speech()->attach($request['parts_of_speech']);
-        
+
+        //        $gramset ->parts_of_speech()->attach($request['parts_of_speech']);
+
         foreach ($request['parts_of_speech'] as $p_id) {
             foreach ($request['langs'] as $l_id) {
-                $gramset-> parts_of_speech()->attach($p_id, ['lang_id'=>$l_id]);
-                }
+                $gramset->parts_of_speech()->attach($p_id, ['lang_id' => $l_id]);
+            }
         }
- 
-        $back_url = '/dict/gramset/?'.$this->args_by_get;
+
+        $back_url = '/dict/gramset/?' . $this->args_by_get;
 
         return Redirect::to($back_url)
-                       ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -174,33 +196,45 @@ class GramsetController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
-        $gramset = Gramset::find($id); 
+
+        $gramset = Gramset::find($id);
         $pos_values = PartOfSpeech::getGroupedList();
-        
+
         $pos_value = [];
         foreach ($gramset->parts_of_speech as $pos) {
             $pos_value[] = $pos->id;
-        }        
-        
+        }
+
         $lang_values = Lang::getList();
         $lang_value = [];
         foreach ($gramset->langs as $lang) {
             $lang_value[] = $lang->id;
-        }        
-
-        $gramset_category_values = GramsetCategory::getList();
-        
-        $grams = [];        
-        foreach (GramCategory::all()->sortBy('sequence_number') as $gc) {         //   id is gram_category_id
-            $grams[$gc->name_en] = ['name'=> $gc->name,
-                                    'grams' => [NULL=>''] + Gram::getList($gc->id)];
         }
 
-        return view('dict.gramset.edit',
-                  compact('grams', 'gramset', 'gramset_category_values',
-                          'lang_value', 'lang_values', 'pos_value',
-                          'pos_values', 'args_by_get', 'url_args'));
+        $gramset_category_values = GramsetCategory::getList();
+
+        $grams = [];
+        foreach (GramCategory::all()->sortBy('sequence_number') as $gc) {         //   id is gram_category_id
+            $grams[$gc->name_en] = [
+                'name' => $gc->name,
+                'grams' => [NULL => ''] + Gram::getList($gc->id)
+            ];
+        }
+
+        return view(
+            'dict.gramset.edit',
+            compact(
+                'grams',
+                'gramset',
+                'gramset_category_values',
+                'lang_value',
+                'lang_values',
+                'pos_value',
+                'pos_values',
+                'args_by_get',
+                'url_args'
+            )
+        );
     }
 
     /**
@@ -217,40 +251,40 @@ class GramsetController extends Controller
             'gram_id_case'  => 'numeric|required_without_all:gram_id_number,gram_id_tense,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
             'gram_id_tense'  => 'numeric|required_without_all:gram_id_case,gram_id_number,gram_id_person,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
             'gram_id_person'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
-            'gram_id_mood'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle', 
-            'gram_id_negation'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_infinitive,gram_id_voice,gram_id_participle', 
-            'gram_id_infinitive'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_voice,gram_id_participle', 
-            'gram_id_voice'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_participle', 
-            'gram_id_participle'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice', 
-            'gram_id_reflexive'  => 'numeric', 
+            'gram_id_mood'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_negation,gram_id_infinitive,gram_id_voice,gram_id_participle',
+            'gram_id_negation'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_infinitive,gram_id_voice,gram_id_participle',
+            'gram_id_infinitive'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_voice,gram_id_participle',
+            'gram_id_voice'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_participle',
+            'gram_id_participle'  => 'numeric|required_without_all:gram_id_case,gram_id_tense,gram_id_person,gram_id_number,gram_id_mood,gram_id_negation,gram_id_infinitive,gram_id_voice',
+            'gram_id_reflexive'  => 'numeric',
             'sequence_number' => 'numeric',
             'parts_of_speech' => 'required|array',
             'langs' => 'required|array',
         ]);
 
         foreach (GramCategory::getNames() as $gc_name) {
-            $column = 'gram_id_'.$gc_name;
+            $column = 'gram_id_' . $gc_name;
             if (!$request[$column]) {
                 $request[$column] = NULL;
             }
         }
-        
+
         $gramset = Gramset::find($id);
         $gramset->fill($request->all())->save();
 
         $gramset->parts_of_speech()->detach();
-//        $gramset->parts_of_speech()->attach($request['parts_of_speech']);
+        //        $gramset->parts_of_speech()->attach($request['parts_of_speech']);
 
         foreach ($request['parts_of_speech'] as $pos_id) {
             foreach ($request['langs'] as $lang_id) {
-                $gramset-> parts_of_speech()->attach($pos_id, ['lang_id'=>$lang_id]);
-                }
+                $gramset->parts_of_speech()->attach($pos_id, ['lang_id' => $lang_id]);
+            }
         }
- 
-        $back_url = '/dict/gramset/'.$this->args_by_get;
+
+        $back_url = '/dict/gramset/' . $this->args_by_get;
 
         return Redirect::to($back_url)
-                       ->withSuccess(\Lang::get('messages.updated_success'));        
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -263,46 +297,46 @@ class GramsetController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
+        $result = [];
 
-        $back_url = '/dict/gramset/'.$this->args_by_get;
-                
-        if($id != "" && $id > 0) {
-            try{
+        $back_url = '/dict/gramset/' . $this->args_by_get;
+
+        if ($id != "" && $id > 0) {
+            try {
                 $gramset = Gramset::find($id);
-                if($gramset){
+                if ($gramset) {
                     $parts_of_speech = $gramset->parts_of_speech();
                     if (!$gramset->wordforms()->count()) {
                         $gramset_name = $gramset->gramsetString();
                         $parts_of_speech->detach();
                         $gramset->delete();
-                        $result['message'] = \Lang::get('dict.gramset_removed', ['name'=>$gramset_name]);
+                        $result['message'] = trans('dict.gramset_removed', ['name' => $gramset_name]);
                     } else {
                         $error = true;
-                        $result['error_message'] = \Lang::get('dict.gramset_has_wordform');
-                    }    
+                        $result['error_message'] = trans('dict.gramset_has_wordform');
+                    }
                 } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to($back_url)
-                               ->withErrors($result['error_message']);
+            return Redirect::to($back_url)
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to($back_url)
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
 
@@ -318,59 +352,63 @@ class GramsetController extends Controller
         $search_gramset = $request->input('q');
         $lang_id = (int)$request->input('lang_id');
         $pos_id = (int)$request->input('pos_id');
-        $gramsets = Gramset::getList($pos_id,$lang_id,true);
+        $gramsets = Gramset::getList($pos_id, $lang_id, true);
 
         $list = [];
-        foreach ($gramsets as $gramset_id =>$gramset_name) {
-            if (preg_match("/".$search_gramset."/", $gramset_name)) {
-                $list[]=['id'  => $gramset_id, 
-                         'text'=> remove_hyphens($gramset_name)];
+        foreach ($gramsets as $gramset_id => $gramset_name) {
+            if (preg_match("/" . $search_gramset . "/", $gramset_name)) {
+                $list[] = [
+                    'id'  => $gramset_id,
+                    'text' => remove_hyphens($gramset_name)
+                ];
             }
-        }  
-//dd($list);        
+        }
+        //dd($list);        
         return Response::json($list);
     }
-    
+
     /*
      * test: /ru/dict/gramset/3/lemma_count/
      */
-    public function lemmaCount($id, $lang_id, $pos_id, Request $request) {
+    public function lemmaCount($id, $lang_id, $pos_id, Request $request)
+    {
         $without_link = $request->without_link;
-        $gramset = Gramset::find($id);    
-        $count=sizeof($gramset->lemmas($pos_id,$lang_id)->groupBy('lemma_id')->get()); 
+        $gramset = Gramset::find($id);
+        $count = sizeof($gramset->lemmas($pos_id, $lang_id)->groupBy('lemma_id')->get());
         $count = number_format($count, 0, ',', ' ');
         if (!$count || $without_link) {
             return $count;
         }
-        return '<a href="'.LaravelLocalization::localizeURL('/dict/lemma/by_wordforms?search_lang='.$lang_id.'&search_pos='.$pos_id.'&search_gramsets[1]='.$gramset->id).'">'.$count.'</a>';
+        return '<a href="' . LaravelLocalization::localizeURL('/dict/lemma/by_wordforms?search_lang=' . $lang_id . '&search_pos=' . $pos_id . '&search_gramsets[1]=' . $gramset->id) . '">' . $count . '</a>';
     }
-    
-    public function wordformCount($id, $lang_id, $pos_id, Request $request) {
+
+    public function wordformCount($id, $lang_id, $pos_id, Request $request)
+    {
         $without_link = $request->without_link;
-        $gramset = Gramset::find($id);    
-        $count = $gramset->wordforms($pos_id,$lang_id)->count();
+        $gramset = Gramset::find($id);
+        $count = $gramset->wordforms($pos_id, $lang_id)->count();
         $count = number_format($count, 0, ',', ' ');
         if (!$count || $without_link) {
             return $count;
         }
-        return '<a href="'.LaravelLocalization::localizeURL('/dict/wordform?search_lang='.$lang_id.'&search_pos='.$pos_id.'&search_gramset='.$gramset->id).'">'.$count.'</a>';    
+        return '<a href="' . LaravelLocalization::localizeURL('/dict/wordform?search_lang=' . $lang_id . '&search_pos=' . $pos_id . '&search_gramset=' . $gramset->id) . '">' . $count . '</a>';
     }
-    
-    public function textWordCount($id, $lang_id, $pos_id, Request $request) {
+
+    public function textWordCount($id, $lang_id, $pos_id, Request $request)
+    {
         $pos_code = PartOfSpeech::getCodeById($pos_id);
         $without_link = $request->without_link;
-        $gramset = Gramset::find($id);    
-        $count_text=$gramset->countTexts($lang_id, $pos_id); 
+        $gramset = Gramset::find($id);
+        $count_text = $gramset->countTexts($lang_id, $pos_id);
         if (!$count_text) {
             return 0;
         }
         $count_text = number_format($count_text, 0, ',', ' ');
         $count_word = number_format($gramset->countWords($lang_id, $pos_id), 0, ',', ' ');
         if ($without_link) {
-            return $count_text. ' / '. $count_word;
+            return $count_text . ' / ' . $count_word;
         }
-        return '<a href="'.LaravelLocalization::localizeURL('/corpus/sentence/results?search_lang[]='.$lang_id.'&search_words[1][p]='.$pos_code.'&search_words[1][gs]='.$gramset->id).'">'.
-                $count_text.'</a>'. ' / '. $count_word;
+        return '<a href="' . LaravelLocalization::localizeURL('/corpus/sentence/results?search_lang[]=' . $lang_id . '&search_words[1][p]=' . $pos_code . '&search_words[1][gs]=' . $gramset->id) . '">' .
+            $count_text . '</a>' . ' / ' . $count_word;
     }
-    
 }

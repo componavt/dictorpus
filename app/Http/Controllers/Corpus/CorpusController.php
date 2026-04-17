@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use DB;
-use LaravelLocalization;
+use Illuminate\Support\Facades\DB;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Charts\DistributionChart;
 
@@ -17,14 +18,14 @@ use App\Models\Dict\Lang;
 
 class CorpusController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/corpus/corpus/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/corpus/corpus/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
 
     /**
@@ -40,26 +41,28 @@ class CorpusController extends Controller
         if (!$search_id) {
             $search_id = NULL;
         }
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
-        $corpuses = Corpus::orderBy('name_'.$locale);
+        $corpuses = Corpus::orderBy('name_' . $locale);
 
         if ($corpus_name) {
-            $corpuses = $corpuses->where(function($q) use ($corpus_name){
-                            $q->where('name_en','like', $corpus_name)
-                              ->orWhere('name_ru','like', $corpus_name);
-                    });
-        } 
+            $corpuses = $corpuses->where(function ($q) use ($corpus_name) {
+                $q->where('name_en', 'like', $corpus_name)
+                    ->orWhere('name_ru', 'like', $corpus_name);
+            });
+        }
 
         if ($search_id) {
-            $corpuses = $corpuses->where('id',$search_id);
-        } 
+            $corpuses = $corpuses->where('id', $search_id);
+        }
 
         $numAll = $corpuses->count();
         $corpuses = $corpuses->get();
-        
-        return view('corpus.corpus.index',
-                    compact('corpuses', 'corpus_name', 'search_id', 'numAll'));
+
+        return view(
+            'corpus.corpus.index',
+            compact('corpuses', 'corpus_name', 'search_id', 'numAll')
+        );
     }
 
     /**
@@ -84,11 +87,11 @@ class CorpusController extends Controller
             'name_en'  => 'max:255',
             'name_ru'  => 'required|max:255',
         ]);
-        
+
         $corpus = Corpus::create($request->all());
-        
+
         return Redirect::to('/corpus/corpus/')
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -110,10 +113,10 @@ class CorpusController extends Controller
      */
     public function edit($id)
     {
-        $corpus = Corpus::find($id); 
-        
+        $corpus = Corpus::find($id);
+
         return view('corpus.corpus.edit')
-                  ->with(['corpus' => $corpus]);
+            ->with(['corpus' => $corpus]);
     }
 
     /**
@@ -129,12 +132,12 @@ class CorpusController extends Controller
             'name_en'  => 'max:255',
             'name_ru'  => 'required|max:255',
         ]);
-        
+
         $corpus = Corpus::find($id);
         $corpus->fill($request->all())->save();
-        
+
         return Redirect::to('/corpus/corpus/')
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -147,45 +150,44 @@ class CorpusController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $corpus = Corpus::find($id);
-                if($corpus){
+                if ($corpus) {
                     $corpus_name = $corpus->name;
-                    if ($corpus->texts()->count()>0) {
+                    if ($corpus->texts()->count() > 0) {
                         $error = true;
-                        $result['error_message'] = \Lang::get('corpus.corpus_has_text', ['name'=>$corpus_name]);                        
+                        $result['error_message'] = trans('corpus.corpus_has_text', ['name' => $corpus_name]);
                     } else {
                         $corpus->delete();
-                        $result['message'] = \Lang::get('corpus.corpus_removed', ['name'=>$corpus_name]);
+                        $result['message'] = trans('corpus.corpus_removed', ['name' => $corpus_name]);
                     }
-                }
-                else{
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/corpus/corpus/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/corpus/corpus/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/corpus/corpus/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
-    
+
     /**
      * Gets list of corpuses for drop down list in JSON format
      * Test url: /corpus/corpus/list?lang_id[]=1&lang[]=5
@@ -196,7 +198,7 @@ class CorpusController extends Controller
     {
         $locale = LaravelLocalization::getCurrentLocale();
 
-        $corpus_name = '%'.$request->input('q').'%';
+        $corpus_name = '%' . $request->input('q') . '%';
         $lang_ids = (array)$request->input('lang_id');
 
         $list = [];
@@ -215,6 +217,4 @@ class CorpusController extends Controller
          */
         return Response::json($list);
     }
-
-    
 }

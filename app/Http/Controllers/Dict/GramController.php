@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-//use DB;
-//use LaravelLocalization;
 
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
@@ -16,14 +14,14 @@ use App\Models\Dict\PartOfSpeech;
 
 class GramController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/gram/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/gram/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
 
     /**
@@ -35,7 +33,7 @@ class GramController extends Controller
     {
         $gram_categories = GramCategory::all()->sortBy('sequence_number');
         $grams = array();
-        
+
         foreach ($gram_categories as $gc) {         //   id is gram_category_id
             $grams[$gc->name] = Gram::getByCategory($gc->id);
         }
@@ -53,7 +51,7 @@ class GramController extends Controller
         $gram_categories = GramCategory::getList();
 
         return view('dict.gram.create')
-                  ->with(['gram_categories' => $gram_categories]);
+            ->with(['gram_categories' => $gram_categories]);
     }
 
     /**
@@ -71,11 +69,11 @@ class GramController extends Controller
             'name_ru'  => 'required|max:255',
             'sequence_number' => 'numeric'
         ]);
-        
+
         $gram = Gram::create($request->all());
-        
+
         return Redirect::to('/dict/gram/')
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -87,9 +85,9 @@ class GramController extends Controller
     public function show($id)
     {
         $gram = Gram::find($id);
-        
+
         return view('dict.gram.show')
-                  ->with(['gram'=>$gram]);
+            ->with(['gram' => $gram]);
     }
 
     /**
@@ -100,13 +98,14 @@ class GramController extends Controller
      */
     public function edit($id)
     {
-        $gram = Gram::find($id); 
+        $gram = Gram::find($id);
         $gram_categories = GramCategory::getList();
-        
+
         return view('dict.gram.edit')
-                  ->with(['gram' => $gram,
-                          'gram_categories' => $gram_categories,
-                         ]);
+            ->with([
+                'gram' => $gram,
+                'gram_categories' => $gram_categories,
+            ]);
     }
 
     /**
@@ -125,12 +124,12 @@ class GramController extends Controller
             'name_ru'  => 'required|max:255',
             'sequence_number' => 'numeric'
         ]);
-        
+
         $gram = Gram::find($id);
         $gram->fill($request->all())->save();
-        
+
         return Redirect::to('/dict/gram/')
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -143,38 +142,37 @@ class GramController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $gram = Gram::find($id);
-                if($gram){
+                if ($gram) {
                     $gram_name = $gram->name;
                     // TODO!!! check if gramsets with this gram exist
                     $gram->delete();
-                    $result['message'] = \Lang::get('dict.gram_removed', ['name'=>$gram_name]);
-                }
-                else{
+                    $result['message'] = trans('dict.gram_removed', ['name' => $gram_name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/dict/gram/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/dict/gram/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/dict/gram/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
 }

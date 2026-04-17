@@ -7,20 +7,20 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use Redirect;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Models\Dict\GramsetCategory;
 
 class GramsetCategoryController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/gramset_category/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/gramset_category/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
 
     /**
@@ -60,11 +60,11 @@ class GramsetCategoryController extends Controller
             'name_ru'  => 'required|max:255',
             'sequence_number' => 'numeric'
         ]);
-        
+
         $gram = GramsetCategory::create($request->all());
-        
+
         return Redirect::to('/dict/gramset_category/')
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -86,8 +86,8 @@ class GramsetCategoryController extends Controller
      */
     public function edit($id)
     {
-        $gramset_category = GramsetCategory::find($id); 
-        
+        $gramset_category = GramsetCategory::find($id);
+
         return view('dict.gramset_category.edit', compact('gramset_category'));
     }
 
@@ -107,12 +107,12 @@ class GramsetCategoryController extends Controller
             'name_ru'  => 'required|max:255',
             'sequence_number' => 'numeric'
         ]);
-        
+
         $gramset_category = GramsetCategory::find($id);
         $gramset_category->fill($request->all())->save();
-        
+
         return Redirect::to('/dict/gramset_category')
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -125,38 +125,37 @@ class GramsetCategoryController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $gramset_category = GramsetCategory::find($id);
-                if($gramset_category){
+                if ($gramset_category) {
                     $name = $gramset_category->name;
                     // TODO!!! check if gramsets with this gramset_category exist
                     $gramset_category->delete();
-                    $result['message'] = \Lang::get('dict.category_removed', ['name'=>$name]);
-                }
-                else{
+                    $result['message'] = trans('dict.category_removed', ['name' => $name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/dict/gramset_category')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/dict/gramset_category')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/dict/gramset_category')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
 }

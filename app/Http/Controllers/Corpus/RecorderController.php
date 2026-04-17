@@ -7,22 +7,25 @@ use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use LaravelLocalization;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Corpus\Recorder;
 
 class RecorderController extends Controller
 {
-     /**
+    public $url_args = [];
+    public $args_by_get = '';
+
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:corpus.edit,/corpus/recorder/', ['only' => ['create','store','edit','update','destroy']]);
-        
-        $this->url_args = Recorder::urlArgs($request);                   
+        $this->middleware('auth:corpus.edit,/corpus/recorder/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
+
+        $this->url_args = Recorder::urlArgs($request);
         $this->args_by_get = search_values_by_URL($this->url_args);
     }
 
@@ -35,15 +38,17 @@ class RecorderController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
-        
+
         $locale = LaravelLocalization::getCurrentLocale();
         $recorders = Recorder::search($url_args);
 
         $numAll = $recorders->count();
         $recorders = $recorders->paginate($url_args['limit_num']);
-        
-        return view('corpus.recorder.index',
-                    compact('recorders', 'numAll','args_by_get', 'url_args'));
+
+        return view(
+            'corpus.recorder.index',
+            compact('recorders', 'numAll', 'args_by_get', 'url_args')
+        );
     }
 
     /**
@@ -56,7 +61,8 @@ class RecorderController extends Controller
         return view('corpus.recorder.create');
     }
 
-    public function validateRequest(Request $request) {
+    public function validateRequest(Request $request)
+    {
         $this->validate($request, [
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
@@ -71,20 +77,20 @@ class RecorderController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validateRequest($request);        
+        $this->validateRequest($request);
         $recorder = Recorder::create($request->all());
-        
-        return Redirect::to('/corpus/recorder/?search_id='.$recorder->id)
-            ->withSuccess(\Lang::get('messages.created_success'));        
+
+        return Redirect::to('/corpus/recorder/?search_id=' . $recorder->id)
+            ->withSuccess(trans('messages.created_success'));
     }
 
     public function simpleStore(Request $request)
     {
-        $this->validateRequest($request);        
+        $this->validateRequest($request);
         $recorder = Recorder::create($request->all());
-        return $recorder->id;        
+        return $recorder->id;
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -104,9 +110,9 @@ class RecorderController extends Controller
      */
     public function edit($id)
     {
-        $recorder = Recorder::find($id); 
-        
-        return view('corpus.recorder.edit',compact('recorder'));
+        $recorder = Recorder::find($id);
+
+        return view('corpus.recorder.edit', compact('recorder'));
     }
 
     /**
@@ -122,12 +128,12 @@ class RecorderController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         $recorder = Recorder::find($id);
         $recorder->fill($request->all())->save();
-        
-        return Redirect::to('/corpus/recorder/?search_id='.$recorder->id)
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+
+        return Redirect::to('/corpus/recorder/?search_id=' . $recorder->id)
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -140,37 +146,36 @@ class RecorderController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $recorder = Recorder::find($id);
-                if($recorder){
+                if ($recorder) {
                     $recorder_name = $recorder->name;
                     $recorder->delete();
-                    $result['message'] = \Lang::get('corpus.recorder_removed', ['name'=>$recorder_name]);
-                }
-                else{
+                    $result['message'] = trans('corpus.recorder_removed', ['name' => $recorder_name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/corpus/recorder/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/corpus/recorder/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/corpus/recorder/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
 }

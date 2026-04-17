@@ -11,16 +11,16 @@ use App\Models\Dict\Relation;
 
 class RelationController extends Controller
 {
-     /**
+    /**
      * Instantiate a new new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth:ref.edit,/dict/relation/', ['only' => ['create','store','edit','update','destroy']]);
+        $this->middleware('auth:ref.edit,/dict/relation/', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,12 +28,12 @@ class RelationController extends Controller
      */
     public function index(Request $request)
     {
-//        $locale = LaravelLocalization::getCurrentLocale();
-//        $relations = Relation::orderBy('name_'.$locale)->get();
+        //        $locale = LaravelLocalization::getCurrentLocale();
+        //        $relations = Relation::orderBy('name_'.$locale)->get();
         $relations = Relation::orderBy('sequence_number')->get();
-        
+
         return view('dict.relation.index')
-                    ->with(['relations' => $relations]);
+            ->with(['relations' => $relations]);
     }
 
     /**
@@ -43,10 +43,10 @@ class RelationController extends Controller
      */
     public function create()
     {
-        $relation_values = [NULL=>''] + Relation::getList();
+        $relation_values = [NULL => ''] + Relation::getList();
 
         return view('dict.relation.create')
-                  ->with(['relation_values' => $relation_values]);
+            ->with(['relation_values' => $relation_values]);
     }
 
     /**
@@ -61,15 +61,15 @@ class RelationController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-        
+
         if (!$request['reverse_relation_id']) {
             $request['reverse_relation_id'] = NULL;
         }
-//dd($request);        
+        //dd($request);        
         $relation = Relation::create($request->all());
-        
+
         return Redirect::to('/dict/relation/')
-            ->withSuccess(\Lang::get('messages.created_success'));        
+            ->withSuccess(trans('messages.created_success'));
     }
 
     /**
@@ -91,13 +91,14 @@ class RelationController extends Controller
      */
     public function edit($id)
     {
-        $relation = Relation::find($id); 
-        $relation_values = [NULL=>''] + $relation->getList();
-        
+        $relation = Relation::find($id);
+        $relation_values = [NULL => ''] + $relation->getList();
+
         return view('dict.relation.edit')
-                  ->with(['relation' => $relation,
-                          'relation_values' => $relation_values,
-                         ]);
+            ->with([
+                'relation' => $relation,
+                'relation_values' => $relation_values,
+            ]);
     }
 
     /**
@@ -113,17 +114,17 @@ class RelationController extends Controller
             'name_en'  => 'max:150',
             'name_ru'  => 'required|max:150',
         ]);
-//dd($request);       
-        
-        if (!$request->reverse_relation_id) {
-            $request->reverse_relation_id = NULL;
+
+        $data = $request->all();
+        if (empty($data['reverse_relation_id'])) {
+            $data['reverse_relation_id'] = NULL;
         }
-        
+
         $relation = Relation::find($id);
-        $relation->fill($request->all())->save();
-        
+        $relation->fill($data)->save();
+
         return Redirect::to('/dict/relation/')
-            ->withSuccess(\Lang::get('messages.updated_success'));        
+            ->withSuccess(trans('messages.updated_success'));
     }
 
     /**
@@ -136,37 +137,36 @@ class RelationController extends Controller
     {
         $error = false;
         $status_code = 200;
-        $result =[];
-        if($id != "" && $id > 0) {
-            try{
+        $result = [];
+        if ($id != "" && $id > 0) {
+            try {
                 $relation = Relation::find($id);
-                if($relation){
+                if ($relation) {
                     $relation_name = $relation->name;
                     $relation->delete();
-                    $result['message'] = \Lang::get('dict.relation_removed', ['name'=>$relation_name]);
-                }
-                else{
+                    $result['message'] = trans('dict.relation_removed', ['name' => $relation_name]);
+                } else {
                     $error = true;
-                    $result['error_message'] = \Lang::get('messages.record_not_exists');
+                    $result['error_message'] = trans('messages.record_not_exists');
                 }
-          }catch(\Exception $ex){
-                    $error = true;
-                    $status_code = $ex->getCode();
-                    $result['error_code'] = $ex->getCode();
-                    $result['error_message'] = $ex->getMessage();
-                }
-        }else{
-            $error =true;
+            } catch (\Exception $ex) {
+                $error = true;
+                $status_code = $ex->getCode();
+                $result['error_code'] = $ex->getCode();
+                $result['error_message'] = $ex->getMessage();
+            }
+        } else {
+            $error = true;
             $status_code = 400;
-            $result['message']='Request data is empty';
+            $result['message'] = 'Request data is empty';
         }
-        
+
         if ($error) {
-                return Redirect::to('/dict/relation/')
-                               ->withErrors($result['error_message']);
+            return Redirect::to('/dict/relation/')
+                ->withErrors($result['error_message']);
         } else {
             return Redirect::to('/dict/relation/')
-                  ->withSuccess($result['message']);
+                ->withSuccess($result['message']);
         }
     }
 }

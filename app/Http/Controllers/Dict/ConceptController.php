@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-
 use App\Http\Controllers\Controller;
-//use Storage;
 
 use App\Models\Corpus\Place;
 

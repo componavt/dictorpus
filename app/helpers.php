@@ -39,6 +39,15 @@ function createRevisionRecord($obj, $key, $old = null, $new = null)
     return true;
 }
 
+if (! function_exists('vms_user')) {
+    function vms_user($field = null)
+    {
+        $user = auth()->user();
+        if (!$user) return null;
+        return $field ? $user->{$field} : $user;
+    }
+}
+
 if (! function_exists('number_with_space')) {
     function number_with_space($num)
     {
@@ -559,7 +568,9 @@ if (!function_exists('csv_row')) {
     {
         $cells = array_map(function ($value) use ($sep) {
             $value = (string) $value;
-            // double any existing quotes inside the value
+            // normalize backslash-escaped values stored in DB (\" → ", \\ → \)
+            $value = stripslashes($value);
+            // RFC 4180: double any existing quotes inside the value
             $value = str_replace('"', '""', $value);
             // wrap in quotes if field contains separator, quote, newline or carriage return
             if (strpbrk($value, $sep . "\"\n\r") !== false) {
