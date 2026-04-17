@@ -68,7 +68,7 @@ Route::group(
         Route::get('text/{id}/edit/example/{example_id}', 'Corpus\TextController@editExample');
         Route::get('text/{id}/history', 'Corpus\TextController@history');
         Route::get('text/{id}/markup', 'Corpus\TextController@markupText');
-        Route::get('text/{id}/sentences', 'Corpus\TextController@editSentences');
+        Route::get('text/{id}/sentences', 'Corpus\TextController@editSentences')->name('text.sentences');
         Route::get('text/{id}/photos', 'Corpus\TextController@photos');
         Route::post('text/{id}/photos', 'Corpus\TextController@updatePhotos')->name('text.update.photos');
         Route::delete('text/{id}/photos/{photo_id}', 'Corpus\TextController@deletePhoto')->name('text.photos.destroy');

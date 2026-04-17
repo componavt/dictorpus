@@ -117,7 +117,7 @@ trait TextSelect
             }
             $s = KarGram::changeLetters(self::clearText($s));
             if (empty($trans_sentences[$sentence->s_id])) {
-                print "<P>В тексте ".$this->id .'не хватает перевода для предложения '. $sentence->s_id."</p>";
+                print "<P>В тексте <a href=".route('text.sentences', $this->id) .'">'.$this->id. '</a> не хватает перевода для предложения '. $sentence->s_id."</p>";
                 continue;
             }           
             $ts = self::clearText($trans_sentences[$sentence->s_id]['sentence']);
