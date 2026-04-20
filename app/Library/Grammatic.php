@@ -221,9 +221,22 @@ class Grammatic
         if ($lang_id == 5 && $is_reflexive) {
             return self::removeSoftening(KarVerbOlo::wordformByStemsRef($stems, $gramset_id, $dialect_id, $def));
         }
-        return self::removeSoftening(KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def));
+
+        $forms[0] = KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def);
+        $forms[1] = self::removeSoftening($forms[0]);
+        if ($dialect_id != 46) { // северный новописьменный
+            return $forms[1];
+        }
+        if ($forms[0] == $forms[1]) {
+            unset($forms[1]);
+        } else {
+            sort($forms);
+        }
+        return join(', ', $forms);
+//        return self::removeSoftening(KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def));
+//        return KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def);
     }
-    
+        
     public static function removeSoftening($word) {
         if (preg_match("/^(.*[^’]l)’([ei].*)$/ui", $word, $regs)) {
             return $regs[1].$regs[2];
