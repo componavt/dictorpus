@@ -277,7 +277,8 @@ return [
         . '<p>От <b>Н.В. Мичуровой</b> на использование переводов рассказов С.И. Евстафьева '
         . '(<a href="/docs/permissions/michurova.pdf">17.09.2025</a>), 
             статей, опубликованных в газете "Oma Mua" (<a href="/images/permissions/michurova.jpg">23.03.2026</a>,
-                   <a href="/docs/permissions/michurova2026.pdf">06.04.2026</a>).</p>'
+                   <a href="/docs/permissions/michurova2026.pdf">06.04.2026</a>,
+                   <a href="/images/permissions/michurova2026-04.jpg">20.04.2026</a>).</p>'
 
         . '<p>от <b>С.А. Мызникова</b> на использование текстов в книге '
         . '"Русско-вепсские заговоры Олонецкого сборника" (<a href="/docs/permissions/myznikov.pdf">14.11.2023</a>).</p>'
