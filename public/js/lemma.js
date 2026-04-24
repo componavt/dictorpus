@@ -32,17 +32,42 @@ function validateInput ($input, validate) {
   }
   return result.valid;
 }
-function checkLemmaForm() {
-    var $signinLemma = $('#lemma').on('change keyup', function () {
+function checkLemmaForm(formSelector='form') {
+/*    var $signinLemma = $('#lemma').on('change keyup', function () {
         validateInput($signinLemma, validateLemma);
     });
     
-    $('form').on('submit', function (e) {
+    $(formSelector).on('submit', function (e) {
         var valid = validateInput($signinLemma, validateLemma);
-            /*& validateInput($signinPassword, validatePassword);*/
         if (!valid) {
-/*                    alert('Error');            */
+          $(formSelector + ' input[type=submit]').attr("disabled", true);
           e.preventDefault(); // если одно из полей не валидно, не отправляем форму
+        } else {
+          $(formSelector + ' input[type=submit]').attr("disabled", false);
+        }
+    });*/
+    
+    var $signinLemma = $('#lemma');
+    // Универсальный селектор для любой submit-кнопки
+    var $submitBtn = $(formSelector).find(':submit');
+    
+    function updateButtonState() {
+        var isValid = validateInput($signinLemma, validateLemma);
+        $submitBtn.prop('disabled', !isValid);
+        console.log('Button state updated: disabled =', !isValid);
+    }
+    
+    // Обновляем при вводе
+    $signinLemma.on('change keyup input', updateButtonState);
+    
+    // Проверяем сразу при инициализации
+    updateButtonState();
+    
+    // Обработчик отправки — только для подстраховки
+    $(formSelector).on('submit', function (e) {
+        if (!validateInput($signinLemma, validateLemma)) {
+            console.log('Form submission prevented: invalid data');
+            e.preventDefault();
         }
     });
 }

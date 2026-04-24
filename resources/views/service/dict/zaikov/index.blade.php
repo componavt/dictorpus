@@ -77,7 +77,7 @@
 
 @section('jqueryFunc')
     toggleSpecial();
-    checkLemmaForm();
+    checkLemmaForm('#modalAddLemma');
     selectWithLang('.select-dialect', "/dict/dialect/list", 'search_lang', '', true);
     addLemma({{$lang_id}}, {{$label_id}});
     posSelect(false, "#modalAddLemma");
