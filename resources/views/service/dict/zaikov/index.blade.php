@@ -71,7 +71,7 @@
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
-    {!!Html::script('js/lemma.js')!!}
+    {!!js('lemma')!!}
     {!!Html::script('js/new_dict.js')!!}
 @stop
 
