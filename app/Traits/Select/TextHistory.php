@@ -91,7 +91,6 @@ trait TextHistory
                 && $item['key'] != 'transtext_id'
                 && $item['key'] != 'event_id'
                 && $item['key'] != 'checked'
-                && !preg_match("/search/", $item['key'])
                 && $item['key'] != 'text_structure'
                 && $item['key'] != 'source_id';
             //&& !($item['key'] == 'reflexive' && $item['old_value'] == null && $item['new_value'] == 0);
