@@ -239,7 +239,10 @@ return [
         . '(<a href="/docs/permissions/dubinskaya_kibir.pdf">2.07.2025</a>).</p>'
 
         . '<p>От <b>О.А. Дубицкой</b> на использование статей и переводов, опубликованных в газете "Oma Mua" '
-        . 'в 2015-2016 гг. (<a href="/images/permissions/dubitskaya.jpg">6.12.2025</a>), в 2016-2017 гг. (<a href="/docs/permissions/dubitskaya.pdf">7.04.2026</a>).</p>'
+        . 'в 2015-2016 гг. (<a href="/images/permissions/dubitskaya.jpg">6.12.2025</a>), 
+           в 2016-2017 гг. (<a href="/docs/permissions/dubitskaya.pdf">7.04.2026</a>);
+           на использование переводов статей Н.В. Мичуровой, опубликованных в газете "Oma Mua" '
+        . '(<a href="/images/permissions/dubitskaya_2026-04-28.jpg">28.04.2026</a>).</p>'
 
         . '<p>От <b>Н.Г. Зайцевой</b> на использование сборников "Izo Lizoi", "Vauktan unen süles", "Virantanaz", "Minun vepsläine oza" '
         . '(<a href="/docs/permissions/zaitseva.pdf">24.06.2025</a>).</p>'
@@ -318,7 +321,7 @@ return [
         . '(<a href="/images/permissions/semenov.jpg">13.05.2025</a>).</p>'
 
         . '<p>От <b>О.Н. Серебрянниковой</b> на использование перевода статей Е.В. Руппиевой в 2020 и 2023 гг. '
-        . '(<a href="/images/permissions/serebryannikova.jpg">15.11.2025</a>), '
+        . '(<a href="/images/permissions/serebryannikova.jpg">15.11.2025</a>), в 2022 г. (<a href="/images/permissions/serebryannikova_2026-04-27.jpg">27.04.2026</a>); '
         . 'Потаповой Э.А. в 2022 г. и Е.В. Руппиевой в 2023 г. (<a href="/docs/permissions/serebrjannikova.pdf">7.04.2026</a>).</p>'
 
         . '<p>от <b>Н.А. Синицкой</b> на использование произведения "In`aine" '
