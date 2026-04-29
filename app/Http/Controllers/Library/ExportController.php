@@ -400,7 +400,7 @@ class ExportController extends Controller
         ini_set('memory_limit', '512M');
         $categories = ConceptCategory::all();
         $filename = 'export/concepts.csv';
-        Storage::disk('public')->put($filename, "Категория\tID понятия\tПонятие\t\tТолкование");
+        Storage::disk('public')->put($filename, "Категория\tPOS\tID понятия\tПонятие\t\tТолкование");
         foreach ($categories->sortBy('id') as $category) {
             //            Storage::disk('public')->append($filename, $category->id . "\t" . $category->name_ru);
             foreach ($category->concepts as $concept) {
