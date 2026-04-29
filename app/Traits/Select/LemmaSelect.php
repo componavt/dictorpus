@@ -64,35 +64,52 @@ trait LemmaSelect
     public function wordformsForTableVerb(int $dialect_id, $without_empty = false)
     {
         $lang_id = Dialect::getLangIDByID($dialect_id);
+
         $numbers = Gram::getByCategory(2);
-        $wordforms = [];
-        //      $gramsets = Gramset::getGroupedList($this->pos_id, $lang_id);
-        //dd($gramsets);            
+        $moods = Gram::getByCategory(5);
+        $tenses = Gram::getByCategory(3);
+        $persons = Gram::getByCategory(4);
         $negations = Gram::getByCategory(6);
-        foreach (Gram::getByCategory(5) as $mood) {
-            foreach (Gram::getByCategory(3) as $tense) {
+
+        $wordforms = [];
+
+        foreach ($moods as $mood) {
+            $tenseVariants = $this->verbTenseVariantsForMood($mood, $tenses);
+
+            foreach ($tenseVariants as $tense) {
                 foreach ($numbers as $number) {
-                    foreach (Gram::getByCategory(4) as $person) {
+                    foreach ($persons as $person) {
                         foreach ($negations as $negation) {
-                            $gramset = Gramset::gramsetsLangPOS($lang_id, $this->pos_id)
-                                ->whereGramIdMood($mood->id)
-                                ->whereGramIdTense($tense->id)
-                                ->whereGramIdPerson($person->id)
-                                ->whereGramIdNumber($number->id)
-                                ->whereGramIdNegation($negation->id)
-                                ->first();
+                            $gramset = $this->findVerbGramset(
+                                $lang_id,
+                                $mood,
+                                $tense,
+                                $person,
+                                $number,
+                                $negation
+                            );
+
                             if (!$gramset) {
                                 continue;
                             }
-                            if (!$without_empty || $without_empty && $this->wordform($gramset->id, $dialect_id)) {
-                                $wordforms[$mood->name . ', ' . $tense->name][$person->short_name . ', ' . $number->short_name][$negation->id]
-                                    = $this->wordform($gramset->id, $dialect_id);
-                            }
+
+                            $this->putVerbWordformToTable(
+                                $wordforms,
+                                $gramset->id,
+                                $dialect_id,
+                                $without_empty,
+                                $mood,
+                                $tense,
+                                $person,
+                                $number,
+                                $negation
+                            );
                         }
                     }
                 }
             }
         }
+
         $infinite_category_id = 26;
         $gramsets = Gramset::gramsetsLangPOS($lang_id, $this->pos_id)
             ->where('gramset_category_id', $infinite_category_id)->get();
@@ -103,6 +120,59 @@ trait LemmaSelect
             }
         }
         return $wordforms;
+    }
+
+    private function verbTenseVariantsForMood($mood, $tenses): array
+    {
+        return $mood->id == 29 // императив
+            ? [null]
+            : $tenses->all();
+    }
+
+    private function findVerbGramset(
+        int $lang_id,
+        $mood,
+        $tense,
+        $person,
+        $number,
+        $negation
+    ) {
+        $query = Gramset::gramsetsLangPOS($lang_id, $this->pos_id)
+            ->whereGramIdMood($mood->id)
+            ->whereGramIdPerson($person->id)
+            ->whereGramIdNumber($number->id)
+            ->whereGramIdNegation($negation->id);
+
+        if ($tense === null) {
+            $query->whereNull('gram_id_tense');
+        } else {
+            $query->whereGramIdTense($tense->id);
+        }
+
+        return $query->first();
+    }
+
+    private function putVerbWordformToTable(
+        array &$wordforms,
+        int $gramset_id,
+        int $dialect_id,
+        bool $without_empty,
+        $mood,
+        $tense,
+        $person,
+        $number,
+        $negation
+    ): void {
+        $wf = $this->wordform($gramset_id, $dialect_id);
+
+        if ($without_empty && !$wf) {
+            return;
+        }
+
+        $moodTenseKey = $mood->name . ($tense ? ', ' . $tense->name : '');
+        $personNumberKey = $person->short_name . ', ' . $number->short_name;
+
+        $wordforms[$moodTenseKey][$personNumberKey][$negation->id] = $wf;
     }
 
     public function hasEssentialWordforms($without_dialect = null)
