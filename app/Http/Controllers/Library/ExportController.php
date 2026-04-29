@@ -399,13 +399,14 @@ class ExportController extends Controller
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         $categories = ConceptCategory::all();
-        $filename = 'export/concepts.csv';
-        Storage::disk('public')->put($filename, "Категория\tPOS\tID понятия\tПонятие\t\tТолкование");
+        $concept_file = 'export/concepts.csv';
+        $category_file = 'export/concept_categoryies.csv';
+        Storage::disk('public')->put($concept_file, "Категория\tPOS\tID понятия\tПонятие\t\tТолкование");
         foreach ($categories->sortBy('id') as $category) {
-            //            Storage::disk('public')->append($filename, $category->id . "\t" . $category->name_ru);
+            Storage::disk('public')->append($category_file, $category->id . "\t" . $category->name_ru);
             foreach ($category->concepts as $concept) {
                 Storage::disk('public')->append(
-                    $filename,
+                    $concept_file,
                     $category->id .
                         "\t" . $concept->pos->code .
                         "\t" . $concept->id .
