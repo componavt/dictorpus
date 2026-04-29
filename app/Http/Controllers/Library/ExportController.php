@@ -402,11 +402,11 @@ class ExportController extends Controller
         $concept_file = 'export/concepts.csv';
         Storage::disk('public')->put($concept_file, "Категория\tPOS\tID понятия\tПонятие на русском языке\tПонятие на английском языке\tТолкование на русском языке\tТолкование на английском языке");
 
-        $category_file = 'export/concept_categoryies.csv';
-        Storage::disk('public')->put($category_file, "ID категории\tНазвание");
+        $category_file = 'export/concept_categories.csv';
+        Storage::disk('public')->put($category_file, "ID категории\tНазвание на русском языке\tНазвание на английском языке");
 
         foreach ($categories->sortBy('id') as $category) {
-            Storage::disk('public')->append($category_file, $category->id . "\t" . $category->name_ru);
+            Storage::disk('public')->append($category_file, $category->id . "\t" . $category->name_ru . "\t" . $category->name_en);
 
             foreach ($category->concepts as $concept) {
                 Storage::disk('public')->append(
