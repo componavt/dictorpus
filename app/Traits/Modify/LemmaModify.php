@@ -19,6 +19,9 @@ use App\Models\Dict\Phonetic;
 use App\Models\Dict\ReverseLemma;
 use App\Models\Dict\Wordform;
 
+/**
+ * @mixin \App\Models\Dict\Lemma
+ */
 trait LemmaModify
 {
     public function updateLemma($data)

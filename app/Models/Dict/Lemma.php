@@ -20,6 +20,13 @@ use App\Models\Dict\Audio;
 use App\Models\Dict\PartOfSpeech;
 use App\Traits\Scopes\ForLangAndPos;
 
+/**
+ * @property int|null $lang_id
+ * @property string|null $lemma
+ * @property string|null $lemma_for_search
+ * @property int|null $pos_id
+ * @property int $is_norm
+ */
 class Lemma extends Model
 {
     protected $fillable = ['lemma', 'lang_id', 'pos_id', 'lemma_for_search', 'wordform_total', 'is_norm'];

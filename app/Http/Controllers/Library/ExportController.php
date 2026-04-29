@@ -399,10 +399,17 @@ class ExportController extends Controller
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         $categories = ConceptCategory::all();
+
         $concept_file = 'export/concepts.csv';
+        if (Storage::disk('public')->exists($concept_file)) {
+            Storage::disk('public')->delete($concept_file);
+        }
         Storage::disk('public')->put($concept_file, "Категория\tPOS\tID понятия\tПонятие на русском языке\tПонятие на английском языке\tТолкование на русском языке\tТолкование на английском языке");
 
         $category_file = 'export/concept_categories.csv';
+        if (Storage::disk('public')->exists($category_file)) {
+            Storage::disk('public')->delete($category_file);
+        }
         Storage::disk('public')->put($category_file, "ID категории\tНазвание на русском языке\tНазвание на английском языке");
 
         foreach ($categories->sortBy('id') as $category) {

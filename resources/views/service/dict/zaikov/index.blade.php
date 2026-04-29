@@ -37,6 +37,10 @@
                               'modal_view'=>'service.dict.label._create'])
         @include('widgets.modal',['name'=>'modalViewWordforms',
                               'title'=>trans('navigation.wordforms')])
+        @include('widgets.modal',['name'=>'modalSuggestTemplates',
+                                  'title'=>trans('dict.choose_template'),
+                                  'modal_view'=>'dict.lemma.choose_template'])
+
                                   
         @include('service.dict.zaikov._search_form',['url' => '/service/dict/zaikov']) 
         
@@ -70,9 +74,9 @@
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/list_change.js')!!}
-    {!!Html::script('js/special_symbols.js')!!}
-    {!!js('lemma')!!}
-    {!!Html::script('js/new_dict.js')!!}
+    {!! js('special_symbols') !!}
+    {!! js('lemma') !!}
+    {!! js('new_dict') !!}
 @stop
 
 @section('jqueryFunc')
