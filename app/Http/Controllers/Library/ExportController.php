@@ -407,6 +407,7 @@ class ExportController extends Controller
                 Storage::disk('public')->append(
                     $filename,
                     $category->id .
+                        "\t" . $concept->pos->code .
                         "\t" . $concept->id .
                         "\t" . $concept->text_ru .
                         "\t" . $concept->text_en .
