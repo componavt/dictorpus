@@ -375,7 +375,7 @@ class KarName
         $V = "[" . KarGram::vowelSet() . "]";
         $stem6_syll = KarGram::countSyllable($stem6);
         //dd($stem6.KarGram::garmVowel($harmony,'loi'));        
-        //dd($stem6);        
+        //        dd($stem6);
         if ($dialect_id == 47 && preg_match("/" . $C . "’?[iuyoö]$/u", $stem6)) {
             return $stem6 . KarGram::garmVowel($harmony, 'loi');
         } elseif ($lang_id == 4 && preg_match("/" . $C . "’?[oö]$/u", $stem6) && $stem0_syll == 3) { // А.1
@@ -934,15 +934,15 @@ class KarName
             case 24: // генитив, мн.ч. 
                 return self::genPl($stems[4], $stems[5], isset($stems[6]) ? $stems[6] : null, $dialect_id);
             case 59: // транслатив, мн.ч. 
-                return $stems[4] ? $stems[4] . 'ksi' : '';
+                return $stems[4] ? Grammatic::joinMorfToBases($stems[4], 'ksi') : '';
             case 61: // иллатив, мн.ч. 
-                return $stems[5] ? $stems[5] . 'h' : '';
+                return $stems[5] ? Grammatic::joinMorfToBases($stems[5], 'h') : '';
             case 65: // комитатив, мн.ч. 
                 return self::comPl($stems[4], $stems[5], $dialect_id);
             case 66: // пролатив, мн.ч. 
                 return $dialect_id == 47 && $stems[4] ? $stems[4] . 'čči' : '';
             case 281: // инструктив, мн.ч. 
-                return $stems[4] ? $stems[4] . 'n' : '';
+                return $stems[4] ? Grammatic::joinMorfToBases($stems[4], 'n') : '';
             case 18: // апроксиматив, мн.ч. 
                 return $dialect_id == 47 && $stems[4] ? $stems[4] . 'll' . KarGram::garmVowel($stems[10], 'uo') : '';
         }
@@ -956,17 +956,17 @@ class KarName
             case 22: // партитив, мн.ч. 
                 return self::partPl($stems[5], isset($stems[6]) ? $stems[6] : null, $stems[10], $dialect_id);
             case 279: // эссив, мн.ч.
-                return $stems[5] ? $stems[5] . 'n' . $a : '';
+                return $stems[5] ? Grammatic::joinMorfToBases($stems[5], 'n' . $a) : '';
             case 23: // инессив, мн.ч.
-                return $stems[4] ? $stems[4] . 'ss' . $a : '';
+                return $stems[4] ? Grammatic::joinMorfToBases($stems[4], 'ss' . $a) : '';
             case 60: // элатив, мн.ч.
-                return $stems[4] ? $stems[4] . 'st' . $a : '';
+                return $stems[4] ? Grammatic::joinMorfToBases($stems[4], 'st' . $a) : '';
             case 280: // адессив-аллатив, мн.ч.
-                return $stems[4] ? $stems[4] . 'll' . $a : '';
+                return $stems[4] ? Grammatic::joinMorfToBases($stems[4], 'll' . $a) : '';
             case 62: // аблатив, мн.ч.
-                return $stems[4] ? $stems[4] . 'l' . ($dialect_id == 47 ? 'd' : 't') . $a : '';
+                return $stems[4] ? Grammatic::joinMorfToBases($stems[4], 'l' . ($dialect_id == 47 ? 'd' : 't') . $a) : '';
             case 64: // абессив, мн.ч.
-                return $stems[4] ? $stems[4] . 'tt' . $a : '';
+                return $stems[4] ? Grammatic::joinMorfToBases($stems[4], 'tt' . $a) : '';
         }
     }
 
@@ -989,7 +989,7 @@ class KarName
     public static function genPl($stem4, $stem5, $stem6, $dialect_id)
     {
         if ($dialect_id == 47) {
-            return $stem4 ? $stem4 . 'n' : '';
+            return $stem4 ? Grammatic::joinMorfToBases($stem4, 'n') : '';
         }
 
         if (!$stem5 || !$stem6) {
@@ -998,7 +998,7 @@ class KarName
         $V = "[" . KarGram::vowelSet() . "]";
         $C = "[" . KarGram::consSet() . "]";
         if (preg_match("/" . $C . "i$/u", $stem5)) { // 1
-            return $stem5 . 'en';
+            return Grammatic::joinMorfToBases($stem5, 'en');
         } elseif (
             preg_match("/^(.+)l[oö]i$/u", $stem5, $regs) // 2
             && KarGram::countSyllable($stem5) > KarGram::countSyllable($stem6)
@@ -1011,7 +1011,7 @@ class KarName
             if (preg_match("/" . $C . $V . "$/u", $stem6)) {
                 return $regs[1] . 'jen';
             } else {
-                return $stem5 . 'jen';
+                return Grammatic::joinMorfToBases($stem5, 'jen');
             }
         } else {
             return '!!!';
@@ -1042,9 +1042,9 @@ class KarName
         }
         if ($dialect_id == 47) {
             if (preg_match("/[oö]i$/u", $stem5)) {
-                return $stem5 . KarGram::garmVowel($harmony, 'da');
+                return Grammatic::joinMorfToBases($stem5, KarGram::garmVowel($harmony, 'da'));
             } else {
-                return $stem5 . 'e';
+                return Grammatic::joinMorfToBases($stem5, 'e');
             }
         }
 
@@ -1055,7 +1055,7 @@ class KarName
         $V = "[" . KarGram::vowelSet() . "]";
         $C = "[" . KarGram::consSet() . "]";
         if (preg_match("/" . $C . "i$/u", $stem5)) {
-            return $stem5 . 'e';
+            return Grammatic::joinMorfToBases($stem5, 'e');
         } elseif (
             preg_match("/^(.+)l[oö]i$/u", $stem5, $regs)
             && KarGram::countSyllable($stem5) > KarGram::countSyllable($stem6)
@@ -1068,7 +1068,7 @@ class KarName
             if (preg_match("/" . $C . $V . "$/u", $stem6)) {
                 return $regs[1] . KarGram::garmVowel($harmony, 'ja');
             } else {
-                return $stem5 . KarGram::garmVowel($harmony, 'ta');
+                return Grammatic::joinMorfToBases($stem5, KarGram::garmVowel($harmony, 'ta'));
             }
         }
     }
@@ -1076,9 +1076,9 @@ class KarName
     public static function comPl($stem4, $stem5, $dialect_id)
     {
         if ($dialect_id == 47) { // tver
-            return $stem4 ? $stem4 . 'nke' : '';
+            return $stem4 ? Grammatic::joinMorfToBases($stem4, 'nke') : '';
         }
-        return $stem5 ? $stem5 . 'neh' : '';
+        return $stem5 ? Grammatic::joinMorfToBases($stem5, 'neh') : '';
     }
 
     /**
