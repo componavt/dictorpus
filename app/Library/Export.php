@@ -351,7 +351,7 @@ class Export
         // Сохранение файла в хранилище
         Storage::disk('public')->put($filename, $csvContent);
 
-        echo "<h3>".$message . ' сохранены в ' . storage_path('app/public/' . $filename) . "</h3>\n";
+        echo "<h3>" . $message . ' сохранены в ' . storage_path('app/public/' . $filename) . "</h3>\n";
     }
 
     /**
@@ -359,13 +359,15 @@ class Export
      *
      * Выгрузка в CSV-файл с колонками:
      * - номер по порядку
-     * - meanings.lemma_id
      * - meanings.id
-     * - meanings.meaning_n
+     * - meanings.lemma_id
      * - lemmas.lemma
      * - lemmas.lang.code
      * - lemmas.pos.code
-     * - meaning_texts.meaning_text
+     * - meaning_texts.meaning_text (ru)
+     * - meaning_texts.meaning_text (en)
+     * - concept_meaning.concept_id
+     * - concepts.concept_category_id
      *
      * @param string $filename Имя файла для сохранения
      * @param Lang $lang язык
@@ -374,54 +376,69 @@ class Export
     public static function russianMeanings($filename, $lang)
     {
         // ID русского языка
-        $rus_lang_id = 2;
+        $ru_lang_id = 2;
+        $en_lang_id = 3;
 
         // Получаем данные из БД
-        $meaning_texts = MeaningText::where('meaning_texts.lang_id', $rus_lang_id)
-            ->join('meanings', 'meaning_texts.meaning_id', '=', 'meanings.id')
-            ->join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
+        $meanings = Meaning::join('lemmas', 'meanings.lemma_id', '=', 'lemmas.id')
             ->join('langs', 'lemmas.lang_id', '=', 'langs.id')
             ->join('parts_of_speech', 'lemmas.pos_id', '=', 'parts_of_speech.id')
+            ->leftJoin('concept_meaning', 'meanings.id', '=', 'concept_meaning.meaning_id')
+            ->leftJoin('concepts', 'concept_meaning.concept_id', '=', 'concepts.id')
             ->where('lemmas.lang_id', $lang->id)
             ->select(
+                'meanings.id',
                 'meanings.lemma_id',
                 'meanings.id as meaning_id',
-                'meanings.meaning_n',
+                //                'meanings.meaning_n',
                 'lemmas.lemma',
                 'langs.code as lang_code',
                 'parts_of_speech.code as pos_code',
-                'meaning_texts.meaning_text'
+                'concept_meaning.concept_id as concept_id',
+                'concepts.concept_category_id as category_id'
             )
             ->orderBy('lemmas.lang_id')
             ->orderBy('lemmas.lemma')
             ->orderBy('meanings.meaning_n')
+            ->with('meaningTexts')
             ->get();
 
         // Заголовок CSV файла
         $file = fopen(storage_path('app/public/' . $filename), 'w');
         fwrite($file, csv_row([
             'id',
-            'lemma_id',
             'meaning_id',
-            'meaning_num',
+            'lemma_id',
+            //            'meaning_num',
             'lemma',
             'lang',
             'pos',
-            'meaning_ru'
+            'meaning_ru',
+            'meaning_en',
+            'concept_id',
+            'category_id'
         ]));
 
         // Записываем данные
         $counter = 1;
-        foreach ($meaning_texts as $row) {
+        foreach ($meanings as $row) {
+            //            dd($row);
+            $meaning_text = $row->meaningTexts->where('lang_id', $ru_lang_id)->first();
+            $meaning_text_ru = $meaning_text ? $meaning_text->meaning_text : '';
+            $meaning_text = $row->meaningTexts->where('lang_id', $en_lang_id)->first();
+            $meaning_text_en = $meaning_text ? $meaning_text->meaning_text : '';
             fwrite($file, csv_row([
                 $counter++,
-                $row->lemma_id,
                 $row->meaning_id,
-                $row->meaning_n,
+                $row->lemma_id,
+                //                $row->meaning_n,
                 $row->lemma,
                 $row->lang_code,
                 $row->pos_code,
-                $row->meaning_text,
+                $meaning_text_ru,
+                $meaning_text_en,
+                $row->concept_id,
+                $row->category_id
             ]));
         }
         fclose($file);
