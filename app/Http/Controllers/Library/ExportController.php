@@ -25,6 +25,7 @@ use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
 //use App\Models\Dict\Gramset;
+use App\Models\Dict\Label;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaFeature;
@@ -37,7 +38,7 @@ class ExportController extends Controller
 {
     public function __construct(Request $request)
     {
-        $for_editors = ['concordance'];
+        $for_editors = ['concordance', 'zaikovDictionary'];
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:admin,/', ['except' => $for_editors]);
         $this->middleware('auth:corpus.edit,/', ['only' => $for_editors]);
@@ -659,5 +660,24 @@ class ExportController extends Controller
 
         Export::imagesforMultimediaDictionary($images, $imagedir, $imagefile);
         print "<p>Изображения выгружены в файл: " . Storage::url($imagefile) . "</p>";
+    }
+
+    public function zaikovDictionary()
+    {
+        $lang_id = 4; // proper
+        $dialect_id = 46;
+        $label_id = Label::ZaikovLabel; // for Zaikov dictionary
+
+        $lemmas = Lemma::whereLangId($lang_id)
+            //            ->wherePosId(11)
+            ->whereIn('id', function ($q) use ($label_id) {
+                $q->select('lemma_id')->from('label_lemma')
+                    ->whereLabelId($label_id);
+            })
+            //            ->take(100)
+            ->orderBy('lemma_for_search')
+            ->get();
+
+        return Export::dictionaryToWord($lemmas, 'zaikov_dictionary.docx', $dialect_id, $label_id);
     }
 }

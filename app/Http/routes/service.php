@@ -25,17 +25,9 @@ Route::group(
         Route::get('wordforms', 'Library\ServiceController@checkWordforms');
         Route::get('wordforms_by_wordform_total', 'Library\ServiceController@wordformsByWordformTotal');
 
-        Route::get('dict/multi', 'Library\DictController@multiView');
-        Route::get('dict/multi/select', 'Library\DictController@multiSelect');
-        Route::get('dict/school', 'Library\DictController@schoolView');
-        Route::get('dict/school/select', 'Library\DictController@schoolSelect');
-        Route::get('dict/synsets', 'Library\DictController@synsetsView')->name('dict.synsets.index');
-        Route::get('dict/synsets/find_new_synset', 'Library\DictController@findNewSynset')->name('dict.synsets.find_new');
-        Route::get('dict/zaikov', 'Library\DictController@zaikovView');
-        Route::get('dict/zaikov/select', 'Library\DictController@zaikovSelect');
+        Route::get('dict/label/{meaning_id}/store', 'Library\DictController@storeLabel');
         Route::get('dict/ldl', 'Library\DictController@ldlView');
         Route::get('dict/ldl/select', 'Library\DictController@ldlSelect');
-        Route::get('dict/label/{meaning_id}/store', 'Library\DictController@storeLabel');
         Route::get('dict/lemma/store', 'Library\DictController@storeLemma');
         //        Route::get('dict/lemma/{id}/edit', 'Library\DictController@editLemma');
         Route::get('dict/lemma/{id}/update', 'Library\DictController@updateLemma');
@@ -46,7 +38,15 @@ Route::group(
         Route::get('dict/meaning/{meaning_id}/phrase/create', 'Library\DictController@createPhrase');
         Route::get('dict/meaning/{meaning_id}/phrase/store', 'Library\DictController@storePhrase');
         Route::get('dict/{meaning_id}/label/{label_id}/remove', 'Library\DictController@removeVisibleLabel');
+        Route::get('dict/multi', 'Library\DictController@multiView');
+        Route::get('dict/multi/select', 'Library\DictController@multiSelect');
+        Route::get('dict/school', 'Library\DictController@schoolView');
+        Route::get('dict/school/select', 'Library\DictController@schoolSelect');
+        Route::get('dict/synsets', 'Library\DictController@synsetsView')->name('dict.synsets.index');
+        Route::get('dict/synsets/find_new_synset', 'Library\DictController@findNewSynset')->name('dict.synsets.find_new');
         Route::get('dict/wordforms/{lemma_id}', 'Library\DictController@wordforms');
+        Route::get('dict/zaikov', 'Library\DictController@zaikovView');
+        Route::get('dict/zaikov/select', 'Library\DictController@zaikovSelect');
 
         Route::get('elf/texts_for_map', 'Library\ElfController@textsForMap')->name('elf.texts_for_map');
         Route::get('elf/bible_texts', 'Library\ElfController@bibleTexts')->name('elf.bible_texts');

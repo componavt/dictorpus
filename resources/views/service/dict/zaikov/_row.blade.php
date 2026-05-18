@@ -2,7 +2,7 @@
                 <td data-th="No">{{ $list_count ?? '' }}</td>
                 <td data-th="{{ trans('dict.lemma') }}">
                     <a href="{{ LaravelLocalization::localizeURL("/dict/lemma/".$lemma->id) }}">
-                       <span id='b-lemma-{{ $lemma->id }}'>{{$lemma->zaikovTemplate()}}</span>
+                       <span id='b-lemma-{{ $lemma->id }}'>{{ $lemma->zaikovTemplate() }}</span>
                     </a>
                 </td>
                 <td data-th="{{ trans('dict.pos') }}">

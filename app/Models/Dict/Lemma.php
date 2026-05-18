@@ -363,17 +363,11 @@ class Lemma extends Model
             ->get();
     }
 
-    public function zaikovTemplate()
+    public function inflectionForms($dialect_id, $for_site = false)
     {
-        $lang_id = 4;
-        $dialect_id = 46;
-        if ($this->lang_id != $lang_id) {
-            return $this->lemma;
-        }
-        $template = $this->stemAffixForm();
         $total_gramsets = 0;
         if (!$this->pos) {
-            return $this->lemma;
+            return '';
         }
 
         if ($this->pos->isName()) {
@@ -391,8 +385,11 @@ class Lemma extends Model
             // TODO: безличные  	ajottua            
         }
 
-        if (!$total_gramsets || $this->wordforms()->wherePivot('dialect_id', $dialect_id)->count() < $total_gramsets) {
-            return $template;
+        if (
+            empty($gramsets) || empty($total_gramsets)
+            || $this->wordforms()->wherePivot('dialect_id', $dialect_id)->count() < $total_gramsets
+        ) {
+            return '';
         }
 
         $wordforms = [];
@@ -400,19 +397,41 @@ class Lemma extends Model
         foreach ($gramsets as $gramset_id) {
             $wforms = $this->wordformsByGramsetDialect($gramset_id, $dialect_id);
             if (!$wforms || !isset($wforms[0])) {
-                return $template;
+                return '';
             }
             $tmp = [];
             foreach ($wforms as $w) {
                 if (!preg_match("/^" . $max_stem . "(.*)$/u", $w->wordform, $regs)) {
-                    return $template;
+                    return '';
                 }
                 $tmp[] = isset($regs[1]) ? '-' . $regs[1] : '';
             }
             $wordforms[$gramset_id] = join('/', $tmp);
         }
+        return ' (' . join(',' . ($for_site ? '&nbsp;' : ' '), $wordforms) . ')';
+    }
 
-        return $template . ' (' . join(',&nbsp;', $wordforms) . ')';
+    public function zaikovTemplate()
+    {
+        $lang_id = 4;
+        $dialect_id = 46;
+        if ($this->lang_id != $lang_id) {
+            return $this->lemma;
+        }
+        return $this->dictionaryTemplate($dialect_id, true);
+    }
+
+    /**
+     * возвращает строку типа aasin||ajaj|a (-an, -ua)
+     *
+     * @param int $dialect_id
+     * @param boolean $for_site : если true, то заменить пробел на &nbsp;
+     * @return string
+     */
+    public function dictionaryTemplate($dialect_id, $for_site = false)
+    {
+        $template = $this->stemAffixForm(); // aasin||ajaj|a
+        return $template . $this->inflectionForms($dialect_id, $for_site);
     }
 
     /**

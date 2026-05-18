@@ -2,10 +2,14 @@
 
 namespace App\Library;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\Settings;
 
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Transtext;
@@ -552,5 +556,69 @@ class Export
             $line = $image_id . "\t" . $info['wiki_photo'];
             Storage::disk('public')->append($imagefile, $line);
         }
+    }
+
+    /**
+     * Выгружает словарь в Word
+     *
+     * @param Collection<int, Lemma> $lemmas
+     * @param string $filename
+     * @param int $dialect_id
+     * @return void
+     */
+    public static function dictionaryToWord($lemmas, $filename, $dialect_id, $label_id)
+    {
+        $tempDir = storage_path('tmp');
+        $filePath = storage_path('tmp/' . $filename);
+
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0777, true);
+        }
+
+        Settings::setTempDir($tempDir);
+
+        $phpWord = new PhpWord();
+        $section = $phpWord->addSection();
+
+        foreach ($lemmas as $lemma) {
+            $textRun = $section->addTextRun();
+
+            $textRun->addText($lemma->stemAffixForm(), ['bold' => true]);
+            $textRun->addText(' ' . $lemma->inflectionForms($dialect_id) . ' ');
+            $textRun->addText(($lemma->pos ? $lemma->pos->dict_code : '') . ' ', ['italic' => true]);
+
+            foreach ($lemma->meaningsWithLabel($label_id) as $meaning) {
+                if ($lemma->meanings()->count() > 1) {    // номер значения
+                    $textRun->addText($meaning->meaning_n . '. ');
+                }
+                $textRun->addText($meaning->getMeaningTextByLangCode('ru'), ['italic' => true]); // значение
+
+                $labels = join(', ', $meaning->labels()->where('visible', 1)->pluck('short_ru')->toArray()); // метки
+                if ($labels) {
+                    $textRun->addText('(' . $labels . ')');
+                }
+
+                foreach ($meaning->examples as $example) { // примеры
+                    $textRun->addText('; ' . $example->example . ' ' . $example->example_ru);
+                }
+
+                if ($meaning->phrases()->count()) { // фразы
+                    $textRun->addText(' ◊');
+                    foreach ($meaning->phrases as $phrase) {
+                        $textRun->addText(' ' . $phrase->lemma);
+                        if ($phrase->meanings && isset($phrase->meanings[0])) {
+                            $textRun->addText(' ' . $phrase->meanings[0]->getMeaningTextByLangCode('ru'));
+                        }
+                    }
+                }
+            }
+
+            $section->addTextBreak(1);
+        }
+
+        $writer = IOFactory::createWriter($phpWord, 'Word2007');
+        $writer->save($filePath);
+
+        return response()->download($filePath, $filename)->deleteFileAfterSend(true);
     }
 }
