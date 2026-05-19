@@ -568,6 +568,9 @@ class Export
      */
     public static function dictionaryToWord($lemmas, $filename, $dialect_id, $label_id)
     {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+
         $tempDir = storage_path('tmp');
         $filePath = storage_path('tmp/' . $filename);
 
