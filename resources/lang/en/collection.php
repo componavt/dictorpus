@@ -41,7 +41,20 @@ return [
             . 'статье Н. Ф. Лескова «Корельская свадьба» (Лесков Н. Корельская свадьба // Живая старина. – Вып.3-4. – СПб., 1894. – С. 499 – 511). Наряду с этим '
             . 'можно познакомиться и с вариантами современных причитаний, которые удалось зафиксировать во время полевых исследований в течение первой половины XXI века.',
         7 => '',
-        8 => '',
+        8 => 'Nina Grigoryevna Zaitseva (born May 25, 1946, in the village of Voilahta, Babayevsky District, Vologda Oblast) is a Soviet and 
+        Russian linguist, Doctor of Philological Sciences, Honored Scientist of the Republic of Karelia (1995), and headed the Linguistics 
+        Sector of the Institute of Linguistics, Literature and History of the Karelian Research Centre of the Russian Academy of Sciences from 
+        1997 to 2020.<br><br>
+        She is the author of a series of Veps-language textbooks, dictionaries, phrasebooks, and reference and teaching materials; 
+        the principal compiler and editor of the <i>Linguistic Atlas of the Veps Language</i>; the author of more than 200 scholarly works; 
+        a poet; the author of the Veps epic <i>Virantanaz</i>; a translator into Veps of the <i>New Testament</i> and the epic 
+        <i>Kalevala</i>; and the longstanding editor of periodicals published in the Veps language.<br><br>
+        Zaitseva played a central role in the development of corpus linguistics at the Institute: she became the driving force behind 
+        and creator of the <i>Corpus of the Veps Language</i> project, which was later transformed into the <i>Open Corpus of the Veps and 
+        Karelian Languages</i>.<br><br>
+        During more than twenty years of leading the sector, N. G. Zaitseva mentored an entire generation of researchers, and thanks to her 
+        efforts, a recognised school of linguistic scholarship was established at the Institute.
+',
     ],
     'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
     'topic_index' => 'Index of plots and thematics of Karelian runes',
