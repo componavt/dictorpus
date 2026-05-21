@@ -1,13 +1,16 @@
 <?php
+
 namespace App\Models\Corpus;
 
 //use App\Models\Corpus\Author;
 use App\Models\Corpus\Genre;
 
-class Collection {
-   
-    public static function getCollectionGenres($collection_id=null) {
-        $genres = [1=>19, 2=>66, 3=>60, 6=>19];
+class Collection
+{
+
+    public static function getCollectionGenres($collection_id = null)
+    {
+        $genres = [1 => 19, 2 => 66, 3 => 60, 6 => 19];
         if (!$collection_id) {
             return $genres;
         }
@@ -16,8 +19,9 @@ class Collection {
         }
     }
 
-    public static function getCollectionAuthors($collection_id=null) {
-        $authors = [4=>335, 5=>15];
+    public static function getCollectionAuthors($collection_id = null)
+    {
+        $authors = [4 => 335, 5 => 15, 8 => 131];
         if (!$collection_id) {
             return $authors;
         }
@@ -26,8 +30,9 @@ class Collection {
         }
     }
 
-    public static function getCollectionLangs($collection_id=null) : array {
-        $langs = [1=>[1], 2=>[4,5,6], 3=>[4,5,6], 6=>[4,5,6]];
+    public static function getCollectionLangs($collection_id = null): array
+    {
+        $langs = [1 => [1], 2 => [4, 5, 6], 3 => [4, 5, 6], 6 => [4, 5, 6]];
         if (!$collection_id) {
             return $langs;
         }
@@ -37,41 +42,46 @@ class Collection {
         return [];
     }
 
-    public static function getCollectionIds() {
+    public static function getCollectionIds()
+    {
         return array_keys(trans('collection.name_list'));
     }
 
-    public static function isCollectionbyAuthor($id) : bool {
+    public static function isCollectionbyAuthor($id): bool
+    {
         $authors = self::getCollectionAuthors();
         if (!empty($authors[$id])) {
             return true;
         }
         return false;
     }
-    
-    public static function isCollectionbyGenre($id) : bool {
+
+    public static function isCollectionbyGenre($id): bool
+    {
         $genres = self::getCollectionGenres();
         if (!empty($genres[$id])) {
             return true;
         }
         return false;
     }
-    
-    public static function isCollectionId($id) : bool {
+
+    public static function isCollectionId($id): bool
+    {
         if (self::isCollectionbyAuthor($id)) {
             return true;
         } elseif (self::isCollectionbyGenre($id)) {
             return true;
-        } elseif ($id==7) {
+        } elseif ($id == 7) {
             return true;
         }
         return false;
     }
-    
-    public static function getCollectionId($lang_ids, $genre_ids, $author_ids=[]) {
+
+    public static function getCollectionId($lang_ids, $genre_ids, $author_ids = [])
+    {
         $lang_ids = (array)$lang_ids;
-        
-        foreach (self::getCollectionAuthors() as $collection_id => $author) {                    
+
+        foreach (self::getCollectionAuthors() as $collection_id => $author) {
             if (!in_array($author, $author_ids)) {
                 continue;
             }
@@ -80,13 +90,13 @@ class Collection {
         foreach (self::getCollectionGenres() as $collection_id => $genre_parent) {
             if (!sizeof(array_intersect(self::getCollectionLangs($collection_id), $lang_ids))) {
                 continue;
-            }            
-            
+            }
+
             $collect_genres = [$genre_parent];
             foreach (Genre::whereIn('parent_id', $collect_genres)->get() as $g) {
                 $collect_genres[] = $g->id;
             }
-        
+
             if (!sizeof(array_intersect($collect_genres, $genre_ids))) {
                 continue;
             }
