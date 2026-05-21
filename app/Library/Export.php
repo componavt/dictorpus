@@ -588,9 +588,10 @@ class Export
 
             $textRun->addText($lemma->stemAffixForm(), ['bold' => true]);
             $textRun->addText(' ' . $lemma->inflectionForms($dialect_id) . ' ');
-            $textRun->addText(($lemma->pos ? $lemma->pos->dict_code : '') . ' ', ['italic' => true]);
+            $textRun->addText(($lemma->pos ? $lemma->pos->dict_code : ''), ['italic' => true]);
 
             foreach ($lemma->meaningsWithLabel($label_id) as $meaning) {
+                $textRun->addText(' ');
                 if ($lemma->meanings()->count() > 1) {    // номер значения
                     $textRun->addText($meaning->meaning_n . '. ');
                 }
@@ -598,7 +599,7 @@ class Export
 
                 $labels = join(', ', $meaning->labels()->where('visible', 1)->pluck('short_ru')->toArray()); // метки
                 if ($labels) {
-                    $textRun->addText('(' . $labels . ')');
+                    $textRun->addText(' (' . $labels . ')');
                 }
 
                 foreach ($meaning->examples as $example) { // примеры
