@@ -590,9 +590,11 @@ class Export
             $textRun->addText(' ' . $lemma->inflectionForms($dialect_id) . ' ');
             $textRun->addText(($lemma->pos ? $lemma->pos->dict_code : ''), ['italic' => true]);
 
-            foreach ($lemma->meaningsWithLabel($label_id) as $meaning) {
+            $meanings = $lemma->meaningsWithLabel($label_id);
+            $count = 1;
+            foreach ($meanings as $meaning) {
                 $textRun->addText(' ');
-                if ($lemma->meanings()->count() > 1) {    // номер значения
+                if ($meanings->count() > 1) {    // номер значения
                     $textRun->addText($meaning->meaning_n . '. ');
                 }
                 $textRun->addText($meaning->getMeaningTextByLangCode('ru'), ['italic' => true]); // значение
@@ -615,6 +617,10 @@ class Export
                         }
                     }
                 }
+                if ($count < $meanings->count()) {
+                    $textRun->addText(';');
+                }
+                $count++;
             }
 
             $section->addTextBreak(1);
