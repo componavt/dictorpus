@@ -674,7 +674,7 @@ class ExportController extends Controller
                 $q->select('lemma_id')->from('label_lemma')
                     ->whereLabelId($label_id);
             })
-            ->take(1000)
+            //->take(1000)
             ->orderBy('lemma_for_search')
             ->get();
 
