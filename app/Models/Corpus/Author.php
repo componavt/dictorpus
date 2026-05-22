@@ -74,6 +74,10 @@ class Author extends Model
         
         foreach ($texts as $text) {
             foreach ($text->corpuses as $corpus) {
+                if (!$text->genres()->count()) {
+                    $out[$corpus->name][null][]=$text;
+                    continue;
+                } 
                 foreach ($text->genres as $genre) {
                     $out[$corpus->name][$genre->name_pl][]=$text;
                 }
