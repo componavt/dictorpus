@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Models\Corpus\Author;
 use App\Models\Corpus\Collection;
+use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Cycle;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Motive;
@@ -36,13 +37,9 @@ class CollectionController extends Controller
             if (Collection::isCollectionByAuthor($id)) {
                 $author_id = Collection::getCollectionAuthors($id);
                 $author = Author::find($author_id);
-                $text_count = Text::whereIn('id', function ($q) use ($author_id) {
-                    $q->select('text_id')->from('author_text')
-                        ->whereIn('author_id', [$author_id]);
-                })->count();
                 return view(
                     'corpus.collection.' . $id . '.index',
-                    compact('author', 'id', 'text_count')
+                    compact('author', 'id')
                 );
             } elseif (Collection::isCollectionByGenre($id)) {
                 $lang_ids = Collection::getCollectionLangs($id);

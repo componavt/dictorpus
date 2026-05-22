@@ -600,6 +600,9 @@ h4 {
     text-decoration: none; 
     font-size: 20px;
 }
+.fletter-capitalize:first-letter {
+    text-transform: uppercase;
+}
 
 @media screen and (min-width: 576px) {   
 }

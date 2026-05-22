@@ -67,6 +67,21 @@ class Author extends Model
         return $list;
     }
 
+    public function textsByCorpuses() {
+        $author_id = $this->id;
+        $out = [];
+        $texts = $this->texts->sortBy('title');
+        
+        foreach ($texts as $text) {
+            foreach ($text->corpuses as $corpus) {
+                foreach ($text->genres as $genre) {
+                    $out[$corpus->name][$genre->name_pl][]=$text;
+                }
+            }
+        }
+//dd($out);
+        return $out;
+    }
 
     /**
      * 
