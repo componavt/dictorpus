@@ -52,8 +52,11 @@ return [
         Zaitseva played a central role in the development of corpus linguistics at the Institute: she became the driving force behind 
         and creator of the <i>Corpus of the Veps Language</i> project, which was later transformed into the <i>Open Corpus of the Veps and 
         Karelian Languages</i>.<br><br>
-        During more than twenty years of leading the sector, N. G. Zaitseva mentored an entire generation of researchers, and thanks to her 
-        efforts, a recognised school of linguistic scholarship was established at the Institute.
+        During more than twenty years of leading the sector, N. G. Zaitseva mentored an generation of researchers, and thanks to her 
+        efforts, a recognised school of linguistic scholarship was established at the Institute. The collection includes texts from poetry 
+        collections, prose works, as well as articles published in the newspaper <i>Kodima</i>.
+
+
 ',
     ],
     'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
