@@ -2,6 +2,9 @@
                 ['name' => 'lemma', 
                  'special_symbol' => true,
                  'title'=>trans('dict.lemma')])
+@if (!empty($lang_id))                 
+        <p><a href="#" onClick="suggestTemplates('{{ $lang_id }}')">{{ trans('dict.suggest_template') }}</a></p>
+@endif        
         @include('widgets.form.formitem._select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,

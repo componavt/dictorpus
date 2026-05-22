@@ -1694,7 +1694,7 @@ class GrammaticTest extends TestCase
     {
         $template = "abu||deng|u";
         $lang_id = 4;
-        $pos_id = 1; // noun
+        $pos_id = 5; // noun
         $num = null;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
         //dd($result);        
@@ -1702,11 +1702,32 @@ class GrammaticTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testStemsFromTemplateKarProperNounKuorma_Auto()
+    {
+        $template = "kuorma||-aut|o [o]";
+        $lang_id = 4;
+        $pos_id = 5; // noun
+        $num = null;
+        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
+        //dd($result);        
+        $expected = [[
+            0 => 'kuorma-auto',
+            1 => 'kuorma-auto',
+            2 => 'kuorma-auto',
+            3 => 'kuorma-autuo',
+            4 => 'kuorma-autoje',
+            5 => 'kuorma-autoloi',
+            6 => 'kuorma-auto',
+            10 => true
+        ], $num, 'kuorma||-aut', 'o'];
+        $this->assertEquals($expected, $result);
+    }
+
     public function testStemsFromTemplateOloNounCompound()
     {
         $template = "abu||deng|u";
         $lang_id = 5;
-        $pos_id = 1; // noun
+        $pos_id = 5; // noun
         $num = null;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
         //dd($result);        
@@ -1718,7 +1739,7 @@ class GrammaticTest extends TestCase
     {
         $template = "abu||deng|u (-an,";
         $lang_id = 5;
-        $pos_id = 1; // noun
+        $pos_id = 5; // noun
         $num = null;
         $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
         //dd($result);        

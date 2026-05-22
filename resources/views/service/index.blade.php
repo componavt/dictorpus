@@ -32,6 +32,7 @@
         <ul>
         <li><a href="service/dict/zaikov">Просмотреть отобранные леммы</a></li>
         <li><a href="service/dict/zaikov/select">Выбрать леммы</a></li>
+        <li><a href="{{ route('export.zaikov_dictionary') }}">Экспорт словаря Зайкова в Word</a></li>
         </ul>        
         
         <p>Отбор лемм для Людиковского диалектного лексикона</p>

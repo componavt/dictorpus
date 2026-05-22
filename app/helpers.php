@@ -363,7 +363,8 @@ if (!function_exists('fact')) {
 if (!function_exists('css')) {
     function css($filename)
     {
-        return '<link href="/css/' . $filename . '.css?' . filemtime(env('APP_ROOT') . 'public/css/' . $filename . '.css') . '" rel="stylesheet">';
+        $code = @filemtime(env('APP_ROOT') . 'public/css/' . $filename . '.css');
+        return '<link href="/css/' . $filename . '.css?' . $code . '" rel="stylesheet">';
     }
 }
 

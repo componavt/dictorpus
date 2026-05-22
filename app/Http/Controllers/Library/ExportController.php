@@ -25,6 +25,7 @@ use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Gram;
 use App\Models\Dict\GramCategory;
 //use App\Models\Dict\Gramset;
+use App\Models\Dict\Label;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaFeature;
@@ -37,7 +38,7 @@ class ExportController extends Controller
 {
     public function __construct(Request $request)
     {
-        $for_editors = ['concordance'];
+        $for_editors = ['concordance', 'zaikovDictionary'];
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:admin,/', ['except' => $for_editors]);
         $this->middleware('auth:corpus.edit,/', ['only' => $for_editors]);
@@ -398,14 +399,35 @@ class ExportController extends Controller
     {
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
-        $categories = ConceptCategory::all()->sortBy('id');
-        $filename = 'export/concepts.csv';
-        Storage::disk('public')->put($filename, "Категория\tID понятия\tПонятие");
+        $categories = ConceptCategory::all();
+
+        $concept_file = 'export/concepts.csv';
+        if (Storage::disk('public')->exists($concept_file)) {
+            Storage::disk('public')->delete($concept_file);
+        }
+        Storage::disk('public')->put($concept_file, "Категория\tPOS\tID понятия\tПонятие на русском языке\tПонятие на английском языке\tТолкование на русском языке\tТолкование на английском языке");
+
+        $category_file = 'export/concept_categories.csv';
+        if (Storage::disk('public')->exists($category_file)) {
+            Storage::disk('public')->delete($category_file);
+        }
+        Storage::disk('public')->put($category_file, "ID категории\tНазвание на русском языке\tНазвание на английском языке");
+
         foreach ($categories->sortBy('id') as $category) {
-            Storage::disk('public')->append($filename, $category->id . "\t" . $category->name_ru);
-            /*            foreach ($category->concepts as $concept) {
-                Storage::disk('public')->append($filename, $category->id."\t".$concept->id."\t".$concept->text_ru);
-            }*/
+            Storage::disk('public')->append($category_file, $category->id . "\t" . $category->name_ru . "\t" . $category->name_en);
+
+            foreach ($category->concepts as $concept) {
+                Storage::disk('public')->append(
+                    $concept_file,
+                    $category->id .
+                        "\t" . $concept->pos->code .
+                        "\t" . $concept->id .
+                        "\t" . $concept->text_ru .
+                        "\t" . $concept->text_en .
+                        "\t" . $concept->descr_ru .
+                        "\t" . $concept->descr_en
+                );
+            }
         }
         print "done.";
     }
@@ -638,5 +660,24 @@ class ExportController extends Controller
 
         Export::imagesforMultimediaDictionary($images, $imagedir, $imagefile);
         print "<p>Изображения выгружены в файл: " . Storage::url($imagefile) . "</p>";
+    }
+
+    public function zaikovDictionary()
+    {
+        $lang_id = 4; // proper
+        $dialect_id = 46;
+        $label_id = Label::ZaikovLabel; // for Zaikov dictionary
+
+        $lemmas = Lemma::whereLangId($lang_id)
+            //            ->wherePosId(11)
+            ->whereIn('id', function ($q) use ($label_id) {
+                $q->select('lemma_id')->from('label_lemma')
+                    ->whereLabelId($label_id);
+            })
+            //->take(1000)
+            ->orderBy('lemma_for_search')
+            ->get();
+
+        return Export::dictionaryToWord($lemmas, 'zaikov_dictionary.docx', $dialect_id, $label_id);
     }
 }

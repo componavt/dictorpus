@@ -6,6 +6,7 @@
                  'special_symbol' => true,
                  'value' => $lemma ? $lemma->stemAffixForm() : null,
                  'title'=>trans('dict.lemma')])
+        <p><a href="#" onClick="suggestTemplates('{{ $lang_id }}')">{{ trans('dict.suggest_template') }}</a></p>
         @include('widgets.form.formitem._select',
                 ['name' => 'pos_id',
                  'values' =>$pos_values,

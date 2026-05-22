@@ -23,6 +23,7 @@ return [
     'lemma_accusative' => 'лемму',
     'lemma_for_search_accusative' => 'поисковый индекс',
     'meaning_accusative' => ':num-е значение',
+    'meaning_n_accusative' => 'номер значения',
     'meaning_genetiv' => ':num-го значения',
     'meaning_text_accusative' => 'толкование',
     'pages_accusative' => 'страницы',

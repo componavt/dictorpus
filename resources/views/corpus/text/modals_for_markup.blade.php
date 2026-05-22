@@ -8,6 +8,7 @@
                                   'title'=>trans('corpus.add-lemma'),
                                   'submit_id' => 'save-lemma',
                                   'lemma'=>null,
+                                  'lang_id'=>!empty($text) ? $text->lang_id : null,
                                   'submit_title' => trans('messages.save'),
                                   'total_meanings' => 1,
                                   'modal_view'=>'dict.lemma.form._create_simple'])
@@ -16,4 +17,7 @@
                                   'submit_id' => 'save-word',
                                   'submit_title' => trans('messages.save'),
                                   'modal_view'=>'corpus.word._form_edit'])
+            @include('widgets.modal',['name'=>'modalSuggestTemplates',
+                                    'title'=>trans('dict.choose_template'),
+                                    'modal_view'=>'dict.lemma.choose_template'])
         @endif         

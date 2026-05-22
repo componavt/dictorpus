@@ -17,7 +17,7 @@
         <p><a href="export/for_mobile">Экспорт данных для мобильной версии</a></p>
         <p><a href="export/for_speech">Экспорт ливвиковских текстов и словоформ для распознавания речи</a></p>
         <p><a href="export/multidict">Экспорт лемм мультисловаря</a></p>
-        <p><a href="export/concepts">Экспорт всех понятий</a></p>
+        <p><a href="export/concepts">Экспорт всех понятий и всех категорий понятий</a></p>
         <p><a href="export/concepts_without_images">Экспорт понятий без картинок</a></p>
         <p><a href="export/multidict_without_concepts">Экспорт лемм мультисловаря без понятий</a></p>
         <p><a href="export/olo_dict">Экспорт ливвиковского словаря</a></p>
