@@ -384,6 +384,7 @@ trait LemmaModify
         $this->labels()->detach();
         $this->phraseLemmas()->detach();
         $this->phrases()->detach();
+        DB::statement("DELETE from meaning_phrase WHERE lemma_id=" . $this->id);
 
         // связи с другими леммами - фонетическими вариантами
         DB::statement("DELETE from lemma_variants WHERE lemma1_id=" . $this->id . " or lemma2_id=" . $this->id);
