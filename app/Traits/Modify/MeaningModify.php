@@ -33,6 +33,7 @@ trait MeaningModify
         $this->labels()->detach();
         $this->dialects()->detach();
         $this->places()->detach();
+        $this->phrases()->detach();
 
         foreach ($this->examples as $example) {
             $example->delete();

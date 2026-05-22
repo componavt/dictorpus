@@ -380,6 +380,7 @@ trait LemmaModify
         $this->wordforms()->detach();
         $this->labels()->detach();
         $this->phraseLemmas()->detach();
+        $this->phrases()->detach();
 
         // связи с другими леммами - фонетическими вариантами
         DB::statement("DELETE from lemma_variants WHERE lemma1_id=" . $this->id . " or lemma2_id=" . $this->id);
