@@ -41,7 +41,7 @@ return [
             . 'статье Н. Ф. Лескова «Корельская свадьба» (Лесков Н. Корельская свадьба // Живая старина. – Вып.3-4. – СПб., 1894. – С. 499 – 511). Наряду с этим '
             . 'можно познакомиться и с вариантами современных причитаний, которые удалось зафиксировать во время полевых исследований в течение первой половины XXI века.',
         7 => '',
-        8 => 'Nina Grigoryevna Zaitseva (born May 25, 1946, in the village of Voilahta, Babayevsky District, Vologda Oblast) is a Soviet and 
+        8 => 'Nina Grigoryevna Zaitseva (born May 25, 1946, in the village of Markovo, Babayevsky District, Vologda Oblast) is a Soviet and 
         Russian linguist, Doctor of Philological Sciences, Honored Scientist of the Republic of Karelia (1995), and headed the Linguistics 
         Sector of the Institute of Linguistics, Literature and History of the Karelian Research Centre of the Russian Academy of Sciences from 
         1997 to 2020.<br><br>
