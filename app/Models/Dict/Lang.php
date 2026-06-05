@@ -246,7 +246,7 @@ class Lang extends Model
            $ids[] = $lang->id; 
         }
         return $ids;   */
-        return self::projectLangs()->pluck('id');
+        return self::projectLangs()->pluck('id')->toArray();
     }
 
     public static function nonProjectLangs()
