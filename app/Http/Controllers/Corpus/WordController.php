@@ -296,7 +296,6 @@ class WordController extends Controller
     {
         $uword = $request->uword;
         $lang_id = (int)$request->lang_id;
-
         if (!$uword || !in_array($lang_id, Lang::projectLangIDs())) {
             return;
         }
