@@ -10,7 +10,6 @@ services:
       MARIADB_DATABASE: vepkar
       MARIADB_USER: vepkar
       MARIADB_PASSWORD: ${DB_PASSWORD}
-# вернуть, если нужен внешний проброс
 #    ports:
 #      - "${DB_PORT}:3306"
     volumes:
@@ -51,6 +50,20 @@ services:
     networks:
       - dictorpus-network
 
+  aspos-web:
+    build: ${ASPOS_PATH}
+    container_name: aspos-web
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    expose:
+      - "80"
+    volumes:
+      - ${ASPOS_PATH}:/var/www/html
+    networks:
+      - dictorpus-network
+
+
   nginx-proxy:
     image: nginx:alpine
     container_name: nginx-proxy
@@ -60,6 +73,7 @@ services:
     depends_on:
       - web
       - topkar-web
+      - aspos-web
     networks:
       - dictorpus-network
     command: >
@@ -79,6 +93,15 @@ services:
           server_name topkar.local;
           location / {
             proxy_pass http://topkar-web:80;
+            proxy_set_header Host \$$host;
+            proxy_set_header X-Real-IP \$$remote_addr;
+          }
+        }
+        server {
+          listen 80;
+          server_name aspos.local;
+          location / {
+            proxy_pass http://aspos-web:80;
             proxy_set_header Host \$$host;
             proxy_set_header X-Real-IP \$$remote_addr;
           }
