@@ -1258,10 +1258,8 @@ class GrammaticTest extends TestCase
 
     public function testMaxStemVepsVerb()
     {
-        $lang_id = 1;
-        $pos_id = 11;
         $stems = ['ant', 'anda', 'andoi', 'and', 'anda', 'and', 't', 'a', ''];
-        $result = Grammatic::maxStem(array_slice($stems, 0, 5), $lang_id, $pos_id);
+        $result = Grammatic::maxStem(array_slice($stems, 0, 5));
 
         $expected = ['an', 't'];
         $this->assertEquals($expected, $result);
@@ -2537,6 +2535,53 @@ class GrammaticTest extends TestCase
             281 => 'vezin',
             18 => 'veziellyö',
             67 => 'vezissäh'
+        ];
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testWordformsFromMiniTemplateKarProperNameIlme()
+    {
+        $template = 'ilm|e [ie, et]';
+        $lang_id = 4;
+        $pos_id = 5;
+        $name_num = null;
+        $dialect_id = '46';
+        list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
+        //dd($stems, KarGram::countSyllable($stems[5]), KarGram::countSyllable($stems[6]));  
+        $result = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
+        $expected = [
+            1 => 'ilme',
+            56 => 'ilme, ilmien',
+            3 => 'ilmien',
+            4 => 'ilmettä',
+            277 => 'ilmienä',
+            5 => 'ilmiekši',
+            8 => 'ilmieššä',
+            9 => 'ilmieštä',
+            10 => 'ilmieh',
+            278 => 'ilmiellä',
+            12 => 'ilmieltä',
+            6 => 'ilmiettä',
+            14 => 'ilmeineh',
+            15 => '',
+
+            2 => 'ilmiet',
+            57 => 'ilmiet',
+            24 => 'ilmeijen',
+            22 => 'ilmeitä',
+            279 => 'ilmeinä',
+            59 => 'ilmeiksi',
+            23 => 'ilmeissä',
+            60 => 'ilmeistä',
+            61 => 'ilmeih',
+            280 => 'ilmeillä',
+            62 => 'ilmeiltä',
+            64 => 'ilmeittä',
+            65 => 'ilmeineh',
+            66 => '',
+            281 => 'ilmein',
+            17 => '',
+            18 => ''
         ];
         $this->assertEquals($expected, $result);
     }
@@ -4017,7 +4062,7 @@ class GrammaticTest extends TestCase
             66796 => 'hyvy|z [de, t]',
             40704 => 'd’alg|e [a]',
         ];
-
+        $result = [];
         foreach ($templates as $lemma_id => $template) {
             $result[$lemma_id] = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);
         }
@@ -4132,6 +4177,7 @@ class GrammaticTest extends TestCase
             70267 => 'vahnu|z [de, t]',
             66796 => 'hyvy|z [de, t]',
         ];
+        $result = [];
         foreach ($templates as $lemma_id => $template) {
             list($stems, $name_num, $max_stem, $affix) = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id);
             $result[$lemma_id] = Grammatic::wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems);
@@ -4203,7 +4249,7 @@ class GrammaticTest extends TestCase
             5 => 'kat|e [tie, et]',
             6 => 'ahkiv|o [o]',
         ];
-
+        $result = [];
         foreach ($templates as $lemma_id => $template) {
             $result[$lemma_id] = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);
         }

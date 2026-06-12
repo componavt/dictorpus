@@ -591,7 +591,7 @@ class Export
             $textRun->addText(($lemma->pos ? $lemma->pos->dict_code : ''), ['italic' => true]);
 
             $meanings = $lemma->meaningsWithLabel($label_id);
-            $count = 1;
+            $count_meanings = 1;
             foreach ($meanings as $meaning) {
                 $textRun->addText(' ');
                 if ($meanings->count() > 1) {    // номер значения
@@ -610,17 +610,20 @@ class Export
 
                 if ($meaning->phrases()->count()) { // фразы
                     $textRun->addText(' ◊');
+                    $phrases = [];
                     foreach ($meaning->phrases as $phrase) {
-                        $textRun->addText(' ' . $phrase->lemma);
+                        $phrase_line = $phrase->lemma;
                         if ($phrase->meanings && isset($phrase->meanings[0])) {
-                            $textRun->addText(' ' . $phrase->meanings[0]->getMeaningTextByLangCode('ru'));
+                            $phrase_line .= ' ' . $phrase->meanings[0]->getMeaningTextByLangCode('ru');
                         }
+                        $phrases[] = $phrase_line;
                     }
+                    $textRun->addText(' ' . join('; ', $phrases));
                 }
-                if ($count < $meanings->count()) {
+                if ($count_meanings < $meanings->count()) {
                     $textRun->addText(';');
                 }
-                $count++;
+                $count_meanings++;
             }
 
             $section->addTextBreak(1);
