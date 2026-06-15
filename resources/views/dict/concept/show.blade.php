@@ -36,9 +36,8 @@
     </div>
     <div class="col-sm-4 concept-page-photo">
         <div id='concept-photo_{{$concept->id}}'></div> 
-    </div>
-        
-        
+    </div>      
+</div>
 @stop
 
 @section('footScriptExtra')
