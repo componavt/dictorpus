@@ -33,7 +33,7 @@ class CollectionController extends Controller
         $id = (int)$id;
         $for_print = (int)($request->for_print);
 
-        if (Collection::isCollectionId($id)) {
+        if (Collection::isCollectionId($id)) {    
             if (Collection::isCollectionByAuthor($id)) {
                 $author_id = Collection::getCollectionAuthors($id);
                 $author = Author::find($author_id);
@@ -42,52 +42,7 @@ class CollectionController extends Controller
                     compact('author', 'id')
                 );
             } elseif (Collection::isCollectionByGenre($id)) {
-                $lang_ids = Collection::getCollectionLangs($id);
-                $langs = Lang::whereIn('id', $lang_ids)->orderBy('id')->get();
-                if ($id == 3) {
-                    $genre_arr = [Collection::getCollectionGenres($id)];
-                    $genres = [Genre::find($genre_arr[0])];
-                } else {
-                    $genres = Genre::where('parent_id', Collection::getCollectionGenres($id))
-                        ->orderBy('sequence_number')->get();
-                    $genre_arr = Genre::find(Collection::getCollectionGenres($id))
-                        ->getSubGenreIds();
-                }
-                $text_count = Text::whereIn('lang_id', $lang_ids)
-                    ->whereIn('id', function ($q) use ($genre_arr) {
-                        $q->select('text_id')->from('genre_text')
-                            ->whereIn('genre_id', $genre_arr);
-                    })->count();
-                $dialects = [];
-                if ($id == 1) {
-                    $dialects = Dialect::whereIn('lang_id', $lang_ids)->get();
-                } elseif ($id == 6) {
-                    foreach ($genres as $genre) {
-                        foreach ($langs as $lang) {
-                            $dials = Dialect::where('lang_id', $lang->id)->get();
-                            foreach ($dials as $dialect) {
-                                $texts = $dialect->textsByGenre($genre->id)->sortBy('title');
-                                if (!count($texts)) {
-                                    continue;
-                                }
-                                $dialects[$genre->id]['langs'][$lang->id]['dialects'][$dialect->id] = ['dialect' => $dialect, 'texts' => $texts];
-                            }
-                            $dialects[$genre->id]['langs'][$lang->id]['lang_text_count'] =
-                                Text::where('lang_id', $lang->id)
-                                ->whereIn('id', function ($q) use ($genre) {
-                                    $q->select('text_id')->from('genre_text')
-                                        ->where('genre_id', $genre->id);
-                                })->count();
-                        }
-                        $dialects[$genre->id]['genre_text_count'] =
-                            Text::whereIn('lang_id', $lang_ids)
-                            ->whereIn('id', function ($q) use ($genre) {
-                                $q->select('text_id')->from('genre_text')
-                                    ->where('genre_id', $genre->id);
-                            })->count();
-                    }
-                    //dd($dialects);                    
-                }
+                list ($dialects, $genres, $lang_ids, $langs, $text_count) = Collection::getDataForCollectionByGenre($id);
                 return view(
                     'corpus.collection.' . $id . '.index',
                     compact(
@@ -100,11 +55,27 @@ class CollectionController extends Controller
                         'text_count'
                     )
                 );
+            } elseif (Collection::isCollectionByCorpuses($id)) {
+                list($corpuses, $text_count) = Collection::getDataForCollectionByCorpuses($id);
+                return view(
+                    'corpus.collection.' . $id . '.index',
+                    compact(
+                        'for_print',
+                        'corpuses',
+                        'id',
+                        'text_count'
+                    )
+                );
             } elseif ($id == 7) {
                 return Redirect::to('/corpus/monument');
             }
+                 
         }
-        return Redirect::to('/corpus/collection');
+        return Redirect::to('/corpus/collection');       
+    }
+
+    public function collectionForAuthor($id, Request $request)
+    {
     }
 
     public function runeTopics(Request $request)
@@ -122,20 +93,20 @@ class CollectionController extends Controller
         );
     }
 
-    public function runesForPlot($plot_id, Request $request)
+    public function textsForPlot(int $collection_id, int $plot_id, Request $request)
     {
         $for_print = (int)($request->for_print);
         $plot = Plot::find($plot_id);
         if (!$plot) {
             return;
         }
-        $lang_id = Collection::getCollectionLangs(2);
+        $lang_id = Collection::getCollectionLangs($collection_id);
         $texts = $plot->texts()->whereIn('lang_id', $lang_id)->get()->sortBy('year');
         $page_title = trans('corpus.plot') . ': ' . $plot->name;
         $url_args = '?search_collection=2&search_plot=' . $plot->id . '&for_print=' . $for_print;
         return view(
-            'corpus.collection.2.texts',
-            compact('for_print', 'lang_id', 'page_title', 'texts', 'url_args')
+            'corpus.collection.'.$collection_id.'.texts',
+            compact('collection_id', 'for_print', 'lang_id', 'page_title', 'texts', 'url_args')
         );
     }
 

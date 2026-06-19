@@ -24,7 +24,7 @@ Route::group(
         
         Route::get('collection/2/topics/{topic_id}', 'Corpus\CollectionController@runesForTopic');
         Route::get('collection/2/topics', 'Corpus\CollectionController@runeTopics');
-        Route::get('collection/2/{plot_id}', 'Corpus\CollectionController@runesForPlot');
+        Route::get('collection/{collection_id}/{plot_id}', 'Corpus\CollectionController@textsForPlot');
         Route::get('collection/3/motives/{motive_id}', 'Corpus\CollectionController@predictionTextsForMotive');
         Route::get('collection/3/motives', 'Corpus\CollectionController@predictionMotives');
         Route::get('collection/3/{cycle_id}', 'Corpus\CollectionController@predictionTextsForCycle');

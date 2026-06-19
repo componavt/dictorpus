@@ -22,6 +22,8 @@ services:
     build: 
       context: ${DICTORPUS_PATH}
     container_name: dictorpus-web
+    environment:
+      TZ: Europe/Moscow
     restart: unless-stopped
     depends_on:
       - mariadb
@@ -40,6 +42,8 @@ services:
   topkar-web:
     build: ${TOPKAR_PATH}
     container_name: topkar-web
+    environment:
+      TZ: Europe/Moscow
     restart: unless-stopped
     depends_on:
       - mariadb
@@ -92,3 +96,4 @@ volumes:
 networks:
   dictorpus-network:
     driver: bridge
+
