@@ -31,6 +31,7 @@ class CollectionController extends Controller
     public function show($id, Request $request)
     {
         $id = (int)$id;
+//        $collection = Collection::find
         $for_print = (int)($request->for_print);
 
         if (Collection::isCollectionId($id)) {    
@@ -72,10 +73,6 @@ class CollectionController extends Controller
                  
         }
         return Redirect::to('/corpus/collection');       
-    }
-
-    public function collectionForAuthor($id, Request $request)
-    {
     }
 
     public function runeTopics(Request $request)

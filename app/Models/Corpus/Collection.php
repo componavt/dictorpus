@@ -2,12 +2,48 @@
 
 namespace App\Models\Corpus;
 
-//use App\Models\Corpus\Author;
+use LaravelLocalization;
+
+use App\Models\Corpus\Author;
+use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
+use App\Models\Corpus\Plot;
 use App\Models\Dict\Lang;
 
 class Collection
 {
+
+    public function getGenres () {
+        $genre_ids = self::getCollectionGenres($this->id);
+        if (empty($genre_ids)) {
+            return null;
+        }
+        return Genre::whereIn('id', $genre_ids)->get();
+    }
+
+    public function getAuthors () {
+        $author_ids = self::getCollectionAuthors($this->id);
+        if (empty($author_ids)) {
+            return null;
+        }
+        return Author::whereIn('id', $author_ids)->get();
+    }
+
+    public function getCorpuses () {
+        $corpus_ids = self::getCollectionCorpuses($this->id);
+        if (empty($corpus_ids)) {
+            return null;
+        }
+        return Corpus::whereIn('id', $corpus_ids)->get();
+    }
+
+    public function getPlots () {
+        $plot_ids = self::getCollectionGenres($this->id);
+        if (empty($plot_ids)) {
+            return null;
+        }
+        return Plot::whereIn('id', $plot_ids)->get();
+    }
 
     public static function getCollectionGenres($collection_id = null)
     {
@@ -28,6 +64,17 @@ class Collection
         }
         if (isset($corpuses[$collection_id])) {
             return $corpuses[$collection_id];
+        }
+    }
+
+    public static function getCollectionPlots($collection_id = null)
+    {
+        $plots = [9 => [53, 84, 85, 86]];
+        if (!$collection_id) {
+            return $plots;
+        }
+        if (isset($plots[$collection_id])) {
+            return $plots[$collection_id];
         }
     }
 
@@ -192,42 +239,21 @@ class Collection
         $langs = Lang::whereIn('id', $lang_ids)->orderBy('id')->get();
         $corpuses = Corpus::whereIn('id', Collection::getCollectionCorpuses($id))
                     ->orderBy('name_'.LaravelLocalization::getCurrentLocale())->get();
-dd($corpuses);                    
-        $genre_arr = $genres->pluck('id')->toArray();
-        $text_count = Text::whereIn('lang_id', $lang_ids)
-            ->whereIn('id', function ($q) use ($genre_arr) {
-                $q->select('text_id')->from('genre_text')
-                    ->whereIn('genre_id', $genre_arr);
-            })->count();
-        $dialects = [];
-        if ($id == 1) {
-            $dialects = Dialect::whereIn('lang_id', $lang_ids)->get();
-        } elseif ($id == 6) {
-            foreach ($genres as $genre) {
-                foreach ($langs as $lang) {
-                    $dials = Dialect::where('lang_id', $lang->id)->get();
-                    foreach ($dials as $dialect) {
-                        $texts = $dialect->textsByGenre($genre->id)->sortBy('title');
-                        if (!count($texts)) {
-                            continue;
-                        }
-                        $dialects[$genre->id]['langs'][$lang->id]['dialects'][$dialect->id] = ['dialect' => $dialect, 'texts' => $texts];
-                    }
-                    $dialects[$genre->id]['langs'][$lang->id]['lang_text_count'] =
-                        Text::where('lang_id', $lang->id)
-                        ->whereIn('id', function ($q) use ($genre) {
-                            $q->select('text_id')->from('genre_text')
-                                ->where('genre_id', $genre->id);
-                        })->count();
-                }
-                $dialects[$genre->id]['genre_text_count'] =
-                    Text::whereIn('lang_id', $lang_ids)
-                    ->whereIn('id', function ($q) use ($genre) {
-                        $q->select('text_id')->from('genre_text')
-                            ->where('genre_id', $genre->id);
-                    })->count();
-            }                                       
+        $corpus_ids = $corpuses->pluck('id')->toArray();
+        $texts = Text::whereIn('lang_id', $lang_ids)
+            ->whereIn('id', function ($q) use ($corpus_ids) {
+                $q->select('text_id')->from('corpus_text')
+                    ->whereIn('corpus_id', $corpus_ids);
+            });
+        $plot_ids = self::getCollectionPlots($id);
+        if ($plot_ids) {
+            $texts ->whereIn('id', function ($q) use ($plot_ids) {
+                $q->select('text_id')->from('plot_text')
+                    ->whereIn('plot_id', $plot_ids);
+            });
+
         }
+        $text_count = $texts->count();
         return [$corpuses, $text_count];
     }
 }
