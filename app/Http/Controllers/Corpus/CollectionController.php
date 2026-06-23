@@ -31,10 +31,10 @@ class CollectionController extends Controller
     public function show($id, Request $request)
     {
         $id = (int)$id;
-//        $collection = Collection::find
+        $collection = Collection::find($id);
         $for_print = (int)($request->for_print);
 
-        if (Collection::isCollectionId($id)) {    
+        if (Collection::isCollectionId($id)) {
             if (Collection::isCollectionByAuthor($id)) {
                 $author_id = Collection::getCollectionAuthors($id);
                 $author = Author::find($author_id);
@@ -43,14 +43,14 @@ class CollectionController extends Controller
                     compact('author', 'id')
                 );
             } elseif (Collection::isCollectionByGenre($id)) {
-                list ($dialects, $genres, $lang_ids, $langs, $text_count) = Collection::getDataForCollectionByGenre($id);
+                list($dialects, $genres, $lang_ids, $langs, $text_count) = Collection::getDataForCollectionByGenre($id);
                 return view(
                     'corpus.collection.' . $id . '.index',
                     compact(
                         'dialects',
                         'for_print',
                         'genres',
-                        'id',
+                        'collection',
                         'lang_ids',
                         'langs',
                         'text_count'
@@ -62,6 +62,7 @@ class CollectionController extends Controller
                     'corpus.collection.' . $id . '.index',
                     compact(
                         'for_print',
+                        'collection',
                         'corpuses',
                         'id',
                         'text_count'
@@ -70,9 +71,8 @@ class CollectionController extends Controller
             } elseif ($id == 7) {
                 return Redirect::to('/corpus/monument');
             }
-                 
         }
-        return Redirect::to('/corpus/collection');       
+        return Redirect::to('/corpus/collection');
     }
 
     public function runeTopics(Request $request)
@@ -90,20 +90,41 @@ class CollectionController extends Controller
         );
     }
 
-    public function textsForPlot(int $collection_id, int $plot_id, Request $request)
+    public function texts(int $id, Request $request)
     {
         $for_print = (int)($request->for_print);
+        $plot_id = (int)($request->plot_id);
         $plot = Plot::find($plot_id);
-        if (!$plot) {
+        $corpus_id = (int)($request->corpus_id);
+        $corpus = Corpus::find($corpus_id);
+
+        $collection = Collection::find($id);
+        if (!$collection) {
             return;
         }
-        $lang_id = Collection::getCollectionLangs($collection_id);
-        $texts = $plot->texts()->whereIn('lang_id', $lang_id)->get()->sortBy('year');
-        $page_title = trans('corpus.plot') . ': ' . $plot->name;
-        $url_args = '?search_collection=2&search_plot=' . $plot->id . '&for_print=' . $for_print;
+        $lang_ids = $collection->getLangIds();
+        $page_titles = [];
+        $texts = Text::whereIn('lang_id', $lang_ids);
+        if ($corpus) {
+            $page_titles[] = trans('corpus.corpus') . ': ' . $corpus->name;
+            $texts->whereIn('id', function ($q) use ($corpus_id) {
+                $q->select('text_id')->from('corpus_text')
+                    ->where('corpus_id', $corpus_id);
+            });
+        }
+        if ($plot) {
+            $page_titles[] = trans('corpus.plot') . ': ' . $plot->name;
+            $texts->whereIn('id', function ($q) use ($plot_id) {
+                $q->select('text_id')->from('plot_text')
+                    ->where('plot_id', $plot_id);
+            });
+        }
+        $texts = $texts->get()->sortBy('year');
+        $page_title = join('<br>', $page_titles);
+        $url_args = '?search_collection=' . $id . '&search_plot=' . $plot_id . '&for_print=' . $for_print;
         return view(
-            'corpus.collection.'.$collection_id.'.texts',
-            compact('collection_id', 'for_print', 'lang_id', 'page_title', 'texts', 'url_args')
+            'corpus.collection.' . $id . '.texts',
+            compact('collection', 'for_print', 'page_title', 'texts', 'url_args')
         );
     }
 
@@ -115,14 +136,18 @@ class CollectionController extends Controller
         if (!$topic || !$plot) {
             return;
         }
-        $lang_id = Collection::getCollectionLangs(2);
-        $texts = $topic->textsForPlot($plot->id)->whereIn('lang_id', $lang_id)->get()->sortBy('year');
+        $collection = Collection::find(2);
+        if (!$collection) {
+            return;
+        }
+        $lang_ids = $collection->getLangIds();
+        $texts = $topic->textsForPlot($plot->id)->whereIn('lang_id', $lang_ids)->get()->sortBy('year');
         $page_title = trans('corpus.plot') . ': ' . $plot->name . '<br>' . trans('corpus.topic') . ': ' . $topic->name;
         $url_args = '?search_collection=2&search_topic=' . $topic->id . '&for_print=' . $for_print;
         $back_link = ['/corpus/collection/2/topics', trans('collection.topic_index')];
         return view(
             'corpus.collection.2.texts',
-            compact('back_link', 'for_print', 'page_title', 'texts', 'url_args')
+            compact('back_link', 'collection', 'for_print', 'page_title', 'texts', 'url_args')
         );
     }
 

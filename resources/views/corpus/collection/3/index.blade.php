@@ -9,8 +9,8 @@
 @stop
 
 @section('body')
-    <h2>{{trans('collection.name_list')[$id]}}</h2>
-    <p>{!!trans('collection.about')[$id]!!}</p>
+    <h2>{{trans('collection.name_list')[$collection->id]}}</h2>
+    <p>{!!trans('collection.about')[$collection->id]!!}</p>
     <p><b>{{trans('collection.total_count')}}:</b> {{$text_count}}</p>
     
     <h3>{{trans('collection.prediction_cycles')}}</h3>

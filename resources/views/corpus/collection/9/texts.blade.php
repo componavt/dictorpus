@@ -2,7 +2,7 @@
 @extends('layouts.'.($for_print ? 'for_print' : 'page'))
 
 @section('page_title')
-{{ trans('collection.name_list')[$collection_id] }}
+{{ trans('collection.name_list')[$collection->id] }}
 @stop
 
 @section('headExtra')
@@ -11,19 +11,20 @@
 
 @section('body')
     <p>
-        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/'.$collection_id) }}">{{trans('collection.to_collection')}}</a>
+        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/'.$collection->id) }}">{{trans('collection.to_collection')}}</a>
         @if(isset($back_link)) 
         | <a href="{{ LaravelLocalization::localizeURL($back_link[0]) }}">{{$back_link[1]}}</a>
         @endif
     </p>
     
-    <h2>{!! $page_title !!}</h2>
+    <h2 style="line-height: 150%">{!! $page_title !!}</h2>
     
     @if (sizeof($texts)) 
     <table class="table table-striped table-wide wide-md">
     <thead>
         <tr>
             <th>No</th>
+            <th>{{ trans('corpus.topic') }}</th>
             <th>{{ trans('corpus.title') }}</th>
             <th>{{ trans('messages.translation') }}</th>
             <th>{{ trans('messages.year') }}</th>
@@ -36,13 +37,16 @@
         @foreach ($texts as $text)
         <tr>
             <td data-th="No">{{ $list_count++ }}</td>
+            <td data-th="{{ trans('corpus.topic') }}">
+                @foreach ($text->topics as $topic)
+                {{ $topic->name }}<br>
+                @endforeach
+            </td>
             <td data-th="{{ trans('corpus.title') }}">
-                {{-- $text->authorsToString() ? $text->authorsToString().'.' : '' --}}
-                <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.$url_args) }}">{{$text->title}}</a>
+                <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.$url_args) }}">{{ $text->title }}</a>
             </td>
             <td data-th="{{ trans('messages.translation') }}">
                 @if ($text->transtext)
-                {{-- $text->transtext->authorsToString() ? $text->transtext->authorsToString().'.' : '' --}}
                 {{$text->transtext->title}}
                 @endif
             </td>

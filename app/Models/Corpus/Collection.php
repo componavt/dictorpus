@@ -2,18 +2,60 @@
 
 namespace App\Models\Corpus;
 
-use LaravelLocalization;
+use InvalidArgumentException;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Plot;
+use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
 class Collection
 {
+    public int $id;
 
-    public function getGenres () {
+    public function __construct(int $id)
+    {
+        if (!in_array($id, self::getCollectionIds(), true)) {
+            throw new InvalidArgumentException("Unknown collection id: {$id}");
+        }
+
+        $this->id = $id;
+    }
+
+    public static function find(int $id): ?self
+    {
+        return in_array($id, self::getCollectionIds(), true)
+            ? new self($id)
+            : null;
+    }
+
+    public function getName(): ?string
+    {
+        $key = "collection.name_list.{$this->id}";
+        $value = trans($key);
+
+        return $value === $key ? null : $value;
+    }
+
+    public function getLangIds()
+    {
+        return Collection::getCollectionLangs($this->id);
+    }
+
+    public function getLangs()
+    {
+        $lang_ids = $this->getLangIds();
+        if (empty($lang_ids)) {
+            return null;
+        }
+        return Lang::whereIn('id', $lang_ids)->orderBy('id')->get();
+    }
+
+    public function getGenres()
+    {
         $genre_ids = self::getCollectionGenres($this->id);
         if (empty($genre_ids)) {
             return null;
@@ -21,7 +63,8 @@ class Collection
         return Genre::whereIn('id', $genre_ids)->get();
     }
 
-    public function getAuthors () {
+    public function getAuthors()
+    {
         $author_ids = self::getCollectionAuthors($this->id);
         if (empty($author_ids)) {
             return null;
@@ -29,7 +72,8 @@ class Collection
         return Author::whereIn('id', $author_ids)->get();
     }
 
-    public function getCorpuses () {
+    public function getCorpuses()
+    {
         $corpus_ids = self::getCollectionCorpuses($this->id);
         if (empty($corpus_ids)) {
             return null;
@@ -37,14 +81,49 @@ class Collection
         return Corpus::whereIn('id', $corpus_ids)->get();
     }
 
-    public function getPlots () {
-        $plot_ids = self::getCollectionGenres($this->id);
+    public function getPlotIds()
+    {
+        return self::getCollectionPlots($this->id);
+    }
+
+    public function getPlots($corpus_id = null)
+    {
+        $plot_ids = $this->getPlotIds();
         if (empty($plot_ids)) {
             return null;
         }
-        return Plot::whereIn('id', $plot_ids)->get();
+        $plots = Plot::whereIn('id', $plot_ids);
+        if (!empty($corpus_id)) {
+            $plots->whereIn('id', function ($q1) use ($corpus_id) {
+                $q1->select('plot_id')->from('plot_text')
+                    ->whereIn('text_id', function ($q2) use ($corpus_id) {
+                        $q2->select('text_id')->from('corpus_text')
+                            ->where('corpus_id', $corpus_id);
+                    });
+            });
+        }
+        return $plots->get();
     }
 
+    public function countTextsForCorpus(int $corpus_id, $plot_id = null)
+    {
+        $texts = Text::whereIn('lang_id', $this->getLangIds())
+            ->whereIn('id', function ($q) use ($corpus_id) {
+                $q->select('text_id')->from('corpus_text')
+                    ->where('corpus_id', $corpus_id);
+            });
+        $plot_ids = $this->getPlotIds();
+        if ($plot_id) {
+            $plot_ids = [$plot_id];
+        }
+        if (!empty($plot_ids)) {
+            $texts->whereIn('id', function ($q) use ($plot_ids) {
+                $q->select('text_id')->from('plot_text')
+                    ->whereIn('plot_id', $plot_ids);
+            });
+        }
+        return $texts->count();
+    }
     public static function getCollectionGenres($collection_id = null)
     {
         $genres = [1 => 19, 2 => 66, 3 => 60, 6 => 19];
@@ -58,7 +137,7 @@ class Collection
 
     public static function getCollectionCorpuses($collection_id = null)
     {
-        $corpuses = [9 => [1,15,4]];
+        $corpuses = [9 => [1, 15, 4]];
         if (!$collection_id) {
             return $corpuses;
         }
@@ -103,7 +182,7 @@ class Collection
 
     public static function getCollectionIds()
     {
-        return array_keys(trans('collection.name_list'));
+        return array_keys((array)trans('collection.name_list'));
     }
 
     public static function isCollectionbyAuthor($id): bool
@@ -178,17 +257,18 @@ class Collection
      * @var int $id - collection ID
      * @return array - [$dialects, $genres, $lang_ids, $langs, $text_count]
      */
-    public static function getDataForCollectionByGenre(int $id) {
+    public static function getDataForCollectionByGenre(int $id)
+    {
         $lang_ids = Collection::getCollectionLangs($id);
         $langs = Lang::whereIn('id', $lang_ids)->orderBy('id')->get();
         if ($id == 3) {
-            $genre_arr = [Collection::getCollectionGenres($id)]; 
+            $genre_arr = [Collection::getCollectionGenres($id)];
             $genres = [Genre::find($genre_arr[0])];
-        } elseif ($id == 9)  {
+        } elseif ($id == 9) {
             $genres = Genre::where(function ($q) use ($id) {
-                    $q->whereIn('id', (array)Collection::getCollectionGenres($id))
-                        ->orWhereIn('parent_id', (array)Collection::getCollectionGenres($id));
-                })
+                $q->whereIn('id', (array)Collection::getCollectionGenres($id))
+                    ->orWhereIn('parent_id', (array)Collection::getCollectionGenres($id));
+            })
                 ->orderBy('sequence_number')->get(); // коллекция жанров и поджанров
             $genre_arr = $genres->pluck('id')->toArray();
         } else {
@@ -229,16 +309,17 @@ class Collection
                         $q->select('text_id')->from('genre_text')
                             ->where('genre_id', $genre->id);
                     })->count();
-            }                                       
+            }
         }
         return [$dialects, $genres, $lang_ids, $langs, $text_count];
     }
 
-    public static function getDataForCollectionByCorpuses(int $id) {
+    public static function getDataForCollectionByCorpuses(int $id)
+    {
         $lang_ids = Collection::getCollectionLangs($id);
         $langs = Lang::whereIn('id', $lang_ids)->orderBy('id')->get();
         $corpuses = Corpus::whereIn('id', Collection::getCollectionCorpuses($id))
-                    ->orderBy('name_'.LaravelLocalization::getCurrentLocale())->get();
+            ->orderBy('name_' . LaravelLocalization::getCurrentLocale())->get();
         $corpus_ids = $corpuses->pluck('id')->toArray();
         $texts = Text::whereIn('lang_id', $lang_ids)
             ->whereIn('id', function ($q) use ($corpus_ids) {
@@ -247,11 +328,10 @@ class Collection
             });
         $plot_ids = self::getCollectionPlots($id);
         if ($plot_ids) {
-            $texts ->whereIn('id', function ($q) use ($plot_ids) {
+            $texts->whereIn('id', function ($q) use ($plot_ids) {
                 $q->select('text_id')->from('plot_text')
                     ->whereIn('plot_id', $plot_ids);
             });
-
         }
         $text_count = $texts->count();
         return [$corpuses, $text_count];

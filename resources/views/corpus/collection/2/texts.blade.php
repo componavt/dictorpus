@@ -2,7 +2,7 @@
 @extends('layouts.'.($for_print ? 'for_print' : 'page'))
 
 @section('page_title')
-{{ trans('collection.name_list')[2] }}
+{{ trans('collection.name_list')[$collection->id] }}
 @stop
 
 @section('headExtra')
@@ -11,7 +11,7 @@
 
 @section('body')
     <p>
-        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2') }}">{{trans('collection.to_collection')}}</a>
+        <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/'.$collection->id) }}">{{trans('collection.to_collection')}}</a>
         @if(isset($back_link)) 
         | <a href="{{ LaravelLocalization::localizeURL($back_link[0]) }}">{{$back_link[1]}}</a>
         @endif

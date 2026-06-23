@@ -1,4 +1,3 @@
-<?php $collection_id = 2; ?>
 @extends('layouts.'.($for_print ? 'for_print' : 'page'))
 
 @section('page_title')
@@ -10,20 +9,20 @@
 @stop
 
 @section('body')
-    <h2>{{trans('collection.name_list')[$id]}}</h2>
-    <p>{!!trans('collection.about')[$id]!!}</p>
+    <h2>{{trans('collection.name_list')[$collection->id]}}</h2>
+    <p>{!!trans('collection.about')[$collection->id]!!}</p>
     <p><b>{{trans('collection.total_count')}}:</b> {{$text_count}}</p>
 
     @foreach ($genres as $genre)
-        @include('corpus.collection.2._genre', ['genre'=>$genre, 'header'=>3])
+        @include('corpus.collection.'.$collection->id.'._genre', ['genre'=>$genre, 'header'=>3])
         @if ($genre->children()->count())
         <div style='padding-left: 20px;'>
             @foreach ($genre->children as $subgenre)
-                @include('corpus.collection.2._genre', ['genre'=>$subgenre, 'header'=>4])
+                @include('corpus.collection.'.$collection->id.'._genre', ['genre'=>$subgenre, 'header'=>4])
             @endforeach
         </div>
         @endif
     @endforeach
 
-    <h4 style='margin-top: 20px;'><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/topics?for_print='.$for_print) }}">{{trans('collection.topic_index')}}</a></h4>
+    <h4 style='margin-top: 20px;'><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/'.$collection->id.'/topics?for_print='.$for_print) }}">{{trans('collection.topic_index')}}</a></h4>
 @stop
