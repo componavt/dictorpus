@@ -97,6 +97,8 @@ class CollectionController extends Controller
         $plot = Plot::find($plot_id);
         $corpus_id = (int)($request->corpus_id);
         $corpus = Corpus::find($corpus_id);
+        $topic_id = (int)($request->topic_id);
+        $topic = Topic::find($topic_id);
 
         $collection = Collection::find($id);
         if (!$collection) {
@@ -117,6 +119,13 @@ class CollectionController extends Controller
             $texts->whereIn('id', function ($q) use ($plot_id) {
                 $q->select('text_id')->from('plot_text')
                     ->where('plot_id', $plot_id);
+            });
+        }
+        if ($topic) {
+            $page_titles[] = trans('corpus.topic') . ': ' . $topic->name;
+            $texts->whereIn('id', function ($q) use ($topic_id) {
+                $q->select('text_id')->from('text_topic')
+                    ->where('topic_id', $topic_id);
             });
         }
         $texts = $texts->get()->sortBy('year');

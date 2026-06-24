@@ -253,7 +253,7 @@ class KarVerbOlo
                 return !$def ? Grammatic::joinMorfToBases(self::inf2Base($stems[0], $stems[3]), 'n') : '';
         }
 
-        if (empty($stems[10])) {
+        if (!isset($stems[10])) {
             return '';
         }
         $A = KarGram::garmVowel($stems[10], 'a');
@@ -261,6 +261,7 @@ class KarVerbOlo
 
         switch ($gramset_id) {
             case 29: // 4. индикатив, презенс, 1 л., мн.ч., пол. 
+                //                dd($stems, $def, Grammatic::joinMorfToBases($stems[1], 'mm' . $O));
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 'mm' . $O) : '';
             case 30: // 5. индикатив, презенс, 2 л., мн.ч., пол. 
                 return !$def ? Grammatic::joinMorfToBases($stems[1], 'tt' . $O) : '';
@@ -531,12 +532,12 @@ class KarVerbOlo
         $stems[3] = $is_reflexive ? self::prsStrongVocalBaseRef($stems[2])
             : self::prsStrongVocalBase($stems[1], $stems[2]); //stem3
 
-        $stems[4] = preg_replace("/-/", $base, $regs[6]); // stem4
+        $stems[4] = trim(preg_replace("/-/", $base, $regs[6])); // stem4
         $stems[6] = self::parsePrs3Pl(preg_replace("/-/", $base, $regs[5]), $is_reflexive); //stem6
         $stems[7] = self::parseImp3Pl(preg_replace("/-/", $base, $regs[7]), $is_reflexive); //stem7
         $stems[8] = $is_reflexive ? self::vocalStrongConsRef($stems[0], $stems[3], $stems[7])
             : self::vocalStrongCons($stems[0], $stems[3], $stems[7]); // stem8
-        $stems[5] = self::weakImpBase($stems[1], $stems[4], $is_reflexive); //stem5
+        $stems[5] = trim(self::weakImpBase($stems[1], $stems[4], $is_reflexive)); //stem5
         return [$stems, null, $regs[1], $regs[2]];
     }
 

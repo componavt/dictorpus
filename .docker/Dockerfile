@@ -17,8 +17,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get purge -y --auto-remove $PHPIZE_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY apache/99-timezone.ini /usr/local/etc/php/conf.d/99-timezone.ini
+COPY .docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY .docker/99-timezone.ini /usr/local/etc/php/conf.d/99-timezone.ini
 
 RUN sed -i 's|DocumentRoot /var/www/html|#DocumentRoot /var/www/html|g' /etc/apache2/apache2.conf
 

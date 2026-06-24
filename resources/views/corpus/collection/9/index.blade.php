@@ -13,14 +13,15 @@
     <p>{!!trans('collection.about')[$id]!!}</p>
     <p><b>{{trans('collection.total_count')}}:</b> {{$text_count}}</p>
 
-    @foreach ($corpuses as $corpus)
-    <h3 class='with-first-big-letter'>{{ $corpus->name}} ({{ $collection->countTextsForCorpus($corpus->id) }})</h3>
-
-        @foreach ($collection->getPlots($corpus->id) as $plot)
-            @if ($collection->countTextsForCorpus($corpus->id, $plot->id))
-    <p><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/'.$collection->id.'/texts?plot_id='.$plot->id.'&corpus_id='.$corpus->id.'&for_print='.$for_print) }}">{{$plot->name}}</a>
-         ({{ $collection->countTextsForCorpus($corpus->id, $plot->id) }})</li>
-            @endif
+    @foreach ($collection->getPlots() as $plot)
+    <h2>{{ $plot->name }} ({{ $collection->countTextsForPlot($plot->id) }})</h2>
+    <ul>
+        @foreach ($collection->getTopicsForPlot($plot->id) as $topic)
+        <li><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/'.$collection->id.'/texts?plot_id='.$plot->id.'&topic_id='.$topic->id.'&for_print='.$for_print) }}">
+            {{ $topic->name }}</a>
+            ({{ $collection->countTextsForTopic($topic->id, $plot->id) }})
+        </li>
         @endforeach
+    </ul>
     @endforeach
 @stop

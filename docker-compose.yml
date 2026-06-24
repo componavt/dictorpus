@@ -21,6 +21,7 @@ services:
   web:
     build: 
       context: ${DICTORPUS_PATH}
+      dockerfile: .docker/Dockerfile
     container_name: dictorpus-web
     environment:
       TZ: Europe/Moscow
@@ -35,12 +36,14 @@ services:
     # - E:\projects\dictorpus:/var/www/html
     # Используем Unix-стиль — стабильнее для WSL2
       - ${DICTORPUS_PATH}:/var/www/html
-      - ./apache/timeout.conf:/etc/apache2/conf-enabled/timeout.conf:ro
+      - ${DICTORPUS_PATH}/.docker/timeout.conf:/etc/apache2/conf-enabled/timeout.conf:ro
     networks:
       - dictorpus-network
 
   topkar-web:
-    build: ${TOPKAR_PATH}
+    build: 
+      context: ${TOPKAR_PATH}
+      dockerfile: .docker/Dockerfile
     container_name: topkar-web
     environment:
       TZ: Europe/Moscow
@@ -55,6 +58,23 @@ services:
     networks:
       - dictorpus-network
 
+  ristikanza-web:
+    build:
+      context: ${RISTIKANZA_PATH}
+      dockerfile: .docker/Dockerfile
+    container_name: ristikanza-web
+    environment:
+      TZ: Europe/Moscow
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    expose:
+      - "80"
+    volumes:
+      - ${RISTIKANZA_PATH}:/var/www/html
+    networks:
+      - dictorpus-network
+
   nginx-proxy:
     image: nginx:alpine
     container_name: nginx-proxy
@@ -64,6 +84,7 @@ services:
     depends_on:
       - web
       - topkar-web
+      - ristikanza-web
     networks:
       - dictorpus-network
     command: >
@@ -83,6 +104,15 @@ services:
           server_name topkar.local;
           location / {
             proxy_pass http://topkar-web:80;
+            proxy_set_header Host \$$host;
+            proxy_set_header X-Real-IP \$$remote_addr;
+          }
+        }
+        server {
+          listen 80;
+          server_name ristikanza.local;
+          location / {
+            proxy_pass http://ristikanza-web:80;
             proxy_set_header Host \$$host;
             proxy_set_header X-Real-IP \$$remote_addr;
           }

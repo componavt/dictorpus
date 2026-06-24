@@ -23,57 +23,62 @@ use App\Models\Dict\PartOfSpeech;
  **/
 class Grammatic
 {
-    public static function langsWithRules() {
-        return [1,4,5,6];
+    public static function langsWithRules()
+    {
+        return [1, 4, 5, 6];
     }
 
-    public static function consSet() {
+    public static function consSet()
+    {
         return "bcčdfghjklmnprsšzžtv";
     }
-    
-    public static function vowelSet() {
+
+    public static function vowelSet()
+    {
         return "aeiouyäö";
     }
-    
+
     /**
      * ku|uzi#kymmen (-vven#en, -uttu#dy; -uzii#ii)
      * @param Array $data = ['lemma'=>'lemma_string', 'lang_id'=>lang_int, 'pos_id'=>pos_int, 'wordform_dialect_id'=>dialect_int];
      * @return array
      */
-    public static function parseLemmaField($data) {
-//dd($data);
+    public static function parseLemmaField($data)
+    {
+        //dd($data);
         $lemma = self::toRightForm($data['lemma']);
-        if (isset($data['number']) && $data['number']=='refl') {
+        if (isset($data['number']) && $data['number'] == 'refl') {
             $data['reflexive'] = 1;
         }
         if (isset($data['reflexive'])) {
-            $is_reflexive = $data['reflexive']; 
+            $is_reflexive = $data['reflexive'];
         } else {
             $is_reflexive = null;
         }
-        if (isset($data['impersonal']) && (boolean)$data['impersonal']) {   
+        if (isset($data['impersonal']) && (bool)$data['impersonal']) {
             $name_num = 'def';
-        } elseif (isset($data['number'])) {    
+        } elseif (isset($data['number'])) {
             $name_num =  self::nameNumFromNumberField($data['number']);
         } else {
             $name_num =  null;
         }
-       
+
         list($stems, $name_num, $max_stem, $affix) = self::stemsFromTemplate($lemma, $data['lang_id'], $data['pos_id'], $name_num, $data['wordform_dialect_id'] ?? null, $is_reflexive);
-        $lemma = preg_replace("/\|\|/", '',$max_stem). $affix;
+        $lemma = preg_replace("/\|\|/", '', $max_stem) . $affix;
         $gramset_wordforms = self::wordformsByStems($data['lang_id'], $data['pos_id'], $data['wordform_dialect_id'] ?? null, $name_num, $stems, $is_reflexive);
-//dd($stems, $name_num, $gramset_wordforms);        
+        //dd($stems, $name_num, $gramset_wordforms);
         if ($gramset_wordforms) {
             return [$lemma, '', $max_stem, $affix, $gramset_wordforms, $stems];
         }
         return self::wordformsFromDict($lemma, $max_stem, $affix);
     }
 
-    public static function getAffixFromtemplate($template, $name_num) {  
+    public static function getAffixFromtemplate($template, $name_num)
+    {
         if (!preg_match("/\s/", $template) && preg_match("/^([^\{\(]*)\|([^\|]*)$/", $template, $regs)) {
             $base = $regs[1];
             $base_suff = $regs[2];
-            $stems[0] = preg_replace("/ǁ/",'',$base).$base_suff;
+            $stems[0] = preg_replace("/ǁ/", '', $base) . $base_suff;
         } else {
             $base = $template;
             $stems = null;
@@ -81,22 +86,23 @@ class Grammatic
         }
         return [$stems, $name_num, $base, $base_suff];
     }
-    
-    public static function wordformsFromDict($lemma, $stem, $affix) {       
+
+    public static function wordformsFromDict($lemma, $stem, $affix)
+    {
         $parsing = preg_match("/^([^\s\(]+)\s*\(([^\,\;]+)\,\s*([^\,\;]+)([\;\,]\s*([^\,\;]+))?\)/", $lemma, $regs);
         if ($parsing) {
             $lemma = $regs[1];
         }
-        
-        $lemma = str_replace('||','',$lemma);
-        if (preg_match("/^(.+)\|(.*)$/",$lemma,$rregs)){
+
+        $lemma = str_replace('||', '', $lemma);
+        if (preg_match("/^(.+)\|(.*)$/", $lemma, $rregs)) {
             $stem = $rregs[1];
             $affix = $rregs[2];
-            $lemma = $stem.$affix;
+            $lemma = $stem . $affix;
         }
-      
+
         if (!$parsing) {
-//var_dump([$parsing, $lemma, $wordforms, $stem, $affix]);
+            //var_dump([$parsing, $lemma, $wordforms, $stem, $affix]);
             return [$lemma, '', $stem, $affix, false, NULL];
         }
 
@@ -105,14 +111,14 @@ class Grammatic
         if (isset($regs[5])) {
             $regs[5] = str_replace('-', $stem, $regs[5]);
         }
-//dd($regs);
-//exit(0);        
+        //dd($regs);
+        //exit(0);        
 
-        $wordforms = $regs[2].', '.$regs[3];
+        $wordforms = $regs[2] . ', ' . $regs[3];
         if (isset($regs[5])) {
-            $wordforms .= '; '.$regs[5];
+            $wordforms .= '; ' . $regs[5];
         }
-        
+
         return [$lemma, $wordforms, $stem, $affix, false, NULL];
     }
     /** Common entry point for all languages. 
@@ -123,12 +129,13 @@ class Grammatic
      * @param int $pos_id part of speech ID
      * @return array
      */
-    public static function getListForAutoComplete($lang_id, $pos_id) {
+    public static function getListForAutoComplete($lang_id, $pos_id)
+    {
         $gramsets = [];
-        if (!in_array($lang_id, self::langsWithRules())) {// is not language with rules
+        if (!in_array($lang_id, self::langsWithRules())) { // is not language with rules
             return $gramsets;
         }
-        
+
         if ($lang_id == 1) {
             $gramsets = VepsGram::getListForAutoComplete($pos_id);
         } else {
@@ -141,76 +148,84 @@ class Grammatic
      * @param String $template
      * @param Int $lang_id
      * @param Int $pos_id
-     * @return Array [array_of_stems, name_of_number, max_stem, affix]
+     * @return array [array_of_stems, name_of_number, max_stem, affix]
      */
-    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id=null, $is_reflexive=null) {       
+    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num = null, $dialect_id = null, $is_reflexive = null)
+    {
         $template = trim($template);
-        if (!in_array($lang_id, self::langsWithRules())// is not langs with rules 
-                || $pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())) {
+        if (
+            !in_array($lang_id, self::langsWithRules()) // is not langs with rules 
+            || $pos_id != PartOfSpeech::getVerbID() && !in_array($pos_id, PartOfSpeech::getNameIDs())
+        ) {
             return Grammatic::getAffixFromtemplate($template, $name_num);
         }
 
         if (!preg_match("/\{\{/", $template)) {
-            $template = preg_replace('/\|\|/','ǁ',$template);
+            $template = preg_replace('/\|\|/', 'ǁ', $template);
         }
         if (preg_match("/^(.+)(\s+[\[\(].+)$/", $template, $regs)) {
-            $template = preg_replace("/\s+/", '_', $regs[1]).$regs[2];
+            $template = preg_replace("/\s+/", '_', $regs[1]) . $regs[2];
         }
         if ($lang_id == 1) {
-            list($stems, $name_num, $max_stem, $affix) = VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);  
+            list($stems, $name_num, $max_stem, $affix) = VepsGram::stemsFromTemplate($template, $pos_id, $name_num, $is_reflexive);
         } else {
             if (!$dialect_id) {
                 $dialect_id = Lang::mainDialectByID($lang_id);
             }
-            list($stems, $name_num, $max_stem, $affix) = KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);       
+            list($stems, $name_num, $max_stem, $affix) = KarGram::stemsFromTemplate($template, $pos_id, $name_num, $dialect_id, $is_reflexive);
         }
-//dd($stems, $name_num, $max_stem, $affix);        
-        $max_stem = preg_replace('/ǁ/','||',$max_stem);
-        $max_stem = preg_replace('/\_/',' ',$max_stem);
-        
-        if ($lang_id != 1 && is_array($stems) && sizeof($stems)>1) {
-            $stems[10] = KarGram::isBackVowels($max_stem.$affix);
+        //dd($stems, $name_num, $max_stem, $affix);
+        $max_stem = preg_replace('/ǁ/', '||', $max_stem);
+        $max_stem = preg_replace('/\_/', ' ', $max_stem);
+
+        if ($lang_id != 1 && is_array($stems) && sizeof($stems) > 1) {
+            $stems[10] = KarGram::isBackVowels($max_stem . $affix);
         }
+
         return [$stems, $name_num, $max_stem, $affix];
     }
 
-    public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num=null, $stems, $is_reflexive=null) {
-//dd($dialect_id);                
-        if (!is_array($stems) || !isset($stems[0]) || sizeof($stems)<6) {
+    public static function wordformsByStems($lang_id, $pos_id, $dialect_id, $name_num, $stems, $is_reflexive = null)
+    {
+        //dd($dialect_id);
+        if (!is_array($stems) || !isset($stems[0]) || sizeof($stems) < 6) {
             return false;
         }
-        
+
         if (!$dialect_id) {
             $dialect_id = Lang::mainDialectByID($lang_id);
         }
-        
+
         $gramsets = self::getListForAutoComplete($lang_id, $pos_id);
-//dd($gramsets);        
+        //dd($gramsets);
         $wordforms = [];
-//if ($template == "{{vep-conj-stems|voik|ta|ab|i}}") dd($stems);                
+
         foreach ($gramsets as $gramset_id) {
             $wordforms[$gramset_id] = self::wordformByStems($lang_id, $pos_id, $dialect_id, $gramset_id, $stems, $name_num, $is_reflexive);
         }
-// dd($wordforms);        
+        //dd($stems, $wordforms);
         return $wordforms;
     }
-    
-    public static function wordformByStems($lang_id, $pos_id, $dialect_id, $gramset_id, $stems, $name_num = null, $is_reflexive = null) {
+
+    public static function wordformByStems($lang_id, $pos_id, $dialect_id, $gramset_id, $stems, $name_num = null, $is_reflexive = null)
+    {
         if ($pos_id == PartOfSpeech::getVerbID()) {
             return self::verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num, $is_reflexive);
         } else {
             return self::nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
         }
     }
-    
-    public static function nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num=null) {
+
+    public static function nameWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num = null)
+    {
         if ($lang_id == 1) {
             return VepsName::wordformByStems($stems, $gramset_id, $dialect_id, $name_num);
         }
         return KarName::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $name_num);
     }
-    
-    public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def=null, $is_reflexive=null) {
+
+    public static function verbWordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def = null, $is_reflexive = null)
+    {
         if ($lang_id == 1) {
             if ($is_reflexive) {
                 return VepsVerbReflex::wordformByStems($stems, $gramset_id, $dialect_id);
@@ -233,19 +248,19 @@ class Grammatic
             sort($forms);
         }
         return join(', ', $forms);
-//        return self::removeSoftening(KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def));
-//        return KarVerb::wordformByStems($stems, $gramset_id, $lang_id, $dialect_id, $def);
     }
-        
-    public static function removeSoftening($word) {
+
+    public static function removeSoftening($word)
+    {
         if (preg_match("/^(.*[^’]l)’([ei].*)$/ui", $word, $regs)) {
-            return $regs[1].$regs[2];
+            return $regs[1] . $regs[2];
         }
         return $word;
     }
-    
-    public static function isLetterChangeable($lang_id) {
-        if (in_array($lang_id,[5, 4, 6])) { // karelian languages
+
+    public static function isLetterChangeable($lang_id)
+    {
+        if (in_array($lang_id, [5, 4, 6])) { // karelian languages
             return true;
         }
         return false;
@@ -262,13 +277,14 @@ class Grammatic
      * @param Int $lang_id
      * @return String
      */
-    public static function changeLetters($word,$lang_id=null) {
-//        $word = self::toRightForm($word);        
+    public static function changeLetters($word, $lang_id = null)
+    {
+        //        $word = self::toRightForm($word);        
         $word = self::toSearchForm($word);
-/*        $word = str_replace("'",'',$word); 
+        /*        $word = str_replace("'",'',$word); 
         $word = str_replace("`",'',$word);
         $word = str_replace("ʼ",'',$word);*/
-        
+
         if (!$lang_id || $lang_id && !self::isLetterChangeable($lang_id)) {
             return $word;
         }
@@ -277,15 +293,25 @@ class Grammatic
         return $word;
     }
 
-    public static function toSearchByPattern($word,$lang_id=null) {
+    public static function toSearchByPattern($word, $lang_id = null)
+    {
         return self::changeLetters(
-                    str_replace("C", "[". self::consSet()."]", 
-                        str_replace("V", "[". self::vowelSet()."]", 
-                           $word, $lang_id)));
+            str_replace(
+                "C",
+                "[" . self::consSet() . "]",
+                str_replace(
+                    "V",
+                    "[" . self::vowelSet() . "]",
+                    $word,
+                    $lang_id
+                )
+            )
+        );
     }
-    
-    public static function toSearchForm($word) {
-        $word = preg_replace("/[’'`ʼ]/u",'',$word);
+
+    public static function toSearchForm($word)
+    {
+        $word = preg_replace("/[’'`ʼ]/u", '', $word);
         if (preg_match("/^\-(.+)$/u", $word, $regs)) {
             $word = $regs[1];
         }
@@ -293,32 +319,35 @@ class Grammatic
         return $word;
     }
 
-    public static function hasPhonetics($word) {
+    public static function hasPhonetics($word)
+    {
         return preg_match("/[i̮̮iń̬ńu̯ŕĺśźηéá|ć/iu", $word);
     }
-    
+
     /**
      * @param string $word
      * @return string
      */
-    public static function removeSpaces($word) {
+    public static function removeSpaces($word)
+    {
         $word = trim($word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         return $word;
     }
-    
+
     /**
      * @param string $word
      * @return string
      */
-    public static function toRightForm($word) {
+    public static function toRightForm($word)
+    {
         $word = trim($word);
         $word = self::removeSpaces($word);
         $word = preg_replace("/['´`΄]+/u", "’", $word);
         $word = remove_diacritics($word);
         return $word;
     }
-    
+
     /**
      * перед 'a' 'o' 'u' и на конце слова важно сохранить смягчение, в остальных заменяем на твердую согласную
      * 
@@ -326,59 +355,61 @@ class Grammatic
      * @param boolean $change_phonetics
      * @return string
      */
-    public static function phoneticsToLemma($word) {
-//$init = $word;
+    public static function phoneticsToLemma($word)
+    {
+        //$init = $word;
         $word = self::removeSpaces($word);
-        
-        $cons = ['ń'=>'n', '̬ń'=>'n', 'ŕ'=>'r', 'ĺ'=>'l', 'ś'=>'s', 'ź'=>'z', 'ć'=>'c']; 
-        foreach (['i̬'=>'i', 'i̮'=>'i', '̮i'=>'i', 'i̯'=>'i', 'u̯'=>'u', 'é'=>'e', 'pá'=>'p’a', 'η'=>'n'] as $old =>$new) {
+
+        $cons = ['ń' => 'n', '̬ń' => 'n', 'ŕ' => 'r', 'ĺ' => 'l', 'ś' => 's', 'ź' => 'z', 'ć' => 'c'];
+        foreach (['i̬' => 'i', 'i̮' => 'i', '̮i' => 'i', 'i̯' => 'i', 'u̯' => 'u', 'é' => 'e', 'pá' => 'p’a', 'η' => 'n'] as $old => $new) {
             $word = str_replace($old, $new, $word);
         }
-        foreach ($cons as $old =>$new) {
-/*                if (preg_match('/^(.+)ńć$/u', $word, $regs)) {
+        foreach ($cons as $old => $new) {
+            /*                if (preg_match('/^(.+)ńć$/u', $word, $regs)) {
                 $word = $regs[1].'n’c’';
             }*/
-            $word = preg_replace('/'.$old.'([aou\s])/u', $new.'’$1', $word);
-            if (preg_match('/^(.*)'.$old.'$/u', $word, $regs)) {
-                $word = $regs[1].$new.'’';
-            }
-        }                
-        foreach ($cons as $old =>$new) {
-            $word = preg_replace('/'.$old."(d['´`΄’]ž)([aou\s])/u", $new.'’$1$2', $word);
-            $word = preg_replace('/'.$old."(dž)([aou\s])/u", $new.'$1$2', $word);
-            $word = preg_replace('/'.$old."(d['´`΄’]ž)$/u", $new.'’$1', $word);
-            $word = preg_replace('/'.$old."(dž)$/u", $new.'$1', $word);
-            $list='lnbmdghtkžptszvrc';
-            $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
-//                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
-            if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?)$/u", $word, $regs)) {
-//                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)$/u", $word, $regs)) {
-                $word = $regs[1].$new.'’'.$regs[2];
+            $word = preg_replace('/' . $old . '([aou\s])/u', $new . '’$1', $word);
+            if (preg_match('/^(.*)' . $old . '$/u', $word, $regs)) {
+                $word = $regs[1] . $new . '’';
             }
         }
-        foreach ($cons as $old =>$new) {
+        foreach ($cons as $old => $new) {
+            $word = preg_replace('/' . $old . "(d['´`΄’]ž)([aou\s])/u", $new . '’$1$2', $word);
+            $word = preg_replace('/' . $old . "(dž)([aou\s])/u", $new . '$1$2', $word);
+            $word = preg_replace('/' . $old . "(d['´`΄’]ž)$/u", $new . '’$1', $word);
+            $word = preg_replace('/' . $old . "(dž)$/u", $new . '$1', $word);
+            $list = 'lnbmdghtkžptszvrc';
+            $word = preg_replace('/' . $old . '([' . $list . "]['´`΄’]?)([aou\s])/u", $new . '’$1$2', $word);
+            //                $word = preg_replace('/'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)([aou\s])/u", $new.'’$1$2', $word);
+            if (preg_match('/^(.*)' . $old . '([' . $list . "]['´`΄’]?)$/u", $word, $regs)) {
+                //                if (preg_match('/^(.*)'.$old.'(['.$list."]['´`΄’]?[".$list."]?['´`΄’]?)$/u", $word, $regs)) {
+                $word = $regs[1] . $new . '’' . $regs[2];
+            }
+        }
+        foreach ($cons as $old => $new) {
             $word = str_replace($old, $new, $word);
         }
 
         $word = preg_replace("/['´`΄]+/", "’", $word);
-//if ($init == 'lat΄ta') {print "\n$word\n";}            
-        foreach (['t','l','s'] as $l) {
-            $word = preg_replace("/".$l."’".$l."([aou\s])/u", $l."’".$l.'’$1', $word);
-            $word = preg_replace("/".$l.$l."’([aou\s])/u", $l."’".$l.'’$1', $word);
-            $word = preg_replace("/".$l."’".$l."$/u", $l."’".$l.'’', $word);
-            $word = preg_replace("/".$l.$l."’$/u", $l."’".$l.'’', $word);
+        //if ($init == 'lat΄ta') {print "\n$word\n";}            
+        foreach (['t', 'l', 's'] as $l) {
+            $word = preg_replace("/" . $l . "’" . $l . "([aou\s])/u", $l . "’" . $l . '’$1', $word);
+            $word = preg_replace("/" . $l . $l . "’([aou\s])/u", $l . "’" . $l . '’$1', $word);
+            $word = preg_replace("/" . $l . "’" . $l . "$/u", $l . "’" . $l . '’', $word);
+            $word = preg_replace("/" . $l . $l . "’$/u", $l . "’" . $l . '’', $word);
         }
 
         foreach (['i', 'e', 'ä', 'ü', 'ö'] as $let) {
-            $word = preg_replace('/’(['.$list. ']?)’?(['.$list. ']?)’?'. $let.'/u', '$1$2'.$let, $word);
+            $word = preg_replace('/’([' . $list . ']?)’?([' . $list . ']?)’?' . $let . '/u', '$1$2' . $let, $word);
         }
         $word = str_replace('d’ž', 'dž', $word);
         return $word;
     }
-    
-    public static function negativeForm($gramset_id, $lang_id) {
+
+    public static function negativeForm($gramset_id, $lang_id)
+    {
         $neg_lemma = Lemma::where('lang_id', $lang_id)->whereLemma('ei')
-                          ->where('pos_id',PartOfSpeech::getIDByCode('AUX'))->first();
+            ->where('pos_id', PartOfSpeech::getIDByCode('AUX'))->first();
         if (!$neg_lemma) {
             return '';
         }
@@ -391,71 +422,73 @@ class Grammatic
             $neg_mood = 27; // indicative
         }
         $neg_gramset = Gramset::where('gram_id_mood', $neg_mood)
-                              ->where('gram_id_person', $gramset->gram_id_person)
-                              ->where('gram_id_number', $gramset->gram_id_number)
-                              ->whereNull('gram_id_tense')->whereNull('gram_id_negation')->first();
+            ->where('gram_id_person', $gramset->gram_id_person)
+            ->where('gram_id_number', $gramset->gram_id_number)
+            ->whereNull('gram_id_tense')->whereNull('gram_id_negation')->first();
         if (!$neg_gramset) {
             return '';
         }
         $neg_wordform = $neg_lemma->wordforms()
-                ->wherePivot('gramset_id', $neg_gramset->id)->first();
-//dd($neg_gramset->id);        
+            ->wherePivot('gramset_id', $neg_gramset->id)->first();
+        //dd($neg_gramset->id);        
         if (!$neg_wordform) {
             return '';
         }
         return $neg_wordform->wordform;
     }
-    
-/*    
+
+    /*    
     public static function processForWordform($word) {
         $word = trim($word);
         $word = preg_replace("/\s{2,}/", " ", $word);
         $word = preg_replace("/['`]/", "’", $word);
         return $word;
     }
-*/    
-    public static function maxStem($stems/*, $lang_id=NULL, $pos_id=NULL*/) {
-//dd($lang_id, $pos_id);
+*/
+    public static function maxStem($stems/*, $lang_id=NULL, $pos_id=NULL*/)
+    {
+        //dd($lang_id, $pos_id);
         $affix = '';
         $stem = $stems[0];
-//print "<P>$stem</P>";            
+        //print "<P>$stem</P>";            
 
-        for ($i=1; $i<sizeof($stems); $i++) {
+        for ($i = 1; $i < sizeof($stems); $i++) {
             if (!$stems[$i]) {
                 continue;
             }
-            while (!preg_match("/^".$stem."/", $stems[$i])) {
-                $affix = mb_substr($stem, -1, 1). $affix;
-                $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
+            while (!preg_match("/^" . $stem . "/", $stems[$i])) {
+                $affix = mb_substr($stem, -1, 1) . $affix;
+                $stem = mb_substr($stem, 0, mb_strlen($stem) - 1);
             }
-//print "<P>".$stems[$i].": $stem</P>";            
+            //print "<P>".$stems[$i].": $stem</P>";            
         }
         return [$stem, $affix];
-        
     }
-    
-    public static function nameNumFromNumberField($number) {
+
+    public static function nameNumFromNumberField($number)
+    {
         $number = (string)$number;
-        if ($number==1) {
+        if ($number == 1) {
             return 'pl';
-        } elseif ($number==2) {
-//            return 'sing';            
+        } elseif ($number == 2) {
+            //            return 'sing';            
             return 'sg'; // изменено 5.09.2019, проверить при импорте тверского словаря           
-        } elseif ($number=='refl') {
+        } elseif ($number == 'refl') {
             return 1;
-        } elseif (in_array($number, ['sing','sg','pl','def','impers'])) {
-            return $number;            
+        } elseif (in_array($number, ['sing', 'sg', 'pl', 'def', 'impers'])) {
+            return $number;
         }
         return null;
     }
-    
-    public static function getStemFromWordform($lemma, $stem_n, $lang_id, $pos_id, $dialect_id, $is_reflexive=false) {
+
+    public static function getStemFromWordform($lemma, $stem_n, $lang_id, $pos_id, $dialect_id, $is_reflexive = false)
+    {
         if ($lang_id == 1) {
             return VepsGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id, $is_reflexive);
         }
         return KarGram::getStemFromWordform($lemma, $stem_n, $pos_id, $dialect_id);
     }
-    
+
     /**
      * 
      * @param Array $stems
@@ -466,7 +499,8 @@ class Grammatic
      * @param STRING $lemma
      * @return String
      */
-    public static function getStemFromStems($stems, $stem_n, $lang_id, $pos_id, $dialect_id, $lemma) {
+    public static function getStemFromStems($stems, $stem_n, $lang_id, $pos_id, $dialect_id, $lemma)
+    {
         if ($lang_id == 1) {
             return VepsGram::getStemFromStems($stems, $stem_n, $pos_id, $dialect_id, $lemma);
         } else {
@@ -474,23 +508,26 @@ class Grammatic
         }
         return null;
     }
-    
-    public static function interLists($neg_list, $list){
-        if (!$list) { return ''; }
-        
+
+    public static function interLists($neg_list, $list)
+    {
+        if (!$list) {
+            return '';
+        }
+
         if (!preg_match("/,/", $neg_list) && !preg_match("/[,\/]/", $list)) {
             if ($neg_list) {
-                return trim($neg_list). ' '. $list;
+                return trim($neg_list) . ' ' . $list;
             } else {
                 return $list;
             }
         }
-        
-        $forms=[];
+
+        $forms = [];
         foreach (preg_split("/,\s*/", $neg_list) as $neg) {
             foreach (preg_split("/[,\/]\s*/", $list) as $verb) {
                 if ($neg) {
-                    $forms[] = trim($neg).' '.trim($verb);
+                    $forms[] = trim($neg) . ' ' . trim($verb);
                 } else {
                     $forms[] = trim($verb);
                 }
@@ -499,27 +536,31 @@ class Grammatic
         sort($forms);
         return join(", ", $forms);
     }
-    
+
     /**
      * Присоединение морфем (или списка морфем) к основам (или спискам основ)
      * 
      * @param string $base
      * @param string $morfs
      */
-    public static function joinMorfToBases($base, $morfs){
-        if (!$base) { return ''; }
-        $forms=[];
+    public static function joinMorfToBases($base, $morfs)
+    {
+        if (!$base) {
+            return '';
+        }
+        $forms = [];
         $bases = preg_split("/[,\/]\s*/", $base);
         sort($bases);
         foreach ($bases as $base) {
             foreach (preg_split("/\,\s*/", $morfs) as $morf) {
-                $forms[] = $base.$morf;
+                $forms[] = $base . $morf;
             }
         }
-        return join(", ", $forms);              
+        return join(", ", $forms);
     }
-    
-    public static function getAffixesForGramset($gramset_id, $lang_id) {
+
+    public static function getAffixesForGramset($gramset_id, $lang_id)
+    {
         if ($lang_id == 1) {
             return VepsGram::getAffixesForGramset($gramset_id);
         } elseif ($lang_id == 4) {
@@ -527,46 +568,50 @@ class Grammatic
         }
         return [];
     }
-    
-    public static function templateFromWordforms($wordforms, $lang_id, $pos_id, $number) {
+
+    public static function templateFromWordforms($wordforms, $lang_id, $pos_id, $number)
+    {
         if ($lang_id == 1) { // vepsian
             return VepsGram::templateFromWordforms($wordforms);
-        } else { 
+        } else {
             return KarGram::templateFromWordforms($wordforms, $lang_id, $pos_id, $number);
-        }        
+        }
     }
-    
-    public static function addEndToMultiBase($base, $end, $div='\/') {
+
+    public static function addEndToMultiBase($base, $end, $div = '\/')
+    {
         if (!$base) {
             return '';
         }
-        $bases = preg_split('/'.$div.'/', $base);
+        $bases = preg_split('/' . $div . '/', $base);
         $ends = preg_split('/,/', $end);
         $forms = [];
-        foreach($bases as $base) {
-            foreach($ends as $end) {
-                $forms[] = trim($base).trim($end);
+        foreach ($bases as $base) {
+            foreach ($ends as $end) {
+                $forms[] = trim($base) . trim($end);
             }
         }
         sort($forms);
         return join(', ', $forms);
     }
-    
-    public static function suggestTemplates($lang_id, $pos_id, $word) {
+
+    public static function suggestTemplates($lang_id, $pos_id, $word)
+    {
         $word = preg_replace("/\|/u", '', $word);
         if ($lang_id != 1) {
             return KarGram::suggestTemplates($lang_id, $pos_id, $word);
         }
         return [];
-    }    
-    
-    public static function extractStem($words) {
+    }
+
+    public static function extractStem($words)
+    {
         $stem = array_shift($words);
         foreach ($words as $word) {
-            while (!preg_match("/^".$stem."/", $word)) {
-                $affix = mb_substr($stem, -1, 1). $affix;
-                $stem = mb_substr($stem, 0, mb_strlen($stem)-1);
-//print "\n$wordform, $stem";                
+            while (!preg_match("/^" . $stem . "/", $word)) {
+                $affix = mb_substr($stem, -1, 1) . $affix;
+                $stem = mb_substr($stem, 0, mb_strlen($stem) - 1);
+                //print "\n$wordform, $stem";                
             }
         }
         return [$stem, $affix];

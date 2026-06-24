@@ -9,12 +9,13 @@ use App\Models\Corpus\Author;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Plot;
+use App\Models\Corpus\Topic;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
 
 class Collection
 {
-    public int $id;
+    public $id;
 
     public function __construct(int $id)
     {
@@ -72,9 +73,14 @@ class Collection
         return Author::whereIn('id', $author_ids)->get();
     }
 
+    public function getCorpusIds()
+    {
+        return self::getCollectionCorpuses($this->id);
+    }
+
     public function getCorpuses()
     {
-        $corpus_ids = self::getCollectionCorpuses($this->id);
+        $corpus_ids = $this->getCorpusIds();
         if (empty($corpus_ids)) {
             return null;
         }
@@ -94,15 +100,37 @@ class Collection
         }
         $plots = Plot::whereIn('id', $plot_ids);
         if (!empty($corpus_id)) {
-            $plots->whereIn('id', function ($q1) use ($corpus_id) {
-                $q1->select('plot_id')->from('plot_text')
-                    ->whereIn('text_id', function ($q2) use ($corpus_id) {
-                        $q2->select('text_id')->from('corpus_text')
-                            ->where('corpus_id', $corpus_id);
-                    });
-            });
+            $corpus_ids = [$corpus_id];
+        } else {
+            $corpus_ids = self::getCollectionCorpuses($this->id);
         }
+        $plots->whereIn('id', function ($q1) use ($corpus_ids) {
+            $q1->select('plot_id')->from('plot_text')
+                ->whereIn('text_id', function ($q2) use ($corpus_ids) {
+                    $q2->select('text_id')->from('corpus_text')
+                        ->whereIn('corpus_id', $corpus_ids);
+                });
+        });
         return $plots->get();
+    }
+
+    public function getTopicsForPlot(int $plot_id)
+    {
+        $corpus_ids = self::getCollectionCorpuses($this->id);
+        $topics = Topic::whereIn('id', function ($q) use ($plot_id) {
+            $q->select('topic_id')->from('plot_topic')
+                ->where('plot_id', $plot_id);
+        })->whereIn('id', function ($q1) use ($corpus_ids, $plot_id) {
+            $q1->select('topic_id')->from('text_topic')
+                ->whereIn('text_id', function ($q2) use ($corpus_ids) {
+                    $q2->select('text_id')->from('corpus_text')
+                        ->whereIn('corpus_id', $corpus_ids);
+                })->whereIn('text_id', function ($q2) use ($plot_id) {
+                    $q2->select('text_id')->from('plot_text')
+                        ->where('plot_id', $plot_id);
+                });
+        });
+        return $topics->get();
     }
 
     public function countTextsForCorpus(int $corpus_id, $plot_id = null)
@@ -112,9 +140,10 @@ class Collection
                 $q->select('text_id')->from('corpus_text')
                     ->where('corpus_id', $corpus_id);
             });
-        $plot_ids = $this->getPlotIds();
         if ($plot_id) {
             $plot_ids = [$plot_id];
+        } else {
+            $plot_ids = $this->getPlotIds();
         }
         if (!empty($plot_ids)) {
             $texts->whereIn('id', function ($q) use ($plot_ids) {
@@ -124,6 +153,46 @@ class Collection
         }
         return $texts->count();
     }
+
+    public function countTextsForPlot(int $plot_id)
+    {
+        $corpus_ids = $this->getCorpusIds();
+        $texts = Text::whereIn('lang_id', $this->getLangIds())
+            ->whereIn('id', function ($q) use ($corpus_ids) {
+                $q->select('text_id')->from('corpus_text')
+                    ->whereIn('corpus_id', $corpus_ids);
+            })->whereIn('id', function ($q) use ($plot_id) {
+                $q->select('text_id')->from('plot_text')
+                    ->where('plot_id', $plot_id);
+            });
+        return $texts->count();
+    }
+
+    public function countTextsForTopic(int $topic_id, $plot_id = null)
+    {
+        $corpus_ids = $this->getCorpusIds();
+        $texts = Text::whereIn('lang_id', $this->getLangIds())
+            ->whereIn('id', function ($q) use ($corpus_ids) {
+                $q->select('text_id')->from('corpus_text')
+                    ->whereIn('corpus_id', $corpus_ids);
+            })->whereIn('id', function ($q) use ($topic_id) {
+                $q->select('text_id')->from('text_topic')
+                    ->where('topic_id', $topic_id);
+            });
+        if ($plot_id) {
+            $plot_ids = [$plot_id];
+        } else {
+            $plot_ids = $this->getPlotIds();
+        }
+        if (!empty($plot_ids)) {
+            $texts->whereIn('id', function ($q) use ($plot_ids) {
+                $q->select('text_id')->from('plot_text')
+                    ->whereIn('plot_id', $plot_ids);
+            });
+        }
+        return $texts->count();
+    }
+
     public static function getCollectionGenres($collection_id = null)
     {
         $genres = [1 => 19, 2 => 66, 3 => 60, 6 => 19];
@@ -137,7 +206,7 @@ class Collection
 
     public static function getCollectionCorpuses($collection_id = null)
     {
-        $corpuses = [9 => [1, 15, 4]];
+        $corpuses = [9 => [4]];
         if (!$collection_id) {
             return $corpuses;
         }

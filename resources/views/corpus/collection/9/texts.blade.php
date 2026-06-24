@@ -24,7 +24,6 @@
     <thead>
         <tr>
             <th>No</th>
-            <th>{{ trans('corpus.topic') }}</th>
             <th>{{ trans('corpus.title') }}</th>
             <th>{{ trans('messages.translation') }}</th>
             <th>{{ trans('messages.year') }}</th>
@@ -37,11 +36,6 @@
         @foreach ($texts as $text)
         <tr>
             <td data-th="No">{{ $list_count++ }}</td>
-            <td data-th="{{ trans('corpus.topic') }}">
-                @foreach ($text->topics as $topic)
-                {{ $topic->name }}<br>
-                @endforeach
-            </td>
             <td data-th="{{ trans('corpus.title') }}">
                 <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.$url_args) }}">{{ $text->title }}</a>
             </td>
