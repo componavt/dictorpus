@@ -14,7 +14,7 @@
     <p><b>{{trans('collection.total_count')}}:</b> {{$text_count}}</p>
 
     @foreach ($collection->getPlots() as $plot)
-    <h2>{{ $plot->name }} ({{ $collection->countTextsForPlot($plot->id) }})</h2>
+    <h3>{{ $plot->name }} ({{ $collection->countTextsForPlot($plot->id) }})</h3>
     <ul>
         @foreach ($collection->getTopicsForPlot($plot->id) as $topic)
         <li><a href="{{ LaravelLocalization::localizeURL('/corpus/collection/'.$collection->id.'/texts?plot_id='.$plot->id.'&topic_id='.$topic->id.'&for_print='.$for_print) }}">
