@@ -440,8 +440,8 @@ class LemmaController extends Controller
 
         $all_meanings = $meaning_relation_values;
         $phrase_values = $lemma->phraseLemmas->pluck('lemma', 'id')->toArray();
-        $wordform_dialect_value = $lemma->WordformDialectPrefer();
-
+        $wordform_dialect_value = $lemma->wordformDialectPrefer();
+        //dd($wordform_dialect_value);
         $lemma_variants = $lemma->variants->pluck('lemma', 'id')->toArray();
         $dialect_values = Dialect::getList($lemma->lang_id);
         $dialects_value = !$lemma->dialects ? []

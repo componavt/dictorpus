@@ -24,7 +24,7 @@ use App\Models\Dict\Wordform;
  */
 trait LemmaModify
 {
-    public function updateLemma($data)
+    public function updateLemma(array $data)
     {
         list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems)
             = Grammatic::parseLemmaField($data);
@@ -434,6 +434,8 @@ trait LemmaModify
             = Grammatic::parseLemmaField($data);
         //dd($gramset_wordforms);        
         $lemma = self::store($data['lemma'], $data['pos_id'], $data['lang_id']);
+        $lemma->is_norm = $data['is_norm'] != 1 ? 0 : 1;
+        $lemma->save();
 
         $lemma->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'], $stems);
         return $lemma;

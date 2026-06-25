@@ -72,6 +72,7 @@ services:
       - "80"
     volumes:
       - ${RISTIKANZA_PATH}:/var/www/html
+      - ../dictorpus/storage/app/public:/mnt/dictorpus-public:ro
     networks:
       - dictorpus-network
 

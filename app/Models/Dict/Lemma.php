@@ -183,16 +183,21 @@ class Lemma extends Model
     {
         $ids = [];
         $lemma_id = $this->id;
-        $dialects = DB::table('dialect_meaning')
-            ->whereIn('meaning_id', function ($query) use ($lemma_id) {
-                $query->select('id')->from('meanings')
-                    ->whereLemmaId($lemma_id);
-            })->get();
-        foreach ($dialects as $dialect) {
-            $ids[] = $dialect->dialect_id;
+        $dialects_from_meanings = Dialect::whereIn('id', function ($q1) use ($lemma_id) {
+            $q1->select('dialect_id')->from('dialect_meaning')
+                ->whereIn('meaning_id', function ($query) use ($lemma_id) {
+                    $query->select('id')->from('meanings')
+                        ->whereLemmaId($lemma_id);
+                });
+        });
+        if ($dialects_from_meanings->count()) {
+            return $dialects_from_meanings->pluck('id')->toArray();
         }
-        //dd($ids);        
-        return $ids;
+        $dialects_from_wordforms = Dialect::whereIn('id', function ($q1) use ($lemma_id) {
+            $q1->select('dialect_id')->from('lemma_wordform')
+                ->whereLemmaId($lemma_id);
+        });
+        return $dialects_from_wordforms->pluck('id')->toArray();
     }
 
     public function labelStatus($label_id)
@@ -284,7 +289,7 @@ class Lemma extends Model
         return $base;
     }
 
-    public function getBaseFromDB($base_n, $dialect_id = null)
+    public function getBaseFromDB(int $base_n, $dialect_id = null)
     {
         $base_obj = $this->bases()->where('base_n', $base_n);
         if ($dialect_id) {
@@ -303,7 +308,7 @@ class Lemma extends Model
         return Audio::getUrlsByLemmaId($this->id);
     }
 
-    public function WordformDialectPrefer()
+    public function wordformDialectPrefer()
     {
         $user_dialect = User::userDialects();
         $lemma_dialects = $this->dialectIds();
@@ -316,32 +321,7 @@ class Lemma extends Model
         return $lemma_dialects[0];
     }
 
-    /*     // Lemma has many MeaningTexts through Meanings
-    public function meaningTexts()
-    {
-        return $this->hasManyThrough(MeaningText::class, Meaning::class, 'lemma_id', 'meaning_id');
-//        return $this->hasManyThrough('App\Models\Dict\MeaningText', 'App\Models\Dict\Meaning');
-    }
-   public function meaning_texts($ids = [])
-    {
-        return MeaningText::whereHas('meanings', function($q) use($ids) { 
-                                $q->whereIn('id', $ids);                             
-                           })->get(); 
-        
-    }    
-/*    public function meaning_texts()
-    {
-        $lemma_id = $this->id;
-        $builder = MeaningText::whereIn('meaning_id', function($query) use($lemma_id) { 
-                                $query->select('id')->from('meanings')
-                                      ->where('lemma_id',$lemma_id);
-                           });
-//dd($builder->toSQL());                           
-        return $builder->get(); 
-        
-    } */
-
-    public function countWordformsByDialect($dialect_id)
+    public function countWordformsByDialect(int $dialect_id)
     {
         return $this->wordforms()
             ->wherePivot('dialect_id', $dialect_id)
