@@ -215,6 +215,7 @@ class LemmaController extends Controller
         $langs_for_meaning = Lang::getListForMeaning();
 
         $dialect_values = $lang_id ? Dialect::getList($lang_id) : Dialect::getList(); //['NULL'=>'']+
+        $place_values = Place::getListByLang($lang_id);
         //dd($dialect_values);        
         return view(
             'dict.lemma.create',
@@ -226,6 +227,7 @@ class LemmaController extends Controller
                 'lang_values',
                 'new_meaning_n',
                 'phrase_values',
+                'place_values',
                 'pos_id',
                 'pos_values',
                 'args_by_get',

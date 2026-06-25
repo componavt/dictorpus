@@ -720,7 +720,7 @@ class Lemma extends Model
     /**
      * Gets array of unique grammatical sets, that has any wordforms of this lemma
      * 
-     * @return Array [NULL=>'', 
+     * @return array [NULL=>'', 
      *                  26=>'индикатив, презенс, 1 л., ед. ч., положительная форма',...]
      */
     public function existGramsets()
@@ -741,7 +741,7 @@ class Lemma extends Model
     /**
      * Gets array of unique grammatical sets, that has any wordforms of this lemma
      * 
-     * @return Array [NULL=>'', 
+     * @return array [NULL=>'', 
      *                  26=>'индикатив, презенс, 1 л., ед. ч., положительная форма',...]
      */
     public function existGramsetsGrouped()
