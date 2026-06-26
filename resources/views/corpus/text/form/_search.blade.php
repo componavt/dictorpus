@@ -210,6 +210,20 @@
                                
     </div>
 @if ($full)    
+    <div class="col-md-4{{$url_args['search_ieeh_archive_number1'] || $url_args['search_ieeh_archive_number2']? '' : ' ext-form'}}">
+        <p style="font-weight:bold; margin-bottom: 6px">{{ trans('corpus.archive_krc') }}</p>
+        <div style="display:flex">
+            @include('widgets.form.formitem._text', 
+                    ['name' => 'search_ieeh_archive_number1', 
+                    'value' => $url_args['search_ieeh_archive_number1'] ? $url_args['search_ieeh_archive_number1'] : ''
+                    ])                               
+            <span style="margin: 5px 10px 0;">/</span>
+            @include('widgets.form.formitem._text', 
+                    ['name' => 'search_ieeh_archive_number2', 
+                    'value' => $url_args['search_ieeh_archive_number2'] ? $url_args['search_ieeh_archive_number2'] : '',
+                    ])    
+        </div>                           
+    </div>
     <div class="col-md-4{{$url_args['search_text'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_text', 

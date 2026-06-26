@@ -27,6 +27,8 @@ trait TextSearch
             'search_event_place'    => (array)$request->input('search_event_place'),
             'search_event_region' => $request->input('search_event_region'),
             'search_genre'    => (array)$request->input('search_genre'),
+            'search_ieeh_archive_number1' => $request->input('search_ieeh_archive_number1'),
+            'search_ieeh_archive_number2' => $request->input('search_ieeh_archive_number2'),
             'search_informant' => $request->input('search_informant'),
             'search_lang'     => (array)$request->input('search_lang'),
             'search_motive'     => (array)$request->input('search_motive'),
@@ -43,7 +45,6 @@ trait TextSearch
             'search_wid'     => (array)$request->input('search_wid'),
             'search_without_genres' => (bool)$request->input('search_without_genres'),
             'search_word'     => $request->input('search_word'),
-            //                    'search_year'     => (int)$request->input('search_year'),
             'search_year_from' => (int)$request->input('search_year_from'),
             'search_year_to'  => (int)$request->input('search_year_to'),
             'wblock_preloaded' => (int)$request->input('wblock_preloaded'),
@@ -80,22 +81,15 @@ trait TextSearch
         $texts = self::searchByTopics($texts, $url_args['search_topic']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
         $texts = self::searchBySource($texts, $url_args['search_source']);
+        $texts = self::searchByArchiveNumber($texts, $url_args['search_ieeh_archive_number1'], $url_args['search_ieeh_archive_number2']);
         $texts = self::searchWithAudio($texts, $url_args['with_audio']);
 
         $texts = self::searchByPivot($texts, 'text', 'motive', $url_args['search_motive']);
 
-        /*        if ($url_args['search_corpus']) {
-            $texts = $texts->whereIn('corpus_id',$url_args['search_corpus']);
-        } */
         if ($url_args['with_transtext']) {
             $texts = $texts->whereNotNull('transtext_id');
         }
-        /*
-        if ($url_args['search_text']) {
-            $texts = $texts->where('text','like','%'.$url_args['search_text'].'%');
-        } */
         //dd(to_sql($texts));        
-        //dd($texts->toSql());                                
 
         return $texts;
     }
@@ -264,18 +258,7 @@ trait TextSearch
             });
         });
     }
-    /*    
-    public static function searchByAuthors($texts, $authors) {
-        if (!sizeof($authors)) {
-            return $texts;
-        }
-        return $texts->whereIn('id',function($query) use ($authors){
-                    $query->select('text_id')
-                    ->from("author_text")
-                    ->whereIn('author_id',$authors);
-                });
-    }
-*/
+
     public static function searchByInformant($texts, $informant)
     {
         if (!$informant) {
@@ -441,6 +424,23 @@ trait TextSearch
                             ->where('year', '<=', $year_to);
                     });
             });
+        });
+    }
+
+    public static function searchByArchiveNumber($texts, $num1, $num2)
+    {
+        if (!$num1 && !$num1) {
+            return $texts;
+        }
+
+        return $texts->whereIn('source_id', function ($q) use ($num1, $num2) {
+            $q->select('id')->from('sources');
+            if ($num1) {
+                $q->where('ieeh_archive_number1', 'like', $num1);
+            }
+            if ($num2) {
+                $q->where('ieeh_archive_number2', 'like', $num2);
+            }
         });
     }
 
