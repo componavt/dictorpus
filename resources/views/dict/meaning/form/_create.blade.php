@@ -8,10 +8,12 @@
                     'tail' => trans('dict.meaning')])</h3>
     </div>
     <div class='col-sm-9'>
+    @if (isset($place_values))
         <br>@include('widgets.form.formitem._select2',
                 ['name' => 'new_meanings['.$count.'][places]', 
-                 'values' => isset($place_values) ? $place_values : [],
+                 'values' => $place_values,
                  'class'=>'select-places form-control'])                        
+    @endif
     </div>
 </div>
 @endif
