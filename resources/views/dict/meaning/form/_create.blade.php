@@ -10,7 +10,7 @@
     <div class='col-sm-9'>
         <br>@include('widgets.form.formitem._select2',
                 ['name' => 'new_meanings['.$count.'][places]', 
-                 'values' => $place_values,
+                 'values' => isset($place_values) ? $place_values : [],
                  'class'=>'select-places form-control'])                        
     </div>
 </div>
