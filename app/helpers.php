@@ -326,30 +326,41 @@ if (!function_exists('found_rem')) {
 if (!function_exists('highlight')) {
     function highlight($str, $substr, $class = 'search-word')
     {
-        /*if ($substr == 'лет назад') {
-    dd($str, $substr);
-} */
-        $str = preg_replace('/\n/', ' ', $str);
-        if (!$substr) {
+        $str = preg_replace('/\R/u', ' ', $str);
+        if ($substr === null || $substr === '') {
             return $str;
         }
-        if (!preg_match('/\s+/', $substr)) {
-            return mb_ereg_replace('(' . $substr . ')', '<span class="' . $class . '">\\1</span>', $str, 'i');
+        $parts = preg_split(
+            '/(<[^>]+>)/u',
+            $str,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
+
+        $needles = preg_split('/\s+/u', trim($substr), -1, PREG_SPLIT_NO_EMPTY);
+        if (!$needles) {
+            return $str;
         }
-        $words = preg_split('/\s+/', $substr);
-        $pattern = '^(.*)(' . join(')(\s*<*[^>]*>*\s*<*[^>]*>*\s*)(', $words) . ')(.*)$';
-        if (preg_match("/" . $pattern . "/iu", $str, $regs)) {
-            $out = $regs[1];
-            for ($i = 2; $i < sizeof($regs) - 1; $i++) {
-                if ($i % 2 == 0) {
-                    $out .= '<span class="' . $class . '">' . $regs[$i] . '</span>';
-                } else {
-                    $out .= $regs[$i];
-                }
+
+        foreach ($parts as &$part) {
+            if (preg_match('/^<[^>]+>$/u', $part)) {
+                continue;
             }
-            return $out . $regs[sizeof($regs) - 1];
+
+            if (count($needles) === 1) {
+                $pattern = '/' . preg_quote($needles[0], '/') . '/iu';
+                $part = preg_replace($pattern, '<span class="' . $class . '">$0</span>', $part);
+            } else {
+                $pattern = '/' . implode('\s+', array_map(function ($word) {
+                    return preg_quote($word, '/');
+                }, $needles)) . '/iu';
+
+                $part = preg_replace($pattern, '<span class="' . $class . '">$0</span>', $part);
+            }
         }
-        return $str;
+        unset($part);
+
+        return implode('', $parts);
     }
 }
 

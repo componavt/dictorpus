@@ -30,59 +30,61 @@ trait WordModify
      */
     public static function splitWord($token, $word_count): array
     {        
-        $str = '';
-        $i = 0;
-        $is_word = TRUE; // the first char enters in a word
-        $words = [];
-        $word = '';
-        while ($i<mb_strlen($token)) {
+        $str = ''; // Строка, которая будет собрана заново: текст + служебная разметка <w id="...">...</w>
+        $i = 0; // Позиция в исходном токене
+        $is_word = TRUE; // Флаг: сейчас мы внутри слова или нет. Считаем, что первый символ токена принадлежит слову
+        $words = []; // Массив найденных слов: ключ = w_id, значение = текст слова
+        $word = ''; // Буфер текущего слова
+
+        while ($i<mb_strlen($token)) { // Посимвольный проход по токену
             $char = mb_substr($token,$i,1);
             if ($char == '<') { // begin of a tag 
+                // Если перед тегом мы были внутри слова, закрываем текущее слово
                 list ($is_word, $str, $word, $words) = self::endWord($is_word, $str, $word, $words, $word_count);
+                // Выносим тег целиком во внешний текст, не включая его в слово
                 list ($i, $str) = self::tagOutWord($token, $i, $str);
                 
                 // the char is a delimeter or white space
             } elseif (mb_strpos(Sentence::word_delimeters(), $char)!==false || preg_match("/\s/",$char)
                        // if word is ending with a dash, the dash is putting out of the word
                       || $is_word && Sentence::dashIsOutOfWord($char, $token, $i) ) { 
+
+                // Закрываем текущее слово, если оно было открыто
                 list ($is_word, $str, $word, $words) = self::endWord($is_word, $str, $word, $words, $word_count);
-                $str .= $char;
+                $str .= $char; // Сам разделитель добавляем в результирующую строку как есть
+
             } else {                
-                // if word is not started AND (the char is not dash or the next char is not special) THEN the new word started
+                // Если сейчас мы вне слова и текущий символ может начинать новое слово, открываем новый тег <w id="...">
                 if (!$is_word && !Sentence::dashIsOutOfWord($char, $token, $i)) { 
                     $is_word = true;
                     $str .= '<w id="'.$word_count++.'">';
                 }
                 if ($is_word) {
-                    $word .= $char;
+                    $word .= $char; // Если мы внутри слова, копим символ в буфер слова
                 } else {
-                    $str .= $char;            
+                    $str .= $char; // Иначе символ просто идёт во внешний текст без word-разметки           
                 }
             }
-//print "$i: $char| word: $word| is_word: $is_word| str: $str\n";            
             $i++;
         }
-        $str .= $word;
-        $words[$word_count-1] = $word;
-//print "$i: $char| word: $word| str: $str\n";            
+        if ($word !== '') {
+            $str .= $word; // После завершения цикла дописываем остаток последнего слова
+            $words[$word_count-1] = $word; // И сохраняем его в массив слов под последним использованным w_id
+        }
         return [$str, $words]; 
     }
     
     public function splitInSentence($word, $cyr_word='') {
         $text_obj = $this->text;
-        $word_obj = $this;
+        $word_obj = $this; // Текущий объект слова; дальше он может стать "левой" частью после split
         
         $sent_obj = Sentence::whereTextId($this->text_id)
                         ->whereSId($this->s_id)->first();
         if (!$sent_obj) { return; }
         
         $sentence = $sent_obj->text_xml;
-//dd($sent_obj->text_xml);        
-/*        list($sxe,$error_message) = Text::toXML($sent_obj->text_xml,'');
-        if ($error_message) { return; }
-dd($sxe->asXML());        */
         
-        $next_word_count = self::nextWId($this->text_id);
+        $next_word_count = self::nextWId($this->text_id); // Получаем следующий свободный w_id в пределах текста
         
         list ($str, $words) = self::splitWord($word, $next_word_count);
         
@@ -109,6 +111,9 @@ dd($sxe->asXML());        */
         if ($cyr_word) {
             $this->splitCyrWord($cyr_word, $next_word_count);
         }
+
+        // пересчитываем word_number у слов в предложении
+        $sent_obj->recountWordNumbers();
     }
     
     public function splitCyrWord($cyr_word, $next_word_count) {
@@ -128,4 +133,5 @@ dd($sxe->asXML());        */
         
         
     }
+
 }

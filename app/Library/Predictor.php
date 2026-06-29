@@ -184,11 +184,27 @@ class Predictor
                        ->where('lemma_wordform.wordform_for_search', 'like', '%'.$uright)
                        ->selectRaw('pos_id, gramset_id, reverse_lemmas.affix as l_affix, lemma_wordform.affix as w_affix, count(*) as count')
                        ->groupBy('pos_id', 'gramset_id', 'reverse_lemmas.affix', 'lemma_wordform.affix')->get();
+
         foreach ($lemmas as $lemma) {
             list($l_affix, $w_affix) = Str::trimEqualSubstrFromLeft($lemma->l_affix, $lemma->w_affix);
-            if (preg_match("/^(.+)".$w_affix."$/u", $uword, $regs)) {
+
+            $pattern = '/^(.+)'.preg_quote($w_affix, '/').'$/u';
+            $matched = preg_match($pattern, $uword, $regs);
+            
+            if ($matched === false) {
+                \Log::error('preg_match failed in wordformsByAnalog', [
+                    'pattern' => $pattern,
+                    'uword' => $uword,
+                    'w_affix' => $w_affix,
+                    'l_affix' => $l_affix,
+                    'preg_last_error' => preg_last_error(),
+                    'preg_last_error_msg' => function_exists('preg_last_error_msg')
+                        ? preg_last_error_msg()
+                        : null,
+                ]);
+            } elseif ($matched === 1) {
                 $predict_lemma = $regs[1]. $l_affix;
-//print "$uword - $w_affix + $l_affix = $predict_lemma\n";                
+
                 list ($total, $out) = self::fillByPosGramset($predict_lemma, $lemma->pos_id, $lemma->gramset_id, $lemma->count, $out, $maybe_proper_noun);
                 $total_found += $total;
             }

@@ -169,5 +169,20 @@ dd($this->id, $text->id, $this->text_xml != $new_sentence, $text->text_structure
 //dd($this->text_xml, $text->text_structure);        
         $text->save();
         $this->save();
-    }            
+    }   
+    
+    public function recountWordNumbers(): void
+    {
+        preg_match_all('/<w id="(\d+)">/u', $this->text_xml, $matches);
+
+        $w_ids = $matches[1] ?? [];
+
+        foreach ($w_ids as $index => $w_id) {
+            Word::where('sentence_id', $this->id)
+                ->where('w_id', $w_id)
+                ->update([
+                    'word_number' => $index + 1
+                ]);
+        }
+    }    
 }

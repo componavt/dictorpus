@@ -603,6 +603,13 @@ class Word extends Model
         return [$j, $str];
     }
 
+    /**
+     * Когда $is_word === true, функция:
+     * - дописывает накопленный $word в $str;
+     * - закрывает тег </w>;
+     * - сохраняет $word в $words[$word_count - 1];
+     * - очищает буфер слова и переводит состояние в “вне слова”.
+     */
     public static function endWord($is_word, $str, $word, $words, $word_count)
     {
         if ($is_word) {
