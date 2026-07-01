@@ -2,15 +2,15 @@
 
 namespace App\Traits\Relations\HasMany;
 
-use App\Models\Dict\Audio;
+use App\Models\Corpus\Punct;
 
-trait Audios
+trait Puncts
 {
     /**
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
-    public function audios()
+    public function puncts()
     {
-        return $this->hasMany(Audio::class);
+        return $this->hasMany(Punct::class);
     }
 }

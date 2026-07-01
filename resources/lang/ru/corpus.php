@@ -46,8 +46,8 @@ return [
     'corpus_removed' => 'Подкорпус ":name" удален.',
     'creation_date' => 'год добавления в корпус',
     'cycle' => 'цикл',
-    'cyrtext_text' => 'Текст кириллицей',
-    'cyrtext_title' => 'Заголовок кириллицей',
+    'cyrtext_text' => 'Текст первоисточника',
+    'cyrtext_title' => 'Заголовок первоисточника',
 
     'district' => 'Район',
     'district_list' => 'Список районов',

@@ -10,9 +10,9 @@
 @stop
 
 @section('body')
-        <h3>{{trans('search.search_results')}}</h3>
-        <p>{!!$search_query!!}</p>
-        <p>{{trans_choice('search.found_texts', 
+        <h3>{{ trans('search.search_results') }}</h3>
+        <p>{!! $search_query !!}</p>
+        <p>{{ trans_choice('search.found_texts', 
             $numAll>20 ? ($numAll%10 == 0 ? 5 : $numAll%10) : $numAll, ['count'=>number_format($numAll, 0, ',', ' ')])}}{{trans_choice('search.found_entries', 
             $entry_number>20 ? ($entry_number%10 == 0 ? 5 : $entry_number%10) : $entry_number, ['count'=>number_format($entry_number, 0, ',', ' ')])}}.</p>
         @if($is_limited)

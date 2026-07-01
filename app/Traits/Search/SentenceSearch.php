@@ -241,10 +241,6 @@ trait SentenceSearch
                 (isset($word['d_f']) && isset($word['d_t'])
                     ? trans('search.in_distance', ['from' => $word['d_f'], 'to' => $word['d_t']]) : '')
                 . ' <b>' . trans('corpus.word') . " $i</b>: " . join(' <span class="warning">' . trans('search.and') . '</span> ', $tmp);
-            if (!empty($args['only_checked'])) {
-                $tmp[] = trans('corpus.only_checked');
-            }
-            $out[] = trans('corpus.only_checked');
         }
         return join(' <span class="warning">' . trans('search.and') . '</span><br>', $out);
     }
@@ -305,6 +301,10 @@ trait SentenceSearch
                 $args['search_year_to'] . '';
         }
 
+        if ($args['only_checked']) {
+            $meta[] = trans('corpus.only_checked');
+        }
+
         return sizeof($meta) ? [join(' <span class="warning">' . trans('search.and') . '</span> ', $meta)] : [];
     }
 
@@ -335,52 +335,65 @@ trait SentenceSearch
 
     /*
  *  Выносим логику дистанции в отдельный метод
-0<=A<=B: from 1 to 3
+0<=d_f<=d_t: from 1 to 3
 t2.word_number>t1.word_number 
-AND t2.word_number-t1.word_number>=A 
-AND t2.word_number-t1.word_number<=B;
+AND t2.word_number-t1.word_number>=d_f 
+AND t2.word_number-t1.word_number<=d_t;
 
-A<0<B: from -3 to 3
+d_f<0<d_t: from -3 to 3
 (t1.word_number>t2.word_number 
-AND t1.word_number-t2.word_number<=|A|
+AND t1.word_number-t2.word_number<=|d_f|
 OR t2.word_number>t1.word_number 
-AND t2.word_number-t1.word_number<=B);
+AND t2.word_number-t1.word_number<=d_t);
 
-B<=A<=0: from -3 to -5
+d_t<=d_f<=0: from -3 to -5
 t1.word_number>t2.word_number 
-AND t1.word_number-t2.word_number>=|A|
-AND t1.word_number-t2.word_number<=|B|;
+AND t1.word_number-t2.word_number>=|d_f|
+AND t1.word_number-t2.word_number<=|d_t|;
 */
-    private static function applyDistanceCondition($join, $i, $A, $B)
+    protected static function applyDistanceCondition($join, $step, $d_f = 1, $d_t = 1)
     {
-        if ($A >= 0 && $B >= 0) {
-            if ($A > $B) {
-                list($A, $B) = [$B, $A];
+        $prev = 't' . ($step - 1) . '.word_number';
+        $curr = 't' . $step . '.word_number';
+
+        if ($d_f >= 0 && $d_t >= 0) {
+            if ($d_f > $d_t) {
+                [$d_f, $d_t] = [$d_t, $d_f];
             }
-            $join->where(DB::raw("t{$i}.word_number"), '>', DB::raw("t" . ($i - 1) . ".word_number"))
-                ->where(DB::raw("t{$i}.word_number - t" . ($i - 1) . ".word_number"), '>=', $A)
-                ->where(DB::raw("t{$i}.word_number - t" . ($i - 1) . ".word_number"), '<=', $B);
-        } elseif ($A < 0 && $B > 0) {
-            $join->where(function ($q) use ($i, $A, $B) {
-                $q->where(DB::raw("t" . ($i - 1) . ".word_number"), '>', DB::raw("t{$i}.word_number"))
-                    ->where(DB::raw("t" . ($i - 1) . ".word_number - t{$i}.word_number"), '<=', abs($A))
-                    ->orWhere(function ($qq) use ($i, $B) {
-                        $qq->where(DB::raw("t{$i}.word_number"), '>', DB::raw("t" . ($i - 1) . ".word_number"))
-                            ->where(DB::raw("t{$i}.word_number - t" . ($i - 1) . ".word_number"), '<=', $B);
-                    });
+
+            $join->on($curr, '>', $prev)
+                ->where(DB::raw("$curr - $prev"), '>=', $d_f)
+                ->where(DB::raw("$curr - $prev"), '<=', $d_t);
+
+            return;
+        }
+
+        if ($d_f < 0 && $d_t > 0) {
+            $join->where(function ($q) use ($prev, $curr, $d_f, $d_t) {
+                $q->where(function ($q2) use ($prev, $curr, $d_f) {
+                    $q2->on($prev, '>', $curr)
+                        ->where(DB::raw("$prev - $curr"), '<=', abs($d_f));
+                })->orWhere(function ($q2) use ($prev, $curr, $d_t) {
+                    $q2->on($curr, '>', $prev)
+                        ->where(DB::raw("$curr - $prev"), '<=', $d_t);
+                });
             });
-        } elseif ($A <= 0 && $B <= 0) {
-            if ($A < $B) {
-                list($A, $B) = [$B, $A];
+
+            return;
+        }
+
+        if ($d_f <= 0 && $d_t <= 0) {
+            if ($d_f < $d_t) {
+                [$d_f, $d_t] = [$d_t, $d_f];
             }
-            $join->where(DB::raw("t" . ($i - 1) . ".word_number"), '>', DB::raw("t{$i}.word_number"))
-                ->where(DB::raw("t" . ($i - 1) . ".word_number - t{$i}.word_number"), '>=', abs($A))
-                ->where(DB::raw("t" . ($i - 1) . ".word_number - t{$i}.word_number"), '<=', abs($B));
+
+            $join->on($prev, '>', $curr)
+                ->where(DB::raw("$prev - $curr"), '>=', abs($d_f))
+                ->where(DB::raw("$prev - $curr"), '<=', abs($d_t));
         }
     }
 
-    /*
- *  старая функция
+    /* *  старая функция
 0<=A<=B: from 1 to 3
 t2.word_number>t1.word_number 
 AND t2.word_number-t1.word_number>=A 
@@ -522,6 +535,64 @@ AND t1.word_number-t2.word_number<=|B|;
         });
     }
 
+    protected static function checkDistanceByWordNumber($prev, $curr, $d_f = 1, $d_t = 1): bool
+    {
+        if ($d_f >= 0 && $d_t >= 0) {
+            if ($d_f > $d_t) {
+                [$d_f, $d_t] = [$d_t, $d_f];
+            }
+
+            $diff = $curr - $prev;
+
+            return $curr > $prev
+                && $diff >= $d_f
+                && $diff <= $d_t;
+        }
+
+        if ($d_f < 0 && $d_t > 0) {
+            return (
+                $prev > $curr
+                && ($prev - $curr) <= abs($d_f)
+            ) || (
+                $curr > $prev
+                && ($curr - $prev) <= $d_t
+            );
+        }
+
+        if ($d_f <= 0 && $d_t <= 0) {
+            if ($d_f < $d_t) {
+                [$d_f, $d_t] = [$d_t, $d_f];
+            }
+
+            $diff = $prev - $curr;
+
+            return $prev > $curr
+                && $diff >= abs($d_f)
+                && $diff <= abs($d_t);
+        }
+
+        return false;
+    }
+
+    protected static function formatStepSearchResults($results, $word_total)
+    {
+        return $results->map(function ($row) use ($word_total) {
+            $newRow = new \stdClass();
+            $newRow->text1_id = $row->text1_id;
+            $newRow->sentence1_id = $row->sentence1_id;
+
+            for ($i = 1; $i <= $word_total; $i++) {
+                $field = 'w' . $i . '_id';
+
+                if (isset($row->$field)) {
+                    $newRow->$field = $row->$field;
+                }
+            }
+
+            return $newRow;
+        });
+    }
+
     public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = [], $only_checked = false)
     {
         $word_total = count($words);
@@ -534,13 +605,18 @@ AND t1.word_number-t2.word_number<=|B|;
 
         if ($word_total === 1) {
             $builder = DB::table('words as t1')
-                ->select('t1.text_id as text1_id', 't1.sentence_id as sentence1_id', 't1.w_id as w1_id');
+                ->select(
+                    't1.text_id as text1_id',
+                    't1.sentence_id as sentence1_id',
+                    't1.w_id as w1_id'
+                );
+
             if ($text_ids) {
                 $builder->whereIn('t1.text_id', $text_ids);
             }
+
             $builder = self::searchWordsByWord($builder, 't1.', $words[1], $lang_ids, $only_checked);
 
-            // Применяем лимит как и для 2+ слов
             $results = collect($builder->limit($limit + 1)->get());
 
             if ($results->count() > $limit) {
@@ -551,114 +627,126 @@ AND t1.word_number-t2.word_number<=|B|;
             return ['results' => $results, 'is_limited' => $is_limited];
         }
 
-        // Шаг 1: Ищем пары первых двух слов
         $builder1 = DB::table('words as t1')
-            ->select('t1.text_id as text1_id', 't1.sentence_id as sentence1_id', 't1.w_id as w1_id');
+            ->select(
+                't1.text_id as text1_id',
+                't1.sentence_id as sentence1_id',
+                't1.w_id as w1_id',
+                't1.word_number as word_number1'
+            );
+
         if ($text_ids) {
             $builder1->whereIn('t1.text_id', $text_ids);
         }
+
         $builder1 = self::searchWordsByWord($builder1, 't1.', $words[1], $lang_ids, $only_checked);
 
         $pairBuilder = $builder1
             ->join('words as t2', function ($join) use ($words) {
-                $join->on('t2.sentence_id', '=', 't1.sentence_id')
-                    ->where(DB::raw("t2.w_id"), '>', DB::raw("t1.w_id"))
-                    ->where(DB::raw("GREATEST(t2.w_id, t1.w_id) - LEAST(t2.w_id, t1.w_id)"), '>=', $words[2]['d_f'] ?? 1)
-                    ->where(DB::raw("GREATEST(t2.w_id, t1.w_id) - LEAST(t2.w_id, t1.w_id)"), '<=', $words[2]['d_t'] ?? 1);
+                $join->on('t2.sentence_id', '=', 't1.sentence_id');
+
+                $d_f = $words[2]['d_f'] ?? 1;
+                $d_t = $words[2]['d_t'] ?? 1;
+
+                self::applyDistanceCondition($join, 2, $d_f, $d_t);
             })
-            ->select('t1.text_id as text1_id', 't1.sentence_id as sentence1_id', 't1.w_id as w1_id', 't2.w_id as w2_id');
+            ->select(
+                't1.text_id as text1_id',
+                't1.sentence_id as sentence1_id',
+                't1.w_id as w1_id',
+                't1.word_number as word_number1',
+                't2.w_id as w2_id',
+                't2.word_number as word_number2'
+            );
 
         $pairBuilder = self::searchWordsByWord($pairBuilder, 't2.', $words[2], $lang_ids, $only_checked);
 
-        // Запрашиваем LIMIT + 1
-        $pairResults = collect($pairBuilder->limit($limit + 1)->get());
+        $currentResults = collect($pairBuilder->limit($limit + 1)->get());
 
-        if ($pairResults->count() > $limit) {
+        if ($currentResults->count() > $limit) {
             $is_limited = true;
-            $pairResults = $pairResults->take($limit);
+            $currentResults = $currentResults->take($limit);
         }
 
-        if ($pairResults->isEmpty()) {
+        if ($currentResults->isEmpty()) {
             return ['results' => collect([]), 'is_limited' => $is_limited];
         }
 
-        // Шаг 2: для 3+ слов
-        if ($word_total >= 3) {
-            $sentenceIds = $pairResults->pluck('sentence1_id')->unique(); //->toArray();
+        for ($step = 3; $step <= $word_total; $step++) {
+            $sentenceIds = $currentResults->pluck('sentence1_id')->unique()->values();
 
-            $builder3 = DB::table('words as t3')
-                ->whereIn('t3.sentence_id', $sentenceIds)
-                ->select('t3.sentence_id as sentence1_id', 't3.w_id as w3_id', 't3.text_id as text1_id');
+            if ($sentenceIds->isEmpty()) {
+                return ['results' => collect([]), 'is_limited' => $is_limited];
+            }
 
-            $builder3 = self::searchWordsByWord($builder3, 't3.', $words[3], $lang_ids, $only_checked);
-            $w3Results = collect($builder3->get())->groupBy('sentence1_id'); // группируем по sentence_id для обработки множественных вхождений
+            $builderN = DB::table('words as t' . $step)
+                ->whereIn('t' . $step . '.sentence_id', $sentenceIds)
+                ->select(
+                    't' . $step . '.text_id as text1_id',
+                    't' . $step . '.sentence_id as sentence1_id',
+                    't' . $step . '.w_id as w' . $step . '_id',
+                    't' . $step . '.word_number as word_number' . $step
+                );
 
-            $finalResults = collect();
+            $builderN = self::searchWordsByWord(
+                $builderN,
+                't' . $step . '.',
+                $words[$step],
+                $lang_ids,
+                $only_checked
+            );
 
-            foreach ($pairResults as $pair) {
-                $sentenceId = $pair->sentence1_id;
-                if (!isset($w3Results[$sentenceId])) continue;
+            $stepResults = collect($builderN->get())->groupBy('sentence1_id');
+            $nextResults = collect();
 
-                // Используем w_id как позицию слова в предложении
-                $w1_pos = $pair->w1_id;
-                $w2_pos = $pair->w2_id;
+            foreach ($currentResults as $resultRow) {
+                $sentenceId = $resultRow->sentence1_id;
 
-                $d_f = $words[3]['d_f'] ?? 1;
-                $d_t = $words[3]['d_t'] ?? 1;
+                if (!isset($stepResults[$sentenceId])) {
+                    continue;
+                }
 
-                // Проверяем все возможные третьи слова в предложении
-                foreach ($w3Results[$sentenceId] as $w3Result) {
-                    $w3_pos = $w3Result->w3_id;
+                $prevWordNumberField = 'word_number' . ($step - 1);
+                $prevWordNumber = $resultRow->$prevWordNumberField;
 
-                    // Проверяем дистанцию между w2 и w3
-                    if ($d_f >= 0 && $d_t >= 0) {
-                        if ($w3_pos > $w2_pos && ($w3_pos - $w2_pos) >= $d_f && ($w3_pos - $w2_pos) <= $d_t) {
-                            $finalResults->push((object)[
-                                'text1_id' => $pair->text1_id,
-                                'sentence1_id' => $sentenceId,
-                                'w1_id' => $pair->w1_id,
-                                'w2_id' => $pair->w2_id,
-                                'w3_id' => $w3_pos,
-                            ]);
-                        }
-                    } else if ($d_f < 0 && $d_t > 0) {
-                        // Поддержка отрицательных дистанций (например, от -3 до 3)
-                        if (($w2_pos > $w3_pos && ($w2_pos - $w3_pos) <= abs($d_f)) ||
-                            ($w3_pos > $w2_pos && ($w3_pos - $w2_pos) <= $d_t)
-                        ) {
-                            $finalResults->push((object)[
-                                'text1_id' => $pair->text1_id,
-                                'sentence1_id' => $sentenceId,
-                                'w1_id' => $pair->w1_id,
-                                'w2_id' => $pair->w2_id,
-                                'w3_id' => $w3_pos,
-                            ]);
-                        }
-                    } else if ($d_f <= 0 && $d_t <= 0) {
-                        // Обе дистанции отрицательны
-                        if ($w2_pos > $w3_pos && ($w2_pos - $w3_pos) >= abs($d_t) && ($w2_pos - $w3_pos) <= abs($d_f)) {
-                            $finalResults->push((object)[
-                                'text1_id' => $pair->text1_id,
-                                'sentence1_id' => $sentenceId,
-                                'w1_id' => $pair->w1_id,
-                                'w2_id' => $pair->w2_id,
-                                'w3_id' => $w3_pos,
-                            ]);
-                        }
+                $d_f = $words[$step]['d_f'] ?? 1;
+                $d_t = $words[$step]['d_t'] ?? 1;
+
+                foreach ($stepResults[$sentenceId] as $stepRow) {
+                    $currWordNumberField = 'word_number' . $step;
+                    $currWordNumber = $stepRow->$currWordNumberField;
+
+                    if (!self::checkDistanceByWordNumber($prevWordNumber, $currWordNumber, $d_f, $d_t)) {
+                        continue;
+                    }
+
+                    $newRow = clone $resultRow;
+                    $wIdField = 'w' . $step . '_id';
+                    $wordNumberField = 'word_number' . $step;
+
+                    $newRow->$wIdField = $stepRow->$wIdField;
+                    $newRow->$wordNumberField = $currWordNumber;
+
+                    $nextResults->push($newRow);
+
+                    if ($nextResults->count() > $limit) {
+                        $is_limited = true;
+                        break 2;
                     }
                 }
             }
 
-            $is_final_limited = false;
-            if ($finalResults->count() > $limit) {
-                $is_final_limited = true;
-                $finalResults = $finalResults->take($limit);
+            if ($nextResults->isEmpty()) {
+                return ['results' => collect([]), 'is_limited' => $is_limited];
             }
 
-            return ['results' => $finalResults, 'is_limited' => $is_limited || $is_final_limited];
+            $currentResults = $nextResults->take($limit);
         }
 
-        return ['results' => $pairResults, 'is_limited' => $is_limited];
+        return [
+            'results' => self::formatStepSearchResults($currentResults, $word_total),
+            'is_limited' => $is_limited
+        ];
     }
 
     /**

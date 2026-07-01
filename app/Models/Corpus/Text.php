@@ -24,6 +24,8 @@ class Text extends Model implements HasMediaConversions
 {
     const PhotoDisk = 'photos';
     const PhotoDir = 'photo';
+    protected static $wordformsCache = [];
+
     protected $fillable = [
         'lang_id',
         'source_id',
@@ -90,6 +92,7 @@ class Text extends Model implements HasMediaConversions
     //    use \App\Traits\Relations\BelongsToMany\Meanings;
 
     use \App\Traits\Relations\HasMany\Audiotexts;
+    use \App\Traits\Relations\HasMany\Puncts;
     use \App\Traits\Relations\HasMany\Sentences;
     use \App\Traits\Relations\HasMany\Words;
 
@@ -331,13 +334,21 @@ class Text extends Model implements HasMediaConversions
      */
     public static function getWordformsByWord($word, $lang_id)
     {
-        // TODO BEFORE COMLETION        
-        $wordforms = Wordform::where('lemma_wordform.wordform_for_search', 'like', $word)
+        $key = $lang_id . '|' . $word;
+
+        if (isset(self::$wordformsCache[$key])) {
+            return self::$wordformsCache[$key];
+        }
+
+        $wordforms = Wordform::select('wordforms.*', 'lemma_wordform.gramset_id')
             ->join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
-            ->whereNotNull('gramset_id')
-            ->whereIn('lemma_id', function ($query) use ($lang_id) {
-                $query->select('id')->from('lemmas')->whereLangId($lang_id);
-            })->get();
+            ->where('lemma_wordform.lang_id', '=', $lang_id)
+            ->where('lemma_wordform.wordform_for_search', '=', $word)
+            ->whereNotNull('lemma_wordform.gramset_id')
+            ->get();
+
+        self::$wordformsCache[$key] = $wordforms;
+
         return $wordforms;
     }
 

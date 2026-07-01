@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class PuTypeSeeder extends Seeder
+class PutypeSeeder extends Seeder
 {
     public function run()
     {
@@ -27,7 +27,7 @@ class PuTypeSeeder extends Seeder
                 'slug' => 'ellipsis',
                 'name_en' => 'ellipsis',
                 'name_ru' => 'многоточие',
-                'symbols' => json_encode(['...', '…'], JSON_UNESCAPED_UNICODE),
+                'symbols' => json_encode(['..', '...', '…'], JSON_UNESCAPED_UNICODE),
             ],
             [
                 'id' => 4,
@@ -48,7 +48,7 @@ class PuTypeSeeder extends Seeder
                 'slug' => 'dash',
                 'name_en' => 'dash',
                 'name_ru' => 'тире',
-                'symbols' => json_encode(['-', '–', '—'], JSON_UNESCAPED_UNICODE),
+                'symbols' => json_encode(['-', '‒', '–', '—', '―'], JSON_UNESCAPED_UNICODE),
             ],
             [
                 'id' => 7,
@@ -66,41 +66,27 @@ class PuTypeSeeder extends Seeder
             ],
             [
                 'id' => 9,
-                'slug' => 'question_exclamation',
-                'name_en' => 'question-exclamation mark',
-                'name_ru' => 'вопросительно-восклицательный знак',
-                'symbols' => json_encode(['?!'], JSON_UNESCAPED_UNICODE),
-            ],
-            [
-                'id' => 10,
-                'slug' => 'exclamation_question',
-                'name_en' => 'exclamation-question mark',
-                'name_ru' => 'восклицательно-вопросительный знак',
-                'symbols' => json_encode(['!?'], JSON_UNESCAPED_UNICODE),
-            ],
-            [
-                'id' => 11,
                 'slug' => 'quote_open',
                 'name_en' => 'opening quote',
                 'name_ru' => 'открывающая кавычка',
                 'symbols' => json_encode(['«', '„', '“', '"', '‘', "'"], JSON_UNESCAPED_UNICODE),
             ],
             [
-                'id' => 12,
+                'id' => 10,
                 'slug' => 'quote_close',
                 'name_en' => 'closing quote',
                 'name_ru' => 'закрывающая кавычка',
                 'symbols' => json_encode(['»', '”', '“', '"', '’', "'"], JSON_UNESCAPED_UNICODE),
             ],
             [
-                'id' => 13,
+                'id' => 11,
                 'slug' => 'bracket_open',
                 'name_en' => 'opening bracket',
                 'name_ru' => 'открывающая скобка',
                 'symbols' => json_encode(['(', '[', '{'], JSON_UNESCAPED_UNICODE),
             ],
             [
-                'id' => 14,
+                'id' => 12,
                 'slug' => 'bracket_close',
                 'name_en' => 'closing bracket',
                 'name_ru' => 'закрывающая скобка',

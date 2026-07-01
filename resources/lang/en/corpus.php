@@ -46,8 +46,8 @@ return [
     'corpus_removed' => 'Corpus ":name" is removed successfully.',
     'creation_date' => 'year of additing into VepKar',
     'cycle' => 'cycle',
-    'cyrtext_text' => 'Text in Cyrillic',
-    'cyrtext_title' => 'Title in Cyrillic',
+    'cyrtext_text' => 'Original source text',
+    'cyrtext_title' => 'Original source title',
 
     'district' => 'District',
     'district_list' => 'District list',

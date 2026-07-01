@@ -14,6 +14,9 @@ use App\Models\Dict\Wordform;
 
 class Word extends Model
 {
+    protected static $meaningsCache = [];
+    protected static $wordformsCache = [];
+
     use \App\Traits\Modify\WordModify;
     use \App\Traits\Select\WordBlock;
 
@@ -501,6 +504,44 @@ class Word extends Model
         }
     }
 
+    public function appendMeaningRowsFromList(array &$meaning_rows, $checked_relevances, $meanings)
+    {
+        $has_checked = false;
+        foreach (array_values($checked_relevances) as $r) {
+            if ($r > 1) {
+                $has_checked = true;
+                break;
+            }
+        }
+
+        foreach ($meanings as $meaning) {
+            $meaning_id = $meaning->id;
+            $relevance = $checked_relevances[$meaning_id] ?? ($has_checked ? 0 : 1);
+
+            $key = $meaning_id . '|' . $this->text_id . '|' . $this->s_id . '|' . $this->w_id;
+
+            $meaning_rows[$key] = [
+                'meaning_id' => $meaning_id,
+                'text_id' => $this->text_id,
+                's_id' => $this->s_id,
+                'word_id' => $this->id,
+                'w_id' => $this->w_id,
+                'relevance' => $relevance,
+            ];
+        }
+    }
+
+    public function appendMeaningRows(array &$meaning_rows, $checked_relevances, $lang_id = null)
+    {
+        if (!$lang_id) {
+            $lang_id = Text::getLangIDbyID($this->text_id);
+        }
+
+        $meanings = self::getMeaningsByWord($this->word, $lang_id);
+
+        $this->appendMeaningRowsFromList($meaning_rows, $checked_relevances, $meanings);
+    }
+
     /**
      * Search wordforms and lemmas matched with $word and
      * get meanings (objects) of these lemmas
@@ -510,12 +551,29 @@ class Word extends Model
      */
     public static function getMeaningsByWord($word, $lang_id)
     {
-        //        $wordform_q = "(SELECT id from wordforms where wordform_for_search like '$word')";
-        //        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_id in $wordform_q)";
-        $lemma_q = "(SELECT lemma_id FROM lemma_wordform WHERE wordform_for_search like '$word')";
-        $meanings = Meaning::whereRaw("lemma_id in (SELECT id from lemmas where lang_id=" . $lang_id
-            . " and (lemma_for_search like '$word' or id in $lemma_q))")
-            ->get();
+        $key = $lang_id . '|' . $word;
+
+        if (isset(self::$meaningsCache[$key])) {
+            return self::$meaningsCache[$key];
+        }
+
+        $meanings = Meaning::whereIn('lemma_id', function ($query) use ($word, $lang_id) {
+            $query->select('id')
+                ->from('lemmas')
+                ->where('lang_id', '=', $lang_id)
+                ->where(function ($q) use ($word, $lang_id) {
+                    $q->where('lemma_for_search', '=', $word)
+                        ->orWhereIn('id', function ($sub) use ($word, $lang_id) {
+                            $sub->select('lemma_id')
+                                ->from('lemma_wordform')
+                                ->where('lang_id', '=', $lang_id)
+                                ->where('wordform_for_search', '=', $word);
+                        });
+                });
+        })->get();
+
+        self::$meaningsCache[$key] = $meanings;
+
         return $meanings;
     }
 

@@ -11,6 +11,7 @@ use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\LemmaWordform;
 use App\Models\Dict\PartOfSpeech;
 
+use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 use App\Models\Corpus\Word;
 
@@ -221,5 +222,46 @@ class Correct
             }
             print "</ol>";
         }
+    }
+
+    public static function fillPunctsForAllSentences($text_id = null, $chunk = 200)
+    {
+        $query = Sentence::query()->orderBy('id');
+
+        if ($text_id) {
+            $query->where('text_id', $text_id);
+        }
+
+        $totalPunctRows = 0;
+        $totalSentences = 0;
+
+        $query->chunk($chunk, function ($sentences) use (&$totalPunctRows, &$totalSentences) {
+
+            foreach ($sentences as $sentence) {
+
+                DB::transaction(function () use ($sentence, &$totalPunctRows, &$totalSentences) {
+
+                    $rows = $sentence->buildPunctRows();
+
+                    DB::table('puncts')
+                        ->where('text_id', $sentence->text_id)
+                        ->where('s_id', $sentence->s_id)
+                        ->delete();
+
+
+                    if (!empty($rows)) {
+                        DB::table('puncts')->insert($rows);
+                        $totalPunctRows += count($rows);
+                    }
+
+                    $totalSentences++;
+                });
+            }
+        });
+
+        return [
+            'sentences' => $totalSentences,
+            'puncts' => $totalPunctRows,
+        ];
     }
 }

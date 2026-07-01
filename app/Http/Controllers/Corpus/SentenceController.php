@@ -83,8 +83,8 @@ class SentenceController extends Controller
         $script_start = microtime(true);
 
         $url_args['words'] = Sentence::preparedWordsForSearch($url_args['search_words']);
-        //dd($url_args['words']);        
-        $search_query = Sentence::searchQueryToString($url_args);
+        $search_query = Sentence::searchQueryToString($url_args); // условия поиска словами
+
         $entry_number = $numAll = 0;
         $text_sentences = [];
         $texts = null;

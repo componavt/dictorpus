@@ -234,7 +234,9 @@ class TextController extends Controller
 
         $error_message = $text->storeAdditionInfo($request);
 
+        // отправляем на проверку разбития на предложения
         $redirect = Redirect::to('/corpus/text/' . ($text->id) . '/check_sentence' . ($this->args_by_get));
+
         if ($error_message) {
             $redirect = $redirect->withErrors($error_message);
         } else {
@@ -446,6 +448,9 @@ class TextController extends Controller
         );
     }
 
+    /**
+     * Проверка разбития текста на предложения
+     */
     public function checkSentences($id)
     {
         $args_by_get = $this->args_by_get;
@@ -457,10 +462,10 @@ class TextController extends Controller
                 ->withErrors(trans('corpus.text_not_found', ['id' => $id]));
         }
         list($text->text_structure, $sentences) = Text::markupText($text->text, true, true);
+
         $trans_sentences = !empty($text->transtext) ? $text->transtext->getSentencesFromXML() : [];
         $cyr_sentences = !empty($text->cyrtext) ? $text->cyrtext->getSentencesFromXML(true) : [];
         $total = max(sizeof($sentences), sizeof($trans_sentences), sizeof($cyr_sentences));
-        //dd($sentences, $trans_sentences, $cyr_sentences, $total);        
 
         return view(
             'corpus.text.check_sentences',
@@ -553,6 +558,8 @@ class TextController extends Controller
         ]);
         //dd($request->topics);
         $error_message = Text::updateByID($request, $id);
+
+        // если необходима разметка отправляем на проверку разбития на предложения, если нет, то на страницу текста
         $redirect = Redirect::to('/corpus/text/' . $id . (empty($request->to_makeup) ? '' : '/check_sentence') . $this->args_by_get);
 
         if ($error_message) {
@@ -702,6 +709,7 @@ class TextController extends Controller
 
     /**
      * Markup xml of text and transtext
+     * 2 этап разметки
      * 
      * @param  int  $id
      * @return \Illuminate\Http\Response

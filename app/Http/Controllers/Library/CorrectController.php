@@ -524,4 +524,12 @@ class CorrectController extends Controller
         }
         print "</table>\n";
     }
+
+    public function puncts()
+    {
+        //ini_set('memory_limit', '-1');
+        ini_set('memory_limit', '512M');
+        $result = Correct::fillPunctsForAllSentences();
+        print "Обработано " . $result['sentences'] . ' предложений и найдено ' . $result['puncts'] . ' знаков препинания';
+    }
 }

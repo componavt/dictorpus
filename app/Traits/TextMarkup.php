@@ -3,26 +3,9 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use \Venturecraft\Revisionable\Revision;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Illuminate\Support\Facades\Log;
 
-use App\Library\Grammatic;
-use App\Library\Str;
-
-use App\Models\User;
-
-use App\Models\Corpus\Event;
 use App\Models\Corpus\Sentence;
-use App\Models\Corpus\Source;
-use App\Models\Corpus\Transtext;
-use App\Models\Corpus\Word;
-
-use App\Models\Dict\Gramset;
-use App\Models\Dict\Meaning;
-use App\Models\Dict\Wordform;
 
 trait TextMarkup
 {
@@ -104,21 +87,62 @@ trait TextMarkup
 
     /**
      * Sets text_xml as a markup text with sentences
+     * эта функция вызывается из контроллера на 2м этапе разметки
      */
     public function markup()
     {
+        DB::listen(function ($query) {
+            if ($query->time >= 20) {
+                \Log::info('SLOW SQL', [
+                    'sql' => $query->sql,
+                    'bindings' => $query->bindings,
+                    'time_ms' => $query->time,
+                ]);
+            }
+        });
+
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
+        $ts = microtime(true);
+
         list($this->text_structure, $sentences) = self::markupText($this->text, true, true);
-        //dd($this->text_structure, $sentences);        
+        Log::info('markupText done', ['sec' => microtime(true) - $ts]);
+
+        $sentencesData = [];
+        $last_s_id = null;
+
         foreach ($sentences as $s_id => $text_xml) {
+            $last_s_id = $s_id;
+            $t1 = microtime(true);
+
             $sentence = Sentence::store($this->id, $s_id, $text_xml);
-            $error_message = $this->updateMeaningAndWordformText($sentence, $text_xml);
+            Log::info('Sentence::store', ['s_id' => $s_id, 'sec' => microtime(true) - $t1]);
+
+            list($sxe, $error_message) = self::toXML($text_xml, $s_id);
+
             if ($error_message) {
                 print $error_message;
+                continue;
             }
+
+            // ВАЖНО: вызываем checkedWords ДО удаления старых записей,
+            // т.к. w_id стабильно переиспользуется между старой и новой разметкой
+            $checked_words = $this->checkedWords($text_xml);
+
+            $sentencesData[] = [
+                'sentence' => $sentence,
+                'sxe' => $sxe,
+                'checked_words' => $checked_words,
+            ];
         }
-        DB::statement("DELETE FROM sentences WHERE s_id>$s_id and text_id=" . (int)$this->id);
+
+        $t3 = microtime(true);
+        $this->updateMeaningAndWordformForText($sentencesData);
+        Log::info('updateMeaningAndWordformForText', ['sec' => microtime(true) - $t3]);
+
+        if ($last_s_id !== null) {
+            DB::statement("DELETE FROM sentences WHERE s_id>$last_s_id and text_id=" . (int)$this->id);
+        }
     }
 
     public function cyrToSentence($sentence, $words)
