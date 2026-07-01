@@ -993,269 +993,321 @@ dd($s->saveXML());
         $lang_id = $this->lang_id;
 
         DB::transaction(function () use ($sentencesData, $text_id, $lang_id) {
+            $this->clearMarkupData($text_id);
 
-            // 1. Чистим все старые данные по тексту
-            $all_w_ids = DB::table('words')->where('text_id', $text_id)->pluck('w_id');
+            $batch = $this->collectSentenceBatchData($sentencesData, $text_id);
 
-            if ($all_w_ids) {
-                DB::table('text_wordform')->where('text_id', $text_id)->whereIn('w_id', $all_w_ids)->delete();
-            }
-
-            DB::table('meaning_text')->where('text_id', $text_id)->delete();
-            DB::table('words')->where('text_id', $text_id)->delete();
-
-            // 2. Собираем слова со всех предложений + карту checked_words по позиции
-            $words_rows_to_insert = [];
-            $word_for_search_by_s_id_w_id = [];
-            $checked_by_s_id_w_id = []; // [s_id][w_id] => ['meanings'=>[...], 'wordforms'=>[...]]
-            $words_for_search = [];
-
-            foreach ($sentencesData as $item) {
-                $sentence = $item['sentence'];
-                $sxe = $item['sxe'];
-                $checked_words = $item['checked_words'] ?? [];
-
-                $s_id = $sentence->s_id;
-                $sentence_id = $sentence->id;
-
-                $xml_words = $sxe->xpath('//w');
-                $position = 0;
-
-                foreach ($xml_words as $word) {
-                    $w_id = (int)$word['id'];
-                    $word_text = trim((string)$word);
-                    $word_for_search = Grammatic::changeLetters(mb_strtolower($word_text));
-
-                    if (!$w_id || $word_for_search === '') {
-                        $position++;
-                        continue;
-                    }
-
-                    $word_for_search_by_s_id_w_id[$s_id][$w_id] = $word_for_search;
-                    $words_for_search[$word_for_search] = $word_for_search;
-
-                    if (isset($checked_words[$position])) {
-                        $checked_by_s_id_w_id[$s_id][$w_id] = $checked_words[$position];
-                    }
-
-                    $words_rows_to_insert[] = [
-                        'text_id' => $text_id,
-                        's_id' => $s_id,
-                        'w_id' => $w_id,
-                        'word' => $word_text,
-                        'word_number' => $position + 1,
-                        'sentence_id' => $sentence_id,
-                    ];
-
-                    $position++;
-                }
-            }
-
-            \Log::info('meaning_text debug words (batch)', [
-                'text_id' => $text_id,
-                'sentences_count' => count($sentencesData),
-                'words_rows_count' => count($words_rows_to_insert),
-            ]);
-
-            if (!$words_rows_to_insert) {
+            if (empty($batch['words_rows'])) {
                 return;
             }
 
-            foreach (array_chunk($words_rows_to_insert, 500) as $chunk) {
-                DB::table('words')->insert($chunk);
-            }
+            $this->insertBatchRows('words', $batch['words_rows']);
 
-            if (!$words_for_search) {
-                return;
-            }
+            $punct_rows = $this->buildPunctRowsBatch($sentencesData);
+            $this->insertBatchRows('puncts', $punct_rows);
 
-            $words_for_search = array_values($words_for_search);
-
-            // 3. word_id по всему тексту
-            $word_rows = DB::table('words')
-                ->select('id as word_id', 's_id', 'w_id')
-                ->where('text_id', $text_id)
-                ->get();
-
-            $word_id_by_s_id_w_id = [];
-
-            foreach ($word_rows as $row) {
-                $s_id = is_array($row) ? $row['s_id'] : $row->s_id;
-                $w_id = is_array($row) ? $row['w_id'] : $row->w_id;
-                $word_id = is_array($row) ? $row['word_id'] : $row->word_id;
-                $word_id_by_s_id_w_id[$s_id][$w_id] = $word_id;
-            }
-
-            // 4. Леммы/словоформы для значений (meanings)
-            $lemma_rows_1 = DB::table('lemmas')
-                ->select('id as lemma_id', 'lemma_for_search as word_for_search')
-                ->where('lang_id', $lang_id)
-                ->whereIn('lemma_for_search', $words_for_search)
-                ->get();
-
-            $lemma_rows_2 = DB::table('lemma_wordform')
-                ->select('lemma_id', 'wordform_for_search as word_for_search')
-                ->where('lang_id', $lang_id)
-                ->whereIn('wordform_for_search', $words_for_search)
-                ->get();
-
-            $lemma_rows = array_merge(
-                is_array($lemma_rows_1) ? $lemma_rows_1 : $lemma_rows_1->all(),
-                is_array($lemma_rows_2) ? $lemma_rows_2 : $lemma_rows_2->all()
+            $lookups = $this->loadMarkupLookups(
+                $text_id,
+                $lang_id,
+                $batch['words_for_search']
             );
 
-            $lemma_map = [];
-            $lemma_ids = [];
+            $meaning_rows = $this->buildMeaningRowsBatch(
+                $text_id,
+                $batch,
+                $lookups
+            );
+            $this->insertBatchRows('meaning_text', $meaning_rows);
 
-            foreach ($lemma_rows as $row) {
-                $lemma_id = is_array($row) ? $row['lemma_id'] : $row->lemma_id;
-                $word_for_search = is_array($row) ? $row['word_for_search'] : $row->word_for_search;
+            $text_wordform_rows = $this->buildTextWordformRowsBatch(
+                $text_id,
+                $batch,
+                $lookups
+            );
+            $this->insertBatchRows('text_wordform', $text_wordform_rows);
+        });
+    }
 
-                if (!$lemma_id || !$word_for_search) {
+    protected function clearMarkupData(int $text_id): void
+    {
+        $all_w_ids = DB::table('words')
+            ->where('text_id', $text_id)
+            ->pluck('w_id');
+
+        if ($all_w_ids) {
+            DB::table('text_wordform')
+                ->where('text_id', $text_id)
+                ->whereIn('w_id', $all_w_ids)
+                ->delete();
+        }
+
+        DB::table('meaning_text')->where('text_id', $text_id)->delete();
+        DB::table('puncts')->where('text_id', $text_id)->delete();
+        DB::table('words')->where('text_id', $text_id)->delete();
+    }
+
+    protected function collectSentenceBatchData(array $sentencesData, int $text_id): array
+    {
+        $words_rows = [];
+        $word_for_search_by_s_id_w_id = [];
+        $checked_by_s_id_w_id = [];
+        $words_for_search = [];
+
+        foreach ($sentencesData as $item) {
+            $sentence = $item['sentence'];
+            $sxe = $item['sxe'];
+            $checked_words = $item['checked_words'] ?? [];
+
+            $s_id = $sentence->s_id;
+            $sentence_id = $sentence->id;
+            $xml_words = $sxe->xpath('//w');
+            $position = 0;
+
+            foreach ($xml_words as $word) {
+                $w_id = (int)$word['id'];
+                $word_text = trim((string)$word);
+                $word_for_search = Grammatic::changeLetters(mb_strtolower($word_text));
+
+                if (!$w_id || $word_for_search === '') {
+                    $position++;
                     continue;
                 }
 
-                $lemma_map[$word_for_search][$lemma_id] = $lemma_id;
-                $lemma_ids[$lemma_id] = $lemma_id;
+                $word_for_search_by_s_id_w_id[$s_id][$w_id] = $word_for_search;
+                $words_for_search[$word_for_search] = $word_for_search;
+
+                if (isset($checked_words[$position])) {
+                    $checked_by_s_id_w_id[$s_id][$w_id] = $checked_words[$position];
+                }
+
+                $words_rows[] = [
+                    'text_id' => $text_id,
+                    's_id' => $s_id,
+                    'w_id' => $w_id,
+                    'word' => $word_text,
+                    'word_number' => $position + 1,
+                    'sentence_id' => $sentence_id,
+                ];
+
+                $position++;
             }
+        }
 
-            $meanings_by_lemma_id = [];
+        return [
+            'words_rows' => $words_rows,
+            'word_for_search_by_s_id_w_id' => $word_for_search_by_s_id_w_id,
+            'checked_by_s_id_w_id' => $checked_by_s_id_w_id,
+            'words_for_search' => array_values($words_for_search),
+        ];
+    }
 
-            if ($lemma_ids) {
-                $meaning_rows = DB::table('meanings')
-                    ->select('id', 'lemma_id')
-                    ->whereIn('lemma_id', array_values($lemma_ids))
-                    ->get();
+    protected function insertBatchRows(string $table, array $rows, int $chunkSize = 500): void
+    {
+        if (empty($rows)) {
+            return;
+        }
 
-                foreach ($meaning_rows as $row) {
-                    $lemma_id = is_array($row) ? $row['lemma_id'] : $row->lemma_id;
-                    $meaning_id = is_array($row) ? $row['id'] : $row->id;
-                    $meanings_by_lemma_id[$lemma_id][] = $meaning_id;
+        foreach (array_chunk($rows, $chunkSize) as $chunk) {
+            DB::table($table)->insert($chunk);
+        }
+    }
+
+    protected function buildPunctRowsBatch(array $sentencesData): array
+    {
+        $rows = [];
+
+        foreach ($sentencesData as $item) {
+            $sentence = $item['sentence'];
+            $sentence_rows = $sentence->buildPunctRows();
+
+            if ($sentence_rows) {
+                foreach ($sentence_rows as $row) {
+                    $rows[] = $row;
                 }
             }
+        }
 
-            // 5. Словоформы (для text_wordform) — по паттерну из логов:
-            // wordforms inner join lemma_wordform ... where gramset_id is not null
-            // and lemma_id in (select id from lemmas where lang_id = ?)
-            $wordform_rows = DB::table('wordforms')
-                ->join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
-                ->whereIn('lemma_wordform.wordform_for_search', $words_for_search)
-                ->whereNotNull('lemma_wordform.gramset_id')
-                ->whereIn('lemma_wordform.lemma_id', function ($q) use ($lang_id) {
-                    $q->select('id')->from('lemmas')->where('lang_id', $lang_id);
-                })
-                ->select(
-                    'wordforms.id as wordform_id',
-                    'lemma_wordform.gramset_id',
-                    'lemma_wordform.wordform_for_search as word_for_search'
-                )
+        return $rows;
+    }
+
+    protected function loadMarkupLookups(int $text_id, int $lang_id, array $words_for_search): array
+    {
+        $word_rows = DB::table('words')
+            ->select('id as word_id', 's_id', 'w_id')
+            ->where('text_id', $text_id)
+            ->get();
+
+        $word_id_by_s_id_w_id = [];
+        foreach ($word_rows as $row) {
+            $s_id = is_array($row) ? $row['s_id'] : $row->s_id;
+            $w_id = is_array($row) ? $row['w_id'] : $row->w_id;
+            $word_id = is_array($row) ? $row['word_id'] : $row->word_id;
+            $word_id_by_s_id_w_id[$s_id][$w_id] = $word_id;
+        }
+
+        $lemma_rows_1 = DB::table('lemmas')
+            ->select('id as lemma_id', 'lemma_for_search as word_for_search')
+            ->where('lang_id', $lang_id)
+            ->whereIn('lemma_for_search', $words_for_search)
+            ->get();
+
+        $lemma_rows_2 = DB::table('lemma_wordform')
+            ->select('lemma_id', 'wordform_for_search as word_for_search')
+            ->where('lang_id', $lang_id)
+            ->whereIn('wordform_for_search', $words_for_search)
+            ->get();
+
+        $lemma_rows = array_merge(
+            is_array($lemma_rows_1) ? $lemma_rows_1 : $lemma_rows_1->all(),
+            is_array($lemma_rows_2) ? $lemma_rows_2 : $lemma_rows_2->all()
+        );
+
+        $lemma_map = [];
+        $lemma_ids = [];
+
+        foreach ($lemma_rows as $row) {
+            $lemma_id = is_array($row) ? $row['lemma_id'] : $row->lemma_id;
+            $word_for_search = is_array($row) ? $row['word_for_search'] : $row->word_for_search;
+
+            if (!$lemma_id || !$word_for_search) {
+                continue;
+            }
+
+            $lemma_map[$word_for_search][$lemma_id] = $lemma_id;
+            $lemma_ids[$lemma_id] = $lemma_id;
+        }
+
+        $meanings_by_lemma_id = [];
+        if ($lemma_ids) {
+            $meaning_rows = DB::table('meanings')
+                ->select('id', 'lemma_id')
+                ->whereIn('lemma_id', array_values($lemma_ids))
                 ->get();
 
-            $wordform_map = [];
+            foreach ($meaning_rows as $row) {
+                $lemma_id = is_array($row) ? $row['lemma_id'] : $row->lemma_id;
+                $meaning_id = is_array($row) ? $row['id'] : $row->id;
+                $meanings_by_lemma_id[$lemma_id][] = $meaning_id;
+            }
+        }
 
-            foreach ($wordform_rows as $row) {
-                $wordform_id = is_array($row) ? $row['wordform_id'] : $row->wordform_id;
-                $gramset_id = is_array($row) ? $row['gramset_id'] : $row->gramset_id;
-                $word_for_search = is_array($row) ? $row['word_for_search'] : $row->word_for_search;
+        $wordform_rows = DB::table('wordforms')
+            ->join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
+            ->whereIn('lemma_wordform.wordform_for_search', $words_for_search)
+            ->whereNotNull('lemma_wordform.gramset_id')
+            ->whereIn('lemma_wordform.lemma_id', function ($q) use ($lang_id) {
+                $q->select('id')->from('lemmas')->where('lang_id', $lang_id);
+            })
+            ->select(
+                'wordforms.id as wordform_id',
+                'lemma_wordform.gramset_id',
+                'lemma_wordform.wordform_for_search as word_for_search'
+            )
+            ->get();
 
-                if (!$wordform_id || !$gramset_id || !$word_for_search) {
+        $wordform_map = [];
+        foreach ($wordform_rows as $row) {
+            $wordform_id = is_array($row) ? $row['wordform_id'] : $row->wordform_id;
+            $gramset_id = is_array($row) ? $row['gramset_id'] : $row->gramset_id;
+            $word_for_search = is_array($row) ? $row['word_for_search'] : $row->word_for_search;
+
+            if (!$wordform_id || !$gramset_id || !$word_for_search) {
+                continue;
+            }
+
+            $key = $wordform_id . '_' . $gramset_id;
+            $wordform_map[$word_for_search][$key] = [
+                'wordform_id' => $wordform_id,
+                'gramset_id' => $gramset_id,
+            ];
+        }
+
+        return [
+            'word_id_by_s_id_w_id' => $word_id_by_s_id_w_id,
+            'lemma_map' => $lemma_map,
+            'meanings_by_lemma_id' => $meanings_by_lemma_id,
+            'wordform_map' => $wordform_map,
+        ];
+    }
+
+    protected function buildMeaningRowsBatch(int $text_id, array $batch, array $lookups): array
+    {
+        $rows = [];
+
+        foreach ($batch['word_for_search_by_s_id_w_id'] as $s_id => $words_of_sentence) {
+            foreach ($words_of_sentence as $w_id => $word_for_search) {
+                if (empty($lookups['word_id_by_s_id_w_id'][$s_id][$w_id])) {
                     continue;
                 }
 
-                $key = $wordform_id . '_' . $gramset_id;
+                if (empty($lookups['lemma_map'][$word_for_search])) {
+                    continue;
+                }
 
-                // Дедупликация: одна и та же связка wordform_id+gramset_id может
-                // прийти несколько раз из-за разных lemma_id/dialect_id в lemma_wordform
-                $wordform_map[$word_for_search][$key] = [
-                    'wordform_id' => $wordform_id,
-                    'gramset_id' => $gramset_id,
-                ];
-            }
+                $word_id = $lookups['word_id_by_s_id_w_id'][$s_id][$w_id];
+                $checked = $batch['checked_by_s_id_w_id'][$s_id][$w_id] ?? null;
+                $checked_meanings = $checked['meanings'] ?? [];
 
-            // 6. Собираем строки meaning_text и text_wordform с учётом старых отметок эксперта
-            $meaning_text_rows = [];
-            $text_wordform_rows = [];
-
-            foreach ($word_for_search_by_s_id_w_id as $s_id => $words_of_sentence) {
-                foreach ($words_of_sentence as $w_id => $word_for_search) {
-                    if (empty($word_id_by_s_id_w_id[$s_id][$w_id])) {
+                foreach ($lookups['lemma_map'][$word_for_search] as $lemma_id) {
+                    if (empty($lookups['meanings_by_lemma_id'][$lemma_id])) {
                         continue;
                     }
 
-                    $word_id = $word_id_by_s_id_w_id[$s_id][$w_id];
-                    $checked = $checked_by_s_id_w_id[$s_id][$w_id] ?? null;
-                    $checked_meanings = $checked['meanings'] ?? [];
-                    $checked_wordforms = $checked['wordforms'] ?? [];
+                    foreach ($lookups['meanings_by_lemma_id'][$lemma_id] as $meaning_id) {
+                        $relevance = $checked_meanings[$meaning_id] ?? 1;
+                        $key = $text_id . '_' . $s_id . '_' . $w_id . '_' . $meaning_id;
 
-                    if (!empty($lemma_map[$word_for_search])) {
-                        foreach ($lemma_map[$word_for_search] as $lemma_id) {
-                            if (empty($meanings_by_lemma_id[$lemma_id])) {
-                                continue;
-                            }
-
-                            foreach ($meanings_by_lemma_id[$lemma_id] as $meaning_id) {
-                                $relevance = $checked_meanings[$meaning_id] ?? 1;
-
-                                $mt_key = $text_id . '_' . $s_id . '_' . $w_id . '_' . $meaning_id;
-
-                                $meaning_text_rows[$mt_key] = [
-                                    'text_id' => $text_id,
-                                    's_id' => $s_id,
-                                    'w_id' => $w_id,
-                                    'word_id' => $word_id,
-                                    'meaning_id' => $meaning_id,
-                                    'relevance' => $relevance,
-                                ];
-                            }
-                        }
-                    }
-
-                    if (!empty($wordform_map[$word_for_search])) {
-                        foreach ($wordform_map[$word_for_search] as $wf) {
-                            $key = $wf['wordform_id'] . '_' . $wf['gramset_id'];
-                            $relevance = $checked_wordforms[$key] ?? 1;
-
-                            // Ключ дедупликации совпадает с PRIMARY KEY таблицы text_wordform
-                            $tw_key = $text_id . '_' . $w_id . '_' . $wf['wordform_id'] . '_' . $wf['gramset_id'];
-
-                            $text_wordform_rows[$tw_key] = [
-                                'text_id' => $text_id,
-                                'w_id' => $w_id,
-                                'wordform_id' => $wf['wordform_id'],
-                                'gramset_id' => $wf['gramset_id'],
-                                'word_id' => $word_id,
-                                'relevance' => $relevance,
-                            ];
-                        }
+                        $rows[$key] = [
+                            'text_id' => $text_id,
+                            's_id' => $s_id,
+                            'w_id' => $w_id,
+                            'word_id' => $word_id,
+                            'meaning_id' => $meaning_id,
+                            'relevance' => $relevance,
+                        ];
                     }
                 }
             }
+        }
 
-            $meaning_text_rows = array_values($meaning_text_rows);
-            $text_wordform_rows = array_values($text_wordform_rows);
+        return array_values($rows);
+    }
 
-            \Log::info('meaning_text debug (batch)', [
-                'text_id' => $text_id,
-                'sentences_count' => count($sentencesData),
-                'words_rows_count' => count($words_rows_to_insert),
-                'word_rows_count' => count($word_rows),
-                'lemma_rows_count' => count($lemma_rows),
-                'lemma_ids_count' => count($lemma_ids),
-                'meaning_text_rows_count' => count($meaning_text_rows),
-                'text_wordform_rows_count' => count($text_wordform_rows),
-            ]);
+    protected function buildTextWordformRowsBatch(int $text_id, array $batch, array $lookups): array
+    {
+        $rows = [];
 
-            if ($meaning_text_rows) {
-                foreach (array_chunk($meaning_text_rows, 500) as $chunk) {
-                    DB::table('meaning_text')->insert($chunk);
+        foreach ($batch['word_for_search_by_s_id_w_id'] as $s_id => $words_of_sentence) {
+            foreach ($words_of_sentence as $w_id => $word_for_search) {
+                if (empty($lookups['word_id_by_s_id_w_id'][$s_id][$w_id])) {
+                    continue;
+                }
+
+                if (empty($lookups['wordform_map'][$word_for_search])) {
+                    continue;
+                }
+
+                $word_id = $lookups['word_id_by_s_id_w_id'][$s_id][$w_id];
+                $checked = $batch['checked_by_s_id_w_id'][$s_id][$w_id] ?? null;
+                $checked_wordforms = $checked['wordforms'] ?? [];
+
+                foreach ($lookups['wordform_map'][$word_for_search] as $wf) {
+                    $wf_key = $wf['wordform_id'] . '_' . $wf['gramset_id'];
+                    $relevance = $checked_wordforms[$wf_key] ?? 1;
+                    $key = $text_id . '_' . $w_id . '_' . $wf['wordform_id'] . '_' . $wf['gramset_id'];
+
+                    $rows[$key] = [
+                        'text_id' => $text_id,
+                        'w_id' => $w_id,
+                        'wordform_id' => $wf['wordform_id'],
+                        'gramset_id' => $wf['gramset_id'],
+                        'word_id' => $word_id,
+                        'relevance' => $relevance,
+                    ];
                 }
             }
+        }
 
-            if ($text_wordform_rows) {
-                foreach (array_chunk($text_wordform_rows, 500) as $chunk) {
-                    DB::table('text_wordform')->insert($chunk);
-                }
-            }
-        });
+        return array_values($rows);
     }
 }
