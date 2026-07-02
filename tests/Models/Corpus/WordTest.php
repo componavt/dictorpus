@@ -1,20 +1,19 @@
 <?php
 
-//use Illuminate\Foundation\Testing\WithoutMiddleware;
-//use Illuminate\Foundation\Testing\DatabaseMigrations;
-//use Illuminate\Foundation\Testing\DatabaseTransactions;
-//use TestCase;
+namespace Tests;
+
+use Tests\TestCase;
 
 use App\Models\Corpus\Word;
 // ./vendor/bin/phpunit tests/Models/Dict/WordTest.php
 
 class WordTest extends TestCase
 {
-// какая-то незаконченная функция    
+    // какая-то незаконченная функция    
     public function testProjectLangIDs()
     {
         $word = 'kuiva';
-        $lang_id=4;
+        $lang_id = 4;
         $result = (array)Word::getMeaningsByWord($word, $lang_id)->pluck('id');
         /*
 dd($result);        
@@ -25,18 +24,18 @@ dd($result);
         $expected = null;
         $this->assertEquals( $expected, $result);   
          * 
-         */     
-        $this->assertEquals( true, true);   
+         */
+        $this->assertEquals(true, true);
     }
-    
+
     public function testSplitWordBySpecialSymbol()
     {
         $token   = "gor’o-¦gor’kija";
         $word_count = 932;
-        
+
         $result = Word::splitWord($token, $word_count);
 
-        $expected  = ["gor’o</w>-¦<w id=\"932\">gor’kija", [931=>'gor’o', 932=>'gor’kija']];
-        $this->assertEquals( $expected, $result);
+        $expected  = ["gor’o</w>-¦<w id=\"932\">gor’kija", [931 => 'gor’o', 932 => 'gor’kija']];
+        $this->assertEquals($expected, $result);
     }
 }

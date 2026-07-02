@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+namespace Tests;
+
+use Tests\TestCase;
 
 use App\Models\Dict\Lang;
 
 // php artisan make:test Models\Dict\LangTest
 // ./vendor/bin/phpunit tests/Models/Dict/LangTest.php
-    
+
 class LangTest extends TestCase
 {
     /**
@@ -20,6 +20,6 @@ class LangTest extends TestCase
     {
         $result = Lang::projectLangIDs();
         $expected = [1, 5, 6, 4];
-        $this->assertEquals( $expected, $result);        
+        $this->assertEquals($expected, $result);
     }
 }

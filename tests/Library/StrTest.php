@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+namespace Tests;
+
+use Tests\TestCase;
 
 use App\Library\Str;
 
@@ -14,8 +14,8 @@ class StrTest extends TestCase
         $str1 = 'tul';
         $str2 = 'tulow';
         $result = Str::trimEqualSubstrFromLeft($str1, $str2);
-        
-        $expected = ['','ow'];
-        $this->assertEquals( $expected, $result);        
+
+        $expected = ['', 'ow'];
+        $this->assertEquals($expected, $result);
     }
 }

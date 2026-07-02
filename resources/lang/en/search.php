@@ -9,11 +9,11 @@ return [
     |
     |
     */
-    
+
     'add_left_context' => 'add left context',
     'add_right_context' => 'add right context',
     'add_word' => 'add another word to the search',
-    'advanced_search'=> 'Advanced Search',
+    'advanced_search' => 'Advanced Search',
     'and' => 'AND',
     'author_or_trans' => 'Author',
     'choose_gram' => 'Choose grammatical attributes',
@@ -29,10 +29,16 @@ return [
     'found_sentences' => '{0}|{1}, :count sentence|[2,Inf], :count sentences',
     'found_texts' => '{0} There are no texts|{1} :count text was found|[2,Inf] :count texts were found',
     'in_distance' => 'in the distance from :from to :to',
-    
+
     'or' => 'OR',
     'other_search' => 'You can use other types of search',
-    
+
+    'punct_before' => 'punctuation before the word',
+    'punct_after' => 'punctuation after the word',
+    'punct_any' => 'any punctuation mark',
+    'punct_between_require_any' => 'there must be at least one punctuation mark between the words',
+    'punct_between_forbid_any' => 'there must be no punctuation marks between the words',
+
     'regex_title' => 'Templates (Regex and custom) are allowed in the field. You can use the following notation:',
     'regex_begin' => 'beginning of string',
     'regex_end' => 'end of string',
@@ -58,11 +64,11 @@ return [
     'search_simple_title_by_corpus' => 'Corpus simple search',
     'search_simple_title_by_dict' => 'Dictionary simple search',
     'search_simple_word' => '<p>This field can contain any word (or fragment of a word) in any language (Vepsian, Karelian, Russian, English or Finnish).</p> '
-                           . '<p>This is a normal substring search, so no wildcards needed.</p>'
-                           . '<p>All dictionary entries and texts in the corpus where this word occurs will be found.</p>',
+        . '<p>This is a normal substring search, so no wildcards needed.</p>'
+        . '<p>All dictionary entries and texts in the corpus where this word occurs will be found.</p>',
     'show_by' => 'by',
-    'simple_search'=> 'Simple Search',
-//    'title_or_trans' => 'Title',
+    'simple_search' => 'Simple Search',
+    //    'title_or_trans' => 'Title',
     'year_from' => 'year (from)',
     'year_to' => 'year (to)',
 ];

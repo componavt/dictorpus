@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+namespace Tests;
+
+use Tests\TestCase;
 
 //use Illuminate\Foundation\Testing\RefreshDatabase; 
 
@@ -13,60 +13,60 @@ use App\Models\Dict\Lemma;
 // ./vendor/bin/phpunit tests/Models/Dict/LemmaTest
 
 class LemmaTest extends TestCase
-{    
-//    use RefreshDatabase;
-    
+{
+    //    use RefreshDatabase;
+
     public function can_get_all_lemmas()
     {
         // Create Property so that the response returns it.
-//        $property = Lemma::factory()->create();
+        //        $property = Lemma::factory()->create();
 
         $response = $this->getJson(route('lemma.index'));
         // We will only assert that the response returns a 200 status for now.
-        $response->assertOk(); 
+        $response->assertOk();
     }
-        
+
     public function testExtractStemVepsVerbManyWordforms()
     {
         $lemma_id = 828;
         $lemma = Lemma::find($lemma_id);
         $result = $lemma->extractStem();
-        
-        $expected = ['pe','sta'];
-        $this->assertEquals( $expected, $result);        
+
+        $expected = ['pe', 'sta'];
+        $this->assertEquals($expected, $result);
     }
-    
+
     public function testExtractStemPropKarVerbManyWordforms()
     {
         $lemma_id = 2984;
         $lemma = Lemma::find($lemma_id);
-        
+
         $result = $lemma->extractStem();
-        
-        $expected = ['aš','tuo'];
-        $this->assertEquals( $expected, $result);        
+
+        $expected = ['aš', 'tuo'];
+        $this->assertEquals($expected, $result);
     }
-    
+
     public function testGetWordformsCONLLVepAnimateNoun()
     {
         $word = "Vellenke";
-        $lemma_obj = Lemma::find(24); 
+        $lemma_obj = Lemma::find(24);
         $result = $lemma_obj->getWordformsCONLL($word);
-        
-        $expected = [["Number=Sing","Case=Com"]];
-        $this->assertEquals( $expected, $result);        
+
+        $expected = [["Number=Sing", "Case=Com"]];
+        $this->assertEquals($expected, $result);
     }
 
     public function testGetGramsetsByWordVepAnimateNoun()
     {
         $word = "Vellenke";
-        $lemma_obj = Lemma::find(24); 
+        $lemma_obj = Lemma::find(24);
         $result = $lemma_obj->getGramsetsByWord($word);
-        
+
         $expected = [14];
-        $this->assertEquals( $expected, $result);        
+        $this->assertEquals($expected, $result);
     }
-    
+
     public function testGetBaseVocalPl()
     {
         $lemma_id = 26420;
@@ -75,33 +75,33 @@ class LemmaTest extends TestCase
         $base_n = 1;
         $dialect_id = 43;
         $result = $lemma->getBase($base_n, $dialect_id);
-        
+
         $expected = null;
-        $this->assertEquals( $expected, $result);        
+        $this->assertEquals($expected, $result);
     }
-    
+
     public function testGetStemAffix()
     {
         $lemma_id = 29586;
         $lemma = Lemma::find($lemma_id);
 
         $result = $lemma->getStemAffix();
-        
-        $expected = ['Anu','s'];
-        $this->assertEquals( $expected, $result);        
+
+        $expected = ['Anu', 's'];
+        $this->assertEquals($expected, $result);
     }
-    
+
     public function testDialectIds()
     {
         $lemma_id = 17;
         $lemma = Lemma::find($lemma_id);
         $result = $lemma->dialectIds();
-        
-        $expected = [1,3,4,5];
-        $this->assertEquals( $expected, $result);        
+
+        $expected = [1, 3, 4, 5];
+        $this->assertEquals($expected, $result);
     }
-    
-/* 
+
+    /* 
     public function testWordformTerminativ()
     {
         $lemma_id = 21531;
@@ -114,5 +114,5 @@ class LemmaTest extends TestCase
         $expected = 'Amerikahasai, Amerikalesai';
         $this->assertEquals( $expected, $result);        
     }
-*/    
+*/
 }

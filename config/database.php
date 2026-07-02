@@ -46,10 +46,11 @@ return [
 
     'connections' => [
 
-        'sqlite' => [
+        'sqlite_testing' => [
             'driver' => 'sqlite',
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => ':memory:',
             'prefix' => '',
+            'foreign_key_constraints' => true,
         ],
 
         'mysql' => [
@@ -61,12 +62,12 @@ return [
             'password' => env('DB_PASSWORD'),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-//            'collation' => 'utf8_bin',
+            //            'collation' => 'utf8_bin',
             'prefix' => '',
             'strict' => false,
             'engine' => null,
         ],
-        
+
         'mysql-collation' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
@@ -80,7 +81,7 @@ return [
             'strict' => false,
             'engine' => null,
         ],
-        
+
         'topkar' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
@@ -90,12 +91,12 @@ return [
             'password' => env('DB_PASSWORD'),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-//            'collation' => 'utf8_bin',
+            //            'collation' => 'utf8_bin',
             'prefix' => '',
             'strict' => false,
             'engine' => null,
         ],
-        
+
         // temp database to copy data to vepkar
         'vepsian' => [
             'driver' => 'mysql',

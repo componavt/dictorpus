@@ -18,6 +18,7 @@ use App\Models\Dict\PartOfSpeech;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Sentence;
+use App\Models\Corpus\Putype;
 use App\Models\Corpus\Text;
 
 trait SentenceSearch
@@ -146,18 +147,28 @@ trait SentenceSearch
     public static function preparedWordsForSearch($words)
     {
         $out = [];
-        //dd($words);        
+
         foreach ($words as $i => $word) {
-            if ((!isset($word['w']) || !$word['w']) && (!isset($word['p']) || !$word['p']) && (!isset($word['g']) || !$word['g']) && (!isset($word['gs']) || !$word['gs'])) {
+            if ((!isset($word['w']) || !$word['w'])
+                && (!isset($word['p']) || !$word['p'])
+                && (!isset($word['g']) || !$word['g'])
+                && (!isset($word['gs']) || !$word['gs'])
+            ) {
                 break;
             }
-            //            $out[$i]['w'] = Grammatic::toSearchForm($word['w']);
-            $out[$i]['w'] = $out[$i]['l']  = $out[$i]['gs'] = null;
-            $out[$i]['p'] = $out[$i]['g'] = [];
+
+            $out[$i]['w']  = $out[$i]['l']  = $out[$i]['gs'] = null;
+            $out[$i]['p']  = $out[$i]['g']  = [];
+            $out[$i]['pb'] = [];
+            $out[$i]['pa'] = [];
+            $out[$i]['bt_mode']  = 'ignore';
+            $out[$i]['bt_types'] = [];
+
+            // ---- слово/часть речи/грампризнаки (как было) ----
 
             if (!empty($word['w'])) {
                 $word['w'] = trim($word['w']);
-                if (preg_match("/^\"(.+)\"$/", $word['w'], $regs)) {
+                if (preg_match('/^\"(.+)\"$/u', $word['w'], $regs)) {
                     $out[$i]['w'] = Grammatic::toSearchByPattern($regs[1]);
                 } else {
                     $out[$i]['l'] = Grammatic::toSearchByPattern($word['w']);
@@ -166,7 +177,6 @@ trait SentenceSearch
 
             foreach (preg_split('/\|/', $word['p']) as $p_code) {
                 $p_id = PartOfSpeech::getIDByCode(trim($p_code));
-                //dd($p_id, $p_code);                
                 if ($p_id) {
                     $out[$i]['p'][] = $p_id;
                 }
@@ -185,13 +195,62 @@ trait SentenceSearch
                 $out[$i]['gs'] = (int)$word['gs'];
             }
 
+            // ---- дистанция как раньше ----
+
             if ($i > 1) {
                 $out[$i]['d_f'] = $word['d_f'] ?? 1;
                 $out[$i]['d_t'] = $word['d_t'] ?? 1;
             }
+
+            // ---- пунктуация перед/после слова ----
+
+            $out[$i]['pb'] = self::normalizePunctField($word['pb'] ?? []);
+            $out[$i]['pa'] = self::normalizePunctField($word['pa'] ?? []);
+
+            // ---- пунктуация между словами (режим + типы; пока только any) ----
+
+            if ($i > 1) {
+                $bt_mode = $word['bt_mode'] ?? 'ignore';
+                if (!in_array($bt_mode, ['ignore', 'require_any', 'forbid_any'], true)) {
+                    $bt_mode = 'ignore';
+                }
+                $out[$i]['bt_mode'] = $bt_mode;
+
+                // на будущее: конкретные типы
+                $out[$i]['bt_types'] = self::normalizePunctField($word['bt'] ?? []);
+            }
         }
-        //dd($out);        
+
         return $out;
+    }
+
+    protected static function normalizePunctField($value): array
+    {
+        if (is_string($value)) {
+            $value = preg_split('/[,|]/u', $value);
+        }
+
+        if (!is_array($value)) {
+            return [];
+        }
+
+        $out = [];
+
+        foreach ($value as $item) {
+            $item = trim((string)$item);
+            if ($item === '') {
+                continue;
+            }
+            // допустим либо 'any', либо slug из putypes
+            if ($item === 'any') {
+                $out[] = 'any';
+                continue;
+            }
+            $out[] = $item;
+        }
+
+        // убираем дубли
+        return array_values(array_unique($out));
     }
 
     public static function searchQueryToString($args)
@@ -204,45 +263,80 @@ trait SentenceSearch
             }
 
             $tmp = [];
+
             if (isset($word['w']) && $word['w']) {
-                $tmp[] = '<i>' . $word['w'] . '</i>';
+                $tmp[] = '<i>' . e($word['w']) . '</i>';
             }
+
             if ($word['p']) {
                 $tmp[] = '(' . join(
                     ' <span class="warning">' . trans('search.or') . '</span> ',
-                    array_map(
-                        function ($code) {
-                            return PartOfSpeech::getNameByCode(trim($code));
-                        },
-                        preg_split('/\|/', $word['p'])
-                    )
+                    array_map(function ($code) {
+                        return PartOfSpeech::getNameByCode(trim($code));
+                    }, preg_split('/\|/', $word['p']))
                 ) . ')';
             }
+
             if (isset($word['g']) && $word['g']) {
                 $groups = [];
                 foreach (preg_split('/\,/', $word['g']) as $gr) {
                     $groups[] = '(' . join(
                         ' <span class="warning">' . trans('search.or') . '</span> ',
-                        array_map(
-                            function ($code) {
-                                return Gram::getNameByCode(trim($code));
-                            },
-                            preg_split('/\|/', $gr)
-                        )
+                        array_map(function ($code) {
+                            return Gram::getNameByCode(trim($code));
+                        }, preg_split('/\|/', $gr))
                     ) . ')';
                 }
                 $tmp[] = '(' . join(' <span class="warning">' . trans('search.and') . '</span> ', $groups) . ')';
             }
+
             if (isset($word['gs']) && $word['gs']) {
                 $tmp[] = Gramset::getStringByID($word['gs']);
             }
 
-            $out[] = //'<br>'.
+            // ---- добавим краткое описание пунктуации ----
+            if (!empty($word['pb'])) {
+                $tmp[] = trans('search.punct_before') . ': ' . self::punctListToString($word['pb']);
+            }
+
+            if (!empty($word['pa'])) {
+                $tmp[] = trans('search.punct_after') . ': ' . self::punctListToString($word['pa']);
+            }
+
+            if (isset($word['bt_mode']) && $word['bt_mode'] && $i > 1) {
+                $tmp[] = self::betweenModeToString($word['bt_mode']);
+            }
+
+            $out[] =
                 (isset($word['d_f']) && isset($word['d_t'])
                     ? trans('search.in_distance', ['from' => $word['d_f'], 'to' => $word['d_t']]) : '')
-                . ' <b>' . trans('corpus.word') . " $i</b>: " . join(' <span class="warning">' . trans('search.and') . '</span> ', $tmp);
+                . ' <b>' . trans('corpus.word') . " $i</b>: "
+                . join(' <span class="warning">' . trans('search.and') . '</span> ', $tmp);
         }
+
         return join(' <span class="warning">' . trans('search.and') . '</span><br>', $out);
+    }
+
+    protected static function punctListToString(array $slugs): string
+    {
+        if (in_array('any', $slugs, true)) {
+            return trans('search.punct_any');
+        }
+
+        // можно сделать маппинг slug → человекочитаемое имя, сейчас просто slug’и
+        return implode(', ', array_map('e', $slugs));
+    }
+
+    protected static function betweenModeToString(string $mode): string
+    {
+        switch ($mode) {
+            case 'require_any':
+                return trans('search.punct_between_require_any');
+            case 'forbid_any':
+                return trans('search.punct_between_forbid_any');
+            default:
+                return '';
+        }
     }
 
     public static function searchQueryToStringMeta($args)
@@ -574,24 +668,6 @@ AND t1.word_number-t2.word_number<=|B|;
         return false;
     }
 
-    protected static function formatStepSearchResults($results, $word_total)
-    {
-        return $results->map(function ($row) use ($word_total) {
-            $newRow = new \stdClass();
-            $newRow->text1_id = $row->text1_id;
-            $newRow->sentence1_id = $row->sentence1_id;
-
-            for ($i = 1; $i <= $word_total; $i++) {
-                $field = 'w' . $i . '_id';
-
-                if (isset($row->$field)) {
-                    $newRow->$field = $row->$field;
-                }
-            }
-
-            return $newRow;
-        });
-    }
 
     public static function searchWordsBySteps($words, $text_ids = [], $lang_ids = [], $only_checked = false)
     {
@@ -604,19 +680,7 @@ AND t1.word_number-t2.word_number<=|B|;
         }
 
         if ($word_total === 1) {
-            $builder = DB::table('words as t1')
-                ->select(
-                    't1.text_id as text1_id',
-                    't1.sentence_id as sentence1_id',
-                    't1.w_id as w1_id'
-                );
-
-            if ($text_ids) {
-                $builder->whereIn('t1.text_id', $text_ids);
-            }
-
-            $builder = self::searchWordsByWord($builder, 't1.', $words[1], $lang_ids, $only_checked);
-
+            $builder = self::buildWordStepQuery(1, $words[1], $text_ids, $lang_ids, $only_checked);
             $results = collect($builder->limit($limit + 1)->get());
 
             if ($results->count() > $limit) {
@@ -624,22 +688,13 @@ AND t1.word_number-t2.word_number<=|B|;
                 $results = $results->take($limit);
             }
 
-            return ['results' => $results, 'is_limited' => $is_limited];
+            return [
+                'results' => self::formatStepSearchResults($results, $word_total),
+                'is_limited' => $is_limited,
+            ];
         }
 
-        $builder1 = DB::table('words as t1')
-            ->select(
-                't1.text_id as text1_id',
-                't1.sentence_id as sentence1_id',
-                't1.w_id as w1_id',
-                't1.word_number as word_number1'
-            );
-
-        if ($text_ids) {
-            $builder1->whereIn('t1.text_id', $text_ids);
-        }
-
-        $builder1 = self::searchWordsByWord($builder1, 't1.', $words[1], $lang_ids, $only_checked);
+        $builder1 = self::buildWordStepQuery(1, $words[1], $text_ids, $lang_ids, $only_checked);
 
         $pairBuilder = $builder1
             ->join('words as t2', function ($join) use ($words) {
@@ -653,6 +708,7 @@ AND t1.word_number-t2.word_number<=|B|;
             ->select(
                 't1.text_id as text1_id',
                 't1.sentence_id as sentence1_id',
+                't1.s_id as s1_id',
                 't1.w_id as w1_id',
                 't1.word_number as word_number1',
                 't2.w_id as w2_id',
@@ -660,8 +716,13 @@ AND t1.word_number-t2.word_number<=|B|;
             );
 
         $pairBuilder = self::searchWordsByWord($pairBuilder, 't2.', $words[2], $lang_ids, $only_checked);
+        self::applyWordPunctConditions($pairBuilder, 't2', $words[2]);
 
-        $currentResults = collect($pairBuilder->limit($limit + 1)->get());
+        $currentResults = collect($pairBuilder->limit($limit + 1)->get())
+            ->filter(function ($row) use ($words) {
+                return self::checkBetweenPunctByRow($row, 2, $words[2]);
+            })
+            ->values();
 
         if ($currentResults->count() > $limit) {
             $is_limited = true;
@@ -679,22 +740,8 @@ AND t1.word_number-t2.word_number<=|B|;
                 return ['results' => collect([]), 'is_limited' => $is_limited];
             }
 
-            $builderN = DB::table('words as t' . $step)
-                ->whereIn('t' . $step . '.sentence_id', $sentenceIds)
-                ->select(
-                    't' . $step . '.text_id as text1_id',
-                    't' . $step . '.sentence_id as sentence1_id',
-                    't' . $step . '.w_id as w' . $step . '_id',
-                    't' . $step . '.word_number as word_number' . $step
-                );
-
-            $builderN = self::searchWordsByWord(
-                $builderN,
-                't' . $step . '.',
-                $words[$step],
-                $lang_ids,
-                $only_checked
-            );
+            $builderN = self::buildWordStepQuery($step, $words[$step], [], $lang_ids, $only_checked)
+                ->whereIn('t' . $step . '.sentence_id', $sentenceIds);
 
             $stepResults = collect($builderN->get())->groupBy('sentence1_id');
             $nextResults = collect();
@@ -727,6 +774,10 @@ AND t1.word_number-t2.word_number<=|B|;
                     $newRow->$wIdField = $stepRow->$wIdField;
                     $newRow->$wordNumberField = $currWordNumber;
 
+                    if (!self::checkBetweenPunctByRow($newRow, $step, $words[$step])) {
+                        continue;
+                    }
+
                     $nextResults->push($newRow);
 
                     if ($nextResults->count() > $limit) {
@@ -747,6 +798,79 @@ AND t1.word_number-t2.word_number<=|B|;
             'results' => self::formatStepSearchResults($currentResults, $word_total),
             'is_limited' => $is_limited
         ];
+    }
+
+    protected static function buildWordStepQuery($step, $word, $text_ids = [], $lang_ids = [], $only_checked = false)
+    {
+        $alias = 't' . $step;
+
+        $builder = DB::table('words as ' . $alias)
+            ->select(
+                $alias . '.text_id as text1_id',
+                $alias . '.sentence_id as sentence1_id',
+                $alias . '.s_id as s1_id',
+                $alias . '.w_id as w' . $step . '_id',
+                $alias . '.word_number as word_number' . $step
+            );
+
+        if ($step === 1 && $text_ids) {
+            $builder->whereIn($alias . '.text_id', $text_ids);
+        }
+
+        $builder = self::searchWordsByWord($builder, $alias . '.', $word, $lang_ids, $only_checked);
+        self::applyWordPunctConditions($builder, $alias, $word);
+
+        return $builder;
+    }
+
+    public static function checkBetweenPunctByRow($row, int $step, array $word): bool
+    {
+        $mode = $word['bt_mode'] ?? 'ignore';
+
+        if ($mode === 'ignore') {
+            return true;
+        }
+
+        $prevField = 'word_number' . ($step - 1);
+        $currField = 'word_number' . $step;
+
+        if (!isset($row->$prevField) || !isset($row->$currField) || !isset($row->s1_id)) {
+            return true;
+        }
+
+        $left = min($row->$prevField, $row->$currField);
+        $right = max($row->$prevField, $row->$currField);
+
+        if ($left === $right) {
+            return $mode !== 'require_any';
+        }
+
+        $typeIds = self::putypeIdsBySlugs($word['bt_types'] ?? []);
+
+        $query = DB::table('puncts')
+            ->join('words', function ($join) {
+                $join->on('words.w_id', '=', 'puncts.left_w_id')
+                    ->on('words.text_id', '=', 'puncts.text_id');
+            })
+            ->where('puncts.s_id', $row->s1_id)
+            ->where('words.word_number', '>=', $left)
+            ->where('words.word_number', '<', $right);
+
+        if ($typeIds) {
+            $query->whereIn('puncts.putype_id', $typeIds);
+        }
+
+        $exists = $query->exists();
+
+        if ($mode === 'require_any') {
+            return $exists;
+        }
+
+        if ($mode === 'forbid_any') {
+            return !$exists;
+        }
+
+        return true;
     }
 
     /**
@@ -837,5 +961,132 @@ AND t1.word_number-t2.word_number<=|B|;
         $builder = self::searchWordsByWord($builder, 't' . $word_total . '.', $words[$word_total], $lang_ids);
 
         return $builder;
+    }
+
+    protected static function putypeIdsBySlugs(array $slugs): array
+    {
+        $slugs = array_filter($slugs, fn($s) => $s !== 'any');
+        if (!$slugs) {
+            return [];
+        }
+
+        return Putype::whereIn('slug', $slugs)->pluck('id')->all();
+    }
+
+    protected static function applyWordPunctConditions(
+        \Illuminate\Database\Query\Builder $query,
+        string $alias,
+        array $word
+    ): void {
+        if (!empty($word['pb'])) {
+            self::applyWordBeforePunctCondition($query, $alias, $word['pb']);
+        }
+
+        if (!empty($word['pa'])) {
+            self::applyWordAfterPunctCondition($query, $alias, $word['pa']);
+        }
+    }
+
+    protected static function applyWordBeforePunctCondition(
+        \Illuminate\Database\Query\Builder $query,
+        string $alias,
+        array $pb
+    ): void {
+        $any = in_array('any', $pb, true);
+        $typeIds = self::putypeIdsBySlugs($pb);
+
+        $query->whereExists(function ($q) use ($alias, $any, $typeIds) {
+            $q->from('puncts')
+                ->whereColumn('puncts.s_id', $alias . '.s_id')
+                ->whereColumn('puncts.right_w_id', $alias . '.w_id');
+
+            if (!$any && $typeIds) {
+                $q->whereIn('puncts.putype_id', $typeIds);
+            }
+        });
+    }
+
+    protected static function applyWordAfterPunctCondition(
+        \Illuminate\Database\Query\Builder $query,
+        string $alias,
+        array $pa
+    ): void {
+        $any = in_array('any', $pa, true);
+        $typeIds = self::putypeIdsBySlugs($pa);
+
+        $query->whereExists(function ($q) use ($alias, $any, $typeIds) {
+            $q->from('puncts')
+                ->whereColumn('puncts.s_id', $alias . '.s_id')
+                ->whereColumn('puncts.left_w_id', $alias . '.w_id');
+
+            if (!$any && $typeIds) {
+                $q->whereIn('puncts.putype_id', $typeIds);
+            }
+        });
+    }
+
+    protected static function applyBetweenPunctCondition(
+        \Illuminate\Database\Query\Builder $query,
+        string $prevAlias,  // t1
+        string $currAlias,  // t2
+        array $word         // word[i] с bt_mode/bt_types
+    ): void {
+        $mode = $word['bt_mode'] ?? 'ignore';
+        if ($mode === 'ignore') {
+            return;
+        }
+
+        $typeIds = self::putypeIdsBySlugs($word['bt_types'] ?? []);
+
+        if ($mode === 'require_any') {
+            self::applyBetweenRequireAny($query, $prevAlias, $currAlias, $typeIds);
+            return;
+        }
+
+        if ($mode === 'forbid_any') {
+            self::applyBetweenForbidAny($query, $prevAlias, $currAlias, $typeIds);
+        }
+    }
+
+    protected static function applyBetweenRequireAny(
+        \Illuminate\Database\Query\Builder $query,
+        string $prevAlias,
+        string $currAlias,
+        array $typeIds
+    ): void {
+        $query->whereExists(function ($q) use ($prevAlias, $currAlias, $typeIds) {
+            $q->from('puncts')
+                ->join('words', 'words.id', '=', 'puncts.left_w_id')
+                // тот же s_id
+                ->whereColumn('puncts.s_id', $prevAlias . '.s_id')
+                ->whereColumn('words.s_id', $prevAlias . '.s_id')
+                // left_w_id лежит между word_number предыдущего и текущего слова
+                ->whereColumn('words.word_number', '>=', $prevAlias . '.word_number')
+                ->whereColumn('words.word_number', '<',  $currAlias . '.word_number');
+
+            if ($typeIds) {
+                $q->whereIn('puncts.putype_id', $typeIds);
+            }
+        });
+    }
+
+    protected static function applyBetweenForbidAny(
+        \Illuminate\Database\Query\Builder $query,
+        string $prevAlias,
+        string $currAlias,
+        array $typeIds
+    ): void {
+        $query->whereNotExists(function ($q) use ($prevAlias, $currAlias, $typeIds) {
+            $q->from('puncts')
+                ->join('words', 'words.id', '=', 'puncts.left_w_id')
+                ->whereColumn('puncts.s_id', $prevAlias . '.s_id')
+                ->whereColumn('words.s_id', $prevAlias . '.s_id')
+                ->whereColumn('words.word_number', '>=', $prevAlias . '.word_number')
+                ->whereColumn('words.word_number', '<',  $currAlias . '.word_number');
+
+            if ($typeIds) {
+                $q->whereIn('puncts.putype_id', $typeIds);
+            }
+        });
     }
 }
