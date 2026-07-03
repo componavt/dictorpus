@@ -434,7 +434,7 @@ trait LemmaModify
             = Grammatic::parseLemmaField($data);
         //dd($gramset_wordforms);        
         $lemma = self::store($data['lemma'], $data['pos_id'], $data['lang_id']);
-        $lemma->is_norm = $data['is_norm'] != 1 ? 0 : 1;
+        $lemma->is_norm = isset($data['is_norm']) && $data['is_norm'] != 1 ? 0 : 1;
         $lemma->save();
 
         $lemma->storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'], $stems);
