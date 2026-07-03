@@ -16,6 +16,15 @@ return [
     'advanced_search' => 'Advanced Search',
     'and' => 'AND',
     'author_or_trans' => 'Author',
+
+    'between_words_n' => 'Conditions between word :n1 and word :n2',
+    'bt_ignore' => 'Ignore punctuation marks',
+    'bt_require_any' => 'There must be a punctuation mark between words',
+    'bt_forbid_any' => 'There must be no punctuation marks between words',
+    'bt_help' => 'Specify whether to include punctuation marks between adjacent words.',
+    'putypes' => 'Which punctuation marks to include',
+    'bt_types_help' => "If you don't select anything, any punctuation mark will be included.",
+
     'choose_gram' => 'Choose grammatical attributes',
     'choose_pos' => 'Choose a part of speech',
     'd_f' => 'from',
@@ -33,11 +42,13 @@ return [
     'or' => 'OR',
     'other_search' => 'You can use other types of search',
 
-    'punct_before' => 'punctuation before the word',
-    'punct_after' => 'punctuation after the word',
+    'punct_after' => 'punctuation after a word',
     'punct_any' => 'any punctuation mark',
-    'punct_between_require_any' => 'there must be at least one punctuation mark between the words',
-    'punct_between_forbid_any' => 'there must be no punctuation marks between the words',
+    'punct_before' => 'punctuation before a word',
+    'punct_between' => 'Punctuation between words',
+    'punct_between_require_any' => 'there must be at least one punctuation mark between words',
+    'punct_between_forbid_any' => 'there must be no punctuation marks between words',
+    'putypes' => 'punctuation mark types',
 
     'regex_title' => 'Templates (Regex and custom) are allowed in the field. You can use the following notation:',
     'regex_begin' => 'beginning of string',

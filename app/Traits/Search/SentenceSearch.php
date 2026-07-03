@@ -5,6 +5,7 @@ namespace App\Traits\Search;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Library\Grammatic;
 use App\Library\Str;
@@ -43,6 +44,16 @@ trait SentenceSearch
         if (!isset($url_args['search_words'][1]['p'])) {
             $url_args['search_words'][1]['p'] = '';
         }
+
+        foreach ($url_args['search_words'] as $i => $word) {
+            if (!isset($url_args['search_words'][$i]['bt_mode']) || !$url_args['search_words'][$i]['bt_mode']) {
+                $url_args['search_words'][$i]['bt_mode'] = 'ignore';
+            }
+            if (!isset($url_args['search_words'][$i]['bt_types']) || !is_array($url_args['search_words'][$i]['bt_types'])) {
+                $url_args['search_words'][$i]['bt_types'] = [];
+            }
+        }
+
         $last_word = $url_args['search_words'][sizeof($url_args['search_words'])];
         if (
             sizeof($url_args['search_words']) > 1 && (!isset($last_word['w']) || !$last_word['w'])
@@ -51,6 +62,7 @@ trait SentenceSearch
         ) {
             unset($url_args['search_words'][sizeof($url_args['search_words'])]);
         }
+
         return $url_args;
     }
 
@@ -305,6 +317,14 @@ trait SentenceSearch
 
             if (isset($word['bt_mode']) && $word['bt_mode'] && $i > 1) {
                 $tmp[] = self::betweenModeToString($word['bt_mode']);
+            }
+
+            if (!empty($word['bt_types']) && is_array($word['bt_types']) && $i > 1) {
+                $putypes = Putype::whereIn('slug', $word['bt_types'])->pluck('name_' . LaravelLocalization::getCurrentLocale(), 'slug')->toArray();
+
+                if (!empty($putypes)) {
+                    $tmp[] = trans('search.putypes') . ': ' . join(', ', $putypes);
+                }
             }
 
             $out[] =
@@ -798,6 +818,30 @@ AND t1.word_number-t2.word_number<=|B|;
             'results' => self::formatStepSearchResults($currentResults, $word_total),
             'is_limited' => $is_limited
         ];
+    }
+
+    protected static function formatStepSearchResults($results, int $word_total)
+    {
+        return $results->map(function ($row) use ($word_total) {
+            $item = [
+                'text_id' => $row->text1_id,
+                'sentence_id' => $row->sentence1_id,
+                's_id' => $row->s1_id ?? null,
+                'words' => [],
+            ];
+
+            for ($step = 1; $step <= $word_total; $step++) {
+                $wIdField = 'w' . $step . '_id';
+                $wordNumberField = 'word_number' . $step;
+
+                $item['words'][] = [
+                    'w_id' => $row->$wIdField ?? null,
+                    'word_number' => $row->$wordNumberField ?? null,
+                ];
+            }
+
+            return $item;
+        })->values();
     }
 
     protected static function buildWordStepQuery($step, $word, $text_ids = [], $lang_ids = [], $only_checked = false)

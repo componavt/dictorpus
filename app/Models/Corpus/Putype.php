@@ -11,4 +11,9 @@ class Putype extends Model
 
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Puncts;
+
+    // Methods
+    use \App\Traits\Methods\getList;
+    use \App\Traits\Methods\getModelName;
+    use \App\Traits\Methods\getNameAttribute;
 }

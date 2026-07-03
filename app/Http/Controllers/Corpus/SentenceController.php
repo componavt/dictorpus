@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Genre;
+use App\Models\Corpus\Putype;
 use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Text;
 
@@ -55,6 +56,7 @@ class SentenceController extends Controller
         $genre_values = Genre::getList();
         $pos_values = PartOfSpeech::getListForCorpus();
         $gram_values = Gram::getListForCorpus();
+        $putype_values = Putype::getList();
         //dd($gram_values);        
         return view(
             'corpus.sentence.index',
@@ -65,6 +67,7 @@ class SentenceController extends Controller
                 'gram_values',
                 'lang_values',
                 'pos_values',
+                'putype_values',
                 'args_by_get',
                 'url_args'
             )
@@ -99,7 +102,7 @@ class SentenceController extends Controller
                 $all_sentences = $sentences;
 
                 // Извлекаем уникальные ID текстов
-                $text_ids = $all_sentences->pluck('text1_id')->unique();
+                $text_ids = $all_sentences->pluck('text_id')->unique();
                 $texts = Text::whereIn('id', $text_ids);
                 $numAll = $texts->count();
                 //dd($numAll);
@@ -108,8 +111,9 @@ class SentenceController extends Controller
 
                 // Группируем предложения по ID текста для эффективной фильтрации
                 $sentences_by_text = [];
+
                 foreach ($all_sentences as $sentence) {
-                    $text_id = $sentence->text1_id;
+                    $text_id = $sentence['text_id'];
                     if (!isset($sentences_by_text[$text_id])) {
                         $sentences_by_text[$text_id] = [];
                     }
@@ -124,14 +128,14 @@ class SentenceController extends Controller
                         continue;
                     }
                     foreach ($sentences_by_text[$text->id] as $sentence) {
-                        $sentence_id = $sentence->sentence1_id;
+                        $sentence_id = $sentence['sentence_id'];
 
                         if (!isset($text_sentences[$text->id]['sentences'][$sentence_id])) {
                             $text_sentences[$text->id]['sentences'][$sentence_id] = Sentence::find($sentence_id);
                         }
 
-                        for ($i = 1; $i <= sizeof($url_args['words']); $i++) {
-                            $text_sentences[$text->id]['words'][] = $sentence->{'w' . $i . '_id'};
+                        for ($i = 0; $i < sizeof($url_args['words']); $i++) {
+                            $text_sentences[$text->id]['words'][] = $sentence['words'][$i]['w_id'];
                         }
                     }
                 }
