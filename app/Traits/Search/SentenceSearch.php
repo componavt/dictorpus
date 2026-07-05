@@ -1028,7 +1028,9 @@ AND t1.word_number-t2.word_number<=|B|;
 
     protected static function putypeIdsBySlugs(array $slugs): array
     {
-        $slugs = array_filter($slugs, fn($s) => $s !== 'any');
+        $slugs = array_filter($slugs, function ($s) {
+            return $s !== 'any';
+        });
         if (!$slugs) {
             return [];
         }
