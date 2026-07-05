@@ -91,16 +91,6 @@ trait TextMarkup
      */
     public function markup()
     {
-        DB::listen(function ($query) {
-            if ($query->time >= 20) {
-                \Log::info('SLOW SQL', [
-                    'sql' => $query->sql,
-                    'bindings' => $query->bindings,
-                    'time_ms' => $query->time,
-                ]);
-            }
-        });
-
         ini_set('max_execution_time', 7200);
         ini_set('memory_limit', '512M');
         $ts = microtime(true);

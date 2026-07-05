@@ -83,6 +83,7 @@ class SentenceController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+//dd($url_args['search_words']);        
         $script_start = microtime(true);
 
         $url_args['words'] = Sentence::preparedWordsForSearch($url_args['search_words']);

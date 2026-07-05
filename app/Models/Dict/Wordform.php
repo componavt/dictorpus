@@ -190,11 +190,13 @@ class Wordform extends Model
             return null;
         }
         $this->trimWord(); // remove extra spaces at the beginning and end of the wordform 
-        $query = "select text_id, s_id, w_id, words.id as word_id from words where"
-            . " text_id in (select id from texts where lang_id = " . $lang_id
-            . ") and word like '" . Grammatic::changeLetters($this->wordform, $lang_id) . "'";
-        $words = DB::select($query);
-        return $words;
+        
+        return DB::connection('mysql')->table('words')
+            ->join('texts', 'texts.id', '=', 'words.text_id')
+            ->where('texts.lang_id', $lang_id)
+            ->where('words.word', Grammatic::changeLetters($this->wordform, $lang_id))
+            ->select('words.text_id', 'words.w_id', 'words.id as word_id')
+            ->get();
     }
 
     /**
@@ -243,22 +245,35 @@ dd($relevance);
      * @param Collection $words - collection of Word objects
      * @return NULL
      */
-    public function addTextLinks($words = null, $lang_id)
+    public function addTextLinks($words = null, $lang_id = null)
     {
         if (!$this->pivot->gramset_id) {
             return;
         }
+        
+        $lang_id = $lang_id ?: $this->pivot->lang_id;
 
-        if (!$words) {
+        if ($words === null) {
             $words = $this->getWordsForLinks($lang_id);
         }
         if (!$words) {
             return;
         }
 
+        $rows = [];
         foreach ($words as $word) {
-            $this->addTextLink($word->text_id, $word->w_id, $this->pivot->gramset_id, 1);
+            $rows[] = [
+                'text_id' => $word->text_id,
+                'w_id' => $word->w_id,
+                'wordform_id' => $this->id,
+                'gramset_id' => $this->pivot->gramset_id,
+                'word_id' => $word->word_id,
+                'relevance' => 1,
+            ];
         }
+
+        // Один bulk INSERT вместо N отдельных addTextLink()
+        DB::connection('mysql')->table('text_wordform')->insert($rows);
     }
 
     /**
@@ -269,30 +284,61 @@ dd($relevance);
      * @param Collection $words - collection of Word objects
      * @return NULL
      */
-    public function updateTextLinks($words = null)
+    public function updateTextLinks($words = null, $lang_id = null)
     {
         if (!$this->pivot->gramset_id) {
             return;
         }
-        if (!$this->lemma) {
-            return;
-        }
-        if (!$words) {
-            $words = $this->getWordsForLinks($this->lemma->lang_id);
+        
+        $lang_id = $lang_id ?: $this->pivot->lang_id;
+        
+        if ($words === null) {
+            $words = $this->getWordsForLinks($lang_id);
         }
 
         $old_relevances = $this->getRelevances();
-        $this->texts()->detach();
+
         if (!$words) {
+            DB::connection('mysql')->table('text_wordform')
+                ->where('wordform_id', $this->id)
+                ->where('gramset_id', $this->pivot->gramset_id)
+                ->delete();
             return;
         }
 
+        $rows = [];
+        $newPairs = [];
         foreach ($words as $word) {
-            $this->addTextLink(
-                $word->text_id,
-                $word->w_id,
-                $this->pivot->gramset_id,
-                $old_relevances[$word->text_id][$word->w_id] ?? 1
+            $newPairs[] = [$word->text_id, $word->w_id];
+
+            $relevance = isset($old_relevances[$word->text_id][$word->w_id])
+                ? $old_relevances[$word->text_id][$word->w_id]
+                : 1;
+
+            $rows[] = [$word->text_id, $word->w_id, $this->id, $this->pivot->gramset_id, $word->word_id, $relevance];
+        }
+
+        // Удаляем только устаревшие пары (text_id, w_id), которых больше нет в новом наборе
+        $query = DB::connection('mysql')->table('text_wordform')
+            ->where('wordform_id', $this->id)
+            ->where('gramset_id', $this->pivot->gramset_id);
+
+        foreach ($newPairs as $pair) {
+            $query->where(function ($q) use ($pair) {
+                $q->where('text_id', '!=', $pair[0])
+                  ->orWhere('w_id', '!=', $pair[1]);
+            });
+        }
+        $query->delete();
+
+        // Bulk upsert по составному PRIMARY KEY (text_id, w_id, wordform_id, gramset_id)
+        foreach ($rows as $row) {
+            DB::connection('mysql')->statement(
+                "INSERT INTO text_wordform
+                    (text_id, w_id, wordform_id, gramset_id, word_id, relevance)
+                 VALUES (?, ?, ?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE relevance = VALUES(relevance), word_id = VALUES(word_id)",
+                $row
             );
         }
     }

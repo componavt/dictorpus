@@ -50,6 +50,7 @@ function addSentenceWordsFields(el) {
     el.style.display='none';
     $("#distance"+count+' input').prop( "disabled", false );
     $("#distance"+count).show();
+    $('#between-punct-row-' + count).show();
 }
 
 function callChoosePOS(el) {

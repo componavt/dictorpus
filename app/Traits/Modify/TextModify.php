@@ -573,13 +573,6 @@ trait TextModify
             ];
         }
 
-        \Log::info('meaning_text debug words', [
-            'text_id' => $text_id,
-            's_id' => $s_id,
-            'xml_words_count' => count($xml_words),
-            'words_count' => count($word_for_search_by_w_id),
-        ]);
-
         if (!$words_for_search) {
             return;
         }
@@ -690,18 +683,6 @@ trait TextModify
                 }
             }
         }
-
-        \Log::info('meaning_text debug', [
-            'text_id' => $text_id,
-            's_id' => $s_id,
-            'lang_id' => $lang_id,
-            'words_count' => count($word_for_search_by_w_id),
-            'word_rows_count' => count($word_rows),
-            'lemma_rows_count' => count($lemma_rows),
-            'lemma_ids_count' => count($lemma_ids),
-            'meaning_rows_count' => count($meaning_rows),
-            'meaning_text_rows_count' => count($meaning_text_rows),
-        ]);
 
         if ($meaning_text_rows) {
             DB::table('meaning_text')->insert($meaning_text_rows);

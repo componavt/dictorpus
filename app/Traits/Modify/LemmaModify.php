@@ -189,18 +189,42 @@ trait LemmaModify
         if (!$dialect_id) {
             $dialect_id = Lang::mainDialectByID($this->lang_id);
         }
-        //dd($dialect_id, $wordforms);        
-        foreach ($wordforms as $gramset_id => $wordform) {
-            $wordform_exists = $this->wordforms()
-                ->wherePivot('gramset_id', $gramset_id)
-                ->wherePivot('dialect_id', $dialect_id)
-                ->get()->pluck('wordform')->toArray();
-            foreach ((array)$wordform as $w) {
-                if (!in_array($w, $wordform_exists)) {
-                    $this->addWordforms($wordform, $gramset_id, $dialect_id);
+        
+        // Один запрос вместо N: тянем все существующие пары gramset_id/wordform сразу
+        $rows = DB::connection('mysql')->table('lemma_wordform')
+            ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
+            ->where('lemma_wordform.lemma_id', $this->id)
+            ->where('lemma_wordform.dialect_id', $dialect_id)
+            ->whereIn('lemma_wordform.gramset_id', array_keys($wordforms))
+            ->select('lemma_wordform.gramset_id', 'wordforms.wordform')
+            ->get();
+
+        $existing = [];
+        foreach ($rows as $row) {
+            $existing[$row->gramset_id][] = $row->wordform;
+        }
+
+        DB::connection('mysql')->transaction(function () use ($wordforms, $dialect_id, &$existing) {
+            foreach ($wordforms as $gramset_id => $wordform) {
+                $trim_words = trim((string) $wordform);
+                if ($trim_words === '') {
+                    continue;
+                }
+
+                if (!isset($existing[$gramset_id])) {
+                    $existing[$gramset_id] = [];
+                }
+
+                foreach (preg_split("/[\/,]/", $trim_words) as $word) {
+                    $word = trim($word);
+                    if ($word === '' || in_array($word, $existing[$gramset_id], true)) {
+                        continue;
+                    }
+                    $this->addWordform($word, $gramset_id, $dialect_id);
+                    $existing[$gramset_id][] = $word;
                 }
             }
-        }
+        });
     }
 
     public function createDictionaryWordforms($wordforms, $number = NULL, $dialect_id = NULL)
@@ -247,16 +271,57 @@ trait LemmaModify
     public function updateTextWordformLinks()
     {
         $lang_id = $this->lang_id;
-        foreach ($this->wordforms as $wordform_obj) {
-            $words = $wordform_obj->getWordsForLinks($this->lang_id);
-            //dd($words);            
-            if (!$wordform_obj->texts()->whereLangId($lang_id)
-                ->wherePivot('gramset_id', $wordform_obj->pivot->gramset_id)->count()) {
-                $wordform_obj->addTextLinks($words, $this->lang_id);
-            } else {
-                $wordform_obj->updateTextLinks($words, $this->lang_id);
-            }
+
+        if ($this->wordforms->isEmpty()) {
+            return;
         }
+
+        $searchMap = [];
+        foreach ($this->wordforms as $wordform_obj) {
+            $wordform_obj->trimWord();
+            $search = Grammatic::changeLetters($wordform_obj->wordform, $lang_id);
+            $searchMap[$search][] = $wordform_obj;
+        }
+
+        $searchStrings = array_keys($searchMap);
+        $allWords = DB::connection('mysql')->table('words')
+            ->join('texts', 'texts.id', '=', 'words.text_id')
+            ->where('texts.lang_id', $lang_id)
+            ->whereIn('words.word', $searchStrings)
+            ->select('words.word', 'words.text_id', 'words.w_id', 'words.id as word_id')
+            ->get();
+
+        $wordsByString = [];
+        foreach ($allWords as $row) {
+            $wordsByString[$row->word][] = $row;
+        }
+
+        $wordformIds = $this->wordforms->pluck('id')->all();
+        $existing = DB::connection('mysql')->table('text_wordform')
+            ->whereIn('wordform_id', $wordformIds)
+            ->select('wordform_id', 'gramset_id')
+            ->distinct()
+            ->get();
+
+        $existingKeys = [];
+        foreach ($existing as $row) {
+            $existingKeys[$row->wordform_id . '_' . $row->gramset_id] = true;
+        }
+
+        DB::connection('mysql')->transaction(function () use ($searchMap, $wordsByString, $existingKeys, $lang_id) {
+            foreach ($searchMap as $search => $wordform_objs) {
+                $words = isset($wordsByString[$search]) ? $wordsByString[$search] : null;
+
+                foreach ($wordform_objs as $wordform_obj) {
+                    $key = $wordform_obj->id . '_' . $wordform_obj->pivot->gramset_id;
+                    if (isset($existingKeys[$key])) {
+                        $wordform_obj->updateTextLinks($words, $lang_id);
+                    } else {
+                        $wordform_obj->addTextLinks($words, $lang_id);
+                    }
+                }
+            }
+        });
     }
 
     public function createReverseLemma($stem = NULL, $affix = NULL)
@@ -297,8 +362,11 @@ trait LemmaModify
 
         $wordform_obj = Wordform::findOrCreate($trim_word);
         //TODO: лишнее поле, удалить        
-        $wordform_obj->wordform_for_search = Grammatic::toSearchForm($trim_word);
-        $wordform_obj->save();
+        $search_form = Grammatic::toSearchForm($trim_word);
+        if ($wordform_obj->wordform_for_search !== $search_form) {
+            $wordform_obj->wordform_for_search = $search_form;
+            $wordform_obj->save();
+        }
 
         $affix = $gramset_id ? $this->affixForWordform($wordform_obj->wordform) : NULL;
 
@@ -307,21 +375,34 @@ trait LemmaModify
 
     public function addWordformGramsetDialect($wordform_obj, $gramset_id, $dialect_id, $affix)
     {
-        DB::connection('mysql')->table('lemma_wordform')->whereLemmaId($this->id)
-            ->whereWordformId($wordform_obj->id)->whereNull('dialect_id')
-            ->whereNull('gramset_id')->delete();
+        // Чистим "неопределённые" связи (gramset_id/dialect_id = NULL) для этой пары lemma/wordform
+        DB::connection('mysql')->table('lemma_wordform')
+            ->where('lemma_id', $this->id)
+            ->where('wordform_id', $wordform_obj->id)
+            ->whereNull('dialect_id')
+            ->whereNull('gramset_id')
+            ->delete();
 
-        if ($this->isExistWordforms($gramset_id, $dialect_id, $wordform_obj->id)) {
-            return;
-        }
-        $this->wordforms()->attach(
-            $wordform_obj->id,
+        $wordform_for_search = Grammatic::changeLetters($wordform_obj->wordform, $this->lang_id);
+
+        // Настоящий bulk-safe upsert через сырой SQL,
+        // т.к. Query Builder в Laravel 5.2 не поддерживает upsert()
+        DB::connection('mysql')->statement(
+            "INSERT INTO lemma_wordform
+                (lemma_id, wordform_id, gramset_id, dialect_id, affix, lang_id, wordform_for_search)
+             VALUES (?, ?, ?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE
+                affix = VALUES(affix),
+                lang_id = VALUES(lang_id),
+                wordform_for_search = VALUES(wordform_for_search)",
             [
-                'gramset_id' => $gramset_id,
-                'dialect_id' => $dialect_id,
-                'affix' => $affix,
-                'lang_id' => $this->lang_id,
-                'wordform_for_search' => Grammatic::changeLetters($wordform_obj->wordform, $this->lang_id)
+                $this->id,
+                $wordform_obj->id,
+                $gramset_id,
+                $dialect_id,
+                $affix,
+                $this->lang_id,
+                $wordform_for_search,
             ]
         );
     }
@@ -493,18 +574,18 @@ trait LemmaModify
         }
         foreach ($wordforms as $gramset_id => $wordform_dialect) {
             $gramset_id = (!(int)$gramset_id) ? NULL : (int)$gramset_id;
-            foreach ($wordform_dialect as $old_dialect_id => $wordform_texts) {
+            foreach ($wordform_dialect as $old_dialect_id => $text_wordforms) {
                 $old_dialect_id = (!(int)$old_dialect_id) ? NULL : (int)$old_dialect_id;
                 $this->deleteWordforms($gramset_id, $old_dialect_id);
 
                 if (isset($dialects[$gramset_id]) && $dialects[$gramset_id] == 'all') {
                     foreach (Dialect::getByLang($this->lang_id) as $dialect) {
-                        $this->addWordforms($wordform_texts, $gramset_id, $dialect->id);
+                        $this->addWordforms($text_wordforms, $gramset_id, $dialect->id);
                     }
                 } else {
                     $dialect_id = (isset($dialects[$gramset_id]) && (int)$dialects[$gramset_id])
                         ? (int)$dialects[$gramset_id] : NULL;
-                    $this->addWordforms($wordform_texts, $gramset_id, $dialect_id);
+                    $this->addWordforms($text_wordforms, $gramset_id, $dialect_id);
                 }
             }
         }

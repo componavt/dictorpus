@@ -146,18 +146,18 @@ trait MeaningModify
     {
         foreach ($meanings as $lang => $meaning_text) {
             if ($meaning_text) {
-                $meaning_text_obj = MeaningText::firstOrCreate(['meaning_id' => $meaning_id, 'lang_id' => $lang]);
-                $meaning_text_obj->meaning_text = $meaning_text;
-                $meaning_text_obj->save();
+                MeaningText::updateOrCreate(
+                    ['meaning_id' => $meaning_id, 'lang_id' => $lang],
+                    ['meaning_text' => $meaning_text]
+                );
             } else {
-                // delete if meaning_text exists in DB but it's empty in form
-                $meaning_text_obj = MeaningText::where('meaning_id', $meaning_id)->where('lang_id', $lang)->first();
-                if ($meaning_text_obj) {
-                    $meaning_text_obj->delete();
-                }
+                MeaningText::where('meaning_id', $meaning_id)
+                    ->where('lang_id', $lang)
+                    ->delete(); // без предварительного SELECT
             }
         }
     }
+    
     /**
      * Updates array of meaning relations 
      *

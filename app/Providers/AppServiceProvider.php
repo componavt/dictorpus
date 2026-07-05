@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
@@ -49,21 +50,25 @@ class AppServiceProvider extends ServiceProvider
         $this->app['log']->getMonolog()->pushHandler($handler);
 
 
-        /*        DB::listen(function ($query) {
-            $location = collect(debug_backtrace())->filter(function ($trace) {
-                return isset($trace['file']) && !str_contains($trace['file'], 'vendor/');
-            })->first(); // берем первый элемент не из каталога вендора
-            $bindings = implode(", ", $query->bindings); // форматируем привязку как строку
-            Log::info("
-                   ------------
-                   Sql: $query->sql
-                   Bindings: $bindings
-                   Time: $query->time
-                   File: ${location['file']}
-                   Line: ${location['line']}
-                   ------------
-            ");
-        });*/
+        if (env('LOG_SLOW_QUERIES', false)) {
+            DB::listen(function ($query) {
+                    if ($query->time >= 100) {
+                        \Log::info(sprintf(
+                            "[SLOW %sms] %s | bindings: %s",
+                            $query->time,
+                            $query->sql,
+                            json_encode($query->bindings)
+                        ));
+
+ /*                       // либо через file_put_contents в отдельный файл:
+                        file_put_contents(
+                            storage_path('logs/slow_queries.log'),
+                            date('Y-m-d H:i:s') . " [{$query->time}ms] {$query->sql} | " . json_encode($query->bindings) . PHP_EOL,
+                            FILE_APPEND
+                        );*/
+                    }
+                });
+        }
     }
 
     /**
