@@ -29,45 +29,18 @@
         <i class='add-more add-pos-codes fas fa-plus-circle fa-lg' onClick='callChooseGram(this)' data-for='search_words_{{$count}}__g_'></i>
     </div>
 
-    <div class="col-md-3">
-        <div id="distance{{$count+1}}" class="form-group"{!! !isset($search_words[$count+1]['d_f']) ? ' style="display:none"' : '' !!}>
-            <div style="margin-bottom: 6px;">
-                <label for="search_words[1][g]" style="margin-bottom: 0;">
-                    {{ trans('search.distance') }}
-                </label>
-                <span style="margin-left: 6px;">
-                    <i class="help-icon far fa-question-circle fa-lg" onclick="callHelp('help-distance')"></i>
-                </span>
-            </div>
+    <div class="col-md-2">
+        <div id="distance{{$count+1}}"  class="form-group"{!! !isset($search_words[$count+1]['d_f']) ?  ' style="display:none"' : '' !!}>
+            <label for="search_words[1][g]">{{trans('search.distance')}}&nbsp;</label>
+            <i class="help-icon far fa-question-circle fa-lg" onclick="callHelp('help-distance')"></i>
+            <div style="display: flex">
+                <span>{{trans('search.d_f')}}&nbsp;&nbsp;</span>
+                <input class="form-control" name="search_words[{{$count+1}}][d_f]" type="text" value="{{$search_words[$count+1]['d_f'] ?? 1}}" {{isset($search_words[$count+1]['d_f']) ? '' : 'disabled'}}>
+                <span>&nbsp;&nbsp;{{trans('search.d_t')}}&nbsp;&nbsp;</span>
+                <input class="form-control" name="search_words[{{$count+1}}][d_t]" type="text" value="{{$search_words[$count+1]['d_t'] ?? 1}}" {{isset($search_words[$count+1]['d_f']) ? '' : 'disabled'}}>
+            </div>            
+        </div>    
 
-            <div style="display: flex; align-items: flex-start;">
-                <div style="display: flex; align-items: center; padding-top: 12px;">
-                    <span>{{ trans('search.d_f') }}&nbsp;&nbsp;</span>
-                    <input class="form-control"
-                           name="search_words[{{$count+1}}][d_f]"
-                           type="text"
-                           value="{{$search_words[$count+1]['d_f'] ?? 1}}"
-                           {{isset($search_words[$count+1]['d_f']) ? '' : 'disabled'}}
-                           style="width: 48px; padding-left: 6px; padding-right: 6px;">
-
-                    <span>&nbsp;&nbsp;{{ trans('search.d_t') }}&nbsp;&nbsp;</span>
-                    <input class="form-control"
-                           name="search_words[{{$count+1}}][d_t]"
-                           type="text"
-                           value="{{$search_words[$count+1]['d_t'] ?? 1}}"
-                           {{isset($search_words[$count+1]['d_f']) ? '' : 'disabled'}}
-                           style="width: 48px; padding-left: 6px; padding-right: 6px;">
-                </div>
-
-                <a class="btn btn-default"
-                   href="javascript:void(0);"
-                   onclick="callChooseBetweenPunct({{$count+1}}, {{$count}}, {{$count+1}})"
-                   title="{{ trans('search.punct_between') }}"
-                   style="margin-left: 8px; width: 64px; height: 78px; padding: 10px 4px; font-size: 11px; line-height: 1.15; text-align: center; white-space: normal; vertical-align: top;">
-                    Знаки<br>пунктуации
-                </a>
-            </div>
-        </div>
 
         @if (!user_corpus_edit() && $count<2 || user_corpus_edit() && $count<3)
         <a title="{{trans('search.add_word')}}"
@@ -78,9 +51,20 @@
         </a>
         @endif
     </div>
+
+    <div class="col-md-1">
+        <a id="between-punct{{$count+1}}" class="btn btn-default"
+            href="javascript:void(0);"
+            onclick="callChooseBetweenPunct({{$count+1}}, {{$count}}, {{$count+1}})"
+            title="{{ trans('search.punct_between') }}"
+            style="width: 100%; height: 60px; padding: 10px 4px; font-size: 11px; line-height: 1.15; text-align: center; white-space: normal; 
+                vertical-align: top;{!! !isset($search_words[$count+1]['d_f']) ?  ' display:none;' : '' !!}">
+            {!! trans('search.puncts_button') !!}
+        </a>
+    </div>
 </div>
 
-<div class="row">
+<div id="between-punct-summary{{$count+1}}" class="row"{!! !isset($search_words[$count+1]['d_f']) ?  ' style="display:none"' : '' !!}>
     <div class="col-md-12">
         <div class="small text-muted between-punct-summary"
              id="between-punct-summary-{{$count+1}}"

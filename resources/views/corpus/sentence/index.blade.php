@@ -94,6 +94,48 @@
         }
     }
 
+    function buildBetweenPunctSummary(mode, selectedNames) {
+        if (mode == 'require_any') {
+            if (selectedNames.length > 0) {
+                return '{{ mb_ucfirst(trans('search.between_label')) }}: ' + selectedNames.join(', ');
+            }
+            return '{{ mb_ucfirst(trans('search.between_label')) }}: {{ trans('search.punct') }}';
+        }
+
+        if (mode == 'forbid_any') {
+            return '{{ mb_ucfirst(trans('search.between_label')) }}: {{ trans('search.punct_without') }}';
+        }
+
+        return '';
+    }
+
+    function refreshBetweenPunctSummary(step) {
+        var mode = $('#search_words_' + step + '__bt_mode_').val() || 'ignore';
+        var selectedNames = [];
+
+        $('#search_words_' + step + '__bt_types_ input[type="hidden"]').each(function() {
+            var slug = $(this).val();
+            var $checkbox = $('.between-putype[value="' + slug + '"]');
+
+            if ($checkbox.length) {
+                selectedNames.push($checkbox.data('name'));
+            }
+        });
+
+        $('#between-punct-summary-' + step).text(
+            buildBetweenPunctSummary(mode, selectedNames)
+        );
+    }
+
+    $('[id^="search_words_"][id$="__bt_mode_"]').each(function() {
+        var id = $(this).attr('id');
+        var m = id.match(/^search_words_(\d+)__bt_mode_$/);
+
+        if (m) {
+            refreshBetweenPunctSummary(m[1]);
+        }
+    });
+
     window.callChooseBetweenPunct = function(step, wordNum1, wordNum2) {
         $('#betweenPunctStep').val(step);
         $('#betweenPunctWordNum1').val(wordNum1);
@@ -123,11 +165,9 @@
         var step = $('#betweenPunctStep').val();
         var mode = $('#betweenPunctMode').val();
         var selectedSlugs = [];
-        var selectedNames = [];
 
         $('.between-putype:checked').each(function() {
             selectedSlugs.push($(this).val());
-            selectedNames.push($(this).data('name'));
         });
 
         $('#search_words_' + step + '__bt_mode_').val(mode);
@@ -141,18 +181,7 @@
             );
         }
 
-        var summary = '{{ trans('search.bt_ignore') }}';
-        if (mode == 'require_any') {
-            summary = '{{ trans('search.bt_require_any') }}';
-        } else if (mode == 'forbid_any') {
-            summary = '{{ trans('search.bt_forbid_any') }}';
-        }
-
-        if (mode != 'ignore' && selectedNames.length > 0) {
-            summary += ': ' + selectedNames.join(', ');
-        }
-
-        $('#between-punct-summary-' + step).text(summary);
+        refreshBetweenPunctSummary(step);
 
         $('#modalBetweenPunct').modal('hide');
     });

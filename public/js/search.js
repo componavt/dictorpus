@@ -2,94 +2,95 @@
   Shows and hides the search form 
   ******************************************/
 function toggleSearchForm() {
-        $(".show-search-form").click(function(){
-            $(".show-search-form").hide();
-/*            $(".search-button-b").css('padding-top', 0);*/
-            $(".ext-form").show("slow");
-            /*css('display', 'table');*/
-            $(".margin-to-ext").css('padding-top','25px')
-                               .css('text-align','right');
-            $(".hide-search-form").show();
-        });
-        $(".hide-search-form").click(function(){
-            $(".hide-search-form").hide();
-            $(".ext-form").hide("slow");
-            $(".margin-to-ext").css('padding-top','0')
-                               .css('text-align','left');
-            $(".show-search-form").show();
-        });
+    $(".show-search-form").click(function () {
+        $(".show-search-form").hide();
+        /*            $(".search-button-b").css('padding-top', 0);*/
+        $(".ext-form").show("slow");
+        /*css('display', 'table');*/
+        $(".margin-to-ext").css('padding-top', '25px')
+            .css('text-align', 'right');
+        $(".hide-search-form").show();
+    });
+    $(".hide-search-form").click(function () {
+        $(".hide-search-form").hide();
+        $(".ext-form").hide("slow");
+        $(".margin-to-ext").css('padding-top', '0')
+            .css('text-align', 'left');
+        $(".show-search-form").show();
+    });
 }
 
 function addWordformGramFields(el) {
-//    $(".add-wordform-gram").click(function(){
-        var count = el.getAttribute('data-count');
-        var lang_id = $("#search_lang option:selected" ).val();
-        var pos_id = $("#search_pos option:selected" ).val();
-        $.ajax({
-            url: '/dict/lemma/wordform_gram_form/', 
-            data: {count: count, lang_id: lang_id, pos_id: pos_id},
-            type: 'GET',
-            success: function(result){
-                $("#search-wordforms").append(result);
-            }
-        }); 
-        el.style.display='none';
-//    });    
+    //    $(".add-wordform-gram").click(function(){
+    var count = el.getAttribute('data-count');
+    var lang_id = $("#search_lang option:selected").val();
+    var pos_id = $("#search_pos option:selected").val();
+    $.ajax({
+        url: '/dict/lemma/wordform_gram_form/',
+        data: { count: count, lang_id: lang_id, pos_id: pos_id },
+        type: 'GET',
+        success: function (result) {
+            $("#search-wordforms").append(result);
+        }
+    });
+    el.style.display = 'none';
+    //    });    
 }
 
 function addSentenceWordsFields(el) {
     var count = el.getAttribute('data-count');
     $.ajax({
-        url: '/corpus/sentence/word_gram_form/', 
-        data: {count: count},
+        url: '/corpus/sentence/word_gram_form/',
+        data: { count: count },
         type: 'GET',
-        success: function(result){
+        success: function (result) {
             $("#search-words").append(result);
         }
-    }); 
-    el.style.display='none';
-    $("#distance"+count+' input').prop( "disabled", false );
-    $("#distance"+count).show();
-    $('#between-punct-row-' + count).show();
+    });
+    el.style.display = 'none';
+    $("#distance" + count + ' input').prop("disabled", false);
+    $("#distance" + count).show();
+    $('#between-punct' + count).show();
+    $('#between-punct-summary' + count).show();
 }
 
 function callChoosePOS(el) {
-    var posCaller=el.getAttribute('data-for');
+    var posCaller = el.getAttribute('data-for');
     $('#insertPosTo').val(posCaller);
-    var poses = $('#'+el.getAttribute('data-for')).val().split("|");
-    $('.choose-pos input:checked').prop( "checked", false );
-    $.each( poses, function( k, v ) {
-        $('#pos_'+v).prop( "checked", true );
-//console.log('#pos_'+v);                
+    var poses = $('#' + el.getAttribute('data-for')).val().split("|");
+    $('.choose-pos input:checked').prop("checked", false);
+    $.each(poses, function (k, v) {
+        $('#pos_' + v).prop("checked", true);
+        //console.log('#pos_'+v);                
     });
-    $("#modalChoosePOS").modal('show');    
+    $("#modalChoosePOS").modal('show');
 }
 
 function callChooseGram(el) {
-    var gramCaller=el.getAttribute('data-for');
+    var gramCaller = el.getAttribute('data-for');
     $('#insertGramTo').val(gramCaller);
-    $('.choose-gram input:checked').prop( "checked", false );
-    
+    $('.choose-gram input:checked').prop("checked", false);
+
     var grams = [];
-    $.each($('#'+el.getAttribute('data-for')).val().split(","), function( i, c ) {
-//console.log(c.split("|"));
+    $.each($('#' + el.getAttribute('data-for')).val().split(","), function (i, c) {
+        //console.log(c.split("|"));
         $.each(c.split("|"), function (j, v) {
-            $('#gram_'+v).prop( "checked", true );
+            $('#gram_' + v).prop("checked", true);
         });
     });
-    $("#modalChooseGram").modal('show');    
+    $("#modalChooseGram").modal('show');
 }
 
-function loadCount(el_selector, url){    
+function loadCount(el_selector, url) {
     $.ajax({
-        url: url, 
+        url: url,
         data: {},
         type: 'GET',
-        success: function(num){       
+        success: function (num) {
             $(el_selector).html(num);
         },
         error: function () {
-            $(el_selector).html('<i class="fa fa-sync-alt fa-lg reload" title="reload" onclick="loadCount(\''+el_selector+'\', \''+url+'\')"></i>');
+            $(el_selector).html('<i class="fa fa-sync-alt fa-lg reload" title="reload" onclick="loadCount(\'' + el_selector + '\', \'' + url + '\')"></i>');
         }
     });
 }

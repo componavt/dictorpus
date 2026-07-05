@@ -229,7 +229,7 @@ trait SentenceSearch
                 $out[$i]['bt_mode'] = $bt_mode;
 
                 // на будущее: конкретные типы
-                $out[$i]['bt_types'] = self::normalizePunctField($word['bt'] ?? []);
+                $out[$i]['bt_types'] = self::normalizePunctField($word['bt_types'] ?? []);
             }
         }
 
@@ -316,15 +316,16 @@ trait SentenceSearch
             }
 
             if (isset($word['bt_mode']) && $word['bt_mode'] && $i > 1) {
-                $tmp[] = self::betweenModeToString($word['bt_mode']);
-            }
+                $typeNames = [];
 
-            if (!empty($word['bt_types']) && is_array($word['bt_types']) && $i > 1) {
-                $putypes = Putype::whereIn('slug', $word['bt_types'])->pluck('name_' . LaravelLocalization::getCurrentLocale(), 'slug')->toArray();
-
-                if (!empty($putypes)) {
-                    $tmp[] = trans('search.putypes') . ': ' . join(', ', $putypes);
+                if (!empty($word['bt_types']) && is_array($word['bt_types'])) {
+                    $typeIds = array_map('intval', $word['bt_types']);
+                    $typeNames = Putype::whereIn('id', $typeIds)
+                        ->pluck('name_' . LaravelLocalization::getCurrentLocale())
+                        ->all();
                 }
+
+                $tmp[] = self::betweenConditionToString($word['bt_mode'], $typeNames);
             }
 
             $out[] =
@@ -335,6 +336,23 @@ trait SentenceSearch
         }
 
         return join(' <span class="warning">' . trans('search.and') . '</span><br>', $out);
+    }
+
+    protected static function betweenConditionToString(string $mode, array $typeNames): string
+    {
+        if ($mode === 'forbid_any') {
+            // Краткая и естественная фраза
+            return trans('search.between_no_punct'); // "между словами: без знаков препинания"
+        }
+
+        // require_any и прочие "позитивные" режимы
+        if ($typeNames) {
+            $list = join(', ', $typeNames); // "запятая, тире"
+        } else {
+            $list = trans('search.any_punct_short'); // "знак препинания"
+        }
+
+        return trans('search.between_label') . ': ' . $list; // "между словами: запятая"
     }
 
     protected static function punctListToString(array $slugs): string
@@ -889,13 +907,14 @@ AND t1.word_number-t2.word_number<=|B|;
             return $mode !== 'require_any';
         }
 
-        $typeIds = self::putypeIdsBySlugs($word['bt_types'] ?? []);
+        $typeIds = array_map('intval', $word['bt_types'] ?? []);
 
         $query = DB::table('puncts')
             ->join('words', function ($join) {
                 $join->on('words.w_id', '=', 'puncts.left_w_id')
                     ->on('words.text_id', '=', 'puncts.text_id');
             })
+            ->where('puncts.text_id', $row->text1_id)
             ->where('puncts.s_id', $row->s1_id)
             ->where('words.word_number', '>=', $left)
             ->where('words.word_number', '<', $right);
