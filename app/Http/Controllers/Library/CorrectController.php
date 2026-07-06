@@ -21,6 +21,7 @@ use App\Models\Dict\Audio;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaWordform;
+use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
 
@@ -531,5 +532,70 @@ class CorrectController extends Controller
         ini_set('memory_limit', '2048M');
         $result = Correct::fillPunctsForAllSentences();
         print "Обработано " . $result['sentences'] . ' предложений и найдено ' . $result['puncts'] . ' знаков препинания';
+    }
+
+    /**
+     * Показывает форму экспертного подбора похожих meanings.
+     *
+     * Идея:
+     * - слева donor-meaning с уже существующим EN;
+     * - справа target-meaning без EN;
+     * - эксперт может подтвердить предложенный перевод или отредактировать его.
+     *
+     * Параметры:
+     * - limit: сколько строк показать за один заход
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function similarMeaningsForm(Request $request)
+    {
+        $limit = (int) $request->input('limit', 50);
+        if ($limit <= 0) {
+            $limit = 50;
+        }
+
+        $candidates = MeaningText::buildSimilarMeaningCandidates($limit);
+
+        return view('dict.meaning.similar_meanings', [
+            'candidates' => $candidates,
+            'limit' => $limit,
+        ]);
+    }
+
+    /**
+     * Сохраняет подтверждённые строки из формы.
+     *
+     * Ожидаем массив rows:
+     * rows[n][target_meaning_id]
+     * rows[n][approved]
+     * rows[n][meaning_en]
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function similarMeaningsSave(Request $request)
+    {
+        $rows = $request->input('rows', []);
+
+        /**
+         * Крупный блок:
+         * базовая валидация структуры данных.
+         *
+         * Для Laravel 5.2 этого достаточно:
+         * если rows не массив, просто возвращаем пользователя назад.
+         */
+        if (!is_array($rows)) {
+            return redirect()->back()
+                ->with('error', 'Некорректный формат данных формы.')
+                ->withInput();
+        }
+
+        $result = MeaningText::saveApprovedMeaningTexts($rows);
+
+        return redirect()->back()->with(
+            'status',
+            'Сохранено новых EN-значений: ' . $result['inserted'] . '; пропущено: ' . $result['skipped']
+        );
     }
 }

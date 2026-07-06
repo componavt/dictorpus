@@ -26,6 +26,7 @@
         <p><a href="/service/correct/missing_gramsets">Добавление отсутствующих связей "текст-грамсет"</a></p>
         <p><a href="/service/correct/sources">Источники</a></p>
         <p><a href="/service/correct/puncts">Заполнить таблицу знаков препинаний</a></p>
+        <p><a href="/service/correct/similar-meanings">Подбор похожих значений для переноса английских толкований</a>
         
 {{--        <p><a href="/service/correct/tmp_fill_wordform_for_search">Заполнить wordform for search у таблицы связей "лемма"-"словоформа"</a>.</p>
         <p><a href="/service/correct/tmp_fill_genres">Добавить жанры для вепсских сказок</a>.</p>

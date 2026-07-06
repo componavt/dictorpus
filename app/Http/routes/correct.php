@@ -21,6 +21,8 @@ Route::group(
         Route::get('missing_gramsets', 'Library\CorrectController@missingGramsets');
         Route::get('move_char_out_word', 'Library\CorrectController@moveCharOutWord');
         Route::get('puncts', 'Library\CorrectController@puncts');
+        Route::get('similar-meanings', 'Library\CorrectController@similarMeaningsForm')->name('correct.similar-meanings');
+        Route::post('similar-meanings', 'Library\CorrectController@similarMeaningsSave')->name('correct.similar-meanings-save');
         Route::get('sources', 'Library\CorrectController@sources');
         /*
         Route::get('tmp_fill_sentence_id_in_text_wordform', 'Library\CorrectTmpController@tmpFillSentenceIdInTextWordform');
