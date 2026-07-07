@@ -362,9 +362,9 @@ trait SimilarMeaningCandidates
      * @param int $limitGroups   сколько review-групп вернуть
      * @return array
      */
-    public static function buildSimilarMeaningGroups($limitGroups = 50)
+    public static function buildSimilarMeaningGroups($limitGroups = 50, $maxCandidateRows = 20000)
     {
-        $flat = static::buildSimilarMeaningCandidates(5000);
+        $flat = static::buildSimilarMeaningCandidates($maxCandidateRows);
 
         $groups = [];
 
