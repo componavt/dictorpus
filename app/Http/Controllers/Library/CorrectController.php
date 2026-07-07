@@ -555,10 +555,10 @@ class CorrectController extends Controller
             $limit = 50;
         }
 
-        $candidates = MeaningText::buildSimilarMeaningCandidates($limit);
+        $groups = MeaningText::buildSimilarMeaningGroups($limit);
 
         return view('dict.meaning.similar_meanings', [
-            'candidates' => $candidates,
+            'groups' => $groups,
             'limit' => $limit,
         ]);
     }

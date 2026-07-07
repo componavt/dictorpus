@@ -174,18 +174,30 @@ trait SimilarMeaningCandidates
     {
         $rows = static::loadMeaningRowsForReview();
 
-        $donors = [];
+        $donorsByKey = [];
         $targets = [];
 
         /**
          * Крупный блок:
-         * разделяем все rows на donor и target.
+         * один проход по всем rows.
+         * donors группируем по review_key сразу в hash-map,
+         * targets просто собираем в список.
+         * Это заменяет O(targets * donors) на O(n).
          */
         foreach ($rows as $row) {
             $canonicalEn = static::canonicalEnglish($row['meaning_en']);
 
             if ($canonicalEn !== '') {
-                $donors[] = $row;
+                $key = static::buildReviewKey($row['pos_id'], $row['meaning_ru']);
+                if ($key === '') {
+                    continue;
+                }
+
+                if (!isset($donorsByKey[$key])) {
+                    $donorsByKey[$key] = [];
+                }
+
+                $donorsByKey[$key][] = $row;
             } else {
                 $targets[] = $row;
             }
@@ -195,7 +207,8 @@ trait SimilarMeaningCandidates
 
         /**
          * Крупный блок:
-         * для каждого target ищем первого подходящего donor.
+         * для каждого target делаем O(1) lookup по review_key
+         * вместо перебора всех donors.
          */
         foreach ($targets as $target) {
             $targetKey = static::buildReviewKey($target['pos_id'], $target['meaning_ru']);
@@ -203,17 +216,12 @@ trait SimilarMeaningCandidates
                 continue;
             }
 
-            foreach ($donors as $donor) {
+            if (!isset($donorsByKey[$targetKey])) {
+                continue;
+            }
+
+            foreach ($donorsByKey[$targetKey] as $donor) {
                 if ((int) $donor['meaning_id'] === (int) $target['meaning_id']) {
-                    continue;
-                }
-
-                if ((string) $donor['pos_id'] !== (string) $target['pos_id']) {
-                    continue;
-                }
-
-                $donorKey = static::buildReviewKey($donor['pos_id'], $donor['meaning_ru']);
-                if ($donorKey !== $targetKey) {
                     continue;
                 }
 
@@ -236,8 +244,8 @@ trait SimilarMeaningCandidates
                     'review_key' => $targetKey,
                 ];
 
-                if (count($candidates) >= (int) $limit) {
-                    break 2;
+                if ($limit > 0 && count($candidates) >= (int) $limit) {
+                    return $candidates;
                 }
             }
         }
@@ -314,5 +322,104 @@ trait SimilarMeaningCandidates
             'inserted' => $inserted,
             'skipped' => $skipped,
         ];
+    }
+
+    /**
+     * Собирает кандидатов, сгруппированных по review_key (нормализованный
+     * русский перевод + pos_id), а внутри — по целевому meaning.
+     *
+     * Структура результата:
+     * [
+     *   'review_key' => [
+     *      'review_key' => '...',
+     *      'meaning_ru' => '...',          // представительный текст группы
+     *      'targets' => [
+     *          target_meaning_id => [
+     *              'target_meaning_id' => ...,
+     *              'target_lemma_id' => ...,
+     *              'target_lemma' => ...,
+     *              'target_meaning_n' => ...,
+     *              'target_meaning_ru' => ...,
+     *              'proposed_meaning_en' => ...,   // из первого source
+     *              'sources' => [
+     *                  [
+     *                      'source_meaning_id' => ...,
+     *                      'source_lemma_id' => ...,
+     *                      'source_lemma' => ...,
+     *                      'source_meaning_n' => ...,
+     *                      'source_meaning_ru' => ...,
+     *                      'source_meaning_en' => ...,
+     *                  ],
+     *                  ...
+     *              ],
+     *          ],
+     *          ...
+     *      ],
+     *   ],
+     *   ...
+     * ]
+     *
+     * @param int $limitGroups   сколько review-групп вернуть
+     * @return array
+     */
+    public static function buildSimilarMeaningGroups($limitGroups = 50)
+    {
+        $flat = static::buildSimilarMeaningCandidates(5000);
+
+        $groups = [];
+
+        /**
+         * Крупный блок:
+         * раскладываем плоский список кандидатов в дерево
+         * review_key -> target_meaning_id -> sources[].
+         */
+        foreach ($flat as $row) {
+            $key = $row['review_key'];
+
+            if (!isset($groups[$key])) {
+                $groups[$key] = [
+                    'review_key' => $key,
+                    'meaning_ru' => $row['target_meaning_ru'],
+                    'targets' => [],
+                ];
+            }
+
+            $targetId = $row['target_meaning_id'];
+
+            if (!isset($groups[$key]['targets'][$targetId])) {
+                $groups[$key]['targets'][$targetId] = [
+                    'target_meaning_id' => $row['target_meaning_id'],
+                    'target_lemma_id' => $row['target_lemma_id'],
+                    'target_lemma' => $row['target_lemma'],
+                    'target_meaning_n' => $row['target_meaning_n'],
+                    'target_meaning_ru' => $row['target_meaning_ru'],
+                    'proposed_meaning_en' => $row['proposed_meaning_en'],
+                    'sources' => [],
+                ];
+            }
+
+            $groups[$key]['targets'][$targetId]['sources'][] = [
+                'source_meaning_id' => $row['source_meaning_id'],
+                'source_lemma_id' => $row['source_lemma_id'],
+                'source_lemma' => $row['source_lemma'],
+                'source_meaning_n' => $row['source_meaning_n'],
+                'source_meaning_ru' => $row['source_meaning_ru'],
+                'source_meaning_en' => $row['source_meaning_en'],
+            ];
+        }
+
+        /**
+         * Сортировка групп по русскому толкованию,
+         * чтобы близкие значения шли подряд.
+         */
+        uasort($groups, function ($a, $b) {
+            return strnatcasecmp($a['meaning_ru'], $b['meaning_ru']);
+        });
+
+        if ($limitGroups > 0 && count($groups) > $limitGroups) {
+            $groups = array_slice($groups, 0, $limitGroups, true);
+        }
+
+        return $groups;
     }
 }
