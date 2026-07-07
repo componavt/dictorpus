@@ -9,12 +9,12 @@ trait TextExport
     /**
      * Load xml from string, create SimpleXMLelement
      *
-     * @param $text_xml - markup text
-     * @param id - identifier of object Text or Transtext
+     * @param string $text_xml - markup text
+     * @param int $id - identifier of object Text or Transtext
      *
      * return Array [SimpleXMLElement object, error text if exists]
      */
-    public static function toXML($text_xml, $id = NULL)
+    public static function toXML(string $text_xml, $id = NULL)
     {
         libxml_use_internal_errors(true);
         if (!preg_match("/^\<\?xml/", $text_xml)) {

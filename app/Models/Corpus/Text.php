@@ -474,12 +474,13 @@ class Text extends Model implements HasMediaConversions
     {
         $text = self::find($text_id);
         $sent_obj = Sentence::getBySid($text_id, $s_id);
+
         if (!$text || !$sent_obj) {
             return NULL;
         }
 
         return [
-            's' => preg_replace('/[¦^]/', '', $sent_obj->text_xml),
+            's' => preg_replace('/[¦^]/u', '', $sent_obj->text_xml),
             'sent_obj' => $sent_obj,
             's_id' => $s_id,
             'text' => $text,
