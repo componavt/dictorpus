@@ -50,26 +50,20 @@ class TextController extends Controller
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
         $this->middleware(
             'auth:corpus.edit,/corpus/text/',
-            ['only' => [
-                'create',
-                'store',
-                'edit',
-                'update',
-                'destroy',
-                'history',
-                'stats',
-                'addExample',
-                'checkSentences',
-                'editExample',
-                'updateExamples',
-                'editSentences',
-                'photos',
-                'updatePhotos',
-                'deletePhoto',
-                'markupText',
-                'markupAllEmptyTextXML',
-                'markupAllTexts',
-                'concordance'
+            ['except' => [
+                'analysSpellchecking',
+                'frequencySymbols',
+                'fullNewList',
+                'fullUpdatedList',
+                'index',
+                'limitedNewList',
+                'limitedUpdatedList',
+                'newTextList',
+                'show',
+                'showWordInSentence',
+                'simpleSearch',
+                'speechCorpus',
+                'spellchecking',
             ]]
         );
         $this->url_args = Text::urlArgs($request);
@@ -326,7 +320,7 @@ class TextController extends Controller
             $url_args['color'] = 'gram'; // для переключения противоположное
             $color = 'meaning';
         }
-        //dd($color);        
+        //dd($color);
         $args_by_get = search_values_by_URL(remove_empty($url_args));
 
         $text = Text::find($id);

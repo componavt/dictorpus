@@ -20,53 +20,65 @@ class MeaningTextRel extends Model
     public $timestamps = false;
 
 
-    public static function updateExamples($relevances)
+    public static function updateExamples(array $relevances)
     {
         foreach ($relevances as $key => $value) {
             if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/", $key, $regs)) {
-                self::updateExample((int)$value, (int)$regs[1], (int)$regs[2], /*(int)$regs[3],*/ (int)$regs[4]);
+                self::updateExample((int)$value, (int)$regs[1], (int)$regs[2], (int)$regs[4]);
             }
         }
     }
 
-    public static function updateExample($relevance, $meaning_id, $text_id, /*$s_id,*/ $w_id)
+    public static function updateExample(int $relevance, int $meaning_id, int $text_id, int $w_id)
     {
-        if ($relevance == 1) { // не выставлена оценка
-            if (self::existsPositiveRelevance($text_id, /*$s_id,*/ $w_id, $meaning_id)) { // этот пример привязан к другому значению
-                $relevance = 0;
+        DB::transaction(function () use ($relevance, $meaning_id, $text_id, $w_id) {
+            if ($relevance == 1) { // не выставлена оценка  — проверяем конфликт с другим значением
+                if (self::existsPositiveRelevance($text_id, $w_id, $meaning_id)) { // этот пример привязан к другому значению
+                    $relevance = 0;
+                }
+            } elseif ($relevance != 0) { // положительная оценка — гасим все прочие значения слова
+                self::setNegativeToUndefOthers($text_id, $w_id, $meaning_id);
             }
-        } elseif ($relevance != 0) { // положительная оценка
-            self::setNegativeToUndefOthers($text_id, /*$s_id,*/ $w_id, $meaning_id); // всем значениям с неопределенными оценками проставим отрицательные
-        }
-        DB::statement('UPDATE meaning_text SET relevance=' . $relevance // запишем оценку этому значению
-            . ' WHERE meaning_id=' . $meaning_id
-            . ' AND text_id=' . $text_id
-            //                     .' AND s_id='.$s_id
-            . ' AND w_id=' . $w_id);
-        if ($relevance > 1) {
-            TextWordform::updateWordformLinksAfterCheckExample($text_id, $w_id, $meaning_id);
-        }
+
+            DB::statement(
+                'UPDATE meaning_text
+                SET relevance = 0
+                WHERE meaning_id <> ?
+                AND text_id = ?
+                AND w_id = ?',
+                [$meaning_id, $text_id, $w_id]
+            );
+
+            if ($relevance > 1) {
+                TextWordform::updateWordformLinksAfterCheckExample($text_id, $w_id, $meaning_id);
+            }
+        });
     }
 
-    // ищем другие значения лемм с положительной оценкой
-    public static function existsPositiveRelevance($text_id, /*$s_id,*/ $w_id, $meaning_id)
+    /** ищем другие значения лемм с положительной оценкой
+     *   
+     * Проверяет, привязан ли этот пример (text_id, w_id) уже к ДРУГОМУ значению
+     * с положительной релевантностью. Вызывается ТОЛЬКО внутри транзакции
+     * updateExample() и обязательно с блокировкой строк (lockForUpdate),
+     * иначе гонка между двумя одновременными кликами возможна.
+     */
+    public static function existsPositiveRelevance(int $text_id, int $w_id, int $meaning_id)
     {
         return DB::table('meaning_text')
             ->where('text_id', $text_id)
-            //                -> where('s_id',$s_id)
             ->where('w_id', $w_id)
             ->where('meaning_id', '<>', $meaning_id)
-            ->where('relevance', '>', 1)->count();
+            ->where('relevance', '>', 1)
+            ->lockForUpdate()
+            ->exists();
     }
 
     // всем значениям с неопределенными оценками проставим отрицательные
-    public static function setNegativeToUndefOthers($text_id, /*$s_id,*/ $w_id, $meaning_id)
+    public static function setNegativeToUndefOthers(int $text_id, int $w_id, int $meaning_id)
     {
         DB::statement('UPDATE meaning_text SET relevance=0' .
             ' WHERE meaning_id <> ' . $meaning_id .
-            ' AND relevance=1' .
             ' AND text_id=' . $text_id .
-            //                      ' AND s_id='.$s_id.
             ' AND w_id=' . $w_id);
     }
 
@@ -103,24 +115,25 @@ class MeaningTextRel extends Model
 
     /**
      * Update meaning-text links after choosing gramset.
+     * убираем те значения, у которых нет выбранного грамсета.
      * 
-     * @param type $text_id
-     * @param type $w_id
-     * @param type $gramset_id
+     * @param int $text_id
+     * @param int $w_id
+     * @param int $gramset_id
      */
     public static function updateMeaningLinksAfterCheckExample($text_id, $w_id, $gramset_id)
     {
-        $meaning_text_rels = self::whereTextId($text_id)
-            ->whereWId($w_id)->get();
-        foreach ($meaning_text_rels as $meaning_text_rel) {
-            $meaning = Meaning::find($meaning_text_rel->meaning_id);
-            $pos = $meaning->lemma->pos;
-            if ($pos->gramsets()->wherePivot('gramset_id', $gramset_id)->count() == 0) {
-                DB::statement('UPDATE meaning_text SET relevance=0'
-                    . ' WHERE meaning_id=' . $meaning_text_rel->meaning_id
-                    . ' AND text_id=' . $text_id
-                    . ' AND w_id=' . $w_id);
-            }
-        }
+        DB::statement(
+            'UPDATE meaning_text mt
+             JOIN meanings m ON m.id = mt.meaning_id
+             JOIN lemmas l ON l.id = m.lemma_id
+             SET mt.relevance = 0
+             WHERE mt.text_id = ?
+               AND mt.w_id = ?
+               AND l.pos_id NOT IN (
+                   SELECT pos_id FROM gramset_pos WHERE gramset_id = ?
+               )',
+            [$text_id, $w_id, $gramset_id]
+        );
     }
 }

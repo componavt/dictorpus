@@ -4,6 +4,7 @@ services:
   mariadb:
     image: mariadb:12.1
     container_name: dictorpus-mariadb
+    command: --innodb-buffer-pool-size=1024M
     restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}

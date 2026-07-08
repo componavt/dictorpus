@@ -422,4 +422,211 @@ trait SimilarMeaningCandidates
 
         return $groups;
     }
+
+    public static function rebuildConceptMeaningCandidates($onlyPos = null)
+    {
+        // Сколько удалили старых "new"
+        $cleared = self::clearNewConceptMeaningCandidates($onlyPos);
+
+        $groups = self::getConceptCandidateSourceGroups($onlyPos);
+
+        $totalGroups           = count($groups);
+        $groupsWithTargets     = 0;
+        $rowsPreparedTotal     = 0;
+        $rowsInsertedTotal     = 0;
+
+        foreach ($groups as $group) {
+            $rows = self::buildConceptMeaningCandidateRowsForGroup($group);
+
+            if (empty($rows)) {
+                continue;
+            }
+
+            $groupsWithTargets++;
+            $rowsPreparedTotal += count($rows);
+
+            foreach (array_chunk($rows, 500) as $chunk) {
+                $rowsInsertedTotal += self::insertConceptMeaningCandidateChunk($chunk);
+            }
+        }
+
+        return [
+            'cleared_new'          => $cleared,
+            'groups_total'         => $totalGroups,
+            'groups_with_targets'  => $groupsWithTargets,
+            'rows_prepared'        => $rowsPreparedTotal,
+            'rows_inserted'        => $rowsInsertedTotal,
+        ];
+    }
+
+    public static function clearNewConceptMeaningCandidates($onlyPos = null)
+    {
+        $query = DB::table('concept_meaning_candidates')
+            ->where('review_status', 'new');
+
+        if ($onlyPos !== null) {
+            $query->where('source_taskpos', $onlyPos);
+        }
+
+        return $query->delete();
+    }
+
+    public static function getConceptCandidateSourceGroups($onlyPos = null)
+    {
+        $query = DB::table('meanings as m')
+            ->leftJoin('concept_meaning as cm', 'cm.meaning_id', '=', 'm.id')
+            ->select(
+                'm.taskpos as source_taskpos',
+                'm.primary_glossru as source_primary_glossru',
+                DB::raw("CONCAT(m.taskpos, '::', m.primary_glossru) as source_group_key"),
+                DB::raw('COUNT(DISTINCT m.id) as source_meaning_count'),
+                DB::raw('COUNT(DISTINCT cm.meaning_id) as source_concept_meaning_count')
+            )
+            ->whereNotNull('m.primary_glossru')
+            ->where('m.primary_glossru', '<>', '')
+            ->groupBy('m.taskpos', 'm.primary_glossru')
+            ->havingRaw('COUNT(DISTINCT cm.meaning_id) > 0');
+
+        if ($onlyPos !== null) {
+            $query->where('m.taskpos', $onlyPos);
+        }
+
+        return $query->get()->all();
+    }
+
+    public static function buildConceptMeaningCandidateRowsForGroup($group)
+    {
+        $targetMeaningIds = self::getMeaningIdsWithoutConceptInGroup(
+            $group->source_taskpos,
+            $group->source_primary_glossru
+        );
+
+        if (empty($targetMeaningIds)) {
+            return [];
+        }
+
+        $conceptRows = self::getConceptsInGroupRanked(
+            $group->source_taskpos,
+            $group->source_primary_glossru
+        );
+
+        if (empty($conceptRows)) {
+            return [];
+        }
+
+        $rows = [];
+
+        foreach ($targetMeaningIds as $meaningId) {
+            foreach ($conceptRows as $conceptRow) {
+                $rows[] = [
+                    'meaning_id'                    => $meaningId,
+                    'concept_id'                    => $conceptRow->concept_id,
+                    'source_taskpos'                => $group->source_taskpos,
+                    'source_primary_glossru'        => $group->source_primary_glossru,
+                    'source_group_key'              => $group->source_group_key,
+                    'source_meaning_count'          => (int) $group->source_meaning_count,
+                    'source_concept_meaning_count'  => (int) $group->source_concept_meaning_count,
+                    'candidate_rank'                => (int) $conceptRow->candidate_rank,
+                    'review_status'                 => 'new',
+                    'review_note'                   => null,
+                    'reviewed_at'                   => null,
+                    // created_at не задаём: в миграции useCurrent()
+                ];
+            }
+        }
+
+        return $rows;
+    }
+
+    public static function getMeaningIdsWithoutConceptInGroup($taskPos, $primaryGlossRu)
+    {
+        return DB::table('meanings as m')
+            ->leftJoin('concept_meaning as cm', 'cm.meaning_id', '=', 'm.id')
+            ->where('m.taskpos', $taskPos)
+            ->where('m.primary_glossru', $primaryGlossRu)
+            ->whereNull('cm.meaning_id')
+            ->pluck('m.id')
+            ->all();
+    }
+
+    public static function getConceptsInGroupRanked($taskPos, $primaryGlossRu)
+    {
+        $rows = DB::table('meanings as m')
+            ->join('concept_meaning as cm', 'cm.meaning_id', '=', 'm.id')
+            ->select(
+                'cm.concept_id',
+                DB::raw('COUNT(*) as concept_usage_count')
+            )
+            ->where('m.taskpos', $taskPos)
+            ->where('m.primary_glossru', $primaryGlossRu)
+            ->groupBy('cm.concept_id')
+            ->orderBy('concept_usage_count', 'desc')
+            ->orderBy('cm.concept_id', 'asc')
+            ->get()
+            ->all();
+
+        $rank = 0;
+        $prevCount = null;
+
+        foreach ($rows as $row) {
+            $count = (int) $row->concept_usage_count;
+
+            if ($prevCount === null || $count !== $prevCount) {
+                $rank++;
+                $prevCount = $count;
+            }
+
+            $row->candidate_rank = $rank;
+        }
+
+        return $rows;
+    }
+
+    public static function insertConceptMeaningCandidateChunk(array $rows)
+    {
+        if (empty($rows)) {
+            return 0;
+        }
+
+        $values   = [];
+        $bindings = [];
+
+        foreach ($rows as $row) {
+            // 11 колонок
+            $values[] = '(' . implode(', ', array_fill(0, 11, '?')) . ')';
+
+            $bindings[] = $row['meaning_id'];
+            $bindings[] = $row['concept_id'];
+            $bindings[] = $row['source_taskpos'];
+            $bindings[] = $row['source_primary_glossru'];
+            $bindings[] = $row['source_group_key'];
+            $bindings[] = $row['source_meaning_count'];
+            $bindings[] = $row['source_concept_meaning_count'];
+            $bindings[] = $row['candidate_rank'];
+            $bindings[] = $row['review_status'];
+            $bindings[] = $row['review_note'];
+            $bindings[] = $row['reviewed_at'];
+        }
+
+        $sql = "
+            INSERT IGNORE INTO concept_meaning_candidates
+            (
+                meaning_id,
+                concept_id,
+                source_taskpos,
+                source_primary_glossru,
+                source_group_key,
+                source_meaning_count,
+                source_concept_meaning_count,
+                candidate_rank,
+                review_status,
+                review_note,
+                reviewed_at
+            )
+            VALUES " . implode(",\n", $values);
+
+        DB::statement($sql, $bindings);
+
+        return count($rows);
+    }
 }

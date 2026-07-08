@@ -11,7 +11,7 @@ use App\Models\Dict\Wordform;
 trait SentenceWordBlock
 {
     /**
-     * Устанавить разметку с блоками слов
+     * Установить разметку с блоками слов
 
      * @param array $search_w         - array ID of searching word object
      * 

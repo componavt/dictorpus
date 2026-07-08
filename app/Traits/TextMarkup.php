@@ -128,7 +128,7 @@ trait TextMarkup
 
         $t3 = microtime(true);
         $this->updateMeaningAndWordformForText($sentencesData);
-        Log::info('updateMeaningAndWordformForText', ['sec' => microtime(true) - $t3]);
+        //Log::info('updateMeaningAndWordformForText', ['sec' => microtime(true) - $t3]);
 
         if ($last_s_id !== null) {
             DB::statement("DELETE FROM sentences WHERE s_id>$last_s_id and text_id=" . (int)$this->id);

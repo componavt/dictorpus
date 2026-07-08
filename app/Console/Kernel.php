@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Commands\Inspire::class,
         \App\Console\Commands\BackfillSafeMeaningEn::class,
+        \App\Console\Commands\BuildMeaningConceptCandidates::class,
     ];
 
     /**
