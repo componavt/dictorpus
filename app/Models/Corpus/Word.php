@@ -418,19 +418,6 @@ class Word extends Model
         if ($this->meanings()->where('relevance', '>', 5)->count() > 0) {
             return true;
         }
-        /*        $text_id = $this->id;
-        
-        $fragments_count = SentenceFragment::where('sentence_id', $this->sentence_id)
-                                ->where('w_id', $this->w_id)->count();
-        if ($fragments_count) {
-            return true;
-        }
-        
-        $translations_count = SentenceTranslation::where('sentence_id', $this->sentence_id)
-                                ->where('w_id', $this->w_id)->count();
-        if ($translations_count) {
-            return true;
-        }*/
     }
 
     /**
@@ -545,7 +532,7 @@ class Word extends Model
     /**
      * Search wordforms and lemmas matched with $word and
      * get meanings (objects) of these lemmas
-     * @param String $word  in lower case
+     * @param String $word in lower case
      * @param Int $lang_id
      * @return Collection
      */
@@ -557,20 +544,23 @@ class Word extends Model
             return self::$meaningsCache[$key];
         }
 
-        $meanings = Meaning::whereIn('lemma_id', function ($query) use ($word, $lang_id) {
-            $query->select('id')
-                ->from('lemmas')
-                ->where('lang_id', '=', $lang_id)
-                ->where(function ($q) use ($word, $lang_id) {
-                    $q->where('lemma_for_search', '=', $word)
-                        ->orWhereIn('id', function ($sub) use ($word, $lang_id) {
-                            $sub->select('lemma_id')
-                                ->from('lemma_wordform')
-                                ->where('lang_id', '=', $lang_id)
-                                ->where('wordform_for_search', '=', $word);
-                        });
-                });
-        })->get();
+        $lemmaIds1 = DB::table('lemmas')
+            ->where('lang_id', $lang_id)
+            ->where('lemma_for_search', $word)
+            ->pluck('id');
+
+        $lemmaIds2 = DB::table('lemma_wordform')
+            ->where('lang_id', $lang_id)
+            ->where('wordform_for_search', $word)
+            ->pluck('lemma_id');
+
+        $lemmaIds = array_values(array_unique(array_merge($lemmaIds1, $lemmaIds2)));
+
+        if (!$lemmaIds) {
+            $meanings = collect();
+        } else {
+            $meanings = Meaning::whereIn('lemma_id', $lemmaIds)->get();
+        }
 
         self::$meaningsCache[$key] = $meanings;
 

@@ -31,6 +31,7 @@ class MeaningTextRel extends Model
 
     public static function updateExample(int $relevance, int $meaning_id, int $text_id, int $w_id)
     {
+        //dd($relevance, $meaning_id, $text_id, $w_id);
         DB::transaction(function () use ($relevance, $meaning_id, $text_id, $w_id) {
             if ($relevance == 1) { // не выставлена оценка  — проверяем конфликт с другим значением
                 if (self::existsPositiveRelevance($text_id, $w_id, $meaning_id)) { // этот пример привязан к другому значению
@@ -42,11 +43,11 @@ class MeaningTextRel extends Model
 
             DB::statement(
                 'UPDATE meaning_text
-                SET relevance = 0
-                WHERE meaning_id <> ?
+                SET relevance = ?
+                WHERE meaning_id = ?
                 AND text_id = ?
                 AND w_id = ?',
-                [$meaning_id, $text_id, $w_id]
+                [$relevance, $meaning_id, $text_id, $w_id]
             );
 
             if ($relevance > 1) {
