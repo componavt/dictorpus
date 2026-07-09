@@ -1047,7 +1047,7 @@ dd($s->saveXML());
             foreach ($xml_words as $word) {
                 $w_id = (int)$word['id'];
                 $word_text = trim((string)$word);
-                $word_for_search = Grammatic::changeLetters(mb_strtolower($word_text));
+                $word_for_search = Grammatic::changeLetters($word_text);
 
                 if (!$w_id || $word_for_search === '') {
                     $position++;
@@ -1065,7 +1065,7 @@ dd($s->saveXML());
                     'text_id' => $text_id,
                     's_id' => $s_id,
                     'w_id' => $w_id,
-                    'word' => $word_text,
+                    'word' => $word_for_search,
                     'word_number' => $position + 1,
                     'sentence_id' => $sentence_id,
                 ];

@@ -96,7 +96,7 @@ trait TextMarkup
         $ts = microtime(true);
 
         list($this->text_structure, $sentences) = self::markupText($this->text, true, true);
-        Log::info('markupText done', ['sec' => microtime(true) - $ts]);
+        //Log::info('markupText done', ['sec' => microtime(true) - $ts]);
 
         $sentencesData = [];
         $last_s_id = null;
@@ -106,7 +106,7 @@ trait TextMarkup
             $t1 = microtime(true);
 
             $sentence = Sentence::store($this->id, $s_id, $text_xml);
-            Log::info('Sentence::store', ['s_id' => $s_id, 'sec' => microtime(true) - $t1]);
+            //Log::info('Sentence::store', ['s_id' => $s_id, 'sec' => microtime(true) - $t1]);
 
             list($sxe, $error_message) = self::toXML($text_xml, $s_id);
 

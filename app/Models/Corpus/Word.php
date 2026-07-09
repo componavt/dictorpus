@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 use App\Library\Str;
+use App\Library\Grammatic;
 
 use App\Models\Dict\Gramset;
 use App\Models\Dict\Lemma;
@@ -543,7 +544,10 @@ class Word extends Model
         if (isset(self::$meaningsCache[$key])) {
             return self::$meaningsCache[$key];
         }
-
+        /*dd(
+            $word,
+            Grammatic::changeLetters($word, $lang_id)
+        );*/
         $lemmaIds1 = DB::table('lemmas')
             ->where('lang_id', $lang_id)
             ->where('lemma_for_search', $word)
@@ -555,7 +559,7 @@ class Word extends Model
             ->pluck('lemma_id');
 
         $lemmaIds = array_values(array_unique(array_merge($lemmaIds1, $lemmaIds2)));
-
+        //dd($lemmaIds);
         if (!$lemmaIds) {
             $meanings = collect();
         } else {
