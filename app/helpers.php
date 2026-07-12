@@ -173,8 +173,8 @@ if (! function_exists('convert_quotes')) {
         );
         $chr = array_keys($chr_map);
         $rpl = array_values($chr_map);
-//        return str_replace($chr, $rpl, html_entity_decode($str, ENT_QUOTES, "UTF-8"));
-        return str_replace($chr, $rpl, $str);
+        return str_replace($chr, $rpl, html_entity_decode($str, ENT_QUOTES, "UTF-8"));
+        //        return str_replace($chr, $rpl, $str);
     }
 }
 

@@ -2,6 +2,8 @@
 
 namespace App\Traits\Export;
 
+use Illuminate\Support\Facades\Log;
+
 use App\Models\Corpus\Word;
 
 trait TextExport
@@ -16,7 +18,16 @@ trait TextExport
      */
     public static function toXML(string $text_xml, $id = NULL)
     {
+        //Log::info(['before_xml_escape' => $text_xml,'has_backslash' => str_contains($text_xml, '\\')]);
+        // Экранирует только сырой &, уже валидные XML-сущности оставляет как есть
+        $text_xml = preg_replace(
+            '/&(?!amp;|lt;|gt;|quot;|apos;|#[0-9]+;|#x[0-9A-Fa-f]+;)/u',
+            '&amp;',
+            $text_xml
+        );
+        //Log::info(['after_xml_escape' => $text_xml,'has_backslash' => str_contains($text_xml, '\\')]);
         libxml_use_internal_errors(true);
+
         if (!preg_match("/^\<\?xml/", $text_xml)) {
             $text_xml = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>' .
                 '<text>' . $text_xml . '</text>';

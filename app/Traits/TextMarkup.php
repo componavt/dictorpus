@@ -37,12 +37,10 @@ trait TextMarkup
      */
     public static function markupText($text, $with_words = true, $by_sentences = false)
     {
-        Log::info(['all_text'=>$text]);
-        
+
         list($text, $pseudo_end) = self::preProcessText(trim($text));
-Log::info(['after_preprocess' => $text]);
         $text = convert_quotes($text);
-Log::info(['after_convert_quotes' => $text]);
+        //Log::info(['after_convert_quotes' => $text]);
 
         $text_xml = '';
         $sen_count = $word_count = 1;
@@ -56,6 +54,19 @@ Log::info(['after_convert_quotes' => $text]);
         )) {
             for ($k = 0; $k < sizeof($desc_out[1]); $k++) {
                 $sentence = $prev . trim($desc_out[1][$k]);
+
+                if (mb_strpos($sentence, '&') !== false) {
+                    /*Log::info([
+                        'stage' => 'sentence_before_markup',
+                        'k' => $k,
+                        'sentence' => $sentence,
+                        'sentence_hex' => bin2hex($sentence),
+                        'prev' => $prev,
+                        'match_text' => $desc_out[1][$k],
+                        'delimiter' => $desc_out[2][$k],
+                        'tail' => $desc_out[3][$k],
+                    ]);*/
+                }
 
                 if ($k == sizeof($desc_out[1]) - 1 && $pseudo_end || $desc_out[2][$k] == '|') {
                     $desc_out[2][$k] = '';
@@ -76,7 +87,16 @@ Log::info(['after_convert_quotes' => $text]);
                 }
                 // division on words
                 list($str, $word_count) = Sentence::markup($sentence, $word_count);
-                //                $str = str_replace('¦', '', $str);
+                if (mb_strpos($sentence, '&') !== false || mb_strpos($str, '\\') !== false) {
+                    /*Log::info([
+                        'stage' => 'after_sentence_markup',
+                        'k' => $k,
+                        'sentence' => $sentence,
+                        'str' => $str,
+                        'str_hex' => bin2hex($str),
+                    ]);*/
+                }
+
                 $sentences[$sen_count] = "<s id=\"" . $sen_count . '">' . $str . $desc_out[2][$k] . "</s>\n";
                 $text_xml .= $by_sentences ? "<s id=\"" . $sen_count . '"/>'
                     : $sentences[$sen_count];
@@ -85,7 +105,7 @@ Log::info(['after_convert_quotes' => $text]);
                 $text_xml .= $div ? $div . "\n" : '';
             }
         }
-        Log::info(['sentences'=>$sentences]);
+        //Log::info(['sentences' => $sentences]);
         return $by_sentences ? [trim($text_xml), $sentences] : trim($text_xml);
     }
 
