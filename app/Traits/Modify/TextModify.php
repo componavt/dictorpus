@@ -3,6 +3,7 @@
 namespace App\Traits\Modify;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use App\Library\Grammatic;
 
@@ -88,6 +89,7 @@ trait TextModify
         $old_text = $text->text;
 
         $text->fill($request->only('lang_id', 'title', 'text', 'text_structure', 'comment')); //,'text_xml''corpus_id',
+Log::info(['old_text'=>$old_text, 'new_text'=>$text->text]);        
 
         $text->updated_at = date('Y-m-d H:i:s');
         $text->save();

@@ -3,6 +3,7 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Sentence extends Model
 {
@@ -135,6 +136,7 @@ class Sentence extends Model
             //print "$i: $char| word: $word| is_word: $is_word| str: $str\n";            
             $i++;
         }
+Log::info(['text'=>$text, 'str'=>$str]);        
         list($is_word, $str, $word_count) = self::wordAddToSentence($is_word, $word, $str, $word_count);
         //print "$i: $char| word: $word| str: $str\n";            
         return [$str, $word_count];

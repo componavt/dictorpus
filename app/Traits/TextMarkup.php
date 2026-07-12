@@ -37,8 +37,12 @@ trait TextMarkup
      */
     public static function markupText($text, $with_words = true, $by_sentences = false)
     {
+        Log::info(['all_text'=>$text]);
+        
         list($text, $pseudo_end) = self::preProcessText(trim($text));
+Log::info(['after_preprocess' => $text]);
         $text = convert_quotes($text);
+Log::info(['after_convert_quotes' => $text]);
 
         $text_xml = '';
         $sen_count = $word_count = 1;
@@ -81,7 +85,7 @@ trait TextMarkup
                 $text_xml .= $div ? $div . "\n" : '';
             }
         }
-        //dd($text_xml);
+        Log::info(['sentences'=>$sentences]);
         return $by_sentences ? [trim($text_xml), $sentences] : trim($text_xml);
     }
 
