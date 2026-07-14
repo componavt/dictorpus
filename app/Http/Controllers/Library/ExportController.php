@@ -38,7 +38,7 @@ class ExportController extends Controller
 {
     public function __construct(Request $request)
     {
-        $for_editors = ['concordance', 'zaikovDictionary'];
+        $for_editors = ['concordance', 'zaikovDictionary', 'annotatedText'];
         // permission= dict.edit, redirect failed users to /dict/lemma/, authorized actions list:
         $this->middleware('auth:admin,/', ['except' => $for_editors]);
         $this->middleware('auth:corpus.edit,/', ['only' => $for_editors]);
