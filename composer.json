@@ -65,9 +65,17 @@
         ]
     },
     "config": {
-        "preferred-install": "dist",
         "allow-plugins": {
             "kylekatarnls/update-helper": true
+        },
+        "audit": {
+            "abandoned": "ignore"
+        },
+        "preferred-install": "dist"
+    },
+    "policy": {
+        "advisories": {
+            "block": false
         }
     },
     "repositories": [

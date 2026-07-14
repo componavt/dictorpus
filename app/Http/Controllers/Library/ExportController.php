@@ -569,14 +569,9 @@ class ExportController extends Controller
 
     public function annotatedText(Text $text, $type)
     {
-        /**        $filename = 'annotated1_'.$text->id.'.csv';
-        $headers = [
-            'Content-Type' => 'text/csv; charset=utf-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
-        $csvContent = $text->annotatedText1Export();
-        return Response::make($csvContent, 200, $headers);**/
-        Settings::setTempDir(env('TMP_DIR'));
+        if (!empty(env('TMP_DIR'))) {
+            Settings::setTempDir(env('TMP_DIR'));
+        }
         return response()->download($text->annotatedTextExport(env('TMP_DIR'), $type))
             ->deleteFileAfterSend(true);
     }

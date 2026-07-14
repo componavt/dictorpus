@@ -11,6 +11,7 @@ class Sentence extends Model
 
     use \App\Traits\Search\SentenceSearch;
     use \App\Traits\Select\SentenceWordBlock;
+    use \App\Traits\Methods\getSentencesFromXML;
     use \App\Traits\Modify\SentencePunctModify;
     use \Venturecraft\Revisionable\RevisionableTrait;
 
