@@ -69,7 +69,8 @@
             "kylekatarnls/update-helper": true
         },
         "audit": {
-            "abandoned": "ignore"
+            "abandoned": "ignore",
+            "block-insecure": false
         },
         "preferred-install": "dist"
     },
