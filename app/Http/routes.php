@@ -22,7 +22,6 @@ Route::group(
     ],
     function () {
         Route::get('simple_search', 'HomeController@simpleSearch')->name('simple_search');
-        include_once 'routes/pages.php';
         include_once 'routes/auth.php';
         include_once 'routes/correct.php';
         include_once 'routes/corpus.php';
@@ -31,8 +30,12 @@ Route::group(
         include_once 'routes/export.php';
         include_once 'routes/import.php';
         include_once 'routes/ldl.php';
-        include_once 'routes/service.php';
         include_once 'routes/olodict.php';
+        include_once 'routes/pages.php';
+        include_once 'routes/service.php';
         include_once 'routes/stats.php';
     }
 );
+
+include_once 'routes/api.php';
+

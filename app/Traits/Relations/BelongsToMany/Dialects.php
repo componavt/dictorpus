@@ -41,12 +41,18 @@ trait Dialects
         return join(', ', $out);
     }
 
-    public function dialectsToString()
+    public function dialectsToArray()
     {
         $out = [];
         foreach ($this->dialects as $dialect) {
             $out[] = $dialect->name;
         }
-        return join(", ", $out);
+        return $out;
     }
+    
+    public function dialectsToString()
+    {
+        return join(", ", $this->dialectsToArray());
+    }
+
 }
