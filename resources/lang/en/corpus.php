@@ -183,6 +183,7 @@ return [
     'topkar_toponyms' => 'TopKar toponyms',
 
     'trans_author' => 'Author of translation/original work',
+    'translation' => 'Translation / Original',
     'translation_in' => 'translation in',
     'transtext_lang' => 'language of translation/original work',
     'transtext_text' => 'text of translation/original work',

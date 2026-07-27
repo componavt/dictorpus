@@ -210,7 +210,7 @@ if (! function_exists('url_args')) {
 // Usage: 
 // $this->args_by_get = search_values_by_URL($this->url_args);
 if (! function_exists('search_values_by_URL')) {
-    function search_values_by_URL(array $url_args = NULL)
+    function search_values_by_URL($url_args = NULL)
     {
         $out = http_build_query(remove_empty($url_args));
         return $out ? '?' . $out : '';
@@ -218,7 +218,7 @@ if (! function_exists('search_values_by_URL')) {
 }
 
 if (! function_exists('remove_empty')) {
-    function remove_empty(array $url_args = NULL)
+    function remove_empty($url_args = NULL)
     {
         if (isset($url_args['limit_num']) && $url_args['limit_num'] == 10) {
             unset($url_args['limit_num']);
@@ -325,7 +325,7 @@ if (!function_exists('found_rem')) {
 }
 
 if (!function_exists('highlight')) {
-    function highlight($str, $substr, $class = 'search-word')
+    function highlight(string $str, $substr = null, $class = 'search-word')
     {
         $str = preg_replace('/\R/u', ' ', $str);
         if ($substr === null || $substr === '') {
@@ -422,20 +422,6 @@ if (!function_exists('str_diff')) {
             $r .= '<ins class="diffmod">' . mb_substr($str2, $i) . '</ins>';
         }
         return $r;
-    }
-}
-
-if (!function_exists('css')) {
-    function css($filename)
-    {
-        return '<link href="/css/' . $filename . '.css?' . filemtime(env('APP_ROOT') . 'public/css/' . $filename . '.css') . '" rel="stylesheet">';
-    }
-}
-
-if (!function_exists('js')) {
-    function js($filename)
-    {
-        return '<script src="/js/' . $filename . '.js?' . filemtime(env('APP_ROOT') . 'public/js/' . $filename . '.js') . '"></script>';
     }
 }
 

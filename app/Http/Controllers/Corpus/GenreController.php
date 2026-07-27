@@ -208,8 +208,8 @@ class GenreController extends Controller
     }
 
     /**
-     * Gets list of places for drop down list in JSON format
-     * Test url: /corpus/genre/list?lang_id[]=1
+     * Gets list of genres for drop down list in JSON format
+     * Test url: /corpus/genre/list?corpus_ids[]=1
      * 
      * @return JSON response
      */

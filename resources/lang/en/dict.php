@@ -153,7 +153,7 @@ return [
     'descriptive' => 'descriptive',
     'check_delete_wordforms' => 'to delete word forms for this dialect',
 
-    'dialect' => 'Dialect',
+    'dialect' => 'dialect',
     'dialect_usage' => 'Dialect of usage',
     'dialect_can_not_be_removed' => 'The dialect can not be removed, there is the related wordforms or texts',
     'dialect_in_lemma_form' => 'Dialect for word form autocompletion',

@@ -96,8 +96,6 @@ class TextController extends Controller
         $texts = $texts->paginate($this->url_args['limit_num']);
 
         $corpus_values = Corpus::getListWithQuantity('texts');
-
-        //$lang_values = Lang::getList();
         $lang_values = Lang::getListWithQuantity('texts', true);
         $dialect_values = Dialect::getList();
         $informant_values = [NULL => ''] + Informant::getList();

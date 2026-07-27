@@ -39,4 +39,7 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'ristikanza' => [
+        'token' => env('RISTIKANZA_API_TOKEN'),
+    ],
 ];
