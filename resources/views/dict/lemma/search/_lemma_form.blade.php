@@ -99,7 +99,7 @@
 </div>      
 <div class="hide-search-form">{{trans('search.simple_search')}} &#8593;</div>
 
-        {!! Form::hidden('search_label', $url_args['search_label']) !!}        
+        {!! Form::hidden('search_label', (int)$url_args['search_label']) !!}        
         {!! Form::close() !!}
 
         

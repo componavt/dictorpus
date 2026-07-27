@@ -495,7 +495,7 @@ class Text extends Model implements HasMediaConversions
     {
         $transtext = Transtext::find($this->transtext_id);
         $trans_s = '';
-        if ($transtext) {
+        if ($transtext && $transtext->text_xml) {
             list($trans_sxe, $trans_error) = self::toXML($transtext->text_xml, 'trans: ' . $transtext->id);
             if (!$trans_error) {
                 $trans_sent = $trans_sxe->xpath('//s[@id="' . $s_id . '"]');

@@ -311,7 +311,7 @@ class LemmaWordformController extends Controller
             ->whereNotNull('affix')
             ->groupBy('lang_id')
             ->latest('frequency')
-            ->get(['lang_id', DB::raw('count(*) as frequency')]);
+            ->get(['lemmas.lang_id', DB::raw('count(*) as frequency')]);
         $lang_values = [];
         foreach ($lemmas_for_lang as $lemma) {
             $lang_values[$lemma->lang_id] = $lemma->lang->name . " (" . number_format($lemma->frequency, 0, '', ' ') . ")";

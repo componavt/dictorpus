@@ -62,7 +62,7 @@
                 <td data-th="{{ trans('navigation.lemmas') }}" style="text-align: right">
                     @php $lemma_count = $label->lemmaCount(); @endphp
                     @if ($lemma_count) 
-                    <a href="{{ route('lemma.index', ['search_label[]'=>$label->id]) }}">{{ format_number($lemma_count) }}</a>
+                    <a href="{{ route('lemma.index', ['search_label'=>$label->id]) }}">{{ format_number($lemma_count) }}</a>
                     @endif
                 </td>
 

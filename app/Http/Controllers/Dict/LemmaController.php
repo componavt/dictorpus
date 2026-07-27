@@ -102,7 +102,7 @@ class LemmaController extends Controller
         $concept_category_values = [NULL => ''] + ConceptCategory::getList();
         $concept_values = [NULL => ''] + Concept::getList($url_args['search_concept_category'], $url_args['search_pos']);
         $not_changeable_pos_list = PartOfSpeech::notChangeablePOSIdList();
-        //dd($url_args['search_concept'], $concept_values);
+
         return view(
             'dict.lemma.index',
             compact(
