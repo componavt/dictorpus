@@ -3,7 +3,7 @@
         @foreach ($genre->plots as $plot)
         <li>{{$plot->name}} 
             @if ($plot->texts->count())
-            (<a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/'.$plot->id.'?for_print='.$for_print)}}">{{$plot->texts->count()}}</a>)
+            (<a href="{{ LaravelLocalization::localizeURL('/corpus/collection/2/texts?plot_id='.$plot->id.'?for_print='.$for_print)}}">{{$plot->texts->count()}}</a>)
             @endif
         </li>
         <ul>

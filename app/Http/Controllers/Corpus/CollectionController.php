@@ -19,7 +19,7 @@ use App\Models\Corpus\Text;
 use App\Models\Corpus\Topic;
 
 use App\Models\Dict\Dialect;
-use App\Models\Dict\Lang;
+//use App\Models\Dict\Lang;
 
 class CollectionController extends Controller
 {
