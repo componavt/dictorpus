@@ -68,6 +68,7 @@ class RistikanzaTextController extends Controller
 
         return response()->json([
             'data' => $items,
+            'url_args' => $url_args,
             'current_page' => $texts->currentPage(),
             'last_page' => $texts->lastPage(),
             'per_page' => $texts->perPage(),
@@ -160,7 +161,7 @@ class RistikanzaTextController extends Controller
     public function dialects(Request $request)
     {
         $locale = app()->getLocale();
-        
+
         $langId = $request->input('lang_id');
 
         if ($langId !== null && !is_array($langId)) {
@@ -217,11 +218,11 @@ class RistikanzaTextController extends Controller
 
         return response()->json($dialects);
     }
-    
+
     public function districts(Request $request)
     {
         $locale = app()->getLocale();
-        
+
         $regionId = $request->input('region_id');
 
         if ($regionId !== null && !is_array($regionId)) {
@@ -278,7 +279,7 @@ class RistikanzaTextController extends Controller
 
         return response()->json($districts);
     }
-    
+
     public function genres(Request $request)
     {
         $locale = app()->getLocale();
@@ -317,11 +318,11 @@ class RistikanzaTextController extends Controller
 
         return response()->json($genres);
     }
-    
+
     public function places(Request $request)
     {
         $locale = app()->getLocale();
-        
+
         $regionId = $request->input('region_id');
         $districtId = $request->input('district_id');
 
@@ -391,5 +392,75 @@ class RistikanzaTextController extends Controller
             ->all();
 
         return response()->json($places);
-    }    
+    }
+
+    public function topics(Request $request)
+    {
+        $locale = app()->getLocale();
+
+        $corpusId = $request->input('corpus_id');
+
+        if ($corpusId !== null && !is_array($corpusId)) {
+            $request->merge([
+                'corpus_id' => [$corpusId],
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'q' => 'sometimes|string|max:255',
+            'corpus_id' => 'sometimes|array',
+            'corpus_id.*' => 'integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $params = $request->only(['q', 'corpus_id']);
+
+        $q = trim((string) ($params['q'] ?? ''));
+        $name = $q === '' ? null : '%' . $q . '%';
+
+        $corpusIds = array_remove_null($params['corpus_id'] ?? []);
+
+        $query = Topic::query();
+
+        if ($name !== null) {
+            $query->where(function ($query) use ($name) {
+                $query->where('name_en', 'like', $name)
+                    ->orWhere('name_ru', 'like', $name);
+            });
+        }
+
+        if (sizeof($corpusIds)) {
+            $query->whereIn('id', function ($q) use ($corpusIds) {
+                $q->select('topic_id')->from('plot_topic')
+                    ->whereIn('plot_id', function ($q1) use ($corpusIds) {
+                        $q1->select('id')->from('plots')
+                            ->whereIn('genre_id', function ($q2) use ($corpusIds) {
+                                $q2->select('id')->from('genres')
+                                    ->whereIn('corpus_id', $corpusIds);
+                            });
+                    });
+            });
+        }
+
+        $topics = $query
+            ->orderBy('name_' . $locale)
+            ->limit(50)
+            ->get()
+            ->map(function ($topic) {
+                return [
+                    'id' => $topic->id,
+                    'text' => $topic->name,
+                ];
+            })
+            ->values()
+            ->all();
+
+        return response()->json($topics);
+    }
 }

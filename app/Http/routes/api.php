@@ -12,5 +12,6 @@ Route::group([
     Route::get('form-values', 'Api\RistikanzaTextController@formValues');
     Route::get('genres', 'Api\RistikanzaTextController@genres');
     Route::get('places', 'Api\RistikanzaTextController@places');
+    Route::get('topics', 'Api\RistikanzaTextController@topics');
     Route::get('{id}', 'Api\RistikanzaTextController@show');
 });
