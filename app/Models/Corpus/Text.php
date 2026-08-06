@@ -24,6 +24,7 @@ class Text extends Model implements HasMediaConversions
 {
     const PhotoDisk = 'photos';
     const PhotoDir = 'photo';
+    const SortList = ['title', 'id'];
     protected static $wordformsCache = [];
 
     protected $fillable = [
@@ -64,6 +65,8 @@ class Text extends Model implements HasMediaConversions
         $this->addMediaConversion('thumb')
             ->setHeight(200);
     }
+
+    use \App\Traits\Methods\sortList;
 
     //Scopes
     use \App\Traits\Scopes\HasOneDialect;

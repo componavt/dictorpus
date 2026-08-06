@@ -7,138 +7,64 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\User;
 
-/**
- * Creates a revision record.
- *
- * @param object $obj
- * @param string $key
- * @param mixed $old
- * @param mixed $new
- *
- * @return bool
- */
-function createRevisionRecord($obj, $key, $old = null, $new = null)
-{
-    if (gettype($obj) != 'object') {
-        return false;
-    }
-    $revisions = [
-        [
-            'revisionable_type' => get_class($obj),
-            'revisionable_id' => $obj->getKey(),
-            'key' => $key,
-            'old_value' => $old,
-            'new_value' => $new,
-            'user_id' => vms_user('id'),
-            'created_at' => new \DateTime(),
-            'updated_at' => new \DateTime(),
-        ]
-    ];
-    $revision = new \Venturecraft\Revisionable\Revision;
-    DB::table($revision->getTable())->insert($revisions);
-    return true;
-}
-
-if (! function_exists('vms_user')) {
-    function vms_user($field = null)
+if (!function_exists('add_loading_image_to_xml')) {
+    function add_loading_image_to_xml(SimpleXMLElement $parent, string $src = '/images/waiting_small.gif')
     {
-        $user = auth()->user();
-        if (!$user) return null;
-        return $field ? $user->{$field} : $user;
+        $load_img = $parent->addChild('img');
+        $load_img->addAttribute('class', 'img-loading');
+        $load_img->addAttribute('src', $src);
     }
 }
 
-if (! function_exists('number_with_space')) {
-    function number_with_space($num)
+if (! function_exists('array_remove_null')) {
+    function array_remove_null($arr)
     {
-        return number_format($num, 0, '', ' ');
+        //        return array_filter($arr, fn($value)=>!is_null($value) && $value !== '');
+        return array_filter((array)$arr, function ($value) {
+            return !is_null($value) && $value !== '';
+        });
     }
 }
 
-if (! function_exists('show_route')) {
-    function show_route($model, $args_by_get = null)
+if (!function_exists('args_replace')) {
+    function args_replace($url_args, $key, $value)
     {
-        return route_for_model($model, 'show', $args_by_get);
+        $url_args[$key] = $value;
+        return search_values_by_URL($url_args);
     }
 }
 
-if (! function_exists('route_for_model')) {
-    function route_for_model($model, $route, $args_by_get = null/*, $resource = null*/)
+if (!function_exists('clean_int_array')) {
+    /**
+     * Очищает входной массив от пустых значений и возвращает массив целых чисел.
+     * Если результат пуст — возвращает null или [] (по флагу).
+     *
+     * @param mixed $value
+     * @param bool $returnNullIfEmpty
+     * @return array|null
+     */
+    function clean_int_array($value, $returnNullIfEmpty = true)
     {
-        /*        $resource = $resource ?? plural_from_model($model);
+        if (is_null($value) || $value === '') {
+            return $returnNullIfEmpty ? null : [];
+        }
 
-        return route("{$resource}.show", $model);*/
-        return route(single_from_model($model) . ".{$route}", $model) . $args_by_get;
-    }
-}
-if (! function_exists('single_from_model')) {
-    function single_from_model($model)
-    {
-        return snake_case(class_basename($model));
-    }
-}
+        if (!is_array($value)) {
+            $value = [$value];
+        }
 
-if (! function_exists('plural_from_model')) {
-    function plural_from_model($model)
-    {
-        $plural = Str::plural(class_basename($model));
+        // Удаляем пустые строки и null
+        $filtered = array_filter($value, function ($v) {
+            return $v !== '' && $v !== null;
+        });
 
-        return Str::camel($plural);
-    }
-}
+        // Преобразуем в целые числа
+        $ints = array_map('intval', $filtered);
 
-if (! function_exists('is_editor')) {
-    function is_editor()
-    {
-        $auth_user = Sentinel::check();
-        return User::whereId($auth_user->id)
-            ->whereIn('id', function ($q) {
-                $q->select('user_id')->from('role_users')
-                    ->whereIn('role_id', [1, 4]);
-            })->count();
-    }
-}
+        // Сбрасываем ключи
+        $ints = array_values($ints);
 
-if (! function_exists('user_dict_edit')) {
-    function user_dict_edit()
-    {
-        return User::checkAccess('dict.edit');
-    }
-}
-
-if (! function_exists('user_dict_add')) {
-    function user_dict_add()
-    {
-        return User::checkAccess('dict.add');
-    }
-}
-
-if (! function_exists('user_dict_audio')) {
-    function user_dict_audio()
-    {
-        return User::checkAccess('dict.audio');
-    }
-}
-
-if (! function_exists('user_corpus_edit')) {
-    function user_corpus_edit()
-    {
-        return User::checkAccess('corpus.edit');
-    }
-}
-
-if (! function_exists('user_photo_edit')) {
-    function user_photo_edit()
-    {
-        return User::checkAccess('photo.edit');
-    }
-}
-
-if (! function_exists('to_sql')) {
-    function to_sql($query)
-    {
-        //dd($query->toSql(), $query->getBindings());        
-        return vsprintf(str_replace(array('?'), array('\'%s\''), $query->toSql()), $query->getBindings());
+        return ($returnNullIfEmpty && empty($ints)) ? null : $ints;
     }
 }
 
@@ -178,111 +104,6 @@ if (! function_exists('convert_quotes')) {
     }
 }
 
-if (! function_exists('to_link')) {
-    function to_link($str, $link)
-    {
-        return '<a href="' . LaravelLocalization::localizeURL($link) . '">' . $str . '</a>';
-    }
-}
-
-// extracts some parameters from object Request into array $url_args
-if (! function_exists('url_args')) {
-    function url_args($request, $limit_min = 10)
-    {
-        $url_args = [
-            'limit_num' => (int)$request->input('limit_num'), // number of records per page
-            'page'      => (int)$request->input('page'),      // number of page
-        ];
-        if (!$url_args['page']) {
-            $url_args['page'] = 1;
-        }
-
-        if ($url_args['limit_num'] <= 0) {
-            $url_args['limit_num'] = $limit_min;
-        } elseif ($url_args['limit_num'] > 1000) {
-            $url_args['limit_num'] = 1000;
-        }
-        return $url_args;
-    }
-}
-
-// Converts the array $url_args (name->value) to String
-// Usage: 
-// $this->args_by_get = search_values_by_URL($this->url_args);
-if (! function_exists('search_values_by_URL')) {
-    function search_values_by_URL($url_args = NULL)
-    {
-        $out = http_build_query(remove_empty($url_args));
-        return $out ? '?' . $out : '';
-    }
-}
-
-if (! function_exists('remove_empty')) {
-    function remove_empty($url_args = NULL)
-    {
-        if (isset($url_args['limit_num']) && $url_args['limit_num'] == 10) {
-            unset($url_args['limit_num']);
-        }
-        if (isset($url_args['page']) && $url_args['page'] == 1) {
-            unset($url_args['page']);
-        }
-        foreach ($url_args as $k => $v) {
-            if (!$v || is_array($v) && (!sizeof($v) || sizeof($v) == 1 && isset($v[1]) && !$v[1])) {
-                unset($url_args[$k]);
-            }
-        }
-        return $url_args;
-    }
-}
-
-if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
-    function mb_ucfirst($string)
-    {
-        $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
-        return $string;
-    }
-}
-
-if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
-    function mb_ucfirst($string)
-    {
-        $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
-        return $string;
-    }
-}
-
-if (!function_exists('prev_args')) {
-    function prev_args($url_args)
-    {
-        $url_args['page'] = $url_args['page'] > 1 ? $url_args['page'] - 1 : 1;
-        return search_values_by_URL($url_args);
-    }
-}
-
-if (!function_exists('next_args')) {
-    function next_args($url_args)
-    {
-        $url_args['page'] = $url_args['page'] + 1;
-        return search_values_by_URL($url_args);
-    }
-}
-
-if (!function_exists('args_replace')) {
-    function args_replace($url_args, $key, $value)
-    {
-        $url_args[$key] = $value;
-        return search_values_by_URL($url_args);
-    }
-}
-
-if (!function_exists('process_text')) {
-    function process_text($text)
-    {
-        $text = str_replace("\n", "<br>", trim($text));
-        return $text;
-    }
-}
-
 if (!function_exists('count_not_empty_elems')) {
     function count_not_empty_elems($list)
     {
@@ -300,10 +121,74 @@ if (!function_exists('count_not_empty_elems')) {
     }
 }
 
-if (!function_exists('remove_hyphens')) {
-    function remove_hyphens($str)
+/**
+ * Creates a revision record.
+ *
+ * @param object $obj
+ * @param string $key
+ * @param mixed $old
+ * @param mixed $new
+ *
+ * @return bool
+ */
+function createRevisionRecord($obj, $key, $old = null, $new = null)
+{
+    if (gettype($obj) != 'object') {
+        return false;
+    }
+    $revisions = [
+        [
+            'revisionable_type' => get_class($obj),
+            'revisionable_id' => $obj->getKey(),
+            'key' => $key,
+            'old_value' => $old,
+            'new_value' => $new,
+            'user_id' => vms_user('id'),
+            'created_at' => new \DateTime(),
+            'updated_at' => new \DateTime(),
+        ]
+    ];
+    $revision = new \Venturecraft\Revisionable\Revision;
+    DB::table($revision->getTable())->insert($revisions);
+    return true;
+}
+
+if (!function_exists('css')) {
+    function css($filename)
     {
-        return preg_replace('/&shy;/', '', $str);
+        $code = @filemtime(env('APP_ROOT') . 'public/css/' . $filename . '.css');
+        return '<link href="/css/' . $filename . '.css?' . $code . '" rel="stylesheet">';
+    }
+}
+
+/**
+ * Encode one CSV row per RFC 4180 (double-quote escaping only, no backslash).
+ * Compatible with PHP 7.3+
+ */
+if (!function_exists('csv_row')) {
+    function csv_row(array $fields, string $sep = ','): string
+    {
+        $cells = array_map(function ($value) use ($sep) {
+            $value = (string) $value;
+            // normalize backslash-escaped values stored in DB (\" → ", \\ → \)
+            $value = stripslashes($value);
+            // RFC 4180: double any existing quotes inside the value
+            $value = str_replace('"', '""', $value);
+            // wrap in quotes if field contains separator, quote, newline or carriage return
+            if (strpbrk($value, $sep . "\"\n\r") !== false) {
+                $value = '"' . $value . '"';
+            }
+            return $value;
+        }, $fields);
+
+        return implode($sep, $cells) . "\n";
+    }
+}
+
+if (!function_exists('fact')) {
+    function fact(int $n)
+    {
+        return ($n >= 1) ?  ($n * fact($n - 1)) : 1;
     }
 }
 
@@ -365,18 +250,18 @@ if (!function_exists('highlight')) {
     }
 }
 
-if (!function_exists('fact')) {
-    function fact(int $n)
+if (! function_exists('is_editor')) {
+    function is_editor()
     {
-        return ($n >= 1) ?  ($n * fact($n - 1)) : 1;
-    }
-}
-
-if (!function_exists('css')) {
-    function css($filename)
-    {
-        $code = @filemtime(env('APP_ROOT') . 'public/css/' . $filename . '.css');
-        return '<link href="/css/' . $filename . '.css?' . $code . '" rel="stylesheet">';
+        $auth_user = Sentinel::check();
+        if (!$auth_user) {
+            return false;
+        }
+        return User::whereId($auth_user->id)
+            ->whereIn('id', function ($q) {
+                $q->select('user_id')->from('role_users')
+                    ->whereIn('role_id', [1, 4]);
+            })->count();
     }
 }
 
@@ -396,6 +281,168 @@ if (!function_exists('mb_strrev')) {
             $r .= mb_substr($str, $i, 1);
         }
         return $r;
+    }
+}
+
+if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
+    function mb_ucfirst($string)
+    {
+        $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
+        return $string;
+    }
+}
+
+if (!function_exists('next_args')) {
+    function next_args($url_args)
+    {
+        $url_args['page'] = $url_args['page'] + 1;
+        return search_values_by_URL($url_args);
+    }
+}
+
+if (! function_exists('number_with_space')) {
+    function number_with_space($num)
+    {
+        return number_format($num, 0, '', ' ');
+    }
+}
+
+if (!function_exists('parse_date_mm_yyyy')) {
+    /**
+     * Парсит строку в формате 'мм.гггг' → Carbon\Carbon объект
+     *
+     * @param string|null $str Например: '06.2025'
+     * @return \Carbon\Carbon|null
+     */
+    function parse_date_mm_yyyy($str)
+    {
+        if (!$str || !preg_match('/^(\d{1,2})\.(\d{4})$/', $str, $m)) {
+            return null;
+        }
+        $month = (int)$m[1];
+        $year  = (int)$m[2];
+        if ($month < 1 || $month > 12) {
+            return null;
+        }
+        return new \Carbon\Carbon("$year-$month-01");
+    }
+}
+
+if (! function_exists('plural_from_model')) {
+    function plural_from_model($model)
+    {
+        $plural = Str::plural(class_basename($model));
+
+        return Str::camel($plural);
+    }
+}
+
+if (!function_exists('prev_args')) {
+    function prev_args($url_args)
+    {
+        $url_args['page'] = $url_args['page'] > 1 ? $url_args['page'] - 1 : 1;
+        return search_values_by_URL($url_args);
+    }
+}
+
+if (!function_exists('process_text')) {
+    function process_text($text)
+    {
+        $text = str_replace("\n", "<br>", trim($text));
+        return $text;
+    }
+}
+
+if (!function_exists('remove_diacritics')) {
+    function remove_diacritics($str)
+    {
+        /*        // Нормализуем строку в форму NFD (разложенные символы)
+        $normalized = normalizer_normalize($str, Normalizer::FORM_D);
+
+        // Удаляем все combining-символы (диакритику)
+        $withoutDiacritics = preg_replace('/\p{Mn}/u', '', $normalized);
+
+        // Возвращаем в компактную форму (опционально)
+        return normalizer_normalize($withoutDiacritics, Normalizer::FORM_C);*/
+        // Только замена символов с точкой снизу (precomposed)
+        $diacriticVowels = ['ạ', 'ẹ', 'ị', 'ọ', 'ụ', 'Ạ', 'Ẹ', 'Ị', 'Ọ', 'Ụ'];
+        $plainVowels     = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
+        $str = str_replace($diacriticVowels, $plainVowels, $str);
+
+        // Удаление ТОЛЬКО combining-знаков (например, ◌̬ U+032C, ◌̱ U+0331)
+        // \p{Mn} удаляет все non-spacing marks, но НЕ трогает Ä, Ö и др.
+        $str = preg_replace('/\p{Mn}/u', '', $str);
+        return $str;
+    }
+}
+
+if (! function_exists('remove_empty')) {
+    function remove_empty($url_args = NULL)
+    {
+        if (isset($url_args['limit_num']) && $url_args['limit_num'] == 10) {
+            unset($url_args['limit_num']);
+        }
+        if (isset($url_args['page']) && $url_args['page'] == 1) {
+            unset($url_args['page']);
+        }
+        foreach ($url_args as $k => $v) {
+            if (!$v || is_array($v) && (!sizeof($v) || sizeof($v) == 1 && isset($v[1]) && !$v[1])) {
+                unset($url_args[$k]);
+            }
+        }
+        return $url_args;
+    }
+}
+
+if (!function_exists('remove_hyphens')) {
+    function remove_hyphens($str)
+    {
+        return preg_replace('/&shy;/', '', $str);
+    }
+}
+
+if (! function_exists('route_for_model')) {
+    function route_for_model($model, $route, $args_by_get = null/*, $resource = null*/)
+    {
+        /*        $resource = $resource ?? plural_from_model($model);
+
+        return route("{$resource}.show", $model);*/
+        return route(single_from_model($model) . ".{$route}", $model) . $args_by_get;
+    }
+}
+
+// Converts the array $url_args (name->value) to String
+// Usage: 
+// $this->args_by_get = search_values_by_URL($this->url_args);
+if (! function_exists('search_values_by_URL')) {
+    function search_values_by_URL($url_args = NULL)
+    {
+        $out = http_build_query(remove_empty($url_args));
+        return $out ? '?' . $out : '';
+    }
+}
+
+if (! function_exists('show_route')) {
+    function show_route($model, $args_by_get = null)
+    {
+        return route_for_model($model, 'show', $args_by_get);
+    }
+}
+
+if (! function_exists('single_from_model')) {
+    function single_from_model($model)
+    {
+        return snake_case(class_basename($model));
+    }
+}
+
+// Разбиваем по точкам, точкам с запятой, тире и т.п.
+if (!function_exists('splitDefinition')) {
+    function split_definition($text)
+    {
+        //dd($text);        
+        $parts = preg_split('/[,.;–—]+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
+        return array_map('trim', $parts);
     }
 }
 
@@ -422,48 +469,6 @@ if (!function_exists('str_diff')) {
             $r .= '<ins class="diffmod">' . mb_substr($str2, $i) . '</ins>';
         }
         return $r;
-    }
-}
-
-// Разбиваем по точкам, точкам с запятой, тире и т.п.
-if (!function_exists('splitDefinition')) {
-    function split_definition($text)
-    {
-        //dd($text);        
-        $parts = preg_split('/[,.;–—]+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
-        return array_map('trim', $parts);
-    }
-}
-
-if (!function_exists('add_loading_image_to_xml')) {
-    function add_loading_image_to_xml(SimpleXMLElement $parent, string $src = '/images/waiting_small.gif')
-    {
-        $load_img = $parent->addChild('img');
-        $load_img->addAttribute('class', 'img-loading');
-        $load_img->addAttribute('src', $src);
-    }
-}
-
-if (!function_exists('remove_diacritics')) {
-    function remove_diacritics($str)
-    {
-        /*        // Нормализуем строку в форму NFD (разложенные символы)
-        $normalized = normalizer_normalize($str, Normalizer::FORM_D);
-
-        // Удаляем все combining-символы (диакритику)
-        $withoutDiacritics = preg_replace('/\p{Mn}/u', '', $normalized);
-
-        // Возвращаем в компактную форму (опционально)
-        return normalizer_normalize($withoutDiacritics, Normalizer::FORM_C);*/
-        // Только замена символов с точкой снизу (precomposed)
-        $diacriticVowels = ['ạ', 'ẹ', 'ị', 'ọ', 'ụ', 'Ạ', 'Ẹ', 'Ị', 'Ọ', 'Ụ'];
-        $plainVowels     = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
-        $str = str_replace($diacriticVowels, $plainVowels, $str);
-
-        // Удаление ТОЛЬКО combining-знаков (например, ◌̬ U+032C, ◌̱ U+0331)
-        // \p{Mn} удаляет все non-spacing marks, но НЕ трогает Ä, Ö и др.
-        $str = preg_replace('/\p{Mn}/u', '', $str);
-        return $str;
     }
 }
 
@@ -503,81 +508,83 @@ if (!function_exists('textToHtml')) {
     }
 }
 
-if (!function_exists('parse_date_mm_yyyy')) {
-    /**
-     * Парсит строку в формате 'мм.гггг' → Carbon\Carbon объект
-     *
-     * @param string|null $str Например: '06.2025'
-     * @return \Carbon\Carbon|null
-     */
-    function parse_date_mm_yyyy($str)
+if (! function_exists('to_link')) {
+    function to_link($str, $link)
     {
-        if (!$str || !preg_match('/^(\d{1,2})\.(\d{4})$/', $str, $m)) {
-            return null;
-        }
-        $month = (int)$m[1];
-        $year  = (int)$m[2];
-        if ($month < 1 || $month > 12) {
-            return null;
-        }
-        return new \Carbon\Carbon("$year-$month-01");
+        return '<a href="' . LaravelLocalization::localizeURL($link) . '">' . $str . '</a>';
     }
 }
 
-if (!function_exists('clean_int_array')) {
-    /**
-     * Очищает входной массив от пустых значений и возвращает массив целых чисел.
-     * Если результат пуст — возвращает null или [] (по флагу).
-     *
-     * @param mixed $value
-     * @param bool $returnNullIfEmpty
-     * @return array|null
-     */
-    function clean_int_array($value, $returnNullIfEmpty = true)
+if (! function_exists('to_sql')) {
+    function to_sql($query)
     {
-        if (is_null($value) || $value === '') {
-            return $returnNullIfEmpty ? null : [];
-        }
-
-        if (!is_array($value)) {
-            $value = [$value];
-        }
-
-        // Удаляем пустые строки и null
-        $filtered = array_filter($value, function ($v) {
-            return $v !== '' && $v !== null;
-        });
-
-        // Преобразуем в целые числа
-        $ints = array_map('intval', $filtered);
-
-        // Сбрасываем ключи
-        $ints = array_values($ints);
-
-        return ($returnNullIfEmpty && empty($ints)) ? null : $ints;
+        //dd($query->toSql(), $query->getBindings());        
+        return vsprintf(str_replace(array('?'), array('\'%s\''), $query->toSql()), $query->getBindings());
     }
 }
 
-/**
- * Encode one CSV row per RFC 4180 (double-quote escaping only, no backslash).
- * Compatible with PHP 7.3+
- */
-if (!function_exists('csv_row')) {
-    function csv_row(array $fields, string $sep = ','): string
+// extracts some parameters from object Request into array $url_args
+if (! function_exists('url_args')) {
+    function url_args($request, $limit_min = 10)
     {
-        $cells = array_map(function ($value) use ($sep) {
-            $value = (string) $value;
-            // normalize backslash-escaped values stored in DB (\" → ", \\ → \)
-            $value = stripslashes($value);
-            // RFC 4180: double any existing quotes inside the value
-            $value = str_replace('"', '""', $value);
-            // wrap in quotes if field contains separator, quote, newline or carriage return
-            if (strpbrk($value, $sep . "\"\n\r") !== false) {
-                $value = '"' . $value . '"';
-            }
-            return $value;
-        }, $fields);
+        $url_args = [
+            'limit_num' => (int)$request->input('limit_num'), // number of records per page
+            'page'      => (int)$request->input('page'),      // number of page
+        ];
+        if (!$url_args['page']) {
+            $url_args['page'] = 1;
+        }
 
-        return implode($sep, $cells) . "\n";
+        if ($url_args['limit_num'] <= 0) {
+            $url_args['limit_num'] = $limit_min;
+        } elseif ($url_args['limit_num'] > 1000) {
+            $url_args['limit_num'] = 1000;
+        }
+        return $url_args;
     }
 }
+
+if (! function_exists('user_corpus_edit')) {
+    function user_corpus_edit()
+    {
+        return User::checkAccess('corpus.edit');
+    }
+}
+
+if (! function_exists('user_dict_add')) {
+    function user_dict_add()
+    {
+        return User::checkAccess('dict.add');
+    }
+}
+
+if (! function_exists('user_dict_audio')) {
+    function user_dict_audio()
+    {
+        return User::checkAccess('dict.audio');
+    }
+}
+
+if (! function_exists('user_dict_edit')) {
+    function user_dict_edit()
+    {
+        return User::checkAccess('dict.edit');
+    }
+}
+
+if (! function_exists('user_photo_edit')) {
+    function user_photo_edit()
+    {
+        return User::checkAccess('photo.edit');
+    }
+}
+
+if (! function_exists('vms_user')) {
+    function vms_user($field = null)
+    {
+        $user = auth()->user();
+        if (!$user) return null;
+        return $field ? $user->{$field} : $user;
+    }
+}
+

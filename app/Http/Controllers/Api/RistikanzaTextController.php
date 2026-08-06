@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+//use Illuminate\Support\Facades\Log;
 
 use App\Http\Controllers\Controller;
 //use Illuminate\Support\Facades\Response;
@@ -151,10 +152,133 @@ class RistikanzaTextController extends Controller
             'plot_values' => Plot::getList(),
             'recorder_values' => [NULL => ''] + Recorder::getList(),
             'region_values' => [NULL => ''] + Region::getList(),
+            'sort_values' => Text::sortList(),
             'topic_values' => Topic::getList(),
         ]);
     }
 
+    public function dialects(Request $request)
+    {
+        $locale = app()->getLocale();
+        
+        $langId = $request->input('lang_id');
+
+        if ($langId !== null && !is_array($langId)) {
+            $request->merge([
+                'lang_id' => [$langId],
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'q' => 'sometimes|string|max:255',
+            'lang_id' => 'sometimes|array',
+            'lang_id.*' => 'integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $params = $request->only(['q', 'lang_id']);
+
+        $q = trim((string) ($params['q'] ?? ''));
+        $name = $q === '' ? null : '%' . $q . '%';
+
+        $langIds = array_remove_null($params['lang_id'] ?? []);
+
+        $query = Dialect::query();
+
+        if ($name !== null) {
+            $query->where(function ($query) use ($name) {
+                $query->where('name_en', 'like', $name)
+                    ->orWhere('name_ru', 'like', $name);
+            });
+        }
+
+        if (sizeof($langIds)) {
+            $query->whereIn('lang_id', $langIds);
+        }
+
+        $dialects = $query
+            ->orderBy('name_' . $locale)
+            ->limit(50)
+            ->get()
+            ->map(function ($dialect) {
+                return [
+                    'id' => $dialect->id,
+                    'text' => $dialect->name,
+                ];
+            })
+            ->values()
+            ->all();
+
+        return response()->json($dialects);
+    }
+    
+    public function districts(Request $request)
+    {
+        $locale = app()->getLocale();
+        
+        $regionId = $request->input('region_id');
+
+        if ($regionId !== null && !is_array($regionId)) {
+            $request->merge([
+                'region_id' => [$regionId],
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'q' => 'sometimes|string|max:255',
+            'region_id' => 'sometimes|array',
+            'region_id.*' => 'integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $params = $request->only(['q', 'region_id']);
+
+        $q = trim((string) ($params['q'] ?? ''));
+        $name = $q === '' ? null : '%' . $q . '%';
+
+        $regionIds = array_remove_null($params['region_id'] ?? []);
+
+        $query = District::query();
+
+        if ($name !== null) {
+            $query->where(function ($query) use ($name) {
+                $query->where('name_en', 'like', $name)
+                    ->orWhere('name_ru', 'like', $name);
+            });
+        }
+
+        if (sizeof($regionIds)) {
+            $query->whereIn('region_id', $regionIds);
+        }
+
+        $districts = $query
+            ->orderBy('name_' . $locale)
+            ->limit(50)
+            ->get()
+            ->map(function ($district) {
+                return [
+                    'id' => $district->id,
+                    'text' => $district->name,
+                ];
+            })
+            ->values()
+            ->all();
+
+        return response()->json($districts);
+    }
+    
     public function genres(Request $request)
     {
         $locale = app()->getLocale();
@@ -193,4 +317,79 @@ class RistikanzaTextController extends Controller
 
         return response()->json($genres);
     }
+    
+    public function places(Request $request)
+    {
+        $locale = app()->getLocale();
+        
+        $regionId = $request->input('region_id');
+        $districtId = $request->input('district_id');
+
+        if ($regionId !== null && !is_array($regionId)) {
+            $request->merge([
+                'region_id' => [$regionId],
+            ]);
+        }
+
+        if ($districtId !== null && !is_array($districtId)) {
+            $request->merge([
+                'district_id' => [$districtId],
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'q' => 'sometimes|string|max:255',
+            'region_id' => 'sometimes|array',
+            'region_id.*' => 'integer|min:1',
+            'district_id' => 'sometimes|array',
+            'district_id.*' => 'integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $params = $request->only(['q', 'region_id', 'district_id']);
+
+        $q = trim((string) ($params['q'] ?? ''));
+        $name = $q === '' ? null : '%' . $q . '%';
+
+        $regionIds = array_remove_null($params['region_id'] ?? []);
+        $districtIds = array_remove_null($params['district_id'] ?? []);
+
+        $query = Place::query();
+
+        if ($name !== null) {
+            $query->where(function ($query) use ($name) {
+                $query->where('name_en', 'like', $name)
+                    ->orWhere('name_ru', 'like', $name);
+            });
+        }
+
+        if (sizeof($regionIds)) {
+            $query->whereIn('region_id', $regionIds);
+        }
+
+        if (sizeof($districtIds)) {
+            $query->whereIn('district_id', $districtIds);
+        }
+
+        $places = $query
+            ->orderBy('name_' . $locale)
+            ->limit(50)
+            ->get()
+            ->map(function ($place) {
+                return [
+                    'id' => $place->id,
+                    'text' => $place->name,
+                ];
+            })
+            ->values()
+            ->all();
+
+        return response()->json($places);
+    }    
 }

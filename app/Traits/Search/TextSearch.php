@@ -14,6 +14,7 @@ trait TextSearch
     public static function urlArgs($request)
     {
         $url_args = Str::urlArgs($request) + [
+            'in_desc'     => (int)$request->input('in_desc'),
             'search_author'   => $request->input('search_author'),
             'search_birth_district'  => (array)$request->input('search_birth_district'),
             'search_birth_place' => (array)$request->input('search_birth_place'),
@@ -47,10 +48,16 @@ trait TextSearch
             'search_word'     => $request->input('search_word'),
             'search_year_from' => (int)$request->input('search_year_from'),
             'search_year_to'  => (int)$request->input('search_year_to'),
+            'sort_by' => $request->input('sort_by'),
             'wblock_preloaded' => (int)$request->input('wblock_preloaded'),
             'with_audio' => (bool)$request->input('with_audio'),
             'with_transtext' => (bool)$request->input('with_transtext'),
         ];
+
+        $sort_list = self::SortList;
+        if (!in_array($url_args['sort_by'], $sort_list)) {
+            $url_args['sort_by'] = $sort_list[0];
+        }
 
         if ($url_args['search_without_genres']) {
             $url_args['search_genre'] = [];
@@ -60,8 +67,7 @@ trait TextSearch
 
     public static function search(array $url_args)
     {
-        //        $texts = self::orderBy('title');        
-        $texts = self::orderBy('id', 'DESC');
+        $texts = self::orderBy($url_args['sort_by'], $url_args['in_desc'] ? 'DESC' : 'ASC');
         $texts = self::searchByAuthor($texts, $url_args['search_author']);
         //        $texts = self::searchByAuthors($texts, $url_args['search_author']);
         $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place'], $url_args['search_birth_district'], $url_args['search_birth_region']);
