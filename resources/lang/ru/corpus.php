@@ -135,12 +135,12 @@ return [
     'record_by' => 'Записывает',
     'record_place' => 'место записи',
     'record_year' => 'г. записи',
+    'recorded' => 'записали',
     'recorder' => 'Собиратель',
     'recorder_list' => 'Список собирателей',
     'recorder_name' => 'Имя собирателя',
     'recorder_removed' => 'Собиратель ":name" удален.',
     'recording_year' => 'год записи',
-    'recorded' => 'записали',
 
     'region' => 'Область, республика',
     'region_list' => 'Список регионов',
@@ -197,5 +197,6 @@ return [
     'unlock' => 'разблокировать',
     'wait_while_search' => 'Подождите, пожалуйста, идет поиск возможных вариантов ...',
     'with_audio' => 'с аудиозаписями',
+    'with_photo' => 'с фото',
     'with_transtext' => 'с переводом на русский'
 ];

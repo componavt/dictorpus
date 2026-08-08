@@ -212,7 +212,7 @@
 @if ($full)    
     <div class="col-md-4{{$url_args['search_ieeh_archive_number1'] || $url_args['search_ieeh_archive_number2']? '' : ' ext-form'}}">
         <p style="font-weight:bold; margin-bottom: 6px">{{ trans('corpus.archive_krc') }}</p>
-        <div style="display:flex">
+        <div style="display:flex; margin-bottom: -15px">
             @include('widgets.form.formitem._text', 
                     ['name' => 'search_ieeh_archive_number1', 
                     'value' => $url_args['search_ieeh_archive_number1'] ? $url_args['search_ieeh_archive_number1'] : ''
@@ -224,7 +224,7 @@
                     ])    
         </div>                           
     </div>
-    <div class="col-md-4{{$url_args['search_text'] ? '' : ' ext-form'}}">
+    <div class="col-md-4{{ $url_args['search_text'] ? '' : ' ext-form' }}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_text', 
                  'special_symbol' => true,
@@ -234,18 +234,32 @@
                 ])
                                
     </div>
-    <div class="col-sm-4{{$url_args['with_audio'] || $url_args['with_transtext']  ? '' : ' ext-form'}}">
+    <div class="col-sm-4{{ $url_args['with_audio']  ? '' : ' ext-form' }}">
+        <div  style="padding: 30px 0 8px;">
         @include('widgets.form.formitem._checkbox',
                 ['name' => 'with_audio',
                 'value' => 1,
                 'checked' => $url_args['with_audio']==1,
                 'tail'=>trans('corpus.with_audio')]) 
-                
+        </div>
+    </div>
+    <div class="col-sm-4{{ $url_args['with_transtext']  ? '' : ' ext-form' }}">                
+        <div  style="padding: 30px 0 8px;">
         @include('widgets.form.formitem._checkbox',
                 ['name' => 'with_transtext',
                 'value' => 1,
                 'checked' => $url_args['with_transtext']==1,
                 'tail'=>trans('corpus.with_transtext')]) 
+        </div>
+    </div>    
+    <div class="col-sm-4{{ $url_args['with_photo']  ? '' : ' ext-form' }}">                
+        <div  style="padding: 30px 0 8px;">
+        @include('widgets.form.formitem._checkbox',
+                ['name' => 'with_photo',
+                'value' => 1,
+                'checked' => $url_args['with_photo']==1,
+                'tail'=>trans('corpus.with_photo')]) 
+        </div>
     </div>    
 @endif
     @include('widgets.form._search_div')

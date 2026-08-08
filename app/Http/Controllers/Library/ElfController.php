@@ -20,26 +20,6 @@ class ElfController extends Controller
             'auth:corpus.edit,/service/index',
             ['only' => ['textsForMap']]
         );
-
-        /*        $this->url_args = url_args($request) + 
-            [
-                'by_alpha'  => (int)$request->input('by_alpha'),
-                'search_concept_category'  => $request->input('search_concept_category'),
-                'search_concept'  => (int)$request->input('search_concept'),
-                'search_gram'    => $request->input('search_gram'),
-                'search_lemma'    => $request->input('search_lemma'),
-                'search_letter'    => $request->input('search_letter'),
-                'search_meaning'    => $request->input('search_meaning'),
-                'search_pos'    => $request->input('search_pos'),
-                'search_word'    => $request->input('search_word'),
-                'with_audios'    => (int)$request->input('with_audios'),
-                'with_photos'    => (int)$request->input('with_photos'),
-                'with_template'    => (int)$request->input('with_template'),
-                'limit_num' => 5
-            ];
-        $this->url_args['limit_num'] = 5;
-//dd($this->url_args['by_alpha']);        
-        $this->args_by_get = search_values_by_URL($this->url_args); */
     }
 
     public function textsForMap()

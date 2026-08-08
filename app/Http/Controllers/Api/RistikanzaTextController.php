@@ -28,6 +28,11 @@ use App\Models\Dict\Lang;
 class RistikanzaTextController extends Controller
 {
     protected $ethnographicCorpus = 15;
+    protected $biblicalCorpus = 2;
+    protected $folkloreCorpus = 4;
+    protected $monumentsCorpus = 12;
+    protected $enabledCorpuses = [2, 4, 12, 15];
+
 
     public function ethnographic(Request $request)
     {
@@ -87,55 +92,99 @@ class RistikanzaTextController extends Controller
             ])
             ->firstOrFail();
 
-        return response()->json($this->textData($text));
+        return response()->json(['data'=>$this->textData($text)]);
     }
 
     protected function textData(Text $text): array
     {
         $lang_id = $text->lang_id;
+        $locale = app()->getLocale();
+        $authors = [];
+        foreach ($text->authors as $author) {
+            $name = $author->getNameByLang($lang_id);
+            $authors[$author->id] = $name ? $name : $author->name;
+        }
+        
+        $informants = $recorders = [];
+        $event_place = $event_date = '';
+        if ($text->event) {
+            $informants = $text->event->informants()->pluck('name_'.$locale,'id')->toArray();
+            $recorders = $text->event->recorders()->pluck('name_'.$locale,'id')->toArray();
+            $event_place = $text->event->place->placeString();
+            $event_date = $text->event->date;
+        }
+        
+        $source = [];
+        if ($text->source) {
+            $source['book'] = $text->source->bookToString();
+            if ($text->source->ieeh_archive_number1) {
+                $source['number'] = '№'.$text->source->ieeh_archive_number1;
+                if ($text->source->ieeh_archive_number2) {
+                    $source['number'] .= '/'.$text->source->ieeh_archive_number2;
+                }
+            }
+            $source['comment'] = $text->source->comment;           
+        }
+        
+        $cyrtext = $transtext = [];
+        if ($text->cyrtext) {
+            $cyrtext['title'] = $text->cyrtext->title;
+            $cyrtext['text'] = $text->cyrtext->text_xml 
+                ? str_replace("<s id=\"", "<s class=\"cyr_sentence\" id=\"cyrtext_s",
+                        str_replace("<w id=\"","<w class=\"cyr_word\" id=\"cyr_w_", 
+                            mb_ereg_replace('[¦^]', '', $text->cyrtext->text_xml)))
+                : nl2br(mb_ereg_replace('[¦^]', '', $text->cyrtext->text));
+        }
+        if ($text->transtext) {
+            $transtext['title'] = $text->transtext->title;
+            $transtext['authors'] = $text->transtext->authorsToString();
+            $transtext['lang'] = $text->transtext->lang ? $text->transtext->lang->short : null;
+            $transtext['text'] = $text->transtext->text_xml 
+                ? str_replace("<s id=\"","<s class=\"trans_sentence\" id=\"transtext_s", 
+                        mb_ereg_replace('[¦^]', '', $text->transtext->text_xml)) 
+                : nl2br(mb_ereg_replace('[¦^]', '', $text->transtext->text));
+        }
+        $original_text = str_replace("<s id=\"","<s class=\"sentence\" id=\"text_s", 
+                        mb_ereg_replace('[¦^]', '', $text->textFromStructure()));
+        
+        $photos = [];
+        foreach ($text->getMedia() as $photo) {
+            $photos[] = [
+                'src' => $photo->getUrl('thumb'),
+                'big' => $photo->getUrl(''),
+                'title' => $photo->name
+            ];
+        }
+        
+        $audiotexts = [];
+        foreach ($text->audiotexts as $audiotext) {
+            $audiotexts[] = $audiotext->url();
+        }
+        
         return [
             'id' => $text->id,
             'title' => $text->title,
-            'lang' => optional($text->lang)->short,
-
-            /*            'authors' => $text->authors
-                ->map(function ($author) use ($lang_id) {
-                    $name = $author->getNameByLang($lang_id);
-                    return [
-                        'id' => $author->id,
-                        'name' => $name ? $name : $author->name,
-                    ];
-                })
-                ->values()
-                ->all(),
-
-            'corpuses' => $text->corpuses
-                ->map(function ($corpus) use ($lang_id) {
-                    return [
-                        'id' => $corpus->id,
-                        'name' => $corpus->name,
-                    ];
-                })
-                ->values()
-                ->all(),*/
-            'authors' => $text->authors
-                //                ->pluck('name', 'id')
-                ->mapWithKeys(function ($author) {
-                    return [
-                        $author->id => $author->name,
-                    ];
-                })
-                ->all(),
-
-            'corpuses' => $text->corpuses
-                //                ->pluck('name', 'id')
-                ->mapWithKeys(function ($corpus) {
-                    return [
-                        $corpus->id => $corpus->name,
-                    ];
-                })
-                ->all(),
-
+            'lang' => $text->lang ? $text->lang->short : null,
+            'dialects' => $text->dialects()->pluck('name_'.$locale,'id')->toArray(),
+            'authors' => $authors,
+            'corpuses' => $text->corpuses()->whereIn('id', $this->enabledCorpuses)->pluck('name_'.$locale,'id')->toArray(),
+            'genres' => $text->genres()->pluck('name_'.$locale,'id')->toArray(),
+            'plots' => $text->plots()->pluck('name_'.$locale,'id')->toArray(),
+            'topics' => $text->topics()->pluck('name_'.$locale,'id')->toArray(),
+            'cycles' => $text->cycles()->pluck('name_'.$locale,'id')->toArray(),
+            'motives' => $text->motives()->pluck('name_'.$locale,'id')->toArray(),
+            'event_place' => $event_place,
+            'event_date' => $event_date,
+            'informants' => $informants,
+            'recorders' => $recorders,
+            'source' => $source,
+            'mentioned_places' => $text->placesToString(),
+            'comment' => $text->comment,
+            'text' => $original_text,
+            'transtext' => $transtext,
+            'cyrtext' => $cyrtext,
+            'photos' => $photos,
+            'audiotexts' => $audiotexts,
         ];
     }
 

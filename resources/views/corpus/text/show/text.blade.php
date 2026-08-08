@@ -1,8 +1,5 @@
-@if ($text->title)
-        <h4>
-        @if ($text->authors)
-            {{$text->authorsToString()}}<h4>
-        @endif
+@if ($text->title)        
+        <h4>{{$text->authorsToString()}}</h4>
         <h3>
         {!!highlight($text->title, $url_args['search_w'], 'search-word')!!}
         </h3>

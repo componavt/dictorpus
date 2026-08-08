@@ -77,19 +77,8 @@ trait TextWordBlock
      */
     public function textForPage($url_args, $meanings = [], $gramsets = [], $wordforms = [], $words_with_important_examples = [])
     {
-        //mb_internal_encoding("UTF-8");
-        //mb_regex_encoding("UTF-8");        
         if ($this->text_structure) :
-            $this->text_xml = $this->text_structure;
-            $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
-            foreach ($sentences as $s) {
-                $s->text_xml = mb_ereg_replace('[¦^]', '', $s->text_xml);
-                $this->text_xml = mb_ereg_replace(
-                    "\<s id=\"" . $s->s_id . "\"\/\>",
-                    $s->text_xml,
-                    $this->text_xml
-                );
-            }
+            $this->text_xml = $this->textFromStructure();
         endif;
         if ($this->text_xml) :
             return $this->setLemmaLink(
@@ -105,6 +94,20 @@ trait TextWordBlock
             );
         endif;
         return nl2br($this->text);
+    }
+    
+    public function textFromStructure() {
+        $out = $this->text_structure;
+        $sentences = Sentence::whereTextId($this->id)->orderBy('s_id')->get();
+        foreach ($sentences as $s) {
+            $s->text_xml = mb_ereg_replace('[¦^]', '', $s->text_xml);
+            $out = mb_ereg_replace(
+                "\<s id=\"" . $s->s_id . "\"\/\>",
+                $s->text_xml,
+                $out
+            );
+        }
+        return $out;
     }
 
     /**

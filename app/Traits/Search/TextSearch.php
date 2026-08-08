@@ -51,6 +51,7 @@ trait TextSearch
             'sort_by' => $request->input('sort_by'),
             'wblock_preloaded' => (int)$request->input('wblock_preloaded'),
             'with_audio' => (bool)$request->input('with_audio'),
+            'with_photo' => (bool)$request->input('with_photo'),
             'with_transtext' => (bool)$request->input('with_transtext'),
         ];
 
@@ -89,6 +90,7 @@ trait TextSearch
         $texts = self::searchBySource($texts, $url_args['search_source']);
         $texts = self::searchByArchiveNumber($texts, $url_args['search_ieeh_archive_number1'], $url_args['search_ieeh_archive_number2']);
         $texts = self::searchWithAudio($texts, $url_args['with_audio']);
+        $texts = self::searchWithPhoto($texts, $url_args['with_photo']);
 
         $texts = self::searchByPivot($texts, 'text', 'motive', $url_args['search_motive']);
 
@@ -128,6 +130,17 @@ trait TextSearch
         return $texts->whereIn('id', function ($query) {
             $query->select('text_id')
                 ->from('audiotexts');
+        });
+    }
+
+    public static function searchWithPhoto($texts, $with_photo)
+    {
+        if (!$with_photo) {
+            return $texts;
+        }
+        return $texts->whereIn('id', function ($query) {
+            $query->select('model_id')->from('media')
+                  ->where('model_type', 'like', '%Text');
         });
     }
 

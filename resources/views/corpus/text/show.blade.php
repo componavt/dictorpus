@@ -15,7 +15,7 @@
         @include('corpus.text.modals_for_markup')
         @include('widgets.modal',['name'=>'modalOpenBigPhoto',
                               'title'=>$text->event && $text->event->place ? $text->event->place->placeString() : ''
-])
+        ])
         
         <p>
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>

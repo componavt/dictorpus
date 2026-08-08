@@ -196,5 +196,6 @@ return [
     'unlock' => 'unlock',
     'wait_while_search' => 'Please wait while searching for possible options ...',
     'with_audio' => 'with audio files',
+    'with_photo' => 'with photo',
     'with_transtext' => 'with translation in Russian'
 ];
