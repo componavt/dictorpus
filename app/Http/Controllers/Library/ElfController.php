@@ -28,7 +28,7 @@ class ElfController extends Controller
             $q->select('text_id')->from('plot_text')
                 ->where('plot_id', env('PLOT_CELEBRATION_ID'));
         })->orderBy('id')->get();
-        //dd($texts);            
+        //dd($texts);
         $text_places = [];
         foreach ($texts as $text) {
             foreach ($text->getCelebrationPlaces() as $cplace) {

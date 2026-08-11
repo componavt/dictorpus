@@ -72,16 +72,31 @@ class Topic extends Model
         }
     }
 
-    /** Gets list of plots
+    /** Gets list of topics
      * 
-     * @return Array [1=>'Bridal laments',..]
+     * @return array [1=>'Bridal laments',..]
      */
-    public static function getList()
+    public static function getList($genre_id = NULL, $corpus_id = NULL)
     {
-        //        $locale = LaravelLocalization::getCurrentLocale();
-        //        $recs = self::orderBy('name_'.$locale);
-
         $recs = self::orderBy('sequence_number');
+
+        if ($genre_id || $corpus_id) {
+            $recs->whereIn('id', function ($q) use ($genre_id, $corpus_id) {
+                $q->select('topic_id')->from('plot_topic')
+                    ->whereIn('plot_id', function ($q1) use ($genre_id, $corpus_id) {
+                        $q1->select('id')->from('plots');
+                        if ($genre_id) {
+                            $q1->where('genre_id', $genre_id);
+                        }
+                        if ($corpus_id) {
+                            $q1->whereIn('genre_id', function ($q2) use ($corpus_id) {
+                                $q2->select('id')->from('genres')
+                                    ->whereCorpusId($corpus_id);
+                            });
+                        }
+                    });
+            });
+        }
 
         $list = [];
         foreach ($recs->get() as $row) {

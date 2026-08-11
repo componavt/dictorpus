@@ -28,14 +28,15 @@ return [
     'birth_year' => 'year of birth',
     'by_sentences' => 'by sentences',
 
-    'char_left' => 'Characters left',
-    'choose-gramset' => 'Choose a gramset',
+    'celebration_places' => 'Settlements to which the holidays mentioned',
     'celebration_type' => 'Link to the celebration map',
     'celebration_types' => [
         1 => 'by informant\'s place of birth',
         2 => 'by recording location',
         3 => 'by mentioned settlement',
     ],
+    'char_left' => 'Characters left',
+    'choose-gramset' => 'Choose a gramset',
     'comment' => 'comments',
     'comment_source' => 'comment to the source',
     'comment_text' => 'comment to the text',

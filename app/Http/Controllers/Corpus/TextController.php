@@ -259,51 +259,37 @@ class TextController extends Controller
         $dialect_values = Dialect::getList($text->lang_id);
         $dialect_value = $text->dialectValue();
         $photos = $text->getMedia();
+        $celebration_places = [];
+        foreach (Place::whereIn('id', $text->getCelebrationPlaces())->get() as $place) {
+            $celebration_places[$place->id] = $place->placeString();
+        }
 
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples)
             = $text->meaningsGramsetsByWid();
 
-        if ($for_print) {
-            return view(
-                'corpus.text.show_print',
-                compact(
-                    'dialect_value',
-                    'dialect_values',
-                    'for_print',
-                    'gramsets_by_wid',
-                    'langs_for_meaning',
-                    'meanings_by_wid',
-                    'photos',
-                    'pos_id',
-                    'pos_values',
-                    'text',
-                    'wordforms',
-                    'words_with_important_examples',
-                    'args_by_get',
-                    'url_args'
-                )
-            );
-        }
-        return view(
-            'corpus.text.show',
-            compact(
-                'dialect_value',
-                'dialect_values',
-                'gramsets_by_wid',
-                'langs_for_meaning',
-                'meanings_by_wid',
-                'photos',
-                'pos_id',
-                'pos_values',
-                'text',
-                'wordforms',
-                'words_with_important_examples',
-                'args_by_get',
-                'url_args'
-            )
+        $vars_for_view = compact(
+            'celebration_places',
+            'dialect_value',
+            'dialect_values',
+            'for_print',
+            'gramsets_by_wid',
+            'langs_for_meaning',
+            'meanings_by_wid',
+            'photos',
+            'pos_id',
+            'pos_values',
+            'text',
+            'wordforms',
+            'words_with_important_examples',
+            'args_by_get',
+            'url_args'
         );
+        if ($for_print) {
+            return view('corpus.text.show_print', $vars_for_view);
+        }
+        return view('corpus.text.show', $vars_for_view);
     }
 
     public function editSentences($id, Request $request)

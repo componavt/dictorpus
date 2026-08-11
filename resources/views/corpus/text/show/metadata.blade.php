@@ -32,6 +32,13 @@
         </div>
         @endif
         
+        @if (sizeof($celebration_places))
+        <div class="topic-list">
+            <p class="topic-list-title">{{trans('corpus.celebration_places')}}:</p>
+            {!! join("<br>\n", $celebration_places) !!}
+        </div>
+        @endif
+
         @if ($text->getCollectionId())
         <p><b>коллекция:</b> 
         &#171;{!! to_link(trans('collection.name_list')[$text->getCollectionId()], 

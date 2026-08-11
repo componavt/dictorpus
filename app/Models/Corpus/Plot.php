@@ -47,9 +47,30 @@ class Plot extends Model
      * 
      * @return Array [1=>'Bridal laments',..]
      */
-    public static function getList($field_id = NULL)
+    public static function getList($genre_id = NULL, $corpus_id = NULL)
     {
-        return self::getListForField($field_id, 'genre_id');
+        //$locale = LaravelLocalization::getCurrentLocale();
+
+        $objs = self::orderBy('sequence_number');
+        //        $objs = self::orderBy('name_' . $locale);
+
+        if ($genre_id) {
+            $objs->where('genre_id', $genre_id);
+        }
+
+        if ($corpus_id) {
+            $objs->whereIn('genre_id', function ($q) use ($corpus_id) {
+                $q->select('id')->from('genres')
+                    ->whereCorpusId($corpus_id);
+            });
+        }
+
+        $list = [];
+        foreach ($objs->get() as $row) {
+            $list[$row->id] = $row->name;
+        }
+
+        return $list;
     }
 
     public static function search(array $url_args)

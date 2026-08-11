@@ -720,6 +720,11 @@ class Text extends Model implements HasMediaConversions
         }
     }
 
+    /**
+     * Список id населенных пунктов, к которым относятся упомянутые в тексте праздники
+     * 
+     * @return array Of place ids
+     */
     public function getCelebrationPlaces()
     {
         $places = [];

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-//use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 
 use App\Http\Controllers\Controller;
 //use Illuminate\Support\Facades\Response;
@@ -64,22 +64,25 @@ class RistikanzaTextController extends Controller
         return response()->json(RistikanzaText::textData($text));
     }
 
-    public function formValues()
+    public function formValues(Request $request)
     {
+        $corpus_id = (int)$request->input('corpus_id');
+        $genre_id = (int)$request->input('genre_id');
+
         return response()->json([
             'author_values' => [NULL => ''] + Author::getList(),
             'corpus_values' => Corpus::getList(),
             'dialect_values' => Dialect::getList(),
             'district_values' => District::getList(),
-            'genre_values' => Genre::getList(),
+            //'genre_values' => Genre::getList($corpusIds),
             'informant_values' => [NULL => ''] + Informant::getList(),
             'lang_values' => Lang::getProjectList(),
             'place_values' => Place::getList(false),
-            'plot_values' => Plot::getList(),
+            'plot_values' => Plot::getList($genre_id, $corpus_id),
             'recorder_values' => [NULL => ''] + Recorder::getList(),
             'region_values' => [NULL => ''] + Region::getList(),
             'sort_values' => Text::sortList(),
-            'topic_values' => Topic::getList(),
+            'topic_values' => Topic::getList($genre_id, $corpus_id),
         ]);
     }
 
@@ -306,7 +309,7 @@ class RistikanzaTextController extends Controller
         /*Log::debug('Ristikanza API places', [
             'sql' => to_sql($query),
         ]);*/
-            
+
         $places = $query
             ->orderBy('name_' . $locale)
             ->limit(50)
@@ -325,13 +328,24 @@ class RistikanzaTextController extends Controller
 
     public function topics(Request $request)
     {
-        $locale = app()->getLocale();
-
         $corpusId = $request->input('corpus_id');
-
         if ($corpusId !== null && !is_array($corpusId)) {
             $request->merge([
                 'corpus_id' => [$corpusId],
+            ]);
+        }
+
+        $genreId = $request->input('genre_id');
+        if ($genreId !== null && !is_array($genreId)) {
+            $request->merge([
+                'genre_id' => [$genreId],
+            ]);
+        }
+
+        $plotId = $request->input('plot_id');
+        if ($plotId !== null && !is_array($plotId)) {
+            $request->merge([
+                'plot_id' => [$plotId],
             ]);
         }
 
@@ -339,6 +353,10 @@ class RistikanzaTextController extends Controller
             'q' => 'sometimes|string|max:255',
             'corpus_id' => 'sometimes|array',
             'corpus_id.*' => 'integer|min:1',
+            'genre_id' => 'sometimes|array',
+            'genre_id.*' => 'integer|min:1',
+            'plot_id' => 'sometimes|array',
+            'plot_id.*' => 'integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -348,12 +366,14 @@ class RistikanzaTextController extends Controller
             ], 422);
         }
 
-        $params = $request->only(['q', 'corpus_id']);
+        $params = $request->only(['q', 'corpus_id', 'genre_id']);
 
         $q = trim((string) ($params['q'] ?? ''));
         $name = $q === '' ? null : '%' . $q . '%';
 
         $corpusIds = array_remove_null($params['corpus_id'] ?? []);
+        $plotIds = array_remove_null($params['plot_id'] ?? []);
+        $genreIds = array_remove_null($params['genre_id'] ?? []);
 
         $query = Topic::query();
 
@@ -364,21 +384,31 @@ class RistikanzaTextController extends Controller
             });
         }
 
-        if (sizeof($corpusIds)) {
-            $query->whereIn('id', function ($q) use ($corpusIds) {
-                $q->select('topic_id')->from('plot_topic')
-                    ->whereIn('plot_id', function ($q1) use ($corpusIds) {
+        if (sizeof($corpusIds) || sizeof($genreIds) || sizeof($plotIds)) {
+            $query->whereIn('id', function ($q) use ($corpusIds, $genreIds, $plotIds) {
+                $q->select('topic_id')->from('plot_topic');
+                if (sizeof($plotIds)) {
+                    $q->whereIn('plot_id', $plotIds);
+                }
+                if (sizeof($corpusIds)) {
+                    $q->whereIn('plot_id', function ($q1) use ($corpusIds, $genreIds) {
                         $q1->select('id')->from('plots')
-                            ->whereIn('genre_id', function ($q2) use ($corpusIds) {
-                                $q2->select('id')->from('genres')
-                                    ->whereIn('corpus_id', $corpusIds);
+                            ->whereIn('genre_id', function ($q2) use ($corpusIds, $genreIds) {
+                                $q2->select('id')->from('genres');
+                                if (sizeof($genreIds)) {
+                                    $q2->whereIn('id', $genreIds);
+                                }
+                                if (sizeof($corpusIds)) {
+                                    $q2->whereIn('corpus_id', $corpusIds);
+                                }
                             });
                     });
+                }
             });
         }
 
         $topics = $query
-            ->orderBy('name_' . $locale)
+            ->orderBy('sequence_number')
             ->limit(50)
             ->get()
             ->map(function ($topic) {
@@ -391,5 +421,108 @@ class RistikanzaTextController extends Controller
             ->all();
 
         return response()->json($topics);
+    }
+
+    public function plots(Request $request)
+    {
+        $corpusId = $request->input('corpus_id');
+        if ($corpusId !== null && !is_array($corpusId)) {
+            $request->merge([
+                'corpus_id' => [$corpusId],
+            ]);
+        }
+
+        $genreId = $request->input('genre_id');
+        if ($genreId !== null && !is_array($genreId)) {
+            $request->merge([
+                'genre_id' => [$genreId],
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'q' => 'sometimes|string|max:255',
+            'corpus_id' => 'sometimes|array',
+            'corpus_id.*' => 'integer|min:1',
+            'genre_id' => 'sometimes|array',
+            'genre_id.*' => 'integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $params = $request->only(['q', 'corpus_id', 'genre_id']);
+
+        $q = trim((string) ($params['q'] ?? ''));
+        $name = $q === '' ? null : '%' . $q . '%';
+
+        $corpusIds = array_remove_null($params['corpus_id'] ?? []);
+        $genreIds = array_remove_null($params['genre_id'] ?? []);
+
+        $query = Plot::query();
+
+        if ($name !== null) {
+            $query->where(function ($query) use ($name) {
+                $query->where('name_en', 'like', $name)
+                    ->orWhere('name_ru', 'like', $name);
+            });
+        }
+
+        if (sizeof($corpusIds) || sizeof($genreIds)) {
+            $query->whereIn('genre_id', function ($q2) use ($corpusIds, $genreIds) {
+                $q2->select('id')->from('genres');
+                if (sizeof($genreIds)) {
+                    $q2->whereIn('id', $genreIds);
+                }
+                if (sizeof($corpusIds)) {
+                    $q2->whereIn('corpus_id', $corpusIds);
+                }
+            });
+        }
+        Log::debug('Ristikanza API locale', [
+            'genre_id' => $request->input('genre_id'),
+            'params' => $params,
+            'genreIds' => $genreIds,
+            'sql' => to_sql($query),
+
+        ]);
+        $plots = $query
+            ->orderBy('sequence_number')
+            ->limit(50)
+            ->get()
+            ->map(function ($plot) {
+                return [
+                    'id' => $plot->id,
+                    'text' => $plot->name,
+                ];
+            })
+            ->values()
+            ->all();
+
+        return response()->json($plots);
+    }
+
+    public function folkloreGenres()
+    {
+        $locale = app()->getLocale();
+
+        $parent_genres = [19, 52, 93];
+        $genres = [];
+
+        foreach ($parent_genres as $parent_id) {
+            $parent = Genre::find($parent_id);
+            if (!$parent) {
+                continue;
+            }
+            $genres[$parent_id]['name'] = $parent->{'name_pl_' . $locale};
+
+            $res = Genre::whereParentId($parent_id)->orderBy('sequence_number');
+            $genres[$parent_id]['genres'] = $res->count() ? $res->pluck('name_pl_' . $locale, 'id')->toArray() : [];
+        }
+
+        return response()->json($genres);
     }
 }
