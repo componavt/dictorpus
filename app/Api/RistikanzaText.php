@@ -190,4 +190,39 @@ class RistikanzaText
             'audiotexts' => $audiotexts,
         ];
     }
+
+    public static function forMap()
+    {
+        $texts = Text::whereIn('id', function ($q) {
+            $q->select('text_id')->from('plot_text')
+                ->where('plot_id', env('PLOT_CELEBRATION_ID'));
+        })->orderBy('id')->get();
+
+        $text_places = [];
+        foreach ($texts as $text) {
+            foreach ($text->getCelebrationPlaces() as $place_id) {
+                $text_places[$place_id][$text->id] = $text->title;
+            }
+        }
+
+        $places = Place::whereIn('id', array_keys($text_places))->get();
+        $objs = [];
+        foreach ($places as $place) {
+            $lat = $place->latitude;
+            $lon = $place->longitude;
+            if ($lat == 0 || $lon == 0) {
+                continue;
+            }
+
+            $objs[$lat . '_' . $lon] = [
+                'place' => $place->name,
+                'lat' => $lat,
+                'lon' => $lon,
+                'texts' => $text_places[$place->id]
+            ];
+        }
+
+        ksort($objs);
+        return $objs;
+    }
 }

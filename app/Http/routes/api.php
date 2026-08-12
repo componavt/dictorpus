@@ -15,6 +15,7 @@ Route::group([
     Route::get('genres', 'Api\RistikanzaTextController@genres');
     Route::get('places', 'Api\RistikanzaTextController@places');
     Route::get('plots', 'Api\RistikanzaTextController@plots');
+    Route::get('for_map', 'Api\RistikanzaTextController@forMap');
     Route::get('topics', 'Api\RistikanzaTextController@topics');
     Route::get('{id}', 'Api\RistikanzaTextController@show');
 });

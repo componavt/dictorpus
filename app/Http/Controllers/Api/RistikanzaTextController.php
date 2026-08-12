@@ -525,4 +525,9 @@ class RistikanzaTextController extends Controller
 
         return response()->json($genres);
     }
+
+    public function forMap()
+    {
+        return response()->json(RistikanzaText::forMap());
+    }
 }
