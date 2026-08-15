@@ -190,36 +190,99 @@ class RistikanzaText
             'audiotexts' => $audiotexts,
         ];
     }
-
-    public static function forMap()
+    
+    protected static function idsFromUrlArgs(array $urlArgs, $key)
     {
-        $texts = Text::whereIn('id', function ($q) {
+        $ids = isset($urlArgs[$key]) ? $urlArgs[$key] : [];
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        $ids = array_filter($ids, function ($id) {
+            return is_numeric($id) && (int) $id > 0;
+        });
+
+        return array_values(array_unique(array_map('intval', $ids)));
+    }
+
+    public static function forMap(array $urlArgs = [])
+    {
+        $topicIds = self::idsFromUrlArgs($urlArgs, 'search_topic');
+        $regionIds = self::idsFromUrlArgs($urlArgs, 'search_region');
+        $districtIds = self::idsFromUrlArgs($urlArgs, 'search_district');
+
+        $textsQuery = Text::whereIn('id', function ($q) {
             $q->select('text_id')->from('plot_text')
                 ->where('plot_id', env('PLOT_CELEBRATION_ID'));
-        })->orderBy('id')->get();
+        });
 
+        if (sizeof($topicIds)) {
+            $textsQuery->whereIn('id', function ($query) use ($topicIds) {
+                $query->select('text_id')
+                    ->from('text_topic')
+                    ->whereIn('topic_id', $topicIds);
+            });
+        }
+        
+        $texts = $textsQuery
+            ->with([
+                'event.informants',
+                'places',
+            ])
+            ->orderBy('id')
+            ->get();
+        
         $text_places = [];
         foreach ($texts as $text) {
             foreach ($text->getCelebrationPlaces() as $place_id) {
                 $text_places[$place_id][$text->id] = $text->title;
             }
         }
+        
+        if (!sizeof($text_places)) {
+            return [];
+        }
 
-        $places = Place::whereIn('id', array_keys($text_places))->get();
+        $placesQuery = Place::whereIn('id', array_keys($text_places));
+        
+        if (sizeof($regionIds)) {
+            $placesQuery->whereIn('region_id', $regionIds);
+        }
+
+        if (sizeof($districtIds)) {
+            $placesQuery->whereIn('district_id', $districtIds);
+        }
+
+        $places = $placesQuery->get();
+
+        
         $objs = [];
         foreach ($places as $place) {
             $lat = $place->latitude;
             $lon = $place->longitude;
+            
             if ($lat == 0 || $lon == 0) {
                 continue;
             }
+            
+            $key = $lat . '_' . $lon;
 
-            $objs[$lat . '_' . $lon] = [
-                'place' => $place->name,
-                'lat' => $lat,
-                'lon' => $lon,
-                'texts' => $text_places[$place->id]
-            ];
+            if (!isset($objs[$key])) {
+                $objs[$key] = [
+                    'place' => $place->name,
+                    'lat' => $lat,
+                    'lon' => $lon,
+                    'texts' => [],
+                ];
+            } else {
+                $objs[$key]['place'] .= '; ' . $place->name;
+            }
+
+            $objs[$key]['texts'] = array_replace(
+                $objs[$key]['texts'],
+                $text_places[$place->id]
+            );
         }
 
         ksort($objs);

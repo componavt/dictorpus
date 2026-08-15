@@ -721,13 +721,15 @@ class Text extends Model implements HasMediaConversions
     }
 
     /**
-     * Список id населенных пунктов, к которым относятся упомянутые в тексте праздники
+     * Список id населенных пунктов, с которыми текст связан в контексте праздника:
+     * место рождения информанта, место записи или упомянутое поселение.
      * 
      * @return array Of place ids
      */
     public function getCelebrationPlaces()
     {
         $places = [];
+        
         foreach ($this->getCelebrationTypeIds() as $type_id) {
             if ($type_id == 1 && $this->event) { // по месту рождения информанта
                 foreach ($this->event->informants as $informant) {
@@ -736,14 +738,15 @@ class Text extends Model implements HasMediaConversions
                     }
                 }
             }
-            if ($type_id == 2 && $this->event) { // по месту записи
+            if ($type_id == 2 && $this->event && $this->event->place_id) { // по месту записи
                 $places[] = $this->event->place_id;
             }
             if ($type_id == 3 && $this->places()->count()) { // по упомянутому поселению
                 $places = array_merge($places, $this->places()->pluck('id')->toArray());
             }
         }
+        $places = array_unique($places);
         sort($places);
-        return array_unique($places);
+        return $places;
     }
 }

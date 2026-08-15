@@ -68,6 +68,9 @@ class RistikanzaTextController extends Controller
     {
         $corpus_id = (int)$request->input('corpus_id');
         $genre_id = (int)$request->input('genre_id');
+        Log::debug('Ristikanza API formValues', [
+            'genre_id' => $genre_id,
+        ]);
 
         return response()->json([
             'author_values' => [NULL => ''] + Author::getList(),
@@ -526,8 +529,9 @@ class RistikanzaTextController extends Controller
         return response()->json($genres);
     }
 
-    public function forMap()
+    public function forMap(Request $request)
     {
-        return response()->json(RistikanzaText::forMap());
+        $url_args = Text::urlArgs($request);
+        return response()->json(RistikanzaText::forMap($url_args));
     }
 }
