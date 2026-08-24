@@ -3,7 +3,7 @@
 namespace App\Traits\Modify;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Log;
 
 use App\Library\Grammatic;
 
@@ -106,7 +106,7 @@ trait TextModify
 
         $this->storeVideo($request->youtube_id, $request->rutube_id);
         $this->storeEvent($request->only('event_place_id', 'event_date', 'event_informants', 'event_recorders'));
-        $this->storeSource($request->only('source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
+        $this->storeSource($request->only('source_publication_id', 'source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
 
         $this->corpuses()->sync($request->corpuses);
 

@@ -142,6 +142,22 @@ class Text extends Model implements HasMediaConversions
             ->orderBy('text_topic.sequence_number');
     }
 
+    public function publications(){
+        $source_id = $this->source_id;
+        return Publication::whereIn('id', function ($q) use ($source_id) {
+            $q->select('publication_id')->from('sources')
+              ->whereId($source_id);
+        });
+    }
+    
+    public function publicationValue():Array{
+        $out = [];
+        foreach ($this->publications()->get() as $publication) {
+            $out[] = $publication->id;
+        }
+        return $out;
+    }
+    
     public function hasVideoCode()
     {
         return $this->video && ($this->video->youtube_id || $this->video->rutube_id);

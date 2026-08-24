@@ -92,6 +92,7 @@ return [
     'sosd' => 'Comparative-onomasiological dictionary of dialects',
     'speech_corpus' => 'Speech corpus',
     'spellchecking' => 'Spellchecking',
+    'source_publications' => 'References\' publications',
     'sources' => 'References',
     'stats' => 'Statistics',
     'synsets' => 'Dictionary of synonyms',

@@ -1,4 +1,14 @@
 {{-- SOURCE --}}
+        <?php if ($action=='create') { $publication_value = NULL; } ?>        
+        @include('widgets.form.formitem._select2', 
+                ['name' => 'source.publication_id', 
+                 'values' =>$publication_values,
+                 'value' => $publication_value,
+                 'is_multiple' => false,
+                 'call_add_onClick' => 'addPublication()',
+                 'call_add_title' => trans('messages.create_new_f'),
+                 'title' => trans('corpus.publication')]) 
+                 
         <?php $source_author_value = ($action=='edit' && $text->source) ? ($text->source->author) : NULL; ?>
         @include('widgets.form.formitem._text', 
                 ['name' => 'source.author', 

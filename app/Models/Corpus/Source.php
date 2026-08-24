@@ -8,7 +8,7 @@ use App\Models\Corpus\Text;
 
 class Source extends Model
 {
-    protected $fillable = ['title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'];
+    protected $fillable = ['publication_id', 'title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -65,7 +65,7 @@ class Source extends Model
      */
     public static function fillByData($source_id, $request_data)
     {
-        $source_fields = ['title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'];
+        $source_fields = ['publication_id', 'title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'];
         foreach ($source_fields as $column) {
             $data_to_fill[$column] = ($request_data['source_' . $column]) ? $request_data['source_' . $column] : NULL;
         }

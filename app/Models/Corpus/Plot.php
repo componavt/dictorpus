@@ -37,6 +37,10 @@ class Plot extends Model
     use \App\Traits\Methods\getListForField;
     use \App\Traits\Methods\getNameAttribute;
     use \App\Traits\Methods\getNameByID;
+    use \App\Traits\Methods\search\byGenres;
+    use \App\Traits\Methods\search\byID;
+    use \App\Traits\Methods\search\byName;
+
 
     public function getNumberInGenresAttribute()
     {
@@ -85,10 +89,6 @@ class Plot extends Model
 
         return $objs;
     }
-
-    use \App\Traits\Methods\search\byGenres;
-    use \App\Traits\Methods\search\byID;
-    use \App\Traits\Methods\search\byName;
 
     public static function searchByCorpus($objs, $corpus_id)
     {

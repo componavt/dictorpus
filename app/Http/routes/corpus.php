@@ -35,14 +35,17 @@ Route::group(
 
                 Route::get('informant/{id}/audio', 'Corpus\InformantController@audio')->name('informant.audio');
                 Route::get('informant/{id}/get_lang', 'Corpus\InformantController@getLang');
-
                 Route::get('informant/store', 'Corpus\InformantController@simpleStore');
+                
                 Route::get('genre/list', 'Corpus\GenreController@genreList');
                 Route::get('motive/list', 'Corpus\MotiveController@motiveList');
+                
                 Route::get('place/birth_list', 'Corpus\PlaceController@birthPlaceList');
                 Route::get('place/list', 'Corpus\PlaceController@placeList');
                 Route::get('place/store', 'Corpus\PlaceController@simpleStore');
+                
                 Route::get('plot/list', 'Corpus\PlotController@plotList');
+                Route::get('publication/store', 'Corpus\PublicationController@simpleStore');
 
                 Route::get('recorder/store', 'Corpus\RecorderController@simpleStore');
                 Route::get('region/{id}/text_count', 'Corpus\RegionController@textCount');
@@ -222,6 +225,17 @@ Route::group(
                                 'update' => 'plot.update',
                                 'store' => 'plot.store',
                                 'destroy' => 'plot.destroy'
+                        ]]
+                );
+
+                Route::resource(
+                        'publication',
+                        'Corpus\PublicationController',
+                        ['names' => [
+                                'index' => 'publication.index',
+                                'update' => 'publication.update',
+                                'store' => 'publication.store',
+                                'destroy' => 'publication.destroy'
                         ]]
                 );
 

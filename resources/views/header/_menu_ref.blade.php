@@ -10,3 +10,4 @@
 <li><a href="{{ LaravelLocalization::localizeURL('/dict/concept') }}">{{ trans('navigation.concepts') }}</a></li>
 <li><a href="{{ LaravelLocalization::localizeURL('/dict/audio') }}">{{ trans('navigation.audios') }}</a></li>
 <li><a href="{{ route('label.index') }}">{{ trans('navigation.labels') }}</a></li>
+<li><a href="{{ route('publication.index') }}">{{ trans('navigation.publications') }}</a></li>

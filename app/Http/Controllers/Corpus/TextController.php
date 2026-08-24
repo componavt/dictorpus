@@ -19,6 +19,7 @@ use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Motive;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Plot;
+use App\Models\Corpus\Publication;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
 use App\Models\Corpus\Sentence;
@@ -389,6 +390,9 @@ class TextController extends Controller
         $trans_author_value = $text->transtext ? $text->transtext->authorValue() : null;
         $project_langs = Lang::projectLangs();
 
+        $publication_values = Publication::getList();
+        $publication_value = $text->publicationValue();
+
         $readonly = ($text->meanings()->wherePivot('relevance', '<>', 1)->count()) ? true : false;
 
         $args_by_get = $this->args_by_get;
@@ -413,6 +417,8 @@ class TextController extends Controller
                 'plot_value',
                 'plot_values',
                 'project_langs',
+                'publication_value',
+                'publication_values',
                 'readonly',
                 'recorder_values',
                 'region_values',
@@ -534,7 +540,6 @@ class TextController extends Controller
             //            'new_file' => 'mimetypes:audio/mp3',
             //            'event_date' => 'numeric',
         ]);
-        //dd($request->topics);
         $error_message = Text::updateByID($request, $id);
 
         // если необходима разметка отправляем на проверку разбития на предложения, если нет, то на страницу текста
