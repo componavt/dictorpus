@@ -17,6 +17,8 @@ return [
     'add-lemma' => 'Add a lemma',
     'add_author' => 'Add an author',
     'add_place' => 'Add a place',
+    'add_publication' => 'Add a publication',
+    'add_pubpart' => 'Add a part of the publication',
     'add_recorder' => 'Add a recorder',
     'add-wordform' => 'Add a wordform',
     'addition_info' => 'Addition information',
@@ -75,6 +77,9 @@ return [
     'informant_list' => 'Informant list',
     'informant_name' => 'Informant name',
     'informant_removed' => 'Informant ":name" is removed successfully.',
+    'is_periodic' => 'Is this a periodical?',
+    'issue_date' => 'issue date',
+    'issues' => 'Issues',
 
     'last_updated_texts' => 'Last updated texts',
     'latitude' => 'latitude',
@@ -96,6 +101,7 @@ return [
     'new_meaning' => 'a new meaning',
     'new_photo' => 'New photo',
     'new_texts' => 'New texts',
+    'number' => 'number',
 
     'of_author' => 'of the author',
     'of_informant_birth' => 'of informant birth',
@@ -133,6 +139,7 @@ return [
     'plot_list' => 'Plot / character list',
     'plot_removed' => 'Plot / character ":name" is removed successfully.',
 
+    'pubparts' => 'Parts of the publication',
     'publication' => 'Publication',
     'publication_has_texts' => 'Publication ":name" can not be removed, there are texts with this publication',
     'publication_removed' => 'Publication ":name" is removed successfully.',
@@ -155,6 +162,7 @@ return [
     'rgo_info' => 'The materials published on the Audio Map in 2024 were prepared as part of the project "Filling the Audio Map of Karelian and Vepsian Dialects." The project is supported by the Russian Geographical Society.',
     'rutube_id' => 'RuTube Identifier',
 
+    'sections' => 'Sections',
     'select_corpus' => 'Select corpus',
     'sentences' => 'Sentences',
     'show_gram_markup' => 'Show grammatic markup',

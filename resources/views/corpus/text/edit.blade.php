@@ -12,7 +12,8 @@
 @section('body')
         <h2>{{ trans('messages.editing')}} {{ trans('corpus.of_text')}} <span class='imp'>"{{ $text->title}}"</span></h2>
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}">{{ trans('messages.back_to_show') }}</a> |            
+            <a href="{{ route('text.index', $url_args) }}">{{ trans('messages.back_to_list') }}</a> |
+            <a href="{{ route('text.show', $text->id) }}{{ $args_by_get}}">{{ trans('messages.back_to_show') }}</a> |            
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
         @endif
@@ -37,6 +38,7 @@
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/corpus.js')!!}
+    {!! js('publication')!!}
 @stop
 
 @section('jqueryFunc')
@@ -50,9 +52,11 @@
     selectCycle('.multiple-select-cycle', 'genres');
     selectMotives('.multiple-select-motive', 'genres');
     selectTopic('plots');
+    selectPubpart('publication_id');
     
     selectPlot('.select-plot', 'genre_id'); /* from modal */
-    
+    initPublicationPeriodicFields(); 
+    initSourcePubparts();   
     
     $('.text-unlock').click(function() {
         $(this).hide();

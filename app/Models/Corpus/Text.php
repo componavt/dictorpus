@@ -12,6 +12,8 @@ use App\Library\Grammatic;
 //use App\Library\Str;
 
 use App\Models\Corpus\Cyrtext;
+use App\Models\Corpus\Publication;
+use App\Models\Corpus\Pubpart;
 use App\Models\Corpus\Sentence;
 //use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
@@ -142,22 +144,44 @@ class Text extends Model implements HasMediaConversions
             ->orderBy('text_topic.sequence_number');
     }
 
-    public function publications(){
+    public function publications()
+    {
         $source_id = $this->source_id;
         return Publication::whereIn('id', function ($q) use ($source_id) {
             $q->select('publication_id')->from('sources')
-              ->whereId($source_id);
+                ->whereId($source_id);
         });
     }
-    
-    public function publicationValue():Array{
+
+    public function publicationValue(): array
+    {
         $out = [];
         foreach ($this->publications()->get() as $publication) {
             $out[] = $publication->id;
         }
         return $out;
     }
-    
+
+    public function getSourcePubpartsAttribute()
+    {
+        $source = $this->source;
+
+        if (!$source) {
+            return collect();
+        }
+
+        return $source->pubparts;
+    }
+
+    public function pubpartValue(): array
+    {
+        $out = [];
+        foreach ($this->source_pubparts as $pubpart) {
+            $out[] = $pubpart->id;
+        }
+        return $out;
+    }
+
     public function hasVideoCode()
     {
         return $this->video && ($this->video->youtube_id || $this->video->rutube_id);
@@ -745,7 +769,7 @@ class Text extends Model implements HasMediaConversions
     public function getCelebrationPlaces()
     {
         $places = [];
-        
+
         foreach ($this->getCelebrationTypeIds() as $type_id) {
             if ($type_id == 1 && $this->event) { // по месту рождения информанта
                 foreach ($this->event->informants as $informant) {

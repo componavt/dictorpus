@@ -1,8 +1,9 @@
 <?php
 
     $source_info = [];
-    if ($source->bookToString()) {
-        $source_info[] = $source->bookToString();
+    $book = $source->bookToString();
+    if ($book) {
+        $source_info[] = $book;
     }
     
     if ($source->ieeh_archive_number1) {

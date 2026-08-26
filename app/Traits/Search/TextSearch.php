@@ -35,6 +35,8 @@ trait TextSearch
             'search_motive'     => (array)$request->input('search_motive'),
             'search_place'    => (array)$request->input('search_place'),
             'search_plot'    => (array)$request->input('search_plot'),
+            'search_publication'  => (array)$request->input('search_publication'),
+            'search_pubpart'  => (array)$request->input('search_pubpart'),
             'search_recorder' => $request->input('search_recorder'),
             'search_region' => $request->input('search_region'),
             'search_sentence' => (int)$request->input('search_sentence'),
@@ -87,7 +89,8 @@ trait TextSearch
         $texts = self::searchByPlots($texts, $url_args['search_plot']);
         $texts = self::searchByTopics($texts, $url_args['search_topic']);
         $texts = self::searchByYear($texts, $url_args['search_year_from'], $url_args['search_year_to']);
-        $texts = self::searchBySource($texts, $url_args['search_source']);
+        $texts = self::searchBySource($texts, $url_args['search_source'], $url_args['search_publication']);
+        $texts = self::searchByPubparts($texts, $url_args['search_pubpart']);
         $texts = self::searchByArchiveNumber($texts, $url_args['search_ieeh_archive_number1'], $url_args['search_ieeh_archive_number2']);
         $texts = self::searchWithAudio($texts, $url_args['with_audio']);
         $texts = self::searchWithPhoto($texts, $url_args['with_photo']);
@@ -140,21 +143,36 @@ trait TextSearch
         }
         return $texts->whereIn('id', function ($query) {
             $query->select('model_id')->from('media')
-                  ->where('model_type', 'like', '%Text');
+                ->where('model_type', 'like', '%Text');
         });
     }
 
-    public static function searchBySource($texts, $source)
+    public static function searchBySource($texts, $source = '', $publications = [])
     {
-        if (!$source) {
+        if (!$source && !sizeof($publications)) {
             return $texts;
         }
-        return $texts->whereIn('source_id', function ($query) use ($source) {
-            $query->select('id')
-                ->from('sources')
-                ->where('title', 'rlike', $source)
-                ->orWhere('author', 'rlike', $source)
-                ->orWhere('comment', 'rlike', $source);
+        return $texts->whereIn('source_id', function ($query) use ($source, $publications) {
+            $query->select('id')->from('sources');
+            if ($source) {
+                $query->where('title', 'rlike', $source)
+                    ->orWhere('author', 'rlike', $source)
+                    ->orWhere('comment', 'rlike', $source);
+            }
+            if (sizeof($publications)) {
+                $query->whereIn('publication_id', $publications);
+            }
+        });
+    }
+
+    public static function searchByPubparts($texts, $pubparts = [])
+    {
+        if (!sizeof($pubparts)) {
+            return $texts;
+        }
+        return $texts->whereIn('source_id', function ($query) use ($pubparts) {
+            $query->select('source_id')->from('pubpart_source')
+                ->whereIn('pubpart_id', $pubparts);
         });
     }
 

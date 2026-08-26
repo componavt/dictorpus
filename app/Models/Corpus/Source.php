@@ -22,11 +22,27 @@ class Source extends Model
         parent::boot();
     }
 
+    // Belongs To Relations
+    use \App\Traits\Relations\BelongsTo\Publication;
+
     // Has Many Relations
     use \App\Traits\Relations\HasMany\Texts;
 
+    public function pubparts()
+    {
+        return $this->belongsToMany(
+            Pubpart::class,
+            'pubpart_source',
+            'source_id',
+            'pubpart_id'
+        )->withPivot('pages');
+    }
+
     public function bookToString()
     {
+        if ($this->publication_id) {
+            return $this->publicationToString();
+        }
         $book = [];
 
         if ($this->author) {
@@ -115,5 +131,224 @@ class Source extends Model
             ->count()) {
             Source::find($source_id)->delete();
         }
+    }
+
+    public function storePubparts(array $data)
+    {
+        $pubpartRows = isset($data['pubparts'])
+            ? $data['pubparts']
+            : [];
+
+        $pivotData = [];
+
+        foreach ($pubpartRows as $row) {
+            $pubpartId = isset($row['pubpart_id'])
+                ? (int) $row['pubpart_id']
+                : 0;
+
+            if (!$pubpartId) {
+                continue;
+            }
+
+            $pages = isset($row['pages'])
+                ? trim($row['pages'])
+                : null;
+
+            $pivotData[$pubpartId] = [
+                'pages' => $pages ?: null,
+            ];
+        }
+
+        return $this->pubparts()->sync($pivotData);
+    }
+
+    public function publicationToString()
+    {
+        if (!$this->publication) {
+            return null;
+        }
+
+        $publication = $this->publication;
+
+        $result = $this->publicationInfoToString($publication);
+        $pubparts = $this->pubpartsToString($publication);
+
+        $result = $this->appendSourceInfo($result, $pubparts);
+
+        if (!$this->hasPubpartPages()) {
+            $result = $this->appendSourceInfo(
+                $result,
+                $this->oldPagesToString()
+            );
+        }
+
+        return $result;
+    }
+
+    protected function publicationInfoToString($publication)
+    {
+        $info = [];
+
+        if ($publication->authors) {
+            $info[] = $publication->authors;
+        }
+
+        if ($publication->title) {
+            $info[] = $publication->title;
+        }
+
+        if ($publication->addition_info) {
+            $info[] = $publication->addition_info;
+        }
+
+        /*
+     * У периодических изданий год выводится у групп выпусков,
+     * а не в общем описании публикации.
+     */
+        if (!$publication->is_periodic && $publication->year) {
+            $info[] = $publication->year;
+        }
+
+        return join('. ', $info);
+    }
+
+    protected function pubpartsToString($publication)
+    {
+        if ($publication->is_periodic) {
+            return $this->periodicPubpartsToString();
+        }
+
+        return $this->nonPeriodicPubpartsToString();
+    }
+
+    protected function periodicPubpartsToString()
+    {
+        $issuesByYear = [];
+
+        foreach ($this->pubparts as $pubpart) {
+            $year = $pubpart->year ?: '';
+            $issue = $this->periodicPubpartToString($pubpart);
+
+            if (!$issue) {
+                continue;
+            }
+
+            if (!isset($issuesByYear[$year])) {
+                $issuesByYear[$year] = [];
+            }
+
+            $issuesByYear[$year][] = $issue;
+        }
+
+        $groups = [];
+
+        foreach ($issuesByYear as $year => $issues) {
+            $prefix = $year ? $year . '. ' : '';
+
+            $groups[] = $prefix . join('; ', $issues);
+        }
+
+        return join('; ', $groups);
+    }
+
+    protected function periodicPubpartToString($pubpart)
+    {
+        $number = trim($pubpart->number ?: '');
+        $date = $this->issueDateToString($pubpart->issue_date);
+
+        if ($date && $number) {
+            $result = $date . ' (№ ' . $number . ')';
+        } elseif ($date) {
+            $result = $date;
+        } elseif ($number) {
+            $result = '№ ' . $number;
+        } else {
+            return null;
+        }
+
+        return $this->appendPubpartPages($result, $pubpart);
+    }
+
+    protected function issueDateToString($date)
+    {
+        if (!$date || $date === '0000-00-00') {
+            return null;
+        }
+
+        return date('d.m', strtotime($date));
+    }
+
+    protected function nonPeriodicPubpartsToString()
+    {
+        $parts = [];
+
+        foreach ($this->pubparts as $pubpart) {
+            $part = $this->nonPeriodicPubpartToString($pubpart);
+
+            if ($part) {
+                $parts[] = $part;
+            }
+        }
+
+        return join('; ', $parts);
+    }
+
+    protected function nonPeriodicPubpartToString($pubpart)
+    {
+        $result = trim($pubpart->title ?: '');
+
+        if (!$result && $pubpart->sequence_number) {
+            $result = '№ ' . $pubpart->sequence_number;
+        }
+
+        if (!$result) {
+            return null;
+        }
+
+        return $this->appendPubpartPages($result, $pubpart);
+    }
+
+    protected function appendPubpartPages($text, $pubpart)
+    {
+        $pages = trim($pubpart->pivot->pages ?: '');
+
+        if (!$pages) {
+            return $text;
+        }
+
+        return $text . '. С. ' . $pages;
+    }
+
+    protected function hasPubpartPages()
+    {
+        foreach ($this->pubparts as $pubpart) {
+            if (trim($pubpart->pivot->pages ?: '')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function oldPagesToString()
+    {
+        $pages = trim($this->pages ?: '');
+
+        if (!$pages) {
+            return null;
+        }
+
+        return 'С. ' . $pages;
+    }
+
+    protected function appendSourceInfo($result, $part)
+    {
+        if (!$part) {
+            return $result;
+        }
+
+        return $result
+            ? $result . '. ' . $part
+            : $part;
     }
 }

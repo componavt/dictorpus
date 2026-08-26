@@ -5,6 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title">{{ $title }}</h4>
             </div>
+@php $title = '' @endphp            
 @if(isset($form_url))
         {!! Form::open(array('method'=>'GET', 'url' => $form_url)) !!}
 @endif
@@ -15,7 +16,7 @@
             </div>
             <div class="modal-footer">
             @if (isset($form_url))
-                <input type="submit" class="btn btn-success" value="{{ $submit_title }}">
+                <input type="button" class="btn btn-success" value="{{ $submit_title }}">
             @elseif (isset($submit_id) || isset($submit_onClick))
                 <button type="submit" class="btn btn-success"  
                         {!! isset($submit_id) ? 'id="'.$submit_id.'"' : '' !!}

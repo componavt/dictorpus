@@ -83,6 +83,3 @@
 </div>                 
 
 @include('corpus.text.form._folk_fields')
-
-
-

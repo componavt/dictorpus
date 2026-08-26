@@ -20,6 +20,7 @@ use App\Models\Corpus\Motive;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Plot;
 use App\Models\Corpus\Publication;
+use App\Models\Corpus\Pubpart;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
 use App\Models\Corpus\Sentence;
@@ -175,6 +176,9 @@ class TextController extends Controller
         $author_values = Author::getList();
         $project_langs = Lang::projectLangs();
 
+        $publication_values = [NULL => ''] + Publication::getList();
+        $pubpart_values = Pubpart::getList();
+
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         return view(
@@ -193,6 +197,8 @@ class TextController extends Controller
                 'place_values',
                 'plot_values',
                 'project_langs',
+                'publication_values',
+                'pubpart_values',
                 'recorder_values',
                 'region_values',
                 'topic_values',
@@ -355,7 +361,11 @@ class TextController extends Controller
      */
     public function edit($id)
     {
-        $text = Text::with('transtext')->find($id); //,'event','source'
+        $text = Text::with('transtext')
+            ->with('event')
+            ->with('source')
+            ->with('source.pubparts')
+            ->findOrFail($id);
 
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
@@ -390,8 +400,10 @@ class TextController extends Controller
         $trans_author_value = $text->transtext ? $text->transtext->authorValue() : null;
         $project_langs = Lang::projectLangs();
 
-        $publication_values = Publication::getList();
+        $publication_values = [NULL => ''] + Publication::getList();
         $publication_value = $text->publicationValue();
+        $pubpart_values = Pubpart::getList();
+        $pubpart_value = $text->pubpartValue();
 
         $readonly = ($text->meanings()->wherePivot('relevance', '<>', 1)->count()) ? true : false;
 
@@ -419,6 +431,8 @@ class TextController extends Controller
                 'project_langs',
                 'publication_value',
                 'publication_values',
+                'pubpart_value',
+                'pubpart_values',
                 'readonly',
                 'recorder_values',
                 'region_values',
@@ -482,6 +496,7 @@ class TextController extends Controller
                 ->withError(trans('messages.invalid_id'));
         }
         $text = Text::find($id);
+
         $pos_values = PartOfSpeech::getGroupedList();
         $langs_for_meaning = array_slice(Lang::getListWithPriority(), 0, 1, true);
         $pos_id = PartOfSpeech::getIDByCode('Noun');
@@ -540,6 +555,7 @@ class TextController extends Controller
             //            'new_file' => 'mimetypes:audio/mp3',
             //            'event_date' => 'numeric',
         ]);
+        //dd($request->all());
         $error_message = Text::updateByID($request, $id);
 
         // если необходима разметка отправляем на проверку разбития на предложения, если нет, то на страницу текста

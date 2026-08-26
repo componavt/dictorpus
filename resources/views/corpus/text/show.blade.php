@@ -18,7 +18,7 @@
         ])
         
         <p>
-            <a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
+            <a href="{{ route('text.index', $url_args) }}">{{ trans('messages.back_to_list') }}</a>
             
         @if (user_corpus_edit())
             | @include('widgets.form.button._edit', 

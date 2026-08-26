@@ -10,7 +10,7 @@ class CreatePublicationsTable extends Migration
     {
         Schema::create('publications', function (Blueprint $table) {
             $table->increments('id');
-
+            $table->boolean('is_periodic')->default(0);
             $table->string('authors', 255)->nullable();
             $table->string('title', 255);
             $table->string('addition_info', 255)->nullable();

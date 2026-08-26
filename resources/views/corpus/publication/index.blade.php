@@ -67,7 +67,8 @@
                 <th>{{ trans('corpus.authors') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
                 <th>{{ trans('corpus.addition_info') }}</th>
-                <th>{{ trans('corpus.year') }}</th>
+                <th>{{ trans('messages.year') }}</th>
+                <th>{{ trans('corpus.pubparts') }}</th>
                 <th>{{ trans('navigation.texts') }}</th>
                 @if (User::checkAccess('corpus.edit'))
                 <th>{{ trans('messages.actions') }}</th>
@@ -82,17 +83,22 @@
                     {{ $publication->authors }}
                 </td>
                 <td data-th="{{ trans('corpus.title') }}">
-                    {{ $publication->title }}
+                    <a href="{{ route('publication.show', $publication->id) }}{{ $args_by_get }}">
+                        {{ $publication->title }}
+                    </a>
                 </td>
                 <td data-th="{{ trans('corpus.addition_info') }}">
                     {{ $publication->addition_info }}
                 </td>
-                <td data-th="{{ trans('corpus.year') }}">
+                <td data-th="{{ trans('messages.year') }}">
                     {{ $publication->year }}
+                </td>
+                <td data-th="{{ trans('corpus.pubparts') }}" style="text-align: center">
+                    {{ $publication->pubparts()->count() }}
                 </td>
                 <td data-th="{{ trans('navigation.texts') }}" style="text-align: center">
                     @if($publication->texts()->count())
-                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text?search_publication=')}} {{$publication->id}}">{{ $publication->texts()->count() }}</a>
+                    <a href="{{ LaravelLocalization::localizeURL('/corpus/text?search_publication=') }}{{ $publication->id}}">{{ $publication->texts()->count() }}</a>
                     @else
                     0
                     @endif

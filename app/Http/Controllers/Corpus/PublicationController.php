@@ -23,8 +23,10 @@ class PublicationController extends Controller
      */
     public function __construct(Request $request)
     {
-        $this->middleware('auth:corpus.edit,/corpus/publication/', ['only' =>
-        ['create', 'store', 'edit', 'update', 'destroy']]);
+        $this->middleware(
+            'auth:corpus.edit,/corpus/publication/',
+            ['except' => ['index', 'show']]
+        );
 
         $this->url_args = Publication::urlArgs($request);
 
@@ -85,17 +87,39 @@ class PublicationController extends Controller
     public function store(Request $request)
     {
         $data = $this->validateRequest($request);
-        $publication = Publication::create($data);
+        $publication = Publication::store($data);
 
-        return Redirect::to('/corpus/publication/'. ($this->args_by_get))
+        return Redirect::to('/corpus/publication/' . ($this->args_by_get))
             ->withSuccess(trans('messages.created_success'));
     }
 
     public function simpleStore(Request $request)
     {
         $data = $this->validateRequest($request);
-        $publication = Publication::create($data);
-        return Response::json([$publication->id, $publication->name]);
+
+        $publication = Publication::store($data);
+
+        $pubparts = [];
+
+        foreach (
+            $publication->pubparts()
+                ->orderBy('sequence_number')
+                ->get() as $pubpart
+        ) {
+
+            $pubparts[] = [
+                'id' => $pubpart->id,
+                'text' => $pubpart->full_name
+            ];
+        }
+
+        return Response::json([
+            'id' => $publication->id,
+            'is_periodic' => (int) $publication->is_periodic,
+            'title' => $publication->title_for_list,
+            'default_year' => $publication->defaultPubpartYear(),
+            'pubparts' => $pubparts,
+        ]);
     }
 
     /**
@@ -106,7 +130,10 @@ class PublicationController extends Controller
      */
     public function show($id)
     {
-        return Redirect::to('/corpus/publication/'. ($this->args_by_get));
+        $url_args = $this->url_args;
+        $publication = Publication::with('pubparts')->findOrFail($id);
+
+        return view('corpus.publication.show', compact('publication', 'url_args'));
     }
 
     /**
@@ -118,7 +145,7 @@ class PublicationController extends Controller
     public function edit($id)
     {
         $url_args = $this->url_args;
-        $publication = Publication::find($id);
+        $publication = Publication::with('pubparts')->findOrFail($id);
 
         return view('corpus.publication.edit', compact('publication', 'url_args'));
     }
@@ -134,7 +161,7 @@ class PublicationController extends Controller
     {
         $data = $this->validateRequest($request);
         $publication = Publication::find($id);
-        $publication->fill($data)->save();
+        $publication->modify($data);
 
         return Redirect::to('/corpus/publication/' . ($this->args_by_get))
             ->withSuccess(trans('messages.updated_success'));
@@ -186,5 +213,16 @@ class PublicationController extends Controller
             return Redirect::to('/corpus/publication/' . ($this->args_by_get))
                 ->withSuccess($result['message']);
         }
+    }
+
+    public function info(int $id)
+    {
+        $publication = Publication::findOrFail($id);
+
+        return Response::json([
+            'id' => $publication->id,
+            'is_periodic' => (int) $publication->is_periodic,
+            'default_year' => $publication->defaultPubpartYear(),
+        ]);
     }
 }

@@ -13,3 +13,11 @@
         @include('widgets.form.formitem._submit', ['title' => trans('messages.save')])
         {!! Form::close() !!}
 @stop
+
+@section('footScriptExtra')
+    {!! js('publication')!!}
+@stop
+
+@section('jqueryFunc')
+    initPublicationPeriodicFields();
+@stop

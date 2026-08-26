@@ -85,7 +85,8 @@ trait TextModify
         $request['text'] = self::process($request['text']);
         $to_makeup = (int)$request['to_makeup'];
 
-        $text = self::with('transtext', 'event', 'source', 'cyrtext')->get()->find($id);
+        $text = self::with('transtext', 'event', 'source', 'cyrtext', 'source.publication', 'source.pubparts')
+            ->get()->find($id);
         $old_text = $text->text;
 
         $text->fill($request->only('lang_id', 'title', 'text', 'text_structure', 'comment')); //,'text_xml''corpus_id',
@@ -106,7 +107,7 @@ trait TextModify
 
         $this->storeVideo($request->youtube_id, $request->rutube_id);
         $this->storeEvent($request->only('event_place_id', 'event_date', 'event_informants', 'event_recorders'));
-        $this->storeSource($request->only('source_publication_id', 'source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
+        $this->storeSource($request->only('source', 'source_publication_id', 'source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
 
         $this->corpuses()->sync($request->corpuses);
 
@@ -397,6 +398,7 @@ trait TextModify
         if (!$is_empty_data) {
             $this->source_id = Source::fillByData($source_id, $request_data);
             $this->save();
+            $this->source->storePubparts($request_data['source'] ?? []);
         } elseif ($source_id) {
             $this->source_id = NULL;
             $this->save();

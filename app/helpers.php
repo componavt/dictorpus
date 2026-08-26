@@ -588,3 +588,13 @@ if (! function_exists('vms_user')) {
     }
 }
 
+if (! function_exists('route_names')) {
+    function route_names(string $model)
+    {
+        $routes = [];
+        foreach (['index', 'show', 'update', 'store', 'destroy'] as $method) {
+            $routes[$method] = $model . '.' . $method;
+        }
+        return ['names' => $routes];
+    }
+}

@@ -10,7 +10,8 @@
 @stop
 
 @section('body')
-        <p><a href="{{ LaravelLocalization::localizeURL('/corpus/text/') }}">{{ trans('messages.back_to_list') }}</a>
+        <p>
+            <a href="{{ route('text.index', $url_args) }}">{{ trans('messages.back_to_list') }}</a>
            |
         @if (User::checkAccess('corpus.edit'))
             <a href="{{ LaravelLocalization::localizeURL('/corpus/text/create') }}{{$args_by_get}}">
@@ -37,6 +38,7 @@
     {!!Html::script('js/special_symbols.js')!!}
     {!!Html::script('js/list_change.js')!!}
     {!!Html::script('js/corpus.js')!!}
+    {!! js('publication')!!}
 @stop
 
 @section('jqueryFunc')
@@ -51,4 +53,6 @@
     selectTopic('plots');
     
     selectPlot('.select-plot', 'genre_id'); /* from modal */
+    initPublicationPeriodicFields();
+    initSourcePubparts();
 @stop
