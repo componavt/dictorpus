@@ -19,6 +19,7 @@ use App\Models\Corpus\Genre;
 use App\Models\Corpus\Informant;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\Plot;
+use App\Models\Corpus\Publication;
 use App\Models\Corpus\Recorder;
 use App\Models\Corpus\Region;
 use App\Models\Corpus\Text;
@@ -527,6 +528,34 @@ class RistikanzaTextController extends Controller
         }
 
         return response()->json($genres);
+    }
+
+    public function monumentBooks()
+    {
+        $locale = app()->getLocale();
+
+        $corpus_id = $this->monumentsCorpus;
+
+        $objs = Publication::whereIn('id', function ($q) use ($corpus_id) {
+            $q->select('publication_id')->from('sources')
+                ->whereIn('id', function ($q2) use ($corpus_id) {
+                    $q2->select('source_id')->from('texts')
+                        ->whereIn('id', function ($q3) use ($corpus_id) {
+                            $q3->select('text_id')->from('corpus_text')
+                                ->whereCorpusId($corpus_id);
+                        });
+                });
+        })->orderBy('title')->get();
+
+        $publications = [];
+        foreach ($objs as $obj) {
+            $publications[$obj->id] = [
+                'title' => $obj->full_info,
+                'photo' => $obj->hasMedia('covers') ? $obj->getFirstMediaUrl('covers', 'thumb') : null
+            ];
+        }
+
+        return response()->json($publications);
     }
 
     public function forMap(Request $request)
