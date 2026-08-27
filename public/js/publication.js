@@ -2,7 +2,7 @@ var sourcePubpartRow = null;
 
 function addPublication() {
     var year = $("#source_year").val();
-    $("#modalAddPublication #authors").val($("#source_authors").val());
+    $("#modalAddPublication #authors").val($("#source_author").val());
     $("#modalAddPublication #title").val($("#source_title").val());
     $("#modalAddPublication #year").val(year);
     $("#modalAddPublication .pubpart_year").val(year);
