@@ -7,11 +7,21 @@
 @section('body')
     <p><a href="{{ LaravelLocalization::localizeURL('/corpus/publication/') }}">{{ trans('messages.back_to_list') }}</a></p>
     
-    {!! Form::open(array('method'=>'POST', 'route' => array('publication.store'))) !!}
-    @include('corpus.publication._form_create_edit', ['submit_title' => trans('messages.create'),
-                                    'publication' => null,
-                                    'action' => 'create'])
-    @include('widgets.form.formitem._submit', ['title' =>  trans('messages.create_new_f')])
+    {!! Form::open([
+        'method'=>'POST', 
+        'route' =>['publication.store'],
+        'files' => true
+        ]) !!}
+
+    @include('corpus.publication._form_create_edit', [
+        'submit_title' => trans('messages.create'),
+        'publication' => null,
+        'action' => 'create',
+        'with_photo' => true])
+        
+    @include('widgets.form.formitem._submit', [
+        'title' =>  trans('messages.create_new_f')])
+
     {!! Form::close() !!}
 @stop
 

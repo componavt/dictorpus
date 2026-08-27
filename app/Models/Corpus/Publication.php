@@ -3,16 +3,19 @@
 namespace App\Models\Corpus;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 use App\Library\Str;
 
 use App\Models\Corpus\Pubpart;
 
-class Publication extends Model
+class Publication extends Model implements HasMediaConversions
 {
     public $timestamps = false;
     protected $fillable = ['is_periodic', 'authors', 'title', 'addition_info', 'year'];
 
+    use HasMediaTrait;
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -23,6 +26,19 @@ class Publication extends Model
     public static function boot()
     {
         parent::boot();
+    }
+
+    public function registerMediaConversions()
+    {
+        $this->addMediaConversion('thumb')
+            ->setWidth(200)
+            ->performOnCollections('covers');
+    }
+
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('covers')
+            ->singleFile();
     }
 
     public function identifiableName()
@@ -68,33 +84,38 @@ class Publication extends Model
      */
     public static function getList()
     {
-        $corpuses = self::orderBy('title')->get();
+        $objs = self::orderBy('title')->get();
 
         $list = array();
-        foreach ($corpuses as $row) {
+        foreach ($objs as $row) {
             $list[$row->id] = $row->title_for_list;
         }
 
         return $list;
     }
 
-    public static function store(array $data)
+    public static function store(array $data, $photo = null)
     {
         if (!empty($data['is_periodic'])) {
             $data['year'] = null;
         }
         $publication = self::create($data);
+
         $publication->storeAddition($data);
+        $publication->storeCover($photo);
+
         return $publication;
     }
 
-    public function modify(array $data)
+    public function modify(array $data, $photo = null)
     {
         if (!empty($data['is_periodic'])) {
             $data['year'] = null;
         }
         $this->fill($data)->save();
+
         $this->storeAddition($data);
+        $this->storeCover($photo);
     }
 
     public function storeAddition(array $data)
@@ -119,6 +140,18 @@ class Publication extends Model
                 Pubpart::create($pubpart_data);
             }
         }
+    }
+
+    protected function storeCover($photo)
+    {
+        if (!$photo) {
+            return;
+        }
+
+        $this->clearMediaCollection('covers');
+
+        $this->addMedia($photo)
+            ->toCollection('covers');
     }
 
     public function defaultPubpartYear()

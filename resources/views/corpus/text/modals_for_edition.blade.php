@@ -40,6 +40,7 @@
                         'submit_onClick' => 'savePublication()',
                         'submit_title' => trans('messages.save'),
                         'submit_id' => 'save-publication',
+                        'with_photo' => false,
                         'modal_view'=>'corpus.publication._form_create_edit'])
 
 @include('widgets.modal', ['name' => 'modalAddPubpart',

@@ -3,38 +3,55 @@
         'is_periodic',
         $publication->is_periodic ?? 0
     ) === 1;
+
+    $with_photo = !empty($with_photo);
+    $publication_data_col = $with_photo
+        ? 'col-sm-4'
+        : 'col-sm-8';
 @endphp
 
 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
 <input type="hidden" id="publication_field" value="">
 <div class="row">
-        <div class='col-sm-4'>
-                @include('widgets.form.formitem._radio', 
-                        ['name' => 'is_periodic',
-                        'values' => trans('messages.bin_answers'),
-                        'checked' => old('is_periodic', $publication->is_periodic ?? 0), 
-                        'title'=>trans('corpus.is_periodic')])
+    <div class='col-sm-4'>
+        @include('widgets.form.formitem._radio', [
+            'name' => 'is_periodic',
+            'values' => trans('messages.bin_answers'),
+            'checked' => old('is_periodic', $publication->is_periodic ?? 0), 
+            'title'=>trans('corpus.is_periodic')])
 
-                @include('widgets.form.formitem._text', 
-                        ['name' => 'authors', 
-                        'title'=>trans('corpus.authors')])
-                <div class="js-non-periodic {{ $is_periodic ? 'hidden' : '' }}">
-                @include('widgets.form.formitem._text', [
-                        'name'  => 'year',
-                        'title' => trans('messages.year'),
-                        'value' => old('year', $publication->year ?? '')
-                ])
-                </div>
-        </div>
-        <div class='col-sm-8'>
-                @include('widgets.form.formitem._text', 
-                        ['name' => 'title', 
-                        'title'=>trans('corpus.title')])
+        @include('widgets.form.formitem._text', [
+            'name' => 'authors', 
+            'title'=>trans('corpus.authors')])
 
-                @include('widgets.form.formitem._text', 
-                        ['name' => 'addition_info', 
-                        'title'=>trans('corpus.addition_info')])
+        <div class="js-non-periodic {{ $is_periodic ? 'hidden' : '' }}">
+        @include('widgets.form.formitem._text', [
+            'name'  => 'year',
+            'title' => trans('messages.year'),
+            'value' => old('year', $publication->year ?? '')
+        ])
         </div>
+    </div>
+    <div class='{{ $publication_data_col }}'>
+        @include('widgets.form.formitem._text', [
+            'name' => 'title', 
+            'title'=>trans('corpus.title')])
+
+        @include('widgets.form.formitem._text', [
+            'name' => 'addition_info', 
+            'title'=>trans('corpus.addition_info')])
+    </div>
+@if ($with_photo)
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="photo">Фотография</label>
+            <div style="margin-bottom: 10px;">
+            @include('corpus.publication.photo')
+            </div>
+            <input id="photo" name="photo" type="file" accept="image/*" class="form-control">
+        </div>
+@endif
+    </div>
 </div>
 <h2>
     <span class="js-non-periodic {{ $is_periodic ? 'hidden' : '' }}">
@@ -78,25 +95,23 @@
 </div>
 @php
     $lastSequence = !empty($publication) && $publication->pubparts->count()
-        ? $publication->pubparts->max('sequence_number')
-        : 0;
+        ? $publication->pubparts->max('sequence_number') : 0;
 
     $count = $lastSequence + 1;
 @endphp
 
-<div id="publication-pubparts"
-     data-next-index="{{ $count }}">
+<div id="publication-pubparts" data-next-index="{{ $count }}">
 
-    @if (!empty($publication))
-        @foreach ($publication->pubparts as $pubpart)
-            @include('corpus.pubpart._form_create_edit', [
-                'count' => $pubpart->sequence_number,
-                'pubpart' => $pubpart,
-                'varname' => 'pubparts['.$pubpart->id.']',
-                'is_periodic' => $is_periodic
-            ])
-        @endforeach
-    @endif
+@if (!empty($publication))
+    @foreach ($publication->pubparts as $pubpart)
+        @include('corpus.pubpart._form_create_edit', [
+            'count' => $pubpart->sequence_number,
+            'pubpart' => $pubpart,
+            'varname' => 'pubparts['.$pubpart->id.']',
+            'is_periodic' => $is_periodic
+        ])
+    @endforeach
+@endif
 
     @include('corpus.pubpart._form_create_edit', [
         'count' => $count,

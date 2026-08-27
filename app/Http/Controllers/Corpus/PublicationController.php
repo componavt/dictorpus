@@ -67,14 +67,21 @@ class PublicationController extends Controller
         return view('corpus.publication.create', compact('args_by_get', 'url_args'));
     }
 
-    public function validateRequest(Request $request)
+    protected function validateRequest(Request $request)
     {
-        $this->validate($request, [
-            'authors'  => 'max:255',
-            'title'  => 'required|max:255',
-            'year'  => 'integer',
-        ]);
+        $rules = [
+            'is_periodic' => 'required|boolean',
+            'authors' => 'max:255',
+            'title' => 'required|max:255',
+            'addition_info' => 'max:255',
+            'year' => 'integer',
+        ];
 
+        if ($request->hasFile('photo')) {
+            $rules['photo'] = 'image|max:5120';
+        }
+
+        $this->validate($request, $rules);
         return $request->all();
     }
 
@@ -87,7 +94,7 @@ class PublicationController extends Controller
     public function store(Request $request)
     {
         $data = $this->validateRequest($request);
-        $publication = Publication::store($data);
+        $publication = Publication::store($data, $request->file('photo'));
 
         return Redirect::to('/corpus/publication/' . ($this->args_by_get))
             ->withSuccess(trans('messages.created_success'));
@@ -161,7 +168,7 @@ class PublicationController extends Controller
     {
         $data = $this->validateRequest($request);
         $publication = Publication::find($id);
-        $publication->modify($data);
+        $publication->modify($data, $request->file('photo'));
 
         return Redirect::to('/corpus/publication/' . ($this->args_by_get))
             ->withSuccess(trans('messages.updated_success'));

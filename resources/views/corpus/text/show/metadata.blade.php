@@ -32,7 +32,7 @@
         </div>
         @endif
         
-        @if (sizeof($celebration_places))
+        @if (!empty($celebration_places) && sizeof($celebration_places))
         <div class="topic-list">
             <p class="topic-list-title">{{trans('corpus.celebration_places')}}:</p>
             {!! join("<br>\n", $celebration_places) !!}
