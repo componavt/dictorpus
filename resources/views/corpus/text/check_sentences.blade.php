@@ -22,7 +22,7 @@
         </p>
         
         <h2>
-            {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
+            {{ $text->authorsToString() ? rtrim(trim($text->authorsToString()), '.'). '.' : '' }}
             {{ $text->title }}
         </h2>
         

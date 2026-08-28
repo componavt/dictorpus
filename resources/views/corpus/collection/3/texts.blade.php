@@ -42,12 +42,12 @@
                 @endif
             </td>
             <td data-th="{{ trans('corpus.title') }}">
-                {{-- $text->authorsToString() ? $text->authorsToString().'.' : '' --}}
+                {{-- $text->authorsToString() ? rtrim(trim($text->authorsToString()), '.'). '.' : '' --}}
                 <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id.$url_args) }}">{{$text->title}}</a>
             </td>
             <td data-th="{{ trans('messages.translation') }}">
                 @if ($text->transtext)
-                {{-- $text->transtext->authorsToString() ? $text->transtext->authorsToString().'.' : '' --}}
+                {{-- $text->transtext->authorsToString() ? rtrim(trim($text->transtext->authorsToString()), '.'). '.' : '' --}}
                 {{$text->transtext->title}}
                 @endif
             </td>

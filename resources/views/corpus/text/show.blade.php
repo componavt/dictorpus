@@ -40,7 +40,7 @@
         </p>
         
         <h2>
-            {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
+            {{ $text->authorsToString() ? rtrim(trim($text->authorsToString()), '.'). '.' : '' }}
             {!!highlight($text->title, $url_args['search_w'], 'search-word')!!}
         @if (user_corpus_edit())
             @include('widgets.form.button._edit', ['route' => '/corpus/text/'.$text->id.'/edit', 'without_text'=>1])

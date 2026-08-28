@@ -55,7 +55,7 @@ class Publication extends Model implements HasMediaConversions
 
     public function getFullInfoAttribute(): String
     {
-        return ($this->authors ? $this->authors . '. ' : '') .
+        return ($this->authors ? rtrim(trim($this->authors), '.') . '. ' : '') .
             $this->title .
             ($this->add_information ? '. ' . $this->add_information : '') .
             ($this->year ? '. ' . $this->year : '');
@@ -63,7 +63,7 @@ class Publication extends Model implements HasMediaConversions
 
     public function getTitleForListAttribute(): String
     {
-        return ($this->authors ? $this->authors . '. ' : '') .
+        return ($this->authors ? rtrim(trim($this->authors), '.') . '. ' : '') .
             $this->title .
             ($this->year ? '. ' . $this->year : '');
     }

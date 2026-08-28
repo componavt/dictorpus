@@ -61,7 +61,7 @@
                 <td data-th="{{ trans('corpus.genre') }}">{{$text->genresToString()}}</td>
             @endif
                 <td data-th="{{ trans('corpus.title') }}">
-                    {{ $text->authorsToString() ? $text->authorsToString().'.' : '' }}
+                    {{ $text->authorsToString() ? rtrim(trim($text->authorsToString()), '.') .'.' : '' }}
                     <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$text->id) }}{{$args_by_get}}">{!!highlight($text->title, $url_args['search_w'], 'search-word')!!}</a>
                 @if ($url_args['search_word'] && $text->transtext)
                     <br>({!!highlight($text->transtext->title, $url_args['search_w'], 'search-word')!!})
@@ -70,7 +70,7 @@
                 @if (!$url_args['search_word'])
                 <td data-th="{{ trans('messages.translation') }}">
                     @if ($text->transtext)
-                    {{ $text->transtext->authorsToString() ? $text->transtext->authorsToString().'.' : '' }}
+                    {{ $text->transtext->authorsToString() ? rtrim(trim($text->transtext->authorsToString()), '.'). '.' : '' }}
                     {!!highlight($text->transtext->title, $url_args['search_w'], 'search-word')!!}
                     @endif
                 </td>
