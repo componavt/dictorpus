@@ -69,9 +69,6 @@ class RistikanzaTextController extends Controller
     {
         $corpus_id = (int)$request->input('corpus_id');
         $genre_id = (int)$request->input('genre_id');
-        Log::debug('Ristikanza API formValues', [
-            'genre_id' => $genre_id,
-        ]);
 
         return response()->json([
             'author_values' => [NULL => ''] + Author::getList(),
@@ -486,13 +483,13 @@ class RistikanzaTextController extends Controller
                 }
             });
         }
-        Log::debug('Ristikanza API locale', [
+        /*        Log::debug('Ristikanza API locale', [
             'genre_id' => $request->input('genre_id'),
             'params' => $params,
             'genreIds' => $genreIds,
             'sql' => to_sql($query),
 
-        ]);
+        ]);*/
         $plots = $query
             ->orderBy('sequence_number')
             ->limit(50)
@@ -532,8 +529,6 @@ class RistikanzaTextController extends Controller
 
     public function monumentBooks()
     {
-        $locale = app()->getLocale();
-
         $corpus_id = $this->monumentsCorpus;
 
         $objs = Publication::whereIn('id', function ($q) use ($corpus_id) {
@@ -556,6 +551,41 @@ class RistikanzaTextController extends Controller
         }
 
         return response()->json($publications);
+    }
+
+    public function monuments(Request $request)
+    {
+        $texts = [];
+
+        $corpus_id = $this->monumentsCorpus;
+        $publicaton_id = $request->input('publication_id');
+
+        if (!$publicaton_id) {
+            return response()->json($texts);
+        }
+
+        $objs = Text::whereIn('id', function ($q) use ($corpus_id) {
+            $q->select('text_id')->from('corpus_text')
+                ->whereCorpusId($corpus_id);
+        })->whereIn('source_id', function ($q) use ($publicaton_id) {
+            $q->select('id')->from('sources')
+                ->wherePublicationId($publicaton_id);
+        })->with('source')->orderBy('title'); //->get();
+
+        Log::debug('Ristikanza API monuments', [
+            'sql' => $objs,
+        ]);
+
+        $objs = $objs->get();
+
+        foreach ($objs as $obj) {
+            $texts[$obj->id] = [
+                'title' => $obj->title,
+                'page' => $obj->source ? $obj->source->pages : null
+            ];
+        }
+
+        return response()->json(collect($texts)->sortBy('page'));
     }
 
     public function forMap(Request $request)
