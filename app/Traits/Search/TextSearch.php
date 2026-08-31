@@ -16,6 +16,7 @@ trait TextSearch
         $url_args = Str::urlArgs($request) + [
             'in_desc'     => (int)$request->input('in_desc'),
             'search_author'   => $request->input('search_author'),
+            'search_bible'   => (array)$request->input('search_bible'),
             'search_birth_district'  => (array)$request->input('search_birth_district'),
             'search_birth_place' => (array)$request->input('search_birth_place'),
             'search_birth_region' => $request->input('search_birth_region'),
@@ -73,6 +74,7 @@ trait TextSearch
         $texts = self::orderBy($url_args['sort_by'], $url_args['in_desc'] ? 'DESC' : 'ASC');
         $texts = self::searchByAuthor($texts, $url_args['search_author']);
         //        $texts = self::searchByAuthors($texts, $url_args['search_author']);
+        $texts = self::searchByBible($texts, $url_args['search_bible']);
         $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place'], $url_args['search_birth_district'], $url_args['search_birth_region']);
         $texts = self::searchByCorpuses($texts, $url_args['search_corpus']);
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
@@ -215,6 +217,17 @@ trait TextSearch
             $query->select('text_id')
                 ->from("dialect_text")
                 ->whereIn('dialect_id', $dialects);
+        });
+    }
+
+    public static function searchByBible($texts, $bibles)
+    {
+        if (!sizeof($bibles)) {
+            return $texts;
+        }
+        return $texts->whereIn('id', function ($query) use ($bibles) {
+            $query->select('text_id')->from("bible_text")
+                ->whereIn('bible_id', $bibles);
         });
     }
 

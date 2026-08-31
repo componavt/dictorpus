@@ -18,6 +18,9 @@ return [
     'audio_map' => 'Audio map',
     'audios' => "Audio recordings of lemmas",
     'authors' => 'Authors',
+
+    'bibles' => 'Bible',
+
     'collections' => 'Collections',
     'concept_categories' => 'Concept categories',
     'concepts' => 'Сoncepts',

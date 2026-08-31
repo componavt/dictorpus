@@ -28,6 +28,13 @@ return [
     'author' => 'Author',
     'authors' => 'Authors',
     'author_removed' => 'Author ":name" is removed successfully.',
+
+    'bible' => 'Bible book',
+    'bible_has_text' => 'The book ":name" can not be removed, there are texts with this book',
+    'bible_link' => 'Bible link',
+    'bible_list' => 'Bible list',
+    'bible_removed' => 'The book ":name" is removed successfully.',
+
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',
     'by_sentences' => 'by sentences',
@@ -39,6 +46,7 @@ return [
         2 => 'by recording location',
         3 => 'by mentioned settlement',
     ],
+    'chapter' => 'Сhapter',
     'char_left' => 'Characters left',
     'choose-gramset' => 'Choose a gramset',
     'comment' => 'comments',
@@ -104,6 +112,7 @@ return [
     'number' => 'number',
 
     'of_author' => 'of the author',
+    'of_bible' => 'of the Bible book',
     'of_informant_birth' => 'of informant birth',
     'of_corpus' => 'of the corpus',
     'of_district' => 'of the district',
@@ -189,6 +198,7 @@ return [
     'texts' => 'texts',
 
     'title' => 'Title',
+    'to' => 'to',
 
     'topic' => 'topic',
     'topic_has_text' => 'Topic ":name" can not be removed, there are texts with this topic',
@@ -206,6 +216,7 @@ return [
 
     'year_of_birth' => 'year of birth',
     'youtube_id' => 'YouTube Identifier',
+    'verses' => 'Verses',
     'word' => 'Word',
     'words' => 'words',
     'unlock' => 'unlock',

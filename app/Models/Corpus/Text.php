@@ -85,6 +85,7 @@ class Text extends Model implements HasMediaConversions
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Authors;
+    use \App\Traits\Relations\BelongsToMany\Bibles;
     use \App\Traits\Relations\BelongsToMany\Corpuses;
     use \App\Traits\Relations\BelongsToMany\Cycles;
     use \App\Traits\Relations\BelongsToMany\Dialects;
@@ -180,6 +181,29 @@ class Text extends Model implements HasMediaConversions
             $out[] = $pubpart->id;
         }
         return $out;
+    }
+
+    public function bibleToString()
+    {
+        if (!$this->bibles->count()) {
+            return '';
+        }
+        $out = [];
+
+        foreach ($this->bibles as $bible) {
+            $line = $bible->name;
+            if ($bible->pivot->chapter) {
+                $line .= ' ' . $bible->pivot->chapter;
+                if ($bible->pivot->verse_from) {
+                    $line .= ':' . $bible->pivot->verse_from;
+                    if ($bible->pivot->verse_to) {
+                        $line .= '-' . $bible->pivot->verse_to;
+                    }
+                }
+            }
+            $out[] = $line;
+        }
+        return join('; ', $out);
     }
 
     public function hasVideoCode()

@@ -44,6 +44,7 @@
 @section('jqueryFunc')
     toggleSpecial();
     $(".multiple-select").select2();
+    $(".multiple-select-bible").select2();
     
     selectDialect('lang_id');
     selectGenre('corpus_id');

@@ -109,23 +109,12 @@ trait TextModify
         $this->storeEvent($request->only('event_place_id', 'event_date', 'event_informants', 'event_recorders'));
         $this->storeSource($request->only('source', 'source_publication_id', 'source_title', 'source_author', 'source_year', 'source_ieeh_archive_number1', 'source_ieeh_archive_number2', 'source_pages', 'source_comment'));
 
-        $this->corpuses()->sync($request->corpuses);
-
-        $this->authors()->detach();
-        $this->authors()->attach($request->authors);
-
-        $this->dialects()->detach();
-        $this->dialects()->attach($request->dialects);
-
-        $this->genres()->detach();
-        $this->genres()->attach($request->genres);
-
-        $this->cycles()->detach();
-        $this->cycles()->attach($request->cycles);
-
-        $this->plots()->detach();
-        $this->plots()->attach($request->plots);
-
+        $this->corpuses()->sync((array)$request->corpuses);
+        $this->authors()->sync((array)$request->authors);
+        $this->dialects()->sync((array)$request->dialects);
+        $this->genres()->sync((array)$request->genres);
+        $this->cycles()->sync((array)$request->cycles);
+        $this->plots()->sync((array)$request->plots);
         $this->places()->sync((array)$request->places);
 
         $this->topics()->detach();
@@ -133,6 +122,15 @@ trait TextModify
             if ($topic['topic_id']) {
                 $this->topics()->attach([$topic['topic_id'] => ['sequence_number' => (int)$topic['sequence_number']]]);
             }
+        }
+
+        $bible = $request->bibles;
+        if ($bible['bible_id']) {
+            $this->bibles()->sync([$bible['bible_id'] => [
+                'chapter' => (int)$bible['chapter'] ?? null,
+                'verse_from' => (int)$bible['verse_from'] ?? null,
+                'verse_to' => (int)$bible['verse_to'] ?? null
+            ]]);
         }
 
         $this->motives()->sync((array)$request->motives);

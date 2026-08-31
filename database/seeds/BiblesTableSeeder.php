@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+// php artisan db:seed --class=BiblesTableSeeder
 class BiblesTableSeeder extends Seeder
 {
     public function run()

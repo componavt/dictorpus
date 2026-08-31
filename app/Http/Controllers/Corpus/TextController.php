@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Corpus\Author;
+use App\Models\Corpus\Bible;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\Cycle;
 use App\Models\Corpus\District;
@@ -157,6 +158,7 @@ class TextController extends Controller
      */
     public function create()
     {
+        $bible_values = [NULL => ''] + Bible::getList();
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
         $cycle_genre_id = Genre::LEGEND_ID;
@@ -184,6 +186,7 @@ class TextController extends Controller
         return view(
             'corpus.text.create',
             compact(
+                'bible_values',
                 'author_values',
                 'corpus_values',
                 'cycle_genre_id',
@@ -367,6 +370,7 @@ class TextController extends Controller
             ->with('source.pubparts')
             ->findOrFail($id);
 
+        $bible_values = [NULL => ''] + Bible::getList();
         $lang_values = Lang::getList();
         $corpus_values = Corpus::getList();
 
@@ -412,6 +416,7 @@ class TextController extends Controller
         return view(
             'corpus.text.edit',
             compact(
+                'bible_values',
                 'author_value',
                 'author_values',
                 'corpus_values',

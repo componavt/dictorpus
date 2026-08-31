@@ -68,4 +68,8 @@
         @if ($text->toponymUrls())
         <p><b>{{trans('corpus.topkar_toponyms')}}:</b> {!! $text->toponymUrls() !!}</p>
         @endif
+
+        @if ($text->bibles()->count())
+        <p><b>{{trans('corpus.bible_link')}}:</b> {!! $text->bibleToString() !!}</p>
+        @endif
 </div>      

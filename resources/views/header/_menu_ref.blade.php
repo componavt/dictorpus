@@ -11,3 +11,4 @@
 <li><a href="{{ LaravelLocalization::localizeURL('/dict/audio') }}">{{ trans('navigation.audios') }}</a></li>
 <li><a href="{{ route('label.index') }}">{{ trans('navigation.labels') }}</a></li>
 <li><a href="{{ route('publication.index') }}">{{ trans('navigation.publications') }}</a></li>
+<li><a href="{{ route('bible.index') }}">{{ trans('navigation.bibles') }}</a></li>

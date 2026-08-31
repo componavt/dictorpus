@@ -16,6 +16,7 @@ Route::group(
         Route::get('audiotext/{id}', 'Corpus\AudiotextController@show')->name('audiotext.show');
 
         Route::get('author/store', 'Corpus\AuthorController@simpleStore');
+        Route::get('bible/list', 'Corpus\BibleController@bibleList');
 
         Route::get('district/birth_list', 'Corpus\DistrictController@birthDistrictList');
         Route::get('district/list', 'Corpus\DistrictController@districtList');
@@ -112,6 +113,7 @@ Route::group(
         Route::get('video', 'Corpus\VideoController@index');
 
         Route::resource('author', 'Corpus\AuthorController', route_names('author'));
+        Route::resource('bible', 'Corpus\BibleController', route_names('bible'));
         Route::resource('corpus', 'Corpus\CorpusController', route_names('corpus'));
         Route::resource('cycle', 'Corpus\CycleController', route_names('cycle'));
         Route::resource('district', 'Corpus\DistrictController', route_names('district'));

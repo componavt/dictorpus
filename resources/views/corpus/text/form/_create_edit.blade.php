@@ -82,4 +82,5 @@
     </div>
 </div>                 
 
+@include('corpus.text.form._bible_fields')
 @include('corpus.text.form._folk_fields')

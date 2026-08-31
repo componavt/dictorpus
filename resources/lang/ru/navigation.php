@@ -19,6 +19,8 @@ return [
     'audios' => 'Аудиозаписи лемм',
     'authors' => 'Авторы / переводчики',
 
+    'bibles' => 'Библия',
+
     'collections' => 'Коллекции',
     'concept_categories' => 'Категории понятий',
     'concepts' => 'Понятия',
