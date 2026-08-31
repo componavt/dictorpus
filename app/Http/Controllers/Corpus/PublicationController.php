@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
+use App\Models\Dict\Lang;
 use App\Models\Corpus\Publication;
 
 class PublicationController extends Controller
@@ -63,8 +64,10 @@ class PublicationController extends Controller
     {
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
+        $lang_values = [NULL => ''] + Lang::getList();
 
-        return view('corpus.publication.create', compact('args_by_get', 'url_args'));
+        return view('corpus.publication.create', 
+                compact('lang_values', 'args_by_get', 'url_args'));
     }
 
     protected function validateRequest(Request $request)
@@ -153,8 +156,10 @@ class PublicationController extends Controller
     {
         $url_args = $this->url_args;
         $publication = Publication::with('pubparts')->findOrFail($id);
+        $lang_values = [NULL => ''] + Lang::getList();
 
-        return view('corpus.publication.edit', compact('publication', 'url_args'));
+        return view('corpus.publication.edit', 
+                compact('lang_values', 'publication', 'url_args'));
     }
 
     /**

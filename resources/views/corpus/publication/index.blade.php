@@ -30,6 +30,7 @@
             <tr>
                 <th>No</th>
                 <th>{{ trans('messages.photo') }}</th>
+                <th>{{ trans('dict.lang') }}</th>
                 <th>{{ trans('corpus.authors') }}</th>
                 <th>{{ trans('corpus.title') }}</th>
                 <th>{{ trans('corpus.addition_info') }}</th>
@@ -47,6 +48,9 @@
                 <td data-th="No">{{ $list_count++ }}</td>
                 <td class="col-photo" data-th="{{ trans('messages.photo') }}">
                     @include('corpus.publication.photo')
+                </td>
+                <td data-th="{{ trans('dict.lang') }}">
+                    {{ $publication->lang->code ?? '' }}
                 </td>
                 <td data-th="{{ trans('corpus.authors') }}">
                     {{ $publication->authors }}

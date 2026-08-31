@@ -6,6 +6,7 @@ function addPublication() {
     $("#modalAddPublication #title").val($("#source_title").val());
     $("#modalAddPublication #year").val(year);
     $("#modalAddPublication .pubpart_year").val(year);
+    $("#modalAddPublication #lang_id").val($("#lang_id").val()).change();
     $("#modalAddPublication").modal('show');
 }
 
@@ -153,6 +154,7 @@ function savePublication() {
             authors: $modal.find('#authors').val(),
             title: title,
             year: $modal.find('#year').val(),
+            lang_id: $modal.find('#lang_id').val(),
 
             addition_info: $modal.find('#addition_info').val(),
 

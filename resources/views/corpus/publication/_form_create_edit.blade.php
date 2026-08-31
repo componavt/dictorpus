@@ -6,24 +6,26 @@
 
     $with_photo = !empty($with_photo);
     $publication_data_col = $with_photo
-        ? 'col-sm-4'
-        : 'col-sm-8';
+        ? 'col-sm-5'
+        : 'col-sm-9';
 @endphp
 
 @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
 <input type="hidden" id="publication_field" value="">
 <div class="row">
-    <div class='col-sm-4'>
+    <div class='col-sm-3'>
         @include('widgets.form.formitem._radio', [
             'name' => 'is_periodic',
             'values' => trans('messages.bin_answers'),
             'checked' => old('is_periodic', $publication->is_periodic ?? 0), 
             'title'=>trans('corpus.is_periodic')])
 
-        @include('widgets.form.formitem._text', [
-            'name' => 'authors', 
-            'title'=>trans('corpus.authors')])
-
+        @include('widgets.form.formitem._select', 
+                ['name' => 'lang_id', 
+                 'values' =>$lang_values,
+                 'title' => trans('dict.lang'),
+                 'attributes' => ['id'=>'lang_id']])
+                 
         <div class="js-non-periodic {{ $is_periodic ? 'hidden' : '' }}">
         @include('widgets.form.formitem._text', [
             'name'  => 'year',
@@ -33,6 +35,10 @@
         </div>
     </div>
     <div class='{{ $publication_data_col }}'>
+        @include('widgets.form.formitem._text', [
+            'name' => 'authors', 
+            'title'=>trans('corpus.authors')])
+
         @include('widgets.form.formitem._text', [
             'name' => 'title', 
             'title'=>trans('corpus.title')])
@@ -50,8 +56,8 @@
             </div>
             <input id="photo" name="photo" type="file" accept="image/*" class="form-control">
         </div>
-@endif
     </div>
+@endif
 </div>
 <h2>
     <span class="js-non-periodic {{ $is_periodic ? 'hidden' : '' }}">

@@ -13,7 +13,7 @@ use App\Models\Corpus\Pubpart;
 class Publication extends Model implements HasMediaConversions
 {
     public $timestamps = false;
-    protected $fillable = ['is_periodic', 'authors', 'title', 'addition_info', 'year'];
+    protected $fillable = ['is_periodic', 'authors', 'title', 'addition_info', 'year', 'lang_id'];
 
     use HasMediaTrait;
     use \Venturecraft\Revisionable\RevisionableTrait;
@@ -46,7 +46,8 @@ class Publication extends Model implements HasMediaConversions
         return $this->title;
     }
 
-    // Belongs To Many Relations    
+    // Relations    
+    use \App\Traits\Relations\BelongsTo\Lang;
     use \App\Traits\Relations\BelongsToMany\Sources;
     use \App\Traits\Relations\HasMany\Pubparts;
 
