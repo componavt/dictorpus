@@ -1,13 +1,14 @@
 var sourcePubpartRow = null;
 
 function addPublication() {
+    var $modal = $("#modalAddPublication");
     var year = $("#source_year").val();
-    $("#modalAddPublication #authors").val($("#source_author").val());
-    $("#modalAddPublication #title").val($("#source_title").val());
-    $("#modalAddPublication #year").val(year);
-    $("#modalAddPublication .pubpart_year").val(year);
-    $("#modalAddPublication #lang_id").val($("#lang_id").val()).change();
-    $("#modalAddPublication").modal('show');
+    $modal.find("#authors").val($("#source_author").val());
+    $modal.find("#title").val($("#source_title").val());
+    $modal.find("#year").val(year);
+    $modal.find(".pubpart_year").val(year);
+    $modal.find("#lang_id").val($("#textForm #lang_id").val()).change();
+    $modal.modal('show');
 }
 
 function addSourcePubpartRow(pubpart) {
@@ -557,3 +558,29 @@ function resetPublicationPubparts($modal) {
     addPublicationPubpartRow();
 }
 
+function initPublicationPubparts() {
+    $(document)
+        .off('click.publicationPubparts', '.remove-publication-pubpart')
+        .on('click.publicationPubparts', '.remove-publication-pubpart', function () {
+            var $row = $(this).closest('.js-pubpart-row');
+            var pubpart_id = $row.attr('data-pubpart-id');
+            var $form = $row.closest('form');
+
+            /*
+             * У существующей части есть id в БД.
+             * Передаём его в форму отдельным массивом.
+             */
+            if (pubpart_id) {
+                $('<input>', {
+                    type: 'hidden',
+                    name: 'deleted_pubparts[]',
+                    value: pubpart_id
+                }).appendTo($form);
+            }
+
+            /*
+             * Для новой строки id пустой: её достаточно убрать из формы.
+             */
+            $row.remove();
+        });
+}

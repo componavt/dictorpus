@@ -74,7 +74,7 @@
     </i>
 </h2>
 <div class="row">
-    <div class="col-sm-2"
+    <div class="col-sm-1"
          style="font-weight:bold; text-align:center; padding-bottom:10px">
         №
     </div>
@@ -97,6 +97,10 @@
     <div class="col-sm-4 js-periodic {{ $is_periodic ? '' : 'hidden' }}"
          style="font-weight:bold; text-align:center; padding-bottom:10px">
         {{ trans('corpus.issue_date') }}
+    </div>
+
+    <div class="col-sm-1"
+         style="padding-bottom:10px">
     </div>
 </div>
 @php

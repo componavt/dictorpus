@@ -121,23 +121,66 @@ class Publication extends Model implements HasMediaConversions
 
     public function storeAddition(array $data)
     {
+        /*
+        * Удаляем только те pubpart, которые относятся
+        * к текущей публикации.
+        */
+        if (!empty($data['deleted_pubparts']) && is_array($data['deleted_pubparts'])) {
+            $deleted_pubpart_ids = array_filter(
+                array_map('intval', $data['deleted_pubparts'])
+            );
+
+            if ($deleted_pubpart_ids) {
+                $this->pubparts()
+                    ->whereIn('id', $deleted_pubpart_ids)
+                    ->get()
+                    ->each(function ($pubpart) {
+                        $pubpart->delete();
+                    });
+            }
+        }
+
+        /*
+        * Изменяем оставшиеся существующие части.
+        *
+        * Пустой title больше не удаляет строку:
+        * удаление делается только крестиком.
+        */
         if (!empty($data['pubparts']) && is_array($data['pubparts'])) {
             foreach ($data['pubparts'] as $pubpart_id => $pubpart_data) {
-                if (empty($pubpart_data['title']) && empty($pubpart_data['number']) && empty($pubpart_data['year']) && empty($pubpart_data['issue_date'])) {
+                $pubpart = $this->pubparts()
+                    ->where('id', (int)$pubpart_id)
+                    ->first();
+
+                if (!$pubpart) {
                     continue;
                 }
-                $pubpart = Pubpart::find($pubpart_id);
+
                 $pubpart_data['publication_id'] = $this->id;
+
                 $pubpart->fill($pubpart_data)->save();
             }
         }
 
+        /*
+        * Создаём новые части.
+        *
+        * Пустая новая строка, которая создаётся в форме
+        * по умолчанию, не попадёт в БД.
+        */
         if (!empty($data['new_pubparts']) && is_array($data['new_pubparts'])) {
             foreach ($data['new_pubparts'] as $pubpart_data) {
-                if (empty($pubpart_data['title']) && empty($pubpart_data['number']) && empty($pubpart_data['year']) && empty($pubpart_data['issue_date'])) {
+                if (
+                    empty($pubpart_data['title'])
+                    && empty($pubpart_data['number'])
+                    && empty($pubpart_data['year'])
+                    && empty($pubpart_data['issue_date'])
+                ) {
                     continue;
                 }
+
                 $pubpart_data['publication_id'] = $this->id;
+
                 Pubpart::create($pubpart_data);
             }
         }

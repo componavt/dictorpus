@@ -1,5 +1,8 @@
-<div class="row js-pubpart-row">
-    <div class="col-sm-2">
+<div
+    class="row js-pubpart-row"
+    data-pubpart-id="{{ !empty($pubpart) ? $pubpart->id : '' }}"
+>
+    <div class="col-sm-1">
         @include('widgets.form.formitem._NUMBER', [
             'name'  => $varname.'[sequence_number]',
             'value' => $count
@@ -33,5 +36,16 @@
             'name'  => $varname.'[issue_date]',
             'value' => $pubpart->issue_date ?? ''
         ])
+    </div>
+
+    <div class="col-sm-1 text-center">
+        <button
+            type="button"
+            class="remove-publication-pubpart btn btn-link"
+            title="{{ trans('messages.delete') }}"
+            aria-label="{{ trans('messages.delete') }}"
+        >
+            <i class="fa fa-times"></i>
+        </button>
     </div>
 </div>

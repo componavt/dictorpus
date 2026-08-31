@@ -26,7 +26,7 @@
 
         @include('corpus.text.modals_for_edition', ['action' => 'edit'])
         
-        {!! Form::model($text, ['method'=>'PUT', 'route'=>['text.update', $text->id], 'files'=>true] ) !!} <?php //, 'enctype'=>"multipart/form-data"?>
+        {!! Form::model($text, ['method'=>'PUT', 'route'=>['text.update', $text->id], 'files'=>true, 'id'=>'textForm']) !!} <?php //, 'enctype'=>"multipart/form-data"?>
         @include('corpus.text.form._create_edit', ['submit_title' => trans('messages.save'),
                                       'action' => 'edit',
                                       'motive_value'=> $text->motiveValue()])

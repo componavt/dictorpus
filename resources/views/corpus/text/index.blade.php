@@ -48,8 +48,12 @@
     toggleSpecial();
     toggleSearchForm();
     recDelete('{{ trans('messages.confirm_delete') }}');
-    $(".multiple-select-lang").select2();
-    $(".multiple-select-corpus").select2();
+    $(".multiple-select-lang").select2({
+        width: '100%'
+    });
+    $(".multiple-select-corpus").select2({
+        width: '100%'
+    });
     selectGenre();
     selectWithLang('.multiple-select-dialect', "/dict/dialect/list", 'search_lang', '', true);
     selectPlot('.multiple-select-plot', 'search_genre');

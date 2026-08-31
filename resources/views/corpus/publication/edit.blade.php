@@ -29,5 +29,6 @@
 @stop
 
 @section('jqueryFunc')
+    initPublicationPubparts();
     initPublicationPeriodicFields();
 @stop
