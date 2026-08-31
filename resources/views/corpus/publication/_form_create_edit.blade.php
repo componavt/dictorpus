@@ -1,10 +1,21 @@
 @php
-    $is_periodic = (int) old(
-        'is_periodic',
-        $publication->is_periodic ?? 0
-    ) === 1;
+    /*
+     * При обычном открытии формы берём integer из модели.
+     *
+     * После Redirect::back()->withInput() old('is_periodic')
+     * приходит строкой: '0' или '1'. Явно приводим её к int,
+     * чтобы строгое сравнение в общем partial _radio работало.
+     */
+    $old_is_periodic = old('is_periodic');
+
+    $is_periodic_value = $old_is_periodic === null
+        ? (int) ($publication->is_periodic ?? 0)
+        : (int) $old_is_periodic;
+
+    $is_periodic = $is_periodic_value === 1;
 
     $with_photo = !empty($with_photo);
+
     $publication_data_col = $with_photo
         ? 'col-sm-5'
         : 'col-sm-9';
@@ -17,7 +28,7 @@
         @include('widgets.form.formitem._radio', [
             'name' => 'is_periodic',
             'values' => trans('messages.bin_answers'),
-            'checked' => old('is_periodic', $publication->is_periodic ?? 0), 
+            'checked' => $is_periodic_value, 
             'title'=>trans('corpus.is_periodic')])
 
         @include('widgets.form.formitem._select', 

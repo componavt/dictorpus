@@ -108,48 +108,54 @@ class Publication extends Model implements HasMediaConversions
         return $publication;
     }
 
-    public function modify(array $data, $photo = null)
+    public function modify(array $data, $photo = null): array
     {
         if (!empty($data['is_periodic'])) {
             $data['year'] = null;
         }
+
         $this->fill($data)->save();
 
-        $this->storeAddition($data);
+        $deletion_errors = $this->storeAddition($data);
+
         $this->storeCover($photo);
+
+        return $deletion_errors;
     }
 
-    public function storeAddition(array $data)
+    public function storeAddition(array $data): array
     {
-        /*
-        * Удаляем только те pubpart, которые относятся
-        * к текущей публикации.
-        */
+        $deletion_errors = [];
+
+        // Удаляем только части текущей публикации. Связанные с источниками части не удаляем.
         if (!empty($data['deleted_pubparts']) && is_array($data['deleted_pubparts'])) {
             $deleted_pubpart_ids = array_filter(
                 array_map('intval', $data['deleted_pubparts'])
             );
 
             if ($deleted_pubpart_ids) {
-                $this->pubparts()
+                $pubparts_for_deletion = $this->pubparts()
                     ->whereIn('id', $deleted_pubpart_ids)
-                    ->get()
-                    ->each(function ($pubpart) {
-                        $pubpart->delete();
-                    });
+                    ->get();
+
+                foreach ($pubparts_for_deletion as $pubpart) {
+                    $deletion_error = $pubpart->deletion_error();
+
+                    if ($deletion_error) {
+                        $deletion_errors[] = $deletion_error;
+                        continue;
+                    }
+
+                    $pubpart->delete_without_text_links();
+                }
             }
         }
 
-        /*
-        * Изменяем оставшиеся существующие части.
-        *
-        * Пустой title больше не удаляет строку:
-        * удаление делается только крестиком.
-        */
+        // Обновляем сохранённые части. Проверяем принадлежность pubpart текущей публикации.
         if (!empty($data['pubparts']) && is_array($data['pubparts'])) {
             foreach ($data['pubparts'] as $pubpart_id => $pubpart_data) {
                 $pubpart = $this->pubparts()
-                    ->where('id', (int)$pubpart_id)
+                    ->where('id', (int) $pubpart_id)
                     ->first();
 
                 if (!$pubpart) {
@@ -162,12 +168,7 @@ class Publication extends Model implements HasMediaConversions
             }
         }
 
-        /*
-        * Создаём новые части.
-        *
-        * Пустая новая строка, которая создаётся в форме
-        * по умолчанию, не попадёт в БД.
-        */
+        // Создаём новые части. Пустая строка формы не создаёт pubpart.
         if (!empty($data['new_pubparts']) && is_array($data['new_pubparts'])) {
             foreach ($data['new_pubparts'] as $pubpart_data) {
                 if (
@@ -184,6 +185,8 @@ class Publication extends Model implements HasMediaConversions
                 Pubpart::create($pubpart_data);
             }
         }
+
+        return $deletion_errors;
     }
 
     protected function storeCover($photo)

@@ -2,13 +2,14 @@
 
 namespace App\Models\Corpus;
 
+use App\Http\Controllers\Corpus\MonumentController;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 class Monument extends Model
 {
     use \App\Traits\Search\MonumentSearch;
-    
+
     use \Venturecraft\Revisionable\RevisionableTrait;
 
     protected $revisionEnabled = true;
@@ -16,10 +17,26 @@ class Monument extends Model
     protected $historyLimit = 999999; //Stop tracking revisions after 999999 changes have been made.
     protected $revisionCreationsEnabled = true; // By default the creation of a new model is not stored as a revision. Only subsequent changes to a model is stored.
 
-    protected $fillable = ['author', 'title', 'place', 'publ_date_from', 
-        'publ_date_to', 'pages', 'bibl_descr', 'graphic_id', 'has_trans', 
-        'volume', 'types', 'is_printed', 'is_full', 'dcopy_link', 'publ', 
-        'study', 'archive', 'comment'];    
+    protected $fillable = [
+        'author',
+        'title',
+        'place',
+        'publ_date_from',
+        'publ_date_to',
+        'pages',
+        'bibl_descr',
+        'graphic_id',
+        'has_trans',
+        'volume',
+        'types',
+        'is_printed',
+        'is_full',
+        'dcopy_link',
+        'publ',
+        'study',
+        'archive',
+        'comment'
+    ];
 
     protected $casts = [
         'publ_date_from' => 'date',
@@ -29,21 +46,22 @@ class Monument extends Model
         'is_full' => 'boolean',
         'types' => 'array',
     ];
-    
-    
+
+
     public static function boot()
     {
         parent::boot();
     }
 
     // Scopes
-//    use \App\Traits\Scopes\SearchByType;    
+    //    use \App\Traits\Scopes\SearchByType;    
 
     // Belongs To Many Relations
     use \App\Traits\Relations\BelongsToMany\Dialects;
     use \App\Traits\Relations\BelongsToMany\Langs;
-    
-    public function getGraphicNameAttribute() {
+
+    public function getGraphicNameAttribute()
+    {
         if (!empty($this->graphic_id) && !empty(trans('monument.graphic_values')[$this->graphic_id])) {
             return trans('monument.graphic_values')[$this->graphic_id];
         }
@@ -54,14 +72,16 @@ class Monument extends Model
         return $value ? json_decode($value, true) : [];
     }
 
-    public function getPublDateFromForFormAttribute() {
+    public function getPublDateFromForFormAttribute()
+    {
         return $this->publ_date_from ? $this->publ_date_from->format('m.Y') : null;
     }
-    
-    public function getPublDateToForFormAttribute() {
+
+    public function getPublDateToForFormAttribute()
+    {
         return $this->publ_date_to ? $this->publ_date_to->format('m.Y') : null;
     }
-    
+
     // Основной атрибут — с полными названиями
     public function getPublDateAttribute()
     {
@@ -72,24 +92,27 @@ class Monument extends Model
     public function getPublDateBriefAttribute()
     {
         return $this->formatPublicationDate(true);
-    }    
-    
-    public function formatPublicationDate($brief = false) {
+    }
+
+    public function formatPublicationDate($brief = false)
+    {
         $from = $this->publ_date_from; // Carbon|null
         $to   = $this->publ_date_to;   // Carbon|null
 
-        $months = trans('date.'.($brief ? 'mons' : 'months')); 
+        $months = trans('date.' . ($brief ? 'mons' : 'months'));
 
         $format = function ($date) use ($months) {
-            if (!$date) { return null; }
+            if (!$date) {
+                return null;
+            }
             return $months[$date->month] . ' ' . $date->year;
         };
 
         $fromStr = $format($from);
         $toStr   = $format($to);
 
-    // Отладка
-/*    \Log::info([
+        // Отладка
+        /*    \Log::info([
         'from_year' => $from->year,
         'from_month' => $from->month,
         'to_year' => $to->year,
@@ -104,10 +127,18 @@ class Monument extends Model
         'centuryEnd'   => (floor(($from->year - 1) / 100) * 100) + 1 + 99
     ]);*/
 
-        if (!$fromStr && !$toStr) { return null; }
-        if ($fromStr && !$toStr)  { return $fromStr; }
-        if (!$fromStr && $toStr)  { return $toStr; }
-        if ($fromStr === $toStr)  { return $fromStr; }
+        if (!$fromStr && !$toStr) {
+            return null;
+        }
+        if ($fromStr && !$toStr) {
+            return $fromStr;
+        }
+        if (!$fromStr && $toStr) {
+            return $toStr;
+        }
+        if ($fromStr === $toStr) {
+            return $fromStr;
+        }
 
         // Правило: весь один год
         if ($from && $to && $from->year === $to->year && $from->month === 1 && $to->month === 12) {
@@ -121,9 +152,9 @@ class Monument extends Model
             $centuryStart = (int)(floor(($from->year - 1) / 100) * 100) + 1; // 1801
             $centuryEnd   = (int)$centuryStart + 99;                         // 1900
 
-            if ( $from->year === $centuryStart && $to->year === $centuryEnd) {
+            if ($from->year === $centuryStart && $to->year === $centuryEnd) {
                 $century = floor(($from->year - 1) / 100) + 1;
-                return $century . ' '.trans('date.'.($brief ? 'cen' : 'century'));
+                return $century . ' ' . trans('date.' . ($brief ? 'cen' : 'century'));
             }
 
             // Иначе — обычный диапазон годов
@@ -131,7 +162,7 @@ class Monument extends Model
         }
         return "$fromStr – $toStr";
     }
-    
+
     public function setTypesAttribute($value)
     {
         if (!$value) {
@@ -149,8 +180,9 @@ class Monument extends Model
     {
         $this->attributes['dialect_id'] = empty($value) ? null : $value;
     }
-    
-    public function setPublDateFromAttribute($value) {
+
+    public function setPublDateFromAttribute($value)
+    {
         if (empty($value)) {
             $this->attributes['publ_date_from'] = null;
             return;
@@ -176,7 +208,8 @@ class Monument extends Model
         }
     }
 
-    public function setPublDateToAttribute($value) {
+    public function setPublDateToAttribute($value)
+    {
         if (empty($value)) {
             $this->attributes['publ_date_to'] = null;
             return;
@@ -202,7 +235,7 @@ class Monument extends Model
         }
     }
 
-/*    public function typeValue():Array{
+    /*    public function typeValue():Array{
         $value = [];
         if ($this->types) {
             foreach ($this->types as type) {
@@ -211,35 +244,35 @@ class Monument extends Model
         }
         return $value;
     }*/
-    
+
     public function typesToString()
     {
         $list = [];
         $type_values = trans('monument.type_values');
-        
+
         foreach ($this->types as $type_id) {
             $list[] = isset($type_values[$type_id]) ? $type_values[$type_id] : null;
         }
         return join(', ', $list);
     }
-    
+
     public function langsAndDialectsToString()
     {
         $list = [];
-        
+
         foreach ($this->langs as $lang) {
             $dialects = [];
             foreach ($this->dialects()->whereLangId($lang->id)->get() as $dialect) {
                 $dialects[] = $dialect->name;
             }
-            $list[] = $lang->name. (sizeof($dialects) ? ' ('.join(', ', $dialects).')' : '');
-            
+            $list[] = $lang->name . (sizeof($dialects) ? ' (' . join(', ', $dialects) . ')' : '');
         }
         return join(', ', $list);
     }
-    
-    public function storeAdditionInfo($data){
-        $this->langs()->sync($data['langs']);
-        $this->dialects()->sync($data['dialects']);
+
+    public function storeAdditionInfo($data)
+    {
+        $this->langs()->sync($data['langs'] ?? []);
+        $this->dialects()->sync($data['dialects'] ?? []);
     }
 }

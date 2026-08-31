@@ -1,4 +1,6 @@
 <input type="hidden" id="new_pubpart_publication_id">
+<input type="hidden" id="new_pubpart_id" value="">  {{-- пустое → создаём новую pubpart;
+                                                     содержит id  → редактируем существующую pubpart. --}}
 
 <div class="form-group js-new-pubpart-non-periodic">
     <label for="new_pubpart_title">

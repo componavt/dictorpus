@@ -66,8 +66,10 @@ class PublicationController extends Controller
         $url_args = $this->url_args;
         $lang_values = [NULL => ''] + Lang::getList();
 
-        return view('corpus.publication.create', 
-                compact('lang_values', 'args_by_get', 'url_args'));
+        return view(
+            'corpus.publication.create',
+            compact('lang_values', 'args_by_get', 'url_args')
+        );
     }
 
     protected function validateRequest(Request $request)
@@ -85,7 +87,11 @@ class PublicationController extends Controller
         }
 
         $this->validate($request, $rules);
-        return $request->all();
+        $data = $request->all();
+        if (empty($data['lang_id'])) {
+            $data['lang_id'] = null;
+        }
+        return $data;
     }
 
     /**
@@ -99,7 +105,7 @@ class PublicationController extends Controller
         $data = $this->validateRequest($request);
         $publication = Publication::store($data, $request->file('photo'));
 
-        return Redirect::to('/corpus/publication/' . ($this->args_by_get))
+        return Redirect::to('/corpus/publication/' . $publication->id . '/' . ($this->args_by_get))
             ->withSuccess(trans('messages.created_success'));
     }
 
@@ -158,8 +164,10 @@ class PublicationController extends Controller
         $publication = Publication::with('pubparts')->findOrFail($id);
         $lang_values = [NULL => ''] + Lang::getList();
 
-        return view('corpus.publication.edit', 
-                compact('lang_values', 'publication', 'url_args'));
+        return view(
+            'corpus.publication.edit',
+            compact('lang_values', 'publication', 'url_args')
+        );
     }
 
     /**
@@ -172,10 +180,23 @@ class PublicationController extends Controller
     public function update(Request $request, $id)
     {
         $data = $this->validateRequest($request);
-        $publication = Publication::find($id);
-        $publication->modify($data, $request->file('photo'));
+        $publication = Publication::findOrFail($id);
 
-        return Redirect::to('/corpus/publication/' . ($this->args_by_get))
+        $deletion_errors = $publication->modify(
+            $data,
+            $request->file('photo')
+        );
+
+        if ($deletion_errors) {
+            return Redirect::back()
+                ->withInput()
+                ->with(
+                    'warning',
+                    implode(' ', $deletion_errors)
+                );
+        }
+
+        return Redirect::to('/corpus/publication/' . $publication->id . '/' . ($this->args_by_get))
             ->withSuccess(trans('messages.updated_success'));
     }
 

@@ -81,6 +81,7 @@
                  
         @include('widgets.form.formitem._radio', 
                 ['name' => 'has_trans', 
+                 'checked' => (int) old('has_trans', $monument->has_trans ?? 0),
                  'values' =>trans('monument.has_trans_values'),
                  'title' => trans('monument.has_trans')])
                  
@@ -93,11 +94,13 @@
                  
         @include('widgets.form.formitem._radio', 
                 ['name' => 'is_printed', 
+                 'checked' => (int) old('is_printed', $monument->is_printed ?? 0),
                  'values' =>trans('monument.is_printed_values'),
                  'title' => trans('monument.is_printed')])
                  
         @include('widgets.form.formitem._radio', 
                 ['name' => 'is_full', 
+                 'checked' => (int) old('is_full', $monument->is_full ?? 0),
                  'values' =>trans('monument.is_full_values'),
                  'title' => trans('monument.is_full')])
                  

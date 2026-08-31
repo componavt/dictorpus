@@ -49,6 +49,8 @@ Route::group(
         Route::get('publication/store', 'Corpus\PublicationController@simpleStore');
         Route::get('pubpart/list', 'Corpus\PubpartController@pList');
         Route::get('pubpart/simple_store', 'Corpus\PubpartController@simpleStore');
+        Route::get('pubpart/{id}/simple_update', 'Corpus\PubpartController@simpleUpdate');
+        Route::get('pubpart/{id}/simple_destroy', 'Corpus\PubpartController@simpleDestroy');
 
         Route::get('recorder/store', 'Corpus\RecorderController@simpleStore');
         Route::get('region/{id}/text_count', 'Corpus\RegionController@textCount');

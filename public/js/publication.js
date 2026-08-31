@@ -212,9 +212,11 @@ function savePubpart() {
     var $modal = $('#modalAddPubpart');
     var $button = $('#save-pubpart');
 
-    var publicationId = $modal
-        .find('#new_pubpart_publication_id')
-        .val();
+    if ($button.prop('disabled')) {
+        return;
+    }
+
+    var publicationId = $modal.find('#new_pubpart_publication_id').val();
 
     var data = {
         publication_id: publicationId,
@@ -239,16 +241,9 @@ function savePubpart() {
 
             var $select = sourcePubpartRow.find('.select-pubpart');
 
-            var option = new Option(
-                pubpart.text,
-                pubpart.id,
-                true,
-                true
-            );
+            var option = new Option(pubpart.text, pubpart.id, true, true);
 
-            $select
-                .append(option)
-                .trigger('change');
+            $select.append(option).trigger('change');
 
             if (pubpart.year) {
                 $('#source-pubparts-group').data(
@@ -268,6 +263,23 @@ function savePubpart() {
             $button.prop('disabled', false);
         }
     });
+}
+
+function savePubpartFromModal() {
+    /*
+     * На publication.show присутствует список частей публикации.
+     * Там создаём или редактируем pubpart и затем перезагружаем страницу.
+     */
+    if ($('#publication-pubparts-show').length) {
+        savePublicationShowPubpart();
+        return;
+    }
+
+    /*
+     * На текстовой форме сохраняем новую часть и выбираем её
+     * в строке sourcePubpartRow, как работает сейчас.
+     */
+    savePubpart();
 }
 
 function getNewPublicationPubparts($modal, isPeriodic) {
@@ -582,5 +594,185 @@ function initPublicationPubparts() {
              * Для новой строки id пустой: её достаточно убрать из формы.
              */
             $row.remove();
+        });
+}
+
+function openPublicationShowPubpartModal(pubpart_data) {
+    var $container = $('#publication-pubparts-show');
+
+    if (!$container.length) {
+        return;
+    }
+
+    var $modal = $('#modalAddPubpart');
+
+    var publication_id = $container.data('publication-id');
+    var is_periodic = String(
+        $container.data('is-periodic')
+    ) === '1';
+
+    pubpart_data = pubpart_data || {};
+
+    $modal.find('#new_pubpart_publication_id').val(publication_id);
+    $modal.find('#new_pubpart_id').val(pubpart_data.id || '');
+
+    $modal.find('#new_pubpart_title').val(
+        pubpart_data.title || ''
+    );
+
+    $modal.find('#new_pubpart_number').val(
+        pubpart_data.number || ''
+    );
+
+    $modal.find('#new_pubpart_year').val(
+        pubpart_data.year || ''
+    );
+
+    $modal.find('#new_pubpart_issue_date').val(
+        pubpart_data.issue_date || ''
+    );
+
+    $modal.find('.js-new-pubpart-periodic')
+        .toggleClass('hidden', !is_periodic);
+
+    $modal.find('.js-new-pubpart-non-periodic')
+        .toggleClass('hidden', is_periodic);
+
+    $modal.modal('show');
+}
+
+function savePublicationShowPubpart() {
+    var $modal = $('#modalAddPubpart');
+    var $button = $modal.find('#save-pubpart');
+
+    if ($button.prop('disabled')) {
+        return;
+    }
+
+    var pubpart_id = $modal.find('#new_pubpart_id').val();
+
+    var data = {
+        publication_id: $modal.find('#new_pubpart_publication_id').val(),
+        title: $.trim($modal.find('#new_pubpart_title').val()),
+        number: $.trim($modal.find('#new_pubpart_number').val()),
+        year: $.trim($modal.find('#new_pubpart_year').val()),
+        issue_date: $.trim($modal.find('#new_pubpart_issue_date').val())
+    };
+
+    var url = pubpart_id
+        ? '/corpus/pubpart/' + pubpart_id + '/simple_update'
+        : '/corpus/pubpart/simple_store';
+
+    $button.prop('disabled', true);
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        data: data,
+
+        success: function () {
+            window.location.reload();
+        },
+
+        error: function (jq_xhr) {
+            var message = 'Не удалось сохранить часть публикации.';
+
+            if (
+                jq_xhr.responseJSON
+                && jq_xhr.responseJSON.message
+            ) {
+                message = jq_xhr.responseJSON.message;
+            }
+
+            alert(message);
+        },
+
+        complete: function () {
+            $button.prop('disabled', false);
+        }
+    });
+}
+
+function deletePublicationShowPubpart(pubpart_id, pubpart_name, $button) {
+    var confirm_message =
+        'Удалить часть публикации «' + pubpart_name + '»?';
+
+    if (!window.confirm(confirm_message)) {
+        return;
+    }
+
+    if ($button.prop('disabled')) {
+        return;
+    }
+
+    $button.prop('disabled', true);
+
+    $.ajax({
+        url: '/corpus/pubpart/' + pubpart_id + '/simple_destroy',
+        type: 'GET',
+        dataType: 'json',
+
+        success: function () {
+            window.location.reload();
+        },
+
+        error: function (jq_xhr) {
+            var message =
+                'Не удалось удалить часть публикации.';
+
+            if (
+                jq_xhr.responseJSON
+                && jq_xhr.responseJSON.message
+            ) {
+                message = jq_xhr.responseJSON.message;
+            }
+
+            alert(message);
+        },
+
+        complete: function () {
+            $button.prop('disabled', false);
+        }
+    });
+}
+
+function initPublicationShowPubparts() {
+    var $container = $('#publication-pubparts-show');
+
+    if (!$container.length) {
+        return;
+    }
+
+    $('#create-publication-pubpart')
+        .off('click.publicationShowPubparts')
+        .on('click.publicationShowPubparts', function () {
+            openPublicationShowPubpartModal();
+        });
+
+    $container
+        .off('click.publicationShowPubparts', '.edit-publication-pubpart')
+        .on('click.publicationShowPubparts', '.edit-publication-pubpart', function () {
+            var $button = $(this);
+
+            openPublicationShowPubpartModal({
+                id: $button.data('pubpart-id'),
+                title: $button.data('title'),
+                number: $button.data('number'),
+                year: $button.data('year'),
+                issue_date: $button.data('issue-date')
+            });
+        });
+
+    $container
+        .off('click.publicationShowPubparts', '.delete-publication-pubpart')
+        .on('click.publicationShowPubparts', '.delete-publication-pubpart', function () {
+            var $button = $(this);
+
+            deletePublicationShowPubpart(
+                $button.data('pubpart-id'),
+                $button.data('pubpart-name'),
+                $button
+            );
         });
 }

@@ -27,16 +27,7 @@
             <p><b>{{ trans('corpus.title') }}</b>: {{ $publication->title }}</p>
             <p><b>{{ mb_ucfirst(trans('messages.year')) }}</b>: {{ $publication->year }}</p>
 
-            @if ($publication->pubparts()->count())
-            <p><b>{{ trans('corpus.pubparts') }}:</b></p>
-            <div class="topic-list">
-            @foreach ($publication->pubparts as $pubpart)
-                {{ $pubpart->full_name }} (
-                @if ($pubpart->texts()->count())<a href="{{ route('text.index', ['search_pubpart'=>$pubpart]) }}">@endif{{ $pubpart->texts()->count() }}@if ($pubpart->texts()->count())</a>@endif
-                )<br>
-            @endforeach
-            </div>
-            @endif
+            @include('corpus.pubpart.index')
         </div>
         <div class="col-sm-4" style='text-align: right'>
             @include('corpus.publication.photo')
@@ -44,4 +35,10 @@
     </div>
 @stop
 
+@section('footScriptExtra')
+    {!! js('publication')!!}
+@stop
 
+@section('jqueryFunc')
+    initPublicationShowPubparts();
+@stop

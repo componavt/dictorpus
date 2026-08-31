@@ -165,7 +165,7 @@ class MonumentController extends Controller
      */
     public function update(MonumentRequest $request, $id)
     {
-        $monument = Monument::find($id);
+        $monument = Monument::with(['langs', 'dialects'])->findOrFail($id);
         $monument->fill($request->all())->save();
         $monument->storeAdditionInfo($request->all());
 
