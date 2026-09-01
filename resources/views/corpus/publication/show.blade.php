@@ -25,6 +25,7 @@
 
             <p><b>{{ trans('corpus.authors') }}</b>: {{ $publication->authors }}</p>
             <p><b>{{ trans('corpus.title') }}</b>: {{ $publication->title }}</p>
+            <p><b>{{ mb_ucfirst(trans('dict.lang')) }}</b>: {{ $publication->lang ? $publication->lang->name : '' }}</p>
             <p><b>{{ mb_ucfirst(trans('messages.year')) }}</b>: {{ $publication->year }}</p>
 
             @include('corpus.pubpart.index')

@@ -77,10 +77,6 @@
                 </div>
             @endforeach
         </div>
-    @else
-        <p class="text-muted">
-            {{ trans('messages.no_records') }}
-        </p>
     @endif
 </div>
 
