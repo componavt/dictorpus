@@ -544,7 +544,8 @@ class RistikanzaTextController extends Controller
 
         $publications = [];
         foreach ($objs as $obj) {
-            $publications[$obj->id] = [
+            $lang = $obj->lang ? $obj->lang->name : '';
+            $publications[$lang][$obj->id] = [
                 'title' => $obj->full_info,
                 'photo' => $obj->hasMedia('covers') ? $obj->getFirstMediaUrl('covers', 'thumb') : null
             ];
