@@ -529,18 +529,7 @@ class RistikanzaTextController extends Controller
 
     public function monumentBooks()
     {
-        $corpus_id = $this->monumentsCorpus;
-
-        $objs = Publication::whereIn('id', function ($q) use ($corpus_id) {
-            $q->select('publication_id')->from('sources')
-                ->whereIn('id', function ($q2) use ($corpus_id) {
-                    $q2->select('source_id')->from('texts')
-                        ->whereIn('id', function ($q3) use ($corpus_id) {
-                            $q3->select('text_id')->from('corpus_text')
-                                ->whereCorpusId($corpus_id);
-                        });
-                });
-        })->orderBy('title')->get();
+        $objs = Publication::getForCorpus($this->monumentsCorpus);
 
         $publications = [];
         foreach ($objs as $obj) {
@@ -556,37 +545,70 @@ class RistikanzaTextController extends Controller
 
     public function monuments(Request $request)
     {
-        $texts = [];
-
-        $corpus_id = $this->monumentsCorpus;
         $publicaton_id = $request->input('publication_id');
 
         if (!$publicaton_id) {
-            return response()->json($texts);
+            return response()->json([]);
         }
 
-        $objs = Text::whereIn('id', function ($q) use ($corpus_id) {
-            $q->select('text_id')->from('corpus_text')
-                ->whereCorpusId($corpus_id);
-        })->whereIn('source_id', function ($q) use ($publicaton_id) {
-            $q->select('id')->from('sources')
-                ->wherePublicationId($publicaton_id);
-        })->with('source')->orderBy('title'); //->get();
+        $texts = $this->textsForCorpusAndPublication($this->monumentsCorpus, $publicaton_id);
 
-        Log::debug('Ristikanza API monuments', [
-            'sql' => $objs,
-        ]);
+        return response()->json(['book_title' => Publication::fullInfoById($publicaton_id), 'texts' => $texts]);
+    }
 
-        $objs = $objs->get();
+    public function bibleBooks()
+    {
+        $objs = Publication::getForCorpus($this->bibleCorpus);
 
+        $publications = [];
         foreach ($objs as $obj) {
-            $texts[$obj->id] = [
-                'title' => $obj->title,
-                'page' => $obj->source ? $obj->source->pages : null
+            $lang = $obj->lang ? $obj->lang->name : '';
+            $publications[$lang][$obj->id] = [
+                'title' => $obj->full_info,
+                //                'photo' => $obj->hasMedia('covers') ? $obj->getFirstMediaUrl('covers', 'thumb') : null
             ];
         }
 
-        return response()->json(collect($texts)->sortBy('page'));
+        return response()->json($publications);
+    }
+
+    public function bible(Request $request)
+    {
+        $publicaton_id = $request->input('publication_id');
+
+        if (!$publicaton_id) {
+            return response()->json([]);
+        }
+
+        $texts = $this->textsForCorpusAndPublication($this->bibleCorpus, $publicaton_id);
+
+        return response()->json(['book_title' => Publication::fullInfoById($publicaton_id), 'texts' => $texts]);
+    }
+
+    protected function textsForCorpusAndPublication(int $corpus_id, int $publicaton_id)
+    {
+        $texts = [];
+        $objs = Text::getForCorpusAndPublication($corpus_id, $publicaton_id);
+
+        foreach ($objs as $obj) {
+            $pages_in_source = $obj->source ? $obj->source->pages : null;
+            if (!sizeof($obj->source_pubparts)) {
+                $texts[''][$obj->id] = [
+                    'title' => $obj->title,
+                    'page' => $pages_in_source
+                ];
+            } else {
+                foreach ($obj->source_pubparts as $pubpart) {
+                    $pubpart_pages = trim($pubpart->pivot->pages ?: '');
+                    $texts[$pubpart->title][$obj->id] = [
+                        'title' => $obj->title,
+                        'page' => $pubpart_pages ?? $pages_in_source
+                    ];
+                }
+            }
+        }
+
+        return $texts;
     }
 
     public function forMap(Request $request)

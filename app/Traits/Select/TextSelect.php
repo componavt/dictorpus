@@ -237,4 +237,21 @@ trait TextSelect
             )
         );
     }
+
+    public static function getForCorpusAndPublication(int $corpus_id, int $publicaton_id)
+    {
+        $objs = self::whereIn('id', function ($q) use ($corpus_id) {
+            $q->select('text_id')->from('corpus_text')
+                ->whereCorpusId($corpus_id);
+        })->whereIn('source_id', function ($q) use ($publicaton_id) {
+            $q->select('id')->from('sources')
+                ->wherePublicationId($publicaton_id);
+        })->with('source')->orderBy('title'); //->get();
+
+        /*Log::debug('Ristikanza API monuments', [
+            'sql' => $objs,
+        ]);*/
+
+        return $objs->get();
+    }
 }
