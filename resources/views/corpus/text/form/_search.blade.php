@@ -187,7 +187,7 @@
     <div class="col-md-2{{$url_args['search_year_from'] ? '' : ' ext-form'}}">
         @include('widgets.form.formitem._text', 
                 ['name' => 'search_year_from', 
-                 'value' => $url_args['search_year_from'] ? $url_args['search_year_from'] : '',
+                 'value' => $url_args['search_year_from']>0 ? $url_args['search_year_from'] : '',
                  'title' => trans('search.year_from')
                 ])                               
     </div>

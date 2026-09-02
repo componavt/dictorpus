@@ -36,7 +36,7 @@
 @section('footScriptExtra')
     {!!Html::script('js/select2.min.js')!!}
     {!!Html::script('js/special_symbols.js')!!}
-    {!!Html::script('js/list_change.js')!!}
+    {!! js('list_change') !!}
     {!!Html::script('js/corpus.js')!!}
     {!! js('publication')!!}
 @stop
@@ -47,7 +47,7 @@
     $(".multiple-select").select2();
     $(".multiple-select-bible").select2();
     
-    selectDialect('lang_id');
+    selectDialect('textForm #lang_id');
     selectGenre('corpus_id');
     selectPlot('.multiple-select-plot', 'genres');
     selectCycle('.multiple-select-cycle', 'genres');
