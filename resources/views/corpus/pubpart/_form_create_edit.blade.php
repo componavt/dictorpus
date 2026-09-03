@@ -2,14 +2,14 @@
     class="row js-pubpart-row"
     data-pubpart-id="{{ !empty($pubpart) ? $pubpart->id : '' }}"
 >
-    <div class="col-sm-1">
+    <div class="col-sm-2">
         @include('widgets.form.formitem._NUMBER', [
             'name'  => $varname.'[sequence_number]',
             'value' => $count
         ])
     </div>
 
-    <div class="col-sm-10 js-non-periodic {{ $is_periodic ? 'hidden' : '' }}">
+    <div class="col-sm-9 js-non-periodic {{ $is_periodic ? 'hidden' : '' }}">
         @include('widgets.form.formitem._text', [
             'name'  => $varname.'[title]',
             'value' => $pubpart->title ?? ''
@@ -23,7 +23,7 @@
         ])
     </div>
 
-    <div class="col-sm-4 js-periodic {{ $is_periodic ? '' : 'hidden' }}">
+    <div class="col-sm-3 js-periodic {{ $is_periodic ? '' : 'hidden' }}">
         @include('widgets.form.formitem._NUMBER', [
             'name'  => $varname.'[year]',
             'value' => $pubpart->year ?? '',
