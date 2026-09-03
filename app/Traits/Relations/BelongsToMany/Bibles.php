@@ -12,10 +12,12 @@ trait Bibles
     public function bibles()
     {
         return $this->belongsToMany(Bible::class)
-            ->withPivot('chapter')
-            ->withPivot('verse_from')
-            ->withPivot('verse_to')
-            ->orderBy('sequence_number');
+            ->withPivot([
+                'reference_type',
+                'chapter',
+                'verse_from',
+                'verse_to',
+            ])->orderBy('sequence_number');
     }
 
     /**

@@ -228,6 +228,7 @@ class TextController extends Controller
             'transtext.lang_id' => 'numeric',
             'event_date' => 'numeric',
             'cyrtext.title'  => 'max:255',
+            'bibles.*.reference_type' => 'required|integer|in:1,2',
         ]);
 
         $text = Text::create($request->only('corpus_id', 'lang_id', 'title', 'comment')); //,'source_id','event_id',
@@ -557,8 +558,7 @@ class TextController extends Controller
             'transtext.title'  => 'max:255',
             'transtext.lang_id' => 'numeric',
             'cyrtext.title'  => 'max:255',
-            //            'new_file' => 'mimetypes:audio/mp3',
-            //            'event_date' => 'numeric',
+            'bibles.*.reference_type' => 'required|integer|in:1,2',
         ]);
         //dd($request->all());
         $error_message = Text::updateByID($request, $id);

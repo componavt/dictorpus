@@ -124,14 +124,10 @@ trait TextModify
             }
         }
 
-        $bible = $request->bibles;
-        if ($bible['bible_id']) {
-            $this->bibles()->sync([$bible['bible_id'] => [
-                'chapter' => (int)$bible['chapter'] ?? null,
-                'verse_from' => (int)$bible['verse_from'] ?? null,
-                'verse_to' => (int)$bible['verse_to'] ?? null
-            ]]);
-        }
+        $this->storeBibles(
+            (array) $request->input('bibles', []),
+            (array) $request->input('corpuses', [])
+        );
 
         $this->motives()->sync((array)$request->motives);
         $this->setCelebrationTypeIds((array)$request->celebration_types);
@@ -141,14 +137,108 @@ trait TextModify
 
         $this->uploadAudioFile($request);
 
-        //dd($old_text, $request->text, $old_text != $request->text, !$this->text_structure, $to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure));
-        /*        if ($to_makeup && $request->text && !$this->hasImportantExamples() && ($old_text != $request->text || !$this->text_structure)) {            
-            $error_message = $this->markup();
-        }*/
-
         $this->push();
 
         return $error_message;
+    }
+
+    protected function storeBibles(array $bible_rows, array $corpus_ids): void
+    {
+        $corpus_ids = array_map('intval', $corpus_ids);
+
+        $has_bible_corpus = in_array(self::BibleCorpus, $corpus_ids, true);
+
+        // Если корпус библейских текстов не выбран,
+        // у текста не должно остаться библейских ссылок.
+        if (!$has_bible_corpus) {
+            $this->bibles()->detach();
+
+            return;
+        }
+
+        /*
+     * Не используем sync():
+     *
+     * sync() строит массив по bible_id и не позволяет
+     * корректно передать несколько строк с одинаковой книгой,
+     * но разными главами и стихами.
+     *
+     * Сначала удаляем прежние строки pivot-таблицы,
+     * затем последовательно создаём все новые.
+     */
+        $this->bibles()->detach();
+
+        $stored_rows = [];
+
+        foreach ($bible_rows as $bible_row) {
+            $bible_id = !empty($bible_row['bible_id'])
+                ? (int) $bible_row['bible_id']
+                : 0;
+
+            /*
+         * Строка без выбранной библейской книги — пустая.
+         * Например, пользователь добавил строку кнопкой +
+         * и не успел её заполнить.
+         */
+            if (!$bible_id) {
+                continue;
+            }
+
+            $chapter = nullable_integer($bible_row['chapter'] ?? null);
+            $verse_from = nullable_integer($bible_row['verse_from'] ?? null);
+            $verse_to = nullable_integer($bible_row['verse_to'] ?? null);
+
+            /*
+         * По умолчанию — основной библейский текст.
+         *
+         * 1 — Библейский текст / Biblical passage
+         * 2 — Параллельное место / Parallel passage
+         */
+            $reference_type = !empty($bible_row['reference_type'])
+                ? (int) $bible_row['reference_type']
+                : 1;
+
+            /*
+         * Не сохраняем неожиданное значение, если оно пришло
+         * не из select формы, а было подставлено вручную.
+         */
+            if (!in_array($reference_type, [1, 2], true)) {
+                $reference_type = 1;
+            }
+
+            /*
+         * Не даём сохранить полностью идентичную ссылку дважды.
+         *
+         * reference_type включён намеренно: один и тот же отрывок
+         * с типами 1 и 2 — это не дубликат, а две разные связи.
+         */
+            $row_key = implode('|', [
+                $bible_id,
+                $chapter ?? '',
+                $verse_from ?? '',
+                $verse_to ?? '',
+                $reference_type,
+            ]);
+
+            if (isset($stored_rows[$row_key])) {
+                continue;
+            }
+
+            $stored_rows[$row_key] = true;
+
+            /*
+         * attach() вызывается отдельно для каждой строки,
+         * а не через sync(). Поэтому одна и та же книга
+         * может быть добавлена несколько раз с разными
+         * главами или диапазонами стихов.
+         */
+            $this->bibles()->attach($bible_id, [
+                'chapter' => $chapter,
+                'verse_from' => $verse_from,
+                'verse_to' => $verse_to,
+                'reference_type' => $reference_type,
+            ]);
+        }
     }
 
     public function uploadAudioFile($request)

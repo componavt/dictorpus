@@ -32,11 +32,19 @@ return [
     'bible' => 'Bible book',
     'bible_has_text' => 'The book ":name" can not be removed, there are texts with this book',
     'bible_link' => 'Bible link',
+    'bible_links' => 'Bible links',
     'bible_list' => 'Bible list',
+    'bible_reference_type' => 'Reference type',
+    'bible_reference_types' => [
+        1 => 'Primary biblical passage',
+        2 => 'Parallel passage',
+    ],
     'bible_removed' => 'The book ":name" is removed successfully.',
+    'biblical_passage' => 'Biblical passage',
 
     'birth_place' => 'birth place',
     'birth_year' => 'year of birth',
+    'book' => 'Book',
     'by_sentences' => 'by sentences',
 
     'celebration_places' => 'Settlements to which the holidays mentioned',
@@ -134,6 +142,7 @@ return [
     'only_checked' => 'only expert-verified results',
 
     'p' => 'p.',
+    'parallel_passages' => 'Parallel passages',
     'parent' => 'parent section',
     'photos' => 'Photos',
     'photos_edit' => 'photos',

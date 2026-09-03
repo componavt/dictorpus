@@ -73,6 +73,7 @@ trait TextSearch
     public static function search(array $url_args)
     {
         $texts = self::orderBy($url_args['sort_by'], $url_args['in_desc'] ? 'DESC' : 'ASC');
+
         $texts = self::searchByAuthor($texts, $url_args['search_author']);
         //        $texts = self::searchByAuthors($texts, $url_args['search_author']);
         $texts = self::searchByBible($texts, $url_args['search_bible']);

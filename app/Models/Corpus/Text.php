@@ -24,9 +24,13 @@ use App\Models\Dict\Wordform;
 
 class Text extends Model implements HasMediaConversions
 {
-    const PhotoDisk = 'photos';
-    const PhotoDir = 'photo';
-    const SortList = ['id', 'title'];
+    public const PhotoDisk = 'photos';
+    public const PhotoDir = 'photo';
+    public const BibleCorpus = 2;
+    public const SortList = ['id', 'title'];
+    const BIBLICAL_PASSAGE = 1;
+    const PARALLEL_PASSAGE = 2;
+
     protected static $wordformsCache = [];
 
     protected $fillable = [
@@ -183,27 +187,54 @@ class Text extends Model implements HasMediaConversions
         return $out;
     }
 
-    public function bibleToString()
+    public function bibleToString($referenceType)
     {
-        if (!$this->bibles->count()) {
+        $bibles = $this->bibles
+            ->filter(function ($bible) use ($referenceType) {
+                return (int) $bible->pivot->reference_type === (int) $referenceType;
+            });
+
+        if ($bibles->isEmpty()) {
             return '';
         }
-        $out = [];
 
-        foreach ($this->bibles as $bible) {
-            $line = $bible->name;
-            if ($bible->pivot->chapter) {
-                $line .= ' ' . $bible->pivot->chapter;
-                if ($bible->pivot->verse_from) {
-                    $line .= ':' . $bible->pivot->verse_from;
-                    if ($bible->pivot->verse_to) {
-                        $line .= '-' . $bible->pivot->verse_to;
-                    }
-                }
-            }
-            $out[] = $line;
-        }
-        return join('; ', $out);
+        return $bibles
+            ->groupBy('id')
+            ->map(function ($passages) {
+                $bible = $passages->first();
+
+                $references = $passages
+                    ->sortBy(function ($passage) {
+                        return sprintf(
+                            '%05d:%05d:%05d',
+                            (int) $passage->pivot->chapter,
+                            (int) $passage->pivot->verse_from,
+                            (int) $passage->pivot->verse_to
+                        );
+                    })
+                    ->map(function ($passage) {
+                        $line = '';
+
+                        if ($passage->pivot->chapter) {
+                            $line .= $passage->pivot->chapter;
+
+                            if ($passage->pivot->verse_from) {
+                                $line .= ':' . $passage->pivot->verse_from;
+
+                                if ($passage->pivot->verse_to) {
+                                    $line .= '–' . $passage->pivot->verse_to;
+                                }
+                            }
+                        }
+
+                        return $line;
+                    })
+                    ->filter()
+                    ->implode('; ');
+
+                return trim($bible->name . ' ' . $references);
+            })
+            ->implode('; ');
     }
 
     public function hasVideoCode()
@@ -812,5 +843,15 @@ class Text extends Model implements HasMediaConversions
         $places = array_unique($places);
         sort($places);
         return $places;
+    }
+
+    public function biblicalPassageToString()
+    {
+        return $this->bibleToString(self::BIBLICAL_PASSAGE);
+    }
+
+    public function parallelPassagesToString()
+    {
+        return $this->bibleToString(self::PARALLEL_PASSAGE);
     }
 }

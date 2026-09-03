@@ -422,3 +422,106 @@ function uploadAudio(text_id, route_upload) {
             })
         });*/
 }
+
+function initBibleFields() {
+    var $corpuses = $('#corpuses');
+    var $bible_fields = $('#bible-fields');
+    var bible_corpus_id = String($bible_fields.data('bible-corpus-id'));
+    var $rows = $('#bible-fields-rows');
+    var $template = $('#bible-field-template');
+
+    if (
+        !$corpuses.length
+        || !$bible_fields.length
+        || !$rows.length
+        || !$template.length
+    ) {
+        return;
+    }
+
+    function has_bible_corpus() {
+        var corpus_ids = $corpuses.val() || [];
+
+        if (!$.isArray(corpus_ids)) {
+            corpus_ids = [corpus_ids];
+        }
+
+        corpus_ids = $.map(corpus_ids, function (corpus_id) {
+            return String(corpus_id);
+        });
+
+        return $.inArray(bible_corpus_id, corpus_ids) !== -1;
+    }
+
+    function toggle_bible_fields() {
+        $bible_fields.toggleClass(
+            'hidden',
+            !has_bible_corpus()
+        );
+    }
+
+    function init_bible_selects($parent) {
+        $parent.find('.multiple-select-bible').each(function () {
+            var $select = $(this);
+
+            if ($select.hasClass('select2-hidden-accessible')) {
+                return;
+            }
+
+            $select.select2({
+                width: '100%'
+            });
+        });
+    }
+
+    function add_bible_field_row() {
+        var index = parseInt(
+            $bible_fields.attr('data-next-index'),
+            10
+        ) || 0;
+
+        var html = $template
+            .html()
+            .replace(/__INDEX__/g, index);
+
+        var $row = $(html);
+
+        $rows.append($row);
+
+        $bible_fields.attr(
+            'data-next-index',
+            index + 1
+        );
+
+        init_bible_selects($row);
+    }
+
+    init_bible_selects($bible_fields);
+
+    toggle_bible_fields();
+
+    $corpuses
+        .off('change.bibleFields')
+        .on('change.bibleFields', function () {
+            toggle_bible_fields();
+        });
+
+    $('#add-bible-field')
+        .off('click.bibleFields')
+        .on('click.bibleFields', function () {
+            add_bible_field_row();
+        });
+
+    $rows
+        .off('click.bibleFields', '.remove-bible-field')
+        .on('click.bibleFields', '.remove-bible-field', function () {
+            var $row = $(this).closest('.js-bible-field-row');
+            var $select = $row.find('.multiple-select-bible');
+
+            if ($select.hasClass('select2-hidden-accessible')) {
+                $select.select2('destroy');
+            }
+
+            $row.remove();
+        });
+}

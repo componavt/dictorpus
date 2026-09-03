@@ -300,6 +300,21 @@ if (!function_exists('next_args')) {
     }
 }
 
+if (!function_exists('nullable_integer')) {
+    function nullable_integer($value)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (trim((string) $value) === '') {
+            return null;
+        }
+
+        return (int) $value;
+    }
+}
+
 if (! function_exists('number_with_space')) {
     function number_with_space($num)
     {
