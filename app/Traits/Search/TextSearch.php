@@ -61,6 +61,7 @@ trait TextSearch
         $sort_list = self::SortList;
         if (!in_array($url_args['sort_by'], $sort_list)) {
             $url_args['sort_by'] = $sort_list[0];
+            $url_args['in_desc'] = 1;
         }
 
         if ($url_args['search_without_genres']) {

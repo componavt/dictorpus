@@ -26,7 +26,7 @@ class Text extends Model implements HasMediaConversions
 {
     const PhotoDisk = 'photos';
     const PhotoDir = 'photo';
-    const SortList = ['title', 'id'];
+    const SortList = ['id', 'title'];
     protected static $wordformsCache = [];
 
     protected $fillable = [
