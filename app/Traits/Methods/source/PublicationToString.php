@@ -538,4 +538,15 @@ trait PublicationToString
 
         return false;
     }
+
+    protected function appendPubpartPages($text, $pubpart)
+    {
+        $pages = trim($pubpart->pivot->pages ?: '');
+
+        if (!$pages) {
+            return $text;
+        }
+
+        return $text . '. С. ' . $pages;
+    }
 }
