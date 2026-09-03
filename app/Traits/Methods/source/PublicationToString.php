@@ -496,7 +496,6 @@ trait PublicationToString
             $result[] = $group['prefix'] .
                 ' ' .
                 $group['from'] .
-                $group['number_suffix'] .
                 '–' .
                 $group['to'] .
                 $group['number_suffix'];

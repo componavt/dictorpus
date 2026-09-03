@@ -182,8 +182,16 @@ class Source extends Model
             return $result;
         }
 
-        return $result
-            ? $result . '. ' . $part
-            : $part;
+        if (!$result) {
+            return $part;
+        }
+
+        $result = rtrim($result);
+
+        if (substr($result, -1) !== '.') {
+            $result .= '.';
+        }
+
+        return $result . ' ' . $part;
     }
 }
