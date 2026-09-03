@@ -402,8 +402,26 @@ trait PublicationToString
         $groups = [];
 
         foreach ($parts as $part) {
+            /*
+         * Убираем только внешние пробелы.
+         *
+         * Точки внутри заголовка и точка после порядкового
+         * числительного сохраняются и разбираются отдельно.
+         */
+            $part = trim($part);
+
+            /*
+         * Примеры:
+         *
+         * Jevanheli Markin kirjuttamana. Matka Jerusalimih. 8
+         * Jevanheli Markin kirjuttamana. Matka Jerusalimih. 8.
+         *
+         * $matches[1] — заголовок до номера;
+         * $matches[2] — номер части;
+         * $matches[3] — точка порядкового числительного, если есть.
+         */
             if (!preg_match(
-                '/^(.*?)(\d+)$/u',
+                '/^(.*?)(\d+)(\.)?$/u',
                 $part,
                 $matches
             )) {
@@ -412,13 +430,15 @@ trait PublicationToString
                     'prefix' => null,
                     'from' => null,
                     'to' => null,
+                    'number_suffix' => '',
                 ];
 
                 continue;
             }
 
-            $prefix = trim($matches[1]);
+            $prefix = rtrim($matches[1]);
             $number = (int) $matches[2];
+            $number_suffix = $matches[3] ?? '';
 
             $last_group_index = count($groups) - 1;
 
@@ -427,6 +447,7 @@ trait PublicationToString
 
                 if (
                     $last_group['prefix'] === $prefix
+                    && $last_group['number_suffix'] === $number_suffix
                     && $last_group['to'] !== null
                     && $number === $last_group['to'] + 1
                 ) {
@@ -441,6 +462,7 @@ trait PublicationToString
                 'prefix' => $prefix,
                 'from' => $number,
                 'to' => $number,
+                'number_suffix' => $number_suffix,
             ];
         }
 
@@ -456,19 +478,31 @@ trait PublicationToString
             if ($group['from'] === $group['to']) {
                 $result[] = $group['prefix'] .
                     ' ' .
-                    $group['from'];
+                    $group['from'] .
+                    $group['number_suffix'];
 
                 continue;
             }
 
+            /*
+         * Для карельского порядкового числительного:
+         *
+         * 8. + 9. -> 8.–9.
+         *
+         * Для обычной нумерации:
+         *
+         * 8 + 9 -> 8–9
+         */
             $result[] = $group['prefix'] .
                 ' ' .
                 $group['from'] .
-                '-' .
-                $group['to'];
+                $group['number_suffix'] .
+                '–' .
+                $group['to'] .
+                $group['number_suffix'];
         }
 
-        return join('; ', $result);
+        return implode('; ', $result);
     }
 
     protected function periodicPubpartsToString()
@@ -547,6 +581,10 @@ trait PublicationToString
             return $text;
         }
 
-        return $text . '. С. ' . $pages;
+        if (substr($text, -1) !== '.') {
+            $text .= '.';
+        }
+
+        return $text . ' С. ' . $pages;
     }
 }
