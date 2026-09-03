@@ -72,7 +72,7 @@ trait PublicationToString
      */
     protected function nonPeriodicPublicationToString($publication)
     {
-        if ($this->hasSamePubpartPages()) {
+        if ($this->hasCommonPages()) {
             return $this->publicationToStringWithSamePubpartPages(
                 $publication
             );
@@ -170,7 +170,7 @@ trait PublicationToString
 
         return $this->appendSourceInfo(
             $result,
-            $this->samePubpartPagesToString()
+            $this->commonPagesToString()
         );
     }
 
@@ -585,5 +585,33 @@ trait PublicationToString
         }
 
         return $text . ' С. ' . $pages;
+    }
+
+    protected function hasCommonPages()
+    {
+        // У всех частей одинаково заполнены собственные страницы.
+        if ($this->hasSamePubpartPages()) {
+            return true;
+        }
+
+        // У частей нет собственных страниц, но страницы заданы для source целиком.
+        if (!$this->hasPubpartPages() && $this->oldPagesToString()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function commonPagesToString()
+    {
+        // Приоритет у страниц конкретных частей.
+        $pages = $this->samePubpartPagesToString();
+
+        if ($pages) {
+            return $pages;
+        }
+
+        // Если у частей страниц нет, используем страницы source.
+        return $this->oldPagesToString();
     }
 }
