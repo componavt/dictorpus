@@ -28,6 +28,7 @@ Route::group(
         Route::get('collection/3/motives/{motive_id}', 'Corpus\CollectionController@predictionTextsForMotive');
         Route::get('collection/3/motives', 'Corpus\CollectionController@predictionMotives');
         Route::get('collection/3/{cycle_id}', 'Corpus\CollectionController@predictionTextsForCycle');
+        Route::get('collection/9/pointer', 'Corpus\CollectionController@pointerFor9');
         //Route::get('collection/{collection_id}/{plot_id}', 'Corpus\CollectionController@textsForPlot');
         Route::get('collection/{id}', 'Corpus\CollectionController@show');
         Route::get('collection', 'Corpus\CollectionController@index');

@@ -75,6 +75,17 @@ class CollectionController extends Controller
         return Redirect::to('/corpus/collection');
     }
 
+    public function pointerFor9(Request $request) {
+        $for_print = (int)($request->for_print);
+        return view(
+            'corpus.collection.9.pointer',
+            compact(
+                'for_print',
+            )
+        );
+
+    }
+
     public function runeTopics(Request $request)
     {
         $for_print = (int)($request->for_print);
