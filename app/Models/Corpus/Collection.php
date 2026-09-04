@@ -92,15 +92,17 @@ class Collection
         return self::getCollectionPlots($this->id);
     }
 
-    public function getPlots($corpus_id = null)
+    public function getPlots($corpus_ids = null)
     {
         $plot_ids = $this->getPlotIds();
         if (empty($plot_ids)) {
             return null;
         }
         $plots = Plot::whereIn('id', $plot_ids);
-        if (!empty($corpus_id)) {
-            $corpus_ids = [$corpus_id];
+        if (!empty($corpus_ids)) {
+            if (!is_array($corpus_ids)) {
+                $corpus_ids = (array)$corpus_ids;
+            }
         } else {
             $corpus_ids = self::getCollectionCorpuses($this->id);
         }
@@ -111,6 +113,7 @@ class Collection
                         ->whereIn('corpus_id', $corpus_ids);
                 });
         });
+        //dd(to_sql($plots));
         return $plots->get();
     }
 
@@ -206,7 +209,7 @@ class Collection
 
     public static function getCollectionCorpuses($collection_id = null)
     {
-        $corpuses = [9 => [4]];
+        $corpuses = [9 => [4]]; // folklore
         if (!$collection_id) {
             return $corpuses;
         }
@@ -217,7 +220,7 @@ class Collection
 
     public static function getCollectionPlots($collection_id = null)
     {
-        $plots = [9 => [53, 84, 85, 86]];
+        $plots = [9 => [84, 85, 86]]; //53, 
         if (!$collection_id) {
             return $plots;
         }
@@ -403,6 +406,6 @@ class Collection
             });
         }
         $text_count = $texts->count();
-        return [$corpuses, $text_count];
+        return [$corpus_ids, $text_count];
     }
 }

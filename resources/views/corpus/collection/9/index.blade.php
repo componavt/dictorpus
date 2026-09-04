@@ -13,7 +13,7 @@
     <p>{!!trans('collection.about')[$id]!!}</p>
     <p><b>{{trans('collection.total_count')}}:</b> {{$text_count}}</p>
 
-    @foreach ($collection->getPlots() as $plot)
+    @foreach ($collection->getPlots($corpus_ids) as $plot)
     <h3>{{ $plot->name }} ({{ $collection->countTextsForPlot($plot->id) }})</h3>
     <ul>
         @foreach ($collection->getTopicsForPlot($plot->id) as $topic)

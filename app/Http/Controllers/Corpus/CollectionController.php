@@ -57,13 +57,13 @@ class CollectionController extends Controller
                     )
                 );
             } elseif (Collection::isCollectionByCorpuses($id)) {
-                list($corpuses, $text_count) = Collection::getDataForCollectionByCorpuses($id);
+                list($corpus_ids, $text_count) = Collection::getDataForCollectionByCorpuses($id);
                 return view(
                     'corpus.collection.' . $id . '.index',
                     compact(
                         'for_print',
                         'collection',
-                        'corpuses',
+                        'corpus_ids',
                         'id',
                         'text_count'
                     )
