@@ -1,7 +1,7 @@
 @extends('layouts.'.($for_print ? 'for_print' : 'page'))
 
 @section('page_title')
-{{ trans('navigation.collections') }}
+{{ trans('collection.name_list')[9] }}
 @stop
 
 @section('headExtra')
@@ -12,7 +12,6 @@
     <p>
         <a href="{{ LaravelLocalization::localizeURL('/corpus/collection/9') }}">{{trans('collection.to_collection')}}</a>
     </p>
-    <h2>{{trans('collection.name_list')[9]}}</h2>
 
     <h4 style="text-align:right">Л.И. Иванова</h4>
     <h3>Указатель основных сюжетов и мотивов/тем карельских мифологических рассказов (быличек)<br>
