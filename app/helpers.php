@@ -598,6 +598,10 @@ if (! function_exists('vms_user')) {
     function vms_user($field = null)
     {
         $user = auth()->user();
+        if (!$user) {
+            $user = Sentinel::check();
+        }
+
         if (!$user) return null;
         return $field ? $user->{$field} : $user;
     }
