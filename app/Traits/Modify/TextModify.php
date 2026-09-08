@@ -144,6 +144,8 @@ trait TextModify
 
     protected function storeBibles(array $bible_rows, array $corpus_ids): void
     {
+        $oldBibles = $this->biblesToHistoryString();
+
         $corpus_ids = array_map('intval', $corpus_ids);
 
         $has_bible_corpus = in_array(self::BibleCorpus, $corpus_ids, true);
@@ -238,6 +240,17 @@ trait TextModify
                 'verse_to' => $verse_to,
                 'reference_type' => $reference_type,
             ]);
+        }
+
+        $newBibles = $this->biblesToHistoryString();
+
+        if ($oldBibles !== $newBibles) {
+            createRevisionRecord(
+                $this,
+                'bible_links',
+                $oldBibles,
+                $newBibles
+            );
         }
     }
 
@@ -474,26 +487,91 @@ trait TextModify
     public function storeSource($request_data)
     {
         $is_empty_data = true;
-        if (array_filter($request_data)) { // returns unempty items of array
+
+        if (array_filter($request_data)) {
             $is_empty_data = false;
         }
-        if ($this) {
-            $source_id = $this->source_id;
-        } else {
-            $source_id = NULL;
-        }
+
+        $source_id = $this->source_id;
+
+        /*
+     * Состояние частей старого source до любых изменений.
+     *
+     * Нельзя использовать $this->source без повторной загрузки:
+     * relation мог быть закеширован в модели, а после сохранения
+     * source_id может измениться.
+     */
+        $old_source = $source_id
+            ? Source::find($source_id)
+            : null;
+
+        $old_pubparts = $old_source
+            ? $this->sourcePubpartsToHistoryString($old_source)
+            : null;
 
         if (!$is_empty_data) {
-            $this->source_id = Source::fillByData($source_id, $request_data);
-            $this->save();
-            $this->source->storePubparts($request_data['source'] ?? []);
-        } elseif ($source_id) {
-            $this->source_id = NULL;
+            $this->source_id = Source::fillByData(
+                $source_id,
+                $request_data
+            );
+
             $this->save();
 
-            if (!self::where('id', '<>', $this->id)
-                ->where('source_id', $source_id)
-                ->count()) {
+            /*
+         * После fillByData() всегда заново получаем source из БД.
+         * Это важно и при создании source, и если relation Text->source
+         * ранее уже был загружен.
+         */
+            $source = Source::find($this->source_id);
+
+            if ($source) {
+                $source->storePubparts(
+                    $request_data['source'] ?? []
+                );
+
+                $new_pubparts = $this->sourcePubpartsToHistoryString(
+                    $source
+                );
+
+                /*
+             * Ревизию пишем только при содержательном изменении:
+             * добавили, удалили, заменили часть либо изменили страницы.
+             */
+                if ($old_pubparts !== $new_pubparts) {
+                    createRevisionRecord(
+                        $source,
+                        'pubparts',
+                        $old_pubparts,
+                        $new_pubparts
+                    );
+                }
+            }
+        } elseif ($source_id) {
+            /*
+         * Если source удаляется из текста, можно записать,
+         * что у него исчезли части.
+         *
+         * Но см. пояснение ниже: после удаления source его история
+         * не будет добавлена в allHistory(), поскольку $this->source
+         * уже отсутствует.
+         */
+            if ($old_source && $old_pubparts !== null) {
+                createRevisionRecord(
+                    $old_source,
+                    'pubparts',
+                    $old_pubparts,
+                    null
+                );
+            }
+
+            $this->source_id = null;
+            $this->save();
+
+            if (
+                !self::where('id', '<>', $this->id)
+                    ->where('source_id', $source_id)
+                    ->count()
+            ) {
                 Source::destroy($source_id);
             }
         }

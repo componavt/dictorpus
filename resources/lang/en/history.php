@@ -11,6 +11,7 @@ return [
     */
 
     'author_accusative' => 'the author',
+    'bible_links_accusative' => 'the bible links',
     'comment_accusative' => 'the comments',
     'corpus_accusative' => 'the corpus',
     'date_accusative' => 'the date',
@@ -28,6 +29,8 @@ return [
     'pages_accusative' => 'the pages',
     'place_accusative' => 'the place',
     'pos_accusative' => 'the part of speech',
+    'publication_accusative' => 'the publication',
+    'pubparts_accusative' => 'the publication parts',
     'reflexive_accusative' => 'the verbal reflexivity',
     'source_genetiv' => 'of the source',
     'title_accusative' => 'the title',
@@ -35,4 +38,5 @@ return [
     'transtext_accusative' => 'the text translation',
     'transtext_genetiv' => 'of the translation',
     'wordform_total_accusative' => 'total number of wordforms',
+    'year_accusative' => 'the year',
 ];

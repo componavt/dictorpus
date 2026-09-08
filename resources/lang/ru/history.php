@@ -11,6 +11,7 @@ return [
     */
 
     'author_accusative' => 'автора',
+    'bible_links_accusative' => 'библейские ссылки',
     'comment_accusative' => 'комментарий',
     'corpus_accusative' => 'корпус',
     'date_accusative' => 'дату',
@@ -29,12 +30,14 @@ return [
     'pages_accusative' => 'страницы',
     'place_accusative' => 'место',
     'pos_accusative' => 'часть речи',
+    'publication_accusative' => 'публикацию',
+    'pubparts_accusative' => 'части публикации',
     'reflexive_accusative' => 'рефлексивность глагола',
     'source_genetiv' => 'источника',
     'text_accusative' => 'текст',
     'title_accusative' => 'заголовок',
-    'transtext_accusative' => 'текст',
     'transtext_accusative' => 'перевод текста',
     'transtext_genetiv' => 'перевода',
     'wordform_total_accusative' => 'общее количество словоформ',
+    'year_accusative' => 'год',
 ];

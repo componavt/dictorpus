@@ -97,6 +97,12 @@ trait TextHistory
         });
         foreach ($all_history as $history) {
             $history->what_created = trans('history.text_accusative');
+
+            if ($history->key === 'bible_links') {
+                $history->field_name = trans(
+                    'history.bible_links_accusative'
+                );
+            }
         }
 
         if ($this->transtext) {
@@ -142,5 +148,116 @@ trait TextHistory
             });
         //dd($all_history);                        
         return $all_history;
+    }
+
+    /**
+     * Возвращает выбранные части публикации source
+     * в виде, пригодном для истории изменений.
+     *
+     * @param \App\Models\Corpus\Source|null $source
+     * @return string|null
+     */
+    public function sourcePubpartsToHistoryString($source)
+    {
+        if (!$source) {
+            return null;
+        }
+
+        $pubparts = $source->pubparts()
+            ->get()
+            ->sortBy(function ($pubpart) {
+                return sprintf(
+                    '%05d|%s|%05d',
+                    (int) $pubpart->sequence_number,
+                    (string) $pubpart->full_name,
+                    (int) $pubpart->id
+                );
+            });
+
+        if ($pubparts->isEmpty()) {
+            return null;
+        }
+
+        $result = [];
+
+        foreach ($pubparts as $pubpart) {
+            $line = $pubpart->full_name;
+
+            $pages = trim(
+                (string) ($pubpart->pivot->pages ?? '')
+            );
+
+            if ($pages !== '') {
+                $line .= ' — ' .
+                    trans('corpus.source_pages') .
+                    ': ' .
+                    $pages;
+            }
+
+            $result[] = $line;
+        }
+
+        return implode("<br>\n", $result);
+    }
+
+    protected function biblesToHistoryString()
+    {
+        $bibles = $this->bibles()
+            ->get()
+            ->sortBy(function ($bible) {
+                return sprintf(
+                    '%02d|%05d|%05d|%05d|%05d',
+                    (int) $bible->pivot->reference_type,
+                    (int) $bible->sequence_number,
+                    (int) $bible->pivot->chapter,
+                    (int) $bible->pivot->verse_from,
+                    (int) $bible->pivot->verse_to
+                );
+            });
+
+        if ($bibles->isEmpty()) {
+            return null;
+        }
+
+        $groups = [
+            1 => [],
+            2 => [],
+        ];
+
+        foreach ($bibles as $bible) {
+            $line = $bible->name;
+
+            if ($bible->pivot->chapter) {
+                $line .= ' ' . $bible->pivot->chapter;
+
+                if ($bible->pivot->verse_from) {
+                    $line .= ':' . $bible->pivot->verse_from;
+
+                    if ($bible->pivot->verse_to) {
+                        $line .= '–' . $bible->pivot->verse_to;
+                    }
+                }
+            }
+
+            $referenceType = (int) $bible->pivot->reference_type;
+
+            if (isset($groups[$referenceType])) {
+                $groups[$referenceType][] = $line;
+            }
+        }
+
+        $result = [];
+
+        if (!empty($groups[1])) {
+            $result[] = trans('corpus.biblical_passage') . ': ' .
+                implode('; ', $groups[1]);
+        }
+
+        if (!empty($groups[2])) {
+            $result[] = trans('corpus.parallel_passages') . ': ' .
+                implode('; ', $groups[2]);
+        }
+
+        return implode("<br>\n", $result);
     }
 }
