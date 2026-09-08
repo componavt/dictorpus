@@ -53,7 +53,6 @@
     selectCycle('.multiple-select-cycle', 'genres');
     selectMotives('.multiple-select-motive', 'genres');
     selectTopic('plots');
-    selectPubpart('publication_id');
     
     selectPlot('.select-plot', 'genre_id'); /* from modal */
     initPublicationPeriodicFields(); 
