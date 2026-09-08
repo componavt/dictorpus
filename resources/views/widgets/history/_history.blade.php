@@ -1,42 +1,3 @@
-<?php
-/*$options = [
-    // Compare by line or by characters
-    'compareCharacters' => false,
-    // Offset size in hunk groups
-    'offset'            => 2,
-];
-
-$diff = \Diff::compare("hello\na", "hello\nasd\na", $options);
-$groups = $diff->getGroups();
-
-foreach($groups as $i => $group)
-{
-    // Output: Hunk 1 : Lines 2 - 6
-    echo 'Hunk ' . $i . ' : Lines ' 
-         . $group->getFirstPosition() . ' - ' . $group->getLastPosition(); 
-    
-    // Output changed lines (entries)
-    foreach($group->getEntries() as $entry)
-    {
-        // Output old position of line
-        echo $entry instanceof \ViKon\Diff\Entry\InsertedEntry 
-            ? '-'
-            : $entry->getOldPosition() + 1;
-
-        echo ' | ';
-
-        // Output new position of line
-        echo $entry instanceof \ViKon\Diff\Entry\DeletedEntry 
-            ? '-'
-            : $entry->getNewPosition() + 1;
-        
-        echo ' - ';        
-
-        // Output line (entry)
-        echo $entry;
-    }
-}*/
-?>
     <h3>{{ trans('messages.history') }}</h3>
         @foreach($all_history as $time => $histories )
 <?php 
@@ -45,7 +6,12 @@ $dt = \Carbon\Carbon::parse($time);
 $user = $histories[0]->userResponsible() ? \App\Models\User::find($histories[0]->userResponsible()->id) : null; 
 $histories = $histories->sortBy('id');
 $history_strings = [];
+
 $diffConfig = new Caxy\HtmlDiff\HtmlDiffConfig();
+$diffConfig->setPurifierCacheLocation(
+    storage_path('app/htmlpurifier')
+);
+
 foreach($histories as $history) {
     $fieldName = $history->fieldName();
     if (!isset($history->field_name)) {
