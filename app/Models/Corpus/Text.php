@@ -13,7 +13,7 @@ use App\Library\Grammatic;
 
 use App\Models\Corpus\Cyrtext;
 use App\Models\Corpus\Publication;
-use App\Models\Corpus\Pubpart;
+//use App\Models\Corpus\Pubpart;
 use App\Models\Corpus\Sentence;
 //use App\Models\Corpus\Source;
 use App\Models\Corpus\Transtext;
@@ -24,10 +24,11 @@ use App\Models\Dict\Wordform;
 
 class Text extends Model implements HasMediaConversions
 {
-    public const PhotoDisk = 'photos';
-    public const PhotoDir = 'photo';
-    public const BibleCorpus = 2;
-    public const SortList = ['id', 'title'];
+    const PhotoDisk = 'photos';
+    const PhotoDir = 'photo';
+    const BibleCorpus = 2;
+    const MonumentsCorpus = 12;
+    const SortList = ['id', 'title'];
     const BIBLICAL_PASSAGE = 1;
     const PARALLEL_PASSAGE = 2;
 

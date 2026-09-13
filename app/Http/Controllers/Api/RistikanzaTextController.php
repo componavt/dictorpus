@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Log;
 
 use App\Http\Controllers\Controller;
 //use Illuminate\Support\Facades\Response;
@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Api\RistikanzaText;
 
 use App\Models\Corpus\Author;
+use App\Models\Corpus\Bible;
 use App\Models\Corpus\Corpus;
 use App\Models\Corpus\District;
 use App\Models\Corpus\Genre;
@@ -69,22 +70,28 @@ class RistikanzaTextController extends Controller
     {
         $corpus_id = (int)$request->input('corpus_id');
         $genre_id = (int)$request->input('genre_id');
+        
+        $form_values = ['lang_values' => Lang::getProjectList()];
+        
+        if ($corpus_id == Text::BibleCorpus) {
+            $form_values['bible_values'] = [NULL => ''] + Bible::getList();
+            
+        } elseif ($corpus_id != Text::MonumentsCorpus) {
+            $form_values['author_values'] = [NULL => ''] + Author::getList();
+            $form_values['corpus_values'] = Corpus::getList();
+            $form_values['dialect_values'] = Dialect::getList();
+            $form_values['district_values'] = District::getList();
+            $form_values['informant_values'] = [NULL => ''] + Informant::getList();
+            $form_values['lang_values'] = Lang::getProjectList();
+            $form_values['place_values'] = Place::getList(false);
+            $form_values['plot_values'] = Plot::getList($genre_id, $corpus_id);
+            $form_values['recorder_values'] = [NULL => ''] + Recorder::getList();
+            $form_values['region_values'] = [NULL => ''] + Region::getList();
+            $form_values['sort_values'] = Text::sortList();
+            $form_values['topic_values'] = Topic::getList($genre_id, $corpus_id);
+        }
 
-        return response()->json([
-            'author_values' => [NULL => ''] + Author::getList(),
-            'corpus_values' => Corpus::getList(),
-            'dialect_values' => Dialect::getList(),
-            'district_values' => District::getList(),
-            //'genre_values' => Genre::getList($corpusIds),
-            'informant_values' => [NULL => ''] + Informant::getList(),
-            'lang_values' => Lang::getProjectList(),
-            'place_values' => Place::getList(false),
-            'plot_values' => Plot::getList($genre_id, $corpus_id),
-            'recorder_values' => [NULL => ''] + Recorder::getList(),
-            'region_values' => [NULL => ''] + Region::getList(),
-            'sort_values' => Text::sortList(),
-            'topic_values' => Topic::getList($genre_id, $corpus_id),
-        ]);
+        return response()->json($form_values);
     }
 
     public function dialects(Request $request)

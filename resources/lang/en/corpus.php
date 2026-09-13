@@ -34,6 +34,7 @@ return [
     'bible_link' => 'Bible link',
     'bible_links' => 'Bible links',
     'bible_list' => 'Bible list',
+    'bible_parallel_passages' => 'Parallel passages',
     'bible_reference_type' => 'Reference type',
     'bible_reference_types' => [
         1 => 'Primary biblical passage',
