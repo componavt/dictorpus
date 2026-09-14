@@ -1,6 +1,8 @@
 <?php
-
 namespace App\Traits\Search;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 use App\Library\Grammatic;
 use App\Library\Str;
@@ -11,7 +13,7 @@ use App\Models\Corpus\Transtext;
 
 trait TextSearch
 {
-    public static function urlArgs($request)
+    public static function urlArgs(Request $request)
     {
         $url_args = Str::urlArgs($request) + [
             'in_desc'     => (int)$request->input('in_desc'),
@@ -20,6 +22,8 @@ trait TextSearch
             'search_birth_district'  => (array)$request->input('search_birth_district'),
             'search_birth_place' => (array)$request->input('search_birth_place'),
             'search_birth_region' => $request->input('search_birth_region'),
+            'search_chapter_from'   => (int)$request->input('search_chapter_from'),
+            'search_chapter_to'   => (int)$request->input('search_chapter_to'),
             'search_collection'   => (int)$request->input('search_collection'),
             'search_corpus'   => (array)$request->input('search_corpus'),
             'search_cycle'     => (array)$request->input('search_cycle'),
@@ -45,6 +49,8 @@ trait TextSearch
             'search_title'    => $request->input('search_title'),
             'search_topic'    => (array)$request->input('search_topic'),
             'search_text'     => $request->input('search_text'),
+            'search_verse_from'   => (int)$request->input('search_verse_from'),
+            'search_verse_to'   => (int)$request->input('search_verse_to'),
             'search_w'     => $request->input('search_w'),
             'search_wid'     => (array)$request->input('search_wid'),
             'search_without_genres' => (bool)$request->input('search_without_genres'),
@@ -54,6 +60,7 @@ trait TextSearch
             'sort_by' => $request->input('sort_by'),
             'wblock_preloaded' => (int)$request->input('wblock_preloaded'),
             'with_audio' => (bool)$request->input('with_audio'),
+            'with_parallel' => (bool)$request->input('with_parallel'),
             'with_photo' => (bool)$request->input('with_photo'),
             'with_transtext' => (bool)$request->input('with_transtext'),
         ];
@@ -76,7 +83,7 @@ trait TextSearch
 
         $texts = self::searchByAuthor($texts, $url_args['search_author']);
         //        $texts = self::searchByAuthors($texts, $url_args['search_author']);
-        $texts = self::searchByBible($texts, $url_args['search_bible']);
+        $texts = self::searchByBible($texts, $url_args['search_bible'], $url_args['search_chapter_from'], $url_args['search_chapter_to'], $url_args['search_verse_from'], $url_args['search_verse_to'], $url_args['with_parallel']);
         $texts = self::searchByBirthPlace($texts, $url_args['search_birth_place'], $url_args['search_birth_district'], $url_args['search_birth_region']);
         $texts = self::searchByCorpuses($texts, $url_args['search_corpus']);
         $texts = self::searchByDialects($texts, $url_args['search_dialect']);
@@ -169,7 +176,7 @@ trait TextSearch
         });
     }
 
-    public static function searchByPubparts($texts, $pubparts = [])
+    public static function searchByPubparts(Builder $texts, $pubparts = [])
     {
         if (!sizeof($pubparts)) {
             return $texts;
@@ -180,7 +187,7 @@ trait TextSearch
         });
     }
 
-    public static function searchByBirthPlace($texts, $place_ids, $district_ids, $region_id)
+    public static function searchByBirthPlace(Builder $texts, array $place_ids=[], $district_ids=[], $region_id=null)
     {
         if (!sizeof($place_ids) && !sizeof($district_ids) && !$region_id) {
             return $texts;
@@ -210,7 +217,7 @@ trait TextSearch
         });
     }
 
-    public static function searchByDialects($texts, $dialects)
+    public static function searchByDialects(Builder $texts, $dialects=[])
     {
         if (!sizeof($dialects)) {
             return $texts;
@@ -222,14 +229,37 @@ trait TextSearch
         });
     }
 
-    public static function searchByBible($texts, $bibles)
+    public static function searchByBible(Builder $texts, $bibles=[], $chapter_from=null, $chapter_to=null, $verse_from=null, $verse_to=null, $with_parallel=false)
     {
-        if (!sizeof($bibles)) {
+        if (!sizeof($bibles) && !$chapter_from && !$chapter_to && !$verse_from && !$verse_to) {
             return $texts;
         }
-        return $texts->whereIn('id', function ($query) use ($bibles) {
-            $query->select('text_id')->from("bible_text")
-                ->whereIn('bible_id', $bibles);
+        return $texts->whereIn('id', function ($query) use ($bibles, $chapter_from, $chapter_to, $verse_from, $verse_to, $with_parallel) {
+            $query->select('text_id')->from("bible_text");
+            if (sizeof($bibles)) {
+                $query->whereIn('bible_id', $bibles);
+            }
+            if ($chapter_from) {
+                $query->where('chapter', '>=', $chapter_from);
+            }
+            if ($chapter_to) {
+                $query->where('chapter', '<=', $chapter_to);
+            }
+            if ($verse_from) {
+                $query->where(function ($q) use ($verse_from) {
+                    $q->where('verse_to', '>=', $verse_from)
+                      ->orWhereNull('verse_from');
+                });                
+            }
+            if ($verse_to) {
+                $query->where(function ($q) use ($verse_to) {
+                    $q->where('verse_from', '<=', $verse_to)
+                      ->orWhereNull('verse_to');
+                });                
+            }
+            if (!$with_parallel) {
+                $query->where('reference_type', '!=', 2);
+            }
         });
     }
 

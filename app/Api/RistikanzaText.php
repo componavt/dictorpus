@@ -288,4 +288,83 @@ class RistikanzaText
         ksort($objs);
         return $objs;
     }
+
+    public static function textsForCorpusAndPublication(int $corpus_id, int $publicaton_id)
+    {
+        $texts = [];
+        $objs = Text::getForCorpusAndPublication($corpus_id, $publicaton_id);
+
+        foreach ($objs as $obj) {
+            $pages_in_source = $obj->source ? $obj->source->pages : null;
+            if (!sizeof($obj->source_pubparts)) {
+                $texts[''][$obj->id] = [
+                    'title' => $obj->title,
+                    'page' => $pages_in_source
+                ];
+            } else {
+                foreach ($obj->source_pubparts as $pubpart) {
+                    $pubpart_pages = trim($pubpart->pivot->pages ?: '');
+                    $texts[$pubpart->title][$obj->id] = [
+                        'title' => $obj->title,
+                        'page' => $pubpart_pages ?? $pages_in_source
+                    ];
+                }
+            }
+        }
+
+        return $texts;
+    }
+    
+    public static function getBibleTexts($url_args)
+    {
+        $texts = Text::search($url_args)
+            ->with([
+                'authors',
+                'bibles',
+                'lang',
+                'transtext'
+            ])
+            ->paginate($url_args['limit_num']);
+
+        /*Log::debug('Ristikanza API locale', [
+            'app_locale' => app()->getLocale(),
+            'accept_language' => $request->header('Accept-Language'),
+            'title' => $texts->first()->title ?? null,
+        ]);*/
+
+        $items = $texts->getCollection()
+            ->map(function ($text) {
+                return [
+                    'id' => $text->id,
+                    'author' => $text->authorsToString(),
+                    'title' => $text->title,
+                    'lang' => $text->lang ? $text->lang->name : '',
+                    'trans_author' => $text->transtext ? $text->transtext->authorsToString() : '',
+                    'trans_title' => $text->transtext ? $text->transtext->title : '',
+                    'bible_passage' => $text->biblicalPassageToString(),
+                    'parallel_passages' => $text->parallelPassagesToString()
+                ];
+            })
+            ->values()
+            ->all();
+
+        if (isset($url_args['search_corpus'][0])) {
+            $url_args['search_corpus'] = $url_args['search_corpus'][0];
+        } else {
+            $url_args['search_corpus'] = null;
+        }
+
+        $url_args = remove_empty($url_args);
+
+        return [
+            'data' => $items,
+            'url_args' => $url_args,
+            'current_page' => $texts->currentPage(),
+            'last_page' => $texts->lastPage(),
+            'per_page' => $texts->perPage(),
+            'total' => $texts->total()
+        ];
+    }
+
+
 }

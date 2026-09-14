@@ -23,7 +23,7 @@ class BibleController extends Controller
     public function __construct(Request $request)
     {
         // permission= corpus.edit, redirect failed users to /corpus/text/, authorized actions list:
-        $this->middleware('auth:corpus.edit,/corpus/bible/', ['except' => ['index', 'bibleList']]);
+        $this->middleware('auth:corpus.edit,/corpus/bible/', ['except' => ['index', 'bibleList', 'show']]);
         $this->url_args = Bible::urlArgs($request);
 
         $this->args_by_get = search_values_by_URL($this->url_args);

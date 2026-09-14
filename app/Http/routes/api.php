@@ -6,8 +6,9 @@ Route::group([
     'middleware' => ['auth.ristikanza', 'api.locale'],
     'prefix' => 'api/ristikanza/texts',
 ], function () {
+    Route::get('bible_book', 'Api\RistikanzaTextController@bibleBook');
     Route::get('bible_books', 'Api\RistikanzaTextController@bibleBooks');
-    Route::get('bible', 'Api\RistikanzaTextController@bible');
+    Route::get('bible_texts', 'Api\RistikanzaTextController@bibleTexts');
     Route::get('dialects', 'Api\RistikanzaTextController@dialects');
     Route::get('districts', 'Api\RistikanzaTextController@districts');
     Route::get('ethnographic', 'Api\RistikanzaTextController@ethnographic');

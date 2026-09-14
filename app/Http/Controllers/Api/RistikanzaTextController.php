@@ -558,7 +558,7 @@ class RistikanzaTextController extends Controller
             return response()->json([]);
         }
 
-        $texts = $this->textsForCorpusAndPublication($this->monumentsCorpus, $publicaton_id);
+        $texts = RistikanzaText::textsForCorpusAndPublication($this->monumentsCorpus, $publicaton_id);
 
         return response()->json(['book_title' => Publication::fullInfoById($publicaton_id), 'texts' => $texts]);
     }
@@ -579,7 +579,10 @@ class RistikanzaTextController extends Controller
         return response()->json($publications);
     }
 
-    public function bible(Request $request)
+    /**
+     * Тексты для одной библейской публикации
+     */
+    public function bibleBook(Request $request)
     {
         $publicaton_id = $request->input('publication_id');
 
@@ -587,35 +590,17 @@ class RistikanzaTextController extends Controller
             return response()->json([]);
         }
 
-        $texts = $this->textsForCorpusAndPublication($this->bibleCorpus, $publicaton_id);
+        $texts = RistikanzaText::textsForCorpusAndPublication($this->bibleCorpus, $publicaton_id);
 
         return response()->json(['book_title' => Publication::fullInfoById($publicaton_id), 'texts' => $texts]);
     }
 
-    protected function textsForCorpusAndPublication(int $corpus_id, int $publicaton_id)
+    public function bibleTexts(Request $request)
     {
-        $texts = [];
-        $objs = Text::getForCorpusAndPublication($corpus_id, $publicaton_id);
+        $url_args = Text::urlArgs($request);
+        $url_args['search_corpus'] = [$this->bibleCorpus];
 
-        foreach ($objs as $obj) {
-            $pages_in_source = $obj->source ? $obj->source->pages : null;
-            if (!sizeof($obj->source_pubparts)) {
-                $texts[''][$obj->id] = [
-                    'title' => $obj->title,
-                    'page' => $pages_in_source
-                ];
-            } else {
-                foreach ($obj->source_pubparts as $pubpart) {
-                    $pubpart_pages = trim($pubpart->pivot->pages ?: '');
-                    $texts[$pubpart->title][$obj->id] = [
-                        'title' => $obj->title,
-                        'page' => $pubpart_pages ?? $pages_in_source
-                    ];
-                }
-            }
-        }
-
-        return $texts;
+        return response()->json(RistikanzaText::getBibleTexts($url_args));
     }
 
     public function forMap(Request $request)
