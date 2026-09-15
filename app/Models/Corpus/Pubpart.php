@@ -64,12 +64,13 @@ class Pubpart extends Model
 
     public function texts()
     {
-        $id = $this->id;
-        return Text::whereNotNull('source_id')
-            ->whereIn('source_id', function ($q) use ($id) {
-                $q->select('source_id')->from('pubpart_source')
-                    ->where('pubpart_id', $id);
-            });
+        return $this->belongsToMany(
+            Text::class,
+            'pubpart_text',
+            'pubpart_id',
+            'text_id'
+        )
+            ->withPivot('pages');
     }
 
     public function texts_count(): int
@@ -99,54 +100,13 @@ class Pubpart extends Model
             '). Сначала удалите связи с частью в текстовых формах.';
     }
 
-
     public function delete_without_text_links(): bool
     {
-        // Если хотя бы один source этой pubpart используется текстом, удаление запрещено.
         if ($this->has_texts()) {
             return false;
         }
 
-        /*
-         * Удаляем только промежуточные связи:
-         * pubpart_source.pubpart_id = текущая часть.
-         * Сами records в sources не удаляются.
-         */
-        DB::table('pubpart_source')
-            ->where('pubpart_id', $this->id)
-            ->delete();
-
-        // Теперь pubpart больше не имеет связей в pubpart_source, поэтому её можно удалить.
         return (bool) $this->delete();
-    }
-
-    public function sourceLinksCount(): int
-    {
-        return (int) DB::table('pubpart_source')
-            ->where('pubpart_id', $this->id)
-            ->count();
-    }
-
-
-    public function hasSourceLinks(): bool
-    {
-        return $this->sourceLinksCount() > 0;
-    }
-
-
-    public function deletionError(): ?string
-    {
-        $source_links_count = $this->sourceLinksCount();
-
-        if (!$source_links_count) {
-            return null;
-        }
-
-        return 'Невозможно удалить часть публикации «' .
-            $this->full_name .
-            '»: она связана с источниками (' .
-            $source_links_count .
-            '). Сначала удалите связи с этой частью в текстовых формах.';
     }
 
     public static function getList()

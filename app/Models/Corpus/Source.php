@@ -31,20 +31,10 @@ class Source extends Model
     // Methods
     use \App\Traits\Methods\source\PublicationToString;
 
-    public function pubparts()
-    {
-        return $this->belongsToMany(
-            Pubpart::class,
-            'pubpart_source',
-            'source_id',
-            'pubpart_id'
-        )->withPivot('pages');
-    }
-
-    public function bookToString()
+    public function bookToString($text = null)
     {
         if ($this->publication_id) {
-            return $this->publicationToString();
+            return $this->publicationToString($text);
         }
         $book = [];
 
@@ -55,7 +45,6 @@ class Source extends Model
             $book[] = $this->title;
         }
         if ($this->year) {
-            //            $book[] = '('.$this->year.')';
             $book[] = $this->year;
         }
         if ($this->pages && (int)$this->pages > 0) {
@@ -63,9 +52,11 @@ class Source extends Model
         }
 
         $book = join(', ', $book);
+
         if ($this->pages && !(int)$this->pages) {
             $book .= '. ' . $this->pages;
         }
+
         return $book;
     }
 
@@ -134,35 +125,6 @@ class Source extends Model
             ->count()) {
             Source::find($source_id)->delete();
         }
-    }
-
-    public function storePubparts(array $data)
-    {
-        $pubpartRows = isset($data['pubparts'])
-            ? $data['pubparts']
-            : [];
-
-        $pivotData = [];
-
-        foreach ($pubpartRows as $row) {
-            $pubpartId = isset($row['pubpart_id'])
-                ? (int) $row['pubpart_id']
-                : 0;
-
-            if (!$pubpartId) {
-                continue;
-            }
-
-            $pages = isset($row['pages'])
-                ? trim($row['pages'])
-                : null;
-
-            $pivotData[$pubpartId] = [
-                'pages' => $pages ?: null,
-            ];
-        }
-
-        return $this->pubparts()->sync($pivotData);
     }
 
     protected function oldPagesToString()

@@ -11,7 +11,7 @@
         ['place' => $text->event->place, 'lang_id' => $text->lang_id]
     )@if ($text->event->date), {{ $text->event->date }}@endif)
 
-@elseif ($text->source && $text->source->bookToString())
-    ({{$text->source->bookToString()}})
+@elseif ($text->source && $text->source->bookToString($text))
+    ({{ $text->source->bookToString($text) }})
 @endif
 </span>

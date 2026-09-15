@@ -1,7 +1,7 @@
 <?php
 
     $source_info = [];
-    $book = $source->bookToString();
+    $book = $source->bookToString($text);
     if ($book) {
         $source_info[] = $book;
     }

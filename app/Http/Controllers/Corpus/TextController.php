@@ -368,7 +368,7 @@ class TextController extends Controller
         $text = Text::with('transtext')
             ->with('event')
             ->with('source')
-            ->with('source.pubparts')
+            ->with('pubparts')
             ->findOrFail($id);
 
         $bible_values = [NULL => ''] + Bible::getList();

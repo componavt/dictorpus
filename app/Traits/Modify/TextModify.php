@@ -85,7 +85,7 @@ trait TextModify
         $request['text'] = self::process($request['text']);
         $to_makeup = (int)$request['to_makeup'];
 
-        $text = self::with('transtext', 'event', 'source', 'cyrtext', 'source.publication', 'source.pubparts')
+        $text = self::with('transtext', 'event', 'source', 'cyrtext', 'source.publication', 'pubparts')
             ->get()->find($id);
         $old_text = $text->text;
 
@@ -494,22 +494,13 @@ trait TextModify
 
         $source_id = $this->source_id;
 
-        /*
-     * Состояние частей старого source до любых изменений.
-     *
-     * Нельзя использовать $this->source без повторной загрузки:
-     * relation мог быть закеширован в модели, а после сохранения
-     * source_id может измениться.
-     */
-        $old_source = $source_id
-            ? Source::find($source_id)
-            : null;
-
-        $old_pubparts = $old_source
-            ? $this->sourcePubpartsToHistoryString($old_source)
-            : null;
-
         if (!$is_empty_data) {
+            /*
+         * Source может быть общим у нескольких текстов.
+         *
+         * Это безопасно, потому что Pubpart теперь привязан
+         * к Text через pubpart_text, а не к Source.
+         */
             $this->source_id = Source::fillByData(
                 $source_id,
                 $request_data
@@ -518,76 +509,104 @@ trait TextModify
             $this->save();
 
             /*
-         * После fillByData() всегда заново получаем source из БД.
-         * Это важно и при создании source, и если relation Text->source
-         * ранее уже был загружен.
-         */
-            $source = Source::find($this->source_id);
-
-            if ($source) {
-                $source->storePubparts(
-                    $request_data['source'] ?? []
-                );
-
-                $new_pubparts = $this->sourcePubpartsToHistoryString(
-                    $source
-                );
-
-                /*
-             * Ревизию пишем только при содержательном изменении:
-             * добавили, удалили, заменили часть либо изменили страницы.
-             */
-                if ($old_pubparts !== $new_pubparts) {
-                    createRevisionRecord(
-                        $source,
-                        'pubparts',
-                        $old_pubparts,
-                        $new_pubparts
-                    );
-                }
-            }
-        } elseif ($source_id) {
-            /*
-         * Если source удаляется из текста, можно записать,
-         * что у него исчезли части.
+         * Поля формы пока называются source[pubparts][...].
          *
-         * Но см. пояснение ниже: после удаления source его история
-         * не будет добавлена в allHistory(), поскольку $this->source
-         * уже отсутствует.
+         * Это можно оставить временно: физически сохраняем
+         * части уже у Text, а не у Source.
          */
-            if ($old_source && $old_pubparts !== null) {
-                createRevisionRecord(
-                    $old_source,
-                    'pubparts',
-                    $old_pubparts,
-                    null
-                );
+            $this->storePubparts(
+                $request_data['source'] ?? []
+            );
+
+            return;
+        }
+
+        /*
+     * Если source полностью удалён, части публикации тоже
+     * не должны оставаться у текста без источника.
+     */
+        $this->storePubparts([]);
+
+        if (!$source_id) {
+            return;
+        }
+
+        $this->source_id = null;
+        $this->save();
+
+        /*
+     * Старый source удаляем, только если он больше не нужен
+     * ни одному тексту.
+     */
+        if (
+            !self::where('id', '<>', $this->id)
+                ->where('source_id', $source_id)
+                ->count()
+        ) {
+            Source::destroy($source_id);
+        }
+    }
+
+    public function storePubparts(array $data)
+    {
+        /*
+     * Снимок состояния до sync().
+     *
+     * Метод находится в TextHistory и читает именно
+     * $this->pubparts(), то есть новую таблицу pubpart_text.
+     */
+        $old_pubparts = $this->pubpartsToHistoryString();
+
+        $pubpart_rows = isset($data['pubparts'])
+            ? $data['pubparts']
+            : [];
+
+        $pivot_data = [];
+
+        foreach ($pubpart_rows as $row) {
+            $pubpart_id = isset($row['pubpart_id'])
+                ? (int) $row['pubpart_id']
+                : 0;
+
+            if (!$pubpart_id) {
+                continue;
             }
 
-            $this->source_id = null;
-            $this->save();
+            $pages = isset($row['pages'])
+                ? trim($row['pages'])
+                : null;
 
-            if (
-                !self::where('id', '<>', $this->id)
-                    ->where('source_id', $source_id)
-                    ->count()
-            ) {
-                Source::destroy($source_id);
-            }
+            $pivot_data[$pubpart_id] = [
+                'pages' => $pages ?: null,
+            ];
+        }
+
+        $this->pubparts()->sync($pivot_data);
+
+        $new_pubparts = $this->pubpartsToHistoryString();
+
+        if ($old_pubparts !== $new_pubparts) {
+            createRevisionRecord(
+                $this,
+                'pubparts',
+                $old_pubparts,
+                $new_pubparts
+            );
         }
     }
 
     public function remove()
     {
+        $this->authors()->detach();
         $this->corpuses()->detach();
+        $this->cycles()->detach();
         $this->dialects()->detach();
         $this->genres()->detach();
-        $this->plots()->detach();
-        $this->cycles()->detach();
         $this->motives()->detach();
         $this->meanings()->detach();
+        $this->plots()->detach();
         $this->wordforms()->detach();
-        $this->authors()->detach();
+        $this->pubparts()->detach();
 
         $this->sentences()->delete();
         $this->words()->delete();

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Traits\Search;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -181,13 +182,15 @@ trait TextSearch
         if (!sizeof($pubparts)) {
             return $texts;
         }
-        return $texts->whereIn('source_id', function ($query) use ($pubparts) {
-            $query->select('source_id')->from('pubpart_source')
+
+        return $texts->whereIn('id', function ($query) use ($pubparts) {
+            $query->select('text_id')
+                ->from('pubpart_text')
                 ->whereIn('pubpart_id', $pubparts);
         });
     }
 
-    public static function searchByBirthPlace(Builder $texts, array $place_ids=[], $district_ids=[], $region_id=null)
+    public static function searchByBirthPlace(Builder $texts, array $place_ids = [], $district_ids = [], $region_id = null)
     {
         if (!sizeof($place_ids) && !sizeof($district_ids) && !$region_id) {
             return $texts;
@@ -217,7 +220,7 @@ trait TextSearch
         });
     }
 
-    public static function searchByDialects(Builder $texts, $dialects=[])
+    public static function searchByDialects(Builder $texts, $dialects = [])
     {
         if (!sizeof($dialects)) {
             return $texts;
@@ -229,7 +232,7 @@ trait TextSearch
         });
     }
 
-    public static function searchByBible(Builder $texts, $bibles=[], $chapter_from=null, $chapter_to=null, $verse_from=null, $verse_to=null, $with_parallel=false)
+    public static function searchByBible(Builder $texts, $bibles = [], $chapter_from = null, $chapter_to = null, $verse_from = null, $verse_to = null, $with_parallel = false)
     {
         if (!sizeof($bibles) && !$chapter_from && !$chapter_to && !$verse_from && !$verse_to) {
             return $texts;
@@ -248,14 +251,14 @@ trait TextSearch
             if ($verse_from) {
                 $query->where(function ($q) use ($verse_from) {
                     $q->where('verse_to', '>=', $verse_from)
-                      ->orWhereNull('verse_from');
-                });                
+                        ->orWhereNull('verse_from');
+                });
             }
             if ($verse_to) {
                 $query->where(function ($q) use ($verse_to) {
                     $q->where('verse_from', '<=', $verse_to)
-                      ->orWhereNull('verse_to');
-                });                
+                        ->orWhereNull('verse_to');
+                });
             }
             if (!$with_parallel) {
                 $query->where('reference_type', '!=', 2);

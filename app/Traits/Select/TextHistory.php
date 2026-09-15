@@ -150,20 +150,9 @@ trait TextHistory
         return $all_history;
     }
 
-    /**
-     * Возвращает выбранные части публикации source
-     * в виде, пригодном для истории изменений.
-     *
-     * @param \App\Models\Corpus\Source|null $source
-     * @return string|null
-     */
-    public function sourcePubpartsToHistoryString($source)
+    public function pubpartsToHistoryString()
     {
-        if (!$source) {
-            return null;
-        }
-
-        $pubparts = $source->pubparts()
+        $pubparts = $this->pubparts()
             ->get()
             ->sortBy(function ($pubpart) {
                 return sprintf(

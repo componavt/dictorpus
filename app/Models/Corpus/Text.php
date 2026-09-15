@@ -168,24 +168,37 @@ class Text extends Model implements HasMediaConversions
         return $out;
     }
 
+    public function pubparts()
+    {
+        return $this->belongsToMany(
+            Pubpart::class,
+            'pubpart_text',
+            'text_id',
+            'pubpart_id'
+        )
+            ->withPivot('pages')
+            ->orderBy('sequence_number');
+    }
+
+    /** временный асессор */
     public function getSourcePubpartsAttribute()
     {
-        $source = $this->source;
-
-        if (!$source) {
-            return collect();
-        }
-
-        return $source->pubparts;
+        return $this->pubparts;
     }
 
     public function pubpartValue(): array
     {
+        return $this->pubparts
+            ->pluck('id')
+            ->all();
+        /* если не работает pluck
         $out = [];
-        foreach ($this->source_pubparts as $pubpart) {
-            $out[] = $pubpart->id;
-        }
-        return $out;
+
+    foreach ($this->pubparts as $pubpart) {
+        $out[] = $pubpart->id;
+    }
+
+    return $out;*/
     }
 
     public function bibleToString($referenceType)

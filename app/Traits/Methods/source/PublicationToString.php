@@ -13,7 +13,7 @@ trait PublicationToString
      *
      * @return string|null
      */
-    public function publicationToString()
+    public function publicationToString($text = null)
     {
         if (!$this->publication) {
             return null;
@@ -22,14 +22,10 @@ trait PublicationToString
         $publication = $this->publication;
 
         if ($publication->is_periodic) {
-            return $this->periodicPublicationToString(
-                $publication
-            );
+            return $this->periodicPublicationToString($publication, $text);
         }
 
-        return $this->nonPeriodicPublicationToString(
-            $publication
-        );
+        return $this->nonPeriodicPublicationToString($publication, $text);
     }
 
 
@@ -46,11 +42,9 @@ trait PublicationToString
      * @param object $publication
      * @return string
      */
-    protected function periodicPublicationToString($publication)
+    protected function periodicPublicationToString($publication, $text = null)
     {
-        return $this->standardPublicationToString(
-            $publication
-        );
+        return $this->standardPublicationToString($publication, $text);
     }
 
 
@@ -70,17 +64,13 @@ trait PublicationToString
      * @param object $publication
      * @return string
      */
-    protected function nonPeriodicPublicationToString($publication)
+    protected function nonPeriodicPublicationToString($publication, $text = null)
     {
-        if ($this->hasCommonPages()) {
-            return $this->publicationToStringWithSamePubpartPages(
-                $publication
-            );
+        if ($this->hasCommonPages($text)) {
+            return $this->publicationToStringWithSamePubpartPages($publication, $text);
         }
 
-        return $this->standardPublicationToString(
-            $publication
-        );
+        return $this->standardPublicationToString($publication, $text);
     }
 
 
@@ -96,22 +86,20 @@ trait PublicationToString
      * @param object $publication
      * @return string
      */
-    protected function standardPublicationToString($publication)
+    protected function standardPublicationToString($publication, $text = null)
     {
         $result = $this->publicationInfoToString(
             $publication
         );
 
-        $pubparts = $this->pubpartsToString(
-            $publication
-        );
+        $pubparts = $this->pubpartsToString($publication, $text);
 
         $result = $this->appendSourceInfo(
             $result,
             $pubparts
         );
 
-        if (!$this->hasPubpartPages()) {
+        if (!$this->hasPubpartPages($text)) {
             $result = $this->appendSourceInfo(
                 $result,
                 $this->oldPagesToString()
@@ -136,9 +124,8 @@ trait PublicationToString
      * @param object $publication
      * @return string
      */
-    protected function publicationToStringWithSamePubpartPages(
-        $publication
-    ) {
+    protected function publicationToStringWithSamePubpartPages($publication, $text = null)
+    {
         /*
          * Год пока не добавляем: в этом варианте он должен
          * следовать после названий частей.
@@ -152,9 +139,7 @@ trait PublicationToString
          * Части пока выводятся без страниц: общая страница
          * будет добавлена один раз в самом конце.
          */
-        $pubparts = $this->nonPeriodicPubpartsToString(
-            false
-        );
+        $pubparts = $this->nonPeriodicPubpartsToString(false, $text);
 
         $result = $this->appendSourceInfo(
             $result,
@@ -170,7 +155,7 @@ trait PublicationToString
 
         return $this->appendSourceInfo(
             $result,
-            $this->commonPagesToString()
+            $this->commonPagesToString($text)
         );
     }
 
@@ -229,13 +214,13 @@ trait PublicationToString
      * @param object $publication
      * @return string|null
      */
-    protected function pubpartsToString($publication)
+    protected function pubpartsToString($publication, $text = null)
     {
         if ($publication->is_periodic) {
-            return $this->periodicPubpartsToString();
+            return $this->periodicPubpartsToString($text);
         }
 
-        return $this->nonPeriodicPubpartsToString();
+        return $this->nonPeriodicPubpartsToString(true, $text);
     }
 
 
@@ -252,16 +237,12 @@ trait PublicationToString
      * @param bool $with_pages
      * @return string
      */
-    protected function nonPeriodicPubpartsToString(
-        $with_pages = true
-    ) {
+    protected function nonPeriodicPubpartsToString($with_pages = true, $text = null)
+    {
         $parts = [];
 
-        foreach ($this->pubparts as $pubpart) {
-            $part = $this->nonPeriodicPubpartToString(
-                $pubpart,
-                $with_pages
-            );
+        foreach ($this->publicationPubparts($text) as $pubpart) {
+            $part = $this->nonPeriodicPubpartToString($pubpart, $with_pages);
 
             if ($part) {
                 $parts[] = $part;
@@ -269,9 +250,7 @@ trait PublicationToString
         }
 
         if (!$with_pages) {
-            return $this->joinSequentialPubparts(
-                $parts
-            );
+            return $this->joinSequentialPubparts($parts);
         }
 
         return join('; ', $parts);
@@ -322,18 +301,18 @@ trait PublicationToString
      *
      * @return bool
      */
-    protected function hasSamePubpartPages()
+    protected function hasSamePubpartPages($text = null)
     {
-        if (!$this->pubparts || !$this->pubparts->count()) {
+        $pubparts = $this->publicationPubparts($text);
+
+        if (!$pubparts->count()) {
             return false;
         }
 
         $pages_values = [];
 
-        foreach ($this->pubparts as $pubpart) {
-            $pages = trim(
-                (string) ($pubpart->pivot->pages ?? '')
-            );
+        foreach ($pubparts as $pubpart) {
+            $pages = trim((string) ($pubpart->pivot->pages ?? ''));
 
             if ($pages === '') {
                 return false;
@@ -354,17 +333,15 @@ trait PublicationToString
      *
      * @return string|null
      */
-    protected function samePubpartPagesToString()
+    protected function samePubpartPagesToString($text = null)
     {
-        if (!$this->hasSamePubpartPages()) {
+        if (!$this->hasSamePubpartPages($text)) {
             return null;
         }
 
-        $pubpart = $this->pubparts->first();
+        $pubpart = $this->publicationPubparts($text)->first();
 
-        $pages = trim(
-            (string) ($pubpart->pivot->pages ?? '')
-        );
+        $pages = trim((string) ($pubpart->pivot->pages ?? ''));
 
         if (!$pages) {
             return null;
@@ -504,11 +481,11 @@ trait PublicationToString
         return implode('; ', $result);
     }
 
-    protected function periodicPubpartsToString()
+    protected function periodicPubpartsToString($text = null)
     {
         $issuesByYear = [];
 
-        foreach ($this->pubparts as $pubpart) {
+        foreach ($this->publicationPubparts($text) as $pubpart) {
             $year = $pubpart->year ?: '';
             $issue = $this->periodicPubpartToString($pubpart);
 
@@ -561,9 +538,9 @@ trait PublicationToString
         return date('d.m', strtotime($date));
     }
 
-    protected function hasPubpartPages()
+    protected function hasPubpartPages($text = null)
     {
-        foreach ($this->pubparts as $pubpart) {
+        foreach ($this->publicationPubparts($text) as $pubpart) {
             if (trim($pubpart->pivot->pages ?: '')) {
                 return true;
             }
@@ -587,25 +564,25 @@ trait PublicationToString
         return $text . ' С. ' . $pages;
     }
 
-    protected function hasCommonPages()
+    protected function hasCommonPages($text = null)
     {
         // У всех частей одинаково заполнены собственные страницы.
-        if ($this->hasSamePubpartPages()) {
+        if ($this->hasSamePubpartPages($text)) {
             return true;
         }
 
         // У частей нет собственных страниц, но страницы заданы для source целиком.
-        if (!$this->hasPubpartPages() && $this->oldPagesToString()) {
+        if (!$this->hasPubpartPages($text) && $this->oldPagesToString()) {
             return true;
         }
 
         return false;
     }
 
-    protected function commonPagesToString()
+    protected function commonPagesToString($text = null)
     {
         // Приоритет у страниц конкретных частей.
-        $pages = $this->samePubpartPagesToString();
+        $pages = $this->samePubpartPagesToString($text);
 
         if ($pages) {
             return $pages;
@@ -613,5 +590,14 @@ trait PublicationToString
 
         // Если у частей страниц нет, используем страницы source.
         return $this->oldPagesToString();
+    }
+
+    protected function publicationPubparts($text = null)
+    {
+        if (!$text) {
+            return collect();
+        }
+
+        return $text->pubparts;
     }
 }

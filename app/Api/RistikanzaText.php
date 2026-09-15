@@ -101,7 +101,7 @@ class RistikanzaText
 
         $source = [];
         if ($text->source) {
-            $source['book'] = $text->source->bookToString();
+            $source['book'] = $text->source->bookToString($text);
             if ($text->source->ieeh_archive_number1) {
                 $source['number'] = '№' . $text->source->ieeh_archive_number1;
                 if ($text->source->ieeh_archive_number2) {
@@ -190,7 +190,7 @@ class RistikanzaText
             'audiotexts' => $audiotexts,
         ];
     }
-    
+
     protected static function idsFromUrlArgs(array $urlArgs, $key)
     {
         $ids = isset($urlArgs[$key]) ? $urlArgs[$key] : [];
@@ -224,7 +224,7 @@ class RistikanzaText
                     ->whereIn('topic_id', $topicIds);
             });
         }
-        
+
         $texts = $textsQuery
             ->with([
                 'event.informants',
@@ -232,20 +232,20 @@ class RistikanzaText
             ])
             ->orderBy('id')
             ->get();
-        
+
         $text_places = [];
         foreach ($texts as $text) {
             foreach ($text->getCelebrationPlaces() as $place_id) {
                 $text_places[$place_id][$text->id] = $text->title;
             }
         }
-        
+
         if (!sizeof($text_places)) {
             return [];
         }
 
         $placesQuery = Place::whereIn('id', array_keys($text_places));
-        
+
         if (sizeof($regionIds)) {
             $placesQuery->whereIn('region_id', $regionIds);
         }
@@ -256,16 +256,16 @@ class RistikanzaText
 
         $places = $placesQuery->get();
 
-        
+
         $objs = [];
         foreach ($places as $place) {
             $lat = $place->latitude;
             $lon = $place->longitude;
-            
+
             if ($lat == 0 || $lon == 0) {
                 continue;
             }
-            
+
             $key = $lat . '_' . $lon;
 
             if (!isset($objs[$key])) {
@@ -314,7 +314,7 @@ class RistikanzaText
 
         return $texts;
     }
-    
+
     public static function getBibleTexts($url_args)
     {
         $texts = Text::search($url_args)
@@ -365,6 +365,4 @@ class RistikanzaText
             'total' => $texts->total()
         ];
     }
-
-
 }
