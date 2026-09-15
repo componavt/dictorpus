@@ -28,7 +28,7 @@
             'call_add_title' => trans('messages.create_new_f'),
             'title' => trans('corpus.publication')]) 
 @include('corpus.text.form._source_pubparts', [
-    'source_pubparts' => $source ? $source->pubparts : collect()
+    'pubparts' => $text ? $text->pubparts : collect()
 ]) 
 
 @if ($show_old_source_fields)

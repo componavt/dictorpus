@@ -1,5 +1,5 @@
 @php
-    $sourcePubparts = $source_pubparts ?? collect();
+    $textPubparts = $pubparts ?? collect();
 @endphp
 
 <div id="source-pubparts-group"
@@ -39,9 +39,9 @@
             </div>
 
             <div id="source-pubparts"
-                data-next-index="{{ $sourcePubparts->count() }}">
+                data-next-index="{{ $textPubparts->count() }}">
 
-                @foreach ($sourcePubparts as $index => $pubpart)
+                @foreach ($textPubparts as $index => $pubpart)
                     <div class="row source-pubpart-row">
                         <div class="col-sm-7">
                             <select class="form-control select-pubpart"
