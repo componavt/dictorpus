@@ -188,6 +188,8 @@ class RistikanzaText
             'cyrtext' => $cyrtext,
             'photos' => $photos,
             'audiotexts' => $audiotexts,
+            'biblical_passage' => $text->biblicalPassageToString(),
+            'parallel_passages' => $text->parallelPassagesToString(),
         ];
     }
 

@@ -59,7 +59,8 @@ class RistikanzaTextController extends Controller
             ->with([
                 'lang',
                 'authors',
-                'corpuses'
+                'corpuses',
+                'pubparts'
             ])
             ->firstOrFail();
 
@@ -70,12 +71,11 @@ class RistikanzaTextController extends Controller
     {
         $corpus_id = (int)$request->input('corpus_id');
         $genre_id = (int)$request->input('genre_id');
-        
+
         $form_values = ['lang_values' => Lang::getProjectList()];
-        
+
         if ($corpus_id == Text::BibleCorpus) {
             $form_values['bible_values'] = [NULL => ''] + Bible::getList();
-            
         } elseif ($corpus_id != Text::MonumentsCorpus) {
             $form_values['author_values'] = [NULL => ''] + Author::getList();
             $form_values['corpus_values'] = Corpus::getList();
