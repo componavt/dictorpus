@@ -708,7 +708,7 @@ class ExportController extends Controller
         $langs = Lang::projectLangs();
 
         foreach ($langs as $lang) {
-            /*
+
             $filename = $dirname . '/texts_' . $lang->code . '.csv';
             Export::textsforMorphDisambig($lang->id, $filename);
             print "<p>Тексты выгружены в файл: " . Storage::url($filename) . "</p>\n";
@@ -720,7 +720,7 @@ class ExportController extends Controller
             $filename = $dirname . '/words_' . $lang->code . '.csv';
             Export::wordsforMorphDisambig($lang->id, $filename);
             print "<p>Слова выгружены в файл: " . Storage::url($filename) . "</p>\n";
-            */
+
             $filename = $dirname . '/candidate_analyses_' . $lang->code . '.csv';
             Export::candidateAnalysesforMorphDisambig($lang->id, $filename);
             print "<p>Кандидаты анализа выгружены в файл: " . Storage::url($filename) . "</p>\n";
