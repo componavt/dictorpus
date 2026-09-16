@@ -25,4 +25,5 @@
         <p><a href="export/russian_meanings">Экспорт русских толкований из словаря для WordNet</a></p>
         <p><a href="export/russian_translations">Экспорт русских переводов примеров к словарю для WordNet</a></p>
         <p><a href="export/for_multimedia_dictionary">Экспорт лемм для Мультимедийного словаря карельского языка</a></p>
+        <p><a href="export/for_morph-disambig">Экспорт данных для задач разрешения морфологической неоднозначности (morph-disambig)</a></p>
     @endsection
