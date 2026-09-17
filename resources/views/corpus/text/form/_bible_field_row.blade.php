@@ -23,7 +23,7 @@
             @endforeach
         </select>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="form-group">
             <label>{{ trans('corpus.book') }}</label>
 
@@ -63,7 +63,7 @@
         </div>
     </div>
 
-    <div class="col-sm-2">
+    <div class="col-sm-3">
         <p style="margin-bottom: 5px">
             <b>{{ trans('corpus.verses') }}</b>
         </p>
