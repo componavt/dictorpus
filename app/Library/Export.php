@@ -5,6 +5,7 @@ namespace App\Library;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use PhpOffice\PhpWord\PhpWord;
@@ -707,6 +708,7 @@ class Export
      */
     public static function sentencesforMorphDisambig(int $lang_id, string $filename)
     {
+        $export_db = DB::connection('mysql_export');
         $csv_handle = fopen('php://temp/maxmemory:5242880', 'w+');
 
         if ($csv_handle === false) {
@@ -727,7 +729,7 @@ class Export
                 ->where('lang_id', $lang_id)
                 ->select('id', 'transtext_id')
                 ->orderBy('id')
-                ->chunk($text_batch_size, function ($texts) use ($csv_handle) {
+                ->chunk($text_batch_size, function ($texts) use ($csv_handle, $export_db) {
                     $text_ids = [];
                     $transtext_ids = [];
                     $transtext_id_by_text_id = [];
@@ -742,7 +744,7 @@ class Export
                     }
 
                     $translation_xml_by_id = $transtext_ids
-                        ? DB::table('transtexts')
+                        ? $export_db->table('transtexts')
                         ->whereIn('id', array_unique($transtext_ids))
                         ->pluck('text_xml', 'id')
                         : [];
@@ -750,7 +752,7 @@ class Export
                     $translation_cache = [];
 
                     foreach (
-                        DB::table('sentences')
+                        $export_db->table('sentences')
                             ->whereIn('text_id', $text_ids)
                             ->select(
                                 'id as sentence_id',
@@ -807,6 +809,7 @@ class Export
     */
     public static function wordsforMorphDisambig(int $lang_id, string $filename)
     {
+        $export_db = DB::connection('mysql_export');
         $csv_handle = fopen('php://temp/maxmemory:5242880', 'w+');
 
         if ($csv_handle === false) {
@@ -821,20 +824,20 @@ class Export
                 'word',
             ]);
 
-            Word::query()
-                ->join('texts as t', 't.id', '=', 'words.text_id')
-                ->where('t.lang_id', $lang_id)
-                ->select('words.id as word_id', 'words.sentence_id', 'words.word_number', 'words.word')
-                ->chunk(500, function ($words) use ($csv_handle) {
-                    foreach ($words as $word) {
-                        self::write_csv_row($csv_handle, [
-                            $word->word_id,
-                            $word->sentence_id,
-                            $word->word_number,
-                            $word->word,
-                        ]);
-                    }
-                });
+            foreach (
+                $export_db->table('words as w')
+                    ->join('texts as t', 't.id', '=', 'w.text_id')
+                    ->where('t.lang_id', $lang_id)
+                    ->select('w.id as word_id', 'w.sentence_id', 'w.word_number', 'w.word')
+                    ->cursor() as $word
+            ) {
+                self::write_csv_row($csv_handle, [
+                    $word->word_id,
+                    $word->sentence_id,
+                    $word->word_number,
+                    $word->word,
+                ]);
+            }
 
             rewind($csv_handle);
 
@@ -868,44 +871,25 @@ class Export
         }
 
         try {
-            self::write_csv_row($csv_handle, [
-                'word_id',
-                'wordform_id',
-                'gramset',
-                'relevance',
-            ]);
+            self::write_csv_row($csv_handle, ['word_id', 'wordform_id', 'gramset', 'relevance']);
 
-            $gramset_sql = "CONCAT_WS('+', g_number.lgr, g_case.lgr, g_tense.lgr, g_person.lgr, g_mood.lgr, g_negation.lgr, g_infinitive.lgr, g_voice.lgr, g_participle.lgr, g_reflexive.lgr) as gramset";
+            $gramset_by_id = self::get_gramset_by_id();
 
             foreach (
-                DB::table('text_wordform as tw')
+                DB::connection('mysql_export')
+                    ->table('text_wordform as tw')
                     ->join('words as w', 'w.id', '=', 'tw.word_id')
                     ->join('texts as t', 't.id', '=', 'w.text_id')
-                    ->leftJoin('gramsets as gs', 'gs.id', '=', 'tw.gramset_id')
-                    ->leftJoin('grams as g_number', 'g_number.id', '=', 'gs.gram_id_number')
-                    ->leftJoin('grams as g_case', 'g_case.id', '=', 'gs.gram_id_case')
-                    ->leftJoin('grams as g_tense', 'g_tense.id', '=', 'gs.gram_id_tense')
-                    ->leftJoin('grams as g_person', 'g_person.id', '=', 'gs.gram_id_person')
-                    ->leftJoin('grams as g_mood', 'g_mood.id', '=', 'gs.gram_id_mood')
-                    ->leftJoin('grams as g_negation', 'g_negation.id', '=', 'gs.gram_id_negation')
-                    ->leftJoin('grams as g_infinitive', 'g_infinitive.id', '=', 'gs.gram_id_infinitive')
-                    ->leftJoin('grams as g_voice', 'g_voice.id', '=', 'gs.gram_id_voice')
-                    ->leftJoin('grams as g_participle', 'g_participle.id', '=', 'gs.gram_id_participle')
-                    ->leftJoin('grams as g_reflexive', 'g_reflexive.id', '=', 'gs.gram_id_reflexive')
-                    ->where('tw.word_id', '>', 0)
                     ->where('t.lang_id', $lang_id)
-                    ->select(
-                        'tw.word_id',
-                        'tw.wordform_id',
-                        DB::raw($gramset_sql),
-                        'tw.relevance'
-                    )
+                    ->select('tw.word_id', 'tw.wordform_id', 'tw.gramset_id', 'tw.relevance')
                     ->cursor() as $analysis
             ) {
                 self::write_csv_row($csv_handle, [
                     $analysis->word_id,
                     $analysis->wordform_id,
-                    $analysis->gramset,
+                    isset($gramset_by_id[$analysis->gramset_id])
+                        ? $gramset_by_id[$analysis->gramset_id]
+                        : '',
                     $analysis->relevance,
                 ]);
             }
@@ -1076,5 +1060,30 @@ class Export
         }, $fields);
 
         fwrite($csv_handle, implode(',', $fields) . "\r\n");
+    }
+
+    public static function get_gramset_by_id()
+    {
+        $gramset_rows = DB::table('gramsets as gs')
+            ->leftJoin('grams as g_number', 'g_number.id', '=', 'gs.gram_id_number')
+            ->leftJoin('grams as g_case', 'g_case.id', '=', 'gs.gram_id_case')
+            ->leftJoin('grams as g_tense', 'g_tense.id', '=', 'gs.gram_id_tense')
+            ->leftJoin('grams as g_person', 'g_person.id', '=', 'gs.gram_id_person')
+            ->leftJoin('grams as g_mood', 'g_mood.id', '=', 'gs.gram_id_mood')
+            ->leftJoin('grams as g_negation', 'g_negation.id', '=', 'gs.gram_id_negation')
+            ->leftJoin('grams as g_infinitive', 'g_infinitive.id', '=', 'gs.gram_id_infinitive')
+            ->leftJoin('grams as g_voice', 'g_voice.id', '=', 'gs.gram_id_voice')
+            ->leftJoin('grams as g_participle', 'g_participle.id', '=', 'gs.gram_id_participle')
+            ->leftJoin('grams as g_reflexive', 'g_reflexive.id', '=', 'gs.gram_id_reflexive')
+            ->selectRaw("gs.id AS gramset_id, CONCAT_WS('+', g_number.lgr, g_case.lgr, g_tense.lgr, g_person.lgr, g_mood.lgr, g_negation.lgr, g_infinitive.lgr, g_voice.lgr, g_participle.lgr, g_reflexive.lgr) AS gramset")
+            ->get();
+
+        $gramset_by_id = [];
+
+        foreach ($gramset_rows as $gramset_row) {
+            $gramset_by_id[$gramset_row->gramset_id] = $gramset_row->gramset;
+        }
+
+        return $gramset_by_id;
     }
 }

@@ -498,19 +498,6 @@ class ExportController extends Controller
         })->orderBy('id')->pluck('id')->toArray();
 
         dd(join(',', $transtexts));
-        /*        $filename = 'export/runes.sql';
-        Storage::disk('public')->put($filename, "ID\tлемма\tN\tзначение");
-        $lang_ru = Lang::where('code','ru')->first()->id;
-        foreach ($meanings as $meaning) {
-            $meaning_text = $meaning->meaningTexts()->where('lang_id',$lang_ru)->first();
-            if (!$meaning_text) {
-                dd('Пустое '.$meaning->meaning_n.' значение '.$meaning->id.' у леммы '.$meaning->lemma_id);
-// select lemma_id, meaning_n from meanings where id not in (select meaning_id from meaning_texts where lang_id=2) and lemma_id in (select id from lemmas where lang_id=5);                                
-            }
-            Storage::disk('public')->append($filename, $meaning->lemma_id."\t".$meaning->lemma->lemma."\t".
-                    $meaning->meaning_n."\t".$meaning_text->meaning_text);
-        }
-        print "done.";*/
     }
 
     public function oloDict(Request $request)

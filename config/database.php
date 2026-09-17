@@ -1,5 +1,9 @@
 <?php
 
+$mysql_buffered_query_option = defined('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY')
+    ? constant('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY')
+    : constant('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY');
+
 return [
 
     /*
@@ -110,6 +114,22 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => null,
+        ],
+
+        'mysql_export' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'vepkar'),
+            'username' => env('DB_USERNAME', 'vepkar'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'options' => [
+                $mysql_buffered_query_option => false,
+            ],
         ],
 
         'pgsql' => [
