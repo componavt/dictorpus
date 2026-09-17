@@ -979,7 +979,7 @@ class Export
      *
      * @return array
      */
-    protected function get_translation_sentences_by_regex($translation_xml)
+    protected static function get_translation_sentences_by_regex($translation_xml)
     {
         $translation_sentences = [];
 
@@ -1001,7 +1001,7 @@ class Export
 
             $sentence_ru = html_entity_decode(strip_tags($sentence_xml), ENT_QUOTES, 'UTF-8');
 
-            $translation_sentences[$s_id] = $this->normalize_sentence_text($sentence_ru);
+            $translation_sentences[$s_id] = self::normalize_sentence_text($sentence_ru);
         }
 
         return $translation_sentences;
