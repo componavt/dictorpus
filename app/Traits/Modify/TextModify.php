@@ -495,22 +495,19 @@ trait TextModify
         $source_id = $this->source_id;
 
         if (!$is_empty_data) {
+            // Находим имеющийся Source с теми же библиографическими данными либо создаём новый.
             $new_source_id = Source::fillByData($request_data);
+
             $this->source_id = $new_source_id;
             $this->save();
 
             /* Поля формы пока называются source[pubparts][...].
-            * Это можно оставить временно: физически сохраняем
-            * части уже у Text, а не у Source. */
+             * Связи Text ↔ Pubpart сохраняются в pubpart_text. */
             $this->storePubparts($request_data['source'] ?? []);
 
-            /*
-     * Если текст был перенесён на найденный общий Source,
-     * прежний Source может стать неиспользуемым.
-     */
+            // Удаляем старый дублирующий Source, только если после переназначения к нему не относится ни один Text.
             if (
-                $source_id
-                && $source_id != $new_source_id
+                $source_id && $source_id != $new_source_id
                 && !self::where('source_id', $source_id)->exists()
             ) {
                 Source::destroy($source_id);
@@ -519,10 +516,7 @@ trait TextModify
             return;
         }
 
-        /*
-     * Если source полностью удалён, части публикации тоже
-     * не должны оставаться у текста без источника.
-     */
+        // Если source полностью удалён, удаляем также связь текста с частями публикации.
         $this->storePubparts([]);
 
         if (!$source_id) {
@@ -532,13 +526,8 @@ trait TextModify
         $this->source_id = null;
         $this->save();
 
-        /*
-     * Старый source удаляем, только если он больше не нужен
-     * ни одному тексту.
-     */
-        if (!self::where('id', '<>', $this->id)
-            ->where('source_id', $source_id)
-            ->count()) {
+        // Удаляем Source только при отсутствии других Text, использующих его.
+        if (!self::where('source_id', $source_id)->exists()) {
             Source::destroy($source_id);
         }
     }
