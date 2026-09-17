@@ -61,46 +61,52 @@ class Source extends Model
     }
 
     /**
-     * if Source doesn't exist, 
-     *      creates new and returns id of Source
-     * elseif Source is updated (data of Source is modified)
-     *      if other texts with this Source exist, 
-     *          creates new and returns id of Source
-     *      else 
-     *          updates Source if it exists 
-     * 
-     * @param INT $source_id or NULL
-     * @param ARRAY $data_to_fill
-     * @return INT or NULL
+     * Находит либо создаёт Source по библиографическим данным
+     * и возвращает его ID.
+     *
+     * Source теперь может быть общим для нескольких текстов:
+     * части публикации и страницы относятся к Text через
+     * таблицу pubpart_text, а не к Source.
+     *
+     * @param int|null $source_id
+     * @param array $request_data
+     * @return int
      */
-    public static function fillByData($source_id, $request_data)
+    public static function fillByData($request_data)
     {
-        $source_fields = ['publication_id', 'title', 'author', 'year', 'ieeh_archive_number1', 'ieeh_archive_number2', 'pages', 'comment'];
+        $source_fields = [
+            'publication_id',
+            'title',
+            'author',
+            'year',
+            'ieeh_archive_number1',
+            'ieeh_archive_number2',
+            'pages',
+            'comment',
+        ];
+
+        $data_to_fill = [];
+
         foreach ($source_fields as $column) {
-            $data_to_fill[$column] = ($request_data['source_' . $column]) ? $request_data['source_' . $column] : NULL;
-        }
-        if (!$source_id) {
-            $source = Source::firstOrCreate($data_to_fill);
-            $source_id = $source->id;
-        } else {
-            $source = Source::find($source_id);
-            $source_is_updated = false;
-            foreach ($data_to_fill as $column => $data_value) {
-                if ($data_value != $source->$column) {
-                    $source_is_updated = true;
-                }
+            $request_key = 'source_' . $column;
+
+            $value = isset($request_data[$request_key]) ? $request_data[$request_key] : null;
+
+            // Пустая строка и отсутствующее поле должны совпадать с NULL в существующих source.
+            if (is_string($value)) {
+                $value = trim($value);
             }
-            if ($source_is_updated) {
-                if ($source->texts && $source->texts()->count() > 1) { // other texts with this Source exist
-                    $source_new = Source::firstOrCreate($data_to_fill);
-                    $source_id = $source_new->id;
-                } else {
-                    $source->fill($data_to_fill);
-                    $source->save();
-                }
-            }
+
+            $data_to_fill[$column] = ($value === '') ? null : $value;
         }
-        return $source_id;
+
+        /* Каждый раз ищем source по полному набору данных.
+        * $source_id намеренно больше не определяет, какой Source
+        * возвращать: старый source может быть одним из сотен
+        * одинаковых дубликатов. */
+        $source = self::firstOrCreate($data_to_fill);
+
+        return $source->id;
     }
 
     public static function removeByID($id)

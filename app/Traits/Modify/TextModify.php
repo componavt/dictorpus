@@ -495,28 +495,26 @@ trait TextModify
         $source_id = $this->source_id;
 
         if (!$is_empty_data) {
-            /*
-         * Source может быть общим у нескольких текстов.
-         *
-         * Это безопасно, потому что Pubpart теперь привязан
-         * к Text через pubpart_text, а не к Source.
-         */
-            $this->source_id = Source::fillByData(
-                $source_id,
-                $request_data
-            );
-
+            $new_source_id = Source::fillByData($request_data);
+            $this->source_id = $new_source_id;
             $this->save();
 
+            /* Поля формы пока называются source[pubparts][...].
+            * Это можно оставить временно: физически сохраняем
+            * части уже у Text, а не у Source. */
+            $this->storePubparts($request_data['source'] ?? []);
+
             /*
-         * Поля формы пока называются source[pubparts][...].
-         *
-         * Это можно оставить временно: физически сохраняем
-         * части уже у Text, а не у Source.
-         */
-            $this->storePubparts(
-                $request_data['source'] ?? []
-            );
+     * Если текст был перенесён на найденный общий Source,
+     * прежний Source может стать неиспользуемым.
+     */
+            if (
+                $source_id
+                && $source_id != $new_source_id
+                && !self::where('source_id', $source_id)->exists()
+            ) {
+                Source::destroy($source_id);
+            }
 
             return;
         }
@@ -538,11 +536,9 @@ trait TextModify
      * Старый source удаляем, только если он больше не нужен
      * ни одному тексту.
      */
-        if (
-            !self::where('id', '<>', $this->id)
-                ->where('source_id', $source_id)
-                ->count()
-        ) {
+        if (!self::where('id', '<>', $this->id)
+            ->where('source_id', $source_id)
+            ->count()) {
             Source::destroy($source_id);
         }
     }
