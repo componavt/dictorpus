@@ -960,10 +960,10 @@ class Export
              */
             Log::warning('Cannot parse transtext XML with DOMDocument', [
                 'transtext_id' => $transtext_id,
-                'xml_errors' => $this->get_libxml_errors(),
+                'xml_errors' => self::get_libxml_errors(),
             ]);
 
-            $translation_sentences = $this->get_translation_sentences_by_regex($translation_xml);
+            $translation_sentences = self::get_translation_sentences_by_regex($translation_xml);
         }
 
         libxml_clear_errors();
