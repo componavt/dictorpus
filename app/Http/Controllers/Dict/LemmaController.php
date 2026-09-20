@@ -519,7 +519,7 @@ class LemmaController extends Controller
             ));
         }
 
-        $per_page = 10;
+        $per_page = 100;
 
         $current_page = LengthAwarePaginator::resolveCurrentPage();
 
