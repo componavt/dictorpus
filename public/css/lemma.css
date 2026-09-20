@@ -354,6 +354,16 @@ h4 .fa {
     margin: 15px 0;
 }
 
+.lemma-example-edit > tbody > tr:first-child > th,
+.lemma-example-edit > tbody > tr:first-child > td {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #ffffff;
+    vertical-align: bottom;
+    border-bottom: 2px solid #cccccc;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

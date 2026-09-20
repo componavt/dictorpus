@@ -26,7 +26,7 @@
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
 
-        <h3>{{ trans('messages.examples') }}</h3>
+        <h3>{{ trans('messages.examples') }}: {{ $sentences->total() }}</h3>
         
         {!! Form::open(['method' => 'GET', 'url' => url()->current(), 'class' => 'lemma-example-filter', 'id' => 'lemma_example_filter_form']) !!}
 
@@ -45,11 +45,6 @@
 
 <?php $count = ($sentences->currentPage() - 1) * $sentences->perPage() + 1; ?>
         
-        <p class="lemma-example-total">
-            {{ trans('messages.examples') }}:
-            {{ $sentences->total() }}
-        </p>
-
         @if ($sentences->lastPage() > 1)
         <div class="lemma-example-pagination">
             {!! $sentences->render() !!}
