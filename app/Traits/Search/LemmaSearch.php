@@ -26,6 +26,7 @@ trait LemmaSearch
                     'search_w' => (string)$request->input('search_w'),
                     'search_wordform' => $request->input('search_wordform'),
                     'search_wordforms'=> (array)$request->input('search_wordforms'),
+                    'show_checked' => (int)$request->input('show_checked'),
                     'show_dialectal'      => (int)$request->input('show_dialectal'),
                     'with_audios'     => (int)$request->input('with_audios'),
                     'with_examples'   => (int)$request->input('with_examples')

@@ -37,7 +37,7 @@ class MeaningTextRel extends Model
                 if (self::existsPositiveRelevance($text_id, $w_id, $meaning_id)) { // этот пример привязан к другому значению
                     $relevance = 0;
                 }
-            } elseif ($relevance != 0) { // положительная оценка — гасим все прочие значения слова
+            } elseif ($relevance >1) { // положительная оценка — гасим все прочие значения слова
                 self::setNegativeToUndefOthers($text_id, $w_id, $meaning_id);
             }
 
@@ -75,12 +75,12 @@ class MeaningTextRel extends Model
     }
 
     // всем значениям с неопределенными оценками проставим отрицательные
-    public static function setNegativeToUndefOthers(int $text_id, int $w_id, int $meaning_id)
-    {
-        DB::statement('UPDATE meaning_text SET relevance=0' .
-            ' WHERE meaning_id <> ' . $meaning_id .
-            ' AND text_id=' . $text_id .
-            ' AND w_id=' . $w_id);
+    public static function setNegativeToUndefOthers(int $text_id, int $w_id, int $meaning_id) {
+        DB::table('meaning_text')
+            ->where('text_id', $text_id)
+            ->where('w_id', $w_id)
+            ->where('meaning_id', '<>', $meaning_id)
+            ->update(['relevance' => 0]);
     }
 
     public static function preparationForExampleEdit($example_id)

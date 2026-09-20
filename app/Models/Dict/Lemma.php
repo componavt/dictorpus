@@ -1060,44 +1060,141 @@ class Lemma extends Model
         $sentences = [];
         $lemma_id = $this->id;
 
-        $sentence_builder = DB::table('meaning_text')
-            ->whereIn('meaning_id', function ($q) use ($lemma_id) {
-                $q->select('id')->from('meanings')
-                    ->where('lemma_id', $lemma_id);
-            })
+        /*
+         * Нужны все значения леммы, а не только те,
+         * для которых нашлась строка в meaning_text.
+         * Отсутствующая строка трактуется как relevance = 1.
+         */
+        $meaning_ids = DB::table('meanings')
+            ->where('lemma_id', $lemma_id)
+            ->lists('id');
+
+        if (!count($meaning_ids)) {
+            return $sentences;
+        }
+
+        $sentence_rows = DB::table('meaning_text')
+            ->select('text_id', 's_id', 'w_id')
+            ->whereIn('meaning_id', $meaning_ids)
             ->groupBy('text_id')
             ->groupBy('s_id')
             ->groupBy('w_id')
             ->orderBy('text_id')
             ->orderBy('s_id')
-            ->orderBy('w_id');
-        //dd($sentence_builder->count());                              
-        //print "<pre>";                              
-        foreach ($sentence_builder->get() as $s) {
-            //print_r($s);            
-            $sentence_builder2 = DB::table('meaning_text')
+            ->orderBy('w_id')
+            ->get();
+
+        $original_order = 0;
+
+        foreach ($sentence_rows as $s) {
+            $meaning_rows = DB::table('meaning_text')
+                ->select('meaning_id', 'relevance')
                 ->where('text_id', $s->text_id)
                 ->where('s_id', $s->s_id)
                 ->where('w_id', $s->w_id)
-                ->whereIn('meaning_id', function ($q) use ($lemma_id) {
-                    $q->select('id')->from('meanings')
-                        ->where('lemma_id', $lemma_id);
-                });
+                ->whereIn('meaning_id', $meaning_ids)
+                ->get();
+
             $relevance = [];
-            foreach ($sentence_builder2->get() as $s2) {
-                $relevance[$s2->meaning_id] = $s2->relevance;
+
+            foreach ($meaning_rows as $meaning_row) {
+                $relevance[$meaning_row->meaning_id] = (int)$meaning_row->relevance;
             }
-            $sentence = Text::extractSentence(
-                $s->text_id,
-                $s->s_id,
-                $s->w_id,
-                $relevance
-            );
-            if ($sentence) {
-                $sentences[] = $sentence;
+
+            /*
+             * Сохраняем прежнюю семантику формы:
+             * если строки meaning_text для значения нет,
+             * это эквивалент relevance = 1.
+             */
+            foreach ($meaning_ids as $meaning_id) {
+                if (!isset($relevance[$meaning_id])) {
+                    $relevance[$meaning_id] = 1;
+                }
+            }
+
+            $sentence = Text::extractSentence($s->text_id, $s->s_id, $s->w_id, $relevance);
+
+            if (!$sentence) {
+                continue;
+            }
+
+            $sentence['example_status'] = self::getExampleStatus($relevance, $meaning_ids );
+
+            /*
+             * Нужен для стабильной сортировки:
+             * внутри одной группы оставляем прежний порядок
+             * text_id, s_id, w_id.
+             */
+            $sentence['_original_order'] = $original_order++;
+
+            $sentences[] = $sentence;
+        }
+
+        $status_priority = [
+            'conflict'  => 0,
+            'unchecked' => 1,
+            'checked'   => 2,
+        ];
+
+        usort($sentences, function ($a, $b) use ($status_priority) {
+            $a_priority = $status_priority[$a['example_status']];
+            $b_priority = $status_priority[$b['example_status']];
+
+            if ($a_priority == $b_priority) {
+                return $a['_original_order'] - $b['_original_order'];
+            }
+
+            return $a_priority - $b_priority;
+        });
+
+        foreach ($sentences as &$sentence) {
+            unset($sentence['_original_order']);
+        }
+        unset($sentence);
+
+        return $sentences;
+    }
+
+    /**
+     * Статусы примера:
+     *
+     * conflict:
+     *     два и более значений имеют relevance > 1;
+     *
+     * checked:
+     *     ровно одно значение имеет relevance > 1,
+     *     а все прочие имеют relevance = 0;
+     *
+     * unchecked:
+     *     всё остальное, в частности:
+     *     - все значения 0 или 1;
+     *     - одно значение > 1, но у другого ещё relevance = 1.
+     */
+    protected static function getExampleStatus(array $relevance, array $meaning_ids) {
+        $positive_count = 0;
+        $undef_count = 0;
+
+        foreach ($meaning_ids as $meaning_id) {
+            $value = isset($relevance[$meaning_id])
+                ? (int)$relevance[$meaning_id]
+                : 1;
+
+            if ($value > 1) {
+                $positive_count++;
+            } elseif ($value == 1) {
+                $undef_count++;
             }
         }
-        return $sentences;
+
+        if ($positive_count > 1) {
+            return 'conflict';
+        }
+
+        if ($positive_count == 1 && $undef_count == 0) {
+            return 'checked';
+        }
+
+        return 'unchecked';
     }
 
     public function firstDialect()

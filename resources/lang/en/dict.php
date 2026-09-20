@@ -349,6 +349,8 @@ return [
     'reverse_relation' => 'reverse relation',
     'right_sort' => 'by final letters',
 
+    'save_and_continue' => 'Save and continue checking',
+    'save_and_return_to_show' => 'Save and return to lemma',
     'search_lemmas_by_wordforms' => 'Lemma search by wordforms',
     'search_pos' => 'Search of a part of speech by endings',
     'search_gramset' => 'Gramset search',
@@ -362,8 +364,8 @@ return [
     'select_lang' => 'Select a language',
     'select_pos' => 'Select a part of speech',
     'select_relation' => 'Select a semantic relation',
+    'show_checked' => 'Show checked examples',
     'show_dialectal' => 'show dialectal variants',
-
     'speaker' => 'Speaker',
     'status' => 'status',
     'status0' => 'is not checked',
@@ -399,4 +401,5 @@ return [
     'wordforms_total' => 'Total number of wordforms',
     'wordforms_grouped_total' => 'Общее количество словоформ, cгруппированных по частям речи, т.е. все совпадающие словоформы, имеющие общую часть речи, считаются за одну',
     'unique_wordforms_total' => 'Number of unique wordforms',
+    'unsaved_examples_confirm' => 'There are unsaved relevance changes. They will be lost if you continue. Continue?',
 ];

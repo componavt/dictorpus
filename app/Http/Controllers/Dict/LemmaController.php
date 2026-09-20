@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
@@ -485,6 +486,7 @@ class LemmaController extends Controller
     public function editExamples(Request $request, $id)
     {
         $lemma = Lemma::find($id);
+        
         if (!$lemma) {
             return Redirect::to('/dict/lemma/' . ($this->args_by_get))
                 ->withErrors('error.no_lemma');
@@ -497,19 +499,73 @@ class LemmaController extends Controller
         foreach ($meanings as $meaning) {
             foreach ($langs_for_meaning as $lang_id => $lang_text) {
                 $meaning_text_obj = MeaningText::where('lang_id', $lang_id)->where('meaning_id', $meaning->id)->first();
+                
                 if ($meaning_text_obj) {
                     $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
                 }
             }
         }
 
+        $sentences = $lemma->sentences();
+
+        $show_checked = $request->get('show_checked') == 1;
+
+        // По умолчанию проверенные примеры скрыты. Они появляются только при ?show_checked=1.
+        if (!$show_checked) {
+            $sentences = array_values(array_filter($sentences,
+                function ($sentence) {
+                    return $sentence['example_status'] != 'checked';
+                }
+            ));
+        }
+
+        $per_page = 10;
+
+        $current_page = LengthAwarePaginator::resolveCurrentPage();
+
+        $total_sentences = count($sentences);
+
+        $page_sentences = array_slice(
+            $sentences,
+            ($current_page - 1) * $per_page,
+            $per_page
+        );
+
+        $sentences = new LengthAwarePaginator(
+            $page_sentences,
+            $total_sentences,
+            $per_page,
+            $current_page
+        );
+
+        /*
+         * Базовый URL без query string, например:
+         * /ru/dict/lemma/123/edit-examples
+         */
+        $sentences->setPath($request->url());
+
+        /*
+         * Сохраняем show_checked=1 и прочие GET-параметры,
+         * но не сохраняем номер текущей страницы: paginator
+         * добавит корректный page сам.
+         */
+        $sentences->appends($request->except('page'));
+
+        $filter_url_args = is_array($this->url_args) ? $this->url_args : [];
+
+        unset($filter_url_args['show_checked']);
+        unset($filter_url_args['page']);
+        
         return view('dict.lemma.edit_examples')
             ->with(
                 array(
                     'back_to_url'    => '/dict/lemma/' . $lemma->id,
+                    'filter_url_args' => $filter_url_args,
                     'lemma'          => $lemma,
-                    'meanings'        => $lemma->meanings,
+                    'meanings'       => $lemma->meanings,
                     'meaning_texts'  => $meaning_texts,
+                    'sentences'      => $sentences,
+                    'show_checked' => $show_checked,
                     'args_by_get'    => $this->args_by_get,
                     'url_args'       => $this->url_args,
                 )
@@ -639,7 +695,16 @@ class LemmaController extends Controller
     public function updateExamples(Request $request, $id)
     {
         MeaningTextRel::updateExamples($request['relevance']);
-        return Redirect::to($request['back_to_url'] . ($this->args_by_get))
+
+        if ($request->get('after_save') == 'continue') {
+            $url = LaravelLocalization::localizeURL(
+                '/dict/lemma/' . $id . '/edit/examples'
+            );
+        } else {
+            $url = $request['back_to_url'];
+        }
+
+        return Redirect::to($url . $this->args_by_get)
             ->withSuccess(trans('messages.updated_success'));
     }
 

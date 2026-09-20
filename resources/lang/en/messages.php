@@ -11,6 +11,8 @@ return [
     */
     
     'actions' => 'Actions',
+    'apply' => 'Show',
+    
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
     'bin_answer_0' => 'no',
@@ -40,6 +42,7 @@ return [
     'filename' => 'Filename',
     'frequency' => 'frequency',
     'from' => 'from',
+    
     'history' => 'history',
     'in_english' => 'in English',
     'in_pl' => 'in plural',
@@ -63,6 +66,7 @@ return [
     'seq_num' => 's/n',
     'sequence_number' => 'sequence number',
     'short' => 'Short name',
+    'show_checked' => 'Show checked examples',
     'special_symbols' => 'special symbols',
     'supper_text' => 'to superscript',
     'text_exists' => 'There is a text associated with this entry',

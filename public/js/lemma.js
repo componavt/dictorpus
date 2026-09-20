@@ -183,3 +183,81 @@ function insertTemplate(template) {
     $("#modalSuggestTemplates").modal('hide');
     $("#lemma").val(template);
 }
+
+function initEditExamplesUnsavedWarning(message) {
+    var is_changed = false;
+    var $edit_form = $('#edit_examples_form');
+    var $filter_form = $('#lemma_example_filter_form');
+
+    if (!$edit_form.length) {
+        return;
+    }
+
+    $edit_form.on('change', 'select[name^="relevance["]', function () {
+        is_changed = true;
+    });
+
+    $edit_form.on('submit', function () {
+        is_changed = false;
+    });
+
+    $filter_form.on('submit', function () {
+        if (!is_changed) {
+            return true;
+        }
+
+        if (!window.confirm(message)) {
+            return false;
+        }
+
+        is_changed = false;
+
+        return true;
+    });
+
+    $(window).on('beforeunload.edit_examples', function (event) {
+        if (!is_changed) {
+            return;
+        }
+
+        var native_event = event.originalEvent || event;
+
+        native_event.preventDefault();
+        native_event.returnValue = message;
+
+        return message;
+    });
+}
+
+function updateExampleRelevanceStyle($select) {
+    $select
+        .removeClass('relevance-0 relevance-1 relevance-3 relevance-5 relevance-7 relevance-10')
+        .addClass('relevance-' + $select.val());
+}
+
+function initExampleRelevanceStyles() {
+    $('#edit_examples_form').on('change', '.js-example-relevance', function () {
+        var $relevance_select = $(this);
+
+        updateExampleRelevanceStyle($relevance_select);
+        clearOtherExampleRelevances($relevance_select);
+    });
+}
+
+function clearOtherExampleRelevances($relevance_select) {
+    if (parseInt($relevance_select.val(), 10) <= 1) {
+        return;
+    }
+
+    $relevance_select.closest('tr')
+        .find('.js-example-relevance')
+        .not($relevance_select)
+        .each(function () {
+            var $other_select = $(this);
+
+            if ($other_select.val() != '0') {
+                $other_select.val('0');
+                updateExampleRelevanceStyle($other_select);
+            }
+        });
+}
