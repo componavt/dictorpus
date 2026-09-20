@@ -15,8 +15,8 @@
 @stop
 
 @section('headExtra')
-    {!!Html::style('css/lemma.css')!!}
-    {!!Html::style('css/text.css')!!}
+    {!! css('lemma') !!}
+    {!! css('text') !!}
 @stop
 
 @section('body')
@@ -136,8 +136,8 @@
 @stop
 
 @section('footScriptExtra')
-    {!!Html::script('js/text.js')!!}
-    {!!Html::script('js/lemma.js')!!}
+    {!! js('text') !!}
+    {!! js('lemma') !!}
 @stop
 
 @section('jqueryFunc')
