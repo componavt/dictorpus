@@ -506,49 +506,26 @@ class LemmaController extends Controller
             }
         }
 
-        $sentences = $lemma->sentences();
-
         $show_checked = $request->get('show_checked') == 1;
-
-        // По умолчанию проверенные примеры скрыты. Они появляются только при ?show_checked=1.
-        if (!$show_checked) {
-            $sentences = array_values(array_filter($sentences,
-                function ($sentence) {
-                    return $sentence['example_status'] != 'checked';
-                }
-            ));
-        }
 
         $per_page = 25;
 
         $current_page = LengthAwarePaginator::resolveCurrentPage();
 
-        $total_sentences = count($sentences);
-
-        $page_sentences = array_slice(
-            $sentences,
-            ($current_page - 1) * $per_page,
-            $per_page
+        $sentences_page = $lemma->sentencesPage(
+            $current_page,
+            $per_page,
+            $show_checked
         );
 
         $sentences = new LengthAwarePaginator(
-            $page_sentences,
-            $total_sentences,
+            $sentences_page['sentences'],
+            $sentences_page['total'],
             $per_page,
-            $current_page
+            $sentences_page['current_page']
         );
 
-        /*
-         * Базовый URL без query string, например:
-         * /ru/dict/lemma/123/edit-examples
-         */
         $sentences->setPath($request->url());
-
-        /*
-         * Сохраняем show_checked=1 и прочие GET-параметры,
-         * но не сохраняем номер текущей страницы: paginator
-         * добавит корректный page сам.
-         */
         $sentences->appends($request->except('page'));
 
         $filter_url_args = is_array($this->url_args) ? $this->url_args : [];

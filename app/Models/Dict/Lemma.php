@@ -1197,6 +1197,215 @@ class Lemma extends Model
         return 'unchecked';
     }
 
+    public function sentencesPage($page, $per_page, $show_checked = false)
+    {
+        $meaning_ids = DB::table('meanings')
+            ->where('lemma_id', $this->id)
+            ->lists('id');
+
+        if (!count($meaning_ids)) {
+            return [
+                'sentences' => [],
+                'total' => 0,
+                'current_page' => 1,
+            ];
+        }
+
+        $meaning_count = count($meaning_ids);
+
+        $positive_sql = '
+            SUM(
+                CASE
+                    WHEN relevance > 1 THEN 1
+                    ELSE 0
+                END
+            )
+        ';
+
+        $undef_sql = '
+            SUM(
+                CASE
+                    WHEN relevance = 1 THEN 1
+                    ELSE 0
+                END
+            )
+        ';
+
+        /*
+         * Отсутствующая строка meaning_text считается relevance = 1.
+         * Поэтому checked возможен лишь тогда, когда есть строка
+         * для каждого значения леммы.
+         */
+        $checked_sql = '('
+            . $positive_sql . ' = 1'
+            . ' AND ' . $undef_sql . ' = 0'
+            . ' AND COUNT(*) = ' . $meaning_count
+            . ')';
+
+        $status_sql = '
+            CASE
+                WHEN ' . $positive_sql . ' > 1 THEN 0
+                WHEN ' . $checked_sql . ' THEN 2
+                ELSE 1
+            END
+        ';
+
+        /*
+         * Базовый запрос намеренно без ORDER BY и LIMIT:
+         * он используется для COUNT(*) через подзапрос.
+         */
+        $sentence_query = DB::table('meaning_text')
+            ->select('text_id', 's_id', 'w_id')
+            ->whereIn('meaning_id', $meaning_ids)
+            ->groupBy('text_id')
+            ->groupBy('s_id')
+            ->groupBy('w_id');
+
+        if (!$show_checked) {
+            $sentence_query->havingRaw('NOT ' . $checked_sql);
+        }
+
+        $count_sql = '
+            SELECT COUNT(*) AS total
+            FROM (' . $sentence_query->toSql() . ') AS sentence_rows
+        ';
+
+        $count_rows = DB::select(
+            $count_sql,
+            $sentence_query->getBindings()
+        );
+
+        $total = (int)$count_rows[0]->total;
+
+        $last_page = max(1, (int)ceil($total / $per_page));
+
+        $current_page = min(
+            max(1, (int)$page),
+            $last_page
+        );
+
+        /*
+         * Теперь добавляем порядок и выбираем только нужную страницу.
+         * Здесь get() вернёт максимум $per_page строк, а не 48 тысяч.
+         */
+        $page_query = clone $sentence_query;
+
+        $sentence_rows = $page_query
+            ->selectRaw($status_sql . ' AS status_order')
+            ->orderByRaw($status_sql)
+            ->orderBy('text_id')
+            ->orderBy('s_id')
+            ->orderBy('w_id')
+            ->skip(($current_page - 1) * $per_page)
+            ->take($per_page)
+            ->get();
+
+        if (!count($sentence_rows)) {
+            return [
+                'sentences' => [],
+                'total' => $total,
+                'current_page' => $current_page,
+            ];
+        }
+
+        $relevance_by_key = $this->pageRelevance(
+            $sentence_rows,
+            $meaning_ids
+        );
+
+        $sentences = [];
+
+        foreach ($sentence_rows as $sentence_row) {
+            $sentence_key = $this->sentenceKey(
+                $sentence_row->text_id,
+                $sentence_row->s_id,
+                $sentence_row->w_id
+            );
+
+            $relevance = isset($relevance_by_key[$sentence_key])
+                ? $relevance_by_key[$sentence_key]
+                : [];
+
+            foreach ($meaning_ids as $meaning_id) {
+                if (!isset($relevance[$meaning_id])) {
+                    $relevance[$meaning_id] = 1;
+                }
+            }
+
+            $sentence = Text::extractSentence(
+                $sentence_row->text_id,
+                $sentence_row->s_id,
+                $sentence_row->w_id,
+                $relevance
+            );
+
+            if (!$sentence) {
+                continue;
+            }
+
+            /*
+             * Оставляем PHP-проверку статуса как страховку:
+             * SQL отвечает за выбор страницы и порядок,
+             * PHP — за окончательное значение в массиве шаблона.
+             */
+            $sentence['example_status'] = self::getExampleStatus(
+                $relevance,
+                $meaning_ids
+            );
+
+            $sentences[] = $sentence;
+        }
+
+        return [
+            'sentences' => $sentences,
+            'total' => $total,
+            'current_page' => $current_page,
+        ];
+    }
+
+    protected function pageRelevance($sentence_rows, $meaning_ids)
+    {
+        $relevance_rows = DB::table('meaning_text')
+            ->select(
+                'text_id',
+                's_id',
+                'w_id',
+                'meaning_id',
+                'relevance'
+            )
+            ->whereIn('meaning_id', $meaning_ids)
+            ->where(function ($query) use ($sentence_rows) {
+                foreach ($sentence_rows as $sentence_row) {
+                    $query->orWhere(function ($query) use ($sentence_row) {
+                        $query->where('text_id', $sentence_row->text_id)
+                            ->where('s_id', $sentence_row->s_id)
+                            ->where('w_id', $sentence_row->w_id);
+                    });
+                }
+            })
+            ->get();
+
+        $relevance_by_key = [];
+
+        foreach ($relevance_rows as $relevance_row) {
+            $sentence_key = $this->sentenceKey(
+                $relevance_row->text_id,
+                $relevance_row->s_id,
+                $relevance_row->w_id
+            );
+
+            $relevance_by_key[$sentence_key][$relevance_row->meaning_id]
+                = (int)$relevance_row->relevance;
+        }
+
+        return $relevance_by_key;
+    }
+
+    protected function sentenceKey($text_id, $s_id, $w_id)
+    {
+        return $text_id . '_' . $s_id . '_' . $w_id;
+    }
+
     public function firstDialect()
     {
         $dialect_id = Lang::mainDialectByID($this->lang_id);
