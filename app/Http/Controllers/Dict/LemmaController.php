@@ -32,6 +32,7 @@ use App\Models\Dict\Meaning;
 use App\Models\Dict\MeaningText;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Relation;
+use App\Models\Dict\Wordform;
 
 class LemmaController extends Controller
 {
@@ -486,7 +487,7 @@ class LemmaController extends Controller
     public function editExamples(Request $request, $id)
     {
         $lemma = Lemma::find($id);
-        
+
         if (!$lemma) {
             return Redirect::to('/dict/lemma/' . ($this->args_by_get))
                 ->withErrors('error.no_lemma');
@@ -499,7 +500,7 @@ class LemmaController extends Controller
         foreach ($meanings as $meaning) {
             foreach ($langs_for_meaning as $lang_id => $lang_text) {
                 $meaning_text_obj = MeaningText::where('lang_id', $lang_id)->where('meaning_id', $meaning->id)->first();
-                
+
                 if ($meaning_text_obj) {
                     $meaning_texts[$meaning->id][$lang_text] = $meaning_text_obj->meaning_text;
                 }
@@ -532,7 +533,7 @@ class LemmaController extends Controller
 
         unset($filter_url_args['show_checked']);
         unset($filter_url_args['page']);
-        
+
         return view('dict.lemma.edit_examples')
             ->with(
                 array(
@@ -627,20 +628,34 @@ class LemmaController extends Controller
             'lang_id' => 'required|numeric',
             //            'pos_id' => 'numeric',
         ]);
-        //dd($request->all());        
-        $lemma->updateLemma($request->all());
 
-        // MEANINGS UPDATING
-        // existing meanings
-        Meaning::updateLemmaMeanings($request->ex_meanings);
+        return DB::transaction(function () use ($request, $id, $lemma) {
+            $before = $lemma->textWordformPairKeys();
 
-        // new meanings, i.e. meanings created by user in form now
-        Meaning::storeLemmaMeanings($request->new_meanings, $id);
+            // false: не запускаем старый updateTextWordformLinks() внутри LemmaModify::storeAddition().
+            $lemma->updateLemma($request->all(), false);
 
-        //$lemma->updateTextLinks();
+            // MEANINGS UPDATING
+            Meaning::updateLemmaMeanings($request->ex_meanings); // existing meanings
+            Meaning::storeLemmaMeanings($request->new_meanings, $id);  // new meanings, i.e. meanings created by user in form now
 
-        return Redirect::to('/dict/lemma/' . ($lemma->id) . ($this->args_by_get ? $this->args_by_get . '&' : '?') . 'update_text_links=1')
-            ->withSuccess(trans('messages.updated_success'));
+            // Вместо старого пересчёта text_wordform в storeAddition()
+            // синхронизируем затронутые пары после обновления леммы и значений.
+            $after = $lemma->textWordformPairKeys();
+
+            foreach ($before + $after as $pair) {
+                Wordform::reconcileTextWordformLinksForPair(
+                    $pair[0],
+                    $pair[1]
+                );
+            }
+
+            return Redirect::to(
+                '/dict/lemma/' . $lemma->id
+                    . ($this->args_by_get ? $this->args_by_get . '&' : '?')
+                    . 'update_text_links=1'
+            )->withSuccess(trans('messages.updated_success'));
+        });
     }
 
     /**

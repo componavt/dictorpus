@@ -190,7 +190,7 @@ class Wordform extends Model
             return null;
         }
         $this->trimWord(); // remove extra spaces at the beginning and end of the wordform 
-        
+
         return DB::connection('mysql')->table('words')
             ->join('texts', 'texts.id', '=', 'words.text_id')
             ->where('texts.lang_id', $lang_id)
@@ -250,7 +250,7 @@ dd($relevance);
         if (!$this->pivot->gramset_id) {
             return;
         }
-        
+
         $lang_id = $lang_id ?: $this->pivot->lang_id;
 
         if ($words === null) {
@@ -289,9 +289,9 @@ dd($relevance);
         if (!$this->pivot->gramset_id) {
             return;
         }
-        
+
         $lang_id = $lang_id ?: $this->pivot->lang_id;
-        
+
         if ($words === null) {
             $words = $this->getWordsForLinks($lang_id);
         }
@@ -326,7 +326,7 @@ dd($relevance);
         foreach ($newPairs as $pair) {
             $query->where(function ($q) use ($pair) {
                 $q->where('text_id', '!=', $pair[0])
-                  ->orWhere('w_id', '!=', $pair[1]);
+                    ->orWhere('w_id', '!=', $pair[1]);
             });
         }
         $query->delete();
@@ -597,5 +597,177 @@ dd($relevance);
         return LemmaWordform::selectWhereLang($lang_id)
             ->whereAffix('#')
             ->count();
+    }
+
+    public static function previewTextWordformLinks(
+        $wordformId,
+        $gramsetId,
+        $includeMissingRows = false,
+        $includeUnmatchedRows = false
+    ) {
+        $db = DB::connection('mysql');
+
+        $owners = $db->table('lemma_wordform')
+            ->where('wordform_id', $wordformId)
+            ->where('gramset_id', $gramsetId)
+            ->select('lang_id', 'wordform_for_search')
+            ->distinct()
+            ->get();
+
+        $expected = [];
+
+        foreach ($owners as $owner) {
+            $words = $db->table('words')
+                ->join('texts', 'texts.id', '=', 'words.text_id')
+                ->where('texts.lang_id', $owner->lang_id)
+                ->where('words.word', $owner->wordform_for_search)
+                ->get([
+                    'words.text_id',
+                    'words.w_id',
+                    'words.id as word_id',
+                    'words.word',
+                    'words.s_id',
+                    'words.word_number',
+                    'words.sentence_id',
+                ]);
+
+            foreach ($words as $word) {
+                $key = $word->text_id . ':' . $word->w_id;
+
+                if (isset($expected[$key])) {
+                    $previous = $expected[$key];
+
+                    if (
+                        $previous->word !== $word->word
+                        || (int) $previous->s_id !== (int) $word->s_id
+                        || (int) $previous->word_number !== (int) $word->word_number
+                        || (int) $previous->sentence_id !== (int) $word->sentence_id
+                    ) {
+                        throw new \RuntimeException(
+                            'Разные слова претендуют на одну позицию ' . $key
+                        );
+                    }
+
+                    if ((int) $word->word_id < (int) $previous->word_id) {
+                        $expected[$key] = $word;
+                    }
+
+                    continue;
+                }
+
+                $expected[$key] = $word;
+            }
+        }
+
+        $storedRows = $db->table('text_wordform')
+            ->where('wordform_id', $wordformId)
+            ->where('gramset_id', $gramsetId)
+            ->get(['text_id', 'w_id', 'word_id', 'relevance']);
+
+        $stored = [];
+
+        foreach ($storedRows as $row) {
+            $stored[$row->text_id . ':' . $row->w_id] = $row;
+        }
+
+        $missing = array_diff_key($expected, $stored);
+        $unmatched = array_diff_key($stored, $expected);
+
+        $markedUnmatched = [];
+
+        foreach ($unmatched as $row) {
+            if ((int) $row->relevance !== 1) {
+                $markedUnmatched[] = [
+                    'text_id' => $row->text_id,
+                    'w_id' => $row->w_id,
+                    'word_id' => $row->word_id,
+                    'relevance' => $row->relevance,
+                ];
+            }
+        }
+
+        $result = [
+            'owners' => count($owners),
+            'expected' => count($expected),
+            'stored' => count($stored),
+            'missing' => count($missing),
+            'unmatched' => count($unmatched),
+            'marked_unmatched' => $markedUnmatched,
+        ];
+
+        if ($includeMissingRows) {
+            $result['missing_rows'] = array_values($missing);
+        }
+
+        if ($includeUnmatchedRows) {
+            $result['unmatched_rows'] = array_values($unmatched);
+        }
+
+        return $result;
+    }
+
+    public static function reconcileTextWordformLinksForPair(
+        $wordformId,
+        $gramsetId
+    ) {
+        $db = DB::connection('mysql');
+
+        return $db->transaction(function () use ($db, $wordformId, $gramsetId) {
+            $preview = self::previewTextWordformLinks(
+                $wordformId,
+                $gramsetId,
+                true,
+                true
+            );
+
+            foreach (array_chunk($preview['missing_rows'], 100) as $chunk) {
+                $rows = [];
+
+                foreach ($chunk as $word) {
+                    $rows[] = [
+                        'text_id' => $word->text_id,
+                        'w_id' => $word->w_id,
+                        'wordform_id' => $wordformId,
+                        'gramset_id' => $gramsetId,
+                        'word_id' => $word->word_id,
+                        'relevance' => 1,
+                    ];
+                }
+
+                $db->table('text_wordform')->insert($rows);
+            }
+
+            $toDelete = [];
+
+            foreach ($preview['unmatched_rows'] as $row) {
+                if ((int) $row->relevance === 1) {
+                    $toDelete[] = $row;
+                }
+            }
+
+            $deleted = 0;
+
+            foreach (array_chunk($toDelete, 100) as $chunk) {
+                $deleted += $db->table('text_wordform')
+                    ->where('wordform_id', $wordformId)
+                    ->where('gramset_id', $gramsetId)
+                    ->where('relevance', 1)
+                    ->where(function ($query) use ($chunk) {
+                        foreach ($chunk as $row) {
+                            $query->orWhere(function ($query) use ($row) {
+                                $query->where('text_id', $row->text_id)
+                                    ->where('w_id', $row->w_id);
+                            });
+                        }
+                    })
+                    ->delete();
+            }
+
+            return [
+                'inserted' => count($preview['missing_rows']),
+                'deleted' => $deleted,
+                'marked_unmatched' => $preview['marked_unmatched'],
+            ];
+        });
     }
 }

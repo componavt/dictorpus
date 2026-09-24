@@ -24,7 +24,7 @@ use App\Models\Dict\Wordform;
  */
 trait LemmaModify
 {
-    public function updateLemma(array $data)
+    public function updateLemma(array $data, $updateTextWordformLinks = true)
     {
         list($new_lemma, $wordforms_list, $stem, $affix, $gramset_wordforms, $stems)
             = Grammatic::parseLemmaField($data);
@@ -37,7 +37,7 @@ trait LemmaModify
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
 
-        $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'] ?? null, $stems);
+        $this->storeAddition($wordforms_list, $stem, $affix, $gramset_wordforms, $data, $data['wordform_dialect_id'] ?? null, $stems, $updateTextWordformLinks);
 
         $this->storePhrase(isset($data['phrase']) ? $data['phrase'] : null);
     }
@@ -49,7 +49,8 @@ trait LemmaModify
         $gramset_wordforms,
         $features,
         $dialect_id,
-        $stems
+        $stems,
+        $updateTextWordformLinks = true
     ) {
         //dd($features);        
         LemmaFeature::store($this->id, $features);
@@ -81,7 +82,9 @@ trait LemmaModify
             isset($features['number']) ? $features['number'] : NULL,
             $dialect_id
         );
-        $this->updateTextWordformLinks();
+        if ($updateTextWordformLinks) {
+            $this->updateTextWordformLinks();
+        }
     }
 
     public function storePhrase($lemmas)
@@ -189,7 +192,7 @@ trait LemmaModify
         if (!$dialect_id) {
             $dialect_id = Lang::mainDialectByID($this->lang_id);
         }
-        
+
         // Один запрос вместо N: тянем все существующие пары gramset_id/wordform сразу
         $rows = DB::connection('mysql')->table('lemma_wordform')
             ->join('wordforms', 'wordforms.id', '=', 'lemma_wordform.wordform_id')
@@ -763,5 +766,27 @@ trait LemmaModify
             $this->reverseLemma->affix = $affix;
             $this->reverseLemma->save();
         }
+    }
+
+    public function textWordformPairKeys()
+    {
+        $rows = DB::table('lemma_wordform')
+            ->where('lemma_id', $this->id)
+            ->whereNotNull('gramset_id')
+            ->select('wordform_id', 'gramset_id')
+            ->distinct()
+            ->get();
+
+        $pairs = [];
+
+        foreach ($rows as $row) {
+            $key = $row->wordform_id . ':' . $row->gramset_id;
+            $pairs[$key] = [
+                (int) $row->wordform_id,
+                (int) $row->gramset_id,
+            ];
+        }
+
+        return $pairs;
     }
 }
