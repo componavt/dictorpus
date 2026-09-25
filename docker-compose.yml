@@ -2,20 +2,20 @@ name: legacy-sites
 
 services:
   mariadb:
-    image: mariadb:12.1
+    image: mariadb:10.3.23
     container_name: dictorpus-mariadb
     command: --innodb-buffer-pool-size=1024M
     restart: unless-stopped
     environment:
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MARIADB_DATABASE: vepkar
-      MARIADB_USER: vepkar
-      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: vepkar
+      MYSQL_USER: vepkar
+      MYSQL_PASSWORD: ${DB_PASSWORD}
 # вернуть, если нужен внешний проброс
 #    ports:
 #      - "${DB_PORT}:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mariadb_data_103:/var/lib/mysql
     networks:
       - dictorpus-network
 
@@ -141,6 +141,9 @@ services:
 
 volumes:
   mariadb_data:
+    driver: local
+
+  mariadb_data_103:
     driver: local
 
 networks:
