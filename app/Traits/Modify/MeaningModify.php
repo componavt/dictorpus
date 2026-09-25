@@ -157,7 +157,7 @@ trait MeaningModify
             }
         }
     }
-    
+
     /**
      * Updates array of meaning relations 
      *
@@ -353,7 +353,7 @@ trait MeaningModify
                 $word->s_id,
                 $word->word_id,
                 $word->w_id,
-                $this->checkRelevance($word->text_id, $word->w_id, $old_relevances[$word->text_id][$word->w_id] ?? 1)
+                $old_relevances[$word->text_id][$word->w_id] ?? 1
             );
         }
     }

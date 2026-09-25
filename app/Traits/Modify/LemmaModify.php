@@ -33,7 +33,7 @@ trait LemmaModify
         $this->lemma = $new_lemma;
         $this->lemma_for_search = Grammatic::changeLetters($new_lemma, $lang_id);
         $this->pos_id = (int)$data['pos_id'] ? (int)$data['pos_id'] : NULL;
-        $this->is_norm = $data['is_norm'] != 1 ? 0 : 1;
+        $this->is_norm = empty($data['is_norm']) || $data['is_norm'] != 1 ? 0 : 1;
         $this->updated_at = date('Y-m-d H:i:s');
         $this->save();
 
@@ -42,17 +42,8 @@ trait LemmaModify
         $this->storePhrase(isset($data['phrase']) ? $data['phrase'] : null);
     }
 
-    public function storeAddition(
-        $wordforms,
-        $stem,
-        $affix,
-        $gramset_wordforms,
-        $features,
-        $dialect_id,
-        $stems,
-        $updateTextWordformLinks = true
-    ) {
-        //dd($features);        
+    public function storeAddition($wordforms, $stem, $affix, $gramset_wordforms, $features, $dialect_id, $stems, $updateTextWordformLinks = true)
+    {
         LemmaFeature::store($this->id, $features);
 
         if (!$dialect_id) {
@@ -61,14 +52,7 @@ trait LemmaModify
         }
         $stems = $this->updateBases($stems, $dialect_id);
         if ($this->features && !$this->features->without_gram && !$gramset_wordforms && $stems) {
-            $gramset_wordforms = Grammatic::wordformsByStems(
-                $this->lang_id,
-                $this->pos_id,
-                null,
-                Grammatic::nameNumFromNumberField($this->features->number ?? null),
-                $stems,
-                $this->features->reflexive ?? null
-            );
+            $gramset_wordforms = Grammatic::wordformsByStems($this->lang_id, $this->pos_id, null, Grammatic::nameNumFromNumberField($this->features->number ?? null), $stems, $this->features->reflexive ?? null);
         }
         $this->storeReverseLemma($stem, $affix);
 
@@ -77,11 +61,7 @@ trait LemmaModify
         $this->storePhonetics($features['new_phonetics'] ?? []);
 
         $this->storeWordformsFromSet($gramset_wordforms, $dialect_id);
-        $this->createDictionaryWordforms(
-            $wordforms,
-            isset($features['number']) ? $features['number'] : NULL,
-            $dialect_id
-        );
+        $this->createDictionaryWordforms($wordforms, isset($features['number']) ? $features['number'] : NULL, $dialect_id);
         if ($updateTextWordformLinks) {
             $this->updateTextWordformLinks();
         }
@@ -443,21 +423,195 @@ trait LemmaModify
      *
      * @return NULL
      */
-    public function updateMeaningTextLinks($words = null)
+    public function updateMeaningTextLinks()
     {
-        if (!$words) {
-            $words = $this->getWordsForMeanings();
+        $lang_id = (int) $this->lang_id;
+
+        $forms = [(string) $this->lemma_for_search];
+
+        $wordforms = DB::table('lemma_wordform')
+            ->where('lemma_id', $this->id)
+            ->lists('wordform_for_search');
+
+        foreach ($wordforms as $wordform) {
+            $forms[] = (string) $wordform;
         }
-        if (!$words) {
+
+        $forms = array_values(array_unique(array_filter($forms)));
+
+        if (!$forms) {
             return;
         }
-        foreach ($this->meanings as $meaning_obj) {
-            // this meaning has not links with texts yet, add them
-            if (!$meaning_obj->texts()->count()) {
-                $meaning_obj->addTextLinks($words);
-            } else {
-                $meaning_obj->updateTextLinks($words);
+
+        $meaning_ids = DB::table('meanings')
+            ->where('lemma_id', $this->id)
+            ->lists('id');
+
+        if (!$meaning_ids) {
+            return;
+        }
+
+        $form_conditions = [];
+        foreach ($forms as $form) {
+            $form_conditions[] = 'w.word LIKE ?';
+        }
+
+        $form_sql = implode(' OR ', $form_conditions);
+
+        $meaning_placeholders = implode(
+            ',',
+            array_fill(0, count($meaning_ids), '?')
+        );
+
+        DB::statement('DROP TEMPORARY TABLE IF EXISTS tmp_lemma_words');
+        DB::statement('DROP TEMPORARY TABLE IF EXISTS tmp_meaning_text_relevance');
+        DB::statement('DROP TEMPORARY TABLE IF EXISTS tmp_blocked_words');
+
+        try {
+            DB::statement(
+                'CREATE TEMPORARY TABLE tmp_lemma_words (
+                text_id INT UNSIGNED NOT NULL,
+                s_id INT UNSIGNED NOT NULL,
+                w_id INT UNSIGNED NOT NULL,
+                word_id INT UNSIGNED NOT NULL,
+                PRIMARY KEY (text_id, w_id)
+            ) ENGINE=InnoDB'
+            );
+
+            $word_bindings = [$lang_id];
+            foreach ($forms as $form) {
+                $word_bindings[] = $form;
             }
+
+            DB::insert(
+                'INSERT INTO tmp_lemma_words
+                (text_id, s_id, w_id, word_id)
+             SELECT
+                w.text_id,
+                w.s_id,
+                w.w_id,
+                w.id
+             FROM words w
+             INNER JOIN texts t ON t.id = w.text_id
+             WHERE t.lang_id = ?
+               AND (' . $form_sql . ')',
+                $word_bindings
+            );
+
+            DB::statement(
+                'CREATE TEMPORARY TABLE tmp_meaning_text_relevance (
+                meaning_id INT UNSIGNED NOT NULL,
+                text_id INT UNSIGNED NOT NULL,
+                w_id INT UNSIGNED NOT NULL,
+                relevance TINYINT UNSIGNED NOT NULL,
+                PRIMARY KEY (meaning_id, text_id, w_id),
+                KEY tmp_meaning_text_relevance_text_w
+                    (text_id, w_id, relevance)
+            ) ENGINE=InnoDB'
+            );
+
+            DB::insert(
+                'INSERT INTO tmp_meaning_text_relevance
+                (meaning_id, text_id, w_id, relevance)
+             SELECT
+                meaning_id,
+                text_id,
+                w_id,
+                relevance
+             FROM meaning_text
+             WHERE meaning_id IN (' . $meaning_placeholders . ')
+               AND relevance <> 1',
+                $meaning_ids
+            );
+
+            DB::statement(
+                'CREATE TEMPORARY TABLE tmp_blocked_words (
+                text_id INT UNSIGNED NOT NULL,
+                w_id INT UNSIGNED NOT NULL,
+                PRIMARY KEY (text_id, w_id)
+            ) ENGINE=InnoDB'
+            );
+
+            /*
+         * Позиции, уже вручную закреплённые за значениями других лемм.
+         * Это единственная проверка основной meaning_text для кандидатов.
+         */
+            DB::insert(
+                'INSERT IGNORE INTO tmp_blocked_words
+                (text_id, w_id)
+             SELECT
+                mt.text_id,
+                mt.w_id
+             FROM meaning_text mt
+             INNER JOIN tmp_lemma_words lw
+                ON lw.text_id = mt.text_id
+               AND lw.w_id = mt.w_id
+             WHERE mt.relevance > 1
+               AND mt.meaning_id NOT IN (' . $meaning_placeholders . ')',
+                $meaning_ids
+            );
+
+            /*
+         * Ручной приоритет другого значения этой же леммы также блокирует
+         * автоматическую relevance = 1 для остальных значений.
+         */
+            DB::statement(
+                'INSERT IGNORE INTO tmp_blocked_words
+                (text_id, w_id)
+             SELECT
+                text_id,
+                w_id
+             FROM tmp_meaning_text_relevance
+             WHERE relevance > 1'
+            );
+
+            DB::delete(
+                'DELETE FROM meaning_text
+             WHERE meaning_id IN (' . $meaning_placeholders . ')',
+                $meaning_ids
+            );
+
+            /*
+         * Никаких EXISTS: только небольшие временные таблицы с индексами.
+         */
+            DB::insert(
+                'INSERT INTO meaning_text
+                (meaning_id, text_id, s_id, word_id, relevance, w_id)
+             SELECT
+                m.id,
+                lw.text_id,
+                lw.s_id,
+                lw.word_id,
+                CASE
+                    WHEN own.relevance IS NOT NULL THEN own.relevance
+                    WHEN blocked.w_id IS NOT NULL THEN 0
+                    ELSE 1
+                END,
+                lw.w_id
+             FROM meanings m
+             CROSS JOIN tmp_lemma_words lw
+             LEFT JOIN tmp_meaning_text_relevance own
+                ON own.meaning_id = m.id
+               AND own.text_id = lw.text_id
+               AND own.w_id = lw.w_id
+             LEFT JOIN tmp_blocked_words blocked
+                ON blocked.text_id = lw.text_id
+               AND blocked.w_id = lw.w_id
+             WHERE m.lemma_id = ?',
+                [$this->id]
+            );
+        } finally {
+            DB::statement(
+                'DROP TEMPORARY TABLE IF EXISTS tmp_blocked_words'
+            );
+
+            DB::statement(
+                'DROP TEMPORARY TABLE IF EXISTS tmp_meaning_text_relevance'
+            );
+
+            DB::statement(
+                'DROP TEMPORARY TABLE IF EXISTS tmp_lemma_words'
+            );
         }
     }
 
@@ -546,17 +700,13 @@ trait LemmaModify
         $this->save();
     }
 
-    public function updateTextLinks()
+    public function updateTextLinks($updateTextWordformLinks = true)
     {
-        // With Meanings
-        $words = $this->getWordsForMeanings();
-        if (!$words) {
-            return;
-        }
-        $this->updateMeaningTextLinks($words);
+        $this->updateMeaningTextLinks();
 
-        // With Wordforms;
-        $this->updateTextWordformLinks();
+        if ($updateTextWordformLinks) {
+            $this->updateTextWordformLinks();
+        }
     }
 
     /**
@@ -699,7 +849,6 @@ trait LemmaModify
                 $this->updateTextWordformLinks(); //updateTextLinks();
             }
         }
-        //exit(0);        
     }
 
     /**
@@ -708,9 +857,6 @@ trait LemmaModify
      */
     public function updatePhoneticDialects($phonetic_dialects)
     {
-        /*if ($this->lemma=='pal’l’aine' && $this->lang_id==6) {
-    dd($phonetic_dialects);
-} */
         if (sizeof($phonetic_dialects) == 1 && $this->lemma == Arrays::array_key_first($phonetic_dialects) && !$this->phonetics()->count()) {
             return;
         }

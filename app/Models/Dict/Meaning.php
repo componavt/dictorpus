@@ -515,9 +515,7 @@ class Meaning extends Model
         ) {
             return 0;
         }
-        /*if ($text_id==1548 && $w_id==7) {
-dd($relevance);
-} */
+
         return $old_relevance;
     }
 

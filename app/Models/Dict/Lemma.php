@@ -1025,13 +1025,7 @@ class Lemma extends Model
     {
         $lang_id = $this->lang_id;
         $strs = ["word like '" . $this->lemma_for_search . "'"];
-        /*        
-        foreach ($this->wordforms as $wordform_obj) {
-            $wordform_obj->trimWord(); // remove extra spaces at the beginning and end of the wordform 
-            //$wordform_obj->checkWordformWithSpaces(0); // too heave request, we are waiting new server :(((
-            $strs[] = "word like '".$wordform_obj->wordform_for_search."'";
-        }
-*/
+
         $wordforms = LemmaWordform::whereLemmaId($this->id)
             ->get(['wordform_for_search']);
         foreach ($wordforms as $lw) {
@@ -1118,7 +1112,7 @@ class Lemma extends Model
                 continue;
             }
 
-            $sentence['example_status'] = self::getExampleStatus($relevance, $meaning_ids );
+            $sentence['example_status'] = self::getExampleStatus($relevance, $meaning_ids);
 
             /*
              * Нужен для стабильной сортировки:
@@ -1170,7 +1164,8 @@ class Lemma extends Model
      *     - все значения 0 или 1;
      *     - одно значение > 1, но у другого ещё relevance = 1.
      */
-    protected static function getExampleStatus(array $relevance, array $meaning_ids) {
+    protected static function getExampleStatus(array $relevance, array $meaning_ids)
+    {
         $positive_count = 0;
         $undef_count = 0;
 
