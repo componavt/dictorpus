@@ -402,13 +402,39 @@ class LemmaController extends Controller
         $relation_values = Relation::getList();
 
         $all_meanings = [];
-        $lemmas = Lemma::where('lang_id', $lemma->lang_id)
+        $lemmas = Lemma::with(['meanings.meaningTexts.lang'])
+            ->where('lang_id', $lemma->lang_id)
             ->where('pos_id', $lemma->pos_id)
             ->where('id', '<>', $lemma->id)
             ->orderBy('lemma')->get();
+
         foreach ($lemmas as $lem) {
+            $hasMultipleMeanings = $lem->meanings->count() > 1;
+
             foreach ($lem->meanings as $meaning) {
-                $all_meanings[$meaning->id] = $lem->lemma . ' (' . $meaning->getMultilangMeaningTextsString() . ')';
+                $texts = [];
+
+                foreach ($meaning->meaningTexts as $meaningText) {
+                    if (!$meaningText->meaning_text) {
+                        continue;
+                    }
+
+                    $text = $meaningText->meaning_text;
+
+                    if ($meaningText->lang && $meaningText->lang->code) {
+                        $text = $meaningText->lang->code . ': ' . $text;
+                    }
+
+                    $texts[] = $text;
+                }
+
+                $meaningText = implode(', ', $texts);
+
+                if ($hasMultipleMeanings) {
+                    $meaningText = $meaning->meaning_n . ') ' . $meaningText;
+                }
+
+                $all_meanings[$meaning->id] = $lem->lemma . ' (' . $meaningText . ')';
             }
         }
 

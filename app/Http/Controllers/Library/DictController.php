@@ -534,7 +534,6 @@ class DictController extends Controller
 
     public function updateLemma($id, Request $request)
     {
-        //dd($request->all());
         $this->validate($request, [
             'lemma'  => 'required|max:255',
             'pos_id' => 'numeric',
@@ -544,6 +543,7 @@ class DictController extends Controller
             return;
         }
         $data = $request->all();
+        $data['is_norm'] = 1;
         $data['lang_id'] = $lemma->lang_id;
 
         DB::transaction(function () use ($lemma, $data) {

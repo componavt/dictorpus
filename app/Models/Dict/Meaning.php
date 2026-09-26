@@ -257,31 +257,57 @@ class Meaning extends Model
     public function getMultilangMeaningTextsString($lang_code = ''): String
     {
         $mean_langs = [];
-        $meaning_texts = $this->meaningTexts()->get();
+
+        $meaning_texts = $this->relationLoaded('meaningTexts')
+            ? $this->meaningTexts
+            : $this->meaningTexts()->get();
+
         if ($lang_code) {
             $lang = Lang::where('code', $lang_code)->first();
+
             if ($lang) {
-                $meaning_texts_by_code = $this->meaningTexts()->where('lang_id', $lang->id);
-                if ($meaning_texts_by_code->count() > 0) {
-                    $meaning_texts = $meaning_texts_by_code->get();
+                $filtered = $meaning_texts->filter(function ($meaning_text) use ($lang) {
+                    return (int) $meaning_text->lang_id === (int) $lang->id;
+                });
+
+                if ($filtered->count() > 0) {
+                    $meaning_texts = $filtered;
                 }
             }
         }
+
         foreach ($meaning_texts as $meaning_text_obj) {
             $meaning_text = $meaning_text_obj->meaning_text;
-            if ($meaning_text) {
-                if ($meaning_text_obj->lang->code != $lang_code) {
-                    $meaning_text = $meaning_text_obj->lang->code . ': ' . $meaning_text;
-                }
-                $mean_langs[] = $meaning_text;
+
+            if (!$meaning_text) {
+                continue;
             }
+
+            $lang = $meaning_text_obj->relationLoaded('lang')
+                ? $meaning_text_obj->lang
+                : $meaning_text_obj->lang()->first();
+
+            if ($lang && $lang->code != $lang_code) {
+                $meaning_text = $lang->code . ': ' . $meaning_text;
+            }
+
+            $mean_langs[] = $meaning_text;
         }
 
         $out = join(', ', $mean_langs);
 
-        if ($this->lemma->meanings()->count() > 1) {
+        $lemma = $this->relationLoaded('lemma')
+            ? $this->lemma
+            : $this->lemma()->first();
+
+        $meanings = $lemma && $lemma->relationLoaded('meanings')
+            ? $lemma->meanings
+            : ($lemma ? $lemma->meanings()->get() : collect());
+
+        if ($meanings->count() > 1) {
             $out = $this->meaning_n . ') ' . $out;
         }
+
         return $out;
     }
 

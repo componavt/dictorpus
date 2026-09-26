@@ -599,12 +599,8 @@ dd($relevance);
             ->count();
     }
 
-    public static function previewTextWordformLinks(
-        $wordformId,
-        $gramsetId,
-        $includeMissingRows = false,
-        $includeUnmatchedRows = false
-    ) {
+    public static function previewTextWordformLinks($wordformId, $gramsetId, $includeMissingRows = false, $includeUnmatchedRows = false)
+    {
         $db = DB::connection('mysql');
 
         $owners = $db->table('lemma_wordform')
@@ -706,19 +702,12 @@ dd($relevance);
         return $result;
     }
 
-    public static function reconcileTextWordformLinksForPair(
-        $wordformId,
-        $gramsetId
-    ) {
+    public static function reconcileTextWordformLinksForPair($wordformId, $gramsetId)
+    {
         $db = DB::connection('mysql');
 
         return $db->transaction(function () use ($db, $wordformId, $gramsetId) {
-            $preview = self::previewTextWordformLinks(
-                $wordformId,
-                $gramsetId,
-                true,
-                true
-            );
+            $preview = self::previewTextWordformLinks($wordformId, $gramsetId, true, true);
 
             foreach (array_chunk($preview['missing_rows'], 100) as $chunk) {
                 $rows = [];
