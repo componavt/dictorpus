@@ -246,11 +246,7 @@ trait TextSelect
         })->whereIn('source_id', function ($q) use ($publicaton_id) {
             $q->select('id')->from('sources')
                 ->wherePublicationId($publicaton_id);
-        })->with('source')->orderBy('id'); //->get();
-
-        /*Log::debug('Ristikanza API monuments', [
-            'sql' => $objs,
-        ]);*/
+        })->with('source', 'pubparts')->orderBy('id');
 
         return $objs->get();
     }

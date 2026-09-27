@@ -294,27 +294,145 @@ class RistikanzaText
     public static function textsForCorpusAndPublication(int $corpus_id, int $publicaton_id)
     {
         $texts = [];
+        $section_meta = [];
+
         $objs = Text::getForCorpusAndPublication($corpus_id, $publicaton_id);
 
         foreach ($objs as $obj) {
             $pages_in_source = $obj->source ? $obj->source->pages : null;
-            if (!sizeof($obj->source_pubparts)) {
-                $texts[''][$obj->id] = [
+
+            $pubparts = $obj->pubparts;
+
+            // у книги нет глав
+            if (!$pubparts->count()) {
+                $section = '';
+
+                $texts[$section][$obj->id] = [
                     'title' => $obj->title,
                     'page' => $pages_in_source
                 ];
-            } else {
-                foreach ($obj->source_pubparts as $pubpart) {
-                    $pubpart_pages = trim($pubpart->pivot->pages ?: '');
-                    $texts[$pubpart->title][$obj->id] = [
-                        'title' => $obj->title,
-                        'page' => $pubpart_pages ?? $pages_in_source
+
+                // Для текстов без части используем очень большой sequence_number, чтобы при одинаковых страницах они не смешивались с именованными разделами.
+                if (!isset($section_meta[$section])) {
+                    $section_meta[$section] = [
+                        'sequence_number' => PHP_INT_MAX,
                     ];
+                }
+
+                continue;
+            } else {
+                foreach ($pubparts as $pubpart) {
+                    $section = $pubpart->title;
+
+                    $pubpart_pages = trim((string) ($pubpart->pivot->pages ?: ''));
+
+                    $page = $pubpart_pages !== '' ? $pubpart_pages : $pages_in_source;
+
+                    $texts[$section][$obj->id] = [
+                        'title' => $obj->title,
+                        'page' => $page
+                    ];
+
+                    // Метаданные группы нужны для сортировки самих названий разделов после заполнения массива.
+                    if (!isset($section_meta[$section])) {
+                        $section_meta[$section] = [
+                            'sequence_number' => (int) $pubpart->sequence_number,
+                        ];
+                    }
                 }
             }
         }
 
+        // Сортируем тексты внутри каждого раздела по странице.
+        foreach ($texts as &$section_texts) {
+            self::sortTextsByPage($section_texts);
+        }
+
+        unset($section_texts);
+
+        /*
+        * Сортируем сами разделы:
+        *
+        * 1. по первой странице любого текста в разделе;
+        * 2. по sequence_number части;
+        * 3. по названию раздела.
+        */
+        uksort($texts, function ($left_section, $right_section) use ($texts, $section_meta) {
+            $left_page = self::firstPageInSection($texts[$left_section]);
+
+            $right_page = self::firstPageInSection($texts[$right_section]);
+
+            if ($left_page !== $right_page) {
+                return $left_page <=> $right_page;
+            }
+
+            $left_sequence = isset($section_meta[$left_section]['sequence_number'])
+                ? $section_meta[$left_section]['sequence_number']
+                : PHP_INT_MAX;
+
+            $right_sequence = isset($section_meta[$right_section]['sequence_number'])
+                ? $section_meta[$right_section]['sequence_number']
+                : PHP_INT_MAX;
+
+            if ($left_sequence !== $right_sequence) {
+                return $left_sequence <=> $right_sequence;
+            }
+
+            return strnatcasecmp($left_section, $right_section);
+        });
+
         return $texts;
+    }
+
+    protected static function firstPageNumber($pages): int
+    {
+        if (!$pages) {
+            return PHP_INT_MAX;
+        }
+
+        if (preg_match('/\d+/', (string) $pages, $matches)) {
+            return (int) $matches[0];
+        }
+
+        return PHP_INT_MAX;
+    }
+
+    protected static function firstPageInSection(array $section_texts): int
+    {
+        $first_page = PHP_INT_MAX;
+
+        foreach ($section_texts as $text) {
+            $page = isset($text['page'])
+                ? self::firstPageNumber($text['page'])
+                : PHP_INT_MAX;
+
+            if ($page < $first_page) {
+                $first_page = $page;
+            }
+        }
+
+        return $first_page;
+    }
+
+    protected static function sortTextsByPage(array &$texts): void
+    {
+        uasort($texts, function ($left, $right) {
+            $left_pages = isset($left['page']) ? $left['page'] : '';
+
+            $right_pages = isset($right['page']) ? $right['page'] : '';
+
+            $left_page = self::firstPageNumber($left_pages);
+            $right_page = self::firstPageNumber($right_pages);
+
+            if ($left_page !== $right_page) {
+                return $left_page <=> $right_page;
+            }
+
+            return strnatcasecmp(
+                isset($left['title']) ? $left['title'] : '',
+                isset($right['title']) ? $right['title'] : ''
+            );
+        });
     }
 
     public static function getBibleTexts($url_args)
