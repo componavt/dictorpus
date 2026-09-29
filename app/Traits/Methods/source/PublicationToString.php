@@ -398,7 +398,7 @@ trait PublicationToString
          * $matches[3] — точка порядкового числительного, если есть.
          */
             if (!preg_match(
-                '/^(.*?)(\d+)(\.)?$/u',
+                '/^(.*\s)(\d+)(\.)?$/u',
                 $part,
                 $matches
             )) {
