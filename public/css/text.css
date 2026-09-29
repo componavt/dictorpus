@@ -16,22 +16,24 @@ s {
 
 .lemma-linked,
 .call-add-wordform {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .add-wordform-link {
     background-color: #f0ad4e;
     border: 1px solid #f0ad4e;
     color: #fff;
-    margin: 5px 0;    
+    margin: 5px 0;
 }
+
 .links-to-lemmas {
     cursor: auto;
 }
+
 /* all is checked = green */
 .lemma-linked.meaning-checked.no-gramsets,
-.lemma-linked.meaning-checked.gramset-checked{
-    color: #2eaf38; 
+.lemma-linked.meaning-checked.gramset-checked {
+    color: #2eaf38;
 }
 
 .lemma-linked p {
@@ -44,12 +46,12 @@ s {
     display: none;
     left: 0;
     margin-top: -2px;
-/*    max-width: 200px;*/
+    /*    max-width: 200px;*/
     padding: 10px;
     position: absolute;
     top: 20px;
     width: 200px;
-    z-index:100;
+    z-index: 100;
 }
 
 .meaning-checked.no-gramsets .links-to-lemmas,
@@ -57,6 +59,7 @@ s {
 .word-checked {
     background: #a6f4bc;
 }
+
 /*
 .not-checked .links-to-lemmas,
 .polysemy .links-to-lemmas {
@@ -64,7 +67,7 @@ s {
 }*/
 .links-to-lemmas a {
     text-decoration: none;
-/*    display: block; */
+    /*    display: block; */
 }
 
 .links-to-lemmas a:hover {
@@ -92,7 +95,7 @@ s {
 
 .links-to-lemmas .meanings_b {
     color: #5173d8;
-    padding-left: 10px;    
+    padding-left: 10px;
 }
 
 .links-to-lemmas .meanings_b p,
@@ -101,7 +104,8 @@ s {
 }
 
 
-w, .text-has-checked-meaning {
+w,
+.text-has-checked-meaning {
     position: relative;
 }
 
@@ -110,7 +114,7 @@ w, .text-has-checked-meaning {
     /*height: 20px;*/
     right: 0;
     padding: 3px 12px;
-/*    position: absolute;*/
+    /*    position: absolute;*/
 }
 
 
@@ -141,6 +145,7 @@ ol {
     cursor: pointer;
     padding-left: 10px;
 }
+
 /*
 .links-to-lemmas div:last-of-type {
     margin-bottom: 10px;
@@ -210,7 +215,7 @@ ol {
 }
 
 .word-linked:hover {
-/*    text-decoration: underline;*/
+    /*    text-decoration: underline;*/
     border-bottom: 1px #972d1a dashed;
 }
 
@@ -220,14 +225,14 @@ ol {
 }
 
 .to-markup {
-    color:#972d1a;
-    text-align: right; 
+    color: #972d1a;
+    text-align: right;
 }
 
 .to-markup-readonly {
-    color: black; 
-    font-weight:normal;
-    text-decoration: line-through; 
+    color: black;
+    font-weight: normal;
+    text-decoration: line-through;
 }
 
 .translation-view {
@@ -243,7 +248,7 @@ h5 {
 }
 
 h5:first-letter {
-    text-transform: uppercase;    
+    text-transform: uppercase;
 }
 
 .corpus-text h3 {
@@ -259,7 +264,7 @@ h5:first-letter {
     font-style: normal;
     font-weight: bold;
     margin: 10px 0 0 -20px;
-    
+
 }
 
 .topic-list-title:first-letter,
@@ -296,14 +301,14 @@ h5:first-letter {
     margin-bottom: 10px;
 }
 
-.photos-b img{
+.photos-b img {
     display: inline-block;
     margin: 0 10px 10px 0;
     cursor: pointer;
 }
 
 .photo-in-modal {
-    text-align:center;
+    text-align: center;
 }
 
 .photo-in-modal img {
@@ -320,25 +325,36 @@ h5:first-letter {
 }
 
 .button-close {
-/*    border:1px #972d1a solid; */
+    /*    border:1px #972d1a solid; */
     border-radius: 50%;
-    color: #972d1a; 
-    display: inline-block; 
-    height: 25px; 
+    color: #972d1a;
+    display: inline-block;
+    height: 25px;
     cursor: pointer;
-    margin-top:20px; 
-    text-align: center; 
-    vertical-align: middle; 
-    width: 25px; 
+    margin-top: 20px;
+    text-align: center;
+    vertical-align: middle;
+    width: 25px;
 }
 
-@media (min-width: 576px) {
+.corpus-text>#cyrtext-c,
+.corpus-text>#text-c,
+.corpus-text>#transtext-c {
+    flex: 1 1 0;
+    min-width: 0;
 }
+
+.corpus-text>.button-close {
+    flex: 0 0 auto;
+}
+
+@media (min-width: 576px) {}
 
 @media (min-width: 768px) {
     .photo-in-modal img {
         max-width: 568px;
     }
+
     .author_b img {
         max-width: 320px;
     }

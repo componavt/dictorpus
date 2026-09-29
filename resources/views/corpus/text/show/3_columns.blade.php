@@ -8,7 +8,7 @@
             <span id='show-cyrtext' class="button-close" style="display:none" title="вернуть колонку">&gt;&gt;</span>            
             <div style="margin-right:20px"></div>
         @endif      
-            <div>
+            <div id="text-c">
             @include('corpus.text.show.text')
             </div>
         @if ($text->transtext)
