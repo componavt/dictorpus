@@ -291,12 +291,12 @@ class RistikanzaText
         return $objs;
     }
 
-    public static function textsForCorpusAndPublication(int $corpus_id, int $publicaton_id)
+    public static function textsForCorpusAndPublication(int $corpus_id, int $publicaton_id, $without_ids = [])
     {
         $texts = [];
         $section_meta = [];
 
-        $objs = Text::getForCorpusAndPublication($corpus_id, $publicaton_id);
+        $objs = Text::getForCorpusAndPublication($corpus_id, $publicaton_id, $without_ids);
 
         foreach ($objs as $obj) {
             $pages_in_source = $obj->source ? $obj->source->pages : null;

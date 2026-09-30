@@ -536,7 +536,7 @@ class RistikanzaTextController extends Controller
 
     public function monumentBooks()
     {
-        $objs = Publication::getForCorpus($this->monumentsCorpus);
+        $objs = Publication::getForCorpus($this->monumentsCorpus, null, [21]);
 
         $publications = [];
         foreach ($objs as $obj) {
@@ -565,7 +565,7 @@ class RistikanzaTextController extends Controller
 
     public function bibleBooks()
     {
-        $objs = Publication::getForCorpus($this->bibleCorpus, 1991, [21]);
+        $objs = Publication::getForCorpus($this->bibleCorpus, 1991);
 
         $publications = [];
         foreach ($objs as $obj) {
