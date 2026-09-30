@@ -565,7 +565,7 @@ class RistikanzaTextController extends Controller
 
     public function bibleBooks()
     {
-        $objs = Publication::getForCorpus($this->bibleCorpus);
+        $objs = Publication::getForCorpus($this->bibleCorpus, 1991);
 
         $publications = [];
         foreach ($objs as $obj) {
@@ -600,7 +600,7 @@ class RistikanzaTextController extends Controller
         $url_args = Text::urlArgs($request);
         $url_args['search_corpus'] = [$this->bibleCorpus];
 
-        return response()->json(RistikanzaText::getBibleTexts($url_args));
+        return response()->json(RistikanzaText::getBibleTexts($url_args, 1991));
     }
 
     public function forMap(Request $request)

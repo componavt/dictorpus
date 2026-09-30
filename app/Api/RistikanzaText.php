@@ -435,7 +435,7 @@ class RistikanzaText
         });
     }
 
-    public static function getBibleTexts($url_args)
+    public static function getBibleTexts($url_args, $min_year = null)
     {
         $texts = Text::search($url_args)
             ->with([
@@ -443,8 +443,26 @@ class RistikanzaText
                 'bibles',
                 'lang',
                 'transtext'
-            ])
-            ->paginate($url_args['limit_num']);
+            ]);
+
+        if ((int) $min_year > 0) {
+            $min_year = (int) $min_year;
+
+            $texts->whereIn('texts.source_id', function ($sourceQuery) use ($min_year) {
+                $sourceQuery
+                    ->select('id')
+                    ->from('sources')
+                    ->where('year', '>=', $min_year)
+                    ->orWhereIn('publication_id', function ($publicationQuery) use ($min_year) {
+                        $publicationQuery
+                            ->select('id')
+                            ->from('publications')
+                            ->where('year', '>=', $min_year);
+                    });
+            });
+        }
+
+        $texts = $texts->paginate($url_args['limit_num']);
 
         /*Log::debug('Ristikanza API locale', [
             'app_locale' => app()->getLocale(),

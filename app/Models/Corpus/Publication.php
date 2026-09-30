@@ -260,9 +260,9 @@ class Publication extends Model implements HasMediaConversions
         return $objs;
     }
 
-    public static function getForCorpus($corpus_id)
+    public static function getForCorpus($corpus_id, $min_year = null)
     {
-        return self::whereIn('id', function ($q) use ($corpus_id) {
+        $books = self::whereIn('id', function ($q) use ($corpus_id) {
             $q->select('publication_id')->from('sources')
                 ->whereIn('id', function ($q2) use ($corpus_id) {
                     $q2->select('source_id')->from('texts')
@@ -271,7 +271,12 @@ class Publication extends Model implements HasMediaConversions
                                 ->whereCorpusId($corpus_id);
                         });
                 });
-        })->orderBy('title')->get();
+        });
+
+        if ($min_year) {
+            $books->where('year', '>=', $min_year);
+        }
+        return $books->orderBy('title')->get();
     }
 
     public static function fullInfoById($id)
