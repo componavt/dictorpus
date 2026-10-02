@@ -296,9 +296,15 @@ class RistikanzaText
         $texts = [];
         $section_meta = [];
 
+        $publication = Publication::find($publicaton_id);
+
+        $publication_title = $publication ? (string) $publication->title : '';
+
         $objs = Text::getForCorpusAndPublication($corpus_id, $publicaton_id, $without_ids);
 
         foreach ($objs as $obj) {
+            $text_title = self::titleWithoutBookTitle((string) $obj->title, $publication_title);
+
             $pages_in_source = $obj->source ? $obj->source->pages : null;
 
             $pubparts = $obj->pubparts;
@@ -308,7 +314,7 @@ class RistikanzaText
                 $section = '';
 
                 $texts[$section][$obj->id] = [
-                    'title' => $obj->title,
+                    'title' => $text_title,
                     'page' => $pages_in_source
                 ];
 
@@ -329,7 +335,7 @@ class RistikanzaText
                     $page = $pubpart_pages !== '' ? $pubpart_pages : $pages_in_source;
 
                     $texts[$section][$obj->id] = [
-                        'title' => $obj->title,
+                        'title' => $text_title,
                         'page' => $page
                     ];
 
@@ -382,6 +388,30 @@ class RistikanzaText
         });
 
         return $texts;
+    }
+
+    /**
+     * Убирает название публикации из начала заголовка текста.
+     * Исходный заголовок сохраняется, если результат пустой.
+     */
+    protected static function titleWithoutBookTitle(string $text_title, string $publication_title): string
+    {
+        // Конечная точка названия книги может быть разделителем.
+        $publication_title = rtrim(trim($publication_title), ". \t\n\r\0\x0B");
+
+        if ($publication_title === '') {
+            return $text_title;
+        }
+
+        $pattern = '/^\s*' . preg_quote($publication_title, '/') . '(?:\s*[.:]\s*|\s+[–—-]\s+|\s+)/u';
+
+        $short_title = preg_replace($pattern, '', $text_title, 1);
+
+        if ($short_title === null || trim($short_title) === '') {
+            return $text_title;
+        }
+
+        return trim($short_title);
     }
 
     protected static function firstPageNumber($pages): int
