@@ -201,11 +201,11 @@ class Text extends Model implements HasMediaConversions
     return $out;*/
     }
 
-    public function bibleToString($referenceType)
+    public function bibleToString($reference_type)
     {
         $bibles = $this->bibles
-            ->filter(function ($bible) use ($referenceType) {
-                return (int) $bible->pivot->reference_type === (int) $referenceType;
+            ->filter(function ($bible) use ($reference_type) {
+                return (int) $bible->pivot->reference_type === (int) $reference_type;
             });
 
         if ($bibles->isEmpty()) {
@@ -217,7 +217,7 @@ class Text extends Model implements HasMediaConversions
             ->map(function ($passages) {
                 $bible = $passages->first();
 
-                $references = $passages
+                $passages = $passages
                     ->sortBy(function ($passage) {
                         return sprintf(
                             '%05d:%05d:%05d',
@@ -226,27 +226,96 @@ class Text extends Model implements HasMediaConversions
                             (int) $passage->pivot->verse_to
                         );
                     })
-                    ->map(function ($passage) {
-                        $line = '';
+                    ->values();
 
-                        if ($passage->pivot->chapter) {
-                            $line .= $passage->pivot->chapter;
+                $references = [];
+                $passage_count = $passages->count();
+                $passage_index = 0;
 
-                            if ($passage->pivot->verse_from) {
-                                $line .= ':' . $passage->pivot->verse_from;
+                while ($passage_index < $passage_count) {
+                    $passage = $passages->get($passage_index);
 
-                                if ($passage->pivot->verse_to) {
-                                    $line .= '–' . $passage->pivot->verse_to;
-                                }
+                    $chapter = (int) $passage->pivot->chapter;
+                    $verse_from = (int) $passage->pivot->verse_from;
+
+                    if (!$chapter) {
+                        $passage_index++;
+                        continue;
+                    }
+
+                    /*
+                 * Главы без стихов:
+                 *
+                 * 1; 2; 3 -> 1-3
+                 * 1; 2; 4 -> 1-2; 4
+                 */
+                    if (!$verse_from) {
+                        $chapter_from = $chapter;
+                        $chapter_to = $chapter;
+                        $next_index = $passage_index + 1;
+
+                        while ($next_index < $passage_count) {
+                            $next_passage = $passages->get($next_index);
+
+                            $next_chapter = (int) $next_passage->pivot->chapter;
+                            $next_verse_from = (int) $next_passage->pivot->verse_from;
+
+                            if (
+                                $next_verse_from
+                                || $next_chapter !== $chapter_to + 1
+                            ) {
+                                break;
                             }
+
+                            $chapter_to = $next_chapter;
+                            $next_index++;
                         }
 
-                        return $line;
-                    })
-                    ->filter()
-                    ->implode('; ');
+                        $references[] = $chapter_from === $chapter_to
+                            ? (string) $chapter_from
+                            : $chapter_from . '-' . $chapter_to;
 
-                return trim($bible->name . ' ' . $references);
+                        $passage_index = $next_index;
+                        continue;
+                    }
+
+                    /*
+                 * Несколько отрывков одной главы:
+                 *
+                 * 2:40; 2:50–52 -> 2:40, 50–52
+                 */
+                    $verse_references = [];
+                    $next_index = $passage_index;
+
+                    while ($next_index < $passage_count) {
+                        $next_passage = $passages->get($next_index);
+
+                        $next_chapter = (int) $next_passage->pivot->chapter;
+                        $next_verse_from = (int) $next_passage->pivot->verse_from;
+                        $next_verse_to = (int) $next_passage->pivot->verse_to;
+
+                        if (
+                            $next_chapter !== $chapter
+                            || !$next_verse_from
+                        ) {
+                            break;
+                        }
+
+                        $verse_line = (string) $next_verse_from;
+
+                        if ($next_verse_to) {
+                            $verse_line .= '–' . $next_verse_to;
+                        }
+
+                        $verse_references[] = $verse_line;
+                        $next_index++;
+                    }
+
+                    $references[] = $chapter . ':' . implode(', ', $verse_references);
+                    $passage_index = $next_index;
+                }
+
+                return trim($bible->name . ' ' . implode('; ', $references));
             })
             ->implode('; ');
     }
