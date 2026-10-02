@@ -6,6 +6,7 @@ namespace App\Api;
 
 use App\Models\Corpus\Genre;
 use App\Models\Corpus\Place;
+use App\Models\Corpus\Publication;
 use App\Models\Corpus\Text;
 
 class RistikanzaText
