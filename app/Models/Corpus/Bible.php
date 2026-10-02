@@ -9,6 +9,7 @@ use App\Library\Str;
 
 class Bible extends Model
 {
+    const PSALMS_BIBLE_ID = 22;
     public $timestamps = false;
 
     protected $fillable = ['name_en', 'name_ru', 'sequence_number'];

@@ -158,6 +158,7 @@ return [
     'plot_list' => 'Plot / character list',
     'plot_removed' => 'Plot / character ":name" is removed successfully.',
 
+    'psalm' => 'Psalm',
     'pubparts' => 'Parts of the publication',
     'publication' => 'Publication',
     'publication_has_texts' => 'Publication ":name" can not be removed, there are texts with this publication',

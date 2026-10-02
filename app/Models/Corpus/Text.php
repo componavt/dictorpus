@@ -11,6 +11,7 @@ use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use App\Library\Grammatic;
 //use App\Library\Str;
 
+use App\Models\Corpus\Bible;
 use App\Models\Corpus\Cyrtext;
 use App\Models\Corpus\Publication;
 //use App\Models\Corpus\Pubpart;
@@ -315,7 +316,10 @@ class Text extends Model implements HasMediaConversions
                     $passage_index = $next_index;
                 }
 
-                return trim($bible->name . ' ' . implode('; ', $references));
+                $book_name = (int) $bible->id === Bible::PSALMS_BIBLE_ID
+                    ? trans('corpus.psalm') : $bible->name;
+
+                return trim($book_name . ' ' . implode('; ', $references));
             })
             ->implode('; ');
     }
