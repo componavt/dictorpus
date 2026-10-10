@@ -1,7 +1,9 @@
 {!! Form::open(['url' => $form_url, 'method' => 'get']) !!} 
 
-@if (!empty($url_args['search_publication']))        
-<input type="hidden" name="search_publication" value="{{ $url_args['search_publication'][0] }}">       
+@if (!empty($url_args['search_publication']))  
+    @foreach ($url_args['search_publication'] as $p)      
+<input type="hidden" name="search_publication" value="{{ $p }}">       
+    @endforeach
 @endif 
 
 <div class="show-search-form">{{trans('search.advanced_search')}} &#8595;</div>
