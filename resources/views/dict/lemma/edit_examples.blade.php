@@ -15,6 +15,7 @@
 @stop
 
 @section('headExtra')
+    {!! css('select2.min') !!}
     {!! css('lemma') !!}
     {!! css('text') !!}
 @stop
@@ -26,20 +27,30 @@
         <p><b>{{ trans('dict.lang') }}:</b> {{ $lemma->lang->name}}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $lemma->pos->name}}</p>
 
-        <h3>{{ trans('messages.examples') }}: {{ $sentences->total() }}</h3>
+        <h3>{{ trans('messages.examples') }}: {{ $sentences->total() }} (из {{ $total_count }})</h3>
         
         {!! Form::open(['method' => 'GET', 'url' => url()->current(), 'class' => 'lemma-example-filter', 'id' => 'lemma_example_filter_form']) !!}
 
         @include('widgets.form._url_args_by_post', ['url_args' => $filter_url_args])
+
+        <div class="form-group">
+            <label for="search_example_gramsets">Грамматические признаки</label>
+
+            <select id="search_example_gramsets" name="search_example_gramsets[]" class="form-control" multiple="multiple">
+        @foreach ($example_gramset_values as $gramset_id => $gramset_value)
+                <option value="{{ $gramset_id }}" {{ in_array((int)$gramset_id, $search_example_gramsets, true) ? 'selected="selected"' : '' }}>
+                    {{ $gramset_value }}
+                </option>
+        @endforeach
+            </select>
+        </div>
 
         <label>
             <input type="checkbox" name="show_checked" value="1"  {{ $show_checked  ? 'checked="checked"' : '' }} >
             {{ trans('dict.show_checked') }}
         </label>
 
-        <button type="submit" class="btn btn-default">
-            {{ trans('messages.apply') }}
-        </button>
+        <button type="submit" class="btn btn-default">{{ trans('messages.apply') }}</button>
 
         {!! Form::close() !!}
 
@@ -131,12 +142,19 @@
 @stop
 
 @section('footScriptExtra')
+    {!! js('select2.min') !!}
     {!! js('text') !!}
     {!! js('lemma') !!}
 @stop
 
 @section('jqueryFunc')
     showLemmaLinked();  
+
+    $('#search_example_gramsets').select2({
+        allowClear: true,
+        placeholder: 'Все грамматические признаки',
+        width: '100%'
+    });
     
     initEditExamplesUnsavedWarning(
         {!! json_encode(trans('dict.unsaved_examples_confirm')) !!}

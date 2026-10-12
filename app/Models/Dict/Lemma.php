@@ -1192,7 +1192,47 @@ class Lemma extends Model
         return 'unchecked';
     }
 
-    public function sentencesPage($page, $per_page, $show_checked = false)
+    /**
+     * Возвращает грамсеты, реально встречающиеся у словоформ в примерах текущей леммы.
+     *
+     * Оценки relevance не учитываются.
+     */
+    public function exampleGramsetValues()
+    {
+        $meaning_ids = $this->meanings()->lists('id');
+
+        if (!count($meaning_ids)) {
+            return [];
+        }
+
+        $gramset_ids = DB::table('meaning_text as mt')
+            ->join('text_wordform as tw', function ($join) {
+                $join->on('tw.text_id', '=', 'mt.text_id')
+                    ->on('tw.w_id', '=', 'mt.w_id');
+            })
+            ->join('lemma_wordform as lw', function ($join) {
+                $join->on('lw.wordform_id', '=', 'tw.wordform_id');
+            })
+            ->where('lw.lemma_id', $this->id)
+            ->whereIn('mt.meaning_id', $meaning_ids)
+            ->whereNotNull('tw.gramset_id')
+            ->distinct()
+            ->lists('tw.gramset_id');
+
+        if (!count($gramset_ids)) {
+            return [];
+        }
+
+        $gramset_values = Gramset::getList($this->pos_id, $this->lang_id, true);
+
+        return array_intersect_key($gramset_values, array_flip($gramset_ids));
+    }
+
+    /**
+     * Возвращает страницу примеров леммы с фильтрами
+     * по проверенности и выбранным грамсетам.
+     */
+    public function sentencesPage($page, $per_page, $show_checked = false,  $search_example_gramsets = [])
     {
         $meaning_ids = DB::table('meanings')
             ->where('lemma_id', $this->id)
@@ -1202,48 +1242,34 @@ class Lemma extends Model
             return [
                 'sentences' => [],
                 'total' => 0,
+                'total_count' => 0,
                 'current_page' => 1,
             ];
         }
 
+        $search_example_gramsets = array_values(array_filter(
+            array_map('intval', (array)$search_example_gramsets)
+        ));
+
         $meaning_count = count($meaning_ids);
 
-        $positive_sql = '
-            SUM(
-                CASE
-                    WHEN relevance > 1 THEN 1
-                    ELSE 0
-                END
-            )
-        ';
+        $positive_sql = 'SUM(CASE WHEN relevance > 1 THEN 1 ELSE 0 END)';
 
-        $undef_sql = '
-            SUM(
-                CASE
-                    WHEN relevance = 1 THEN 1
-                    ELSE 0
-                END
-            )
-        ';
+        $undef_sql = 'SUM(CASE WHEN relevance = 1 THEN 1 ELSE 0 END)';
 
         /*
          * Отсутствующая строка meaning_text считается relevance = 1.
          * Поэтому checked возможен лишь тогда, когда есть строка
          * для каждого значения леммы.
          */
-        $checked_sql = '('
-            . $positive_sql . ' = 1'
+        $checked_sql = '(' . $positive_sql . ' = 1'
             . ' AND ' . $undef_sql . ' = 0'
-            . ' AND COUNT(*) = ' . $meaning_count
-            . ')';
+            . ' AND COUNT(*) = ' . $meaning_count . ')';
 
-        $status_sql = '
-            CASE
+        $status_sql = 'CASE
                 WHEN ' . $positive_sql . ' > 1 THEN 0
                 WHEN ' . $checked_sql . ' THEN 2
-                ELSE 1
-            END
-        ';
+                ELSE 1 END';
 
         /*
          * Базовый запрос намеренно без ORDER BY и LIMIT:
@@ -1251,33 +1277,62 @@ class Lemma extends Model
          */
         $sentence_query = DB::table('meaning_text')
             ->select('text_id', 's_id', 'w_id')
-            ->whereIn('meaning_id', $meaning_ids)
-            ->groupBy('text_id')
-            ->groupBy('s_id')
-            ->groupBy('w_id');
+            ->whereIn('meaning_id', $meaning_ids);
+
+        /*
+        * Считаем все примеры леммы до применения фильтров.
+        * Один пример — одна комбинация text_id, s_id и w_id.
+        */
+        $total_query = clone $sentence_query;
+
+        $total_query->groupBy('text_id')->groupBy('s_id')->groupBy('w_id');
+
+        $total_count_rows = DB::select(
+            'SELECT COUNT(*) AS total
+                FROM (' . $total_query->toSql() . ') AS all_sentence_rows',
+            $total_query->getBindings()
+        );
+
+        $total_count = (int)$total_count_rows[0]->total;
+
+        // Фильтруем примеры по грамсетам словоформ текущей леммы.
+        if (count($search_example_gramsets)) {
+            $gramset_placeholders = implode(', ', array_fill(0, count($search_example_gramsets), '?'));
+
+            $gramset_sql = 'EXISTS (
+                    SELECT 1
+                    FROM text_wordform AS tw
+                    WHERE tw.text_id = meaning_text.text_id
+                    AND tw.w_id = meaning_text.w_id
+                    AND tw.gramset_id IN (' . $gramset_placeholders . ')
+                    AND tw.wordform_id IN (
+                        SELECT lw.wordform_id
+                        FROM lemma_wordform AS lw
+                        WHERE lw.lemma_id = ?
+                    )
+                )';
+
+            $gramset_bindings = array_values($search_example_gramsets);
+            $gramset_bindings[] = $this->id;
+
+            $sentence_query->whereRaw($gramset_sql, $gramset_bindings);
+        }
+
+        $sentence_query->groupBy('text_id')->groupBy('s_id')->groupBy('w_id');
 
         if (!$show_checked) {
             $sentence_query->havingRaw('NOT ' . $checked_sql);
         }
 
-        $count_sql = '
-            SELECT COUNT(*) AS total
-            FROM (' . $sentence_query->toSql() . ') AS sentence_rows
-        ';
+        $count_sql = 'SELECT COUNT(*) AS total FROM (' . $sentence_query->toSql() . ') AS sentence_rows';
 
-        $count_rows = DB::select(
-            $count_sql,
-            $sentence_query->getBindings()
-        );
+        $count_rows = DB::select($count_sql, $sentence_query->getBindings());
 
         $total = (int)$count_rows[0]->total;
 
         $last_page = max(1, (int)ceil($total / $per_page));
 
-        $current_page = min(
-            max(1, (int)$page),
-            $last_page
-        );
+        $current_page = min(max(1, (int)$page), $last_page);
 
         /*
          * Теперь добавляем порядок и выбираем только нужную страницу.
@@ -1288,38 +1343,27 @@ class Lemma extends Model
         $sentence_rows = $page_query
             ->selectRaw($status_sql . ' AS status_order')
             ->orderByRaw($status_sql)
-            ->orderBy('text_id')
-            ->orderBy('s_id')
-            ->orderBy('w_id')
+            ->orderBy('text_id')->orderBy('s_id')->orderBy('w_id')
             ->skip(($current_page - 1) * $per_page)
-            ->take($per_page)
-            ->get();
+            ->take($per_page)->get();
 
         if (!count($sentence_rows)) {
             return [
                 'sentences' => [],
                 'total' => $total,
+                'total_count' => $total_count,
                 'current_page' => $current_page,
             ];
         }
 
-        $relevance_by_key = $this->pageRelevance(
-            $sentence_rows,
-            $meaning_ids
-        );
+        $relevance_by_key = $this->pageRelevance($sentence_rows, $meaning_ids);
 
         $sentences = [];
 
         foreach ($sentence_rows as $sentence_row) {
-            $sentence_key = $this->sentenceKey(
-                $sentence_row->text_id,
-                $sentence_row->s_id,
-                $sentence_row->w_id
-            );
+            $sentence_key = $this->sentenceKey($sentence_row->text_id, $sentence_row->s_id, $sentence_row->w_id);
 
-            $relevance = isset($relevance_by_key[$sentence_key])
-                ? $relevance_by_key[$sentence_key]
-                : [];
+            $relevance = isset($relevance_by_key[$sentence_key]) ? $relevance_by_key[$sentence_key] : [];
 
             foreach ($meaning_ids as $meaning_id) {
                 if (!isset($relevance[$meaning_id])) {
@@ -1327,12 +1371,7 @@ class Lemma extends Model
                 }
             }
 
-            $sentence = Text::extractSentence(
-                $sentence_row->text_id,
-                $sentence_row->s_id,
-                $sentence_row->w_id,
-                $relevance
-            );
+            $sentence = Text::extractSentence($sentence_row->text_id, $sentence_row->s_id, $sentence_row->w_id, $relevance);
 
             if (!$sentence) {
                 continue;
@@ -1343,10 +1382,7 @@ class Lemma extends Model
              * SQL отвечает за выбор страницы и порядок,
              * PHP — за окончательное значение в массиве шаблона.
              */
-            $sentence['example_status'] = self::getExampleStatus(
-                $relevance,
-                $meaning_ids
-            );
+            $sentence['example_status'] = self::getExampleStatus($relevance, $meaning_ids);
 
             $sentences[] = $sentence;
         }
@@ -1354,6 +1390,7 @@ class Lemma extends Model
         return [
             'sentences' => $sentences,
             'total' => $total,
+            'total_count' => $total_count,
             'current_page' => $current_page,
         ];
     }

@@ -535,23 +535,22 @@ class LemmaController extends Controller
 
         $show_checked = $request->get('show_checked') == 1;
 
+        /*
+        * Принимаем только грамсеты, доступные среди примеров текущей леммы.
+        * Это не позволяет отфильтровать страницу чужими или несуществующими ID.
+        */
+        $example_gramset_values = $lemma->exampleGramsetValues();
+
+        $search_example_gramsets = array_values(array_filter(array_map('intval', (array)$request->get('search_example_gramsets', []))));
+        $search_example_gramsets = array_values(array_intersect($search_example_gramsets, array_map('intval', array_keys($example_gramset_values))));
+
         $per_page = 25;
 
         $current_page = LengthAwarePaginator::resolveCurrentPage();
 
-        $sentences_page = $lemma->sentencesPage(
-            $current_page,
-            $per_page,
-            $show_checked
-        );
+        $sentences_page = $lemma->sentencesPage($current_page, $per_page, $show_checked, $search_example_gramsets);
 
-        $sentences = new LengthAwarePaginator(
-            $sentences_page['sentences'],
-            $sentences_page['total'],
-            $per_page,
-            $sentences_page['current_page']
-        );
-
+        $sentences = new LengthAwarePaginator($sentences_page['sentences'], $sentences_page['total'], $per_page, $sentences_page['current_page']);
         $sentences->setPath($request->url());
         $sentences->appends($request->except('page'));
 
@@ -559,21 +558,23 @@ class LemmaController extends Controller
 
         unset($filter_url_args['show_checked']);
         unset($filter_url_args['page']);
+        unset($filter_url_args['search_example_gramsets']);
 
         return view('dict.lemma.edit_examples')
-            ->with(
-                array(
-                    'back_to_url'    => '/dict/lemma/' . $lemma->id,
-                    'filter_url_args' => $filter_url_args,
-                    'lemma'          => $lemma,
-                    'meanings'       => $lemma->meanings,
-                    'meaning_texts'  => $meaning_texts,
-                    'sentences'      => $sentences,
-                    'show_checked' => $show_checked,
-                    'args_by_get'    => $this->args_by_get,
-                    'url_args'       => $this->url_args,
-                )
-            );
+            ->with([
+                'back_to_url'    => '/dict/lemma/' . $lemma->id,
+                'filter_url_args' => $filter_url_args,
+                'example_gramset_values' => $example_gramset_values,
+                'lemma'          => $lemma,
+                'meanings'       => $lemma->meanings,
+                'meaning_texts'  => $meaning_texts,
+                'search_example_gramsets' => $search_example_gramsets,
+                'sentences'      => $sentences,
+                'show_checked' => $show_checked,
+                'total_count' => $sentences_page['total_count'],
+                'args_by_get'    => $this->args_by_get,
+                'url_args'       => $this->url_args,
+            ]);
     }
 
     /**
