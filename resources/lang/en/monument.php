@@ -46,10 +46,11 @@ return [
         1 => 'dictionary',
         4 => 'folklore text',
         3 => 'grammar essay',
+        7 => 'textbook',
         6 => 'original text',
         5 => 'speech sample',
         2 => 'translation',
-        //        6 => '',
+        //        8 => '',
     ],
     'volume' => 'volume of Karelian/Vepsian text (words)',
 ];
