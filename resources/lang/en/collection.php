@@ -42,22 +42,25 @@ return [
             . 'можно познакомиться и с вариантами современных причитаний, которые удалось зафиксировать во время полевых исследований в течение первой половины XXI века.',
         7 => '',
         8 => 'Nina Grigoryevna Zaitseva (born May 25, 1946, in the village of Markovo, Babayevsky District, Vologda Oblast) is a Soviet and 
-        Russian linguist, Doctor of Philological Sciences, Honored Scientist of the Republic of Karelia (1995), and headed the Linguistics 
-        Sector of the Institute of Linguistics, Literature and History of the Karelian Research Centre of the Russian Academy of Sciences from 
-        1997 to 2020.<br><br>
-        She is the author of a series of Veps-language textbooks, dictionaries, phrasebooks, and reference and teaching materials; 
-        the principal compiler and editor of the <i>Linguistic Atlas of the Veps Language</i>; the author of more than 200 scholarly works; 
-        a poet; the author of the Veps epic <i>Virantanaz</i>; a translator into Veps of the <i>New Testament</i> and the epic 
-        <i>Kalevala</i>; and the longstanding editor of periodicals published in the Veps language.<br><br>
-        Zaitseva played a central role in the development of corpus linguistics at the Institute: she became the driving force behind 
-        and creator of the <i>Corpus of the Veps Language</i> project, which was later transformed into the <i>Open Corpus of the Veps and 
-        Karelian Languages</i>.<br><br>
-        During more than twenty years of leading the sector, N. G. Zaitseva mentored an generation of researchers, and thanks to her 
-        efforts, a recognised school of linguistic scholarship was established at the Institute. The collection includes texts from poetry 
-        collections, prose works, as well as articles published in the newspaper <i>Kodima</i>.
-
-
-',
+            Russian linguist, Doctor of Philological Sciences, Honored Scientist of the Republic of Karelia (1995), and headed the Linguistics 
+            Sector of the Institute of Linguistics, Literature and History of the Karelian Research Centre of the Russian Academy of Sciences from 
+            1997 to 2020.<br><br>
+            She is the author of a series of Veps-language textbooks, dictionaries, phrasebooks, and reference and teaching materials; 
+            the principal compiler and editor of the <i>Linguistic Atlas of the Veps Language</i>; the author of more than 200 scholarly works; 
+            a poet; the author of the Veps epic <i>Virantanaz</i>; a translator into Veps of the <i>New Testament</i> and the epic 
+            <i>Kalevala</i>; and the longstanding editor of periodicals published in the Veps language.<br><br>
+            Zaitseva played a central role in the development of corpus linguistics at the Institute: she became the driving force behind 
+            and creator of the <i>Corpus of the Veps Language</i> project, which was later transformed into the <i>Open Corpus of the Veps and 
+            Karelian Languages</i>.<br><br>
+            During more than twenty years of leading the sector, N. G. Zaitseva mentored an generation of researchers, and thanks to her 
+            efforts, a recognised school of linguistic scholarship was established at the Institute. The collection includes texts from poetry 
+            collections, prose works, as well as articles published in the newspaper <i>Kodima</i>.',
+        9 => 'The database comprises a collection of texts containing information about various characters in Karelian belief narratives (bylichki). This collection includes mythological narratives about figures associated with Karelian festive traditions. These comprise texts about Kegri, an ancient Karelian deity associated with ancestor worship and the liminal period marking the turn of the year, as well as belief narratives about two mythological figures associated with the winter Christmastide period: the South Karelian Syundy and the North Karelian Epiphany Old Woman.<br><br>
+            The structure of the database enables both researchers (folklorists, ethnologists, and linguists) and a wider audience (local historians, museum staff, tour guides, etc.) to identify and analyse various aspects of traditional folk culture. For example, users can examine the characters of Karelian belief narratives, their spatiotemporal settings, their functions, and the purposes and means of their interaction with humans. The database also makes it possible to relate belief narratives about Kegri, Syundy, and the Epiphany Old Woman to other texts in VepKar, such as ethnographic accounts of festive traditions or texts dealing with similar themes.<br><br>
+            The primary purpose of the database is to make archival folklore materials accessible and to enable researchers to analyse the texts from linguistic, folkloristic, and ethnographic perspectives. The database is open to all interested users with a wide range of interests and purposes.<br><br>
+            The collection is accompanied by <a href="' . route('collection.9.pointer') . '">a scholarly index of the principal plots and motifs/themes in belief narratives about Kegri, Syundy, and the Epiphany Old Woman</a>. The index is based on texts of Karelian mythological prose identified in the Sound Archive of the Institute of Linguistics, Literature and History of the Karelian Research Centre of the Russian Academy of Sciences and is published here for the first time. It was compiled by L. I. Ivanova. At this stage, the number of archival references in the index (references to individual archival units held in the Institute’s Sound Archive) exceeds the number of belief narratives included in the collection, indicating considerable potential for its expansion. The resource can be supplemented both with previously recorded texts held in the Institute’s Sound Archive, including those subsequently added to the index, and with new materials of mythological prose that the Institute’s researchers continue to record during field expeditions.<br><br>
+            The collection was developed by V. P. Mironova, Candidate of Sciences in Philology and Senior Research Fellow in the Folklore and Literary Studies Section of the Institute of Linguistics, Literature and History of the Karelian Research Centre of the Russian Academy of Sciences; L. I. Ivanova, Research Fellow in the same section; and N. B. Krizhanovskaya, Lead Research Engineer at the Institute’s NORDICA Interdisciplinary Research and Education Centre.',
+        10 => '',
     ],
     'motive_index' => 'Index of types, motives and basic elements of Karelian legends',
     'topic_index' => 'Index of plots and thematics of Karelian runes',
@@ -70,9 +73,15 @@ return [
         5 => 'Stanislav Vasilyevich Tarasov',
         7 => 'Monuments of Karelian and Vepsian writing',
         8 => 'Nina Grigoryevna Zaitseva',
+        9 => 'Karelian mythological prose',
+        10 => 'Karielan šana',
     ],
     'prediction_cycles' => 'Prediction cycles',
     //    'to_motive_index' => 'to Motive index',
+    'publication_no_year' => 'Year not specified',
+    'publication_empty_issue' => 'No texts from this issue have been added to the collection yet.',
+    'publication_empty' => 'No issues have been added yet.',
+    'publication_pages' => 'pp.',
     'to_collection' => 'To collection',
     'total_count' => 'Total number of texts',
 ];

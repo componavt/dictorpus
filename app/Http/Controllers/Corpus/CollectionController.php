@@ -68,6 +68,20 @@ class CollectionController extends Controller
                         'text_count'
                     )
                 );
+            } elseif (Collection::isCollectionByPublication($id)) {
+                list($publication, $pubparts_by_year, $text_count) = Collection::getDataForCollectionByPublication($id);
+
+                return view(
+                    'corpus.collection.' . $id . '.index',
+                    compact(
+                        'collection',
+                        'for_print',
+                        'id',
+                        'publication',
+                        'pubparts_by_year',
+                        'text_count'
+                    )
+                );
             } elseif ($id == 7) {
                 return Redirect::to('/corpus/monument');
             }
@@ -75,7 +89,8 @@ class CollectionController extends Controller
         return Redirect::to('/corpus/collection');
     }
 
-    public function pointerFor9(Request $request) {
+    public function pointerFor9(Request $request)
+    {
         $for_print = (int)($request->for_print);
         return view(
             'corpus.collection.9.pointer',
@@ -83,7 +98,6 @@ class CollectionController extends Controller
                 'for_print',
             )
         );
-
     }
 
     public function runeTopics(Request $request)

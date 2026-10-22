@@ -252,6 +252,22 @@ class Collection
         return [];
     }
 
+    public static function getCollectionPublications($collection_id = null)
+    {
+        $publications = [10 => 29,];
+
+        if ($collection_id === null) {
+            return $publications;
+        }
+
+        return isset($publications[$collection_id]) ? $publications[$collection_id] : null;
+    }
+
+    public static function isCollectionByPublication($id): bool
+    {
+        return self::getCollectionPublications($id) !== null;
+    }
+
     public static function getCollectionIds()
     {
         return array_keys((array)trans('collection.name_list'));
@@ -291,6 +307,8 @@ class Collection
         } elseif (self::isCollectionbyGenre($id)) {
             return true;
         } elseif (self::isCollectionbyCorpuses($id)) {
+            return true;
+        } elseif (self::isCollectionByPublication($id)) {
             return true;
         } elseif ($id == 7) {
             return true;
@@ -407,5 +425,52 @@ class Collection
         }
         $text_count = $texts->count();
         return [$corpus_ids, $text_count];
+    }
+
+    public static function getDataForCollectionByPublication(int $id)
+    {
+        $publication_id = self::getCollectionPublications($id);
+
+        if ($publication_id === null) {
+            throw new InvalidArgumentException(
+                "Collection {$id} is not linked to a publication."
+            );
+        }
+
+        $publication = Publication::findOrFail($publication_id);
+
+        $pubparts = Pubpart::where('publication_id', $publication_id)
+            ->with([
+                'texts' => function ($query) {
+                    $query->select('texts.id', 'texts.title')
+                        ->orderByRaw("CASE
+                            WHEN TRIM(pubpart_text.pages) REGEXP '^[0-9]'
+                            THEN 0 ELSE 1
+                        END")
+                        ->orderByRaw('CAST(TRIM(pubpart_text.pages) AS UNSIGNED)')
+                        ->orderBy('texts.title')
+                        ->orderBy('texts.id');
+                },
+            ])
+            ->orderBy('year')
+            ->orderBy('sequence_number')
+            ->orderBy('id')
+            ->get();
+
+        $pubparts_by_year = $pubparts->groupBy(function ($pubpart) {
+            return $pubpart->year ? (int) $pubpart->year : 0;
+        });
+
+        $text_ids = [];
+
+        foreach ($pubparts as $pubpart) {
+            foreach ($pubpart->texts as $text) {
+                $text_ids[$text->id] = true;
+            }
+        }
+
+        $text_count = count($text_ids);
+
+        return [$publication, $pubparts_by_year, $text_count];
     }
 }

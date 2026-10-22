@@ -348,6 +348,14 @@ h5:first-letter {
     flex: 0 0 auto;
 }
 
+.collection-issue {
+    margin-left: 30px;
+}
+
+.collection-articles li {
+    margin-bottom: 4px;
+}
+
 @media (min-width: 576px) {}
 
 @media (min-width: 768px) {
