@@ -340,7 +340,10 @@ class LemmaController extends Controller
      */
     public function show($id, Request $request)
     {
-        $lemma = Lemma::find($id);
+        $lemma = Lemma::with([
+            'meanings.collocations.collocateMeaning.lemma',
+            'meanings.collocations.conceptCategory',
+        ])->find($id);
         if (!$lemma)
             return Redirect::to('/dict/lemma/' . ($this->args_by_get))
                 ->withErrors('error.no_lemma');

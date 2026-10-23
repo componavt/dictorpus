@@ -12,6 +12,21 @@ return [
 
     'author_accusative' => 'автора',
     'bible_links_accusative' => 'библейские ссылки',
+
+    'collocation_changed' => 'изменил(а) сочетаемость #:id',
+    'collocation_changed_for_meaning' => 'изменил(а) сочетаемость #:id значения :num',
+    'collocation_category' => 'Категория',
+    'collocation_created' => 'создал(а) сочетаемость #:id',
+    'collocation_created_for_meaning' => 'создал(а) сочетаемость #:id значения :num',
+    'collocation_deleted_for_meaning' => 'удалил(а) сочетаемость #:id значения :num',
+    'collocation_display_gloss' => 'Русское пояснение',
+    'collocation_meaning_number' => 'значение :num',
+    'collocation_not_specified' => 'не указано',
+    'collocation_partner_meaning' => 'Значение слова-партнёра',
+    'collocation_snapshot_unreadable' => 'удалил(а) сочетаемость. Не удалось прочитать снимок записи.',
+    'collocation_source_meaning' => 'Исходное значение',
+    'collocation_without_category' => 'Без категории',
+
     'comment_accusative' => 'комментарий',
     'corpus_accusative' => 'корпус',
     'date_accusative' => 'дату',

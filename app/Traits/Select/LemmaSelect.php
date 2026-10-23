@@ -4,6 +4,7 @@ namespace App\Traits\Select;
 
 use \Venturecraft\Revisionable\Revision;
 
+use App\Models\Dict\Collocation;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gram;
 use App\Models\Dict\Gramset;
@@ -324,11 +325,74 @@ trait LemmaSelect
             }
         }
 
+        $all_history = $this->addCollocationsHistory($all_history);
+
         $all_history = $all_history->sortByDesc('id')
             ->groupBy(function ($item, $key) {
                 return (string)$item['updated_at'];
             });
         //dd($all_history);                        
         return $all_history;
+    }
+
+    /**
+     * Добавляет историю существующих и удалённых сочетаемостей статьи.
+     * ID удалённых записей извлекаются из сохранённых событий удаления.
+     */
+    public function addCollocationsHistory($all_history)
+    {
+        $meaning_numbers = [];
+
+        foreach ($this->meanings as $meaning) {
+            $meaning_numbers[$meaning->id] = $meaning->meaning_n;
+        }
+
+        $collocation_contexts = [];
+
+        if ($meaning_numbers) {
+            $collocations = Collocation::whereIn('meaning_id', array_keys($meaning_numbers))->get();
+
+            foreach ($collocations as $collocation) {
+                $collocation_contexts[$collocation->id] = [
+                    'meaning_n' => $meaning_numbers[$collocation->meaning_id],
+                ];
+            }
+        }
+
+        foreach ($all_history as $history) {
+            if ($history->key !== 'collocation_deleted') {
+                continue;
+            }
+
+            $history->is_collocation_history = true;
+
+            $snapshot = json_decode($history->old_value, true);
+
+            if (!is_array($snapshot) || empty($snapshot['id'])) {
+                continue;
+            }
+
+            $collocation_contexts[(int) $snapshot['id']] = [
+                'meaning_n' => $snapshot['meaning_n'] ?? null,
+            ];
+        }
+
+        if (!$collocation_contexts) {
+            return $all_history;
+        }
+
+        $collocation_history = Revision::where('revisionable_type', (new Collocation())->getMorphClass())
+            ->whereIn('revisionable_id', array_keys($collocation_contexts))
+            ->where('key', '<>', 'updated_at')
+            ->get();
+
+        foreach ($collocation_history as $history) {
+            $context = $collocation_contexts[$history->revisionable_id];
+
+            $history->is_collocation_history = true;
+            $history->collocation_meaning_n = $context['meaning_n'];
+        }
+
+        return $all_history->merge($collocation_history);
     }
 }

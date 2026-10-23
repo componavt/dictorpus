@@ -617,6 +617,11 @@ trait LemmaModify
 
     public function remove()
     {
+        foreach ($this->meanings()->get() as $meaning) {
+            if ($meaning->hasCollocations()) {
+                abort(409, trans('collocations.lemma_in_use'));
+            }
+        }
         $this->audios()->detach();
         $this->wordforms()->detach();
         $this->labels()->detach();

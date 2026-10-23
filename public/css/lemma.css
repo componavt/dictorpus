@@ -5,7 +5,7 @@
 
 .table-interpretations th:first-letter,
 .table-interpretations-translations th:first-letter {
-    text-transform: uppercase;    
+    text-transform: uppercase;
 }
 
 .table-interpretations th,
@@ -18,6 +18,7 @@
 .table-interpretations-translations td {
     padding-right: 10px;
 }
+
 /*
 .table-interpretations-translations tr td:not(:first-child) {
     width: 50%;
@@ -38,6 +39,7 @@
 .lemma-meaning {
     display: block;
 }
+
 .lemma-meaning h4 {
     margin-top: 25px;
 }
@@ -73,7 +75,7 @@
 }
 
 .relevance {
-    padding-right: 20px;    
+    padding-right: 20px;
 }
 
 .relevance-10 {
@@ -129,6 +131,7 @@
 .sentence-edit {
     color: #666;
 }
+
 .unchecked-count {
     color: red;
 }
@@ -172,11 +175,11 @@
 
 .word-form-table td {
     padding: 0 5px;
-/*    width: 33%; */
+    /*    width: 33%; */
 }
 
 .big-size {
-    font-size: 18px; 
+    font-size: 18px;
     line-height: 14px;
     letter-spacing: 2px;
 }
@@ -201,7 +204,7 @@ h4 .fa {
     cursor: pointer;
 }
 
-.img-loading_stem-affix{
+.img-loading_stem-affix {
     display: none;
 }
 
@@ -212,7 +215,7 @@ h4 .fa {
 
 .reload-list {
     color: #ef3928;
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 #lemmaStemAffix {
@@ -238,11 +241,11 @@ h4 .fa {
 }
 
 .status0::before {
-    content:url('/images/status0.gif');
+    content: url('/images/status0.gif');
 }
 
 .status1::before {
-    content:url('/images/status1.gif');
+    content: url('/images/status1.gif');
 }
 
 .add-to-list,
@@ -271,7 +274,7 @@ h4 .fa {
     text-align: left;
     top: 3px;
     width: 200px;
-    z-index: 100;    
+    z-index: 100;
 }
 
 .audio-info-caller {
@@ -285,21 +288,21 @@ h4 .fa {
     top: 5px;
 }
 
-.meaning-b-photo {    
-    display:flex;
+.meaning-b-photo {
+    display: flex;
 }
 
-.meaning-photo  { 
+.meaning-photo {
     padding-left: 10px;
 }
 
-.meaning-photo img { 
+.meaning-photo img {
     max-width: 200px;
     height: auto;
 }
 
 .lemma-example-view {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     position: relative
 }
 
@@ -321,11 +324,11 @@ h4 .fa {
     margin-top: 0;
 }
 
-.lemma-example-edit tr.lemma-example-conflict > td {
+.lemma-example-edit tr.lemma-example-conflict>td {
     background-color: #fff1f1;
 }
 
-.lemma-example-edit tr.lemma-example-conflict > td:first-child {
+.lemma-example-edit tr.lemma-example-conflict>td:first-child {
     border-left: 5px solid #d9534f;
 }
 
@@ -354,14 +357,50 @@ h4 .fa {
     margin: 15px 0;
 }
 
-.lemma-example-edit > tbody > tr:first-child > th,
-.lemma-example-edit > tbody > tr:first-child > td {
+.lemma-example-edit>tbody>tr:first-child>th,
+.lemma-example-edit>tbody>tr:first-child>td {
     position: sticky;
     top: 0;
     z-index: 2;
     background-color: #ffffff;
     vertical-align: bottom;
     border-bottom: 2px solid #cccccc;
+}
+
+.meaning-collocations {
+    margin: 12px 0;
+}
+
+.meaning-collocations-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.meaning-collocations-edit {
+    flex-shrink: 0;
+}
+
+.meaning-collocations-groups {
+    margin-left: 16px;
+}
+
+.meaning-collocations-group {
+    margin-bottom: 10px;
+}
+
+.meaning-collocations-group:last-child {
+    margin-bottom: 0;
+}
+
+.meaning-collocations-category {
+    margin: 0 0 2px;
+    font-weight: normal;
+}
+
+.meaning-collocations-items {
+    margin: 0;
 }
 
 @media screen and (min-width: 767px) {
@@ -372,18 +411,18 @@ h4 .fa {
     .lemma-meaning-left {
         padding-right: 20px;
     }
-    
+
     .lemma-b {
-        display: flex;    
+        display: flex;
         justify-content: space-between;
         align-items: flex-end;
     }
-    
+
     .lemma-meaning .lemma-meaning-examples h4 {
         margin-top: 0;
     }
-    
+
     .dict-form {
-        text-align: right; 
+        text-align: right;
     }
 }

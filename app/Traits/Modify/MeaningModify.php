@@ -13,6 +13,9 @@ trait MeaningModify
 {
     public function remove()
     {
+        if ($this->hasCollocations()) {
+            abort(409, trans('collocations.meaning_in_use'));
+        }
         DB::table('meaning_relation')
             ->where('meaning1_id', $this->id)->delete();
         DB::table('meaning_relation')

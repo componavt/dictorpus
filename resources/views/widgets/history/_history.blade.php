@@ -13,6 +13,11 @@ $diffConfig->setPurifierCacheLocation(
 );
 
 foreach($histories as $history) {
+    if ($history->is_collocation_history) {
+        $history_strings[] = view('widgets.history._collocation', ['history' => $history])->render();
+        continue;
+    }
+
     $fieldName = $history->fieldName();
     if (!isset($history->field_name)) {
         $history->field_name = trans('history.'.$fieldName.'_accusative');

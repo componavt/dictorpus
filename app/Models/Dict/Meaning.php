@@ -70,6 +70,7 @@ class Meaning extends Model
     }
 
     // Has Many Relations
+    use \App\Traits\Relations\HasMany\Collocations;
     use \App\Traits\Relations\HasMany\Examples;
     use \App\Traits\Relations\HasMany\MeaningTexts;
 

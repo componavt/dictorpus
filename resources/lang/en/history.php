@@ -12,6 +12,21 @@ return [
 
     'author_accusative' => 'the author',
     'bible_links_accusative' => 'the bible links',
+
+    'collocation_category' => 'Category',
+    'collocation_changed' => 'Updated collocation #:id',
+    'collocation_changed_for_meaning' => 'Updated collocation #:id for meaning :num',
+    'collocation_created' => 'Created collocation #:id',
+    'collocation_created_for_meaning' => 'Created collocation #:id for meaning :num',
+    'collocation_deleted_for_meaning' => 'Deleted collocation #:id for meaning :num',
+    'collocation_display_gloss' => 'Russian gloss',
+    'collocation_meaning_number' => 'meaning :num',
+    'collocation_not_specified' => 'not specified',
+    'collocation_partner_meaning' => 'Collocate meaning',
+    'collocation_snapshot_unreadable' => 'Deleted a collocation. The record snapshot could not be read.',
+    'collocation_source_meaning' => 'Source meaning',
+    'collocation_without_category' => 'Uncategorized',
+
     'comment_accusative' => 'the comments',
     'corpus_accusative' => 'the corpus',
     'date_accusative' => 'the date',
