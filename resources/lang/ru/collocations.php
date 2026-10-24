@@ -39,6 +39,8 @@ return [
     'history' => 'История статьи',
     'lemma_in_use' => 'Значения статьи участвуют в сочетаемостях. Сначала удалите связанные сочетаемости.',
     'list' => 'Внесённые сочетаемости',
+    'list_count' => 'Внесено сочетаний: :count',
+    'list_open_synset' => 'Открыть сводку синсета',
 
     'matrix_add_hint' => 'Добавить сочетание :source + :partner',
     'matrix_cell_hint' => ':source + :partner — :gloss',

@@ -774,12 +774,8 @@ class DictController extends Controller
         if (empty($url_args['search_lang'])) {
             $url_args['search_lang'] = 5; // livvic
         }
-        /*        if (empty($url_args['search_pos'])) {
-            $url_args['search_pos'] = 1; // adjective
-        }*/
         $args_by_get = search_values_by_URL($url_args);
 
-        //        $new_set = Synset::findSynset($url_args['search_lang'], $url_args['search_pos']);
         $new_set_founded = Synset::newSetFounded($url_args['search_lang'], $url_args['search_pos']);
 
         $synsets = Synset::whereLangId($url_args['search_lang']);
@@ -793,7 +789,14 @@ class DictController extends Controller
         }
 
         $numAll = $synsets->count();
-        $synsets = $synsets->orderBy('id')->paginate($url_args['limit_num']);
+
+        $synsets = $synsets->with([
+            'meanings.lemma',
+            'meanings.collocations.collocateMeaning.lemma',
+            'meanings.collocations.conceptCategory',
+        ])
+            ->orderBy('id')
+            ->paginate($url_args['limit_num']);
 
         $lang_values = Lang::getProjectList();
         $pos_values = [NULL => ''] + PartOfSpeech::getList();

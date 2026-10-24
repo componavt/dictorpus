@@ -565,6 +565,34 @@ h4 .fa {
     margin-right: 5px;
 }
 
+/* Компактная сочетаемость в списке синсетов. */
+.synset-list-collocations {
+    min-width: 220px;
+}
+
+.synset-list-collocation {
+    margin-bottom: 6px;
+}
+
+.synset-list-collocation>summary {
+    cursor: pointer;
+    color: #972d1a;
+}
+
+.synset-list-collocation-name {
+    white-space: nowrap;
+}
+
+.synset-list-collocation-body {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.synset-list-collocations-link {
+    margin-top: 8px;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

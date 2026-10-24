@@ -32,7 +32,7 @@
             <th>{{ trans('dict.dominant') }}</th>
             <th>{{ trans('dict.core') }}</th>
             <th>{{ trans('dict.periphery') }}</th>
-            <th>{{ trans('dict.collocates') }}</th>            
+            <th>{{ trans('collocations.title') }}</th>            
             <th>{{ trans('dict.potential_members') }}</th>
             <th>Русские синонимы</th>
             <th>{{ trans('messages.actions') }}</th>
@@ -60,7 +60,9 @@
                 <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        
         @endforeach
             </td>
-            <td data-th="{{ trans('dict.collocates') }}">{{ $synset->collocates }}</td>
+            <td data-th="{{ trans('collocations.title') }}" class="synset-list-collocations">
+        @include('service.dict.synsets._collocations')
+            </td>
             <td data-th="{{ trans('dict.potential_members') }}">
         @foreach ($synset->searchPotentialMembers() as $meaning)
                 <a href="{{ route('lemma.show', $meaning->lemma_id) }}">{{ $meaning->lemma->lemma }}</a><sup title="{{ $meaning->getMeaningTextLocale() }}">{{ $meaning->meaning_n}}</sup>        

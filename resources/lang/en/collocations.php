@@ -39,6 +39,8 @@ return [
     'edit' => 'Edit a collocation',
     'lemma_in_use' => 'Meanings of this entry are used in collocations. Delete the related collocations first.',
     'list' => 'Recorded collocations',
+    'list_count' => 'Recorded collocations: :count',
+    'list_open_synset' => 'Open the synset summary',
 
     'matrix_add_hint' => 'Add the collocation :source + :partner',
     'matrix_cell_hint' => ':source + :partner — :gloss',

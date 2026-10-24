@@ -246,4 +246,41 @@ trait SynsetSelect
             'groups' => array_values($groups),
         ];
     }
+
+    /**
+     * Возвращает участников с внесённой сочетаемостью для списка синсетов.
+     *
+     * Доминанта выводится первой, остальные — по алфавиту.
+     * Использует предварительно загруженные связи.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function collocationMembersForList()
+    {
+        $dominant_id = (int) $this->dominant_id;
+
+        return $this->meanings
+            ->filter(function ($meaning) {
+                return !$meaning->collocations->isEmpty();
+            })
+            ->sort(function ($left, $right) use ($dominant_id) {
+                $left_is_dominant = (int) $left->id === $dominant_id;
+                $right_is_dominant = (int) $right->id === $dominant_id;
+
+                if ($left_is_dominant !== $right_is_dominant) {
+                    return $left_is_dominant ? -1 : 1;
+                }
+
+                $comparison = strcmp(mb_strtolower($left->lemma->lemma), mb_strtolower($right->lemma->lemma));
+
+                if ($comparison !== 0) {
+                    return $comparison;
+                }
+
+                $comparison = $left->meaning_n <=> $right->meaning_n;
+
+                return $comparison !== 0 ? $comparison : $left->id <=> $right->id;
+            })
+            ->values();
+    }
 }
