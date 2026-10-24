@@ -157,3 +157,95 @@ function initSynsetCollocationsView() {
 
     setView(saved_view, false);
 }
+
+/**
+ * Фильтрует строки матрицы по различиям наличия записей.
+ * Сохраняет настройку отдельно для каждого синсета.
+ */
+function initSynsetCollocationDifferences() {
+    var container = $('#synset-collocations');
+
+    if (!container.length) {
+        return;
+    }
+
+    var checkbox = container.find('#synset-collocations-only-differences');
+
+    if (!checkbox.length) {
+        return;
+    }
+
+    var synset_id = container.attr('data-synset-id');
+
+    if (!synset_id) {
+        return;
+    }
+
+    var storage_key = 'vepkar.synset.' + synset_id + '.collocations.only-differences';
+
+    var rows = container.find('.synset-collocation-data-row');
+    var categories = container.find('.synset-collocation-category-row');
+    var table = container.find('table.synset-collocations-matrix');
+    var empty_message = container.find('#synset-collocations-no-differences');
+
+    /**
+     * Скрывает одинаковые строки и категории без оставшихся строк.
+     */
+    function applyFilter(persist) {
+        var only_differences = !checkbox.prop('disabled') && checkbox.prop('checked');
+
+        var visible_count = 0;
+
+        rows.each(function () {
+            var row = $(this);
+
+            var has_differences = row.attr('data-has-differences') === '1';
+
+            var hide_row = only_differences && !has_differences;
+
+            row.prop('hidden', hide_row);
+
+            if (!hide_row) {
+                visible_count++;
+            }
+        });
+
+        categories.each(function () {
+            var category = $(this);
+            var category_key = category.attr('data-category-key');
+
+            var has_visible_rows = rows.filter(function () {
+                return $(this).attr('data-category-key') === category_key && !this.hidden;
+            }).length > 0;
+
+            category.prop('hidden', !has_visible_rows);
+        });
+
+        var no_differences = only_differences && visible_count === 0;
+
+        table.prop('hidden', no_differences);
+        empty_message.prop('hidden', !no_differences);
+
+        if (persist) {
+            try {
+                window.localStorage.setItem(storage_key, only_differences ? '1' : '0');
+            } catch (error) {
+                // При запрете хранилища фильтр продолжает работать.
+            }
+        }
+    }
+
+    try {
+        checkbox.prop('checked', !checkbox.prop('disabled') && window.localStorage.getItem(storage_key) === '1');
+    } catch (error) {
+        // При недоступном хранилище фильтр по умолчанию выключен.
+    }
+
+    checkbox
+        .off('change.synsetCollocationDifferences')
+        .on('change.synsetCollocationDifferences', function () {
+            applyFilter(true);
+        });
+
+    applyFilter(false);
+}

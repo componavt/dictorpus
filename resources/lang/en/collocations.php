@@ -27,6 +27,11 @@ return [
     'copy_wrong_language' => 'The source and target must have the same language.',
     'delete' => 'Delete',
     'deleted' => 'The collocation has been deleted and recorded in the entry history.',
+
+    'differences_hint' => 'Record presence in this category is compared across all synset members, including columns with no recorded data. Differences in Russian glosses are not compared.',
+    'differences_none' => 'No rows differ in record presence.',
+    'differences_only' => 'Differences only',
+
     'display_gloss' => 'Russian gloss',
     'duplicate' => 'This collocate meaning has already been added.',
     'empty' => 'No collocations have been recorded yet.',

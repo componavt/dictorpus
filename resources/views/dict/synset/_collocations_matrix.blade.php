@@ -5,6 +5,22 @@
     {{ trans('collocations.matrix_hint') }}
 </p>
 
+<div class="synset-collocations-filters">
+    <label for="synset-collocations-only-differences">
+        <input type="checkbox" id="synset-collocations-only-differences" aria-describedby="synset-collocations-differences-hint"
+            {{ $collocation_matrix['columns']->count() < 2 ? 'disabled' : '' }}>
+        {{ trans('collocations.differences_only') }}
+    </label>
+
+    <p id="synset-collocations-differences-hint" class="help-block">
+        {{ trans('collocations.differences_hint') }}
+    </p>
+</div>
+
+<p id="synset-collocations-no-differences" class="help-block" role="status" hidden>
+    {{ trans('collocations.differences_none') }}
+</p>
+
 <div class="synset-collocations-matrix-scroll">
     <table class="table table-bordered synset-collocations-matrix">
         <thead>
@@ -47,8 +63,8 @@
         </thead>
 
         <tbody>
-    @foreach ($collocation_matrix['groups'] as $group)
-            <tr class="synset-collocation-category-row">
+    @foreach ($collocation_matrix['groups'] as $group_index => $group)
+            <tr class="synset-collocation-category-row" data-category-key="{{ $group_index }}">
                 <th colspan="{{ $collocation_matrix['columns']->count() + 1 }}">
                     <em>{{ $group['category'] ? $group['category']->name
                         : trans('collocations.without_category') }}</em>
@@ -61,7 +77,7 @@
             $partner_url = LaravelLocalization::localizeURL('/dict/lemma/'.$partner_meaning->lemma_id).'#meaning-'.$partner_meaning->id;
             ?>
 
-            <tr>
+            <tr class="synset-collocation-data-row" data-category-key="{{ $group_index }}" data-has-differences="{{ count($row['cells']) < $collocation_matrix['columns']->count() ? '1' : '0' }}">
                 <th scope="row"
                     class="synset-collocation-partner">
                     <span class="synset-collocation-name">

@@ -29,4 +29,5 @@
     });
 
     initSynsetCollocationsView();
+    initSynsetCollocationDifferences();
 @stop
