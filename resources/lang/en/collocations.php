@@ -28,7 +28,7 @@ return [
     'delete' => 'Delete',
     'deleted' => 'The collocation has been deleted and recorded in the entry history.',
 
-    'differences_hint' => 'Record presence in this category is compared across all synset members, including columns with no recorded data. Differences in Russian glosses are not compared.',
+    'differences_hint' => 'Record presence in this category is compared only across the selected members. Select at least two members to find differences. Differences in Russian glosses are not compared.',
     'differences_none' => 'No rows differ in record presence.',
     'differences_only' => 'Differences only',
 
@@ -50,6 +50,14 @@ return [
 
     'meaning' => 'Meaning :num',
     'meaning_in_use' => 'This meaning is used in collocations. Delete the related collocations first.',
+
+    'members_all' => 'Select all',
+    'members_empty' => 'Select at least one member to compare.',
+    'members_hint' => 'The selection affects only the comparison and does not change synset membership.',
+    'members_no_records' => 'The selected members have no recorded collocations.',
+    'members_none' => 'Clear selection',
+    'members_title' => 'Members to compare',
+
     'partner' => 'Collocate and meaning',
     'save' => 'Save',
     'save_failed' => 'The collocation could not be saved.',

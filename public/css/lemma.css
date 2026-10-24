@@ -534,6 +534,37 @@ h4 .fa {
     margin-right: 6px;
 }
 
+/* Выбор участников сравнительной матрицы. */
+.synset-collocations-members {
+    margin: 16px 0;
+    padding: 0;
+    border: 0;
+}
+
+.synset-collocations-members legend {
+    margin-bottom: 8px;
+    font-size: 16px;
+    border: 0;
+}
+
+.synset-collocations-member-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-bottom: 6px;
+}
+
+.synset-collocations-member-options label {
+    margin: 0;
+    font-weight: normal;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.synset-collocations-member-options input {
+    margin-right: 5px;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

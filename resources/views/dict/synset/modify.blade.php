@@ -29,5 +29,5 @@
     });
 
     initSynsetCollocationsView();
-    initSynsetCollocationDifferences();
+    initSynsetCollocationComparison();
 @stop

@@ -159,53 +159,145 @@ function initSynsetCollocationsView() {
 }
 
 /**
- * Фильтрует строки матрицы по различиям наличия записей.
- * Сохраняет настройку отдельно для каждого синсета.
+ * Управляет выбором участников и фильтром различий матрицы.
+ * Сохраняет настройки отдельно для каждого синсета.
  */
-function initSynsetCollocationDifferences() {
+function initSynsetCollocationComparison() {
     var container = $('#synset-collocations');
 
     if (!container.length) {
         return;
     }
 
-    var checkbox = container.find('#synset-collocations-only-differences');
-
-    if (!checkbox.length) {
-        return;
-    }
-
+    var members = container.find('.synset-collocation-member-checkbox');
+    var differences = container.find('#synset-collocations-only-differences');
     var synset_id = container.attr('data-synset-id');
 
-    if (!synset_id) {
+    if (!members.length || !differences.length || !synset_id) {
         return;
     }
 
-    var storage_key = 'vepkar.synset.' + synset_id + '.collocations.only-differences';
+    var storage_prefix = 'vepkar.synset.' + synset_id + '.collocations.';
+    var members_key = storage_prefix + 'members';
+    var differences_key = storage_prefix + 'only-differences';
 
-    var rows = container.find('.synset-collocation-data-row');
-    var categories = container.find('.synset-collocation-category-row');
     var table = container.find('table.synset-collocations-matrix');
-    var empty_message = container.find('#synset-collocations-no-differences');
+    var columns = table.find('.synset-collocation-column');
+    var member_cells = table.find('[data-member-id]');
+    var rows = table.find('.synset-collocation-data-row');
+    var categories = table.find('.synset-collocation-category-row');
+
+    var no_members = container.find('#synset-collocations-no-members');
+    var no_records = container.find('#synset-collocations-no-records');
+    var no_differences = container.find('#synset-collocations-no-differences');
 
     /**
-     * Скрывает одинаковые строки и категории без оставшихся строк.
+     * Возвращает ID выбранных значений в порядке столбцов.
      */
-    function applyFilter(persist) {
-        var only_differences = !checkbox.prop('disabled') && checkbox.prop('checked');
+    function selectedIds() {
+        return members.filter(':checked').map(function () {
+            return this.value;
+        }).get();
+    }
 
+    /**
+     * Сохраняет выбор участников и предпочтение фильтра различий.
+     */
+    function saveSettings(ids) {
+        try {
+            window.localStorage.setItem(
+                members_key,
+                JSON.stringify({
+                    all: ids.length === members.length,
+                    ids: ids
+                })
+            );
+
+            window.localStorage.setItem(
+                differences_key,
+                differences.prop('checked') ? '1' : '0'
+            );
+        } catch (error) {
+            // При запрете хранилища сравнение продолжает работать.
+        }
+    }
+
+    /**
+     * Пересчитывает столбцы, строки и заголовки по текущему выбору.
+     */
+    function applyComparison(persist) {
+        var ids = selectedIds();
+        var selected_count = ids.length;
+        var selected_map = {};
+
+        $.each(ids, function (index, id) {
+            selected_map[id] = true;
+        });
+
+        differences.prop('disabled', selected_count < 2);
+
+        var only_differences = selected_count >= 2
+            && differences.prop('checked');
+
+        member_cells.each(function () {
+            var cell = $(this);
+
+            cell.prop(
+                'hidden',
+                selected_map[cell.attr('data-member-id')] !== true
+            );
+        });
+
+        var section_counts = {
+            core: 0,
+            periphery: 0
+        };
+
+        columns.each(function () {
+            var column = $(this);
+
+            if (selected_map[column.attr('data-member-id')] === true) {
+                section_counts[column.attr('data-member-group')]++;
+            }
+        });
+
+        table.find('[data-member-section]').each(function () {
+            var section = $(this);
+            var count = section_counts[section.attr('data-member-section')];
+
+            section
+                .prop('hidden', count === 0)
+                .attr('colspan', Math.max(1, count));
+        });
+
+        categories.find('th').attr('colspan', selected_count + 1);
+
+        var relevant_count = 0;
         var visible_count = 0;
 
         rows.each(function () {
             var row = $(this);
 
-            var has_differences = row.attr('data-has-differences') === '1';
+            var recorded_count = row.find(
+                '.synset-collocation-cell[data-recorded="1"]'
+            ).filter(function () {
+                return selected_map[
+                    $(this).attr('data-member-id')
+                ] === true;
+            }).length;
 
-            var hide_row = only_differences && !has_differences;
+            var has_records = recorded_count > 0;
 
-            row.prop('hidden', hide_row);
+            if (has_records) {
+                relevant_count++;
+            }
 
-            if (!hide_row) {
+            var show_row = has_records
+                && (!only_differences || recorded_count < selected_count);
+
+            row.prop('hidden', !show_row);
+
+            if (show_row) {
                 visible_count++;
             }
         });
@@ -215,37 +307,112 @@ function initSynsetCollocationDifferences() {
             var category_key = category.attr('data-category-key');
 
             var has_visible_rows = rows.filter(function () {
-                return $(this).attr('data-category-key') === category_key && !this.hidden;
+                return $(this).attr('data-category-key') === category_key
+                    && !this.hidden;
             }).length > 0;
 
             category.prop('hidden', !has_visible_rows);
         });
 
-        var no_differences = only_differences && visible_count === 0;
+        table.prop('hidden', visible_count === 0);
 
-        table.prop('hidden', no_differences);
-        empty_message.prop('hidden', !no_differences);
+        no_members.prop('hidden', selected_count !== 0);
+
+        no_records.prop(
+            'hidden',
+            !(selected_count > 0 && relevant_count === 0)
+        );
+
+        no_differences.prop(
+            'hidden',
+            !(only_differences
+                && relevant_count > 0
+                && visible_count === 0)
+        );
 
         if (persist) {
-            try {
-                window.localStorage.setItem(storage_key, only_differences ? '1' : '0');
-            } catch (error) {
-                // При запрете хранилища фильтр продолжает работать.
-            }
+            saveSettings(ids);
         }
     }
 
-    try {
-        checkbox.prop('checked', !checkbox.prop('disabled') && window.localStorage.getItem(storage_key) === '1');
-    } catch (error) {
-        // При недоступном хранилище фильтр по умолчанию выключен.
+    /**
+     * Восстанавливает выбор, исключая отсутствующих в синсете участников.
+     */
+    function restoreMembers() {
+        try {
+            var saved = JSON.parse(
+                window.localStorage.getItem(members_key) || 'null'
+            );
+
+            if (!saved || !$.isArray(saved.ids)) {
+                return;
+            }
+
+            if (saved.all === true) {
+                members.prop('checked', true);
+                return;
+            }
+
+            var saved_map = {};
+
+            $.each(saved.ids, function (index, id) {
+                if (typeof id === 'string' || typeof id === 'number') {
+                    saved_map[String(id)] = true;
+                }
+            });
+
+            var matching_count = members.filter(function () {
+                return saved_map[this.value] === true;
+            }).length;
+
+            if (saved.ids.length > 0 && matching_count === 0) {
+                return;
+            }
+
+            members.each(function () {
+                this.checked = saved_map[this.value] === true;
+            });
+        } catch (error) {
+            // При повреждённой настройке оставляем выбранными всех.
+        }
     }
 
-    checkbox
-        .off('change.synsetCollocationDifferences')
-        .on('change.synsetCollocationDifferences', function () {
-            applyFilter(true);
+    restoreMembers();
+
+    try {
+        differences.prop(
+            'checked',
+            window.localStorage.getItem(differences_key) === '1'
+        );
+    } catch (error) {
+        // При недоступном хранилище фильтр остаётся выключенным.
+    }
+
+    members
+        .off('change.synsetCollocationComparison')
+        .on('change.synsetCollocationComparison', function () {
+            applyComparison(true);
         });
 
-    applyFilter(false);
+    differences
+        .off('change.synsetCollocationComparison')
+        .on('change.synsetCollocationComparison', function () {
+            applyComparison(true);
+        });
+
+    container.find('#synset-collocations-select-all')
+        .off('click.synsetCollocationComparison')
+        .on('click.synsetCollocationComparison', function () {
+            members.prop('checked', true);
+            applyComparison(true);
+        });
+
+    container.find('#synset-collocations-clear-selection')
+        .off('click.synsetCollocationComparison')
+        .on('click.synsetCollocationComparison', function () {
+            members.prop('checked', false);
+            applyComparison(true);
+        });
+
+    applyComparison(false);
 }

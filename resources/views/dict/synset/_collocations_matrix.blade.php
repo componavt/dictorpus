@@ -5,6 +5,33 @@
     {{ trans('collocations.matrix_hint') }}
 </p>
 
+<fieldset class="synset-collocations-members">
+    <legend>{{ trans('collocations.members_title') }}</legend>
+
+    <div class="synset-collocations-member-options">
+        @foreach ($collocation_matrix['columns'] as $member)
+            <label for="compare-member-{{ $member->id }}">
+                <input type="checkbox" id="compare-member-{{ $member->id }}" class="synset-collocation-member-checkbox" value="{{ $member->id }}" checked>
+                {{ $member->lemma->lemma }}<sup>{{ $member->meaning_n }}</sup>
+            </label>
+        @endforeach
+    </div>
+
+    <div>
+        <button type="button" class="btn btn-link btn-sm" id="synset-collocations-select-all">
+            {{ trans('collocations.members_all') }}
+        </button>
+
+        <button type="button" class="btn btn-link btn-sm" id="synset-collocations-clear-selection">
+            {{ trans('collocations.members_none') }}
+        </button>
+    </div>
+
+    <p class="help-block">
+        {{ trans('collocations.members_hint') }}
+    </p>
+</fieldset>
+
 <div class="synset-collocations-filters">
     <label for="synset-collocations-only-differences">
         <input type="checkbox" id="synset-collocations-only-differences" aria-describedby="synset-collocations-differences-hint"
@@ -21,7 +48,22 @@
     {{ trans('collocations.differences_none') }}
 </p>
 
+<p id="synset-collocations-no-members" class="help-block" role="status" hidden>
+    {{ trans('collocations.members_empty') }}
+</p>
+
+<p id="synset-collocations-no-records" class="help-block" role="status" hidden>
+    {{ trans('collocations.members_no_records') }}
+</p>
+
 <div class="synset-collocations-matrix-scroll">
+<?php
+$core_member_ids = [];
+
+foreach ($core_members as $core_member) {
+    $core_member_ids[$core_member->id] = true;
+}
+?>
     <table class="table table-bordered synset-collocations-matrix">
         <thead>
             <tr>
@@ -30,13 +72,13 @@
                 </th>
 
     @if ($core_members->count())
-                <th colspan="{{ $core_members->count() }}" class="text-center">
+                <th colspan="{{ $core_members->count() }}" class="text-center" data-member-section="core">
                     {{ trans('dict.core') }}
                 </th>
     @endif
 
     @if ($periphery_members->count())
-                <th colspan="{{ $periphery_members->count() }}" class="text-center">
+                <th colspan="{{ $periphery_members->count() }}" class="text-center" data-member-section="periphery">
                     {{ trans('dict.periphery') }}
                 </th>
     @endif
@@ -47,7 +89,7 @@
         <?php
         $member_url = LaravelLocalization::localizeURL('/dict/lemma/'.$member->lemma_id).'#meaning-'.$member->id;
         ?>
-                <th scope="col" class="synset-collocation-column">
+                <th scope="col" class="synset-collocation-column" data-member-id="{{ $member->id }}" data-member-group="{{ isset($core_member_ids[$member->id]) ? 'core' : 'periphery' }}">
                     <span class="synset-collocation-name">
                         <a href="{{ $member_url }}" target="_blank" rel="noopener"
                             title="{{ trans('collocations.meaning', ['num' => $member->meaning_n,
@@ -77,7 +119,7 @@
             $partner_url = LaravelLocalization::localizeURL('/dict/lemma/'.$partner_meaning->lemma_id).'#meaning-'.$partner_meaning->id;
             ?>
 
-            <tr class="synset-collocation-data-row" data-category-key="{{ $group_index }}" data-has-differences="{{ count($row['cells']) < $collocation_matrix['columns']->count() ? '1' : '0' }}">
+            <tr class="synset-collocation-data-row" data-category-key="{{ $group_index }}">
                 <th scope="row"
                     class="synset-collocation-partner">
                     <span class="synset-collocation-name">
@@ -92,7 +134,7 @@
                 $collocation = $row['cells'][$member->id] ?? null;
                 ?>
 
-                <td class="synset-collocation-cell">
+                <td class="synset-collocation-cell" data-member-id="{{ $member->id }}" data-recorded="{{ $collocation ? '1' : '0' }}">
                 @if ($collocation)
                     <?php
                     $cell_hint = trans('collocations.matrix_cell_hint',
