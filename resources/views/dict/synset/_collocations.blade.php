@@ -1,4 +1,4 @@
-<div class="synset-collocations" id="synset-collocations">
+<div class="synset-collocations" id="synset-collocations" data-synset-id="{{ $synset->id }}">
     <h3>{{ trans('collocations.synset_title') }}</h3>
 
     <p class="help-block">
