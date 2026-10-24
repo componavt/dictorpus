@@ -14,7 +14,7 @@
         </div>
     </div>
     
-    {!! Form::model($synset, array('method'=>'PUT', 'route' => array('synset.update', $synset->id))) !!}
+    {!! Form::model($synset, ['id' => 'synset-edit-form', 'method' => 'PUT', 'route' => ['synset.update', $synset->id]]) !!}
     @include('dict.synset._form_create_edit', ['submit_title' => trans('messages.save'),
                                   'action' => 'edit'])
     {!! Form::close() !!}

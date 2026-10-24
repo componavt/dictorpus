@@ -66,11 +66,14 @@ return [
     'saved' => 'The collocation has been saved.',
     'search_placeholder' => 'Enter at least two characters',
     'source_summary' => 'Original expert summary (text)',
-    'synset_edit' => 'Edit collocations in a new tab',
+
+    'synset_edit' => 'Edit collocations',
+    'synset_leave_confirm' => 'The synset form has unsaved changes. Leave this page without saving?',
     'synset_meaning_mismatch' => 'The edited meaning does not belong to the specified synset. Reopen the editor from the current synset membership.',
-    'synset_refresh_hint' => 'The editor opens in a new tab. After editing, refresh this page, saving any changes to the synset form first.',
+    'synset_refresh_hint' => 'After editing, use the return-to-synset link in the collocation editor.',
     'synset_saved_members_hint' => 'The saved synset membership is shown. Save the synset first if you have changed its members.',
     'synset_title' => 'Collocations of synset members',
+
     'title' => 'Collocations',
     'use_category' => 'Use this category for a new collocation',
     'use_dictionary_gloss' => 'Use the dictionary gloss',

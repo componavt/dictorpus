@@ -1,4 +1,4 @@
-<div class="synset-collocations" id="synset-collocations" data-synset-id="{{ $synset->id }}">
+<div class="synset-collocations" id="synset-collocations" data-synset-id="{{ $synset->id }}" data-leave-confirm="{{ trans('collocations.synset_leave_confirm') }}">
     <h3>{{ trans('collocations.synset_title') }}</h3>
 
     <p class="help-block">
@@ -42,7 +42,7 @@
             @endif
 
             @if (User::checkAccess('dict.edit'))
-                <a href="{{ $editor_url }}" target="_blank" rel="noopener" title="{{ trans('collocations.synset_edit') }}" aria-label="{{ trans('collocations.synset_edit') }}">
+                <a href="{{ $editor_url }}" title="{{ trans('collocations.synset_edit') }}" aria-label="{{ trans('collocations.synset_edit') }}">
                     <i class="fa fa-pencil-alt fa-lg" aria-hidden="true"></i>
                 </a>
             @endif

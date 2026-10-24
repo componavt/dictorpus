@@ -30,4 +30,5 @@
 
     initSynsetCollocationsView();
     initSynsetCollocationComparison();
+    initSynsetCollocationNavigation();
 @stop

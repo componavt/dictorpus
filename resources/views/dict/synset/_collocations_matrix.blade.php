@@ -148,7 +148,7 @@ foreach ($core_members as $core_member) {
                     ?>
 
                     @if (User::checkAccess('dict.edit'))
-                    <a href="{{ $editor_url }}" target="_blank" rel="noopener" title="{{ $cell_hint }}"
+                    <a href="{{ $editor_url }}" title="{{ $cell_hint }}"
                         aria-label="{{ trans('collocations.edit').': '.$cell_hint }}">
                         <i class="fa fa-check text-success" aria-hidden="true"></i>
                     </a>
@@ -175,7 +175,7 @@ foreach ($core_members as $core_member) {
                         ]);
                         ?>
 
-                    <a href="{{ $add_url }}" class="synset-collocation-add" target="_blank" rel="noopener" title="{{ $add_hint }}" aria-label="{{ $add_hint }}">
+                    <a href="{{ $add_url }}" class="synset-collocation-add" title="{{ $add_hint }}" aria-label="{{ $add_hint }}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                     </a>
                     @else

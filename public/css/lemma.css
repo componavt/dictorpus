@@ -437,9 +437,11 @@ h4 .fa {
     margin: 12px 0 16px;
 }
 
-/* Широкая матрица прокручивается внутри блока. */
+/* Прокрутка длинной и широкой матрицы внутри ограниченного блока. */
 .synset-collocations-matrix-scroll {
-    overflow-x: auto;
+    position: relative;
+    max-height: 70vh;
+    overflow: auto;
 }
 
 .synset-collocations-matrix {
@@ -591,6 +593,20 @@ h4 .fa {
 
 .synset-list-collocations-link {
     margin-top: 8px;
+}
+
+/* Закрепляем обе строки шапки как единый блок. */
+.synset-collocations-matrix>thead {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #fff;
+    box-shadow: 0 2px 0 #ddd;
+}
+
+/* Непрозрачный фон закрывает прокручиваемые под шапкой строки. */
+.synset-collocations-matrix>thead>tr>th {
+    background-color: #fff;
 }
 
 @media screen and (min-width: 767px) {

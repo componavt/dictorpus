@@ -416,3 +416,49 @@ function initSynsetCollocationComparison() {
 
     applyComparison(false);
 }
+
+/**
+ * Предупреждает об изменениях формы перед переходом из блока сочетаемости.
+ */
+function initSynsetCollocationNavigation() {
+    var container = $('#synset-collocations');
+    var form = $('#synset-edit-form');
+
+    if (!container.length || !form.length) {
+        return;
+    }
+
+    var saved_data = form.serialize();
+
+    container
+        .off('click.synsetCollocationNavigation', 'a')
+        .on('click.synsetCollocationNavigation', 'a', function (event) {
+            var link = $(this);
+            var href = link.attr('href');
+            var target = link.attr('target');
+
+            if (!href || href.charAt(0) === '#') {
+                return;
+            }
+
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+                return;
+            }
+
+            if (event.which && event.which !== 1) {
+                return;
+            }
+
+            if (target && target !== '_self') {
+                return;
+            }
+
+            if (form.serialize() === saved_data) {
+                return;
+            }
+
+            if (!window.confirm(container.attr('data-leave-confirm'))) {
+                event.preventDefault();
+            }
+        });
+}
