@@ -1,4 +1,4 @@
-    <p><a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/') }}">{{ trans('messages.back_to_list') }}</a></p>
+    <p><a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/').$args_by_get }}">{{ trans('messages.back_to_list') }}</a></p>
 
     <div class='row' style='margin-bottom: 20px;'>
         <div class='col-sm-6'><b>Язык:</b> {{ $lang->name }}</div>

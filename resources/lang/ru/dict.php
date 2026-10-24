@@ -376,6 +376,7 @@ return [
     'status' => 'статус',
     'status0' => 'не проверено',
     'status1' => 'проверено',
+    'synset_members_required' => 'Добавьте хотя бы одно значение в синсет.',
     'synset_removed' => 'Синсет №:num удален',
     'syntype' => 'тип синонимии',
     'suggest_template' => 'Предложить шаблон',

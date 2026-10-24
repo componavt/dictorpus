@@ -10,10 +10,13 @@
 
 @section('body')
     <p>
-        <a href="{{ $base_url }}">
+        <a href="{{ $editor_url  }}">
             {{ trans('collocations.title') }}
         </a>
-    </p>
+     @if ($synset_url)
+        | <a href="{{ $synset_url }}">{{ trans('collocations.back_to_synset', ['num' => $synset_id]) }}</a>
+    @endif
+   </p>
 
     <p>
         <strong>{{ trans('collocations.copy_target') }}:</strong>
@@ -32,6 +35,8 @@
     @endif
 
     <form method="GET" action="{{ $base_url.'/copy' }}">
+        @include('dict.collocation._synset_context')
+
         <div class="form-group">
             <label for="source_meaning_id">
                 {{ trans('collocations.copy_source') }}
@@ -83,22 +88,15 @@
             ?>
 
             <form method="POST" action="{{ $base_url.'/copy' }}">
-                <input type="hidden"
-                       name="_token"
-                       value="{{ csrf_token() }}">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="source_meaning_id" value="{{ $source->id }}">
+                <input type="hidden" name="selection_submitted" value="1">
 
-                <input type="hidden"
-                       name="source_meaning_id"
-                       value="{{ $source->id }}">
-
-                <input type="hidden"
-                       name="selection_submitted"
-                       value="1">
+                @include('dict.collocation._synset_context')
 
                 <p>
                     <label>
-                        <input type="checkbox"
-                               id="copy-select-all"
+                        <input type="checkbox" id="copy-select-all"
                                {{ !$copyable_count ? 'disabled' : '' }}>
                         {{ trans('collocations.copy_select_all') }}
                     </label>
@@ -173,7 +171,7 @@
                     {{ trans('collocations.copy') }}
                 </button>
 
-                <a href="{{ $base_url }}" class="btn btn-default">
+                <a href="{{ $editor_url  }}" class="btn btn-default">
                     {{ trans('collocations.cancel') }}
                 </a>
             </form>

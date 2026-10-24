@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Dict;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
@@ -95,26 +96,53 @@ class SynsetController extends Controller
         );
     }
 
+    /**
+     * Создаёт непустой синсет и открывает редактор или список.
+     */
     public function store(Request $request)
     {
-        //dd($request->all());        
-        if (!empty($request->meanings)) {
-            $synset = Synset::create($this->validateRequest($request));
-            $synset->meanings()->sync((array)$request->meanings);
-            $synset->pos_id = $synset->meanings()->first()->lemma->pos_id;
-            $synset->save();
-        }
-        return Redirect::to('/service/dict/synsets/' . ($this->args_by_get))
-            ->withSuccess(trans('messages.created_success'));;
+        $this->validate($request, [
+            'meanings' => 'required|array',
+        ], [
+            'meanings.required' => trans('dict.synset_members_required'),
+        ]);
+
+        $synset = Synset::create($this->validateRequest($request));
+
+        $synset->meanings()->sync((array) $request->meanings);
+        $synset->pos_id = $synset->meanings()->first()->lemma->pos_id;
+        $synset->save();
+
+        return $this->redirectAfterSave($request, $synset, 'messages.created_success');
     }
 
+    /**
+     * Открывает редактор синсета и загружает сочетаемость его участников.
+     */
     public function edit($id)
     {
-        $synset = Synset::find($id);
+        $synset = Synset::with([
+            'core.lemma',
+            'core.collocations.collocateMeaning.lemma',
+            'core.collocations.conceptCategory',
+            'periphery.lemma',
+            'periphery.collocations.collocateMeaning.lemma',
+            'periphery.collocations.conceptCategory',
+        ])->findOrFail($id);
+
+        $core_members = $synset->coreWithFrequencies()->values();
+        $periphery_members = $synset->periphery->values();
+        $collocation_members = $core_members
+            ->merge($periphery_members)
+            ->values();
+
+        $collocation_matrix = $synset->collocationsMatrix($collocation_members);
+
         $potential_members = $synset->searchPotentialMembers();
 
         $pos_values = [NULL => ''] + PartOfSpeech::getList();
         $syntype_values = Syntype::getList(1);
+
         $args_by_get = $this->args_by_get;
         $url_args = $this->url_args;
         $action = 'edit';
@@ -123,18 +151,21 @@ class SynsetController extends Controller
             'dict.synset.modify',
             compact(
                 'action',
-                'pos_values',
-                'synset',
-                'potential_members',
-                'syntype_values',
                 'args_by_get',
+                'collocation_matrix',
+                'core_members',
+                'periphery_members',
+                'pos_values',
+                'potential_members',
+                'synset',
+                'syntype_values',
                 'url_args'
             )
         );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Сохраняет синсет и открывает редактор или список по выбранной кнопке.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -142,17 +173,17 @@ class SynsetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $synset = Synset::find($id);
+        $synset = Synset::findOrFail($id);
 
         $synset->comment = $request->comment;
         $synset->descr = $request->descr;
         $synset->collocates = $request->collocates;
-        $synset->dominant_id = (int)$request->dominant_id;
+        $synset->dominant_id = (int) $request->dominant_id;
         $synset->save();
-        $synset->meanings()->sync((array)$request->meanings);
 
-        return Redirect::to('/service/dict/synsets/' . ($this->args_by_get))
-            ->withSuccess(trans('messages.updated_success'));
+        $synset->meanings()->sync((array) $request->meanings);
+
+        return $this->redirectAfterSave($request, $synset, 'messages.updated_success');
     }
 
 
@@ -195,5 +226,22 @@ class SynsetController extends Controller
         }
         return Redirect::to('/service/dict/synsets/' . ($this->args_by_get))
             ->withSuccess($result['message']);
+    }
+
+    /**
+     * Возвращает в редактор или список после сохранения синсета.
+     * Сохраняет язык интерфейса и параметры исходного списка.
+     */
+    protected function redirectAfterSave(Request $request, Synset $synset, $message_key)
+    {
+        $path = $request->input('after_save') === 'list'
+            ? '/service/dict/synsets/'
+            : '/dict/synset/' . $synset->id . '/edit';
+
+        $url = LaravelLocalization::localizeURL($path)
+            . $this->args_by_get;
+
+        return Redirect::to($url)
+            ->withSuccess(trans($message_key));
     }
 }

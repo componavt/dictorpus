@@ -1,4 +1,4 @@
-    <p><a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/') }}">{{ trans('messages.back_to_list') }}</a></p>
+    <p><a href="{{ LaravelLocalization::localizeURL('/service/dict/synsets/').$args_by_get }}">{{ trans('messages.back_to_list') }}</a></p>
     <h2>{{ trans('messages.editing')}} {{ trans('dict.of_synsets')}} <span class='imp'>{{ $synset->name}}</span></h2>
     
     <div class='row' style='margin-bottom: 20px;'>
@@ -18,3 +18,6 @@
     @include('dict.synset._form_create_edit', ['submit_title' => trans('messages.save'),
                                   'action' => 'edit'])
     {!! Form::close() !!}
+<hr>
+
+@include('dict.synset._collocations')

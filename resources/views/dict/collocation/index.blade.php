@@ -9,11 +9,19 @@
 @stop
 
 @section('body')
+    @if (session('matrix_notice'))
+    <div class="alert alert-info">
+        {{ session('matrix_notice') }}
+    </div>
+    @endif
     <p>
         <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id) }}">
             {{ trans('collocations.back_to_article') }}
         </a>
-        | <a href="{{ $base_url.'/copy' }}">{{ trans('collocations.copy_open') }}</a>
+    @if ($synset_url)
+        | <a href="{{ $synset_url }}">{{ trans('collocations.back_to_synset', ['num' => $synset_id]) }}</a>
+    @endif
+        | <a href="{{ $copy_url }}">{{ trans('collocations.copy_open') }}</a>
         | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id.'/history') }}">
             {{ trans('collocations.history') }}
         </a>
@@ -35,10 +43,6 @@
         </div>
     @endif
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
     <h3>
         {{ trans($editing ? 'collocations.edit' : 'collocations.add') }}
     </h3>
@@ -46,6 +50,7 @@
     <form method="POST" action="{{ $editing ? $base_url.'/'.$editing->id : $base_url }}">
 
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        @include('dict.collocation._synset_context')
 
         @if ($editing)
             <input type="hidden" name="_method" value="PUT">
@@ -95,7 +100,7 @@
             </label>
 
             <textarea id="display_gloss" name="display_gloss" class="form-control"
-                      rows="2">{{ old('display_gloss', $editing ? $editing->display_gloss : '') }}</textarea>
+                      rows="2">{{ old('display_gloss', $default_display_gloss) }}</textarea>
 
             <button type="button" id="use-dictionary-gloss" class="btn btn-link">
                 {{ trans('collocations.use_dictionary_gloss') }}
@@ -107,7 +112,7 @@
         </button>
 
         @if ($editing)
-            <a href="{{ $base_url }}" class="btn btn-default">
+            <a href="{{ $editor_url }}" class="btn btn-default">
                 {{ trans('collocations.cancel') }}
             </a>
         @endif
@@ -155,7 +160,7 @@
                         <td>{{ $collocation->display_gloss }}</td>
 
                         <td style="white-space: nowrap">
-                            <a href="{{ $base_url.'?edit='.$collocation->id }}" 
+                            <a href="{{ $base_url.'?'.http_build_query(array_merge($navigation_args, ['edit' => $collocation->id])) }}" 
                                 class="btn btn-default btn-sm btn-warning"
                             title="{{ trans('collocations.edit') }}"
                             aria-label="{{ trans('collocations.edit') }}">
@@ -168,6 +173,8 @@
 
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="_method" value="DELETE">
+
+                                @include('dict.collocation._synset_context')
 
                                 <button type="submit" class="btn btn-danger btn-sm" title="{{ trans('collocations.delete') }}"
                                         aria-label="{{ trans('collocations.delete') }}">

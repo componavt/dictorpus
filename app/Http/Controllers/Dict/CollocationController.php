@@ -16,6 +16,12 @@ use App\Models\Dict\Meaning;
 class CollocationController extends Controller
 {
     /**
+     * Синсет, из которого открыт редактор в текущем запросе.
+     * @var int|null
+     */
+    protected $synset_id = null;
+
+    /**
      * Ограничивает доступ к редактору правом редактирования словаря.
      */
     public function __construct()
@@ -24,23 +30,54 @@ class CollocationController extends Controller
     }
 
     /**
-     * Показывает список сочетаемостей и форму добавления или изменения.
+     * Показывает редактор и предзаполняет добавление при переходе из матрицы.
      */
     public function index(Request $request, $meaning_id)
     {
+        $this->setSynsetContext($request, $meaning_id);
+
         $this->validate($request, [
             'category_id' => 'string|max:4|exists:concept_categories,id',
             'edit' => 'integer|min:1',
+            'partner_id' => 'integer|min:1|exists:meanings,id',
         ]);
 
         $meaning = Meaning::with('lemma')->findOrFail($meaning_id);
 
         $editing = null;
+        $prefill_meaning = null;
 
         if ($request->input('edit')) {
             $editing = $meaning->collocations()
                 ->where('id', (int) $request->input('edit'))
                 ->firstOrFail();
+        }
+
+        if (!$editing && $request->input('partner_id')) {
+            $prefill_meaning = $this->findPartnerMeaning(
+                $request->input('partner_id'),
+                $meaning->lemma->lang_id
+            );
+
+            if (!$prefill_meaning) {
+                abort(422, trans('collocations.wrong_language'));
+            }
+
+            $existing = $meaning->collocations()
+                ->where('collocate_meaning_id', $prefill_meaning->id)
+                ->first();
+
+            if ($existing) {
+                $url = $this->withSynsetContext(
+                    $this->editorUrl($meaning->id),
+                    ['edit' => $existing->id]
+                );
+
+                return redirect($url)->with(
+                    'matrix_notice',
+                    trans('collocations.matrix_pair_exists')
+                );
+            }
         }
 
         $default_category_id = $editing
@@ -55,24 +92,27 @@ class CollocationController extends Controller
 
         $category_values = ConceptCategory::getList();
 
-        $selected_id = $request->old('collocate_meaning_id', $editing ? $editing->collocate_meaning_id : null);
+        $default_partner_id = $editing
+            ? $editing->collocate_meaning_id
+            : ($prefill_meaning ? $prefill_meaning->id : null);
+
+        $selected_id = $request->old(
+            'collocate_meaning_id',
+            $default_partner_id
+        );
 
         $selected_meaning = null;
         $selected_gloss = '';
 
         if (is_scalar($selected_id) && ctype_digit((string) $selected_id)) {
-            $selected_meaning = Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')
-                ->select('meanings.*')
-                ->with('lemma')
-                ->where('meanings.id', (int) $selected_id)
-                ->where('lemmas.lang_id', $meaning->lemma->lang_id)
-                ->first();
+            $selected_meaning = $this->findPartnerMeaning($selected_id, $meaning->lemma->lang_id);
 
             if ($selected_meaning) {
-                $selected_gloss = (string) $selected_meaning
-                    ->getMeaningTextByLangCode('ru');
+                $selected_gloss = (string) $selected_meaning->getMeaningTextByLangCode('ru');
             }
         }
+
+        $default_display_gloss = $editing ? $editing->display_gloss : $selected_gloss;
 
         $base_url = $this->editorUrl($meaning->id);
 
@@ -81,11 +121,12 @@ class CollocationController extends Controller
             'category_values',
             'collocations',
             'default_category_id',
+            'default_display_gloss',
             'editing',
             'meaning',
             'selected_gloss',
-            'selected_meaning',
-        ));
+            'selected_meaning'
+        ))->with($this->navigationData($meaning->id));
     }
 
     /**
@@ -177,6 +218,7 @@ class CollocationController extends Controller
      */
     public function store(Request $request, $meaning_id)
     {
+        $this->setSynsetContext($request, $meaning_id);
         $category_id = DB::transaction(function () use ($request, $meaning_id) {
             $meaning = Meaning::where('id', $meaning_id)
                 ->lockForUpdate()
@@ -194,11 +236,9 @@ class CollocationController extends Controller
             return $collocation->concept_category_id;
         });
 
-        $url = $this->editorUrl($meaning_id);
+        $query = $category_id === null ? [] : ['category_id' => $category_id];
 
-        if ($category_id !== null) {
-            $url .= '?' . http_build_query(['category_id' => $category_id]);
-        }
+        $url = $this->withSynsetContext($this->editorUrl($meaning_id), $query);
 
         return redirect($url)
             ->withSuccess(trans('collocations.saved'));
@@ -209,6 +249,7 @@ class CollocationController extends Controller
      */
     public function update(Request $request, $meaning_id, $collocation_id)
     {
+        $this->setSynsetContext($request, $meaning_id);
         DB::transaction(function () use ($request, $meaning_id, $collocation_id) {
             $meaning = Meaning::where('id', $meaning_id)
                 ->lockForUpdate()
@@ -226,15 +267,17 @@ class CollocationController extends Controller
             }
         });
 
-        return redirect($this->editorUrl($meaning_id))
-            ->withSuccess(trans('collocations.saved'));
+        return redirect(
+            $this->withSynsetContext($this->editorUrl($meaning_id))
+        )->withSuccess(trans('collocations.saved'));
     }
 
     /**
      * Удаляет сочетаемость с сохранением события в истории статьи.
      */
-    public function destroy($meaning_id, $collocation_id)
+    public function destroy(Request $request, $meaning_id, $collocation_id)
     {
+        $this->setSynsetContext($request, $meaning_id);
         DB::transaction(function () use ($meaning_id, $collocation_id) {
             $meaning = Meaning::where('id', $meaning_id)
                 ->lockForUpdate()
@@ -247,8 +290,9 @@ class CollocationController extends Controller
             $collocation->removeWithHistory();
         });
 
-        return redirect($this->editorUrl($meaning_id))
-            ->withSuccess(trans('collocations.deleted'));
+        return redirect(
+            $this->withSynsetContext($this->editorUrl($meaning_id))
+        )->withSuccess(trans('collocations.deleted'));
     }
 
     /**
@@ -318,6 +362,7 @@ class CollocationController extends Controller
      */
     public function copyForm(Request $request, $meaning_id)
     {
+        $this->setSynsetContext($request, $meaning_id);
         $this->validate($request, [
             'source_meaning_id' => 'integer|min:1|exists:meanings,id',
         ], [], [
@@ -369,7 +414,7 @@ class CollocationController extends Controller
             'copyable_count',
             'meaning',
             'source'
-        ));
+        ))->with($this->navigationData($meaning->id));
     }
 
     /**
@@ -377,6 +422,7 @@ class CollocationController extends Controller
      */
     public function copySelected(Request $request, $meaning_id)
     {
+        $this->setSynsetContext($request, $meaning_id);
         $this->validate($request, [
             'source_meaning_id' => 'required|integer|min:1|exists:meanings,id',
             'collocation_ids' => 'required|array',
@@ -458,8 +504,9 @@ class CollocationController extends Controller
             return $result;
         });
 
-        return redirect($this->editorUrl($meaning_id))
-            ->withSuccess(trans('collocations.copy_result', $result));
+        return redirect(
+            $this->withSynsetContext($this->editorUrl($meaning_id))
+        )->withSuccess(trans('collocations.copy_result', $result));
     }
 
     /**
@@ -493,5 +540,94 @@ class CollocationController extends Controller
             === (string) $right->concept_category_id
             && (string) $left->display_gloss
             === (string) $right->display_gloss;
+    }
+
+    /**
+     * Проверяет контекст синсета до выполнения операций редактора.
+     */
+    protected function setSynsetContext(Request $request, $meaning_id)
+    {
+        $this->synset_id = null;
+
+        $this->validate($request, [
+            'synset_id' => 'integer|min:1|exists:synsets,id',
+        ]);
+
+        $synset_id = $request->input('synset_id');
+
+        if ($synset_id === null || $synset_id === '') {
+            return;
+        }
+
+        $synset_id = (int) $synset_id;
+
+        $belongs_to_synset = DB::table('meaning_synset')
+            ->where('synset_id', $synset_id)
+            ->where('meaning_id', (int) $meaning_id)
+            ->exists();
+
+        if (!$belongs_to_synset) {
+            abort(
+                409,
+                trans('collocations.synset_meaning_mismatch')
+            );
+        }
+
+        $this->synset_id = $synset_id;
+    }
+
+    /**
+     * Добавляет проверенный контекст синсета к адресу без query-параметров.
+     */
+    protected function withSynsetContext($url, array $query = [])
+    {
+        if ($this->synset_id !== null) {
+            $query['synset_id'] = $this->synset_id;
+        }
+
+        return $url . ($query ? '?' . http_build_query($query) : '');
+    }
+
+    /**
+     * Формирует ссылки редактора, копирования и возврата к синсету.
+     *
+     * @return array
+     */
+    protected function navigationData($meaning_id)
+    {
+        $base_url = $this->editorUrl($meaning_id);
+
+        $navigation_args = $this->synset_id === null
+            ? []
+            : ['synset_id' => $this->synset_id];
+
+        $synset_url = $this->synset_id === null
+            ? null
+            : LaravelLocalization::localizeURL(
+                '/dict/synset/' . $this->synset_id . '/edit'
+            ) . '#synset-collocations';
+
+        return [
+            'copy_url' => $this->withSynsetContext($base_url . '/copy'),
+            'editor_url' => $this->withSynsetContext($base_url),
+            'navigation_args' => $navigation_args,
+            'synset_id' => $this->synset_id,
+            'synset_url' => $synset_url,
+        ];
+    }
+
+    /**
+     * Находит значение партнёра с проверкой языка исходной леммы.
+     *
+     * @return \App\Models\Dict\Meaning|null
+     */
+    protected function findPartnerMeaning($meaning_id, $lang_id)
+    {
+        return Meaning::join('lemmas', 'lemmas.id', '=', 'meanings.lemma_id')
+            ->select('meanings.*')
+            ->with('lemma')
+            ->where('meanings.id', (int) $meaning_id)
+            ->where('lemmas.lang_id', $lang_id)
+            ->first();
     }
 }

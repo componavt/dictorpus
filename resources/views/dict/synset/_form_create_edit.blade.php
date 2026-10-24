@@ -3,14 +3,14 @@
         @if (!empty($synset) && $action=='edit')
             @if (count($synset->core))
         <tr><th colspan='3'>{{ trans('dict.core') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
-                @foreach ($synset->coreWithFrequencies() as $meaning)
+                @foreach ($core_members as $meaning)
 @include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id, 'button'=>'remove', 'disabled'=>false])
                 @endforeach
             @endif
         
             @if (count($synset->periphery))
         <tr><th colspan='3'>{{ trans('dict.periphery') }}</th><th>{{ trans('dict.syntype') }}</th></tr>
-                @foreach ($synset->periphery as $meaning)
+                @foreach ($periphery_members as $meaning)
 @include('/dict/synset/_meaning_row', ['syntype_id'=>$meaning->pivot->syntype_id, 'button'=>'remove', 'disabled'=>false])
                 @endforeach
             @endif                
@@ -19,22 +19,12 @@
     @include('widgets.form.formitem._textarea',
             ['name' => 'collocates',
              'attributes' => ['rows' => 5],
-             'title' => 'Сочетаемость'])                
+             'title' => trans('collocations.source_summary')])                
 
-    <div class="row">
-        <div class="col-sm-6">
-            @include('widgets.form.formitem._textarea',
-                    ['name' => 'comment',
-                     'attributes' => ['rows' => 3],
-                     'title' => 'Русские синонимы'])                
-        </div>
-        <div class="col-sm-6">
-            @include('widgets.form.formitem._textarea',
-                    ['name' => 'descr',
-                     'attributes' => ['rows' => 3],
-                     'title' => 'Определение доминанты'])                
-        </div>
-    </div>
+    @include('widgets.form.formitem._textarea',
+            ['name' => 'comment',
+                'attributes' => ['rows' => 3],
+                'title' => 'Русские синонимы'])                
 
     <table style="width: 100%">
         <tr><th><i class="fa fa-sync-alt fa-lg reload-list" title="перегрузить список с учетом комментария" onclick="reloadPotentialMembers('{{ !empty($synset)? $synset->id : 0 }}', '{{ !empty($synset)? $synset->lang_id : $lang->id }}')"></i></th>
@@ -61,4 +51,12 @@
         </div>
     </div>
 
-    @include('widgets.form.formitem._submit', ['title' => $submit_title])
+    <div class="form-group">
+        <button type="submit" name="after_save" value="edit" class="btn btn-primary btn-default">
+            {{ $submit_title }}
+        </button>
+
+        <button type="submit" name="after_save" value="list" class="btn btn-default">
+            {{ trans($action === 'create' ? 'messages.create_and_back_to_list' : 'messages.save_and_back_to_list') }}
+        </button>
+    </div>

@@ -371,6 +371,7 @@ return [
     'status0' => 'is not checked',
     'status1' => 'is checked',
     'suggest_template' => 'suggest a template',
+    'synset_members_required' => 'Add at least one meaning to the synset.',
     'syntype' => 'type of synonymy',
 
     'tense' => 'Tense',

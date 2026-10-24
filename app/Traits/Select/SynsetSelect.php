@@ -162,4 +162,88 @@ trait SynsetSelect
             ->with('meaningTexts')
             ->get();
     }
+
+    /**
+     * Строит матрицу сочетаемости по предварительно загруженным участникам.
+     *
+     * Строки различаются по категории и значению слова-партнёра.
+     * Ячейки содержат исходные записи Collocation.
+     *
+     * @param \Illuminate\Support\Collection $members
+     * @return array
+     */
+    public function collocationsMatrix($members)
+    {
+        $columns = $members->values();
+        $groups = [];
+
+        foreach ($columns as $member) {
+            foreach ($member->collocations as $collocation) {
+                $category_id = $collocation->concept_category_id;
+
+                $group_key = $category_id === null ? '__uncategorized__' : $category_id;
+
+                if (!isset($groups[$group_key])) {
+                    $groups[$group_key] = [
+                        'category' => $collocation->conceptCategory,
+                        'rows' => [],
+                    ];
+                }
+
+                $partner_id = $collocation->collocate_meaning_id;
+
+                if (!isset($groups[$group_key]['rows'][$partner_id])) {
+                    $groups[$group_key]['rows'][$partner_id] = [
+                        'meaning' => $collocation->collocateMeaning,
+                        'cells' => [],
+                    ];
+                }
+
+                $groups[$group_key]['rows'][$partner_id]['cells'][$member->id]
+                    = $collocation;
+            }
+        }
+
+        foreach ($groups as &$group) {
+            uasort($group['rows'], function ($left, $right) {
+                $left_meaning = $left['meaning'];
+                $right_meaning = $right['meaning'];
+
+                $comparison = strcmp(mb_strtolower($left_meaning->lemma->lemma), mb_strtolower($right_meaning->lemma->lemma));
+
+                if ($comparison !== 0) {
+                    return $comparison;
+                }
+
+                $comparison = $left_meaning->meaning_n
+                    <=> $right_meaning->meaning_n;
+
+                return $comparison !== 0 ? $comparison : $left_meaning->id <=> $right_meaning->id;
+            });
+
+            $group['rows'] = array_values($group['rows']);
+        }
+
+        unset($group);
+
+        uasort($groups, function ($left, $right) {
+            $left_category = $left['category'];
+            $right_category = $right['category'];
+
+            if ($left_category === null) {
+                return $right_category === null ? 0 : 1;
+            }
+
+            if ($right_category === null) {
+                return -1;
+            }
+
+            return strnatcmp((string) $left_category->id, (string) $right_category->id);
+        });
+
+        return [
+            'columns' => $columns,
+            'groups' => array_values($groups),
+        ];
+    }
 }

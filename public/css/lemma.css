@@ -403,6 +403,123 @@ h4 .fa {
     margin: 0;
 }
 
+.synset-collocations {
+    margin-top: 20px;
+}
+
+.synset-collocation-member {
+    margin: 12px 0 18px;
+    padding-left: 14px;
+    border-left: 2px solid #eee;
+}
+
+.synset-collocation-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.synset-collocation-name {
+    white-space: nowrap;
+}
+
+.synset-collocation-name>a {
+    font-weight: bold;
+}
+
+/* Переключение представлений сочетаемости синсета. */
+.synset-collocations-view-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 16px;
+}
+
+/* Широкая матрица прокручивается внутри блока. */
+.synset-collocations-matrix-scroll {
+    overflow-x: auto;
+}
+
+.synset-collocations-matrix {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.synset-collocations-matrix .synset-collocation-partner {
+    min-width: 160px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.synset-collocations-matrix .synset-collocation-column,
+.synset-collocations-matrix .synset-collocation-cell {
+    min-width: 85px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.synset-collocations-matrix .synset-collocation-partner a {
+    font-weight: normal;
+}
+
+.synset-collocation-dominant {
+    display: block;
+    margin-top: 4px;
+    font-weight: normal;
+    color: #777;
+}
+
+.synset-collocation-category-row>th {
+    background: #f5f5f5;
+    font-weight: normal;
+}
+
+.synset-collocation-cell>a {
+    display: inline-block;
+    padding: 4px 10px;
+}
+
+/* Скрытое представление не занимает места. */
+.synset-collocations [hidden] {
+    display: none !important;
+}
+
+/* В матрице сохраняем исходный регистр лемм и названий. */
+.table.synset-collocations-matrix th::first-letter {
+    text-transform: none;
+}
+
+/* Ссылки занимают доступную ширину ячейки матрицы. */
+.table.synset-collocations-matrix>tbody>tr>td.synset-collocation-cell {
+    padding: 0;
+}
+
+.synset-collocations-matrix .synset-collocation-cell>a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 8px 10px;
+    text-decoration: none;
+}
+
+/* Пустая ячейка остаётся визуально пустой до наведения или фокуса. */
+.synset-collocation-add>i {
+    opacity: 0;
+}
+
+.synset-collocation-add:hover,
+.synset-collocation-add:focus {
+    background-color: #f5f5f5;
+}
+
+.synset-collocation-add:hover>i,
+.synset-collocation-add:focus>i {
+    opacity: 0.7;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

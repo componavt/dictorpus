@@ -58,6 +58,19 @@ class PartOfSpeech extends Model
     // Methods
     use \App\Traits\Methods\getNameAttribute;
 
+    public function getNameShortAttribute(): String
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $column = "name_short_" . $locale;
+        $name = $this->{$column};
+
+        if (!$name && $locale != 'ru') {
+            $name = $this->name_short_ru;
+        }
+
+        return $name ? $name : '';
+    }
+
     /* TODO: разобраться для какого проекта объединяли предлоги и послелоги?       
     // muttator
     public function getCodeAttribute($code)

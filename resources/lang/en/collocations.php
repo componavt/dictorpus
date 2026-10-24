@@ -4,6 +4,7 @@ return [
     'add' => 'Add a collocation',
     'actions' => 'Actions',
     'back_to_article' => 'Back to the entry',
+    'back_to_synset' => 'Return to synset #:num',
     'cancel' => 'Cancel',
     'category' => 'Category',
     'confirm_delete' => 'Delete this collocation?',
@@ -33,6 +34,15 @@ return [
     'edit' => 'Edit a collocation',
     'lemma_in_use' => 'Meanings of this entry are used in collocations. Delete the related collocations first.',
     'list' => 'Recorded collocations',
+
+    'matrix_add_hint' => 'Add the collocation :source + :partner',
+    'matrix_cell_hint' => ':source + :partner — :gloss',
+    'matrix_empty' => 'No collocations have been recorded for comparison yet.',
+    'matrix_hint' => 'Click a mark to edit a collocation, or an empty cell to add one with the collocate meaning and category already selected. Hover over a mark to see the saved gloss. An empty cell means that no record exists in this category, not that the combination is impossible.',
+    'matrix_not_recorded' => 'No record in this category',
+    'matrix_pair_exists' => 'This pair of meanings has already been recorded. The existing record has been opened; its category may differ from the selected matrix row.',
+    'matrix_recorded' => 'Collocation recorded',
+
     'meaning' => 'Meaning :num',
     'meaning_in_use' => 'This meaning is used in collocations. Delete the related collocations first.',
     'partner' => 'Collocate and meaning',
@@ -40,9 +50,19 @@ return [
     'save_failed' => 'The collocation could not be saved.',
     'saved' => 'The collocation has been saved.',
     'search_placeholder' => 'Enter at least two characters',
+    'source_summary' => 'Original expert summary (text)',
+    'synset_edit' => 'Edit collocations in a new tab',
+    'synset_meaning_mismatch' => 'The edited meaning does not belong to the specified synset. Reopen the editor from the current synset membership.',
+    'synset_refresh_hint' => 'The editor opens in a new tab. After editing, refresh this page, saving any changes to the synset form first.',
+    'synset_saved_members_hint' => 'The saved synset membership is shown. Save the synset first if you have changed its members.',
+    'synset_title' => 'Collocations of synset members',
     'title' => 'Collocations',
     'use_category' => 'Use this category for a new collocation',
     'use_dictionary_gloss' => 'Use the dictionary gloss',
+
+    'view_matrix' => 'Comparison',
+    'view_words' => 'By word',
+
     'without_category' => 'Uncategorized',
     'wrong_language' => 'The collocate must have the same language as the source lemma.',
 ];

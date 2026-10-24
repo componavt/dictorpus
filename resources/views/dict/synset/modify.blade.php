@@ -5,8 +5,8 @@
 @stop
 
 @section('headExtra')
-    {!!Html::style('css/select2.min.css')!!}
-    {!!Html::style('css/lemma.css')!!}
+    {!! css('select2.min') !!}
+    {!! css('lemma') !!}
 @stop
 
 @section('body')      
@@ -26,5 +26,26 @@
         id = $(this).data('id');
         $(".meaning-row").css('font-weight', 'normal');
         $("#meaning-"+id).css('font-weight', 'bold');
+    });
+
+    // Переключает представления сочетаемости без отправки формы.
+    $('.synset-collocations-view').on('click', function () {
+        var button = $(this);
+        var container = button.closest('.synset-collocations');
+        var show_matrix = button.attr('data-view') === 'matrix';
+
+        container.find('#synset-collocations-words')
+            .prop('hidden', show_matrix);
+
+        container.find('#synset-collocations-matrix')
+            .prop('hidden', !show_matrix);
+
+        container.find('.synset-collocations-view')
+            .removeClass('active')
+            .attr('aria-pressed', 'false');
+
+        button
+            .addClass('active')
+            .attr('aria-pressed', 'true');
     });
 @stop

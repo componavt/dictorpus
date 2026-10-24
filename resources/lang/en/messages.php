@@ -9,23 +9,24 @@ return [
     |
     |
     */
-    
+
     'actions' => 'Actions',
     'apply' => 'Show',
-    
+
     'back_to_list' => 'Return to list',
     'back_to_show' => 'Return to review',
     'bin_answer_0' => 'no',
     'bin_answer_1' => 'yes',
-    'bin_answers' => [1=>'yes', 0=>'no'],
+    'bin_answers' => [1 => 'yes', 0 => 'no'],
     'category' => 'category',
     'changed' => 'changed',
     'check' => 'check',
     'choose' => 'choose',
-    'close' => 'close', 
+    'close' => 'close',
     'code' => 'code',
     'confirm_delete' => 'Do you want to delete this item?',
     'copy' => 'copy',
+    'create_and_back_to_list' => 'Create and return to the list',
     'create_new_f' => 'Create a new',
     'create_new_m' => 'Create a new',
     'create_new_g' => 'Create a new',
@@ -42,7 +43,7 @@ return [
     'filename' => 'Filename',
     'frequency' => 'frequency',
     'from' => 'from',
-    
+
     'history' => 'history',
     'in_english' => 'in English',
     'in_pl' => 'in plural',
@@ -61,6 +62,7 @@ return [
     'reload' => 'reload',
     'reset' => 'reset',
     'save' => 'save',
+    'save_and_back_to_list' => 'Save and return to the list',
     'script_executed' => 'The script was executed in :n sec.',
     'search' => 'search',
     'seq_num' => 's/n',
@@ -81,5 +83,5 @@ return [
     'upload' => 'upload',
     'view' => 'view',
     'year' => 'year',
-    'waiting' => 'Please wait, data is loading...',    
+    'waiting' => 'Please wait, data is loading...',
 ];
