@@ -1,0 +1,94 @@
+.meaning-example-sentence .example-source {
+    background-color: #fff0a8;
+    color: #222;
+    border-radius: 2px;
+}
+
+.meaning-example-sentence .example-partner {
+    background-color: #ccefdc;
+    color: #222;
+    border-radius: 2px;
+}
+
+.meaning-example-sentence .example-source.example-partner {
+    background-color: #e2d5f5;
+}
+
+.meaning-example-sentence .links-to-lemmas {
+    text-align: left;
+    white-space: normal;
+}
+
+.meaning-example-sentence .links-to-lemmas p {
+    margin: 0;
+}
+
+.meaning-example-sentence .example-review-block {
+    margin: -10px;
+    padding: 10px;
+}
+
+.meaning-example-sentence .example-review-checked {
+    background-color: #a6f4bc;
+}
+
+.meaning-example-sentence .example-review-plus {
+    background: none;
+    border: 0;
+    color: #f0ad4e;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.meaning-example-sentence .example-review-plus.example-review-source {
+    color: #337ab7;
+}
+
+.meaning-example-sentence .example-review-plus:disabled {
+    cursor: wait;
+    opacity: 0.5;
+}
+
+.meaning-example-sentence .example-review-block .gramsets_b {
+    margin-top: 5px;
+    padding-top: 5px;
+}
+
+.meaning-example-sentence .example-review-actions {
+    margin-top: 6px;
+    text-align: right;
+}
+
+.meaning-example-sentence .example-review-reset {
+    background: none;
+    border: 0;
+    color: #222;
+    cursor: pointer;
+    padding: 3px 4px;
+}
+
+.meaning-example-sentence .example-review-reset:disabled {
+    cursor: wait;
+    opacity: 0.5;
+}
+
+.meaning-example-sentence .example-add-collocation {
+    margin: 6px 0;
+}
+
+.example-distance-range {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.example-distance-range label {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.example-distance-range .form-control {
+    flex: 0 0 80px;
+    width: 80px;
+}

@@ -85,11 +85,13 @@ Route::group(
         Route::get('lemma_wordform/pos_common_wordforms', 'Dict\LemmaWordformController@posCommonWordforms');
 
         Route::get('meaning/create', 'Dict\MeaningController@create');
+        Route::get('meaning/down/{id}', 'Dict\MeaningController@down');
         Route::get('meaning/example/add/{example_id}/{relevance}', 'Dict\MeaningController@addExample');
         //        Route::get('meaning/examples/reload/{id}', 'Dict\MeaningController@reloadExamples');
         Route::get('meaning/examples/load/{id}', 'Dict\MeaningController@loadExamples');
         Route::get('meaning/examples/load_more/{id}', 'Dict\MeaningController@loadMoreExamples');
         Route::get('meaning/full_new_list', 'Dict\MeaningController@fullNewList');
+        Route::get('meaning/up/{id}', 'Dict\MeaningController@up');
         Route::get('meaning/{meaning_id}/add_label/{label_id}', 'Dict\MeaningController@addLabel');
 
         // Редактор сочетаемости конкретного значения.
@@ -101,12 +103,16 @@ Route::group(
         Route::get('meaning/{meaning_id}/collocations', 'Dict\CollocationController@index');
         Route::post('meaning/{meaning_id}/collocations', 'Dict\CollocationController@store');
 
+        Route::get('meaning/{meaning_id}/examples/partners', 'Library\MeaningExampleController@partners')->where('meaning_id', '[0-9]+');
+        Route::get('meaning/{meaning_id}/examples/search', 'Library\MeaningExampleController@index')->where('meaning_id', '[0-9]+')->name('meaning.examples.search');
+        Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/gramset', 'Library\MeaningExampleController@confirmGramset')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
+        Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/meaning', 'Library\MeaningExampleController@confirmMeaning')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
+        Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/reset', 'Library\MeaningExampleController@resetWord')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
+        Route::get('meaning/{meaning_id}/examples/word/{text_id}_{w_id}', 'Library\MeaningExampleController@wordBlock')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/remove_label/{label_id}', 'Dict\MeaningController@removeLabel');
         Route::get('meaning/{meaning_id}/photo', 'Dict\MeaningController@photo');
         Route::get('meaning/{id}/edit', 'Dict\MeaningController@edit');
         Route::get('meaning/{id}/update', 'Dict\MeaningController@update');
-        Route::get('meaning/up/{id}', 'Dict\MeaningController@up');
-        Route::get('meaning/down/{id}', 'Dict\MeaningController@down');
 
         Route::get('pos', 'Dict\PartOfSpeechController@index');
 
