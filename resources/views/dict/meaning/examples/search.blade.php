@@ -13,8 +13,8 @@
 
 @section('body')
 <div
-    class="meaning-example-search"
-    data-distance-from="{{ $distance_from }}"
+    class="meaning-example-search" data-synset-id="{{ $synset_id }}"
+    data-distance-from="{{ $distance_from }}" data-examples-return="{{ $examples_return }}"
     data-distance-to="{{ $distance_to }}"
     data-word-block-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/word') }}"
     data-csrf-token="{{ csrf_token() }}"
@@ -191,25 +191,26 @@
 @stop
 
 @section('jqueryFunc')
-initExamplePartnerSelect();
-initExampleCollocationLinks();
+    initExamplePartnerSelect();
+    initExampleCollocationLinks();
 
-var example_page = $('.meaning-example-search');
+    var example_page = $('.meaning-example-search');
 
-showWordBlock('{{ LaravelLocalization::getCurrentLocale() }}',
-example_page.attr('data-word-block-url'),
-{
-distance_from: example_page.attr('data-distance-from'),
-distance_to: example_page.attr('data-distance-to')
-}
-);
+    showWordBlock('{{ LaravelLocalization::getCurrentLocale() }}',
+        example_page.attr('data-word-block-url'),
+        {
+            distance_from: example_page.attr('data-distance-from'),
+            distance_to: example_page.attr('data-distance-to'),
+            synset_id: example_page.attr('data-synset-id') || '',
+            examples_return: example_page.attr('data-examples-return') || ''
 
-$('.meaning-example-sentence').on(
-'click',
-'.links-to-lemmas',
-function (event) {
-event.stopPropagation();
-}
-);
+        }
+    );
+
+    $('.meaning-example-sentence').on('click', '.links-to-lemmas',
+        function (event) {
+            event.stopPropagation();
+        }
+    );
 
 @stop

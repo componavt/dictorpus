@@ -34,7 +34,7 @@
 
     @if ($add_collocation_url)
         <p class="example-add-collocation">
-            <a href="{{ $add_collocation_url }}" target="_blank" rel="noopener">
+            <a href="{{ $add_collocation_url }}">
                 {{ trans('meaning_examples.add_collocation') }}
             </a>
         </p>

@@ -38,6 +38,8 @@ function saveExampleAnnotation(el, action, data) {
     data.distance_to = page.attr('data-distance-to');
     data.source_w_id = word.attr('data-source-w-id');
     data.fragment_id = word.attr('data-fragment-id');
+    data.synset_id = page.attr('data-synset-id') || '';
+    data.examples_return = page.attr('data-examples-return') || '';
 
     var word_key = word.attr('data-word-key') || word.attr('id');
 
@@ -171,7 +173,8 @@ function rateSourceExample(el) {
             source_w_id: card.attr('data-source-w-id'),
             fragment_id: card.attr('data-fragment-id'),
             distance_from: page.attr('data-distance-from'),
-            distance_to: page.attr('data-distance-to')
+            distance_to: page.attr('data-distance-to'),
+            synset_id: page.attr('data-synset-id') || ''
         },
         success: function (result) {
             updateExampleRating(card, parseInt(result.relevance, 10));

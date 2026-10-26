@@ -23,6 +23,8 @@ use App\Library\MeaningExampleSearch;
 class MeaningExampleController extends Controller
 {
     protected $review_context = [];
+    protected $synset_id = null;
+    protected $examples_return = '';
 
     /**
      * Показывает найденные предложения без изменения корпусных связей.
@@ -36,6 +38,7 @@ class MeaningExampleController extends Controller
         ])->findOrFail($meaning_id);
 
         $synset_id = $this->exampleSynsetId($request, $source);
+        $this->synset_id = $synset_id;
 
         $input = [
             'distance_from' => $request->input('distance_from', -1),
@@ -153,6 +156,7 @@ class MeaningExampleController extends Controller
                 ]);
         }
 
+        $this->examples_return = $examples_return;
         $word_blocks = [];
 
         if ($sentences && count($sentences)) {
@@ -335,6 +339,9 @@ class MeaningExampleController extends Controller
      */
     protected function reviewWord($meaning_id, $text_id, $w_id, Request $request)
     {
+        $this->validate($request, ['examples_return' => 'string|max:4096']);
+        $this->examples_return = (string) $request->input('examples_return', '');
+
         $interval = [
             'distance_from' => $request->input('distance_from', -1),
             'distance_to' => $request->input('distance_to', 1),
@@ -364,6 +371,7 @@ class MeaningExampleController extends Controller
         }
 
         $source = Meaning::with('lemma')->findOrFail($meaning_id);
+        $this->synset_id = $this->exampleSynsetId($request, $source);
 
         $word = Word::with('text')
             ->where('text_id', $text_id)
@@ -435,12 +443,25 @@ class MeaningExampleController extends Controller
                 ->where('w_id', $review_context['source_w_id'])
                 ->value('relevance');
 
+        $examples_return = '';
+
+        if ($this->examples_return !== '') {
+            $return_parts = explode('#', $this->examples_return, 2);
+
+            $examples_return = $return_parts[0]
+                . '#sentence-' . $source->id
+                . '_' . $word->text_id
+                . '_' . $word->s_id
+                . '_' . $review_context['source_w_id'];
+        }
+
         $add_collocation_url = $read_only ? null
             : $this->collocationEditorUrl(
                 $source,
                 $word,
                 $word_meanings['checked'] ?? null,
-                $interval
+                $interval,
+                $examples_return
             );
 
         return view(
@@ -608,24 +629,13 @@ class MeaningExampleController extends Controller
      *
      * @return string|null
      */
-    protected function collocationEditorUrl(
-        Meaning $source,
-        Word $word,
-        ?Meaning $partner,
-        array $interval
-    ) {
-        if (
-            !User::checkAccess('dict.edit')
-            || !$partner
-            || (int) $partner->relevance <= 1
-        ) {
+    protected function collocationEditorUrl(Meaning $source, Word $word, ?Meaning $partner, array $interval, $examples_return = '')
+    {
+        if (!User::checkAccess('dict.edit') || !$partner || (int) $partner->relevance <= 1) {
             return null;
         }
 
-        if (
-            (int) $partner->lemma->lang_id
-            !== (int) $source->lemma->lang_id
-        ) {
+        if ((int) $partner->lemma->lang_id !== (int) $source->lemma->lang_id) {
             return null;
         }
 
@@ -663,11 +673,17 @@ class MeaningExampleController extends Controller
             return null;
         }
 
-        return LaravelLocalization::localizeURL(
-            '/dict/meaning/' . $source->id . '/collocations'
-        ) . '?' . http_build_query([
-            'partner_id' => $partner->id,
-        ]);
+        $query = ['partner_id' => $partner->id];
+
+        if ($this->synset_id !== null) {
+            $query['synset_id'] = $this->synset_id;
+        }
+
+        if ($examples_return !== '') {
+            $query['examples_return'] = $examples_return;
+        }
+
+        return LaravelLocalization::localizeURL('/dict/meaning/' . $source->id . '/collocations') . '?' . http_build_query($query);
     }
 
     /**

@@ -20,6 +20,7 @@ class CollocationController extends Controller
      * @var int|null
      */
     protected $synset_id = null;
+    protected $examples_return = null;
 
     /**
      * Ограничивает доступ к редактору правом редактирования словаря.
@@ -547,6 +548,7 @@ class CollocationController extends Controller
      */
     protected function setSynsetContext(Request $request, $meaning_id)
     {
+        $this->examples_return = $this->exampleReturnData($request, $meaning_id);
         $this->synset_id = null;
 
         $this->validate($request, [
@@ -577,12 +579,16 @@ class CollocationController extends Controller
     }
 
     /**
-     * Добавляет проверенный контекст синсета к адресу без query-параметров.
+     * Добавляет навигационный контекст к адресу без query-параметров.
      */
     protected function withSynsetContext($url, array $query = [])
     {
         if ($this->synset_id !== null) {
             $query['synset_id'] = $this->synset_id;
+        }
+
+        if ($this->examples_return !== null) {
+            $query['examples_return'] = $this->examples_return['path'];
         }
 
         return $url . ($query ? '?' . http_build_query($query) : '');
@@ -597,19 +603,16 @@ class CollocationController extends Controller
     {
         $base_url = $this->editorUrl($meaning_id);
 
-        $navigation_args = $this->synset_id === null
-            ? []
+        $navigation_args = $this->synset_id === null ? []
             : ['synset_id' => $this->synset_id];
 
-        $synset_url = $this->synset_id === null
-            ? null
-            : LaravelLocalization::localizeURL(
-                '/dict/synset/' . $this->synset_id . '/edit'
-            ) . '#synset-collocations';
+        $synset_url = $this->synset_id === null ? null
+            : LaravelLocalization::localizeURL('/dict/synset/' . $this->synset_id . '/edit') . '#synset-collocations';
 
         return [
             'copy_url' => $this->withSynsetContext($base_url . '/copy'),
             'editor_url' => $this->withSynsetContext($base_url),
+            'examples_return' => $this->examples_return,
             'navigation_args' => $navigation_args,
             'synset_id' => $this->synset_id,
             'synset_url' => $synset_url,
@@ -629,5 +632,75 @@ class CollocationController extends Controller
             ->where('meanings.id', (int) $meaning_id)
             ->where('lemmas.lang_id', $lang_id)
             ->first();
+    }
+
+    /**
+     * Проверяет внутренний адрес возврата к примерам исходного значения.
+     */
+    protected function exampleReturnData(Request $request, $meaning_id)
+    {
+        $return_path = $request->input('examples_return');
+
+        if ($return_path === null || $return_path === '') {
+            return null;
+        }
+
+        $this->validate($request, [
+            'examples_return' => 'required|string|max:4096',
+        ]);
+
+        $parts = parse_url($return_path);
+
+        $path = '/dict/meaning/' . (int) $meaning_id . '/examples/search';
+
+        if (
+            $parts === false
+            || isset($parts['scheme'])
+            || isset($parts['host'])
+            || ($parts['path'] ?? '') !== $path
+        ) {
+            abort(422);
+        }
+
+        $query = [];
+        parse_str($parts['query'] ?? '', $query);
+
+        $query = array_intersect_key($query, array_flip([
+            'distance_from',
+            'distance_to',
+            'only_checked',
+            'page',
+            'partner_meaning_id',
+            'per_page',
+            'same_gramset',
+            'synset_id',
+        ]));
+
+        foreach ($query as $value) {
+            if (!is_scalar($value)) {
+                abort(422);
+            }
+        }
+
+        $fragment = $parts['fragment'] ?? '';
+
+        if (
+            $fragment !== ''
+            && !preg_match(
+                '~^sentence-' . (int) $meaning_id
+                    . '_[0-9]+_[0-9]+_[0-9]+$~D',
+                $fragment
+            )
+        ) {
+            abort(422);
+        }
+
+        $suffix = $query ? '?' . http_build_query($query) : '';
+        $suffix .= $fragment !== '' ? '#' . $fragment : '';
+
+        return [
+            'path' => $path . $suffix,
+            'url' => LaravelLocalization::localizeURL($path) . $suffix,
+        ];
     }
 }
