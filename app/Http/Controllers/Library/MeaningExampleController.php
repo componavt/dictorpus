@@ -689,11 +689,8 @@ class MeaningExampleController extends Controller
     /**
      * Проверяет исходное употребление и ограничения показанного фрагмента.
      */
-    protected function reviewContext(
-        Meaning $source,
-        Word $word,
-        Request $request
-    ) {
+    protected function reviewContext(Meaning $source, Word $word, Request $request)
+    {
         $this->validate($request, [
             'fragment_id' => 'required|integer|min:0',
             'source_w_id' => 'required|integer|min:1',
@@ -718,16 +715,27 @@ class MeaningExampleController extends Controller
             abort(404);
         }
 
-        $fragment = SentenceFragment::where(
-            'sentence_id',
-            $source_word->sentence_id
-        )
+        $fragment = SentenceFragment::where('sentence_id', $source_word->sentence_id)
             ->where('w_id', $source_w_id)
             ->orderBy('id')
             ->first();
 
-        $is_fragment = $fragment
-            && trim((string) $fragment->text_xml) !== '';
+        $is_fragment = false;
+
+        if ($fragment && trim((string) $fragment->text_xml) !== '') {
+            $original_xml = DB::table('sentences')
+                ->where('id', $source_word->sentence_id)
+                ->value('text_xml');
+
+            if ($original_xml === null) {
+                abort(404);
+            }
+
+            $is_fragment = SentenceFragment::differsFromOriginal(
+                $fragment->text_xml,
+                $original_xml
+            );
+        }
 
         $fragment_id = $is_fragment ? (int) $fragment->id : 0;
 

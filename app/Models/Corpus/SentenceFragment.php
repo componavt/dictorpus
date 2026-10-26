@@ -9,7 +9,7 @@ use App\Models\Corpus\Sentence;
 class SentenceFragment extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['sentence_id','w_id','text_xml'];
+    protected $fillable = ['sentence_id', 'w_id', 'text_xml'];
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 
@@ -23,13 +23,26 @@ class SentenceFragment extends Model
     {
         parent::boot();
     }
-    
+
     // Belongs To Relations
     use \App\Traits\Relations\BelongsTo\Lang;
     use \App\Traits\Relations\BelongsTo\Sentence;
 
-    public static function getBySW($sentence_id, $w_id) {
+    public static function getBySW($sentence_id, $w_id)
+    {
         return self::whereSentenceId($sentence_id)
-                   ->whereWId($w_id)->first();
+            ->whereWId($w_id)->first();
+    }
+
+    /**
+     * Проверяет, содержит ли фрагмент непустой XML, отличный от оригинала.
+     */
+    public static function differsFromOriginal($fragment_xml, $original_xml)
+    {
+        $fragment_xml = trim((string) $fragment_xml);
+        $original_xml = trim((string) $original_xml);
+
+        return $fragment_xml !== ''
+            && $fragment_xml !== $original_xml;
     }
 }

@@ -5,6 +5,8 @@ namespace App\Library;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Models\Corpus\SentenceFragment;
+
 class MeaningExampleData
 {
     protected $source_meaning_id;
@@ -178,13 +180,8 @@ class MeaningExampleData
     /**
      * Готовит текст, перевод и адрес оценки конкретного употребления.
      */
-    protected function buildSourceExample(
-        array $item,
-        array $matches,
-        array $fragments,
-        array $translations,
-        array $text_titles
-    ) {
+    protected function buildSourceExample(array $item, array $matches, array $fragments, array $translations, array $text_titles)
+    {
         $match = $matches[0];
         $source_w_id = (int) $match['source_w_id'];
         $key = $item['sentence_id'] . ':' . $source_w_id;
@@ -192,7 +189,10 @@ class MeaningExampleData
         $fragment = $fragments[$key] ?? null;
 
         $is_fragment = $fragment
-            && trim((string) $fragment->text_xml) !== '';
+            && SentenceFragment::differsFromOriginal(
+                $fragment->text_xml,
+                $item['text_xml']
+            );
 
         $translation_values = $translations[$key] ?? [];
 
