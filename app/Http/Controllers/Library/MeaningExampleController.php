@@ -35,6 +35,8 @@ class MeaningExampleController extends Controller
             'meaningTexts.lang',
         ])->findOrFail($meaning_id);
 
+        $synset_id = $this->exampleSynsetId($request, $source);
+
         $input = [
             'distance_from' => $request->input('distance_from', -1),
             'distance_to' => $request->input('distance_to', 1),
@@ -116,6 +118,7 @@ class MeaningExampleController extends Controller
                 'only_checked' => $threshold,
                 'same_gramset' => (int) $input['same_gramset'],
                 'per_page' => (int) $input['per_page'],
+                'synset_id' => $synset_id,
             ]);
         }
 
@@ -146,6 +149,7 @@ class MeaningExampleController extends Controller
                     'partner_meaning_id' => $partner ? $partner->id : '',
                     'per_page' => $sentences->perPage(),
                     'same_gramset' => (int) $input['same_gramset'],
+                    'synset_id' => $synset_id,
                 ]);
         }
 
@@ -179,6 +183,7 @@ class MeaningExampleController extends Controller
                 'search_errors',
                 'sentences',
                 'source',
+                'synset_id',
                 'word_blocks',
             )
         );
@@ -996,5 +1001,34 @@ class MeaningExampleController extends Controller
         }
 
         return $blocks;
+    }
+
+    /**
+     * Проверяет, что исходное значение входит в указанный синсет.
+     */
+    protected function exampleSynsetId(Request $request, Meaning $source)
+    {
+        $this->validate($request, [
+            'synset_id' => 'integer|min:1|exists:synsets,id',
+        ]);
+
+        $synset_id = $request->input('synset_id');
+
+        if ($synset_id === null || $synset_id === '') {
+            return null;
+        }
+
+        $synset_id = (int) $synset_id;
+
+        $membership_count = DB::table('meaning_synset')
+            ->where('synset_id', $synset_id)
+            ->where('meaning_id', $source->id)
+            ->count();
+
+        if (!$membership_count) {
+            abort(409, trans('meaning_examples.synset_meaning_mismatch'));
+        }
+
+        return $synset_id;
     }
 }

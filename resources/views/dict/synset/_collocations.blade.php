@@ -20,16 +20,17 @@
     </div>
 
     <div id="synset-collocations-words">
-@foreach (['dict.core' => $core_members, 'dict.periphery' => $periphery_members] as $section_key => $members)
-    @if (!$members->isEmpty())
+        @foreach (['dict.core' => $core_members, 'dict.periphery' => $periphery_members] as $section_key => $members)
+        @if (!$members->isEmpty())
         <h4>{{ trans($section_key) }}</h4>
 
         @foreach ($members as $member)
-            <?php
-            $collocation_groups = $member->collocationsByCategory();
-            $member_url = LaravelLocalization::localizeURL('/dict/lemma/'.$member->lemma_id).'#meaning-'.$member->id;
-            $editor_url = LaravelLocalization::localizeURL('/dict/meaning/'.$member->id.'/collocations').'?'.http_build_query(['synset_id' => $synset->id]);
-            ?>
+        <?php
+        $collocation_groups = $member->collocationsByCategory();
+        $member_url = LaravelLocalization::localizeURL('/dict/lemma/' . $member->lemma_id) . '#meaning-' . $member->id;
+        $editor_url = LaravelLocalization::localizeURL('/dict/meaning/' . $member->id . '/collocations') . '?' . http_build_query(['synset_id' => $synset->id]);
+        $examples_url = LaravelLocalization::localizeURL('/dict/meaning/' . $member->id . '/examples/search') . '?' . http_build_query(['synset_id' => $synset->id]);
+        ?>
 
         <div class="synset-collocation-member">
             <div class="synset-collocation-header">
@@ -37,25 +38,28 @@
                     <a href="{{ $member_url }}">{{ $member->lemma->lemma }}</a><sup>{{ $member->meaning_n }}</sup>
                 </span>
 
-            @if ((int) $synset->dominant_id === (int) $member->id)
+                @if ((int) $synset->dominant_id === (int) $member->id)
                 <small class="text-muted">{{ trans('dict.dominant') }}</small>
-            @endif
+                @endif
 
-            @if (User::checkAccess('dict.edit'))
+                @if (User::checkAccess('dict.edit'))
                 <a href="{{ $editor_url }}" title="{{ trans('collocations.synset_edit') }}" aria-label="{{ trans('collocations.synset_edit') }}">
                     <i class="fa fa-pencil-alt fa-lg" aria-hidden="true"></i>
                 </a>
-            @endif
+                @endif
+                <a href="{{ $examples_url }}">
+                    {{ trans('meaning_examples.all_examples') }}
+                </a>
             </div>
 
             @include('dict.collocation._groups', ['collocation_groups' => $collocation_groups])
         </div>
         @endforeach
-    @endif
-@endforeach
+        @endif
+        @endforeach
     </div>
 
     <div id="synset-collocations-matrix" hidden>
-@include('dict.synset._collocations_matrix')
+        @include('dict.synset._collocations_matrix')
     </div>
 </div>

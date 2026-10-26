@@ -30,6 +30,7 @@ return [
     'save_error' => 'Could not save the annotation. Refresh the page and try again.',
     'source' => 'Source meaning',
     'source_relevance' => 'Source meaning score',
+    'synset_meaning_mismatch' => 'The source meaning does not belong to the specified synset. Reopen the examples from the synset.',
     'submit' => 'Search',
     'text' => 'Text',
     'title' => 'Usage example search',

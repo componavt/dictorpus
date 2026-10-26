@@ -1,219 +1,215 @@
 @extends('layouts.page')
 
 @section('page_title')
-    {{ trans('navigation.lemmas') }}
+{{ trans('navigation.lemmas') }}
 @stop
 
 @section('headExtra')
-    {!! css('select2.min') !!}
-    {!! css('lemma') !!}
-    {!! css('text') !!}
-    {!! css('meaning-examples') !!}
+{!! css('select2.min') !!}
+{!! css('lemma') !!}
+{!! css('text') !!}
+{!! css('meaning-examples') !!}
 @stop
 
 @section('body')
-    <div
-        class="meaning-example-search"
-        data-distance-from="{{ $distance_from }}"
-        data-distance-to="{{ $distance_to }}"
-        data-word-block-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/word') }}"
-        data-csrf-token="{{ csrf_token() }}"
-        data-save-error="{{ trans('meaning_examples.save_error') }}"
-    >
-        @include('dict.meaning.examples._header')
+<div
+    class="meaning-example-search"
+    data-distance-from="{{ $distance_from }}"
+    data-distance-to="{{ $distance_to }}"
+    data-word-block-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/word') }}"
+    data-csrf-token="{{ csrf_token() }}"
+    data-save-error="{{ trans('meaning_examples.save_error') }}">
+    @include('dict.meaning.examples._header')
 
-        @if ($search_errors->count())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($search_errors->all() as $message)
-                        <li>{{ $message }}</li>
-                    @endforeach
-                </ul>
-            </div>
+    @if ($search_errors->count())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($search_errors->all() as $message)
+            <li>{{ $message }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <form method="GET" action="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/search') }}">
+        @if ($synset_id !== null)
+        <input type="hidden" name="synset_id" value="{{ $synset_id }}">
         @endif
 
-        <form method="GET" action="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/search') }}">
-            <div class="form-group">
-                <label for="example-search-partner">
-                    {{ trans('meaning_examples.partner') }}
-                </label>
+        <div class="form-group">
+            <label for="example-search-partner">
+                {{ trans('meaning_examples.partner') }}
+            </label>
 
-                <select
-                    id="example-search-partner"
-                    name="partner_meaning_id"
-                    class="form-control"
-                    data-search-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/partners') }}"
-                    data-placeholder="{{ trans('meaning_examples.partner_placeholder') }}"
-                    style="width: 100%;"
-                >
-                    <option value=""></option>
+            <select
+                id="example-search-partner"
+                name="partner_meaning_id"
+                class="form-control"
+                data-search-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/partners') }}"
+                data-placeholder="{{ trans('meaning_examples.partner_placeholder') }}"
+                style="width: 100%;">
+                <option value=""></option>
 
-                    @if ($partner)
-                        <option value="{{ $partner->id }}" selected>
-                            {{ $partner_text }}
-                        </option>
-                    @endif
-                </select>
+                @if ($partner)
+                <option value="{{ $partner->id }}" selected>
+                    {{ $partner_text }}
+                </option>
+                @endif
+            </select>
 
-                <p class="help-block">
-                    {{ trans('meaning_examples.partner_hint') }}
-                </p>
-            </div>
+            <p class="help-block">
+                {{ trans('meaning_examples.partner_hint') }}
+            </p>
+        </div>
 
-            <input type="hidden" name="only_checked" value="0">
+        <input type="hidden" name="only_checked" value="0">
+
+        <div class="checkbox">
+            <label>
+                <input
+                    type="checkbox"
+                    name="only_checked"
+                    value="1"
+                    @if ($only_checked) checked @endif>
+                {{ trans('meaning_examples.only_checked') }}
+            </label>
+        </div>
+
+        <div id="example-search-partner-options">
+            <input type="hidden" name="same_gramset" value="0">
 
             <div class="checkbox">
                 <label>
                     <input
                         type="checkbox"
-                        name="only_checked"
+                        name="same_gramset"
                         value="1"
-                        @if ($only_checked) checked @endif
-                    >
-                    {{ trans('meaning_examples.only_checked') }}
+                        @if ($same_gramset) checked @endif>
+                    {{ trans('meaning_examples.same_gramset') }}
                 </label>
             </div>
+        </div>
 
-            <div id="example-search-partner-options">
-                <input type="hidden" name="same_gramset" value="0">
+        <div class="example-distance-range">
+            <label for="example-search-distance-from">
+                {{ trans('meaning_examples.distance_from') }}
+            </label>
 
-                <div class="checkbox">
-                    <label>
-                        <input
-                            type="checkbox"
-                            name="same_gramset"
-                            value="1"
-                            @if ($same_gramset) checked @endif
-                        >
-                        {{ trans('meaning_examples.same_gramset') }}
-                    </label>
-                </div>
-            </div>
+            <input
+                type="number"
+                step="1"
+                id="example-search-distance-from"
+                name="distance_from"
+                value="{{ $distance_from }}"
+                class="form-control"
+                required>
 
-            <div class="example-distance-range">
-                <label for="example-search-distance-from">
-                    {{ trans('meaning_examples.distance_from') }}
-                </label>
+            <label for="example-search-distance-to">
+                {{ trans('meaning_examples.distance_to_short') }}
+            </label>
 
-                <input
-                    type="number"
-                    step="1"
-                    id="example-search-distance-from"
-                    name="distance_from"
-                    value="{{ $distance_from }}"
-                    class="form-control"
-                    required
-                >
+            <input
+                type="number"
+                step="1"
+                id="example-search-distance-to"
+                name="distance_to"
+                value="{{ $distance_to }}"
+                class="form-control"
+                required>
+        </div>
 
-                <label for="example-search-distance-to">
-                    {{ trans('meaning_examples.distance_to_short') }}
-                </label>
+        <p class="help-block">
+            {{ trans('meaning_examples.distance_hint') }}
+        </p>
 
-                <input
-                    type="number"
-                    step="1"
-                    id="example-search-distance-to"
-                    name="distance_to"
-                    value="{{ $distance_to }}"
-                    class="form-control"
-                    required
-                >
-            </div>
+        <div class="form-group">
+            <label for="example-search-per-page">
+                {{ trans('meaning_examples.per_page') }}
+            </label>
 
-            <p class="help-block">
-                {{ trans('meaning_examples.distance_hint') }}
-            </p>
+            <select
+                id="example-search-per-page"
+                name="per_page"
+                class="form-control"
+                style="width: auto;">
+                @foreach (array_unique([2, 5, 10, 20, 50, $per_page]) as $value)
+                <option
+                    value="{{ $value }}"
+                    @if ($per_page==$value) selected @endif>
+                    {{ $value }}
+                </option>
+                @endforeach
+            </select>
+        </div>
 
-            <div class="form-group">
-                <label for="example-search-per-page">
-                    {{ trans('meaning_examples.per_page') }}
-                </label>
+        <button type="submit" class="btn btn-primary">
+            {{ trans('meaning_examples.submit') }}
+        </button>
+    </form>
 
-                <select
-                    id="example-search-per-page"
-                    name="per_page"
-                    class="form-control"
-                    style="width: auto;"
-                >
-                    @foreach (array_unique([2, 5, 10, 20, 50, $per_page]) as $value)
-                        <option
-                            value="{{ $value }}"
-                            @if ($per_page == $value) selected @endif
-                        >
-                            {{ $value }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+    @if ($sentences)
+    <hr>
 
-            <button type="submit" class="btn btn-primary">
-                {{ trans('meaning_examples.submit') }}
-            </button>
-        </form>
+    <p>
+        {{ trans('meaning_examples.total') }}:
+        <span class="example-result-total">{{ $sentences->total() }}</span>
+    </p>
 
-        @if ($sentences)
-            <hr>
+    @if (count($sentences))
+    <p class="example-rating-legend">
+        @foreach (trans('dict.relevance_scope_example') as $rating_value => $rating_text)
+        <span class="relevance relevance-{{ $rating_value }}">
+            <span class="glyphicon glyphicon-star"></span>
+            {{ $rating_text }}
+        </span>
+        @endforeach
+    </p>
 
-            <p>
-                {{ trans('meaning_examples.total') }}:
-                <span class="example-result-total">{{ $sentences->total() }}</span>
-            </p>
+    <ol start="{{ $sentences->firstItem() }}">
+        @foreach ($sentences as $item)
+        <li class="example-sentence-group">
+            @foreach ($item['source_examples'] as $example)
+            @include('dict.meaning.examples._card')
+            @endforeach
+        </li>
+        @endforeach
+    </ol>
+    @elseif ($sentences->total() === 0)
+    <p>{{ trans('meaning_examples.no_results') }}</p>
+    @else
+    <p>{{ trans('meaning_examples.empty_page') }}</p>
+    @endif
 
-            @if (count($sentences))
-                <p class="example-rating-legend">
-                    @foreach (trans('dict.relevance_scope_example') as $rating_value => $rating_text)
-                        <span class="relevance relevance-{{ $rating_value }}">
-                            <span class="glyphicon glyphicon-star"></span>
-                            {{ $rating_text }}
-                        </span>
-                    @endforeach
-                </p>
-
-                <ol start="{{ $sentences->firstItem() }}">
-                    @foreach ($sentences as $item)
-                        <li class="example-sentence-group">
-                            @foreach ($item['source_examples'] as $example)
-                                @include('dict.meaning.examples._card')
-                            @endforeach
-                        </li>
-                    @endforeach
-                </ol>
-            @elseif ($sentences->total() === 0)
-                <p>{{ trans('meaning_examples.no_results') }}</p>
-            @else
-                <p>{{ trans('meaning_examples.empty_page') }}</p>
-            @endif
-
-            {!! $sentences->render() !!}
-        @endif
-    </div>
+    {!! $sentences->render() !!}
+    @endif
+</div>
 @stop
 @section('footScriptExtra')
-    {!! js('select2.min') !!}
-    {!! js('text') !!}
-    {!! js('meaning_examples') !!}
+{!! js('select2.min') !!}
+{!! js('text') !!}
+{!! js('meaning_examples') !!}
 @stop
 
 @section('jqueryFunc')
-    initExamplePartnerSelect();
-    initExampleCollocationLinks();
+initExamplePartnerSelect();
+initExampleCollocationLinks();
 
-    var example_page = $('.meaning-example-search');
+var example_page = $('.meaning-example-search');
 
-    showWordBlock('{{ LaravelLocalization::getCurrentLocale() }}',
-        example_page.attr('data-word-block-url'),
-        {
-            distance_from: example_page.attr('data-distance-from'),
-            distance_to: example_page.attr('data-distance-to')
-        }
-    );
+showWordBlock('{{ LaravelLocalization::getCurrentLocale() }}',
+example_page.attr('data-word-block-url'),
+{
+distance_from: example_page.attr('data-distance-from'),
+distance_to: example_page.attr('data-distance-to')
+}
+);
 
-    $('.meaning-example-sentence').on(
-        'click',
-        '.links-to-lemmas',
-        function (event) {
-            event.stopPropagation();
-        }
-    );
+$('.meaning-example-sentence').on(
+'click',
+'.links-to-lemmas',
+function (event) {
+event.stopPropagation();
+}
+);
 
 @stop

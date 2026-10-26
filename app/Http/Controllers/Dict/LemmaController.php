@@ -1250,6 +1250,7 @@ class LemmaController extends Controller
             'partner_meaning_id',
             'per_page',
             'same_gramset',
+            'synset_id',
         ]));
 
         foreach ($query as $value) {
