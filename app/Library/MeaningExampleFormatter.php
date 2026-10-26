@@ -9,7 +9,7 @@ class MeaningExampleFormatter
      *
      * @return string
      */
-    public static function highlight(array $item)
+    public static function highlight(array $item, array $word_blocks = [])
     {
         $source_ids = [];
         $partner_ids = [];
@@ -77,6 +77,7 @@ class MeaningExampleFormatter
                 : '',
             'source_w_id' => (int) ($item['source_w_id'] ?? 0),
             'fragment_id' => (int) ($item['fragment_id'] ?? 0),
+            'word_blocks' => $word_blocks,
         ];
 
         return self::renderNode(
@@ -92,18 +93,9 @@ class MeaningExampleFormatter
     /**
      * Сохраняет текст, добавляя подсветку и контейнеры штатных блоков ЛГП.
      */
-    protected static function renderNode(
-        \DOMNode $node,
-        $text_id,
-        array $source_ids,
-        array $partner_ids,
-        array $linked_ids,
-        array $word_context
-    ) {
-        if (
-            $node->nodeType === XML_TEXT_NODE
-            || $node->nodeType === XML_CDATA_SECTION_NODE
-        ) {
+    protected static function renderNode(\DOMNode $node, $text_id, array $source_ids, array $partner_ids, array $linked_ids, array $word_context)
+    {
+        if ($node->nodeType === XML_TEXT_NODE || $node->nodeType === XML_CDATA_SECTION_NODE) {
             return self::escape($node->nodeValue);
         }
 
@@ -151,6 +143,14 @@ class MeaningExampleFormatter
             $word_key = $text_id . '_' . $w_id;
             $block_id = $word_context['dom_prefix'] . $word_key;
 
+            $word_blocks = $word_context['word_blocks'] ?? [];
+            $preloaded = array_key_exists($w_id, $word_blocks);
+
+            $block_html = $preloaded
+                ? $word_blocks[$w_id]
+                : '<img class="img-loading"'
+                . ' src="/images/waiting_small.gif" alt="">';
+
             return '<w id="' . $block_id . '"'
                 . ' data-word-key="' . $word_key . '"'
                 . ' data-source-w-id="' . $word_context['source_w_id'] . '"'
@@ -158,9 +158,9 @@ class MeaningExampleFormatter
                 . ' class="' . implode(' ', $classes) . '">'
                 . $html
                 . '<div id="links_' . $block_id . '"'
-                . ' class="links-to-lemmas" data-downloaded="0">'
-                . '<img class="img-loading"'
-                . ' src="/images/waiting_small.gif" alt="">'
+                . ' class="links-to-lemmas"'
+                . ' data-downloaded="' . ($preloaded ? '1' : '0') . '">'
+                . $block_html
                 . '</div>'
                 . '</w>';
         }

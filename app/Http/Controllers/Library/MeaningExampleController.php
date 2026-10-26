@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\MeaningExampleWordData;
 use App\Models\User;
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\SentenceFragment;
@@ -148,6 +149,19 @@ class MeaningExampleController extends Controller
                 ]);
         }
 
+        $word_blocks = [];
+
+        if ($sentences && count($sentences)) {
+            $word_blocks = $this->preloadWordBlocks(
+                $source,
+                $sentences->items(),
+                [
+                    'distance_from' => (int) $input['distance_from'],
+                    'distance_to' => (int) $input['distance_to'],
+                ]
+            );
+        }
+
         return view(
             'dict.meaning.examples.search',
             compact(
@@ -165,6 +179,7 @@ class MeaningExampleController extends Controller
                 'search_errors',
                 'sentences',
                 'source',
+                'word_blocks',
             )
         );
     }
@@ -369,59 +384,22 @@ class MeaningExampleController extends Controller
     /**
      * Собирает блок из текущих смысловых и морфологических привязок.
      */
-    protected function renderWordBlock(Meaning $source, Word $word, array $interval)
+    protected function renderWordBlock(Meaning $source, Word $word, array $interval, array $prepared = [])
     {
-        list($meanings, $gramsets, $wordforms) = $word->text
-            ->meaningsGramsetsByWid([(int) $word->w_id]);
+        $data = isset($prepared['data'])
+            ? $prepared['data']
+            : (new MeaningExampleWordData())->load(
+                (int) $word->text_id,
+                [(int) $word->w_id]
+            );
 
-        $word_meanings = $meanings[$word->w_id] ?? [];
-        $word_gramsets = $gramsets[$word->w_id] ?? [];
+        $review_context = isset($prepared['context'])
+            ? $prepared['context']
+            : $this->review_context;
 
-        if (!empty($word_meanings['checked'])) {
-            $lemma_id = (int) $word_meanings['checked']->lemma_id;
-
-            $gramset_rows = Gramset::join(
-                'text_wordform as tw',
-                'tw.gramset_id',
-                '=',
-                'gramsets.id'
-            )
-                ->where('tw.text_id', $word->text_id)
-                ->where('tw.w_id', $word->w_id)
-                ->where('tw.relevance', '>', 0)
-                ->whereRaw(
-                    'EXISTS (
-                        SELECT 1
-                        FROM lemma_wordform lw
-                        WHERE lw.lemma_id = ?
-                            AND lw.wordform_id = tw.wordform_id
-                            AND lw.gramset_id = tw.gramset_id
-                    )',
-                    [$lemma_id]
-                )
-                ->select([
-                    'gramsets.*',
-                    'tw.wordform_id',
-                    'tw.relevance',
-                ])
-                ->orderBy('gramsets.sequence_number')
-                ->orderBy('gramsets.id')
-                ->orderBy('tw.wordform_id')
-                ->get();
-
-            $word_gramsets = [
-                'checked' => null,
-                'unchecked' => [],
-            ];
-
-            foreach ($gramset_rows as $gramset) {
-                if ((int) $gramset->relevance > 1) {
-                    $word_gramsets['checked'] = $gramset;
-                } else {
-                    $word_gramsets['unchecked'][] = $gramset;
-                }
-            }
-        }
+        $word_meanings = $data['meanings'][$word->w_id] ?? [];
+        $word_gramsets = $data['gramsets'][$word->w_id] ?? [];
+        $wordforms = $data['wordforms'];
 
         $meaning_checked = !empty($word_meanings['checked']);
         $gramset_checked = !empty($word_gramsets['checked']);
@@ -439,16 +417,18 @@ class MeaningExampleController extends Controller
         $fully_checked = $meaning_checked
             && ($gramset_checked || !$has_gramsets);
 
-        $read_only = !empty($this->review_context['read_only']);
+        $read_only = !empty($review_context['read_only']);
         $can_edit = User::checkAccess('corpus.edit') && !$read_only;
 
         $can_reset = $can_edit && (!$meaning_checked || (int) $word_meanings['checked']->relevance !== 10);
 
-        $source_relevance = (int) DB::table('meaning_text')
-            ->where('meaning_id', $source->id)
-            ->where('text_id', $word->text_id)
-            ->where('w_id', $this->review_context['source_w_id'])
-            ->value('relevance');
+        $source_relevance = array_key_exists('source_relevance', $prepared)
+            ? (int) $prepared['source_relevance']
+            : (int) DB::table('meaning_text')
+                ->where('meaning_id', $source->id)
+                ->where('text_id', $word->text_id)
+                ->where('w_id', $review_context['source_w_id'])
+                ->value('relevance');
 
         $add_collocation_url = $read_only ? null
             : $this->collocationEditorUrl(
@@ -918,5 +898,103 @@ class MeaningExampleController extends Controller
         }
 
         return $results;
+    }
+
+    /**
+     * Готовит HTML разборов страницы, загружая данные группами по текстам.
+     */
+    protected function preloadWordBlocks(
+        Meaning $source,
+        array $items,
+        array $interval
+    ) {
+        $requested_words = [];
+        $sentence_ids = [];
+
+        foreach ($items as $item) {
+            $text_id = (int) $item['text_id'];
+
+            $sentence_ids[$text_id][(int) $item['sentence_id']] = true;
+
+            foreach ($item['linked_w_ids'] ?? [] as $w_id) {
+                $requested_words[$text_id][(int) $w_id] = true;
+            }
+        }
+
+        $words_by_text = [];
+        $data_by_text = [];
+
+        $loader = new MeaningExampleWordData();
+
+        foreach ($requested_words as $text_id => $w_ids) {
+            $words = Word::where('text_id', $text_id)
+                ->whereIn('sentence_id', array_keys($sentence_ids[$text_id]))
+                ->whereIn('w_id', array_keys($w_ids))
+                ->get();
+
+            $loaded_w_ids = [];
+
+            foreach ($words as $word) {
+                $w_id = (int) $word->w_id;
+
+                $words_by_text[$text_id][$w_id] = $word;
+                $loaded_w_ids[] = $w_id;
+            }
+
+            if ($loaded_w_ids) {
+                $data_by_text[$text_id] = $loader->load(
+                    $text_id,
+                    $loaded_w_ids
+                );
+            }
+        }
+
+        $blocks = [];
+
+        foreach ($items as $item) {
+            $text_id = (int) $item['text_id'];
+
+            if (!isset($data_by_text[$text_id])) {
+                continue;
+            }
+
+            foreach ($item['source_examples'] as $example) {
+                $example_id = $example['example_id'];
+                $source_w_id = (int) $example['source_w_id'];
+
+                foreach ($example['linked_w_ids'] ?? [] as $w_id) {
+                    $w_id = (int) $w_id;
+
+                    $word = $words_by_text[$text_id][$w_id] ?? null;
+
+                    if (
+                        !$word
+                        || (int) $word->sentence_id !== (int) $example['sentence_id']
+                    ) {
+                        continue;
+                    }
+
+                    $context = [
+                        'source_w_id' => $source_w_id,
+                        'fragment_id' => (int) $example['fragment_id'],
+                        'read_only' => !empty($example['is_fragment'])
+                            && $w_id !== $source_w_id,
+                    ];
+
+                    $blocks[$example_id][$w_id] = $this->renderWordBlock(
+                        $source,
+                        $word,
+                        $interval,
+                        [
+                            'context' => $context,
+                            'data' => $data_by_text[$text_id],
+                            'source_relevance' => (int) $example['source_relevance'],
+                        ]
+                    )->render();
+                }
+            }
+        }
+
+        return $blocks;
     }
 }
