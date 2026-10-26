@@ -9,12 +9,3 @@
     </tr>
 @endforeach
 </table>
-
-@if ($count<=$sentence_count)
-<a {{--id="show-more-{{$meaning->id}}" --}}
-   class="show-more-examples"
-   onClick ="showMoreExamples(this, {{$start+$limit}}, '{{LaravelLocalization::getCurrentLocale()}}', {{ $is_edit }})"
-   data-for="{{$meaning->id}}">
-        {{ trans('dict.more_examples') }}
-</a>
-@endif

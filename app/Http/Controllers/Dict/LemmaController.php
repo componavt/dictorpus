@@ -595,6 +595,11 @@ class LemmaController extends Controller
                 ->withErrors('error.no_lemma');
         }
 
+        $example_return = $this->exampleReturnData(
+            $request,
+            $lemma->id
+        );
+
         list($sentence, $meanings, $meaning_texts, $w_id) =
             MeaningTextRel::preparationForExampleEdit($example_id);
 
@@ -622,6 +627,7 @@ class LemmaController extends Controller
             'dict.lemma.example.edit',
             compact(
                 'back_to_url',
+                'example_return',
                 'fragment',
                 'id',
                 'langs_for_meaning',
@@ -716,12 +722,17 @@ class LemmaController extends Controller
      */
     public function updateExamples(Request $request, $id)
     {
+        $example_return = $this->exampleReturnData($request, $id);
+
         MeaningTextRel::updateExamples($request['relevance']);
 
+        if ($example_return && $request->get('after_save') !== 'continue') {
+            return Redirect::to($example_return['url'])
+                ->withSuccess(trans('messages.updated_success'));
+        }
+
         if ($request->get('after_save') == 'continue') {
-            $url = LaravelLocalization::localizeURL(
-                '/dict/lemma/' . $id . '/edit/examples'
-            );
+            $url = LaravelLocalization::localizeURL('/dict/lemma/' . $id . '/edit/examples');
         } else {
             $url = $request['back_to_url'];
         }
@@ -1190,5 +1201,83 @@ class LemmaController extends Controller
             $lemma->is_norm = $is_norm ? 1 : 0;
             $lemma->save();
         }
+    }
+
+    /**
+     * Проверяет внутренний адрес возврата к примерам этой леммы.
+     */
+    protected function exampleReturnData(Request $request, $lemma_id)
+    {
+        $return_path = $request->input('examples_return');
+
+        if ($return_path === null || $return_path === '') {
+            return null;
+        }
+
+        $this->validate($request, [
+            'examples_return' => 'required|string|max:4096',
+        ]);
+
+        $parts = parse_url($return_path);
+
+        if (
+            $parts === false
+            || isset($parts['scheme'])
+            || isset($parts['host'])
+            || !preg_match(
+                '~^/dict/meaning/([1-9][0-9]*)/examples/search$~D',
+                $parts['path'] ?? '',
+                $matches
+            )
+        ) {
+            abort(422);
+        }
+
+        $meaning_id = (int) $matches[1];
+
+        Meaning::where('id', $meaning_id)
+            ->where('lemma_id', $lemma_id)
+            ->firstOrFail();
+
+        $query = [];
+        parse_str($parts['query'] ?? '', $query);
+
+        $query = array_intersect_key($query, array_flip([
+            'distance_from',
+            'distance_to',
+            'only_checked',
+            'page',
+            'partner_meaning_id',
+            'per_page',
+            'same_gramset',
+        ]));
+
+        foreach ($query as $value) {
+            if (!is_scalar($value)) {
+                abort(422);
+            }
+        }
+
+        $fragment = $parts['fragment'] ?? '';
+
+        if (
+            $fragment !== ''
+            && !preg_match(
+                '~^sentence-' . $meaning_id . '_[0-9]+_[0-9]+_[0-9]+$~D',
+                $fragment
+            )
+        ) {
+            abort(422);
+        }
+
+        $path = '/dict/meaning/' . $meaning_id . '/examples/search';
+
+        $suffix = $query ? '?' . http_build_query($query) : '';
+        $suffix .= $fragment !== '' ? '#' . $fragment : '';
+
+        return [
+            'path' => $path . $suffix,
+            'url' => LaravelLocalization::localizeURL($path) . $suffix,
+        ];
     }
 }

@@ -66,12 +66,28 @@ class MeaningExampleSearch
 
     /**
      * Строит запрос употреблений одного значения или пар употреблений.
-     *
-     * @return \Illuminate\Database\Query\Builder
      */
     public function query()
     {
-        $query = DB::table('meaning_text as mt1')
+        $query = $this->sourceQuery();
+
+        if ($this->partner) {
+            $query = $this->addPartner($query);
+
+            if ($this->options['same_gramset']) {
+                $query = $this->applyCommonGramset($query);
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Строит общую выборку употреблений исходного значения.
+     */
+    protected function sourceQuery()
+    {
+        return DB::table('meaning_text as mt1')
             ->join('words as w1', function ($join) {
                 $join->on('w1.id', '=', 'mt1.word_id')
                     ->on('w1.text_id', '=', 'mt1.text_id')
@@ -95,22 +111,21 @@ class MeaningExampleSearch
                 'w1.word_number as source_position',
                 'mt1.relevance as source_relevance',
             ]);
-
-        if ($this->partner) {
-            $query = $this->addPartner($query);
-
-            if ($this->options['same_gramset']) {
-                $query = $this->applyCommonGramset($query);
-            }
-        }
-
-        return $query;
     }
 
     /**
-     * Ограничивает поиск наличием партнёра в заданном диапазоне позиций.
+     * Ограничивает соседние употребления выбранным значением партнёра.
      */
     protected function addPartner(Builder $query)
+    {
+        return $this->addNeighbourWords($query)
+            ->where('mt2.meaning_id', $this->partner->id);
+    }
+
+    /**
+     * Присоединяет соседние употребления и их неисключённые значения.
+     */
+    protected function addNeighbourWords(Builder $query)
     {
         return $query
             ->join('words as w2', function ($join) {
@@ -125,7 +140,6 @@ class MeaningExampleSearch
                     ->on('mt2.s_id', '=', 'w2.s_id')
                     ->on('mt2.w_id', '=', 'w2.w_id');
             })
-            ->where('mt2.meaning_id', $this->partner->id)
             ->where(
                 'mt2.relevance',
                 '>',
@@ -151,10 +165,22 @@ class MeaningExampleSearch
     }
 
     /**
-     * Требует общий неисключённый грамсет, допустимый для обеих лемм.
+     * Проверяет совместимость форм выбранного партнёра или кандидата.
      */
-    protected function applyCommonGramset(Builder $query)
-    {
+    protected function applyCommonGramset(
+        Builder $query,
+        $for_candidates = false
+    ) {
+        $partner_condition = $for_candidates
+            ? 'lw2.lemma_id = m2.lemma_id'
+            : 'lw2.lemma_id = ?';
+
+        $bindings = [$this->source->lemma_id];
+
+        if (!$for_candidates) {
+            $bindings[] = $this->partner->lemma_id;
+        }
+
         return $query->whereRaw(
             'EXISTS (
                 SELECT 1
@@ -172,12 +198,9 @@ class MeaningExampleSearch
                     AND tw1.relevance > 0
                     AND tw2.relevance > 0
                     AND lw1.lemma_id = ?
-                    AND lw2.lemma_id = ?
+                    AND ' . $partner_condition . '
             )',
-            [
-                $this->source->lemma_id,
-                $this->partner->lemma_id,
-            ]
+            $bindings
         );
     }
 
@@ -263,6 +286,8 @@ class MeaningExampleSearch
         $total = (int) $this->query()
             ->distinct()
             ->count('s.id');
+        $last_page = max(1, (int) ceil($total / $per_page));
+        $page = min($page, $last_page);
 
         $rows = $this->query()
             ->select([
@@ -377,6 +402,31 @@ class MeaningExampleSearch
             $items[$sentence_id]['matches'][] = (array) $match;
         }
 
-        return array_values($items);
+        return (new MeaningExampleData($this->source->id))
+            ->prepare(array_values($items));
+    }
+
+    /**
+     * Возвращает уникальные значения соседних слов для выбора партнёра.
+     */
+    public function partnerMeaningsQuery()
+    {
+        $query = $this->addNeighbourWords($this->sourceQuery())
+            ->join('meanings as m2', 'm2.id', '=', 'mt2.meaning_id')
+            ->join('lemmas as l2', 'l2.id', '=', 'm2.lemma_id')
+            ->where('l2.lang_id', $this->source->lemma->lang_id);
+
+        if ($this->options['same_gramset']) {
+            $query = $this->applyCommonGramset($query, true);
+        }
+
+        return $query
+            ->select([
+                'm2.id as meaning_id',
+                'l2.id as lemma_id',
+                'l2.lemma',
+                'm2.meaning_n',
+            ])
+            ->distinct();
     }
 }

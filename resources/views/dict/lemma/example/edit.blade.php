@@ -31,13 +31,17 @@
         </div>
         @include('dict.lemma.example._translations')
 
-        <p><a href="{{ LaravelLocalization::localizeURL($back_to_url) }}{{$args_by_get}}">{{ trans('messages.back_to_show') }}</a></p>
+        <p><a href="{{ $example_return ? $example_return['url'] : (LaravelLocalization::localizeURL($back_to_url).$args_by_get) }}">
+                {{ $example_return ? trans('meaning_examples.back_to_examples') : trans('messages.back_to_show') }}
+            </a></p>
         
 
         {!! Form::open(array('method'=>'POST', 'route' => $route)) !!}
         @include('widgets.form._url_args_by_post',['url_args'=>$url_args])
         <input type="hidden" name="back_to_url" value="{{$back_to_url}}">
-        
+        @if ($example_return)
+            <input type="hidden" name="examples_return" value="{{ $example_return['path'] }}">
+        @endif
         <table class="table lemma-example-edit">
             @foreach ($meanings as $meaning)
             <tr>

@@ -609,6 +609,11 @@ h4 .fa {
     background-color: #fff;
 }
 
+.all-examples-link {
+    margin-top: 10px;
+    text-align: right;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

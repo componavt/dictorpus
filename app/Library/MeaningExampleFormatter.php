@@ -67,12 +67,25 @@ class MeaningExampleFormatter
             return self::escape($item['sentence']);
         }
 
+        $word_context = [
+            'dom_prefix' => !empty($item['example_id'])
+                ? 'example_' . preg_replace(
+                    '/[^0-9_]/',
+                    '',
+                    (string) $item['example_id']
+                ) . '_'
+                : '',
+            'source_w_id' => (int) ($item['source_w_id'] ?? 0),
+            'fragment_id' => (int) ($item['fragment_id'] ?? 0),
+        ];
+
         return self::renderNode(
             $document->documentElement,
             (int) $item['text_id'],
             $source_ids,
             $partner_ids,
-            $linked_ids
+            $linked_ids,
+            $word_context
         );
     }
 
@@ -84,7 +97,8 @@ class MeaningExampleFormatter
         $text_id,
         array $source_ids,
         array $partner_ids,
-        array $linked_ids
+        array $linked_ids,
+        array $word_context
     ) {
         if (
             $node->nodeType === XML_TEXT_NODE
@@ -109,7 +123,8 @@ class MeaningExampleFormatter
                 $text_id,
                 $source_ids,
                 $partner_ids,
-                $linked_ids
+                $linked_ids,
+                $word_context
             );
         }
 
@@ -133,10 +148,14 @@ class MeaningExampleFormatter
         if (isset($linked_ids[$w_id])) {
             $classes[] = 'word-linked';
 
-            $block_id = $text_id . '_' . $w_id;
+            $word_key = $text_id . '_' . $w_id;
+            $block_id = $word_context['dom_prefix'] . $word_key;
 
-            return '<w id="' . $block_id . '" class="'
-                . implode(' ', $classes) . '">'
+            return '<w id="' . $block_id . '"'
+                . ' data-word-key="' . $word_key . '"'
+                . ' data-source-w-id="' . $word_context['source_w_id'] . '"'
+                . ' data-fragment-id="' . $word_context['fragment_id'] . '"'
+                . ' class="' . implode(' ', $classes) . '">'
                 . $html
                 . '<div id="links_' . $block_id . '"'
                 . ' class="links-to-lemmas" data-downloaded="0">'

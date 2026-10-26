@@ -84,11 +84,19 @@ function showWordBlock(locale, block_route = null, block_data = {}) {
         w_block.show();
         var downloaded = w_block.data('downloaded');
         if (downloaded === 0) {
-            var block_url = block_route
-                ? block_route + '/' + t_w_id
-                : '/' + locale + '/corpus/word/load_lemma_block/' + t_w_id;
+            var word_key = $(this).attr('data-word-key') || t_w_id;
+            var request_data = $.extend({}, block_data);
 
-            loadWordBlock(t_w_id, block_url, block_data);
+            if (block_route) {
+                request_data.source_w_id = $(this).attr('data-source-w-id');
+                request_data.fragment_id = $(this).attr('data-fragment-id');
+            }
+
+            var block_url = block_route
+                ? block_route + '/' + word_key
+                : '/' + locale + '/corpus/word/load_lemma_block/' + word_key;
+
+            loadWordBlock(t_w_id, block_url, request_data);
         }
     });
 

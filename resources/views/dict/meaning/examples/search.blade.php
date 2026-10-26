@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
 @section('page_title')
-    {{ trans('meaning_examples.title') }}
+    {{ trans('navigation.lemmas') }}
 @stop
 
 @section('headExtra')
@@ -20,18 +20,7 @@
         data-csrf-token="{{ csrf_token() }}"
         data-save-error="{{ trans('meaning_examples.save_error') }}"
     >
-        <p>
-            {{ trans('meaning_examples.source') }}:
-            <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$source->lemma_id) }}">
-                {{ $source->lemma->lemma }}</a><sup>{{ $source->meaning_n }}</sup>            
-
-            @if ($partner)
-                —
-                {{ trans('meaning_examples.partner') }}:
-                <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$partner->lemma_id) }}">
-                    {{ $partner->lemma->lemma }}</a><sup>{{ $partner->meaning_n }}</sup>                
-            @endif
-        </p>
+        @include('dict.meaning.examples._header')
 
         @if ($search_errors->count())
             <div class="alert alert-danger">
@@ -85,10 +74,7 @@
                 </label>
             </div>
 
-            <div
-                id="example-search-partner-options"
-                @if (!$partner) style="display: none;" @endif
-            >
+            <div id="example-search-partner-options">
                 <input type="hidden" name="same_gramset" value="0">
 
                 <div class="checkbox">
@@ -170,29 +156,25 @@
 
             <p>
                 {{ trans('meaning_examples.total') }}:
-                {{ $sentences->total() }}
+                <span class="example-result-total">{{ $sentences->total() }}</span>
             </p>
 
             @if (count($sentences))
+                <p class="example-rating-legend">
+                    @foreach (trans('dict.relevance_scope_example') as $rating_value => $rating_text)
+                        <span class="relevance relevance-{{ $rating_value }}">
+                            <span class="glyphicon glyphicon-star"></span>
+                            {{ $rating_text }}
+                        </span>
+                    @endforeach
+                </p>
+
                 <ol start="{{ $sentences->firstItem() }}">
                     @foreach ($sentences as $item)
-                        <li style="margin-bottom: 15px;">
-                            <div class="meaning-example-sentence">
-                                {!! \App\Library\MeaningExampleFormatter::highlight($item) !!}
-                            </div>
-
-                            <div class="text-muted">
-                                {{ trans('meaning_examples.source_relevance') }}:
-                                {{ $item['source_relevance'] }};
-
-                                {{ trans('meaning_examples.matches') }}:
-                                {{ $item['match_count'] }}.
-
-                                <a href="{{ LaravelLocalization::localizeURL('/corpus/text/'.$item['text_id'].'?search_sentence='.$item['s_id']) }}">
-                                    {{ trans('meaning_examples.text') }}
-                                    № {{ $item['text_id'] }}
-                                </a>
-                            </div>
+                        <li class="example-sentence-group">
+                            @foreach ($item['source_examples'] as $example)
+                                @include('dict.meaning.examples._card')
+                            @endforeach
                         </li>
                     @endforeach
                 </ol>

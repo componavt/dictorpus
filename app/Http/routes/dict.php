@@ -107,6 +107,7 @@ Route::group(
         Route::get('meaning/{meaning_id}/examples/search', 'Library\MeaningExampleController@index')->where('meaning_id', '[0-9]+')->name('meaning.examples.search');
         Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/gramset', 'Library\MeaningExampleController@confirmGramset')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
         Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/meaning', 'Library\MeaningExampleController@confirmMeaning')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
+        Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/relevance', 'Library\MeaningExampleController@rateExample')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
         Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/reset', 'Library\MeaningExampleController@resetWord')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/word/{text_id}_{w_id}', 'Library\MeaningExampleController@wordBlock')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/remove_label/{label_id}', 'Dict\MeaningController@removeLabel');

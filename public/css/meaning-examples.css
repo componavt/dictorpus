@@ -92,3 +92,53 @@
     flex: 0 0 80px;
     width: 80px;
 }
+
+.example-sentence-group {
+    margin-bottom: 20px;
+}
+
+.example-card {
+    margin-bottom: 15px;
+}
+
+.example-card-translation {
+    margin-top: 3px;
+}
+
+.example-card-footer {
+    margin-top: 3px;
+}
+
+.example-rating-actions {
+    display: inline;
+    white-space: nowrap;
+}
+
+.example-rating-button {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 0 4px;
+    vertical-align: middle;
+}
+
+.example-rating-button.relevance-10 {
+    color: green;
+}
+
+.example-rating-button.relevance-7 {
+    color: blue;
+}
+
+.example-rating-button.relevance-5 {
+    color: orange;
+}
+
+.example-rating-button[data-relevance="0"] {
+    color: #777;
+}
+
+.example-rating-button:disabled {
+    cursor: wait;
+    opacity: 0.5;
+}

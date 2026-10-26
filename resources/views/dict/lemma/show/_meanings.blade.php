@@ -41,7 +41,7 @@
             </div>
             <div class="lemma-meaning-examples">
                 <img class="img-loading" id="img-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
-                <div  id="meaning-examples_{{$meaning->id}}"></div>
+                <div id="meaning-examples_{{$meaning->id}}"></div>
             </div>
             </tr>
         </div>

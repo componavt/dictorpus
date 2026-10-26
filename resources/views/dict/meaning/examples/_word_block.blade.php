@@ -1,5 +1,10 @@
 <div class="example-review-block @if ($fully_checked) example-review-checked @endif">
     <h3>{{ $word->word }}</h3>
+        @if ($read_only && (User::checkAccess('dict.edit') || User::checkAccess('corpus.edit')))
+        <p class="text-muted">
+            {{ trans('meaning_examples.fragment_read_only') }}
+        </p>
+    @endif
 
     @foreach ($meaning_values as $meaning)
         <div class="lemma_b">
@@ -14,11 +19,11 @@
                 @if ($can_edit && !$meaning_checked)
                     <button
                         type="button"
-                        class="example-review-plus @if ($meaning->id == $source->id) example-review-source @endif"
+                        class="example-review-plus"
                         data-meaning-id="{{ $meaning->id }}"
                         onclick="checkExampleMeaning(this)"
-                        title="{{ $meaning->id == $source->id ? trans('meaning_examples.confirm_source') : trans('corpus.mark_right_meaning') }}"
-                        aria-label="{{ $meaning->id == $source->id ? trans('meaning_examples.confirm_source') : trans('corpus.mark_right_meaning') }}"
+                        title="{{ trans('corpus.mark_right_meaning') }}"
+                        aria-label="{{ trans('corpus.mark_right_meaning') }}"
                     >
                         <span class="fa fa-plus" aria-hidden="true"></span>
                     </button>
