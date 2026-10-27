@@ -140,7 +140,7 @@
 
             <tbody>
                 @foreach ($collocations as $collocation)
-                    <tr>
+                    <tr id="collocation-{{ $collocation->id }}">
                         <td>
                             {{ $collocation->conceptCategory ? $collocation->conceptCategory->name : trans('collocations.without_category') }}
 

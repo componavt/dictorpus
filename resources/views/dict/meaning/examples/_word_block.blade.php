@@ -33,11 +33,17 @@
                     </button>
                 @endif
 
-                @if ($meaning_checked && $add_collocation_url)
+                @if ($meaning_checked && ($add_collocation_url || $delete_collocation_url))
                     <span class="example-collocation-actions">
-                        <a href="{{ $add_collocation_url }}">
-                            {{ trans('meaning_examples.add_collocation') }}
-                        </a>
+                        @if ($delete_collocation_url)
+                            <a href="{{ $delete_collocation_url }}" title="{{ trans('meaning_examples.delete_collocation_hint') }}">
+                                {{ trans('meaning_examples.delete_collocation') }}
+                            </a>
+                        @else
+                            <a href="{{ $add_collocation_url }}">
+                                {{ trans('meaning_examples.add_collocation') }}
+                            </a>
+                        @endif
                     </span>
                 @endif
             </p>

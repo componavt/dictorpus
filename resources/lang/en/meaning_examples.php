@@ -7,6 +7,8 @@ return [
     'back_to_view' => 'Back to entry',
     'collocation_recorded' => 'A collocation with the source meaning has already been recorded',
     'confirm_source' => 'Give this source meaning example a score of 7',
+    'delete_collocation' => 'Delete collocation…',
+    'delete_collocation_hint' => 'Open the collocation record to delete it with confirmation',
     'different_language' => 'The source and partner meanings must belong to the same language.',
     'distance_from' => 'Distance from',
     'distance_hint' => 'Partner position relative to the source word: −1 means immediately before it, +1 means immediately after it.',

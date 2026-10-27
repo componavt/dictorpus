@@ -470,6 +470,26 @@ class MeaningExampleController extends Controller
                 $examples_return
             );
 
+        $delete_collocation_url = null;
+
+        if ($collocation_recorded && !$read_only && User::checkAccess('dict.edit')) {
+            $partner_id = (int) $word_meanings['checked']->id;
+            $collocation_id = $recorded_partner_ids[$partner_id];
+
+            $query = ['edit' => $collocation_id];
+
+            if ($this->synset_id !== null) {
+                $query['synset_id'] = $this->synset_id;
+            }
+
+            if ($examples_return !== '') {
+                $query['examples_return'] = $examples_return;
+            }
+
+            $delete_collocation_url = LaravelLocalization::localizeURL('/dict/meaning/' . $source->id . '/collocations')
+                . '?' . http_build_query($query) . '#collocation-' . $collocation_id;
+        }
+
         return view(
             'dict.meaning.examples._word_block',
             compact(
@@ -477,6 +497,7 @@ class MeaningExampleController extends Controller
                 'can_edit',
                 'can_reset',
                 'collocation_recorded',
+                'delete_collocation_url',
                 'fully_checked',
                 'gramset_checked',
                 'gramset_values',
@@ -1166,7 +1187,7 @@ class MeaningExampleController extends Controller
     }
 
     /**
-     * Возвращает множество записанных партнёров исходного значения.
+     * Возвращает соответствие ID партнёра и ID записи сочетаемости.
      */
     protected function recordedPartnerIds(Meaning $source)
     {
@@ -1175,11 +1196,10 @@ class MeaningExampleController extends Controller
         if (!array_key_exists($source_id, $this->recorded_partner_ids)) {
             $ids = [];
 
-            $rows = $source->collocations()
-                ->get(['collocate_meaning_id']);
+            $rows = $source->collocations()->get(['id', 'collocate_meaning_id']);
 
             foreach ($rows as $row) {
-                $ids[(int) $row->collocate_meaning_id] = true;
+                $ids[(int) $row->collocate_meaning_id] = (int) $row->id;
             }
 
             $this->recorded_partner_ids[$source_id] = $ids;
