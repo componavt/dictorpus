@@ -582,6 +582,7 @@ trait TextModify
 
     public function remove()
     {
+        $this->bibles()->detach();
         $this->authors()->detach();
         $this->corpuses()->detach();
         $this->cycles()->detach();
