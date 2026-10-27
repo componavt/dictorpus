@@ -9,7 +9,7 @@ class MeaningExampleFormatter
      *
      * @return string
      */
-    public static function highlight(array $item, array $word_blocks = [])
+    public static function highlight(array $item, array $word_blocks = [], array $window = [])
     {
         $source_ids = [];
         $partner_ids = [];
@@ -69,6 +69,21 @@ class MeaningExampleFormatter
             'word_blocks' => $word_blocks,
             'original' => !empty($item['is_original']) ? 1 : 0
         ];
+        
+        $word_context['distances'] = [];
+        $word_context['window'] = $window;
+
+        $positions = $item['word_positions'] ?? [];
+        $source_w_id = $word_context['source_w_id'];
+
+        if (array_key_exists($source_w_id, $positions)) {
+            $source_position = (int) $positions[$source_w_id];
+
+            foreach ($positions as $w_id => $position) {
+                $word_context['distances'][(int) $w_id] =
+                    (int) $position - $source_position;
+            }
+        }
 
         if ($word_context['original']) {
             $word_context['dom_prefix'] = 'original_'
@@ -122,6 +137,38 @@ class MeaningExampleFormatter
         $word_id = $node->getAttribute('id');
         $w_id = ctype_digit($word_id) ? (int) $word_id : 0;
 
+        $distances = $word_context['distances'] ?? [];
+        $window = $word_context['window'] ?? [];
+
+        if (array_key_exists($w_id, $distances)) {
+            $distance = (int) $distances[$w_id];
+
+            $distance_label = $distance > 0
+                ? '+' . $distance
+                : (string) $distance;
+
+            $position_classes = ['example-positioned-word'];
+
+            if (
+                $w_id !== $word_context['source_w_id']
+                && isset($window['distance_from'], $window['distance_to'])
+                && $distance >= (int) $window['distance_from']
+                && $distance <= (int) $window['distance_to']
+            ) {
+                $position_classes[] = 'example-window-word';
+            }
+
+            $title = trans('meaning_examples.word_distance', [
+                'distance' => $distance_label,
+            ]);
+
+            $html = '<span class="' . implode(' ', $position_classes) . '"'
+                . ' data-word-distance="' . $distance . '"'
+                . ' title="' . self::escape($title) . '">'
+                . $html
+                . '</span>';
+        }
+        
         $classes = [];
 
         if (isset($source_ids[$w_id])) {

@@ -159,3 +159,18 @@
     margin-top: 4px;
     font-size: 0.85em;
 }
+
+.meaning-example-search .example-window-word {
+    border-top: 2px solid #7676a8;
+    padding-top: 2px;
+}
+
+.meaning-example-search .example-window-legend {
+    color: #666;
+    font-size: 0.9em;
+    margin: 10px 0;
+}
+
+.meaning-example-search .example-window-legend .example-window-word {
+    display: inline-block;
+}

@@ -1114,15 +1114,18 @@ class MeaningExampleController extends Controller
             ->get();
 
         $w_ids = [];
+        $word_positions = [];
 
         foreach ($words as $word) {
-            $w_ids[] = (int) $word->w_id;
+            $word_w_id = (int) $word->w_id;
+            $w_ids[] = $word_w_id;
+
+            if ($word->word_number !== null) {
+                $word_positions[$word_w_id] = (int) $word->word_number;
+            }
         }
 
-        $data = (new MeaningExampleWordData())->load(
-            (int) $source_word->text_id,
-            $w_ids
-        );
+        $data = (new MeaningExampleWordData())->load((int) $source_word->text_id, $w_ids);
 
         $source_relevance = (int) DB::table('meaning_text')
             ->where('meaning_id', $source->id)
@@ -1173,15 +1176,13 @@ class MeaningExampleController extends Controller
             'source_w_id' => (int) $source_word->w_id,
             'text_id' => (int) $source_word->text_id,
             'text_xml' => (string) $sentence->text_xml,
+            'word_positions' => $word_positions,
         ];
 
         return view(
             'dict.meaning.examples._original',
             [
-                'original_html' => MeaningExampleFormatter::highlight(
-                    $item,
-                    $blocks
-                ),
+                'original_html' => MeaningExampleFormatter::highlight($item, $blocks, $interval),
             ]
         );
     }

@@ -343,11 +343,33 @@ class MeaningExampleSearch
                 'linked_w_ids' => [],
                 'text_xml' => '',
                 'sentence' => '',
+                'word_positions' => [],
             ];
         }
 
         if (!$sentence_ids) {
             return [];
+        }
+        
+        $position_rows = DB::table('words')
+            ->whereIn('sentence_id', $sentence_ids)
+            ->select([
+                'sentence_id',
+                'w_id',
+                'word_number',
+            ])
+            ->get();
+
+        foreach ($position_rows as $word) {
+            if ($word->word_number === null) {
+                continue;
+            }
+
+            $sentence_id = (int) $word->sentence_id;
+            $w_id = (int) $word->w_id;
+
+            $items[$sentence_id]['word_positions'][$w_id] =
+                (int) $word->word_number;
         }
 
         $linked_words = DB::table('meaning_text as mt')

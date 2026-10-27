@@ -17,7 +17,14 @@
         </span>
 
         <span class="meaning-example-sentence">
-            {!! \App\Library\MeaningExampleFormatter::highlight($example, $word_blocks[$example['example_id']] ?? []) !!}
+            {!! \App\Library\MeaningExampleFormatter::highlight(
+                $example,
+                $word_blocks[$example['example_id']] ?? [],
+                [
+                    'distance_from' => (int) $distance_from,
+                    'distance_to' => (int) $distance_to,
+                ]
+            ) !!}
         </span>
     </div>
 

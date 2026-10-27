@@ -41,4 +41,7 @@ return [
     'text' => 'Text',
     'title' => 'Usage example search',
     'total' => 'Sentences found',
+    'window_hint' => 'the top line marks neighbouring words within the selected range; distances are calculated from the original sentence.',
+    'window_label' => 'Search window :from…:to',
+    'word_distance' => 'Distance from the source word: :distance',
 ];

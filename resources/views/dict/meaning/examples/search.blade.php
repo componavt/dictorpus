@@ -165,6 +165,17 @@
         </span>
         @endforeach
     </p>
+    
+    <p class="example-window-legend">
+        <span class="example-window-word">
+            {{ trans('meaning_examples.window_label', [
+                'from' => $distance_from,
+                'to' => $distance_to,
+            ]) }}
+        </span>
+        —
+        {{ trans('meaning_examples.window_hint') }}
+    </p>
 
     <ol start="{{ $sentences->firstItem() }}">
         @foreach ($sentences as $item)
