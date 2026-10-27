@@ -68,6 +68,7 @@ function saveExampleAnnotation(el, action, data) {
                     parseInt(source_relevance, 10)
                 );
             }
+            updateExampleCollocationMarks();
         },
         error: function () {
             alert(page.attr('data-save-error'));
@@ -302,6 +303,7 @@ function toggleExampleOriginal(el) {
 
             button.attr('aria-expanded', 'true')
                 .text(button.attr('data-hide'));
+            updateExampleCollocationMarks();
         },
         error: function () {
             alert(page.attr('data-save-error'));
@@ -309,6 +311,44 @@ function toggleExampleOriginal(el) {
         complete: function () {
             content.data('loading', false);
             button.prop('disabled', false);
+        }
+    });
+}
+
+/**
+ * Отмечает слова, чьи подтверждённые значения записаны как партнёры источника.
+ */
+function updateExampleCollocationMarks() {
+    $('.meaning-example-search w.word-linked').each(function () {
+        var word = $(this);
+        var review = word.children('.links-to-lemmas')
+            .children('.example-review-block')
+            .first();
+
+        if (!review.length) {
+            return;
+        }
+
+        var recorded = review.attr('data-collocation-recorded') === '1';
+        var mark = word.children('.example-recorded-partner');
+
+        word.toggleClass('example-collocation-recorded', recorded);
+
+        if (!recorded) {
+            mark.remove();
+            return;
+        }
+
+        if (!mark.length) {
+            var page = word.closest('.meaning-example-search');
+            var label = page.attr('data-collocation-recorded-label');
+
+            $('<span>')
+                .addClass('example-recorded-partner')
+                .attr('title', label)
+                .attr('aria-label', label)
+                .text('✓')
+                .appendTo(word);
         }
     });
 }

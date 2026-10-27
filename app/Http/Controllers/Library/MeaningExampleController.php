@@ -26,6 +26,7 @@ class MeaningExampleController extends Controller
     protected $review_context = [];
     protected $synset_id = null;
     protected $examples_return = '';
+    protected $recorded_partner_ids = [];
 
     /**
      * Показывает найденные предложения без изменения корпусных связей.
@@ -418,6 +419,10 @@ class MeaningExampleController extends Controller
         $meaning_checked = !empty($word_meanings['checked']);
         $gramset_checked = !empty($word_gramsets['checked']);
 
+        $recorded_partner_ids = $this->recordedPartnerIds($source);
+
+        $collocation_recorded = $meaning_checked && isset($recorded_partner_ids[(int) $word_meanings['checked']->id]);
+
         $meaning_values = $meaning_checked
             ? [$word_meanings['checked']]
             : ($word_meanings['unchecked'] ?? []);
@@ -471,6 +476,7 @@ class MeaningExampleController extends Controller
                 'add_collocation_url',
                 'can_edit',
                 'can_reset',
+                'collocation_recorded',
                 'fully_checked',
                 'gramset_checked',
                 'gramset_values',
@@ -652,14 +658,6 @@ class MeaningExampleController extends Controller
             ->where('sw.text_id', $word->text_id)
             ->where('sw.s_id', $word->s_id)
             ->where('sw.id', '<>', $word->id)
-            ->whereRaw(
-                '? - sw.word_number BETWEEN ? AND ?',
-                [
-                    (int) $word->word_number,
-                    $interval['distance_from'],
-                    $interval['distance_to'],
-                ]
-            )
             ->count();
 
         if (!$source_count) {
@@ -1079,12 +1077,7 @@ class MeaningExampleController extends Controller
             'source_w_id' => $w_id,
         ]);
 
-        list($source, $source_word, $interval) = $this->reviewWord(
-            $meaning_id,
-            $text_id,
-            $w_id,
-            $request
-        );
+        list($source, $source_word, $interval) = $this->reviewWord($meaning_id, $text_id, $w_id, $request);
 
         $sentence = DB::table('sentences')
             ->where('id', $source_word->sentence_id)
@@ -1170,5 +1163,28 @@ class MeaningExampleController extends Controller
                 ),
             ]
         );
+    }
+
+    /**
+     * Возвращает множество записанных партнёров исходного значения.
+     */
+    protected function recordedPartnerIds(Meaning $source)
+    {
+        $source_id = (int) $source->id;
+
+        if (!array_key_exists($source_id, $this->recorded_partner_ids)) {
+            $ids = [];
+
+            $rows = $source->collocations()
+                ->get(['collocate_meaning_id']);
+
+            foreach ($rows as $row) {
+                $ids[(int) $row->collocate_meaning_id] = true;
+            }
+
+            $this->recorded_partner_ids[$source_id] = $ids;
+        }
+
+        return $this->recorded_partner_ids[$source_id];
     }
 }

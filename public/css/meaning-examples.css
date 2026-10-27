@@ -142,3 +142,20 @@
     cursor: wait;
     opacity: 0.5;
 }
+
+.meaning-example-search w.example-collocation-recorded {
+    border-bottom: 1px dotted #287a32;
+}
+
+.meaning-example-search .example-recorded-partner {
+    color: #287a32;
+    font-size: 0.8em;
+    margin-left: 2px;
+    white-space: nowrap;
+}
+
+.meaning-example-search .example-collocation-actions {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.85em;
+}

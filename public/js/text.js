@@ -152,6 +152,9 @@ function loadWordBlock(w_id, url, data = {}, block_element = null) {
         type: 'GET',
         success: function (result) {
             block.html(result).data('downloaded', 1);
+            if (typeof updateExampleCollocationMarks === 'function') {
+                updateExampleCollocationMarks();
+            }
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert('loadWordBlock: ' + xhr.status);

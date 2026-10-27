@@ -1,6 +1,10 @@
-<div class="example-review-block @if ($fully_checked) example-review-checked @endif">
+<div
+    class="example-review-block @if ($fully_checked) example-review-checked @endif"
+    data-collocation-recorded="{{ $collocation_recorded ? '1' : '0' }}"
+>
     <h3>{{ $word->word }}</h3>
-        @if ($read_only && (User::checkAccess('dict.edit') || User::checkAccess('corpus.edit')))
+
+    @if ($read_only && (User::checkAccess('dict.edit') || User::checkAccess('corpus.edit')))
         <p class="text-muted">
             {{ trans('meaning_examples.fragment_read_only') }}
         </p>
@@ -28,17 +32,17 @@
                         <span class="fa fa-plus" aria-hidden="true"></span>
                     </button>
                 @endif
+
+                @if ($meaning_checked && $add_collocation_url)
+                    <span class="example-collocation-actions">
+                        <a href="{{ $add_collocation_url }}">
+                            {{ trans('meaning_examples.add_collocation') }}
+                        </a>
+                    </span>
+                @endif
             </p>
         </div>
     @endforeach
-
-    @if ($add_collocation_url)
-        <p class="example-add-collocation">
-            <a href="{{ $add_collocation_url }}">
-                {{ trans('meaning_examples.add_collocation') }}
-            </a>
-        </p>
-    @endif
 
     @if (count($gramset_values))
         <div class="gramsets_b">
@@ -46,7 +50,7 @@
                 <p>
                     {{ $gramset->gramsetString() }}
 
-                                        @if (!$gramset_checked && !empty($wordforms[$gramset->wordform_id]))
+                    @if (!$gramset_checked && !empty($wordforms[$gramset->wordform_id]))
                         <span class="text-muted">
                             ({{ $wordforms[$gramset->wordform_id] }})
                         </span>
@@ -82,5 +86,5 @@
                 <span class="fa fa-sync-alt fa-lg" aria-hidden="true"></span>
             </button>
         </div>
-    @endif    
+    @endif
 </div>

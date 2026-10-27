@@ -14,6 +14,7 @@
 @section('body')
 <div
     class="meaning-example-search" data-synset-id="{{ $synset_id }}"
+    data-collocation-recorded-label="{{ trans('meaning_examples.collocation_recorded') }}"
     data-distance-from="{{ $distance_from }}" data-examples-return="{{ $examples_return }}"
     data-distance-to="{{ $distance_to }}"
     data-word-block-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/word') }}"
@@ -193,6 +194,7 @@
 @section('jqueryFunc')
     initExamplePartnerSelect();
     initExampleCollocationLinks();
+    updateExampleCollocationMarks();
 
     var example_page = $('.meaning-example-search');
 
