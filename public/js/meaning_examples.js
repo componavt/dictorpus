@@ -148,13 +148,28 @@ function initExamplePartnerSelect() {
 }
 
 /**
- * Обновляет кэш блоков после возвращения из редактора сочетаемостей.
+ * Сбрасывает кэш разборов при возврате фокуса и обновляет страницу после bfcache.
  */
 function initExampleCollocationLinks() {
-    $(window).on('focus.exampleCollocations', function () {
-        $('.meaning-example-sentence .links-to-lemmas').data('downloaded', 0);
-        $('.example-original-content').data('downloaded', 0);
-    });
+    $(window)
+        .off('focus.exampleCollocations')
+        .on('focus.exampleCollocations', function () {
+            $('.meaning-example-sentence .links-to-lemmas')
+                .data('downloaded', 0);
+
+            $('.example-original-content')
+                .data('downloaded', 0);
+        });
+
+    $(window)
+        .off('pageshow.exampleCollocations')
+        .on('pageshow.exampleCollocations', function (event) {
+            var page_event = event.originalEvent || event;
+
+            if (page_event.persisted) {
+                window.location.reload();
+            }
+        });
 }
 
 /**
