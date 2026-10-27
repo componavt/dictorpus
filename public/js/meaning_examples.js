@@ -37,7 +37,8 @@ function saveExampleAnnotation(el, action, data) {
     data.distance_from = page.attr('data-distance-from');
     data.distance_to = page.attr('data-distance-to');
     data.source_w_id = word.attr('data-source-w-id');
-    data.fragment_id = word.attr('data-fragment-id');
+    data.original = word.attr('data-original') || 0;
+    data.fragment_id = String(data.original) === '1' ? 0 : word.attr('data-fragment-id');
     data.synset_id = page.attr('data-synset-id') || '';
     data.examples_return = page.attr('data-examples-return') || '';
 
@@ -49,6 +50,14 @@ function saveExampleAnnotation(el, action, data) {
         data: data,
         success: function (html) {
             block.html(html).data('downloaded', 1);
+            page.find('w[data-word-key]').filter(function () {
+                return $(this).attr('data-word-key') === word_key;
+            }).children('.links-to-lemmas').not(block)
+                .hide()
+                .data('downloaded', 0);
+
+            page.find('.example-original-content')
+                .data('downloaded', 0);
             var source_relevance = block
                 .find('.example-review-block')
                 .attr('data-source-relevance');
@@ -142,8 +151,8 @@ function initExamplePartnerSelect() {
  */
 function initExampleCollocationLinks() {
     $(window).on('focus.exampleCollocations', function () {
-        $('.meaning-example-sentence .links-to-lemmas')
-            .data('downloaded', 0);
+        $('.meaning-example-sentence .links-to-lemmas').data('downloaded', 0);
+        $('.example-original-content').data('downloaded', 0);
     });
 }
 
@@ -179,9 +188,8 @@ function rateSourceExample(el) {
         success: function (result) {
             updateExampleRating(card, parseInt(result.relevance, 10));
 
-            page.find('.links-to-lemmas')
-                .hide()
-                .data('downloaded', 0);
+            page.find('.links-to-lemmas').hide().data('downloaded', 0);
+            page.find('.example-original-content').data('downloaded', 0);
         },
         error: function () {
             alert(page.attr('data-save-error'));
@@ -245,4 +253,62 @@ function removeExampleCard(card) {
             counter.text(Math.max(0, total - 1));
         }
     }
+}
+
+/**
+ * Раскрывает оригинал и загружает его вместе с готовыми разборами.
+ */
+function toggleExampleOriginal(el) {
+    var button = $(el);
+    var panel = button.closest('.example-original-panel');
+    var content = panel.children('.example-original-content');
+    var page = button.closest('.meaning-example-search');
+    var expanded = button.attr('aria-expanded') === 'true';
+
+    if (expanded) {
+        content.hide();
+        button.attr('aria-expanded', 'false')
+            .text(button.attr('data-show'));
+        return;
+    }
+
+    if (content.data('downloaded')) {
+        content.show();
+        button.attr('aria-expanded', 'true')
+            .text(button.attr('data-hide'));
+        return;
+    }
+
+    if (content.data('loading')) {
+        return;
+    }
+
+    content.data('loading', true);
+    button.prop('disabled', true);
+
+    $.ajax({
+        url: button.attr('data-url'),
+        type: 'GET',
+        data: {
+            distance_from: page.attr('data-distance-from'),
+            distance_to: page.attr('data-distance-to'),
+            examples_return: page.attr('data-examples-return') || '',
+            synset_id: page.attr('data-synset-id') || ''
+        },
+        success: function (html) {
+            content.html(html)
+                .data('downloaded', 1)
+                .show();
+
+            button.attr('aria-expanded', 'true')
+                .text(button.attr('data-hide'));
+        },
+        error: function () {
+            alert(page.attr('data-save-error'));
+        },
+        complete: function () {
+            content.data('loading', false);
+            button.prop('disabled', false);
+        }
+    });
 }

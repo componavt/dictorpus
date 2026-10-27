@@ -24,26 +24,15 @@ class MeaningExampleFormatter
             }
         }
 
-        $linked_ids = array_fill_keys(
-            $item['linked_w_ids'] ?? [],
-            true
-        );
+        $linked_ids = array_fill_keys($item['linked_w_ids'] ?? [], true);
 
         $xml = (string) $item['text_xml'];
 
-        if (
-            trim($xml) === ''
-            || preg_match('/<!DOCTYPE|<!ENTITY/i', $xml)
-        ) {
+        if (trim($xml) === '' || preg_match('/<!DOCTYPE|<!ENTITY/i', $xml)) {
             return self::escape($item['sentence']);
         }
 
-        $xml = preg_replace(
-            '/^\s*<\?xml[^?]*\?>/u',
-            '',
-            $xml,
-            1
-        );
+        $xml = preg_replace('/^\s*<\?xml[^?]*\?>/u', '', $xml, 1);
 
         $document = new \DOMDocument('1.0', 'UTF-8');
 
@@ -78,7 +67,13 @@ class MeaningExampleFormatter
             'source_w_id' => (int) ($item['source_w_id'] ?? 0),
             'fragment_id' => (int) ($item['fragment_id'] ?? 0),
             'word_blocks' => $word_blocks,
+            'original' => !empty($item['is_original']) ? 1 : 0
         ];
+
+        if ($word_context['original']) {
+            $word_context['dom_prefix'] = 'original_'
+                . $word_context['dom_prefix'];
+        }
 
         return self::renderNode(
             $document->documentElement,
@@ -155,6 +150,7 @@ class MeaningExampleFormatter
                 . ' data-word-key="' . $word_key . '"'
                 . ' data-source-w-id="' . $word_context['source_w_id'] . '"'
                 . ' data-fragment-id="' . $word_context['fragment_id'] . '"'
+                . ' data-original="' . $word_context['original'] . '"'
                 . ' class="' . implode(' ', $classes) . '">'
                 . $html
                 . '<div id="links_' . $block_id . '"'

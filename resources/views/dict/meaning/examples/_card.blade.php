@@ -4,6 +4,11 @@
     data-source-word-key="{{ $example['text_id'].'_'.$example['source_w_id'] }}"
     data-source-w-id="{{ $example['source_w_id'] }}"
     data-fragment-id="{{ (int) $example['fragment_id'] }}">
+    @if ($example['is_fragment'] && (User::checkAccess('dict.edit') || User::checkAccess('corpus.edit')))
+        <div class="text-muted example-fragment-label">
+            {{ trans('meaning_examples.fragment') }}
+        </div>
+    @endif
     <div class="example-card-text">
         <span class="example-source-rating">
             @if ($example['source_relevance'] > 1)
@@ -22,14 +27,29 @@
     </div>
     @endif
 
+        @if ($example['is_fragment'] && (User::checkAccess('dict.edit') || User::checkAccess('corpus.edit')))
+        <div class="example-original-panel">
+            <button
+                type="button"
+                class="btn btn-link btn-sm example-original-toggle"
+                data-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/original/'.$example['text_id'].'_'.$example['source_w_id']) }}"
+                data-show="{{ trans('meaning_examples.show_original') }}"
+                data-hide="{{ trans('meaning_examples.hide_original') }}"
+                aria-expanded="false"
+                onclick="toggleExampleOriginal(this)"
+            >
+                {{ trans('meaning_examples.show_original') }}
+            </button>
+
+            <div
+                class="example-original-content"
+                style="display: none;"
+            ></div>
+        </div>
+    @endif
+
     <div class="example-card-footer">
         (<a href="{{ $example['text_url'] }}">{{ $example['text_title'] }}</a>)
-
-        @if ($example['is_fragment'] && (User::checkAccess('dict.edit') || User::checkAccess('corpus.edit')))
-        <span class="text-muted">
-            — {{ trans('meaning_examples.fragment') }}
-        </span>
-        @endif
 
         @if (User::checkAccess('dict.edit'))
         @include('widgets.form.button._edit', [

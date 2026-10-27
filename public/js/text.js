@@ -75,36 +75,52 @@ function showLemmaLinked(text_id) {
 /**
  *  show/hide a block with lemmas by click on a word
  */
+/**
+ * Показывает разбор непосредственно внутри нажатого слова.
+ */
 function showWordBlock(locale, block_route = null, block_data = {}) {
     $("body").on("click", ".word-linked", function (event) {
-        event.preventDefault(); // reload event after AJAX reload
-        var t_w_id = $(this).attr('id');
-        $(".links-to-lemmas").hide(); // hide all open blocks
-        var w_block = $("#links_" + t_w_id);
+        event.preventDefault();
+
+        var word = $(this);
+        var t_w_id = word.attr('id');
+        var w_block = word.children('.links-to-lemmas').first();
+
+        if (!w_block.length) {
+            return;
+        }
+
+        $(".links-to-lemmas").hide();
         w_block.show();
-        var downloaded = w_block.data('downloaded');
-        if (downloaded === 0) {
-            var word_key = $(this).attr('data-word-key') || t_w_id;
+
+        if (w_block.data('downloaded') === 0) {
+            var word_key = word.attr('data-word-key') || t_w_id;
             var request_data = $.extend({}, block_data);
 
             if (block_route) {
-                request_data.source_w_id = $(this).attr('data-source-w-id');
-                request_data.fragment_id = $(this).attr('data-fragment-id');
+                request_data.source_w_id = word.attr('data-source-w-id');
+                request_data.fragment_id = word.attr('data-fragment-id');
+                request_data.original = word.attr('data-original') || 0;
             }
 
             var block_url = block_route
                 ? block_route + '/' + word_key
                 : '/' + locale + '/corpus/word/load_lemma_block/' + word_key;
 
-            loadWordBlock(t_w_id, block_url, request_data);
+            loadWordBlock(
+                t_w_id,
+                block_url,
+                request_data,
+                w_block
+            );
         }
     });
 
     $(document).mouseup(function (e) {
-        var div = $(".links-to-lemmas");
-        if (!div.is(e.target)
-            && div.has(e.target).length === 0) {
-            div.hide(); // hide this block
+        var blocks = $(".links-to-lemmas");
+
+        if (!blocks.is(e.target) && blocks.has(e.target).length === 0) {
+            blocks.hide();
         }
     });
 }
@@ -115,20 +131,34 @@ function updateWordBlock(text_id, w_id) {
 
 }
 
-function loadWordBlock(w_id, url, data = {}) {
-    $("#links_" + w_id + ".links-to-lemmas .img-loading").show();
-    //console.log("loadWordBlock: " + url);
+/**
+ * Загружает разбор в переданный контейнер или в контейнер по старому ID.
+ */
+function loadWordBlock(w_id, url, data = {}, block_element = null) {
+    var block = block_element
+        ? $(block_element)
+        : $("#links_" + w_id + ".links-to-lemmas");
+
+    if (!block.length || block.data('loading')) {
+        return;
+    }
+
+    block.data('loading', true);
+    block.find('.img-loading').show();
+
     $.ajax({
         url: url,
         data: data,
         type: 'GET',
         success: function (result) {
-            $("#links_" + w_id + ".links-to-lemmas").html(result);
-            $("#links_" + w_id + ".links-to-lemmas").data('downloaded', 1)
+            block.html(result).data('downloaded', 1);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert('loadWordBlock: ' + xhr.status);
             alert(thrownError);
+        },
+        complete: function () {
+            block.data('loading', false);
         }
     });
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\MeaningExampleFormatter;
 use App\Library\MeaningExampleWordData;
 use App\Models\User;
 use App\Models\Corpus\MeaningTextRel;
@@ -693,9 +694,15 @@ class MeaningExampleController extends Controller
     {
         $this->validate($request, [
             'fragment_id' => 'required|integer|min:0',
+            'original' => 'boolean',
             'source_w_id' => 'required|integer|min:1',
         ]);
 
+        $original = (bool) (int) $request->input('original', 0);
+
+        if ($original && !User::checkAccess('dict.edit') && !User::checkAccess('corpus.edit')) {
+            abort(403);
+        }
         $source_w_id = (int) $request->input('source_w_id');
 
         $source_word = Word::where('text_id', $word->text_id)
@@ -737,7 +744,7 @@ class MeaningExampleController extends Controller
             );
         }
 
-        $fragment_id = $is_fragment ? (int) $fragment->id : 0;
+        $fragment_id = $is_fragment && !$original ? (int) $fragment->id : 0;
 
         if ($fragment_id !== (int) $request->input('fragment_id')) {
             abort(409);
@@ -746,7 +753,8 @@ class MeaningExampleController extends Controller
         return [
             'source_w_id' => $source_w_id,
             'fragment_id' => $fragment_id,
-            'read_only' => $is_fragment
+            'original' => $original,
+            'read_only' => $is_fragment && !$original
                 && (int) $word->w_id !== $source_w_id,
         ];
     }
@@ -1054,5 +1062,113 @@ class MeaningExampleController extends Controller
         }
 
         return $synset_id;
+    }
+
+    /**
+     * Загружает исходное предложение с готовыми разборами для редактора.
+     */
+    public function originalSentence($meaning_id, $text_id, $w_id, Request $request)
+    {
+        if (!User::checkAccess('dict.edit') && !User::checkAccess('corpus.edit')) {
+            abort(403);
+        }
+
+        $request->merge([
+            'fragment_id' => 0,
+            'original' => 1,
+            'source_w_id' => $w_id,
+        ]);
+
+        list($source, $source_word, $interval) = $this->reviewWord(
+            $meaning_id,
+            $text_id,
+            $w_id,
+            $request
+        );
+
+        $sentence = DB::table('sentences')
+            ->where('id', $source_word->sentence_id)
+            ->first();
+
+        if (!$sentence) {
+            abort(404);
+        }
+
+        $words = Word::where('text_id', $source_word->text_id)
+            ->where('sentence_id', $source_word->sentence_id)
+            ->orderBy('word_number')
+            ->get();
+
+        $w_ids = [];
+
+        foreach ($words as $word) {
+            $w_ids[] = (int) $word->w_id;
+        }
+
+        $data = (new MeaningExampleWordData())->load(
+            (int) $source_word->text_id,
+            $w_ids
+        );
+
+        $source_relevance = (int) DB::table('meaning_text')
+            ->where('meaning_id', $source->id)
+            ->where('word_id', $source_word->id)
+            ->where('text_id', $source_word->text_id)
+            ->where('s_id', $source_word->s_id)
+            ->where('w_id', $source_word->w_id)
+            ->value('relevance');
+
+        $blocks = [];
+        $linked_w_ids = [];
+
+        foreach ($words as $word) {
+            $word_w_id = (int) $word->w_id;
+
+            if (empty($data['meanings'][$word_w_id])) {
+                continue;
+            }
+
+            $linked_w_ids[] = $word_w_id;
+
+            $blocks[$word_w_id] = $this->renderWordBlock(
+                $source,
+                $word,
+                $interval,
+                [
+                    'context' => $this->review_context,
+                    'data' => $data,
+                    'source_relevance' => $source_relevance,
+                ]
+            )->render();
+        }
+
+        $item = [
+            'example_id' => $source->id
+                . '_' . $source_word->text_id
+                . '_' . $source_word->s_id
+                . '_' . $source_word->w_id,
+            'fragment_id' => 0,
+            'is_original' => true,
+            'linked_w_ids' => $linked_w_ids,
+            'matches' => [
+                [
+                    'source_w_id' => (int) $source_word->w_id,
+                ],
+            ],
+            'sentence' => strip_tags((string) $sentence->text_xml),
+            'source_w_id' => (int) $source_word->w_id,
+            'text_id' => (int) $source_word->text_id,
+            'text_xml' => (string) $sentence->text_xml,
+        ];
+
+        return view(
+            'dict.meaning.examples._original',
+            [
+                'original_html' => MeaningExampleFormatter::highlight(
+                    $item,
+                    $blocks
+                ),
+            ]
+        );
     }
 }

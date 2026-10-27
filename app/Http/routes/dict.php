@@ -103,6 +103,7 @@ Route::group(
         Route::get('meaning/{meaning_id}/collocations', 'Dict\CollocationController@index');
         Route::post('meaning/{meaning_id}/collocations', 'Dict\CollocationController@store');
 
+        Route::get('meaning/{meaning_id}/examples/original/{text_id}_{w_id}', 'Library\MeaningExampleController@originalSentence')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/partners', 'Library\MeaningExampleController@partners')->where('meaning_id', '[0-9]+');
         Route::get('meaning/{meaning_id}/examples/search', 'Library\MeaningExampleController@index')->where('meaning_id', '[0-9]+')->name('meaning.examples.search');
         Route::post('meaning/{meaning_id}/examples/word/{text_id}_{w_id}/gramset', 'Library\MeaningExampleController@confirmGramset')->where('meaning_id', '[0-9]+')->where('text_id', '[0-9]+')->where('w_id', '[0-9]+');
