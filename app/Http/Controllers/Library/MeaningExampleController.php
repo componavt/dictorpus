@@ -1219,4 +1219,16 @@ class MeaningExampleController extends Controller
 
         return $this->recorded_partner_ids[$source_id];
     }
+
+    /**
+     * Возвращает актуальные ID записей сочетаемости по ID партнёров.
+     */
+    public function recordedPartners($meaning_id)
+    {
+        $source = Meaning::findOrFail($meaning_id);
+
+        return response()->json([
+            'partners' => (object) $this->recordedPartnerIds($source),
+        ])->header('Cache-Control', 'no-store');
+    }
 }

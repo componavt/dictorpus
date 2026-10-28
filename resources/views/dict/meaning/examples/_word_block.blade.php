@@ -1,5 +1,6 @@
 <div
     class="example-review-block @if ($fully_checked) example-review-checked @endif"
+    data-checked-meaning-id="{{ $meaning_checked ? $meaning_values[0]->id : 0 }}"
     data-collocation-recorded="{{ $collocation_recorded ? '1' : '0' }}"
 >
     <h3>{{ $word->word }}</h3>

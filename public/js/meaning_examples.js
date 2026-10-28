@@ -159,6 +159,7 @@ function initExampleCollocationLinks() {
 
             $('.example-original-content')
                 .data('downloaded', 0);
+            refreshExampleRecordedPartners();
         });
 
     $(window)
@@ -440,4 +441,101 @@ function restoreExampleOriginal() {
 
     button.data('restore-scroll', true);
     toggleExampleOriginal(button[0]);
+}
+
+/**
+ * Обновляет признаки сочетаемости и ссылки в уже загруженных разборах.
+ */
+function applyExampleRecordedPartners(page, partners) {
+    page.find('.example-review-block').each(function () {
+        var review = $(this);
+        var block = review.closest('.links-to-lemmas');
+
+        if (block.data('saving')) {
+            return;
+        }
+
+        var meaning_id = review.attr('data-checked-meaning-id') || '0';
+
+        var collocation_id = Object.prototype.hasOwnProperty.call(
+            partners,
+            meaning_id
+        ) ? parseInt(partners[meaning_id], 10) : 0;
+
+        var recorded = collocation_id > 0;
+
+        review.attr(
+            'data-collocation-recorded',
+            recorded ? '1' : '0'
+        );
+
+        var link = review.find('.example-collocation-actions a').first();
+
+        if (!link.length || meaning_id === '0') {
+            return;
+        }
+
+        var url = new URL(link.attr('href'), window.location.href);
+
+        if (recorded) {
+            url.searchParams.delete('partner_id');
+            url.searchParams.set('edit', String(collocation_id));
+            url.hash = 'collocation-' + collocation_id;
+
+            link.text(page.attr('data-delete-collocation-label'))
+                .attr('title', page.attr('data-delete-collocation-hint'));
+        } else {
+            url.searchParams.delete('edit');
+            url.searchParams.set('partner_id', meaning_id);
+            url.hash = '';
+
+            link.text(page.attr('data-add-collocation-label'))
+                .removeAttr('title');
+        }
+
+        link.attr('href', url.href);
+    });
+
+    updateExampleCollocationMarks();
+}
+
+/**
+ * Одним запросом получает актуальную сочетаемость исходного значения.
+ */
+function refreshExampleRecordedPartners() {
+    var page = $('.meaning-example-search').first();
+    var url = page.attr('data-recorded-partners-url');
+
+    if (!page.length || !url || page.data('collocations-refreshing')) {
+        return;
+    }
+
+    page.data('collocations-refreshing', true);
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        cache: false,
+        success: function (result) {
+            if (
+                !result
+                || !result.partners
+                || typeof result.partners !== 'object'
+            ) {
+                return;
+            }
+
+            applyExampleRecordedPartners(page, result.partners);
+        },
+        error: function (xhr) {
+            console.warn(
+                'Could not refresh example collocations:',
+                xhr.status
+            );
+        },
+        complete: function () {
+            page.data('collocations-refreshing', false);
+        }
+    });
 }

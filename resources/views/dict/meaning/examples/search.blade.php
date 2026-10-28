@@ -19,7 +19,11 @@
     data-distance-to="{{ $distance_to }}"
     data-word-block-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/word') }}"
     data-csrf-token="{{ csrf_token() }}"
-    data-save-error="{{ trans('meaning_examples.save_error') }}">
+    data-save-error="{{ trans('meaning_examples.save_error') }}"
+    data-recorded-partners-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/recorded-partners') }}"
+    data-add-collocation-label="{{ trans('meaning_examples.add_collocation') }}"
+    data-delete-collocation-label="{{ trans('meaning_examples.delete_collocation') }}"
+    data-delete-collocation-hint="{{ trans('meaning_examples.delete_collocation_hint') }}">
     @include('dict.meaning.examples._header')
 
     @if ($search_errors->count())
