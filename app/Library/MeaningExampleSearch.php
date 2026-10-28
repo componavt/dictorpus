@@ -29,6 +29,7 @@ class MeaningExampleSearch
             'partner_threshold' => 0,
             'same_gramset' => true,
             'source_threshold' => 0,
+            'whole_sentence' => false,
         ], $options);
 
         $this->validateOptions();
@@ -59,8 +60,12 @@ class MeaningExampleSearch
             throw new \InvalidArgumentException('distance_from must not exceed distance_to.');
         }
 
-        if (!is_bool($this->options['same_gramset'])) {
-            throw new \InvalidArgumentException('same_gramset must be a boolean.');
+        foreach (['same_gramset', 'whole_sentence'] as $field) {
+            if (!is_bool($this->options[$field])) {
+                throw new \InvalidArgumentException(
+                    $field . ' must be a boolean.'
+                );
+            }
         }
     }
 
@@ -123,11 +128,12 @@ class MeaningExampleSearch
     }
 
     /**
-     * Присоединяет соседние употребления и их неисключённые значения.
+     * Присоединяет другие употребления в том же предложении.
+     * При выключенном whole_sentence ограничивает их расстоянием.
      */
     protected function addNeighbourWords(Builder $query)
     {
-        return $query
+        $query = $query
             ->join('words as w2', function ($join) {
                 $join->on('w2.sentence_id', '=', 'w1.sentence_id')
                     ->on('w2.text_id', '=', 'w1.text_id')
@@ -144,14 +150,19 @@ class MeaningExampleSearch
                 'mt2.relevance',
                 '>',
                 $this->options['partner_threshold']
-            )
-            ->whereRaw(
+            );
+
+        if (!$this->options['whole_sentence']) {
+            $query->whereRaw(
                 'w2.word_number - w1.word_number BETWEEN ? AND ?',
                 [
                     $this->options['distance_from'],
                     $this->options['distance_to'],
                 ]
-            )
+            );
+        }
+
+        return $query
             ->addSelect([
                 'w2.id as partner_word_id',
                 'w2.w_id as partner_w_id',
@@ -350,7 +361,7 @@ class MeaningExampleSearch
         if (!$sentence_ids) {
             return [];
         }
-        
+
         $position_rows = DB::table('words')
             ->whereIn('sentence_id', $sentence_ids)
             ->select([

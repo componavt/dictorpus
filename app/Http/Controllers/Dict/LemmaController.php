@@ -1252,6 +1252,7 @@ class LemmaController extends Controller
             'per_page',
             'same_gramset',
             'synset_id',
+            'whole_sentence',
         ]));
 
         foreach ($query as $value) {

@@ -132,6 +132,21 @@ foreach ($core_members as $core_member) {
             @foreach ($collocation_matrix['columns'] as $member)
                 <?php
                 $collocation = $row['cells'][$member->id] ?? null;
+                $examples_url = LaravelLocalization::localizeURL(
+                    '/dict/meaning/'.$member->id.'/examples/search'
+                ).'?'.http_build_query([
+                    'distance_from' => -1,
+                    'distance_to' => 1,
+                    'only_checked' => 0,
+                    'partner_meaning_id' => $partner_meaning->id,
+                    'same_gramset' => 1,
+                    'synset_id' => $synset->id,
+                ]);
+
+                $examples_hint = trans('collocations.matrix_examples_hint', [
+                    'source' => $member->lemma->lemma .' ('.$member->meaning_n.')',
+                    'partner' => $partner_meaning->lemma->lemma .' ('.$partner_meaning->meaning_n.')',
+                ]);
                 ?>
 
                 <td class="synset-collocation-cell" data-member-id="{{ $member->id }}" data-recorded="{{ $collocation ? '1' : '0' }}">
@@ -182,6 +197,10 @@ foreach ($core_members as $core_member) {
                     <span class="sr-only">{{ trans('collocations.matrix_not_recorded') }}</span>
                     @endif
                 @endif
+                <a  href="{{ $examples_url }}" class="synset-collocation-examples"
+                    title="{{ $examples_hint }}" aria-label="{{ $examples_hint }}">
+                        {{ trans('collocations.matrix_examples') }}
+                    </a>
                 </td>
             @endforeach
             </tr>

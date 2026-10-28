@@ -14,6 +14,7 @@
 @section('body')
 <div
     class="meaning-example-search" data-synset-id="{{ $synset_id }}"
+    data-whole-sentence="{{ $whole_sentence ? '1' : '0' }}"
     data-collocation-recorded-label="{{ trans('meaning_examples.collocation_recorded') }}"
     data-distance-from="{{ $distance_from }}" data-examples-return="{{ $examples_return }}"
     data-distance-to="{{ $distance_to }}"
@@ -85,15 +86,24 @@
 
             <div class="checkbox">
                 <label>
-                    <input
-                        type="checkbox"
-                        name="same_gramset"
-                        value="1"
-                        @if ($same_gramset) checked @endif>
+                    <input type="checkbox" name="same_gramset" value="1" @if ($same_gramset) checked @endif>
                     {{ trans('meaning_examples.same_gramset') }}
                 </label>
             </div>
         </div>
+
+        <input type="hidden" name="whole_sentence" value="0">
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="whole_sentence" value="1" @if ($whole_sentence) checked @endif>
+                {{ trans('meaning_examples.whole_sentence') }}
+            </label>
+        </div>
+
+        <p class="help-block">
+            {{ trans('meaning_examples.whole_sentence_hint') }}
+        </p>
 
         <div class="example-distance-range">
             <label for="example-search-distance-from">
@@ -170,16 +180,22 @@
         @endforeach
     </p>
     
-    <p class="example-window-legend">
-        <span class="example-window-word">
-            {{ trans('meaning_examples.window_label', [
-                'from' => $distance_from,
-                'to' => $distance_to,
-            ]) }}
-        </span>
-        —
-        {{ trans('meaning_examples.window_hint') }}
-    </p>
+    @if ($whole_sentence)
+        <p class="example-window-legend">
+            {{ trans('meaning_examples.whole_sentence_results') }}
+        </p>
+    @else
+        <p class="example-window-legend">
+            <span class="example-window-word">
+                {{ trans('meaning_examples.window_label', [
+                    'from' => $distance_from,
+                    'to' => $distance_to,
+                ]) }}
+            </span>
+            —
+            {{ trans('meaning_examples.window_hint') }}
+        </p>
+    @endif
 
     <ol start="{{ $sentences->firstItem() }}">
         @foreach ($sentences as $item)
@@ -219,8 +235,8 @@
             distance_from: example_page.attr('data-distance-from'),
             distance_to: example_page.attr('data-distance-to'),
             synset_id: example_page.attr('data-synset-id') || '',
-            examples_return: example_page.attr('data-examples-return') || ''
-
+            examples_return: example_page.attr('data-examples-return') || '',
+            whole_sentence: example_page.attr('data-whole-sentence') || 0
         }
     );
 

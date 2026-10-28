@@ -50,6 +50,7 @@ class MeaningExampleController extends Controller
             'same_gramset' => $request->input('same_gramset', 1),
             'per_page' => $request->input('per_page', 20),
             'page' => $request->input('page', 1),
+            'whole_sentence' => $request->input('whole_sentence', 0),
         ];
 
         $validator = Validator::make(
@@ -62,6 +63,7 @@ class MeaningExampleController extends Controller
                 'same_gramset' => 'required|boolean',
                 'per_page' => 'required|integer|min:1|max:100',
                 'page' => 'required|integer|min:1|max:1000000',
+                'whole_sentence' => 'required|boolean',
             ],
             [],
             [
@@ -111,6 +113,7 @@ class MeaningExampleController extends Controller
                     'partner_threshold' => $threshold,
                     'same_gramset' => (bool) (int) $input['same_gramset'],
                     'source_threshold' => $threshold,
+                    'whole_sentence' => (bool) (int) $input['whole_sentence'],
                 ]
             );
 
@@ -124,11 +127,13 @@ class MeaningExampleController extends Controller
                 'same_gramset' => (int) $input['same_gramset'],
                 'per_page' => (int) $input['per_page'],
                 'synset_id' => $synset_id,
+                'whole_sentence' => (int) $input['whole_sentence'],
             ]);
         }
 
         $only_checked = !empty($input['only_checked']);
         $same_gramset = !empty($input['same_gramset']);
+        $whole_sentence = !empty($input['whole_sentence']);
 
         $per_page = $sentences ? $sentences->perPage() : 20;
 
@@ -144,8 +149,7 @@ class MeaningExampleController extends Controller
         $examples_return = '';
 
         if ($sentences) {
-            $examples_return = '/dict/meaning/' . $source->id
-                . '/examples/search?'
+            $examples_return = '/dict/meaning/' . $source->id . '/examples/search?'
                 . http_build_query([
                     'distance_from' => (int) $input['distance_from'],
                     'distance_to' => (int) $input['distance_to'],
@@ -155,6 +159,7 @@ class MeaningExampleController extends Controller
                     'per_page' => $sentences->perPage(),
                     'same_gramset' => (int) $input['same_gramset'],
                     'synset_id' => $synset_id,
+                    'whole_sentence' => (int) $input['whole_sentence'],
                 ]);
         }
 
@@ -190,6 +195,7 @@ class MeaningExampleController extends Controller
                 'sentences',
                 'source',
                 'synset_id',
+                'whole_sentence',
                 'word_blocks',
             )
         );
@@ -347,6 +353,7 @@ class MeaningExampleController extends Controller
         $interval = [
             'distance_from' => $request->input('distance_from', -1),
             'distance_to' => $request->input('distance_to', 1),
+            'whole_sentence' => $request->input('whole_sentence', 0),
         ];
 
         $validator = Validator::make(
@@ -354,6 +361,7 @@ class MeaningExampleController extends Controller
             [
                 'distance_from' => 'required|integer',
                 'distance_to' => 'required|integer',
+                'whole_sentence' => 'required|boolean',
             ],
             [],
             [
@@ -574,6 +582,7 @@ class MeaningExampleController extends Controller
                 'partner_threshold' => $input['only_checked'],
                 'same_gramset' => (bool) $input['same_gramset'],
                 'source_threshold' => $input['only_checked'],
+                'whole_sentence' => (bool) (int) $input['whole_sentence'],
             ]
         );
 
@@ -869,6 +878,7 @@ class MeaningExampleController extends Controller
             'page' => $request->input('page', 1),
             'q' => $request->input('q', ''),
             'same_gramset' => $request->input('same_gramset', 1),
+            'whole_sentence' => $request->input('whole_sentence', 0),
         ];
 
         $validator = Validator::make(
@@ -880,6 +890,7 @@ class MeaningExampleController extends Controller
                 'page' => 'required|integer|min:1|max:10000',
                 'q' => 'string|max:100',
                 'same_gramset' => 'required|boolean',
+                'whole_sentence' => 'required|boolean',
             ],
             [],
             [
@@ -903,6 +914,7 @@ class MeaningExampleController extends Controller
                 'only_checked',
                 'page',
                 'same_gramset',
+                'whole_sentence',
             ] as $field
         ) {
             $input[$field] = (int) $input[$field];

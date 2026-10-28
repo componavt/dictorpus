@@ -45,6 +45,8 @@ return [
     'matrix_add_hint' => 'Add the collocation :source + :partner',
     'matrix_cell_hint' => ':source + :partner — :gloss',
     'matrix_empty' => 'No collocations have been recorded for comparison yet.',
+    'matrix_examples' => 'Examples',
+    'matrix_examples_hint' => 'Find usage examples for :source + :partner',
     'matrix_hint' => 'Click a mark to edit a collocation, or an empty cell to add one with the collocate meaning and category already selected. Hover over a mark to see the saved gloss. An empty cell means that no record exists in this category, not that the combination is impossible.',
     'matrix_not_recorded' => 'No record in this category',
     'matrix_pair_exists' => 'This pair of meanings has already been recorded. The existing record has been opened; its category may differ from the selected matrix row.',

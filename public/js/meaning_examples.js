@@ -36,6 +36,7 @@ function saveExampleAnnotation(el, action, data) {
     data._token = page.attr('data-csrf-token');
     data.distance_from = page.attr('data-distance-from');
     data.distance_to = page.attr('data-distance-to');
+    data.whole_sentence = page.attr('data-whole-sentence') || 0;
     data.source_w_id = word.attr('data-source-w-id');
     data.original = word.attr('data-original') || 0;
     data.fragment_id = String(data.original) === '1' ? 0 : word.attr('data-fragment-id');
@@ -127,6 +128,9 @@ function initExamplePartnerSelect() {
                         .prop('checked') ? 1 : 0,
                     same_gramset: form
                         .find('input[type="checkbox"][name="same_gramset"]')
+                        .prop('checked') ? 1 : 0,
+                    whole_sentence: form
+                        .find('input[type="checkbox"][name="whole_sentence"]')
                         .prop('checked') ? 1 : 0
                 };
             },
@@ -140,7 +144,8 @@ function initExamplePartnerSelect() {
         'change',
         '[name="distance_from"], [name="distance_to"], '
         + 'input[type="checkbox"][name="only_checked"], '
-        + 'input[type="checkbox"][name="same_gramset"]',
+        + 'input[type="checkbox"][name="same_gramset"], '
+        + 'input[type="checkbox"][name="whole_sentence"]',
         function () {
             partner_select.select2('close');
         }
@@ -159,6 +164,7 @@ function initExampleCollocationLinks() {
 
             $('.example-original-content')
                 .data('downloaded', 0);
+
             refreshExampleRecordedPartners();
         });
 
@@ -200,7 +206,8 @@ function rateSourceExample(el) {
             fragment_id: card.attr('data-fragment-id'),
             distance_from: page.attr('data-distance-from'),
             distance_to: page.attr('data-distance-to'),
-            synset_id: page.attr('data-synset-id') || ''
+            synset_id: page.attr('data-synset-id') || '',
+            whole_sentence: page.attr('data-whole-sentence') || 0,
         },
         success: function (result) {
             updateExampleRating(card, parseInt(result.relevance, 10));
@@ -309,7 +316,8 @@ function toggleExampleOriginal(el) {
             distance_from: page.attr('data-distance-from'),
             distance_to: page.attr('data-distance-to'),
             examples_return: page.attr('data-examples-return') || '',
-            synset_id: page.attr('data-synset-id') || ''
+            synset_id: page.attr('data-synset-id') || '',
+            whole_sentence: page.attr('data-whole-sentence') || 0,
         },
         success: function (html) {
             content.html(html).data('downloaded', 1);

@@ -614,6 +614,13 @@ h4 .fa {
     text-align: right;
 }
 
+.synset-collocations-matrix .synset-collocation-examples {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.85em;
+    white-space: nowrap;
+}
+
 @media screen and (min-width: 767px) {
     .lemma-meaning {
         display: flex;

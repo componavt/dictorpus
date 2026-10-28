@@ -23,6 +23,7 @@
                 [
                     'distance_from' => (int) $distance_from,
                     'distance_to' => (int) $distance_to,
+                    'whole_sentence' => $whole_sentence,
                 ]
             ) !!}
         </span>
@@ -36,22 +37,15 @@
 
         @if ($example['is_fragment'] && (User::checkAccess('dict.edit') || User::checkAccess('corpus.edit')))
         <div class="example-original-panel">
-            <button
-                type="button"
-                class="btn btn-link btn-sm example-original-toggle"
+            <button type="button" class="btn btn-link btn-sm example-original-toggle"
                 data-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/original/'.$example['text_id'].'_'.$example['source_w_id']) }}"
                 data-show="{{ trans('meaning_examples.show_original') }}"
                 data-hide="{{ trans('meaning_examples.hide_original') }}"
-                aria-expanded="false"
-                onclick="toggleExampleOriginal(this)"
-            >
+                aria-expanded="false" onclick="toggleExampleOriginal(this)">
                 {{ trans('meaning_examples.show_original') }}
             </button>
 
-            <div
-                class="example-original-content"
-                style="display: none;"
-            ></div>
+            <div class="example-original-content" style="display: none;"></div>
         </div>
     @endif
 

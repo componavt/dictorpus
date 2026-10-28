@@ -69,7 +69,7 @@ class MeaningExampleFormatter
             'word_blocks' => $word_blocks,
             'original' => !empty($item['is_original']) ? 1 : 0
         ];
-        
+
         $word_context['distances'] = [];
         $word_context['window'] = $window;
 
@@ -150,7 +150,8 @@ class MeaningExampleFormatter
             $position_classes = ['example-positioned-word'];
 
             if (
-                $w_id !== $word_context['source_w_id']
+                empty($window['whole_sentence'])
+                && $w_id !== $word_context['source_w_id']
                 && isset($window['distance_from'], $window['distance_to'])
                 && $distance >= (int) $window['distance_from']
                 && $distance <= (int) $window['distance_to']
@@ -168,7 +169,7 @@ class MeaningExampleFormatter
                 . $html
                 . '</span>';
         }
-        
+
         $classes = [];
 
         if (isset($source_ids[$w_id])) {
