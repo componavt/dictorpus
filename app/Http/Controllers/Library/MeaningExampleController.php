@@ -453,8 +453,19 @@ class MeaningExampleController extends Controller
 
         if ($this->examples_return !== '') {
             $return_parts = explode('#', $this->examples_return, 2);
+            $path_parts = explode('?', $return_parts[0], 2);
 
-            $examples_return = $return_parts[0]
+            $return_query = [];
+            parse_str($path_parts[1] ?? '', $return_query);
+
+            if (!empty($review_context['original'])) {
+                $return_query['open_original'] = 1;
+            } else {
+                unset($return_query['open_original']);
+            }
+
+            $examples_return = $path_parts[0]
+                . ($return_query ? '?' . http_build_query($return_query) : '')
                 . '#sentence-' . $source->id
                 . '_' . $word->text_id
                 . '_' . $word->s_id

@@ -226,4 +226,5 @@
         }
     );
 
+    restoreExampleOriginal();
 @stop

@@ -1246,6 +1246,7 @@ class LemmaController extends Controller
             'distance_from',
             'distance_to',
             'only_checked',
+            'open_original',
             'page',
             'partner_meaning_id',
             'per_page',

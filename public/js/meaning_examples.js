@@ -274,6 +274,9 @@ function removeExampleCard(card) {
 /**
  * Раскрывает оригинал и загружает его вместе с готовыми разборами.
  */
+/**
+ * Раскрывает оригинал и загружает его вместе с готовыми разборами.
+ */
 function toggleExampleOriginal(el) {
     var button = $(el);
     var panel = button.closest('.example-original-panel');
@@ -282,16 +285,12 @@ function toggleExampleOriginal(el) {
     var expanded = button.attr('aria-expanded') === 'true';
 
     if (expanded) {
-        content.hide();
-        button.attr('aria-expanded', 'false')
-            .text(button.attr('data-show'));
+        setExampleOriginalExpanded(button, content, false);
         return;
     }
 
     if (content.data('downloaded')) {
-        content.show();
-        button.attr('aria-expanded', 'true')
-            .text(button.attr('data-hide'));
+        setExampleOriginalExpanded(button, content, true);
         return;
     }
 
@@ -312,15 +311,18 @@ function toggleExampleOriginal(el) {
             synset_id: page.attr('data-synset-id') || ''
         },
         success: function (html) {
-            content.html(html)
-                .data('downloaded', 1)
-                .show();
+            content.html(html).data('downloaded', 1);
 
-            button.attr('aria-expanded', 'true')
-                .text(button.attr('data-hide'));
             updateExampleCollocationMarks();
+
+            setExampleOriginalExpanded(
+                button,
+                content,
+                true
+            );
         },
         error: function () {
+            button.removeData('restore-scroll');
             alert(page.attr('data-save-error'));
         },
         complete: function () {
@@ -366,4 +368,76 @@ function updateExampleCollocationMarks() {
                 .appendTo(word);
         }
     });
+}
+
+/**
+ * Меняет видимость оригинала и сохраняет состояние карточки в адресе.
+ */
+function setExampleOriginalExpanded(button, content, expanded) {
+    var card = button.closest('.example-card');
+    var card_id = card.attr('id');
+
+    content.toggle(expanded);
+
+    button.attr('aria-expanded', expanded ? 'true' : 'false')
+        .text(button.attr(expanded ? 'data-hide' : 'data-show'));
+
+    if (card_id) {
+        var url = new URL(window.location.href);
+
+        if (expanded) {
+            url.searchParams.set('open_original', '1');
+            url.hash = card_id;
+        } else if (url.hash === '#' + card_id) {
+            url.searchParams.delete('open_original');
+        }
+
+        window.history.replaceState(window.history.state, '', url.href);
+    }
+
+    if (expanded && button.data('restore-scroll')) {
+        button.removeData('restore-scroll');
+
+        if (card.length) {
+            card[0].scrollIntoView({ block: 'start' });
+        }
+    }
+}
+
+/**
+ * Восстанавливает оригинал карточки, указанной в адресе возврата.
+ */
+function restoreExampleOriginal() {
+    var url = new URL(window.location.href);
+
+    if (url.searchParams.get('open_original') !== '1') {
+        return;
+    }
+
+    var card_id = url.hash.substring(1);
+
+    if (!card_id) {
+        return;
+    }
+
+    var card_element = document.getElementById(card_id);
+
+    if (!card_element) {
+        return;
+    }
+
+    var card = $(card_element);
+
+    if (!card.hasClass('example-card') || !card.closest('.meaning-example-search').length) {
+        return;
+    }
+
+    var button = card.find('.example-original-toggle').first();
+
+    if (!button.length || button.attr('aria-expanded') === 'true') {
+        return;
+    }
+
+    button.data('restore-scroll', true);
+    toggleExampleOriginal(button[0]);
 }

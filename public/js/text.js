@@ -80,6 +80,10 @@ function showLemmaLinked(text_id) {
  */
 function showWordBlock(locale, block_route = null, block_data = {}) {
     $("body").on("click", ".word-linked", function (event) {
+        if ($(event.target).closest('.links-to-lemmas').length) {
+            return;
+        }
+
         event.preventDefault();
 
         var word = $(this);

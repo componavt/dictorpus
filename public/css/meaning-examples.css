@@ -161,8 +161,12 @@
 }
 
 .meaning-example-search .example-window-word {
-    border-top: 2px solid #7676a8;
-    padding-top: 2px;
+    border-top: 0;
+    padding-top: 0;
+    background-image: linear-gradient(#7676a8, #7676a8);
+    background-repeat: no-repeat;
+    background-size: 100% 2px;
+    background-position: left 0;
 }
 
 .meaning-example-search .example-window-legend {
