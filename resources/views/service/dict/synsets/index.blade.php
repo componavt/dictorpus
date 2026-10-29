@@ -6,8 +6,9 @@
 
 @section('headExtra')
     <link media="all" type="text/css" rel="stylesheet" href="//cdn.datatables.net/1.11.4/css/dataTables.bootstrap.min.css">
-    {!!Html::style('css/table.css')!!}
-    {!!Html::style('css/lemma.css')!!}
+    {!! css('table') !!}
+    {!! css('lemma') !!}
+    {!! css('synsets') !!}
 @stop
 
 @section('body')  

@@ -308,17 +308,46 @@ class Lemma extends Model
         return Audio::getUrlsByLemmaId($this->id);
     }
 
+    /**
+     * Выбирает диалект для автозаполнения словоформ.
+     *
+     * Приоритет — первый по порядку списка диалект,
+     * для которого у леммы есть словоформы.
+     * Если таких диалектов нет — первый диалект языка.
+     *
+     * @return int|null
+     */
     public function wordformDialectPrefer()
     {
-        $user_dialect = User::userDialects();
-        $lemma_dialects = $this->dialectIds();
-        if (!sizeof($lemma_dialects)) {
-            return $user_dialect;
+        $dialect_ids = array_keys(
+            Dialect::getList($this->lang_id)
+        );
+
+        if (!$dialect_ids) {
+            return null;
         }
-        if (in_array($user_dialect, $lemma_dialects)) {
-            return $user_dialect;
+
+        $rows = DB::table('lemma_wordform as lw')
+            ->join('wordforms as w', 'w.id', '=', 'lw.wordform_id')
+            ->where('lw.lemma_id', $this->id)
+            ->whereIn('lw.dialect_id', $dialect_ids)
+            ->select('lw.dialect_id')
+            ->distinct()
+            ->get();
+
+        $available_dialects = [];
+
+        foreach ($rows as $row) {
+            $available_dialects[(int) $row->dialect_id] = true;
         }
-        return $lemma_dialects[0];
+
+        foreach ($dialect_ids as $dialect_id) {
+            if (isset($available_dialects[(int) $dialect_id])) {
+                return (int) $dialect_id;
+            }
+        }
+
+        return (int) $dialect_ids[0];
     }
 
     public function countWordformsByDialect(int $dialect_id)

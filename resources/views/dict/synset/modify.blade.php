@@ -7,6 +7,7 @@
 @section('headExtra')
     {!! css('select2.min') !!}
     {!! css('lemma') !!}
+    {!! css('synsets') !!}
 @stop
 
 @section('body')      
