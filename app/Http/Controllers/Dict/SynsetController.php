@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\MeaningExampleAvailability;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Synset;
@@ -137,6 +138,8 @@ class SynsetController extends Controller
             ->values();
 
         $collocation_matrix = $synset->collocationsMatrix($collocation_members);
+
+        $collocation_matrix['example_pairs'] = (new MeaningExampleAvailability())->forMatrix($collocation_matrix);
 
         $potential_members = $synset->searchPotentialMembers();
 

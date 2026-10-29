@@ -132,6 +132,12 @@ foreach ($core_members as $core_member) {
             @foreach ($collocation_matrix['columns'] as $member)
                 <?php
                 $collocation = $row['cells'][$member->id] ?? null;
+
+                $has_examples = !empty($collocation_matrix['example_pairs']
+                        [$member->id]
+                        [$partner_meaning->id]
+                );
+
                 $examples_url = LaravelLocalization::localizeURL(
                     '/dict/meaning/'.$member->id.'/examples/search'
                 ).'?'.http_build_query([
@@ -139,8 +145,9 @@ foreach ($core_members as $core_member) {
                     'distance_to' => 1,
                     'only_checked' => 0,
                     'partner_meaning_id' => $partner_meaning->id,
-                    'same_gramset' => 1,
+                    'same_gramset' => 0,
                     'synset_id' => $synset->id,
+                    'whole_sentence' => 1,
                 ]);
 
                 $examples_hint = trans('collocations.matrix_examples_hint', [
@@ -197,11 +204,13 @@ foreach ($core_members as $core_member) {
                     <span class="sr-only">{{ trans('collocations.matrix_not_recorded') }}</span>
                     @endif
                 @endif
+                @if ($has_examples)
                 <a  href="{{ $examples_url }}" class="synset-collocation-examples"
                     title="{{ $examples_hint }}" aria-label="{{ $examples_hint }}">
                         {{ trans('collocations.matrix_examples') }}
                     </a>
                 </td>
+                @endif
             @endforeach
             </tr>
         @endforeach
