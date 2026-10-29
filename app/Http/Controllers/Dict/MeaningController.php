@@ -4,14 +4,12 @@ namespace App\Http\Controllers\Dict;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-
 use App\Http\Controllers\Controller;
 
+use App\Library\MeaningExamplePreview;
 use App\Models\User;
-
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
-
 use App\Models\Dict\Lang;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\Relation;
@@ -178,43 +176,21 @@ class MeaningController extends Controller
         return '<span class="glyphicon glyphicon-star relevance-' . $relevance . '"></span>';
     }
 
-    /**
-     * test: /dict/meaning/examples/reload/23813
-     * 
-     * @param INT $id
-     * @return \Illuminate\Http\Response
-     */
     public function loadExamples(int $id, Request $request)
     {
-        $limit = 5;
-        $start = (int)$request->input('start');
-        $update_examples = (int)$request->input('update_examples');
         $meaning = Meaning::find($id);
+
         if (!$meaning) {
-            return NULL;
+            return null;
         }
 
-        if (User::checkAccess('dict.edit') && ($update_examples || !$meaning->texts()->count())) {
-            $meaning->reloadExamples();
-        }
-
-        $sentence_count = $meaning->countSentences(false);
-        $sentence_total = $meaning->countSentences(true);
-        $sentences = $meaning->sentences(true, $limit, $start); // always true to show unchecked examples
-        $count = 1 + $start;
-        //dd($sentences);        
-        return view(
-            'dict.lemma.example.all',
-            compact(
-                'meaning',
-                'limit',
-                'start',
-                'count',
-                'sentence_count',
-                'sentence_total',
-                'sentences'
-            )
+        $preview = (new MeaningExamplePreview())->forMeaning(
+            $meaning,
+            (int) $request->input('start'),
+            (bool) $request->input('update_examples')
         );
+
+        return view('dict.lemma.example.all', $preview);
     }
 
     public function loadMoreExamples(int $id, Request $request)

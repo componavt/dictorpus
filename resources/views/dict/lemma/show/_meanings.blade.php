@@ -40,8 +40,12 @@
                     
             </div>
             <div class="lemma-meaning-examples">
-                <img class="img-loading" id="img-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
-                <div id="meaning-examples_{{$meaning->id}}"></div>
+                <img class="img-loading" id="img-loading_{{ $meaning->id }}"
+                    src="{{ asset('images/loading.gif') }}" style="display: none;" alt="">
+
+                <div id="meaning-examples_{{ $meaning->id }}">
+                    @include('dict.lemma.example.all', $example_previews[$meaning->id])
+                </div>
             </div>
             </tr>
         </div>

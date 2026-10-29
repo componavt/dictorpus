@@ -11,20 +11,17 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-use App\Models\User;
-
 use App\Library\Grammatic;
-
+use App\Library\MeaningExamplePreview;
+use App\Models\User;
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Place;
 use App\Models\Corpus\SentenceFragment;
 use App\Models\Corpus\SentenceTranslation;
-
 use App\Models\Dict\Concept;
 use App\Models\Dict\ConceptCategory;
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Gramset;
-//use App\Models\Dict\Label;
 use App\Models\Dict\Lang;
 use App\Models\Dict\Lemma;
 use App\Models\Dict\LemmaFeature;
@@ -351,8 +348,20 @@ class LemmaController extends Controller
         $update_text_links = (int)$request->update_text_links;
 
         $langs_for_meaning = Lang::getListWithPriority($lemma->lang_id);
-        //dd($relations);
         $meanings = $lemma->meanings;
+        $example_previews = [];
+        $preview_builder = new MeaningExamplePreview();
+
+        foreach ($meanings as $meaning) {
+            $meaning->setRelation('lemma', $lemma);
+
+            $example_previews[$meaning->id] =
+                $preview_builder->forMeaning(
+                    $meaning,
+                    0,
+                    (bool) $update_text_links
+                );
+        }
         $meaning_texts = $lemma->getMeaningTexts();
         $meaning_relations = $lemma->getMeaningRelations();
         $translation_values = $lemma->getMeaningTranslations();
@@ -369,6 +378,7 @@ class LemmaController extends Controller
             'dict.lemma.show',
             compact(
                 'dialect_values',
+                'example_previews',
                 'informant_id',
                 'lemma',
                 'meaning_texts',
