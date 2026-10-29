@@ -131,15 +131,9 @@
                 {{ trans('meaning_examples.per_page') }}
             </label>
 
-            <select
-                id="example-search-per-page"
-                name="per_page"
-                class="form-control"
-                style="width: auto;">
+            <select id="example-search-per-page" name="per_page" class="form-control" style="width: auto;">
                 @foreach (array_unique([2, 5, 10, 20, 50, $per_page]) as $value)
-                <option
-                    value="{{ $value }}"
-                    @if ($per_page==$value) selected @endif>
+                <option value="{{ $value }}" @if ($per_page==$value) selected @endif>
                     {{ $value }}
                 </option>
                 @endforeach
@@ -148,6 +142,10 @@
 
         <button type="submit" class="btn btn-primary">
             {{ trans('meaning_examples.submit') }}
+        </button>
+
+        <button type="submit" class="btn btn-default" formaction="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/candidates') }}">
+            {{ trans('collocation_candidates.title') }}
         </button>
     </form>
 

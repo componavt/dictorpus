@@ -1,0 +1,103 @@
+.meaning-candidates .candidate-distance {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.meaning-candidates .candidate-distance input {
+    width: 90px;
+}
+
+.meaning-candidates .candidate-page-size {
+    width: auto;
+}
+
+.candidate-table .candidate-lemma>th {
+    background: #f5f5f5;
+    text-align: left;
+}
+
+.candidate-table .candidate-lemma span {
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+.candidate-table .candidate-count {
+    text-align: center;
+}
+
+.candidate-table .candidate-unchecked {
+    color: #806600;
+}
+
+.candidate-table .candidate-actions a {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.candidate-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.meaning-candidates {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.meaning-candidates .candidate-table-scroll {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    max-height: 70vh;
+    overflow: auto;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.meaning-candidates .candidate-table {
+    width: 100%;
+    min-width: 1050px;
+    margin-bottom: 0;
+}
+
+.meaning-candidates .candidate-table>thead>tr>th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #fff;
+    box-shadow: 0 2px 0 #ddd;
+}
+
+.meaning-candidates .candidate-table>tbody>tr>td {
+    vertical-align: top;
+}
+
+.meaning-candidates .candidate-table>thead>tr>th:first-child {
+    min-width: 250px;
+}
+
+.meaning-candidates .candidate-actions {
+    min-width: 160px;
+}
+
+.meaning-candidates .candidate-delete {
+    margin: 4px 0 0;
+}
+
+.meaning-candidates .candidate-delete-button {
+    padding: 0;
+    color: #a94442;
+    text-decoration: underline;
+}
+
+.meaning-candidates .candidate-pos {
+    width: 100%;
+    max-width: 360px;
+}

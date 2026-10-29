@@ -465,42 +465,32 @@ class MeaningExampleSearch
 
     /**
      * Строит сводку значений-партнёров по текущим условиям поиска.
-     *
      * Проверенность относится к значению партнёра.
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    public function collocationCandidatesQuery()
+    public function collocationCandidatesQuery($partner_pos_id = 0)
     {
         if ($this->partner !== null) {
-            throw new \LogicException(
-                'Candidate search requires an unspecified partner.'
-            );
+            throw new \LogicException('Candidate search requires an unspecified partner.');
         }
 
-        return $this->partnerMeaningsQuery()
-            ->select([
-                'm2.id as meaning_id',
-                'l2.id as lemma_id',
-                'l2.lemma',
-                'm2.meaning_n',
-            ])
-            ->selectRaw(
-                'COUNT(DISTINCT s.id) as sentences'
-            )
-            ->selectRaw(
-                'COUNT(DISTINCT s.text_id) as texts'
-            )
-            ->selectRaw(
-                'COUNT(DISTINCT CASE
-                    WHEN mt2.relevance > 1 THEN s.id
-                END) as checked_sentences'
-            )
-            ->selectRaw(
-                'COUNT(DISTINCT CASE
-                    WHEN mt2.relevance = 1 THEN s.id
-                END) as unchecked_sentences'
-            )
+        $query = $this->partnerMeaningsQuery();
+
+        if ($partner_pos_id) {
+            $query->where('l2.pos_id', (int) $partner_pos_id);
+        }
+
+        return $query->select([
+            'm2.id as meaning_id',
+            'l2.id as lemma_id',
+            'l2.lemma',
+            'm2.meaning_n',
+        ])
+            ->selectRaw('COUNT(DISTINCT s.id) as sentences')
+            ->selectRaw('COUNT(DISTINCT s.text_id) as texts')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN mt2.relevance > 1 THEN s.id END) as checked_sentences')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN mt2.relevance = 1 THEN s.id END) as unchecked_sentences')
             ->groupBy('m2.id')
             ->groupBy('l2.id')
             ->groupBy('l2.lemma')
@@ -512,12 +502,12 @@ class MeaningExampleSearch
      *
      * @return array
      */
-    public function collocationCandidatesPage($per_page = 25, $page = 1)
+    public function collocationCandidatesPage($per_page = 25, $page = 1, $partner_pos_id = 0)
     {
         $per_page = max(1, min(100, (int) $per_page));
         $page = max(1, (int) $page);
 
-        $rows = $this->collocationCandidatesQuery()
+        $rows = $this->collocationCandidatesQuery($partner_pos_id)
             ->orderBy('sentences', 'desc')
             ->orderBy('texts', 'desc')
             ->orderBy('m2.id')
@@ -553,19 +543,18 @@ class MeaningExampleSearch
             $collocations = DB::table('collocations')
                 ->where('meaning_id', $this->source->id)
                 ->whereIn('collocate_meaning_id', $meaning_ids)
-                ->select('collocate_meaning_id')
+                ->select(['id', 'collocate_meaning_id'])
                 ->distinct()
                 ->get();
 
             foreach ($collocations as $collocation) {
-                $recorded[(int) $collocation->collocate_meaning_id] = true;
+                $recorded[(int) $collocation->collocate_meaning_id] = (int) $collocation->id;
             }
         }
 
         foreach ($items as &$item) {
-            $item['recorded'] = isset(
-                $recorded[$item['meaning_id']]
-            );
+            $item['recorded'] = isset($recorded[$item['meaning_id']]);
+            $item['collocation_id'] = $recorded[$item['meaning_id']] ?? null;
         }
 
         unset($item);

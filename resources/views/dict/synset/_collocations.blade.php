@@ -30,6 +30,7 @@
         $member_url = LaravelLocalization::localizeURL('/dict/lemma/' . $member->lemma_id) . '#meaning-' . $member->id;
         $editor_url = LaravelLocalization::localizeURL('/dict/meaning/' . $member->id . '/collocations') . '?' . http_build_query(['synset_id' => $synset->id]);
         $examples_url = LaravelLocalization::localizeURL('/dict/meaning/' . $member->id . '/examples/search') . '?' . http_build_query(['synset_id' => $synset->id]);
+        $candidates_url = LaravelLocalization::localizeURL('/dict/meaning/'.$member->id.'/examples/candidates') .'?'.http_build_query(['synset_id' => $synset->id, 'same_gramset' => 0]);
         ?>
 
         <div class="synset-collocation-member">
@@ -49,6 +50,9 @@
                 @endif
                 <a href="{{ $examples_url }}">
                     {{ trans('meaning_examples.all_examples') }}
+                </a>
+                <a href="{{ $candidates_url }}">
+                    {{ trans('collocation_candidates.title') }}
                 </a>
             </div>
 

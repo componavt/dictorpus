@@ -22,7 +22,7 @@
         | <a href="{{ $synset_url }}">{{ trans('collocations.back_to_synset', ['num' => $synset_id]) }}</a>
     @endif
     @if (!empty($examples_return))
-        | <a href="{{ $examples_return['url'] }}">{{ trans('meaning_examples.back_to_examples') }}</a>
+        | <a href="{{ $examples_return['url'] }}">{{ $examples_return['label'] ?? trans('meaning_examples.back_to_examples') }}</a>
     @endif
         | <a href="{{ $copy_url }}">{{ trans('collocations.copy_open') }}</a>
         | <a href="{{ LaravelLocalization::localizeURL('/dict/lemma/'.$meaning->lemma_id.'/history') }}">

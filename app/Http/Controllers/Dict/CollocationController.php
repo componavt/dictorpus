@@ -651,16 +651,17 @@ class CollocationController extends Controller
 
         $parts = parse_url($return_path);
 
-        $path = '/dict/meaning/' . (int) $meaning_id . '/examples/search';
+        $root = '/dict/meaning/' . (int) $meaning_id . '/examples/';
+        $allowed_paths = [$root . 'search', $root . 'candidates'];
 
         if (
-            $parts === false
-            || isset($parts['scheme'])
-            || isset($parts['host'])
-            || ($parts['path'] ?? '') !== $path
+            $parts === false || isset($parts['scheme']) || isset($parts['host'])
+            || !in_array($parts['path'] ?? '', $allowed_paths, true)
         ) {
             abort(422);
         }
+
+        $path = $parts['path'];
 
         $query = [];
         parse_str($parts['query'] ?? '', $query);
@@ -672,8 +673,10 @@ class CollocationController extends Controller
             'open_original',
             'page',
             'partner_meaning_id',
+            'partner_pos_id',
             'per_page',
             'same_gramset',
+            'source_only_checked',
             'synset_id',
             'whole_sentence',
         ]));
@@ -686,14 +689,7 @@ class CollocationController extends Controller
 
         $fragment = $parts['fragment'] ?? '';
 
-        if (
-            $fragment !== ''
-            && !preg_match(
-                '~^sentence-' . (int) $meaning_id
-                    . '_[0-9]+_[0-9]+_[0-9]+$~D',
-                $fragment
-            )
-        ) {
+        if ($fragment !== '' && !preg_match('~^sentence-' . (int) $meaning_id . '_[0-9]+_[0-9]+_[0-9]+$~D', $fragment)) {
             abort(422);
         }
 
@@ -703,6 +699,7 @@ class CollocationController extends Controller
         return [
             'path' => $path . $suffix,
             'url' => LaravelLocalization::localizeURL($path) . $suffix,
+            'label' => trans($path === $root . 'candidates' ? 'collocation_candidates.back' : 'meaning_examples.back_to_examples'),
         ];
     }
 }
