@@ -462,4 +462,119 @@ class MeaningExampleSearch
             ])
             ->distinct();
     }
+
+    /**
+     * Строит сводку значений-партнёров по текущим условиям поиска.
+     *
+     * Проверенность относится к значению партнёра.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function collocationCandidatesQuery()
+    {
+        if ($this->partner !== null) {
+            throw new \LogicException(
+                'Candidate search requires an unspecified partner.'
+            );
+        }
+
+        return $this->partnerMeaningsQuery()
+            ->select([
+                'm2.id as meaning_id',
+                'l2.id as lemma_id',
+                'l2.lemma',
+                'm2.meaning_n',
+            ])
+            ->selectRaw(
+                'COUNT(DISTINCT s.id) as sentences'
+            )
+            ->selectRaw(
+                'COUNT(DISTINCT s.text_id) as texts'
+            )
+            ->selectRaw(
+                'COUNT(DISTINCT CASE
+                    WHEN mt2.relevance > 1 THEN s.id
+                END) as checked_sentences'
+            )
+            ->selectRaw(
+                'COUNT(DISTINCT CASE
+                    WHEN mt2.relevance = 1 THEN s.id
+                END) as unchecked_sentences'
+            )
+            ->groupBy('m2.id')
+            ->groupBy('l2.id')
+            ->groupBy('l2.lemma')
+            ->groupBy('m2.meaning_n');
+    }
+
+    /**
+     * Возвращает страницу кандидатов и признак продолжения списка.
+     *
+     * @return array
+     */
+    public function collocationCandidatesPage($per_page = 25, $page = 1)
+    {
+        $per_page = max(1, min(100, (int) $per_page));
+        $page = max(1, (int) $page);
+
+        $rows = $this->collocationCandidatesQuery()
+            ->orderBy('sentences', 'desc')
+            ->orderBy('texts', 'desc')
+            ->orderBy('m2.id')
+            ->skip(($page - 1) * $per_page)
+            ->take($per_page + 1)
+            ->get();
+
+        $items = [];
+
+        foreach ($rows as $row) {
+            $items[] = [
+                'meaning_id' => (int) $row->meaning_id,
+                'lemma_id' => (int) $row->lemma_id,
+                'lemma' => $row->lemma,
+                'meaning_n' => (int) $row->meaning_n,
+                'sentences' => (int) $row->sentences,
+                'texts' => (int) $row->texts,
+                'checked_sentences' =>
+                (int) $row->checked_sentences,
+                'unchecked_sentences' =>
+                (int) $row->unchecked_sentences,
+            ];
+        }
+
+        $has_more = count($items) > $per_page;
+        $items = array_slice($items, 0, $per_page);
+
+        $recorded = [];
+
+        if ($items) {
+            $meaning_ids = array_column($items, 'meaning_id');
+
+            $collocations = DB::table('collocations')
+                ->where('meaning_id', $this->source->id)
+                ->whereIn('collocate_meaning_id', $meaning_ids)
+                ->select('collocate_meaning_id')
+                ->distinct()
+                ->get();
+
+            foreach ($collocations as $collocation) {
+                $recorded[(int) $collocation->collocate_meaning_id] = true;
+            }
+        }
+
+        foreach ($items as &$item) {
+            $item['recorded'] = isset(
+                $recorded[$item['meaning_id']]
+            );
+        }
+
+        unset($item);
+
+        return [
+            'items' => $items,
+            'has_more' => $has_more,
+            'page' => $page,
+            'per_page' => $per_page,
+        ];
+    }
 }

@@ -117,21 +117,12 @@ function initExamplePartnerSelect() {
                 return {
                     q: params.term || '',
                     page: params.page || 1,
-                    distance_from: form
-                        .find('[name="distance_from"]')
-                        .val(),
-                    distance_to: form
-                        .find('[name="distance_to"]')
-                        .val(),
-                    only_checked: form
-                        .find('input[type="checkbox"][name="only_checked"]')
-                        .prop('checked') ? 1 : 0,
-                    same_gramset: form
-                        .find('input[type="checkbox"][name="same_gramset"]')
-                        .prop('checked') ? 1 : 0,
-                    whole_sentence: form
-                        .find('input[type="checkbox"][name="whole_sentence"]')
-                        .prop('checked') ? 1 : 0
+                    distance_from: form.find('[name="distance_from"]').val(),
+                    distance_to: form.find('[name="distance_to"]').val(),
+                    only_checked: form.find('input[type="checkbox"][name="only_checked"]').prop('checked') ? 1 : 0,
+                    same_gramset: form.find('input[type="checkbox"][name="same_gramset"]').prop('checked') ? 1 : 0,
+                    source_only_checked: form.find('input[type="checkbox"][name="source_only_checked"]').prop('checked') ? 1 : 0,
+                    whole_sentence: form.find('input[type="checkbox"][name="whole_sentence"]').prop('checked') ? 1 : 0
                 };
             },
             processResults: function (data) {
@@ -145,6 +136,7 @@ function initExamplePartnerSelect() {
         '[name="distance_from"], [name="distance_to"], '
         + 'input[type="checkbox"][name="only_checked"], '
         + 'input[type="checkbox"][name="same_gramset"], '
+        + 'input[type="checkbox"][name="source_only_checked"], '
         + 'input[type="checkbox"][name="whole_sentence"]',
         function () {
             partner_select.select2('close');

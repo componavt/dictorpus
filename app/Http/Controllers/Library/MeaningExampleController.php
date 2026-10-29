@@ -48,6 +48,7 @@ class MeaningExampleController extends Controller
             'partner_meaning_id' => $request->input('partner_meaning_id', ''),
             'only_checked' => $request->input('only_checked', 0),
             'same_gramset' => $request->input('same_gramset', 1),
+            'source_only_checked' => $request->input('source_only_checked', $request->input('only_checked', 0)),
             'per_page' => $request->input('per_page', 20),
             'page' => $request->input('page', 1),
             'whole_sentence' => $request->input('whole_sentence', 0),
@@ -61,6 +62,7 @@ class MeaningExampleController extends Controller
                 'partner_meaning_id' => 'integer|min:1',
                 'only_checked' => 'required|boolean',
                 'same_gramset' => 'required|boolean',
+                'source_only_checked' => 'required|boolean',
                 'per_page' => 'required|integer|min:1|max:100',
                 'page' => 'required|integer|min:1|max:1000000',
                 'whole_sentence' => 'required|boolean',
@@ -112,7 +114,7 @@ class MeaningExampleController extends Controller
                     'distance_to' => (int) $input['distance_to'],
                     'partner_threshold' => $threshold,
                     'same_gramset' => (bool) (int) $input['same_gramset'],
-                    'source_threshold' => $threshold,
+                    'source_threshold' => (int) $input['source_only_checked'],
                     'whole_sentence' => (bool) (int) $input['whole_sentence'],
                 ]
             );
@@ -125,6 +127,7 @@ class MeaningExampleController extends Controller
                 'partner_meaning_id' => $partner ? $partner->id : '',
                 'only_checked' => $threshold,
                 'same_gramset' => (int) $input['same_gramset'],
+                'source_only_checked' => (int) $input['source_only_checked'],
                 'per_page' => (int) $input['per_page'],
                 'synset_id' => $synset_id,
                 'whole_sentence' => (int) $input['whole_sentence'],
@@ -133,6 +136,7 @@ class MeaningExampleController extends Controller
 
         $only_checked = !empty($input['only_checked']);
         $same_gramset = !empty($input['same_gramset']);
+        $source_only_checked = !empty($input['source_only_checked']);
         $whole_sentence = !empty($input['whole_sentence']);
 
         $per_page = $sentences ? $sentences->perPage() : 20;
@@ -158,6 +162,7 @@ class MeaningExampleController extends Controller
                     'partner_meaning_id' => $partner ? $partner->id : '',
                     'per_page' => $sentences->perPage(),
                     'same_gramset' => (int) $input['same_gramset'],
+                    'source_only_checked' => (int) $input['source_only_checked'],
                     'synset_id' => $synset_id,
                     'whole_sentence' => (int) $input['whole_sentence'],
                 ]);
@@ -194,6 +199,7 @@ class MeaningExampleController extends Controller
                 'search_errors',
                 'sentences',
                 'source',
+                'source_only_checked',
                 'synset_id',
                 'whole_sentence',
                 'word_blocks',
@@ -571,6 +577,9 @@ class MeaningExampleController extends Controller
     {
         $input = $this->partnerSearchInput($request);
 
+        $this->validate($request, ['source_only_checked' => 'boolean']);
+        $source_threshold = (int) $request->input('source_only_checked', $input['only_checked']);
+
         $source = Meaning::with('lemma')->findOrFail($meaning_id);
 
         $search = new MeaningExampleSearch(
@@ -581,7 +590,7 @@ class MeaningExampleController extends Controller
                 'distance_to' => $input['distance_to'],
                 'partner_threshold' => $input['only_checked'],
                 'same_gramset' => (bool) $input['same_gramset'],
-                'source_threshold' => $input['only_checked'],
+                'source_threshold' => $source_threshold,
                 'whole_sentence' => (bool) (int) $input['whole_sentence'],
             ]
         );
@@ -590,14 +599,7 @@ class MeaningExampleController extends Controller
 
         if ($input['q'] !== '') {
             $query->where('l2.lemma', 'like', '%' . $input['q'] . '%')
-                ->orderByRaw(
-                    'CASE
-                        WHEN l2.lemma = ? THEN 0
-                        WHEN l2.lemma LIKE ? THEN 1
-                        ELSE 2
-                    END',
-                    [$input['q'], $input['q'] . '%']
-                );
+                ->orderByRaw('CASE WHEN l2.lemma = ? THEN 0 WHEN l2.lemma LIKE ? THEN 1 ELSE 2 END', [$input['q'], $input['q'] . '%']);
         }
 
         $page_size = 25;

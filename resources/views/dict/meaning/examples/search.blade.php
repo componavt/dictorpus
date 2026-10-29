@@ -68,18 +68,7 @@
             </p>
         </div>
 
-        <input type="hidden" name="only_checked" value="0">
-
-        <div class="checkbox">
-            <label>
-                <input
-                    type="checkbox"
-                    name="only_checked"
-                    value="1"
-                    @if ($only_checked) checked @endif>
-                {{ trans('meaning_examples.only_checked') }}
-            </label>
-        </div>
+        @include('dict.meaning.examples._checked_filters')
 
         <div id="example-search-partner-options">
             <input type="hidden" name="same_gramset" value="0">
