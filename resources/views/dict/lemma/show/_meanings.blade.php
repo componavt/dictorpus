@@ -1,52 +1,59 @@
-        @foreach ($lemma->meanings as $meaning)
-        <div class="lemma-meaning" id="meaning-{{ $meaning->id }}">
-            <div class="lemma-meaning-left">
-                <h3>{{$meaning->meaning_n}}  {{ trans('dict.meaning') }}
-                    @if (sizeof($meaning->showShortLabels()))
-                        ({{ join(', ', $meaning->showShortLabels()) }})
-                    @endif
-                </h3>
+@foreach ($lemma->meanings as $meaning)
+    <?php
+    $short_labels = $meaning->showShortLabels();
+    $has_photo = $meaning->hasPhoto();
+    $dialect_list = $meaning->dialectListToString();
+    ?>
 
-            @if ($meaning->hasPhoto())
-                <div class="meaning-b-photo">
-                    <div>
-            @endif    
+    <div class="lemma-meaning lemma-meaning-layout" id="meaning-{{ $meaning->id }}">
+        <div class="lemma-meaning-left">
+            <h3 class="meaning-heading">
+                {{ $meaning->meaning_n }} {{ trans('dict.meaning') }}
 
-            @include('dict.lemma.show.meaning.concepts')
+                @if (count($short_labels))
+                    ({{ join(', ', $short_labels) }})
+                @endif
+            </h3>
 
-            @include('dict.lemma.show.meaning.texts')
+            <div class="meaning-definitions">
+                @include('dict.lemma.show.meaning.texts')
+            </div>
 
-            @if ($meaning->hasPhoto())
+            <div class="meaning-concept-block">
+                @include('dict.lemma.show.meaning.concepts')
+
+                @if ($has_photo)
+                    <div class="meaning-photo" id="meaning-photo_{{ $meaning->id }}">
+                        <img class="img-loading" id="img-photo-loading_{{ $meaning->id }}"
+                            src="{{ asset('images/loading.gif') }}" alt="">
                     </div>
-                    <div class="meaning-photo" id='meaning-photo_{{$meaning->id}}'>
-                    <img class="img-loading" id="img-photo-loading_{{$meaning->id}}" src="{{ asset('images/loading.gif') }}">
-                    </div>
-                </div>
-            @endif    
+                @endif
+            </div>
 
             @if (isset($meaning_relations[$meaning->id]))
-            <ul>
-                @include('dict.lemma.show.meaning.relations', ['meaning_relations' => $meaning_relations[$meaning->id]])
-            </ul>
+                <ul class="meaning-relations">
+                    @include('dict.lemma.show.meaning.relations', ['meaning_relations' => $meaning_relations[$meaning->id]])
+                </ul>
             @endif
 
             @include('dict.lemma.show.meaning.translations')
 
-            @include('dict.lemma.show.meaning.collocations')
-
-            @if ($meaning->dialectListToString())
-                <p><b>{{ trans('dict.dialects_usage') }}:</b> {{ $meaning->dialectListToString()}}</p>
+            @if ($dialect_list)
+                <p class="meaning-dialects">
+                    <b>{{ trans('dict.dialects_usage') }}:</b>
+                    {{ $dialect_list }}
+                </p>
             @endif
-                    
-            </div>
-            <div class="lemma-meaning-examples">
-                <img class="img-loading" id="img-loading_{{ $meaning->id }}"
-                    src="{{ asset('images/loading.gif') }}" style="display: none;" alt="">
 
-                <div id="meaning-examples_{{ $meaning->id }}">
-                    @include('dict.lemma.example.all', $example_previews[$meaning->id])
-                </div>
-            </div>
-            </tr>
+            @include('dict.lemma.show.meaning.collocations')
         </div>
-        @endforeach
+
+        <div class="lemma-meaning-examples">
+            <img class="img-loading" id="img-loading_{{ $meaning->id }}" src="{{ asset('images/loading.gif') }}" style="display: none;" alt="">
+
+            <div id="meaning-examples_{{ $meaning->id }}">
+                @include('dict.lemma.example.all', $example_previews[$meaning->id])
+            </div>
+        </div>
+    </div>
+@endforeach

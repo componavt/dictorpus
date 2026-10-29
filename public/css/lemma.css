@@ -621,7 +621,166 @@ h4 .fa {
     white-space: nowrap;
 }
 
-@media screen and (min-width: 767px) {
+/* Компоновка значения в словарной статье. */
+.lemma-meaning.lemma-meaning-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+    align-items: start;
+}
+
+.lemma-meaning-layout>.lemma-meaning-left,
+.lemma-meaning-layout>.lemma-meaning-examples {
+    min-width: 0;
+    padding-right: 0;
+    overflow-wrap: anywhere;
+}
+
+.lemma-meaning-layout .meaning-heading {
+    margin: 0 0 12px;
+}
+
+.lemma-meaning-layout .meaning-definitions>ul {
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+}
+
+.lemma-meaning-layout .meaning-definitions>ul>li {
+    margin-bottom: 6px;
+}
+
+.lemma-meaning-layout .meaning-concept-block {
+    margin: 12px 0;
+}
+
+.lemma-meaning-layout .meaning-concept-block:empty {
+    display: none;
+}
+
+.lemma-meaning-layout .meaning-photo {
+    margin-top: 10px;
+    padding-left: 0;
+}
+
+.lemma-meaning-layout .meaning-photo>a {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.lemma-meaning-layout .meaning-photo img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 180px;
+}
+
+.lemma-meaning-layout .meaning-relations {
+    margin: 12px 0;
+    padding-left: 18px;
+}
+
+.lemma-meaning-layout .show-meaning-translation {
+    padding-left: 0;
+}
+
+.lemma-meaning-layout .show-meaning-translation .meaning-translations-title {
+    margin: 16px 0 10px;
+    font-size: inherit;
+}
+
+.lemma-meaning-layout .show-meaning-translation p {
+    margin-bottom: 8px;
+}
+
+.lemma-meaning-layout .meaning-dialects {
+    margin: 14px 0;
+}
+
+.lemma-meaning-layout .meaning-collocations-groups {
+    margin-left: 0;
+}
+
+/* Раскрытие дополнительных категорий только в словарной статье. */
+.lemma-meaning-layout .meaning-collocations-more {
+    margin-top: 8px;
+}
+
+.lemma-meaning-layout .meaning-collocations-more>summary {
+    display: block;
+    padding: 4px 0;
+    color: #972d1a;
+    text-align: right;
+    list-style: none;
+    cursor: pointer;
+}
+
+.lemma-meaning-layout .meaning-collocations-more>summary::-webkit-details-marker {
+    display: none;
+}
+
+.lemma-meaning-layout .meaning-collocations-more>summary::marker {
+    content: "";
+}
+
+.lemma-meaning-layout .meaning-collocations-more>summary::after {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-left: 9px;
+    margin-right: 3px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    vertical-align: 0.15em;
+    transform: rotate(45deg);
+}
+
+.lemma-meaning-layout .meaning-collocations-more[open]>summary::after {
+    vertical-align: -0.05em;
+    transform: rotate(225deg);
+}
+
+.lemma-meaning-layout .meaning-collocations-more>summary:hover {
+    text-decoration: underline;
+}
+
+.lemma-meaning-layout .meaning-collocations-more>summary:focus-visible {
+    outline: 2px solid #972d1a;
+    outline-offset: 3px;
+}
+
+.lemma-meaning-layout .meaning-collocations-collapse-label {
+    display: none;
+}
+
+.lemma-meaning-layout .meaning-collocations-more[open] .meaning-collocations-expand-label {
+    display: none;
+}
+
+.lemma-meaning-layout .meaning-collocations-more[open] .meaning-collocations-collapse-label {
+    display: inline;
+}
+
+.lemma-meaning-layout .meaning-collocations-more-body {
+    margin-top: 10px;
+}
+
+.lemma-meaning-layout .meaning-definitions em,
+.lemma-meaning-layout .show-meaning-translation em {
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* На широком экране описание занимает около трети строки. */
+@media screen and (min-width: 768px) {
+    .lemma-meaning.lemma-meaning-layout {
+        grid-template-columns:
+            minmax(260px, 1fr) minmax(0, 2fr);
+        column-gap: 24px;
+    }
+
     .lemma-meaning {
         display: flex;
     }

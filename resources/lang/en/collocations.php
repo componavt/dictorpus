@@ -7,6 +7,7 @@ return [
     'back_to_synset' => 'Return to synset #:num',
     'cancel' => 'Cancel',
     'category' => 'Category',
+    'collapse_categories' => 'Show less',
     'confirm_delete' => 'Delete this collocation?',
     'copy' => 'Copy selected',
     'copy_already_exists' => 'Already exists — skip',
@@ -67,6 +68,7 @@ return [
     'save_failed' => 'The collocation could not be saved.',
     'saved' => 'The collocation has been saved.',
     'search_placeholder' => 'Enter at least two characters',
+    'show_all_categories' => 'Show all categories (:count)',
     'source_summary' => 'Original expert summary (text)',
 
     'synset_edit' => 'Edit collocations',

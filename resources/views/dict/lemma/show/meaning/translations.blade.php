@@ -1,6 +1,8 @@
             @if (isset($translation_values[$meaning->id]))
             <div class="show-meaning-translation">
-            <h4>{{ trans('dict.translation')}}</h4>
+            <p class="meaning-translations-title">
+                <strong>{{ trans('dict.translation') }}</strong>
+            </p>
                 @foreach ($translation_values[$meaning->id] as $lang_text => $translation_lemmas)
                 <?php
                     $transl_lemmas = [];
@@ -11,7 +13,7 @@
                     ksort($transl_lemmas);
                     $translation_meanings =  join ('; ',$transl_lemmas);
                 ?>
-                <p><b>{{$lang_text}}:</b> {!! $translation_meanings !!}</p>
+                <p><em>{{$lang_text}}:</em> {!! $translation_meanings !!}</p>
                 @endforeach
             </div>
             @endif

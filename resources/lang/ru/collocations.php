@@ -7,6 +7,7 @@ return [
     'back_to_synset' => 'Вернуться к синсету №:num',
     'cancel' => 'Отмена',
     'category' => 'Категория',
+    'collapse_categories' => 'Свернуть',
     'confirm_delete' => 'Удалить эту сочетаемость?',
     'copy' => 'Копировать выбранные',
     'copy_already_exists' => 'Уже есть — пропускаем',
@@ -67,6 +68,7 @@ return [
     'save_failed' => 'Не удалось сохранить сочетаемость.',
     'saved' => 'Сочетаемость сохранена.',
     'search_placeholder' => 'Введите не менее двух символов',
+    'show_all_categories' => 'Показать все категории (:count)',
     'source_summary' => 'Исходная экспертная сводка (текст)',
 
     'synset_edit' => 'Редактировать сочетаемость',
