@@ -106,4 +106,44 @@ class SynsetCollocationCandidateFilters
             'corpus_ids' => $filters['corpus_ids'],
         ];
     }
+
+    /**
+     * Читает выбранные значения и проверяет их принадлежность синсету.
+     */
+    public function members(Request $request, $members)
+    {
+        $allowed_ids = array_map('intval', $members->pluck('id')->all());
+
+        $input = [
+            'member_ids' => $request->input('member_ids', $allowed_ids),
+        ];
+
+        if (is_array($input['member_ids'])) {
+            $input['member_ids'] = array_values(array_filter(
+                $input['member_ids'],
+                function ($id) {
+                    return $id !== '';
+                }
+            ));
+        }
+
+        $validator = Validator::make($input, [
+            'member_ids' => 'present|array|max:500',
+            'member_ids.*' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            abort(422, trans('collocation_candidates.invalid_members'));
+        }
+
+        $selected_ids = array_values(array_unique(
+            array_map('intval', $input['member_ids'])
+        ));
+
+        if (array_diff($selected_ids, $allowed_ids)) {
+            abort(422, trans('collocation_candidates.invalid_members'));
+        }
+
+        return $selected_ids;
+    }
 }

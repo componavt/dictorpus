@@ -3,6 +3,10 @@
         <input type="hidden" name="synset_id" value="{{ $synset_id }}">
     @endif
 
+    @if (!empty($matrix_mode))
+        @include('dict.synset._candidate_members')
+    @endif
+
     <div class="example-word-columns">
         <fieldset class="example-form-section">
             <legend>{{ trans('meaning_examples.source_section') }}</legend>

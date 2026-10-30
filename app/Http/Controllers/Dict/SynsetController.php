@@ -265,7 +265,7 @@ class SynsetController extends Controller
 
         $core_members = $synset->coreWithFrequencies()->values();
 
-        $members = $core_members
+        $all_members = $core_members
             ->merge($synset->periphery)
             ->unique('id')
             ->values();
@@ -273,7 +273,13 @@ class SynsetController extends Controller
         $core_ids = $core_members->pluck('id')->all();
 
         $filter_service = new SynsetCollocationCandidateFilters();
-        $filter_values = $filter_service->values($members);
+        $selected_member_ids = $filter_service->members($request, $all_members);
+
+        $members = $all_members->filter(function ($member) use ($selected_member_ids) {
+            return in_array((int) $member->id, $selected_member_ids, true);
+        })->values();
+
+        $filter_values = $filter_service->values($all_members);
         $filters = $filter_service->read($request, $filter_values);
         $options = $filter_service->options($filters);
 
@@ -315,6 +321,7 @@ class SynsetController extends Controller
         $back_url = LaravelLocalization::localizeURL('/dict/synset/' . $synset->id . '/edit') . $this->args_by_get;
 
         return view('dict.synset.candidates', compact(
+            'all_members',
             'back_url',
             'base_url',
             'candidate_groups',
@@ -324,6 +331,7 @@ class SynsetController extends Controller
             'members',
             'partner_count',
             'pos_values',
+            'selected_member_ids',
             'synset',
             'synset_id'
         ));

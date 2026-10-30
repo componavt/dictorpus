@@ -110,3 +110,18 @@
 .synset-candidates>thead>tr>th.candidate-member>a::first-letter {
     text-transform: none !important;
 }
+
+/* Компактные подписи выбранных участников. */
+#candidate-matrix-members+.select2-container .select2-selection__choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+#candidate-matrix-members+.select2-container .select2-selection__choice__remove {
+    display: inline-block;
+    float: none;
+    flex-shrink: 0;
+    margin: 0;
+}
