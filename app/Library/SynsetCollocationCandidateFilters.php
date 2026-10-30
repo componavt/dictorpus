@@ -49,6 +49,7 @@ class SynsetCollocationCandidateFilters
             'same_gramset' => 1,
             'whole_sentence' => 0,
             'partner_pos_id' => 0,
+            'row_mode' => 0,
         ];
 
         $input = [];
@@ -65,6 +66,7 @@ class SynsetCollocationCandidateFilters
             'same_gramset' => 'required|boolean',
             'whole_sentence' => 'required|boolean',
             'partner_pos_id' => 'required|integer|min:0',
+            'row_mode' => 'required|integer|in:0,1,2',
         ]);
 
         if ($validator->fails()) {

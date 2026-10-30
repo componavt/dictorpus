@@ -291,14 +291,20 @@ class SynsetController extends Controller
             '/dict/synset/' . $synset_id . '/examples/candidates'
         );
 
-        $rows = (new SynsetCollocationCandidateData())->prepare($members, $options, $filters['partner_pos_id']);
+        $candidate_data = new SynsetCollocationCandidateData();
+
+        $rows = $candidate_data->prepare($members, $options, $filters['partner_pos_id']);
+
+        $partner_total = count($rows);
+
+        $rows = $candidate_data->filterRows($rows, $members->count(), $filters['row_mode']);
 
         $partner_count = count($rows);
 
         $candidate_groups = (new MeaningCollocationCandidateData())->prepare($rows);
 
         $example_query = $filters;
-        unset($example_query['partner_pos_id']);
+        unset($example_query['partner_pos_id'], $example_query['row_mode']);
 
         $example_query = array_merge($example_query, [
             'synset_id' => $synset_id,
@@ -330,6 +336,7 @@ class SynsetController extends Controller
             'filters',
             'members',
             'partner_count',
+            'partner_total',
             'pos_values',
             'selected_member_ids',
             'synset',

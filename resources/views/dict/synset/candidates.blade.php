@@ -16,7 +16,8 @@
     <h2>Корпусные кандидаты: {{ $synset->name }}</h2>
 
     <p>Участников: {{ $members->count() }} из {{ $all_members->count() }}.
-        Значений-партнёров: {{ $partner_count }}.</p>
+        Найдено значений-партнёров: {{ $partner_total }}.
+        Показано: {{ $partner_count }}.</p>
 
     @include('dict.meaning.examples.form._form', [
         'candidate_mode' => true,
@@ -38,8 +39,10 @@
     <p>В синсете нет участников.</p>
     @elseif (!$members->count())
     <p>{{ trans('collocation_candidates.matrix_members_empty') }}</p>
-    @elseif (!$partner_count)
+    @elseif (!$partner_total)
     <p>При текущих условиях кандидаты не найдены.</p>
+    @elseif (!$partner_count)
+    <p>{{ trans('collocation_candidates.matrix_rows_empty') }}</p>
     @else
     <div class="synset-candidates-scroll">
         <table class="table table-bordered table-hover synset-candidates">
@@ -112,4 +115,13 @@
 
 @section('jqueryFunc')
     initMeaningExampleFilters();
+
+    function updateMatrixRowOptions() {
+        var selected_ids = $('#candidate-matrix-members').val() || [];
+
+        $('#candidate-matrix-row-options').toggle(selected_ids.length >= 2);
+    }
+
+    $('#candidate-matrix-members').on('change', updateMatrixRowOptions);
+    updateMatrixRowOptions();
 @stop
