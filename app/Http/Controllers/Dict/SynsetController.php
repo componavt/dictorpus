@@ -299,12 +299,20 @@ class SynsetController extends Controller
 
         $rows = $candidate_data->filterRows($rows, $members->count(), $filters['row_mode']);
 
+        if ($filters['unrecorded_only']) {
+            $rows = $candidate_data->filterUnrecorded($rows);
+        }
+
         $partner_count = count($rows);
 
         $candidate_groups = (new MeaningCollocationCandidateData())->prepare($rows);
 
         $example_query = $filters;
-        unset($example_query['partner_pos_id'], $example_query['row_mode']);
+        unset(
+            $example_query['partner_pos_id'],
+            $example_query['row_mode'],
+            $example_query['unrecorded_only']
+        );
 
         $example_query = array_merge($example_query, [
             'synset_id' => $synset_id,

@@ -137,4 +137,20 @@ class SynsetCollocationCandidateData
             return $found_count > 0 && $found_count < $member_count;
         }));
     }
+
+    /**
+     * Оставляет строки хотя бы с одной найденной, но невнесённой парой.
+     */
+    public function filterUnrecorded(array $rows)
+    {
+        return array_values(array_filter($rows, function ($row) {
+            foreach ($row['cells'] as $cell) {
+                if ($cell['sentences'] > 0 && !$cell['recorded']) {
+                    return true;
+                }
+            }
+
+            return false;
+        }));
+    }
 }

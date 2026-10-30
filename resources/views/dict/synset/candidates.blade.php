@@ -117,11 +117,17 @@
     initMeaningExampleFilters();
 
     function updateMatrixRowOptions() {
-        var selected_ids = $('#candidate-matrix-members').val() || [];
+        var selected_count = $('#candidate-matrix-members input:checked').length;
 
-        $('#candidate-matrix-row-options').toggle(selected_ids.length >= 2);
+        $('#candidate-matrix-row-options').toggle(selected_count >= 2);
     }
 
-    $('#candidate-matrix-members').on('change', updateMatrixRowOptions);
+    $('#candidate-matrix-members').on('change', 'input[type="checkbox"]', updateMatrixRowOptions);
+    $('#candidate-members-all, #candidate-members-none').on('click', function () {
+        var checked = this.id === 'candidate-members-all';
+
+        $('#candidate-matrix-members input[type="checkbox"]').prop('checked', checked);
+        updateMatrixRowOptions();
+    });
     updateMatrixRowOptions();
 @stop

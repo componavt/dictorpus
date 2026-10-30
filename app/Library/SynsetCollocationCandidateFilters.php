@@ -50,6 +50,7 @@ class SynsetCollocationCandidateFilters
             'whole_sentence' => 0,
             'partner_pos_id' => 0,
             'row_mode' => 0,
+            'unrecorded_only' => 0,
         ];
 
         $input = [];
@@ -67,6 +68,7 @@ class SynsetCollocationCandidateFilters
             'whole_sentence' => 'required|boolean',
             'partner_pos_id' => 'required|integer|min:0',
             'row_mode' => 'required|integer|in:0,1,2',
+            'unrecorded_only' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {

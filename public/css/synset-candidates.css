@@ -111,17 +111,55 @@
     text-transform: none !important;
 }
 
-/* Компактные подписи выбранных участников. */
-#candidate-matrix-members+.select2-container .select2-selection__choice {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
+/* Компактный выбор участников обычными чекбоксами. */
+.candidate-member-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-bottom: 14px;
 }
 
-#candidate-matrix-members+.select2-container .select2-selection__choice__remove {
+.meaning-example-form .candidate-member-check {
     display: inline-block;
-    float: none;
-    flex-shrink: 0;
     margin: 0;
+    font-weight: normal;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.meaning-example-form .candidate-member-check input[type="checkbox"] {
+    position: static;
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin: 0 5px 0 0;
+    vertical-align: middle;
+    opacity: 1;
+    box-shadow: none;
+}
+
+/* Два фильтра в одной строке. */
+.candidate-matrix-modes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.candidate-matrix-modes>.form-group {
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.candidate-member-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: -6px 0 14px;
+}
+
+@media screen and (max-width: 767px) {
+    .candidate-matrix-modes {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
 }
