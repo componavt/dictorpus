@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\CollocationExampleData;
 use App\Library\MeaningExampleFilterInput;
 use App\Library\MeaningExampleFilterValues;
 use App\Library\MeaningExampleFormatter;
@@ -200,6 +201,20 @@ class MeaningExampleController extends Controller
             );
         }
 
+        $example_collocation = null;
+        $collocation_example_actions = [];
+
+        if (User::checkAccess('dict.edit') && $partner && $sentences && count($sentences)) {
+            $example_collocation = $source->collocations()
+                ->where('collocate_meaning_id', $partner->id)
+                ->first();
+
+            if ($example_collocation) {
+                $collocation_example_actions = (new CollocationExampleData())
+                    ->forPage($example_collocation, $sentences->items());
+            }
+        }
+
         return view(
             'dict.meaning.examples.search',
             compact(
@@ -223,6 +238,8 @@ class MeaningExampleController extends Controller
                 'word_blocks',
                 'filter_values',
                 'selected_filters',
+                'example_collocation',
+                'collocation_example_actions',
             )
         );
     }

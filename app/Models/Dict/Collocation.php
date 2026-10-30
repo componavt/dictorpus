@@ -128,4 +128,13 @@ class Collocation extends Model
 
         return $result;
     }
+
+    /**
+     * Прикреплённые корпусные примеры.
+     */
+    public function corpusExamples()
+    {
+        return $this->hasMany(CollocationExample::class)
+            ->orderBy('id');
+    }
 }

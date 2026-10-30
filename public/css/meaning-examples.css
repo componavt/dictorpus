@@ -144,13 +144,15 @@
 }
 
 .meaning-example-search w.example-collocation-recorded {
-    border-bottom: 1px dotted #287a32;
+    border-bottom: 1px dotted #888;
 }
 
 .meaning-example-search .example-recorded-partner {
-    color: #287a32;
-    font-size: 0.8em;
-    margin-left: 2px;
+    display: inline-block;
+    color: #666;
+    font-size: 1em;
+    margin-left: 4px;
+    vertical-align: baseline;
     white-space: nowrap;
 }
 
@@ -177,4 +179,21 @@
 
 .meaning-example-search .example-window-legend .example-window-word {
     display: inline-block;
+}
+
+.collocation-example-action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+}
+
+.collocation-example-form {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
 }

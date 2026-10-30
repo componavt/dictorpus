@@ -13,8 +13,10 @@
 @stop
 
 @section('body')
-<div
-    class="meaning-example-search" data-synset-id="{{ $synset_id }}"
+<div class="meaning-example-search" data-synset-id="{{ $synset_id }}"
+    data-delete-collocation-confirm="{{ trans('meaning_examples.delete_collocation_confirm') }}"
+    data-delete-collocation-error="{{ trans('meaning_examples.delete_collocation_error') }}"
+    data-attach-error="{{ trans('collocation_examples.attach_error') }}"
     data-whole-sentence="{{ $whole_sentence ? '1' : '0' }}"
     data-collocation-recorded-label="{{ trans('meaning_examples.collocation_recorded') }}"
     data-distance-from="{{ $distance_from }}" data-examples-return="{{ $examples_return }}"
@@ -111,12 +113,14 @@
 {!! js('meaning_example_filters') !!}
 {!! js('text') !!}
 {!! js('meaning_examples') !!}
+{!! js('collocation_examples') !!}
 @stop
 
 @section('jqueryFunc')
     initMeaningExampleFilters();
     initExamplePartnerSelect();
     initExampleCollocationLinks();
+    initCollocationExampleAttach();
     updateExampleCollocationMarks();
 
     var example_page = $('.meaning-example-search');
