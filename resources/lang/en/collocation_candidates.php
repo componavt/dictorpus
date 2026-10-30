@@ -19,6 +19,7 @@ return [
     'next' => 'Next',
     'pages' => 'Candidate pages',
     'page' => 'Page :num',
+    'page_of' => 'Page :page of :pages.',
     'partner_pos' => 'Partner part of speech',
     'per_page' => 'Meanings per page',
     'previous' => 'Previous',
@@ -30,6 +31,7 @@ return [
     'texts' => 'Texts',
     'texts_hint' => 'Distinct corpus texts containing matching sentences.',
     'title' => 'Collocation candidates',
+    'total' => 'Total candidate meanings: :num.',
     'unchecked' => 'With unverified partner',
     'unchecked_hint' => 'Sentences where this partner meaning is still an unverified analysis alternative.',
 ];

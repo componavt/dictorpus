@@ -5,6 +5,8 @@
 @stop
 
 @section('headExtra')
+    {!! css('select2.min') !!}
+    {!! css('meaning-example-form') !!}
     {!! css('synset-candidates') !!}
 @stop
 
@@ -20,10 +22,14 @@
         Значений-партнёров: {{ $partner_count }}.
     </p>
 
-    <p class="text-muted">
-        Расстояние: −1…1; общий грамсет;
-        проверенные и непроверенные привязки источника и партнёра.
-    </p>
+    @include('dict.meaning.examples.form._form', [
+        'candidate_mode' => true,
+        'matrix_mode' => true,
+        'form_url' => $base_url,
+        'form_values' => $filters,
+    ])
+
+    <hr>
 
     <p class="text-muted">
         Число — количество разных предложений.
@@ -109,4 +115,13 @@
             </table>
         </div>
     @endif
+@stop
+
+@section('footScriptExtra')
+    {!! js('select2.min') !!}
+    {!! js('meaning_example_filters') !!}
+@stop
+
+@section('jqueryFunc')
+    initMeaningExampleFilters();
 @stop

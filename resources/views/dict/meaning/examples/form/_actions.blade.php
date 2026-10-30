@@ -1,4 +1,5 @@
 <div class="example-form-actions">
+@if (empty($matrix_mode))
     <div class="example-page-size">
         <label for="example-search-per-page">
             {{ trans($candidate_mode ? 'collocation_candidates.per_page' : 'meaning_examples.per_page') }}
@@ -9,6 +10,7 @@
             @endforeach
         </select>
     </div>
+@endif
 
     <button type="submit" class="btn btn-primary">
         {{ trans($candidate_mode ? 'collocation_candidates.apply' : 'meaning_examples.submit') }}

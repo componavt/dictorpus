@@ -504,21 +504,38 @@ class MeaningExampleSearch
     }
 
     /**
-     * Возвращает страницу кандидатов и признак продолжения списка.
+     * Считает разные значения партнёров без расчёта их статистики.
+     */
+    public function countCollocationCandidates($partner_pos_id = 0)
+    {
+        $query = $this->partnerMeaningsQuery();
+
+        if ($partner_pos_id) {
+            $query->where('l2.pos_id', (int) $partner_pos_id);
+        }
+
+        return (int) $query->distinct()->count('m2.id');
+    }
+
+    /**
+     * Возвращает страницу кандидатов с общим числом и пагинатором.
      *
      * @return array
      */
     public function collocationCandidatesPage($per_page = 25, $page = 1, $partner_pos_id = 0)
     {
         $per_page = max(1, min(100, (int) $per_page));
-        $page = max(1, (int) $page);
+
+        $total = $this->countCollocationCandidates($partner_pos_id);
+        $last_page = max(1, (int) ceil($total / $per_page));
+        $page = max(1, min($last_page, (int) $page));
 
         $rows = $this->collocationCandidatesQuery($partner_pos_id)
             ->orderBy('sentences', 'desc')
             ->orderBy('texts', 'desc')
             ->orderBy('m2.id')
             ->skip(($page - 1) * $per_page)
-            ->take($per_page + 1)
+            ->take($per_page)
             ->get();
 
         $items = [];
@@ -537,9 +554,6 @@ class MeaningExampleSearch
                 (int) $row->unchecked_sentences,
             ];
         }
-
-        $has_more = count($items) > $per_page;
-        $items = array_slice($items, 0, $per_page);
 
         $recorded = [];
 
@@ -567,9 +581,18 @@ class MeaningExampleSearch
 
         return [
             'items' => $items,
-            'has_more' => $has_more,
+            'total' => $total,
+            'has_more' => $page < $last_page,
             'page' => $page,
             'per_page' => $per_page,
+            'last_page' => $last_page,
+            'paginator' => new LengthAwarePaginator(
+                $items,
+                $total,
+                $per_page,
+                $page,
+                ['path' => Paginator::resolveCurrentPath()]
+            ),
         ];
     }
 }

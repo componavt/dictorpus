@@ -39,6 +39,8 @@ class MeaningCollocationCandidateController extends Controller
         ]);
 
         $candidate_page = $search->collocationCandidatesPage($filters['per_page'], $filters['page'], $filters['partner_pos_id']);
+        $filters['page'] = $candidate_page['page'];
+        $candidate_page['paginator']->appends($filters);
         $groups = (new MeaningCollocationCandidateData())->prepare($candidate_page['items']);
         $groups = (new MeaningCollocationCandidateLinks())->prepare($source, $groups, $filters);
 

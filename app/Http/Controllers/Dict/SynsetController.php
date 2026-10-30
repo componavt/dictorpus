@@ -10,6 +10,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Library\MeaningCollocationCandidateData;
 use App\Library\MeaningExampleAvailability;
 use App\Library\SynsetCollocationCandidateData;
+use App\Library\SynsetCollocationCandidateFilters;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Synset;
@@ -253,7 +254,7 @@ class SynsetController extends Controller
     /**
      * Показывает корпусных кандидатов для всех участников синсета.
      */
-    public function collocationCandidates($id)
+    public function collocationCandidates($id, Request $request)
     {
         $synset = Synset::with([
             'core.lemma',
@@ -271,36 +272,33 @@ class SynsetController extends Controller
 
         $core_ids = $core_members->pluck('id')->all();
 
-        $options = [
-            'corpus_ids' => [],
-            'distance_from' => -1,
-            'distance_to' => 1,
-            'partner_threshold' => 0,
-            'same_gramset' => true,
-            'source_gramset_ids' => [],
-            'source_threshold' => 0,
-            'whole_sentence' => false,
-        ];
+        $filter_service = new SynsetCollocationCandidateFilters();
+        $filter_values = $filter_service->values($members);
+        $filters = $filter_service->read($request, $filter_values);
+        $options = $filter_service->options($filters);
 
-        $rows = (new SynsetCollocationCandidateData())->prepare($members, $options);
+        $pos_values = PartOfSpeech::getGroupedList();
+
+        $synset_id = (int) $synset->id;
+
+        $base_url = LaravelLocalization::localizeURL(
+            '/dict/synset/' . $synset_id . '/examples/candidates'
+        );
+
+        $rows = (new SynsetCollocationCandidateData())->prepare($members, $options, $filters['partner_pos_id']);
 
         $partner_count = count($rows);
 
         $candidate_groups = (new MeaningCollocationCandidateData())->prepare($rows);
 
-        $example_query = [
-            'distance_from' => $options['distance_from'],
-            'distance_to' => $options['distance_to'],
-            'only_checked' => $options['partner_threshold'],
-            'source_only_checked' => $options['source_threshold'],
-            'same_gramset' => (int) $options['same_gramset'],
-            'whole_sentence' => (int) $options['whole_sentence'],
-            'source_gramset_ids' => $options['source_gramset_ids'],
-            'corpus_ids' => $options['corpus_ids'],
-            'synset_id' => (int) $synset->id,
+        $example_query = $filters;
+        unset($example_query['partner_pos_id']);
+
+        $example_query = array_merge($example_query, [
+            'synset_id' => $synset_id,
             'page' => 1,
             'per_page' => 20,
-        ];
+        ]);
 
         foreach ($candidate_groups as &$group) {
             foreach ($group['items'] as &$item) {
@@ -318,11 +316,16 @@ class SynsetController extends Controller
 
         return view('dict.synset.candidates', compact(
             'back_url',
+            'base_url',
             'candidate_groups',
             'core_ids',
+            'filter_values',
+            'filters',
             'members',
             'partner_count',
-            'synset'
+            'pos_values',
+            'synset',
+            'synset_id'
         ));
     }
 }
