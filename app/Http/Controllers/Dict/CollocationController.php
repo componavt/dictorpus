@@ -679,6 +679,8 @@ class CollocationController extends Controller
             'source_only_checked',
             'synset_id',
             'whole_sentence',
+            'source_gramset_ids',
+            'corpus_ids',
         ]));
 
         foreach ($query as $value) {

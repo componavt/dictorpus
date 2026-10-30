@@ -1,0 +1,119 @@
+.meaning-example-form {
+    margin: 20px 0;
+}
+
+.meaning-example-form .example-word-columns,
+.meaning-example-form .example-combination {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+}
+
+.meaning-example-form .example-form-section {
+    min-width: 0;
+    margin: 0 0 18px;
+    padding: 12px 14px 14px;
+    border: 1px solid #ddd;
+}
+
+.meaning-example-form .example-form-section>legend {
+    width: auto;
+    margin: 0;
+    padding: 0 6px;
+    border: 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.meaning-example-form .example-word-columns>fieldset {
+    margin-bottom: 0;
+}
+
+.meaning-example-form .example-word-columns {
+    margin-bottom: 18px;
+}
+
+.meaning-example-form .example-word-columns>fieldset,
+.meaning-example-form .example-combination>div {
+    min-width: 0;
+}
+
+.meaning-example-form .example-distance-range {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.meaning-example-form .example-distance-range label {
+    margin: 0;
+    font-weight: normal;
+}
+
+.meaning-example-form .example-distance-range input {
+    width: 65px;
+    flex: 0 0 65px;
+}
+
+.meaning-example-form .example-combination .checkbox {
+    margin: 6px 0;
+}
+
+.meaning-example-form .example-distance-fields.is-disabled {
+    opacity: 0.55;
+}
+
+.meaning-example-form .example-form-actions,
+.meaning-example-form .example-page-size {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.meaning-example-form .example-page-size {
+    margin-right: 8px;
+}
+
+.meaning-example-form .example-page-size label {
+    margin: 0;
+}
+
+.meaning-example-form .example-page-size select {
+    width: auto;
+}
+
+.meaning-examples-header .example-header-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.meaning-examples-header .example-header-columns>div {
+    min-width: 0;
+}
+
+.meaning-examples-header .example-header-meaning h3 {
+    margin-top: 0;
+}
+
+.meaning-examples-header .example-header-meaning ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+@media screen and (min-width: 768px) {
+    .meaning-examples-header .example-header-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .meaning-example-form .example-word-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .meaning-example-form .example-combination {
+        grid-template-columns: minmax(290px, 1.3fr) repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+}

@@ -117,6 +117,8 @@ function initExamplePartnerSelect() {
                 return {
                     q: params.term || '',
                     page: params.page || 1,
+                    source_gramset_ids: form.find('[name="source_gramset_ids[]"]').val() || [],
+                    corpus_ids: form.find('[name="corpus_ids[]"]').val() || [],
                     distance_from: form.find('[name="distance_from"]').val(),
                     distance_to: form.find('[name="distance_to"]').val(),
                     only_checked: form.find('input[type="checkbox"][name="only_checked"]').prop('checked') ? 1 : 0,
@@ -133,7 +135,8 @@ function initExamplePartnerSelect() {
 
     form.on(
         'change',
-        '[name="distance_from"], [name="distance_to"], '
+        '[name="source_gramset_ids[]"], [name="corpus_ids[]"], '
+        + '[name="distance_from"], [name="distance_to"], '
         + 'input[type="checkbox"][name="only_checked"], '
         + 'input[type="checkbox"][name="same_gramset"], '
         + 'input[type="checkbox"][name="source_only_checked"], '

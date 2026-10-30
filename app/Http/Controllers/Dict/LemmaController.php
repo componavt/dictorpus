@@ -1234,11 +1234,7 @@ class LemmaController extends Controller
             $parts === false
             || isset($parts['scheme'])
             || isset($parts['host'])
-            || !preg_match(
-                '~^/dict/meaning/([1-9][0-9]*)/examples/search$~D',
-                $parts['path'] ?? '',
-                $matches
-            )
+            || !preg_match('~^/dict/meaning/([1-9][0-9]*)/examples/search$~D', $parts['path'] ?? '', $matches)
         ) {
             abort(422);
         }
@@ -1263,12 +1259,15 @@ class LemmaController extends Controller
             'same_gramset',
             'synset_id',
             'whole_sentence',
+            'source_only_checked',
+            'source_gramset_ids',
+            'corpus_ids',
         ]));
 
-        foreach ($query as $value) {
-            if (!is_scalar($value)) {
-                abort(422);
-            }
+        $query = \App\Library\MeaningExampleFilterInput::returnQuery($query);
+
+        if ($query === null) {
+            abort(422);
         }
 
         $fragment = $parts['fragment'] ?? '';

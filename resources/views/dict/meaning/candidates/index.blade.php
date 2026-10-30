@@ -5,15 +5,16 @@
 @stop
 
 @section('headExtra')
+{!! css('select2.min') !!}
 {!! css('lemma') !!}
 {!! css('meaning-candidates') !!}
+{!! css('meaning-example-form') !!}
 @stop
 
 @section('body')
 <div class="meaning-candidates">
     @include('dict.meaning.examples._header')
 
-    <h2>{{ trans('collocation_candidates.title') }}</h2>
     <p class="help-block">{{ trans('collocation_candidates.hint') }}</p>
 
     @include('dict.meaning.candidates._filters')
@@ -30,4 +31,13 @@
 
     @include('dict.meaning.candidates._pagination')
 </div>
+@stop
+
+@section('footScriptExtra')
+{!! js('select2.min') !!}
+{!! js('meaning_example_filters') !!}
+@stop
+
+@section('jqueryFunc')
+    initMeaningExampleFilters();
 @stop

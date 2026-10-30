@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\MeaningExampleFilterInput;
+use App\Library\MeaningExampleFilterValues;
 use App\Library\MeaningCollocationCandidateData;
 use App\Library\MeaningCollocationCandidateLinks;
 use App\Library\MeaningExampleSearch;
@@ -19,8 +21,9 @@ class MeaningCollocationCandidateController extends Controller
 {
     public function index($meaning_id, Request $request)
     {
-        $filters = $this->filters($request);
         $source = Meaning::with(['lemma.lang', 'lemma.pos', 'meaningTexts.lang'])->findOrFail($meaning_id);
+        $filter_values = (new MeaningExampleFilterValues())->load($source);
+        $filters = $this->filters($request, $filter_values);
         $synset_id = $filters['synset_id'] ?? null;
         $this->checkSynset($source, $synset_id);
 
@@ -31,6 +34,8 @@ class MeaningCollocationCandidateController extends Controller
             'partner_threshold' => $filters['only_checked'],
             'same_gramset' => (bool) $filters['same_gramset'],
             'whole_sentence' => (bool) $filters['whole_sentence'],
+            'source_gramset_ids' => $filters['source_gramset_ids'],
+            'corpus_ids' => $filters['corpus_ids'],
         ]);
 
         $candidate_page = $search->collocationCandidatesPage($filters['per_page'], $filters['page'], $filters['partner_pos_id']);
@@ -50,6 +55,7 @@ class MeaningCollocationCandidateController extends Controller
             'candidate_page',
             'groups',
             'filters',
+            'filter_values',
             'lemma',
             'meaning_labels',
             'partner',
@@ -59,7 +65,7 @@ class MeaningCollocationCandidateController extends Controller
         ));
     }
 
-    protected function filters(Request $request)
+    protected function filters(Request $request, array $filter_values)
     {
         $defaults = [
             'distance_from' => -1,
@@ -107,7 +113,13 @@ class MeaningCollocationCandidateController extends Controller
             unset($filters['synset_id']);
         }
 
-        return $filters;
+        $extra_filters = (new MeaningExampleFilterInput())->read($request->all(), $filter_values);
+
+        if ($extra_filters['errors']->count()) {
+            abort(422, $extra_filters['errors']->first());
+        }
+
+        return array_merge($filters, $extra_filters['options']);
     }
 
     protected function checkSynset(Meaning $source, $synset_id)
@@ -123,8 +135,10 @@ class MeaningCollocationCandidateController extends Controller
             abort(403);
         }
 
-        $filters = $this->filters($request);
-        $source = Meaning::findOrFail($meaning_id);
+        $source = Meaning::with('lemma')->findOrFail($meaning_id);
+        $filter_values = (new MeaningExampleFilterValues())->load($source);
+        $filters = $this->filters($request, $filter_values);
+
         $this->checkSynset($source, $filters['synset_id'] ?? null);
 
         DB::transaction(function () use ($source, $collocation_id) {

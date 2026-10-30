@@ -24,10 +24,12 @@ class MeaningExampleSearch
         $this->partner = $partner;
 
         $this->options = array_merge([
+            'corpus_ids' => [],
             'distance_from' => -1,
             'distance_to' => 1,
             'partner_threshold' => 0,
             'same_gramset' => true,
+            'source_gramset_ids' => [],
             'source_threshold' => 0,
             'whole_sentence' => false,
         ], $options);
@@ -67,6 +69,10 @@ class MeaningExampleSearch
                 );
             }
         }
+
+        foreach (['source_gramset_ids', 'corpus_ids'] as $field) {
+            $this->options[$field] = MeaningExampleFilters::ids($this->options[$field], $field);
+        }
     }
 
     /**
@@ -92,7 +98,7 @@ class MeaningExampleSearch
      */
     protected function sourceQuery()
     {
-        return DB::table('meaning_text as mt1')
+        $query = DB::table('meaning_text as mt1')
             ->join('words as w1', function ($join) {
                 $join->on('w1.id', '=', 'mt1.word_id')
                     ->on('w1.text_id', '=', 'mt1.text_id')
@@ -116,6 +122,12 @@ class MeaningExampleSearch
                 'w1.word_number as source_position',
                 'mt1.relevance as source_relevance',
             ]);
+        return (new MeaningExampleFilters())->apply(
+            $query,
+            $this->source->lemma_id,
+            $this->options['source_gramset_ids'],
+            $this->options['corpus_ids']
+        );
     }
 
     /**
@@ -178,13 +190,9 @@ class MeaningExampleSearch
     /**
      * Проверяет совместимость форм выбранного партнёра или кандидата.
      */
-    protected function applyCommonGramset(
-        Builder $query,
-        $for_candidates = false
-    ) {
-        $partner_condition = $for_candidates
-            ? 'lw2.lemma_id = m2.lemma_id'
-            : 'lw2.lemma_id = ?';
+    protected function applyCommonGramset(Builder $query, $for_candidates = false)
+    {
+        $partner_condition = $for_candidates ? 'lw2.lemma_id = m2.lemma_id' : 'lw2.lemma_id = ?';
 
         $bindings = [$this->source->lemma_id];
 
@@ -192,27 +200,25 @@ class MeaningExampleSearch
             $bindings[] = $this->partner->lemma_id;
         }
 
-        return $query->whereRaw(
-            'EXISTS (
-                SELECT 1
-                FROM text_wordform AS tw1
-                JOIN lemma_wordform AS lw1
-                    ON lw1.wordform_id = tw1.wordform_id
-                    AND lw1.gramset_id = tw1.gramset_id
-                JOIN text_wordform AS tw2
-                    ON tw2.gramset_id = tw1.gramset_id
-                JOIN lemma_wordform AS lw2
-                    ON lw2.wordform_id = tw2.wordform_id
-                    AND lw2.gramset_id = tw2.gramset_id
+        $gramset_condition = '';
+        $gramset_ids = $this->options['source_gramset_ids'];
+
+        if ($gramset_ids) {
+            $placeholders = implode(', ', array_fill(0, count($gramset_ids), '?'));
+            $gramset_condition = ' AND tw1.gramset_id IN (' . $placeholders . ')';
+            $bindings = array_merge($bindings, $gramset_ids);
+        }
+
+        return $query->whereRaw('EXISTS (SELECT 1 FROM text_wordform AS tw1
+                JOIN lemma_wordform AS lw1 ON lw1.wordform_id = tw1.wordform_id AND lw1.gramset_id = tw1.gramset_id
+                JOIN text_wordform AS tw2 ON tw2.gramset_id = tw1.gramset_id
+                JOIN lemma_wordform AS lw2 ON lw2.wordform_id = tw2.wordform_id AND lw2.gramset_id = tw2.gramset_id
                 WHERE tw1.word_id = w1.id
                     AND tw2.word_id = w2.id
                     AND tw1.relevance > 0
                     AND tw2.relevance > 0
                     AND lw1.lemma_id = ?
-                    AND ' . $partner_condition . '
-            )',
-            $bindings
-        );
+                    AND ' . $partner_condition . $gramset_condition . ')', $bindings);
     }
 
     /**

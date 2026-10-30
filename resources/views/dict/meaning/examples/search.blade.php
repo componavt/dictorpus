@@ -9,6 +9,7 @@
 {!! css('lemma') !!}
 {!! css('text') !!}
 {!! css('meaning-examples') !!}
+{!! css('meaning-example-form') !!}
 @stop
 
 @section('body')
@@ -37,117 +38,19 @@
     </div>
     @endif
 
-    <form method="GET" action="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/search') }}">
-        @if ($synset_id !== null)
-        <input type="hidden" name="synset_id" value="{{ $synset_id }}">
-        @endif
-
-        <div class="form-group">
-            <label for="example-search-partner">
-                {{ trans('meaning_examples.partner') }}
-            </label>
-
-            <select
-                id="example-search-partner"
-                name="partner_meaning_id"
-                class="form-control"
-                data-search-url="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/partners') }}"
-                data-placeholder="{{ trans('meaning_examples.partner_placeholder') }}"
-                style="width: 100%;">
-                <option value=""></option>
-
-                @if ($partner)
-                <option value="{{ $partner->id }}" selected>
-                    {{ $partner_text }}
-                </option>
-                @endif
-            </select>
-
-            <p class="help-block">
-                {{ trans('meaning_examples.partner_hint') }}
-            </p>
-        </div>
-
-        @include('dict.meaning.examples._checked_filters')
-
-        <div id="example-search-partner-options">
-            <input type="hidden" name="same_gramset" value="0">
-
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="same_gramset" value="1" @if ($same_gramset) checked @endif>
-                    {{ trans('meaning_examples.same_gramset') }}
-                </label>
-            </div>
-        </div>
-
-        <input type="hidden" name="whole_sentence" value="0">
-
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="whole_sentence" value="1" @if ($whole_sentence) checked @endif>
-                {{ trans('meaning_examples.whole_sentence') }}
-            </label>
-        </div>
-
-        <p class="help-block">
-            {{ trans('meaning_examples.whole_sentence_hint') }}
-        </p>
-
-        <div class="example-distance-range">
-            <label for="example-search-distance-from">
-                {{ trans('meaning_examples.distance_from') }}
-            </label>
-
-            <input
-                type="number"
-                step="1"
-                id="example-search-distance-from"
-                name="distance_from"
-                value="{{ $distance_from }}"
-                class="form-control"
-                required>
-
-            <label for="example-search-distance-to">
-                {{ trans('meaning_examples.distance_to_short') }}
-            </label>
-
-            <input
-                type="number"
-                step="1"
-                id="example-search-distance-to"
-                name="distance_to"
-                value="{{ $distance_to }}"
-                class="form-control"
-                required>
-        </div>
-
-        <p class="help-block">
-            {{ trans('meaning_examples.distance_hint') }}
-        </p>
-
-        <div class="form-group">
-            <label for="example-search-per-page">
-                {{ trans('meaning_examples.per_page') }}
-            </label>
-
-            <select id="example-search-per-page" name="per_page" class="form-control" style="width: auto;">
-                @foreach (array_unique([2, 5, 10, 20, 50, $per_page]) as $value)
-                <option value="{{ $value }}" @if ($per_page==$value) selected @endif>
-                    {{ $value }}
-                </option>
-                @endforeach
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            {{ trans('meaning_examples.submit') }}
-        </button>
-
-        <button type="submit" class="btn btn-default" formaction="{{ LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/candidates') }}">
-            {{ trans('collocation_candidates.title') }}
-        </button>
-    </form>
+    @include('dict.meaning.examples.form._form', [
+        'candidate_mode' => false,
+        'form_url' => LaravelLocalization::localizeURL('/dict/meaning/'.$source->id.'/examples/search'),
+        'form_values' => array_merge($selected_filters, [
+            'distance_from' => $distance_from,
+            'distance_to' => $distance_to,
+            'source_only_checked' => $source_only_checked,
+            'only_checked' => $only_checked,
+            'same_gramset' => $same_gramset,
+            'whole_sentence' => $whole_sentence,
+            'per_page' => $per_page,
+        ]),
+    ])
 
     @if ($sentences)
     <hr>
@@ -205,11 +108,13 @@
 @stop
 @section('footScriptExtra')
 {!! js('select2.min') !!}
+{!! js('meaning_example_filters') !!}
 {!! js('text') !!}
 {!! js('meaning_examples') !!}
 @stop
 
 @section('jqueryFunc')
+    initMeaningExampleFilters();
     initExamplePartnerSelect();
     initExampleCollocationLinks();
     updateExampleCollocationMarks();

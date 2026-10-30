@@ -5,7 +5,9 @@
     <input type="hidden" name="_method" value="DELETE">
 
     @foreach ($filters as $name => $value)
-        <input type="hidden" name="{{ $name }}" value="{{ $value }}">
+        @foreach ((array) $value as $entry)
+            <input type="hidden" name="{{ $name }}{{ is_array($value) ? '[]' : '' }}" value="{{ $entry }}">
+        @endforeach
     @endforeach
 
     <button type="submit" class="btn btn-link candidate-delete-button">

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\MeaningExampleFilterInput;
+use App\Library\MeaningExampleFilterValues;
 use App\Library\MeaningExampleFormatter;
 use App\Library\MeaningExampleWordData;
 use App\Models\User;
@@ -38,6 +40,10 @@ class MeaningExampleController extends Controller
             'lemma.pos',
             'meaningTexts.lang',
         ])->findOrFail($meaning_id);
+
+        $filter_values = (new MeaningExampleFilterValues())->load($source);
+        $extra_filters = (new MeaningExampleFilterInput())->read($request->all(), $filter_values);
+        $selected_filters = $extra_filters['options'] ?? ['source_gramset_ids' => [], 'corpus_ids' => []];
 
         $synset_id = $this->exampleSynsetId($request, $source);
         $this->synset_id = $synset_id;
@@ -103,6 +109,12 @@ class MeaningExampleController extends Controller
 
         $search_errors = $validator->errors();
 
+        foreach ($extra_filters['errors']->getMessages() as $field => $messages) {
+            foreach ($messages as $message) {
+                $search_errors->add($field, $message);
+            }
+        }
+
         if ($search_errors->count() === 0) {
             $threshold = (int) $input['only_checked'];
 
@@ -110,10 +122,12 @@ class MeaningExampleController extends Controller
                 $source,
                 $partner,
                 [
+                    'corpus_ids' => $selected_filters['corpus_ids'],
                     'distance_from' => (int) $input['distance_from'],
                     'distance_to' => (int) $input['distance_to'],
                     'partner_threshold' => $threshold,
                     'same_gramset' => (bool) (int) $input['same_gramset'],
+                    'source_gramset_ids' => $selected_filters['source_gramset_ids'],
                     'source_threshold' => (int) $input['source_only_checked'],
                     'whole_sentence' => (bool) (int) $input['whole_sentence'],
                 ]
@@ -131,6 +145,8 @@ class MeaningExampleController extends Controller
                 'per_page' => (int) $input['per_page'],
                 'synset_id' => $synset_id,
                 'whole_sentence' => (int) $input['whole_sentence'],
+                'source_gramset_ids' => $selected_filters['source_gramset_ids'],
+                'corpus_ids' => $selected_filters['corpus_ids'],
             ]);
         }
 
@@ -165,6 +181,8 @@ class MeaningExampleController extends Controller
                     'source_only_checked' => (int) $input['source_only_checked'],
                     'synset_id' => $synset_id,
                     'whole_sentence' => (int) $input['whole_sentence'],
+                    'source_gramset_ids' => $selected_filters['source_gramset_ids'],
+                    'corpus_ids' => $selected_filters['corpus_ids'],
                 ]);
         }
 
@@ -203,6 +221,8 @@ class MeaningExampleController extends Controller
                 'synset_id',
                 'whole_sentence',
                 'word_blocks',
+                'filter_values',
+                'selected_filters',
             )
         );
     }
@@ -582,6 +602,13 @@ class MeaningExampleController extends Controller
 
         $source = Meaning::with('lemma')->findOrFail($meaning_id);
 
+        $filter_values = (new MeaningExampleFilterValues())->load($source);
+        $extra_filters = (new MeaningExampleFilterInput())->read($request->all(), $filter_values);
+
+        if ($extra_filters['errors']->count()) {
+            abort(422, $extra_filters['errors']->first());
+        }
+
         $search = new MeaningExampleSearch(
             $source,
             null,
@@ -590,6 +617,8 @@ class MeaningExampleController extends Controller
                 'distance_to' => $input['distance_to'],
                 'partner_threshold' => $input['only_checked'],
                 'same_gramset' => (bool) $input['same_gramset'],
+                'source_gramset_ids' => $extra_filters['options']['source_gramset_ids'],
+                'corpus_ids' => $extra_filters['options']['corpus_ids'],
                 'source_threshold' => $source_threshold,
                 'whole_sentence' => (bool) (int) $input['whole_sentence'],
             ]
