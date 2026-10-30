@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Library\MeaningCollocationCandidateData;
 use App\Library\MeaningExampleAvailability;
+use App\Library\SynsetCollocationCandidateData;
 use App\Models\Dict\Lang;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Synset;
@@ -246,5 +248,81 @@ class SynsetController extends Controller
 
         return Redirect::to($url)
             ->withSuccess(trans($message_key));
+    }
+
+    /**
+     * Показывает корпусных кандидатов для всех участников синсета.
+     */
+    public function collocationCandidates($id)
+    {
+        $synset = Synset::with([
+            'core.lemma',
+            'core.meaningTexts.lang',
+            'periphery.lemma',
+            'periphery.meaningTexts.lang',
+        ])->findOrFail($id);
+
+        $core_members = $synset->coreWithFrequencies()->values();
+
+        $members = $core_members
+            ->merge($synset->periphery)
+            ->unique('id')
+            ->values();
+
+        $core_ids = $core_members->pluck('id')->all();
+
+        $options = [
+            'corpus_ids' => [],
+            'distance_from' => -1,
+            'distance_to' => 1,
+            'partner_threshold' => 0,
+            'same_gramset' => true,
+            'source_gramset_ids' => [],
+            'source_threshold' => 0,
+            'whole_sentence' => false,
+        ];
+
+        $rows = (new SynsetCollocationCandidateData())->prepare($members, $options);
+
+        $partner_count = count($rows);
+
+        $candidate_groups = (new MeaningCollocationCandidateData())->prepare($rows);
+
+        $example_query = [
+            'distance_from' => $options['distance_from'],
+            'distance_to' => $options['distance_to'],
+            'only_checked' => $options['partner_threshold'],
+            'source_only_checked' => $options['source_threshold'],
+            'same_gramset' => (int) $options['same_gramset'],
+            'whole_sentence' => (int) $options['whole_sentence'],
+            'source_gramset_ids' => $options['source_gramset_ids'],
+            'corpus_ids' => $options['corpus_ids'],
+            'synset_id' => (int) $synset->id,
+            'page' => 1,
+            'per_page' => 20,
+        ];
+
+        foreach ($candidate_groups as &$group) {
+            foreach ($group['items'] as &$item) {
+                foreach ($item['cells'] as $source_id => &$cell) {
+                    $query = array_merge($example_query, ['partner_meaning_id' => $item['meaning_id']]);
+                    $cell['examples_url'] = LaravelLocalization::localizeURL('/dict/meaning/' . $source_id . '/examples/search') . '?' . http_build_query($query);
+                }
+                unset($cell);
+            }
+            unset($item);
+        }
+        unset($group);
+
+        $back_url = LaravelLocalization::localizeURL('/dict/synset/' . $synset->id . '/edit') . $this->args_by_get;
+
+        return view('dict.synset.candidates', compact(
+            'back_url',
+            'candidate_groups',
+            'core_ids',
+            'members',
+            'partner_count',
+            'synset'
+        ));
     }
 }

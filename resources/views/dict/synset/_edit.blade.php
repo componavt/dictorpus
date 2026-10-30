@@ -20,4 +20,8 @@
     {!! Form::close() !!}
 <hr>
 
+<p><a class="btn btn-default" href="{{ LaravelLocalization::localizeURL('/dict/synset/' . $synset->id . '/examples/candidates') . $args_by_get }}">
+        Корпусные кандидаты всех участников
+    </a></p>
+
 @include('dict.synset._collocations')

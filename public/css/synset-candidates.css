@@ -1,0 +1,112 @@
+.synset-candidates {
+    width: auto;
+    min-width: 100%;
+}
+
+.synset-candidates>thead>tr>th,
+.synset-candidates>tbody>tr>td {
+    vertical-align: top;
+}
+
+.synset-candidates .candidate-partner {
+    min-width: 240px;
+    max-width: 380px;
+}
+
+.synset-candidates .candidate-member {
+    min-width: 160px;
+    max-width: 240px;
+    text-align: center;
+}
+
+.synset-candidates .candidate-gloss {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    color: #666;
+}
+
+.synset-candidates .candidate-member-type {
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: normal;
+    color: #888;
+}
+
+.synset-candidates .candidate-cell {
+    text-align: center;
+}
+
+.synset-candidates .candidate-cell-recorded {
+    background-color: #edf7ed;
+}
+
+.synset-candidates .candidate-recorded-mark {
+    margin-left: 4px;
+    color: #397439;
+}
+
+.synset-candidates .candidate-counts {
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #777;
+}
+
+.synset-candidates .candidate-counts span {
+    display: inline-block;
+    margin: 0 3px;
+    white-space: nowrap;
+}
+
+/* Прокрутка внутри таблицы по обеим осям. */
+.synset-candidates-scroll {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.synset-candidates-scroll .synset-candidates {
+    width: max-content;
+    min-width: 100%;
+    max-width: none;
+    margin-bottom: 0;
+}
+
+/* Сохраняем исходный регистр слов, без capitalize/uppercase. */
+.synset-candidates>thead>tr>th,
+.synset-candidates>thead>tr>th a,
+.synset-candidates>thead>tr>th div {
+    text-transform: none;
+}
+
+/* Шапка остаётся видимой при вертикальной прокрутке. */
+.synset-candidates>thead>tr>th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #f5f5f5;
+}
+
+/* Значения партнёров остаются видимыми при горизонтальной прокрутке. */
+.synset-candidates>tbody>tr>td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background-color: #fff;
+}
+
+.synset-candidates>thead>tr>th:first-child {
+    left: 0;
+    z-index: 3;
+}
+
+.synset-candidates>thead>tr>th.candidate-member,
+.synset-candidates>thead>tr>th.candidate-member>a,
+.synset-candidates>thead>tr>th.candidate-member::first-letter,
+.synset-candidates>thead>tr>th.candidate-member>a::first-letter {
+    text-transform: none !important;
+}

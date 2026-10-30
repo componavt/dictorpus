@@ -125,11 +125,12 @@ Route::group(
         Route::get('reverse_lemma/inflexion_groups', 'Dict\ReverseLemmaController@inflexionGroups');
         Route::get('reverse_lemma/tmpCreateAllReverse', 'Dict\ReverseLemmaController@tmpCreateAllReverse');
 
+        Route::get('synset/edit/new_members', 'Dict\SynsetApiController@newMembersEdit');
+        Route::get('synset/members_list', 'Dict\SynsetApiController@membersList');
+        Route::get('synset/{id}/edit/potential_members', 'Dict\SynsetApiController@potentialMembersEdit');
+        Route::get('synset/{id}/examples/candidates', 'Dict\SynsetController@collocationCandidates')->where('id', '[0-9]+');
         Route::get('synset/{id}/set_status/{status}', 'Dict\SynsetApiController@setStatus');
         Route::get('synset/{id}/remove_meaning/{meaning_id}', 'Dict\SynsetApiController@removeMeaning');
-        Route::get('synset/{id}/edit/potential_members', 'Dict\SynsetApiController@potentialMembersEdit');
-        Route::get('synset/members_list', 'Dict\SynsetApiController@membersList');
-        Route::get('synset/edit/new_members', 'Dict\SynsetApiController@newMembersEdit');
 
         Route::get('wordform/create', 'Dict\WordformController@create');
         Route::get('wordform/with_multiple_lemmas', 'Dict\WordformController@withMultipleLemmas');
