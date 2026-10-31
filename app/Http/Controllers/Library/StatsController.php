@@ -151,6 +151,13 @@ class StatsController extends Controller
         $minDate = Carbon::parse($min_date)->startOfDay();
         $maxDate = Carbon::parse($max_date)->endOfDay();
 
+        $history_marked = Revision::where('user_id', $user->id)
+            ->whereBetween('updated_at', [$minDate, $maxDate])
+            ->where('revisionable_type', Word::class)
+            ->whereIn('key', ['meaning_relevance', 'gramset_relevance'])
+            ->select('key', DB::raw('COUNT(DISTINCT revisionable_id) as count'))
+            ->groupBy('key')->get()->keyBy('key');
+
         $history_created = Revision::where('user_id', $user->id)
             ->whereBetween('updated_at', [$minDate, $maxDate])
             ->where('key', 'created_at')
@@ -194,6 +201,7 @@ class StatsController extends Controller
             'stats.by_editor',
             compact(
                 'history_created',
+                'history_marked',
                 'history_updated',
                 'max_date',
                 'min_date',

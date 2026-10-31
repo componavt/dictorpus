@@ -165,16 +165,64 @@ class Wordform extends Model
         if (!$gramset_id) {
             return;
         }
-        DB::statement('UPDATE text_wordform SET relevance=0' . // всем связям проставим отрицательные
-            ' WHERE text_id=' . $text_id .
-            ' AND w_id=' . $w_id);
-        $wordform_link = $this->texts()->wherePivot('text_id', $text_id)->wherePivot('w_id', $w_id)->wherePivot('gramset_id', $gramset_id);
-        if ($wordform_link->count()) {
-            $wordform_link->update(['relevance' => 2]);
-        } else {
-            $wordform_link = $this->texts()->attach($text_id, ['w_id' => $w_id, 'gramset_id' => $gramset_id, 'relevance' => 2]);
-        }
-        MeaningTextRel::updateMeaningLinksAfterCheckExample($text_id, $w_id, $gramset_id);
+
+        DB::transaction(function () use ($text_id, $w_id, $gramset_id) {
+            $wordform_link = DB::table('text_wordform')
+                ->where('text_id', $text_id)
+                ->where('w_id', $w_id)
+                ->where('wordform_id', $this->id)
+                ->where('gramset_id', $gramset_id)
+                ->lockForUpdate()
+                ->first();
+
+            $old_relevance = $wordform_link ? (int)$wordform_link->relevance : null;
+
+            $word = $wordform_link ? Word::findOrFail($wordform_link->word_id) : Word::where('text_id', $text_id)
+                ->where('w_id', $w_id)
+                ->firstOrFail();
+
+            DB::table('text_wordform')
+                ->where('text_id', $text_id)
+                ->where('w_id', $w_id)
+                ->update(['relevance' => 0]);
+
+            if ($wordform_link) {
+                DB::table('text_wordform')
+                    ->where('text_id', $text_id)
+                    ->where('w_id', $w_id)
+                    ->where('wordform_id', $this->id)
+                    ->where('gramset_id', $gramset_id)
+                    ->update(['relevance' => 2]);
+            } else {
+                $this->texts()->attach($text_id, [
+                    'w_id' => $w_id,
+                    'gramset_id' => $gramset_id,
+                    'word_id' => $word->id,
+                    'relevance' => 2,
+                ]);
+            }
+
+            MeaningTextRel::updateMeaningLinksAfterCheckExample($text_id, $w_id, $gramset_id);
+
+            if ($old_relevance !== 2) {
+                $new_value = [
+                    'text_id' => (int)$text_id,
+                    'w_id' => (int)$w_id,
+                    'wordform_id' => (int)$this->id,
+                    'gramset_id' => (int)$gramset_id,
+                    'relevance' => 2,
+                ];
+
+                $old_value = null;
+
+                if ($wordform_link) {
+                    $old_value = $new_value;
+                    $old_value['relevance'] = $old_relevance;
+                }
+
+                createRevisionRecord($word, 'gramset_relevance', $old_value === null ? null : json_encode($old_value), json_encode($new_value));
+            }
+        });
     }
 
     /**

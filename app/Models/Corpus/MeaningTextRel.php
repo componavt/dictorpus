@@ -31,27 +31,58 @@ class MeaningTextRel extends Model
 
     public static function updateExample(int $relevance, int $meaning_id, int $text_id, int $w_id)
     {
-        //dd($relevance, $meaning_id, $text_id, $w_id);
         DB::transaction(function () use ($relevance, $meaning_id, $text_id, $w_id) {
-            if ($relevance == 1) { // не выставлена оценка  — проверяем конфликт с другим значением
-                if (self::existsPositiveRelevance($text_id, $w_id, $meaning_id)) { // этот пример привязан к другому значению
+            $changed_links = [];
+
+            if ($relevance > 1) {
+                $links = DB::table('meaning_text')
+                    ->where('meaning_id', $meaning_id)
+                    ->where('text_id', $text_id)
+                    ->where('w_id', $w_id)
+                    ->lockForUpdate()
+                    ->get();
+
+                foreach ($links as $link) {
+                    if ((int)$link->relevance !== $relevance) {
+                        $changed_links[] = $link;
+                    }
+                }
+            }
+
+            if ($relevance == 1) {
+                // Не выставлена оценка — проверяем конфликт с другим значением.
+                if (self::existsPositiveRelevance($text_id, $w_id, $meaning_id)) {
                     $relevance = 0;
                 }
-            } elseif ($relevance >1) { // положительная оценка — гасим все прочие значения слова
+            } elseif ($relevance > 1) {
+                // Положительная оценка — гасим все прочие значения слова.
                 self::setNegativeToUndefOthers($text_id, $w_id, $meaning_id);
             }
 
             DB::statement(
-                'UPDATE meaning_text
-                SET relevance = ?
-                WHERE meaning_id = ?
-                AND text_id = ?
-                AND w_id = ?',
+                'UPDATE meaning_text SET relevance = ? WHERE meaning_id = ? AND text_id = ? AND w_id = ?',
                 [$relevance, $meaning_id, $text_id, $w_id]
             );
 
             if ($relevance > 1) {
                 TextWordform::updateWordformLinksAfterCheckExample($text_id, $w_id, $meaning_id);
+
+                foreach ($changed_links as $link) {
+                    $word = Word::findOrFail($link->word_id);
+
+                    $old_value = [
+                        'meaning_id' => (int)$link->meaning_id,
+                        'text_id' => (int)$link->text_id,
+                        's_id' => (int)$link->s_id,
+                        'w_id' => (int)$link->w_id,
+                        'relevance' => (int)$link->relevance,
+                    ];
+
+                    $new_value = $old_value;
+                    $new_value['relevance'] = $relevance;
+
+                    createRevisionRecord($word, 'meaning_relevance', json_encode($old_value), json_encode($new_value));
+                }
             }
         });
     }
@@ -75,7 +106,8 @@ class MeaningTextRel extends Model
     }
 
     // всем значениям с неопределенными оценками проставим отрицательные
-    public static function setNegativeToUndefOthers(int $text_id, int $w_id, int $meaning_id) {
+    public static function setNegativeToUndefOthers(int $text_id, int $w_id, int $meaning_id)
+    {
         DB::table('meaning_text')
             ->where('text_id', $text_id)
             ->where('w_id', $w_id)

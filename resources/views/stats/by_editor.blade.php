@@ -45,6 +45,10 @@
     <p>{{ $title }}: <b>{{ format_number($count) }}</b></p>
         @endif
     @endforeach
-    
+
+    <h3>Размечены</h3>
+    <p>значения у {{ format_number(isset($history_marked['meaning_relevance']) ? $history_marked['meaning_relevance']->count : 0) }} слов</p>
+    <p>грамматические признаки у {{ format_number(isset($history_marked['gramset_relevance']) ? $history_marked['gramset_relevance']->count : 0) }} слов</p>
+
     <p><a href="{{ route('stats.by_editors') }}">К списку редакторов</a></p>
 @stop
