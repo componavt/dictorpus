@@ -3,6 +3,10 @@
         <input type="hidden" name="synset_id" value="{{ $synset_id }}">
     @endif
 
+    @if (!empty($matrix_mode))
+        @include('dict.synset._candidate_members')
+    @endif
+
     <div class="example-word-columns">
         <fieldset class="example-form-section">
             <legend>{{ trans('meaning_examples.source_section') }}</legend>
@@ -15,7 +19,8 @@
         </fieldset>
     </div>
 
-    <fieldset class="example-form-section">
+    <fieldset class="example-form-section example-combination-section"
+            @if (empty($candidate_mode) && empty($partner)) style="display: none;" @endif>
         <legend>{{ trans('meaning_examples.combination_section') }}</legend>
         @include('dict.meaning.examples.form._conditions')
     </fieldset>

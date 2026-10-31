@@ -98,6 +98,8 @@ Route::group(
         Route::get('meaning/{meaning_id}/collocations/copy', 'Dict\CollocationController@copyForm');
         Route::post('meaning/{meaning_id}/collocations/copy', 'Dict\CollocationController@copySelected');
         Route::get('meaning/{meaning_id}/collocations/search', 'Dict\CollocationController@search');
+        Route::post('meaning/{meaning_id}/collocations/{collocation_id}/examples', 'Dict\CollocationExampleController@store')->where('meaning_id', '[0-9]+')->where('collocation_id', '[0-9]+');
+        Route::delete('meaning/{meaning_id}/collocations/{collocation_id}/examples/{example_id}', 'Dict\CollocationExampleController@destroy')->where('meaning_id', '[0-9]+')->where('collocation_id', '[0-9]+')->where('example_id', '[0-9]+');
         Route::put('meaning/{meaning_id}/collocations/{collocation_id}', 'Dict\CollocationController@update');
         Route::delete('meaning/{meaning_id}/collocations/{collocation_id}', 'Dict\CollocationController@destroy');
         Route::get('meaning/{meaning_id}/collocations', 'Dict\CollocationController@index');

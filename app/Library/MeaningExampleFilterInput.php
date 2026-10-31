@@ -4,6 +4,8 @@ namespace App\Library;
 
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\Dict\Meaning;
+
 class MeaningExampleFilterInput
 {
     public function read(array $input, array $values)
@@ -87,5 +89,107 @@ class MeaningExampleFilterInput
         }
 
         return $query;
+    }
+
+    /**
+     * Проверяет параметры страницы поиска и выбранного партнёра.
+     */
+    public function search(array $raw, Meaning $source, array $values)
+    {
+        $input = $this->searchInput($raw);
+        $validator = $this->searchValidator($input);
+        $partner = null;
+
+        if (
+            !$validator->fails() && $input['partner_meaning_id'] !== ''
+            && $input['partner_meaning_id'] !== null
+        ) {
+            $partner = $this->searchPartner(
+                $input['partner_meaning_id'],
+                $source,
+                $validator->errors()
+            );
+        }
+
+        if (
+            !$validator->errors()->count()
+            && (int) $input['distance_from'] > (int) $input['distance_to']
+        ) {
+            $validator->errors()->add(
+                'distance_from',
+                trans('meaning_examples.invalid_distance')
+            );
+        }
+
+        $extra = $this->read($raw, $values);
+        $errors = $validator->errors();
+
+        foreach ($extra['errors']->getMessages() as $field => $messages) {
+            foreach ($messages as $message) {
+                $errors->add($field, $message);
+            }
+        }
+
+        return [
+            'input' => $input,
+            'partner' => $partner,
+            'errors' => $errors,
+            'selected_filters' => $extra['options']
+                ?? ['source_gramset_ids' => [], 'corpus_ids' => []],
+        ];
+    }
+
+    protected function searchInput(array $raw)
+    {
+        $defaults = [
+            'distance_from' => -1,
+            'distance_to' => 1,
+            'partner_meaning_id' => '',
+            'only_checked' => 0,
+            'same_gramset' => 1,
+            'source_only_checked' => array_key_exists('only_checked', $raw)
+                ? $raw['only_checked'] : 0,
+            'per_page' => 20,
+            'page' => 1,
+            'whole_sentence' => 0,
+        ];
+
+        return array_intersect_key($raw + $defaults, $defaults);
+    }
+
+    protected function searchValidator(array $input)
+    {
+        return Validator::make($input, [
+            'distance_from' => 'required|integer',
+            'distance_to' => 'required|integer',
+            'partner_meaning_id' => 'integer|min:1',
+            'only_checked' => 'required|boolean',
+            'same_gramset' => 'required|boolean',
+            'source_only_checked' => 'required|boolean',
+            'per_page' => 'required|integer|min:1|max:100',
+            'page' => 'required|integer|min:1|max:1000000',
+            'whole_sentence' => 'required|boolean',
+        ], [], [
+            'distance_from' => trans('meaning_examples.distance_from'),
+            'distance_to' => trans('meaning_examples.distance_to'),
+            'partner_meaning_id' => trans('meaning_examples.partner'),
+            'only_checked' => trans('meaning_examples.only_checked'),
+            'same_gramset' => trans('meaning_examples.same_gramset'),
+            'per_page' => trans('meaning_examples.per_page'),
+            'page' => trans('meaning_examples.page'),
+        ]);
+    }
+
+    protected function searchPartner($id, Meaning $source, $errors)
+    {
+        $partner = Meaning::with(['lemma.pos', 'meaningTexts.lang'])->find((int) $id);
+
+        if (!$partner) {
+            $errors->add('partner_meaning_id', trans('meaning_examples.invalid_partner'));
+        } elseif ((int) $partner->lemma->lang_id !== (int) $source->lemma->lang_id) {
+            $errors->add('partner_meaning_id', trans('meaning_examples.different_language'));
+        }
+
+        return $partner;
     }
 }

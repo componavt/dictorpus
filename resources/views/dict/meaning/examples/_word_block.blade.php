@@ -22,29 +22,22 @@
                 {{ $meaning->getMultilangMeaningTextsString(LaravelLocalization::getCurrentLocale()) }}
 
                 @if ($can_edit && !$meaning_checked)
-                    <button
-                        type="button"
-                        class="example-review-plus"
-                        data-meaning-id="{{ $meaning->id }}"
-                        onclick="checkExampleMeaning(this)"
-                        title="{{ trans('corpus.mark_right_meaning') }}"
-                        aria-label="{{ trans('corpus.mark_right_meaning') }}"
-                    >
+                    <button type="button" class="example-review-plus" data-meaning-id="{{ $meaning->id }}" onclick="checkExampleMeaning(this)" title="{{ trans('corpus.mark_right_meaning') }}" aria-label="{{ trans('corpus.mark_right_meaning') }}">
                         <span class="fa fa-plus" aria-hidden="true"></span>
                     </button>
                 @endif
 
                 @if ($meaning_checked && ($add_collocation_url || $delete_collocation_url))
                     <span class="example-collocation-actions">
-                        @if ($delete_collocation_url)
-                            <a href="{{ $delete_collocation_url }}" title="{{ trans('meaning_examples.delete_collocation_hint') }}">
-                                {{ trans('meaning_examples.delete_collocation') }}
-                            </a>
-                        @else
-                            <a href="{{ $add_collocation_url }}">
-                                {{ trans('meaning_examples.add_collocation') }}
-                            </a>
-                        @endif
+                    @if ($delete_collocation_url)
+                        <a href="{{ $delete_collocation_url }}" onclick="return deleteExampleCollocation(this, event)" title="{{ trans('meaning_examples.delete_collocation_hint') }}">
+                            {{ trans('meaning_examples.delete_collocation') }}
+                        </a>
+                    @else
+                        <a href="{{ $add_collocation_url }}" onclick="return deleteExampleCollocation(this, event)">
+                            {{ trans('meaning_examples.add_collocation') }}
+                        </a>
+                    @endif
                     </span>
                 @endif
             </p>

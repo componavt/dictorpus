@@ -291,6 +291,14 @@ class CollocationController extends Controller
             $collocation->removeWithHistory();
         });
 
+        if ($request->ajax()) {
+            return response()->json([
+                'partners' => DB::table('collocations')
+                    ->where('meaning_id', $meaning_id)
+                    ->pluck('id', 'collocate_meaning_id'),
+            ]);
+        }
+
         return redirect(
             $this->withSynsetContext($this->editorUrl($meaning_id))
         )->withSuccess(trans('collocations.deleted'));

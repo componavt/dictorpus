@@ -368,7 +368,7 @@ function updateExampleCollocationMarks() {
                 .addClass('example-recorded-partner')
                 .attr('title', label)
                 .attr('aria-label', label)
-                .text('✓')
+                .append($('<i>').addClass('fas fa-book-open').attr('aria-hidden', 'true'))
                 .appendTo(word);
         }
     });
@@ -541,4 +541,67 @@ function refreshExampleRecordedPartners() {
             page.data('collocations-refreshing', false);
         }
     });
+}
+
+/**
+ * Удаляет сочетаемость без перехода в редактор.
+ */
+function deleteExampleCollocation(el, event) {
+    var link = $(el);
+    var url = new URL(link.attr('href'), window.location.href);
+    var collocation_id = url.searchParams.get('edit');
+
+    if (!collocation_id || !/^[1-9][0-9]*$/.test(collocation_id)) {
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    var page = link.closest('.meaning-example-search');
+
+    if (page.data('collocation-deleting')) {
+        return;
+    }
+
+    if (!window.confirm(page.attr('data-delete-collocation-confirm'))) {
+        return;
+    }
+
+    page.data('collocation-deleting', true);
+
+    var data = {
+        _token: page.attr('data-csrf-token')
+    };
+
+    var synset_id = page.attr('data-synset-id');
+
+    if (synset_id) {
+        data.synset_id = synset_id;
+    }
+
+    $.ajax({
+        url: url.origin + url.pathname.replace(/\/$/, '') + '/' + collocation_id,
+        type: 'DELETE',
+        dataType: 'json',
+        data: data
+    }).done(function (result) {
+        applyExampleRecordedPartners(page, result.partners);
+
+        page.find('.collocation-example-action').filter(function () {
+            return $(this).attr('data-collocation-id') === collocation_id;
+        }).remove();
+
+        page.find('.links-to-lemmas')
+            .hide()
+            .data('downloaded', 0);
+
+        page.find('.example-original-content')
+            .data('downloaded', 0);
+    }).fail(function () {
+        alert(page.attr('data-delete-collocation-error'));
+    }).always(function () {
+        page.data('collocation-deleting', false);
+    });
+
 }

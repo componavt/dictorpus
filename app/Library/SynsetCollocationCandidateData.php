@@ -117,4 +117,40 @@ class SynsetCollocationCandidateData
 
         return $rows;
     }
+
+    /**
+     * Отбирает строки по наличию находок у выбранных участников.
+     */
+    public function filterRows(array $rows, $member_count, $mode)
+    {
+        if ($mode === 0 || $member_count < 2) {
+            return $rows;
+        }
+
+        return array_values(array_filter($rows, function ($row) use ($member_count, $mode) {
+            $found_count = count($row['cells']);
+
+            if ($mode === 1) {
+                return $found_count === $member_count;
+            }
+
+            return $found_count > 0 && $found_count < $member_count;
+        }));
+    }
+
+    /**
+     * Оставляет строки хотя бы с одной найденной, но невнесённой парой.
+     */
+    public function filterUnrecorded(array $rows)
+    {
+        return array_values(array_filter($rows, function ($row) {
+            foreach ($row['cells'] as $cell) {
+                if ($cell['sentences'] > 0 && !$cell['recorded']) {
+                    return true;
+                }
+            }
+
+            return false;
+        }));
+    }
 }
