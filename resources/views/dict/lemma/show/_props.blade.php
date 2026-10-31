@@ -1,4 +1,4 @@
-<div style="display:flex; justify-content: space-between">
+<div style="display:flex; justify-content: space-between; padding-bottom: 20px;">
     <div>
         @include('dict.lemma.show._basic_props')
 
