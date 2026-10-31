@@ -19,7 +19,8 @@
         </fieldset>
     </div>
 
-    <fieldset class="example-form-section">
+    <fieldset class="example-form-section example-combination-section"
+            @if (empty($candidate_mode) && empty($partner)) style="display: none;" @endif>
         <legend>{{ trans('meaning_examples.combination_section') }}</legend>
         @include('dict.meaning.examples.form._conditions')
     </fieldset>

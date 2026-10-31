@@ -32,7 +32,7 @@ class MeaningExampleController extends Controller
     protected $recorded_partner_ids = [];
 
     /**
-     * Показывает найденные предложения без изменения корпусных связей.
+     * Показывает результаты поиска и действия с примерами.
      */
     public function index($meaning_id, Request $request)
     {
@@ -43,205 +43,22 @@ class MeaningExampleController extends Controller
         ])->findOrFail($meaning_id);
 
         $filter_values = (new MeaningExampleFilterValues())->load($source);
-        $extra_filters = (new MeaningExampleFilterInput())->read($request->all(), $filter_values);
-        $selected_filters = $extra_filters['options'] ?? ['source_gramset_ids' => [], 'corpus_ids' => []];
+        $filters = (new MeaningExampleFilterInput())
+            ->search($request->all(), $source, $filter_values);
 
-        $synset_id = $this->exampleSynsetId($request, $source);
-        $this->synset_id = $synset_id;
+        $this->synset_id = $this->exampleSynsetId($request, $source);
 
-        $input = [
-            'distance_from' => $request->input('distance_from', -1),
-            'distance_to' => $request->input('distance_to', 1),
-            'partner_meaning_id' => $request->input('partner_meaning_id', ''),
-            'only_checked' => $request->input('only_checked', 0),
-            'same_gramset' => $request->input('same_gramset', 1),
-            'source_only_checked' => $request->input('source_only_checked', $request->input('only_checked', 0)),
-            'per_page' => $request->input('per_page', 20),
-            'page' => $request->input('page', 1),
-            'whole_sentence' => $request->input('whole_sentence', 0),
-        ];
+        $results = $this->searchResults($source, $filters);
+        $this->examples_return = $results['examples_return'];
 
-        $validator = Validator::make(
-            $input,
-            [
-                'distance_from' => 'required|integer',
-                'distance_to' => 'required|integer',
-                'partner_meaning_id' => 'integer|min:1',
-                'only_checked' => 'required|boolean',
-                'same_gramset' => 'required|boolean',
-                'source_only_checked' => 'required|boolean',
-                'per_page' => 'required|integer|min:1|max:100',
-                'page' => 'required|integer|min:1|max:1000000',
-                'whole_sentence' => 'required|boolean',
-            ],
-            [],
-            [
-                'distance_from' => trans('meaning_examples.distance_from'),
-                'distance_to' => trans('meaning_examples.distance_to'),
-                'partner_meaning_id' => trans('meaning_examples.partner'),
-                'only_checked' => trans('meaning_examples.only_checked'),
-                'same_gramset' => trans('meaning_examples.same_gramset'),
-                'per_page' => trans('meaning_examples.per_page'),
-                'page' => trans('meaning_examples.page'),
-            ]
+        $data = $this->searchViewData($source, $filters, $results, $filter_values);
+        $attachments = $this->searchCollocationData(
+            $source,
+            $filters['partner'],
+            $results['sentences']
         );
 
-        $partner = null;
-        $sentences = null;
-
-        if (
-            !$validator->fails() && $input['partner_meaning_id'] !== '' && $input['partner_meaning_id'] !== null
-        ) {
-            $partner = Meaning::with(['lemma.pos', 'meaningTexts.lang'])->find((int) $input['partner_meaning_id']);
-
-            if (!$partner) {
-                $validator->errors()->add('partner_meaning_id', trans('meaning_examples.invalid_partner'));
-            } elseif ((int) $partner->lemma->lang_id !== (int) $source->lemma->lang_id) {
-                $validator->errors()->add(
-                    'partner_meaning_id',
-                    trans('meaning_examples.different_language')
-                );
-            }
-        }
-
-        if ($validator->errors()->count() === 0 && (int) $input['distance_from'] > (int) $input['distance_to']) {
-            $validator->errors()->add('distance_from', trans('meaning_examples.invalid_distance'));
-        }
-
-        $search_errors = $validator->errors();
-
-        foreach ($extra_filters['errors']->getMessages() as $field => $messages) {
-            foreach ($messages as $message) {
-                $search_errors->add($field, $message);
-            }
-        }
-
-        if ($search_errors->count() === 0) {
-            $threshold = (int) $input['only_checked'];
-
-            $search = new MeaningExampleSearch(
-                $source,
-                $partner,
-                [
-                    'corpus_ids' => $selected_filters['corpus_ids'],
-                    'distance_from' => (int) $input['distance_from'],
-                    'distance_to' => (int) $input['distance_to'],
-                    'partner_threshold' => $threshold,
-                    'same_gramset' => (bool) (int) $input['same_gramset'],
-                    'source_gramset_ids' => $selected_filters['source_gramset_ids'],
-                    'source_threshold' => (int) $input['source_only_checked'],
-                    'whole_sentence' => (bool) (int) $input['whole_sentence'],
-                ]
-            );
-
-            $sentences = $search->paginateSentences((int) $input['per_page'], (int) $input['page']);
-
-            $sentences->appends([
-                'distance_from' => (int) $input['distance_from'],
-                'distance_to' => (int) $input['distance_to'],
-                'partner_meaning_id' => $partner ? $partner->id : '',
-                'only_checked' => $threshold,
-                'same_gramset' => (int) $input['same_gramset'],
-                'source_only_checked' => (int) $input['source_only_checked'],
-                'per_page' => (int) $input['per_page'],
-                'synset_id' => $synset_id,
-                'whole_sentence' => (int) $input['whole_sentence'],
-                'source_gramset_ids' => $selected_filters['source_gramset_ids'],
-                'corpus_ids' => $selected_filters['corpus_ids'],
-            ]);
-        }
-
-        $only_checked = !empty($input['only_checked']);
-        $same_gramset = !empty($input['same_gramset']);
-        $source_only_checked = !empty($input['source_only_checked']);
-        $whole_sentence = !empty($input['whole_sentence']);
-
-        $per_page = $sentences ? $sentences->perPage() : 20;
-
-        $distance_from = is_scalar($input['distance_from']) ? (string) $input['distance_from'] : '';
-        $distance_to = is_scalar($input['distance_to']) ? (string) $input['distance_to'] : '';
-
-        $partner_text = $partner ? $this->partnerOptionText($partner) : '';
-
-        $lemma = $source->lemma;
-        $meaning_labels = $source->showShortLabels();
-        $back_to_url = LaravelLocalization::localizeURL('/dict/lemma/' . $lemma->id) . '#meaning-' . $source->id;
-
-        $examples_return = '';
-
-        if ($sentences) {
-            $examples_return = '/dict/meaning/' . $source->id . '/examples/search?'
-                . http_build_query([
-                    'distance_from' => (int) $input['distance_from'],
-                    'distance_to' => (int) $input['distance_to'],
-                    'only_checked' => (int) $input['only_checked'],
-                    'page' => $sentences->currentPage(),
-                    'partner_meaning_id' => $partner ? $partner->id : '',
-                    'per_page' => $sentences->perPage(),
-                    'same_gramset' => (int) $input['same_gramset'],
-                    'source_only_checked' => (int) $input['source_only_checked'],
-                    'synset_id' => $synset_id,
-                    'whole_sentence' => (int) $input['whole_sentence'],
-                    'source_gramset_ids' => $selected_filters['source_gramset_ids'],
-                    'corpus_ids' => $selected_filters['corpus_ids'],
-                ]);
-        }
-
-        $this->examples_return = $examples_return;
-        $word_blocks = [];
-
-        if ($sentences && count($sentences)) {
-            $word_blocks = $this->preloadWordBlocks(
-                $source,
-                $sentences->items(),
-                [
-                    'distance_from' => (int) $input['distance_from'],
-                    'distance_to' => (int) $input['distance_to'],
-                ]
-            );
-        }
-
-        $example_collocation = null;
-        $collocation_example_actions = [];
-
-        if (User::checkAccess('dict.edit') && $partner && $sentences && count($sentences)) {
-            $example_collocation = $source->collocations()
-                ->where('collocate_meaning_id', $partner->id)
-                ->first();
-
-            if ($example_collocation) {
-                $collocation_example_actions = (new CollocationExampleData())
-                    ->forPage($example_collocation, $sentences->items());
-            }
-        }
-
-        return view(
-            'dict.meaning.examples.search',
-            compact(
-                'back_to_url',
-                'distance_from',
-                'distance_to',
-                'examples_return',
-                'lemma',
-                'meaning_labels',
-                'only_checked',
-                'partner',
-                'partner_text',
-                'per_page',
-                'same_gramset',
-                'search_errors',
-                'sentences',
-                'source',
-                'source_only_checked',
-                'synset_id',
-                'whole_sentence',
-                'word_blocks',
-                'filter_values',
-                'selected_filters',
-                'example_collocation',
-                'collocation_example_actions',
-            )
-        );
+        return view('dict.meaning.examples.search', array_merge($data, $attachments));
     }
 
     /**
@@ -1290,5 +1107,120 @@ class MeaningExampleController extends Controller
         return response()->json([
             'partners' => (object) $this->recordedPartnerIds($source),
         ])->header('Cache-Control', 'no-store');
+    }
+
+    /**
+     * Выполняет поиск только при корректных параметрах.
+     */
+    protected function searchResults(Meaning $source, array $filters)
+    {
+        if ($filters['errors']->count()) {
+            return ['sentences' => null, 'examples_return' => ''];
+        }
+
+        $input = $filters['input'];
+        $partner = $filters['partner'];
+        $selected = $filters['selected_filters'];
+
+        $search = new MeaningExampleSearch($source, $partner, [
+            'corpus_ids' => $selected['corpus_ids'],
+            'distance_from' => (int) $input['distance_from'],
+            'distance_to' => (int) $input['distance_to'],
+            'partner_threshold' => (int) $input['only_checked'],
+            'same_gramset' => (bool) (int) $input['same_gramset'],
+            'source_gramset_ids' => $selected['source_gramset_ids'],
+            'source_threshold' => (int) $input['source_only_checked'],
+            'whole_sentence' => (bool) (int) $input['whole_sentence'],
+        ]);
+
+        $sentences = $search->paginateSentences(
+            (int) $input['per_page'],
+            (int) $input['page']
+        );
+
+        $query = array_merge($selected, array_map('intval', $input), [
+            'partner_meaning_id' => $partner ? $partner->id : '',
+            'synset_id' => $this->synset_id,
+        ]);
+        unset($query['page']);
+
+        $sentences->appends($query);
+
+        $query['page'] = $sentences->currentPage();
+        $query['per_page'] = $sentences->perPage();
+
+        return [
+            'sentences' => $sentences,
+            'examples_return' => '/dict/meaning/' . $source->id
+                . '/examples/search?' . http_build_query($query),
+        ];
+    }
+
+    /**
+     * Готовит данные существующего шаблона без изменения его интерфейса.
+     */
+    protected function searchViewData(
+        Meaning $source,
+        array $filters,
+        array $results,
+        array $filter_values
+    ) {
+        $input = $filters['input'];
+        $partner = $filters['partner'];
+        $sentences = $results['sentences'];
+
+        $word_blocks = [];
+
+        if ($sentences && count($sentences)) {
+            $word_blocks = $this->preloadWordBlocks($source, $sentences->items(), [
+                'distance_from' => (int) $input['distance_from'],
+                'distance_to' => (int) $input['distance_to'],
+            ]);
+        }
+
+        return [
+            'source' => $source,
+            'lemma' => $source->lemma,
+            'partner' => $partner,
+            'partner_text' => $partner ? $this->partnerOptionText($partner) : '',
+            'meaning_labels' => $source->showShortLabels(),
+            'back_to_url' => LaravelLocalization::localizeURL('/dict/lemma/' . $source->lemma_id) . '#meaning-' . $source->id,
+            'filter_values' => $filter_values,
+            'selected_filters' => $filters['selected_filters'],
+            'search_errors' => $filters['errors'],
+            'sentences' => $sentences,
+            'word_blocks' => $word_blocks,
+            'synset_id' => $this->synset_id,
+            'examples_return' => $this->examples_return,
+            'distance_from' => is_scalar($input['distance_from']) ? (string) $input['distance_from'] : '',
+            'distance_to' => is_scalar($input['distance_to']) ? (string) $input['distance_to'] : '',
+            'only_checked' => !empty($input['only_checked']),
+            'source_only_checked' => !empty($input['source_only_checked']),
+            'same_gramset' => !empty($input['same_gramset']),
+            'whole_sentence' => !empty($input['whole_sentence']),
+            'per_page' => $sentences ? $sentences->perPage() : 20,
+        ];
+    }
+
+    /**
+     * Готовит действия прикрепления для существующей пары значений.
+     */
+    protected function searchCollocationData(Meaning $source, $partner, $sentences)
+    {
+        $example_collocation = null;
+        $collocation_example_actions = [];
+
+        if (User::checkAccess('dict.edit') && $partner && $sentences && count($sentences)) {
+            $example_collocation = $source->collocations()
+                ->where('collocate_meaning_id', $partner->id)
+                ->first();
+
+            if ($example_collocation) {
+                $collocation_example_actions = (new CollocationExampleData())
+                    ->forPage($example_collocation, $sentences->items());
+            }
+        }
+
+        return compact('example_collocation', 'collocation_example_actions');
     }
 }

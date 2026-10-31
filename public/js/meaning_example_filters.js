@@ -9,6 +9,7 @@ function initMeaningExampleFilters() {
     });
 
     initExampleCombinationConditions();
+    initExampleCombinationVisibility();
 }
 
 function initExampleCombinationConditions() {
@@ -34,6 +35,20 @@ function initExampleCombinationConditions() {
 
         whole.on('change', update);
         block.find('.example-distance-range input[type="number"]').on('input change', update);
+        update();
+    });
+}
+
+function initExampleCombinationVisibility() {
+    $('#example-search-partner').each(function () {
+        var partner = $(this);
+        var section = partner.closest('form').find('.example-combination-section');
+
+        function update() {
+            section.toggle(Boolean(partner.val()));
+        }
+
+        partner.on('change', update);
         update();
     });
 }

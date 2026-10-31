@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Library\CollocationExampleLink;
 use App\Models\Dict\Meaning;
-use App\Models\User;
 
 class CollocationExampleController extends Controller
 {
@@ -19,10 +18,6 @@ class CollocationExampleController extends Controller
 
     public function store($meaning_id, $collocation_id, Request $request)
     {
-        if (!User::checkAccess('dict.edit')) {
-            abort(403);
-        }
-
         $this->validate($request, [
             'text_id' => 'required|integer|min:1',
             'source_w_id' => 'required|integer|min:1',
