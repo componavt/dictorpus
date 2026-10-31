@@ -24,18 +24,24 @@ class DumpDownloadController extends Controller
     public function index()
     {
 
-	$dir="db/";
+	$dir = public_path('db') . '/';
 
 	$files = scandir($dir,SCANDIR_SORT_DESCENDING);
 
 	$dumps=array();
 
-	foreach ($files as $file) if ($file!="."&&$file!="..") {
+	foreach ($files as $file) {
+           // List only regular, non-symlink VepKar dump files.
+           if (preg_match('/\Avepkardb-[0-9]{8}\.gz\z/', $file) !== 1
+               || !is_file($dir.$file)
+               || is_link($dir.$file)) {
+               continue;
+           }
 		$dumps[]=array("filename"=>$file,
 				"date"=>date("d-m-Y H:i:s",filemtime($dir.$file)),
 				"size"=>round(filesize($dir.$file)/(1024*1024),1),
 //				"href"=>env('APP_URL').$dir.$file
-				"href"=>$dir.$file
+				"href"=>"db/".$file
 				);
 	}
 
