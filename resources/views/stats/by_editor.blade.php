@@ -47,8 +47,8 @@
     @endforeach
 
     <h3>Размечены</h3>
-    <p>значения у {{ format_number(isset($history_marked['meaning_relevance']) ? $history_marked['meaning_relevance']->count : 0) }} слов</p>
-    <p>грамматические признаки у {{ format_number(isset($history_marked['gramset_relevance']) ? $history_marked['gramset_relevance']->count : 0) }} слов</p>
+    <p>значения у <b>{{ format_number(isset($history_marked['meaning_relevance']) ? $history_marked['meaning_relevance']->count : 0) }}</b> слов</p>
+    <p>грамматические признаки у <b>{{ format_number(isset($history_marked['gramset_relevance']) ? $history_marked['gramset_relevance']->count : 0) }}</b> слов</p>
 
     <p><a href="{{ route('stats.by_editors') }}">К списку редакторов</a></p>
 @stop
