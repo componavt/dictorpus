@@ -34,7 +34,7 @@
     <h3>Создано</h3>
     @foreach ($models as $model => $title)
         @if(!empty($history_created[$model]))
-    <p>{{ $title }}: <b>{{ format_number($history_created[$model]->count) }}</b></p>
+    <p>{{ $title }} — <b>{{ format_number($history_created[$model]->count) }}</b></p>
         @endif
     @endforeach
     
@@ -42,7 +42,7 @@
     <h3>Изменено</h3>
     @foreach ($history_updated as $title => $count)
         @if (!empty($count))
-    <p>{{ $title }}: <b>{{ format_number($count) }}</b></p>
+    <p>{{ $title }} — <b>{{ format_number($count) }}</b></p>
         @endif
     @endforeach
 
