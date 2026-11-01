@@ -151,12 +151,25 @@ class StatsController extends Controller
         $minDate = Carbon::parse($min_date)->startOfDay();
         $maxDate = Carbon::parse($max_date)->endOfDay();
 
-        $history_marked = Revision::where('user_id', $user->id)
-            ->whereBetween('updated_at', [$minDate, $maxDate])
-            ->where('revisionable_type', Word::class)
-            ->whereIn('key', ['meaning_relevance', 'gramset_relevance'])
-            ->select('key', DB::raw('COUNT(DISTINCT revisionable_id) as count'))
-            ->groupBy('key')->get()->keyBy('key');
+        $history_marked = DB::select(
+            "SELECT COUNT(*) AS total_words,
+                COALESCE(SUM(has_meaning = 1 AND has_gramset = 1), 0) AS both_words,
+                COALESCE(SUM(has_meaning = 1 AND has_gramset = 0), 0) AS meaning_only_words,
+                COALESCE(SUM(has_meaning = 0 AND has_gramset = 1), 0) AS gramset_only_words
+             FROM (
+                 SELECT revisionable_id,
+                     MAX(CASE WHEN `key` = 'meaning_relevance' THEN 1 ELSE 0 END) AS has_meaning,
+                     MAX(CASE WHEN `key` = 'gramset_relevance' THEN 1 ELSE 0 END) AS has_gramset
+                 FROM revisions
+                 WHERE user_id = ?
+                   AND updated_at BETWEEN ? AND ?
+                   AND revisionable_type = ?
+                   AND `key` IN ('meaning_relevance', 'gramset_relevance')
+                 GROUP BY revisionable_id
+             ) AS marked_words",
+            [$user->id, $minDate, $maxDate, Word::class]
+        );
+        $history_marked = $history_marked[0];
 
         $model_types = array_keys($models);
         $placeholders = implode(', ', array_fill(0, count($model_types), '?'));

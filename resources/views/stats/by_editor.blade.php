@@ -46,9 +46,10 @@
         @endif
     @endforeach
 
-    <h3>Размечено слов:</h3>
-    <p>по значению — <b>{{ format_number(isset($history_marked['meaning_relevance']) ? $history_marked['meaning_relevance']->count : 0) }}</b></p>
-    <p>по грамматическим признакам — <b>{{ format_number(isset($history_marked['gramset_relevance']) ? $history_marked['gramset_relevance']->count : 0) }}</b></p>
+        <h3>Размечено слов — <b>{{ format_number($history_marked->total_words) }}</b>:</h3>
+    <p>по значению и грамматическим признакам — <b>{{ format_number($history_marked->both_words) }}</b></p>
+    <p>только по значению — <b>{{ format_number($history_marked->meaning_only_words) }}</b></p>
+    <p>только по грамматическим признакам — <b>{{ format_number($history_marked->gramset_only_words) }}</b></p>
 
     <p><a href="{{ route('stats.by_editors') }}">К списку редакторов</a></p>
 @stop
