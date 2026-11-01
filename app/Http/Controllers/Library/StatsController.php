@@ -137,7 +137,7 @@ class StatsController extends Controller
 
         if (empty($min_date) || empty($max_date)) {
             $rec = Revision::where('user_id', $user->id)
-                ->selectRaw('min(created_at) as min, max(created_at) as max')
+                ->selectRaw('min(updated_at) as min, max(updated_at) as max')
                 ->first();
 
             if (!$rec) {
@@ -158,44 +158,35 @@ class StatsController extends Controller
             ->select('key', DB::raw('COUNT(DISTINCT revisionable_id) as count'))
             ->groupBy('key')->get()->keyBy('key');
 
-        $history_created = Revision::where('user_id', $user->id)
-            ->whereBetween('updated_at', [$minDate, $maxDate])
-            ->where('key', 'created_at')
-            ->whereIn('revisionable_type', array_keys($models))
-            ->groupBy('revisionable_type')
-            //                     ->orderBy('revisionable_type')
-            ->select('revisionable_type', DB::raw('count(*) as count'))
-            ->get()
-            ->keyBy('revisionable_type');
+        $model_types = array_keys($models);
+        $placeholders = implode(', ', array_fill(0, count($model_types), '?'));
+
+        $history_stats = collect(DB::select(
+            "SELECT revisionable_type,
+                SUM(CASE WHEN `key` = 'created_at' THEN 1 ELSE 0 END) AS count,
+                COUNT(DISTINCT revisionable_id)
+                    - COUNT(DISTINCT CASE WHEN `key` = 'created_at' THEN revisionable_id ELSE NULL END) AS updated_count
+             FROM revisions
+             WHERE user_id = ?
+               AND updated_at BETWEEN ? AND ?
+               AND revisionable_type IN ($placeholders)
+             GROUP BY revisionable_type",
+            array_merge([$user->id, $minDate, $maxDate], $model_types)
+        ))->keyBy('revisionable_type');
+
+        $history_created = $history_stats->filter(function ($stats) {
+            return (int)$stats->count > 0;
+        });
 
         $history_updated = [];
-
-        foreach ($models as $modelClass => $label) {
-            $count = Revision::where('user_id', $user->id)
-                ->whereBetween('updated_at', [$minDate, $maxDate])
-                ->where('revisionable_type', $modelClass)
-                ->where('key', '<>', 'created_at')
-                ->whereNotIn('revisionable_id', function ($q) use ($user, $minDate, $maxDate, $modelClass) {
-                    $q->select('revisionable_id')->from('revisions')
-                        ->where('user_id', $user->id)
-                        ->whereBetween('updated_at', [$minDate, $maxDate])
-                        ->where('key', 'created_at')
-                        ->where('revisionable_type', $modelClass);
-                })
-                ->distinct('revisionable_id')
-                ->count('revisionable_id'); // только уникальные ID
-
-            $history_updated[$label] = $count;
-            /*            if (!empty($history_created[$modelClass])) {
-                $history_updated[$label] -= $history_created[$modelClass]->count;
-            }*/
+        foreach ($models as $model_type => $label) {
+            $history_updated[$label] = isset($history_stats[$model_type]) ? (int)$history_stats[$model_type]->updated_count : 0;
         }
 
         $quarter_query = '?min_date=' . Carbon::now()->startOfQuarter()->format('Y-m-d')
             . '&max_date=' . Carbon::now()->format('Y-m-d');
         $year_query = '?min_date=' . Carbon::now()->startOfYear()->format('Y-m-d')
             . '&max_date=' . Carbon::now()->format('Y-m-d');
-
 
         return view(
             'stats.by_editor',
