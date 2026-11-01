@@ -271,11 +271,17 @@ class User extends EloquentUser
     {
         $now = date_create();
         $date = date_format(date_modify($now, '-30 day'), 'Y-m-d');
-        $users = DB::table('revisions')
-            ->where('created_at', '>', $date)
-            ->groupBy('user_id')->get(['user_id']);
-        //dd($users);        
-        return sizeof($users);
+
+        $stats = DB::select(
+            "SELECT COUNT(*) AS active_editors
+             FROM (SELECT user_id, MAX(updated_at) AS last_action
+                 FROM revisions
+                 GROUP BY user_id) AS editor_activity
+             WHERE last_action > ?",
+            [$date]
+        );
+
+        return (int)$stats[0]->active_editors;
     }
 
 
