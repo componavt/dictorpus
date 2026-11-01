@@ -259,12 +259,25 @@ class StatsController extends Controller
     public function byCorpMarkup()
     {
         $total_words = Word::count();
-        $total_marked_words = Word::countMarked();
-        $marked_words_to_all = 100 * $total_marked_words / $total_words;
-        $lang_marked = Lang::countWords();
+        $marked_words_by_lang = collect(DB::table('words as w')
+            ->join('texts as t', 't.id', '=', 'w.text_id')
+            ->whereIn('w.id', function ($query) {
+                $query->select('word_id')->from('meaning_text')->where('relevance', '>', 0);
+            })
+            ->selectRaw('t.lang_id, COUNT(*) AS marked_words')
+            ->groupBy('t.lang_id')->get())->keyBy('lang_id');
 
-        $total_checked_words = Text::countCheckedWords();
-        $checked_words_to_marked = 100 * $total_checked_words / $total_marked_words;
+        $total_marked_words = (int)$marked_words_by_lang->sum('marked_words');
+        $marked_words_to_all = $total_words ? 100 * $total_marked_words / $total_words : 0;
+        $checked_words_by_lang = collect(DB::table('meaning_text as mt')
+            ->join('texts as t', 't.id', '=', 'mt.text_id')
+            ->where('mt.relevance', '>', 1)
+            ->selectRaw('t.lang_id, COUNT(DISTINCT mt.text_id, mt.w_id) AS checked_words')
+            ->groupBy('t.lang_id')->get())->keyBy('lang_id');
+
+        $total_checked_words = (int)$checked_words_by_lang->sum('checked_words');
+        $lang_marked = Lang::countWords($checked_words_by_lang, $marked_words_by_lang);
+        $checked_words_to_marked = $total_marked_words ? 100 * $total_checked_words / $total_marked_words : 0;
 
         return view('stats.by_corp_markup')
             ->with([

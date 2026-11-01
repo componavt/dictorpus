@@ -439,7 +439,7 @@ class Word extends Model
     public static function countMarked($lang_id = null)
     {
         $examples = self::whereIn('id', function ($query) {
-            $query->select('word_id')->from('meaning_text');
+            $query->select('word_id')->from('meaning_text')->where('relevance', '>', 0);
         });
         if ($lang_id) {
             $examples->whereIn('text_id', function ($q) use ($lang_id) {

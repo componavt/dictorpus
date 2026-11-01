@@ -722,15 +722,15 @@ class Text extends Model implements HasMediaConversions
 
     public static function countCheckedWords($lang_id = null)
     {
-        $texts = DB::table('meaning_text')->select('text_id', 'w_id')
-            ->where('relevance', '>', 1);
+        $texts = DB::table('meaning_text')->where('relevance', '>', 1);
+
         if ($lang_id) {
-            $texts = $texts->whereIn('text_id', function ($q) use ($lang_id) {
+            $texts->whereIn('text_id', function ($q) use ($lang_id) {
                 $q->select('id')->from('texts')->where('lang_id', $lang_id);
             });
         }
 
-        return $texts->distinct()->count();
+        return $texts->count(DB::raw('DISTINCT text_id, w_id'));
     }
 
     public static function videoForStart()
