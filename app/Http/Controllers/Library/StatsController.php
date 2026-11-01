@@ -62,41 +62,6 @@ class StatsController extends Controller
 
     public function byEditors()
     {
-        /*        $users = User::whereIn('id', function ($q) {
-                    $q->select('user_id')->from('revisions');
-                })
-//                ->limit(1)
-                ->get();
-        $editors = collect();
-        foreach ($users as $user) {
-            $history = DB::table('revisions')
-                         ->where('user_id',$user->id)
-                         ->orderBy('updated_at','desc');
-            $user->count = number_format($history->count(), 0, ',', ' ');
-            $user->last_time = $history->first()->updated_at;
-            $editors->push($user);
-        }
-        $editors->sortByDesc('last_time');*/
-
-        /*        // Получаем агрегированные данные по revisions: группируем по user_id
-        $revisionStats = collect(DB::table('revisions')
-            ->select('user_id', DB::raw('COUNT(*) as revisions_count'), DB::raw('MAX(updated_at) as last_time'))
-            ->groupBy('user_id')
-            ->get())
-            ->keyBy('user_id'); // для быстрого доступа по user_id
-//dd(get_class($revisionStats));
-        // Получаем пользователей, участвующих в revisions
-        $userIds = $revisionStats->keys();
-        $users = User::whereIn('id', $userIds)->get();
-
-        // Собираем коллекцию редакторов
-        $editors = $users->map(function ($user) use ($revisionStats) {
-            $stats = $revisionStats[$user->id];
-            $user->count = number_format($stats->revisions_count, 0, ',', ' ');
-            $user->last_time = $stats->last_time;
-            return $user;
-        })->sortByDesc('last_time');    */
-
         // Получаем агрегированные данные по ревизиям
         $revisionStats = Revision::query()
             ->select('user_id', DB::raw('COUNT(*) as revisions_count'), DB::raw('MAX(updated_at) as last_time'))
@@ -106,7 +71,7 @@ class StatsController extends Controller
             ->keyBy('user_id');
 
         // Получаем всех пользователей, которые что-то редактировали
-        $users = User::whereIn('id', $revisionStats->keys())->get();
+        $users = User::with('roles')->whereIn('id', $revisionStats->keys())->get();
 
         // Собираем итоговую коллекцию
         $editors = $users->map(function ($user) use ($revisionStats) {
