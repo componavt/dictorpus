@@ -31,6 +31,12 @@
         
         {!! Form::open(['method' => 'GET', 'url' => url()->current(), 'class' => 'lemma-example-filter', 'id' => 'lemma_example_filter_form']) !!}
 
+        @if ($errors->has('relevance'))
+            <div class="alert alert-danger" role="alert">
+                {{ $errors->first('relevance') }}
+            </div>
+        @endif
+
         @include('widgets.form._url_args_by_post', ['url_args' => $filter_url_args])
 
         <div class="form-group">

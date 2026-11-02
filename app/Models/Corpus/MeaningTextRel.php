@@ -22,11 +22,55 @@ class MeaningTextRel extends Model
 
     public static function updateExamples(array $relevances)
     {
+        $examples = [];
+        $positive_meanings = [];
+
         foreach ($relevances as $key => $value) {
-            if (preg_match("/^(\d+)\_(\d+)_(\d+)_(\d+)$/", $key, $regs)) {
-                self::updateExample((int)$value, (int)$regs[1], (int)$regs[2], (int)$regs[4]);
+            if (!preg_match("/^(\d+)_(\d+)_(\d+)_(\d+)$/", $key, $regs)) {
+                continue;
+            }
+
+            $relevance = (int) $value;
+            $meaning_id = (int) $regs[1];
+            $text_id = (int) $regs[2];
+            $w_id = (int) $regs[4];
+
+            $examples[] = [
+                'relevance' => $relevance,
+                'meaning_id' => $meaning_id,
+                'text_id' => $text_id,
+                'w_id' => $w_id,
+            ];
+
+            if ($relevance > 1) {
+                $position = $text_id . ':' . $w_id;
+                $positive_meanings[$position][$meaning_id] = true;
             }
         }
+
+        foreach ($positive_meanings as $position => $meaning_ids) {
+            if (count($meaning_ids) > 1) {
+                throw new \InvalidArgumentException(
+                    'Изменения не сохранены. ' .
+                        'У одного из примеров положительная оценка выставлена ' .
+                        'сразу для нескольких значений. ' .
+                        'Оставьте положительную оценку только у одного значения, ' .
+                        'а для остальных выберите «плохой пример». ' .
+                        'Проверьте строки со знаком ⚠ и сохраните форму повторно.'
+                );
+            }
+        }
+
+        DB::transaction(function () use ($examples) {
+            foreach ($examples as $example) {
+                self::updateExample(
+                    $example['relevance'],
+                    $example['meaning_id'],
+                    $example['text_id'],
+                    $example['w_id']
+                );
+            }
+        });
     }
 
     public static function updateExample(int $relevance, int $meaning_id, int $text_id, int $w_id)

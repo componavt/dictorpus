@@ -734,7 +734,15 @@ class LemmaController extends Controller
     {
         $example_return = $this->exampleReturnData($request, $id);
 
-        MeaningTextRel::updateExamples($request['relevance']);
+        try {
+            MeaningTextRel::updateExamples(
+                (array) $request->input('relevance', [])
+            );
+        } catch (\InvalidArgumentException $exception) {
+            return Redirect::back()
+                ->withErrors(['relevance' => $exception->getMessage()])
+                ->withInput();
+        }
 
         if ($example_return && $request->get('after_save') !== 'continue') {
             return Redirect::to($example_return['url'])

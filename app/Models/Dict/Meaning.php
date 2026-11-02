@@ -521,29 +521,24 @@ class Meaning extends Model
         $next->save();
     }
 
-    /**
-     * Ckeck if any checked meaning exists
-     * Return 0, if it exists
-     * 
-     * @param int $text_id
-     * @param int $w_id
-     * @param int $old_relevance
-     * @return int
-     */
     public function checkRelevance($text_id, $w_id, $old_relevance = 1)
     {
-        if (
-            $old_relevance == 0 ||
-            // if some another meaning has positive evaluation with this sentence, 
-            // it means that this meaning is not suitable for this example
-            DB::table('meaning_text')->where('meaning_id', '<>', $this->id)
-            ->whereTextId($text_id)->whereWId($w_id)
-            ->where('relevance', '>', 1)->count() > 0
-        ) {
-            return 0;
+        $old_relevance = (int) $old_relevance;
+
+        // Пересборка сохраняет существующие явные оценки.
+        // Старые конфликты остаются для экспертного разбора.
+        if ($old_relevance !== 1) {
+            return $old_relevance;
         }
 
-        return $old_relevance;
+        $has_positive_other = DB::table('meaning_text')
+            ->where('meaning_id', '<>', $this->id)
+            ->whereTextId($text_id)
+            ->whereWId($w_id)
+            ->where('relevance', '>', 1)
+            ->exists();
+
+        return $has_positive_other ? 0 : 1;
     }
 
     /**
