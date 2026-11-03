@@ -37,7 +37,7 @@ trait TextExportExcel
                     $sheet,
                     $row,
                     trim(strip_tags(preg_replace('/[¦^]/u', '', $sentence->text_xml))),
-                    strip_tags(preg_replace('/[¦^]/u', '', $cyr_sentences[$sentence->s_id]['sentence'])),
+                    strip_tags(preg_replace('/[¦^]/u', '', $cyr_sentences[$sentence->s_id]['sentence'] ?? '')),
                     strip_tags(preg_replace('/[¦^]/u', '', $trans_sentences[$sentence->s_id]['sentence'] ?? ''))
                 );
             list($sheet, $row) =

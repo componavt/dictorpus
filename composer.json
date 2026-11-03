@@ -23,7 +23,7 @@
         "phpoffice/phpword": "0.18",
         "spatie/laravel-medialibrary": "4.0.0",
         "box/spout": "3.3",
-        "phpoffice/phpspreadsheet": "1.17"
+        "phpoffice/phpspreadsheet": "1.30.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
