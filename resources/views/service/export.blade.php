@@ -26,4 +26,81 @@
         <p><a href="export/russian_translations">Экспорт русских переводов примеров к словарю для WordNet</a></p>
         <p><a href="export/for_multimedia_dictionary">Экспорт лемм для Мультимедийного словаря карельского языка</a></p>
         <p><a href="export/for_morph-disambig">Экспорт данных для задач разрешения морфологической неоднозначности (morph-disambig)</a></p>
+        <hr>
+
+<h3>Синонимические ряды и сочетаемость</h3>
+
+<p>
+    Ливвиковские прилагательные: все сохранённые синсеты,
+    включая черновики, их состав, возможные кандидаты,
+    сочетаемость и прикреплённые корпусные примеры.
+</p>
+
+<form method="POST"
+      action="{{ \LaravelLocalization::localizeURL('/service/export/synonyms') }}">
+    {!! csrf_field() !!}
+
+    <button type="submit" class="btn btn-primary">
+        Выгрузить CSV
+    </button>
+</form>
+
+@if (session('synonym_export_error'))
+    <div class="alert alert-danger" style="margin-top: 15px;">
+        <p>Экспорт не завершён:</p>
+        <p>{{ session('synonym_export_error') }}</p>
+    </div>
+@endif
+
+@if (session('synonym_export_result'))
+    <?php $synonym_result = session('synonym_export_result'); ?>
+
+    <div class="alert alert-success" style="margin-top: 15px;">
+        Экспорт завершён. Ниже доступны новые файлы.
+    </div>
+
+    <h4>Количество строк</h4>
+
+    <ul>
+        @foreach ($synonym_result['counts'] as $name => $count)
+            <li>{{ $name }}: {{ $count }}</li>
+        @endforeach
+    </ul>
+
+    <h4>Проверка корпусных примеров</h4>
+
+    <ul>
+        <li>
+            Не найдено однозначное соответствие предложению:
+            {{ $synonym_result['warnings']['missing_sentence'] }}
+        </li>
+        <li>
+            Отсутствует русский перевод:
+            {{ $synonym_result['warnings']['missing_translation'] }}
+        </li>
+        <li>
+            Текущий XML отличается от сохранённого:
+            {{ $synonym_result['warnings']['changed_xml'] }}
+        </li>
+    </ul>
+
+    <p>
+        В CSV сохраняется исходный XML прикреплённого примера.
+        Примеры без найденного предложения или перевода не удаляются.
+    </p>
+@endif
+
+@if (!empty($synonym_files))
+    <h4>Последняя успешная выгрузка</h4>
+
+    <ul>
+        @foreach ($synonym_files as $synonym_file)
+            <li>
+                <a href="{{ $synonym_file['url'] }}" download>
+                    {{ $synonym_file['name'] }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+@endif
     @endsection

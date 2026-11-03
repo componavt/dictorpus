@@ -26,6 +26,7 @@ Route::group(
         Route::get('russian_meanings', 'Library\ExportController@exportRussianMeanings');
         Route::get('russian_translations', 'Library\ExportController@exportRussianTranslations');
         Route::get('sentences', 'Library\ExportController@sentencesToLines');
+        Route::post('synonyms', 'Library\ExportController@forSynonyms');
         Route::get('unimorph', 'Library\ExportController@lemmasToUniMorph');
         Route::get('zaikov_dictionary', 'Library\ExportController@zaikovDictionary')->name('export.zaikov_dictionary');
     }

@@ -5,7 +5,6 @@ namespace App\Traits\Select;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Dict\Lang;
-use App\Models\Synset;
 use App\Models\Dict\Meaning;
 
 trait SynsetSelect

@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
 use App\Library\Export;
+use App\Library\SynonymExport;
 
 use App\Models\Corpus\Collection;
 use App\Models\Corpus\Genre;
@@ -32,7 +33,6 @@ use App\Models\Dict\LemmaFeature;
 use App\Models\Dict\Meaning;
 use App\Models\Dict\PartOfSpeech;
 use App\Models\Dict\Wordform;
-use App\Models\Dict\MeaningText;
 
 class ExportController extends Controller
 {
@@ -47,11 +47,25 @@ class ExportController extends Controller
     public function index()
     {
         $langs = [];
+
         foreach (Lang::projectLangIDs() as $l_id) {
             $langs[$l_id] = Lang::getNameById($l_id);
         }
 
-        return view('service.export', compact('langs'));
+        $synonym_files = [];
+
+        foreach (SynonymExport::filenames() as $filename) {
+            $relative = 'export/synonyms/' . $filename;
+
+            if (Storage::disk('public')->exists($relative)) {
+                $synonym_files[] = [
+                    'name' => $filename,
+                    'url' => url($relative),
+                ];
+            }
+        }
+
+        return view('service.export', compact('langs', 'synonym_files'));
     }
 
     /*
@@ -711,6 +725,26 @@ class ExportController extends Controller
             $filename = $dirname . '/candidate_analyses_' . $lang->code . '.csv';
             Export::candidateAnalysesforMorphDisambig($lang->id, $filename);
             print "<p>Кандидаты анализа выгружены в файл: " . Storage::url($filename) . "</p>\n";
+        }
+    }
+
+    public function forSynonyms()
+    {
+        ini_set('max_execution_time', 7200);
+        ini_set('memory_limit', '512M');
+
+        try {
+            $result = (new SynonymExport())->run();
+
+            return redirect(
+                \LaravelLocalization::localizeURL('/service/export')
+            )->with('synonym_export_result', $result);
+        } catch (\Exception $e) {
+            \Log::error('Synonym export failed', ['exception' => $e]);
+
+            return redirect(
+                \LaravelLocalization::localizeURL('/service/export')
+            )->with('synonym_export_error', $e->getMessage());
         }
     }
 }
