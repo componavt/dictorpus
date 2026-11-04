@@ -1,5 +1,5 @@
 <?php
-Route::get('service/export', 'Library\ExportController@index');
+Route::get('service/export', 'Library\ExportController@index')->name('service.export');
 Route::group(
     [
         'prefix' => 'service/export/',
@@ -11,6 +11,7 @@ Route::group(
         Route::get('concepts_without_images', 'Library\ExportController@conceptsWithoutImages');
         Route::get('conll', 'Library\ExportController@textsToCONLL');
         Route::get('conll/annotation', 'Library\ExportController@annotationConll');
+        Route::post('dictorpus-data', 'Library\ExportController@forDictorpusData');
         Route::get('for_mobile', 'Library\ExportController@forMobile');
         Route::get('for_morph-disambig', 'Library\ExportController@forMorphDisambig');
         Route::get('for_multimedia_dictionary', 'Library\ExportController@forMultimediaDictionary');

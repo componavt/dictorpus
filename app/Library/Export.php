@@ -412,7 +412,7 @@ class Export
 
         // Заголовок CSV файла
         $file = fopen(storage_path('app/public/' . $filename), 'w');
-        fwrite($file, csv_row([
+        self::write_csv_row($file, [
             'id',
             'meaning_id',
             'lemma_id',
@@ -424,7 +424,7 @@ class Export
             'meaning_en',
             'concept_id',
             'category_id'
-        ]));
+        ]);
 
         // Записываем данные
         $counter = 1;
@@ -434,7 +434,7 @@ class Export
             $meaning_text_ru = $meaning_text ? $meaning_text->meaning_text : '';
             $meaning_text = $row->meaningTexts->where('lang_id', $en_lang_id)->first();
             $meaning_text_en = $meaning_text ? $meaning_text->meaning_text : '';
-            fwrite($file, csv_row([
+            self::write_csv_row($file, [
                 $counter++,
                 $row->meaning_id,
                 $row->lemma_id,
@@ -446,71 +446,96 @@ class Export
                 $meaning_text_en,
                 $row->concept_id,
                 $row->category_id
-            ]));
+            ]);
         }
         fclose($file);
         return true;
     }
 
-    /**
-     * Экспорт русских переводов предложений 
-     *
-     * Выгрузка в CSV-файл с колонками:
-     * - номер по порядку
-     * - ID значения
-     * - meaning_texts.meaning_text - предложение на русском языке, перевод проверенного примера
-     *
-     * @param string $filename Имя файла для сохранения
-     * @param int $lang_id язык текстов
-     * @return bool Успех или неудача
-     */
     public static function russianTranslations($filename, $lang_id)
     {
-        // ID русского языка
-        $lang_ru = 2;
+        $file = fopen(storage_path('app/public/' . $filename), 'wb');
 
-        $file = fopen(storage_path('app/public/' . $filename), 'w');
-        fwrite($file, csv_row([
-            'id',
-            'meaning_id',
-            'example'
-        ]));
+        if ($file === false) {
+            throw new \RuntimeException('Не удалось открыть файл: ' . $filename);
+        }
 
-        $texts = Text::whereNotNull('transtext_id')
-            ->where('lang_id', $lang_id)
-            ->whereIn('id', function ($q) use ($lang_id) {
-                $q->select('id')->from('meaning_text')
-                    ->where('relevance', '>', 1);
-            })->get();
+        try {
+            self::write_csv_row($file, ['id', 'meaning_id', 'example']);
 
-        $count = 1;
-        foreach ($texts as $text) {
-            $text_id = $text->id;
-            $transtext = $text->transtext;
-            $examples = DB::table('meaning_text')
-                ->select(['s_id', 'meaning_id'])
-                ->where('text_id', $text_id)
-                ->where('relevance', '>', 1)
+            $texts = Text::whereNotNull('transtext_id')
+                ->where('lang_id', $lang_id)
+                ->whereIn('id', function ($q) {
+                    $q->select('text_id')
+                        ->from('meaning_text')
+                        ->where('relevance', '>', 1);
+                })
+                ->select('id', 'transtext_id')
+                ->orderBy('id')
                 ->get();
 
-            if (empty($examples)) {
-                continue;
-            }
+            $count = 1;
 
-            foreach ($examples as $example) {
-                $s_id = $example->s_id;
-                $sentence = Text::processSentenceForExport($text->getTransSentence($s_id));
-                if (empty($sentence)) {
+            foreach ($texts as $text) {
+                $examples = DB::table('meaning_text')
+                    ->where('text_id', $text->id)
+                    ->where('relevance', '>', 1)
+                    ->select('s_id', 'meaning_id')
+                    ->get();
+
+                if (count($examples) === 0) {
                     continue;
                 }
-                fwrite($file, csv_row([
-                    $count++,
-                    $example->meaning_id,
-                    $sentence,
-                ]));
+
+                $translationXml = DB::table('transtexts')
+                    ->where('id', $text->transtext_id)
+                    ->value('text_xml');
+
+                if (!$translationXml) {
+                    continue;
+                }
+
+                list($xml, $error) = Text::toXML($translationXml, 'trans: ' . $text->transtext_id);
+
+                if ($error || !$xml) {
+                    continue;
+                }
+
+                $needed = [];
+
+                foreach ($examples as $example) {
+                    $needed[(string) $example->s_id] = true;
+                }
+
+                $translations = [];
+
+                foreach ($xml->xpath('//s') as $sentence) {
+                    $sId = (string) $sentence['id'];
+
+                    if (!isset($needed[$sId]) || array_key_exists($sId, $translations)) {
+                        continue;
+                    }
+
+                    $sentenceXml = mb_ereg_replace('[¦^]', '', $sentence->asXML());
+
+                    $translations[$sId] = Text::processSentenceForExport($sentenceXml);
+                }
+
+                foreach ($examples as $example) {
+                    $sId = (string) $example->s_id;
+
+                    if (!array_key_exists($sId, $translations) || empty($translations[$sId])) {
+                        continue;
+                    }
+
+                    self::write_csv_row($file, [$count++, $example->meaning_id, $translations[$sId]]);
+                }
+
+                unset($xml, $translations, $examples);
             }
+        } finally {
+            fclose($file);
         }
-        fclose($file);
     }
 
     public static function lemmasforMultimediaDictionary($filename)
@@ -809,12 +834,23 @@ class Export
     */
     public static function wordsforMorphDisambig(int $lang_id, string $filename)
     {
+        $started = microtime(true);
         $export_db = DB::connection('mysql_export');
+
         $csv_handle = fopen('php://temp/maxmemory:5242880', 'w+');
 
         if ($csv_handle === false) {
             throw new \RuntimeException('Cannot open temporary CSV buffer.');
         }
+
+        $rows = 0;
+        $read_seconds = 0.0;
+        $csv_seconds = 0.0;
+        $write_seconds = 0.0;
+        $writes = 0;
+
+        $buffer = '';
+        $buffer_limit = 1048576;
 
         try {
             self::write_csv_row($csv_handle, [
@@ -824,26 +860,92 @@ class Export
                 'word',
             ]);
 
-            foreach (
-                $export_db->table('words as w')
-                    ->join('texts as t', 't.id', '=', 'w.text_id')
-                    ->where('t.lang_id', $lang_id)
-                    ->select('w.id as word_id', 'w.sentence_id', 'w.word_number', 'w.word')
-                    ->cursor() as $word
-            ) {
-                self::write_csv_row($csv_handle, [
+            $query = $export_db->table('words as w')
+                ->join('texts as t', 't.id', '=', 'w.text_id')
+                ->where('t.lang_id', $lang_id)
+                ->select(
+                    'w.id as word_id',
+                    'w.sentence_id',
+                    'w.word_number',
+                    'w.word'
+                );
+
+            $next_row_started = microtime(true);
+
+            foreach ($query->cursor() as $word) {
+                $row_ready = microtime(true);
+                $read_seconds += $row_ready - $next_row_started;
+
+                $buffer .= self::csv_line([
                     $word->word_id,
                     $word->sentence_id,
                     $word->word_number,
                     $word->word,
                 ]);
+
+                $rows++;
+
+                if (strlen($buffer) >= $buffer_limit) {
+                    $write_started = microtime(true);
+
+                    self::write_csv_bytes($csv_handle, $buffer);
+
+                    $write_seconds += microtime(true) - $write_started;
+                    $writes++;
+                    $buffer = '';
+                }
+
+                $next_row_started = microtime(true);
+                $csv_seconds += $next_row_started - $row_ready;
             }
 
-            rewind($csv_handle);
+            $read_seconds += microtime(true) - $next_row_started;
+
+            if ($buffer !== '') {
+                $write_started = microtime(true);
+
+                self::write_csv_bytes($csv_handle, $buffer);
+
+                $elapsed = microtime(true) - $write_started;
+                $write_seconds += $elapsed;
+                $csv_seconds += $elapsed;
+                $writes++;
+                $buffer = '';
+            }
+
+            $stat = fstat($csv_handle);
+            $bytes = $stat['size'];
+
+            $save_started = microtime(true);
+
+            if (!rewind($csv_handle)) {
+                throw new \RuntimeException('Cannot rewind CSV buffer.');
+            }
 
             if (!Storage::disk('public')->put($filename, $csv_handle)) {
                 throw new \RuntimeException('Cannot save CSV file: ' . $filename);
             }
+
+            $save_seconds = microtime(true) - $save_started;
+
+            Log::info(sprintf(
+                '[EXPORT PROFILE] words lang_id=%d rows=%d size_mib=%.2f '
+                    . 'read_s=%.3f csv_s=%.3f save_s=%.3f total_s=%.3f',
+                $lang_id,
+                $rows,
+                $bytes / 1048576,
+                $read_seconds,
+                $csv_seconds,
+                $save_seconds,
+                microtime(true) - $started
+            ));
+
+            Log::info(sprintf(
+                '[CSV BUFFER] words lang_id=%d writes=%d write_s=%.3f',
+                $lang_id,
+                $writes,
+                $write_seconds
+            ));
         } finally {
             fclose($csv_handle);
         }
@@ -875,6 +977,15 @@ class Export
 
             $gramset_by_id = self::get_gramset_by_id();
 
+            $buffer = '';
+            $buffer_limit = 1048576;
+
+            $rows = 0;
+            $writes = 0;
+            $write_seconds = 0.0;
+
+            $started = microtime(true);
+
             foreach (
                 DB::connection('mysql_export')
                     ->table('text_wordform as tw')
@@ -884,7 +995,7 @@ class Export
                     ->select('tw.word_id', 'tw.wordform_id', 'tw.gramset_id', 'tw.relevance')
                     ->cursor() as $analysis
             ) {
-                self::write_csv_row($csv_handle, [
+                $buffer .= self::csv_line([
                     $analysis->word_id,
                     $analysis->wordform_id,
                     isset($gramset_by_id[$analysis->gramset_id])
@@ -892,6 +1003,27 @@ class Export
                         : '',
                     $analysis->relevance,
                 ]);
+                $rows++;
+
+                if (strlen($buffer) >= $buffer_limit) {
+                    $write_started = microtime(true);
+
+                    self::write_csv_bytes($csv_handle, $buffer);
+
+                    $write_seconds += microtime(true) - $write_started;
+                    $writes++;
+                    $buffer = '';
+                }
+            }
+
+            if ($buffer !== '') {
+                $write_started = microtime(true);
+
+                self::write_csv_bytes($csv_handle, $buffer);
+
+                $write_seconds += microtime(true) - $write_started;
+                $writes++;
+                $buffer = '';
             }
 
             rewind($csv_handle);
@@ -899,6 +1031,16 @@ class Export
             if (!Storage::disk('public')->put($filename, $csv_handle)) {
                 throw new \RuntimeException('Cannot save CSV file: ' . $filename);
             }
+
+            Log::info(sprintf(
+                '[CSV BUFFER] candidate_analyses lang_id=%d rows=%d '
+                    . 'writes=%d write_s=%.3f total_s=%.3f',
+                $lang_id,
+                $rows,
+                $writes,
+                $write_seconds,
+                microtime(true) - $started
+            ));
         } finally {
             fclose($csv_handle);
         }
@@ -1040,26 +1182,45 @@ class Export
         return $xml_errors;
     }
 
-    /**
-     * Записывает одну строку CSV в строго заданном формате:
-     *
-     * - UTF-8 без BOM;
-     * - delimiter = ",";
-     * - quotechar = '"';
-     * - doublequote = true.
-     *
-     * @param resource $csv_handle
-     * @param array    $fields
-     *
-     * @return void
-     */
+    public static function csv_line(array $fields)
+    {
+        $cells = [];
+
+        foreach ($fields as $value) {
+            $value = $value === null ? '' : (string) $value;
+
+            if (strpbrk($value, ",\"\r\n") !== false) {
+                $value = '"' . str_replace('"', '""', $value) . '"';
+            }
+
+            $cells[] = $value;
+        }
+
+        return implode(',', $cells) . "\n";
+    }
+
     public static function write_csv_row($csv_handle, array $fields)
     {
-        $fields = array_map(function ($field) {
-            return '"' . str_replace('"', '""', (string)$field) . '"';
-        }, $fields);
+        self::write_csv_bytes($csv_handle, self::csv_line($fields));
+    }
 
-        fwrite($csv_handle, implode(',', $fields) . "\r\n");
+    protected static function write_csv_bytes($csv_handle, $data)
+    {
+        $length = strlen($data);
+        $offset = 0;
+
+        while ($offset < $length) {
+            $written = fwrite(
+                $csv_handle,
+                $offset === 0 ? $data : substr($data, $offset)
+            );
+
+            if ($written === false || $written === 0) {
+                throw new \RuntimeException('Не удалось записать CSV.');
+            }
+
+            $offset += $written;
+        }
     }
 
     public static function get_gramset_by_id()

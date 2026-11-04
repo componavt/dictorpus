@@ -13,6 +13,7 @@ use PhpOffice\PhpWord\Settings;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
+use App\Library\DictorpusDataExport;
 use App\Library\Export;
 use App\Library\SynonymExport;
 
@@ -65,7 +66,20 @@ class ExportController extends Controller
             }
         }
 
-        return view('service.export', compact('langs', 'synonym_files'));
+        $dictorpus_data_files = [];
+
+        foreach (DictorpusDataExport::filenames() as $filename) {
+            $relative = 'export/dictorpus-data/' . $filename;
+
+            if (Storage::disk('public')->exists($relative)) {
+                $dictorpus_data_files[] = [
+                    'name' => $filename,
+                    'url' => url($relative),
+                ];
+            }
+        }
+
+        return view('service.export', compact('langs', 'synonym_files', 'dictorpus_data_files'));
     }
 
     /*
@@ -737,14 +751,30 @@ class ExportController extends Controller
             $result = (new SynonymExport())->run();
 
             return redirect(
-                \LaravelLocalization::localizeURL('/service/export')
+                route('service.export')
             )->with('synonym_export_result', $result);
         } catch (\Exception $e) {
             \Log::error('Synonym export failed', ['exception' => $e]);
 
             return redirect(
-                \LaravelLocalization::localizeURL('/service/export')
+                route('service.export')
             )->with('synonym_export_error', $e->getMessage());
+        }
+    }
+
+    public function forDictorpusData()
+    {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '512M');
+
+        try {
+            $result = (new DictorpusDataExport())->run();
+
+            return redirect(route('service.export'))->with('dictorpus_data_result', $result);
+        } catch (\Exception $e) {
+            \Log::error('Dictorpus-data export failed', ['exception' => $e]);
+
+            return redirect(route('service.export'))->with('dictorpus_data_error', $e->getMessage());
         }
     }
 }

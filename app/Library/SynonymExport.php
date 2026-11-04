@@ -36,7 +36,7 @@ class SynonymExport
         ];
     }
 
-    public function run()
+    public function run($relativeDirectory = null)
     {
         $lock = fopen(storage_path('app/synonym-export.lock'), 'c');
 
@@ -50,7 +50,9 @@ class SynonymExport
             throw new \RuntimeException('Экспорт синонимов уже выполняется.');
         }
 
-        $relative = 'export/.synonyms-' . uniqid('', true);
+        $relative = $relativeDirectory === null
+            ? 'export/.synonyms-' . uniqid('', true)
+            : $relativeDirectory;
         $temporary = storage_path('app/public/' . $relative);
         $target = storage_path('app/public/export/synonyms');
         $backup = $target . '-backup-' . uniqid('', true);
@@ -125,7 +127,7 @@ class SynonymExport
                     'olo',
                     'ADJ',
                     $synset->dominant_id ?: null,
-                    $synset->comment,
+                    trim((string) $synset->comment),
                 ]);
 
                 $seen = [];
@@ -157,6 +159,13 @@ class SynonymExport
 
             $this->checkMeaningsCsv($temporary . '/meanings_olo.csv');
 
+            if ($relativeDirectory !== null) {
+                return [
+                    'counts' => $this->counts,
+                    'warnings' => $this->warnings,
+                ];
+            }
+
             if (file_exists($target)) {
                 if (!is_dir($target) || !rename($target, $backup)) {
                     throw new \RuntimeException(
@@ -187,7 +196,7 @@ class SynonymExport
         } finally {
             $this->closeFiles();
 
-            if (is_dir($temporary)) {
+            if ($relativeDirectory === null && is_dir($temporary)) {
                 File::deleteDirectory($temporary);
             }
 
@@ -245,35 +254,14 @@ class SynonymExport
             $this->handles[$name] = $handle;
             $this->counts[$name] = 0;
 
-            $this->csv($handle, $header);
+            Export::write_csv_row($handle, $header);
         }
     }
 
     protected function write($name, array $row)
     {
-        $this->csv($this->handles[$name], $row);
+        Export::write_csv_row($this->handles[$name], $row);
         $this->counts[$name]++;
-    }
-
-    protected function csv($handle, array $row)
-    {
-        $cells = [];
-
-        foreach ($row as $value) {
-            $value = $value === null ? '' : (string) $value;
-
-            if (strpbrk($value, ",\"\r\n") !== false) {
-                $value = '"' . str_replace('"', '""', $value) . '"';
-            }
-
-            $cells[] = $value;
-        }
-
-        $line = implode(',', $cells) . "\n";
-
-        if (fwrite($handle, $line) !== strlen($line)) {
-            throw new \RuntimeException('Не удалось записать строку CSV.');
-        }
     }
 
     protected function exportCollocations(array $memberIds)
