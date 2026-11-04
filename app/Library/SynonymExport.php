@@ -261,7 +261,12 @@ class SynonymExport
 
         foreach ($row as $value) {
             $value = $value === null ? '' : (string) $value;
-            $cells[] = '"' . str_replace('"', '""', $value) . '"';
+
+            if (strpbrk($value, ",\"\r\n") !== false) {
+                $value = '"' . str_replace('"', '""', $value) . '"';
+            }
+
+            $cells[] = $value;
         }
 
         $line = implode(',', $cells) . "\n";
