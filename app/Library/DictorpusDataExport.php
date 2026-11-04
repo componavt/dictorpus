@@ -108,21 +108,15 @@ class DictorpusDataExport
                     }
                 }
 
-                $this->timed('examples_' . $code, function () use ($relative, $code, $lang) {
-                    Export::russianTranslations($relative . '/dict/examples_' . $code . '.csv', $lang->id);
-                });
+                Export::russianTranslations($relative . '/dict/examples_' . $code . '.csv', $lang->id);
 
                 foreach ($methods as $name => $method) {
-                    $this->timed($name . '_' . $code, function () use ($method, $lang, $relative, $name, $code) {
-                        Export::$method($lang->id, $relative . '/corpus/' . $name . '_' . $code . '.csv');
-                    });
+                    Export::$method($lang->id, $relative . '/corpus/' . $name . '_' . $code . '.csv');
                 }
             }
 
             foreach (self::filenames() as $filename) {
-                $this->timed('zstd ' . $filename, function () use ($temporary, $filename) {
-                    $this->compress($temporary . '/' . substr($filename, 0, -4));
-                });
+                $this->compress($temporary . '/' . substr($filename, 0, -4));
             }
 
             if (file_exists($target)) {
@@ -142,11 +136,6 @@ class DictorpusDataExport
             if (is_dir($backup)) {
                 File::deleteDirectory($backup);
             }
-
-            \Log::info('[EXPORT PUBLISHED] dictorpus-data', [
-                'directory' => $target,
-                'file_count' => count(self::filenames()),
-            ]);
 
             return [
                 'file_count' => count(self::filenames()),
@@ -213,34 +202,5 @@ class DictorpusDataExport
                     )
             );
         }
-    }
-
-    protected function timed($name, callable $callback)
-    {
-        $started = microtime(true);
-
-        \Log::info('[EXPORT START] ' . $name);
-
-        try {
-            $result = $callback();
-        } catch (\Exception $e) {
-            \Log::error(sprintf(
-                '[EXPORT FAILED] %s: %.2f s',
-                $name,
-                microtime(true) - $started
-            ), [
-                'exception' => $e,
-            ]);
-
-            throw $e;
-        }
-
-        \Log::info(sprintf(
-            '[EXPORT END] %s: %.2f s',
-            $name,
-            microtime(true) - $started
-        ));
-
-        return $result;
     }
 }

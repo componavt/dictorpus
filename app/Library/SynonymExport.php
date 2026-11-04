@@ -36,32 +36,14 @@ class SynonymExport
         ];
     }
 
-    public function run($relativeDirectory = null)
+    public function run($relative)
     {
-        $lock = fopen(storage_path('app/synonym-export.lock'), 'c');
-
-        if ($lock === false) {
-            throw new \RuntimeException('Не удалось открыть блокировку экспорта.');
-        }
-
-        if (!flock($lock, LOCK_EX | LOCK_NB)) {
-            fclose($lock);
-
-            throw new \RuntimeException('Экспорт синонимов уже выполняется.');
-        }
-
-        $relative = $relativeDirectory === null
-            ? 'export/.synonyms-' . uniqid('', true)
-            : $relativeDirectory;
         $temporary = storage_path('app/public/' . $relative);
         $target = storage_path('app/public/export/synonyms');
         $backup = $target . '-backup-' . uniqid('', true);
 
         try {
-            if (
-                !File::makeDirectory($temporary, 0755, true)
-                && !is_dir($temporary)
-            ) {
+            if (!File::makeDirectory($temporary, 0755, true) && !is_dir($temporary)) {
                 throw new \RuntimeException('Не удалось создать каталог экспорта.');
             }
 
@@ -108,18 +90,11 @@ class SynonymExport
                 }
 
                 if (!$localIds) {
-                    throw new \RuntimeException(
-                        'Синсет ' . $synset->id . ' не содержит значений.'
-                    );
+                    throw new \RuntimeException('Синсет ' . $synset->id . ' не содержит значений.');
                 }
 
-                if (
-                    $synset->dominant_id
-                    && !isset($localIds[(int) $synset->dominant_id])
-                ) {
-                    throw new \RuntimeException(
-                        'Доминанта не входит в состав синсета ' . $synset->id
-                    );
+                if ($synset->dominant_id && !isset($localIds[(int) $synset->dominant_id])) {
+                    throw new \RuntimeException('Доминанта не входит в состав синсета ' . $synset->id);
                 }
 
                 $this->write('synsets', [
@@ -159,49 +134,12 @@ class SynonymExport
 
             $this->checkMeaningsCsv($temporary . '/meanings_olo.csv');
 
-            if ($relativeDirectory !== null) {
-                return [
-                    'counts' => $this->counts,
-                    'warnings' => $this->warnings,
-                ];
-            }
-
-            if (file_exists($target)) {
-                if (!is_dir($target) || !rename($target, $backup)) {
-                    throw new \RuntimeException(
-                        'Не удалось сохранить предыдущую выгрузку.'
-                    );
-                }
-            }
-
-            if (!rename($temporary, $target)) {
-                if (is_dir($backup) && !rename($backup, $target)) {
-                    throw new \RuntimeException(
-                        'Ошибка публикации. Предыдущая выгрузка сохранена в: '
-                            . $backup
-                    );
-                }
-
-                throw new \RuntimeException('Не удалось опубликовать выгрузку.');
-            }
-
-            if (is_dir($backup)) {
-                File::deleteDirectory($backup);
-            }
-
             return [
                 'counts' => $this->counts,
                 'warnings' => $this->warnings,
             ];
         } finally {
             $this->closeFiles();
-
-            if ($relativeDirectory === null && is_dir($temporary)) {
-                File::deleteDirectory($temporary);
-            }
-
-            flock($lock, LOCK_UN);
-            fclose($lock);
         }
     }
 

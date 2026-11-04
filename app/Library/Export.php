@@ -825,16 +825,11 @@ class Export
     }
 
     /*
-    * Экспорт слов для задач разрешения морфологической неоднозначности.
-    *
-    * word_id,sentence_id,word_number,word (word-нормализованное слово)
-    *
-    * SELECT w.id AS word_id, w.sentence_id, w.word_number, w.word FROM words AS w WHERE 
-    w.text_id IN (SELECT id FROM texts WHERE lang_id = $lang_id);
+    * Экспорт нормализованных корпусных слов для заданного языка.
+    * CSV: word_id,sentence_id,word_number,word
     */
     public static function wordsforMorphDisambig(int $lang_id, string $filename)
     {
-        $started = microtime(true);
         $export_db = DB::connection('mysql_export');
 
         $csv_handle = fopen('php://temp/maxmemory:5242880', 'w+');
@@ -842,12 +837,6 @@ class Export
         if ($csv_handle === false) {
             throw new \RuntimeException('Cannot open temporary CSV buffer.');
         }
-
-        $rows = 0;
-        $read_seconds = 0.0;
-        $csv_seconds = 0.0;
-        $write_seconds = 0.0;
-        $writes = 0;
 
         $buffer = '';
         $buffer_limit = 1048576;
@@ -870,12 +859,7 @@ class Export
                     'w.word'
                 );
 
-            $next_row_started = microtime(true);
-
             foreach ($query->cursor() as $word) {
-                $row_ready = microtime(true);
-                $read_seconds += $row_ready - $next_row_started;
-
                 $buffer .= self::csv_line([
                     $word->word_id,
                     $word->sentence_id,
@@ -883,40 +867,15 @@ class Export
                     $word->word,
                 ]);
 
-                $rows++;
-
                 if (strlen($buffer) >= $buffer_limit) {
-                    $write_started = microtime(true);
-
                     self::write_csv_bytes($csv_handle, $buffer);
-
-                    $write_seconds += microtime(true) - $write_started;
-                    $writes++;
                     $buffer = '';
                 }
-
-                $next_row_started = microtime(true);
-                $csv_seconds += $next_row_started - $row_ready;
             }
-
-            $read_seconds += microtime(true) - $next_row_started;
 
             if ($buffer !== '') {
-                $write_started = microtime(true);
-
                 self::write_csv_bytes($csv_handle, $buffer);
-
-                $elapsed = microtime(true) - $write_started;
-                $write_seconds += $elapsed;
-                $csv_seconds += $elapsed;
-                $writes++;
-                $buffer = '';
             }
-
-            $stat = fstat($csv_handle);
-            $bytes = $stat['size'];
-
-            $save_started = microtime(true);
 
             if (!rewind($csv_handle)) {
                 throw new \RuntimeException('Cannot rewind CSV buffer.');
@@ -925,44 +884,19 @@ class Export
             if (!Storage::disk('public')->put($filename, $csv_handle)) {
                 throw new \RuntimeException('Cannot save CSV file: ' . $filename);
             }
-
-            $save_seconds = microtime(true) - $save_started;
-
-            Log::info(sprintf(
-                '[EXPORT PROFILE] words lang_id=%d rows=%d size_mib=%.2f '
-                    . 'read_s=%.3f csv_s=%.3f save_s=%.3f total_s=%.3f',
-                $lang_id,
-                $rows,
-                $bytes / 1048576,
-                $read_seconds,
-                $csv_seconds,
-                $save_seconds,
-                microtime(true) - $started
-            ));
-
-            Log::info(sprintf(
-                '[CSV BUFFER] words lang_id=%d writes=%d write_s=%.3f',
-                $lang_id,
-                $writes,
-                $write_seconds
-            ));
         } finally {
             fclose($csv_handle);
         }
     }
 
     /*
-    * Экспорт кандидатов для анализа задач разрешения морфологической неоднозначности.
+    * Экспорт морфологических кандидатов корпусных слов заданного языка.
     *
-    * word_id,wordform_id,gramset,relevance
+    * CSV: word_id,wordform_id,gramset,relevance
     *
-     * gramset - сериализация gramsets + grams:
-     * Порядок категорий:
-     *   number → case → tense → person → mood →  negation → infinitive → voice → participle → reflexive
-     * берутся коды lgr
-     * SELECT gs.id AS gramset_id, CONCAT_WS('+', g_number.lgr, g_case.lgr, g_tense.lgr, g_person.lgr, g_mood.lgr, g_negation.lgr, g_infinitive.lgr, g_voice.lgr, g_participle.lgr, g_reflexive.lgr) AS gramset FROM gramsets AS gs LEFT JOIN grams AS g_number ON g_number.id = gs.gram_id_number LEFT JOIN grams AS g_case   ON g_case.id   = gs.gram_id_case LEFT JOIN grams AS g_tense  ON g_tense.id  = gs.gram_id_tense LEFT JOIN grams AS g_person ON g_person.id = gs.gram_id_person LEFT JOIN grams AS g_mood ON g_mood.id = gs.gram_id_mood LEFT JOIN grams AS g_negation ON g_negation.id = gs.gram_id_negation LEFT JOIN grams AS g_infinitive ON g_infinitive.id = gs.gram_id_infinitive LEFT JOIN grams AS g_voice ON g_voice.id = gs.gram_id_voice LEFT JOIN grams AS g_participle ON g_participle.id = gs.gram_id_participle LEFT JOIN grams AS g_reflexive ON g_reflexive.id = gs.gram_id_reflexive;
-     * 
-    * SELECT tw.word_id, tw.wordform_id, tw.gramset_id, tw.relevance FROM text_wordform AS tw JOIN words AS w ON w.id = tw.word_id WHERE tw.word_id > 0 AND w.text_id IN (SELECT id FROM texts WHERE lang_id = 1);
+    * gramset формируется методом get_gramset_by_id().
+    * Неизвестный или отсутствующий gramset экспортируется пустым полем.
+    * Кандидаты всех статусов relevance сохраняются.
     */
     public static function candidateAnalysesforMorphDisambig(int $lang_id, string $filename)
     {
@@ -979,12 +913,6 @@ class Export
 
             $buffer = '';
             $buffer_limit = 1048576;
-
-            $rows = 0;
-            $writes = 0;
-            $write_seconds = 0.0;
-
-            $started = microtime(true);
 
             foreach (
                 DB::connection('mysql_export')
@@ -1003,44 +931,25 @@ class Export
                         : '',
                     $analysis->relevance,
                 ]);
-                $rows++;
 
                 if (strlen($buffer) >= $buffer_limit) {
-                    $write_started = microtime(true);
-
                     self::write_csv_bytes($csv_handle, $buffer);
-
-                    $write_seconds += microtime(true) - $write_started;
-                    $writes++;
                     $buffer = '';
                 }
             }
 
             if ($buffer !== '') {
-                $write_started = microtime(true);
-
                 self::write_csv_bytes($csv_handle, $buffer);
-
-                $write_seconds += microtime(true) - $write_started;
-                $writes++;
                 $buffer = '';
             }
 
-            rewind($csv_handle);
+            if (!rewind($csv_handle)) {
+                throw new \RuntimeException('Cannot rewind CSV buffer.');
+            }
 
             if (!Storage::disk('public')->put($filename, $csv_handle)) {
                 throw new \RuntimeException('Cannot save CSV file: ' . $filename);
             }
-
-            Log::info(sprintf(
-                '[CSV BUFFER] candidate_analyses lang_id=%d rows=%d '
-                    . 'writes=%d write_s=%.3f total_s=%.3f',
-                $lang_id,
-                $rows,
-                $writes,
-                $write_seconds,
-                microtime(true) - $started
-            ));
         } finally {
             fclose($csv_handle);
         }

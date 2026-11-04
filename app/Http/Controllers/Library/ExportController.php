@@ -15,7 +15,6 @@ use Carbon\Carbon;
 
 use App\Library\DictorpusDataExport;
 use App\Library\Export;
-use App\Library\SynonymExport;
 
 use App\Models\Corpus\Collection;
 use App\Models\Corpus\Genre;
@@ -53,19 +52,6 @@ class ExportController extends Controller
             $langs[$l_id] = Lang::getNameById($l_id);
         }
 
-        $synonym_files = [];
-
-        foreach (SynonymExport::filenames() as $filename) {
-            $relative = 'export/synonyms/' . $filename;
-
-            if (Storage::disk('public')->exists($relative)) {
-                $synonym_files[] = [
-                    'name' => $filename,
-                    'url' => url($relative),
-                ];
-            }
-        }
-
         $dictorpus_data_files = [];
 
         foreach (DictorpusDataExport::filenames() as $filename) {
@@ -79,7 +65,10 @@ class ExportController extends Controller
             }
         }
 
-        return view('service.export', compact('langs', 'synonym_files', 'dictorpus_data_files'));
+        return view(
+            'service.export',
+            compact('langs', 'dictorpus_data_files')
+        );
     }
 
     /*
@@ -689,77 +678,6 @@ class ExportController extends Controller
             ->get();
 
         return Export::dictionaryToWord($lemmas, 'zaikov_dictionary.docx', $dialect_id, $label_id);
-    }
-
-    /**
-     * Экспорт файлов для задач разрешения морфологической неоднозначности
-     * 
-     * export/morph-disambig/
-     * ├── texts_<lang_code>.csv 
-     * ├── sentences_<lang_code>.csv 
-     * ├── words_<lang_code>.csv     
-     * └── candidate_analyses_<lang_code>.csv
-     * 
-     * где  <lang_code>: krl, lud, olo, vep
-     * 
-     * Правила CSV:
-     *   encoding = UTF-8
-     *   delimiter = ,
-     *   quotechar = "
-     *   doublequote = true (кавычка внутри текста экранируется удвоением "")
-     *
-     * candidate_analyses:
-     * 
-     * @return void
-     */
-    public function forMorphDisambig()
-    {
-        ini_set('max_execution_time', 7200);
-        ini_set('memory_limit', '512M');
-
-        $dirname = "export/for_morph_disambig";
-        Storage::disk('public')->makeDirectory($dirname);
-
-        $langs = Lang::projectLangs();
-
-        foreach ($langs as $lang) {
-
-            $filename = $dirname . '/texts_' . $lang->code . '.csv';
-            Export::textsforMorphDisambig($lang->id, $filename);
-            print "<p>Тексты выгружены в файл: " . Storage::url($filename) . "</p>\n";
-
-            $filename = $dirname . '/sentences_' . $lang->code . '.csv';
-            Export::sentencesforMorphDisambig($lang->id, $filename);
-            print "<p>Предложения выгружены в файл: " . Storage::url($filename) . "</p>\n";
-
-            $filename = $dirname . '/words_' . $lang->code . '.csv';
-            Export::wordsforMorphDisambig($lang->id, $filename);
-            print "<p>Слова выгружены в файл: " . Storage::url($filename) . "</p>\n";
-
-            $filename = $dirname . '/candidate_analyses_' . $lang->code . '.csv';
-            Export::candidateAnalysesforMorphDisambig($lang->id, $filename);
-            print "<p>Кандидаты анализа выгружены в файл: " . Storage::url($filename) . "</p>\n";
-        }
-    }
-
-    public function forSynonyms()
-    {
-        ini_set('max_execution_time', 7200);
-        ini_set('memory_limit', '512M');
-
-        try {
-            $result = (new SynonymExport())->run();
-
-            return redirect(
-                route('service.export')
-            )->with('synonym_export_result', $result);
-        } catch (\Exception $e) {
-            \Log::error('Synonym export failed', ['exception' => $e]);
-
-            return redirect(
-                route('service.export')
-            )->with('synonym_export_error', $e->getMessage());
-        }
     }
 
     public function forDictorpusData()

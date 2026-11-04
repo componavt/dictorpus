@@ -13,7 +13,6 @@ Route::group(
         Route::get('conll/annotation', 'Library\ExportController@annotationConll');
         Route::post('dictorpus-data', 'Library\ExportController@forDictorpusData');
         Route::get('for_mobile', 'Library\ExportController@forMobile');
-        Route::get('for_morph-disambig', 'Library\ExportController@forMorphDisambig');
         Route::get('for_multimedia_dictionary', 'Library\ExportController@forMultimediaDictionary');
         Route::get('for_speech', 'Library\ExportController@forSpeech');
         Route::get('lemma_with_pos', 'Library\ExportController@lemmasWithPOS');
@@ -27,7 +26,6 @@ Route::group(
         Route::get('russian_meanings', 'Library\ExportController@exportRussianMeanings');
         Route::get('russian_translations', 'Library\ExportController@exportRussianTranslations');
         Route::get('sentences', 'Library\ExportController@sentencesToLines');
-        Route::post('synonyms', 'Library\ExportController@forSynonyms');
         Route::get('unimorph', 'Library\ExportController@lemmasToUniMorph');
         Route::get('zaikov_dictionary', 'Library\ExportController@zaikovDictionary')->name('export.zaikov_dictionary');
     }
