@@ -907,7 +907,7 @@ class Export
         }
 
         try {
-            self::write_csv_row($csv_handle, ['word_id', 'wordform_id', 'gramset', 'relevance']);
+            self::write_csv_row($csv_handle, ['word_id', 'wordform_id', 'gramset_id', 'gramset', 'relevance']);
 
             $gramset_by_id = self::get_gramset_by_id();
 
@@ -926,6 +926,7 @@ class Export
                 $buffer .= self::csv_line([
                     $analysis->word_id,
                     $analysis->wordform_id,
+                    $analysis->gramset_id === null ? '\\N' : $analysis->gramset_id,
                     isset($gramset_by_id[$analysis->gramset_id])
                         ? $gramset_by_id[$analysis->gramset_id]
                         : '',
@@ -1132,7 +1133,7 @@ class Export
         }
     }
 
-    public static function get_gramset_by_id()
+    public static function get_gramset_by_id($with_rows = false)
     {
         $gramset_rows = DB::table('gramsets as gs')
             ->leftJoin('grams as g_number', 'g_number.id', '=', 'gs.gram_id_number')
@@ -1145,8 +1146,12 @@ class Export
             ->leftJoin('grams as g_voice', 'g_voice.id', '=', 'gs.gram_id_voice')
             ->leftJoin('grams as g_participle', 'g_participle.id', '=', 'gs.gram_id_participle')
             ->leftJoin('grams as g_reflexive', 'g_reflexive.id', '=', 'gs.gram_id_reflexive')
-            ->selectRaw("gs.id AS gramset_id, CONCAT_WS('+', g_number.lgr, g_case.lgr, g_tense.lgr, g_person.lgr, g_mood.lgr, g_negation.lgr, g_infinitive.lgr, g_voice.lgr, g_participle.lgr, g_reflexive.lgr) AS gramset")
+            ->selectRaw("gs.*, gs.id AS gramset_id, CONCAT_WS('+', g_number.lgr, g_case.lgr, g_tense.lgr, g_person.lgr, g_mood.lgr, g_negation.lgr, g_infinitive.lgr, g_voice.lgr, g_participle.lgr, g_reflexive.lgr) AS gramset")
             ->get();
+
+        if ($with_rows) {
+            return $gramset_rows;
+        }
 
         $gramset_by_id = [];
 

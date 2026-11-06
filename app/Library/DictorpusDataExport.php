@@ -5,6 +5,7 @@ namespace App\Library;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
 
+use App\Library\SynonymExport;
 use App\Models\Dict\Lang;
 
 class DictorpusDataExport
@@ -18,6 +19,8 @@ class DictorpusDataExport
         foreach (self::LANGUAGES as $code) {
             $files[] = 'dict/meanings_' . $code . '.csv.zst';
             $files[] = 'dict/examples_' . $code . '.csv.zst';
+            $files[] = 'dict/morphology/lemmas_' . $code . '.csv.zst';
+            $files[] = 'dict/morphology/lemma_wordforms_' . $code . '.csv.zst';
 
             foreach (['texts', 'sentences', 'words', 'candidate_analyses'] as $name) {
                 $files[] = 'corpus/' . $name . '_' . $code . '.csv.zst';
@@ -28,6 +31,10 @@ class DictorpusDataExport
             if ($filename !== 'meanings_olo.csv') {
                 $files[] = 'dict/synonyms/' . $filename . '.zst';
             }
+        }
+
+        foreach (['grams', 'gramsets', 'gramset_pos', 'parts_of_speech'] as $name) {
+            $files[] = 'dict/grammar/' . $name . '.csv';
         }
 
         sort($files);
@@ -57,16 +64,11 @@ class DictorpusDataExport
         try {
             $this->process('zstd --version', 30);
 
-            foreach (['dict', 'corpus'] as $directory) {
+            foreach (['dict', 'corpus', 'dict/morphology', 'dict/grammar'] as $directory) {
                 $path = $temporary . '/' . $directory;
 
-                if (
-                    !File::makeDirectory($path, 0755, true)
-                    && !is_dir($path)
-                ) {
-                    throw new \RuntimeException(
-                        'Не удалось создать каталог ' . $path
-                    );
+                if (!File::makeDirectory($path, 0755, true) && !is_dir($path)) {
+                    throw new \RuntimeException('Не удалось создать каталог ' . $path);
                 }
             }
 
@@ -113,10 +115,27 @@ class DictorpusDataExport
                 foreach ($methods as $name => $method) {
                     Export::$method($lang->id, $relative . '/corpus/' . $name . '_' . $code . '.csv');
                 }
+
+                MorphologyExport::lemmas($lang->id, $relative . '/dict/morphology/lemmas_' . $code . '.csv');
+                MorphologyExport::lemmaWordforms($lang->id, $relative . '/dict/morphology/lemma_wordforms_' . $code . '.csv');
             }
 
+            MorphologyExport::grams($relative . '/dict/grammar/grams.csv');
+            MorphologyExport::gramsets($relative . '/dict/grammar/gramsets.csv');
+            MorphologyExport::gramsetPos($relative . '/dict/grammar/gramset_pos.csv');
+            MorphologyExport::partsOfSpeech($relative . '/dict/grammar/parts_of_speech.csv');
+
             foreach (self::filenames() as $filename) {
-                $this->compress($temporary . '/' . substr($filename, 0, -4));
+                if (substr($filename, -4) === '.zst') {
+                    $this->compress($temporary . '/' . substr($filename, 0, -4));
+                    continue;
+                }
+
+                $path = $temporary . '/' . $filename;
+
+                if (!is_file($path) || filesize($path) === 0) {
+                    throw new \RuntimeException('CSV отсутствует или пуст: ' . $filename);
+                }
             }
 
             if (file_exists($target)) {
