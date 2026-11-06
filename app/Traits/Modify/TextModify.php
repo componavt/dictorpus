@@ -12,6 +12,7 @@ use App\Models\Corpus\Cyrtext;
 use App\Models\Corpus\Event;
 use App\Models\Corpus\Sentence;
 use App\Models\Corpus\Source;
+use App\Models\Corpus\TextWordform;
 use App\Models\Corpus\Transtext;
 use App\Models\Corpus\Video;
 use App\Models\Corpus\Word;
@@ -49,6 +50,11 @@ trait TextModify
 
     protected function pushWordformRow(array &$rows, $text_id, $wordform_id, $gramset_id, $word_id, $w_id, $relevance)
     {
+        $gramset_id = TextWordform::positiveGramsetId($gramset_id);
+        if ($gramset_id === null) {
+            return;
+        }
+
         $key = $text_id . '|' . $wordform_id . '|' . $gramset_id . '|' . $w_id . '|' . $word_id;
 
         $rows[$key] = [
@@ -1033,6 +1039,11 @@ trait TextModify
 
     public function addWordform($wordform_id, $gramset_id, $word_id, $w_id, $relevance)
     {
+        $gramset_id = TextWordform::positiveGramsetId($gramset_id);
+        if ($gramset_id === null) {
+            return;
+        }
+
         if ($this->wordforms()->wherePivot('wordform_id', $wordform_id)
             ->wherePivot('w_id', $w_id)
             ->wherePivot('gramset_id', $gramset_id)->count()

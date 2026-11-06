@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Corpus\MeaningTextRel;
 use App\Models\Corpus\Text;
+use App\Models\Corpus\TextWordform;
 use App\Models\Corpus\Word;
 
 use App\Library\Grammatic;
@@ -162,7 +163,9 @@ class Wordform extends Model
 
     public function updateTextWordformLinks($text_id, $w_id, $gramset_id)
     {
-        if (!$gramset_id) {
+        $gramset_id = TextWordform::positiveGramsetId($gramset_id);
+
+        if ($gramset_id === false) {
             return;
         }
 
@@ -253,6 +256,7 @@ class Wordform extends Model
      * 
      * @param int $text_id
      * @param int $w_id
+     * @param int $gramset_id
      * @param int $old_relevance
      * @return int
      */
@@ -268,15 +272,12 @@ class Wordform extends Model
         ) {
             return 0;
         }
-        /*if ($text_id==1548 && $w_id==7) {
-dd($relevance);
-} */
         return $old_relevance;
     }
 
     public function addTextLink($text_id, $w_id, $gramset_id, $old_relevance)
     {
-        $relevance = $this->checkRelevance($text_id, $w_id, $old_relevance);
+        $relevance = $this->checkRelevance($text_id, $w_id, $gramset_id, $old_relevance);
         $this->texts()->attach(
             $text_id,
             [
@@ -295,7 +296,8 @@ dd($relevance);
      */
     public function addTextLinks($words = null, $lang_id = null)
     {
-        if (!$this->pivot->gramset_id) {
+        $gramset_id = TextWordform::positiveGramsetId($this->pivot->gramset_id);
+        if ($gramset_id === null) {
             return;
         }
 
@@ -314,7 +316,7 @@ dd($relevance);
                 'text_id' => $word->text_id,
                 'w_id' => $word->w_id,
                 'wordform_id' => $this->id,
-                'gramset_id' => $this->pivot->gramset_id,
+                'gramset_id' => $gramset_id,
                 'word_id' => $word->word_id,
                 'relevance' => 1,
             ];
@@ -334,7 +336,8 @@ dd($relevance);
      */
     public function updateTextLinks($words = null, $lang_id = null)
     {
-        if (!$this->pivot->gramset_id) {
+        $gramset_id = TextWordform::positiveGramsetId($this->pivot->gramset_id);
+        if ($gramset_id === null) {
             return;
         }
 
@@ -349,7 +352,7 @@ dd($relevance);
         if (!$words) {
             DB::connection('mysql')->table('text_wordform')
                 ->where('wordform_id', $this->id)
-                ->where('gramset_id', $this->pivot->gramset_id)
+                ->where('gramset_id', $gramset_id)
                 ->delete();
             return;
         }
@@ -369,7 +372,7 @@ dd($relevance);
         // Удаляем только устаревшие пары (text_id, w_id), которых больше нет в новом наборе
         $query = DB::connection('mysql')->table('text_wordform')
             ->where('wordform_id', $this->id)
-            ->where('gramset_id', $this->pivot->gramset_id);
+            ->where('gramset_id', $gramset_id);
 
         foreach ($newPairs as $pair) {
             $query->where(function ($q) use ($pair) {
@@ -752,6 +755,11 @@ dd($relevance);
 
     public static function reconcileTextWordformLinksForPair($wordformId, $gramsetId)
     {
+        $gramsetId = TextWordform::positiveGramsetId($gramsetId);
+        if ($gramsetId === null) {
+            throw new \InvalidArgumentException('Для синхронизации text_wordform требуется gramset_id > 0.');
+        }
+
         $db = DB::connection('mysql');
 
         return $db->transaction(function () use ($db, $wordformId, $gramsetId) {

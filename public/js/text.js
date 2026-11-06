@@ -352,11 +352,20 @@ function changeWordBlock(text_id, w_id) {
  * @returns {undefined}
  */
 function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id, dialects, prediction, interpretation) {
-    //console.log('saveWordform = text_id:'+text_id + ', w_id:' + w_id)    
+    var gramsetSelect = $("#choose-gramset");
+
+    // При выборе предсказания грамсет берётся сервером из prediction.
+    // Для обычного выбора леммы проверяем существующий список грамсетов.
+    if (lemma_id && gramsetSelect.length &&
+        !isPositiveGramsetId(gramset_id)) {
+        alert('Выберите грамматические характеристики слова!');
+        gramsetSelect.focus();
+        return;
+    }
+
     $("#save-wordform").attr("disabled", true);
     var route = '/dict/lemma_wordform/store';
     var test_url = '?text_id=' + text_id + '&lemma_id=' + lemma_id + '&meaning_id=' + meaning_id + '&gramset_id=' + gramset_id + '&wordform=' + wordform + '&w_id=' + w_id + '&dialects[]=' + dialects + '&prediction=' + prediction + '&interpretation=' + interpretation;
-    //console.log("saveWordform: " + test_url);
 
     $.ajax({
         url: route,
@@ -379,9 +388,16 @@ function saveWordform(text_id, w_id, lemma_id, wordform, meaning_id, gramset_id,
             clearWordformModal();
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            var text = 'saveWordform Error: ' + 'XMLHTTPRequestObject status: (' + jqXHR.status + ', ' + jqXHR.statusText + '), ' +
-                'text status: (' + textStatus + '), error thrown: (' + errorThrown + '), route: ' + route + test_url;
-            alert(text);
+            var response = jqXHR.responseJSON;
+
+            if (response && response.message) {
+                alert(response.message);
+            } else {
+                alert('Не удалось сохранить разметку: ' + jqXHR.status + ' ' + errorThrown);
+            }
+        },
+        complete: function () {
+            $("#save-wordform").attr("disabled", false);
         }
     });
 }
@@ -670,4 +686,8 @@ function toggleColumns() {
         $(this).hide();
         $("#hide-transtext").show();
     });
+}
+
+function isPositiveGramsetId(value) {
+    return /^[1-9]\d*$/.test(String(value == null ? '' : value));
 }

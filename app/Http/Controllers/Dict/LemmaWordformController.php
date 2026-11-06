@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Library\Grammatic;
 
 use App\Models\Corpus\Text;
+use App\Models\Corpus\TextWordform;
 use App\Models\Corpus\Word;
 
 use App\Models\Dict\Dialect;
@@ -90,6 +91,18 @@ class LemmaWordformController extends Controller
                 return;
             }
         }
+        $requires_gramset = $lemma->pos && $lemma->pos->isChangeable();
+
+        if ($requires_gramset) {
+            $validated_gramset_id = TextWordform::positiveGramsetId($gramset_id);
+
+            if ($validated_gramset_id === false || !Gramset::where('id', $validated_gramset_id)->exists()) {
+                return response()->json(['message' => 'Выберите грамматические характеристики слова.'], 422);
+            }
+
+            $gramset_id = $validated_gramset_id;
+        }
+
         $lemma->addWordformFromText($wordform, $gramset_id, $dialects, $text_id, $w_id);
         $text->addLinkWithMeaning($lemma, $meaning_id, $w_id, $word);
         return 1;
