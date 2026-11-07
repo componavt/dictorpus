@@ -363,19 +363,15 @@ trait MeaningModify
 
     public function reloadExamples()
     {
-        ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '1024M');
+        $lemma = $this->lemma;
 
-        $words = $this->lemma->getWordsForMeanings();
-        if ($words) {
-            if (!$this->texts()->count()) {
-                $this->addTextLinks($words);
-            } else {
-                $this->updateTextLinks($words);
-            }
-        } else {
-            $this->texts()->detach();
+        if (!$lemma) {
+            return;
         }
+
+        DB::transaction(function () use ($lemma) {
+            $lemma->updateMeaningTextLinks();
+        });
     }
 
     /**

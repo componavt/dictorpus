@@ -150,43 +150,60 @@ class LemmaWordformController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        $lemma = Lemma::findOrFail($id);
-        //dd($lemma->reverseLemma);        
+        return DB::transaction(function () use ($request, $id) {
+            $lemma = Lemma::findOrFail($id);
 
-        $bases = $request->bases;
-        //        $bases[0] = $lemma->reverseLemma->updateStemAffixFromBase($bases[0]);
+            $before = $lemma->textWordformPairKeys();
 
-        $dialect_id = $request->dialect_id;
-        if (!(int)$dialect_id) {
-            $dialect_id = NULL;
-        }
-        // WORDFORMS UPDATING
-        //remove all records from table lemma_wordform
-        $lemma->updateBases($bases, $request->dialect_id_for_bases);
-        $lemma->wordforms()->wherePivot('dialect_id', $dialect_id)->detach();
-        //add wordforms from full table of gramsets
-        $lemma->storeWordformGramsets($request->lang_wordforms, $request->lang_wordforms_dialect);
-        //add wordforms without gramsets
-        $lemma->storeWordformsEmpty($request->empty_wordforms, $dialect_id);
+            $dialect_id = (int) $request->dialect_id;
+            $dialect_id = $dialect_id ?: null;
 
-        // updates links with text examples
-        //        $lemma->updateTextLinks();
-        $lemma->updateTextWordformLinks();
-        $lemma->updateWordformTotal();
-        $lemma->updated_at = date('Y-m-d H:i:s');
-        $lemma->save();
+            $lemma->updateBases(
+                $request->bases,
+                $request->dialect_id_for_bases
+            );
 
-        return Redirect::to('/dict/lemma/' . ($lemma->id) . ($this->args_by_get) . ($this->args_by_get ? '&' : '?') . 'update_text_links=1')
-            ->withSuccess(trans('messages.updated_success'));
+            $lemma->wordforms()
+                ->wherePivot('dialect_id', $dialect_id)
+                ->detach();
+
+            $lemma->storeWordformGramsets(
+                $request->lang_wordforms,
+                $request->lang_wordforms_dialect
+            );
+
+            $lemma->storeWordformsEmpty(
+                $request->empty_wordforms,
+                $dialect_id
+            );
+
+            $after = $lemma->textWordformPairKeys();
+
+            foreach ($before + $after as $pair) {
+                $gramset_id = TextWordform::positiveGramsetId($pair[1]);
+
+                if ($gramset_id === null) {
+                    continue;
+                }
+
+                Wordform::reconcileTextWordformLinksForPair(
+                    $pair[0],
+                    $gramset_id
+                );
+            }
+
+            $lemma->updateMeaningTextLinks();
+
+            $lemma->updateWordformTotal();
+            $lemma->updated_at = date('Y-m-d H:i:s');
+            $lemma->save();
+
+            return Redirect::to(
+                '/dict/lemma/' . $lemma->id . $this->args_by_get
+            )->withSuccess(trans('messages.updated_success'));
+        });
     }
 
     public function destroy(Request $request, $id)

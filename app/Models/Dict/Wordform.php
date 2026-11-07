@@ -165,7 +165,7 @@ class Wordform extends Model
     {
         $gramset_id = TextWordform::positiveGramsetId($gramset_id);
 
-        if ($gramset_id === false) {
+        if ($gramset_id === null) {
             return;
         }
 
@@ -366,7 +366,7 @@ class Wordform extends Model
                 ? $old_relevances[$word->text_id][$word->w_id]
                 : 1;
 
-            $rows[] = [$word->text_id, $word->w_id, $this->id, $this->pivot->gramset_id, $word->word_id, $relevance];
+            $rows[] = [$word->text_id, $word->w_id, $this->id, $gramset_id, $word->word_id, $relevance];
         }
 
         // Удаляем только устаревшие пары (text_id, w_id), которых больше нет в новом наборе
@@ -395,19 +395,34 @@ class Wordform extends Model
     }
 
     /**
-     * Saves relevances <> 1 into array 
-     * 
-     * @return Array
+     * Saves relevances <> 1 into array.
+     *
+     * @return array
      */
     public function getRelevances()
     {
-        $relevances = [];
-        $texts = $this->texts()->wherePivot('gramset_id', $this->pivot->gramset_id)->get();
-        foreach ($texts as $text) {
-            if ($text->pivot->relevance != 1) {
-                $relevances[$text->id][$text->pivot->w_id] = $text->pivot->relevance;
-            }
+        $gramset_id = TextWordform::positiveGramsetId(
+            $this->pivot->gramset_id
+        );
+
+        if ($gramset_id === null) {
+            return [];
         }
+
+        $rows = DB::connection('mysql')
+            ->table('text_wordform')
+            ->where('wordform_id', $this->id)
+            ->where('gramset_id', $gramset_id)
+            ->where('relevance', '<>', 1)
+            ->get(['text_id', 'w_id', 'relevance']);
+
+        $relevances = [];
+
+        foreach ($rows as $row) {
+            $relevances[$row->text_id][$row->w_id]
+                = (int) $row->relevance;
+        }
+
         return $relevances;
     }
 

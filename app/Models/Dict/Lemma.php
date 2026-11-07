@@ -522,14 +522,40 @@ class Lemma extends Model
     public function wordformWithLink($w, $wordform)
     {
         $lang_id = $this->lang_id;
-        $word_count =  $wordform->texts()->whereLangId($lang_id)
-            ->wherePivot('gramset_id', $wordform->pivot->gramset_id)->wherePivot('relevance', '>', 0)->count();
+        $gramset_id = $wordform->pivot->gramset_id;
+
+        $sql = 'SELECT COUNT(*) AS word_count
+            FROM text_wordform AS tw
+                FORCE INDEX (idx_tw_form_gram_rel_word)
+            STRAIGHT_JOIN texts AS t ON t.id = tw.text_id
+            WHERE tw.wordform_id = ?
+              AND tw.relevance > 0
+              AND t.lang_id = ?';
+
+        $bindings = [
+            $wordform->id,
+            $lang_id,
+        ];
+
+        if ($gramset_id === null) {
+            $sql .= ' AND tw.gramset_id IS NULL';
+        } else {
+            $sql .= ' AND tw.gramset_id = ?';
+            $bindings[] = $gramset_id;
+        }
+
+        $rows = DB::connection('mysql')->select($sql, $bindings);
+        $word_count = (int) $rows[0]->word_count;
+
         if (!$word_count) {
             return $w;
         }
-        return '<a href="' . LaravelLocalization::localizeURL('/corpus/text/?search_lang=' . $lang_id
-            . '&search_word=' . Grammatic::changeLetters($wordform->wordform, $lang_id))
-            . '" title="' . $word_count . '">' . $w . '</a>';
+
+        return '<a href="' . LaravelLocalization::localizeURL(
+            '/corpus/text/?search_lang=' . $lang_id
+                . '&search_word='
+                . Grammatic::changeLetters($wordform->wordform, $lang_id)
+        ) . '" title="' . $word_count . '">' . $w . '</a>';
     }
 
     public function getWordformsByWord($word)
