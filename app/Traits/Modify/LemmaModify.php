@@ -418,201 +418,212 @@ trait LemmaModify
         $wordform->updateMeaningTextLinks($this);
     }
 
-    /**
-     * Update meaning-text links or creating new links for all meanings
-     *
-     * @return NULL
-     */
     public function updateMeaningTextLinks()
     {
-        $lang_id = (int) $this->lang_id;
+        $db = DB::connection('mysql');
 
-        $forms = [(string) $this->lemma_for_search];
+        $temporary_tables = [
+            'tmp_mt_candidates',
+            'tmp_mt_removed_positive',
+            'tmp_mt_blocked',
+        ];
 
-        $wordforms = DB::table('lemma_wordform')
-            ->where('lemma_id', $this->id)
-            ->lists('wordform_for_search');
-
-        foreach ($wordforms as $wordform) {
-            $forms[] = (string) $wordform;
+        foreach ($temporary_tables as $table) {
+            $db->statement('DROP TEMPORARY TABLE IF EXISTS ' . $table);
         }
-
-        $forms = array_values(array_unique(array_filter($forms)));
-
-        if (!$forms) {
-            return;
-        }
-
-        $meaning_ids = DB::table('meanings')
-            ->where('lemma_id', $this->id)
-            ->lists('id');
-
-        if (!$meaning_ids) {
-            return;
-        }
-
-        $form_conditions = [];
-        foreach ($forms as $form) {
-            $form_conditions[] = 'w.word LIKE ?';
-        }
-
-        $form_sql = implode(' OR ', $form_conditions);
-
-        $meaning_placeholders = implode(
-            ',',
-            array_fill(0, count($meaning_ids), '?')
-        );
-
-        DB::statement('DROP TEMPORARY TABLE IF EXISTS tmp_lemma_words');
-        DB::statement('DROP TEMPORARY TABLE IF EXISTS tmp_meaning_text_relevance');
-        DB::statement('DROP TEMPORARY TABLE IF EXISTS tmp_blocked_words');
 
         try {
-            DB::statement(
-                'CREATE TEMPORARY TABLE tmp_lemma_words (
-                text_id INT UNSIGNED NOT NULL,
-                s_id INT UNSIGNED NOT NULL,
-                w_id INT UNSIGNED NOT NULL,
-                word_id INT UNSIGNED NOT NULL,
-                PRIMARY KEY (text_id, w_id)
-            ) ENGINE=InnoDB'
-            );
+            $result = $db->transaction(function () use ($db) {
+                $lemma = $db->table('lemmas')
+                    ->where('id', $this->id)
+                    ->lockForUpdate()
+                    ->first();
 
-            $word_bindings = [$lang_id];
-            foreach ($forms as $form) {
-                $word_bindings[] = $form;
-            }
+                if (!$lemma) {
+                    throw new \RuntimeException('Лемма не найдена.');
+                }
 
-            DB::insert(
-                'INSERT INTO tmp_lemma_words
-                (text_id, s_id, w_id, word_id)
-             SELECT
-                w.text_id,
-                w.s_id,
-                w.w_id,
-                w.id
-             FROM words w
-             INNER JOIN texts t ON t.id = w.text_id
-             WHERE t.lang_id = ?
-               AND (' . $form_sql . ')',
-                $word_bindings
-            );
+                $meaning_ids = $db->table('meanings')
+                    ->where('lemma_id', $this->id)
+                    ->lists('id');
 
-            DB::statement(
-                'CREATE TEMPORARY TABLE tmp_meaning_text_relevance (
-                meaning_id INT UNSIGNED NOT NULL,
-                text_id INT UNSIGNED NOT NULL,
-                w_id INT UNSIGNED NOT NULL,
-                relevance TINYINT UNSIGNED NOT NULL,
-                PRIMARY KEY (meaning_id, text_id, w_id),
-                KEY tmp_meaning_text_relevance_text_w
-                    (text_id, w_id, relevance)
-            ) ENGINE=InnoDB'
-            );
+                $result = [
+                    'deleted' => 0,
+                    'reset' => 0,
+                    'updated' => 0,
+                    'inserted' => 0,
+                ];
 
-            DB::insert(
-                'INSERT INTO tmp_meaning_text_relevance
-                (meaning_id, text_id, w_id, relevance)
-             SELECT
-                meaning_id,
-                text_id,
-                w_id,
-                relevance
-             FROM meaning_text
-             WHERE meaning_id IN (' . $meaning_placeholders . ')
-               AND relevance <> 1',
-                $meaning_ids
-            );
+                if (!$meaning_ids) {
+                    return $result;
+                }
 
-            DB::statement(
-                'CREATE TEMPORARY TABLE tmp_blocked_words (
-                text_id INT UNSIGNED NOT NULL,
-                w_id INT UNSIGNED NOT NULL,
-                PRIMARY KEY (text_id, w_id)
-            ) ENGINE=InnoDB'
-            );
+                $forms = [(string) $lemma->lemma_for_search];
 
-            /*
-         * Позиции, уже вручную закреплённые за значениями других лемм.
-         * Это единственная проверка основной meaning_text для кандидатов.
-         */
-            DB::insert(
-                'INSERT IGNORE INTO tmp_blocked_words
-                (text_id, w_id)
-             SELECT
-                mt.text_id,
-                mt.w_id
-             FROM meaning_text mt
-             INNER JOIN tmp_lemma_words lw
-                ON lw.text_id = mt.text_id
-               AND lw.w_id = mt.w_id
-             WHERE mt.relevance > 1
-               AND mt.meaning_id NOT IN (' . $meaning_placeholders . ')',
-                $meaning_ids
-            );
+                $wordforms = $db->table('lemma_wordform')
+                    ->where('lemma_id', $this->id)
+                    ->lists('wordform_for_search');
 
-            /*
-         * Ручной приоритет другого значения этой же леммы также блокирует
-         * автоматическую relevance = 1 для остальных значений.
-         */
-            DB::statement(
-                'INSERT IGNORE INTO tmp_blocked_words
-                (text_id, w_id)
-             SELECT
-                text_id,
-                w_id
-             FROM tmp_meaning_text_relevance
-             WHERE relevance > 1'
-            );
+                foreach ($wordforms as $wordform) {
+                    $forms[] = (string) $wordform;
+                }
 
-            DB::delete(
-                'DELETE FROM meaning_text
-             WHERE meaning_id IN (' . $meaning_placeholders . ')',
-                $meaning_ids
-            );
+                $forms = array_values(array_unique(array_filter($forms, function ($form) {
+                    return $form !== '';
+                })));
 
-            /*
-         * Никаких EXISTS: только небольшие временные таблицы с индексами.
-         */
-            DB::insert(
-                'INSERT INTO meaning_text
-                (meaning_id, text_id, s_id, word_id, relevance, w_id)
-             SELECT
-                m.id,
-                lw.text_id,
-                lw.s_id,
-                lw.word_id,
-                CASE
-                    WHEN own.relevance IS NOT NULL THEN own.relevance
-                    WHEN blocked.w_id IS NOT NULL THEN 0
-                    ELSE 1
-                END,
-                lw.w_id
-             FROM meanings m
-             CROSS JOIN tmp_lemma_words lw
-             LEFT JOIN tmp_meaning_text_relevance own
-                ON own.meaning_id = m.id
-               AND own.text_id = lw.text_id
-               AND own.w_id = lw.w_id
-             LEFT JOIN tmp_blocked_words blocked
-                ON blocked.text_id = lw.text_id
-               AND blocked.w_id = lw.w_id
-             WHERE m.lemma_id = ?',
-                [$this->id]
-            );
+                if (!$forms) {
+                    throw new \RuntimeException('Нет поисковых форм: пересчёт meaning_text отменён.');
+                }
+
+                $meaning_placeholders = implode(',', array_fill(0, count($meaning_ids), '?'));
+
+                $form_sql = implode(' OR ', array_fill(0, count($forms), 'w.word LIKE ?'));
+
+                $db->statement('CREATE TEMPORARY TABLE tmp_mt_candidates (
+                    text_id INT UNSIGNED NOT NULL,
+                    w_id INT UNSIGNED NOT NULL,
+                    s_id INT UNSIGNED NOT NULL,
+                    word_id INT UNSIGNED NOT NULL,
+                    PRIMARY KEY (text_id, w_id)) ENGINE=InnoDB');
+
+                $db->insert(
+                    'INSERT INTO tmp_mt_candidates
+                    (text_id, w_id, s_id, word_id)
+                 SELECT w.text_id, w.w_id, w.s_id, w.id
+                 FROM words w
+                 INNER JOIN texts t ON t.id = w.text_id
+                 WHERE t.lang_id = ?
+                   AND (' . $form_sql . ')',
+                    array_merge([(int) $lemma->lang_id], $forms)
+                );
+
+                $db->statement('CREATE TEMPORARY TABLE tmp_mt_removed_positive (
+                    text_id INT UNSIGNED NOT NULL,
+                    w_id INT UNSIGNED NOT NULL,
+                    PRIMARY KEY (text_id, w_id)) ENGINE=InnoDB');
+
+                $db->insert(
+                    'INSERT INTO tmp_mt_removed_positive (text_id, w_id)
+                 SELECT DISTINCT mt.text_id, mt.w_id
+                 FROM meaning_text mt
+                 LEFT JOIN tmp_mt_candidates c
+                    ON c.text_id = mt.text_id
+                   AND c.w_id = mt.w_id
+                 WHERE mt.meaning_id IN (' . $meaning_placeholders . ')
+                   AND mt.relevance > 1
+                   AND c.text_id IS NULL',
+                    $meaning_ids
+                );
+
+                $result['deleted'] = $db->delete(
+                    'DELETE mt
+                 FROM meaning_text mt
+                 LEFT JOIN tmp_mt_candidates c
+                    ON c.text_id = mt.text_id
+                   AND c.w_id = mt.w_id
+                 WHERE mt.meaning_id IN (' . $meaning_placeholders . ')
+                   AND c.text_id IS NULL',
+                    $meaning_ids
+                );
+
+                $db->statement('CREATE TEMPORARY TABLE tmp_mt_blocked (
+                    text_id INT UNSIGNED NOT NULL,
+                    w_id INT UNSIGNED NOT NULL,
+                    PRIMARY KEY (text_id, w_id)) ENGINE=InnoDB');
+
+                $db->insert('INSERT IGNORE INTO tmp_mt_blocked (text_id, w_id)
+                 SELECT mt.text_id, mt.w_id
+                 FROM tmp_mt_candidates c
+                 INNER JOIN meaning_text mt
+                    ON mt.text_id = c.text_id
+                   AND mt.w_id = c.w_id
+                 WHERE mt.relevance > 1');
+
+                $db->insert(
+                    'INSERT IGNORE INTO tmp_mt_blocked (text_id, w_id)
+                 SELECT mt.text_id, mt.w_id
+                 FROM tmp_mt_removed_positive r
+                 INNER JOIN meaning_text mt
+                    ON mt.text_id = r.text_id
+                   AND mt.w_id = r.w_id
+                 WHERE mt.relevance > 1'
+                );
+
+                $result['reset'] = $db->update('UPDATE meaning_text mt
+                 INNER JOIN tmp_mt_removed_positive r
+                    ON r.text_id = mt.text_id
+                   AND r.w_id = mt.w_id
+                 LEFT JOIN tmp_mt_blocked b
+                    ON b.text_id = mt.text_id
+                   AND b.w_id = mt.w_id
+                 SET mt.relevance = 1
+                 WHERE mt.relevance = 0
+                   AND b.text_id IS NULL');
+
+                $result['updated'] = $db->update('UPDATE meaning_text mt
+                 INNER JOIN tmp_mt_candidates c
+                    ON c.text_id = mt.text_id
+                   AND c.w_id = mt.w_id
+                 LEFT JOIN tmp_mt_blocked b
+                    ON b.text_id = mt.text_id
+                   AND b.w_id = mt.w_id
+                 SET
+                    mt.relevance = CASE
+                        WHEN mt.relevance = 1
+                             AND b.text_id IS NOT NULL THEN 0
+                        ELSE mt.relevance
+                    END,
+                    mt.s_id = c.s_id,
+                    mt.word_id = c.word_id
+                 WHERE mt.meaning_id IN (' . $meaning_placeholders . ')
+                   AND (
+                        NOT (mt.s_id <=> c.s_id)
+                        OR NOT (mt.word_id <=> c.word_id)
+                        OR (
+                            mt.relevance = 1
+                            AND b.text_id IS NOT NULL
+                        )
+                   )', $meaning_ids);
+
+                $db->insert(
+                    'INSERT INTO meaning_text
+                    (meaning_id, text_id, s_id, word_id, relevance, w_id)
+                 SELECT m.id, c.text_id, c.s_id, c.word_id,
+                    CASE
+                        WHEN b.text_id IS NOT NULL THEN 0
+                        ELSE 1
+                    END,
+                    c.w_id
+                 FROM meanings m
+                 CROSS JOIN tmp_mt_candidates c
+                 LEFT JOIN meaning_text mt
+                    ON mt.meaning_id = m.id
+                   AND mt.text_id = c.text_id
+                   AND mt.w_id = c.w_id
+                 LEFT JOIN tmp_mt_blocked b
+                    ON b.text_id = c.text_id
+                   AND b.w_id = c.w_id
+                 WHERE m.lemma_id = ?
+                   AND mt.meaning_id IS NULL',
+                    [$this->id]
+                );
+
+                $counts = $db->select('SELECT ROW_COUNT() AS inserted_count');
+
+                $result['inserted'] = (int) $counts[0]->inserted_count;
+
+                return $result;
+            });
         } finally {
-            DB::statement(
-                'DROP TEMPORARY TABLE IF EXISTS tmp_blocked_words'
-            );
-
-            DB::statement(
-                'DROP TEMPORARY TABLE IF EXISTS tmp_meaning_text_relevance'
-            );
-
-            DB::statement(
-                'DROP TEMPORARY TABLE IF EXISTS tmp_lemma_words'
-            );
+            foreach (array_reverse($temporary_tables) as $table) {
+                $db->statement('DROP TEMPORARY TABLE IF EXISTS ' . $table);
+            }
         }
+
+        \Illuminate\Support\Facades\Log::info('[meaning_text reconcile] lemma_id=' . $this->id, $result);
+
+        return $result;
     }
 
     public function remove()
