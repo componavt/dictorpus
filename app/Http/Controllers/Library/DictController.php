@@ -818,6 +818,16 @@ class DictController extends Controller
         );
     }
 
+    /**
+     * Показывает помощь эксперту с сохранением параметров списка.
+     */
+    public function synsetsHelp()
+    {
+        $url_args = $this->url_args;
+
+        return view('service.dict.synsets.help', compact('url_args'));
+    }
+
     public function findNewSynset(Request $request)
     {
         $url_args = $this->url_args;

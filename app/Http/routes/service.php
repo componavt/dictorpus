@@ -44,6 +44,7 @@ Route::group(
         Route::get('dict/school/select', 'Library\DictController@schoolSelect');
         Route::get('dict/synsets', 'Library\DictController@synsetsView')->name('dict.synsets.index');
         Route::get('dict/synsets/find_new_synset', 'Library\DictController@findNewSynset')->name('dict.synsets.find_new');
+        Route::get('dict/synsets/help', 'Library\DictController@synsetsHelp')->name('dict.synsets.help');
         Route::get('dict/wordforms/{lemma_id}', 'Library\DictController@wordforms');
         Route::get('dict/zaikov', 'Library\DictController@zaikovView');
         Route::get('dict/zaikov/select', 'Library\DictController@zaikovSelect');
