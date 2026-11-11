@@ -10,6 +10,7 @@ return [
     |
     */
 
+    'about_project' => '',
     'archive' => 'archive data (archive name, code)',
     'author' => 'author / compiler / translator',
     'bibl_descr' => 'full bibliographic description',

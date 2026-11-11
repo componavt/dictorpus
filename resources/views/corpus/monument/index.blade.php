@@ -21,7 +21,7 @@
     @endif
 </p>
 
-<p style="font-size: 1.5em">{!! trans('monument.about_project') !!}</p>
+<p style="font-size: 1.2em; line-height:150%">{!! trans('monument.about_project') !!}</p>
 
 @include('corpus.monument._search_form',['url' => '/corpus/monument/'])
 
