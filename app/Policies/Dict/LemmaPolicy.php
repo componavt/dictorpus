@@ -12,37 +12,52 @@ class LemmaPolicy
     use HandlesAuthorization;
 
     /**
-     * Create a new policy instance.
+     * Проверяет возможность создания леммы.
      *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-    
-    /**
-     * Determine if the given lemma can be updated by the user.
-     *
-     * @param  User  $user
-     * @param  Lemma  $lemma
+     * @param User $user Проверяемый пользователь.
+     * @param Lemma $lemma Лемма.
      * @return bool
      */
-
     public function store(User $user, Lemma $lemma)
     {
-        $permission = 'dict.edit';
-        return $user->hasAccess($permission);
+        return $this->canEdit($user);
     }
-    
+
+    /**
+     * Проверяет возможность открытия редактора леммы.
+     *
+     * @param User $user Проверяемый пользователь.
+     * @param Lemma $lemma Лемма.
+     * @return bool
+     */
     public function edit(User $user, Lemma $lemma)
     {
-        $permission = 'dict.edit';
-        return $user->hasAccess($permission);
+        return $this->canEdit($user);
     }
+
+    /**
+     * Проверяет возможность изменения леммы.
+     *
+     * @param User $user Проверяемый пользователь.
+     * @param Lemma $lemma Лемма.
+     * @return bool
+     */
     public function update(User $user, Lemma $lemma)
     {
-        $permission = 'dict.edit';
-        return $user->hasAccess($permission);
+        return $this->canEdit($user);
+    }
+
+    /**
+     * Учитывает общий переключатель и прежнее право пользователя.
+     *
+     * Проверяет именно переданного пользователя, а не текущую сессию.
+     *
+     * @param User $user Проверяемый пользователь.
+     * @return bool
+     */
+    protected function canEdit(User $user)
+    {
+        return User::editingEnabled()
+            && $user->hasAccess('dict.edit');
     }
 }

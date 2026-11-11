@@ -47,6 +47,7 @@ class WordController extends Controller
                 'edit',
                 'update',
                 'destroy',
+                'addGramset',
                 'updateMeaningLinks',
                 'updateWordBlock'
             ]]
@@ -161,11 +162,8 @@ class WordController extends Controller
      */
     public function loadWordBlock($text_id, $w_id)
     {
-        if (User::checkAccess('dict.edit')) {
+        if (User::checkAccess('corpus.edit')) {
             $word = Word::whereTextId($text_id)->whereWId($w_id)->first();
-            // 2020-10-24 пока отключим, чтобы быстрее работало...            
-            //            $word->updateMeaningAndWordformText();
-            // 2020-11-20 добавим условие, потому что сильно тормозит
             $text = Text::find($text_id);
             if (!$text->wordforms()->where('w_id', $w_id)->count()) {
                 $word->updateWordformText();

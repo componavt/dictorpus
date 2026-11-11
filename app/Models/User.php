@@ -230,21 +230,45 @@ class User extends EloquentUser
     }
 
     /**
-     * Checks access for a permission
+     * Проверяет, разрешено ли редактирование настройкой приложения.
      *
-     * @param  string $permission, f.e. 'dict.edit'
-     * @return boolean
+     * Единый переключатель используется общей проверкой прав и политиками.
+     * Не изменяет сохранённые права пользователей и ролей.
+     *
+     * @return bool
+     */
+    public static function editingEnabled()
+    {
+        return (bool) config('editing.enabled', true);
+    }
+
+    /**
+     * Проверяет право пользователя с учётом общего запрета редактирования.
+     *
+     * При выключенном редактировании возвращает false для любого права,
+     * включая admin. При включённом сохраняет прежнее поведение:
+     * администратору разрешены все действия, остальным — выданные права.
+     *
+     * Метод используется middleware, контроллерами и элементами интерфейса.
+     * Он не заменяет обязательную проверку доступа в операциях записи.
+     *
+     * @param string $permission Проверяемое право, например dict.edit.
+     * @return bool
      */
     public static function checkAccess(string $permission)
     {
-        $user = Sentinel::check();
-        if (!$user)
+        if (!self::editingEnabled()) {
             return false;
-        //print "<pre>";
-        //var_dump($user);
-        if ($user->hasAccess('admin') || $user->hasAccess($permission))
-            return true;
-        return false;
+        }
+
+        $user = Sentinel::check();
+
+        if (!$user) {
+            return false;
+        }
+
+        return $user->hasAccess('admin')
+            || $user->hasAccess($permission);
     }
 
     public function getLastActionTime()
