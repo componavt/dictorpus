@@ -661,20 +661,106 @@ trait TextModify
             return $error_message;
         }
 
+        $seen_w_ids = [];
+
+        foreach ($sxe->xpath('//w') as $xml_word) {
+            $raw_w_id = (string) $xml_word['id'];
+
+            $w_id = filter_var(
+                $raw_w_id,
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1]]
+            );
+
+            if ($w_id === false) {
+                return 'Invalid word id "' . $raw_w_id
+                    . '" in sentence ' . $s_id . '.';
+            }
+
+            if (isset($seen_w_ids[$w_id])) {
+                return 'Duplicate word id ' . $w_id
+                    . ' in sentence ' . $s_id
+                    . '. No words or annotation links were changed.';
+            }
+
+            $seen_w_ids[$w_id] = true;
+        }
+
         $checked_words = $without_check ? [] : $this->checkedWords($text_xml);
         $text_id = (int)$this->id;
 
-        DB::transaction(function () use ($s_id, $text_id, $sentence, $sxe, $checked_words) {
-            $w_ids = DB::table('words')
+        DB::transaction(function () use ($s_id, $text_id, $sentence, $sxe, $checked_words, $without_check) {
+            $old_w_ids = [];
+
+            $old_words = DB::table('words')
                 ->where('text_id', $text_id)
                 ->where('s_id', $s_id)
-                ->pluck('w_id');
+                ->get(['w_id']);
 
-            if ($w_ids) {
-                DB::table('text_wordform')
+            foreach ($old_words as $old_word) {
+                $old_word = (array) $old_word;
+                $old_w_ids[] = (int) $old_word['w_id'];
+            }
+
+            // Проверяем, что новые w_id не принадлежат другому предложению.
+            $xml_w_ids = [];
+
+            foreach ($sxe->xpath('//w') as $xml_word) {
+                $xml_w_ids[] = (int) $xml_word['id'];
+            }
+
+            if ($xml_w_ids) {
+                $conflicts = DB::table('words')
                     ->where('text_id', $text_id)
-                    ->whereIn('w_id', $w_ids)
-                    ->delete();
+                    ->whereIn('w_id', $xml_w_ids)
+                    ->where(function ($query) use ($s_id) {
+                        $query->where('s_id', '<>', $s_id)
+                            ->orWhereNull('s_id');
+                    })
+                    ->count();
+
+                if ($conflicts > 0) {
+                    throw new \RuntimeException(
+                        'Word ids conflict with another sentence. '
+                            . 'No changes were committed.'
+                    );
+                }
+            }
+
+            // text_wordform здесь не удаляем:
+            // оценки прочитает updateWordformText() после пересоздания слов.
+
+            $old_meaning_relevances = [];
+
+            if (!$without_check) {
+                $old_meaning_rows = DB::table('meaning_text')
+                    ->where('text_id', $text_id)
+                    ->where('s_id', $s_id)
+                    ->get();
+
+                foreach ($old_meaning_rows as $row) {
+                    $row = (array) $row;
+
+                    $w_id = (int) $row['w_id'];
+                    $meaning_id = (int) $row['meaning_id'];
+                    $relevance = (int) $row['relevance'];
+
+                    if (
+                        isset($old_meaning_relevances[$w_id])
+                        && array_key_exists(
+                            $meaning_id,
+                            $old_meaning_relevances[$w_id]
+                        )
+                        && $old_meaning_relevances[$w_id][$meaning_id] !== $relevance
+                    ) {
+                        throw new \RuntimeException(
+                            'Conflicting meaning relevances for w_id '
+                                . $w_id . ', meaning_id ' . $meaning_id
+                        );
+                    }
+
+                    $old_meaning_relevances[$w_id][$meaning_id] = $relevance;
+                }
             }
 
             DB::table('meaning_text')
@@ -687,11 +773,75 @@ trait TextModify
                 ->where('s_id', $s_id)
                 ->delete();
 
-            $this->updateMeaningAndWordformSentence(
-                $sentence,
-                $sxe->xpath('//w'),
-                $checked_words ?? null
-            );
+            $this->updateMeaningAndWordformSentence($sentence, $sxe->xpath('//w'), $checked_words ?? null);
+
+            $current_meaning_rows = DB::table('meaning_text')
+                ->where('text_id', $text_id)
+                ->where('s_id', $s_id)
+                ->get();
+
+            $has_selected_meaning = [];
+
+            foreach ($current_meaning_rows as $row) {
+                $row = (array) $row;
+
+                $w_id = (int) $row['w_id'];
+                $meaning_id = (int) $row['meaning_id'];
+
+                if (
+                    ($old_meaning_relevances[$w_id][$meaning_id] ?? null) === 2
+                ) {
+                    $has_selected_meaning[$w_id] = true;
+                }
+            }
+
+            foreach ($current_meaning_rows as $row) {
+                $row = (array) $row;
+
+                $w_id = (int) $row['w_id'];
+                $meaning_id = (int) $row['meaning_id'];
+
+                $relevance = $old_meaning_relevances[$w_id][$meaning_id]
+                    ?? (!empty($has_selected_meaning[$w_id]) ? 0 : 1);
+
+                DB::table('meaning_text')
+                    ->where('text_id', $text_id)
+                    ->where('s_id', $s_id)
+                    ->where('w_id', $w_id)
+                    ->where('meaning_id', $meaning_id)
+                    ->where('word_id', $row['word_id'])
+                    ->update(['relevance' => $relevance]);
+            }
+
+            $new_words = Word::where('text_id', $text_id)
+                ->where('s_id', $s_id)
+                ->get();
+
+            $new_w_ids = [];
+
+            foreach ($new_words as $word_obj) {
+                $new_w_ids[] = (int) $word_obj->w_id;
+                $word_obj->updateWordformText($without_check);
+            }
+
+            // Убираем связи слов, которые были в предложении, но отсутствуют после пересоздания.
+            $removed_w_ids = array_values(array_diff($old_w_ids, $new_w_ids));
+
+            if ($removed_w_ids) {
+                $remaining_words = DB::table('words')
+                    ->where('text_id', $text_id)
+                    ->whereIn('w_id', $removed_w_ids)
+                    ->count();
+
+                if ($remaining_words > 0) {
+                    throw new \RuntimeException('Removed word ids are still used by another sentence. No changes were committed.');
+                }
+
+                DB::table('text_wordform')
+                    ->where('text_id', $text_id)
+                    ->whereIn('w_id', $removed_w_ids)
+                    ->delete();
+            }
         });
     }
 
@@ -747,7 +897,7 @@ trait TextModify
                 'text_id' => $text_id,
                 's_id' => $s_id,
                 'w_id' => $w_id,
-                'word' => $word_text,
+                'word' => $word_for_search,
                 'checked' => ($checked_words && in_array($w_id, $checked_words)) ? 1 : 0,
                 'word_number' => $word_number,
                 'sentence_id' => $sentence_id,
@@ -989,20 +1139,32 @@ trait TextModify
     }
 
     /**
-     * set links between a word (of some text) and a wordform-gramset in the dictionary
-     * 
-     * @param Array $checked_relevances [<wordform1_id>_<gramset1_id> => [word, relevance1], <wordform2_id>_<gramset2_id> => [word, relevance2], ... ]
-     * @param INT $lang_id
-     * $retutn INT - the number of links with meanings
+     * Добавляет найденные в словаре грамматические разборы вхождения слова.
+     *
+     * Для найденных пар сохраняет переданные оценки. Новые пары получают
+     * relevance=0, если среди найденных есть ранее выбранная пара с оценкой 2,
+     * иначе relevance=1.
+     *
+     * @param array $checked_relevances Оценки по ключам wordform_id_gramset_id.
+     * @param \App\Models\Corpus\Word $word_obj Вхождение слова в тексте.
+     * @return void
      */
     public function setWordforms($checked_relevances, $word_obj)
     {
-        if (in_array(2, array_values($checked_relevances))) {
-            $has_checked = true;
-        } else {
-            $has_checked = false;
+        $wordforms = self::getWordformsByWord(remove_diacritics($word_obj->word), $this->lang_id);
+
+        $has_checked = false;
+
+        foreach ($wordforms as $wordform) {
+            $wg_id = $wordform->id . '_' . $wordform->gramset_id;
+
+            if ((int) ($checked_relevances[$wg_id] ?? 1) === 2) {
+                $has_checked = true;
+                break;
+            }
         }
-        foreach (self::getWordformsByWord(remove_diacritics($word_obj->word), $this->lang_id) as $wordform) {
+
+        foreach ($wordforms as $wordform) {
             $wg_id = $wordform->id . '_' . $wordform->gramset_id;
             $relevance = $checked_relevances[$wg_id] ?? ($has_checked ? 0 : 1);
             $this->addWordform($wordform->id, $wordform->gramset_id, $word_obj->id, $word_obj->w_id, $relevance);
@@ -1037,28 +1199,109 @@ trait TextModify
         $this->appendWordformRowsFromList($wordform_rows, $checked_relevances, $word_obj, $wordforms);
     }
 
+    /**
+     * Добавляет грамматический разбор или проверяет существующую связь.
+     *
+     * Недопустимые gramset_id и дублирующиеся пары пропускаются.
+     * Для существующей пары допускается только восстановление ссылки
+     * на отсутствующее слово; её relevance при этом не меняется.
+     *
+     * @param int $wordform_id Идентификатор словоформы.
+     * @param int|null $gramset_id Идентификатор набора грамматических признаков.
+     * @param int $word_id Идентификатор актуальной записи words.
+     * @param int $w_id Идентификатор вхождения слова в тексте.
+     * @param int $relevance Оценка для новой связи, не для существующей.
+     * @return void
+     */
     public function addWordform($wordform_id, $gramset_id, $word_id, $w_id, $relevance)
     {
         $gramset_id = TextWordform::positiveGramsetId($gramset_id);
+
         if ($gramset_id === null) {
             return;
         }
 
-        if ($this->wordforms()->wherePivot('wordform_id', $wordform_id)
-            ->wherePivot('w_id', $w_id)
-            ->wherePivot('gramset_id', $gramset_id)->count()
-        ) {
-            return;
-        }
-        $this->wordforms()->attach(
-            $wordform_id,
-            [
+        DB::transaction(function () use ($wordform_id, $gramset_id, $word_id, $w_id, $relevance) {
+            $query = DB::table('text_wordform')
+                ->where('text_id', $this->id)
+                ->where('w_id', $w_id)
+                ->where('wordform_id', $wordform_id)
+                ->where('gramset_id', $gramset_id);
+
+            $existing = (clone $query)->lockForUpdate()->get();
+
+            if (count($existing) > 1) {
+                return;
+            }
+
+            if (count($existing) === 1) {
+                $this->repairWordformWordId($query, (array) $existing[0], $word_id, $w_id);
+                return;
+            }
+
+            $this->wordforms()->attach($wordform_id, [
                 'w_id' => $w_id,
                 'word_id' => $word_id,
                 'gramset_id' => $gramset_id,
-                'relevance' => $relevance
-            ]
-        );
+                'relevance' => $relevance,
+            ]);
+        });
+    }
+
+    /**
+     * Восстанавливает word_id единственной существующей строки разбора.
+     *
+     * Вызывается внутри транзакции после блокировки и проверки уникальности пары.
+     * Если прежнее слово существует или новое слово неоднозначно, связь
+     * остаётся прежней. Обновляется только word_id, без изменения relevance.
+     *
+     * Проверяет соответствие нового слова по text_id + w_id, но не по XML.
+     * Это не замена расширенной проверке, выполняемой Artisan-командой.
+     *
+     * @param \Illuminate\Database\Query\Builder $query Запрос конкретной пары разбора.
+     * @param array $existing Полный снимок единственной строки пары.
+     * @param int $word_id Идентификатор предполагаемого актуального слова.
+     * @param int $w_id Идентификатор вхождения слова в тексте.
+     * @return void
+     * @throws \RuntimeException Если обновлена не одна строка.
+     */
+    private function repairWordformWordId($query, array $existing, $word_id, $w_id)
+    {
+        if ((int) $existing['word_id'] === (int) $word_id) {
+            return;
+        }
+
+        if ($existing['word_id'] !== null) {
+            $old_word = DB::table('words')->where('id', $existing['word_id'])->lockForUpdate()->first();
+
+            if ($old_word) {
+                return;
+            }
+        }
+
+        $words = DB::table('words')->where('text_id', $this->id)->where('w_id', $w_id)->lockForUpdate()->get(['id']);
+
+        if (count($words) !== 1) {
+            return;
+        }
+
+        $word = (array) $words[0];
+
+        if ((int) $word['id'] !== (int) $word_id) {
+            return;
+        }
+
+        $update = clone $query;
+
+        if ($existing['word_id'] === null) {
+            $update->whereNull('word_id');
+        } else {
+            $update->where('word_id', $existing['word_id']);
+        }
+
+        if ($update->update(['word_id' => $word_id]) !== 1) {
+            throw new \RuntimeException('Expected exactly one repaired text_wordform row.');
+        }
     }
 
     public function mergeNodes($sxe, $words)

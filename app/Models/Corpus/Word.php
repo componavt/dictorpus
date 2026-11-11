@@ -147,10 +147,25 @@ class Word extends Model
         }
     }
 
+    /**
+     * Удаляет слово и связанные с ним аннотации в одной транзакции.
+     *
+     * Грамматические связи удаляются по word_id, смысловые — через meanings().
+     * При ошибке удаления изменения в БД откатываются.
+     *
+     * @return void
+     */
     public function remove()
     {
-        $this->meanings()->detach();
-        $this->delete();
+        DB::transaction(function () {
+            DB::table('text_wordform')
+                ->where('word_id', $this->id)
+                ->delete();
+
+            $this->meanings()->detach();
+
+            $this->delete();
+        });
     }
 
     public static function getByTextWid($text_id, $w_id)
@@ -590,29 +605,60 @@ class Word extends Model
     }
 
     /**
-     * Sets links meaning - text - sentence AND text-wordform
+     * Пересоздаёт смысловые и грамматические связи вхождения слова.
+     *
+     * При $reset = false перед пересозданием считываются сохранённые оценки.
+     * При $reset = true прежние оценки не передаются в построение новых связей.
+     * Все изменения выполняются в одной транзакции.
+     *
+     * @param bool $reset Нужно ли пересоздать связи без сохранённых оценок.
+     * @return void
      */
     public function updateMeaningAndWordformText($reset = false)
     {
+        DB::transaction(function () use ($reset) {
+            $checked_meaning_words = $reset  ? [] : $this->checkedMeaningRelevances();
 
-        $checked_meaning_words = $reset ? [] : $this->checkedMeaningRelevances();
-        DB::statement("DELETE FROM meaning_text WHERE text_id=" . $this->text_id . " and w_id=" . $this->w_id);
-        $this->setMeanings($checked_meaning_words, $this->text->lang_id);
+            DB::table('meaning_text')
+                ->where('text_id', $this->text_id)
+                ->where('w_id', $this->w_id)
+                ->delete();
 
-        $checked_wordform_words = $reset ? [] : $this->checkedWordformRelevances();
-        DB::statement("DELETE FROM text_wordform WHERE text_id=" . $this->text_id . " and w_id=" . $this->w_id);
-        $this->text->setWordforms($checked_wordform_words, $this);
+            $this->setMeanings($checked_meaning_words, $this->text->lang_id);
+
+            $checked_wordform_words = $reset ? [] : $this->checkedWordformRelevances();
+
+            DB::table('text_wordform')
+                ->where('text_id', $this->text_id)
+                ->where('w_id', $this->w_id)
+                ->delete();
+
+            $this->text->setWordforms($checked_wordform_words, $this);
+        });
     }
 
     /**
-     * Sets links meaning - text - sentence AND text-wordform
+     * Пересоздаёт только грамматические связи вхождения слова.
+     *
+     * Связи определяются по text_id + w_id, поэтому могут быть восстановлены
+     * после пересоздания записи words и изменения её идентификатора.
+     * Смысловые связи не изменяются.
+     *
+     * @param bool $reset Нужно ли пересоздать связи без сохранённых оценок.
+     * @return void
      */
     public function updateWordformText($reset = false)
     {
+        DB::transaction(function () use ($reset) {
+            $checked_wordform_words = $reset ? [] : $this->checkedWordformRelevances();
 
-        $checked_wordform_words = $reset ? [] : $this->checkedWordformRelevances();
-        DB::statement("DELETE FROM text_wordform WHERE text_id=" . $this->text_id . " and w_id=" . $this->w_id);
-        $this->text->setWordforms($checked_wordform_words, $this);
+            DB::table('text_wordform')
+                ->where('text_id', $this->text_id)
+                ->where('w_id', $this->w_id)
+                ->delete();
+
+            $this->text->setWordforms($checked_wordform_words, $this);
+        });
     }
 
     // get old checked links meaning-text

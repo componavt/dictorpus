@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         \App\Console\Commands\BackfillSafeMeaningEn::class,
         \App\Console\Commands\BuildMeaningConceptCandidates::class,
+        \App\Console\Commands\RepairTextWordformWordIds::class,
     ];
 
     /**

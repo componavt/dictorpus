@@ -529,7 +529,7 @@ class Text extends Model implements HasMediaConversions
             ->join('lemma_wordform', 'lemma_wordform.wordform_id', '=', 'wordforms.id')
             ->where('lemma_wordform.lang_id', '=', $lang_id)
             ->where('lemma_wordform.wordform_for_search', '=', $word)
-            ->whereNotNull('lemma_wordform.gramset_id')
+            ->where('lemma_wordform.gramset_id', '>', 0)
             ->get();
 
         self::$wordformsCache[$key] = $wordforms;

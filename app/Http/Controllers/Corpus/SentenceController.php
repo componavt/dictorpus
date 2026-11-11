@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Corpus;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -238,11 +239,23 @@ class SentenceController extends Controller
 
         $text_xml = $request->input('text_xml');
         if ($text_xml && $sentence->text_xml != $text_xml) {
-            $sentence->text_xml = $text_xml;
-            $sentence->save();
-            $error_message = $text->updateMeaningAndWordformText($sentence, $text_xml);
-            if ($error_message) {
-                return $error_message;
+            DB::beginTransaction();
+
+            try {
+                $error_message = $text->updateMeaningAndWordformText($sentence, $text_xml);
+
+                if ($error_message) {
+                    DB::rollBack();
+                    return $error_message;
+                }
+
+                $sentence->text_xml = $text_xml;
+                $sentence->save();
+
+                DB::commit();
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                throw $e;
             }
         }
         $with_edit = true;
