@@ -499,12 +499,35 @@ class RepairTextWordformWordIds extends Command
     }
 
     /**
-     * Сопоставляет слово с единственным XML-вхождением во всём тексте.
+     * Сопоставляет поисковое слово с единственным XML-вхождением.
+     *
+     * В words.word хранится поисковая форма, а XML сохраняет исходное
+     * написание. Поэтому XML-слово преобразуется через changeLetters()
+     * с языком текста, как при подготовке word_for_search.
+     *
+     * При применении язык текста читается с блокировкой внутри транзакции.
+     * XML и сохранённое слово не изменяются.
      *
      * @return array Статус проверки и, при успехе, идентификатор слова.
      */
     protected function assessWordXml(array $word, $textId, $wId, $lock)
     {
+        $texts = $this->readRows(
+            DB::table('texts')->where('id', $textId),
+            $lock
+        );
+
+        if (count($texts) !== 1) {
+            return ['status' => 'text_missing_or_invalid_language'];
+        }
+
+        $text = (array) $texts[0];
+        $langId = $this->positiveInteger($text['lang_id']);
+
+        if ($langId === false) {
+            return ['status' => 'text_missing_or_invalid_language'];
+        }
+
         $index = $this->loadXmlIndex($textId, $lock);
 
         if ($index['invalid']) {
@@ -519,15 +542,23 @@ class RepairTextWordformWordIds extends Command
 
         $match = $matches[0];
 
+        $xmlWordForSearch = Grammatic::changeLetters(
+            trim((string) $match['word']),
+            $langId
+        );
+
         if (
             (int) $word['sentence_id'] !== $match['sentence_id']
             || (int) $word['s_id'] !== $match['s_id']
-            || $this->normalize($word['word']) !== $this->normalize($match['word'])
+            || $this->normalize($word['word']) !== $xmlWordForSearch
         ) {
             return ['status' => 'word_xml_mismatch'];
         }
 
-        return ['status' => 'candidate', 'word_id' => (int) $word['id']];
+        return [
+            'status' => 'candidate',
+            'word_id' => (int) $word['id'],
+        ];
     }
 
     /**
