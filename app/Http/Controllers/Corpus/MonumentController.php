@@ -8,8 +8,8 @@ use App\Http\Requests\MonumentRequest;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Illuminate\Support\Facades\Response;
+//use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+//use Illuminate\Support\Facades\Response;
 
 use App\Models\Dict\Dialect;
 use App\Models\Dict\Lang;
@@ -29,7 +29,7 @@ class MonumentController extends Controller
     {
         $this->middleware(
             'auth:corpus.edit,/corpus/monument/',
-            ['except' => ['index']]
+            ['except' => ['index', 'show']]
         );
 
         $this->url_args = Monument::urlArgs($request);

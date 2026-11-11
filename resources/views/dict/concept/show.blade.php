@@ -5,48 +5,47 @@
 @stop
 
 @section('body')
-        <p>
-            <a href="{{ LaravelLocalization::localizeURL('/dict/concept/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
-            
-        @if (User::checkAccess('ref.edit'))
-            | @include('widgets.form.button._edit', ['route' => '/dict/concept/'.$concept->id.'/edit'])
-            | @include('widgets.form.button._delete', ['route' => 'concept.destroy', 'args'=>['id' => $concept->id]]) 
-        @else
-            | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
-        @endif 
-            | <a href="">{{ trans('messages.history') }}</a>
-        </p>
-        
+<p>
+    <a href="{{ LaravelLocalization::localizeURL('/dict/concept/') }}{{$args_by_get}}">{{ trans('messages.back_to_list') }}</a>
+
+    @if (User::checkAccess('ref.edit'))
+    | @include('widgets.form.button._edit', ['route' => '/dict/concept/'.$concept->id.'/edit'])
+    | @include('widgets.form.button._delete', ['route' => 'concept.destroy', 'args'=>['id' => $concept->id]])
+    @else
+    | {{ trans('messages.edit') }} | {{ trans('messages.delete') }}
+    @endif
+    | <a href="">{{ trans('messages.history') }}</a>
+</p>
+
 <div class="row">
     <div class="col-sm-8">
         <h2>{{ $concept->text }}</h2>
-        
+
         <p><b>{{ trans('messages.category') }}:</b> {{ $concept->concept_category_id }}. {{ $concept->conceptCategory->name }}</p>
         <p><b>{{ trans('dict.pos') }}:</b> {{ $concept->pos->name }}</p>
-        <p><b>{{ trans('dict.name')}} {{ trans('messages.in_russian') }}:</b> {{ $concept->text_ru }}</p>        
-        <p><b>{{ trans('dict.name')}} {{ trans('messages.in_english') }}:</b> {{ $concept->text_en }}</p>        
-        <p><b>{{ trans('dict.descr')}} {{ trans('messages.in_russian') }}:</b> {{ $concept->descr_ru }}</p>        
+        <p><b>{{ trans('dict.name')}} {{ trans('messages.in_russian') }}:</b> {{ $concept->text_ru }}</p>
+        <p><b>{{ trans('dict.name')}} {{ trans('messages.in_english') }}:</b> {{ $concept->text_en }}</p>
+        <p><b>{{ trans('dict.descr')}} {{ trans('messages.in_russian') }}:</b> {{ $concept->descr_ru }}</p>
         <p><b>{{ trans('dict.descr')}} {{ trans('messages.in_english') }}:</b> {{ $concept->descr_en }}</p>
-        
+
         @if ($concept->countLemmas())
-                    
-        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}?search_concept={{ $concept->id }}">{{ trans('navigation.lemmas') }}</a> 
-           ({{ $concept->countLemmas() }})</p>
-        @endif        
+
+        <p><a href="{{ LaravelLocalization::localizeURL('/dict/lemma') }}?search_concept={{ $concept->id }}">{{ trans('navigation.lemmas') }}</a>
+            ({{ $concept->countLemmas() }})</p>
+        @endif
     </div>
     <div class="col-sm-4 concept-page-photo">
-        <div id='concept-photo_{{$concept->id}}'></div> 
-    </div>      
+        <div id='concept-photo_{{$concept->id}}'></div>
+    </div>
 </div>
 @stop
 
 @section('footScriptExtra')
-    {!!Html::script('js/rec-delete-link.js')!!}
-    {!!Html::script('js/meaning.js')!!}
+{!!Html::script('js/rec-delete-link.js')!!}
+{!!Html::script('js/meaning.js')!!}
 @stop
 
 @section('jqueryFunc')
-    recDelete('{{ trans('messages.confirm_delete') }}');
-    loadPhoto('concept', {{$concept->id}}, '/dict/concept/{{$concept->id}}/photo_preview');
+recDelete('{{ trans('messages.confirm_delete') }}');
+loadPhoto('concept', {{$concept->id}}, '/dict/concept/{{$concept->id}}/photo_preview');
 @stop
-
