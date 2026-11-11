@@ -882,7 +882,7 @@ trait TextModify
         foreach ($xml_words as $word) {
             $w_id = (int)$word['id'];
             $word_text = trim((string)$word);
-            $word_for_search = Grammatic::changeLetters(mb_strtolower($word_text));
+            $word_for_search = Grammatic::changeLetters(mb_strtolower($word_text), $lang_id);
 
             $word_number++;
 
