@@ -298,18 +298,19 @@ class Word extends Model
             }
             self::removeByTextWid($this->text_id, $word_id);
         }
-        $this->word = $last_node[0]->__toString();
+        $this->word = Grammatic::changeLetters(trim($last_node[0]->__toString()), $this->text->lang_id);
         $this->save();
         $this->text->updateXML($sxe->asXML());
     }
 
     /**
-     * check if Word equils to word in the text
-     * if $word_string is NULL or empty string delete this Word
-     * if the words are different update Word
-     * 
-     * @param String $word_string
-     * @return boolean = true if $word_string = Word->word
+     * Сверяет поисковую форму слова с переданным исходным написанием.
+     *
+     * Пустой вход сохраняет прежнее поведение: слово удаляется.
+     * При совпадении возвращается true; после обновления — null.
+     *
+     * @param string|null $word_string Исходное написание слова.
+     * @return bool|null
      */
     public function checkWord($word_string)
     {
@@ -317,6 +318,11 @@ class Word extends Model
             $this->remove();
             return;
         }
+
+        $word_string = Grammatic::changeLetters(
+            trim((string) $word_string),
+            $this->text->lang_id
+        );
 
         if ($word_string == $this->word) {
             return true;
@@ -745,7 +751,7 @@ class Word extends Model
             $this->sentence->text_xml = $new_text;
             $this->sentence->save();
 
-            $this->word = $w_parts[1];
+            $this->word = Grammatic::changeLetters(trim((string)$w_parts[1]), $this->text->lang_id);
             $this->save();
 
             $this->sentence->numerateWords();

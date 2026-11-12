@@ -1476,7 +1476,7 @@ dd($s->saveXML());
             foreach ($xml_words as $word) {
                 $w_id = (int)$word['id'];
                 $word_text = trim((string)$word);
-                $word_for_search = Grammatic::changeLetters($word_text);
+                $word_for_search = Grammatic::changeLetters($word_text, $this->lang_id);
 
                 if (!$w_id || $word_for_search === '') {
                     $position++;
