@@ -686,11 +686,93 @@ trait TextModify
             $seen_w_ids[$w_id] = true;
         }
 
-        $checked_words = $without_check ? [] : $this->checkedWords($text_xml);
         $text_id = (int)$this->id;
 
-        DB::transaction(function () use ($s_id, $text_id, $sentence, $sxe, $checked_words, $without_check) {
-            $old_w_ids = [];
+        DB::transaction(function () use ($s_id, $text_id, $sentence, $sxe, $without_check, $seen_w_ids, $text_xml) {
+            // Сначала общая блокировка текста, затем его предложений.
+            $locked_text = DB::table('texts')
+                ->where('id', $text_id)
+                ->lockForUpdate()
+                ->first(['id']);
+
+            if (!$locked_text) {
+                throw new \RuntimeException('Text not found. No changes were committed.');
+            }
+
+            $locked_sentence = DB::table('sentences')
+                ->where('id', (int) $sentence->id)
+                ->where('text_id', $text_id)
+                ->lockForUpdate()
+                ->first(['id', 's_id', 'text_xml']);
+
+            if (!$locked_sentence) {
+                throw new \RuntimeException('Sentence not found in text. No changes were committed.');
+            }
+
+            $locked_sentence = (array) $locked_sentence;
+
+            if (
+                (int) $locked_sentence['s_id'] !== (int) $s_id
+                || (string) $locked_sentence['text_xml'] !== (string) $sentence->text_xml
+            ) {
+                throw new \RuntimeException(
+                    'Sentence XML changed before annotation update. No changes were committed.'
+                );
+            }
+
+            $checked_words = $without_check ? [] : $this->checkedWords($text_xml);
+
+            // Старые позиции берём из XML и таблицы words:
+            // строка words могла исчезнуть раньше, чем её аннотации.
+            $old_w_id_set = [];
+
+            $old_xml = (string) $sentence->text_xml;
+
+            if (trim($old_xml) === '') {
+                throw new \RuntimeException(
+                    'Old sentence XML is empty. '
+                        . 'No changes were committed.'
+                );
+            }
+
+            list($old_sxe, $old_error_message) = self::toXML(
+                $old_xml,
+                $s_id
+            );
+
+            if (!$old_sxe || $old_error_message) {
+                throw new \RuntimeException(
+                    'Cannot parse old sentence XML. '
+                        . 'No changes were committed.'
+                );
+            }
+
+            foreach ($old_sxe->xpath('//w') as $old_xml_word) {
+                $raw_old_w_id = (string) $old_xml_word['id'];
+
+                $old_w_id = filter_var(
+                    $raw_old_w_id,
+                    FILTER_VALIDATE_INT,
+                    ['options' => ['min_range' => 1]]
+                );
+
+                if ($old_w_id === false) {
+                    throw new \RuntimeException(
+                        'Invalid word id in old sentence XML. '
+                            . 'No changes were committed.'
+                    );
+                }
+
+                if (isset($old_w_id_set[$old_w_id])) {
+                    throw new \RuntimeException(
+                        'Duplicate word id ' . $old_w_id
+                            . ' in old sentence XML. '
+                            . 'No changes were committed.'
+                    );
+                }
+
+                $old_w_id_set[$old_w_id] = true;
+            }
 
             $old_words = DB::table('words')
                 ->where('text_id', $text_id)
@@ -699,7 +781,92 @@ trait TextModify
 
             foreach ($old_words as $old_word) {
                 $old_word = (array) $old_word;
-                $old_w_ids[] = (int) $old_word['w_id'];
+                $old_w_id = (int) $old_word['w_id'];
+
+                if ($old_w_id < 1) {
+                    throw new \RuntimeException(
+                        'Invalid word id in existing words row. '
+                            . 'No changes were committed.'
+                    );
+                }
+
+                $old_w_id_set[$old_w_id] = true;
+            }
+
+            $old_w_ids = array_keys($old_w_id_set);
+
+            // Проверяем старые и новые позиции также по XML:
+            // в другом предложении строка words может отсутствовать.
+            if ($old_w_ids || $seen_w_ids) {
+                $other_sentences = DB::table('sentences')
+                    ->where('text_id', $text_id)
+                    ->where('id', '<>', (int) $sentence->id)
+                    ->lockForUpdate()
+                    ->get(['id', 's_id', 'text_xml']);
+
+                foreach ($other_sentences as $other_sentence) {
+                    $other_sentence = (array) $other_sentence;
+
+                    $other_xml = (string) $other_sentence['text_xml'];
+
+                    // Не продолжаем очистку, если принадлежность
+                    // позиций нельзя надёжно проверить.
+                    if (
+                        trim($other_xml) === ''
+                        || preg_match(
+                            '/<!\s*(?:DOCTYPE|ENTITY)\b/i',
+                            $other_xml
+                        )
+                    ) {
+                        throw new \RuntimeException(
+                            'Cannot safely inspect another sentence XML. '
+                                . 'No changes were committed.'
+                        );
+                    }
+
+                    list($other_sxe, $other_error_message) = self::toXML(
+                        $other_xml,
+                        $other_sentence['s_id']
+                    );
+
+                    if (!$other_sxe || $other_error_message) {
+                        throw new \RuntimeException(
+                            'Cannot parse another sentence XML. '
+                                . 'No changes were committed.'
+                        );
+                    }
+
+                    foreach ($other_sxe->xpath('//w') as $other_xml_word) {
+                        $raw_other_w_id = (string) $other_xml_word['id'];
+
+                        $other_w_id = filter_var(
+                            $raw_other_w_id,
+                            FILTER_VALIDATE_INT,
+                            ['options' => ['min_range' => 1]]
+                        );
+
+                        if ($other_w_id === false) {
+                            throw new \RuntimeException(
+                                'Invalid word id in another sentence XML. '
+                                    . 'No changes were committed.'
+                            );
+                        }
+
+                        if (isset($old_w_id_set[$other_w_id])) {
+                            throw new \RuntimeException(
+                                'Old word ids occur in another sentence XML. '
+                                    . 'No changes were committed.'
+                            );
+                        }
+
+                        if (isset($seen_w_ids[$other_w_id])) {
+                            throw new \RuntimeException(
+                                'New word ids occur in another sentence XML. '
+                                    . 'No changes were committed.'
+                            );
+                        }
+                    }
+                }
             }
 
             // Проверяем, что новые w_id не принадлежат другому предложению.
