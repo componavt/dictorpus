@@ -664,12 +664,14 @@ class Export
     }
 
     /*
-    * Экспорт текстов для задач разрешения морфологической неоднозначности.
-    *
-    * text_id,corpus_id,dialect_code,genre_id,year_recorded
-    *
-    * Несколько корпусов, диалектов и жанров разделяются символом "|".
-    */
+     * Экспорт текстов для задач разрешения морфологической неоднозначности.
+     *
+     * text_id,corpus_id,dialect_code,genre_id,year_recorded,year_published
+     *
+     * Несколько корпусов, диалектов и жанров разделяются символом "|".
+     * year_recorded — исходное значение events.date.
+     * year_published — исходное значение sources.year.
+     */
     public static function textsforMorphDisambig(int $lang_id, string $filename)
     {
         $csv_handle = fopen('php://temp/maxmemory:5242880', 'w+');
@@ -685,6 +687,7 @@ class Export
                 'dialect_code',
                 'genre_id',
                 'year_recorded',
+                'year_published',
             ]);
 
             Text::query()
@@ -693,7 +696,8 @@ class Export
                 GROUP_CONCAT(DISTINCT c.id ORDER BY c.id SEPARATOR '|') AS corpus_id,
                 GROUP_CONCAT(DISTINCT d.code ORDER BY d.id SEPARATOR '|') AS dialect_code,
                 GROUP_CONCAT(DISTINCT g.id ORDER BY g.id SEPARATOR '|') AS genre_id,
-                e.date AS year_recorded")
+                e.date AS year_recorded,
+                s.year AS year_published")
                 ->leftJoin('corpus_text as ct', 'ct.text_id', '=', 't.id')
                 ->leftJoin('corpuses as c', 'c.id', '=', 'ct.corpus_id')
                 ->leftJoin('dialect_text as dt', 'dt.text_id', '=', 't.id')
@@ -701,8 +705,9 @@ class Export
                 ->leftJoin('genre_text as gt', 'gt.text_id', '=', 't.id')
                 ->leftJoin('genres as g', 'g.id', '=', 'gt.genre_id')
                 ->leftJoin('events as e', 'e.id', '=', 't.event_id')
+                ->leftJoin('sources as s', 's.id', '=', 't.source_id')
                 ->where('t.lang_id', $lang_id)
-                ->groupBy('t.id', 'e.date')
+                ->groupBy('t.id', 'e.date', 's.year')
                 ->orderBy('t.id')
                 ->chunk(500, function ($texts) use ($csv_handle) {
                     foreach ($texts as $text) {
@@ -712,6 +717,7 @@ class Export
                             $text->dialect_code,
                             $text->genre_id,
                             $text->year_recorded,
+                            $text->year_published,
                         ]);
                     }
                 });
@@ -826,7 +832,7 @@ class Export
 
     /*
     * Экспорт нормализованных корпусных слов для заданного языка.
-    * CSV: word_id,sentence_id,word_number,word
+    * CSV: word_id,sentence_id,word_number,word,w_id,s_id
     */
     public static function wordsforMorphDisambig(int $lang_id, string $filename)
     {
@@ -847,6 +853,8 @@ class Export
                 'sentence_id',
                 'word_number',
                 'word',
+                'w_id',
+                's_id',
             ]);
 
             $query = $export_db->table('words as w')
@@ -856,7 +864,9 @@ class Export
                     'w.id as word_id',
                     'w.sentence_id',
                     'w.word_number',
-                    'w.word'
+                    'w.word',
+                    'w.w_id',
+                    'w.s_id'
                 );
 
             foreach ($query->cursor() as $word) {
@@ -865,6 +875,8 @@ class Export
                     $word->sentence_id,
                     $word->word_number,
                     $word->word,
+                    $word->w_id,
+                    $word->s_id,
                 ]);
 
                 if (strlen($buffer) >= $buffer_limit) {

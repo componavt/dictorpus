@@ -37,6 +37,10 @@ class DictorpusDataExport
             $files[] = 'dict/grammar/' . $name . '.csv';
         }
 
+        foreach (['corpora', 'genres', 'dialects'] as $name) {
+            $files[] = 'corpus/reference/' . $name . '.csv';
+        }
+
         sort($files);
 
         return $files;
@@ -64,7 +68,7 @@ class DictorpusDataExport
         try {
             $this->process('zstd --version', 30);
 
-            foreach (['dict', 'corpus', 'dict/morphology', 'dict/grammar'] as $directory) {
+            foreach (['dict', 'corpus', 'dict/morphology', 'dict/grammar', 'corpus/reference'] as $directory) {
                 $path = $temporary . '/' . $directory;
 
                 if (!File::makeDirectory($path, 0755, true) && !is_dir($path)) {
@@ -124,6 +128,10 @@ class DictorpusDataExport
             MorphologyExport::gramsets($relative . '/dict/grammar/gramsets.csv');
             MorphologyExport::gramsetPos($relative . '/dict/grammar/gramset_pos.csv');
             MorphologyExport::partsOfSpeech($relative . '/dict/grammar/parts_of_speech.csv');
+
+            CorpusReferenceExport::corpora($relative . '/corpus/reference/corpora.csv');
+            CorpusReferenceExport::genres($relative . '/corpus/reference/genres.csv');
+            CorpusReferenceExport::dialects($relative . '/corpus/reference/dialects.csv');
 
             foreach (self::filenames() as $filename) {
                 if (substr($filename, -4) === '.zst') {

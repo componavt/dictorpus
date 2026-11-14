@@ -172,7 +172,7 @@ class MorphologyExport
         ], $query);
     }
 
-    protected static function writeQuery($filename, array $columns, $query)
+    public static function writeQuery($filename, array $columns, $query)
     {
         self::writeRows($filename, $columns, $query->cursor());
     }
