@@ -1293,6 +1293,205 @@ class TextRemovedWordCleanupTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+
+    /**
+     * @dataProvider wordSplitModeProvider
+     */
+    public function testWordSplitWithDuplicateIdLeavesTablesUnchanged($without_check)
+    {
+        $old_xml = $this->seedWordSplitFixture();
+        $before = $this->snapshotWordIdConflictTables();
+        $text = \App\Models\Corpus\Text::find(1880);
+        $sentence = (object) [
+            'id' => 51467,
+            's_id' => 16,
+            'text_xml' => $old_xml,
+        ];
+
+        $result = $text->updateMeaningAndWordformText(
+            $sentence,
+            '<s id="16"><w id="136">mua</w> <w id="136">ilma</w></s>',
+            $without_check
+        );
+
+        $this->assertSame(
+            'Duplicate word id 136 in sentence 16. '
+                . 'No words or annotation links were changed.',
+            $result
+        );
+        $this->assertSame($before, $this->snapshotWordIdConflictTables());
+    }
+
+    /**
+     * @dataProvider wordSplitModeProvider
+     */
+    public function testWordSplitWithDistinctIdsCreatesSeparateAnnotations($without_check)
+    {
+        $cache_property = new \ReflectionProperty(
+            \App\Models\Corpus\Text::class,
+            'wordformsCache'
+        );
+        $cache_property->setAccessible(true);
+        $previous_cache = $cache_property->getValue();
+
+        try {
+            $cache_property->setValue(null, []);
+            $this->runDistinctWordSplitScenario($without_check);
+        } finally {
+            $cache_property->setValue(null, $previous_cache);
+        }
+    }
+
+    public function wordSplitModeProvider()
+    {
+        return [
+            'normal save' => [false],
+            'without previous assessments' => [true],
+        ];
+    }
+
+    /**
+     * Искусственное слитное слово и два независимых словарных разбора.
+     * Соседнее предложение из общей фикстуры остаётся контрольным.
+     */
+    private function seedWordSplitFixture()
+    {
+        $this->createWordMergeDictionarySchema();
+        $this->seedWordIdConflictFixture();
+
+        DB::table('words')->where('id', 101)->update(['word' => 'muailma']);
+        DB::table('meaning_text')
+            ->where('text_id', 1880)->where('w_id', 136)->delete();
+        DB::table('text_wordform')
+            ->where('text_id', 1880)->where('w_id', 136)->delete();
+
+        $old_xml = '<s id="16"><w id="136">muailma</w></s>';
+        DB::table('sentences')->insert([
+            ['id' => 51467, 'text_id' => 1880, 's_id' => 16,
+                'text_xml' => $old_xml],
+            ['id' => 51468, 'text_id' => 1880, 's_id' => 17,
+                'text_xml' => '<s id="17"><w id="137">other</w></s>'],
+        ]);
+
+        foreach ([9300 => 'mua', 9400 => 'ilma', 9500 => 'muailma'] as $lemma_id => $word) {
+            DB::table('lemmas')->insert([
+                'id' => $lemma_id, 'lang_id' => 6,
+                'lemma' => $word, 'lemma_for_search' => $word,
+            ]);
+            DB::table('meanings')->insert([
+                'id' => $lemma_id + 1, 'lemma_id' => $lemma_id,
+            ]);
+            DB::table('wordforms')->insert([
+                'id' => $lemma_id + 2,
+                'wordform' => $word, 'wordform_for_search' => $word,
+            ]);
+            foreach (($lemma_id === 9300 ? [1, 56] : [2]) as $gramset_id) {
+                DB::table('lemma_wordform')->insert([
+                    'lemma_id' => $lemma_id, 'wordform_id' => $lemma_id + 2,
+                    'lang_id' => 6, 'wordform_for_search' => $word,
+                    'gramset_id' => $gramset_id,
+                ]);
+            }
+        }
+
+        DB::table('meaning_text')->insert([
+            'meaning_id' => 9501, 'text_id' => 1880, 's_id' => 16,
+            'word_id' => 101, 'relevance' => 2, 'w_id' => 136,
+        ]);
+        DB::table('text_wordform')->insert([
+            'text_id' => 1880, 'w_id' => 136,
+            'wordform_id' => 9502, 'gramset_id' => 2,
+            'relevance' => 2, 'word_id' => 101,
+        ]);
+
+        return $old_xml;
+    }
+
+    private function runDistinctWordSplitScenario($without_check)
+    {
+        $old_xml = $this->seedWordSplitFixture();
+        $before = $this->snapshotWordIdConflictTables();
+        $text = \App\Models\Corpus\Text::find(1880);
+        $sentence = (object) [
+            'id' => 51467, 's_id' => 16, 'text_xml' => $old_xml,
+        ];
+
+        // w137 принадлежит соседнему предложению; новая часть получает w138.
+        $result = $text->updateMeaningAndWordformText(
+            $sentence,
+            '<s id="16"><w id="136">mua</w> <w id="138">ilma</w></s>',
+            $without_check
+        );
+        $this->assertNull($result);
+
+        $rows = DB::table('words')
+            ->where('text_id', 1880)->where('s_id', 16)
+            ->orderBy('word_number')->get();
+        $this->assertCount(2, $rows);
+        $word_ids = [];
+        $expected_words = [
+            ['w_id' => 136, 'word' => 'mua'],
+            ['w_id' => 138, 'word' => 'ilma'],
+        ];
+        foreach ($rows as $position => $row) {
+            $row = (array) $row;
+            $this->assertEquals($expected_words[$position]['w_id'], $row['w_id']);
+            $this->assertSame($expected_words[$position]['word'], $row['word']);
+            $this->assertEquals($position + 1, $row['word_number']);
+            $this->assertEquals(1880, $row['text_id']);
+            $this->assertEquals(51467, $row['sentence_id']);
+            $this->assertEquals(16, $row['s_id']);
+            $this->assertFalse(in_array((int) $row['id'], [101, 102], true));
+            $word_ids[(int) $row['w_id']] = (int) $row['id'];
+        }
+        $this->assertNotEquals($word_ids[136], $word_ids[138]);
+        $this->assertEquals(0, DB::table('words')->where('id', 101)->count());
+
+        $actual_meanings = [];
+        foreach (DB::table('meaning_text')->where('text_id', 1880)
+            ->whereIn('w_id', [136, 138])->orderBy('w_id')->get() as $row) {
+            $row = (array) $row;
+            $actual_meanings[] = [
+                (int) $row['w_id'], (int) $row['meaning_id'],
+                (int) $row['word_id'], (int) $row['relevance'], (int) $row['s_id'],
+            ];
+        }
+        $this->assertSame([
+            [136, 9301, $word_ids[136], 1, 16],
+            [138, 9401, $word_ids[138], 1, 16],
+        ], $actual_meanings);
+
+        $actual_wordforms = [];
+        foreach (DB::table('text_wordform')->where('text_id', 1880)
+            ->whereIn('w_id', [136, 138])->orderBy('w_id')
+            ->orderBy('wordform_id')->orderBy('gramset_id')->get() as $row) {
+            $row = (array) $row;
+            $actual_wordforms[] = [
+                (int) $row['w_id'], (int) $row['wordform_id'],
+                (int) $row['gramset_id'], (int) $row['word_id'],
+                (int) $row['relevance'],
+            ];
+        }
+        $this->assertSame([
+            [136, 9302, 1, $word_ids[136], 1],
+            [136, 9302, 56, $word_ids[136], 1],
+            [138, 9402, 2, $word_ids[138], 1],
+        ], $actual_wordforms);
+
+        // Проверяется контракт метода аннотаций: XML сохраняет вызывающий код.
+        // Вне двух изменяемых позиций, включая sentences, всё неизменно.
+        $after = $this->snapshotWordIdConflictTables();
+        foreach (['words', 'meaning_text', 'text_wordform'] as $table) {
+            $outside_positions = function ($row) {
+                return !((int) $row['text_id'] === 1880
+                    && in_array((int) $row['w_id'], [136, 138], true));
+            };
+            $before[$table] = array_values(array_filter($before[$table], $outside_positions));
+            $after[$table] = array_values(array_filter($after[$table], $outside_positions));
+        }
+        $this->assertSame($before, $after);
+    }
+
     /**
      * Создаёт исходное слово, соседнее слово и их аннотации.
      *

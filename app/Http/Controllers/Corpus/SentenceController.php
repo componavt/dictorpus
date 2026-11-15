@@ -234,30 +234,70 @@ class SentenceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sentence = Sentence::findOrfail($id);
-        $text = $sentence->text;
-
         $text_xml = $request->input('text_xml');
-        if ($text_xml && $sentence->text_xml != $text_xml) {
-            DB::beginTransaction();
+        $original_xml_hash = $request->input('original_xml_hash');
 
-            try {
+        if (!is_string($text_xml) || trim($text_xml) === '') {
+            return response('XML предложения не должен быть пустым.', 422)
+                ->header('Content-Type', 'text/plain; charset=UTF-8');
+        }
+
+        if (!is_string($original_xml_hash)
+            || !preg_match('/\A[a-f0-9]{64}\z/', $original_xml_hash)) {
+            return response(
+                'Не получена исходная версия предложения. '
+                    . 'Скопируйте свои изменения, заново откройте форму и повторите сохранение.',
+                422
+            )->header('Content-Type', 'text/plain; charset=UTF-8');
+        }
+
+        $initial_sentence = Sentence::findOrfail($id);
+        $text_id = (int) $initial_sentence->text_id;
+
+        DB::beginTransaction();
+
+        try {
+            // Тот же порядок блокировок, что в методе обновления аннотаций.
+            $text = Text::where('id', $text_id)->lockForUpdate()->first();
+            $sentence = Sentence::where('id', $id)
+                ->where('text_id', $text_id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$text || !$sentence
+                || (int) $sentence->s_id !== (int) $initial_sentence->s_id
+                || !hash_equals(
+                    hash('sha256', (string) $sentence->text_xml),
+                    $original_xml_hash
+                )) {
+                DB::rollBack();
+                return response(
+                    'Предложение изменилось после открытия формы. '
+                        . 'Ваши изменения не сохранены. Скопируйте их, '
+                        . 'заново откройте форму и сравните с актуальным текстом.',
+                    409
+                )->header('Content-Type', 'text/plain; charset=UTF-8');
+            }
+
+            if ((string) $sentence->text_xml !== $text_xml) {
                 $error_message = $text->updateMeaningAndWordformText($sentence, $text_xml);
 
                 if ($error_message) {
                     DB::rollBack();
-                    return $error_message;
+                    return response($error_message, 422)
+                        ->header('Content-Type', 'text/plain; charset=UTF-8');
                 }
 
                 $sentence->text_xml = $text_xml;
                 $sentence->save();
-
-                DB::commit();
-            } catch (\Throwable $e) {
-                DB::rollBack();
-                throw $e;
             }
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
         }
+
         $with_edit = true;
         list($meanings_by_wid, $gramsets_by_wid, $wordforms, $words_with_important_examples)
             = $sentence->text->meaningsGramsetsByWid($sentence->words()->pluck('w_id'));

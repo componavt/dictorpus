@@ -492,25 +492,49 @@ function loadSentenceForm(sid) {
 
 function saveSentence(sid) {
     var form = $('#change-sentence-' + sid);
-    var formData = $(form).serialize();
-    var url = $(form).attr('action');
+    if (!form.length || form.data('saving')) {
+        return false;
+    }
 
-    /*    $("#sentence-"+sid).empty(); */
-    $("#loading-sentence-" + sid).show();
+    var form_data = form.serialize();
+    var url = form.attr('action');
+    var submit_buttons = form.find(':submit');
 
-    $(form).submit(function (event) {
-        event.preventDefault();
-        $.ajax({
-            type: 'PUT',
-            url: url,
-            data: formData
+    form.data('saving', true);
+    submit_buttons.prop('disabled', true);
+    $('#loading-sentence-' + sid).show();
+
+    $.ajax({
+        type: 'PUT',
+        url: url,
+        data: form_data,
+        dataType: 'html'
+    })
+        .done(function (response) {
+            $('#sentence-' + sid).html(response);
+            $('#sentence-edit-' + sid).show();
         })
-            .done(function (response) {
-                $("#sentence-" + sid).html(response);
-                $("#loading-sentence-" + sid).hide();
-                $("#sentence-edit-" + sid).show();
-            });
-    });
+        .fail(function (xhr) {
+            var message = 'Не удалось сохранить предложение. '
+                + 'Введённый XML оставлен в форме. Код ответа: ' + xhr.status + '.';
+            var content_type = xhr.getResponseHeader('Content-Type') || '';
+
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            } else if ((xhr.status === 409 || xhr.status === 422)
+                && content_type.indexOf('text/plain') !== -1 && xhr.responseText) {
+                message = xhr.responseText;
+            }
+
+            alert(message);
+        })
+        .always(function () {
+            form.data('saving', false);
+            submit_buttons.prop('disabled', false);
+            $('#loading-sentence-' + sid).hide();
+        });
+
+    return false;
 }
 
 function markupSentence(sid) {
