@@ -1,0 +1,1259 @@
+{
+    "format_version": 1,
+    "scope": "grammar-remaining-diagnostics",
+    "lemma_id": 3539,
+    "tables": {
+        "lemmas": {
+            "columns": [
+                {
+                    "name": "id",
+                    "mysql_type": "int(10) unsigned",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": true
+                },
+                {
+                    "name": "lemma",
+                    "mysql_type": "varchar(255)",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "lang_id",
+                    "mysql_type": "smallint(5) unsigned",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "pos_id",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "is_norm",
+                    "mysql_type": "tinyint(4)",
+                    "nullable": false,
+                    "default": "1",
+                    "auto_increment": false
+                },
+                {
+                    "name": "updated_at",
+                    "mysql_type": "timestamp",
+                    "nullable": false,
+                    "default": "current_timestamp()",
+                    "auto_increment": false
+                },
+                {
+                    "name": "created_at",
+                    "mysql_type": "timestamp",
+                    "nullable": false,
+                    "default": "current_timestamp()",
+                    "auto_increment": false
+                },
+                {
+                    "name": "reflexive",
+                    "mysql_type": "tinyint(1) unsigned",
+                    "nullable": true,
+                    "default": "0",
+                    "auto_increment": false
+                },
+                {
+                    "name": "lemma_for_search",
+                    "mysql_type": "varchar(100)",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "wordform_total",
+                    "mysql_type": "smallint(5) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "status",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": false,
+                    "default": "0",
+                    "auto_increment": false
+                }
+            ],
+            "primary_key": [
+                "id"
+            ],
+            "rows": [
+                {
+                    "id": 3539,
+                    "lemma": "abai",
+                    "lang_id": 5,
+                    "pos_id": 5,
+                    "is_norm": 1,
+                    "updated_at": "2022-10-27 09:15:33",
+                    "created_at": "2018-03-29 12:57:50",
+                    "reflexive": 0,
+                    "lemma_for_search": "abai",
+                    "wordform_total": 58,
+                    "status": 0
+                }
+            ]
+        },
+        "lemma_features": {
+            "columns": [
+                {
+                    "name": "id",
+                    "mysql_type": "int(10) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "animacy",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "abbr",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "number",
+                    "mysql_type": "tinyint(1)",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "reflexive",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "transitive",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "descriptive",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "prontype_id",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "numtype_id",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "degree_id",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "advtype_id",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "comptype_id",
+                    "mysql_type": "varchar(1)",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "phonetics",
+                    "mysql_type": "varchar(45)",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "impersonal",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "partype_id",
+                    "mysql_type": "varchar(2)",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "without_gram",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "updated_at",
+                    "mysql_type": "timestamp",
+                    "nullable": false,
+                    "default": "current_timestamp()",
+                    "auto_increment": false
+                },
+                {
+                    "name": "created_at",
+                    "mysql_type": "timestamp",
+                    "nullable": false,
+                    "default": "current_timestamp()",
+                    "auto_increment": false
+                }
+            ],
+            "primary_key": [],
+            "rows": [
+                {
+                    "id": 3539,
+                    "animacy": null,
+                    "abbr": null,
+                    "number": 0,
+                    "reflexive": null,
+                    "transitive": null,
+                    "descriptive": null,
+                    "prontype_id": null,
+                    "numtype_id": null,
+                    "degree_id": null,
+                    "advtype_id": null,
+                    "comptype_id": null,
+                    "phonetics": null,
+                    "impersonal": null,
+                    "partype_id": null,
+                    "without_gram": null,
+                    "updated_at": "2020-11-15 10:48:11",
+                    "created_at": "2020-11-15 10:48:11"
+                }
+            ]
+        },
+        "lemma_wordform": {
+            "columns": [
+                {
+                    "name": "lemma_id",
+                    "mysql_type": "int(10) unsigned",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "wordform_id",
+                    "mysql_type": "int(10) unsigned",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "gramset_id",
+                    "mysql_type": "smallint(5) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "dialect_id",
+                    "mysql_type": "smallint(5) unsigned",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "affix",
+                    "mysql_type": "varchar(25)",
+                    "nullable": true,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "wordform_for_search",
+                    "mysql_type": "varchar(100)",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "lang_id",
+                    "mysql_type": "tinyint(3) unsigned",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                }
+            ],
+            "primary_key": [],
+            "rows": [
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 10619,
+                    "gramset_id": 1,
+                    "dialect_id": 44,
+                    "affix": "i",
+                    "wordform_for_search": "abai",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 10619,
+                    "gramset_id": 56,
+                    "dialect_id": 44,
+                    "affix": "i",
+                    "wordform_for_search": "abai",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 10620,
+                    "gramset_id": 3,
+                    "dialect_id": 44,
+                    "affix": "jan",
+                    "wordform_for_search": "abajan",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 10620,
+                    "gramset_id": 56,
+                    "dialect_id": 44,
+                    "affix": "jan",
+                    "wordform_for_search": "abajan",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 10621,
+                    "gramset_id": 4,
+                    "dialect_id": 44,
+                    "affix": "jua",
+                    "wordform_for_search": "abajua",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12219,
+                    "gramset_id": 5,
+                    "dialect_id": 44,
+                    "affix": "jakse",
+                    "wordform_for_search": "abajakse",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12220,
+                    "gramset_id": 6,
+                    "dialect_id": 44,
+                    "affix": "jattah",
+                    "wordform_for_search": "abajattah",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12221,
+                    "gramset_id": 8,
+                    "dialect_id": 44,
+                    "affix": "jas",
+                    "wordform_for_search": "abajas",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12221,
+                    "gramset_id": 9,
+                    "dialect_id": 44,
+                    "affix": "jas",
+                    "wordform_for_search": "abajas",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12222,
+                    "gramset_id": 9,
+                    "dialect_id": 44,
+                    "affix": "jaspäi",
+                    "wordform_for_search": "abajaspäi",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12223,
+                    "gramset_id": 10,
+                    "dialect_id": 44,
+                    "affix": "jah",
+                    "wordform_for_search": "abajah",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12224,
+                    "gramset_id": 11,
+                    "dialect_id": 44,
+                    "affix": "jal",
+                    "wordform_for_search": "abajal",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12224,
+                    "gramset_id": 12,
+                    "dialect_id": 44,
+                    "affix": "jal",
+                    "wordform_for_search": "abajal",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12225,
+                    "gramset_id": 12,
+                    "dialect_id": 44,
+                    "affix": "jalpäi",
+                    "wordform_for_search": "abajalpäi",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12226,
+                    "gramset_id": 13,
+                    "dialect_id": 44,
+                    "affix": "jale",
+                    "wordform_for_search": "abajale",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12227,
+                    "gramset_id": 14,
+                    "dialect_id": 44,
+                    "affix": "janke",
+                    "wordform_for_search": "abajanke",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12228,
+                    "gramset_id": 15,
+                    "dialect_id": 44,
+                    "affix": "jači",
+                    "wordform_for_search": "abajači",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12229,
+                    "gramset_id": 2,
+                    "dialect_id": 44,
+                    "affix": "jat",
+                    "wordform_for_search": "abajat",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12229,
+                    "gramset_id": 57,
+                    "dialect_id": 44,
+                    "affix": "jat",
+                    "wordform_for_search": "abajat",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12230,
+                    "gramset_id": 24,
+                    "dialect_id": 44,
+                    "affix": "join",
+                    "wordform_for_search": "abajoin",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12230,
+                    "gramset_id": 281,
+                    "dialect_id": 44,
+                    "affix": "join",
+                    "wordform_for_search": "abajoin",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12231,
+                    "gramset_id": 59,
+                    "dialect_id": 44,
+                    "affix": "joikse",
+                    "wordform_for_search": "abajoikse",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12232,
+                    "gramset_id": 64,
+                    "dialect_id": 44,
+                    "affix": "jittah",
+                    "wordform_for_search": "abajittah",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12233,
+                    "gramset_id": 281,
+                    "dialect_id": 44,
+                    "affix": "jin",
+                    "wordform_for_search": "abajin",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12234,
+                    "gramset_id": 23,
+                    "dialect_id": 44,
+                    "affix": "jis",
+                    "wordform_for_search": "abajis",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12234,
+                    "gramset_id": 60,
+                    "dialect_id": 44,
+                    "affix": "jis",
+                    "wordform_for_search": "abajis",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12235,
+                    "gramset_id": 60,
+                    "dialect_id": 44,
+                    "affix": "jispäi",
+                    "wordform_for_search": "abajispäi",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12236,
+                    "gramset_id": 61,
+                    "dialect_id": 44,
+                    "affix": "jih",
+                    "wordform_for_search": "abajih",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12237,
+                    "gramset_id": 25,
+                    "dialect_id": 44,
+                    "affix": "jil",
+                    "wordform_for_search": "abajil",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12237,
+                    "gramset_id": 62,
+                    "dialect_id": 44,
+                    "affix": "jil",
+                    "wordform_for_search": "abajil",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12238,
+                    "gramset_id": 62,
+                    "dialect_id": 44,
+                    "affix": "jilpäi",
+                    "wordform_for_search": "abajilpäi",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12239,
+                    "gramset_id": 63,
+                    "dialect_id": 44,
+                    "affix": "jile",
+                    "wordform_for_search": "abajile",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12240,
+                    "gramset_id": 65,
+                    "dialect_id": 44,
+                    "affix": "jienke",
+                    "wordform_for_search": "abajienke",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 12241,
+                    "gramset_id": 66,
+                    "dialect_id": 44,
+                    "affix": "jiči",
+                    "wordform_for_search": "abajiči",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 39477,
+                    "gramset_id": 22,
+                    "dialect_id": 44,
+                    "affix": "jii",
+                    "wordform_for_search": "abajii",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 39478,
+                    "gramset_id": 22,
+                    "dialect_id": 44,
+                    "affix": "joi",
+                    "wordform_for_search": "abajoi",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 74207,
+                    "gramset_id": 25,
+                    "dialect_id": 44,
+                    "affix": "joil",
+                    "wordform_for_search": "abajoil",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 74207,
+                    "gramset_id": 62,
+                    "dialect_id": 44,
+                    "affix": "joil",
+                    "wordform_for_search": "abajoil",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 74208,
+                    "gramset_id": 62,
+                    "dialect_id": 44,
+                    "affix": "joilpäi",
+                    "wordform_for_search": "abajoilpäi",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 74209,
+                    "gramset_id": 63,
+                    "dialect_id": 44,
+                    "affix": "joile",
+                    "wordform_for_search": "abajoile",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081604,
+                    "gramset_id": 277,
+                    "dialect_id": 44,
+                    "affix": "jannu",
+                    "wordform_for_search": "abajannu",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081606,
+                    "gramset_id": 279,
+                    "dialect_id": 44,
+                    "affix": "joinnu",
+                    "wordform_for_search": "abajoinnu",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081607,
+                    "gramset_id": 64,
+                    "dialect_id": 44,
+                    "affix": "joittah",
+                    "wordform_for_search": "abajoittah",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081608,
+                    "gramset_id": 23,
+                    "dialect_id": 44,
+                    "affix": "jois",
+                    "wordform_for_search": "abajois",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081608,
+                    "gramset_id": 60,
+                    "dialect_id": 44,
+                    "affix": "jois",
+                    "wordform_for_search": "abajois",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081609,
+                    "gramset_id": 60,
+                    "dialect_id": 44,
+                    "affix": "joispäi",
+                    "wordform_for_search": "abajoispäi",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081610,
+                    "gramset_id": 61,
+                    "dialect_id": 44,
+                    "affix": "joih",
+                    "wordform_for_search": "abajoih",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081611,
+                    "gramset_id": 65,
+                    "dialect_id": 44,
+                    "affix": "joinke",
+                    "wordform_for_search": "abajoinke",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081612,
+                    "gramset_id": 65,
+                    "dialect_id": 44,
+                    "affix": "joinneh",
+                    "wordform_for_search": "abajoinneh",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081613,
+                    "gramset_id": 66,
+                    "dialect_id": 44,
+                    "affix": "joiči",
+                    "wordform_for_search": "abajoiči",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081618,
+                    "gramset_id": 24,
+                    "dialect_id": 44,
+                    "affix": "jien",
+                    "wordform_for_search": "abajien",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081619,
+                    "gramset_id": 279,
+                    "dialect_id": 44,
+                    "affix": "jinnu",
+                    "wordform_for_search": "abajinnu",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081620,
+                    "gramset_id": 59,
+                    "dialect_id": 44,
+                    "affix": "jikse",
+                    "wordform_for_search": "abajikse",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 1081621,
+                    "gramset_id": 65,
+                    "dialect_id": 44,
+                    "affix": "jinneh",
+                    "wordform_for_search": "abajinneh",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 2098523,
+                    "gramset_id": 17,
+                    "dialect_id": 44,
+                    "affix": "jalluo",
+                    "wordform_for_search": "abajalluo",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 2098524,
+                    "gramset_id": 16,
+                    "dialect_id": 44,
+                    "affix": "jassah",
+                    "wordform_for_search": "abajassah",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 2098525,
+                    "gramset_id": 18,
+                    "dialect_id": 44,
+                    "affix": "jielluo",
+                    "wordform_for_search": "abajielluo",
+                    "lang_id": 5
+                },
+                {
+                    "lemma_id": 3539,
+                    "wordform_id": 2098526,
+                    "gramset_id": 67,
+                    "dialect_id": 44,
+                    "affix": "jissah",
+                    "wordform_for_search": "abajissah",
+                    "lang_id": 5
+                }
+            ]
+        },
+        "wordforms": {
+            "columns": [
+                {
+                    "name": "id",
+                    "mysql_type": "int(10) unsigned",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": true
+                },
+                {
+                    "name": "wordform",
+                    "mysql_type": "varchar(255)",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                },
+                {
+                    "name": "updated_at",
+                    "mysql_type": "timestamp",
+                    "nullable": false,
+                    "default": "current_timestamp()",
+                    "auto_increment": false
+                },
+                {
+                    "name": "created_at",
+                    "mysql_type": "timestamp",
+                    "nullable": false,
+                    "default": "current_timestamp()",
+                    "auto_increment": false
+                },
+                {
+                    "name": "wordform_for_search",
+                    "mysql_type": "varchar(100)",
+                    "nullable": false,
+                    "default": null,
+                    "auto_increment": false
+                }
+            ],
+            "primary_key": [
+                "id"
+            ],
+            "rows": [
+                {
+                    "id": 10619,
+                    "wordform": "abai",
+                    "updated_at": "2018-03-22 19:56:58",
+                    "created_at": "2018-03-22 19:56:58",
+                    "wordform_for_search": "abai"
+                },
+                {
+                    "id": 10620,
+                    "wordform": "abajan",
+                    "updated_at": "2018-03-22 19:56:59",
+                    "created_at": "2018-03-22 19:56:59",
+                    "wordform_for_search": "abajan"
+                },
+                {
+                    "id": 10621,
+                    "wordform": "abajua",
+                    "updated_at": "2018-03-22 19:56:59",
+                    "created_at": "2018-03-22 19:56:59",
+                    "wordform_for_search": "abajua"
+                },
+                {
+                    "id": 12219,
+                    "wordform": "abajakse",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajakse"
+                },
+                {
+                    "id": 12220,
+                    "wordform": "abajattah",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajattah"
+                },
+                {
+                    "id": 12221,
+                    "wordform": "abajas",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajas"
+                },
+                {
+                    "id": 12222,
+                    "wordform": "abajaspäi",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajaspäi"
+                },
+                {
+                    "id": 12223,
+                    "wordform": "abajah",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajah"
+                },
+                {
+                    "id": 12224,
+                    "wordform": "abajal",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajal"
+                },
+                {
+                    "id": 12225,
+                    "wordform": "abajalpäi",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajalpäi"
+                },
+                {
+                    "id": 12226,
+                    "wordform": "abajale",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajale"
+                },
+                {
+                    "id": 12227,
+                    "wordform": "abajanke",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajanke"
+                },
+                {
+                    "id": 12228,
+                    "wordform": "abajači",
+                    "updated_at": "2018-03-29 13:32:07",
+                    "created_at": "2018-03-29 13:32:07",
+                    "wordform_for_search": "abajači"
+                },
+                {
+                    "id": 12229,
+                    "wordform": "abajat",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajat"
+                },
+                {
+                    "id": 12230,
+                    "wordform": "abajoin",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajoin"
+                },
+                {
+                    "id": 12231,
+                    "wordform": "abajoikse",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajoikse"
+                },
+                {
+                    "id": 12232,
+                    "wordform": "abajittah",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajittah"
+                },
+                {
+                    "id": 12233,
+                    "wordform": "abajin",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajin"
+                },
+                {
+                    "id": 12234,
+                    "wordform": "abajis",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajis"
+                },
+                {
+                    "id": 12235,
+                    "wordform": "abajispäi",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajispäi"
+                },
+                {
+                    "id": 12236,
+                    "wordform": "abajih",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajih"
+                },
+                {
+                    "id": 12237,
+                    "wordform": "abajil",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajil"
+                },
+                {
+                    "id": 12238,
+                    "wordform": "abajilpäi",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajilpäi"
+                },
+                {
+                    "id": 12239,
+                    "wordform": "abajile",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajile"
+                },
+                {
+                    "id": 12240,
+                    "wordform": "abajienke",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajienke"
+                },
+                {
+                    "id": 12241,
+                    "wordform": "abajiči",
+                    "updated_at": "2018-03-29 13:32:08",
+                    "created_at": "2018-03-29 13:32:08",
+                    "wordform_for_search": "abajiči"
+                },
+                {
+                    "id": 39477,
+                    "wordform": "abajii",
+                    "updated_at": "2018-06-09 20:41:52",
+                    "created_at": "2018-06-09 20:41:52",
+                    "wordform_for_search": "abajii"
+                },
+                {
+                    "id": 39478,
+                    "wordform": "abajoi",
+                    "updated_at": "2018-06-09 20:41:52",
+                    "created_at": "2018-06-09 20:41:52",
+                    "wordform_for_search": "abajoi"
+                },
+                {
+                    "id": 74207,
+                    "wordform": "abajoil",
+                    "updated_at": "2019-01-21 13:23:45",
+                    "created_at": "2019-01-21 13:23:45",
+                    "wordform_for_search": "abajoil"
+                },
+                {
+                    "id": 74208,
+                    "wordform": "abajoilpäi",
+                    "updated_at": "2019-01-21 13:23:45",
+                    "created_at": "2019-01-21 13:23:45",
+                    "wordform_for_search": "abajoilpäi"
+                },
+                {
+                    "id": 74209,
+                    "wordform": "abajoile",
+                    "updated_at": "2019-01-21 13:23:45",
+                    "created_at": "2019-01-21 13:23:45",
+                    "wordform_for_search": "abajoile"
+                },
+                {
+                    "id": 1081604,
+                    "wordform": "abajannu",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajannu"
+                },
+                {
+                    "id": 1081606,
+                    "wordform": "abajoinnu",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajoinnu"
+                },
+                {
+                    "id": 1081607,
+                    "wordform": "abajoittah",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajoittah"
+                },
+                {
+                    "id": 1081608,
+                    "wordform": "abajois",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajois"
+                },
+                {
+                    "id": 1081609,
+                    "wordform": "abajoispäi",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajoispäi"
+                },
+                {
+                    "id": 1081610,
+                    "wordform": "abajoih",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajoih"
+                },
+                {
+                    "id": 1081611,
+                    "wordform": "abajoinke",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajoinke"
+                },
+                {
+                    "id": 1081612,
+                    "wordform": "abajoinneh",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajoinneh"
+                },
+                {
+                    "id": 1081613,
+                    "wordform": "abajoiči",
+                    "updated_at": "2020-05-25 09:39:49",
+                    "created_at": "2020-05-25 09:39:49",
+                    "wordform_for_search": "abajoiči"
+                },
+                {
+                    "id": 1081618,
+                    "wordform": "abajien",
+                    "updated_at": "2020-05-25 09:42:51",
+                    "created_at": "2020-05-25 09:42:51",
+                    "wordform_for_search": "abajien"
+                },
+                {
+                    "id": 1081619,
+                    "wordform": "abajinnu",
+                    "updated_at": "2020-05-25 09:42:51",
+                    "created_at": "2020-05-25 09:42:51",
+                    "wordform_for_search": "abajinnu"
+                },
+                {
+                    "id": 1081620,
+                    "wordform": "abajikse",
+                    "updated_at": "2020-05-25 09:42:51",
+                    "created_at": "2020-05-25 09:42:51",
+                    "wordform_for_search": "abajikse"
+                },
+                {
+                    "id": 1081621,
+                    "wordform": "abajinneh",
+                    "updated_at": "2020-05-25 09:42:51",
+                    "created_at": "2020-05-25 09:42:51",
+                    "wordform_for_search": "abajinneh"
+                },
+                {
+                    "id": 2098523,
+                    "wordform": "abajalluo",
+                    "updated_at": "2022-10-27 09:15:03",
+                    "created_at": "2022-10-27 09:15:03",
+                    "wordform_for_search": "abajalluo"
+                },
+                {
+                    "id": 2098524,
+                    "wordform": "abajassah",
+                    "updated_at": "2022-10-27 09:15:03",
+                    "created_at": "2022-10-27 09:15:03",
+                    "wordform_for_search": "abajassah"
+                },
+                {
+                    "id": 2098525,
+                    "wordform": "abajielluo",
+                    "updated_at": "2022-10-27 09:15:03",
+                    "created_at": "2022-10-27 09:15:03",
+                    "wordform_for_search": "abajielluo"
+                },
+                {
+                    "id": 2098526,
+                    "wordform": "abajissah",
+                    "updated_at": "2022-10-27 09:15:03",
+                    "created_at": "2022-10-27 09:15:03",
+                    "wordform_for_search": "abajissah"
+                }
+            ]
+        }
+    },
+    "sources": {
+        "Tests\\GrammaticTest::testStemsFromTemplateKarProperNounKuorma_Auto": {
+            "file": "tests/Library/GrammaticTest.php",
+            "line": 1703,
+            "code": "    public function testStemsFromTemplateKarProperNounKuorma_Auto()\r\n    {\r\n        $template = \"kuorma||-aut|o [o]\";\r\n        $lang_id = 4;\r\n        $pos_id = 5; // noun\r\n        $num = null;\r\n        $result = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num);\r\n        //dd($result);        \r\n        $expected = [[\r\n            0 => 'kuorma-auto',\r\n            1 => 'kuorma-auto',\r\n            2 => 'kuorma-auto',\r\n            3 => 'kuorma-autuo',\r\n            4 => 'kuorma-autoje',\r\n            5 => 'kuorma-autoloi',\r\n            6 => 'kuorma-auto',\r\n            10 => true\r\n        ], $num, 'kuorma||-aut', 'o'];\r\n        $this->assertEquals($expected, $result);\r\n    }\r\n"
+        },
+        "Tests\\GrammaticTest::testGetStemFromWordform": {
+            "file": "tests/Library/GrammaticTest.php",
+            "line": 1851,
+            "code": "    public function testGetStemFromWordform()\r\n    {\r\n        $id = 3539;\r\n        $lemma = Lemma::findOrFail($id);\r\n        $base_n = 4;\r\n        $dialect_id = 44;\r\n        $result = Grammatic::getStemFromWordform($lemma, $base_n, $lemma->lang_id,  $lemma->pos_id, $dialect_id, $lemma->features ? $lemma->features->is_reflexive : false);\r\n\r\n        $expected = 'abaji/abajoi';\r\n        $this->assertEquals($expected, $result);\r\n    }\r\n"
+        },
+        "Tests\\GrammaticTest::testStemsFromMiniTemplateForLud": {
+            "file": "tests/Library/GrammaticTest.php",
+            "line": 4268,
+            "code": "    public function testStemsFromMiniTemplateForLud()\r\n    {\r\n        $lang_id = 6;\r\n        $dialect_id = 42;\r\n        $pos_id = 11; // verb\r\n        $num = NULL;\r\n        $templates = [\r\n            3461 => 'kač|čoda [o]',\r\n            42494 => 'kuč|čuda [u]',\r\n            41301 => 'eč|čidä [i]',\r\n            14596 => 'ot|tada [a]',\r\n            50380 => 'kyzy|dä []',\r\n            22172 => 'anda|da []',\r\n            14594 => 'elä|dä []',\r\n            45142 => 'itke|i []',\r\n            43596 => 'särbä|i []',\r\n            29444 => 'd’uo|da []',\r\n            62863 => 'vie|dä []',\r\n            41336 => 'sua|da []',\r\n            29594 => 'tul|da [e]',\r\n            3525 => 'män|dä [e]',\r\n            67094 => 'pur|da [e]',\r\n            22260 => 'pagi|šta [že]',\r\n            44615 => 'pe|stä [ze]',\r\n            43235 => 'maga|ta [da]',\r\n            41869 => 'rube|ta [da]',\r\n            70904 => 'haravoi|ta [če]',\r\n            62330 => 'suvai|ta [če]',\r\n        ];\r\n        $result = [];\r\n        foreach ($templates as $lemma_id => $template) {\r\n            $result[$lemma_id] = Grammatic::stemsFromTemplate($template, $lang_id, $pos_id, $num, $dialect_id);\r\n        }\r\n        $expected = [\r\n            3461 => [0 => [0 => 'kaččoda', 1 => 'kačo', 2 => 'kaččo', 3 => 'kačoi/kačuoi', 4 => 'kaččoi/kaččuoi', 5 => 'kaččo', 6 => 'kačota', 7 => 'kačott', 10 => true], 1 => null, 2 => 'kač', 3 => 'čoda'],\r\n            42494 => [0 => [0 => 'kuččuda', 1 => 'kuču', 2 => 'kučču', 3 => 'kučui', 4 => 'kuččui', 5 => 'kučču', 6 => 'kučuta', 7 => 'kučutt', 10 => true], 1 => null, 2 => 'kuč', 3 => 'čuda'],\r\n            50380 => [0 => [0 => 'kyzydä', 1 => 'kyzy', 2 => 'kyzy', 3 => 'kyzyi', 4 => 'kyzyi', 5 => 'kyzy', 6 => 'kyzytä', 7 => 'kyzytt', 10 => false], 1 => null, 2 => 'kyzy', 3 => 'dä'],\r\n            41301 => [0 => [0 => 'eččidä', 1 => 'eči', 2 => 'ečči', 3 => 'ečii', 4 => 'eččii', 5 => 'ečči', 6 => 'ečitä', 7 => 'ečitt', 10 => false], 1 => null, 2 => 'eč', 3 => 'čidä'],\r\n            22172 => [0 => [0 => 'andada', 1 => 'anda', 2 => 'anda', 3 => 'andoi/anduoi', 4 => 'andoi/anduoi', 5 => 'anda', 6 => 'andeta', 7 => 'andett', 10 => true], 1 => null, 2 => 'an', 3 => 'dada'],\r\n            14596 => [0 => [0 => 'ottada', 1 => 'ota', 2 => 'otta', 3 => 'oti', 4 => 'otti', 5 => 'otta', 6 => 'oteta', 7 => 'otett', 10 => true], 1 => null, 2 => 'ot', 3 => 'tada'],\r\n            14594 => [0 => [0 => 'elädä', 1 => 'elä', 2 => 'elä', 3 => 'eli', 4 => 'eli', 5 => 'elä', 6 => 'eletä', 7 => 'elett', 10 => false], 1 => null, 2 => 'el', 3 => 'ädä'],\r\n            45142 => [0 => [0 => 'itkei', 1 => 'itke', 2 => 'itke', 3 => 'itki', 4 => 'itki', 5 => 'itke', 6 => 'itketä', 7 => 'itkett', 10 => false], 1 => null, 2 => 'itk', 3 => 'ei'],\r\n            43596 => [0 => [0 => 'särbäi', 1 => 'särbä', 2 => 'särbä', 3 => 'särbi', 4 => 'särbi', 5 => 'särbä', 6 => 'särbetä', 7 => 'särbett', 10 => false], 1 => null, 2 => 'särb', 3 => 'äi'],\r\n            29444 => [0 => [0 => 'd’uoda', 1 => 'd’uo', 2 => 'd’uo', 3 => 'd’oi/d’uoi', 4 => 'd’oi/d’uoi', 5 => 'd’uo', 6 => 'd’uoda', 7 => 'd’uod', 10 => true], 1 => null, 2 => 'd’', 3 => 'uoda'],\r\n            62863 => [0 => [0 => 'viedä', 1 => 'vie', 2 => 'vie', 3 => 'vei/viei', 4 => 'vei/viei', 5 => 'vie', 6 => 'viedä', 7 => 'vied', 10 => false], 1 => null, 2 => 'v', 3 => 'iedä'],\r\n            41336 => [0 => [0 => 'suada', 1 => 'sua', 2 => 'sua', 3 => 'sai/suai', 4 => 'sai/suai', 5 => 'sua', 6 => 'suada', 7 => 'suad', 10 => true], 1 => null, 2 => 'sua', 3 => 'da'],\r\n            29594 => [0 => [0 => 'tulda', 1 => 'tule', 2 => 'tule', 3 => 'tuli', 4 => 'tuli', 5 => 'tul', 6 => 'tulda', 7 => 'tuld', 10 => true], 1 => null, 2 => 'tul', 3 => 'da'],\r\n            3525 => [0 => [0 => 'mändä', 1 => 'mäne', 2 => 'mäne', 3 => 'mäni', 4 => 'mäni', 5 => 'män', 6 => 'mändä', 7 => 'mänd', 10 => false], 1 => null, 2 => 'män', 3 => 'dä'],\r\n            67094 => [0 => [0 => 'purda', 1 => 'pure', 2 => 'pure', 3 => 'puri', 4 => 'puri', 5 => 'pur', 6 => 'purda', 7 => 'purd', 10 => true], 1 => null, 2 => 'pur', 3 => 'da'],\r\n            22260 => [0 => [0 => 'pagišta', 1 => 'pagiže', 2 => 'pagiže', 3 => 'pagiži', 4 => 'pagiži', 5 => 'pagiš', 6 => 'pagišta', 7 => 'pagišt', 10 => true], 1 => null, 2 => 'p', 3 => 'agišta'],\r\n            44615 => [0 => [0 => 'pestä', 1 => 'peze', 2 => 'peze', 3 => 'pezi', 4 => 'pezi', 5 => 'pes', 6 => 'pestä', 7 => 'pest', 10 => false], 1 => null, 2 => 'pe', 3 => 'stä'],\r\n            43235 => [0 => [0 => 'magata', 1 => 'magada', 2 => 'magada', 3 => 'magaži', 4 => 'magaži', 5 => 'maga', 6 => 'magata', 7 => 'magatt', 10 => true], 1 => null, 2 => 'maga', 3 => 'ta'],\r\n            41869 => [0 => [0 => 'rubeta', 1 => 'rubeda', 2 => 'rubeda', 3 => 'rubeži', 4 => 'rubeži', 5 => 'rube', 6 => 'rubeta', 7 => 'rubett', 10 => true], 1 => null, 2 => 'rube', 3 => 'ta'],\r\n            70904 => [0 => [0 => 'haravoita', 1 => 'haravoiče', 2 => 'haravoičče', 3 => 'haravoiči', 4 => 'haravoičči', 5 => 'haravoi', 6 => 'haravoita', 7 => 'haravoitt', 10 => true], 1 => null, 2 => 'haravoi', 3 => 'ta'],\r\n            62330 => [0 => [0 => 'suvaita', 1 => 'suvaiče', 2 => 'suvaičče', 3 => 'suvaiči', 4 => 'suvaičči', 5 => 'suvai', 6 => 'suvaita', 7 => 'suvaitt', 10 => true], 1 => null, 2 => 'suvai', 3 => 'ta'],\r\n        ];\r\n\r\n        $this->assertEquals($expected, $result);\r\n    }\r\n"
+        },
+        "App\\Library\\Grammatic\\KarName::stemsFromTemplate": {
+            "file": "app/Library/Grammatic/KarName.php",
+            "line": 164,
+            "code": "    public static function stemsFromTemplate($template, $lang_id, $pos_id, $name_num, $dialect_id = null)\r\n    {\r\n        $base_shab = \"([^\\s\\(\\]\\|]+)\";\r\n        $base_suff_shab = \"([^\\s\\(\\]\\|]*)\";\r\n        //        $okon1_shab = \"(-?[^\\-\\,\\;\\)]+)\";\r\n        $okon3_shab = \"(-?[^\\-\\,\\;\\)]+?\\/?-?[^\\-\\,\\;\\)]*)\";\r\n        //        $lemma_okon1_shab = \"/^\".$base_shab.\"\\|?\".$base_suff_shab.\"\\s*\\(\".$okon1_shab;\r\n        $lemma_okon3_shab = \"/^\" . $base_shab . \"\\|?\" . $base_suff_shab . \"\\s*\\(\" . $okon3_shab;\r\n\r\n        // mini template\r\n        if (preg_match(\"/^\" . $base_shab . \"\\|?\" . $base_suff_shab . \"\\s*\\[([^\\]]*)\\]/\", $template, $regs)) {\r\n            return self::stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num, $dialect_id);\r\n            // only plural\r\n        } elseif ($name_num == 'pl' && preg_match($lemma_okon3_shab . \",\\s*\" . $okon3_shab . \"\\)/\", $template, $regs)) {\r\n            //            $name_num = 'pl';\r\n            return  self::stemsPlFromTemplate($regs);\r\n            // only single\r\n        } elseif ($name_num == 'sg' && preg_match($lemma_okon3_shab . \",\\s*\" . $okon3_shab . \"\\)/\", $template, $regs)) {\r\n            return  self::stemsSgFromTemplate($regs);\r\n            // others\r\n        } elseif (preg_match($lemma_okon3_shab . \",\\s*\" . $okon3_shab . \";\\s*\" . $okon3_shab . \"\\)/\", $template, $regs)) {\r\n            $name_num = '';\r\n            return self::stemsOthersFromTemplate($regs);\r\n        } else {\r\n            return Grammatic::getAffixFromtemplate($template, $name_num);\r\n        }\r\n    }\r\n"
+        },
+        "App\\Library\\Grammatic\\KarName::stemsFromMiniTemplate": {
+            "file": "app/Library/Grammatic/KarName.php",
+            "line": 200,
+            "code": "    public static function stemsFromMiniTemplate($lang_id, $pos_id, $regs, $name_num, $dialect_id)\r\n    {\r\n        //dd($regs);    \r\n        $regs[1] = preg_replace('/\\_/', ' ', $regs[1]);\r\n        if (preg_match(\"/^(.+)ǁ(.+)$/\", $regs[1], $sword)) {\r\n            $fword = preg_replace('/ǁ/', '', $sword[1]);\r\n            $base = $sword[2];\r\n        } else {\r\n            $fword = '';\r\n            $base = $regs[1];\r\n        }\r\n        //        $base = preg_replace('/ǁ/','',$regs[1]);\r\n        $stem0 = $base . $regs[2];\r\n        $out = [[$fword . $stem0], null, $regs[0], null];\r\n        $ps_list = preg_split(\"/\\s*,\\s*/\", $regs[3]);\r\n        $harmony = KarGram::isBackVowels($stem0); // harmony\r\n        $stem0_syll = KarGram::countSyllable($stem0);\r\n\r\n        if ($lang_id == 6) {\r\n            // $ok = $regs[2];            \r\n            list($stem1, $stem2, $stem6) = KarNameLud::initialStemsFromMiniTemplate($base, $regs[2], $stem0, $ps_list);\r\n            $stem3 = KarNameLud::stem3FromMiniTemplate($stem6);\r\n            $stem4 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem1, $stem6, $harmony, $pos_id);\r\n            $stem5 = KarNameLud::stemPlFromMiniTemplate($stem0, $stem2, $stem6, $harmony, $pos_id);\r\n        } else {\r\n            list($stem1, $stem6, $ps1) = self::stems1And6FromMiniTemplate($base, $stem0, $ps_list);\r\n            if (!$stem6) {\r\n                return $out;\r\n            }\r\n            $stem2 = self::stem2FromMiniTemplate($base, $stem1, $stem6, isset($ps1[1]) ? $ps1[1] : null);\r\n            $stem3 = self::stem3FromMiniTemplate($stem6, $lang_id, $harmony, $dialect_id);\r\n            $stem5 = self::stem5FromMiniTemplate($stem0, $stem1, $stem6, $lang_id, $pos_id, $harmony, $stem0_syll, $dialect_id);\r\n            $stem4 = self::stem4FromMiniTemplate($stem1, $stem5, $stem6, $harmony, $dialect_id);\r\n        }\r\n        $stems = [\r\n            0 => $fword . $stem0,\r\n            1 => $fword . $stem1, // single genetive base \r\n            2 => $fword . $stem2, // single illative base\r\n            3 => $fword . $stem3,\r\n            4 => $fword . $stem4,\r\n            5 => $fword . $stem5,\r\n            6 => $fword . $stem6,\r\n            10 => $harmony\r\n        ];\r\n        //dd($stems, $stem0_syll, $regs[1].$regs[2]);        \r\n        return [$stems, $name_num, $regs[1], $regs[2]];\r\n    }\r\n"
+        },
+        "App\\Library\\Grammatic\\KarVerbLud::stemsFromMiniTemplate": {
+            "file": "app/Library/Grammatic/KarVerbLud.php",
+            "line": 754,
+            "code": "    public static function stemsFromMiniTemplate($regs, $name_num=null) {\r\n        $base = preg_replace('/ǁ/','',$regs[1]);\r\n        $harmony = KarGram::isBackVowels($regs[1].$regs[2]); // harmony\r\n        $stems=[\r\n            0=>$base.$regs[2], \r\n            1=>$base.$regs[3],\r\n            2=>'',\r\n            3=>'',\r\n            4=>'',\r\n            5=>'',\r\n            6=>'',\r\n            7=>''];\r\n        \r\n        $stems[2]=self::stem2FromMiniTemplate($base, $regs[2], $regs[3], $stems[1]); // вспом. сильн. гл.\r\n        $stems[3]=self::stem3FromMiniTemplate($stems[1], $harmony);\r\n        $stems[4]=self::stem3FromMiniTemplate($stems[2], $harmony);\r\n        $stems[5]=self::stem5FromMiniTemplate($stems[0]);\r\n        $stems[6]=self::stem6FromMiniTemplate($stems[0], $stems[1], $harmony); \r\n        $stems[7]=self::stem7FromMiniTemplate($stems[6]);\r\n        \r\n        return [$stems, $name_num, $regs[1], $regs[2]];\r\n    }\r\n"
+        },
+        "App\\Library\\Grammatic\\KarVerb::getStemFromWordform": {
+            "file": "app/Library/Grammatic/KarVerb.php",
+            "line": 734,
+            "code": "    public static function getStemFromWordform($lemma, $stem_n, $dialect_id)\r\n    {\r\n        //dd($stem_n);        \r\n        switch ($stem_n) {\r\n            case 0:\r\n                return $lemma->lemma;\r\n        }\r\n        switch ($stem_n) {\r\n            case 1:  // indicative presence 1 sg\r\n                if (preg_match(\"/^(.+)n$/\", $lemma->wordform(26, $dialect_id), $regs)) {\r\n                    return preg_replace(\"/,\\s*/\", '/', $regs[1]);\r\n                }\r\n                return '';\r\n            case 4: // indicative imperfect 3 sg\r\n                $stems4 = preg_split(\"/\\s*,\\s*/\", $lemma->wordform(34, $dialect_id));\r\n                sort($stems4);\r\n                return join('/', $stems4);\r\n            case 6: // indicative presence 3 pl\r\n                if (preg_match(\"/^(.+)h$/\", $lemma->wordform(31, $dialect_id), $regs)) {\r\n                    return preg_replace(\"/,\\s*/\", '/', $regs[1]);\r\n                }\r\n                return '';\r\n        }\r\n        if ($lemma->lang_id == 5) {\r\n            return KarVerbOlo::getStemFromWordform($lemma, $stem_n, $dialect_id);\r\n        }\r\n\r\n        switch ($stem_n) {\r\n            case 2: // 3 infinitive illative\r\n                if (preg_match(\"/^(.+)m[aä]h$/u\", $lemma->wordform(174, $dialect_id), $regs)) {\r\n                    return $regs[1];\r\n                }\r\n                return '';\r\n            case 3: // indicative imperfect 1 sg\r\n                $stems3 = [];\r\n                foreach (preg_split(\"/\\s*,\\s*/\", $lemma->wordform(32, $dialect_id)) as $wordform) {\r\n                    if (preg_match(\"/^(.+)n$/\", $wordform, $regs)) {\r\n                        $stems3[] = $regs[1];\r\n                    }\r\n                }\r\n                sort($stems3);\r\n                return join('/', $stems3);\r\n            case 7: // indicative imperfect 3 pl\r\n                if (preg_match(\"/^(.+)ih$/\", $lemma->wordform(37, $dialect_id), $regs)) {\r\n                    return $regs[1];\r\n                }\r\n                return '';\r\n        }\r\n\r\n        if ($lemma->lang_id == 6) {\r\n            return KarVerbLud::getStemFromWordform($lemma, $stem_n, $dialect_id);\r\n        }\r\n\r\n        switch ($stem_n) {\r\n            case 5: // 2 active participle\r\n                if (preg_match(\"/^(.+)n?[nlrsš]un$/\", $lemma->wordform(179, $dialect_id), $regs)) {\r\n                    return $regs[1];\r\n                }\r\n                return '';\r\n        }\r\n    }\r\n"
+        },
+        "App\\Library\\Grammatic\\KarVerbOlo::getStemFromWordform": {
+            "file": "app/Library/Grammatic/KarVerbOlo.php",
+            "line": 464,
+            "code": "    public static function getStemFromWordform($lemma, $stem_n, $dialect_id)\r\n    {\r\n        switch ($stem_n) {\r\n            case 2: // indicative presence 3 sg\r\n                if (preg_match(\"/^(.+)n$/\", $lemma->wordform(28, $dialect_id), $regs)) {\r\n                    return preg_replace(\"/,\\s*/\", '/', $regs[1]);\r\n                }\r\n                return '';\r\n            case 3: // 3 infinitive illative\r\n                if (preg_match(\"/^(.+)m[aä]h$/u\", $lemma->wordform(174, $dialect_id), $regs)) {\r\n                    return preg_replace(\"/,\\s*/\", '/', $regs[1]);\r\n                }\r\n                return '';\r\n            case 5: // indicative imperfect 1 sg\r\n                if (preg_match(\"/^(.+)n$/\", $lemma->wordform(32, $dialect_id), $regs)) {\r\n                    return preg_replace(\"/,\\s*/\", '/', $regs[1]);\r\n                }\r\n                return '';\r\n            case 7: // indicative imperfect 3 pl\r\n                $stem7 = $lemma->wordform(37, $dialect_id);\r\n                return $stem7 ? preg_replace(\"/,\\s*/\", '/', $stem7) : '';\r\n        }\r\n    }\r\n"
+        }
+    }
+}

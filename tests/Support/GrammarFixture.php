@@ -41,6 +41,62 @@ class GrammarFixture
         }
     }
 
+    /** Load the reviewed abai example only for tests that explicitly need it. */
+    public static function loadAbai($app)
+    {
+        $connection = IsolatedSqliteTestCase::assertSqliteIsolation($app);
+        $pdo = $connection->getPdo();
+        if ($pdo->inTransaction()) {
+            throw new \RuntimeException('Load the abai fixture outside a transaction.');
+        }
+        $path = dirname(__DIR__) . '/Fixtures/grammar-remaining.json';
+        if (!is_file($path) || !is_readable($path)) {
+            throw new \RuntimeException('Missing tests/Fixtures/grammar-remaining.json.');
+        }
+        $json = str_replace("\r\n", "\n", file_get_contents($path));
+        if (!hash_equals('8ab2640cd8d58cf15f96904ca4226ee6ec9178ff20180cd4b3939d073b914ea7', hash('sha256', $json))) {
+            throw new \RuntimeException('Abai fixture SHA256 mismatch. Do not regenerate it silently.');
+        }
+        $snapshot = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        if (($snapshot['format_version'] ?? null) !== 1
+            || ($snapshot['scope'] ?? null) !== 'grammar-remaining-diagnostics'
+            || ($snapshot['lemma_id'] ?? null) !== 3539
+            || !isset($snapshot['tables']) || !is_array($snapshot['tables'])) {
+            throw new \RuntimeException('Unsupported abai fixture format.');
+        }
+        $expected = ['lemmas', 'lemma_features', 'lemma_wordform', 'wordforms'];
+        $actual = array_keys($snapshot['tables']);
+        sort($expected);
+        sort($actual);
+        if ($actual !== $expected) {
+            throw new \RuntimeException('Unexpected tables in the abai fixture.');
+        }
+        $existing = $pdo->query("SELECT name FROM sqlite_master WHERE type='table'")
+            ->fetchAll(\PDO::FETCH_COLUMN);
+        foreach (['lemmas', 'lemma_wordform', 'wordforms'] as $name) {
+            if (!in_array($name, $existing, true)) {
+                throw new \RuntimeException('Load the base grammar fixture before the abai fixture.');
+            }
+        }
+        if (in_array('lemma_features', $existing, true)) {
+            throw new \RuntimeException('The abai fixture requires a fresh lemma_features table.');
+        }
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo->beginTransaction();
+        try {
+            self::createTable($pdo, 'lemma_features', $snapshot['tables']['lemma_features']);
+            foreach (['lemmas', 'lemma_features', 'wordforms', 'lemma_wordform'] as $name) {
+                self::insertRows($pdo, $name, $snapshot['tables'][$name]);
+            }
+            $pdo->commit();
+        } catch (\Throwable $error) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $error;
+        }
+    }
+
     private static function snapshot()
     {
         if (self::$snapshot !== null) {

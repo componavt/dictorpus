@@ -1850,6 +1850,8 @@ class GrammaticTest extends TestCase
 
     public function testGetStemFromWordform()
     {
+        \Tests\Support\GrammarFixture::loadAbai($this->app);
+
         $id = 3539;
         $lemma = Lemma::findOrFail($id);
         $base_n = 4;
