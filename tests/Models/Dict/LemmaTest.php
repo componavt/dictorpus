@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Tests\TestCase;
+use Tests\GrammarTestCase as TestCase;
 
 //use Illuminate\Foundation\Testing\RefreshDatabase; 
 
@@ -14,6 +14,12 @@ use App\Models\Dict\Lemma;
 
 class LemmaTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        \Tests\Support\GrammarFixture::loadLemmaTests($this->app);
+    }
+
     //    use RefreshDatabase;
 
     public function can_get_all_lemmas()

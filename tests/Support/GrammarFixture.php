@@ -97,6 +97,92 @@ class GrammarFixture
         }
     }
 
+    /** Explicit supplement for the seven database-backed LemmaTest cases. */
+    public static function loadLemmaTests($app)
+    {
+        $connection = IsolatedSqliteTestCase::assertSqliteIsolation($app);
+        $pdo = $connection->getPdo();
+        if ($pdo->inTransaction()) {
+            throw new \RuntimeException('Load lemma test data outside a transaction.');
+        }
+        $path = dirname(__DIR__) . '/Fixtures/lemma-tests.json';
+        if (!is_file($path) || !is_readable($path)) {
+            throw new \RuntimeException('Missing tests/Fixtures/lemma-tests.json.');
+        }
+        $json = str_replace("\r\n", "\n", file_get_contents($path));
+        if (!hash_equals('b498f058ff42a32bcf7a08d10263e114d8eb559705c3b23c830692d484df9958', hash('sha256', $json))) {
+            throw new \RuntimeException('Lemma test fixture SHA256 mismatch.');
+        }
+        $snapshot = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        if (($snapshot['format_version'] ?? null) !== 1
+            || ($snapshot['scope'] ?? null) !== 'lemma-model-tests'
+            || ($snapshot['lemma_ids'] ?? null) !== [17, 24, 828, 2984, 26420, 29586]
+            || !isset($snapshot['tables']) || !is_array($snapshot['tables'])) {
+            throw new \RuntimeException('Unsupported lemma test fixture format.');
+        }
+        $expected = [
+            'lemmas', 'lemma_features', 'reverse_lemmas', 'lemma_bases',
+            'wordforms', 'lemma_wordform', 'meanings', 'dialect_meaning',
+        ];
+        $actual = array_keys($snapshot['tables']);
+        $sorted = $expected;
+        sort($actual);
+        sort($sorted);
+        if ($actual !== $sorted) {
+            throw new \RuntimeException('Unexpected tables in lemma test fixture.');
+        }
+        $existing = $pdo->query("SELECT name FROM sqlite_master WHERE type='table'")
+            ->fetchAll(\PDO::FETCH_COLUMN);
+        foreach (['lemmas', 'wordforms', 'lemma_wordform'] as $name) {
+            if (!in_array($name, $existing, true)) {
+                throw new \RuntimeException('Load the base grammar fixture first.');
+            }
+        }
+        foreach (['lemma_features', 'reverse_lemmas', 'lemma_bases', 'meanings', 'dialect_meaning'] as $name) {
+            if (in_array($name, $existing, true)) {
+                throw new \RuntimeException('Lemma test supplement requires fresh table: ' . $name);
+            }
+        }
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo->beginTransaction();
+        try {
+            foreach ($expected as $name) {
+                $table = $snapshot['tables'][$name];
+                if (!in_array($name, $existing, true)) {
+                    self::createTable($pdo, $name, $table);
+                } else {
+                    $columns = $pdo->query('PRAGMA table_info(' . self::identifier($name) . ')')
+                        ->fetchAll(\PDO::FETCH_ASSOC);
+                    if (array_column($columns, 'name') !== array_column($table['columns'], 'name')) {
+                        throw new \RuntimeException('Fixture column mismatch in ' . $name);
+                    }
+                }
+                if ($name === 'wordforms') {
+                    $select = $pdo->prepare('SELECT wordform, wordform_for_search FROM wordforms WHERE id = ?');
+                    $new_rows = [];
+                    foreach ($table['rows'] as $row) {
+                        $select->execute([$row['id']]);
+                        $stored = $select->fetch(\PDO::FETCH_ASSOC);
+                        if ($stored === false) {
+                            $new_rows[] = $row;
+                        } elseif ($stored['wordform'] !== $row['wordform']
+                            || $stored['wordform_for_search'] !== $row['wordform_for_search']) {
+                            throw new \RuntimeException('Conflicting shared wordform ID: ' . $row['id']);
+                        }
+                    }
+                    $table['rows'] = $new_rows;
+                }
+                self::insertRows($pdo, $name, $table);
+            }
+            $pdo->commit();
+        } catch (\Throwable $error) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $error;
+        }
+    }
+
     private static function snapshot()
     {
         if (self::$snapshot !== null) {
