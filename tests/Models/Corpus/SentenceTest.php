@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Tests\TestCase;
+use Tests\IsolatedSqliteTestCase as TestCase;
 
 use App\Models\Corpus\Sentence;
 
