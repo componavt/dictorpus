@@ -656,6 +656,11 @@ trait TextModify
     {
         $s_id = $sentence->s_id;
 
+        $validation_error = \App\Library\SentenceXmlValidator::error($text_xml, $s_id);
+        if ($validation_error !== null) {
+            return $validation_error;
+        }
+
         list($sxe, $error_message) = self::toXML($text_xml, $s_id);
         if ($error_message) {
             return $error_message;
