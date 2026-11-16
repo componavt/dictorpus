@@ -32,27 +32,7 @@ class WordMergeWordsTest extends \PHPUnit_Framework_TestCase
         $storedLast,
         $expectedMerged
     ) {
-        $connection = $this->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $connection->method('getQueryGrammar')
-            ->willReturn(new Grammar());
-
-        $connection->method('getPostProcessor')
-            ->willReturn(new Processor());
-
-        $connection->method('getName')
-            ->willReturn('isolated_merge_test');
-
-        $connection->expects($this->once())
-            ->method('select')
-            ->with(
-                $this->isType('string'),
-                $this->equalTo([1509, 61]),
-                $this->anything()
-            )
-            ->willReturn([]);
+        $connection = new WordMergeWordsConnectionSpy();
 
         $resolver = new ConnectionResolver([
             'isolated_merge_test' => $connection,
@@ -67,10 +47,7 @@ class WordMergeWordsTest extends \PHPUnit_Framework_TestCase
                 . '</s>'
         );
 
-        $word = $this->getMockBuilder(Word::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['save', 'remove'])
-            ->getMock();
+        $word = new WordMergeWordsSpy();
 
         $word->setRawAttributes([
             'id' => 9001,
@@ -83,26 +60,21 @@ class WordMergeWordsTest extends \PHPUnit_Framework_TestCase
 
         $word->setRelation('text', $text);
 
-        $word->expects($this->never())
-            ->method('remove');
+        $word->onSave = function () use (
+            $word,
+            $text,
+            $expectedMerged
+        ) {
+            $this->assertSame($expectedMerged, $word->word);
 
-        $word->expects($this->once())
-            ->method('save')
-            ->will($this->returnCallback(function () use (
-                $word,
-                $text,
-                $expectedMerged
-            ) {
-                $this->assertSame($expectedMerged, $word->word);
+            $this->assertSame(
+                [],
+                $text->updatedXml,
+                'Слово должно сохраняться до вызова updateXML().'
+            );
 
-                $this->assertSame(
-                    [],
-                    $text->updatedXml,
-                    'Слово должно сохраняться до вызова updateXML().'
-                );
-
-                return true;
-            }));
+            return true;
+        };
 
         $oldResolver = Word::getConnectionResolver();
         $oldLibxmlMode = libxml_use_internal_errors();
@@ -115,6 +87,18 @@ class WordMergeWordsTest extends \PHPUnit_Framework_TestCase
                 62 => $lastWord,
             ]);
 
+            $this->assertSame(1, $word->saveCalls);
+            $this->assertSame(0, $word->removeCalls);
+
+            $this->assertCount(1, $connection->selectCalls);
+            $this->assertInternalType(
+                'string',
+                $connection->selectCalls[0]['query']
+            );
+            $this->assertSame(
+                [1509, 61],
+                $connection->selectCalls[0]['bindings']
+            );
             $this->assertNull($result);
             $this->assertSame($expectedMerged, $word->word);
             $this->assertCount(1, $text->updatedXml);
@@ -214,5 +198,75 @@ class WordMergeWordsTextDouble
     {
         $this->updatedXml[] = $xml;
         $this->text_xml = $xml;
+    }
+}
+
+/**
+ * Запоминает запрос поиска слова, не открывая соединение с БД.
+ */
+class WordMergeWordsConnectionSpy extends Connection
+{
+    public $selectCalls = [];
+
+    public function __construct()
+    {
+        // Настоящее соединение не создаётся.
+    }
+
+    public function getQueryGrammar()
+    {
+        return new Grammar();
+    }
+
+    public function getPostProcessor()
+    {
+        return new Processor();
+    }
+
+    public function getName()
+    {
+        return 'isolated_merge_test';
+    }
+
+    public function select($query, $bindings = [], $useReadPdo = true)
+    {
+        $this->selectCalls[] = [
+            'query' => $query,
+            'bindings' => $bindings,
+            'useReadPdo' => $useReadPdo,
+        ];
+
+        return [];
+    }
+}
+
+/**
+ * Выполняет настоящий mergeWords(), подменяя сохранение и удаление.
+ */
+class WordMergeWordsSpy extends Word
+{
+    public $saveCalls = 0;
+    public $removeCalls = 0;
+    public $onSave;
+
+    public function __construct()
+    {
+        // Намеренно не вызываем конструктор Eloquent.
+    }
+
+    public function save(array $options = [])
+    {
+        ++$this->saveCalls;
+
+        if ($this->onSave !== null) {
+            call_user_func($this->onSave);
+        }
+
+        return true;
+    }
+
+    public function remove()
+    {
+        ++$this->removeCalls;
     }
 }
