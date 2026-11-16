@@ -37,34 +37,29 @@ class WordMoveCharOutTest extends \PHPUnit_Framework_TestCase
             $sentence
         );
 
-        $word->expects($this->never())
-            ->method('remove');
+        $word->onSave = function () use (
+            $word,
+            $sentence,
+            $expectedWord,
+            $expectedXml
+        ) {
+            $this->assertSame($expectedWord, $word->word);
+            $this->assertSame($expectedXml, $sentence->text_xml);
 
-        $word->expects($this->once())
-            ->method('save')
-            ->will($this->returnCallback(function () use (
-                $word,
-                $sentence,
-                $expectedWord,
-                $expectedXml
-            ) {
-                $this->assertSame($expectedWord, $word->word);
-                $this->assertSame($expectedXml, $sentence->text_xml);
+            $this->assertSame(
+                [$expectedXml],
+                $sentence->savedXml,
+                'Предложение должно быть сохранено перед словом.'
+            );
 
-                $this->assertSame(
-                    [$expectedXml],
-                    $sentence->savedXml,
-                    'Предложение должно быть сохранено перед словом.'
-                );
+            $this->assertSame(
+                [],
+                $sentence->numberedXml,
+                'Перенумерация должна происходить после сохранения слова.'
+            );
 
-                $this->assertSame(
-                    [],
-                    $sentence->numberedXml,
-                    'Перенумерация должна происходить после сохранения слова.'
-                );
-
-                return true;
-            }));
+            return true;
+        };
 
         $this->expectOutputString(
             "<p>sentence_id=38822, word_id=9001<br>\n"
@@ -73,6 +68,8 @@ class WordMoveCharOutTest extends \PHPUnit_Framework_TestCase
         );
 
         $result = $word->moveCharOut('#');
+        $this->assertSame(1, $word->saveCalls);
+        $this->assertSame(0, $word->removeCalls);
 
         $this->assertNull($result);
         $this->assertSame($expectedWord, $word->word);
@@ -118,15 +115,11 @@ class WordMoveCharOutTest extends \PHPUnit_Framework_TestCase
         $sentence = new WordMoveCharOutSentenceDouble($sourceXml);
         $word = $this->makeWord('kala', 1, $sentence);
 
-        $word->expects($this->never())
-            ->method('save');
-
-        $word->expects($this->never())
-            ->method('remove');
-
         $this->expectOutputString('');
 
         $result = $word->moveCharOut('#');
+        $this->assertSame(0, $word->saveCalls);
+        $this->assertSame(0, $word->removeCalls);
 
         $this->assertNull($result);
         $this->assertSame('kala', $word->word);
@@ -136,22 +129,19 @@ class WordMoveCharOutTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Создаёт частичный mock без конструктора и загрузки связей из БД.
+     * Создаёт тестовую модель без конструктора Eloquent и загрузки связей из БД.
      *
      * @param string $storedWord Исходное значение word.
      * @param int $langId Язык текста.
      * @param WordMoveCharOutSentenceDouble $sentence Подмена предложения.
-     * @return \App\Models\Corpus\Word|\PHPUnit_Framework_MockObject_MockObject
+     * @return WordMoveCharOutSpy
      */
     private function makeWord(
         $storedWord,
         $langId,
         WordMoveCharOutSentenceDouble $sentence
     ) {
-        $word = $this->getMockBuilder(Word::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['save', 'remove'])
-            ->getMock();
+        $word = new WordMoveCharOutSpy();
 
         $word->setRawAttributes([
             'id' => 9001,
@@ -223,5 +213,36 @@ class WordMoveCharOutSentenceDouble
     public function numerateWords()
     {
         $this->numberedXml[] = $this->text_xml;
+    }
+}
+
+/**
+ * Подменяет запись в БД, сохраняя возможность проверять порядок операций.
+ */
+class WordMoveCharOutSpy extends Word
+{
+    public $saveCalls = 0;
+    public $removeCalls = 0;
+    public $onSave;
+
+    public function __construct()
+    {
+        // Намеренно не вызываем конструктор Eloquent.
+    }
+
+    public function save(array $options = [])
+    {
+        ++$this->saveCalls;
+
+        if ($this->onSave !== null) {
+            call_user_func($this->onSave);
+        }
+
+        return true;
+    }
+
+    public function remove()
+    {
+        ++$this->removeCalls;
     }
 }
