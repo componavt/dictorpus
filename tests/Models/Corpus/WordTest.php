@@ -2,32 +2,13 @@
 
 namespace Tests;
 
-use Tests\TestCase;
+use Tests\IsolatedSqliteTestCase as TestCase;
 
 use App\Models\Corpus\Word;
-// ./vendor/bin/phpunit tests/Models/Dict/WordTest.php
+// ./vendor/bin/phpunit tests/Models/Corpus/WordTest.php
 
 class WordTest extends TestCase
 {
-    // какая-то незаконченная функция    
-    public function testProjectLangIDs()
-    {
-        $word = 'kuiva';
-        $lang_id = 4;
-        $result = (array)Word::getMeaningsByWord($word, $lang_id)->pluck('id');
-        /*
-dd($result);        
-        $result = [];
-        foreach ($meanings as $meaning) {
-            $result[]=$mre
-        }
-        $expected = null;
-        $this->assertEquals( $expected, $result);   
-         * 
-         */
-        $this->assertEquals(true, true);
-    }
-
     public function testSplitWordBySpecialSymbol()
     {
         $token   = "gor’o-¦gor’kija";
