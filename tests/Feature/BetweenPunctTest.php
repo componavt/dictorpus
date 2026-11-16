@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Tests\TestCase;
+use Tests\IsolatedSqliteTestCase as TestCase;
 
 use App\Models\Corpus\Sentence;
 
@@ -82,6 +82,9 @@ class BetweenPunctTest extends TestCase
         if (!empty($punctsData)) {
             DB::table('puncts')->insert($punctsData);
         }
+
+        // Все сценарии этого теста используют текст с ID 10.
+        $row->text1_id = 10;
 
         $result = Sentence::checkBetweenPunctByRow($row, 2, $wordConfig);
 
@@ -226,7 +229,7 @@ class BetweenPunctTest extends TestCase
                 ],
                 [
                     'bt_mode'  => 'require_any',
-                    'bt_types' => ['comma'], // а putypeIdsBySlugs даст id = 1
+                    'bt_types' => [1], // comma
                 ],
                 false,
             ],
@@ -257,7 +260,7 @@ class BetweenPunctTest extends TestCase
                 ],
                 [
                     'bt_mode'  => 'require_any',
-                    'bt_types' => ['comma'],
+                    'bt_types' => [1], // comma
                 ],
                 true,
             ],
@@ -281,7 +284,7 @@ class BetweenPunctTest extends TestCase
                 ],
                 [
                     'bt_mode'  => 'require_any',
-                    'bt_types' => ['comma', 'dash'],
+                    'bt_types' => [1, 2], // comma, dash
                 ],
                 true,
             ],
@@ -305,7 +308,7 @@ class BetweenPunctTest extends TestCase
                 ],
                 [
                     'bt_mode'  => 'require_any',
-                    'bt_types' => ['comma'],
+                    'bt_types' => [1], // comma
                 ],
                 true,
             ],
@@ -361,7 +364,7 @@ class BetweenPunctTest extends TestCase
                 ],
                 [
                     'bt_mode'  => 'forbid_any',
-                    'bt_types' => ['comma'], // запрещаем только comma
+                    'bt_types' => [1], // comma
                 ],
                 true,
             ],
@@ -392,7 +395,7 @@ class BetweenPunctTest extends TestCase
                 ],
                 [
                     'bt_mode'  => 'require_any',
-                    'bt_types' => ['comma'],
+                    'bt_types' => [1], // comma
                 ],
                 true,
             ],
