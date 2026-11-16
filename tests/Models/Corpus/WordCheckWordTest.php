@@ -9,7 +9,7 @@ class WordCheckWordTest extends \PHPUnit_Framework_TestCase
     /**
      * Проверяет нормализацию, результат метода и число сохранений.
      *
-     * Настоящий checkWord() выполняется на частичном mock:
+     * Настоящий checkWord() выполняется на тестовом подклассе:
      * save() и remove() заменены, приложение Laravel не загружается.
      *
      * @dataProvider provideNonEmptyWords
@@ -32,25 +32,17 @@ class WordCheckWordTest extends \PHPUnit_Framework_TestCase
     ) {
         $word = $this->makeWord($storedWord, $langId);
 
-        $word->expects($this->never())
-            ->method('remove');
-
-        $word->expects($this->exactly($expectedSaves))
-            ->method('save')
-            ->will($this->returnCallback(function () use ($word, $expectedWord) {
-                $this->assertSame(
-                    $expectedWord,
-                    $word->word,
-                    'В save() должно поступать уже нормализованное слово.'
-                );
-
-                return true;
-            }));
-
         $result = $word->checkWord($inputWord);
 
         $this->assertSame($expectedResult, $result);
         $this->assertSame($expectedWord, $word->word);
+        $this->assertSame(0, $word->removeCalls);
+        $this->assertSame($expectedSaves, count($word->savedWords));
+        $this->assertSame(
+            array_fill(0, $expectedSaves, $expectedWord),
+            $word->savedWords,
+            'В save() должно поступать уже нормализованное слово.'
+        );
     }
 
     /**
@@ -161,16 +153,12 @@ class WordCheckWordTest extends \PHPUnit_Framework_TestCase
     {
         $word = $this->makeWord('kala', 1);
 
-        $word->expects($this->never())
-            ->method('save');
-
-        $word->expects($this->once())
-            ->method('remove');
-
         $result = $word->checkWord($inputWord);
 
         $this->assertNull($result);
         $this->assertSame('kala', $word->word);
+        $this->assertSame([], $word->savedWords);
+        $this->assertSame(1, $word->removeCalls);
     }
 
     /**
@@ -187,21 +175,15 @@ class WordCheckWordTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Создаёт модель без конструктора, запросов и загрузки приложения.
+     * Создаёт тестовую модель без запросов и загрузки приложения.
      *
-     * Связь text заранее заполнена объектом с единственным нужным
-     * свойством lang_id, поэтому её загрузка из БД не требуется.
-     *
-     * @param string $storedWord Исходное значение поля word.
-     * @param int $langId Язык текста.
-     * @return \App\Models\Corpus\Word|\PHPUnit_Framework_MockObject_MockObject
+     * @param string $storedWord
+     * @param int $langId
+     * @return WordCheckWordSpy
      */
     private function makeWord($storedWord, $langId)
     {
-        $word = $this->getMockBuilder(Word::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['save', 'remove'])
-            ->getMock();
+        $word = new WordCheckWordSpy();
 
         $word->setRawAttributes([
             'word' => $storedWord,
@@ -213,5 +195,31 @@ class WordCheckWordTest extends \PHPUnit_Framework_TestCase
         $word->setRelation('text', $text);
 
         return $word;
+    }
+}
+
+/**
+ * Выполняет настоящий checkWord(), но не сохраняет и не удаляет данные.
+ */
+class WordCheckWordSpy extends Word
+{
+    public $savedWords = [];
+    public $removeCalls = 0;
+
+    public function __construct()
+    {
+        // Намеренно не вызываем конструктор Eloquent.
+    }
+
+    public function save(array $options = [])
+    {
+        $this->savedWords[] = $this->word;
+
+        return true;
+    }
+
+    public function remove()
+    {
+        ++$this->removeCalls;
     }
 }
