@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Tests\TestCase;
+use Tests\GrammarTestCase as TestCase;
 
 use App\Library\Experiments\SearchByAnalog;
 
