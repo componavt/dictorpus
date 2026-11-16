@@ -212,41 +212,7 @@ if (!function_exists('found_rem')) {
 if (!function_exists('highlight')) {
     function highlight(string $str, $substr = null, $class = 'search-word')
     {
-        $str = preg_replace('/\R/u', ' ', $str);
-        if ($substr === null || $substr === '') {
-            return $str;
-        }
-        $parts = preg_split(
-            '/(<[^>]+>)/u',
-            $str,
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
-        );
-
-        $needles = preg_split('/\s+/u', trim($substr), -1, PREG_SPLIT_NO_EMPTY);
-        if (!$needles) {
-            return $str;
-        }
-
-        foreach ($parts as &$part) {
-            if (preg_match('/^<[^>]+>$/u', $part)) {
-                continue;
-            }
-
-            if (count($needles) === 1) {
-                $pattern = '/' . preg_quote($needles[0], '/') . '/iu';
-                $part = preg_replace($pattern, '<span class="' . $class . '">$0</span>', $part);
-            } else {
-                $pattern = '/' . implode('\s+', array_map(function ($word) {
-                    return preg_quote($word, '/');
-                }, $needles)) . '/iu';
-
-                $part = preg_replace($pattern, '<span class="' . $class . '">$0</span>', $part);
-            }
-        }
-        unset($part);
-
-        return implode('', $parts);
+        return \App\Library\TextHighlighter::highlight($str, $substr, $class);
     }
 }
 
