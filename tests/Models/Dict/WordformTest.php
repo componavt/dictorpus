@@ -2,21 +2,16 @@
 
 namespace Tests;
 
-use Tests\TestCase;
+use Tests\IsolatedSqliteTestCase as TestCase;
 
 use App\Models\Dict\Wordform;
 
 class WordformTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
     public function testGetMainPartManySpaces()
     {
-        $wordform_id = 8439; // en astu
-        $wordform = Wordform::find($wordform_id);
+        $wordform = new Wordform;
+        $wordform->wordform = '  en   astu  ';
 
         $result = $wordform->getMainPart();
 
@@ -24,12 +19,10 @@ class WordformTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    // Should be: "ei ole aštun" -> aštun
     public function testGetMainPartStrangeSpaces()
     {
-        $wordform_id = 8861; // ei ole aštun
-        $wordform = Wordform::find($wordform_id);
-        //print $wordform->wordform . " sixth='". ord(mb_substr($wordform->wordform, 6, 1, 'UTF-8')). "'";
+        $wordform = new Wordform;
+        $wordform->wordform = "ei ole\u{00A0}aštun";
 
         $result = $wordform->getMainPart();
 
