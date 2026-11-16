@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Tests\TestCase;
+use Tests\GrammarTestCase as TestCase;
 
 use App\Library\Grammatic;
 //use App\Library\Grammatic\KarGram;
@@ -362,7 +362,7 @@ class GrammaticTest extends TestCase
             50 => 'älä kačahtai',
             74 => 'älgäh kačahtakkahes',
             75 => '',
-            76 => 'äigiä kačahtakkuattokseh',
+            76 => 'älgiä kačahtakkuattokseh',
             77 => 'äldähes kačahtettahes',
 
             // Кондиционал, презенс, положительные формы (60-65)
